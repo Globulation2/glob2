@@ -5556,3 +5556,7 @@ Voegt ijs toe aan de kaarteditor. Grondeenheden bewegen met halve snelheid en ve
 Wegterrein
 [experiment road-terrain help]
 Voegt klinkerwegen toe aan de kaarteditor. Grondeenheden bewegen met dubbele snelheid. Wegen ondersteunen gebouwen, maar geen grondstoffen.
+[experiment markets-v2]
+Markten V2
+[experiment markets-v2 help]
+Werkers kunnen voorraden uit de gedeelde marktvoorraad halen. Markten kunnen worden verbeterd om tarwe en hout en daarna alle grondstoffen op te slaan. Teams wisselen nog steeds alleen fruit uit. Geldt voor nieuwe spellen; opgeslagen spellen behouden hun oorspronkelijke instelling.

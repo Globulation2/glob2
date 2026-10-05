@@ -5556,3 +5556,7 @@ Adaugă gheață în editorul de hărți. Unitățile terestre se deplasează cu
 Teren de drum
 [experiment road-terrain help]
 Adaugă drumuri pietruite în editorul de hărți. Unitățile terestre se deplasează cu viteză dublă. Drumurile permit clădiri, dar nu resurse.
+[experiment markets-v2]
+Piețe V2
+[experiment markets-v2 help]
+Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbunătățite pentru a depozita grâu și lemn, apoi toate resursele. Între echipe se schimbă în continuare doar fructe. Se aplică jocurilor noi; salvările păstrează setarea inițială.

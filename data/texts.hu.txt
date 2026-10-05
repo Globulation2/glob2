@@ -5556,3 +5556,7 @@ Jeget ad a térképszerkesztőhöz. A szárazföldi egységek félsebességgel m
 Útterep
 [experiment road-terrain help]
 Macskaköves utakat ad a térképszerkesztőhöz. A szárazföldi egységek kétszeres sebességgel mozognak. Az utakon lehetnek épületek, de erőforrások nem.
+[experiment markets-v2]
+Piacok V2
+[experiment markets-v2 help]
+A munkások a piacok közös készletéből is hozhatnak ellátmányt. A piacok fejleszthetők búza és fa, majd minden nyersanyag tárolására. A csapatok között továbbra is csak gyümölcs cserélhető. Új játékokra érvényes; a mentések megőrzik az eredeti beállítást.

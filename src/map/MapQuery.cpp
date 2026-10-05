@@ -148,7 +148,7 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) c
 
 bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const
 {
-	if (gid == NOGBID || Building::GIDtoTeam(gid) != teamNumber)
+	if (!marketsV2Enabled() || gid == NOGBID || Building::GIDtoTeam(gid) != teamNumber)
 		return false;
 	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 	// The stock is the team's shared pool; only a market whose level takes the

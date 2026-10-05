@@ -5556,3 +5556,7 @@ Aggiunge ghiaccio all’editor delle mappe. Le unità terrestri si muovono a met
 Terreno stradale
 [experiment road-terrain help]
 Aggiunge strade acciottolate all’editor delle mappe. Le unità terrestri si muovono a velocità doppia. Le strade possono ospitare edifici, ma non risorse.
+[experiment markets-v2]
+Mercati V2
+[experiment markets-v2 help]
+I lavoratori possono prelevare scorte dal magazzino condiviso dei mercati. I mercati possono essere migliorati per conservare grano e legno, poi tutte le risorse. Gli scambi tra squadre restano limitati alla frutta. Si applica alle nuove partite; i salvataggi mantengono l’impostazione originale.

@@ -41,6 +41,7 @@ enum class ExperimentId : Uint8
 	FarmAreas = 1,
 	IceTerrain = 2,
 	RoadTerrain = 3,
+	MarketsV2 = 4,
 	Count
 };
 

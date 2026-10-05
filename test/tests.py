@@ -75,6 +75,7 @@ ENGINE_TESTS = [
     '#src/building/LevelGateHarness.cpp',
     '#src/unit/ResourceFetchTargetHarness.cpp',
     '#src/unit/MarketFetchHarness.cpp',
+    ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/RoundTripHungerGateHarness.cpp',
     '#src/map/TerrainResourcesHarness.cpp',
     '#src/map/TerrainEcologyHarness.cpp',

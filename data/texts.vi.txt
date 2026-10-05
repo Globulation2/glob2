@@ -5556,3 +5556,7 @@ Thêm băng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di ch
 Địa hình đường
 [experiment road-terrain help]
 Thêm đường lát đá vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường cho phép đặt công trình nhưng không cho phép tài nguyên.
+[experiment markets-v2]
+Chợ V2
+[experiment markets-v2 help]
+Công nhân có thể lấy vật tư từ kho chung của các chợ. Chợ có thể nâng cấp để chứa lúa mì và gỗ, rồi mọi tài nguyên. Trao đổi giữa các đội vẫn chỉ gồm trái cây. Áp dụng cho trò chơi mới; bản lưu giữ thiết lập ban đầu.

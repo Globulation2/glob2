@@ -5556,3 +5556,7 @@ Pridá ľad do editora máp. Pozemné jednotky sa pohybujú polovičnou rýchlos
 Terén ciest
 [experiment road-terrain help]
 Pridá dláždené cesty do editora máp. Pozemné jednotky sa pohybujú dvojnásobnou rýchlosťou. Na cestách môžu byť budovy, ale nie suroviny.
+[experiment markets-v2]
+Trhy V2
+[experiment markets-v2 help]
+Robotníci môžu brať zásoby zo spoločného skladu trhov. Trhy možno vylepšiť na skladovanie pšenice a dreva, potom všetkých surovín. Medzi tímami sa naďalej vymieňa iba ovocie. Platí pre nové hry; uložené hry si zachovajú pôvodné nastavenie.

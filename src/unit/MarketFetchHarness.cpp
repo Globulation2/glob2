@@ -48,6 +48,7 @@ struct Bed
 	TestUnit* unit;
 	Bed(int unitX, int unitY) : game(gui.game)
 	{
+		game.gameHeader.getExperiments().set(ExperimentId::MarketsV2);
 		game.map.setSize(6, 6, GRASS); // 64x64
 		game.map.setGame(&game);
 		for (int y = 0; y < game.map.getH(); ++y)
@@ -240,7 +241,9 @@ TEST_CASE("MarketFetch/upgraded market IDs and stock survive binary and text sav
 	glob2test::HeadlessGlobals globals;
 	for (int level=0; level<3; ++level) for (bool text : {false,true})
 	{
-		glob2test::HeadlessGame source(glob2test::GameOptions{.header=true});
+		glob2test::GameOptions options{.header=true};
+		options.experiments.set(ExperimentId::MarketsV2);
+		glob2test::HeadlessGame source(options);
 		auto *market=source.addBuilding("market",8,8,level);
 		REQUIRE(market);
 		CHECK(market->typeNum==(level ? 50+2*level : 50));

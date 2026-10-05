@@ -1677,3 +1677,10 @@ remain stable, higher-level sites and buildings append as IDs 51–54, and their
 stock and type IDs survive binary/text game saves. Level 2 accepts wood and
 wheat in addition to fruit; level 3 accepts all eight resource types. Costs and
 reuse of the level-1 artwork remain provisional while the feature is draft.
+
+`MarketsV2` checks both sides of the `markets-v2` experiment: disabled fetch
+entry points and construction gates, per-tick legacy market deliveries against
+master, all level/resource/swim-class combinations, upgrade cancellation and
+completion with shared stock, and binary/text continuation. The benchmark case
+reports identical market workloads with the experiment off and on, including
+heavy checksums and save/load overhead; it is not a standalone routing benchmark.

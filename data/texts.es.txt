@@ -5556,3 +5556,7 @@ Añade hielo al editor de mapas. Las unidades terrestres se mueven a la mitad de
 Terreno de caminos
 [experiment road-terrain help]
 Añade caminos adoquinados al editor de mapas. Las unidades terrestres se mueven al doble de velocidad. Los caminos admiten edificios, pero no recursos.
+[experiment markets-v2]
+Mercados V2
+[experiment markets-v2 help]
+Los trabajadores pueden recoger suministros del almacén compartido de los mercados. Los mercados pueden mejorarse para almacenar trigo y madera, y después todos los recursos. Entre equipos solo se intercambia fruta. Se aplica a partidas nuevas; las guardadas conservan su configuración original.

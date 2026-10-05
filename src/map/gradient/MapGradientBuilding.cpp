@@ -171,7 +171,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
 	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const bool withMarkets=!building->type->canExchange;
+	const bool withMarkets=building->fetchesFromMarkets();
 	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the

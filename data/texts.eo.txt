@@ -5556,3 +5556,7 @@ Aldonas glacion al la mapredaktilo. Teraj unuoj moviĝas je duona rapido kaj per
 Voja tereno
 [experiment road-terrain help]
 Aldonas pavimitajn vojojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapido. Vojoj permesas konstruaĵojn sed ne rimedojn.
+[experiment markets-v2]
+Merkatoj V2
+[experiment markets-v2 help]
+Laboristoj povas preni provizojn el la komuna merkata stoko. Merkatoj povas plialtniveliĝi por stoki tritikon kaj lignon, poste ĉiujn rimedojn. Inter teamoj oni ankoraŭ interŝanĝas nur fruktojn. Validas por novaj ludoj; konservitaj ludoj retenas sian originan agordon.

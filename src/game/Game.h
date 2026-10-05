@@ -256,6 +256,7 @@ public:
 	bool tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam);
 
 	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
+	bool isBuildingTypeAvailable(int typeNum) const;
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);

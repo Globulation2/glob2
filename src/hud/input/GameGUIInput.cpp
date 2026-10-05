@@ -508,7 +508,7 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	else if (upgrade)
 	{
 		// upgrade
-		if ((buildingType->nextLevel != -1) &&
+		if (building->isUpgradeAvailable() &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
 			(localTeam->maxBuildLevel() > buildingType->level))
 			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));

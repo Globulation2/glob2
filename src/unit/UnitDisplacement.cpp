@@ -189,6 +189,7 @@ void Unit::handleDisplacement(void)
 						{
 							int bestResource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
+							bool takeInExchangeBuilding=false;
 							Map* map=owner->map;
 							for (int r=0; r<MAX_NB_RESOURCES; r++)
 							{
@@ -210,8 +211,30 @@ void Unit::handleDisplacement(void)
 										{
 											bestResource=r;
 											minValue=value;
+											takeInExchangeBuilding=false;
 										}
 									}
+									if (!owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2) && attachedBuilding->type->canFeedUnit)
+										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
+											if ((*bi)->resources[r]>0)
+											{
+												int buildingDist;
+												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
+												{
+													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
+													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
+													int value=(buildingDist+5)/need;
+													if (value<minValue)
+													{
+														bestResource=r;
+														minValue=value;
+
+														ownExchangeBuilding=*bi;
+														setTargetBuilding(*bi);
+														takeInExchangeBuilding=true;
+													}
+												}
+											}
 								}
 							}
 
@@ -222,6 +245,15 @@ void Unit::handleDisplacement(void)
 							{
 								destinationPurpose=bestResource;
 								assert(activity==ACT_FILLING);
+								if (takeInExchangeBuilding)
+								{
+									displacement=DIS_GOING_TO_BUILDING;
+									targetX=targetBuilding->getMidX();
+									targetY=targetBuilding->getMidY();
+									targetBuilding->insertUnitToHarvesting(this);
+									validTarget=true;
+								}
+								else
 								{
 									int dummyDist;
 									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))

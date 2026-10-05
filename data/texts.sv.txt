@@ -5556,3 +5556,7 @@ Lägger till is i kartredigeraren. Markenheter rör sig med halva hastigheten oc
 Vägterräng
 [experiment road-terrain help]
 Lägger till kullerstensvägar i kartredigeraren. Markenheter rör sig med dubbel hastighet. Vägar tillåter byggnader men inte resurser.
+[experiment markets-v2]
+Marknader V2
+[experiment markets-v2 help]
+Arbetare kan hämta förnödenheter från marknadernas gemensamma lager. Marknader kan uppgraderas för att lagra vete och trä och sedan alla resurser. Handel mellan lag omfattar fortfarande bara frukt. Gäller nya spel; sparade spel behåller sin ursprungliga inställning.

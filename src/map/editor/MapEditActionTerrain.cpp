@@ -75,6 +75,7 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 		int typeNum=globalContainer->buildingsTypes.getTypeNum(selectionName, buildingLevel, false);
 		if(!isUpgradable(IntBuildingType::shortNumberFromType(selectionName)))
 			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
+		if (!game.isBuildingTypeAvailable(typeNum)) return false;
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		int tempX, tempY, x, y;
 		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);

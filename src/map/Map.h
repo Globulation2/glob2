@@ -819,6 +819,7 @@ public:
 	Building *touchedStockedMarket(Unit *unit, int resourceType) const;
 	//! A stock of resourceType in one of the team's markets appeared or ran out:
 	//! rebuild the "with markets" gradients for it at the next step.
+	bool marketsV2Enabled() const;
 	void dirtyMarketGradients(int teamNumber, int resourceType);
 	
 	//! Follow the gradient uphill from (x, y). Returns whether a goal cell was reached; the

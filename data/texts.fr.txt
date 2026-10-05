@@ -5556,3 +5556,7 @@ Ajoute de la glace à l’éditeur de cartes. Les unités terrestres avancent à
 Terrain routier
 [experiment road-terrain help]
 Ajoute des routes pavées à l’éditeur de cartes. Les unités terrestres avancent deux fois plus vite. Les routes peuvent accueillir des bâtiments, mais pas de ressources.
+[experiment markets-v2]
+Marchés V2
+[experiment markets-v2 help]
+Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés. Les marchés peuvent être améliorés pour stocker le blé et le bois, puis toutes les ressources. Les échanges entre équipes restent limités aux fruits. S’applique aux nouvelles parties ; les sauvegardes gardent leur réglage initial.

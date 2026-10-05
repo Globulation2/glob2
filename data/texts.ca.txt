@@ -5556,3 +5556,7 @@ Afegeix gel a l’editor de mapes. Les unitats terrestres es mouen a la meitat d
 Terreny de camins
 [experiment road-terrain help]
 Afegeix camins empedrats a l’editor de mapes. Les unitats terrestres es mouen al doble de velocitat. Els camins admeten edificis, però no recursos.
+[experiment markets-v2]
+Mercats V2
+[experiment markets-v2 help]
+Els treballadors poden recollir provisions de l’estoc compartit dels mercats. Els mercats es poden millorar per guardar blat i fusta, i després tots els recursos. Entre equips només s’intercanvia fruita. S’aplica a partides noves; les desades conserven la configuració original.

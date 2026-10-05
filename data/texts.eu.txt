@@ -5556,3 +5556,7 @@ Izotza gehitzen du mapa-editorean. Lurreko unitateak abiadura erdian mugitzen di
 Bide-lurzorua
 [experiment road-terrain help]
 Harriz zolatutako bideak gehitzen ditu mapa-editorean. Lurreko unitateak abiadura bikoitzean mugitzen dira. Bideetan eraikinak egon daitezke, baina baliabideak ez.
+[experiment markets-v2]
+Merkatuak V2
+[experiment markets-v2 help]
+Langileek hornigaiak har ditzakete merkatuen biltegi partekatutik. Merkatuak hobetu daitezke garia eta egurra gordetzeko, eta gero baliabide guztiak. Taldeen arteko trukea frutara mugatzen da. Partida berriei aplikatzen zaie; gordetako partidek jatorrizko ezarpena mantentzen dute.

@@ -42,7 +42,7 @@ namespace
 			b.buildingState == Building::ALIVE && !b.type->isBuildingSite;
 		return constructionActionLabel(b.constructionResultState, b.buildingState, b.type, b.hp,
 			offersConstruction && b.isHardSpaceForBuildingSite(Building::REPAIR),
-			offersConstruction && b.type->nextLevel != -1 && b.isHardSpaceForBuildingSite(Building::UPGRADE),
+			offersConstruction && b.isUpgradeAvailable() && b.isHardSpaceForBuildingSite(Building::UPGRADE),
 			local.maxBuildLevel(), b.getEffectiveMaxHp());
 	}
 }

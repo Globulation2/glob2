@@ -13,8 +13,14 @@
 
 #include <mutex>
 
+bool Map::marketsV2Enabled() const
+{
+	return game && game->gameHeader.hasExperiment(ExperimentId::MarketsV2);
+}
+
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
+	withMarkets = withMarkets && marketsV2Enabled();
 	// Keep colonies without markets on the original field and refresh schedule.
 	if (withMarkets && game->teams[teamNumber]->canExchange.empty()) withMarkets=false;
 	// AI workers may request the same lazy field concurrently. Cover both
@@ -31,6 +37,7 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
+	withMarkets = withMarkets && marketsV2Enabled();
 	PERF_SCOPE_TIME(ResourceGradient);
 	auto &slot = withMarkets ? marketResourcesGradient[teamNumber][resourceType][swimClass] : resourcesGradient[teamNumber][resourceType][swimClass];
 	gradientRuntime->pipeline.invalidate(&slot);
@@ -42,6 +49,7 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 
 void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, bool withMarkets)
 {
+	withMarkets = withMarkets && marketsV2Enabled();
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -80,6 +88,7 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 
 void Map::dirtyMarketGradients(int teamNumber, int resourceType)
 {
+	if (!marketsV2Enabled()) return;
 	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
 		{
 			marketGradientDirty[teamNumber][resourceType][s]=true;

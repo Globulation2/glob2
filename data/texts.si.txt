@@ -5556,3 +5556,7 @@ Doda led v urejevalnik zemljevidov. Kopenske enote se premikajo s polovično hit
 Cestni teren
 [experiment road-terrain help]
 Doda tlakovane ceste v urejevalnik zemljevidov. Kopenske enote se premikajo z dvojno hitrostjo. Ceste omogočajo zgradbe, ne pa virov.
+[experiment markets-v2]
+Tržnice V2
+[experiment markets-v2 help]
+Delavci lahko jemljejo zaloge iz skupnega skladišča tržnic. Tržnice je mogoče nadgraditi za shranjevanje pšenice in lesa, nato vseh surovin. Med ekipami se še vedno izmenjuje le sadje. Velja za nove igre; shranjene igre ohranijo prvotno nastavitev.
