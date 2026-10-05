@@ -1,3 +1,6 @@
+import type { ApiServices } from '../services.ts';
+import type { ColonySkinVersion } from '@glob2/protocol';
+import { webpRendition } from '../http/webpRendition.ts';
 import { sha256Hex } from '@glob2/core';
 import { SWARM_MESHES, type SwarmMeshId } from '@glob2/protocol';
 
@@ -38,4 +41,17 @@ export function skinManifestSha256(content: SkinContent): string {
  */
 export function knownSwarmMesh(value: string): SwarmMeshId | undefined {
   return SWARM_MESHES.find((mesh) => mesh === value);
+}
+
+/** Wire hashes describe WebP renditions; the published version and source remain immutable. */
+export async function webpSkinVersion(
+  services: Pick<ApiServices, 'db' | 'blobs'>,
+  version: ColonySkinVersion,
+): Promise<ColonySkinVersion> {
+  const [textureSha256, materialSha256] = await Promise.all([
+    webpRendition(services.db, services.blobs, version.textureSha256),
+    webpRendition(services.db, services.blobs, version.materialSha256),
+  ]);
+  const wire = { ...version, textureSha256, materialSha256 };
+  return { ...wire, manifestSha256: skinManifestSha256(wire) };
 }

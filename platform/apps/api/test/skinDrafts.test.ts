@@ -55,7 +55,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   expect(await sharp(materialPng).metadata()).toMatchObject({
     width: 512,
     height: 512,
-    channels: 1,
+    channels: 3,
   });
   const material = await sharp(materialPng)
     .extractChannel(0)

@@ -12,6 +12,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <SurfaceRaster.h>
 #include <stdexcept>
+#include <AssetLoader.h>
 #ifdef GLOB2_WEBGL2
 #include <set>
 #endif
@@ -54,6 +55,7 @@ namespace GAGCore
 		if (!loadImage(imageFileName))
 			setRes(0, 0);
 		allocateTexture();
+		prepareTexture();
 	}
 
 	DrawableSurface::DrawableSurface(int w, int h)
@@ -73,6 +75,38 @@ namespace GAGCore
 		allocateTexture();
 		markPixelsChanged();
 	}
+
+    DrawableSurface::DrawableSurface(SDL_Surface *prepared, AdoptPixels, bool allocateGPU)
+    {
+        assert(prepared && prepared->format == SDL_PIXELFORMAT_ARGB8888);
+        sdlsurface = prepared;
+        setClipRect(); if (allocateGPU) allocateTexture(); markPixelsChanged();
+    }
+
+    std::unique_ptr<DrawableSurface> DrawableSurface::fromAssetImage(const AssetImage& image,
+            bool exclusive, bool allocateGPU)
+    {
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            exclusive ? image.releaseSurface() : SDL_DuplicateSurface(image.surface), SDL_DestroySurface);
+        if (!pixels) throw std::runtime_error(SDL_GetError());
+        auto result = std::make_unique<DrawableSurface>(pixels.get(), AdoptPixels{}, allocateGPU);
+        pixels.release();
+        result->adoptUploadPreparation(image, exclusive);
+        return result;
+    }
+
+    void DrawableSurface::adoptUploadPreparation(const AssetImage& image, bool exclusive)
+    {
+        if (exclusive) { preparedUploadPixels = std::move(image.uploadPixels); preparedMips = std::move(image.mips); }
+        else { preparedUploadPixels = image.uploadPixels; preparedMips = image.mips; }
+        preparedUploadRevision = pixelRevision;
+    }
+    void DrawableSurface::prepareTexture()
+    {
+        assert(!_gc || SDL_GetCurrentThreadID() == _gc->eventThread);
+        if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision);
+        if (glUploadedRevision != pixelRevision) uploadToTexture();
+    }
 
     size_t DrawableSurface::allocatedTextureBytes()
     {
@@ -173,14 +207,21 @@ namespace GAGCore
 
 			void *pixelsPtr;
 			GLenum pixelFormat;
+#if defined(GLOB2_WEBGL2)
+            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(nullptr, SDL_DestroySurface);
+#elif SDL_BYTEORDER == SDL_BIG_ENDIAN
+            std::valarray<Uint32> tempPixels;
+#endif
+            if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
+                pixelsPtr = preparedUploadPixels.data(); pixelFormat = GL_RGBA;
+            } else {
 			#if defined(GLOB2_WEBGL2)
-            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
-                SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+            rgba.reset(SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32));
             if (!rgba) return;
             pixelsPtr = rgba->pixels;
             pixelFormat = GL_RGBA;
             #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
-			std::valarray<Uint32> tempPixels(sdlsurface->w * sdlsurface->h);
+			tempPixels.resize(sdlsurface->w * sdlsurface->h);
 			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlsurface->pixels);
 			for (size_t i=0; i<tempPixels.size(); i++)
 			{
@@ -193,6 +234,7 @@ namespace GAGCore
 			pixelsPtr = sdlsurface->pixels;
 			pixelFormat = GL_BGRA;
 			#endif
+            }
 			if (glState.isTextureSRectangle)
 			{
 				glTexImage2D(GL_TEXTURE_RECTANGLE_NV, 0, GL_RGBA, sdlsurface->w, sdlsurface->h, 0, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
@@ -210,11 +252,14 @@ namespace GAGCore
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-                    int w=getMinPowerOfTwo(sdlsurface->w),h=getMinPowerOfTwo(sdlsurface->h);
-                    std::vector<unsigned char> level(w*h*4);
-                    auto source=static_cast<unsigned char*>(pixelsPtr);
-                    for(int y=0;y<h;++y)for(int x=0;x<w;++x)
-                        for(int c=0;c<4;++c)level[(y*w+x)*4+c]=source[(std::min(y,sdlsurface->h-1)*sdlsurface->w+std::min(x,sdlsurface->w-1))*4+c];
+                    AssetImage fallback(nullptr);
+                    const auto *levels = &preparedMips;
+                    if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {
+                        fallback.surface = SDL_DuplicateSurface(sdlsurface);
+                        if (!fallback.surface) throw std::runtime_error(SDL_GetError());
+                        fallback.prepareUpload(true);
+                        levels = &fallback.mips;
+                    }
                     glState.allocatedTextureBytes-=gpuBytes;gpuBytes=0;
                     // S3TC/DXT5 stores one 16-byte block per 4x4 pixel tile, a fixed
                     // 4:1 ratio versus RGBA8 regardless of encoder; letting the driver
@@ -230,33 +275,22 @@ namespace GAGCore
                     const bool compress=glState.hasS3TCCompression;
 #endif
                     const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
-                    for(int mip=0;;++mip)
-                    {
-                        if(compress&&(w<4||h<4)){glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,mip-1);break;}
-                        glTexImage2D(GL_TEXTURE_2D,mip,internalFormat,w,h,0,pixelFormat,GL_UNSIGNED_BYTE,level.data());
-                        const size_t mipBytes=compress?static_cast<size_t>((w+3)/4)*((h+3)/4)*16:static_cast<size_t>(w)*h*4;
-                        gpuBytes+=mipBytes;glState.allocatedTextureBytes+=mipBytes;
-                        if(w==1&&h==1)break;
-                        int nw=std::max(1,w/2),nh=std::max(1,h/2);
-                        std::vector<unsigned char> next(nw*nh*4);
-                        for(int y=0;y<nh;++y)for(int x=0;x<nw;++x)
-                        {
-                            unsigned sum[4]={0,0,0,0};
-                            for(int j=0;j<2;++j)for(int i=0;i<2;++i)
-                            {
-                                auto p=&level[(std::min(h-1,y*2+j)*w+std::min(w-1,x*2+i))*4];
-                                sum[3]+=p[3];for(int c=0;c<3;++c)sum[c]+=p[c]*p[3];
-                            }
-                            auto p=&next[(y*nw+x)*4];p[3]=(sum[3]+2)/4;
-                            for(int c=0;c<3;++c)p[c]=sum[3]?(sum[c]+sum[3]/2)/sum[3]:0;
-                        }
-                        level.swap(next);w=nw;h=nh;
+                    for (size_t mip = 0; mip < levels->size(); ++mip) {
+                        const auto &level = (*levels)[mip];
+                        const int w = level.width, h = level.height;
+                        if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, int(mip) - 1); break; }
+                        glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
+                        const size_t bytes = compress ? size_t((w + 3) / 4) * ((h + 3) / 4) * 16 : size_t(w) * h * 4;
+                        gpuBytes += bytes; glState.allocatedTextureBytes += bytes;
                     }
+
                 }
 			}
 		}
 		#endif
 		glUploadedRevision = pixelRevision;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
 	}
 
 	void DrawableSurface::freeGPUTexture(void)
@@ -336,30 +370,25 @@ namespace GAGCore
 		SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
 	}
 
-	bool DrawableSurface::loadImage(const std::string name)
-	{
-		if (name.size())
-		{
-			SDL_IOStream *imageStream;
-			if ((imageStream = Toolkit::getFileManager()->openImage(name)) != NULL)
-			{
-				SDL_Surface *loadedSurface;
-				loadedSurface = (name.size() >= 5 && name.compare(name.size()-5, 5, ".webp") == 0) ? IMG_LoadWEBP_IO(imageStream) : IMG_Load_IO(imageStream, 0);
-				SDL_CloseIO(imageStream);
-				if (loadedSurface)
-				{
-					if (sdlsurface)
-						SDL_DestroySurface(sdlsurface);
-					sdlsurface = convertForUpload(loadedSurface);
-					SDL_DestroySurface(loadedSurface);
-					setClipRect();
-					markPixelsChanged();
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    bool DrawableSurface::loadImage(const std::string name)
+    {
+        if (name.empty()) return false;
+        auto &loader = Toolkit::assets();
+        auto request = loader.requestImage(name);
+        if (!loader.wait(request)) return false;
+        auto image = request.take();
+        const bool exclusive = bool(image);
+        if (!image) image = request.get();
+        SDL_Surface *prepared = exclusive ? image->releaseSurface() : SDL_DuplicateSurface(image->surface);
+        if (!prepared) return false;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = prepared;
+        setClipRect(); markPixelsChanged();
+        adoptUploadPreparation(*image, exclusive);
+        initTextureSize();
+        if (texture || (_gc && _gc->portableRenderer)) prepareTexture();
+        return true;
+    }
 
 	void DrawableSurface::shiftHSV(float hue, float sat, float lum)
 	{

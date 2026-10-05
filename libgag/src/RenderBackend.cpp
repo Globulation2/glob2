@@ -58,6 +58,23 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		check(SDL_SetRenderClipRect(renderer, result ? &*result : nullptr));
 	}
+    SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision)
+    {
+        if (!pixels) throw std::invalid_argument("Texture has no CPU pixels");
+        auto version = revisions.find(key);
+        if (version == revisions.end() || version->second != revision) forget(key);
+        if (auto found = textures.find(key); found != textures.end()) return found->second;
+        auto *texture = SDL_CreateTextureFromSurface(renderer, pixels);
+        if (!texture) throw std::runtime_error(SDL_GetError());
+        textures.emplace(key, texture); revisions[key] = revision;
+        check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND));
+        check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST));
+        return texture;
+    }
+    void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision) override
+    {
+        textureFor(key, pixels, revision);
+    }
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
 				   std::uint64_t revision) override
 	{
@@ -77,27 +94,7 @@ class SDLRenderBackend final : public RenderBackend
 			vertices.size() > static_cast<size_t>(std::numeric_limits<int>::max()))
 			throw std::invalid_argument("Invalid triangle batch size");
 		SDL_Texture *texture = nullptr;
-		if (key)
-		{
-			if (!pixels)
-				throw std::invalid_argument("Texture has no CPU pixels");
-			auto version = revisions.find(key);
-			if (version == revisions.end() || version->second != revision)
-				forget(key);
-			auto found = textures.find(key);
-			if (found == textures.end())
-			{
-				texture = SDL_CreateTextureFromSurface(renderer, pixels);
-				if (!texture)
-					throw std::runtime_error(SDL_GetError());
-				textures.emplace(key, texture);
-				revisions[key] = revision;
-				check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND));
-				check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST));
-			}
-			else
-				texture = found->second;
-		}
+        if (key) texture = textureFor(key, pixels, revision);
 		if (applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0))
 		{
 			transformed.assign(vertices.begin(), vertices.end());

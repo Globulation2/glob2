@@ -32,7 +32,7 @@ async function openStill(bytes: Buffer) {
   return input;
 }
 
-/** The colour atlas, re-encoded as an opaque sRGB PNG. */
+/** The colour atlas, re-encoded as an opaque sRGB WebP. */
 export async function canonicalSkinImage(encoded: string): Promise<Buffer> {
   const bytes = decodeUpload(encoded, 1048576, 'image');
   try {
@@ -41,14 +41,14 @@ export async function canonicalSkinImage(encoded: string): Promise<Buffer> {
     return await input
       .flatten({ background: '#ffffff' })
       .toColourspace('srgb')
-      .png({ compressionLevel: 9 })
+      .webp({ lossless: true, effort: 4 })
       .toBuffer();
   } catch {
     throw apiError('bad_request', 'Use a valid, still 512 by 512 pixel image.');
   }
 }
 
-/** The material map, validated and re-encoded as an 8-bit greyscale PNG of material ids. */
+/** The material map, validated and re-encoded as a lossless WebP of material ids. */
 export async function canonicalMaterialMap(encoded: string): Promise<Buffer> {
   const bytes = decodeUpload(encoded, 262144, 'material map');
   const invalid = () =>
@@ -88,6 +88,6 @@ export async function canonicalMaterialMap(encoded: string): Promise<Buffer> {
   }
   return sharp(ids, { raw: { width: info.width, height: info.height, channels: 1 } })
     .toColourspace('b-w')
-    .png({ compressionLevel: 9 })
+    .webp({ lossless: true, effort: 4 })
     .toBuffer();
 }

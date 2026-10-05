@@ -25,9 +25,9 @@ test('WebAssembly decodes exact WebP and normalized PNG pixels', async ({page}) 
   const result=await page.evaluate(() => window.imageResult);
   expect(result.error).toBeUndefined();
   expect(result.code).toBe(0);
-  // Both WebP modes, normalized PNG through both decoders, and strict artwork lookup.
+  // Prepared image adoption, both WebP modes, normalized PNG, and strict artwork lookup.
   // Native PNG/JPEG saving is a separate native-only case.
-  expect((result.report.match(/<testcase\s/g) || []).length).toBe(4);
+  expect((result.report.match(/<testcase\s/g) || []).length).toBe(5);
   expect(result.report).toContain('name="Q90 lossy WebP preserves dimensions and exact alpha"');
   expect(result.report).toContain('name="16-bit RGBA rounds normalized channels to the exporter reference"');
   expect(result.report).toContain('failures="0"');

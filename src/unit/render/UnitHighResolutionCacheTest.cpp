@@ -50,7 +50,7 @@ struct InspectUnitSprite : Sprite
 	}
 	// Test-only: simulate a corrupted HD install by dropping one frame's HD
 	// team layer, without touching the checked-in production pack. Production
-	// code only ever changes these arrays through load()/reloadHighResolution(),
+	// code only changes these arrays through load() or atomic HD publication,
 	// both of which recompute the per-block HD-completeness cache themselves;
 	// poking the arrays directly here has to do the same.
 	void dropExperimentRotated(int index)

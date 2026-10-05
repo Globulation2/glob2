@@ -34,7 +34,7 @@ export const STAGES: Stage[] = [
   { id: 'ready', label: 'Ready', status: 'pending' },
 ];
 export const preview = (v: Delivered) =>
-  `/api/v1/maps/${v.map_id}/versions/${v.map_hash}/preview.png`;
+  `/api/v1/maps/${v.map_id}/versions/${v.map_hash}/preview.webp`;
 export const price = (p: Wallet['packs'][number]) =>
   new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
     p.amount / 100,

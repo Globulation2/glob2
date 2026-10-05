@@ -453,6 +453,11 @@ describe('blob garbage collection', () => {
         .execute();
 
       const paint = await put('a published colony paint', 'old');
+      const wirePaint = await put('its persistent WebP rendition', 'old');
+      await database.db
+        .insertInto('image_webp_renditions')
+        .values({ source_sha256: paint.sha256, webp_sha256: wirePaint.sha256 })
+        .execute();
       const paintMaterial = await put('a published colony material map', 'old');
       const skin = await database.db
         .insertInto('colony_skins')
@@ -543,6 +548,7 @@ describe('blob garbage collection', () => {
         artifact,
         playedMap,
         paint,
+        wirePaint,
         paintMaterial,
         studioMap,
         checkpoint,

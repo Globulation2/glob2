@@ -20,6 +20,7 @@ class RenderBackend
 	virtual void blit(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque,
 					  const SDL_Rect &sourceRect, const SDL_FRect &destination, Uint8 alpha) = 0;
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
+    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t) {}
 	virtual RenderOperations operations() const { return {}; }
 	// Only software backends borrow a target; binding flushes old queued work.
 	virtual void bindTarget(SDL_Surface *) {}

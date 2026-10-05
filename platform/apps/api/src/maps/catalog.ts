@@ -179,7 +179,7 @@ export function publicOwner(row: MapRow): PublicAccount {
 
 export function versionUrls(origin: string, mapId: string, hash: string) {
   const base = `${origin}/api/v1/maps/${mapId}/versions/${hash}`;
-  return { downloadUrl: `${base}/file`, previewUrl: `${base}/preview.png` };
+  return { downloadUrl: `${base}/file`, previewUrl: `${base}/preview.webp` };
 }
 
 export function versionView(origin: string, row: VersionRow): MapVersionInfo {

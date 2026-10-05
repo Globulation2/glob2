@@ -60,7 +60,7 @@ const MAP_INFO = {
     validation: 'valid',
     fileTitle: 'Two Rivers',
     preview: 'ready',
-    previewUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/preview.png`,
+    previewUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/preview.webp`,
     downloadUrl: `https://play.example.org/api/v1/maps/${MAP_ID}/versions/${HASH_A}/file`,
     createdAt: NOW,
   },

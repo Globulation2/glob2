@@ -1,3 +1,4 @@
+import type { BlobStore } from '@glob2/core';
 import { matchColonySkins } from '../skins/matches.ts';
 // Match tickets and match.start payloads. Tickets are signed by the replica
 // that delivers them, with the same Ed25519 key (and JWKS) as access tokens,
@@ -39,17 +40,20 @@ export function mapUrl(origin: string, hash: string): string {
 
 export class Assignments {
   private readonly db: Db;
+  private readonly blobs: BlobStore;
   private readonly keys: SigningKeys;
   private readonly origin: string;
   private readonly queueNames: ReadonlyMap<string, string>;
 
   constructor(
     db: Db,
+    blobs: BlobStore,
     keys: SigningKeys,
     origin: string,
     queueNames: ReadonlyMap<string, string> = new Map(),
   ) {
     this.db = db;
+    this.blobs = blobs;
     this.keys = keys;
     this.origin = origin;
     this.queueNames = queueNames;
@@ -77,7 +81,7 @@ export class Assignments {
       this.mapTitle(setup),
       matchRatingPreview(this.db, match.id, accountId),
       activeEntitlements(this.db, accountId),
-      matchColonySkins(this.db, this.keys, this.origin, matchId),
+      matchColonySkins(this.db, this.blobs, this.keys, this.origin, matchId),
     ]);
     // Appearance freezing can wait for another replica. Do not deliver a relay
     // assignment read before a concurrent failover completed.

@@ -1,3 +1,4 @@
+import { skinAssetUrl } from './assetUrls.ts';
 /* Canvas contexts are checked by paintCanvas; dimensions are fixed. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
@@ -310,8 +311,8 @@ export function useSkinDocument(accountId: string | undefined) {
           return;
         }
         const [colour, materials] = await Promise.all([
-          readColour(`data:image/png;base64,${draft.imageBase64}`),
-          decodeMaterials(`data:image/png;base64,${draft.materialBase64}`),
+          readColour(`data:image/webp;base64,${draft.imageBase64}`),
+          decodeMaterials(`data:image/webp;base64,${draft.materialBase64}`),
         ]);
         if (alive.current) {
           requireUnchanged(generation);
@@ -334,8 +335,8 @@ export function useSkinDocument(accountId: string | undefined) {
     await run(async () => {
       const generation = documentGeneration.current;
       const [colour, materials] = await Promise.all([
-        readColour(`/api/v1/skins/versions/${skin.id}/texture`),
-        decodeMaterials(`/api/v1/skins/versions/${skin.id}/material`),
+        readColour(skinAssetUrl(skin, 'texture')),
+        decodeMaterials(skinAssetUrl(skin, 'material')),
       ]);
       if (alive.current) {
         requireUnchanged(generation);

@@ -38,6 +38,16 @@ python3 test/run_tests.py --binary engine --in-process     # fast local loop, no
 python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 ```
 
+`ColonySkinPreview` checks shared image preparation with independent appearance
+authorization, refresh, expiry and cancellation across preview owners.
+
+Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
+continuation cancellation, cache metadata cleanup and variable atlas admission.
+`SpriteSheets` also checks renderer readiness and atomic HD reload publication. Build the
+`asset-loading-benchmark` target to compare worker configurations against the same
+runtime assets. See [asset loading](../docs/development/reference.md#release-asset-and-bundle-sizes)
+for worker controls, scratch accounting and measurement limits.
+
 `test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
 (suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`
 (deterministic by sorted name), then runs each engine case in its own process with

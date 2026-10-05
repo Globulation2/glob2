@@ -34,6 +34,17 @@ public:
 };
 class HighResolutionIntegrationHarness
 {
+    static void finishAssets()
+    {
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+        bool complete = false;
+        do {
+            complete = Toolkit::pollAssets(4);
+            if (complete) break;
+            SDL_Delay(1);
+        } while (std::chrono::steady_clock::now() < deadline);
+        REQUIRE(complete);
+    }
 #ifdef HAVE_OPENGL
     static void capture(const std::string &name)
     {
@@ -164,6 +175,7 @@ public:
         // the CPU team-colour cache, which software rendering uses for native art too.
         {
             Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            finishAssets();
             REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
             auto &gui=engine.gui;gui.updateCamera();gui.zoomMap(10,300,300);gui.drawAll(0);
             const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
@@ -182,6 +194,7 @@ public:
         {
             const size_t loaded=Sprite::highResolutionStats().cpuBytes;
             MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);
+            finishAssets();
             REQUIRE(Sprite::highResolutionStats().cpuBytes==loaded);
             editor.updateCamera();editor.zoomMap(10,300,300);
             editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
@@ -201,6 +214,7 @@ public:
         {
             globalContainer->settings.highResolutionArtwork=hd;
             Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            finishAssets();
             auto &gui=engine.gui;gui.updateCamera();
             const auto checksum=gui.game.checkSum(nullptr,nullptr,nullptr,true);
             for(double zoom:{gui.camera.minimumZoom(),.5,1.,2.,MapCamera::MAX_ZOOM})
@@ -283,11 +297,13 @@ public:
         }
         {
             Engine replay;REQUIRE(replay.loadReplay("replays/current.replay")==Engine::EE_NO_ERROR);
+            finishAssets();
             auto &gui=replay.gui;gui.updateCamera();gui.zoomMap(5,300,300);gui.drawAll(0);capture("replay-hd");
         }
         globalContainer->replaying=false;
         {
             MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
+            finishAssets();
             auto& settings = globalContainer->settings;
             const bool previousEdgeScroll = settings.edgeScrollWindowed;
             REQUIRE_FALSE(bool(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
@@ -376,6 +392,7 @@ public:
         {
             globalContainer->settings.highResolutionArtwork=hd;
             MapEdit dense;dense.game.map.setSize(6,6,GRASS);dense.game.map.setGame(&dense.game);
+            finishAssets();
             for(int team=0;team<4;++team)dense.game.addTeam(team);
             const char *types[]={"swarm","inn","hospital","school","swimmingpool","barracks"};
             for(int y=4;y<60;y+=7)for(int x=4;x<60;x+=7)
@@ -397,6 +414,9 @@ public:
                 dense.drawMenu();dense.drawMiniMap();dense.drawWidgets();capture(std::string(hd?"dense-hd-":"dense-original-")+std::to_string(int(zoom*100)));
             }
         }
+        // GUI teardown schedules optional layer release; exercise the same
+        // owner polling that the application performs before checking residency.
+        finishAssets();
         REQUIRE(Sprite::highResolutionStats().cpuBytes==0);
         std::cout<<"PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release\n";
     }
