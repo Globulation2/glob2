@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 #include "EngineFixtures.h"
 #include "TerrainPresentation.h"
 #include "scene/SceneMap.h"
@@ -7,10 +10,12 @@
 #include "MapImage.h"
 #include "GenerationRequest.h"
 #include <SDL3_image/SDL_image.h>
+#ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
 #include <epoxy/gl.h>
+#endif
 #endif
 #include <algorithm>
 #include <cstring>
@@ -20,12 +25,14 @@ std::vector<Uint8> terrainPixels(bool gpu)
 {
     auto *gfx=globalContainer->gfx;
     GAGCore::Sprite::flushBatches(gfx);
+#ifdef HAVE_OPENGL
     if(gpu) {
         glFinish(); GLint viewport[4]; glGetIntegerv(GL_VIEWPORT,viewport);
         std::vector<Uint8> result(viewport[2]*viewport[3]*4);
         glReadPixels(0,0,viewport[2],viewport[3],GL_RGBA,GL_UNSIGNED_BYTE,result.data());
         return result;
     }
+#endif
     auto *surface=SDL_ConvertSurface(gfx->getSDLSurface(),SDL_PIXELFORMAT_RGBA32);
     REQUIRE(surface);
     std::vector<Uint8> result(surface->w*surface->h*4);
@@ -108,7 +115,9 @@ void layeredCache(bool gpu)
 }
 TEST_SUITE("TerrainPresentation") {
 TEST_CASE("whole-cell layers preserve software terrain caching [display][artifacts]") { layeredCache(false); }
+#ifdef HAVE_OPENGL
 TEST_CASE("whole-cell layers preserve OpenGL terrain caching [display]") { layeredCache(true); }
+#endif
 TEST_CASE("tile animation and optional backgrounds use presentation metadata") {
     auto p=terrainPresentation(ICE);
     p.animationFrames=3;p.animationTicks=4;
