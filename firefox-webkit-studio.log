@@ -1,0 +1,17 @@
+
+Running 8 tests using 1 worker
+
+(node:3938740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › tests/studio.spec.js:11:1 › Studio launches an ephemeral AI-only game and reports live progress (26.4s)
+  ✓  2 [firefox] › tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (3.8s)
+  ✓  3 [firefox] › tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (4.9s)
+  ✓  4 [firefox] › tests/studio.spec.js:149:1 › Studio returns bounded runtime diagnostics for a failed controller (9.6s)
+(node:3941118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [webkit] › tests/studio.spec.js:11:1 › Studio launches an ephemeral AI-only game and reports live progress (13.2s)
+  ✓  6 [webkit] › tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (4.5s)
+  ✓  7 [webkit] › tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (4.6s)
+  ✓  8 [webkit] › tests/studio.spec.js:149:1 › Studio returns bounded runtime diagnostics for a failed controller (7.0s)
+
+  8 passed (1.3m)

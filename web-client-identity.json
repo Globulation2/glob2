@@ -1,0 +1,7 @@
+{
+  "mode": "release",
+  "native_wss": false,
+  "role": "client",
+  "target": "web",
+  "toolchain": "emscripten"
+}
