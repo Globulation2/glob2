@@ -65,7 +65,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
             sha256: stored.sha256,
             size: stored.size,
             storage_key: stored.key,
-            content_type: 'image/png',
+            content_type: 'image/webp',
           })
           .execute();
       }
@@ -190,8 +190,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       expect((await command(['--render-skin'])).code).toBe(1);
       await save();
       expect((await command([...args, '--manifest', join(work, 'input.json')])).code).toBe(1);
-      texture = Buffer.from(texture);
-      texture.writeUInt32BE(513, 16);
+      texture = await sharp(texture).resize(513, 512).png().toBuffer();
       await save();
       expect((await command()).stderr).toContain('512x512');
       texture = Buffer.from(fixture.textureHex, 'hex');
