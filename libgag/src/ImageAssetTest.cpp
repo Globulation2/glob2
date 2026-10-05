@@ -61,12 +61,11 @@ TEST_CASE("Q90 lossy WebP preserves dimensions and exact alpha") {
     SDL_DestroySurface(surface);
 }
 TEST_CASE("16-bit RGBA rounds normalized channels to the exporter reference") {
-    // Keep both decoders within one registered case: the native runner verifies
-    // exact test names against its selected inventory.
-    for (const bool fallback : {false, true}) {
-        INFO("SDL PNG fallback: " << fallback);
-        auto stream = SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png));
-        auto surface = fallback ? SDL_LoadPNG_IO(stream, true) : IMG_Load_IO(stream, true);
+    // Keep one JUnit result for the strict native selection inventory while
+    // exercising both production decoder paths against the same reference.
+    for (const auto decoder : {IMG_Load_IO, SDL_LoadPNG_IO}) {
+        auto surface = decoder(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+
         REQUIRE(surface != nullptr);
         auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
         REQUIRE(rgba != nullptr);
