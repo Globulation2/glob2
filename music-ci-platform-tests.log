@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/music.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  21:12:09
+   Duration  12.47s (tests 76%, import 13%, transform 11%)
+
