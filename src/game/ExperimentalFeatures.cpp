@@ -22,6 +22,8 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources."},
 		{ExperimentId::RoadTerrain, "road-terrain", "Road terrain",
 		 "Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources."},
+		{ExperimentId::MarketsV2, "markets-v2", "Markets V2",
+		 "Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting."},
 	};
 	return definitions;
 }

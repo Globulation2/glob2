@@ -647,6 +647,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
 					marketGradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 					stream->readLeaveSection();
+					if (!marketsV2Enabled() && (marketResourcesGradient[t][r][sw] || marketGradientDirty[t][r][sw] || marketGradientUpdated[t][r][sw]))
+						throw std::runtime_error("Market routing state requires Markets V2");
 				}
 				stream->readLeaveSection();
 			}
@@ -729,7 +731,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			const unsigned sw=destination%SWIM_CLASS_COUNT;
 			const unsigned marketBase=Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT;
 			const bool market=destination>=marketBase;
-			if (market && versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS) throw std::runtime_error("Invalid saved gradient destination");
+			if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
 			const unsigned encoded=market ? destination-marketBase : destination;
 			const unsigned kinds=market ? MAX_NB_RESOURCES : MAX_NB_RESOURCES+2;
 			const unsigned kind=(encoded/SWIM_CLASS_COUNT)%kinds;

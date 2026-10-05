@@ -47,7 +47,7 @@ void GameGUI::drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingTyp
 
 	// building text
 	title = "";
-	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
+	if (selBuild->showLevel)
 	{
 		const std::string textT = Toolkit::getStringTable()->getString("[level]");
 		title += FormattableString("%0 %1").arg(textT).arg(buildingType->level+1);

@@ -5556,3 +5556,7 @@ Adds ice to the map editor. Ground units move at half speed and lose one health 
 Road terrain
 [experiment road-terrain help]
 Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+[experiment markets-v2]
+Markets V2
+[experiment markets-v2 help]
+Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.

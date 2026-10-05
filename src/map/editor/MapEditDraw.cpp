@@ -210,7 +210,7 @@ bool MapEdit::isUpgradable(int buildingLevel)
 	if(buildingLevel==IntBuildingType::STONE_WALL)
 		return false;
 	if(buildingLevel==IntBuildingType::MARKET_BUILDING)
-		return false;
+		return game.gameHeader.hasExperiment(ExperimentId::MarketsV2);
 	return true;
 }
 

@@ -218,8 +218,17 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	return teams[team]->myUnits[id];
 }
 
+bool Game::isBuildingTypeAvailable(int typeNum) const
+{
+	if (typeNum < 0 || static_cast<size_t>(typeNum) >= globalContainer->buildingsTypes.size()) return false;
+	const BuildingType *type = globalContainer->buildingsTypes.get(typeNum);
+	return type->shortTypeNum != IntBuildingType::MARKET_BUILDING || type->level == 0
+		|| gameHeader.hasExperiment(ExperimentId::MarketsV2);
+}
+
 Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
+	if (!isBuildingTypeAvailable(typeNum)) return nullptr;
 	Team *team=teams[teamNumber];
 	assert(team);
 

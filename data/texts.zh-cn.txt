@@ -5556,3 +5556,7 @@ AI 遥测
 道路地形
 [experiment road-terrain help]
 在地图编辑器中添加石板道路。地面单位以两倍速度移动。道路上可以放置建筑，但不能放置资源。
+[experiment markets-v2]
+市场 V2
+[experiment markets-v2 help]
+工人可以从市场的共享库存取得物资。市场可升级以储存小麦和木材，之后可储存所有资源。队伍之间仍只交换水果。适用于新游戏；存档保留原始设置。

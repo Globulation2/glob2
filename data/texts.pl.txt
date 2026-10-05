@@ -5556,3 +5556,7 @@ Dodaje lód do edytora map. Jednostki lądowe poruszają się z połową prędko
 Teren dróg
 [experiment road-terrain help]
 Dodaje brukowane drogi do edytora map. Jednostki lądowe poruszają się z podwójną prędkością. Drogi dopuszczają budynki, ale nie zasoby.
+[experiment markets-v2]
+Rynki V2
+[experiment markets-v2 help]
+Robotnicy mogą pobierać zapasy ze wspólnego magazynu rynków. Rynki można ulepszać, aby przechowywały pszenicę i drewno, a następnie wszystkie zasoby. Między drużynami nadal wymienia się tylko owoce. Dotyczy nowych gier; zapisy zachowują pierwotne ustawienie.

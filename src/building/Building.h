@@ -227,6 +227,8 @@ class Building : public BuildingUtils
 	/// markets. Markets fetch for themselves from the map only, so stock never
 	/// circulates between markets.
 	bool fetchesFromMarkets() const;
+	/// Game-aware upgrade availability; the static type table is shared by games.
+	bool isUpgradeAvailable() const;
 	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired

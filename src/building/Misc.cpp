@@ -140,7 +140,12 @@ void Building::kill(int diagnosticRemoval)
 
 bool Building::fetchesFromMarkets() const
 {
-	return !type->canExchange;
+	return owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2) && !type->canExchange;
+}
+
+bool Building::isUpgradeAvailable() const
+{
+	return owner->game->isBuildingTypeAvailable(type->nextLevel);
 }
 
 bool Building::canUnitWorkHere(Unit* unit)
@@ -208,6 +213,9 @@ void Building::removeUnitFromInside(Unit* unit)
 
 void Building::updateResourcesPointer()
 {
+	if (type->shortTypeNum == IntBuildingType::MARKET_BUILDING && owner->map->marketsV2Enabled())
+		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+			owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	if(!type->useTeamResources)
 	{
 		resources=localResource;

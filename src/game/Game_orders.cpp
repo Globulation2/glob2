@@ -214,6 +214,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 		oc.unitWorking < 0 || oc.unitWorking > MAX_BUILDING_WORKER_REQUEST ||
 		oc.unitWorkingFuture < 0 || oc.unitWorkingFuture > MAX_BUILDING_WORKER_REQUEST ||
 		(oc.flagRadius && (*oc.flagRadius < 0 || *oc.flagRadius > 32767))) return;
+	if (!isBuildingTypeAvailable(oc.typeNum)) return;
 	BuildingType *bt=globalContainer->buildingsTypes.get(oc.typeNum);
 	if(!mapscript.buildingAllowed(IntBuildingType::typeFromShortNumber(bt->shortTypeNum),bt->isVirtual))return;
 	bool isVirtual=bt->isVirtual;

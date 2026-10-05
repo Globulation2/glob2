@@ -5556,3 +5556,7 @@ Adiciona gelo ao editor de mapas. As unidades terrestres movem-se a metade da ve
 Terreno de estrada
 [experiment road-terrain help]
 Adiciona estradas de calçada ao editor de mapas. As unidades terrestres movem-se ao dobro da velocidade. As estradas permitem edifícios, mas não recursos.
+[experiment markets-v2]
+Mercados V2
+[experiment markets-v2 help]
+Os trabalhadores podem buscar provisões no estoque compartilhado dos mercados. Os mercados podem ser melhorados para armazenar trigo e madeira, depois todos os recursos. As trocas entre equipes continuam limitadas a frutas. Aplica-se a jogos novos; os jogos salvos mantêm a configuração original.

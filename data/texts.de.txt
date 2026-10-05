@@ -5556,3 +5556,7 @@ Fügt Eis zum Karteneditor hinzu. Bodeneinheiten bewegen sich mit halber Geschwi
 Straßengelände
 [experiment road-terrain help]
 Fügt Kopfsteinpflasterstraßen zum Karteneditor hinzu. Bodeneinheiten bewegen sich mit doppelter Geschwindigkeit. Straßen erlauben Gebäude, aber keine Ressourcen.
+[experiment markets-v2]
+Märkte V2
+[experiment markets-v2 help]
+Arbeiter können Vorräte aus dem gemeinsamen Marktbestand holen. Märkte lassen sich zuerst für Weizen und Holz, dann für alle Rohstoffe ausbauen. Zwischen Teams wird weiterhin nur Obst ausgetauscht. Gilt für neue Spiele; Spielstände behalten ihre ursprüngliche Einstellung.

@@ -217,6 +217,8 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
         if (!(co_await teams[i]->loadTask(stream, &globalContainer->buildingsTypes, versionMinor)))
             co_return false;
 		if (teams[i]->teamNumber != i) co_return false;
+		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+			if (const Building *b = teams[i]->myBuildings[slot]; b && !isBuildingTypeAvailable(b->typeNum)) co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

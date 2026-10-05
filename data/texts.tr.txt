@@ -5556,3 +5556,7 @@ Harita düzenleyicisine buz ekler. Kara birimleri yarı hızda hareket eder ve b
 Yol arazisi
 [experiment road-terrain help]
 Harita düzenleyicisine taş döşeli yollar ekler. Kara birimleri iki kat hızda hareket eder. Yollarda bina bulunabilir, ancak kaynak bulunamaz.
+[experiment markets-v2]
+Pazarlar V2
+[experiment markets-v2 help]
+İşçiler pazarların ortak stokundan malzeme alabilir. Pazarlar önce buğday ve odun, sonra tüm kaynakları depolamak için yükseltilebilir. Takımlar arasında yalnızca meyve alışverişi yapılır. Yeni oyunlara uygulanır; kayıtlı oyunlar ilk ayarlarını korur.

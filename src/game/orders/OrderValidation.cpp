@@ -61,7 +61,7 @@ Result checkCreate(const Context& c, const OrderCreate& o)
 {
 	if (Result r = ownTeam(c, o.teamNumber); r.verdict != Verdict::Accepted)
 		return r;
-	if (o.typeNum < 0 || static_cast<std::size_t>(o.typeNum) >= globalContainer->buildingsTypes.size())
+	if (!c.game.isBuildingTypeAvailable(o.typeNum))
 		return rejected(Reason::BadBuildingType);
 	const BuildingType* type = globalContainer->buildingsTypes.get(o.typeNum);
 	// What GameGUIToolManager::placeBuildingAt and ScriptOrders create: a level-0
@@ -165,6 +165,9 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		// to reject only a healthy building's upgrade, including fortress games.
 		if (c.game.gameHeader.isUnitUpgradesDisabled() && b && !b->type->isBuildingSite
 			&& b->hp >= b->getEffectiveMaxHp()) return rejected(Reason::BadState);
+		if (b && !b->type->isBuildingSite && b->hp >= b->getEffectiveMaxHp()
+			&& b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING
+			&& !c.game.gameHeader.hasExperiment(ExperimentId::MarketsV2)) return rejected(Reason::BadState);
 		return accepted();
 	}
 

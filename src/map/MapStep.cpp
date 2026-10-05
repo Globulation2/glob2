@@ -324,7 +324,7 @@ void Map::syncStep(Uint32 stepCounter)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (marketResourcesGradient[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
+					if (marketsV2Enabled() && marketResourcesGradient[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
 						gradientRuntime->pipeline.invalidate(&marketResourcesGradient[t][r][s]);
 						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field, true); });

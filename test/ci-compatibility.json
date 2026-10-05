@@ -32,7 +32,9 @@
     "RuntimeContinuation/*",
     "UnitHighResolutionCache/*",
     "ScreenExecution/*",
-    "SettingsGraphics/*"
+    "SettingsGraphics/*",
+    "MarketFetch/*",
+    "MarketsV2/*"
   ],
   "unit_filters": [
     "*"
