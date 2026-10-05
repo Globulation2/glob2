@@ -1,0 +1,88 @@
+{
+  "testedCommit": "722e4658615cb05d7f0e679c27875799177d8a25",
+  "base": "934c3c588bea51ec7421152e15f5168b2aaf5502",
+  "integration": "PR head includes master; Studio migration0044 follows skin sprites0043.",
+  "environment": {
+    "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "architecture": "x86_64",
+    "compiler": "15.2.0",
+    "node": "22.22.1 (24.19.0 for fixture/e2e TypeScript execution)",
+    "npm": "9.2.0",
+    "Caddy": "2.10",
+    "dependencies": "npm lockfiles; repository-pinned Emscripten/SDL3/image encoder dependencies; Postgres test instance"
+  },
+  "checks": [
+    {
+      "cwd": "platform/",
+      "command": "npx vitest run --maxWorkers=4",
+      "result": "711 passed,10 skipped",
+      "log": "review-integrated-platform-final.log"
+    },
+    {
+      "cwd": "platform/",
+      "command": "npm run typecheck && npm run lint && npm run build -w @glob2/web",
+      "result": "passed",
+      "log": "review-integrated-typecheck.log,review-integrated-lint.log,review-integrated-web-build.log"
+    },
+    {
+      "cwd": "platform/",
+      "command": "PATH=<emsdk>/node/24.19.0_64bit/bin:$PATH npm run e2e -w @glob2/web -- aiStudio.spec.ts",
+      "result": "2 passed:desktop and phone",
+      "log": "review-integrated-ui-tests.log"
+    },
+    {
+      "cwd": "./",
+      "command": "CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix scons release=1 -j4",
+      "result": "passed",
+      "log": "review-integrated-native-build.log"
+    },
+    {
+      "cwd": "./",
+      "command": "CCACHE=1 scons target=web release=1 web_profile=0 emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39 -j8",
+      "result": "passed;serial and threaded runtime",
+      "log": "review-integrated-browser-build.log"
+    },
+    {
+      "cwd": "browser/",
+      "command": "npx playwright test tests/studio.spec.js tests/asset-loading.spec.js --grep 'Studio|loading page shows'",
+      "result": "15 passed:Chromium,Firefox,WebKit",
+      "log": "review-integrated-browser-tests.log"
+    },
+    {
+      "cwd": "./",
+      "command": "node --test browser/unit/*.test.js",
+      "result": "54 passed",
+      "log": "review-integrated-browser-unit.log"
+    },
+    {
+      "cwd": "./",
+      "command": "\"$(python3 tools/package_assets.py --encoder-python)\" -m unittest discover -s test/build_system -v",
+      "result": "321 passed,2 skipped",
+      "log": "review-integrated-build-contracts-pinned.log"
+    },
+    {
+      "cwd": "./",
+      "command": "node artifacts/ai-studio/hosting-smoke.cjs",
+      "result": "passed:actual Caddy,parent/iframe/Monaco workers isolated,threaded runtime,no persistent draft mount,stop cleanup",
+      "log": "review-integrated-hosting.log"
+    },
+    {
+      "cwd": "./",
+      "command": "python3 docs/.work/ai-studio/run-native-evidence.py",
+      "result": "1024 native/browser ticks;512 continuation ticks and saved payload match;legacy fixtures passed",
+      "log": "review-native-evidence.log"
+    }
+  ],
+  "limitations": [
+    "Provider and Stripe exercised through fixtures;no live paid calls or payments.",
+    "Native Linux x86_64 only;Windows/macOS native builds not exercised.",
+    "Studio disabled by default;paid configuration and maintainer playthrough required before enablement."
+  ],
+  "review": "Three subagents across backend/billing,frontend/state,runtime/hosting;two substantive review cycles plus audits of both master integrations. Root reviewed fixes and integration.",
+  "failuresResolved": [
+    "Hosted platform-boundary failure fixed by ApplicationHost reporting hooks.",
+    "Integrated migration-count assertion changed21\u219222 and schema/full suite rerun.",
+    "Initial local build-contract invocation used system Python;rerun with repository-pinned encoder environment."
+  ],
+  "simulation": "No simulation behavior or save format changes;unchanged native checksum fixture matched by all six browser/runtime combinations."
+}
