@@ -16,6 +16,31 @@ def entry(path, count, covered):
 
 
 class CoverageSummaryTests(unittest.TestCase):
+    def test_failed_report_retains_all_raw_profiles(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            profiles = [Path(temporary) / 'first.profraw', Path(temporary) / 'second.profraw']
+            for path in profiles:
+                path.write_bytes(b'raw profile evidence')
+            self.assertEqual(coverage.compact_profiles(profiles, successful=False),
+                             {'raw_profiles_retained': True})
+            self.assertTrue(all(path.read_bytes() == b'raw profile evidence' for path in profiles))
+
+    def test_completed_report_compacts_only_selected_inputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            profiles = [directory / 'first.profraw', directory / 'second.profraw']
+            for path in profiles:
+                path.write_bytes(b'raw')
+            report = directory / 'coverage.profdata'
+            report.write_bytes(b'merged evidence')
+            other = directory / 'unmerged.profraw'
+            other.write_bytes(b'failed run')
+            self.assertEqual(coverage.compact_profiles(profiles, successful=True),
+                             {'raw_profiles_retained': False, 'raw_profile_bytes_removed': 6})
+            self.assertFalse(any(path.exists() for path in profiles))
+            self.assertEqual(report.read_bytes(), b'merged evidence')
+            self.assertEqual(other.read_bytes(), b'failed run')
+
     def test_counts_are_weighted_and_headers_are_not_implementation_lines(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
