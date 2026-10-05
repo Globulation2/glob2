@@ -1,0 +1,37 @@
+{
+  "sourceHash": "dd01d495b85c7eb9658fe5a9c563f7b30c1762fb9d3574c12f51c0ff0763e20b",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "failed",
+      "message": "AI must define step(ctx) or main(ctx)"
+    },
+    {
+      "id": "state",
+      "status": "skipped"
+    },
+    {
+      "id": "gameplay",
+      "status": "skipped"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ]
+}

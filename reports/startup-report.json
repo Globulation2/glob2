@@ -1,0 +1,37 @@
+{
+  "sourceHash": "6c520c2d2d946361581a23835d83f55389593096e44c7764f9292ea98005be27",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "failed",
+      "message": "Error: Startup failed\n    at <anonymous> (<glob2-script>:1:11)\n"
+    },
+    {
+      "id": "state",
+      "status": "skipped"
+    },
+    {
+      "id": "gameplay",
+      "status": "skipped"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ]
+}

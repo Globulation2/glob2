@@ -1,0 +1,44 @@
+{
+  "sourceHash": "a6fff2a4d882d6246f90cf86b3b1d13b0444085d603b11ee1c76217c51861336",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "passed"
+    },
+    {
+      "id": "state",
+      "status": "passed"
+    },
+    {
+      "id": "gameplay",
+      "status": "failed",
+      "message": "JavaScript AI at tick 0: Invalid integer argument: id"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ],
+  "metadata": {
+    "apiVersion": 1,
+    "author": "",
+    "description": "",
+    "name": "",
+    "version": ""
+  }
+}

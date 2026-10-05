@@ -1,0 +1,37 @@
+{
+  "sourceHash": "d4b186adc512b1387f5b90c13cdd7f2472dd8ad39db2af0447087060eb883703",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "failed",
+      "message": "SyntaxError: Unexpected token '('\n    at <glob2-script>:2:29\n"
+    },
+    {
+      "id": "startup",
+      "status": "skipped"
+    },
+    {
+      "id": "state",
+      "status": "skipped"
+    },
+    {
+      "id": "gameplay",
+      "status": "skipped"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ]
+}

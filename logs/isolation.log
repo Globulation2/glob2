@@ -1,0 +1,1 @@
+PASS: unbounded host scratch refuses AI validation: Error: AI validation requires a dedicated scratch tmpfs of at most 4 GiB.

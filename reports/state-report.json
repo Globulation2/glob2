@@ -1,0 +1,37 @@
+{
+  "sourceHash": "ba4979421e60117b6ca44d7bc5f8db25be1c45f0644658d58a1b7ccf64e39991",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "passed"
+    },
+    {
+      "id": "state",
+      "status": "failed",
+      "message": "Persistent global objects cannot have custom prototypes"
+    },
+    {
+      "id": "gameplay",
+      "status": "skipped"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "sourceHash": "7baaba3add1c282e191b33a181bf140789210f6299bbd500b88835c6fc4bf948",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": false,
+  "checks": [
+    {
+      "id": "file",
+      "status": "failed",
+      "message": "Invalid integer argument: apiVersion"
+    },
+    {
+      "id": "syntax",
+      "status": "skipped"
+    },
+    {
+      "id": "startup",
+      "status": "skipped"
+    },
+    {
+      "id": "state",
+      "status": "skipped"
+    },
+    {
+      "id": "gameplay",
+      "status": "skipped"
+    },
+    {
+      "id": "determinism",
+      "status": "skipped"
+    },
+    {
+      "id": "continuation",
+      "status": "skipped"
+    }
+  ]
+}

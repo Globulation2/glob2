@@ -1,0 +1,12 @@
+{
+  "revision": "bdeb8dc0b608e841da14df16a66930c7e6711a6c",
+  "base": "0a3da6df8898850f29050ec240e919e8b4a5b1b3",
+  "latestObservedMaster": "b58be00a245f801442ab330bf0e4b9e14dfa431b",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "node": "v22.22.1",
+  "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=$PWD/artifacts/ai-library/deps/recording scons -j8 release=1 server=0 unit-tests engine-tests",
+  "nativeBuildRevision": "ce2c43be8",
+  "nativeInputsUnchangedSinceBuild": true,
+  "postgres": "16.15"
+}

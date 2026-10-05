@@ -1,0 +1,43 @@
+{
+  "sourceHash": "c6c22043eda22791c61251b5b79f1481e892e771d2147e4302f00f26e53b9252",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": true,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "passed"
+    },
+    {
+      "id": "state",
+      "status": "passed"
+    },
+    {
+      "id": "gameplay",
+      "status": "passed"
+    },
+    {
+      "id": "determinism",
+      "status": "passed"
+    },
+    {
+      "id": "continuation",
+      "status": "passed"
+    }
+  ],
+  "metadata": {
+    "apiVersion": 2,
+    "author": "",
+    "description": "",
+    "name": "Patient",
+    "version": "1"
+  }
+}

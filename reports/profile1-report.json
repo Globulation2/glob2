@@ -1,0 +1,43 @@
+{
+  "sourceHash": "18be0fa61df54f68798d57e40b7f8d4b1d1c4cf14993d8f6e6329dbe0f5d8354",
+  "simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e",
+  "suite": 1,
+  "valid": true,
+  "checks": [
+    {
+      "id": "file",
+      "status": "passed"
+    },
+    {
+      "id": "syntax",
+      "status": "passed"
+    },
+    {
+      "id": "startup",
+      "status": "passed"
+    },
+    {
+      "id": "state",
+      "status": "passed"
+    },
+    {
+      "id": "gameplay",
+      "status": "passed"
+    },
+    {
+      "id": "determinism",
+      "status": "passed"
+    },
+    {
+      "id": "continuation",
+      "status": "passed"
+    }
+  ],
+  "metadata": {
+    "apiVersion": 1,
+    "author": "",
+    "description": "",
+    "name": "",
+    "version": ""
+  }
+}
