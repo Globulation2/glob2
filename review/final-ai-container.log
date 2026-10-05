@@ -1,0 +1,49 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86CameraAccessEnable
+> Warning:          Could not resolve keysym XF86CameraAccessDisable
+> Warning:          Could not resolve keysym XF86CameraAccessToggle
+> Warning:          Could not resolve keysym XF86NextElement
+> Warning:          Could not resolve keysym XF86PreviousElement
+> Warning:          Could not resolve keysym XF86AutopilotEngageToggle
+> Warning:          Could not resolve keysym XF86MarkWaypoint
+> Warning:          Could not resolve keysym XF86Sos
+> Warning:          Could not resolve keysym XF86NavChart
+> Warning:          Could not resolve keysym XF86FishingChart
+> Warning:          Could not resolve keysym XF86SingleRangeRadar
+> Warning:          Could not resolve keysym XF86DualRangeRadar
+> Warning:          Could not resolve keysym XF86RadarOverlay
+> Warning:          Could not resolve keysym XF86TraditionalSonar
+> Warning:          Could not resolve keysym XF86ClearvuSonar
+> Warning:          Could not resolve keysym XF86SidevuSonar
+> Warning:          Could not resolve keysym XF86NavInfo
+Errors from xkbcomp are not fatal to the X server
+{"level":30,"time":"2026-10-05T05:31:13.383Z","service":"skin-render-worker","msg":"Worker connected and looking for jobs... (task names: 'skin:render:4b8ae969f8de56b26070fe480008a9b17069390461554c41517fb06ae038f6c2')"}
+{"level":30,"time":"2026-10-05T05:31:13.386Z","service":"skin-render-worker","revision":"4b8ae969f8de56b26070fe480008a9b17069390461554c41517fb06ae038f6c2","msg":"Skin render worker ready"}
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86CameraAccessEnable
+> Warning:          Could not resolve keysym XF86CameraAccessDisable
+> Warning:          Could not resolve keysym XF86CameraAccessToggle
+> Warning:          Could not resolve keysym XF86NextElement
+> Warning:          Could not resolve keysym XF86PreviousElement
+> Warning:          Could not resolve keysym XF86AutopilotEngageToggle
+> Warning:          Could not resolve keysym XF86MarkWaypoint
+> Warning:          Could not resolve keysym XF86Sos
+> Warning:          Could not resolve keysym XF86NavChart
+> Warning:          Could not resolve keysym XF86FishingChart
+> Warning:          Could not resolve keysym XF86SingleRangeRadar
+> Warning:          Could not resolve keysym XF86DualRangeRadar
+> Warning:          Could not resolve keysym XF86RadarOverlay
+> Warning:          Could not resolve keysym XF86TraditionalSonar
+> Warning:          Could not resolve keysym XF86ClearvuSonar
+> Warning:          Could not resolve keysym XF86SidevuSonar
+> Warning:          Could not resolve keysym XF86NavInfo
+Errors from xkbcomp are not fatal to the X server
+{"level":30,"time":"2026-10-05T05:32:10.876Z","service":"skin-render-worker","id":"3a4a1b78-b6e5-485c-b6d1-d9c079d695a9","revision":"4b8ae969f8de56b26070fe480008a9b17069390461554c41517fb06ae038f6c2","attempt":1,"ms":57485,"bytes":2962792,"msg":"Skin sprites ready"}
+{"level":30,"time":"2026-10-05T05:32:10.880Z","service":"skin-render-worker","label":"worker","workerId":"worker-fdcb24a0c7aa9d9b69","job":{"id":1,"job_queue_id":null,"task_id":1,"payload":{"id":"3a4a1b78-b6e5-485c-b6d1-d9c079d695a9"},"priority":0,"run_at":"2026-10-05T05:31:13.351Z","attempts":1,"max_attempts":3,"last_error":null,"created_at":"2026-10-05T05:31:13.351Z","updated_at":"2026-10-05T05:31:13.351Z","key":"skin:render:3a4a1b78-b6e5-485c-b6d1-d9c079d695a9","locked_at":"2026-10-05T05:31:13.386Z","locked_by":"pool-dc3a782add5249627e","revision":0,"flags":null,"is_available":false,"task_identifier":"skin:render:4b8ae969f8de56b26070fe480008a9b17069390461554c41517fb06ae038f6c2"},"duration":57490.726389,"success":true,"msg":"Completed task 1 (skin:render:4b8ae969f8de56b26070fe480008a9b17069390461554c41517fb06ae038f6c2, 57490.73ms) with success"}
+{"level":30,"time":"2026-10-05T05:32:38.168Z","service":"skin-render-worker","reason":"SIGTERM","msg":"shutting down"}
+{"level":30,"time":"2026-10-05T05:32:38.172Z","service":"skin-render-worker","msg":"shutdown complete"}

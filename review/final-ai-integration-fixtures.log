@@ -1,0 +1,9 @@
+
+> fixtures
+> npm run --workspace @glob2/protocol generate
+
+
+> @glob2/protocol@0.1.0 generate
+> node scripts/generate.ts
+
+wrote 367 files to /home/bradley/.codex/worktrees/7f73/glob2/platform/packages/protocol/fixtures

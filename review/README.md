@@ -1,3 +1,5 @@
+Latest integrated feature revision: `e2b07c14957600d8e5882da94e4fd7bfd6017fc0`, based on master `da0d0d97f01083b98a954eaa5948f9f2992c6bc2`. See the final integration section below; older detailed checks retain their source revision.
+
 Review and final validation for `3c3c1d7bc21e9bce239446e495f4f77c050e4b76`, based on master `0d26564bc27d547740b9fbda1395df667d5f1bb8`. Overlapping parallel asset preparation, WebP wire delivery and Windows encoder preparation changes are integrated. Linux x86_64, GCC 15.2, release C++20/O3, pinned SDL 3.4.16 and libwebp 1.6.0, Node 24.19, Mesa/llvmpipe/Xvfb, Playwright 1.63. Docker uses Ubuntu 24.04/GCC 13/Node 22.
 
 Independent subagent review and self review fixed completed offscreen downloads retaining all four slots, bounded compressed buffers when disk writes fail, extracted worker bundle validation, clarified cache ownership, and added runtime encoder verification. The reviewer rechecked the fixes and integration, finding no remaining blockers.
@@ -59,3 +61,18 @@ SKIN_PREVIEW_SAVE="$PWD/artifacts/software-skin-review/crowd-three.game.gz" SKIN
 ```
 
 GPU uses the same command with `-g`, 48 frames/32 warmup, and a `review-gpu` prefix. CPU: classic mean 12.42 ms/p95 17.72; skinned 23.42/p95 25.50; decoded 57,326,148 bytes (54.7 MiB), 37 pages, zero measured warm misses/decodes/evictions. GPU/llvmpipe: classic 37.92/p95 42.92; skinned 269.34/p95 294.06. These timings include shared-host interference and llvmpipe atlas churn; they do not establish hardware performance.
+
+Final integration with AI Music Studio
+------------------------------------
+
+Revision `e2b07c14957600d8e5882da94e4fd7bfd6017fc0` integrates master `da0d0d97f01083b98a954eaa5948f9f2992c6bc2`. The reviewer checked the merge: both Docker/Compose workers and packages remain intact; blob GC retains both features' references; skin migration is now `0043` after music's `0042`; optional account export access follows master. Regenerated protocol fixtures did not change. Fresh dependencies, typecheck, affected ESLint, Compose configuration, 44 platform/API/UI/protocol tests plus 14 DB/worker retention tests, two actual native CLI/worker tests and 87 CI policy tests pass. Native binaries were rebuilt; the 63-case suite and all 702 golden checksums pass at this revision. These `final-ai-*` logs supersede earlier matching checks.
+
+The final worker image generated the same bundle in 57,485 ms, 2,962,792 bytes, first attempt. Health was healthy, rootless/read-only settings retained, and SIGTERM completed in 4 ms with exit 0. Fresh Chromium serial/threaded GL/software replays exercise the API and migration at the integrated revision. Renderer/browser source inputs are unchanged by this platform-only merge; the earlier three-browser/dual-runtime visual coverage remains identified at its own revision. The startup test's final change permits only WebKit's verified unsupported serial fallback: two passes and one explicitly unsupported skip, preserving required threaded mode on Chromium/Firefox.
+
+Master was fetched again before merge; `c8d2d4c9f` advances only the unrelated UI synthetic presentation harness. It was not merged solely to chase unrelated commits.
+
+Additional platform retention command:
+
+```sh
+node node_modules/vitest/vitest.mjs run apps/worker/test/reliability.test.ts packages/db/test/reliability.test.ts
+```

@@ -1,11 +1,15 @@
 
-Running 2 tests using 1 worker
+Running 3 tests using 1 worker
 
-(node:3666776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:3706377) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  1 [chromium] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly (8.1s)
-(node:3667025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+  ✓  1 [chromium] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly (8.8s)
+(node:3709349) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓  2 [firefox] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly (8.7s)
+  ✓  2 [firefox] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly (8.9s)
+(node:3710651) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  3 [webkit] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly
 
-  2 passed (19.9s)
+  1 skipped
+  2 passed (26.8s)
