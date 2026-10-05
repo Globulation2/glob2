@@ -30,7 +30,12 @@ export function ColonyHero() {
     if (!element) return;
     const update = () => {
       if (paused || offscreen || reduced || document.hidden) element.pause();
-      else void element.play().catch(() => setPlaying(false));
+      else
+        void element.play().catch((error: unknown) => {
+          // Pausing can cancel a still-pending play promise after playback starts.
+          // Keep the frozen frame and resume control for this expected cancellation.
+          if (!(error instanceof DOMException && error.name === 'AbortError')) setPlaying(false);
+        });
     };
     update();
     document.addEventListener('visibilitychange', update);
