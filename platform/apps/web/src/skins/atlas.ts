@@ -1,7 +1,6 @@
 // colony-v2 skins: a 512px colour atlas and a 512px material map, each holding
 // one 256px quadrant per model. Mesh UVs map into a quadrant as uv / 2 + offset.
 export const ATLAS_SIZE = 512;
-export const MODEL_SIZE = 256;
 
 export const MODELS = [
   { id: 'worker', name: 'Worker', mesh: 'worker-walk', x: 0, y: 0 },
@@ -13,33 +12,11 @@ export type Model = (typeof MODELS)[number];
 
 // Ids are stored in the material map; the game shades each id differently.
 export const MATERIALS = [
-  { id: 0, name: 'Classic glossy', swatch: 'rgba(255,255,255,0)' },
-  { id: 1, name: 'Matte', swatch: 'rgba(120,120,120,0.75)' },
-  { id: 2, name: 'Metallic', swatch: 'rgba(70,170,235,0.75)' },
-  { id: 3, name: 'Hairy', swatch: 'rgba(170,115,60,0.75)' },
+  { id: 0, name: 'Classic glossy' },
+  { id: 1, name: 'Matte' },
+  { id: 2, name: 'Metallic' },
+  { id: 3, name: 'Hairy' },
 ] as const;
-
-/** Sets a hard-edged disc of material ids, clipped to one model's quadrant. */
-export function paintMaterial(
-  map: Uint8Array,
-  model: Model,
-  cx: number,
-  cy: number,
-  radius: number,
-  id: number,
-) {
-  const r = Math.max(0.5, radius);
-  const x0 = Math.max(model.x, Math.floor(cx - r)),
-    x1 = Math.min(model.x + MODEL_SIZE - 1, Math.ceil(cx + r));
-  const y0 = Math.max(model.y, Math.floor(cy - r)),
-    y1 = Math.min(model.y + MODEL_SIZE - 1, Math.ceil(cy + r));
-  for (let y = y0; y <= y1; y++)
-    for (let x = x0; x <= x1; x++) {
-      const dx = x + 0.5 - cx,
-        dy = y + 0.5 - cy;
-      if (dx * dx + dy * dy <= r * r) map[y * ATLAS_SIZE + x] = id;
-    }
-}
 
 /** Opaque grey PNG (id, id, id): canvas premultiplication cannot alter it. */
 export function encodeMaterials(map: Uint8Array): string {

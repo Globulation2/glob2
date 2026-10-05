@@ -63,6 +63,7 @@ describe('colony skin equipment', () => {
         layout: 'colony-v2',
         building_color: 0xff8800,
         swarm_mesh: 'crown',
+        swarm_view_angle: 127,
         manifest_sha256: 'b'.repeat(64),
       })
       .returning('id')
@@ -147,6 +148,7 @@ describe('colony skin equipment', () => {
     expect(appearance.buildingColor).toBe(0x112233);
     expect(appearance.version.buildingColor).toBe(0xff8800);
     expect(appearance.version.swarmMesh).toBe('crown');
+    expect(appearance.version.swarmViewAngle).toBe(127);
     const verified = keys.verify(appearance.assertion, {
       type: COLONY_SKIN_TYPE,
       audience: COLONY_SKIN_AUDIENCE,

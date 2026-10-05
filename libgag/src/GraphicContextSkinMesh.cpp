@@ -84,7 +84,7 @@ constexpr unsigned TileSize = 128, AtlasSize = 2048;
 constexpr unsigned Columns = AtlasSize / TileSize, SlotsPerPage = Columns * Columns;
 constexpr unsigned MaxPages = 4, MaxSlots = SkinAtlasCache::Capacity;
 constexpr float Padding = 1.25f;
-// Shared verbatim with the web designer preview (MeshPreview.tsx); keep the
+// Shared verbatim with the web designer preview (materialShader.ts); keep the
 // marked block identical. Normals are camera space; the camera is orthographic.
 const char *const SkinMaterialGLSL = R"GLSL(
 // BEGIN skin-material

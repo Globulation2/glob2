@@ -316,6 +316,7 @@ function Layout() {
       </div>
     </>
   );
+  if (section === 'skins') return <Suspense fallback={<Loading />}>{page}</Suspense>;
   return (
     <div
       className={`site app-shell${home ? ' home' : ''}${studio ? ' studio-shell' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}

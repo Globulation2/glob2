@@ -1,97 +1,53 @@
-import { SkinStore } from '../skins/Store.tsx';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  SWARM_MESHES,
-  type ColonySkinVersion,
-  type SkinDraft,
-  type SwarmMeshId,
-} from '@glob2/protocol';
+/* DOM nodes are present during pointer events; model catalogs are nonempty. */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { useEffect, useRef, useState } from 'react';
+import { SWARM_MESHES, type SwarmMeshId } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
-import { MeshPreview } from '../skins/MeshPreview.tsx';
-import { SWARM_SHAPES, isSwarmMesh } from '../skins/swarmShapes.ts';
-import {
-  ATLAS_SIZE,
-  MATERIALS,
-  MODEL_SIZE,
-  MODELS,
-  decodeMaterials,
-  encodeMaterials,
-  paintMaterial,
-  type Model,
-} from '../skins/atlas.ts';
-
-function contextOf(canvas: HTMLCanvasElement) {
-  const context = canvas.getContext('2d', { willReadFrequently: true });
-  if (!context) throw new Error('Painting is unavailable in this browser.');
-  return context;
-}
-
-type Skin = ColonySkinVersion & { name: string; kind: 'custom' | 'preset'; entitlement: string };
-type Catalog = {
-  items: Skin[];
-  equippedVersionId: string | null;
-  equippedBuildingColor: number | null;
-};
-type Snapshot = { colour: ImageData; materials: Uint8Array };
-const DRAFT_KEY = 'glob2-skin-draft-v2';
-
-async function loadImage(src: string) {
-  const image = new Image();
-  image.src = src;
-  await image.decode();
-  if (image.width !== ATLAS_SIZE || image.height !== ATLAS_SIZE)
-    throw new Error('Invalid skin dimensions.');
-  return image;
-}
+import { MeshPreview, type SceneView, type Tool } from '../skins/MeshPreview.tsx';
+import { ACTIONS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
+import { MODELS, type Model } from '../skins/atlas.ts';
+import { SWARM_SHAPES, swarmModel } from '../skins/swarmShapes.ts';
+import { SkinStore } from '../skins/Store.tsx';
+import { StudioDialog, StudioIcon, MaterialSwatches } from '../skins/StudioControls.tsx';
+import { PatternDialog } from '../skins/PatternDialog.tsx';
+import { applyCoverage } from '../skins/paint.ts';
+import { useSkinDocument, type Catalog } from '../skins/useSkinDocument.ts';
+import { useToolboxLayout } from '../skins/useToolboxLayout.ts';
+import { SkinLibrary } from '../skins/SkinLibrary.tsx';
+import { CopyPaintDialog } from '../skins/CopyPaintDialog.tsx';
 
 export function Skins() {
   const { account } = useSession();
-  // Remount all canvas/history/async state when the signed-in identity changes.
-  return <SkinDesigner key={account?.id ?? 'local'} />;
+  return <SkinStudio key={account?.id ?? 'local'} />;
 }
-function SkinDesigner() {
+type Dialog = 'patterns' | 'shop' | 'library' | 'settings' | 'save' | 'shapes' | 'copy' | null;
+function SkinStudio() {
   const { account } = useSession();
-  const alive = useRef(true);
-  useEffect(() => {
-    alive.current = true;
-    return () => {
-      alive.current = false;
-    };
-  }, []);
-  const [draftRevision, setDraftRevision] = useState<string | null>(null);
-  // The whole colour atlas lives off screen; the visible canvas shows one model.
-  const [atlas] = useState(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = ATLAS_SIZE;
-    const context = contextOf(canvas);
-    context.fillStyle = '#ffffff';
-    context.fillRect(0, 0, ATLAS_SIZE, ATLAS_SIZE);
-    return canvas;
-  });
-  const materials = useRef<Uint8Array>(new Uint8Array(ATLAS_SIZE * ATLAS_SIZE));
-  const [materialRevision, setMaterialRevision] = useState(0);
-  const [view, setView] = useState<HTMLCanvasElement | null>(null);
-  const ref = useCallback((node: HTMLCanvasElement | null) => setView(node), []);
-  const [model, setModel] = useState<Model>(MODELS[0]);
-  const [mode, setMode] = useState<'colour' | 'material'>('colour');
-  const [material, setMaterial] = useState(2);
-  const [showMaterials, setShowMaterials] = useState(false);
-  const [workspaceView, setWorkspaceView] = useState<'designer' | 'library' | 'store'>(() =>
-    new URLSearchParams(window.location.search).has('purchase') ? 'store' : 'designer',
+  const doc = useSkinDocument(account?.id),
+    d = doc.data;
+  const [model, setModel] = useState<Model>(MODELS[0]),
+    [action, setAction] = useState('walk'),
+    [phase, setPhase] = useState(0),
+    [animate, setAnimate] = useState(false);
+  const [camera, setCamera] = useState<Camera>(DEFAULT_CAMERA),
+    [tool, setTool] = useState<Tool>('brush');
+  const [mode, setMode] = useState<'colour' | 'material'>('colour'),
+    [brush, setBrush] = useState('#ed9252'),
+    [material, setMaterial] = useState(0);
+  const [size, setSize] = useState(36),
+    [opacity, setOpacity] = useState(1),
+    [hardness, setHardness] = useState(0.8),
+    [pressure, setPressure] = useState(false);
+  const [dialog, setDialog] = useState<Dialog>(() =>
+    new URLSearchParams(window.location.search).has('purchase') ? 'shop' : null,
   );
-  const [name, setName] = useState('My colony');
-  const [brush, setBrush] = useState('#ed9252');
-  const [building, setBuilding] = useState('#ed9252');
-  const [swarmMesh, setSwarmMesh] = useState<SwarmMeshId>('classic');
-  const [size, setSize] = useState(12);
-  const [erase, setErase] = useState(false);
-  const [message, setMessage] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [skinId, setSkinId] = useState<string>();
-  const undo = useRef<Snapshot[]>([]),
-    redo = useRef<Snapshot[]>([]);
-  const [historyCounts, setHistoryCounts] = useState([0, 0]);
+  const [finalView, setFinalView] = useState(false),
+    [finalAngle, setFinalAngle] = useState(0),
+    [reference, setReference] = useState(false);
+  const { toolbox, position, collapsed, setCollapsed, handleProps, resetLayout } =
+    useToolboxLayout(!finalView);
+  const scene = useRef<SceneView | null>(null);
   const catalog = useLoad(
     async (signal) =>
       account
@@ -99,662 +55,701 @@ function SkinDesigner() {
         : { items: [], equippedVersionId: null, equippedBuildingColor: null },
     [account?.id],
   );
-  const overlay = showMaterials || mode === 'material';
-  const redraw = useCallback(() => {
-    if (!view) return;
-    const ctx = contextOf(view);
-    ctx.drawImage(atlas, model.x, model.y, MODEL_SIZE, MODEL_SIZE, 0, 0, MODEL_SIZE, MODEL_SIZE);
-    if (!overlay) return;
-    for (const { id, swatch } of MATERIALS.slice(1)) {
-      ctx.fillStyle = swatch;
-      for (let y = 0; y < MODEL_SIZE; y++) {
-        let start = -1;
-        for (let x = 0; x <= MODEL_SIZE; x++) {
-          const on =
-            x < MODEL_SIZE && materials.current[(model.y + y) * ATLAS_SIZE + model.x + x] === id;
-          if (on && start < 0) start = x;
-          if (!on && start >= 0) {
-            ctx.fillRect(start, y, x - start, 1);
-            start = -1;
-          }
-        }
-      }
-    }
-  }, [view, atlas, model, overlay]);
-  useEffect(redraw, [redraw, materialRevision]);
-  const materialsChanged = () => setMaterialRevision((r) => r + 1);
-  const readMaterials = useCallback(() => materials.current, []);
-  function snapshot(): Snapshot {
-    return {
-      colour: contextOf(atlas).getImageData(0, 0, ATLAS_SIZE, ATLAS_SIZE),
-      materials: materials.current.slice(),
-    };
+  const disabled = doc.busy || !doc.hydrated;
+  function showDialog(next: Dialog) {
+    doc.finish();
+    setAnimate(false);
+    if (scene.current) setPhase(scene.current.frame);
+    setDialog(next);
   }
-  function restore(state: Snapshot) {
-    contextOf(atlas).putImageData(state.colour, 0, 0);
-    materials.current = state.materials;
-    materialsChanged();
+  function chooseModel(m: Model) {
+    doc.finish();
+    setModel(m);
+    setAction(ACTIONS[m.id][0] ?? '');
+    setPhase(0);
+    setAnimate(false);
+    setFinalView(false);
+    setCamera(DEFAULT_CAMERA);
   }
-  function checkpoint() {
-    undo.current.push(snapshot());
-    if (undo.current.length > 30) undo.current.shift();
-    redo.current = [];
-    setHistoryCounts([undo.current.length, redo.current.length]);
+  function selectShape(shape: SwarmMeshId) {
+    doc.edit({ swarmMesh: shape });
+    chooseModel(MODELS[3]);
+    setDialog(null);
   }
-  // u, v address the active model's 256px quadrant (also its mesh UVs).
-  function paint(u: number, v: number) {
-    const x = model.x + u * MODEL_SIZE,
-      y = model.y + v * MODEL_SIZE;
-    if (mode === 'material') {
-      paintMaterial(materials.current, model, x, y, size / 2, material);
-      materialsChanged();
-      return;
-    }
-    const ctx = contextOf(atlas);
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(model.x, model.y, MODEL_SIZE, MODEL_SIZE);
-    ctx.clip();
-    ctx.fillStyle = erase ? '#ffffff' : brush;
-    ctx.beginPath();
-    ctx.arc(x, y, size / 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    redraw();
+  function enterFinal() {
+    doc.finish();
+    setAnimate(false);
+    setFinalAngle(d.swarmViewAngle);
+    setFinalView(true);
   }
-  function history(back: boolean) {
-    const from = back ? undo.current : redo.current,
-      to = back ? redo.current : undo.current;
-    const state = from.pop();
-    if (!state) return;
-    to.push(snapshot());
-    restore(state);
-    setHistoryCounts([undo.current.length, redo.current.length]);
-  }
-  function inPattern(kind: 'fill' | 'stripes' | 'spots', x: number, y: number) {
-    if (kind === 'stripes') return x % 32 < 16;
-    if (kind === 'spots') {
-      const dx = (x % 32) - 16,
-        dy = (y % 32) - 16;
-      return dx * dx + dy * dy < 81;
-    }
-    return true;
-  }
-  function pattern(kind: 'fill' | 'stripes' | 'spots') {
-    checkpoint();
-    if (mode === 'material') {
-      for (let y = 0; y < MODEL_SIZE; y++)
-        for (let x = 0; x < MODEL_SIZE; x++)
-          materials.current[(model.y + y) * ATLAS_SIZE + model.x + x] = inPattern(kind, x, y)
-            ? material
-            : 0;
-      materialsChanged();
-      return;
-    }
-    const ctx = contextOf(atlas);
-    ctx.fillStyle = kind === 'fill' ? brush : '#ffffff';
-    ctx.fillRect(model.x, model.y, MODEL_SIZE, MODEL_SIZE);
-    ctx.fillStyle = brush;
-    if (kind === 'stripes')
-      for (let x = 0; x < MODEL_SIZE; x += 32) ctx.fillRect(model.x + x, model.y, 16, MODEL_SIZE);
-    if (kind === 'spots')
-      for (let y = 16; y < MODEL_SIZE; y += 32)
-        for (let x = 16; x < MODEL_SIZE; x += 32) {
-          ctx.beginPath();
-          ctx.arc(model.x + x, model.y + y, 9, 0, Math.PI * 2);
-          ctx.fill();
-        }
-    redraw();
-  }
-  function copyToAll() {
-    checkpoint();
-    const ctx = contextOf(atlas);
-    const colour = ctx.getImageData(model.x, model.y, MODEL_SIZE, MODEL_SIZE);
-    for (const other of MODELS) {
-      if (other.id === model.id) continue;
-      ctx.putImageData(colour, other.x, other.y);
-      for (let y = 0; y < MODEL_SIZE; y++)
-        materials.current.copyWithin(
-          (other.y + y) * ATLAS_SIZE + other.x,
-          (model.y + y) * ATLAS_SIZE + model.x,
-          (model.y + y) * ATLAS_SIZE + model.x + MODEL_SIZE,
-        );
-    }
-    materialsChanged();
-    setMessage(`Copied the ${model.name.toLowerCase()} design to every model.`);
-  }
-  async function install(image: CanvasImageSource, map: Uint8Array) {
-    checkpoint();
-    contextOf(atlas).drawImage(image, 0, 0);
-    materials.current = map;
-    materialsChanged();
-  }
-  const encoded = () => ({
-    imageBase64: atlas.toDataURL('image/png').split(',')[1],
-    materialBase64: encodeMaterials(materials.current).split(',')[1],
-  });
-  function saveDraft() {
-    try {
-      localStorage.setItem(
-        `${DRAFT_KEY}:${account?.id ?? 'local'}`,
-        JSON.stringify({
-          name,
-          building,
-          swarmMesh,
-          skinId,
-          image: atlas.toDataURL('image/png'),
-          material: encodeMaterials(materials.current),
-        }),
+  function pick(index: number) {
+    const at = (model.y + Math.floor(index / 256)) * 512 + model.x + (index % 256);
+    if (mode === 'material') setMaterial(d.materials[at] ?? 0);
+    else
+      setBrush(
+        '#' +
+          Array.from(d.colour.subarray(at * 4, at * 4 + 3), (v) =>
+            v.toString(16).padStart(2, '0'),
+          ).join(''),
       );
-      setMessage('Draft saved on this device.');
-    } catch {
-      setMessage('This browser could not save the draft.');
-    }
-  }
-  async function loadDraft() {
-    setBusy(true);
-    try {
-      const raw = localStorage.getItem(`${DRAFT_KEY}:${account?.id ?? 'local'}`);
-      if (!raw) {
-        setMessage('No saved draft on this device.');
-        return;
-      }
-      const draft = JSON.parse(raw) as {
-        name: string;
-        building: string;
-        image: string;
-        material: string;
-        skinId?: string;
-        swarmMesh?: string;
-      };
-      const png = (value: unknown, limit: number) =>
-        typeof value === 'string' &&
-        value.startsWith('data:image/png;base64,') &&
-        value.length <= limit;
-      if (
-        !png(draft.image, 1500000) ||
-        !png(draft.material, 400000) ||
-        !/^#[0-9a-f]{6}$/i.test(draft.building) ||
-        typeof draft.name !== 'string' ||
-        // Drafts saved before shape choice have no swarmMesh and use the classic swarm.
-        (draft.swarmMesh !== undefined && !isSwarmMesh(draft.swarmMesh)) ||
-        (draft.skinId !== undefined &&
-          (typeof draft.skinId !== 'string' ||
-            !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(draft.skinId)))
-      )
-        throw new Error('Invalid draft');
-      const [image, map] = await Promise.all([
-        loadImage(draft.image),
-        decodeMaterials(draft.material),
-      ]);
-      if (!alive.current) return;
-      await install(image, map);
-      setName(draft.name.slice(0, 64));
-      setBuilding(draft.building);
-      setSwarmMesh(isSwarmMesh(draft.swarmMesh) ? draft.swarmMesh : 'classic');
-      setSkinId(draft.skinId);
-      setMessage('Draft restored.');
-    } catch {
-      if (alive.current) setMessage('The saved draft could not be restored.');
-    } finally {
-      if (alive.current) setBusy(false);
-    }
-  }
-  async function accountDraft(save: boolean) {
-    setBusy(true);
-    setMessage('');
-    try {
-      if (save) {
-        const result = await request<{ revision: string }>('PUT', '/api/v1/skins/draft', {
-          body: {
-            revision: draftRevision,
-            ...(skinId ? { skinId } : {}),
-            name,
-            buildingColor: parseInt(building.slice(1), 16),
-            swarmMesh,
-            ...encoded(),
-          },
-        });
-        if (!alive.current) return;
-        setDraftRevision(result.revision);
-        setMessage('Draft saved to your account.');
-      } else {
-        const { draft } = await request<{ draft: SkinDraft | null }>('GET', '/api/v1/skins/draft');
-        if (!alive.current) return;
-        if (!draft) {
-          setDraftRevision(null);
-          setMessage('No saved draft in your account.');
-          return;
-        }
-        const [image, map] = await Promise.all([
-          loadImage(`data:image/png;base64,${draft.imageBase64}`),
-          decodeMaterials(`data:image/png;base64,${draft.materialBase64}`),
-        ]);
-        if (!alive.current) return;
-        await install(image, map);
-        setName(draft.name);
-        setBuilding(`#${draft.buildingColor.toString(16).padStart(6, '0')}`);
-        setSwarmMesh(draft.swarmMesh);
-        setSkinId(draft.skinId);
-        setDraftRevision(draft.revision);
-        setMessage('Account draft restored.');
-      }
-    } catch (e) {
-      if (alive.current) setMessage(e instanceof Error ? e.message : 'Could not sync your draft.');
-    } finally {
-      if (alive.current) setBusy(false);
-    }
-  }
-  async function openDesign(skin: Skin) {
-    setBusy(true);
-    setMessage('');
-    try {
-      const [image, map] = await Promise.all([
-        loadImage(`/api/v1/skins/versions/${skin.id}/texture`),
-        decodeMaterials(`/api/v1/skins/versions/${skin.id}/material`),
-      ]);
-      if (!alive.current) return;
-      await install(image, map);
-      setName(skin.kind === 'custom' ? skin.name : `${skin.name} remix`);
-      setBuilding(`#${skin.buildingColor.toString(16).padStart(6, '0')}`);
-      setSwarmMesh(skin.swarmMesh);
-      setSkinId(skin.kind === 'custom' ? skin.skinId : undefined);
-      setMessage(
-        skin.kind === 'custom'
-          ? 'Design opened. Publishing saves a new version; equip it when ready.'
-          : 'Preset copied into the designer. Publishing requires the designer unlock.',
-      );
-    } catch (e) {
-      if (alive.current) setMessage(e instanceof Error ? e.message : 'Could not open this design.');
-    } finally {
-      if (alive.current) setBusy(false);
-    }
-  }
-  async function publish() {
-    setBusy(true);
-    setMessage('');
-    try {
-      const version = await request<ColonySkinVersion>('POST', '/api/v1/skins/publish', {
-        body: {
-          name,
-          ...(skinId ? { skinId } : {}),
-          buildingColor: parseInt(building.slice(1), 16),
-          swarmMesh,
-          ...encoded(),
-        },
-      });
-      if (!alive.current) return;
-      setSkinId(version.skinId);
-      catalog.reload();
-      setMessage('Published. Open My skins to equip this version.');
-    } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Could not publish.');
-    } finally {
-      setBusy(false);
-    }
+    setTool('brush');
   }
   async function equip(id: string | null) {
-    setBusy(true);
     try {
       await request('PUT', '/api/v1/skins/equipped', {
-        body: { versionId: id, buildingColor: parseInt(building.slice(1), 16) },
+        body: { versionId: id, buildingColor: parseInt(d.building.slice(1), 16) },
       });
       catalog.reload();
-      setMessage(id ? 'Skin equipped for your next match.' : 'Default colony selected.');
+      doc.setMessage(id ? 'Skin equipped for your next match.' : 'Default colony selected.');
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Could not equip.');
-    } finally {
-      setBusy(false);
+      doc.setMessage(e instanceof Error ? e.message : 'Could not equip.');
     }
   }
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (
+        dialog ||
+        disabled ||
+        (e.target instanceof HTMLElement &&
+          (e.target.matches('input,textarea,select') || e.target.isContentEditable))
+      )
+        return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        doc.history(!e.shiftKey);
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        doc.history(false);
+      } else if (e.ctrlKey || e.metaKey || e.altKey) return;
+      else if (e.key === '[') setSize((s) => Math.max(4, s - 4));
+      else if (e.key === ']') setSize((s) => Math.min(160, s + 4));
+      else if (e.key === 'b') setTool('brush');
+      else if (e.key === 'e') setTool('erase');
+      else if (e.key === 'i') setTool('pick');
+      else if (e.key === 'f' && !finalView) setCamera(DEFAULT_CAMERA);
+      else if (!finalView && (e.key === '+' || e.key === '=' || e.key === '-')) {
+        e.preventDefault();
+        setCamera((c) => ({
+          ...c,
+          zoom: Math.max(0.45, Math.min(4, c.zoom * (e.key === '-' ? 0.8 : 1.25))),
+        }));
+      }
+    };
+    window.addEventListener('keydown', key);
+    return () => window.removeEventListener('keydown', key);
+  }, [doc, dialog, disabled, finalView]);
+  const common = {
+    texture: doc.canvas,
+    materials: d.materials,
+    revision: doc.revision,
+    model,
+    swarmMesh: d.swarmMesh,
+    action,
+    phase,
+  };
   return (
-    <>
-      <div className="page-head">
-        <div className="grow">
-          <h1>Colony skins</h1>
-          <p className="caption">Make your colony your own.</p>
+    <div
+      className="skin-studio"
+      data-toolbox={collapsed ? 'collapsed' : 'expanded'}
+      data-mode={finalView ? 'final' : 'paint'}
+    >
+      <header className="skin-topbar">
+        <a
+          href="/"
+          className="skin-icon-button"
+          aria-label="Back to Globulation 2"
+          onClick={() => doc.saveLocal()}
+        >
+          <StudioIcon name="back" />
+        </a>
+        <div className="skin-document-title">
+          <span className="skin-eyebrow">COLONY STUDIO</span>
+          <input
+            aria-label="Skin name"
+            maxLength={64}
+            value={d.name}
+            disabled={disabled}
+            onChange={(e) => doc.edit({ name: e.target.value })}
+          />
+          <small className="skin-mobile-status" role="status">
+            {doc.status}
+          </small>
         </div>
-      </div>
-      <div className="skin-view-switch seg" role="group" aria-label="Skins view">
-        <button
-          aria-pressed={workspaceView === 'designer'}
-          onClick={() => setWorkspaceView('designer')}
-        >
-          Designer
-        </button>
-        <button
-          aria-pressed={workspaceView === 'library'}
-          onClick={() => setWorkspaceView('library')}
-        >
-          My skins
-        </button>
-        <button aria-pressed={workspaceView === 'store'} onClick={() => setWorkspaceView('store')}>
-          Store
-        </button>
-      </div>
-      <section
-        aria-label="Skin designer"
-        hidden={workspaceView !== 'designer'}
-        inert={workspaceView !== 'designer'}
-      >
-        <p>
-          Paint each kind of unit and your swarm, choose what each part is made of and your swarm's
-          shape, and pick a color for the rest of your buildings. Try the designer for free;
-          publishing requires the designer unlock.
-        </p>
-        <p>
-          Glob paint repeats automatically on matching front/back and top/bottom surfaces so their
-          flips stay seamless.
-        </p>
-        <div
-          role="tablist"
-          aria-label="Model to paint"
-          style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
-        >
+        <span className="skin-save-status" role="status">
+          {doc.status}
+        </span>
+        <div className="skin-history">
+          <button
+            className="skin-icon-button"
+            aria-label="Undo"
+            disabled={disabled || !doc.canUndo}
+            onClick={() => doc.history(true)}
+          >
+            <StudioIcon name="undo" />
+          </button>
+          <button
+            className="skin-icon-button"
+            aria-label="Redo"
+            disabled={disabled || !doc.canRedo}
+            onClick={() => doc.history(false)}
+          >
+            <StudioIcon name="redo" />
+          </button>
+        </div>
+        <nav aria-label="Studio">
+          <button onClick={() => showDialog('library')}>My skins</button>
+          <button onClick={() => showDialog('shop')}>Shop</button>
+          <button
+            className="skin-icon-button"
+            aria-label="Skin settings"
+            onClick={() => showDialog('settings')}
+          >
+            <StudioIcon name="settings" />
+          </button>
+          <button className="skin-save-button" aria-label="Save" onClick={() => showDialog('save')}>
+            <StudioIcon name="save" />
+            <span>Save</span>
+          </button>
+          <button
+            className="skin-primary"
+            disabled={disabled || account?.kind !== 'registered'}
+            onClick={() => void doc.publish(catalog.reload)}
+            title={account?.kind !== 'registered' ? 'Sign in to publish your skin' : undefined}
+          >
+            Publish
+          </button>
+        </nav>
+      </header>
+      <main className="skin-stage" aria-label="Skin designer">
+        <MeshPreview
+          {...common}
+          camera={finalView ? { ...DEFAULT_CAMERA, game: true, angle: finalAngle } : camera}
+          onCamera={(c) => (finalView ? setFinalAngle(c.angle) : setCamera(c))}
+          animate={animate && !dialog && !finalView}
+          active={!dialog}
+          interactive={!disabled}
+          tool={finalView ? 'orbit' : tool}
+          size={size}
+          hardness={mode === 'material' ? 1 : hardness}
+          pressure={pressure}
+          onPause={(frame) => {
+            setAnimate(false);
+            setPhase(frame);
+          }}
+          onScene={(s) => {
+            scene.current = s;
+          }}
+          onCoverage={(coverage, p) => {
+            if (disabled || finalView) return;
+            doc.paint((data) =>
+              applyCoverage(
+                data,
+                model,
+                coverage,
+                mode,
+                tool === 'erase' ? '#ffffff' : brush,
+                tool === 'erase' ? 0 : material,
+                mode === 'material' ? 1 : opacity * p,
+              ),
+            );
+          }}
+          onEnd={(cancel) => doc.finish(cancel)}
+          onPick={pick}
+        />
+        <div className="skin-models skin-panel" role="group" aria-label="Model to paint">
           {MODELS.map((m) => (
             <button
               key={m.id}
-              role="tab"
-              aria-selected={m.id === model.id}
-              onClick={() => setModel(m)}
-              style={{ fontWeight: m.id === model.id ? 'bold' : undefined }}
+              aria-pressed={model.id === m.id}
+              disabled={disabled}
+              onClick={() => chooseModel(m)}
             >
-              {m.name}
+              <img src={`/skins/thumbs/${m.mesh}.png`} alt="" />
+              <span>{m.name}</span>
             </button>
           ))}
         </div>
-        <div className="skin-designer">
-          <section aria-label="Paint tools">
-            <fieldset disabled={busy} style={{ border: 0, padding: 0, margin: 0 }}>
-              <label>
-                Skin name{' '}
-                <input maxLength={64} value={name} onChange={(e) => setName(e.target.value)} />
-              </label>
-              <div role="radiogroup" aria-label="Brush paints">
-                Brush paints{' '}
-                <label className="check">
-                  <input
-                    type="radio"
-                    name="brush-mode"
-                    checked={mode === 'colour'}
-                    onChange={() => setMode('colour')}
-                  />{' '}
-                  Colour
-                </label>{' '}
-                <label className="check">
-                  <input
-                    type="radio"
-                    name="brush-mode"
-                    checked={mode === 'material'}
-                    onChange={() => setMode('material')}
-                  />{' '}
-                  Material
-                </label>
-              </div>
-              {mode === 'colour' ? (
-                <div>
-                  <label>
-                    Paint{' '}
-                    <input type="color" value={brush} onChange={(e) => setBrush(e.target.value)} />
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={erase}
-                      onChange={(e) => setErase(e.target.checked)}
-                    />{' '}
-                    Erase to white
-                  </label>
-                </div>
-              ) : (
-                <div role="radiogroup" aria-label="Material">
-                  {MATERIALS.map((m) => (
-                    <label key={m.id} className="check" style={{ marginRight: 8 }}>
-                      <input
-                        type="radio"
-                        name="material"
-                        checked={material === m.id}
-                        onChange={() => setMaterial(m.id)}
-                      />{' '}
-                      <span
-                        aria-hidden="true"
-                        style={{
-                          display: 'inline-block',
-                          width: 12,
-                          height: 12,
-                          border: '1px solid #888',
-                          background: m.swatch,
-                        }}
-                      />{' '}
-                      {m.name}
-                    </label>
-                  ))}
-                </div>
-              )}
-              <label>
-                Brush size{' '}
-                <input
-                  type="range"
-                  min="1"
-                  max="64"
-                  value={size}
-                  onChange={(e) => setSize(Number(e.target.value))}
-                />
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={overlay}
-                  disabled={mode === 'material'}
-                  onChange={(e) => setShowMaterials(e.target.checked)}
-                />{' '}
-                Show materials
-              </label>
-              <canvas
-                ref={ref}
-                width={MODEL_SIZE}
-                height={MODEL_SIZE}
-                aria-label="Paint texture"
-                style={{ width: 256, height: 256, touchAction: 'none', border: '1px solid #888' }}
-                onPointerDown={(e) => {
-                  if (busy) return;
-                  checkpoint();
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                  const r = e.currentTarget.getBoundingClientRect();
-                  paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
-                }}
-                onPointerMove={(e) => {
-                  if (e.buttons && !busy) {
-                    const r = e.currentTarget.getBoundingClientRect();
-                    paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
-                  }
-                }}
-              />
-              <div>
-                <button disabled={!historyCounts[0]} onClick={() => history(true)}>
-                  Undo
-                </button>
-                <button disabled={!historyCounts[1]} onClick={() => history(false)}>
-                  Redo
-                </button>
-                <button onClick={() => pattern('fill')}>Fill</button>
-                <button onClick={() => pattern('stripes')}>Try stripes</button>
-                <button onClick={() => pattern('spots')}>Try spots</button>
-                <button onClick={copyToAll}>Copy to all models</button>
-              </div>
-              <label>
-                Building color{' '}
-                <input
-                  type="color"
-                  value={building}
-                  onChange={(e) => setBuilding(e.target.value)}
-                />
-              </label>
-              <fieldset aria-describedby="swarm-shape-hint">
-                <legend>Swarm shape</legend>
-                {SWARM_MESHES.map((mesh) => (
-                  <label key={mesh} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <input
-                      type="radio"
-                      name="swarm-shape"
-                      value={mesh}
-                      checked={swarmMesh === mesh}
-                      onChange={() => {
-                        setSwarmMesh(mesh);
-                        // Show the new shape; the swarm quadrant paints every shape.
-                        setModel(MODELS[3]);
-                      }}
-                    />
-                    <span>
-                      <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
-                    </span>
-                  </label>
-                ))}
-                <p id="swarm-shape-hint">
-                  Each shape takes paint in its own way, so check your swarm in the preview after
-                  switching. Your units keep their paint.
-                </p>
-              </fieldset>
-              <div>
-                <button disabled={busy} onClick={saveDraft}>
-                  Save on this device
-                </button>
-                <button disabled={busy} onClick={() => void loadDraft()}>
-                  Restore from this device
-                </button>
-                {account?.kind === 'registered' && (
-                  <>
-                    <button disabled={busy} onClick={() => void accountDraft(true)}>
-                      Save to account
-                    </button>
-                    <button disabled={busy} onClick={() => void accountDraft(false)}>
-                      Restore from account
-                    </button>
-                  </>
-                )}
-                <button
-                  disabled={busy || !account || account.kind !== 'registered'}
-                  onClick={() => void publish()}
-                >
-                  {skinId ? 'Publish new version' : 'Publish skin'}
-                </button>
-              </div>
-              {skinId && (
-                <p>
-                  Editing a published design. Existing versions stay available.{' '}
-                  <button
-                    onClick={() => {
-                      setSkinId(undefined);
-                      setMessage('This painting will publish as a separate design.');
-                    }}
-                  >
-                    Make a separate design
-                  </button>
-                </p>
-              )}
-              {!account && (
-                <p>
-                  <a href="/signin">Sign in</a> to publish or equip a skin.
-                </p>
-              )}
-            </fieldset>
-          </section>
-          <MeshPreview
-            active={workspaceView === 'designer'}
-            texture={atlas}
-            swarmMesh={swarmMesh}
-            materials={readMaterials}
-            materialRevision={materialRevision}
-            model={model}
-            onPaint={(u, v) => {
-              if (!busy) paint(u, v);
-            }}
-            onStroke={() => {
-              if (!busy) checkpoint();
-            }}
-          />
-        </div>
-      </section>
-      <p role="status" aria-label="Designer status">
-        {message}
-        {message.startsWith('Published.') && (
-          <button className="small" onClick={() => setWorkspaceView('library')}>
-            View My skins
+        {model.id === 'swarm' && (
+          <button className="skin-shape-button skin-panel" onClick={() => showDialog('shapes')}>
+            {SWARM_SHAPES[d.swarmMesh].name}
+            <span>Change shape ⌄</span>
           </button>
         )}
-      </p>
-      <section
-        aria-label="Skin store"
-        hidden={workspaceView !== 'store'}
-        inert={workspaceView !== 'store'}
-      >
-        <SkinStore onChange={catalog.reload} />
-      </section>
-      <section
-        aria-label="My skins"
-        hidden={workspaceView !== 'library'}
-        inert={workspaceView !== 'library'}
-      >
-        <h2>Your colony looks</h2>
-        <button disabled={busy || !account} onClick={() => void equip(null)}>
-          Use default colony
-        </button>
-        {catalog.status === 'error' && <p role="alert">{catalog.error.message}</p>}
-        {catalog.status === 'ready' && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-            {catalog.data.items.map((skin) => (
-              <article key={skin.id} data-version-id={skin.id} style={{ maxWidth: 200 }}>
-                <img
-                  width={128}
-                  height={128}
-                  src={`/api/v1/skins/versions/${skin.id}/texture`}
-                  alt={`${skin.name} paint`}
-                />
-                <h3>{skin.name}</h3>
+        {!finalView && (
+          <aside
+            ref={toolbox}
+            className={`skin-toolbox skin-panel ${collapsed ? 'is-collapsed' : ''}`}
+            aria-label="Paint tools"
+            style={position ? { left: position.x, top: position.y } : undefined}
+          >
+            <div className="skin-toolbox-handle" {...handleProps}>
+              <span>
+                ⠿ <span>TOOLBOX</span>
+              </span>
+              <button
+                aria-label={collapsed ? 'Expand toolbox' : 'Collapse toolbox'}
+                onClick={() => setCollapsed(!collapsed)}
+              >
+                {collapsed ? '+' : '−'}
+              </button>
+            </div>
+            <div className="skin-tools">
+              {(
+                [
+                  ['brush', 'Brush', 'B'],
+                  ['erase', 'Eraser', 'E'],
+                  ['pick', 'Eyedropper', 'I'],
+                  ['orbit', 'Orbit', ''],
+                ] as const
+              ).map(([id, label, key]) => (
                 <button
-                  disabled={busy}
-                  onClick={() => {
-                    setWorkspaceView('designer');
-                    void openDesign(skin);
-                  }}
+                  key={id}
+                  aria-pressed={tool === id}
+                  title={`${label}${key ? ' · ' + key : ''}`}
+                  onClick={() => setTool(id)}
                 >
-                  {skin.kind === 'custom' ? 'Edit this version' : 'Use as a starting point'}
+                  <StudioIcon name={id} />
+                  <span>{label}</span>
                 </button>
-                <p>
-                  {skin.kind === 'preset' ? 'Premade skin' : 'Your design'},{' '}
-                  {SWARM_SHAPES[skin.swarmMesh].name.toLowerCase()} swarm{' '}
-                  <span
-                    role="img"
-                    aria-label={`Building color #${skin.buildingColor.toString(16).padStart(6, '0')}`}
-                    style={{
-                      display: 'inline-block',
-                      width: 16,
-                      height: 16,
-                      background: `#${skin.buildingColor.toString(16).padStart(6, '0')}`,
-                    }}
+              ))}
+              <button onClick={() => showDialog('patterns')}>
+                <StudioIcon name="patterns" />
+                <span>Patterns</span>
+              </button>
+            </div>
+            {!collapsed && (
+              <div className="skin-tool-options">
+                <div className="skin-segment" role="group" aria-label="Brush paints">
+                  <button aria-pressed={mode === 'colour'} onClick={() => setMode('colour')}>
+                    Color
+                  </button>
+                  <button aria-pressed={mode === 'material'} onClick={() => setMode('material')}>
+                    Material
+                  </button>
+                </div>
+                {mode === 'colour' ? (
+                  <label className="skin-color-field">
+                    <input
+                      type="color"
+                      aria-label="Paint color"
+                      value={brush}
+                      onChange={(e) => setBrush(e.target.value)}
+                    />
+                    <span>
+                      <strong>Paint color</strong>
+                      <small>{brush.toUpperCase()}</small>
+                    </span>
+                  </label>
+                ) : (
+                  <MaterialSwatches color={d.building} selected={material} onSelect={setMaterial} />
+                )}
+                <label>
+                  Brush size <span className="skin-value">{size}</span>
+                  <input
+                    type="range"
+                    aria-label="Brush size"
+                    min={4}
+                    max={160}
+                    value={size}
+                    onChange={(e) => setSize(Number(e.target.value))}
                   />
-                </p>
-                <button
-                  disabled={
-                    busy ||
-                    (catalog.data.equippedVersionId === skin.id &&
-                      (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
-                        parseInt(building.slice(1), 16))
+                </label>
+                {mode === 'colour' && (
+                  <>
+                    <label>
+                      Opacity <span className="skin-value">{Math.round(opacity * 100)}%</span>
+                      <input
+                        type="range"
+                        aria-label="Opacity"
+                        min={0.05}
+                        max={1}
+                        step={0.05}
+                        value={opacity}
+                        onChange={(e) => setOpacity(Number(e.target.value))}
+                      />
+                    </label>
+                    <label>
+                      Hardness <span className="skin-value">{Math.round(hardness * 100)}%</span>
+                      <input
+                        type="range"
+                        aria-label="Hardness"
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        value={hardness}
+                        onChange={(e) => setHardness(Number(e.target.value))}
+                      />
+                    </label>
+                  </>
+                )}
+                <label className="skin-check">
+                  <input
+                    type="checkbox"
+                    checked={pressure}
+                    onChange={(e) => setPressure(e.target.checked)}
+                  />
+                  Pen pressure
+                </label>
+                <details>
+                  <summary>Paint repeats on matching surfaces</summary>
+                  <p>
+                    Some front/back and top/bottom surfaces share paint. A stroke may appear on
+                    their matching side too, keeping the glob’s flips seamless.
+                  </p>
+                </details>
+              </div>
+            )}
+          </aside>
+        )}
+        <div className="skin-navigation skin-panel">
+          <div className="skin-view-compass" aria-label="View orientation">
+            <span
+              style={{
+                transform: `rotate(${-(finalView ? finalAngle : (camera.yaw * 180) / Math.PI)}deg)`,
+              }}
+            >
+              ↑
+            </span>
+            <small>{finalView ? 'FINAL VIEW' : 'VIEW'}</small>
+          </div>
+          {!finalView && (
+            <>
+              <select
+                aria-label="Camera view"
+                value=""
+                onChange={(e) => {
+                  if (e.target.value === 'zoom-in' || e.target.value === 'zoom-out') {
+                    const factor = e.target.value === 'zoom-in' ? 1.25 : 0.8;
+                    setCamera((c) => ({
+                      ...c,
+                      zoom: Math.max(0.45, Math.min(4, c.zoom * factor)),
+                    }));
+                    return;
                   }
-                  onClick={() => void equip(skin.id)}
-                >
-                  {catalog.data.equippedVersionId === skin.id
-                    ? (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
-                      parseInt(building.slice(1), 16)
-                      ? 'Equipped'
-                      : 'Apply building color'
-                    : 'Equip'}
-                </button>
-              </article>
-            ))}
+                  const views: Record<string, [number, number]> = {
+                    front: [0, 0],
+                    back: [Math.PI, 0],
+                    left: [-Math.PI / 2, 0],
+                    right: [Math.PI / 2, 0],
+                    top: [0, Math.PI / 2],
+                    bottom: [0, -Math.PI / 2],
+                  };
+                  const p = views[e.target.value];
+                  if (p) setCamera({ ...camera, yaw: p[0], pitch: p[1], game: false });
+                }}
+              >
+                <option value="" disabled>
+                  View…
+                </option>
+                <optgroup label="Inspection zoom">
+                  <option value="zoom-in">Zoom in (+)</option>
+                  <option value="zoom-out">Zoom out (−)</option>
+                </optgroup>
+                {['front', 'back', 'left', 'right', 'top', 'bottom'].map((v) => (
+                  <option key={v} value={v}>
+                    {v[0]!.toUpperCase() + v.slice(1)}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="skin-icon-button"
+                aria-label="Fit model"
+                title="Fit model · F"
+                onClick={() => setCamera(DEFAULT_CAMERA)}
+              >
+                <StudioIcon name="fit" />
+              </button>
+              <button
+                className="skin-icon-button"
+                aria-label="Show game view"
+                title="Game-size reference"
+                aria-pressed={reference}
+                onClick={() => setReference(!reference)}
+              >
+                <StudioIcon name="view" />
+              </button>
+            </>
+          )}
+        </div>
+        {reference && !finalView && (
+          <div className="skin-reference skin-panel">
+            <span className="skin-eyebrow">
+              IN GAME · {model.id === 'swarm' ? `${d.swarmViewAngle}°` : 'CURRENT POSE'}
+            </span>
+            <div
+              className="skin-game-size"
+              style={{
+                width:
+                  (model.id === 'swarm'
+                    ? 128
+                    : model.id === 'worker'
+                      ? 38
+                      : model.id === 'warrior'
+                        ? 40
+                        : 32) * 1.25,
+                height:
+                  (model.id === 'swarm'
+                    ? 128
+                    : model.id === 'worker'
+                      ? 38
+                      : model.id === 'warrior'
+                        ? 40
+                        : 32) * 1.25,
+              }}
+            >
+              <MeshPreview
+                {...common}
+                camera={{
+                  ...DEFAULT_CAMERA,
+                  game: true,
+                  angle: model.id === 'swarm' ? d.swarmViewAngle : 0,
+                }}
+                interactive={false}
+                active={!dialog}
+              />
+            </div>
+            <small>Actual game size · 1×</small>
           </div>
         )}
-      </section>
-    </>
+        {finalView ? (
+          <div className="skin-final-view skin-panel">
+            <span className="skin-eyebrow">CHOOSE FINAL VIEW</span>
+            <h2>Your swarm, in the game</h2>
+            <p>Turn around the ring. Height and scale stay fixed.</p>
+            <div className="skin-camera-ring" aria-hidden="true">
+              <span style={{ transform: `rotate(${finalAngle}deg)` }}>●</span>
+            </div>
+            <label>
+              Camera angle <span className="skin-value">{finalAngle}°</span>
+              <input
+                type="range"
+                min={0}
+                max={359}
+                aria-label="Camera angle"
+                value={finalAngle}
+                onChange={(e) => setFinalAngle(Number(e.target.value))}
+              />
+            </label>
+            <div>
+              <button onClick={() => setFinalAngle(0)}>Reset angle</button>
+              <button onClick={() => setFinalView(false)}>Cancel</button>
+              <button
+                className="skin-primary"
+                onClick={() => {
+                  doc.edit({ swarmViewAngle: finalAngle });
+                  setFinalView(false);
+                  setReference(true);
+                }}
+              >
+                Use this view
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="skin-pose-strip skin-panel">
+            {model.id === 'swarm' ? (
+              <>
+                <span className="skin-muted">Final game view · {d.swarmViewAngle}°</span>
+                <button onClick={enterFinal}>
+                  <StudioIcon name="view" />
+                  Choose final view
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="skin-actions" role="group" aria-label="Pose">
+                  {ACTIONS[model.id].map((a) => (
+                    <button
+                      key={a}
+                      aria-pressed={action === a}
+                      onClick={() => {
+                        setAction(a);
+                        setPhase(0);
+                        setAnimate(false);
+                      }}
+                    >
+                      <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
+                      <span>{a[0]!.toUpperCase() + a.slice(1)}</span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  className="skin-icon-button"
+                  aria-label={animate ? 'Pause animation' : 'Play animation'}
+                  onClick={() => {
+                    if (animate && scene.current) setPhase(scene.current.frame);
+                    setAnimate(!animate);
+                  }}
+                >
+                  <StudioIcon name={animate ? 'pause' : 'play'} />
+                </button>
+                <label className="skin-frame">
+                  <span>Pose</span>
+                  <input
+                    aria-label="Frame"
+                    type="range"
+                    min={0}
+                    max={31}
+                    value={phase}
+                    onChange={(e) => {
+                      setAnimate(false);
+                      setPhase(Number(e.target.value));
+                    }}
+                  />
+                  <span className="skin-value">{phase + 1}/32</span>
+                </label>
+              </>
+            )}
+          </div>
+        )}
+        <div className="skin-stage-hint">
+          {finalView
+            ? 'Drag to turn · fixed height and scale'
+            : tool === 'orbit'
+              ? 'Drag to orbit · scroll or pinch to zoom'
+              : 'Drag to paint · Orbit tool to turn · scroll or pinch to zoom'}
+        </div>
+        {doc.message && (
+          <div className="skin-toast" role="status" aria-label="Designer status">
+            {doc.message}
+            <button aria-label="Dismiss notification" onClick={() => doc.setMessage('')}>
+              ×
+            </button>
+          </div>
+        )}
+      </main>
+      {dialog === 'patterns' && (
+        <PatternDialog
+          data={d}
+          model={model}
+          camera={camera}
+          action={action}
+          phase={phase}
+          mode={mode}
+          color={brush}
+          material={material}
+          onClose={() => setDialog(null)}
+          onApply={(candidate) => {
+            doc.replace(candidate);
+            setDialog(null);
+          }}
+        />
+      )}
+      {dialog === 'shop' && (
+        <StudioDialog title="Skin shop" onClose={() => setDialog(null)}>
+          <SkinStore onChange={catalog.reload} beforeCheckout={doc.saveLocal} />
+        </StudioDialog>
+      )}
+      {dialog === 'settings' && (
+        <StudioDialog title="Skin settings" onClose={() => setDialog(null)}>
+          <div className="skin-settings">
+            <label className="skin-color-field">
+              <input
+                type="color"
+                aria-label="Building color"
+                value={d.building}
+                onChange={(e) => doc.edit({ building: e.target.value })}
+              />
+              <span>
+                <strong>Building color</strong>
+                <small>Also used by traditional rendering</small>
+              </span>
+            </label>
+            <div className="skin-building-sample" style={{ color: d.building }}>
+              <svg viewBox="0 0 120 80" aria-label="Traditional building color preview" role="img">
+                <path
+                  fill="currentColor"
+                  d="M18 69V32L36 13l18 19v37zm37 0V17L73 2l18 15v52zm38 0V43l12-13 12 13v26Z"
+                />
+                <path fill="#211d28" d="M28 69V48h14v21m25 0V39h13v30" />
+              </svg>
+            </div>
+            <p className="skin-muted">
+              Your painted colors stay as they are. Material swatches use this color to help compare
+              their finishes.
+            </p>
+            <button onClick={resetLayout}>Reset toolbox layout</button>
+            <button onClick={() => setDialog('copy')}>Copy paint to other models…</button>
+            {d.skinId && (
+              <button onClick={() => doc.edit({ skinId: undefined })}>
+                Make a separate design
+              </button>
+            )}
+          </div>
+        </StudioDialog>
+      )}
+      {dialog === 'save' && (
+        <StudioDialog title="Save your skin" onClose={() => setDialog(null)}>
+          <div className="skin-save-options">
+            <p>Your work is recovered automatically on this device.</p>
+            <button onClick={doc.saveCheckpoint}>Save on this device</button>
+            <button disabled={disabled} onClick={() => void doc.restoreLocal()}>
+              Restore from this device
+            </button>
+            {account?.kind === 'registered' ? (
+              <>
+                <button disabled={disabled} onClick={() => void doc.accountDraft(true)}>
+                  Save to account
+                </button>
+                <button disabled={disabled} onClick={() => void doc.accountDraft(false)}>
+                  Restore from account
+                </button>
+              </>
+            ) : (
+              <a href="/signin" onClick={() => doc.saveLocal()}>
+                Sign in to save to your account and publish
+              </a>
+            )}
+            <p role="status">{doc.message || doc.status}</p>
+          </div>
+        </StudioDialog>
+      )}
+      {dialog === 'shapes' && (
+        <StudioDialog title="Swarm shape" onClose={() => setDialog(null)}>
+          <div className="skin-shape-grid">
+            {SWARM_MESHES.map((shape) => (
+              <button
+                key={shape}
+                aria-pressed={d.swarmMesh === shape}
+                onClick={() => selectShape(shape)}
+              >
+                <img src={`/skins/thumbs/${swarmModel(shape)}.png`} alt="" />
+                <strong>{SWARM_SHAPES[shape].name}</strong>
+                <small>{SWARM_SHAPES[shape].description}</small>
+              </button>
+            ))}
+          </div>
+          <p className="skin-muted">
+            Each shape shares the swarm paint area. Check the result after switching.
+          </p>
+        </StudioDialog>
+      )}
+      {dialog === 'library' && (
+        <StudioDialog title="My skins" onClose={() => setDialog(null)} wide>
+          <SkinLibrary
+            catalog={catalog.status === 'ready' ? catalog.data : null}
+            error={catalog.status === 'error' ? catalog.error.message : undefined}
+            busy={disabled}
+            onOpen={(skin) => {
+              void doc.openDesign(skin);
+              setDialog(null);
+            }}
+            onEquip={(id) => void equip(id)}
+            message={doc.message}
+          />
+        </StudioDialog>
+      )}
+      {dialog === 'copy' && (
+        <CopyPaintDialog
+          data={d}
+          model={model}
+          onClose={() => setDialog(null)}
+          onApply={(data) => {
+            doc.replace(data);
+            setDialog(null);
+          }}
+        />
+      )}
+    </div>
   );
 }

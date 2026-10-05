@@ -35,6 +35,8 @@ const MaterialMapBase64 = Type.String({
   pattern: '^[A-Za-z0-9+/]+={0,2}$',
 });
 
+const SwarmViewAngle = Type.Integer({ minimum: 0, maximum: 359 });
+
 export const PublishSkinRequest = Strict({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   skinId: Type.Optional(Uuid),
@@ -42,6 +44,7 @@ export const PublishSkinRequest = Strict({
   materialBase64: MaterialMapBase64,
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: Type.Optional(SwarmMesh),
+  swarmViewAngle: Type.Optional(SwarmViewAngle),
 });
 export const EquipSkinRequest = Strict({
   versionId: Type.Union([Uuid, Type.Null()]),
@@ -60,6 +63,7 @@ export const ColonySkinVersion = Open({
   layout: Type.Literal(COLONY_SKIN_LAYOUT),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: SwarmMesh,
+  swarmViewAngle: Type.Optional(SwarmViewAngle),
 });
 export type ColonySkinVersion = Static<typeof ColonySkinVersion>;
 
@@ -96,6 +100,7 @@ export const SaveSkinDraftRequest = Strict({
   materialBase64: MaterialMapBase64,
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: Type.Optional(SwarmMesh),
+  swarmViewAngle: Type.Optional(SwarmViewAngle),
 });
 export const SkinDraft = Open({
   skinId: Type.Optional(Uuid),
@@ -105,6 +110,7 @@ export const SkinDraft = Open({
   materialBase64: Type.String({ minLength: 4, maxLength: 349528 }),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: SwarmMesh,
+  swarmViewAngle: Type.Optional(SwarmViewAngle),
 });
 export type SkinDraft = Static<typeof SkinDraft>;
 

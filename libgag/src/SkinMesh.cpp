@@ -10,6 +10,7 @@
 
 namespace GAGCore
 {
+namespace { std::atomic<std::uint64_t> nextIdentity{1}; }
 bool SkinMesh::load(const std::string &path, std::string &error)
 {
     FileStreamBackend input(std::fopen(path.c_str(), "rb"));
@@ -67,9 +68,50 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
             return fail("invalid skin vertex");
     }
     if (!complete) return fail("truncated skin mesh");
-    static std::atomic<std::uint64_t> nextIdentity{1};
     candidate.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
     *this = std::move(candidate);
     return true;
 }
+SkinMesh SkinMesh::rotatedView(unsigned angle, const std::array<float, 16> &inverse,
+                              const std::array<float, 16> &projection,
+                              const std::array<float, 9> &normals) const
+{
+    if (!identity || frames != 1 || angle >= 360) return {};
+    SkinMesh result = *this;
+    result.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
+    const double radians = -static_cast<double>(angle) * 3.14159265358979323846 / 180;
+    const double cosine = std::cos(radians), sine = std::sin(radians);
+    auto point = [](const std::array<float, 16> &matrix, double x, double y, double z) {
+        return std::array<double, 3>{
+            matrix[0] * x + matrix[1] * y + matrix[2] * z + matrix[3],
+            matrix[4] * x + matrix[5] * y + matrix[6] * z + matrix[7],
+            matrix[8] * x + matrix[9] * y + matrix[10] * z + matrix[11],
+        };
+    };
+    for (unsigned vertex = 0; vertex < vertices; ++vertex)
+    {
+        const auto offset = vertex * 6;
+        const auto model = point(inverse, poses[offset], poses[offset + 1], poses[offset + 2]);
+        // Exported swarm pivots are the world origin. Rotate about world Z,
+        // preserving the standardized camera height, scale and ground alignment.
+        const auto projected = point(projection,
+            cosine * model[0] - sine * model[1], sine * model[0] + cosine * model[1], model[2]);
+        std::array<double, 3> normal{};
+        for (unsigned axis = 0; axis < 3; ++axis)
+            normal[axis] = normals[axis * 3] * poses[offset + 3] +
+                           normals[axis * 3 + 1] * poses[offset + 4] +
+                           normals[axis * 3 + 2] * poses[offset + 5];
+        const double nx = cosine * normal[0] - sine * normal[1];
+        const double ny = sine * normal[0] + cosine * normal[1];
+        for (unsigned axis = 0; axis < 3; ++axis)
+        {
+            result.poses[offset + axis] = static_cast<float>(projected[axis]);
+            // The normal rotation is orthonormal; its transpose returns to camera space.
+            result.poses[offset + 3 + axis] = static_cast<float>(
+                normals[axis] * nx + normals[axis + 3] * ny + normals[axis + 6] * normal[2]);
+        }
+    }
+    return result;
+}
+
 }

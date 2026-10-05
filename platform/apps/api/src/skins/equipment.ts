@@ -28,6 +28,7 @@ export async function authorizedSkin(
       'v.layout',
       'v.building_color',
       'v.swarm_mesh',
+      'v.swarm_view_angle',
       'v.manifest_sha256',
       's.owner_account_id',
       's.entitlement',
