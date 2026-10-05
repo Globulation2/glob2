@@ -20,6 +20,9 @@
         "createdAt"
       ],
       "properties": {
+        "avatarUrl": {
+          "type": "string"
+        },
         "id": {
           "type": "string",
           "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
@@ -100,6 +103,10 @@
           "provisional"
         ],
         "properties": {
+          "overallRank": {
+            "type": "integer",
+            "minimum": 1
+          },
           "ladder": {
             "type": "string",
             "maxLength": 64

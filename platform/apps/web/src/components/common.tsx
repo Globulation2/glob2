@@ -1,5 +1,5 @@
 // Small shared pieces: loading/error states, match rows, player links, avatars, map images.
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import type { MatchSummary, PublicAccount } from '@glob2/protocol';
 import { ApiError } from '../api.ts';
 import { GameArt, type ArtName } from '../art.tsx';
@@ -108,9 +108,11 @@ export function Avatar({
   account,
   size,
 }: {
-  account: Pick<PublicAccount, 'id' | 'displayName'>;
+  account: Pick<PublicAccount, 'id' | 'displayName' | 'avatarUrl'>;
   size?: 'small' | 'large';
 }) {
+  const [failed, setFailed] = useState<string>();
+  const src = account.avatarUrl ?? `/api/v1/accounts/${account.id}/avatar`;
   return (
     <span
       className={`avatar${size ? ` ${size}` : ''}`}
@@ -118,6 +120,7 @@ export function Avatar({
       aria-hidden="true"
     >
       {initial(account.displayName)}
+      {failed !== src && <img src={src} alt="" onError={() => setFailed(src)} loading="lazy" />}
     </span>
   );
 }
@@ -165,9 +168,19 @@ export function TeamSwatches({ match }: { match: MatchSummary }) {
 }
 
 /** One match in a history list, from the point of view of `accountId` when given. */
-export function MatchRow({ match, accountId }: { match: MatchSummary; accountId?: string }) {
+export function MatchRow({
+  match,
+  accountId,
+  aiId,
+}: {
+  match: MatchSummary;
+  accountId?: string;
+  aiId?: string;
+}) {
   const { instance } = useSession();
-  const mine = seatOf(match, accountId);
+  const mine = aiId
+    ? match.participants.find((p) => p.kind === 'ai' && p.ai === aiId)
+    : seatOf(match, accountId);
   const result = outcomeLetter(mine?.outcome);
   const others = match.participants.filter((p) => p !== mine);
   const allies = mine ? others.filter((p) => p.team === mine.team) : [];
@@ -224,17 +237,24 @@ export function MatchRow({ match, accountId }: { match: MatchSummary; accountId?
 export function MatchListView({
   matches,
   accountId,
+  aiId,
   empty = 'No matches yet.',
 }: {
   matches: MatchSummary[];
   accountId?: string;
+  aiId?: string;
   empty?: string;
 }) {
   if (matches.length === 0) return <Empty art="warFlag">{empty}</Empty>;
   return (
     <div className="list">
       {matches.map((m) => (
-        <MatchRow key={m.id} match={m} {...(accountId ? { accountId } : {})} />
+        <MatchRow
+          key={m.id}
+          match={m}
+          {...(accountId ? { accountId } : {})}
+          {...(aiId ? { aiId } : {})}
+        />
       ))}
     </div>
   );

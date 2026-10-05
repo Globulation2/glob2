@@ -8,6 +8,10 @@ sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fa
 Web font (platform web app and sign-in pages only, not the game) :
 Nunito, copyright 2014 The Nunito Project Authors, SIL Open Font License 1.1 (licence in platform/apps/web/public/fonts/LICENSE-Nunito.txt), from @fontsource-variable/nunito. See platform/apps/web/art/README.md.
 
+Profile photo editor (platform web app):
+[react-easy-crop](https://github.com/ValentinH/react-easy-crop), copyright 2022 Valentin Hervieu, MIT.
+The license is shipped in `platform/apps/web/public/licenses/react-easy-crop.txt`.
+
 Emoticon for alliance :
 kopete http://kopete.kde.org/
 

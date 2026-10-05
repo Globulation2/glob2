@@ -2,6 +2,8 @@
 // origin, so requests carry the web session cookie (set by /signin); writes are
 // same-origin fetches, which the API's CSRF check accepts.
 import type {
+  AiProfile,
+  PlayerDirectory,
   AdminAccount,
   AdminAccountList,
   AiLeaderboard,
@@ -91,6 +93,16 @@ export async function fetchInstance(signal?: AbortSignal): Promise<InstanceInfo>
 export const ACCOUNT_EXPORT_PATH = '/api/v1/accounts/me/export';
 
 export const api = {
+  players: (query: Query, signal?: AbortSignal) =>
+    get<PlayerDirectory>('/api/v1/players', query, signal),
+  aiProfile: (id: string, simVersion?: string, signal?: AbortSignal) =>
+    get<AiProfile>(`/api/v1/players/ai/${id}`, { simVersion }, signal),
+  aiMatches: (id: string, query: Query, signal?: AbortSignal) =>
+    get<MatchList>(`/api/v1/players/ai/${id}/matches`, query, signal),
+  uploadAvatar: (image: Blob) =>
+    request<SelfAccount>('PUT', '/api/v1/accounts/me/avatar', { body: image }),
+  avatarSource: (source: 'automatic' | 'initials') =>
+    request<SelfAccount>('PATCH', '/api/v1/accounts/me/avatar', { body: { source } }),
   stats: (signal?: AbortSignal) => get<InstanceStats>('/api/v1/stats', undefined, signal),
   me: (signal?: AbortSignal) => get<SelfAccount>('/api/v1/accounts/me', undefined, signal),
   signOut: () => request<undefined>('POST', '/api/v1/auth/web/sign-out', { body: {} }),
