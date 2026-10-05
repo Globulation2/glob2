@@ -486,6 +486,41 @@ TEST_SUITE("TerrainPresentation")
 						std::runtime_error);
 		CHECK(backend.largestTexture == 0);
 	}
+	TEST_CASE(
+		"empty water pages skip software submissions and refresh after terrain edits [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture(
+			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = true});
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		SoftwareTerrainCache cache;
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+		REQUIRE(pixels);
+		// A scoped offscreen pass selects the real software backend on every host.
+		globals->gfx->drawToSurface(
+			pixels.get(), .73f,
+			[&]
+			{
+				const auto draw = [&]
+				{
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0,
+										  fixture.team->me, true));
+					const auto before = globals->gfx->renderer->operations();
+					cache.draw(*globals->gfx);
+					const auto after = globals->gfx->renderer->operations();
+					return after.blits - before.blits + after.triangles - before.triangles;
+				};
+				CHECK(draw() == 0);
+				fixture.game.map.setCellTerrain(4, 4, ICE);
+				scene.extract(fixture.game.map);
+				CHECK(draw() > 0);
+				fixture.game.map.setCellTerrain(4, 4, WATER);
+				scene.extract(fixture.game.map);
+				CHECK(draw() == 0);
+			});
+	}
 	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;

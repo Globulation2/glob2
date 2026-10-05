@@ -295,19 +295,21 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								SDL_Rect area{x * n, y * n, n, n};
 								SDL_FillSurfaceRect(target, &area, 0);
 							}
-							bool opaque = true;
-							for (int py = 0; py < n && opaque; ++py)
+							bool opaque = true, empty = true;
+							for (int py = 0; py < n && (opaque || empty); ++py)
 								for (int px = 0; px < n; ++px)
-									if ((*(reinterpret_cast<Uint32 *>(
-											   static_cast<Uint8 *>(target->pixels) +
-											   (y * n + py) * target->pitch) +
-										   x * n + px) >>
-										 24) != 255)
-									{
-										opaque = false;
+								{
+									const auto *row = reinterpret_cast<const Uint32 *>(
+										static_cast<const Uint8 *>(target->pixels) +
+										(y * n + py) * target->pitch);
+									const auto alpha = row[x * n + px] >> 24;
+									opaque &= alpha == 255;
+									empty &= alpha == 0;
+									if (!opaque && !empty)
 										break;
-									}
+								}
 							entry->opaque[i] = opaque;
+							entry->empty[i] = empty;
 						}
 					entry->image->markPixelsChanged();
 					entry->tiles = tiles;
@@ -401,7 +403,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 		for (int y = 0; y < ChunkTiles; ++y)
 			for (int x = 0; x < ChunkTiles; ++x)
 			{
-				if (copy.chunk->opaque[y * ChunkTiles + x])
+				if (copy.chunk->opaque[y * ChunkTiles + x] || copy.chunk->empty[y * ChunkTiles + x])
 					continue;
 				SDL_Rect area{copy.x + x * 32, copy.y + y * 32, 32, 32}, visible;
 				if (SDL_GetRectIntersection(&area, &paintBounds, &visible))

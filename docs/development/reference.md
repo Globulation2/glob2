@@ -1361,8 +1361,9 @@ The [terrain authoring guide](../assets/terrain-materials.md) describes the cata
 boundary resolver, source preparation, budgets and asset pipeline.
 
 Within a software page, adjacent opaque tiles become borrowed surface views over
-the raw pixels. Coastlines retain individual source blits, avoiding repeated alpha
-scans over transparent holes. Views are destroyed before their backing page.
+the raw pixels. Fully transparent tiles submit no draw. Partially transparent
+coastlines retain individual source blits, avoiding repeated alpha scans over
+transparent holes. Views are destroyed before their backing page.
 Each page validates the canonical terrain neighborhood, discovery decisions and
 revisions of the materials its recipes use. Animation or source changes in unrelated
 materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
