@@ -113,6 +113,10 @@ TEST_SUITE("TerrainRegistry")
 			types.push_back(definition("many:t" + std::to_string(i)));
 		auto registry = TerrainRegistry::builtins()->importJson(source(types));
 		CHECK(registry->size() == TerrainRegistry::Capacity);
+		CHECK(registry->propertyProfiles().size() ==
+			  TerrainRegistry::builtins()->propertyProfiles().size());
+		CHECK(registry->propertyIndex(TerrainType(1000)) ==
+			  registry->propertyIndex(TerrainType(7)));
 		CHECK(registry->movement(4).profiles.size() == 4);
 		CHECK_THROWS(registry->importJson(source(Json::array({definition("overflow:x")}))));
 		CHECK(TerrainRegistry::deserialize(registry->serialize())->digest() == registry->digest());

@@ -36,6 +36,10 @@ class TerrainRegistry
 		assert(valid(id));
 		return properties_[id];
 	}
+	// Simulation cells cache this compact index; canonical terrain IDs remain
+	// unchanged for authoring, serialization and presentation.
+	std::uint16_t propertyIndex(TerrainType id) const { return propertyIndices_[id]; }
+	const std::vector<TerrainProperties> &propertyProfiles() const { return propertyProfiles_; }
 	const TerrainPresentation &presentation(TerrainType id) const
 	{
 		assert(valid(id));
@@ -54,7 +58,8 @@ class TerrainRegistry
   private:
 	TerrainRegistry();
 	void compile();
-	std::vector<TerrainProperties> properties_;
+	std::vector<TerrainProperties> properties_, propertyProfiles_;
+	std::vector<std::uint16_t> propertyIndices_;
 	std::vector<TerrainPresentation> presentations_;
 	std::vector<std::string> keys_, names_;
 	std::vector<TerrainType> appearances_;

@@ -97,6 +97,8 @@ class Map
 	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
 	std::vector<TerrainType> terrainIds;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
+	std::vector<Uint16> terrainPropertyIndices;
+	const TerrainProperties *terrainPropertyTable = terrainRegistryValue->propertyProfiles().data();
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
@@ -443,7 +445,7 @@ public:
 	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(coordToIndex(x,y)); }
 	const TerrainProperties &terrainPropertiesAt(size_t index) const
 	{
-		return terrainRegistryValue->properties(terrainTypeAt(index));
+		return terrainPropertyTable[terrainPropertyIndices[index]];
 	}
 	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
 	// Terrain habitat only: ignores deposits, buildings and units already here.

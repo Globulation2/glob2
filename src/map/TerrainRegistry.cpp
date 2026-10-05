@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <limits>
+#include <map>
 #include <set>
 #include <unordered_map>
 #include <stdexcept>
@@ -308,6 +309,23 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 }
 void TerrainRegistry::compile()
 {
+	// Field-wise keys exclude struct padding and preserve deterministic IDs.
+	std::map<std::array<int, 19>, std::uint16_t> properties;
+	propertyProfiles_.clear();
+	propertyIndices_.clear();
+	propertyProfiles_.reserve(size());
+	propertyIndices_.reserve(size());
+	for (const auto &p : properties_)
+	{
+#define VALUE(f) int(p.f),
+		const std::array<int, 19> key = {TERRAIN_FIELDS(VALUE)};
+#undef VALUE
+		auto [it, inserted] = properties.emplace(key, propertyProfiles_.size());
+		if (inserted)
+			propertyProfiles_.push_back(p);
+		propertyIndices_.push_back(it->second);
+	}
+
 	soleSwimmingType_ = -1;
 	unsigned swimmers = 0;
 	airCosts_.resize(size());

@@ -889,6 +889,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Capability counters keep health, air and projectile shortcuts independent of
   registry size. A* retains the historical built-in lower bound and lowers it only
   for faster custom terrain actually present, preserving old route choices.
+  Map property queries use a derived two-byte index plane into deduplicated
+  fixed-layout property structs, keeping equivalent custom IDs out of the hot
+  property working set. Canonical tile IDs and persistence remain unchanged.
   Maps lazily cache a one-byte cost-profile plane and only the distinct costs
   present in that plane per queried swimming class,
   removing the ID-to-profile lookup from general-cost cell loops. These planes

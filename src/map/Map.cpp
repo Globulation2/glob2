@@ -266,10 +266,16 @@ void Map::importTerrainDefinitions(std::string_view json)
 	auto next = terrainRegistry().importJson(json);
 	// Compilation/validation and allocation happen before publishing a replacement.
 	std::vector<std::size_t> counts(next->size());
-	for (auto type : terrainIds)
-		++counts[type];
+	std::vector<Uint16> propertyIndices(terrainIds.size());
+	for (std::size_t i = 0; i < terrainIds.size(); ++i)
+	{
+		++counts[terrainIds[i]];
+		propertyIndices[i] = next->propertyIndex(terrainIds[i]);
+	}
 	gradientRuntime->pipeline.finish();
 	terrainRegistryValue = std::move(next);
+	terrainPropertyIndices = std::move(propertyIndices);
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
 	terrainCounts = std::move(counts);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -310,6 +316,10 @@ void Map::importTerrainDefinitions(std::string_view json)
 
 void Map::rebuildTerrainCounts()
 {
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+	terrainPropertyIndices.resize(terrainIds.size());
+	for (std::size_t i = 0; i < terrainIds.size(); ++i)
+		terrainPropertyIndices[i] = terrainRegistry().propertyIndex(terrainIds[i]);
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -352,6 +362,7 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	if (terrainCounts[type]++ == 0)
 		adjustTerrainFeatures(type, true);
 	terrainIds[index] = type;
+	terrainPropertyIndices[index] = terrainRegistry().propertyIndex(type);
 	terrainEditChanged = true;
 	// Queries inside a batch may have materialized a partial snapshot. Every
 	// subsequent mutation invalidates it; generation is published at commit so
@@ -483,6 +494,7 @@ void Map::clear()
 		terrainMovementSnapshots = {};
 	}
 	terrainIds.clear();
+	terrainPropertyIndices.clear();
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -579,6 +591,8 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	tiles.assign(size, Tile());
 	terrainIds.assign(size, GRASS);
+	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
 	terrainCounts[GRASS] = size;
 	adjustTerrainFeatures(GRASS, true);
 
