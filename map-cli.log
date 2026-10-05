@@ -1,0 +1,3 @@
+PASS 50 map CLI commands: config precedence, map round trip, preview sizes, premade map, three saves, invalid inputs and unchanged preferences.
+Artifacts: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/map-cli
+PASS 21 diagnostics commands; evidence: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/map-cli/diagnostics

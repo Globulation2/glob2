@@ -1,0 +1,2 @@
+test_map_cli: BASELINE BUG CONFIRMED: inherited profile leaks into child; timed-out command and output missing
+test_map_image: BASELINE BUG CONFIRMED: inherited profile leaks into child; timed-out command and output missing

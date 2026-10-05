@@ -1,0 +1,2 @@
+test_map_cli: private profile overrides inherited profile; timed-out command and both streams retained; timeout re-raised: PASS
+test_map_image: private profile overrides inherited profile; timed-out command and both streams retained; timeout re-raised: PASS
