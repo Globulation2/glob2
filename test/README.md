@@ -374,7 +374,8 @@ struct GrassMap : Map {
         wDec = 3; hDec = 3; w = 8; h = 8;  // 8x8 map
         wMask = 7; hMask = 7;
         size = 64;
-        cases.assign(64, Case{});           // default: terrain=0 (grass), no bldg/unit
+        cases.assign(64, Case{});           // default sprite=0 (grass), no bldg/unit
+        importLegacyTerrain();            // initialize canonical terrain IDs
         // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
@@ -397,7 +398,12 @@ Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sour
 
 ### Terrain encoding for tests
 
-To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, sand 128–143, water 256–271. See `Map.h:336-361`.
+Use `Map::setCellTerrain(x, y, TerrainType)` for semantic terrain edits. Batch larger
+edits with `auto batch = map.editTerrain()` to invalidate derived fields once.
+`Case::terrain` is a sprite frame, not a terrain ID. Legacy-import fixtures that
+write frames directly must call `importLegacyTerrain()` afterwards; this adapter
+accepts only classic frames (grass 0–15, sand 128–143, water 256–271 and their
+intervening shore frames). Tests should not use frame ranges as gameplay predicates.
 
 ### When to use this pattern
 
@@ -1107,7 +1113,9 @@ because it includes the save header/version. Run the retained late-game regressi
 with `python3 test/maxima/check_save_continuation_fixture.py build/native-tests/src/glob2`.
 
 The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
-through 30511 against uninterrupted execution. Its compressed save, expected
+through 30511 against the current terrain simulation's complete-record hashes.
+Its midpoint reload also compares complete records, adjusting only the known
+save-format contribution to the aggregate checksum. Its compressed save, expected
 per-tick hashes, and reproduction commands are in
 [maxima/fixtures/save-continuation](maxima/fixtures/save-continuation/README.md).
 

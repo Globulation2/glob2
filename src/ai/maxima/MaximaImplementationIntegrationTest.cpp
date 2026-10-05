@@ -14,6 +14,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Version.h"
+#include "AIMaximaFoodSupply.h"
 #include "TeamStat.h"
 #include <memory>
 #include <limits>
@@ -74,7 +75,9 @@ template<class T> static void payloadRoundTrip(const T& original)
     const std::string bytes(backend->getBuffer(),backend->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
-    std::unique_ptr<T> loaded(T::load(&input));
+    std::unique_ptr<T> loaded;
+    if constexpr (std::is_same_v<T,Construction::Constraint>) loaded.reset(T::load(&input,VERSION_MINOR));
+    else loaded.reset(T::load(&input));
     GAGCore::MemoryStreamBackend* second=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream roundtrip(second);
     loaded->save(&roundtrip);
@@ -476,7 +479,9 @@ static void reviewBugRegressions()
     ally->seenByMask|=player.team->me;
     enemy->seenByMask|=player.team->me;
     c.initialize();
-    auto world=ai.collect_development_world(c);
+    uint32_t observedSignature=0;
+    auto world=ai.collect_development_world(c,&observedSignature);
+    REQUIRE(observedSignature==world.computeSignature());
     REQUIRE(world.tile(35,35).threat==0);
     REQUIRE(world.tile(50,50).threat==ai.strategy.placement.enemy_threat_base);
     // Diplomacy changes must affect the next placement world as well.
@@ -1298,7 +1303,7 @@ static void explorerSwarmStaffingRegressions()
     for(int position:{30,50})
     {
         game.map.setResource(position+6,position+1,WHEAT,1);
-        game.map.getTile(position+6,position+3).terrain=256;
+        game.map.setCellTerrain(position+6,position+3,WATER);
     }
     // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
     // own closed loop now, so there is no colony total to divide and no
@@ -1399,7 +1404,7 @@ static void economicResourceAccessRegressions()
     Unit* worker=game.addUnit(12,16,0,WORKER,0,0,0,0); REQUIRE(worker);
     // Both vertical water strips close the route around the toroidal map.
     for(int y=0;y<64;++y)
-    { game.map.getTile(0,y).terrain=256; game.map.getTile(16,y).terrain=256; }
+    { game.map.setCellTerrain(0,y,WATER); game.map.setCellTerrain(16,y,WATER); }
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) game.map.setMapDiscovered(x,y,player.team->me);
     game.map.setResource(13,20,WHEAT,1);
     game.map.setResource(19,11,WHEAT,1);
@@ -1430,7 +1435,7 @@ static void economicResourceAccessRegressions()
     // Sharing connectivity must preserve algae's unit counts and shore access.
     game.map.setResource(16,24,ALGA,1);
     game.map.getTile(16,24).resource.amount=4;
-    for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.getTile(x,y).terrain=256;
+    for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.setCellTerrain(x,y,WATER);
     game.map.setResource(21,19,ALGA,1);
     game.map.getTile(21,19).resource.amount=3;
     ai.update_environment_model(c);
@@ -1653,6 +1658,40 @@ void upgradeWorkerPriorityRegressions()
 
 TEST_SUITE("Maxima.Implementation")
 {
+    TEST_CASE("terrain travel fields serialize mode and retain stale snapshots")
+    {
+        glob2test::HeadlessGlobals globals;
+        Map map; map.setSize(4,4,WATER);
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+        Player player; player.map=&map;
+        Gradients::GradientManager manager(&player),restored(&player);
+        Gradients::GradientInfo walking;
+        walking.add_source(new Gradients::Entities::Position(0,1));
+        walking.terrainTravel=field::TerrainTravel::Walk;
+        Gradients::GradientInfo geometric;
+        geometric.add_source(new Gradients::Entities::Position(0,1));
+        REQUIRE(manager.get_gradient(walking).get_height(4,1)==4);
+        REQUIRE(manager.get_gradient(geometric).get_height(4,1)==4);
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        manager.saveExecutionState(&output);output.flush();
+        const auto bytes=memory->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        restored.loadExecutionState(&input,VERSION_MINOR);
+        REQUIRE(!restored.is_updated(walking));
+        REQUIRE(restored.get_gradient(walking).get_height(4,1)==2);
+        REQUIRE(restored.get_gradient(geometric).get_height(4,1)==4);
+        Construction::MinimumDistance constraint(walking,3);
+        payloadRoundTrip<Construction::Constraint>(constraint);
+        Gradients::GradientInfo avoidsIrrigation;
+        avoidsIrrigation.add_source(new Gradients::Entities::Position(0,1));
+        avoidsIrrigation.add_obstacle(new Gradients::Entities::Water);
+        Construction::MinimumDistance irrigationConstraint(avoidsIrrigation,3);
+        payloadRoundTrip<Construction::Constraint>(irrigationConstraint);
+    }
+
 	TEST_CASE("gradient dependencies; payload round trips and cache expiry")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1723,4 +1762,39 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("upgrade worker priority regressions") { glob2test::HeadlessGlobals globals; upgradeWorkerPriorityRegressions(); }
 	TEST_CASE("category maintenance capacity regressions") { glob2test::HeadlessGlobals globals; categoryMaintenanceCapacityRegressions(); }
 	TEST_CASE("school population scaling regressions") { glob2test::HeadlessGlobals globals; schoolPopulationScalingRegressions(); }
+}
+
+TEST_CASE("Maxima food catchments and carrier discounts follow road and ice travel costs" *
+          doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.terrain=WATER,.teams=1,.discovered=true,.loadDefaultRace=true});
+    auto& game=world.game;auto& map=game.map;
+    const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
+    const auto* type=globalContainer->buildingsTypes.get(innType);
+    for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
+        map.setCellTerrain(2+dx,2+dy,GRASS);
+    auto* inn=game.addBuilding(2,2,innType,0);REQUIRE(inn);
+    const int sx=inn->posX+inn->type->width,sy=inn->posY;
+    for(int dx=0;dx<=4;++dx)map.setCellTerrain(sx+dx,sy,GRASS);
+    map.setResource(sx+4,sy,WHEAT,1);
+    AIMaxima::Farming::ExactFertilityCache fertility;
+    fertility.rebuild(32,32,std::vector<uint8_t>(1024),std::vector<uint8_t>(1024));
+    auto capacity=[&](int radius) {
+        return AIMaxima::reachableFoodCapacity(&map,inn,game.teams[0]->me,false,radius,
+            fertility,nullptr,nullptr,1000);
+    };
+    auto distant=[&]() {
+        return AIMaxima::distantFoodCapacity(&map,{inn},game.teams[0]->me,false,1,
+            fertility,nullptr,1000);
+    };
+    CHECK(capacity(3)==0);
+    const auto neutral=distant();REQUIRE(neutral>0);
+    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,ROAD);
+    CHECK(capacity(2)>0);
+    CHECK(distant()>neutral);
+    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,ICE);
+    CHECK(capacity(3)==0);
+    CHECK(capacity(8)>0);
+    CHECK(distant()<neutral);
 }

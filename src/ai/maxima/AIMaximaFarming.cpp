@@ -17,13 +17,6 @@ namespace Farming
 
 namespace
 {
-	const int KERNEL_RADIUS=15;
-	const int KERNEL_WIDTH=31;
-	const int BOX_WIDTH=16;
-	const uint32_t OFFSET_WEIGHT[KERNEL_WIDTH]={
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
-		15,14,13,12,11,10,9,8,7,6,5,4,3,2,1
-	};
 
 	int clamp100(int value)
 	{
@@ -41,203 +34,18 @@ namespace
 
 }
 
-ExactFertilityCache::ExactFertilityCache()
-	: width(0), height(0), waterTiles(0), sandTiles(0),
-	  usedPath(AdaptiveFertilityPath)
-{
-}
-
-bool ExactFertilityCache::validFor(int expectedWidth, int expectedHeight) const
-{
-	return width==expectedWidth && height==expectedHeight
-		&& fertility.size()==size_t(width*height);
-}
-
-uint32_t ExactFertilityCache::at(int x, int y) const
-{
-	assert(validFor(width, height));
-	if(x<0 || x>=width) x=(x%width+width)%width;
-	if(y<0 || y>=height) y=(y%height+height)%height;
-	return fertility[y*width+x];
-}
-
-int ExactFertilityCache::wx(int x, int offset) const
-{
-	return wrappedX[(offset+KERNEL_WIDTH)*width+x];
-}
-
-int ExactFertilityCache::wy(int y, int offset) const
-{
-	return wrappedY[(offset+KERNEL_WIDTH)*height+y];
-}
-
-void ExactFertilityCache::buildWrappedIndexes()
-{
-	// Rolling boxes need +/-16 and mirrored corrections need +/-30.
-	wrappedX.resize((KERNEL_WIDTH*2+1)*width);
-	wrappedY.resize((KERNEL_WIDTH*2+1)*height);
-	for(int offset=-KERNEL_WIDTH; offset<=KERNEL_WIDTH; ++offset)
-	{
-		for(int x=0; x<width; ++x)
-			wrappedX[(offset+KERNEL_WIDTH)*width+x]
-				=(x+offset%width+width)%width;
-		for(int y=0; y<height; ++y)
-			wrappedY[(offset+KERNEL_WIDTH)*height+y]
-				=(y+offset%height+height)%height;
-	}
-}
-
-void ExactFertilityCache::buildWaterConvolution(
-	const std::vector<uint8_t>& water)
-{
-	const int size=width*height;
-	first.assign(size, 0);
-	second.assign(size, 0);
-	fertility.assign(size, 0);
-
-	// A length-16 forward box followed by a length-16 backward box is
-	// exactly the triangular 16-|offset| kernel. Repeat vertically.
-	for(int y=0; y<height; ++y)
-	{
-		uint32_t sum=0;
-		for(int dx=0; dx<BOX_WIDTH; ++dx)
-			sum+=water[y*width+wx(0, dx)];
-		for(int x=0; x<width; ++x)
-		{
-			first[y*width+x]=sum;
-			sum-=water[y*width+x];
-			sum+=water[y*width+wx(x, BOX_WIDTH)];
-		}
-	}
-	for(int y=0; y<height; ++y)
-	{
-		uint32_t sum=0;
-		for(int dx=-KERNEL_RADIUS; dx<=0; ++dx)
-			sum+=first[y*width+wx(0, dx)];
-		for(int x=0; x<width; ++x)
-		{
-			second[y*width+x]=sum;
-			sum-=first[y*width+wx(x, -KERNEL_RADIUS)];
-			sum+=first[y*width+wx(x, 1)];
-		}
-	}
-	for(int x=0; x<width; ++x)
-	{
-		uint32_t sum=0;
-		for(int dy=0; dy<BOX_WIDTH; ++dy)
-			sum+=second[wy(0, dy)*width+x];
-		for(int y=0; y<height; ++y)
-		{
-			first[y*width+x]=sum;
-			sum-=second[y*width+x];
-			sum+=second[wy(y, BOX_WIDTH)*width+x];
-		}
-	}
-	for(int x=0; x<width; ++x)
-	{
-		uint32_t sum=0;
-		for(int dy=-KERNEL_RADIUS; dy<=0; ++dy)
-			sum+=first[wy(0, dy)*width+x];
-		for(int y=0; y<height; ++y)
-		{
-			fertility[y*width+x]=sum;
-			sum-=first[wy(y, -KERNEL_RADIUS)*width+x];
-			sum+=first[wy(y, 1)*width+x];
-		}
-	}
-}
-
-void ExactFertilityCache::rebuild(int newWidth, int newHeight,
+void ExactFertilityCache::rebuild(int width, int height,
 	const std::vector<uint8_t>& water, const std::vector<uint8_t>& sand,
-	FertilityCalculationPath requestedPath)
+	FertilityCalculationPath path)
 {
-	assert(newWidth>0 && newHeight>0);
-	assert(water.size()==size_t(newWidth*newHeight));
-	assert(sand.size()==water.size());
-	width=newWidth;
-	height=newHeight;
-	waterTiles=0;
-	sandTiles=0;
-	for(size_t i=0; i<water.size(); ++i)
-	{
-		waterTiles+=water[i]!=0;
-		sandTiles+=sand[i]!=0;
-	}
-	buildWrappedIndexes();
-	usedPath=requestedPath;
-	if(usedPath==AdaptiveFertilityPath)
-	{
-		const uint32_t sandCost=uint32_t(4*water.size())+961u*uint32_t(sandTiles);
-		const uint32_t waterCost=961u*uint32_t(waterTiles);
-		usedPath=sandCost<=waterCost
-			? SandCorrectionFertilityPath : WaterSplatFertilityPath;
-	}
-
-	if(usedPath==SandCorrectionFertilityPath)
-	{
-		buildWaterConvolution(water);
-		for(int sy=0; sy<height; ++sy)
-		{
-			for(int sx=0; sx<width; ++sx)
-			{
-				if(!sand[sy*width+sx])
-					continue;
-				const int* const xWrap=&wrappedX[KERNEL_WIDTH*width+sx];
-				const int* const yWrap=&wrappedY[KERNEL_WIDTH*height+sy];
-				for(int dy=-KERNEL_RADIUS; dy<=KERNEL_RADIUS; ++dy)
-				{
-					const uint32_t yWeight=OFFSET_WEIGHT[dy+KERNEL_RADIUS];
-					uint32_t* const targetRow=&fertility[
-						yWrap[dy*height]*width];
-					const uint8_t* const waterRow=&water[
-						yWrap[2*dy*height]*width];
-					for(int dx=-KERNEL_RADIUS; dx<=KERNEL_RADIUS; ++dx)
-					{
-						if(waterRow[xWrap[2*dx*width]])
-							targetRow[xWrap[dx*width]]-=
-								yWeight*OFFSET_WEIGHT[dx+KERNEL_RADIUS];
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		fertility.assign(width*height, 0);
-		for(int waterY=0; waterY<height; ++waterY)
-		{
-			for(int waterX=0; waterX<width; ++waterX)
-			{
-				if(!water[waterY*width+waterX])
-					continue;
-				const int* const xWrap=&wrappedX[KERNEL_WIDTH*width+waterX];
-				const int* const yWrap=&wrappedY[KERNEL_WIDTH*height+waterY];
-				for(int dy=-KERNEL_RADIUS; dy<=KERNEL_RADIUS; ++dy)
-				{
-					const uint32_t yWeight=OFFSET_WEIGHT[dy+KERNEL_RADIUS];
-					uint32_t* const targetRow=&fertility[
-						yWrap[-dy*height]*width];
-					const uint8_t* const sandRow=&sand[
-						yWrap[-2*dy*height]*width];
-					for(int dx=-KERNEL_RADIUS; dx<=KERNEL_RADIUS; ++dx)
-					{
-						if(!sandRow[xWrap[-2*dx*width]])
-							targetRow[xWrap[-dx*width]]+=
-								yWeight*OFFSET_WEIGHT[dx+KERNEL_RADIUS];
-					}
-				}
-			}
-		}
-	}
+	field.rebuild(width,height,water,sand,static_cast<Fertility::Path>(path));
+	generation=0;
 }
 
 uint32_t usefulExpansionCapacity(uint32_t fertility, int amount,
 	int availableNeighbors, bool wheat)
 {
-	amount=std::max(0, std::min(8, amount));
-	availableNeighbors=std::max(0, std::min(8, availableNeighbors));
-	const uint32_t divisor=wheat ? 192u : 64u;
-	return fertility*uint32_t(amount)*uint32_t(availableNeighbors)/divisor;
+	return Fertility::usefulExpansionCapacity(fertility,amount,availableNeighbors,wheat);
 }
 
 bool fertilityWithinPercentBand(uint32_t fertility, int minimumPercent,

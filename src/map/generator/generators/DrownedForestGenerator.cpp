@@ -1307,7 +1307,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 			for (const auto &d : kCardinalSteps)
 			{
 				const int i = t.at(tile % t.w + d[0], tile / t.w + d[1]);
-				if (!seen[i] && map.isWater(i % t.w, i / t.w))
+				if (!seen[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA))
 				{
 					seen[i] = 1;
 					shore.push_back(i);
@@ -1526,7 +1526,8 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 				return "A meadow exit is blocked.";
 		auto permanent = walk;
 		for (int i = 0; i < t.size(); ++i)
-			if (map.isGrass(i % t.w, i / t.w) && !town[i])
+			if ((map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+				map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) && !town[i])
 				permanent[i] = 0;
 		if (!independentExits(t, permanent, g))
 			return "A meadow lacks two independent three-wide exits.";
@@ -1560,7 +1561,8 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 	// join a town, its woodlot, or the surrounding woods even through a diagonal seam.
 	std::vector<int> plots(t.size(), -1);
 	for (int i = 0; i < t.size(); ++i)
-		if (map.isGrass(i % t.w, i / t.w))
+		if ((map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))))
 			plots[i] = 0;
 	for (int k = 0; k < int(L.clearings.size()); ++k)
 	{

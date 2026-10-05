@@ -4,6 +4,7 @@
 
 #include <GAG.h>
 #include "ExperimentalFeatures.h"
+#include "TerrainExperiments.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -149,12 +150,29 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
-	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
-	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
-	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
-	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 362, BrushTool::WIDTH, BrushTool::HEIGHT), "terrain view", "terrain brush selector", "handle terrain click", brush);
-	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 466, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
+    for (unsigned id=0; id<TERRAIN_COUNT; ++id)
+    {
+        const auto type = static_cast<::TerrainType>(id);
+        const auto& presentation = terrainPresentation(type);
+        if (!presentation.editorSelectable || type==GRASS || type==SAND || type==WATER) continue;
+        const auto requirement = terrainExperiment(type);
+        if (requirement && !globalContainer->settings.experiments.has(*requirement)) continue;
+        const int slot = int(additionalTerrainSelectors.size());
+        auto* selector = new TerrainSelector(*this,
+            widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32*(slot%4)+decX,
+                286+38*(slot/4),32,32), "terrain view",
+            std::string(presentation.name)+" selector", std::string("select ")+presentation.name,
+            TerrainSelector::selectorFor(type));
+        additionalTerrainSelectors.push_back(selector);
+        addWidget(selector);
+    }
+    const int terrainExtraRow = 38*((int(additionalTerrainSelectors.size())+3)/4);
+	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294+terrainExtraRow, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320+terrainExtraRow, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
+	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336+terrainExtraRow, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
+	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336+terrainExtraRow, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
+	terrainBrushSelector = new BrushSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 362+terrainExtraRow, BrushTool::WIDTH, BrushTool::HEIGHT), "terrain view", "terrain brush selector", "handle terrain click", brush);
+	showFertilityOverlay = new Checkbox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 466+terrainExtraRow, 128, 16), "terrain view", "fertility checkbox", "compute fertility", "[Fertility Map]", isFertilityOn);
 	addWidget(grass);
 	addWidget(sand);
 	addWidget(water);

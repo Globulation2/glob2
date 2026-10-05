@@ -257,7 +257,7 @@ static void resources(Game &game, GenerationContext &context,
 
 		// WOOD
 		for (d = 0; d < islandsSize; d++)
-			if (!map.isGrass(bootX[s], bootY[s] - d))
+			if (!map.terrainSupportsResourceAt(bootX[s], bootY[s] - d, WOOD))
 				break;
 		amount = d - smoothResources - 2;
 		if (amount < 1)
@@ -270,7 +270,7 @@ static void resources(Game &game, GenerationContext &context,
 
 		// WHEAT
 		for (d = 0; d < islandsSize; d++)
-			if (!map.isGrass(bootX[s] - d, bootY[s]))
+			if (!map.terrainSupportsResourceAt(bootX[s] - d, bootY[s], WHEAT))
 				break;
 		amount = d - smoothResources - 0;
 		if (amount < 1)
@@ -290,13 +290,13 @@ static void resources(Game &game, GenerationContext &context,
 		// is how far west the wheat field sits, not where the southern grass ends. It is one tile
 		// and almost always on the island, so it is kept rather than moving every colony's quarry.
 		for (d = 0; d < islandsSize; d++)
-			if (!map.isGrass(bootX[s], bootY[s] + d))
+			if (!map.terrainSupportsResourceAt(bootX[s], bootY[s] + d, STONE))
 				break;
 		setScaledResource(map, bootX[s], bootY[s] + p, STONE, 1, options.stone);
 
 		// We add the resource with the smallest amount, unless that extra deposit is switched off:
 		for (d = 0; d < islandsSize; d++)
-			if (!map.isGrass(bootX[s] + d, bootY[s] + d))
+			if (!map.terrainSupportsResourceAt(bootX[s] + d, bootY[s] + d, smallestResource))
 				break;
 		amount = d - smoothResources - 3;
 		if (amount < 1)
@@ -310,7 +310,7 @@ static void resources(Game &game, GenerationContext &context,
 		// East to the first water, then out past it by the spreading margin, so the algae sits a
 		// little offshore of the beach, where it has water all round and sand in reach to regrow.
 		for (d = 0; d < 2 * islandsSize; d++)
-			if (map.isWater(bootX[s] + d, bootY[s]))
+			if (map.terrainSupportsResourceAt(bootX[s] + d, bootY[s], ALGA))
 				break;
 		amount = smoothResources;
 		p = d + smoothResources - 1 + amount / 2;

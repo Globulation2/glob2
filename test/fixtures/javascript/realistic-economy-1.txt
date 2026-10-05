@@ -52,7 +52,7 @@ root/state/scores/7/distance number 3ff6a09e667f3bcd
 root/state/scores/7/value number 3fdb7599b487a947
 root/state/metrics object 5
 root/state/metrics/pressure number 3fd77b193145a7da
-root/state/metrics/potential number 402ee9ef1f27486b
+root/state/metrics/potential number 402efb3a6a2efdb4
 root/state/metrics/demand number 4034000000000000
 root/state/metrics/jitter number 3f3b8cca9b800000
 root/state/metrics/workers number 4010000000000000

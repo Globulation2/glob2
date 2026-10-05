@@ -475,7 +475,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// invade wheat. The north half and both southern quarters must stay separate.
 	std::vector<unsigned char> grass(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		grass[i] = map.isGrass(i % t.w, i / t.w);
+		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD)));
 	const auto cropRegions = connectedRegions(grass, t.w, t.h, true, GridNeighbors::Eight);
 	std::vector<int> cropPlot(t.size(), -1);
 	for (int cell = 0; cell < L.cells.cellCount(); ++cell)

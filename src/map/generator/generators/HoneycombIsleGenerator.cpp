@@ -1159,7 +1159,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		!error.empty())
 		return error;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.street[i] && L.homeOf[i] < 0 && !map.isWater(i % t.w, i / t.w) &&
+		if (L.street[i] && L.homeOf[i] < 0 && map.terrainPropertiesAt(i % t.w, i / t.w).walkable &&
 			map.getResource(i % t.w, i / t.w).type != NO_RES_TYPE)
 			return "A street is blocked by a deposit at " + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w) + ".";

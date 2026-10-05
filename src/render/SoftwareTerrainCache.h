@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDLGraphicContext.h>
+#include "TerrainPresentation.h"
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -15,9 +16,10 @@ class SoftwareTerrainCache
 	static constexpr std::size_t Budget = 32u * 1024u * 1024u;
 	struct Tile
 	{
-		GAGCore::DrawableSurface *image = nullptr;
-		std::uint64_t revision = 0;
-		int terrainId = -1;
+		std::array<GAGCore::DrawableSurface *, TerrainLayers::Capacity> images{};
+        std::array<std::uint64_t, TerrainLayers::Capacity> revisions{};
+        TerrainLayers layers;
+        bool opaque = false;
 		bool discovered = false;
 		bool operator==(const Tile &) const = default;
 	};
@@ -36,6 +38,11 @@ class SoftwareTerrainCache
 		bool valid = false;
 		std::uint64_t used = 0;
 	};
+    // Include layer descriptors and worst-case borrowed surface views in the
+    // reservation, not only the RGBA payload. This remains bounded as new
+    // materials add layers or create highly fragmented transparent edges.
+    static constexpr std::size_t ChunkStorageBytes = ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
+        ChunkTiles * ChunkTiles * (sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface));
 	struct Copy
 	{
 		Chunk *chunk;
@@ -51,10 +58,10 @@ class SoftwareTerrainCache
   public:
 	bool enabled = true; // Benchmark switch, not a saved gameplay preference.
 	bool prepare(const SceneMap &map, GAGCore::Sprite &terrain, int left, int top, int right, int bottom,
-				 int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap);
+				 int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);
 	void draw(GAGCore::GraphicContext &target);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
-	std::size_t bytes() const { return chunks.size() * ChunkPixels * ChunkPixels * 4; }
+	std::size_t bytes() const { return chunks.size() * ChunkStorageBytes; }
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 };

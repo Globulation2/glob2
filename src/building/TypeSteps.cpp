@@ -14,6 +14,7 @@
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"
+#include "UnitTiming.h"
 #include "Utilities.h"
 #include "Order.h"
 #include "Bullet.h"
@@ -75,7 +76,9 @@ void Building::swarmStep(void)
 				u->activity=Unit::ACT_RANDOM;
 				u->displacement=Unit::DIS_RANDOM;
 				u->movement=Unit::MOV_EXITING_BUILDING;
-				u->speed=u->performance[u->action];
+				u->speed=unitTerrainMovementSpeed(u->performance[u->action], u->performance[FLY]
+                    ? owner->map->terrainPropertiesAt(u->posX,u->posY).airSpeedQ8
+                    : owner->map->terrainPropertiesAt(u->posX,u->posY).groundSpeedQ8);
 
 				productionTimeout=type->unitProductionTime;
 
@@ -198,9 +201,20 @@ void Building::applyCandidate(TurretTarget& best, int score, int ticks,
 	}
 }
 
+bool Building::hasClearShotTo(int targetX, int targetY) const
+{
+    const Map *map = owner->map;
+    if (!map->hasProjectileBlockingTerrain()) return true;
+    if (map->terrainPropertiesAt(targetX,targetY).projectileBlocks) return false;
+    const auto shot = computeFiringSolution(targetX,targetY);
+    return map->projectilePathClear(shot.originX,shot.originY,
+        shot.originX+shot.speedX*shot.ticksLeft,shot.originY+shot.speedY*shot.ticksLeft);
+}
+
 void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToHit,
                                 Uint32 enemies, Map* map, TurretTarget& best) const
 {
+	if (!hasClearShotTo(targetX,targetY)) return;
 	int targetGUID = map->getGroundUnit(targetX, targetY);
 	int airTargetGUID = map->getAirUnit(targetX, targetY);
 	if (targetGUID != NOGUID)

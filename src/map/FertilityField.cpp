@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-// Copyright (C) 2008 Bradley Arsenault
 #include "FertilityField.h"
-
 #include "Map.h"
+#include "TerrainProperties.h"
 
 #include <algorithm>
 #include <cassert>
@@ -12,196 +10,253 @@
 
 namespace
 {
-	const int KERNEL_RADIUS = 15;
-	const int KERNEL_WIDTH = 31;
-	const int BOX_WIDTH = 16;
-	const std::uint32_t OFFSET_WEIGHT[KERNEL_WIDTH] = {
-		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-	};
+int wrap(int value, int size) { const int r = value % size; return r < 0 ? r + size : r; }
+
+// Four running-box passes produce the triangular kernel in O(width*height).
+// Signed 64-bit intermediates cover the largest map and every allowed Q8 value.
+// Each line starts with a short fixed-size sum; no per-cell division/modulo is
+// needed in the inner loops, including maps smaller than the kernel radius.
+template<class T>
+std::vector<std::int64_t> triangular(const std::vector<T>& input, int width, int height, int radius)
+{
+	const int box = radius + 1;
+	const std::size_t size = std::size_t(width) * height;
+	std::vector<std::int64_t> a(input.begin(), input.end()), b(size);
+	for (int axis = 0; axis < 2; ++axis)
+		for (int pass = 0; pass < 2; ++pass)
+		{
+			const int length = axis ? height : width, lines = axis ? width : height;
+			const int stride = axis ? width : 1;
+			const int begin = pass ? -radius : 0;
+			for (int line = 0; line < lines; ++line)
+			{
+				const std::size_t base = axis ? line : std::size_t(line) * width;
+				std::int64_t sum = 0;
+				for (int d = 0; d < box; ++d) sum += a[base + wrap(begin+d, length)*stride];
+				int remove = wrap(begin, length), add = wrap(begin+box, length);
+				for (int p = 0; p < length; ++p)
+				{
+					b[base + p*stride] = sum;
+					sum += a[base + add*stride] - a[base + remove*stride];
+					if (++add == length) add = 0;
+					if (++remove == length) remove = 0;
+				}
+			}
+			a.swap(b);
+		}
+	return a;
+}
+// Only rebuilds need wrapped indexes. Runtime growth reads the cached fields.
+// Algae's rotated doubled offset reaches +/-45 relative to a donor/shore cell.
+struct WrappedIndexes
+{
+    int width,height;
+    std::vector<int> xs,ys;
+    WrappedIndexes(int w,int h):width(w),height(h),xs(91*w),ys(91*h)
+    {
+        for(int d=-45;d<=45;++d)
+        {
+            const int bx=d%w,by=d%h;
+            for(int x=0;x<w;++x) xs[(d+45)*w+x]=(x+bx+w)%w;
+            for(int y=0;y<h;++y) ys[(d+45)*h+y]=(y+by+h)%h;
+        }
+    }
+    int x(int position,int delta) const { return xs[(delta+45)*width+position]; }
+    int y(int position,int delta) const { return ys[(delta+45)*height+position]; }
+};
+constexpr int offsetWeight(int offset) { return 16-(offset<0 ? -offset : offset); }
+
+std::uint32_t q16(std::int64_t value)
+{
+	return static_cast<std::uint32_t>(std::clamp<std::int64_t>(value, 0, Fertility::kScale));
+}
+}
+
+const Fertility::GrowthCache& Map::resourceGrowthField() const
+{
+	std::lock_guard<std::mutex> lock(growthCacheMutex);
+	if (!growthCache.validFor(*this)) growthCache.rebuild(*this);
+	return growthCache;
 }
 
 namespace Fertility
 {
-
-int Field::wx(int x, int offset) const
+void Field::rebuild(int w, int h, const std::vector<std::uint8_t>& water,
+	const std::vector<std::uint8_t>& sand, Path path)
 {
-	return wrappedX[(offset + KERNEL_WIDTH) * width + x];
+	std::vector<std::int16_t> contributions(water.size());
+	std::vector<std::uint16_t> inhibition(sand.size());
+	for (std::size_t i=0; i<water.size(); ++i) contributions[i] = water[i] ? 256 : 0;
+	for (std::size_t i=0; i<sand.size(); ++i) inhibition[i] = sand[i] ? 256 : 0;
+	rebuildWeighted(w, h, contributions, inhibition, path);
 }
 
-int Field::wy(int y, int offset) const
+void Field::rebuildWeighted(int w, int h, const std::vector<std::int16_t>& contributionQ8,
+    const std::vector<std::uint16_t>& inhibitionQ8,Path path)
 {
-	return wrappedY[(offset + KERNEL_WIDTH) * height + y];
+    assert(w>0 && h>0 && contributionQ8.size()==std::size_t(w)*h && inhibitionQ8.size()==contributionQ8.size());
+    width=w;height=h;
+    waterTiles=std::count_if(contributionQ8.begin(),contributionQ8.end(),[](auto v){return v!=0;});
+    sandTiles=std::count_if(inhibitionQ8.begin(),inhibitionQ8.end(),[](auto v){return v!=0;});
+    const auto size=contributionQ8.size();
+    usedPath=path==Path::Adaptive
+        ? (4*std::uint64_t(size)+961*std::uint64_t(sandTiles)<=961*std::uint64_t(waterTiles)
+            ? Path::SandCorrection : Path::WaterSplat) : path;
+    std::vector<std::int64_t> totals(size,0);
+    const WrappedIndexes wrapped(w,h);
+    if(usedPath==Path::SandCorrection)
+    {
+        totals=triangular(contributionQ8,w,h,15);
+        for(auto& value:totals)value*=256;
+        // A donor and its opposite inhibitor act on the same weighted offset.
+        // Iterate only inhibitors; no grid-sized 961-tap scan is needed.
+        for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
+        {
+            const int inhibition=std::min<int>(inhibitionQ8[sy*w+sx],256);
+            if(!inhibition)continue;
+            int targetX[31],donorX[31];
+            for(int dx=-15;dx<=15;++dx)
+            {targetX[dx+15]=wrapped.x(sx,dx);donorX[dx+15]=wrapped.x(sx,2*dx);}
+            for(int dy=-15;dy<=15;++dy)
+            {
+                auto* target=&totals[wrapped.y(sy,dy)*w];
+                const auto* donor=&contributionQ8[wrapped.y(sy,2*dy)*w];
+                const std::int64_t scale=inhibition*offsetWeight(dy);
+                for(int dx=-15;dx<=15;++dx)
+                    target[targetX[dx+15]]-=scale*offsetWeight(dx)*donor[donorX[dx+15]];
+            }
+        }
+    }
+    else
+    {
+        // Sparse donor alternative; signed contributions remain signed until
+        // every pair is accumulated, so nearby deficits cancel bonuses exactly.
+        for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
+        {
+            const int donor=contributionQ8[sy*w+sx];
+            if(!donor)continue;
+            int targetX[31],inhibitorX[31];
+            for(int dx=-15;dx<=15;++dx)
+            {targetX[dx+15]=wrapped.x(sx,-dx);inhibitorX[dx+15]=wrapped.x(sx,-2*dx);}
+            for(int dy=-15;dy<=15;++dy)
+            {
+                auto* target=&totals[wrapped.y(sy,-dy)*w];
+                const auto* inhibitors=&inhibitionQ8[wrapped.y(sy,-2*dy)*w];
+                const std::int64_t scale=donor*offsetWeight(dy);
+                for(int dx=-15;dx<=15;++dx)
+                    target[targetX[dx+15]]+=scale*offsetWeight(dx)*(256-std::min<int>(inhibitors[inhibitorX[dx+15]],256));
+            }
+        }
+    }
+    fertility.resize(size);
+    for(std::size_t i=0;i<size;++i)fertility[i]=q16(totals[i]/(256*256));
 }
 
-void Field::buildWrappedIndexes()
+std::vector<std::uint32_t> shoreGrowthField(int w,int h,
+    const std::vector<std::int16_t>& contributionQ8,const std::vector<std::uint16_t>& supportQ8)
 {
-	// The rolling boxes reach +/-16; the mirrored sand lookups reach +/-30.
-	wrappedX.resize((KERNEL_WIDTH * 2 + 1) * width);
-	wrappedY.resize((KERNEL_WIDTH * 2 + 1) * height);
-	for (int offset = -KERNEL_WIDTH; offset <= KERNEL_WIDTH; ++offset)
-	{
-		// offset % width/height does not depend on x/y; computing it once per offset instead of
-		// once per tile turns this into 63 divisions instead of up to 63 * width and 63 * height.
-		const int baseX = offset % width, baseY = offset % height;
-		for (int x = 0; x < width; ++x)
-			wrappedX[(offset + KERNEL_WIDTH) * width + x] = (x + baseX + width) % width;
-		for (int y = 0; y < height; ++y)
-			wrappedY[(offset + KERNEL_WIDTH) * height + y] = (y + baseY + height) % height;
-	}
+    const auto size=contributionQ8.size();
+    assert(w>0 && h>0 && size==std::size_t(w)*h && supportQ8.size()==size);
+    const auto donors=std::count_if(contributionQ8.begin(),contributionQ8.end(),[](auto v){return v!=0;});
+    const auto shores=std::count_if(supportQ8.begin(),supportQ8.end(),[](auto v){return v!=0;});
+    std::vector<std::uint32_t> result(size,0);
+    if(!donors || !shores)return result;
+    std::vector<std::int64_t> totals(size,0);
+    const WrappedIndexes wrapped(w,h);
+    if(shores<=donors)
+    {
+        // Shore at (x+2dy,y+2dx), donor at (x+dx,y+dy). Invert the
+        // former relation to stamp only from nonzero support cells.
+        for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
+        {
+            const int support=supportQ8[sy*w+sx];
+            if(!support)continue;
+            int targetX[31];
+            for(int dy=-15;dy<=15;++dy)targetX[dy+15]=wrapped.x(sx,-2*dy);
+            for(int dx=-15;dx<=15;++dx)
+            {
+                auto* target=&totals[wrapped.y(sy,-2*dx)*w];
+                const std::int64_t scale=support*offsetWeight(dx);
+                for(int dy=-15;dy<=15;++dy)
+                    target[targetX[dy+15]]+=scale*offsetWeight(dy)*
+                        contributionQ8[wrapped.y(sy,dy-2*dx)*w+wrapped.x(sx,dx-2*dy)];
+            }
+        }
+    }
+    else
+    {
+        for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
+        {
+            const int donor=contributionQ8[sy*w+sx];
+            if(!donor)continue;
+            int targetX[31];
+            for(int dx=-15;dx<=15;++dx)targetX[dx+15]=wrapped.x(sx,-dx);
+            for(int dy=-15;dy<=15;++dy)
+            {
+                auto* target=&totals[wrapped.y(sy,-dy)*w];
+                const std::int64_t scale=donor*offsetWeight(dy);
+                for(int dx=-15;dx<=15;++dx)
+                    target[targetX[dx+15]]+=scale*offsetWeight(dx)*
+                        supportQ8[wrapped.y(sy,2*dx-dy)*w+wrapped.x(sx,2*dy-dx)];
+            }
+        }
+    }
+    for(std::size_t i=0;i<size;++i)result[i]=q16(totals[i]/(256*256));
+    return result;
 }
 
-void Field::buildWaterConvolution(const std::vector<std::uint8_t>& water)
+void Field::multiplyLocal(const std::vector<std::uint16_t>& growthQ8)
 {
-	const int size = width * height;
-	first.assign(size, 0);
-	second.assign(size, 0);
-	fertility.assign(size, 0);
-
-	// A length-16 forward box followed by a length-16 backward box is exactly the
-	// triangular 16-|offset| kernel. Four linear passes instead of 961 taps per tile.
-	for (int y = 0; y < height; ++y)
-	{
-		std::uint32_t sum = 0;
-		for (int dx = 0; dx < BOX_WIDTH; ++dx)
-			sum += water[y * width + wx(0, dx)];
-		for (int x = 0; x < width; ++x)
-		{
-			first[y * width + x] = sum;
-			sum -= water[y * width + x];
-			sum += water[y * width + wx(x, BOX_WIDTH)];
-		}
-	}
-	for (int y = 0; y < height; ++y)
-	{
-		std::uint32_t sum = 0;
-		for (int dx = -KERNEL_RADIUS; dx <= 0; ++dx)
-			sum += first[y * width + wx(0, dx)];
-		for (int x = 0; x < width; ++x)
-		{
-			second[y * width + x] = sum;
-			sum -= first[y * width + wx(x, -KERNEL_RADIUS)];
-			sum += first[y * width + wx(x, 1)];
-		}
-	}
-	for (int x = 0; x < width; ++x)
-	{
-		std::uint32_t sum = 0;
-		for (int dy = 0; dy < BOX_WIDTH; ++dy)
-			sum += second[wy(0, dy) * width + x];
-		for (int y = 0; y < height; ++y)
-		{
-			first[y * width + x] = sum;
-			sum -= second[y * width + x];
-			sum += second[wy(y, BOX_WIDTH) * width + x];
-		}
-	}
-	for (int x = 0; x < width; ++x)
-	{
-		std::uint32_t sum = 0;
-		for (int dy = -KERNEL_RADIUS; dy <= 0; ++dy)
-			sum += first[wy(0, dy) * width + x];
-		for (int y = 0; y < height; ++y)
-		{
-			fertility[y * width + x] = sum;
-			sum -= first[wy(y, -KERNEL_RADIUS) * width + x];
-			sum += first[wy(y, 1) * width + x];
-		}
-	}
+	assert(growthQ8.size()==fertility.size());
+	for (std::size_t i=0; i<fertility.size(); ++i)
+		fertility[i]=static_cast<std::uint32_t>(std::uint64_t(fertility[i])*growthQ8[i]/256);
 }
 
-void Field::rebuild(int newWidth, int newHeight, const std::vector<std::uint8_t>& water,
-	const std::vector<std::uint8_t>& sand, Path requestedPath)
+bool GrowthCache::validFor(const Map& map) const
 {
-	assert(newWidth > 0 && newHeight > 0);
-	assert(water.size() == size_t(newWidth) * newHeight);
-	assert(sand.size() == water.size());
-	width = newWidth;
-	height = newHeight;
-	waterTiles = 0;
-	sandTiles = 0;
-	for (size_t i = 0; i < water.size(); ++i)
-	{
-		waterTiles += water[i] != 0;
-		sandTiles += sand[i] != 0;
-	}
-	buildWrappedIndexes();
-	usedPath = requestedPath;
-	if (usedPath == Path::Adaptive)
-	{
-		// The convolution is four passes over the map; each splat is a 31x31 stamp.
-		const std::uint32_t sandCost = std::uint32_t(4 * water.size()) + 961u * std::uint32_t(sandTiles);
-		const std::uint32_t waterCost = 961u * std::uint32_t(waterTiles);
-		usedPath = sandCost <= waterCost ? Path::SandCorrection : Path::WaterSplat;
-	}
+	return land.getW()==map.getW() && land.getH()==map.getH() &&
+		generation==map.terrainGeneration() && aquatic.size()==std::size_t(map.getW())*map.getH();
+}
 
-	if (usedPath == Path::SandCorrection)
+void GrowthCache::rebuild(const Map& map)
+{
+	const int w=map.getW(), h=map.getH();
+	const std::size_t size=std::size_t(w)*h;
+	std::vector<std::int16_t> contribution(size);
+	std::vector<std::uint16_t> inhibition(size), shore(size);
+	localGrowth.resize(size);
+	growthHabitats.resize(size);
+	for (std::size_t i=0; i<size; ++i)
 	{
-		buildWaterConvolution(water);
-		// Every (water, sand) pair straddling a tile removes the weight the convolution
-		// credited it, so each subtraction cancels a contribution that was really added.
-		for (int sy = 0; sy < height; ++sy)
-		{
-			for (int sx = 0; sx < width; ++sx)
-			{
-				if (!sand[sy * width + sx])
-					continue;
-				const int* const xWrap = &wrappedX[KERNEL_WIDTH * width + sx];
-				const int* const yWrap = &wrappedY[KERNEL_WIDTH * height + sy];
-				// xWrap[dx * width] and xWrap[2 * dx * width] depend only on dx, not dy, but sit
-				// inside the dy loop below, which revisits every dx KERNEL_WIDTH times; looking
-				// each one up once here instead removes that factor from this tile's cost.
-				int targetX[KERNEL_WIDTH], probeX[KERNEL_WIDTH];
-				for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-				{
-					targetX[dx + KERNEL_RADIUS] = xWrap[dx * width];
-					probeX[dx + KERNEL_RADIUS] = xWrap[2 * dx * width];
-				}
-				for (int dy = -KERNEL_RADIUS; dy <= KERNEL_RADIUS; ++dy)
-				{
-					const std::uint32_t yWeight = OFFSET_WEIGHT[dy + KERNEL_RADIUS];
-					std::uint32_t* const targetRow = &fertility[yWrap[dy * height] * width];
-					const std::uint8_t* const waterRow = &water[yWrap[2 * dy * height] * width];
-					for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-						if (waterRow[probeX[dx + KERNEL_RADIUS]])
-							targetRow[targetX[dx + KERNEL_RADIUS]] -=
-								yWeight * OFFSET_WEIGHT[dx + KERNEL_RADIUS];
-				}
-			}
-		}
+		const auto& p=map.terrainPropertiesAt(i);
+		contribution[i]=p.fertilitySource ? p.fertilityQ8 : 0;
+		inhibition[i]=p.inhibitionQ8;
+		shore[i]=p.shoreSupportQ8;
+		localGrowth[i]=p.growthQ8;
+		growthHabitats[i]=p.resourcesGrow ? p.allowedResources : 0;
 	}
+	land.rebuildWeighted(w,h,contribution,inhibition);
+	aquatic=shoreGrowthField(w,h,contribution,shore);
+	land.multiplyLocal(localGrowth);
+	generation=map.terrainGeneration();
+}
+
+std::uint32_t GrowthCache::rate(std::size_t index, int resourceType) const
+{
+	assert(index<localGrowth.size());
+	if (resourceType<0 || resourceType>=MAX_RESOURCES ||
+		!(growthHabitats[index] & (1u<<resourceType))) return 0;
+	std::uint64_t value;
+	if (resourceType==WHEAT || resourceType==WOOD)
+		value=land.values()[index];
+	else if (resourceType==ALGA)
+		value=std::uint64_t(aquatic[index])*localGrowth[index]/256;
+	else if (resourceType==STONE || resourceType==NO_RES_TYPE)
+		return 0;
 	else
-	{
-		fertility.assign(size_t(width) * height, 0);
-		for (int waterY = 0; waterY < height; ++waterY)
-		{
-			for (int waterX = 0; waterX < width; ++waterX)
-			{
-				if (!water[waterY * width + waterX])
-					continue;
-				const int* const xWrap = &wrappedX[KERNEL_WIDTH * width + waterX];
-				const int* const yWrap = &wrappedY[KERNEL_WIDTH * height + waterY];
-				// See the SandCorrection branch above: xWrap[-dx * width] and xWrap[-2 * dx * width]
-				// depend only on dx, so look each one up once here instead of once per (dy, dx).
-				int targetX[KERNEL_WIDTH], probeX[KERNEL_WIDTH];
-				for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-				{
-					targetX[dx + KERNEL_RADIUS] = xWrap[-dx * width];
-					probeX[dx + KERNEL_RADIUS] = xWrap[-2 * dx * width];
-				}
-				for (int dy = -KERNEL_RADIUS; dy <= KERNEL_RADIUS; ++dy)
-				{
-					const std::uint32_t yWeight = OFFSET_WEIGHT[dy + KERNEL_RADIUS];
-					std::uint32_t* const targetRow = &fertility[yWrap[-dy * height] * width];
-					const std::uint8_t* const sandRow = &sand[yWrap[-2 * dy * height] * width];
-					for (int dx = -KERNEL_RADIUS; dx <= KERNEL_RADIUS; ++dx)
-						if (!sandRow[probeX[dx + KERNEL_RADIUS]])
-							targetRow[targetX[dx + KERNEL_RADIUS]] +=
-								yWeight * OFFSET_WEIGHT[dx + KERNEL_RADIUS];
-				}
-			}
-		}
-	}
+		value=std::uint64_t(kScale)*localGrowth[index]/256;
+	if (resourceType!=WHEAT) value*=3;
+	return static_cast<std::uint32_t>(std::min<std::uint64_t>(value,4u*kRateScale));
 }
 
 void Field::gate(const std::vector<std::uint8_t>& keep)
@@ -222,7 +277,7 @@ std::uint32_t Field::at(int x, int y) const
 
 namespace
 {
-	/// 8-connected over grass from every takeable wheat or wood tile.
+	/// 8-connected over crop habitat from every takeable wheat or wood tile.
 	std::vector<std::uint8_t> depositReach(const Map& map)
 	{
 		const int w = map.getW(), h = map.getH();
@@ -246,7 +301,7 @@ namespace
 						continue;
 					const int nx = map.normalizeX(px + dx), ny = map.normalizeY(py + dy);
 					std::uint8_t& cell = reached[size_t(ny) * w + nx];
-					if (!cell && map.isGrass(nx, ny))
+					if (!cell && (map.terrainPropertiesAt(nx, ny).allowedResources & (1u << WHEAT)))
 					{
 						cell = 1;
 						frontier.emplace(nx, ny);
@@ -259,23 +314,13 @@ namespace
 
 Field forMap(const Map& map, bool gateOnReachableDeposits)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<std::uint8_t> water(size_t(w) * h, 0), sand(size_t(w) * h, 0);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			water[size_t(y) * w + x] = map.isWater(x, y);
-			sand[size_t(y) * w + x] = map.isSand(x, y);
-		}
-	Field field;
-	field.rebuild(w, h, water, sand);
+	const int w=map.getW(), h=map.getH();
+	Field field=map.resourceGrowthField().landField();
 	if (gateOnReachableDeposits)
 	{
-		std::vector<std::uint8_t> keep = depositReach(map);
-		for (int y = 0; y < h; ++y)
-			for (int x = 0; x < w; ++x)
-				if (!map.isGrass(x, y))
-					keep[size_t(y) * w + x] = 0;
+		auto keep=depositReach(map);
+		for (std::size_t i=0; i<keep.size(); ++i)
+			if ((map.terrainPropertiesAt(i).allowedResources & (1u<<WHEAT))==0) keep[i]=0;
 		field.gate(keep);
 	}
 	return field;

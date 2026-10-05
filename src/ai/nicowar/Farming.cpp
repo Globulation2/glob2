@@ -65,19 +65,19 @@ void NewNicowar::update_farming(Runtime& runtime)
 				//Expand the farm horizontally
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==0 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1))
 				{
-					if(is_wood && mi.is_resource(x-1, y, WOOD) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_grass(x+1,y))
+					if(is_wood && mi.is_resource(x-1, y, WOOD) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_resource_habitat(x+1,y,WOOD))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x-1, y, WHEAT) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, WHEAT) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_crop_habitat(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_resource(x+1, y, WOOD) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_grass(x-1,y))
+					else if(is_wood && mi.is_resource(x+1, y, WOOD) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_resource_habitat(x-1,y,WOOD))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x+1, y, WHEAT) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, WHEAT) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_crop_habitat(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -86,19 +86,19 @@ void NewNicowar::update_farming(Runtime& runtime)
 				//Expand the farm vertically
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==0))
 				{
-					if(is_wood && mi.is_resource(x, y-1, WOOD) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_grass(x,y+1))
+					if(is_wood && mi.is_resource(x, y-1, WOOD) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_resource_habitat(x,y+1,WOOD))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y-1, WHEAT) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, WHEAT) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_crop_habitat(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_resource(x, y+1, WOOD) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_grass(x,y-1))
+					else if(is_wood && mi.is_resource(x, y+1, WOOD) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_resource_habitat(x,y-1,WOOD))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y+1, WHEAT) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, WHEAT) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_crop_habitat(x,y-1))
 					{
 						farm_spot = true;
 					}
@@ -137,7 +137,7 @@ void NewNicowar::update_farming(Runtime& runtime)
 					farm_spot = false;
 				}
 
-				if(farm_spot && mi.is_sand(x,y))
+				if(farm_spot && !mi.is_resource_habitat(x,y,is_wood ? WOOD : WHEAT))
 				{
 					farm_spot = false;
 				}

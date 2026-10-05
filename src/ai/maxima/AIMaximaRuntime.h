@@ -9,6 +9,7 @@
 #define AI_MAXIMA_RUNTIME_H
 
 #include "field/Frontier.h"
+#include "field/TerrainTravel.h"
 #include "AIImplementation.h"
 #include "Map.h"
 #include "Order.h"
@@ -144,7 +145,7 @@ enum DistanceState
 namespace Entities
 {
 	enum EntityType { EBuilding, EAnyTeamBuilding, EAnyResource, EResource,
-		EWater, EPosition, ESand };
+		EWater, EPosition, ESand, EUnwalkable };
 
 	class Entity
 	{
@@ -220,6 +221,15 @@ namespace Entities
 		void save(GAGCore::OutputStream*) const;
 	};
 
+	class Unwalkable : public Water
+	{
+	public:
+		bool matches(Player*,int,int) const override;
+		bool equals(const Entity&) const override;
+		EntityType type() const override { return EUnwalkable; }
+		void save(GAGCore::OutputStream*) const override;
+	};
+
 	class Position : public Entity
 	{
 	public:
@@ -248,6 +258,7 @@ namespace Entities
 class GradientInfo
 {
 public:
+    field::TerrainTravel terrainTravel=field::TerrainTravel::Geometric;
 	void add_source(Entities::Entity* source);
 	void add_obstacle(Entities::Entity* obstacle);
 	bool matches_source(Player*, int, int) const;
@@ -255,7 +266,7 @@ public:
 	bool needs_updating() const;
 	bool operator==(const GradientInfo&) const;
 	void save(GAGCore::OutputStream*) const;
-	bool load(GAGCore::InputStream*);
+	bool load(GAGCore::InputStream*,Sint32 versionMinor);
 private:
 	std::vector<std::shared_ptr<Entities::Entity> > sources;
 	std::vector<std::shared_ptr<Entities::Entity> > obstacles;
@@ -271,6 +282,7 @@ private:
 	friend class GradientManager;
 	void recalculate(Player* player, field::Frontier& frontier);
 	GradientInfo info;
+    std::uint64_t terrainGeneration=0;
 	int width;
 	int sourceCount;
 	std::vector<Sint16> values;
@@ -451,7 +463,7 @@ namespace Construction
 		virtual Gradients::GradientInfo* gradient_info() { return NULL; }
 		virtual int type() const=0;
 		virtual void save(GAGCore::OutputStream*) const=0;
-		static Constraint* load(GAGCore::InputStream*);
+		static Constraint* load(GAGCore::InputStream*,Sint32 versionMinor);
 	};
 	class MinimumDistance : public Constraint
 	{
@@ -491,7 +503,7 @@ namespace Construction
 		void add_constraint(Constraint*);
 		void add_condition(Conditions::Condition*);
 		void save(GAGCore::OutputStream*) const;
-		static BuildingOrder* load(GAGCore::InputStream*);
+		static BuildingOrder* load(GAGCore::InputStream*,Sint32 versionMinor);
 	private:
 		friend class ::AIMaximaRuntime::Context;
 		PlacementResult find_location(Context&, int cellBudget, bool& complete);
@@ -636,6 +648,7 @@ namespace SearchTools
 		bool is_forbidden_area(int,int) const; bool is_guard_area(int,int) const;
 		bool is_clearing_area(int,int) const; bool is_discovered(int,int) const;
 		bool is_resource(int,int,int) const; bool is_resource(int,int) const;
+		bool is_walkable(int,int) const; bool is_crop_habitat(int,int) const;
 		bool is_water(int,int) const; bool is_sand(int,int) const; bool is_grass(int,int) const;
 		bool backs_onto_sand(int,int) const; int get_ammount_resource(int,int) const;
 	private: Context& context;

@@ -478,7 +478,8 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
-				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,posX,posY) <= b->type->shootingRange + 1))return true;
+				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->type->shootingRange + 1)
+                    && b->hasClearShotTo(x,y)) return true;
 			}
 		}
 	}

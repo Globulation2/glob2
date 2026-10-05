@@ -153,8 +153,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("bool shoreline_backed", farming)
         helper = self.policy[self.policy.index("std::vector<Uint8> shoreline_backing"):]
         helper = helper[:helper.index("bool is_empty_growth_cell")]
-        self.assertRegex(helper, r"map->hasSand\(nx\s*,\s*ny\)")
-        self.assertIn("map->isWater(x, y)", helper)
+        self.assertIn("map->terrainPropertiesAt(nx,ny).shoreline", helper)
+        self.assertIn("terrainProvidesFertility(map->terrainPropertiesAt(x, y))", helper)
         self.assertNotIn("ressource", helper)
         self.assertNotIn("mi.is_sand(x+dx, y+dy)", farming)
 
@@ -206,7 +206,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
     def test_exact_integer_kernel_has_no_float_or_sqrt(self):
         self.assertNotIn("sqrt", self.primitive)
         self.assertNotIn("float", self.primitive)
-        self.assertIn("OFFSET_WEIGHT", self.primitive)
+        self.assertIn("field.rebuild(width,height,water,sand,", self.primitive)
 
 if __name__ == "__main__":
     unittest.main()

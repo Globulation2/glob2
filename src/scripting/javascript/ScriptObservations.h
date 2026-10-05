@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ScriptValue.h"
+#include "TerrainType.h"
+#include "Version.h"
 #include <array>
 #include <memory>
 class Game;
@@ -19,6 +21,7 @@ class Observations
 	{
 		unsigned tick = 0;
 		unsigned short terrain = 0, fertility = 0;
+		TerrainType terrainType = GRASS;
 		unsigned char type = 255, variety = 0, amount = 0;
 		bool known = false;
 	};
@@ -44,6 +47,7 @@ class Observations
 	{
 		unsigned tick = 0;
 		unsigned short terrain = 0, fertility = 0;
+		TerrainType terrainType = GRASS;
 		unsigned char resource = 255, amount = 0;
 		bool known = false, visible = false, forbidden = false, building = false;
 		bool operator==(const Cell &) const = default;
@@ -65,6 +69,6 @@ class Observations
 	Value query(const std::string &name, const std::vector<Value> &args,
 				const QueryBudget &budget = {}) const;
 	void save(GAGCore::OutputStream *stream) const;
-	void load(GAGCore::InputStream *stream);
+	void load(GAGCore::InputStream *stream, int version = VERSION_MINOR);
 };
 } // namespace Script

@@ -149,7 +149,7 @@ namespace
 			std::vector<int>& field=components[swimming];
 			field.assign(w*h,-1);
 			for(int i=0; i<w*h; ++i)
-				if(map->isResource(i%w,i/w) || (!swimming && map->isWater(i%w,i/w)))
+				if(map->isResource(i%w,i/w) || (!map->terrainPropertiesAt(i).walkable && !(swimming && map->terrainPropertiesAt(i).swimmable)))
 					field[i]=-2;
 			std::vector<int> queue;
 			for(int start=0; start<w*h; ++start)
@@ -168,7 +168,7 @@ namespace
 	bool rally_walkable(const Map* map, Uint32 team, int x, int y)
 	{
 		return map->getBuilding(x,y)==NOGBID && !map->isResource(x,y)
-			&& !map->isWater(x,y) && !map->isForbidden(x,y,team);
+			&& map->terrainPropertiesAt(x,y).walkable && !map->isForbidden(x,y,team);
 	}
 
 	// Count distinct connected standing tiles inside the engine's circular flag
@@ -450,12 +450,14 @@ void Maxima::plan_offense(Context& runtime)
 	offense_diagnostics.gate="open";
 
 	GradientInfo land_info;
+    land_info.terrainTravel=field::TerrainTravel::Walk;
 	land_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.player->team->teamNumber, CompletedBuildings));
 	land_info.add_obstacle(new Entities::AnyResource);
-	land_info.add_obstacle(new Entities::Water);
+	land_info.add_obstacle(new Entities::Unwalkable);
 	Gradient& land_route=runtime.get_gradient_manager().get_gradient(land_info);
 	GradientInfo swim_info;
+    swim_info.terrainTravel=field::TerrainTravel::Swim;
 	swim_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.player->team->teamNumber, CompletedBuildings));
 	swim_info.add_obstacle(new Entities::AnyResource);
@@ -729,9 +731,10 @@ bool Maxima::control_offense_waves(Context& runtime)
 	}
 	Map* map=runtime.player->map;
 	GradientInfo routeInfo;
+    routeInfo.terrainTravel=field::TerrainTravel::Walk;
 	routeInfo.add_source(new Entities::Position(budget.tactical_target_x,budget.tactical_target_y));
 	routeInfo.add_obstacle(new Entities::AnyResource);
-	routeInfo.add_obstacle(new Entities::Water);
+	routeInfo.add_obstacle(new Entities::Unwalkable);
 	Gradient& route=runtime.get_gradient_manager().get_gradient(routeInfo);
 	const auto& policy=strategy.assault;
 	const int capacity=strategy.military.attack_unit_cap;
@@ -1236,6 +1239,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	MapInfo mi(runtime);
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, CompletedBuildings));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
@@ -1260,6 +1264,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	const int by=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_pathfind;
+    gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
 	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
 	Gradient& gradient_pathfind=runtime.get_gradient_manager().get_gradient(gi_pathfind);
@@ -1531,9 +1536,10 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		{
 			const int index=y*w+x;
 			amphibious_walkable[index]=map.is_discovered(x, y)
-				&& !map.is_resource(x, y) && !map.is_forbidden_area(x, y);
+				&& !map.is_resource(x, y) && !map.is_forbidden_area(x, y)
+				&& (map.is_walkable(x,y) || map.is_water(x,y));
 			land_walkable[index]=amphibious_walkable[index]
-				&& !map.is_water(x, y);
+				&& map.is_walkable(x, y);
 		}
 	}
 

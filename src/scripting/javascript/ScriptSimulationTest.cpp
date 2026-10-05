@@ -10,6 +10,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <map>
+#include <zlib.h>
 
 namespace
 {
@@ -199,12 +200,12 @@ void fixture(const std::string &name)
 		glob2test::inflated("test/fixtures/javascript/" + name + "-initial.game.gz");
 	const auto released = glob2test::readFile(
 		glob2test::inflated("test/fixtures/javascript/" + name + "-256.checksums.gz"));
-	const auto expected = glob2test::readFile(
+	const auto expanded = glob2test::readFile(
 		glob2test::inflated("test/fixtures/javascript/" + name + "-256-teams16.checksums.gz"));
 	// Expanding the generation table changes its aggregate hash, even when the
 	// extra slots are unused. Keep every released team/entity field pinned too.
 	const auto releasedRecords = records(released);
-	const auto expandedRecords = records(expected);
+	const auto expandedRecords = records(expanded);
 	REQUIRE(releasedRecords.size() == expandedRecords.size());
 	for (const auto& [tick, record] : releasedRecords)
 	{
@@ -214,6 +215,19 @@ void fixture(const std::string &name)
 	}
 	const auto directory = glob2test::artifactDir();
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
+	// The terrain simulation has its own trace; retain released traces above as
+	// historical migration evidence instead of rewriting their old behavior.
+	const auto terrainFixture = "test/fixtures/javascript/" + name + "-256-terrain.checksums.gz";
+	if (glob2test::updatingFixtures())
+	{
+		gzFile output = gzopen((glob2test::sourceRoot() / terrainFixture).string().c_str(), "wb9");
+		REQUIRE(output != nullptr);
+		const auto written = gzwrite(output, serial.trace.data(), unsigned(serial.trace.size()));
+		const auto closed = gzclose(output);
+		REQUIRE(written == int(serial.trace.size()));
+		REQUIRE(closed == Z_OK);
+	}
+	const auto expected = glob2test::readFile(glob2test::inflated(terrainFixture));
 	CHECK(serial.trace == expected);
 	const auto parallel = execute(initial, directory / "workers4", 4, false, true);
 	CHECK(parallel.trace == expected);

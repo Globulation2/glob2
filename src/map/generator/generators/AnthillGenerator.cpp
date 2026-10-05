@@ -341,7 +341,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w) && !rock[i];
+			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable && !rock[i];
 		return ground;
 	};
 	// The swarm stands at the chamber's middle, a tile towards the door.

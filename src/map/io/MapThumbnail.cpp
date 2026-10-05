@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "TerrainPresentation.h"
 #include "MapThumbnail.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
@@ -176,18 +177,19 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 			for (int sy = y * mh / result->height; sy < (y + 1) * mh / result->height; ++sy)
 				for (int sx = x * mw / result->width; sx < (x + 1) * mw / result->width; ++sx)
 				{
-					const auto terrain = map.getUMTerrain(sx, sy);
-					int color = terrain == GRASS ? 0 : terrain == WATER ? 1 : 2;
+					const auto type = map.terrainTypeAt(sx,sy);
+                    const auto terrain = terrainUsesLegacyCorners(type) ? map.getUMTerrain(sx,sy) : type;
+                    const auto color = terrainPresentation(terrain).preview;
+                    int channels[3] = {color.r,color.g,color.b};
 					const int resources[] = {WOOD, WHEAT, STONE, ALGA};
 					for (int r = 0; r < 4; ++r)
 						if (map.isResourceTakeable(sx, sy, resources[r]))
 						{
-							color = r + 3;
+							std::copy_n(colors[r+3],3,channels);
 							break;
 						}
-					color = std::clamp(color, 0, 6);
 					for (int c = 0; c < 3; ++c)
-						sums[c] += colors[color][c];
+						sums[c] += channels[c];
 					++count;
 					// a building or unit paints the whole pixel in its team's colour
 					if (header && map.getBuilding(sx, sy) != NOGBID)

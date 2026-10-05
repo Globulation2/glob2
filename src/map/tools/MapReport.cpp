@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
+#include "TerrainPresentation.h"
 #include "Game.h"
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
@@ -634,7 +635,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	};
 	const Map &map = game.map;
 	const Torus t(map);
-	std::array<int, 6> terrain{};
+	std::array<int, TERRAIN_COUNT> terrain{};
 	std::array<int, 4> underlying{};
 	std::array<int, MAX_RESOURCES> resourceTiles{}, harvestable{};
 	std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{};
@@ -647,17 +648,13 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	int fertileGrass = 0;
 	for (int p = 0; p < t.size(); ++p)
 	{
-		const unsigned tile = map.getTerrain(p);
-		++terrain[tile < 16    ? 0
-				  : tile < 128 ? 1
-				  : tile < 144 ? 2
-				  : tile < 256 ? 3
-				  : tile < 272 ? 4
-							   : 5];
+        const auto material = map.terrainTypeAt(p);
+        const auto &properties = map.terrainPropertiesAt(p);
+        ++terrain[material];
 		const int um = map.getUMTerrain(p % t.w, p / t.w);
 		++underlying[um >= 0 && um <= 2 ? um : 3];
-		water[p] = map.isWater(p);
-		land[p] = tile < 256;
+		water[p] = properties.swimmable;
+        land[p] = properties.walkable;
 		const auto &r = map.getResource(p);
 		if (r.type != NO_RES_TYPE)
 		{
@@ -684,11 +681,10 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	}
 	lap(&MapReportTimings::tileScan);
 	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources;
-	const char *terrainNames[] = {
-		"grass", "grass_sand_border", "sand", "sand_water_border", "water", "unknown"};
-	const char *underlyingNames[] = {"water", "sand", "grass", "unknown"};
-	for (int i = 0; i < 6; ++i)
-		terrainJson.push_back({terrainNames[i], coverage(terrain[i], t.size())});
+    const char *underlyingNames[] = {"water", "sand", "grass", "unknown"};
+    for (int i=0; i<TERRAIN_COUNT; ++i)
+        terrainJson.push_back({TerrainPresentations[i].name,coverage(terrain[i],t.size())});
+    terrainJson.push_back({"unknown",coverage(0,t.size())});
 	for (int i = 0; i < 4; ++i)
 		underlyingJson.push_back({underlyingNames[i], coverage(underlying[i], t.size())});
 	const ResourcesTypes resourceTypes;
@@ -828,7 +824,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 								{"grass_tiles", distribution(fertilityGrass)},
 								{"potential_grass_ignoring_deposit_reachability",
 								 distribution(potentialGrass)},
-								{"positive_grass", coverage(fertileGrass, terrain[0])}})},
+								{"positive_grass", coverage(fertileGrass, terrain[GRASS])}})},
 					{"canonical_quality", qualityJson(quality, {})},
 					{"start_position_euclidean_distances", J::array(geometry)},
 					{"movement",

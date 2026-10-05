@@ -1173,13 +1173,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (L.paddyOf[i] < 0 || !map.isGrass(x, y))
+		if (L.paddyOf[i] < 0 || !(map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
+			map.terrainSupportsResourceAt(x, y, WOOD))))
 			continue;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int m = t.at(x + dx, y + dy);
-				if (map.isGrass(m % t.w, m / t.w) && L.paddyOf[m] != L.paddyOf[i])
+				if ((map.canResourcesGrow(m % t.w, m / t.w) && (map.terrainSupportsResourceAt(m % t.w, m / t.w, WHEAT) ||
+					map.terrainSupportsResourceAt(m % t.w, m / t.w, WOOD))) && L.paddyOf[m] != L.paddyOf[i])
 					return "A paddy's bund is broken at " + at(x, y) + ": its crops could spread out.";
 			}
 	}
@@ -1188,7 +1190,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (L.gateOpen[i] && map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE)
 			return "A home's gate is closed by stone at " + at(i % t.w, i / t.w) + ".";
 	for (const Ford &f : L.fords)
-		if (map.isWater(int(f.centre.x), int(f.centre.y)))
+		if (!map.terrainPropertiesAt(int(f.centre.x), int(f.centre.y)).walkable)
 			return "A ford is under water at " + at(int(f.centre.x), int(f.centre.y)) + ".";
 	return walkFromFirstColony(map, context.request.nbTeams, "the karst", "through the towers and fords").error;
 }

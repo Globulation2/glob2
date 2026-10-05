@@ -10,6 +10,7 @@
 #include "Order.h"
 #include "Utilities.h"
 #include "Brush.h"
+#include "FileFormatVersions.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -35,6 +36,7 @@ GradientInfo GradientInfo::clone() const
 {
 	GradientInfo copy;
 	copy.needs_updated=needs_updated;
+    copy.terrainTravel=terrainTravel;
 	for(const auto& source : sources)
 		copy.sources.push_back(source->clone());
 	for(const auto& obstacle : obstacles)
@@ -63,7 +65,7 @@ bool GradientInfo::match_obstacle(Map* map, int posx, int posy)
 
 bool GradientInfo::operator==(const GradientInfo& rhs) const
 {
-	if(sources.size()!=rhs.sources.size() || obstacles.size() != rhs.obstacles.size())
+	if(terrainTravel!=rhs.terrainTravel || sources.size()!=rhs.sources.size() || obstacles.size() != rhs.obstacles.size())
 		return false;
 	for(unsigned int i=0; i<sources.size(); ++i)
 	{
@@ -116,6 +118,9 @@ bool GradientInfo::needs_updating() const
 bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("GradientInfo");
+    const unsigned travel=versionMinor>=FILE_FORMAT_VERSION_TERRAIN_PROPERTIES?stream->readUint8("terrainTravel"):0;
+    if(!field::validTerrainTravel(travel)) return false;
+    terrainTravel=static_cast<field::TerrainTravel>(travel);
 
 	stream->readEnterSection("sources");
 	int size=stream->readCount("size");
@@ -135,6 +140,9 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 	{
 		stream->readEnterSection(n);
 		obstacles[n]=std::shared_ptr<Entities::Entity>(Entities::Entity::load_entity(stream, player, versionMinor));
+		// Old Water obstacles meant non-walkable terrain, not irrigation.
+		if (versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && obstacles[n]->get_type()==Entities::EWater)
+			obstacles[n]=std::make_shared<Entities::Unwalkable>();
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -148,6 +156,7 @@ bool GradientInfo::load(GAGCore::InputStream *stream, Player *player, Sint32 ver
 void GradientInfo::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("GradientInfo");
+    stream->writeUint8(static_cast<unsigned>(terrainTravel),"terrainTravel");
 
 	stream->writeEnterSection("sources");
 	stream->writeUint32(sources.size(), "size");
@@ -218,6 +227,7 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
 {
 	PERF_SCOPE_TIME(AIGradient);
 	width=map->getW();
+    terrainGeneration=map->terrainGeneration();
 	gradient.resize(map->getW()*map->getH());
 	std::fill(gradient.begin(), gradient.end(),0);
 
@@ -231,11 +241,18 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(map, x, y))
+			else if(gradient_info.match_obstacle(map, x, y) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
-	expand_bfs(frontier);
+    if(gradient_info.terrainTravel!=field::TerrainTravel::Geometric &&
+        (gradient_info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
+    {
+        field::expandTerrainTravel(gradient,width,map->getH(),gradient_info.terrainTravel,
+            [&](std::size_t i){return map->terrainTypeAt(i);});
+        frontier.clear();
+    }
+    else expand_bfs(frontier);
 }
 
 
@@ -277,6 +294,7 @@ std::unique_ptr<GradientManager> GradientManager::clone() const
 	{
 		auto field=std::make_shared<Gradient>(gradient->gradient_info.clone());
 		field->width=gradient->width;
+        field->terrainGeneration=gradient->terrainGeneration;
 		field->gradient=gradient->gradient;
 		copy->gradients.push_back(std::move(field));
 	}
@@ -290,7 +308,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if(ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
+			if((*i)->terrainGeneration!=map->terrainGeneration() || ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
 			{
 				ticks_since_update[i-gradients.begin()]=0;
 				(*i)->recalculate(map,frontier);
@@ -313,7 +331,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 	{
 		if(gradients[i]->get_gradient_info() == gi)
 		{
-			if(gi.needs_updating())
+			if(gradients[i]->terrainGeneration!=map->terrainGeneration() || gi.needs_updating())
 			{
 				queuedGradients.push(i);
 			}
@@ -333,7 +351,7 @@ bool GradientManager::is_updated(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if(ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating())
+			if((*i)->terrainGeneration!=map->terrainGeneration() || (ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating()))
 			{
 				return false;
 			}
@@ -357,7 +375,7 @@ void GradientManager::update()
 	if((timer%1)==0 && !queuedGradients.empty())
 	{
 		int g=queuedGradients.front();
-		if(ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
+		if(gradients[g]->terrainGeneration!=map->terrainGeneration() || ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
 		{
 			gradients[g]->recalculate(map,frontier);
 			ticks_since_update[g]=0;
@@ -383,6 +401,7 @@ void GradientManager::save(GAGCore::OutputStream* stream)
 		stream->writeEnterSection(i);
 		Gradient& g=*gradients[i];
 		g.gradient_info.save(stream);
+        stream->writeUint8(g.terrainGeneration==map->terrainGeneration(),"terrainCurrent");
 		stream->writeSint32(ticks_since_update[i],"age");
 		stream->writeSint32(g.width,"width");
 		stream->writeUint32(g.gradient.size(),"size");
@@ -419,6 +438,8 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 		GradientInfo info;
 		if(!info.load(stream,player,versionMinor)) return false;
 		auto g=std::make_shared<Gradient>(info);
+        const bool terrainCurrent=versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES || stream->readUint8("terrainCurrent");
+        g->terrainGeneration=terrainCurrent?map->terrainGeneration():0;
 		ticks_since_update.push_back(stream->readSint32("age"));
 		g->width=stream->readSint32("width");
 		const Uint32 size=stream->readCount("size");

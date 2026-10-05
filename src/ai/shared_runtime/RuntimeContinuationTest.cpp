@@ -108,6 +108,42 @@ class RuntimeContinuationTest
         legacyCopy->update();
         REQUIRE(save(first,false)==originalFirst);
     }
+    static void terrainTravelContinuation()
+    {
+        {
+            Map neutral; neutral.setSize(4,4,GRASS);
+            auto diagonal=info(new Entities::Position(0,0));
+            diagonal.terrainTravel=field::TerrainTravel::Walk;
+            GradientManager manager(&neutral);
+            REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
+            neutral.setCellTerrain(8,8,ROAD);
+            REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
+        }
+        Game game(nullptr); game.map.setSize(4,4,WATER); game.map.setGame(&game);
+        auto& map=game.map;
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+        auto walking=info(new Entities::Position(0,1));
+        walking.terrainTravel=field::TerrainTravel::Walk;
+        auto geometry=info(new Entities::Position(0,1));
+        GradientManager original(&map);
+        REQUIRE(original.get_gradient(walking).get_height(4,1)==4);
+        REQUIRE(original.get_gradient(geometry).get_height(4,1)==4);
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+        for(bool text:{false,true})
+        {
+            GradientManager restored(&map);
+            const auto bytes=save(original,text);
+            REQUIRE(load(restored,bytes,text));
+            REQUIRE(save(restored,text)==bytes);
+            REQUIRE(!restored.is_updated(walking));
+            REQUIRE(restored.get_gradient(walking).get_height(4,1)==2);
+            REQUIRE(restored.get_gradient(geometry).get_height(4,1)==4);
+            auto copy=restored.clone();
+            REQUIRE(save(*copy,text)==save(restored,text));
+        }
+        REQUIRE(original.get_gradient(walking).get_height(4,1)==2);
+    }
+
 public:
     static void run()
     {
@@ -120,7 +156,10 @@ public:
             const auto wheat=info(text ? static_cast<Entities::Entity*>(new Entities::AnyResource)
                                        : static_cast<Entities::Entity*>(new Entities::Resource(WHEAT)));
             const auto water=info(new Entities::Water);
+            auto avoidsIrrigation=info(new Entities::Position(0,0));
+            avoidsIrrigation.add_obstacle(new Entities::Water);
             original.get_gradient(wheat);
+            original.get_gradient(avoidsIrrigation);
             // Save a stale field, an uncomputed queued field and duplicate
             // queue entries. Reload must retain their age/order, not rebuild.
             original.ticks_since_update[0]=151;
@@ -148,6 +187,7 @@ public:
             REQUIRE(!load(badQueue,save(original,text),text));
         }
         independentManagers();
+        terrainTravelContinuation();
         std::cout<<"Runtime gradient continuation: independent managers, binary/text fields, stale ages, queued work and invalid indices PASS\n";
     }
 };
@@ -158,4 +198,56 @@ TEST_SUITE("RuntimeContinuation")
 		glob2test::HeadlessGlobals globals;
 		RuntimeContinuationTest::run();
 	}
+}
+
+TEST_CASE("terrain weighted influence retains obstacles and sub-tile road costs" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    // Isolate a corridor from toroidal shortcuts; two road entries cost one
+    // strength unit, while one ice entry costs two.
+    std::vector<unsigned char> values(64,0);
+    std::vector<TerrainType> terrain(64,GRASS);
+    for(int x=1;x<=6;++x)values[8+x]=1;
+    values[9]=20;terrain[10]=terrain[11]=ROAD;terrain[12]=ICE;
+    field::expandTerrainInfluence(values.data(),8,8,[&](size_t i){return terrain[i];});
+    CHECK(values[9]==20);CHECK(values[10]==19);CHECK(values[11]==19);
+    CHECK(values[12]==17);CHECK(values[13]==16);CHECK(values[8]==0);
+}
+
+TEST_CASE("irrigation heuristics require a positive enabled fertility contribution" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    auto source=terrainProperties(WATER);
+    CHECK(terrainProvidesFertility(source));
+    source.fertilityQ8=-256;CHECK_FALSE(terrainProvidesFertility(source));
+    source.fertilityQ8=0;CHECK_FALSE(terrainProvidesFertility(source));
+    source.fertilityQ8=256;source.fertilitySource=false;
+    CHECK_FALSE(terrainProvidesFertility(source));
+}
+
+TEST_CASE("position entities retain historical binary and text payloads" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    struct SavedPosition : Entities::Position
+    {
+        using Position::Position;
+        using Position::save;
+        using Position::load;
+        bool matches(int x,int y) { return is_entity(nullptr,x,y); }
+    };
+    for(bool text:{false,true}) for(int version:{133,VERSION_MINOR})
+    {
+        SavedPosition original(7,13),restored(0,0);
+        auto* memory=new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output(text?static_cast<OutputStream*>(new TextOutputStream(memory)):
+            static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+        original.save(output.get());output->writeUint32(0xabc123,"sentinel");output->flush();
+        const auto bytes=memory->takeContents();
+        auto* source=new MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
+        std::unique_ptr<InputStream> input(text?static_cast<InputStream*>(new TextInputStream(source)):
+            static_cast<InputStream*>(new BinaryInputStream(source)));
+        CHECK(restored.load(input.get(),nullptr,version));
+        CHECK(restored.matches(7,13));CHECK_FALSE(restored.matches(7,0));
+        CHECK(input->readUint32("sentinel")==0xabc123);
+    }
 }

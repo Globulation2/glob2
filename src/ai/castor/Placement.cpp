@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "field/Influence.h"
+#include "field/TerrainTravel.h"
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
@@ -169,6 +170,12 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 
 void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
+    if(map->hasTerrainMovementModifiers())
+    {
+        field::expandTerrainInfluence(gradient,map->w,map->h,
+            [&](std::size_t i){return map->terrainTypeAt(i);});
+        return;
+    }
 	field::directionalInfluence(gradient,{map->w,map->h},
 		field::BlockedUnitFloor<AI_CASTOR_GRADIENT_WALL>{});
 }

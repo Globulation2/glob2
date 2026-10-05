@@ -531,7 +531,7 @@ bool generate(Game &game, GenerationContext &c)
 	std::vector<std::pair<int, int>> treeSites;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.woodland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
-			game.map.isGrass(i % t.w, i / t.w) && clearGround(game.map, i % t.w, i / t.w))
+			game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) && clearGround(game.map, i % t.w, i / t.w))
 			treeSites.push_back({treeNoise[i], i});
 	std::sort(treeSites.begin(), treeSites.end());
 	const int wantedTrees =

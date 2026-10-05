@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptObservations.h"
+#include "FileFormatVersions.h"
+#include "TerrainProperties.h"
+#include "TerrainPresentation.h"
+#include "TerrainExperiments.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
 #include "Team.h"
@@ -160,7 +164,7 @@ void Observations::observe()
 				const auto &t = game.map.getTile(x, y);
 				const auto &r = t.resource;
 				remember(unsigned(game.map.coordToIndex(x, y))) = {
-					game.stepCounter, t.terrain, t.fertility, r.type, r.variety, r.amount, true};
+					game.stepCounter, t.terrain, t.fertility, game.map.terrainTypeAt(x,y), r.type, r.variety, r.amount, true};
 			}
 	lastTick = game.stepCounter;
 }
@@ -174,8 +178,8 @@ Value Observations::tile(int x, int y) const
 	if (current)
 	{
 		const auto &c = game.map.getTile(x, y);
-		t = {game.stepCounter, c.terrain,          c.fertility,
-			 c.resource.type,  c.resource.variety, c.resource.amount};
+		t = {game.stepCounter, c.terrain, c.fertility, game.map.terrainTypeAt(x,y),
+			 c.resource.type, c.resource.variety, c.resource.amount};
 	}
 	else
 	{
@@ -187,6 +191,7 @@ Value Observations::tile(int x, int y) const
 	v.set("explored", true)
 		.set("observedTick", t.tick)
 		.set("terrain", int(t.terrain))
+		.set("terrainType", int(t.terrainType))
 		.set("resource", Value::object()
 							 .set("type", int(t.type))
 							 .set("variety", int(t.variety))
@@ -255,6 +260,40 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		}
 		return a;
 	}
+    if (name == "terrainTypes")
+    {
+        // Static definitions reveal no map state. Build the native value once;
+        // callers receive detached, read-only JS snapshots in both profiles.
+        static const Value definitions=[] {
+            Value result=Value::array();
+            for(unsigned id=0;id<TERRAIN_COUNT;++id)
+            {
+                const auto type=static_cast<TerrainType>(id);
+                const auto& p=terrainProperties(type);
+                const auto& presentation=terrainPresentation(type);
+                const auto experiment=terrainExperiment(type);
+                Value resources=Value::array();
+                for(unsigned resource=0;resource<MAX_NB_RESOURCES;++resource)
+                    if(p.allowedResources & (1u<<resource))resources.items.emplace_back(resource);
+                result.items.push_back(Value::object()
+                    .set("id",id).set("name",presentation.name)
+                    .set("experiment",experiment?Value(experimentDefinition(*experiment).key):Value())
+                    .set("editorSelectable",presentation.editorSelectable)
+                    .set("walkable",p.walkable).set("swimmable",p.swimmable).set("flyable",p.flyable)
+                    .set("resourcesGrow",p.resourcesGrow).set("fertilitySource",p.fertilitySource)
+                    .set("nonGrowingResources",p.nonGrowingResources).set("buildable",p.buildable)
+                    .set("projectileBlocks",p.projectileBlocks).set("shoreline",p.shoreline)
+                    .set("groundSpeedQ8",int(p.groundSpeedQ8)).set("airSpeedQ8",int(p.airSpeedQ8))
+                    .set("groundHealthQ8",int(p.groundHealthQ8)).set("airHealthQ8",int(p.airHealthQ8))
+                    .set("growthQ8",int(p.growthQ8)).set("fertilityQ8",int(p.fertilityQ8))
+                    .set("inhibitionQ8",int(p.inhibitionQ8)).set("shoreSupportQ8",int(p.shoreSupportQ8))
+                    .set("allowedResources",resources).set("farmCrop",int(p.farmCrop)));
+            }
+            return result;
+        }();
+        charge(TERRAIN_COUNT*48);
+        return definitions;
+    }
 	if (name == "buildingTypes")
 	{
 		Value a = Value::array();
@@ -453,11 +492,12 @@ void Observations::save(GAGCore::OutputStream *s) const
 		s->writeUint8(t.type, "type");
 		s->writeUint8(t.variety, "variety");
 		s->writeUint8(t.amount, "amount");
+		s->writeUint16(t.terrainType, "terrainType");
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
 }
-void Observations::load(GAGCore::InputStream *s)
+void Observations::load(GAGCore::InputStream *s, int version)
 {
 	remembered.clear();
 	knownTiles = 0;
@@ -478,6 +518,10 @@ void Observations::load(GAGCore::InputStream *s)
 		t.type = s->readUint8("type");
 		t.variety = s->readUint8("variety");
 		t.amount = s->readUint8("amount");
+		const unsigned terrainType = version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
+			? s->readUint16("terrainType") : unsigned(legacyTerrainType(t.terrain));
+		if (!validTerrainType(terrainType)) throw std::runtime_error("Invalid remembered terrain type");
+		t.terrainType = static_cast<TerrainType>(terrainType);
 		if (index >= size || lookup(index))
 			throw std::runtime_error("Invalid terrain memory");
 		t.known = true;
@@ -500,6 +544,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 		out.known = true;
 		out.tick = game.stepCounter;
 		out.terrain = tile.terrain;
+		out.terrainType = game.map.terrainTypeAt(x,y);
 		out.fertility = tile.fertility;
 		out.resource = tile.resource.type;
 		out.amount = tile.resource.amount;
@@ -515,6 +560,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 		out.known = true;
 		out.tick = old->tick;
 		out.terrain = old->terrain;
+		out.terrainType = old->terrainType;
 		out.fertility = old->fertility;
 		out.resource = old->type;
 		out.amount = old->amount;

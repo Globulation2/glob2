@@ -71,7 +71,7 @@ TEST_SUITE("NicowarFarming")
 		{
 			Fixture f;
 			auto& map = f.game.map;
-			for (int y=0; y<64; ++y) map.getTile(0,y).terrain = 256;
+			for (int y=0; y<64; ++y) map.setCellTerrain(0,y,WATER);
 			for (int x : {5, 6, 7, 9, 10}) map.setResource(x, 9, WOOD, 0);
 			map.setResource(4, 9, WHEAT, 0);
 			map.setResource(5, 20, WOOD, 0);

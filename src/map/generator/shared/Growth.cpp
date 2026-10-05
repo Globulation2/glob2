@@ -5,6 +5,7 @@
 #include "Map.h"
 #include <stdexcept>
 #include "TerrainType.h"
+#include "TerrainProperties.h"
 namespace MapGeneration
 {
 int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
@@ -33,7 +34,7 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 		seeds[i] = (type == WHEAT || type == WOOD) && (!fertility || fertility->at(x, y) > 0);
 		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
 		// the engine does. No generated map sets the flag; loaded scenario maps may.
-		grass[i] = map.isGrass(x, y) && map.canResourcesGrow(x, y);
+		grass[i] = (map.terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT)) && map.canResourcesGrow(x, y);
 	}
 	// Reuse the same toroidal eight-neighbour topology as the other region operations.
 	auto result = floodFrom(t, seeds, grass);
@@ -71,7 +72,7 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int q = t.at(i % t.w + dx, i / t.w + dy);
-				if (reached[q] || !map.isGrass(q % t.w, q / t.w) ||
+				if (reached[q] || !(map.terrainPropertiesAt(q).allowedResources & (1u<<WHEAT)) ||
 					!map.canResourcesGrow(q % t.w, q / t.w)) continue;
 				reached[q] = 1;
 				if (fertility.at(q % t.w, q / t.w) > 0) queue.push_back(q);
@@ -82,11 +83,24 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 
 Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 {
-	const std::vector<unsigned char> water = pureTiles(sketch, t, WATER);
-	const std::vector<unsigned char> sand = pureTiles(sketch, t, SAND);
+	std::vector<std::int16_t> contribution(t.size(),0);
+	std::vector<std::uint16_t> inhibition(t.size(),0), growth(t.size(),256);
+	for (unsigned id=0; id<TERRAIN_COUNT; ++id)
+	{
+		const auto& properties=terrainProperties(static_cast<TerrainType>(id));
+		const auto pure=pureTiles(sketch,t,static_cast<TerrainType>(id));
+		for (int i=0; i<t.size(); ++i) if(pure[i])
+		{
+			contribution[i]=properties.fertilitySource ? properties.fertilityQ8 : 0;
+			inhibition[i]=properties.inhibitionQ8;
+			growth[i]=properties.growthQ8;
+		}
+	}
 	Fertility::Field field;
-	field.rebuild(t.w, t.h, std::vector<std::uint8_t>(water.begin(), water.end()),
-				  std::vector<std::uint8_t>(sand.begin(), sand.end()));
+	field.rebuildWeighted(t.w,t.h,contribution,inhibition);
+	// The public sketch field measures potential before habitat gating, just
+	// like the ungated map field; local modifiers are applied for crop habitats.
+	field.multiplyLocal(growth);
 	return field;
 }
 

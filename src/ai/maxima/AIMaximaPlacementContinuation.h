@@ -1,6 +1,7 @@
 #ifndef AI_MAXIMA_PLACEMENT_CONTINUATION_H
 #define AI_MAXIMA_PLACEMENT_CONTINUATION_H
 #include "AIMaximaPlacement.h"
+#include "FileFormatVersions.h"
 namespace AIMaximaPlacement
 {
 template<class A> void fields(A& a, Footprint& value)
@@ -32,9 +33,9 @@ template<class A> void fields(A& a, WorldTile& value)
 {
 	a("discovered",value.discovered);
 	a("foodTraversable",value.foodTraversable);
-	a("grass",value.grass);
-	a("water",value.water);
-	a("sand",value.sand);
+	a("grass",value.buildable);
+	a("water",value.swimmable);
+	a("sand",value.growthInhibiting);
 	a("permanentResource",value.permanentResource);
 	a("clearableResource",value.clearableResource);
 	a("occupied",value.occupied);
@@ -52,6 +53,17 @@ template<class A> void fields(A& a, WorldTile& value)
 	a("protectedness",value.protectedness);
 	a("conqueredOpportunity",value.conqueredOpportunity);
 	a("protectedYield",value.protectedYield);
+	if(a.version()>=FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+	{
+		a("walkable",value.walkable);
+		a("fertilitySource",value.fertilitySource);
+	}
+	else
+	{
+		// Legacy water was both the swimming habitat and irrigation source.
+		value.walkable=!value.swimmable;
+		value.fertilitySource=value.swimmable;
+	}
 }
 
 template<class A> void fields(A& a, WorldBuilding& value)

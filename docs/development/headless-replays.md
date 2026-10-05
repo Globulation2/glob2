@@ -9,9 +9,10 @@ Run AI games without a GUI to generate `.replay` files for cross-codebase fideli
 Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
-seed. Replays recorded before version 127 are refused; older saved games still
-load, with shared gradient cache state copied into each controller. Network
-protocol version 46 rejects clients that still share these caches.
+seed. Older saved games still load, with shared gradient cache state copied into
+each controller. Terrain format 134 adds property-driven movement and ecology;
+replays recorded before version 134 are refused and network protocol 55 separates
+clients using those rules. Saved games adopt the current simulation.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or

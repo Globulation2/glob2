@@ -24,6 +24,7 @@ int NewNicowar::choose_building_to_attack(Runtime& runtime)
 	buildings_to_attack.reserve(100);
 
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
@@ -101,10 +102,14 @@ void NewNicowar::control_attacks(Runtime& runtime)
 	int num_pool=bs_pool.count_buildings();
 	
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	if(num_pool == 0)
-		gi_building.add_obstacle(new Entities::Water);
+    {
+        gi_building.terrainTravel=field::TerrainTravel::Walk;
+		gi_building.add_obstacle(new Entities::Unwalkable);
+    }
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 	
 	for(unsigned i=0; i<attack_flags.size(); ++i)
@@ -127,6 +132,7 @@ void NewNicowar::choose_enemy_target(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_choose_enemy_target_calls);
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
@@ -180,6 +186,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	MapInfo mi(runtime);
 
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=field::TerrainTravel::Swim;
 	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
@@ -205,6 +212,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	const int by=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
+    gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
 	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
 	Gradient& gradient_pathfind=runtime.get_gradient_manager().get_gradient(gi_pathfind);

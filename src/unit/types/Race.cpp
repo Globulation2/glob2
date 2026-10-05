@@ -6,6 +6,8 @@
 #include <Stream.h>
 
 #include "Race.h"
+#include "UnitTiming.h"
+#include "map/TerrainProperties.h"
 
 UnitType Race::unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
 Sint32 Race::hungriness;
@@ -23,7 +25,7 @@ namespace
 	//                                  magicAttackAir, magicAttackGround,
 	//                                  magicCreateWood, magicCreateWheat,
 	//                                  magicCreateAlga, armor, hpMax }
-	const UnitType kDefaultUnitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS] = {
+	constexpr UnitType kDefaultUnitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS] = {
 		// WORKER (baseWorker)
 		{
 			// level 0
@@ -130,6 +132,18 @@ namespace
 			  .magicActionCooldown = 0 },
 		},
 	};
+
+    static_assert([] {
+        for (const auto& race : kDefaultUnitTypes) for (const auto& unit : race)
+            for (const auto& terrain : TERRAIN_PROPERTIES)
+                for (int action : {int(WALK),int(SWIM),int(FLY)})
+                {
+                    const unsigned factor=action==FLY?terrain.airSpeedQ8:terrain.groundSpeedQ8;
+                    if (static_cast<unsigned>(unit.performance[action])*factor/256 > UNIT_DELTA_MAX)
+                        return false;
+                }
+        return true;
+    }(), "Default unit terrain movement must not hit the one-cell-per-tick speed cap");
 
 	const Sint32 kDefaultRaceHungriness = 425;
 }

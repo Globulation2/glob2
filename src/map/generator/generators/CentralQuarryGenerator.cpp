@@ -962,7 +962,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -1023,7 +1023,7 @@ bool generate(Game &game, GenerationContext &context)
 				[&](int, int to, int, int)
 				{
 					const int x = to % t.w, y = to / t.w;
-					if (map.isWater(x, y) || map.getBuilding(x, y) != NOGBID)
+					if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID)
 						return -1;
 					return map.isResource(x, y) ? 11 : 10;
 				});
@@ -1227,7 +1227,7 @@ bool generate(Game &game, GenerationContext &context)
 		const std::vector<unsigned char> open = walkableTiles(map);
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = !map.isWater(i % t.w, i / t.w);
+			ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
 		for (int k = 0; k < teams; ++k)
 		{
 			const std::vector<int> walked = stepsFrom(t, tileMask(t, workers[k]), open);
@@ -1306,7 +1306,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// With the bars shut, the island is out of reach on foot (terrain alone: deposits come and go).
 	std::vector<unsigned char> ground(n, 0), sources(n, 0);
 	for (int i = 0; i < n; ++i)
-		ground[i] = !map.isWater(i % t.w, i / t.w) && !L.bars[i];
+		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !L.bars[i];
 	for (const std::vector<int> &tiles : walk.workers)
 		for (int i : tiles)
 			sources[i] = 1;
@@ -1341,7 +1341,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// measured over the terrain alone from each colony's workers.
 	std::vector<unsigned char> land(n, 0);
 	for (int i = 0; i < n; ++i)
-		land[i] = !map.isWater(i % t.w, i / t.w);
+		land[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
 	const std::vector<int> swim = stepsFrom(t, L.island);
 	std::vector<int> firstWorkers;
 	for (int k = 0; k < teams; ++k)

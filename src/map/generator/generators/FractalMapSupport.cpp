@@ -808,10 +808,8 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	// the home or cut an undesigned route. Later growth can fill the same fixed plot area.
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (!map.isGrass(i % t.w, i / t.w))
-			continue;
 		const int type = L.wheat[i] ? WHEAT : L.wood[i] ? WOOD : -1;
-		if (type < 0)
+		if (type < 0 || !map.terrainSupportsResourceAt(i % t.w, i / t.w, type))
 			continue;
 		const int amount = type == WHEAT ? wheatAmount : woodAmount;
 		const int density =
@@ -870,7 +868,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				for (int dx = -1; clear && dx <= 1; ++dx)
 				{
 					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
-					clear = map.isGrass(x, y) && clearGround(map, x, y) && !claimed(L, j);
+					clear = map.terrainSupportsResourceAt(x, y, WHEAT) && clearGround(map, x, y) && !claimed(L, j);
 				}
 			if (!clear)
 				continue;
@@ -949,7 +947,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			for (int x = 4; x < t.w; x += 8)
 			{
 				const int i = t.at(x, y);
-				if (claimed(L, i) || !clearGround(map, x, y) || !map.isGrass(x, y))
+				if (claimed(L, i) || !clearGround(map, x, y) || !map.terrainSupportsResourceAt(x, y, STONE))
 					continue;
 				int score = INT_MAX;
 				for (Home h : L.homes)
@@ -977,7 +975,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				if (dx * dx + dy * dy > 20)
 					continue;
 				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
-				if (claimed(L, i) || !map.isGrass(x, y) || !clearGround(map, x, y))
+				if (claimed(L, i) || !map.terrainSupportsResourceAt(x, y, STONE) || !clearGround(map, x, y))
 					continue;
 				if (int(context.bounded("fractal-quarries", 100)) >=
 					context.request.option("stone-amount"))
@@ -1178,7 +1176,7 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 	}
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.crossings[i] && map.isWater(i % t.w, i / t.w))
+		if (L.crossings[i] && !map.terrainPropertiesAt(i % t.w, i / t.w).walkable)
 			return "A designed crossing was lost at (" + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w) + ") during terrain rasterization.";
 	}

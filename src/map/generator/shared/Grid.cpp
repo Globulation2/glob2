@@ -158,7 +158,7 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 	for (int y = 0; y < map.getH(); ++y)
 		for (int x = 0; x < map.getW(); ++x)
 			open[size_t(y) * map.getW() + x] =
-				!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+				map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	return open;
 }
 

@@ -49,6 +49,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	dy=0;
 	direction=UNIT_DIRECTION_NONE;
 	insideTimeout=0;
+	terrainHealthRemainder=0;
 	speed=32;
 
 	// Custom-game "glass cannon" rule: cut HP once here, at the source,
@@ -235,8 +236,45 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	}
 }
 
+void Unit::applyTerrainHealth()
+{
+	applyTerrainHealth(owner->map->terrainPropertiesAt(posX,posY));
+}
+
+void Unit::applyTerrainHealth(const TerrainProperties& terrain)
+{
+	// Entering positions already lie inside the building. An exiting unit is
+	// exposed as soon as an exit is found and its building attachment released.
+	if (isDead || insideTimeout < 0 || displacement == DIS_INSIDE || displacement == DIS_ENTERING_BUILDING ||
+		(displacement == DIS_EXITING_BUILDING && attachedBuilding)) return;
+	const int rate = performance[FLY] ? terrain.airHealthQ8 : terrain.groundHealthQ8;
+	applyTerrainHealthRate(rate);
+}
+
+void Unit::applyTerrainHealthRate(int rate)
+{
+	if (!rate) return;
+	// Healing at the cap cannot be banked to cancel later damage. Keep a
+	// negative fraction: subsequent healing may legitimately repay that debt.
+	if (rate > 0 && hp >= performance[HP] && terrainHealthRemainder >= 0)
+	{
+		terrainHealthRemainder = 0;
+		return;
+	}
+	terrainHealthRemainder += rate;
+	const int change = terrainHealthRemainder / 256;
+	terrainHealthRemainder %= 256;
+	if (change < 0) recordLethalDamage(-change, GameplayMeasurements::UNKNOWN);
+	hp = std::min(performance[HP], hp + change);
+	if (hp >= performance[HP] && terrainHealthRemainder > 0) terrainHealthRemainder = 0;
+	if (change) needToRecheckMedical = true;
+	resolveDeath();
+}
+
 void Unit::syncStep(void)
 {
+	if (owner->map->hasTerrainHealthEffects()) applyTerrainHealth();
+	if (isDead) return;
 	//warrior attacks?
 	assert(speed>0);
 	if ((action==ATTACK_SPEED) && (delta>=UNIT_ATTACK_HIT_DELTA) && (delta<(UNIT_ATTACK_HIT_DELTA+speed)))

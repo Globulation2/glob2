@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BINARY = Path(sys.argv[1] if len(sys.argv) > 1 else native_binary()).resolve()
 OUT = ROOT / 'artifacts/map-image'
 COLORS = [(0,128,0),(240,220,140),(0,64,255),(0,64,0),(255,255,0),(128,128,128),
-          (0,255,255),(255,0,255),(255,0,0),(255,128,0),(128,0,255),(255,255,255)]
+          (0,255,255),(255,0,255),(255,0,0),(255,128,0),(128,0,255),(255,255,255),
+          (190,225,240),(176,138,98)]
 
 
 def write_png(path, w, h, cells, transparent=False):
@@ -73,6 +74,34 @@ def main():
     exported=OUT/'export.png'; run('--export-map-image',dest,'--output',exported)
     ew,eh,pixels=png(exported); assert (ew,eh)==(64,64)
     for color in COLORS[3:11]: assert bytes(color) in [pixels[i:i+3] for i in range(0,len(pixels),3)],color
+    # Whole-cell materials survive authoring, save/load, and image round trips.
+    # Their adjacency must not turn neighboring grass/water into legacy shores.
+    materials=[0]*(64*64)
+    for y in range(20,36):
+        for x in range(12,20): materials[y*64+x]=12  # ice
+        for x in range(20,28): materials[y*64+x]=13  # road
+        for x in range(28,36): materials[y*64+x]=2   # water
+    mark(materials,64,64,48,48)
+    material_image=OUT/'new-terrain.png';write_png(material_image,64,64,materials)
+    material_map=OUT/'new-terrain.map.gz';material_report=OUT/'new-terrain.json'
+    run('--import-map-image',material_image,'--width',64,'--height',64,'--teams',1,
+        '--output',material_map,'--json',material_report)
+    material_data=json.loads(material_report.read_text())
+    for name in ('ice','road'):
+        assert material_data['terrain'][name]['tiles']==128
+    material_export=OUT/'new-terrain-export.png'
+    run('--export-map-image',material_map,'--output',material_export)
+    _,_,material_pixels=png(material_export)
+    for x,y,kind in ((11,24,0),(12,24,12),(20,24,13),(27,24,13),(28,24,2)):
+        i=(y*64+x)*3
+        assert material_pixels[i:i+3]==bytes(COLORS[kind]),(x,y,kind)
+    run('--preview-map',material_map,'--json',OUT/'new-terrain-loaded.json')
+    assert json.loads((OUT/'new-terrain-loaded.json').read_text())['terrain']==material_data['terrain']
+    run('--import-map-image',material_export,'--width',64,'--height',64,'--teams',1,
+        '--output',OUT/'new-terrain-restored.map.gz','--json',OUT/'new-terrain-restored.json')
+    restored_materials=json.loads((OUT/'new-terrain-restored.json').read_text())['terrain']
+    for name in ('ice','road'):
+        assert restored_materials[name]==material_data['terrain'][name]
     # Canonical image export/import must preserve the full live team capacity.
     dense=[0]*(256*256)
     for y in range(32,256,64):

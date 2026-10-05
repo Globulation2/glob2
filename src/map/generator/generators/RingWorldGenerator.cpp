@@ -261,7 +261,7 @@ bool siteFits(const Map &map, int x, int y)
 		{
 			const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
 			const bool footprint = dx >= 0 && dx < 4 && dy >= 0 && dy < 4;
-			if (footprint ? !map.isGrass(nx, ny) : map.isWater(nx, ny))
+			if (footprint ? !map.terrainPropertiesAt(nx, ny).buildable : !map.terrainPropertiesAt(nx, ny).walkable)
 				return false;
 			if (map.getBuilding(nx, ny) != NOGBID || map.getGroundUnit(nx, ny) != NOGUID)
 				return false;
@@ -284,8 +284,8 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 		{
-			water[size_t(y) * width + x] = map.isWater(x, y);
-			dry[size_t(y) * width + x] = !map.isWater(x, y);
+			water[size_t(y) * width + x] = terrainProvidesFertility(map.terrainPropertiesAt(x, y));
+			dry[size_t(y) * width + x] = map.terrainPropertiesAt(x, y).walkable;
 		}
 	const std::vector<int> shore = stepsFrom(Torus{width, height}, water, dry);
 	// Only the belt itself: an island or a stretch of rough coast cut off at sea can offer the same
@@ -295,7 +295,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 			spine[size_t(y) * width + x] =
-				!map.isWater(x, y) && std::abs(belt.across(x, y)) < kSpineHalf - 1;
+				map.terrainPropertiesAt(x, y).walkable && std::abs(belt.across(x, y)) < kSpineHalf - 1;
 	const std::vector<int> onBelt = stepsFrom(Torus{width, height}, spine, dry);
 	const double slot = double(length) / teams;
 	const double first = context.bounded("colonies", 3600) / 3600.0 * length;
@@ -368,7 +368,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, boo
 			for (int dx = -3; dx <= 6; ++dx)
 			{
 				const int nx = map.normalizeX(bestX + dx), ny = map.normalizeY(bestY + dy);
-				if (!map.isWater(nx, ny))
+				if (map.terrainPropertiesAt(nx, ny).walkable)
 					home[size_t(ny) * width + nx] = 1;
 			}
 		if (!placeSettlement(game, context, team, home, MapGeneratorPoint(bestX, bestY), "starts"))
@@ -390,8 +390,8 @@ void furnishHomes(Game &game, GenerationContext &context)
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 		{
-			water[size_t(y) * width + x] = map.isWater(x, y);
-			dry[size_t(y) * width + x] = !map.isWater(x, y);
+			water[size_t(y) * width + x] = terrainProvidesFertility(map.terrainPropertiesAt(x, y));
+			dry[size_t(y) * width + x] = map.terrainPropertiesAt(x, y).walkable;
 		}
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const std::vector<int> shore = stepsFrom(t, water, dry);
@@ -508,7 +508,7 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 					if (!dx && !dy)
 						continue;
 					const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-					if (map.isWater(nx, ny) || map.getBuilding(nx, ny) != NOGBID)
+					if (!map.terrainPropertiesAt(nx, ny).walkable || map.getBuilding(nx, ny) != NOGBID)
 						continue;
 					const int step = axes.u(x, y) + axes.stepU(dx, dy);
 					const int nw = w + (step < 0 ? -1 : step >= length ? 1 : 0);
@@ -694,7 +694,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> winding(area, kUnreached), reached;
 	const bool beltWraps = floodAround(
 		map, axes, workers[0], [&map](int x, int y)
-		{ return !map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID; },
+		{ return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID; },
 		winding, reached);
 	for (int team = 1; team < teams; ++team)
 	{

@@ -987,7 +987,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	};
 	auto initial = answers(before);
 	game.map.getTile(22, 22).fertility = 65535;
-	game.map.getTile(22, 22).terrain = 256;
+	game.map.setCellTerrain(22, 22,WATER);
 	game.map.setResource(21, 21, WHEAT, 1);
 	enemy->hp = 999;
 	world.addUnit(WARRIOR, 24, 24, 1);
@@ -1005,7 +1005,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	CHECK(summary.get("fertility").number == 321);
 	CHECK(summary.get("visibleTiles").number == 0);
 	game.map.setMapDiscovered(10, 10, game.teams[0]->me);
-	game.map.getTile(10, 10).terrain = 256;
+	game.map.setCellTerrain(10, 10,WATER);
 	auto location = Value::object().set("x", 10).set("y", 10);
 	CHECK(remembered.query("passable", {location}, {}).number == 0);
 	location.set("movement", "swim");
@@ -1314,4 +1314,90 @@ TEST_CASE("Online AI installs verify bytes and preserve provenance on rollback" 
 	// when users replace their source locally.
 	reloaded.put(second, "local.js", id);
 	CHECK_FALSE(reloaded.get(id).online.has_value());
+}
+
+TEST_CASE("JavaScript path fields use terrain travel costs and invalidate speed-only changes" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    auto& map=world.game.map;
+    for(int y=0;y<16;++y) for(int x=0;x<16;++x) map.setCellTerrain(x,y,WATER);
+    for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
+    Observations observations(world.game,-1); observations.setProfile(2);
+    Spatial spatial(world.game,0,observations);
+    Value points=Value::array(); points.items.push_back(Value::object().set("x",0).set("y",1));
+    auto spec=Value::object().set("sources",Value::object().set("points",points)).set("metric","path");
+    auto sample=[&](const Value& query) {
+        spatial.begin(Value::array());
+        auto handle=spatial.query("distanceField",{query},{});
+        return spatial.query("fieldValue",{handle,Value(4),Value(1)},{}).get("distance").number;
+    };
+    CHECK_EQ(sample(spec),4);
+    for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+    ++world.game.stepCounter;
+    CHECK_EQ(sample(spec),2);
+    for(int x=0;x<16;++x) map.setCellTerrain(x,1,ICE);
+    ++world.game.stepCounter;
+    CHECK_EQ(sample(spec),8);
+    spec.set("metric","chebyshev");
+    CHECK_EQ(sample(spec),4);
+}
+
+TEST_CASE("JavaScript path diagonals retain the neutral strategic metric" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    Observations observations(world.game,-1); observations.setProfile(2);
+    Spatial spatial(world.game,0,observations);
+    Value points=Value::array(); points.items.push_back(Value::object().set("x",0).set("y",0));
+    const auto spec=Value::object().set("sources",Value::object().set("points",points)).set("metric","path");
+    auto sample=[&]() {
+        spatial.begin(Value::array());
+        const auto handle=spatial.query("distanceField",{spec},{});
+        return spatial.query("fieldValue",{handle,Value(3),Value(3)},{}).get("distance").number;
+    };
+    CHECK_EQ(sample(),3);
+    world.game.map.setCellTerrain(8,8,ROAD);
+    ++world.game.stepCounter;
+    CHECK_EQ(sample(),3);
+}
+
+TEST_CASE("JavaScript terrain registry exposes immutable property capabilities in both profiles" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    world.game.map.setCellTerrain(5,5,ICE);
+    for(unsigned profile:{1u,2u}) for(bool commander:{false,true})
+    {
+        Observations observations(world.game,-1);observations.setProfile(profile);
+        Host host;host.profile=profile;host.commander=commander;
+        host.width=host.height=16;host.team=-1;host.random=[] {return 0u;};
+        host.query=[&](const auto& name,const auto& args,const QueryBudget& budget) {
+            return observations.query(name,args,budget);
+        };
+        auto result=makeRuntime()->invoke(
+            "export function step(ctx,s) {"
+            "const all=ctx.game.terrainTypes(); const tile=ctx.game.map.tile(5,5);"
+            "const ice=all[tile.terrainType],road=all.find(t=>t.name==='road');"
+            "s.name=ice.name;s.walk=ice.walkable;s.swim=ice.swimmable;s.air=ice.flyable;"
+            "s.speed=ice.groundSpeedQ8;s.health=ice.groundHealthQ8;s.experiment=ice.experiment;"
+            "s.road=road.buildable && road.groundSpeedQ8===512 && !road.resourcesGrow;"
+            "s.grass=all.find(t=>t.name==='grass').allowedResources.includes(1);"
+            "s.internal=all.some(t=>!t.editorSelectable);"
+            "s.frozen=Object.isFrozen(all)&&Object.isFrozen(ice)&&Object.isFrozen(ice.allowedResources);"
+            "try{ice.groundSpeedQ8=99;}catch(e){}"
+            "s.unchanged=ctx.game.terrainTypes()[tile.terrainType].groundSpeedQ8===128;"
+            "}",Value::object(),false,host);
+        const auto& state=result.state;
+        CHECK(state.get("name").text=="ice");CHECK(state.get("walk").number==1);
+        CHECK(state.get("swim").number==0);CHECK(state.get("air").number==1);
+        CHECK(state.get("speed").number==128);CHECK(state.get("health").number==-8);
+        CHECK(state.get("experiment").text=="ice-terrain");
+        CHECK(state.get("road").number==1);CHECK(state.get("grass").number==1);
+        CHECK(state.get("internal").number==1);CHECK(state.get("frozen").number==1);
+        CHECK(state.get("unchanged").number==1);
+    }
 }

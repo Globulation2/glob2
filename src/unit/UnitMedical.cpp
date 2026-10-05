@@ -17,9 +17,9 @@ void Unit::selectPreferredMovement(void)
 {
 	if (performance[FLY])
 		action=FLY;
-	else if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
+	else if ((performance[SWIM]) && (owner->map->terrainPropertiesAt(posX, posY).swimmable) )
 		action=SWIM;
-	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
+	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
 		action=WALK;
 	else
 		assert(false);
@@ -28,9 +28,9 @@ void Unit::selectPreferredMovement(void)
 void Unit::selectPreferredGroundMovement(void)
 {
 	assert(!performance[FLY]);
-	if ((performance[SWIM]) && (owner->map->isWater(posX, posY)) )
+	if ((performance[SWIM]) && (owner->map->terrainPropertiesAt(posX, posY).swimmable) )
 		action=SWIM;
-	else if ((performance[WALK]) && (!owner->map->isWater(posX, posY)) )
+	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
 		action=WALK;
 	else
 		assert(false);
@@ -212,6 +212,11 @@ void Unit::handleMedical(void)
 	else if (hp<=trigHP)
 		medical=MED_DAMAGED;
 
+	resolveDeath();
+}
+
+void Unit::resolveDeath()
+{
 	// Custom-game "no permadeath" rule: clamp back up instead of letting the
 	// unit cross the death threshold; like the rule's description, HP stops at 1.
 	if (owner->game->gameHeader.isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD+1)

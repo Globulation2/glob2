@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapImage.h"
+#include "TerrainPresentation.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "GenerationContext.h"
@@ -28,19 +29,30 @@ struct Category
 	TerrainType terrain;
 	int resource;
 };
+constexpr Category terrainCategory(TerrainType type)
+{
+    const auto c=terrainPresentation(type).image;
+    return {c.r,c.g,c.b,type,NO_RES};
+}
 // Order also defines nearest-color and cell-majority ties. Keep in sync with CLI.md.
-constexpr std::array<Category, 12> palette{{{0, 128, 0, GRASS, NO_RES},
-											{240, 220, 140, SAND, NO_RES},
-											{0, 64, 255, WATER, NO_RES},
-											{0, 64, 0, GRASS, WOOD},
-											{255, 255, 0, GRASS, WHEAT},
-											{128, 128, 128, GRASS, STONE},
-											{0, 255, 255, WATER, ALGA},
-											{255, 0, 255, GRASS, PAPYRUS},
-											{255, 0, 0, GRASS, CHERRY},
-											{255, 128, 0, GRASS, ORANGE},
-											{128, 0, 255, GRASS, PRUNE},
-											{255, 255, 255, GRASS, NO_RES}}};
+constexpr auto palette = [] {
+    constexpr std::array<Category,12> legacy{{terrainCategory(GRASS), terrainCategory(SAND), terrainCategory(WATER),
+        {0,64,0,GRASS,WOOD}, {255,255,0,GRASS,WHEAT}, {128,128,128,GRASS,STONE},
+        {0,255,255,WATER,ALGA}, {255,0,255,GRASS,PAPYRUS}, {255,0,0,GRASS,CHERRY},
+        {255,128,0,GRASS,ORANGE}, {128,0,255,GRASS,PRUNE}, {255,255,255,GRASS,NO_RES}}};
+    constexpr auto authoredCount = [] {
+        unsigned count=0;
+        for (const auto& p : TerrainPresentations) count += !p.legacyCorners;
+        return count;
+    }();
+    std::array<Category,legacy.size()+authoredCount> result{};
+    unsigned cursor=0;
+    for (const auto& entry : legacy) result[cursor++]=entry;
+    for (unsigned type=0;type<TERRAIN_COUNT;++type)
+        if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+            result[cursor++]=terrainCategory(static_cast<TerrainType>(type));
+    return result;
+}();
 constexpr int marker = 11;
 using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
 Surface surface(SDL_Surface *p)
@@ -464,10 +476,15 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
 	for (int i = 0; i < w * h; ++i)
 		original[i] = palette[cells[i]].terrain;
 	std::vector<TerrainType> repaired = original;
+    // The old corner lattice remains a legacy editing adapter. Explicit
+    // materials are restored as whole cells after legacy shore reconciliation.
+    for (auto &type : repaired)
+        if (!terrainUsesLegacyCorners(type)) type = SAND;
+    const auto legacyOriginal = repaired;
 	repairSeams(repaired, w, h, report.seamWidth, protectedResources, {GRASS, SAND, WATER});
 	for (int i = 0; i < w * h; ++i)
 	{
-		report.seamTerrainChanges += repaired[i] != original[i];
+		report.seamTerrainChanges += repaired[i] != legacyOriginal[i];
 		map.setUMTerrain(i % w, i / w, homes[i] ? GRASS : repaired[i]);
 	}
 	map.controlSand();
@@ -499,6 +516,26 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
 			join({x, (h - 1) * w + x});
 	}
 	map.rebuildTerrain();
+    // Whole-cell materials are not sand corners. Restore neighboring uniform
+    // legacy cells whose only foreign corner was an authored material, so a
+    // road in an ocean does not create walkable shores outside the road cell.
+    // Genuinely mixed classic corners retain the existing shore adapter.
+    for (int y=0; y<h; ++y) for (int x=0; x<w; ++x) {
+        const int i=y*w+x;
+        if (homes[i] || !terrainUsesLegacyCorners(original[i]) || repaired[i]!=legacyOriginal[i]) continue;
+        bool authored=false,uniform=true;
+        for (int dy=0; dy<=1; ++dy) for(int dx=0; dx<=1; ++dx) {
+            const int j=((y+dy)%h)*w+(x+dx)%w;
+            if (homes[j]) { uniform=false; continue; }
+            if (!terrainUsesLegacyCorners(original[j])) authored=true;
+            else if (original[j]!=original[i] || repaired[j]!=legacyOriginal[j]) uniform=false;
+        }
+        if (authored && uniform) map.setCellTerrain(x,y,original[i]);
+    }
+    for (int i=0; i<w*h; ++i) {
+        if (!homes[i] && !terrainUsesLegacyCorners(original[i]))
+            map.setCellTerrain(i%w,i/w,original[i]);
+    }
 	return original;
 }
 
@@ -514,7 +551,8 @@ std::vector<int> collectImportedResources(Map &map, const std::vector<int> &cell
 		const int x = i % w;
 		const int y = i / w;
 		const int type = palette[cells[i]].resource;
-		report.terrainChanges += map.getUMTerrain(x, y) != original[i];
+		const auto material = map.terrainTypeAt(x,y);
+        report.terrainChanges += (terrainUsesLegacyCorners(material) ? map.getUMTerrain(x,y) : material) != original[i];
 		if (type == NO_RES || homes[i])
 			continue;
 		if (!map.isResourceAllowed(x, y, type))
@@ -611,8 +649,12 @@ void exportMapImage(const Game &game, const std::string &path)
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const auto terrain = map.getUMTerrain(x, y);
-			int c = terrain == GRASS ? 0 : terrain == SAND ? 1 : 2;
+			const auto material = map.terrainTypeAt(x,y);
+            const auto terrain = terrainUsesLegacyCorners(material) ? map.getUMTerrain(x,y) : material;
+            int c = 0;
+            for (int candidate=0; candidate<int(palette.size()); ++candidate)
+                if (candidate!=marker && palette[candidate].resource==NO_RES && palette[candidate].terrain==terrain)
+                { c=candidate; break; }
 			const auto &resource = map.getResource(x, y);
 			for (int r = 3; r < marker; ++r)
 				if (resource.type == palette[r].resource)

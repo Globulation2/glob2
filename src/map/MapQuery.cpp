@@ -27,9 +27,9 @@ bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
 		return false;
 	if (c.noUnit && getGroundUnit(x, y) != NOGUID)
 		return false;
-	if (c.waterBlocks && !canSwim && isWater(x, y))
+	if (c.requireGroundPassable && !terrainPropertiesAt(x, y).walkable && !(canSwim && terrainPropertiesAt(x, y).swimmable))
 		return false;
-	if (c.requireGrass && !isGrass(x, y))
+	if (c.requireBuildable && !terrainPropertiesAt(x, y).buildable)
 		return false;
 	if (c.checkForbidden && (getForbidden(x, y) & teamMask))
 		return false;
@@ -290,5 +290,34 @@ Uint8 Map::getImmobileUnit(int x, int y) const
 }
 
 
+
+
+
+// Wrapped spatial distances are also used by point-to-point searches.
+Sint32 Map::warpDist1d(int p, int q, int l)
+{
+	Sint32 d=abs(p-q);
+	d%=l;
+	if (d>l/2)
+		d=l-d;
+	return d;
+}
+
+Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
+{
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
+	return ((dx*dx)+(dy*dy));
+}
+
+Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
+{
+	Sint32 dx=warpDist1d(px,qx,w);
+	Sint32 dy=warpDist1d(py,qy,h);
+	if (dx>dy)
+		return dx;
+	else
+		return dy;
+}
 
 

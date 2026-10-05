@@ -43,7 +43,7 @@ bool AIJavaScript::load(GAGCore::InputStream *s, Player *, Sint32 version)
 	error = s->readText("error");
 	if (error.size() > 16384)
 		throw std::runtime_error("Oversized script diagnostic");
-	observations.load(s);
+	observations.load(s, version);
 	if (profile == 2)
 		services->load(Script::Value::decode(s->readText("services")));
 	s->readLeaveSection();

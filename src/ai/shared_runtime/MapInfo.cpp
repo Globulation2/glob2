@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "GlobalContainer.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::SearchTools;
@@ -92,42 +93,54 @@ bool MapInfo::is_resource(int x, int y)
 
 bool MapInfo::is_water(int x, int y)
 {
-	return runtime.player->map->isWater(x, y);
+	return runtime.player->map->terrainPropertiesAt(x, y).swimmable;
 }
 
 
 
 bool MapInfo::is_sand(int x, int y)
 {
-	return runtime.player->map->isSand(x, y);
+	return runtime.player->map->terrainPropertiesAt(x, y).inhibitionQ8 != 0;
 }
 
 
 
+bool MapInfo::is_resource_habitat(int x, int y, int resource)
+{
+	const auto& terrain=runtime.player->map->terrainPropertiesAt(x,y);
+	if(resource<0 || resource>=MAX_RESOURCES || !(terrain.allowedResources & (1u<<resource))) return false;
+	return globalContainer->resourcesTypes.get(resource)->shrinkable || terrain.nonGrowingResources;
+}
+
+bool MapInfo::is_crop_habitat(int x, int y)
+{
+	return runtime.player->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);
+}
+
 bool MapInfo::is_grass(int x, int y)
 {
-	return runtime.player->map->isGrass(x, y);
+	return runtime.player->map->terrainPropertiesAt(x, y).buildable;
 }
 
 
 
 bool MapInfo::backs_onto_sand(int x, int y)
 {
-	if(runtime.player->map->hasSand(x-1, y))
+	if(runtime.player->map->terrainPropertiesAt(x-1, y).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x+1, y))
+	if(runtime.player->map->terrainPropertiesAt(x+1, y).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x-1, y-1))
+	if(runtime.player->map->terrainPropertiesAt(x-1, y-1).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x, y-1))
+	if(runtime.player->map->terrainPropertiesAt(x, y-1).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x+1, y-1))
+	if(runtime.player->map->terrainPropertiesAt(x+1, y-1).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x-1, y+1))
+	if(runtime.player->map->terrainPropertiesAt(x-1, y+1).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x, y+1))
+	if(runtime.player->map->terrainPropertiesAt(x, y+1).shoreline)
 		return true;
-	if(runtime.player->map->hasSand(x+1, y+1))
+	if(runtime.player->map->terrainPropertiesAt(x+1, y+1).shoreline)
 		return true;
 	return false;
 }

@@ -17,9 +17,9 @@ std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (map.isWater(x, y))
+		if (!map.terrainPropertiesAt(i).walkable)
 			continue;
-		beach[i] = map.getTerrainType(x, y) != GRASS && !notBeach[i];
+		beach[i] = map.terrainPropertiesAt(i).shoreline && !notBeach[i];
 		// A tile's corners are undermap vertices (x, y) to (x + 1, y + 1); the beach pass reaches a
 		// vertex one step further, so a sea vertex anywhere in the box one wider decides the tile.
 		for (int dy = -1; dy <= 2 && !margin[i]; ++dy)
@@ -68,7 +68,8 @@ std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
 	std::vector<unsigned char> stone(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		if (!wallable[i] || map.getTerrainType(i % t.w, i / t.w) != GRASS)
+		if (!wallable[i] || (!map.terrainPropertiesAt(i).nonGrowingResources ||
+			!(map.terrainPropertiesAt(i).allowedResources & (1u << STONE))))
 			continue;
 		for (int dy = -1; dy <= 1 && !stone[i]; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -145,7 +146,8 @@ DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<un
 	{
 		if (!wall[i])
 			continue;
-		if (map.getTerrainType(i % t.w, i / t.w) == GRASS)
+		if (map.terrainPropertiesAt(i).nonGrowingResources &&
+			(map.terrainPropertiesAt(i).allowedResources & (1u << STONE)))
 			result.stone[i] = 1;
 		else if (result.gaps++ == 0)
 			result.firstGap = i;
@@ -170,7 +172,7 @@ std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
 	const int n = t.w * t.h;
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
-		open[i] = !shut[i] && !map.isWater(i % t.w, i / t.w) &&
+		open[i] = !shut[i] && map.terrainPropertiesAt(i).walkable &&
 				  !(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
 	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
 	for (int k = 0; k < teams; ++k)
@@ -193,7 +195,7 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
 		open[i] =
-			!shut[i] && !map.isWater(i % t.w, i / t.w) &&
+			!shut[i] && map.terrainPropertiesAt(i).walkable &&
 			!(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
 	int pieces = 0;
 	for (int p : piece)

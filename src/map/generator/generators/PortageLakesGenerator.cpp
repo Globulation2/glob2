@@ -1346,7 +1346,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		auto waterEligible = [&](int i)
 		{
 			return t.dist2(pool % t.w, pool / t.w, i % t.w, i / t.w) <= 36 &&
-				   game.map.isWater(i % t.w, i / t.w);
+				   game.map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA);
 		};
 		growPatch(game.map, t, pool, ALGA, 8 + scaledCount(8, o.algae), waterEligible);
 	}

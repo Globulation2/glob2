@@ -63,7 +63,7 @@ namespace
 		queue.reserve(w*h);
 		for(int y=0; y<h; ++y)
 			for(int x=0; x<w; ++x)
-				if(map->isWater(x, y))
+				if(terrainProvidesFertility(map->terrainPropertiesAt(x, y)))
 				{
 					backing[y*w+x]=1;
 					queue.push_back(y*w+x);
@@ -74,7 +74,7 @@ namespace
 		field::traverse(queue,{w,h},field::Surrounding,[](int){return field::Visit::Expand;},
 			[&](int,int x,int y) {
 				const int nx=(x+w)%w,ny=(y+h)%h,next=ny*w+nx;
-				if(!backing[next] && map->hasSand(nx,ny)){backing[next]=1;queue.push_back(next);}
+				if(!backing[next] && map->terrainPropertiesAt(nx,ny).shoreline){backing[next]=1;queue.push_back(next);}
 			});
 		return backing;
 	}
@@ -92,9 +92,9 @@ namespace
 		return false;
 	}
 
-	bool is_empty_growth_cell(const Tile& cell)
+	bool is_empty_growth_cell(const Tile& cell, const TerrainProperties& terrain)
 	{
-		return cell.terrain<16 && cell.canResourcesGrow
+		return (terrain.allowedResources & (1u<<WHEAT)) && terrain.resourcesGrow && cell.canResourcesGrow
 			&& cell.resource.type==NO_RES_TYPE && cell.building==NOGBID;
 	}
 
@@ -159,7 +159,7 @@ namespace
 		// protecting an empty tile then exposing its new wheat would defeat it.
 		const bool fertile=fertility>=minimum_fertility
 			|| (resource_type==WHEAT && shoreline_backed);
-		if(is_empty_growth_cell(cell)
+		if(is_empty_growth_cell(cell, map->terrainPropertiesAt(x,y))
 		   && fertile)
 		{
 			bool adjacent_resource=false;
@@ -182,7 +182,7 @@ namespace
 				{
 					if(!dx && !dy) continue;
 					const Tile& neighbor=map->getTile(x+dx, y+dy);
-					const bool eligible=is_empty_growth_cell(neighbor)
+					const bool eligible=is_empty_growth_cell(neighbor, map->terrainPropertiesAt(x+dx,y+dy))
 						&& fertility_cache.at(x+dx, y+dy)>=minimum_fertility
 						&& (resource_type!=WHEAT
 							|| wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]);
@@ -280,7 +280,7 @@ Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& runtime)
 				&& maintenance_circulation_mask[index];
 			if(!mi.is_discovered(x, y)
 				|| (mi.is_clearing_area(x, y) && !owned_maintenance)
-				|| !mi.is_grass(x, y))
+				|| !mi.is_crop_habitat(x, y))
 				continue;
 			const int distance=settlement.get_height(x, y);
 			if(distance<0 || distance>14)
@@ -541,7 +541,7 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 				if(visited[next]||tile.building!=NOGBID
 				   ||(tile.resource.type!=NO_RES_TYPE && !farm_area && !(after_harvest
 				      && (tile.resource.type==WOOD || tile.resource.type==WHEAT)))
-				   ||(!swimming&&map->isWater(nx,ny))
+				   ||(!map->terrainPropertiesAt(nx,ny).walkable && !(swimming && map->terrainPropertiesAt(nx,ny).swimmable))
 				   ||!map->isMapDiscovered(nx,ny,runtime.player->team->allies)
 				   ||(map->isForbidden(nx,ny,runtime.player->team->me)
 				      && !farm_area && !development_planner.isCirculationReserved(next)))return;
@@ -678,7 +678,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			circulation.erase(std::unique(circulation.begin(),circulation.end()),circulation.end());
 			circulation.erase(std::remove_if(circulation.begin(),circulation.end(),
 				[&](int index){const Tile& cell=map->getTile(index%w,index/w);
-					return memberMask[index]||cell.building!=NOGBID||cell.terrain>=16
+					return memberMask[index]||cell.building!=NOGBID||!map->terrainPropertiesAt(index).walkable
 						||!map->isMapDiscovered(index%w,index/w,runtime.player->team->allies)
 						||(cell.resource.type!=NO_RES_TYPE
 						   &&globalContainer->resourcesTypes.get(cell.resource.type)->eternal);
@@ -734,7 +734,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			&& !wood_reserve.cells[index]
 			&& managed[index]
 			&& budget.farming_wood_firebreak_enabled
-			&& discovered && cell.terrain<16
+			&& discovered && (map->terrainPropertiesAt(index).allowedResources & (1u<<WOOD))
 			&& cell.canResourcesGrow && cell.building==NOGBID
 			&& !permanent_resource && cell.resource.type==WOOD
 			&& Farming::fertilityWithinPercentBand(fertility_cache.at(x, y),
@@ -835,7 +835,7 @@ void Maxima::initialize_farming_cache(Context& runtime)
 	Map* map=runtime.player->map;
 	const int w=map->getW();
 	const int h=map->getH();
-	if(fertility_cache.validFor(w, h)
+	if(fertility_cache.validFor(w, h, map->terrainGeneration())
 	   && farming_shoreline_mask.size()==size_t(w*h)
 	   && farming_cardinal_shoreline_mask.size()==size_t(w*h)
 	   && applied_farm_protection_mask.size()==size_t(w*h)
@@ -845,16 +845,7 @@ void Maxima::initialize_farming_cache(Context& runtime)
 		return;
 	const std::chrono::steady_clock::time_point started=
 		std::chrono::steady_clock::now();
-	std::vector<Uint8> water(w*h, 0);
-	std::vector<Uint8> sand(w*h, 0);
-	for(int y=0; y<h; ++y)
-		for(int x=0; x<w; ++x)
-		{
-			const Uint16 terrain=map->getTile(x, y).terrain;
-			water[y*w+x]=terrain>=256 && terrain<272;
-			sand[y*w+x]=terrain>=128 && terrain<144;
-		}
-	fertility_cache.rebuild(w, h, water, sand);
+    fertility_cache.assign(map->resourceGrowthField().landField(), map->terrainGeneration());
 	// Terrain does not change during a game. Compute the whole connected
 	// beach once, then keep final adjacency masks for constant-time queries.
 	const std::vector<Uint8> backing=shoreline_backing(map);
@@ -910,7 +901,7 @@ int Maxima::available_expansion_neighbors(Context& runtime, int x, int y) const
 		{
 			if(!dx && !dy) continue;
 			const Tile& cell=map->getTile(x+dx, y+dy);
-			if(cell.terrain<16 && cell.canResourcesGrow
+			if((map->terrainPropertiesAt(x+dx,y+dy).allowedResources & (1u<<WHEAT)) && map->canResourcesGrow(x+dx,y+dy)
 			   && cell.resource.type==NO_RES_TYPE && cell.building==NOGBID
 			   && cell.groundUnit==NOGUID && cell.airUnit==NOGUID)
 				available+=1;
@@ -929,7 +920,7 @@ int Maxima::growth_absorbing_neighbors(Context& runtime, int x, int y) const
 		{
 			if(!dx && !dy) continue;
 			const Tile& cell=map->getTile(x+dx, y+dy);
-			if(cell.terrain>=16 || !cell.canResourcesGrow
+			if(!(map->terrainPropertiesAt(x+dx,y+dy).allowedResources & (1u<<WHEAT)) || !map->canResourcesGrow(x+dx,y+dy)
 			   || cell.building!=NOGBID) continue;
 			// Growth either seeds empty ground or tops up a partly harvested
 			// stack beside it. A full stack absorbs nothing, so a protected
@@ -993,23 +984,17 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 	// Derive the same exact fertility without retaining new simulation state.
 	Farming::ExactFertilityCache rebuilt;
 	const Farming::ExactFertilityCache* fertility=&fertility_cache;
-	if(!fertility_cache.validFor(w,h))
+	if(!fertility_cache.validFor(w,h,map->terrainGeneration()))
 	{
-		std::vector<Uint8> water(w*h,0),sand(w*h,0);
-		for(int i=0;i<w*h;++i)
-		{
-			const int terrain=map->getTile(i%w,i/w).terrain;
-			water[i]=terrain>=256 && terrain<272;
-			sand[i]=terrain>=128 && terrain<144;
-		}
-		rebuilt.rebuild(w,h,water,sand);fertility=&rebuilt;
+        rebuilt.assign(map->resourceGrowthField().landField(), map->terrainGeneration());
+        fertility=&rebuilt;
 	}
 	const auto managed=farm_management_area(runtime,budget.farming_management_radius);
 	const auto reachable=worker_reachable_circulation(runtime,true);
 	auto eligible=[&](int i)
 	{
 		const Tile& cell=map->getTile(i%w,i/w);
-		return managed[i] && cell.terrain<16 && cell.canResourcesGrow
+		return managed[i] && (map->terrainPropertiesAt(i).allowedResources & (1u<<WOOD)) && cell.canResourcesGrow
 			&& cell.building==NOGBID && !has_hard_farming_contract(i)
 			&& map->isMapDiscovered(i%w,i/w,runtime.player->team->me)
 			&& (cell.resource.type==NO_RES_TYPE || cell.resource.type==WOOD
@@ -1131,7 +1116,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 				&& cell.resource.amount>0;
 			const bool wood=cell.resource.type==WOOD
 				&& cell.resource.amount>0;
-			const bool empty_growth=is_empty_growth_cell(cell);
+			const bool empty_growth=is_empty_growth_cell(cell, map->terrainPropertiesAt(x,y));
 
 			FarmTileClassification wheat_role;
 			FarmTileClassification wood_role;

@@ -370,7 +370,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const int i = L.t.at(x, y);
 		return !L.reserved[i] && L.plotOf[i] < 0 && fertility.at(L.t.x(x), L.t.y(y)) == 0 &&
-			   game.map.isGrass(L.t.x(x), L.t.y(y)) && clearGround(game.map, L.t.x(x), L.t.y(y));
+			   game.map.terrainSupportsResourceAt(L.t.x(x), L.t.y(y), WOOD) && clearGround(game.map, L.t.x(x), L.t.y(y));
 	};
 	for (size_t k = 0; k < L.plainTrees.size() && clumps < wantedClumps; ++k)
 	{

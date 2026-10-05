@@ -4,7 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
-#include "field/GradientPropagation.h"
+#include "field/TerrainGradient.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -18,83 +18,58 @@
 
 // growResources, syncStep, fog of war, discovery, explored area
 
+void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate,int scarcity)
+{
+    static_assert(MersenneTwister::min()==0 && MersenneTwister::max()==UINT32_MAX);
+    assert(scarcity>=1);
+    const unsigned opportunities=growthOpportunities(rate,[]{return syncRand();});
+    for(unsigned attempt=0;attempt<opportunities;++attempt)
+    {
+        if(scarcity!=1 && syncRand()%scarcity!=0) continue;
+        // Re-read the source after each attempt: growth can change its amount.
+        const Resource& resource=map.getResource(x,y);
+        if(resource.type==NO_RES_TYPE) break;
+        if(resource.amount<=(syncRand()&7))
+        {
+            if(map.canResourcesGrow(x,y))
+            {
+                const int type=resource.type, amount=resource.amount;
+                map.incResource(x,y,type,resource.variety);
+                map.recordNaturalGrowth(x,y,type,type,amount);
+            }
+        }
+        else if(globalContainer->resourcesTypes.get(resource.type)->expendable)
+        {
+            int dx,dy;
+            Unit::dxDyFromDirection(syncRand()&7,&dx,&dy);
+            const int nx=x+dx,ny=y+dy;
+            if(map.canResourcesGrow(nx,ny))
+            {
+                const auto& before=map.getResource(nx,ny);
+                const int oldType=before.type,oldAmount=before.amount,type=resource.type;
+                map.incResource(nx,ny,type,resource.variety);
+                map.recordNaturalGrowth(nx,ny,type,oldType,oldAmount);
+            }
+        }
+    }
+}
+
 void Map::growResources(void)
 {
-	if (game->gameHeader.isResourceGrowthDisabled())
-		return;
-	rebuildGrowthCoverage();
-	// Custom-game "scarce resources" rule: an extra grow/extend probability
-	// divisor, stacking with (not replacing) corn's own CORN_GROWTH_DIVISOR
-	// roll below, applied uniformly to every resource type.
-	static constexpr int scarcityDivisor[] = {1, 2, 4, 8};
-	const int scarcity = scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
-
-	int dy=(syncRand()&0x3);
-	for (int y=dy; y<h; y+=4)
-	{
-		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
-		{
-			const Resource &r = getResource(x, y);
-			if (r.type!=NO_RES_TYPE)
-			{
-				// we look around to see if there is any water :
-				// TODO: uses UnderMap.
-				int dwax=(syncRand()&0xF)-(syncRand()&0xF);
-				int dway=(syncRand()&0xF)-(syncRand()&0xF);
-				int wax1=x+dwax;
-				int way1=y+dway;
-
-				int wax2=x+dway*2;
-				int way2=y+dwax*2;
-
-				int wax3=x-dwax;
-				int way3=y-dway;
-
-				// alga, wood and wheat are limited by near underground. Others are not.
-				bool expand=true;
-				if (r.type == ALGA)
-					expand = isWater(wax1, way1) && isSand(wax2, way2);
-				else if (r.type == WOOD)
-					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
-				else if (r.type == WHEAT)
-					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
-
-				// Growth rate of wheat is 1/WHEAT_GROWTH_DIVISOR
-				if(r.type == WHEAT && expand)
-					if(syncRand() % WHEAT_GROWTH_DIVISOR != 0)
-						expand = false;
-
-				if (expand && (scarcity==1 || syncRand()%scarcity==0))
-				{
-					if (r.amount<=(syncRand()&7))
-					{
-						// we grow resource:
-						if(canResourcesGrow(x, y))
-						{
-							const int beforeType = r.type, beforeAmount = r.amount;
-							incResource(x, y, beforeType, r.variety);
-							recordNaturalGrowth(x,y,beforeType,beforeType,beforeAmount);
-						}
-					}
-					else if (globalContainer->resourcesTypes.get(r.type)->expendable)
-					{
-						// we extend resource:
-						int dx, dy;
-						Unit::dxDyFromDirection((syncRand()&7), &dx, &dy);
-						int nx=x+dx;
-						int ny=y+dy;
-						if(canResourcesGrow(nx, ny))
-						{
-							const Resource &before = getResource(nx, ny);
-							const int beforeType = before.type, beforeAmount = before.amount;
-							incResource(nx, ny, r.type, r.variety);
-							recordNaturalGrowth(nx,ny,r.type,beforeType,beforeAmount);
-						}
-					}
-				}
-			}
-		}
-	}
+    if(game->gameHeader.isResourceGrowthDisabled()) return;
+    rebuildGrowthCoverage();
+    static constexpr int scarcityDivisor[]={1,2,4,8};
+    const int scarcity=scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
+    const auto& ecology=resourceGrowthField();
+    const int firstY=syncRand()&3;
+    for(int y=firstY;y<h;y+=4)
+        for(int x=syncRand()&15;x<w;x+=syncRand()&31)
+        {
+            const auto& resource=getResource(x,y);
+            if(resource.type!=NO_RES_TYPE)
+                Fertility::applyGrowthOpportunities(*this,x,y,
+                    ecology.rate(coordToIndex(x,y),resource.type),scarcity);
+        }
 }
 
 void Map::rebuildGrowthCoverage()
@@ -247,15 +222,12 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
-		if (!job.water)
-			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
-				geometry, scratch, [this](size_t i) { return isWater(static_cast<unsigned>(i)); });
-		else
-		{
-			const auto *water = job.water->data();
-			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
-				geometry, scratch, [water](size_t i) { return water[i] != 0; });
-		}
+        const auto *types = job.terrain ? job.terrain->data() : nullptr;
+        // Uniform profiles perform no terrain reads. A weighted profile always
+        // captures its semantic IDs before the job leaves the simulation thread.
+        gradient_kernel::propagateTerrainField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
+            geometry, scratch, [types](size_t i) { return types ? types[i] : GRASS; },
+            job.modifiedCosts);
 	});
 }
 
@@ -296,7 +268,7 @@ void Map::syncStep(Uint32 stepCounter)
 			// MapGradientField.cpp statically asserts EVEN water cost equals land.
 			// Other swimmers can change costs without changing these markers, so
 			// conservatively refresh their scheduled fields unconditionally.
-			bool changed = escapeSwim != 0 && escapeSwim != SWIM_CLASS_EVEN;
+			bool changed = hasTerrainMovementModifiers() || (escapeSwim != 0 && escapeSwim != SWIM_CLASS_EVEN);
 			if (!changed)
 			{
 				const Uint32 teamMask = Team::teamNumberToMask(escapeTeam);
@@ -304,7 +276,7 @@ void Map::syncStep(Uint32 stepCounter)
 				{
 					const Tile& tile = tiles[i];
 					const bool blocked = tile.resource.type != NO_RES_TYPE
-						|| tile.building != NOGBID || (escapeSwim == 0 && isWater((unsigned)i))
+						|| tile.building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
 						|| immobileUnits[i] != IMMOBILE_UNIT_NONE;
 					const bool goal = !blocked && !(tile.forbidden & teamMask);
 					if ((field[i] == GRADIENT_FORBIDDEN) != blocked
@@ -325,9 +297,10 @@ void Map::syncStep(Uint32 stepCounter)
 	auto dispatch = [&](Uint16 **slot, int swim, auto seed) {
 		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
 			seed(job.data.get());
-			if (swim != 0 && swim != SWIM_CLASS_EVEN) {
-				job.water = frozenWaterSnapshot();
-			} else job.water.reset();
+            job.modifiedCosts = hasTerrainMovementModifiers();
+            if (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN))
+                job.terrain = frozenTerrainSnapshot();
+            else job.terrain.reset();
 		});
 	};
 	// We only update one gradient per step, round robin over the gradients in use.

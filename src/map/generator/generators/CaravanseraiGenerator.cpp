@@ -631,7 +631,7 @@ bool generate(Game &game, GenerationContext &context)
 		const int x = i % t.w, y = i / t.w;
 		if (walls.stone[i])
 			map.setResource(x, y, STONE, 1);
-		else if (L.mesa[i] && map.isGrass(x, y))
+		else if (L.mesa[i] && map.terrainSupportsResourceAt(x, y, STONE))
 		{
 			map.setResource(x, y, STONE, 1);
 			structural[i] = 1;
@@ -658,16 +658,16 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "caravanserai resources";
 	std::vector<unsigned char> waterTiles(n, 0);
 	for (int i = 0; i < n; ++i)
-		waterTiles[i] = map.isWater(i % t.w, i / t.w);
+		waterTiles[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w));
 	const std::vector<int> fromWater = stepsFrom(t, waterTiles);
-	const auto open = [&](int i)
-	{ return map.isGrass(i % t.w, i / t.w) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto open = [&](int i, int type)
+	{ return map.terrainSupportsResourceAt(i % t.w, i / t.w, type) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 	// Plant `count` of `type` on the tiles `where` allows, nearest the water first.
 	const auto plantNearWater = [&](int type, int count, auto where)
 	{
 		std::vector<std::pair<int, int>> tiles;
 		for (int i = 0; i < n; ++i)
-			if (where(i) && open(i) && fromWater[i] >= 0)
+			if (where(i) && open(i, type) && fromWater[i] >= 0)
 				tiles.push_back({fromWater[i], i});
 		std::stable_sort(tiles.begin(), tiles.end());
 		int placed = 0;
@@ -693,7 +693,7 @@ bool generate(Game &game, GenerationContext &context)
 		const int sx = int(std::floor(L.homes[k].x + swarm.x)), sy = int(std::floor(L.homes[k].y + swarm.y));
 		std::vector<std::pair<int, int>> ring;
 		for (int i = 0; i < n; ++i)
-			if (L.homeOf[i] == k && L.homeKind[i] == kFields && open(i))
+			if (L.homeOf[i] == k && L.homeKind[i] == kFields && open(i, WHEAT))
 				ring.push_back({t.dist2(i % t.w, i / t.w, sx, sy), i});
 		std::stable_sort(ring.begin(), ring.end());
 		int w = 0;
@@ -723,12 +723,13 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			const int along = (fruit - 1) * 5 - 2;
 			const int ax = alongX ? cx + along : cx + side * 9, ay = alongX ? cy + side * 9 : cy + along;
-			const int seed = seedNear(t, ax, ay, 3, [&](int i) { return inOasis(i) && open(i); });
+			const int seed = seedNear(t, ax, ay, 3, [&](int i) { return inOasis(i) &&
+				open(i, fruit < 3 ? CHERRY + fruit : STONE); });
 			if (seed < 0)
 				continue;
 			if (fruit < 3)
 				growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(kGroveTiles, o.fruit)),
-						  [&](int i) { return inOasis(i) && open(i); });
+						  [&](int i) { return inOasis(i) && open(i, fruit < 3 ? CHERRY + fruit : STONE); });
 			else if (scaledCount(1, o.stone) > 0)
 				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
 								   kQuarryRadius);
@@ -761,7 +762,8 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		open[i] = map.isGrass(x, y) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
+			map.terrainSupportsResourceAt(x, y, WOOD))) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
 		source[i] = from[i] && open[i];
 	}
 	return stepsFrom(t, source, open);

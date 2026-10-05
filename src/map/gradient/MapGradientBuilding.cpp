@@ -52,7 +52,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 			if (tile.building!=NOGBID)
 				gradient[i]=tile.building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
 			else if ((tile.forbidden&teamMask) || tile.resource.type!=NO_RES_TYPE ||
-			         immobileUnits[i]!=IMMOBILE_UNIT_NONE || (!canSwim && isWater(i)))
+			         immobileUnits[i]!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
@@ -118,7 +118,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					//Clearing flags don't consider water an obstacle so long as that piece of
 					//water is under the flag, like algae
-					else if (!canSwim && isWater(static_cast<unsigned>(wyx)) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
+					else if (!terrainPropertiesAt(wyx).walkable && !(canSwim && terrainPropertiesAt(wyx).swimmable) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 				}
 				else

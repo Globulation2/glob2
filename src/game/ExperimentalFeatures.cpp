@@ -18,6 +18,10 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."},
 		{ExperimentId::FarmAreas, "farm-areas", "Farm areas",
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
+		{ExperimentId::IceTerrain, "ice-terrain", "Ice terrain",
+		 "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources."},
+		{ExperimentId::RoadTerrain, "road-terrain", "Road terrain",
+		 "Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources."},
 	};
 	return definitions;
 }
@@ -100,7 +104,7 @@ void ExperimentSet::save(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 }
 
-bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor, bool rejectUnknown)
 {
 	clear();
 	if (versionMinor < FILE_FORMAT_VERSION_EXPERIMENTS)
@@ -124,6 +128,8 @@ bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		if (const auto id = parseExperimentKey(key))
 			set(*id);
+		else if (rejectUnknown)
+			return false;
 		else
 			std::cerr << "ExperimentSet::load: ignoring unknown experiment \"" << key << "\"" << std::endl;
 	}

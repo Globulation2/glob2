@@ -5,6 +5,8 @@
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BuildingGradientSearch.h"
+#include "field/TerrainGradient.h"
+#include "field/TerrainTravel.h"
 
 #include <algorithm>
 #include <cinttypes>
@@ -35,6 +37,7 @@ struct PathMap : Map
 		size = static_cast<size_t>(w) * h;
 		tiles.assign(size, Tile());
 		for (size_t i = 0; i < size; ++i) tiles[i].terrain = terrain[i];
+        importLegacyTerrain();
 	}
 	void changeTerrain() { for (size_t i=0; i<size; ++i) setTerrain(i & wMask, i >> wDec, tiles[i].terrain == 256 ? 0 : 256); }
 	~PathMap()
@@ -52,7 +55,7 @@ void require(bool condition, const char* message)
 }
 
 std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
-	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost)
+	const std::vector<Uint16>& terrain, int width, int height, int swimClass, int maxCost, const std::vector<TerrainType>* semantic = nullptr)
 {
 	constexpr int waterSteps[] = {10, 5, 7, 10, 13, 20, 30};
 	constexpr int Infinity = INT_MAX / 2;
@@ -74,7 +77,13 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
 		const int x = static_cast<int>(i % width), y = static_cast<int>(i / width);
 		// Reverse traversal enters this settled cell in the forward path.
 		const bool water = terrain[i] >= 256 && terrain[i] <= 271;
-		const int cardinal = water ? waterSteps[swimClass] : 10;
+		int cardinal = water ? waterSteps[swimClass] : 10;
+        if (semantic)
+        {
+            const auto &p = terrainProperties((*semantic)[i]);
+            const int base = p.swimmable ? waterSteps[swimClass] : 10;
+            cardinal = std::max(1, (base*256 + p.groundSpeedQ8/2)/p.groundSpeedQ8);
+        }
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -288,7 +297,7 @@ TEST_CASE("immutable water snapshots share storage and retain their captured ter
 	{
 		std::mt19937 random(0x71A6D19u);
 		constexpr int caps[] = {INT_MIN, -1, 0, 1, 4, 5, 7, 9, 10, 13, 14, 29, 30, 41, 42, 43, 44, 120, 65490, 65491, 65492, INT_MAX};
-		constexpr Uint16 terrainKinds[] = {0, 255, 256, 257, 271, 272, 65535};
+		constexpr Uint16 terrainKinds[] = {0, 15, 128, 255, 256, 257, 271};
 		// Explicit bucket-window and sentinel frontiers, including out-of-contract
 		// expensive seeds as robustness checks of the existing preserved behavior.
 		constexpr int seedCosts[] = {0, 1, 41, 42, 43, 44, 65490, 65491, 65492, 65533};
@@ -343,4 +352,132 @@ TEST_CASE("immutable water snapshots share storage and retain their captured ter
 		}
 		MESSAGE("cases=" << cases << " exact_cells=" << cellsChecked << " digest=" << digest);
 	}
+}
+
+TEST_CASE("mixed terrain costs match heap oracle and immutable lazy searches [pathfinding]")
+{
+    std::mt19937 random(1623);
+    for (int trial=0;trial<90;++trial)
+    {
+        const int ws=4+trial%3,hs=4+trial%2,w=1<<ws,h=1<<hs,sw=trial%7;
+        const size_t count=size_t(w)*h;
+        std::vector<Uint16> oldTerrain(count,0),seeds(count,Unreached);
+        std::vector<TerrainType> terrain(count);
+        PathMap map(ws,hs,oldTerrain);
+        for (size_t i=0;i<count;++i)
+        {
+            terrain[i]=static_cast<TerrainType>(random()%TERRAIN_COUNT);
+            map.setCellTerrain(i,terrain[i]);
+            seeds[i]=random()%6?Unreached:Blocked;
+            if(random()%37==0)seeds[i]=Goal;
+        }
+        seeds[0]=Goal;
+        const auto expected=oracle(seeds,oldTerrain,w,h,sw,CostLimit,&terrain);
+        auto actual=seeds;
+        map.propagateGradient(actual.data(),sw);
+        REQUIRE(actual==expected);
+        actual=seeds;
+        BuildingGradientSearch search;
+        search.begin(map,actual.data(),sw);
+        search.resolve(1);
+        for(size_t i=0;i<count;++i)map.setCellTerrain(i,GRASS);
+        search.finish();
+        REQUIRE(actual==expected);
+    }
+}
+
+TEST_CASE("general terrain queue supports colliding costs and wrapped thin grids [pathfinding]")
+{
+    std::mt19937 random(7721);
+    for (const auto shape : {std::pair{31,1},std::pair{2,17},std::pair{32,16}})
+        for(int sw=0;sw<7;++sw)
+        {
+            const int w=shape.first,h=shape.second;
+            std::vector<TerrainType> terrain(w*h);
+            std::vector<Uint16> oldTerrain(w*h,0),seeds(w*h,Unreached);
+            for(size_t i=0;i<seeds.size();++i)
+            {
+                terrain[i]=static_cast<TerrainType>(random()%TERRAIN_COUNT);
+                if(random()%13==0) seeds[i]=Goal-(random()%90);
+            }
+            seeds[0]=Goal;
+            auto expected=oracle(seeds,oldTerrain,w,h,sw,60,&terrain);
+            auto actual=seeds;
+            GradientWorkspace workspace;
+            gradient_kernel::propagateTerrainField(actual.data(),sw,60,{w,h},workspace,
+                [&](size_t i){return terrain[i];},true);
+            REQUIRE(actual==expected);
+            // Artificial equal cardinal/diagonal costs exercise one shared cursor
+            // for all eight neighbors independently of the registered terrain set.
+            gradient_kernel::TerrainEntryCosts aliasCosts;
+            aliasCosts.fill({1,1});
+            actual.assign(w*h,Unreached);actual[0]=Goal;
+            for(auto &bucket:workspace.buckets)bucket.clear();
+            workspace.buckets[0].push(0);size_t pending=1;
+            for(int cost=0;pending;++cost)
+                gradient_kernel::expandTerrainBucket(actual.data(),workspace.buckets.data(),pending,
+                    cost,CostLimit,{w,h},aliasCosts,[&](size_t i){return terrain[i];});
+            for(int y=0;y<h;++y)for(int x=0;x<w;++x)
+                REQUIRE(actual[y*w+x]==Goal-std::max(std::min(x,w-x),std::min(y,h-y)));
+        }
+}
+
+TEST_CASE("legacy terrain import rejects unregistered sprite IDs [pathfinding]")
+{
+    for (Uint16 sprite : {Uint16(272),Uint16(65535)})
+    {
+        bool rejected=false;
+        PathMap map(4,4,std::vector<Uint16>(256,0));
+        map.getTile(0,0).terrain=sprite;
+        try { map.importLegacyTerrain(); }
+        catch(const std::invalid_argument&) { rejected=true; }
+        CHECK(rejected);
+    }
+}
+
+TEST_CASE("strategic terrain distances retain wide costs until publishing tile estimates [pathfinding]")
+{
+    std::mt19937 random(8931);
+    for(int trial=0;trial<30;++trial)
+    {
+        constexpr int w=32,h=16,infinity=INT_MAX;
+        std::vector<TerrainType> terrain(w*h);
+        std::vector<int> expected(w*h,infinity);
+        std::vector<std::int16_t> values(w*h,0);
+        for(int i=0;i<w*h;++i)
+        {
+            terrain[i]=static_cast<TerrainType>(random()%TERRAIN_COUNT);
+            if(random()%5==0) values[i]=1;
+            if(random()%29==0) {expected[i]=0;values[i]=2;}
+        }
+        const auto markers=values;
+        // Independent Bellman-Ford oracle. Strategic fields preserve their
+        // Chebyshev metric: diagonal and cardinal edges share the same base
+        // cost, unlike the engine unit-navigation oracle above. Reverse edges
+        // pay entry into the sourceward cell and keep fractional tile costs.
+        for(int pass=0;pass<w*h;++pass)
+        {
+            bool changed=false;
+            for(int from=0;from<w*h;++from)
+            {
+                if(expected[from]==infinity)continue;
+                const int speed=terrainProperties(terrain[from]).groundSpeedQ8;
+                const int step=std::max(1,(GRADIENT_STEP*256+speed/2)/speed);
+                for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+                {
+                    if(!dx&&!dy)continue;
+                    const int next=((from/w+dy+h)%h)*w+(from%w+dx+w)%w;
+                    if(markers[next]==1)continue;
+                    if(expected[from]+step<expected[next])
+                    {expected[next]=expected[from]+step;changed=true;}
+                }
+            }
+            if(!changed)break;
+        }
+        field::expandTerrainTravel(values,w,h,field::TerrainTravel::Swim,
+            [&](std::size_t i){return terrain[i];});
+        for(int i=0;i<w*h;++i)
+            CHECK_EQ(values[i],markers[i]==1?1:expected[i]==infinity?0:
+                2+(expected[i]+GRADIENT_STEP-1)/GRADIENT_STEP);
+    }
 }

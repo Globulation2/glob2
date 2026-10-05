@@ -81,6 +81,16 @@ void Sector::step(void)
 	for (std::list<Bullet *>::iterator it=bullets.begin();it!=bullets.end();)
 	{
 		Bullet *bullet = (*it);
+		if (map->hasProjectileBlockingTerrain() &&
+			(!map->projectilePathClear(bullet->px, bullet->py,
+				bullet->px + (bullet->ticksLeft > 0 ? bullet->speedX : 0),
+				bullet->py + (bullet->ticksLeft > 0 ? bullet->speedY : 0)) ||
+			 (bullet->ticksLeft == 0 && map->terrainPropertiesAt(bullet->targetX,bullet->targetY).projectileBlocks)))
+		{
+			delete bullet;
+			it = bullets.erase(it);
+			continue;
+		}
 		if ( bullet->ticksLeft > 0 )
 		{
 			bullet->step();

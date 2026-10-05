@@ -36,7 +36,7 @@
     [4B] u32 grid_w                 (≤32, == min(map_w, 32))
     [4B] u32 grid_h                 (≤32, == min(map_h, 32))
     per cell × 7 channels (HWC; row-major, gy outer, gx inner):
-      [1B] terrain                  (0=GRASS, 1=SAND, 2=WATER, 255=other)
+      [1B] terrain                  (stable TerrainType ID: 0=WATER, 1=SAND, 2=GRASS; 255=unrepresentable)
       [1B] resource_amount          (sum across cell, capped at 255; FOW: visible only)
       [1B] my_unit_count            (capped at 255; always shown — units are mine)
       [1B] enemy_unit_count         (capped at 255; FOW: visible only)

@@ -639,7 +639,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.padOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands a little out from the pad's middle, away from the hub, so the kit and the
@@ -706,7 +706,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	for (size_t j = 0; j < L.spokeLines.size(); ++j)
 		for (const ShapePoint &p : L.spokeLines[j])
-			if (map.isWater(t.x(int(std::lround(p.x))), t.y(int(std::lround(p.y)))))
+			if (!map.terrainPropertiesAt(t.x(int(std::lround(p.x))), t.y(int(std::lround(p.y)))).walkable)
 				return "Spoke " + std::to_string(j) + " is broken by water.";
 	const ColonyWalk walk =
 		walkFromFirstColony(map, context.request.nbTeams, "the web", "along the web");

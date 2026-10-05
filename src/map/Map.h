@@ -20,6 +20,9 @@
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
+#include "FertilityField.h"
+#include "TerrainProperties.h"
+#include "TerrainExperiments.h"
 #include "BitArray.h"
 
 class Unit;
@@ -89,6 +92,18 @@ class Map
 	unsigned computeExperiments = 0;
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
+	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
+	std::vector<TerrainType> terrainIds;
+	std::array<std::size_t, TERRAIN_COUNT> terrainCounts{};
+	std::uint64_t terrainGenerationValue = 1;
+	void changeTerrainIdentity(size_t index, TerrainType type);
+	void rebuildTerrainCounts();
+	unsigned terrainEditDepth = 0;
+	bool terrainEditChanged = false, terrainRoutesChanged = false;
+	bool terrainHealthEffects = false;
+	bool terrainMovementModifiers = false, airTerrainConstraints = false, projectileBlockingTerrain = false;
+	void updateTerrainSummary();
+	void finishTerrainEdit();
 	// Storage only: an idle building still drops its field and saved null state.
 	// A fixed slot count avoids allocations in the pool itself.
 	static constexpr std::size_t GRADIENT_BUFFER_POOL_SLOTS = 64;
@@ -159,7 +174,7 @@ public:
 
 	//! "Infinity" / "unvisited" sentinel for the A* algorithm's Uint16 cost fields
 	//! (moveCost, totalCost). All real costs fit within 0..0xFFFE so 0xFFFF is safe.
-	static constexpr Uint16 ASTAR_COST_INFINITY = static_cast<Uint16>(-1);
+	static constexpr Uint32 ASTAR_COST_INFINITY = static_cast<Uint32>(-1);
 
 public:
 	static constexpr int MIN_SUPPORTED_SIZE_EXPONENT = 4;
@@ -393,18 +408,40 @@ public:
 		return tiles[pos].terrain;
 	}
 
-	//! Return the typeof terrain. If type is unregistered, returns unknown (-1).
+	//! Canonical gameplay identity; never inferred from art in a simulation query.
+	TerrainType terrainTypeAt(size_t index) const { return terrainIds[index]; }
+	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(coordToIndex(x,y)); }
+	const TerrainProperties& terrainPropertiesAt(size_t index) const { return ::terrainProperties(terrainTypeAt(index)); }
+	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
+	// Terrain habitat only: ignores deposits, buildings and units already here.
+	bool terrainSupportsResourceAt(int x, int y, int resourceType) const;
+	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
+	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
+	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
+	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
+	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
+	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }
+	bool hasProjectileBlockingTerrain() const { return projectileBlockingTerrain; }
+	bool projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const;
+	ExperimentSet requiredTerrainExperiments() const;
+	class TerrainEditBatch
+	{
+		Map& map;
+	public:
+		explicit TerrainEditBatch(Map& value) : map(value) { ++map.terrainEditDepth; }
+		~TerrainEditBatch() { if (--map.terrainEditDepth == 0) map.finishTerrainEdit(); }
+		TerrainEditBatch(const TerrainEditBatch&) = delete;
+		TerrainEditBatch& operator=(const TerrainEditBatch&) = delete;
+	};
+	TerrainEditBatch editTerrain() { return TerrainEditBatch(*this); }
+	void setCellTerrain(size_t index, TerrainType type);
+	void setCellTerrain(int x, int y, TerrainType type) { setCellTerrain(coordToIndex(x,y), type); }
+	// Explicit adapter for old serialized state and legacy test/import fixtures.
+	void importLegacyTerrain();
 	int getTerrainType(int x, int y) const
 	{
-		unsigned t = getTerrain(x, y);
-		if (t<16)
-			return GRASS;
-		else if ((t>=128) && (t<128+16))
-			return SAND;
-		else if ((t>=256) && (t<256+16))
-			return WATER;
-		else
-			return TERRAIN_TYPE_UNKNOWN;
+		const auto type = terrainTypeAt(x,y);
+		return type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE ? TERRAIN_TYPE_UNKNOWN : int(type);
 	}
 
 	const Resource& getResource(int x, int y) const
@@ -438,17 +475,9 @@ public:
 		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
-	void setTerrain(int x, int y, Uint16 terrain)
-	{
-		Tile &tile = tiles[coordToIndex(x, y)];
-		if ((tile.terrain >= 256 && tile.terrain < 272) != (terrain >= 256 && terrain < 272))
-		{
-			std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-			waterSnapshot.reset();
-		}
-		tile.terrain = terrain;
-	}
-	
+	// Legacy corner/sprite authoring adapter. Gameplay mutations use setCellTerrain.
+	void setTerrain(int x, int y, Uint16 terrain);
+
 	//! A bump throws away every cached route field in the game, so only paint
 	//! a tile that is not already in the state being asked for.
 	void addForbidden(int x, int y, Uint32 teamNum)
@@ -487,38 +516,16 @@ public:
 	}
 
 	
-	bool isWater(int x, int y) const
-	{
-		int t = getTerrain(x, y)-256;
-		return ((t>=0) && (t<16));
-	}
-	
-	bool isWater(unsigned pos) const
-	{
-		int t = getTerrain(pos)-256;
-		return ((t>=0) && (t<16));
-	}
-
-	bool isGrass(int x, int y) const
-	{
-		return (getTerrain(x, y)<16);
-	}
-	
-	bool isGrass(unsigned pos) const
-	{
-		return (getTerrain(pos)<16);
-	}
-	
-	bool isSand(int x, int y) const
-	{
-		int t=getTerrain(x, y);
-		return ((t>=128)&&(t<128+16));
-	}
-	
+	// Literal identity queries retained for authoring and script introspection.
+	bool isWater(int x, int y) const { return terrainTypeAt(x,y) == WATER; }
+	bool isWater(unsigned pos) const { return terrainTypeAt(pos) == WATER; }
+	bool isGrass(int x, int y) const { return terrainTypeAt(x,y) == GRASS; }
+	bool isGrass(unsigned pos) const { return terrainTypeAt(pos) == GRASS; }
+	bool isSand(int x, int y) const { return terrainTypeAt(x,y) == SAND; }
 	bool hasSand(int x, int y) const
 	{
-		int t=getTerrain(x, y);
-		return ((t>=16)&&(t<=255));
+		const auto type = terrainTypeAt(x,y);
+		return type == SAND || type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE;
 	}
 
 	bool isResource(int x, int y) const
@@ -552,7 +559,7 @@ public:
 
 	bool canResourcesGrow(int x, int y) const
 	{
-		return getTile(x, y).canResourcesGrow;
+		return getTile(x, y).canResourcesGrow && terrainPropertiesAt(x,y).resourcesGrow;
 	}
 
 	//! Decrement resource at position (x,y). Return true on success, false otherwise.
@@ -569,18 +576,12 @@ public:
 	//! map with no game (the editor, Map-only tools).
 	bool farmAreasEnabled() const;
 
-	//! Whether resourceType could ever grow at (x,y): a necessary condition read
-	//! off Map::growResources's terrain probe, not a sufficient one. The probe
-	//! draws offsets dwax, dway in [-15,15] and needs isWater(x+dwax, y+dway) for
-	//! wheat, wood and algae, so a tile with no water in that box never grows.
-	//! Algae also need isSand(x+dway*2, y+dwax*2), checked here as "some sand in
-	//! the doubled box"; the joint draw and the wheat/wood !isSand test are not
-	//! modelled. Keep this in step if growResources' probe changes.
+	//! Whether the registered habitat and cached fertility field give this
+	//! resource a nonzero growth probability at the tile.
 	bool canResourceEverGrowHere(int x, int y, int resourceType) const;
 
-	//! The crop a farm grows on this tile's terrain: wheat on grass, algae on
-	//! water, nothing anywhere else. The terrain decides, so a farm needs no
-	//! per-resource mode and no extra UI.
+	//! The crop registered for this terrain, or NO_RES_TYPE when no crop is
+	//! supported. Farm areas require no per-resource mode.
 	int farmCropAt(int x, int y) const;
 
 	//! Whether a worker should clear the resource on this tile for the team:
@@ -640,8 +641,8 @@ private:
 	struct TileChecks {
 		bool noResource    : 1; //!< reject if a resource sits on the tile
 		bool noUnit         : 1; //!< reject if a ground unit sits on the tile
-		bool waterBlocks    : 1; //!< reject water tiles unless canSwim is true
-		bool requireGrass   : 1; //!< reject any tile whose terrain isn't grass
+		bool requireGroundPassable : 1; //!< require walking or an enabled swimming mode
+		bool requireBuildable : 1; //!< require terrain that supports buildings
 		bool checkForbidden : 1; //!< reject if the tile's forbidden mask intersects teamMask
 	};
 	//! Returns true iff (x,y) passes every enabled check. A building whose gid
@@ -655,7 +656,7 @@ public:
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const;
 	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const;
-	bool isFreeForAirUnit(int x, int y) const { return (getAirUnit(x+w, y+h)==NOGUID); }
+	bool isFreeForAirUnit(int x, int y) const { return terrainPropertiesAt(x,y).flyable && (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y) const;
 	bool isFreeForBuilding(int x, int y, int w, int h) const;
 	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const;
@@ -904,6 +905,7 @@ public:
 	
 	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
 	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength);
+	bool pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy);
 	
 	void initExploredArea(int teamNumber);
 	void makeDiscoveredAreasExplored(int teamNumber);
@@ -967,6 +969,9 @@ public:
 	
 	///This is the maximum fertility of any point on the map
 	Uint16 fertilityMaximum;
+	const Fertility::GrowthCache& resourceGrowthField() const;
+	mutable Fertility::GrowthCache growthCache;
+	mutable std::mutex growthCacheMutex;
 	
 protected:
 	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed
@@ -1031,7 +1036,7 @@ protected:
 	struct AStarAlgorithmPoint
 	{
 		AStarAlgorithmPoint() : x(-1), y(-1), dx(-1), dy(-1), moveCost(ASTAR_COST_INFINITY), totalCost(ASTAR_COST_INFINITY), isClosed(false) { }
-		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint16 moveCost, Uint16 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
+		AStarAlgorithmPoint(Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Uint32 moveCost, Uint32 totalCost, bool isClosed) : x(x), y(y), dx(dx), dy(dy), moveCost(moveCost), totalCost(totalCost), isClosed(isClosed) {}
 		//Pos x
 		Sint16 x;
 		//Pos y
@@ -1041,9 +1046,9 @@ protected:
 		//The direction from the starting point that leads to this path
 		Sint16 dy;
 		//Cost to get to square x
-		Uint16 moveCost;
+		Uint32 moveCost;
 		//Cost to get to square x + estimate to get to the end
-		Uint16 totalCost;
+		Uint32 totalCost;
 		//Whether this cell has been examined
 		bool isClosed;
 	};

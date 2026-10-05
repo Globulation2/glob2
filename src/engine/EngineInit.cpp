@@ -65,7 +65,11 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
 void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
 {
     if (!map.getIsSavedGame())
+        {
         header.setExperiments(globalContainer->settings.experiments);
+        for (const auto& definition : experimentDefinitions())
+            if (map.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
+    }
 }
 int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)
 {

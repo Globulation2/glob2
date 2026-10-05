@@ -16,6 +16,7 @@ void Map::tile(int rx, int ry)
 
 	const int oldW = w, oldH = h, oldWDec = wDec;
 	const std::vector<Tile> oldTiles = tiles;
+	const auto oldTerrain = terrainIds;
 	const std::vector<Uint32> oldDiscovered = mapDiscovered;
 	const std::vector<Uint8> oldUndermap(undermap, undermap + size);
 	std::string names[9];
@@ -32,6 +33,7 @@ void Map::tile(int rx, int ry)
 			// units and buildings are placed again per colony, and the
 			// per-team zones belong to teams that are rebuilt
 			tiles[dst] = oldTiles[src];
+			terrainIds[dst] = oldTerrain[src];
 			tiles[dst].building = NOGBID;
 			tiles[dst].groundUnit = NOGUID;
 			tiles[dst].airUnit = NOGUID;
@@ -42,6 +44,8 @@ void Map::tile(int rx, int ry)
 			mapDiscovered[dst] = oldDiscovered[src];
 			undermap[dst] = oldUndermap[src];
 		}
+	rebuildTerrainCounts();
+	finishTerrainEdit();
 	for (int n = 0; n < 9; n++)
 		setAreaName(n, names[n]);
 }

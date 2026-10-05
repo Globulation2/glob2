@@ -49,3 +49,18 @@ TEST_SUITE("UnitTiming")
 	TEST_CASE_FIXTURE(UnitTimingTest, "NonTravelActions") { testNonTravelActions(); }
 	TEST_CASE_FIXTURE(UnitTimingTest, "IntegerQuantization") { testIntegerQuantization(); }
 }
+
+TEST_CASE("terrain travel speed uses deterministic bounded Q8 factors")
+{
+    CHECK_EQ(unitTerrainMovementSpeed(32,256),32);
+    CHECK_EQ(unitTerrainMovementSpeed(32,128),16);
+    CHECK_EQ(unitTerrainMovementSpeed(32,512),64);
+    CHECK_EQ(unitTerrainMovementSpeed(3,128),2);
+    CHECK_EQ(unitTerrainMovementSpeed(200,512),UNIT_DELTA_MAX);
+    CHECK_EQ(unitTerrainMovementSpeed(0,512),0);
+    CHECK_EQ(unitTerrainMovementSpeed(30,1024),120);
+    CHECK_EQ(unitTerrainMovementSpeed(28,1024),112);
+    CHECK_EQ(unitTerrainMovementSpeed(32,512,false),32);
+    CHECK_EQ(unitTerrainMovementSpeed(32,128,false),32);
+    CHECK(unitActionStepSpeed(unitTerrainMovementSpeed(1,64),WALK,1,1)>0);
+}

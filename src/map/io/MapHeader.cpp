@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "MapHeader.h"
 #include <algorithm>
 #include <map>
@@ -26,6 +27,7 @@ void MapHeader::reset()
 	mapOffset = 0;
 	isSavedGame=false;
 	fileNameOverride = "";
+	requiredTerrainExperiments.clear();
 	resetGameSHA1();
 }
 
@@ -80,6 +82,7 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 		stream->read(SHA1, 20, "SHA1");
 	}
 	
+	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && !requiredTerrainExperiments.load(stream, versionMinor, true)) return false;
 	stream->readEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -106,6 +109,7 @@ void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 	if (sha1Position)
 		*sha1Position = stream->getPosition();
 	stream->write(SHA1, 20, "SHA1");
+	requiredTerrainExperiments.save(stream);
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
 	{
@@ -261,8 +265,11 @@ Uint32 MapHeader::checkSum() const
 	cs^=versionMajor;
 	cs^=versionMinor;
 	cs^=numberOfTeams;
-	cs=(cs<<31)|(cs>>1);
-	return cs;
+	for (const auto& definition : experimentDefinitions())
+		if (requiredTerrainExperiments.has(definition.id)) cs ^= Sint32((1u + static_cast<unsigned>(definition.id)) * 0x9e3779b9u);
+	// Keep the historical arithmetic right shift, but shift unsigned bits
+	// on the left so experiment hashes cannot trigger signed-shift overflow.
+	return (Uint32(cs)<<31)|Uint32(cs>>1);
 }
 
 
@@ -273,6 +280,7 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
 		rhs.mapName != mapName ||
+		rhs.requiredTerrainExperiments != requiredTerrainExperiments ||
 		!std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
@@ -286,6 +294,7 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 		rhs.mapOffset == mapOffset &&
 		rhs.isSavedGame == isSavedGame &&
 		rhs.mapName == mapName &&
+		rhs.requiredTerrainExperiments == requiredTerrainExperiments &&
 		std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;

@@ -137,6 +137,7 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 
 		//Constraints around nearby settlement
 		AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 		//You want to be close to other buildings, but wheat is more important

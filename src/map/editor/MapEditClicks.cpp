@@ -179,6 +179,8 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
 	const int firstX = firstPlacement ? firstPlacement->x : -1;
 	const int firstY = firstPlacement ? firstPlacement->y : -1;
+	// Commit terrain-dependent invalidation once for the entire brush stamp.
+	auto terrainBatch = game.map.editTerrain();
 	// we update local values
 	if (brush.getType() == BrushTool::MODE_ADD)
 	{
@@ -189,8 +191,16 @@ void MapEdit::handleTerrainClick(int mx, int my)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
 					int resToSet=-1;
+                    if (terrainType >= TerrainSelector::RegisteredBegin && TerrainSelector::isBaseTerrain(terrainType))
+                    {
+                        game.map.setCellTerrain(x,y,TerrainSelector::baseTerrain(terrainType));
+                        game.map.removeUnallowedResources(x,y,1,1);
+                        game.removeUnallowedUnitsAndBuildings(x,y,1,1);
+                        continue;
+                    }
 					switch(terrainType)
 					{
+
 					case TerrainSelector::Grass:
 						game.map.setUMatPos(x, y, GRASS, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
@@ -245,6 +255,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						resToSet=PRUNE;
 						break;
 					case TerrainSelector::NoTerrain:
+                    default:
 						break;
 					}
 					if(resToSet!=-1 && game.map.isResourceAllowed(x, y, resToSet))
@@ -301,6 +312,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						break;
 					case TerrainSelector::Grass:
 					case TerrainSelector::NoTerrain:
+                    default:
 						break;
 					}
 				}

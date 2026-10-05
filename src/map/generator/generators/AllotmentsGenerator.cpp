@@ -466,9 +466,16 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "allotments plots";
 	std::vector<std::vector<int>> plotTiles(L.styles.size());
 	for (int i = 0; i < n; ++i)
-		if (L.plotOf[i] >= 0 && map.isGrass(i % t.w, i / t.w) && !reserved[i] &&
-			clearGround(map, i % t.w, i / t.w))
-			plotTiles[L.plotOf[i]].push_back(i);
+	{
+		if (L.plotOf[i] < 0 || reserved[i] || !clearGround(map, i % t.w, i / t.w))
+			continue;
+		const int plot = L.plotOf[i];
+		const Style style = Style(L.styles[plot]);
+		const int resource = style == kWheat ? WHEAT : style == kWood ? WOOD :
+			style == kFruit ? CHERRY + plot % 3 : STONE;
+		if (map.terrainSupportsResourceAt(i % t.w, i / t.w, resource))
+			plotTiles[plot].push_back(i);
+	}
 	std::array<int, 4> planted{};
 	std::vector<unsigned char> topup(n, 0);
 	for (size_t p = 0; p < plotTiles.size(); ++p)
@@ -517,7 +524,11 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<int> ground;
 		for (int i = 0; i < n; ++i)
 			if (L.cellOf[i] == c && L.kind[i] == parcel.kind && L.homeOf[i] < 0 &&
-				map.isGrass(i % t.w, i / t.w) && clearGround(map, i % t.w, i / t.w) && !reserved[i])
+				(parcel.kind == kWoodlot ? map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) : (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+					map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
+					map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
+					map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE))) && clearGround(map, i % t.w, i / t.w) &&
+					!reserved[i])
 				ground.push_back(i);
 		if (ground.empty())
 			continue;
@@ -570,7 +581,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto open = [&](int i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		return map.isGrass(x, y) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+		return (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
+			map.terrainSupportsResourceAt(x, y, WOOD))) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
 	};
 	for (int i = 0; i < n; ++i)
 		if (L.plotOf[i] >= 0 && open(i))

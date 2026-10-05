@@ -430,7 +430,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return lost;
 	// Every designed ridge tile that could hold stone does: the ridges are the map's walls.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.isGrass(i % t.w, i / t.w) &&
+		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
 			map.getResource(i % t.w, i / t.w).type != STONE)
 			return "A ridge has lost its stone at (" + std::to_string(i % t.w) + ", " +
 				   std::to_string(i / t.w) + ").";

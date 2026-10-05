@@ -392,7 +392,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> mask(n, 0);
 		for (int i = 0; i < n; ++i)
-			mask[i] = L.homeOf[i] == k && map.isGrass(i % t.w, i / t.w);
+			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return mask;
 	};
 	const double normal = stripeNormal(t, L.across);

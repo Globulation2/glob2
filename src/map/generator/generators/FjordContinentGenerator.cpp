@@ -490,7 +490,7 @@ std::vector<MapGeneratorPoint> anchorTeams(Game &game, const FjordLayout &layout
 			double mx = mapped.x, my = mapped.y;
 			int ix = game.map.normalizeX((int)lround(mx));
 			int iy = game.map.normalizeY((int)lround(my));
-			if (!game.map.isWater(ix, iy))
+			if (game.map.terrainPropertiesAt(ix, iy).walkable)
 			{
 				fx = ix;
 				fy = iy;
@@ -541,7 +541,7 @@ bool verifyConnectivity(Game &game, const FjordLayout &layout,
 					continue;
 				int nx = game.map.normalizeX(p.x + dx);
 				int ny = game.map.normalizeY(p.y + dy);
-				if (!visited[ny * W + nx] && !game.map.isWater(nx, ny))
+				if (!visited[ny * W + nx] && game.map.terrainPropertiesAt(nx, ny).walkable)
 				{
 					visited[ny * W + nx] = true;
 					stack.push_back(MapGeneratorPoint(nx, ny));
@@ -572,7 +572,9 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 			// Wheat/stone/fruit all require grass, so the sand ring the lake just grew (when there
 			// is one) is deliberately excluded here rather than merely non-water - a clump center
 			// landing on sand could miss every grass tile within its own radius and place nothing.
-			if (!game.map.isGrass(x, y) || grid[y * layout.W + x] != 0)
+			if (!(game.map.terrainSupportsResourceAt(x, y, STONE) && game.map.terrainSupportsResourceAt(x, y, CHERRY) &&
+				game.map.terrainSupportsResourceAt(x, y, ORANGE) && game.map.terrainSupportsResourceAt(x, y, PRUNE)) ||
+				grid[y * layout.W + x] != 0)
 				continue;
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
@@ -615,7 +617,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 		for (int y = 0; y < layout.H; ++y)
 			for (int x = 0; x < layout.W; ++x)
 			{
-				if (!game.map.isWater(x, y))
+				if (!game.map.terrainSupportsResourceAt(x, y, ALGA))
 					continue;
 				const auto shaped = layout.toShape({double(x), double(y)});
 				double u = shaped.x, v = shaped.y;
@@ -645,7 +647,7 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
 	{
 		for (int x = 0; x < layout.W; ++x)
 		{
-			if (!game.map.isWater(x, y))
+			if (!game.map.terrainSupportsResourceAt(x, y, ALGA))
 				continue;
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
@@ -679,7 +681,7 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 	std::vector<MapGeneratorPoint> allWater;
 	for (int y = 0; y < layout.H; ++y)
 		for (int x = 0; x < layout.W; ++x)
-			if (game.map.isWater(x, y))
+			if (!game.map.terrainPropertiesAt(x, y).walkable)
 				allWater.push_back(MapGeneratorPoint(x, y));
 
 	for (int i = 0; i < layout.nbTeams; ++i)

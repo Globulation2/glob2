@@ -224,8 +224,8 @@ namespace
 					&& !(tile.forbidden&player->team->me)
 					&& tile.building==NOGBID
 					&& tile.resource.type==NO_RES_TYPE;
-				swimming[index]=clear;
-				walking[index]=clear && !map->isWater(x, y);
+				swimming[index]=clear && (map->terrainPropertiesAt(index).walkable || map->terrainPropertiesAt(index).swimmable);
+				walking[index]=clear && map->terrainPropertiesAt(index).walkable;
 			}
 
 		std::vector<int> walkingSources;
@@ -756,8 +756,8 @@ void Maxima::initialize_topology_profile(Context& runtime)
 			const bool here=map.is_water(x, y);
 			const bool resource=map.is_resource(x, y);
 			water+=here ? 1 : 0;
-			land+=here ? 0 : 1;
-			grass+=map.is_grass(x, y) ? 1 : 0;
+			land+=map.is_walkable(x,y) ? 1 : 0;
+			grass+=map.is_crop_habitat(x, y) ? 1 : 0;
 			buildable+=map.is_grass(x, y) && !resource ? 1 : 0;
 			corn+=map.is_resource(x, y, WHEAT) ? 1 : 0;
 			wood+=map.is_resource(x, y, WOOD) ? 1 : 0;
@@ -768,16 +768,16 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				|| map.is_resource(x, y, PRUNE) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water((x+1)%width, y) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water(x, (y+1)%height) ? 1 : 0;
-			if(!here)
+			if(map.is_walkable(x,y))
 			{
-				const bool horizontal=!map.is_water((x+width-1)%width, y)
-					&& !map.is_water((x+1)%width, y);
-				const bool vertical=!map.is_water(x, (y+height-1)%height)
-					&& !map.is_water(x, (y+1)%height);
-				const bool blocked_horizontal=map.is_water((x+width-1)%width, y)
-					&& map.is_water((x+1)%width, y);
-				const bool blocked_vertical=map.is_water(x, (y+height-1)%height)
-					&& map.is_water(x, (y+1)%height);
+				const bool horizontal=map.is_walkable((x+width-1)%width, y)
+					&& map.is_walkable((x+1)%width, y);
+				const bool vertical=map.is_walkable(x, (y+height-1)%height)
+					&& map.is_walkable(x, (y+1)%height);
+				const bool blocked_horizontal=!map.is_walkable((x+width-1)%width, y)
+					&& !map.is_walkable((x+1)%width, y);
+				const bool blocked_vertical=!map.is_walkable(x, (y+height-1)%height)
+					&& !map.is_walkable(x, (y+1)%height);
 				if((horizontal && blocked_vertical)
 				   || (vertical && blocked_horizontal))
 					chokepoints+=1;
@@ -794,7 +794,7 @@ void Maxima::initialize_topology_profile(Context& runtime)
 		for(int y=0; y<height; ++y)
 		{
 			const int origin=y*width+x;
-			if(map.is_water(x, y) || component[origin]>=0)
+			if(!map.is_walkable(x, y) || component[origin]>=0)
 				continue;
 			const int label=component_sizes.size();
 			int size=0;
@@ -813,7 +813,7 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				for(int direction=0; direction<4; ++direction)
 				{
 					const int next=ny[direction]*width+nx[direction];
-					if(component[next]<0 && !map.is_water(nx[direction], ny[direction]))
+					if(component[next]<0 && map.is_walkable(nx[direction], ny[direction]))
 					{
 						component[next]=label;
 						pending.push_back(next);
@@ -1609,11 +1609,12 @@ void Maxima::update_opponent_models(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_opponent_models_calls);
 	AIMaximaRuntime::Gradients::GradientInfo home_info;
+    home_info.terrainTravel=snapshot.swimming_warriors<6?field::TerrainTravel::Walk:field::TerrainTravel::Swim;
 	home_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.player->team->teamNumber, CompletedBuildings));
 	home_info.add_obstacle(new Entities::AnyResource);
 	if(snapshot.swimming_warriors<6)
-		home_info.add_obstacle(new Entities::Water);
+		home_info.add_obstacle(new Entities::Unwalkable);
 	Gradient& home=runtime.get_gradient_manager().get_gradient(home_info);
 
 	for(int team=0; team<Team::MAX_COUNT; ++team)
@@ -1966,7 +1967,7 @@ void Maxima::plan_reconnaissance_objectives(Context& runtime)
 							const int y=((center_y+dy)%map->getH()
 								+map->getH())%map->getH();
 							const int index=y*map->getW()+x;
-							if(!discovered[index] || map->isWater(x, y)
+							if(!discovered[index] || !map->terrainPropertiesAt(index).walkable
 							   || map->getResource(x, y).type==NO_RES_TYPE
 							   || !seen_sites.insert(index).second)
 								continue;
@@ -4195,9 +4196,11 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		tile.discovered=map->isMapDiscovered(x,y,runtime.player->team->allies);
 		// Terrain is immutable during a match. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
-		tile.water=cell.terrain>=256 && cell.terrain<272;
-		tile.sand=cell.terrain>=128 && cell.terrain<144;
-		tile.grass=cell.terrain<16;tile.occupied=cell.building!=NOGBID;
+		tile.swimmable=map->terrainPropertiesAt(index).swimmable;
+		tile.walkable=map->terrainPropertiesAt(index).walkable;
+		tile.fertilitySource=terrainProvidesFertility(map->terrainPropertiesAt(index));
+		tile.growthInhibiting=map->terrainPropertiesAt(index).inhibitionQ8 != 0;
+		tile.buildable=map->terrainPropertiesAt(index).buildable;tile.occupied=cell.building!=NOGBID;
 		tile.woodReserve=wood_reserve.cells[index]!=0;
 		tile.foodTraversable=!(cell.forbidden&runtime.player->team->me)
 			|| applied_farm_protection_mask[index];
@@ -4210,10 +4213,11 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 				cell.resource.type)->eternal;
 			tile.clearableResource=!tile.permanentResource;
 		}
-		const Uint32 flags=(tile.discovered?1u:0u)|(tile.grass?2u:0u)
-			|(tile.water?4u:0u)|(tile.sand?8u:0u)
+		const Uint32 flags=(tile.discovered?1u:0u)|(tile.buildable?2u:0u)
+			|(tile.swimmable?4u:0u)|(tile.growthInhibiting?8u:0u)
 			|(tile.permanentResource?16u:0u)
-			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u);
+			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u)
+			|(tile.walkable?512u:0u)|(tile.fertilitySource?1024u:0u);
 		add_preemptive_hash(worldSignature,flags);
 		add_preemptive_hash(worldSignature,Uint32(tile.resourceType+1));
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
@@ -4228,7 +4232,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 				tile.resourceAmount,expansionNeighbors,
 				tile.resourceType==WHEAT);
 		}
-		if(tile.discovered && tile.grass && !tile.occupied
+		if(tile.discovered && !tile.occupied
 		   && tile.resourceType==WHEAT && tile.resourceAmount>0)
 		{
 			// A stack is an opportunity even where nothing regrows: a colony
@@ -5776,7 +5780,7 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 		const ::Tile& cell=map->getTile(x,y);
 		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
 			&& !(cell.forbidden&runtime.player->team->me)
-			&& (budget.can_swim || !(cell.terrain>=256 && cell.terrain<272));
+			&& (map->terrainPropertiesAt(x,y).walkable || (budget.can_swim && map->terrainPropertiesAt(x,y).swimmable));
 		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,runtime.player->team->allies);
 		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
 		   && map->isMapDiscovered(x,y,runtime.player->team->allies))

@@ -152,7 +152,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 			if (d < 0)
 				continue;
 			const int x = p % w, y = p / w;
-			if (d <= scale.catchmentSteps && map.isGrass(p) && map.tiles[p].canResourcesGrow &&
+			if (d <= scale.catchmentSteps && (map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)) && map.canResourcesGrow(x,y) &&
 				fertility.at(x, y) > 0)
 			{
 				const double chance = double(fertility.at(x, y)) / Fertility::kScale;

@@ -284,6 +284,12 @@
         },
         "unknown": {
           "$ref": "#/$defs/coverage"
+        },
+        "ice": {
+          "$ref": "#/$defs/coverage"
+        },
+        "road": {
+          "$ref": "#/$defs/coverage"
         }
       },
       "required": [

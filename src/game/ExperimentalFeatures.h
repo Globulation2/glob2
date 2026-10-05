@@ -39,6 +39,8 @@ enum class ExperimentId : Uint8
 	// A fourth painted area: a harvest inside it draws from the ripest tile of
 	// the connected field and keeps one grain on every tile as seed.
 	FarmAreas = 1,
+	IceTerrain = 2,
+	RoadTerrain = 3,
 	Count
 };
 
@@ -90,7 +92,7 @@ public:
 	// drops unknown keys with one line on stderr each, and returns false only
 	// when the section itself is malformed.
 	void save(GAGCore::OutputStream *stream) const;
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor, bool rejectUnknown = false);
 
 private:
 	std::bitset<COUNT> bits;

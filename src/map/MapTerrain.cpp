@@ -2,12 +2,21 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "TerrainPresentation.h"
 #include "Utilities.h"
 
 // Terrain editing & rendering: setUMatPos, regenerateMap, lookup
 
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
+	auto terrainBatch = editTerrain();
+	assert(t <= GRASS);
+	// A corner brush replaces the four incident cells. Neighbor shore repair
+	// must not erase authored whole-cell materials outside that footprint.
+	for (int cx = x-(l>>1)-1; cx <= x+(l>>1); ++cx)
+		for (int cy = y-(l>>1)-1; cy <= y+(l>>1); ++cy)
+			if (!terrainUsesLegacyCorners(terrainTypeAt(cx,cy)))
+				changeTerrainIdentity(coordToIndex(cx,cy), GRASS);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 		{
@@ -114,9 +123,34 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 
 void Map::regenerateMap(int x, int y, int w, int h)
 {
+	auto terrainBatch = editTerrain();
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
-			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
+			if (terrainUsesLegacyCorners(terrainTypeAt(dx,dy)))
+			{
+				Uint8 corners[4];
+				bool authored[4];
+				int uniform = -1;
+				bool mixed = false;
+				for (int corner=0;corner<4;++corner)
+				{
+					const int cx=dx+(corner&1), cy=dy+(corner>>1);
+					corners[corner]=getUMTerrain(cx,cy);
+					authored[corner]=!terrainUsesLegacyCorners(terrainTypeAt(cx,cy));
+					if (!authored[corner])
+					{
+						if (uniform<0) uniform=corners[corner];
+						else if (uniform!=corners[corner]) mixed=true;
+					}
+				}
+				// Whole-cell materials do not contribute a sand corner to their
+				// otherwise uniform neighbors. Keep this true after import and
+				// every later presentation rebuild, including across the torus.
+				if (!mixed && uniform>=0)
+					for (int corner=0;corner<4;++corner)
+						if (authored[corner]) corners[corner]=uniform;
+				setTerrain(dx,dy,lookup(corners[0],corners[1],corners[2],corners[3]));
+			}
 }
 
 Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const

@@ -234,7 +234,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> mask(n, 0);
 		for (int i = 0; i < n; ++i)
-			mask[i] = L.homeOf[i] == k && map.isGrass(i % t.w, i / t.w);
+			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return mask;
 	};
 	const auto anchor = [&](int k)
@@ -346,7 +346,8 @@ bool generate(Game &game, GenerationContext &context)
 		int area = 0;
 		for (int i = 0; i < n; ++i)
 			area += L.hillOf[i] == k && L.farm.row[i] >= 0 && L.farm.row[i] % 2 == 0 &&
-					map.isGrass(i % t.w, i / t.w);
+					(map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
+						map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD));
 		const int wheat = int(scaledCount(area * 45 / 100, o.wheat));
 		const int wood = int(scaledCount(area * 8 / 100, o.wood));
 		const int actual = plantFarm(map, t, L.farm, wheat, wood,

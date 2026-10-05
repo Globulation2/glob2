@@ -170,8 +170,8 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 			// Terrain: take the top-left source cell (categorical; we'd
 			// need a histogram to do better and the model can learn around
 			// downsample artifacts).
-			int tt = map.getTerrainType(x0, y0);
-			Uint8 terrain = (tt < 0) ? 255 : (Uint8)tt;
+			const auto tt = map.terrainTypeAt(x0, y0);
+			Uint8 terrain = unsigned(tt) >= 255 ? 255 : static_cast<Uint8>(tt);
 
 			Uint32 resourceSum = 0;
 			Uint32 myUnitCount = 0;

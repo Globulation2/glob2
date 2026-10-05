@@ -60,6 +60,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	direction = stream->readSint32("direction");
 	insideTimeout = stream->readSint32("insideTimeout");
 	speed = stream->readSint32("speed");
+	terrainHealthRemainder = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES ? stream->readSint32("terrainHealthRemainder") : 0;
+	if (terrainHealthRemainder <= -256 || terrainHealthRemainder >= 256) throw std::runtime_error("Invalid terrain exposure remainder");
 
 	// states
 	needToRecheckMedical = (bool)stream->readUint32("needToRecheckMedical");
@@ -186,6 +188,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(direction, "direction");
 	stream->writeSint32(insideTimeout, "insideTimeout");
 	stream->writeSint32(speed, "speed");
+	stream->writeSint32(terrainHealthRemainder, "terrainHealthRemainder");
 
 	// states
 	stream->writeUint32((Uint32)needToRecheckMedical, "needToRecheckMedical");
@@ -342,6 +345,7 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(insideTimeout);// [9]
 	cs=rotl1(cs);
 	cs^=speed;
+	cs ^= static_cast<Uint32>(terrainHealthRemainder) * 0x9e3779b9u;
 	if (checkSumsVector)
 		checkSumsVector->push_back(speed);// [10]
 	cs=rotl1(cs);

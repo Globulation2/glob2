@@ -405,10 +405,10 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 // the ground where they compete. Frontier tiles are kept in a list with each new tile inserted at a
 // random position, so growth picks its next tile at random from the frontier: regions come out as
 // organic blobs rather than the diamonds a breadth-first flood makes. Claims go 8-way. With
-// grassOnly, regions only claim grass, so a region covers only its buildable land.
+// buildableOnly, regions only claim terrain that permits buildings.
 void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				 std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
-				 std::vector<int> &areaNumbers, bool grassOnly)
+				 std::vector<int> &areaNumbers, bool buildableOnly)
 {
 	std::vector<int> gradient(map.getW() * map.getH(), 0);
 
@@ -490,7 +490,7 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 					side = *addr;
 					if (side == 0 && grid[deltaAddrC[ci]] == areaN)
 					{
-						if (grassOnly && !map.isGrass(deltaAddrC[ci]))
+						if (buildableOnly && !map.terrainPropertiesAt(deltaAddrC[ci]).buildable)
 							continue;
 						*addr = g;
 						grid[deltaAddrC[ci]] = t;

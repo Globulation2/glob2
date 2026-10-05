@@ -234,7 +234,7 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 		{
 			const int x = i % t.w, y = i / t.w;
 			open[i] =
-				!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+				map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 		}
 		std::vector<std::vector<int>> sources(teams);
 		for (int k = 0; k < teams; ++k)

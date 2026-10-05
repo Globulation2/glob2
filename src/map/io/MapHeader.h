@@ -5,6 +5,7 @@
 
 #include "BaseTeam.h"
 #include "Team.h"
+#include "ExperimentalFeatures.h"
 #include <vector>
 
 namespace GAGCore
@@ -21,6 +22,7 @@ namespace GAGCore
 class MapHeader
 {
 public:
+	ExperimentSet requiredTerrainExperiments;
 	/// Gives default values to all entries
 	MapHeader();
 		

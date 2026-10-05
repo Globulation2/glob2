@@ -498,7 +498,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		int planted = 0;
 		for (int i : L.landingFields[f])
-			if (planted < 24 && fertility.values()[i] > 0 && game.map.isGrass(i % t.w, i / t.w))
+			if (planted < 24 && fertility.values()[i] > 0 && game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT))
 			{
 				game.map.setResource(i % t.w, i / t.w, WHEAT, 1);
 				++planted;
@@ -611,7 +611,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<unsigned char> clearedGround(t.size());
 	for (int i = 0; i < t.size(); ++i)
 		clearedGround[i] =
-			!game.map.isWater(i % t.w, i / t.w) && game.map.getResource(i).type != STONE;
+			game.map.terrainPropertiesAt(i % t.w, i / t.w).walkable && game.map.getResource(i).type != STONE;
 	const auto regions = connectedRegions(clearedGround, t.w, t.h, true, GridNeighbors::Eight);
 	const auto ownership = labelComponents(regions, L.homeOf);
 	if (ownership.conflictTile >= 0)

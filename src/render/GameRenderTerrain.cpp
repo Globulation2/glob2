@@ -40,16 +40,24 @@ namespace
 // at canonical 32-tile and torus boundaries; camera motion only changes the
 // translation, and visibility is included in the exact cached frame vector.
 template<class Describe>
-bool drawCachedTerrain(const void *mapIdentity, Sprite *sprite, int left, int top,
+bool drawCachedTerrain(const void *mapIdentity, int left, int top,
     int right, int bottom, int viewportX, int viewportY, int maskW, int maskH,
-    Describe describe)
+    int layerCount, Describe describe)
 {
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
     std::vector<int> frames;
+    // Asset identities are part of exact cache validation. Native/GPU image
+    // content revisions additionally invalidate entries in MapGeometryCache.
+    std::vector<int> assets;
+    for (unsigned type=0; type<TERRAIN_COUNT; ++type)
+        for (auto *asset : {globalContainer->terrainSprites[type],globalContainer->terrainBackdropSprites[type]}) {
+            const auto bits = static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(asset));
+            assets.push_back(static_cast<int>(bits)); assets.push_back(static_cast<int>(bits>>32));
+        }
     GAGCore::MapGeometryCache *cache;
-    try { frames.reserve(32 * 32); cache = &batch->geometryCache(); }
+    try { frames.reserve(32 * 32 * TerrainLayers::Capacity + 4*TERRAIN_COUNT); cache = &batch->geometryCache(); }
     catch (const std::bad_alloc&) { return false; }
     GAGCore::MapGeometryCache::Layer layer(*cache);
     for (int y = top; y <= bottom;)
@@ -63,17 +71,33 @@ bool drawCachedTerrain(const void *mapIdentity, Sprite *sprite, int left, int to
             frames.clear();
             for (int dy = 0; dy < height; ++dy)
                 for (int dx = 0; dx < width; ++dx)
-                    frames.push_back(describe(mapX + dx, mapY + dy));
+                    {
+                        const auto layers = describe(mapX + dx, mapY + dy);
+                        for (int layer=0; layer<layerCount; ++layer) {
+                            const int frame=layers.frames[layer];
+                            const int asset=int(layers.materials[layer])*2+layers.backdrop[layer];
+                            frames.push_back(frame < 0 ? -1 : frame | (asset<<16));
+                        }
+                    }
+            frames.insert(frames.end(),assets.begin(),assets.end());
             auto draw = [&](int originX, int originY)
             {
+                Sprite *active = nullptr;
                 std::size_t index = 0;
                 for (int dy = 0; dy < height; ++dy)
                     for (int dx = 0; dx < width; ++dx)
                     {
-                        int frame = frames[index++];
-                        if (frame >= 0) gfx->drawSprite((originX + dx) * 32, (originY + dy) * 32, sprite, frame);
+                        for (int layer=0; layer<layerCount; ++layer)
+                        {
+                            const int code = frames[index++];
+                            if (code < 0) continue;
+                            auto *asset=globalContainer->terrainLayerSprite(static_cast<TerrainType>(code>>17),(code>>16)&1);
+                            if (active && active!=asset) gfx->finishDrawingSprite(active,255);
+                            gfx->drawSprite((originX + dx) * 32,(originY + dy) * 32,asset,code&0xffff);
+                            active=asset;
+                        }
                     }
-                gfx->finishDrawingSprite(sprite, 255);
+                if (active) gfx->finishDrawingSprite(active,255);
             };
             bool drawn = false;
             try
@@ -161,44 +185,37 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
 
-// TODO: WATER_TILE_SIZE is hardcoded to the dimensions of data/gfx/water and would
-// silently break if that asset is ever resized. Could be replaced with
-// terrainWater->getW(0) / getH(0), but that relies on the sprite being loaded with
-// a valid frame 0, and nothing here or at the load site (GlobalContainer::load)
-// validates that. If terrainWater fails to load or reports zero size, water tiles
-// silently fail to render -- oceans and lakes look visibly broken but the game
-// otherwise plays normally, with no log or crash to flag the asset problem.
-// The right fix is asset validation at load time (covering ~30 sprites loaded the
-// same way in GlobalContainer::load), not a per-render guard here.
 void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 {
 	PERF_SCOPE_TIME(Water);
-	// Tile size of the data/gfx/water sprite, in pixels.
-	static const int WATER_TILE_SIZE = 512;
-	int waterStartX = -(((viewportX<<5)+time/2) % WATER_TILE_SIZE);
-	int waterStartY = -((viewportY<<5) % WATER_TILE_SIZE);
-	for (int y=waterStartY; y<sh; y += WATER_TILE_SIZE)
-		for (int x=waterStartX; x<sw; x += WATER_TILE_SIZE)
-			globalContainer->gfx->drawSprite(x, y, globalContainer->terrainWater, 0);
-	globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater, 255);
+    const auto &p=TerrainOceanBackdrop;
+    const int frame=terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time);
+    const int width=globalContainer->terrainWater->getW(frame),height=globalContainer->terrainWater->getH(frame);
+    const int waterStartX=-(((viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
+    const int waterStartY=-(((viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
+    for(int y=waterStartY;y<sh;y+=height) {
+        for(int x=waterStartX;x<sw;x+=width)
+            globalContainer->gfx->drawSprite(x,y,globalContainer->terrainWater,frame);
+    }
+    globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater,255);
 }
 
-void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
+void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
 {
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    if (drawCachedTerrain(sceneMap.cacheKey(), globalContainer->terrain, left, top, right, bot,
-            viewportX, viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), [&](int x, int y)
+    if (drawCachedTerrain(sceneMap.cacheKey(), left, top, right, bot,
+            viewportX, viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), sceneMap.terrainLayerCapacity(), [&](int x, int y)
             {
                 bool visible = (drawOptions & DRAW_WHOLE_MAP) ||
                     sceneMap.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, visibleTeams);
-                int frame = sceneMap.getTerrain(x, y);
-                return visible && frame < 256 ? frame : -1; // Water is animated separately.
+                return visible ? sceneMap.terrainLayersAt(x,y,animationTime) : TerrainLayers{};
             })) return;
 
 	// we draw the terrains, eventually with debug rects:
+    Sprite *active=nullptr;
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
@@ -209,23 +226,16 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 							y+viewportY+1,
 							visibleTeams))
 			{
-				// draw terrain
-				int id=sceneMap.getTerrain(x+viewportX, y+viewportY);
-				Sprite *sprite;
-				if (id<272)
-				{
-					sprite=globalContainer->terrain;
-				}
-				else
-				{
-					assert(false); // Now there shouldn't be any more resources on "terrain".
-					sprite=globalContainer->resources;
-					id-=272;
-				}
-				if ((id < 256) || (id >= 256+16))
-					globalContainer->gfx->drawSprite(x<<5, y<<5, sprite, id);
+                const auto layers = sceneMap.terrainLayersAt(x+viewportX,y+viewportY,animationTime);
+                for (int layer=0; layer<TerrainLayers::Capacity; ++layer)
+                    if (layers.frames[layer]>=0) {
+                        auto *asset=globalContainer->terrainLayerSprite(layers.materials[layer],layers.backdrop[layer]);
+                        if (active && active!=asset) globalContainer->gfx->finishDrawingSprite(active,255);
+                        globalContainer->gfx->drawSprite(x<<5,y<<5,asset,layers.frames[layer]);
+                        active=asset;
+                    }
 			}
-	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
+	if (active) globalContainer->gfx->finishDrawingSprite(active,255);
 }
 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
@@ -283,11 +293,11 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	// Averages of the lit terrain artwork, indexed by undermap type (water,
 	// sand, grass), so the cross-fade from the detailed tiles keeps its hue.
-	static const Uint8 terrainColor[3][3] = {{70, 50, 191}, {182, 168, 48}, {30, 113, 30}};
+
 	const auto colorOf = [&](int x, int y) -> Uint32
 	{
-		const int terrain = std::clamp(sceneMap.getUMTerrain(x+viewportX, y+viewportY), 0, 2);
-		int r = terrainColor[terrain][0], g = terrainColor[terrain][1], b = terrainColor[terrain][2];
+		const auto color = terrainPresentation(sceneMap.presentationTypeAt(x+viewportX,y+viewportY)).overview;
+        int r=color.r, g=color.g, b=color.b;
 		const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 		if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 			sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))

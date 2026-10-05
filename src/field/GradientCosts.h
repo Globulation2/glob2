@@ -13,7 +13,7 @@ namespace gradient_kernel
 	// Cost of entering a water cell per swim class, in gradient units (a land
 	// cell costs GRADIENT_STEP). Class 0 cannot swim: its seeds mark water as an
 	// obstacle, so its entry is never used.
-	constexpr int WATER_STEP[] = { 0, 5, 7, 10, 13, 20, 30 };
+	constexpr int WATER_STEP[] = { 0, 5, 7, 10, 13, 20, GRADIENT_SLOWEST_SWIM_STEP };
 	constexpr int MAX_STEP = WATER_STEP[std::size(WATER_STEP) - 1] * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
 	constexpr unsigned BUCKETS = GradientBucket::COUNT;
 	// A future edge cannot circle back to the current bucket during expansion.

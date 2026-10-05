@@ -573,10 +573,13 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		for (int x = 0; x < w; ++x)
 		{
 			const size_t i = size_t(y) * w + x;
-			grass[i] = map.isGrass(x, y) && map.getBuilding(x, y) == NOGBID &&
+			grass[i] = (map.terrainSupportsResourceAt(x, y, WHEAT) && map.terrainSupportsResourceAt(x, y, WOOD) &&
+				map.terrainSupportsResourceAt(x, y, STONE) && map.terrainSupportsResourceAt(x, y, CHERRY) &&
+				map.terrainSupportsResourceAt(x, y, ORANGE) && map.terrainSupportsResourceAt(x, y, PRUNE)) &&
+				map.getBuilding(x, y) == NOGBID &&
 					   map.getGroundUnit(x, y) == NOGUID;
-			water[i] = map.isWater(x, y);
-			land[i] = !water[i];
+			water[i] = map.terrainSupportsResourceAt(x, y, ALGA);
+			land[i] = map.terrainPropertiesAt(x, y).walkable;
 			const Point p = tilePoint(w, h, x, y);
 			// Nothing is planted within 1.5 tiles past the home's clear disc, nor within 3 to 4
 			// tiles of where a causeway lands (2 tiles to each side beyond its width), so neither

@@ -114,7 +114,7 @@ TEST_SUITE("MapGradientInvalidation")
 	  auto rebuildCount=propagations()-rebuilds;
 	  std::vector<Uint16> checked(g,g+4096);m.updateForbiddenGradient(0,swim);
 	  REQUIRE(std::equal(checked.begin(),checked.end(),g));
-	  bool unchanged=mutation==2||mutation==9||mutation==10||mutation==11
+	  bool unchanged=mutation==2||mutation==7||mutation==8||mutation==9||mutation==10||mutation==11
 	   || (swim==Map::SWIM_CLASS_EVEN && (mutation==7||mutation==8));
 	  bool uniform=swim==0||swim==Map::SWIM_CLASS_EVEN;
 	  REQUIRE(rebuildCount==(!uniform||!unchanged?1:0));

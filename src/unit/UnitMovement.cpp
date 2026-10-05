@@ -211,7 +211,7 @@ void Unit::handleMovementRemovingBlackAround()
 			}
 		}
 	}
-	if (movement!=MOV_GOING_DX_DY || owner->map->getAirUnit(posX+dx, posY+dy)!=NOGUID)
+	if (movement!=MOV_GOING_DX_DY || !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
 		movement=MOV_RANDOM_FLY;
 }
 

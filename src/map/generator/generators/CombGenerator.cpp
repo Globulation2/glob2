@@ -405,7 +405,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			else if (u % 9 >= 6)
 				fruits.push_back(i);
 		}
-		if (game.map.isWater(i % t.w, i / t.w) && (d < -2 && d > -9) && u >= 20 &&
+		if (game.map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA) && (d < -2 && d > -9) && u >= 20 &&
 			u < L.length - 20)
 			algae.push_back(i);
 	}
@@ -460,7 +460,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	const auto spread = fertileCropEnvelope(map, fertility);
 	std::vector<unsigned char> inlet(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		inlet[i] = map.isWater(i % t.w, i / t.w) && L.side[i] >= 0;
+		inlet[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w)) && L.side[i] >= 0;
 	const auto inletFringe = dilate(t, inlet, kCropProbeReach + 1);
 	const auto foodWalk = supplyWalk(map, t, WHEAT), stoneWalk = supplyWalk(map, t, STONE),
 			   woodWalk = supplyWalk(map, t, WOOD);
@@ -550,8 +550,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 				room += ownAnchors[i] && inPeninsula(i, 4) && walk[i] >= 0;
 				if (open[i] && L.side[i] == int(p % 2))
 					for (const auto &step : kCardinalSteps)
-						if (map.isWater(t.at(i % t.w + step[0], i / t.w + step[1]) % t.w,
-										t.at(i % t.w + step[0], i / t.w + step[1]) / t.w))
+						if (map.terrainPropertiesAt(t.at(i % t.w + step[0], i / t.w + step[1])).swimmable)
 						{
 							++landing;
 							break;
