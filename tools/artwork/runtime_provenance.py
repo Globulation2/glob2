@@ -5,20 +5,15 @@ from collections import Counter
 import hashlib
 import json
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.artwork.package_runtime import AI, MATERIALS, require
 OUTPUT = ROOT / 'docs/assets/high-resolution/ASSET-PROVENANCE.md'
-CATEGORIES = {
-    'current': 'AI upscale with constrained finishing',
-    'outline_repair': 'AI upscale with constrained finishing',
-    'painted_repair': 'AI upscale with constrained finishing',
-    'crystal_repair': 'AI upscale with constrained finishing',
-    'resource constrained': 'AI upscale with constrained finishing',
-    'world constrained': 'AI upscale with constrained finishing',
-    'soft mask resampling': 'Non-AI mask resampling',
-    'shared-material rugged corner masks v5; quiet flat grass': 'Generated material with deterministic tiling',
-    'quiet ripples; periodic material v3': 'Generated material with deterministic tiling',
-}
+CATEGORIES = {recipe: 'AI upscale with constrained finishing' for recipe in AI}
+CATEGORIES.update({recipe: 'Generated material with deterministic tiling' for recipe in MATERIALS})
+CATEGORIES['soft mask resampling'] = 'Non-AI mask resampling'
 
 def render():
     manifest = json.loads((ROOT / 'data/highres/v1/manifest.json').read_text())
@@ -31,19 +26,21 @@ def render():
                     else 'Hand-authored vector' if authored else CATEGORIES[recipe])
         sources = frame.get('sources', [])
         if original or authored:
-            assert sources, frame['id']
+            require(sources, 'Missing provenance sources: ' + frame['id'])
         for source in sources:
-            assert hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256']
+            require(hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'],
+                    'Provenance source hash differs: ' + source['path'])
         for layer in frame['layers']:
             path = ROOT / 'data/highres/v1' / layer['file']
-            assert hashlib.sha256(path.read_bytes()).hexdigest() == layer['sha256']
+            require(hashlib.sha256(path.read_bytes()).hexdigest() == layer['sha256'],
+                    'Provenance layer hash differs: ' + str(path))
         native = '—'
         if sources:
             source = sources[0]
             size = source.get('native_size')
             if size:
                 native = '%s×%s' % tuple(size)
-            native += ' ([source](../../%s))' % source['path']
+            native += ' ([source](../../../%s))' % source['path']
         rows.append((frame['id'], category, '%s×%s' % (frame['width'], frame['height']), native, recipe))
     counts = Counter(row[1] for row in rows)
     lines = ['# Runtime artwork provenance', '',
@@ -59,8 +56,8 @@ def render():
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
     lines += ['', f'Total: **{len(rows)} frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in '
-              '[the pack manifest](../../data/highres/v1/manifest.json). '
-              'See [original export recipes](../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.', '',
+              '[the pack manifest](../../../data/highres/v1/manifest.json). '
+              'See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.', '',
               '| Frame | Source category | Logical canvas | Native canvas/source | Recipe |',
               '| --- | --- | --- | --- | --- |']
     lines += ['| `%s` | %s | %s | %s | %s |' % row for row in sorted(rows)]
@@ -72,7 +69,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     result = render()
     if args.check:
-        assert OUTPUT.read_text() == result, 'Stale inventory: rerun runtime_provenance.py'
+        require(OUTPUT.read_text() == result, 'Stale inventory: rerun runtime_provenance.py')
         print('PASS complete recipe classification, source/output hashes and current inventory')
     else:
         OUTPUT.write_text(result)

@@ -43,7 +43,7 @@ namespace
 void setYoungResource(Map& map, int x, int y, int type)
 {
     map.setResource(x,y,type,1);
-    map.getTile(x,y).resource.amount=1;
+    map.setResourceAmount(map.coordToIndex(x,y), 1);
 }
 
 struct Fixture
@@ -245,7 +245,7 @@ int applyAreaContracts(Fixture& f)
                 if(remove->areaType==ClearingArea)
                 {
                     changes+=map.isClearArea(cell.x,cell.y,f.player.team->me);
-                    map.getTile(cell.x,cell.y).clearArea&=~f.player.team->me;
+                    map.setAreaMask(map.coordToIndex(cell.x,cell.y), &Tile::clearArea, map.getTile(cell.x,cell.y).clearArea & (~f.player.team->me));
                 }
             }
     }
@@ -272,7 +272,7 @@ void expansionLeavesHarvestLanesOpen()
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
-            map.getTile(x,y).canResourcesGrow=0;
+            map.setResourcesGrow(x,y, 0);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
         const int seed=index(19,19),support=index(20,19);
@@ -285,7 +285,7 @@ void expansionLeavesHarvestLanesOpen()
             int i=index(21,y);setYoungResource(map,i%64,i/64,WHEAT);
             i=index(22,y);setYoungResource(map,i%64,i/64,WHEAT);
         }
-        for(int i:{seed,support,target,other})map.getTile(i%64,i/64).canResourcesGrow=1;
+        for(int i:{seed,support,target,other})map.setResourcesGrow(i%64,i/64, 1);
         if(live)setYoungResource(map,support%64,support/64,WHEAT);
         configurePattern(f);
         ai.update_farming(ai.context);applyAreaContracts(f);
@@ -322,7 +322,7 @@ void woodReserveSurvivesWheatPincer()
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
-        for(int i=0;i<64*64;++i)map.getTile(i%64,i/64).canResourcesGrow=0;
+        for(int i=0;i<64*64;++i)map.setResourcesGrow(i%64,i/64, 0);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
         const int seed=index(20,20),outlet=index(20,19),worker=index(21,18);
@@ -331,7 +331,7 @@ void woodReserveSurvivesWheatPincer()
         map.setNoResource(seed%64,seed/64,0);
         setYoungResource(map,seed%64,seed/64,WOOD);
         map.setNoResource(outlet%64,outlet/64,0);
-        for(int i:{seed,outlet})map.getTile(i%64,i/64).canResourcesGrow=1;
+        for(int i:{seed,outlet})map.setResourcesGrow(i%64,i/64, 1);
         REQUIRE(f.game.addUnit(worker%64,worker/64,0,WORKER,0,0,0,0));
         configurePattern(f);
         ai.budget.farming_minimum_wood_fertility=65536;
@@ -393,8 +393,8 @@ void woodReserveSurvivesWheatPincer()
         for(int x:{24,26})
         {
             int i=index(x,x);setYoungResource(map,i%64,i/64,WOOD);
-            map.getTile(i%64,i/64).canResourcesGrow=1;
-            i=index(x,x-1);map.getTile(i%64,i/64).canResourcesGrow=1;
+            map.setResourcesGrow(i%64,i/64, 1);
+            i=index(x,x-1);map.setResourcesGrow(i%64,i/64, 1);
         }
         update();
         auto stable=ai.select_wood_reserve(ai.context);
@@ -464,7 +464,7 @@ void permanentWheatLayout()
     {
         Fixture f(team);auto& ai=*f.ai;Map& map=f.game.map;
         auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
-        for(int y=0;y<64;++y)for(int x=0;x<64;++x)map.getTile(x,y).canResourcesGrow=1;
+        for(int y=0;y<64;++y)for(int x=0;x<64;++x)map.setResourcesGrow(x,y, 1);
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.setCellTerrain(i%64,i/64,WATER);}
         for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
@@ -475,7 +475,7 @@ void permanentWheatLayout()
         for(int amount:{1,2,3,4,5,2})
         {
             for(int i:{seed,interior,edge,lane})
-            {setYoungResource(map,i%64,i/64,WHEAT);map.getTile(i%64,i/64).resource.amount=amount;}
+            {setYoungResource(map,i%64,i/64,WHEAT);map.setResourceAmount(map.coordToIndex(i%64,i/64), amount);}
             ai.update_farming(ai.context);
             const int changes=applyAreaContracts(f);
             if(!first)REQUIRE(changes==0);
@@ -495,7 +495,7 @@ void permanentWheatLayout()
         REQUIRE(!ai.farm_protection_mask[interior]);
         // Selected seeds stay protected at maturity and after forced resource loss.
         setYoungResource(map,seed%64,seed/64,WHEAT);
-        map.getTile(seed%64,seed/64).resource.amount=4;
+        map.setResourceAmount(map.coordToIndex(seed%64,seed/64), 4);
         ai.update_farming(ai.context);applyAreaContracts(f);
         REQUIRE(map.isForbidden(seed%64,seed/64,f.player.team->me));
         map.setNoResource(seed%64,seed/64,0);

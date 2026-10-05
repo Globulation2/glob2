@@ -495,9 +495,9 @@ bool generate(Game &game, GenerationContext &c)
 			for (int dx = -v.plot; dx <= v.plot; ++dx)
 			{
 				const int i = t.at(x + dx, y + dy);
-				auto &resource = map.getResource(i % t.w, i / t.w);
+				const auto &resource = map.getResource(i % t.w, i / t.w);
 				if (L.plot[i] && (resource.type == WHEAT || resource.type == WOOD))
-					resource.amount = 2 + ((dx + dy + 2 * v.plot) % 2);
+					map.setResourceAmount(i, 2 + ((dx + dy + 2 * v.plot) % 2));
 			}
 		// Small quarries and orchards reward occupation of additional fields. Their
 		// bounded patches stay away from village footprints, hedges and crop plots.

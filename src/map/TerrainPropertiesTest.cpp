@@ -100,7 +100,7 @@ TEST_CASE("same-size map replacement and legacy import refresh ecology")
     map.setSize(5,5,GRASS);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)==0);
-    map.tiles[map.coordToIndex(9,8)].terrain=256;
+    auto tile=map.getTile(9,8);tile.terrain=256;map.replaceTile(9,8,tile);
     map.importLegacyTerrain();
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK(map.resourceGrowthField().landField().at(8,8)>0);
