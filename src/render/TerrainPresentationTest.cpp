@@ -253,8 +253,12 @@ TEST_SUITE("TerrainValidation")
 {
 	TEST_CASE("mixed terrain simulation trace and visual gallery [display][artifacts]")
 	{
+		const auto loadingStart = std::chrono::steady_clock::now();
 		glob2test::HeadlessGlobals globals(
 			{.display = true, .width = 1024, .height = 768, .seed = 7331});
+		const auto graphicsReady = std::chrono::steady_clock::now();
+		globals->terrainCompositor().prepare(false, 0);
+		const auto sourcesReady = std::chrono::steady_clock::now();
 		glob2test::HeadlessGame fixture({.wDec = 5,
 										 .hDec = 5,
 										 .discovered = true,
@@ -305,6 +309,11 @@ TEST_SUITE("TerrainValidation")
 		}
 		auto warm = std::chrono::steady_clock::now();
 		std::ofstream timing(glob2test::artifactDir() / "timing.txt");
+		timing << "graphics_loading_ms "
+			   << std::chrono::duration<double, std::milli>(graphicsReady - loadingStart).count()
+			   << "\nterrain_source_loading_ms "
+			   << std::chrono::duration<double, std::milli>(sourcesReady - graphicsReady).count()
+			   << '\n';
 		timing << "cold_ms " << std::chrono::duration<double, std::milli>(cold - start).count()
 			   << "\nwarm_ms "
 			   << std::chrono::duration<double, std::milli>(warm - cold).count() / 30
