@@ -756,13 +756,18 @@ one command, in an order that never leaves a half-upgraded instance:
    only Docker) into the build tree, and every image with the checkout's sim
    version. The running images are first tagged `:previous`. A failed build
    changes nothing that runs.
-3. **Swap:** `up --wait` (migrations run first, in `init`).
+3. **Swap:** `up --wait` (migrations run first, in `init`). Profiles of optional
+   services already running on the host are included in the build and swap, so
+   they cannot be left behind when Compose replaces a network. A network address
+   pool change still requires the downtime described above.
 4. **Web client last:** only once the new stack is healthy is the new client
    installed at `/play/`, so browsers never load a client newer than the platform
-   and engine agents behind it.
+   and engine agents behind it. Both `index.html` and the AI Studio entry page
+   `studio.html` are installed with their available precompressed copies.
 
 If the new stack does not become healthy, the script starts the `:previous`
-images of the previous revision again and leaves the web client as it was. The
+images of the previous revision again, recreating containers to restore network
+attachments, and leaves the web client as it was. The
 previous revision is the one the last successful run recorded in
 `GLOB2_DEPLOYED_REVISION_FILE`, not the checkout's `HEAD`, so checking out the new
 ref before running the script (to run its newest version) is safe. Before the first

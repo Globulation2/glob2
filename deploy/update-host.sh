@@ -41,6 +41,22 @@ compose() {
 	docker compose -f deploy/compose.yaml --env-file "$env_file" "$@"
 }
 
+# Include optional services already running on this host in the build and swap.
+# Otherwise a disabled profile can keep a network alive during its replacement.
+running_services=$(compose --profile '*' ps --services --status running)
+running_profiles=$(compose --profile '*' config --format json | RUNNING_SERVICES="$running_services" python3 -c '
+import json, os, sys
+services = json.load(sys.stdin).get("services", {})
+profiles = {profile for name in os.environ["RUNNING_SERVICES"].split()
+           for profile in services.get(name, {}).get("profiles", [])}
+print(",".join(sorted(profiles)))
+')
+if [ -n "$running_profiles" ]; then
+	COMPOSE_PROFILES=${COMPOSE_PROFILES:-$(setting COMPOSE_PROFILES)}
+	COMPOSE_PROFILES="${COMPOSE_PROFILES:+$COMPOSE_PROFILES,}$running_profiles"
+	export COMPOSE_PROFILES
+fi
+
 # The revision running now: the record of the last successful deployment.
 state=$(setting GLOB2_DEPLOYED_REVISION_FILE)
 state=${state:-$(cd "$(dirname "$env_file")/.." && pwd)/deployed-revision}
@@ -142,7 +158,8 @@ if ! compose up -d --wait --wait-timeout 300 --remove-orphans; then
 	git checkout --quiet --detach "$previous"
 	GLOB2_SIM_VERSION=$(python3 deploy/sim_version.py "$root")
 	export GLOB2_SIM_VERSION
-	if compose up -d --no-build --wait --wait-timeout 300 --remove-orphans; then
+	# A failed network replacement can leave stopped containers disconnected.
+	if compose up -d --no-build --force-recreate --wait --wait-timeout 300 --remove-orphans; then
 		echo "update-host: rolled back; the previous release is running again" >&2
 	else
 		echo "update-host: the previous release did not become healthy either" >&2
