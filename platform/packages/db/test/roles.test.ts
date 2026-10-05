@@ -172,6 +172,8 @@ describe('upgrading a database the superuser migrated', () => {
       SELECT 'fn', p.oid::regprocedure::text, pg_get_userbyid(p.proowner)
         FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
         WHERE n.nspname IN ('public', 'graphile_worker')
+          AND NOT EXISTS (SELECT 1 FROM pg_depend d WHERE d.classid = 'pg_proc'::regclass
+                          AND d.objid = p.oid AND d.deptype = 'e')
       UNION ALL
       SELECT 'type', n.nspname || '.' || t.typname, pg_get_userbyid(t.typowner)
         FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace
@@ -179,6 +181,8 @@ describe('upgrading a database the superuser migrated', () => {
       UNION ALL
       SELECT 'schema', nspname, pg_get_userbyid(nspowner) FROM pg_namespace
         WHERE nspname IN ('public', 'graphile_worker')`);
+    // Trusted extension functions (pg_trgm) remain owned by the bootstrap owner;
+    // transferOwnership deliberately excludes extension members.
     const strays = objects.rows.filter((o) => o.owner !== DB_ROLES.migrator);
     expect(strays).toEqual([]);
     expect(objects.rows.length).toBeGreaterThan(50);

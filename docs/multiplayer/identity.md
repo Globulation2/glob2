@@ -57,6 +57,40 @@ Authenticated REST calls send `Authorization: Bearer <access token>`. Errors are
 `ErrorBody` documents (`unauthenticated` 401, `forbidden` 403, `conflict` 409,
 `rate_limited` 429, …).
 
+## Profile photos
+
+Registered accounts use Gravatar automatically unless they upload a photo or choose
+initials in the web account settings. `SelfAccount.avatarSource` reports `automatic`,
+`uploaded`, or `initials`; account representations may include `avatarUrl`.
+
+- `PUT /api/v1/accounts/me/avatar` accepts raw still JPEG, PNG or WebP bytes,
+  limited to 10 MiB and 25 megapixels. The web editor uses MIT-licensed
+  [react-easy-crop](https://github.com/ValentinH/react-easy-crop) for a square crop
+  with a circular preview. Sharp normalizes orientation, strips metadata and
+  stores a 512×512 WebP; the original is not retained.
+- `PATCH /api/v1/accounts/me/avatar` takes `{ "source": "automatic" }` or
+  `{ "source": "initials" }`. Both remove the uploaded image. `DELETE` restores
+  automatic selection. Writes require the account's authentication and existing
+  CSRF protections and allow 30 changes per hour.
+- `GET /api/v1/accounts/{id}/avatar` serves an active registered account's image
+  or 404 (the UI shows initials). It never redirects visitors to Gravatar or
+  reveals email hashes. Responses use `no-store`, so old URLs cannot keep serving
+  a removed image through the application cache.
+
+Automatic selection tries normalized, distinct linked emails in linking order.
+The API hashes them with SHA-256 and requests G-rated images with `d=404` from
+Gravatar. Successful and missing results are cached in shared storage for 24 hours;
+linked-email changes clear the cache and advance the photo URL revision, so mounted
+avatars refresh too. Identity fingerprints also guard cache reads. Upstream fetches
+have a shared three-second deadline and bounded bytes;
+failures retry after one minute and use initials (or the same identity's previously
+cached image). External fetches never hold a database connection or account lock;
+a bounded queue limits concurrent refreshes, and conditional writes discard results
+superseded by identity, preference or deletion changes. Orphaned bytes left by
+interrupted writes or unlinked identities are collected after the existing seven-day
+blob grace period. Preference changes and account deletion remove stored avatar images. Data exports include
+photo preferences and the current download URL.
+
 ## Sign-in providers
 
 Providers are configured in `instance.yaml` under `auth.providers`; their

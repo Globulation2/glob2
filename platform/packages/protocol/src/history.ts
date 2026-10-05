@@ -14,7 +14,7 @@
 //   GET /api/v1/stats                                                              InstanceStats
 import { Type, type Static } from 'typebox';
 import { Open, SeatIndex, Timestamp, Uuid } from './common.ts';
-import { MatchSetup } from './matchSetup.ts';
+import { AiId, MatchSetup } from './matchSetup.ts';
 import { SimVersion } from './simVersion.ts';
 import {
   AccountStatus,
@@ -51,6 +51,7 @@ export type AiLeaderboard = Static<typeof AiLeaderboard>;
 // ---------------------------------------------------------------- profiles
 
 export const PlayerRating = Open({
+  overallRank: Type.Optional(Type.Integer({ minimum: 1 })),
   ladder: Type.String({ maxLength: 64 }),
   rating: Type.Number({ description: 'Displayed rating: ordinal scaled around 1500.' }),
   mu: Type.Number(),
@@ -288,3 +289,36 @@ export const InstanceStats = Open(
   { description: 'GET /api/v1/stats.' },
 );
 export type InstanceStats = Static<typeof InstanceStats>;
+
+export const DirectoryPlayer = Type.Union([
+  Open({ kind: Type.Literal('account'), account: PublicAccount }),
+  Open({
+    kind: Type.Literal('ai'),
+    ai: AiId,
+    displayName: Type.String(),
+    simVersion: Type.Optional(SimVersion),
+  }),
+]);
+export type DirectoryPlayer = Static<typeof DirectoryPlayer>;
+export const PlayerDirectory = Open({
+  items: Type.Array(DirectoryPlayer),
+  nextCursor: Type.Optional(Type.String()),
+});
+export type PlayerDirectory = Static<typeof PlayerDirectory>;
+export const AiEconomyCurve = Open({
+  matchId: Uuid,
+  seat: SeatIndex,
+  points: Type.Array(EconomyPoint),
+});
+export type AiEconomyCurve = Static<typeof AiEconomyCurve>;
+export const AiProfile = Open({
+  ai: AiId,
+  displayName: Type.String(),
+  simVersion: Type.Optional(SimVersion),
+  versions: Type.Array(Open({ simVersion: SimVersion, current: Type.Boolean() })),
+  ratings: Type.Array(PlayerRating),
+  ratingHistory: Type.Array(RatingHistoryPoint),
+  recentMatches: Type.Array(MatchSummary),
+  aggregates: Open({ ...PlayerAggregates.properties, economy: Type.Optional(AiEconomyCurve) }),
+});
+export type AiProfile = Static<typeof AiProfile>;

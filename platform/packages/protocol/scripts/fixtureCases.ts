@@ -239,6 +239,8 @@ const ROOM_STATE = {
 };
 
 const SELF_ACCOUNT = {
+  avatarUrl: `/api/v1/accounts/${ACCOUNT_1}/avatar?v=2`,
+  avatarSource: 'uploaded',
   id: ACCOUNT_1,
   displayName: 'Alice',
   kind: 'registered',
@@ -684,6 +686,28 @@ const VERIFIED_OUTCOME = {
 };
 
 export const fixtureCases: FixtureCase[] = [
+  {
+    schema: 'PlayerDirectory',
+    name: 'ai',
+    note: 'Configured AI before its first game.',
+    valid: true,
+    value: { items: [{ kind: 'ai', ai: 'nicowar', displayName: 'Nicowar' }] },
+  },
+  {
+    schema: 'AiProfile',
+    name: 'unplayed',
+    note: 'An AI profile without games or a supported engine.',
+    valid: true,
+    value: {
+      ai: 'castor',
+      displayName: 'Castor',
+      versions: [],
+      ratings: [],
+      ratingHistory: [],
+      recentMatches: [],
+      aggregates: { windowDays: 90, games: 0, wins: 0, losses: 0, winRates: [] },
+    },
+  },
   {
     schema: 'HiveTool',
     name: 'investigate',
@@ -2045,9 +2069,15 @@ export const fixtureCases: FixtureCase[] = [
     schema: 'PlayerProfile',
     name: 'registered',
     valid: true,
-    note: 'A registered player with a rating, its history and aggregates.',
+    note: 'A registered player with an avatar, human and overall ranks, history and aggregates.',
     value: {
-      account: { id: ACCOUNT_1, displayName: 'Alice', kind: 'registered', createdAt: NOW },
+      account: {
+        id: ACCOUNT_1,
+        displayName: 'Alice',
+        kind: 'registered',
+        createdAt: NOW,
+        avatarUrl: `/api/v1/accounts/${ACCOUNT_1}/avatar?v=2`,
+      },
       detail: 'full',
       ratings: [
         {
@@ -2059,6 +2089,7 @@ export const fixtureCases: FixtureCase[] = [
           wins: 7,
           provisional: false,
           rank: 3,
+          overallRank: 5,
         },
       ],
       ratingHistory: [

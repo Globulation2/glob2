@@ -3,7 +3,8 @@
     "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
     "displayName": "Alice",
     "kind": "registered",
-    "createdAt": "2026-10-01T12:00:00Z"
+    "createdAt": "2026-10-01T12:00:00Z",
+    "avatarUrl": "/api/v1/accounts/0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b/avatar?v=2"
   },
   "detail": "full",
   "ratings": [
@@ -15,7 +16,8 @@
       "games": 11,
       "wins": 7,
       "provisional": false,
-      "rank": 3
+      "rank": 3,
+      "overallRank": 5
     }
   ],
   "ratingHistory": [

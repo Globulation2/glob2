@@ -21,6 +21,12 @@ export type JsonValue =
   string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 export interface AccountsTable {
+  avatar_source: Defaulted<'automatic' | 'uploaded' | 'initials'>;
+  avatar_key: Nullable<string>;
+  avatar_revision: Defaulted<number>;
+  gravatar_fingerprint: Nullable<string>;
+  gravatar_checked_at: NullableTimestamp;
+  gravatar_key: Nullable<string>;
   id: Generated<string>;
   kind: 'guest' | 'registered';
   display_name: string;

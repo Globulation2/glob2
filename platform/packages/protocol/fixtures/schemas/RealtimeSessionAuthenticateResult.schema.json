@@ -20,6 +20,25 @@
         "entitlements"
       ],
       "properties": {
+        "avatarUrl": {
+          "type": "string"
+        },
+        "avatarSource": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "automatic"
+            },
+            {
+              "type": "string",
+              "const": "uploaded"
+            },
+            {
+              "type": "string",
+              "const": "initials"
+            }
+          ]
+        },
         "id": {
           "type": "string",
           "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",

@@ -181,6 +181,8 @@ browser hosting remains unavailable. See `docs/browser/gateway.md` for the trans
 48 kHz Opus mixer. Map fertility is staged privately before publication. Landscape previews run
 on the shared native worker path in threaded builds and one candidate per UI
 timer in the serial fallback; an individual fallback roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
+`webgl-shaders.js` removes the legacy WebGL1 derivatives prefix from GLSL ES 3.00
+shaders, whose version directive must stay first and whose derivatives are built in.
 there is no mobile UI adaptation.
 
 Browser and desktop players in one match must run builds with the same sim

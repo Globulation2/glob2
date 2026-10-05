@@ -1,10 +1,13 @@
+import { avatarUrl } from '../avatars/urls.ts';
+import { rankedParticipants, leaderboardEntry, overallRanks } from './rankings.ts';
+import type { ParticipantFilter } from './players.ts';
 // Read side of match history (plan section G): leaderboards, player profiles,
 // match lists and match detail, over the tables and 0004 views the worker
 // fills from verified results. Nothing here writes.
 //
 // Visibility rules:
-// - Leaderboards list registered, active accounts only; AI entities are listed
-//   separately, per sim version. Guests are never ranked.
+// - Leaderboards default to active registered accounts. Combined/AI views add
+//   supported AI revisions as distinct participants. Guests are never ranked.
 // - Profiles of deleted accounts do not exist; banned accounts are visible to
 //   moderators only. Guests get a minimal profile (no ratings or aggregates).
 // - Every match is reachable by id (match links are shareable); the public
@@ -197,58 +200,34 @@ export class HistoryService {
 
   async leaderboard(
     ladder: string,
-    options: { cursor?: string; limit: number; provisional: 'include' | 'exclude' },
+    options: {
+      cursor?: string;
+      limit: number;
+      provisional: 'include' | 'exclude';
+      participants?: ParticipantFilter;
+    },
   ): Promise<LeaderboardPage> {
     await this.requireLadder(ladder);
     const offset = rankCursor(options.cursor);
     const settledOnly = options.provisional === 'exclude';
-    const rows = await sql<{
-      rank: string;
-      mu: number;
-      sigma: number;
-      games: number;
-      wins: number;
-      id: string;
-      display_name: string;
-      kind: 'guest' | 'registered';
-      created_at: Date;
-    }>`
-      SELECT * FROM (
-        SELECT row_number() OVER (ORDER BY r.ordinal DESC, r.games DESC, a.id) AS rank,
-               r.mu, r.sigma, r.games, r.wins, a.id, a.display_name, a.kind, a.created_at
-        FROM ratings r
-        JOIN rating_entities e ON e.id = r.entity_id AND e.kind = 'account'
-        JOIN accounts a ON a.id = e.account_id
-        WHERE r.ladder = ${ladder} AND r.games > 0
-          AND a.kind = 'registered' AND a.status = 'active'
-          AND (${settledOnly}::boolean IS FALSE OR r.sigma <= ${PROVISIONAL_SIGMA})
-      ) ranked
-      ORDER BY rank
-      OFFSET ${offset} LIMIT ${options.limit + 1}`.execute(this.db);
-    const page = rows.rows.slice(0, options.limit);
+    const versions = (await this.currentSimVersions()).map(simVersionKey);
+    const ranked = rankedParticipants(
+      [ladder],
+      versions,
+      options.participants ?? 'humans',
+      settledOnly,
+    );
+    const result = await sql<
+      Parameters<typeof leaderboardEntry>[0]
+    >`SELECT * FROM (${ranked}) ranked
+      ORDER BY rank OFFSET ${offset} LIMIT ${options.limit + 1}`.execute(this.db);
     const name = this.queueNames.get(ladder);
     return {
       ladder,
       ...(name ? { name } : {}),
-      entries: page.map((row) =>
-        entry(
-          Number(row.rank),
-          {
-            kind: 'account',
-            account: {
-              id: row.id,
-              displayName: row.display_name,
-              kind: row.kind,
-              createdAt: row.created_at.toISOString(),
-            },
-          },
-          row,
-        ),
-      ),
-      ...(rows.rows.length > options.limit
-        ? {
-            nextCursor: Buffer.from(String(offset + options.limit)).toString('base64url'),
-          }
+      entries: result.rows.slice(0, options.limit).map(leaderboardEntry),
+      ...(result.rows.length > options.limit
+        ? { nextCursor: Buffer.from(String(offset + options.limit)).toString('base64url') }
         : {}),
     };
   }
@@ -318,6 +297,7 @@ export class HistoryService {
     const recent = await this.playerMatches(account.id, viewer, { limit: 10 });
     const base = {
       account: {
+        avatarUrl: avatarUrl(account.id, account.avatar_revision),
         id: account.id,
         displayName: account.display_name,
         kind: account.kind,
@@ -334,7 +314,18 @@ export class HistoryService {
       this.ratingHistoryOf(account.id),
       this.aggregatesOf(account.id),
     ]);
-    return { ...base, detail: 'full', ratings, ratingHistory: history, aggregates };
+    const versions = (await this.currentSimVersions()).map(simVersionKey);
+    const ranks = await overallRanks(
+      this.db,
+      ratings.map((r) => r.ladder),
+      versions,
+      { accountId: account.id },
+    );
+    const withOverall = ratings.map((r) => {
+      const overallRank = ranks.get(r.ladder);
+      return { ...r, ...(overallRank !== undefined ? { overallRank } : {}) };
+    });
+    return { ...base, detail: 'full', ratings: withOverall, ratingHistory: history, aggregates };
   }
 
   private async ratingsOf(accountId: string): Promise<PlayerRating[]> {

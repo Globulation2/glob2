@@ -171,6 +171,12 @@ const typedColumns: ColumnLists = {
     'created_at',
   ],
   accounts: [
+    'avatar_source',
+    'avatar_key',
+    'avatar_revision',
+    'gravatar_fingerprint',
+    'gravatar_checked_at',
+    'gravatar_key',
     'id',
     'kind',
     'display_name',
@@ -695,6 +701,7 @@ describe('migrations', () => {
         '0033_queue_searches',
         '0034_skin_swarm_mesh',
         '0035_colony_skins_v2',
+        '0036_players_avatars',
       ]);
       expect(
         (
@@ -747,7 +754,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(13);
+      expect(upgraded).toHaveLength(14);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -868,6 +875,7 @@ describe('migrations', () => {
       const upgraded = await migrateToLatest(db);
       expect(upgraded.map((m) => [m.migrationName, m.status])).toEqual([
         ['0035_colony_skins_v2', 'Success'],
+        ['0036_players_avatars', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
