@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioCheck",
+  "title": "MusicStudioCheck",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "attempt",
+    "status",
+    "measures"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "running"
+        },
+        {
+          "type": "string",
+          "const": "pass"
+        },
+        {
+          "type": "string",
+          "const": "warn"
+        },
+        {
+          "type": "string",
+          "const": "fail"
+        },
+        {
+          "type": "string",
+          "const": "waived"
+        },
+        {
+          "type": "string",
+          "const": "info"
+        },
+        {
+          "type": "string",
+          "const": "skip"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    },
+    "measures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "status",
+          "value",
+          "threshold",
+          "detail"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "pass"
+              },
+              {
+                "type": "string",
+                "const": "warn"
+              },
+              {
+                "type": "string",
+                "const": "fail"
+              },
+              {
+                "type": "string",
+                "const": "waived"
+              },
+              {
+                "type": "string",
+                "const": "info"
+              },
+              {
+                "type": "string",
+                "const": "skip"
+              }
+            ]
+          },
+          "value": {},
+          "threshold": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

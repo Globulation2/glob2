@@ -365,3 +365,34 @@ Audio settings, the file picker, installation and selection, then reloads the
 browser to verify the persisted bytes. Its quota-failure case verifies recovery
 export and a successful retry. Without that archive, the integration cases skip
 explicitly; the platform web E2E suite can generate one.
+
+## Online AI Music Studio
+
+The optional online Music Studio uses the symbolic layer on CPUs. Its versioned
+`acoustic-v1` palette contains the instruments pinned by the four approved acoustic
+sets; `synth-v1` contains Glass Garden's warm Surge XT patches and DSP voices. It
+uses neither ACE-Step nor uploaded recordings. Assets are provisioned at image
+build time by `python -m glob2music.studio.install_assets CACHE`.
+
+The composition agent writes `composition.py` with `SCORE`, `arrange(mood)` and
+optional `MIX_ADJUST`. Generated code runs only in an isolated export process. A
+bounded JSON score crosses into a fresh trusted process, which checks ranges and
+structure, humanises, renders, folds tails, mixes, masters and encodes. Generated
+performance hooks and QA waivers cannot cross this boundary. Part names and
+instrument identifiers are validated before they can become filesystem paths.
+
+All ten audio checks run against the final encoded files, including the license,
+credits and AI-disclosure tags. Missing checks, skipped measurements and failures
+prevent delivery; warnings remain visible. Candidate evidence and composition
+sources stay private. Revisions edit the selected version's saved source. One
+request includes at most three render attempts within its model and CPU budgets.
+These automated checks do not replace listening; the service and each palette
+need listening and cost qualification before operators enable credit sales.
+
+Choose the release license before generation, then confirm it when publishing.
+The trusted encoder embeds the license, AI disclosure and pipeline/sample credits
+before final QA. Download ZIPs keep the native importer's three-file layout
+(`a1.opus`, `a2.opus`, `a3.opus`); attribution travels in the Opus tags.
+A timeline fingerprint covers tempo, meter, harmonic form and section boundaries;
+the comparison player carries its position only between matching timelines and
+frame counts.

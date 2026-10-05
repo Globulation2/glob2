@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioConfig",
+  "title": "MusicStudioConfig",
+  "type": "object",
+  "required": [
+    "enabled",
+    "salesEnabled"
+  ],
+  "properties": {
+    "enabled": {
+      "type": "boolean"
+    },
+    "salesEnabled": {
+      "type": "boolean"
+    },
+    "textModel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pipelineVersion": {
+      "type": "string",
+      "const": "music-v1"
+    },
+    "packs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "priceId",
+          "credits",
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "priceId": {
+            "type": "string",
+            "pattern": "^price_"
+          },
+          "credits": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "usd"
+              },
+              {
+                "type": "string",
+                "const": "cad"
+              },
+              {
+                "type": "string",
+                "const": "eur"
+              },
+              {
+                "type": "string",
+                "const": "gbp"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "maxItems": 20
+    },
+    "chatPerHour": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "providerCallsPerDay": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "maxCalls": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 30
+    },
+    "maxOutputTokens": {
+      "type": "integer",
+      "minimum": 4000,
+      "maximum": 32000
+    },
+    "maxTotalTokens": {
+      "type": "integer",
+      "minimum": 10000,
+      "maximum": 500000
+    },
+    "maxSourceBytes": {
+      "type": "integer",
+      "minimum": 4096,
+      "maximum": 131072
+    },
+    "maxOutputBytes": {
+      "type": "integer",
+      "minimum": 1048576,
+      "maximum": 134217728
+    },
+    "timeoutSeconds": {
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 3600
+    }
+  },
+  "additionalProperties": false
+}

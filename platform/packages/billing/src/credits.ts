@@ -49,11 +49,11 @@ export function price(rate: RateCard, usage: Usage): number {
     BigInt(usage.output) * BigInt(rate.output);
   return integer(Number((numerator + 999999n) / 1000000n));
 }
-export type CreditProduct = 'hive' | 'maps';
+export type CreditProduct = 'hive' | 'maps' | 'music';
 export class Credits {
   readonly product: CreditProduct;
   private table(name: string) {
-    return sql.table(`${this.product === 'hive' ? 'hive' : 'map'}_${name}`);
+    return sql.table(`${this.product === 'maps' ? 'map' : this.product}_${name}`);
   }
   readonly db: Kysely<Database>;
   constructor(db: Kysely<Database>, product: CreditProduct = 'hive') {
@@ -154,7 +154,7 @@ export class Credits {
           'credits',
           this.product === 'hive'
             ? 'Your commander needs more credits. Standing orders remain active.'
-            : 'Your map studio needs more credits.',
+            : `Your ${this.product === 'music' ? 'music' : 'map'} studio needs more credits.`,
         );
       await sql`INSERT INTO ${this.table('calls')}(id,account_id,reserved,status,rate) VALUES(${id},${account},${amount},'reserved',${JSON.stringify(rate)}::jsonb)`.execute(
         db,

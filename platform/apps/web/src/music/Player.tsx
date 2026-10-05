@@ -2,7 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import type { MusicRelease } from '@glob2/protocol';
 export const MOODS = ['Calm', 'Building', 'Combat'];
 const GAME_FADE_SECONDS = 17833 / 48000;
-export function MusicPlayer({ release }: { release: MusicRelease }) {
+export function MusicPlayer({
+  release,
+  initialPosition = 0,
+  onPosition,
+}: {
+  release: MusicRelease;
+  initialPosition?: number;
+  onPosition?: (seconds: number) => void;
+}) {
   const engine = useRef<{ worker: Worker; context: AudioContext; node: AudioWorkletNode } | null>(
     null,
   );
@@ -87,6 +95,7 @@ export function MusicPlayer({ release }: { release: MusicRelease }) {
         node.port.onmessage = (event: MessageEvent<{ position: number; weights: number[] }>) => {
           if (!alive.current) return;
           setPosition(event.data.position);
+          onPosition?.(event.data.position);
           setWeights(event.data.weights);
         };
         worker.onerror = () => {
@@ -104,6 +113,7 @@ export function MusicPlayer({ release }: { release: MusicRelease }) {
           if (data.ready) {
             setReady(true);
             setLoading(false);
+            command(2, Math.max(0, Math.min(initialPosition, release.frames / 48000)));
             const start = wantsPlayback.current && !document.hidden && context.state === 'running';
             setPlaying(start);
             command(0, Number(start));

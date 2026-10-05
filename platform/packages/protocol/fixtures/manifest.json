@@ -82,6 +82,16 @@
     "MusicModerate": "schemas/MusicModerate.schema.json",
     "MusicRelease": "schemas/MusicRelease.schema.json",
     "MusicReport": "schemas/MusicReport.schema.json",
+    "MusicStudioArtifact": "schemas/MusicStudioArtifact.schema.json",
+    "MusicStudioCheck": "schemas/MusicStudioCheck.schema.json",
+    "MusicStudioConfig": "schemas/MusicStudioConfig.schema.json",
+    "MusicStudioCreate": "schemas/MusicStudioCreate.schema.json",
+    "MusicStudioEvent": "schemas/MusicStudioEvent.schema.json",
+    "MusicStudioGenerate": "schemas/MusicStudioGenerate.schema.json",
+    "MusicStudioMessage": "schemas/MusicStudioMessage.schema.json",
+    "MusicStudioProgress": "schemas/MusicStudioProgress.schema.json",
+    "MusicStudioSettings": "schemas/MusicStudioSettings.schema.json",
+    "MusicStudioStageProgress": "schemas/MusicStudioStageProgress.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
     "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
@@ -1169,6 +1179,32 @@
       "schema": "StudioProgress",
       "valid": true,
       "note": "Historical requests explicitly expose missing detail without inventing checks."
+    },
+    {
+      "file": "valid/MusicStudioGenerate/acoustic-revision.json",
+      "schema": "MusicStudioGenerate",
+      "valid": true,
+      "note": "CPU acoustic revisions retain an explicit parent and seed."
+    },
+    {
+      "file": "invalid/MusicStudioGenerate/no-gpu-pipeline.json",
+      "schema": "MusicStudioGenerate",
+      "valid": false,
+      "stage": "schema",
+      "note": "GPU generation is not a Music Studio pipeline."
+    },
+    {
+      "file": "valid/MusicStudioEvent/audio-check.json",
+      "schema": "MusicStudioEvent",
+      "valid": true,
+      "note": "Checks retain thresholds and candidate identity."
+    },
+    {
+      "file": "invalid/MusicStudioEvent/invented-pass.json",
+      "schema": "MusicStudioEvent",
+      "valid": false,
+      "stage": "schema",
+      "note": "Unknown statuses cannot masquerade as validation."
     }
   ],
   "tickets": {

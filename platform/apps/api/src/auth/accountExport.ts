@@ -56,6 +56,12 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   hive_calls: ['account_id'],
   hive_sessions: ['account_id'],
   hive_purchases: ['account_id'],
+  music_wallets: ['account_id'],
+  music_ledger: ['account_id'],
+  music_calls: ['account_id'],
+  music_purchases: ['account_id'],
+  music_studio_threads: ['account_id'],
+  music_studio_requests: ['account_id'],
   map_wallets: ['account_id'],
   map_ledger: ['account_id'],
   map_calls: ['account_id'],
@@ -730,6 +736,95 @@ export async function exportAccount(
         .where('r.account_id', '=', id)
         .orderBy('a.created_at')
         .execute();
+      const musicStudioWallets = await tx
+        .selectFrom('music_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioLedger = await tx
+        .selectFrom('music_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioCalls = await tx
+        .selectFrom('music_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioPurchases = await tx
+        .selectFrom('music_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioThreads = await tx
+        .selectFrom('music_studio_threads')
+        .select(['id', 'brief', 'title', 'created_at', 'updated_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioRequests = await tx
+        .selectFrom('music_studio_requests')
+        .select([
+          'id',
+          'thread_id',
+          'kind',
+          'status',
+          'input',
+          'checkpoints',
+          'release_id',
+          'error',
+          'charged',
+          'created_at',
+          'completed_at',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const musicStudioMessages = await tx
+        .selectFrom('music_studio_messages as m')
+        .innerJoin('music_studio_threads as t', 't.id', 'm.thread_id')
+        .select(['m.id', 'm.thread_id', 'm.role', 'm.text', 'm.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('m.created_at')
+        .orderBy('m.id')
+        .execute();
+      const musicStudioEvents = await tx
+        .selectFrom('music_studio_events as e')
+        .innerJoin('music_studio_threads as t', 't.id', 'e.thread_id')
+        .select(['e.thread_id', 'e.cursor', 'e.request_id', 'e.type', 'e.payload', 'e.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('e.cursor')
+        .execute();
+      const musicStudioArtifacts = await tx
+        .selectFrom('music_studio_artifacts as a')
+        .innerJoin('music_studio_threads as t', 't.id', 'a.thread_id')
+        .select([
+          'a.id',
+          'a.thread_id',
+          'a.request_id',
+          'a.stage',
+          'a.kind',
+          'a.label',
+          'a.hash',
+          'a.created_at',
+        ])
+        .where('t.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+      const musicStudioAttempts = await tx
+        .selectFrom('music_studio_attempts as a')
+        .innerJoin('music_studio_requests as r', 'r.id', 'a.request_id')
+        .select([
+          'a.id',
+          'a.request_id',
+          'a.stage',
+          'a.model',
+          'a.status',
+          'a.input',
+          'a.output',
+          'a.created_at',
+        ])
+        .where('r.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
 
       return {
         format: ACCOUNT_EXPORT_FORMAT,
@@ -813,6 +908,18 @@ export async function exportAccount(
           attempts: rows(studioAttempts),
           events: rows(studioEvents),
           artifacts: rows(studioArtifacts),
+        },
+        musicStudio: {
+          wallets: rows(musicStudioWallets),
+          ledger: rows(musicStudioLedger),
+          calls: rows(musicStudioCalls),
+          purchases: rows(musicStudioPurchases),
+          threads: rows(musicStudioThreads),
+          messages: rows(musicStudioMessages),
+          requests: rows(musicStudioRequests),
+          attempts: rows(musicStudioAttempts),
+          events: rows(musicStudioEvents),
+          artifacts: rows(musicStudioArtifacts),
         },
         ais: {
           published: ais.map((a) => ({

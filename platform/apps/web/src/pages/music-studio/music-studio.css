@@ -1,0 +1,422 @@
+.music-studio {
+  --mu-gold: var(--gold-ink);
+  --mu-teal: var(--success);
+}
+.mu-workspace {
+  display: grid;
+  grid-template-columns: var(--chat-width, 36%) 8px minmax(0, 1fr);
+  min-height: 75vh;
+}
+.mu-chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface-2);
+}
+.mu-chat-heading,
+.mu-inspector-heading {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+.mu-chat-heading h2,
+.mu-inspector-heading h2 {
+  margin: 0.35rem 0 0;
+  font-size: 1.4rem;
+}
+.mu-messages {
+  overflow: auto;
+  max-height: 52vh;
+  min-height: 220px;
+  padding: 1.5rem;
+  flex: 1;
+}
+.mu-message {
+  margin: 0 0 1.3rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--surface);
+}
+.mu-message.user {
+  margin-left: 1rem;
+  background: var(--surface);
+}
+.mu-message p {
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+.mu-message small,
+.mu-compose > small {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 1;
+}
+.mu-compose {
+  padding: 1.3rem;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 0.65rem;
+}
+.mu-compose textarea,
+.mu-draft textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 100px;
+}
+.mu-settings {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+}
+.mu-settings label,
+.mu-actions label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+}
+.mu-settings select,
+.mu-settings input {
+  min-width: 0;
+  width: 100%;
+}
+.mu-generate {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.mu-divider {
+  cursor: col-resize;
+  background: #ffffff06;
+  touch-action: none;
+}
+.mu-divider:hover,
+.mu-divider:focus {
+  background: #8dc8b455;
+}
+.mu-inspector {
+  min-width: 0;
+  padding-bottom: 2rem;
+  background: radial-gradient(ellipse at top right, #40605522, transparent 60%);
+}
+.mu-inspector > p,
+.mu-inspector > button,
+.mu-inspector > section,
+.mu-inspector > details,
+.mu-inspector > .music-player,
+.mu-inspector > .mu-actions,
+.mu-inspector > .mu-audition-header,
+.mu-inspector > .mu-candidate {
+  margin: 1rem 1.5rem;
+}
+.mu-inspector-heading,
+.mu-audition-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.mu-versions {
+  display: flex;
+  overflow: auto;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+}
+.mu-versions button {
+  white-space: nowrap;
+}
+.mu-versions button[aria-pressed='true'] {
+  border-color: var(--mu-teal);
+  color: var(--mu-teal);
+}
+.mu-versions small {
+  display: block;
+  font-size: 0.65rem;
+  opacity: 1;
+}
+.mu-empty {
+  min-height: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  color: var(--ink-2);
+}
+.mu-empty > span {
+  font-size: 6rem;
+  color: var(--mu-gold);
+  opacity: 1;
+}
+.mu-empty p {
+  max-width: 380px;
+  line-height: 1.7;
+}
+.mu-mood-labels {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}
+.mu-stages {
+  list-style: none;
+  padding: 1rem 1.5rem;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+.mu-stages li {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+.mu-stages li[data-status='running'],
+.mu-stages li[data-status='complete'] {
+  opacity: 1;
+  color: var(--mu-teal);
+}
+.mu-stages small {
+  display: block;
+  margin-top: 0.3rem;
+  color: inherit;
+  opacity: 1;
+  line-height: 1.5;
+}
+.mu-working {
+  color: var(--mu-gold);
+}
+.mu-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.7rem;
+}
+.mu-private {
+  font-size: 0.8rem;
+  opacity: 1;
+}
+.mu-artifacts,
+.mu-notes,
+.mu-checks details {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.mu-artifacts a,
+.mu-artifacts button {
+  display: inline-block;
+  margin: 0.7rem 0.5rem 0 0;
+}
+.mu-checks > p {
+  font-size: 0.85rem;
+  opacity: 1;
+  line-height: 1.6;
+}
+.mu-checks details {
+  margin: 0.65rem 0;
+  padding: 0.85rem;
+}
+.mu-checks summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+.mu-checks summary small {
+  margin-left: auto;
+  opacity: 1;
+}
+.mu-status {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  background: var(--surface);
+}
+.mu-status.pass {
+  color: var(--success);
+}
+.mu-status.warn {
+  color: var(--warn);
+}
+.mu-status.fail {
+  color: var(--danger);
+}
+.mu-measure {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+.mu-measure:first-of-type {
+  margin-top: 1rem;
+}
+.mu-measure p {
+  grid-column: 1/-1;
+  margin: 0.2rem 0;
+  opacity: 1;
+}
+.mu-measure small {
+  opacity: 1;
+}
+.mu-candidate audio {
+  width: 100%;
+}
+.mu-candidate > p {
+  color: var(--mu-gold);
+}
+.mu-prompt {
+  display: block;
+  text-align: left;
+  width: 100%;
+  margin: 0.7rem 0;
+  padding: 1rem;
+}
+.mu-landing {
+  padding: 2rem clamp(1rem, 4vw, 5rem) 3rem;
+}
+.mu-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 0 3rem;
+}
+.mu-hero h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
+  line-height: 1.06;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+.mu-hero > p {
+  max-width: 430px;
+  line-height: 1.8;
+  position: relative;
+  z-index: 1;
+}
+.mu-score-art {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 45%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.38;
+  mask-image: linear-gradient(90deg, transparent, #000 20%);
+}
+.mu-score-art i {
+  display: block;
+  flex: 1;
+  border-radius: 6px;
+  background: linear-gradient(#e5c487, #5f9a86);
+  animation: mu-breathe 5s ease-in-out infinite;
+}
+.mu-idea-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.mu-idea-grid button {
+  padding: 1.4rem;
+  text-align: left;
+  background: linear-gradient(135deg, #708d5022, #28332d22);
+  border: 1px solid var(--line);
+}
+.mu-idea-grid strong {
+  display: block;
+  color: var(--mu-gold);
+  margin-bottom: 0.7rem;
+}
+.mu-idea-grid span {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+.mu-draft {
+  display: block;
+  margin: 2rem 0;
+}
+.mu-draft textarea {
+  display: block;
+  margin-top: 0.7rem;
+}
+.mu-landing-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  line-height: 1.7;
+}
+.mu-landing-bottom button {
+  margin: 0.5rem 0.6rem 0.5rem 0;
+}
+.mu-landing nav a {
+  display: inline-block;
+  margin: 0.5rem 1rem 0.5rem 0;
+}
+.mu-mobile-tabs {
+  display: none;
+}
+.mu-reveal {
+  animation: mu-reveal 0.7s ease-out;
+}
+@keyframes mu-reveal {
+  from {
+    box-shadow: inset 0 0 90px #edcd7844;
+  }
+  to {
+    box-shadow: inset 0 0 0 transparent;
+  }
+}
+@keyframes mu-breathe {
+  50% {
+    transform: scaleY(0.75);
+    opacity: 1;
+  }
+}
+@media (max-width: 850px) {
+  .mu-mobile-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.7rem;
+  }
+  .mu-workspace {
+    display: block;
+  }
+  .mu-divider {
+    display: none;
+  }
+  .mu-workspace[data-pane='chat'] > .mu-inspector,
+  .mu-workspace[data-pane='listen'] > .mu-chat {
+    display: none;
+  }
+  .mu-idea-grid,
+  .mu-landing-bottom {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .mu-score-art {
+    width: 65%;
+    opacity: 0.18;
+  }
+  .mu-measure {
+    grid-template-columns: 1fr;
+  }
+  .mu-measure p {
+    grid-column: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mu-reveal,
+  .mu-score-art i {
+    animation: none;
+  }
+}

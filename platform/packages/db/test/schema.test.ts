@@ -59,6 +59,7 @@ const typedColumns: ColumnLists = {
     'resolution_note',
   ],
   music_releases: [
+    'authoring',
     'id',
     'owner_id',
     'metadata',
@@ -147,6 +148,62 @@ const typedColumns: ColumnLists = {
     'assertion',
     'created_at',
   ],
+  music_studio_threads: [
+    'id',
+    'account_id',
+    'title',
+    'brief',
+    'created_at',
+    'updated_at',
+    'event_cursor',
+  ],
+  music_studio_events: [
+    'thread_id',
+    'cursor',
+    'request_id',
+    'dedup',
+    'type',
+    'payload',
+    'created_at',
+  ],
+  music_studio_provider_usage: ['day', 'calls'],
+  music_studio_artifacts: [
+    'id',
+    'thread_id',
+    'request_id',
+    'stage',
+    'kind',
+    'label',
+    'hash',
+    'created_at',
+  ],
+  music_studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
+  music_studio_requests: [
+    'id',
+    'thread_id',
+    'account_id',
+    'kind',
+    'status',
+    'input',
+    'checkpoints',
+    'lease_until',
+    'lease',
+    'release_id',
+    'error',
+    'charged',
+    'created_at',
+    'completed_at',
+  ],
+  music_studio_attempts: [
+    'id',
+    'request_id',
+    'stage',
+    'model',
+    'status',
+    'input',
+    'output',
+    'created_at',
+  ],
   studio_threads: [
     'id',
     'account_id',
@@ -198,6 +255,9 @@ const typedColumns: ColumnLists = {
     'output',
     'created_at',
   ],
+  music_wallets: ['account_id', 'balance', 'reserved'],
+  music_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  music_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
   map_wallets: ['account_id', 'balance', 'reserved'],
   map_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
   map_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
@@ -237,6 +297,16 @@ const typedColumns: ColumnLists = {
     'created_at',
   ],
   hive_programs: ['session_id', 'id', 'revision', 'definition', 'status', 'supervised'],
+  music_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
   map_purchases: [
     'id',
     'account_id',
@@ -793,6 +863,7 @@ describe('migrations', () => {
         '0038_skin_view_angle',
         '0039_music',
         '0040_ai_library',
+        '0041_music_studio',
       ]);
       expect(
         (
@@ -862,7 +933,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(18);
+      expect(upgraded).toHaveLength(19);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -996,6 +1067,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_music_studio', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1126,6 +1198,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_music_studio', 'Success'],
       ]);
       expect(
         await db

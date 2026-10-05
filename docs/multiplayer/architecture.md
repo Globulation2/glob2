@@ -1088,3 +1088,39 @@ AudioWorklet receives bounded mixed PCM from a WASM build of the native preview
 code. See [music pipeline](../assets/music-pipeline.md#community-releases) for the
 self-contained file format and [hosting](../hosting/README.md#music-worker) for
 operational limits.
+
+## AI Music Studio
+
+`/music-studio` provides CPU-only conversational soundtrack authoring. REST under
+`/api/v1/music-studio` owns account state, projects, messages, explicit generation,
+cancellation, private artifacts and checkout. `packages/music-studio` owns the
+transactional journal and delivery; `apps/ai-music-worker` owns provider calls,
+bounded agent tools and isolated Python execution. The score/rendering contracts
+are described in the [music pipeline](../assets/music-pipeline.md#online-ai-music-studio).
+
+Music uses its own wallets, ledger and Stripe purchases. A generation reserves one
+credit; creating its private immutable music release and consuming the credit
+commit together. Failure or cancellation returns the reservation once. Unknown
+provider outcomes keep the reservation pending for administrative reconciliation
+at `POST /api/v1/admin/music-studio/requests/:id/fail`. Provider attempts are
+journalled before dispatch and anonymous daily usage survives history deletion.
+
+The event stream reuses Map Studio's ordered, transactional SSE transport and
+reconnect/authentication behavior on a separate notification channel. Stage,
+check, candidate and composer-progress events remain with each request. History
+snapshots omit worker-only source/configuration checkpoints; account exports
+include them without lease credentials. Account deletion fences workers and
+returns unfinished reservations before removing authoring history.
+
+Delivered revisions use existing music-library authorization and playback.
+Publishing requires confirmation of the license selected before generation; it
+exposes only that release and final check results. License and attribution are
+embedded in Opus tags before validation, preserving the native three-file ZIP
+format. Uploaded audio cannot replace generated revisions. Withdrawing a release
+uses existing library controls; it does not reveal private authoring artifacts.
+
+Deleting a Music Studio conversation removes its private source, messages, candidates
+and event history; finished releases remain independently managed in the music
+library. Free-chat usage is retained as zero-credit ledger entries and anonymous
+daily provider counters survive history/account deletion. Private pipeline source
+fingerprints fence recovery across an incompatible worker upgrade.

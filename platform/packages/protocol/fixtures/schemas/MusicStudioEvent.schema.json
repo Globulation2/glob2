@@ -1,0 +1,544 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioEvent",
+  "title": "MusicStudioEvent",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "state"
+            },
+            {
+              "type": "string",
+              "const": "complete"
+            }
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "stage"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "id",
+            "label",
+            "status"
+          ],
+          "properties": {
+            "id": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "prepare"
+                },
+                {
+                  "type": "string",
+                  "const": "score"
+                },
+                {
+                  "type": "string",
+                  "const": "render"
+                },
+                {
+                  "type": "string",
+                  "const": "master"
+                },
+                {
+                  "type": "string",
+                  "const": "checks"
+                },
+                {
+                  "type": "string",
+                  "const": "repair"
+                },
+                {
+                  "type": "string",
+                  "const": "ready"
+                }
+              ]
+            },
+            "label": {
+              "type": "string"
+            },
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "pending"
+                },
+                {
+                  "type": "string",
+                  "const": "running"
+                },
+                {
+                  "type": "string",
+                  "const": "complete"
+                },
+                {
+                  "type": "string",
+                  "const": "failed"
+                }
+              ]
+            },
+            "detail": {
+              "type": "string"
+            },
+            "completedAt": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "check"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "id",
+            "label",
+            "attempt",
+            "status",
+            "measures"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "attempt": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            },
+            "status": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "pending"
+                },
+                {
+                  "type": "string",
+                  "const": "running"
+                },
+                {
+                  "type": "string",
+                  "const": "pass"
+                },
+                {
+                  "type": "string",
+                  "const": "warn"
+                },
+                {
+                  "type": "string",
+                  "const": "fail"
+                },
+                {
+                  "type": "string",
+                  "const": "waived"
+                },
+                {
+                  "type": "string",
+                  "const": "info"
+                },
+                {
+                  "type": "string",
+                  "const": "skip"
+                }
+              ]
+            },
+            "detail": {
+              "type": "string"
+            },
+            "measures": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "status",
+                  "value",
+                  "threshold",
+                  "detail"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "pass"
+                      },
+                      {
+                        "type": "string",
+                        "const": "warn"
+                      },
+                      {
+                        "type": "string",
+                        "const": "fail"
+                      },
+                      {
+                        "type": "string",
+                        "const": "waived"
+                      },
+                      {
+                        "type": "string",
+                        "const": "info"
+                      },
+                      {
+                        "type": "string",
+                        "const": "skip"
+                      }
+                    ]
+                  },
+                  "value": {},
+                  "threshold": {
+                    "type": "string"
+                  },
+                  "detail": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "artifact"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "id",
+            "requestId",
+            "stage",
+            "kind",
+            "label",
+            "url"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "requestId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "stage": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "prepare"
+                },
+                {
+                  "type": "string",
+                  "const": "score"
+                },
+                {
+                  "type": "string",
+                  "const": "render"
+                },
+                {
+                  "type": "string",
+                  "const": "master"
+                },
+                {
+                  "type": "string",
+                  "const": "checks"
+                },
+                {
+                  "type": "string",
+                  "const": "repair"
+                },
+                {
+                  "type": "string",
+                  "const": "ready"
+                }
+              ]
+            },
+            "kind": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "preview"
+                },
+                {
+                  "type": "string",
+                  "const": "source"
+                },
+                {
+                  "type": "string",
+                  "const": "report"
+                }
+              ]
+            },
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "message"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "messageId"
+          ],
+          "properties": {
+            "messageId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "id",
+        "requestId",
+        "createdAt",
+        "type",
+        "payload"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "text"
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "text",
+            "attempt"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "maxLength": 16000
+            },
+            "attempt": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

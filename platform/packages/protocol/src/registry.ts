@@ -1,3 +1,4 @@
+import { musicStudioSchemas } from './musicStudio.ts';
 import { aiSchemas } from './ais.ts';
 import { musicSchemas } from './music.ts';
 import { studioSchemas } from './mapStudio.ts';
@@ -179,6 +180,9 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   MatchColonySkin: { schema: MatchColonySkin },
   ColonySkinClaims: { schema: ColonySkinClaims },
   ...Object.fromEntries(Object.entries(aiSchemas).map(([name, schema]) => [name, { schema }])),
+  ...Object.fromEntries(
+    Object.entries(musicStudioSchemas).map(([name, schema]) => [name, { schema }]),
+  ),
   ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
   // Simulation and match description

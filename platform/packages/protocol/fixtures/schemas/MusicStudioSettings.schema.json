@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioSettings",
+  "title": "MusicStudioSettings",
+  "type": "object",
+  "required": [
+    "pipeline",
+    "seed"
+  ],
+  "properties": {
+    "pipeline": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "acoustic-v1"
+        },
+        {
+          "type": "string",
+          "const": "synth-v1"
+        }
+      ]
+    },
+    "license": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "CC0-1.0"
+        },
+        {
+          "type": "string",
+          "const": "CC-BY-4.0"
+        },
+        {
+          "type": "string",
+          "const": "CC-BY-SA-4.0"
+        }
+      ]
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2147483647
+    }
+  },
+  "additionalProperties": false
+}
