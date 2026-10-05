@@ -5545,14 +5545,14 @@ Onbeperkt
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Beperk het tekenen in de hele toepassing. Lagere waarden verminderen het tekenwerk. De spelsnelheid blijft gelijk.
 [ice]
-Ice
+IJs
 [road]
-Road
+Weg
 [experiment ice-terrain]
-Ice terrain
+IJsterrein
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Voegt ijs toe aan de kaarteditor. Grondeenheden bewegen met halve snelheid en verliezen één gezondheidspunt per 32 simulatiestappen op het ijs. Op ijs kunnen geen gebouwen of grondstoffen staan.
 [experiment road-terrain]
-Road terrain
+Wegterrein
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Voegt klinkerwegen toe aan de kaarteditor. Grondeenheden bewegen met dubbele snelheid. Wegen ondersteunen gebouwen, maar geen grondstoffen.

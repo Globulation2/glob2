@@ -5545,14 +5545,14 @@ CPU %0%
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Περιορίζει τη σχεδίαση σε όλη την εφαρμογή. Οι χαμηλότερες τιμές μειώνουν την εργασία απόδοσης. Η ταχύτητα του παιχνιδιού δεν αλλάζει.
 [ice]
-Ice
+Πάγος
 [road]
-Road
+Δρόμος
 [experiment ice-terrain]
-Ice terrain
+Παγωμένο έδαφος
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Προσθέτει πάγο στον επεξεργαστή χαρτών. Οι μονάδες εδάφους κινούνται με τη μισή ταχύτητα και χάνουν έναν πόντο υγείας κάθε 32 βήματα προσομοίωσης πάνω στον πάγο. Ο πάγος δεν επιτρέπει κτίρια ή πόρους.
 [experiment road-terrain]
-Road terrain
+Έδαφος δρόμων
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Προσθέτει λιθόστρωτους δρόμους στον επεξεργαστή χαρτών. Οι μονάδες εδάφους κινούνται με διπλάσια ταχύτητα. Οι δρόμοι επιτρέπουν κτίρια, αλλά όχι πόρους.

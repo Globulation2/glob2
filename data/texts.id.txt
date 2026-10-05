@@ -5545,14 +5545,14 @@ Tanpa batas
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Batasi penggambaran di seluruh aplikasi. Nilai yang lebih rendah mengurangi pekerjaan rendering. Kecepatan permainan tidak berubah.
 [ice]
-Ice
+Es
 [road]
-Road
+Jalan
 [experiment ice-terrain]
-Ice terrain
+Medan es
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Menambahkan es ke editor peta. Unit darat bergerak dengan setengah kecepatan dan kehilangan satu poin kesehatan setiap 32 langkah simulasi di atas es. Es tidak dapat memuat bangunan atau sumber daya.
 [experiment road-terrain]
-Road terrain
+Medan jalan
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Menambahkan jalan berbatu ke editor peta. Unit darat bergerak dengan dua kali kecepatan. Jalan dapat memuat bangunan, tetapi bukan sumber daya.

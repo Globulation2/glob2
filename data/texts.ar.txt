@@ -5545,14 +5545,14 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 حدّد معدل الرسم في التطبيق كله. تقلّل القيم المنخفضة عمل الرسم. لا تتغير سرعة اللعبة.
 [ice]
-Ice
+جليد
 [road]
-Road
+طريق
 [experiment ice-terrain]
-Ice terrain
+تضاريس جليدية
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+يضيف الجليد إلى محرر الخرائط. تتحرك الوحدات البرية بنصف السرعة وتفقد نقطة صحة واحدة كل 32 خطوة محاكاة على الجليد. لا يمكن وضع مبانٍ أو موارد على الجليد.
 [experiment road-terrain]
-Road terrain
+تضاريس الطرق
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+يضيف طرقًا مرصوفة بالحجارة إلى محرر الخرائط. تتحرك الوحدات البرية بضعف السرعة. تسمح الطرق بالمباني ولكن لا تسمح بالموارد.

@@ -5545,14 +5545,14 @@ Sem limite
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Limita o desenho em toda a aplicação. Valores mais baixos reduzem o trabalho de renderização. A velocidade do jogo não muda.
 [ice]
-Ice
+Gelo
 [road]
-Road
+Estrada
 [experiment ice-terrain]
-Ice terrain
+Terreno de gelo
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Adiciona gelo ao editor de mapas. As unidades terrestres movem-se a metade da velocidade e perdem um ponto de vida por cada 32 passos de simulação expostas ao gelo. O gelo não pode conter edifícios nem recursos.
 [experiment road-terrain]
-Road terrain
+Terreno de estrada
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Adiciona estradas de calçada ao editor de mapas. As unidades terrestres movem-se ao dobro da velocidade. As estradas permitem edifícios, mas não recursos.

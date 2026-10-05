@@ -5545,14 +5545,14 @@ Senlima
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Limigu desegnadon en la tuta aplikaĵo. Pli malaltaj valoroj reduktas la desegnan laboron. La ludrapido restas senŝanĝa.
 [ice]
-Ice
+Glacio
 [road]
-Road
+Vojo
 [experiment ice-terrain]
-Ice terrain
+Glacia tereno
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Aldonas glacion al la mapredaktilo. Teraj unuoj moviĝas je duona rapido kaj perdas unu sanpoenton ĉiun 32-an simulpaŝon sur glacio. Glacio ne povas enhavi konstruaĵojn aŭ rimedojn.
 [experiment road-terrain]
-Road terrain
+Voja tereno
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Aldonas pavimitajn vojojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapido. Vojoj permesas konstruaĵojn sed ne rimedojn.

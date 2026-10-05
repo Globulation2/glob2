@@ -5545,14 +5545,14 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 アプリ全体の描画頻度を制限します。低い値にすると描画処理が減ります。ゲームの速度は変わりません。
 [ice]
-Ice
+氷
 [road]
-Road
+道路
 [experiment ice-terrain]
-Ice terrain
+氷の地形
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+マップエディターに氷を追加します。地上ユニットの移動速度は半分になり、氷の上でシミュレーションが32ティック進むごとに体力を1失います。氷には建物や資源を配置できません。
 [experiment road-terrain]
-Road terrain
+道路の地形
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+マップエディターに石畳の道路を追加します。地上ユニットの移動速度は2倍になります。道路には建物を配置できますが、資源は配置できません。

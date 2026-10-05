@@ -5545,14 +5545,14 @@ Brez omejitve
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Omeji izris v celotni aplikaciji. Nižje vrednosti zmanjšajo delo pri izrisu. Hitrost igre se ne spremeni.
 [ice]
-Ice
+Led
 [road]
-Road
+Cesta
 [experiment ice-terrain]
-Ice terrain
+Ledeni teren
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Doda led v urejevalnik zemljevidov. Kopenske enote se premikajo s polovično hitrostjo in izgubijo eno točko zdravja vsakih 32 simulacijskih korakov na ledu. Na ledu ne more biti zgradb ali virov.
 [experiment road-terrain]
-Road terrain
+Cestni teren
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Doda tlakovane ceste v urejevalnik zemljevidov. Kopenske enote se premikajo z dvojno hitrostjo. Ceste omogočajo zgradbe, ne pa virov.

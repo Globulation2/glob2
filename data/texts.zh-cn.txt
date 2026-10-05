@@ -5545,14 +5545,14 @@ AI 遥测
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 限制整个应用程序的绘制频率。较低的数值可减少绘制工作量。游戏速度不变。
 [ice]
-Ice
+冰
 [road]
-Road
+道路
 [experiment ice-terrain]
-Ice terrain
+冰地形
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+在地图编辑器中添加冰。地面单位以一半速度移动，在冰上每经过32个模拟步就损失1点生命值。冰上不能放置建筑或资源。
 [experiment road-terrain]
-Road terrain
+道路地形
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+在地图编辑器中添加石板道路。地面单位以两倍速度移动。道路上可以放置建筑，但不能放置资源。

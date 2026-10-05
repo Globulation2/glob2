@@ -5545,14 +5545,14 @@ Fără limită
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Limitează desenarea în întreaga aplicație. Valorile mai mici reduc efortul de randare. Viteza jocului nu se schimbă.
 [ice]
-Ice
+Gheață
 [road]
-Road
+Drum
 [experiment ice-terrain]
-Ice terrain
+Teren de gheață
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Adaugă gheață în editorul de hărți. Unitățile terestre se deplasează cu jumătate din viteză și pierd un punct de sănătate la fiecare 32 de pași de simulare pe gheață. Gheața nu poate conține clădiri sau resurse.
 [experiment road-terrain]
-Road terrain
+Teren de drum
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Adaugă drumuri pietruite în editorul de hărți. Unitățile terestre se deplasează cu viteză dublă. Drumurile permit clădiri, dar nu resurse.

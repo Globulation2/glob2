@@ -5545,14 +5545,14 @@ Ubegrænset
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Begræns tegningen i hele programmet. Lavere værdier reducerer tegningsarbejdet. Spillets hastighed er uændret.
 [ice]
-Ice
+Is
 [road]
-Road
+Vej
 [experiment ice-terrain]
-Ice terrain
+Isterræn
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Tilføjer is til korteditoren. Landenheder bevæger sig med halv hastighed og mister ét livspoint for hver 32 simulationstrin på isen. Is kan ikke rumme bygninger eller ressourcer.
 [experiment road-terrain]
-Road terrain
+Vejterræn
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Tilføjer brostensveje til korteditoren. Landenheder bevæger sig med dobbelt hastighed. Veje tillader bygninger, men ikke ressourcer.
