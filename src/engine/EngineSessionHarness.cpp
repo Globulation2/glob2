@@ -672,6 +672,9 @@ TEST_SUITE("EngineSession")
 		                    resumedAt = frames;
 		                }
 		                screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
+		                // The synthetic frame clock does not yield CPU time. Give the
+		                // asynchronous worker a scheduling turn before the next frame.
+		                SDL_Delay(1);
 		                require(++frames <= 4000, "Threaded stack-driven session failed to finish");
 		            }
 		            require(loadingFrames > 20 && frames > resumedAt + 20 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
