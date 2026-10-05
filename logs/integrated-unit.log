@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (739 cases) (10.4s)
+
+1 passed, 0 failed, 14 skipped (10.4s of test time)
+[run_tests] JUnit report: artifacts/ai-library/unit-integrated.xml (753 cases)

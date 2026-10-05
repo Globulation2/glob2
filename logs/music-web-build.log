@@ -1,0 +1,750 @@
+
+> @glob2/web@0.1.0 build
+> python3 ../../../tools/music/build_web.py && vite build
+
+checking build system type... x86_64-pc-linux-gnux32
+checking host system type... wasm32-unknown-emscripten
+checking how to print strings... printf
+checking for wasm32-unknown-emscripten-gcc... /tmp/glob2-opus-tools-k1qlwss4/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc accepts -g... yes
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to enable C11 features... none needed
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc understands -c and -o together... yes
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by /tmp/glob2-opus-tools-k1qlwss4/cc... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /tmp/glob2-opus-tools-k1qlwss4/nm
+checking the name lister (/tmp/glob2-opus-tools-k1qlwss4/nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert x86_64-pc-linux-gnux32 file names to wasm32-unknown-emscripten format... func_convert_file_noop
+checking how to convert x86_64-pc-linux-gnux32 file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for wasm32-unknown-emscripten-file... no
+checking for file... file
+checking for wasm32-unknown-emscripten-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... unknown
+checking for wasm32-unknown-emscripten-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for wasm32-unknown-emscripten-ar... /tmp/glob2-opus-tools-k1qlwss4/ar
+checking for archiver @FILE support... @
+checking for wasm32-unknown-emscripten-strip... no
+checking for strip... strip
+checking for wasm32-unknown-emscripten-ranlib... /tmp/glob2-opus-tools-k1qlwss4/ranlib
+checking for gawk... gawk
+checking command to parse /tmp/glob2-opus-tools-k1qlwss4/nm output from /tmp/glob2-opus-tools-k1qlwss4/cc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for wasm32-unknown-emscripten-mt... no
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -fno-rtti -fno-exceptions... no
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to produce PIC... -fPIC -DPIC
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc PIC flag -fPIC -DPIC works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc static flag -static works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... (cached) yes
+checking whether the /tmp/glob2-opus-tools-k1qlwss4/cc linker (/bin/ld) supports shared libraries... yes
+checking dynamic linker characteristics... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... no
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a race-free mkdir -p... /usr/bin/mkdir -p
+checking whether make sets $(MAKE)... yes
+checking whether make supports the include directive... yes (GNU style)
+checking whether make supports nested variables... yes
+checking dependency style of /tmp/glob2-opus-tools-k1qlwss4/cc... gcc3
+checking whether to enable maintainer-specific portions of Makefiles... yes
+checking for wasm32-unknown-emscripten-gcc... (cached) /tmp/glob2-opus-tools-k1qlwss4/cc
+checking whether the compiler supports GNU C... (cached) yes
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc accepts -g... (cached) yes
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to enable C11 features... (cached) none needed
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc understands -c and -o together... (cached) yes
+checking for inttypes.h... (cached) yes
+checking for stdint.h... (cached) yes
+checking for sys/types.h... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking size of int16_t... 2
+checking size of uint16_t... 2
+checking size of u_int16_t... 2
+checking size of int32_t... 4
+checking size of uint32_t... 4
+checking size of u_int32_t... 4
+checking size of int64_t... 8
+checking size of uint64_t... 8
+checking size of short... 2
+checking size of int... 4
+checking size of long... 4
+checking size of long long... 8
+checking for working memcmp... yes
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating src/Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/libogg/Makefile
+config.status: creating include/Makefile
+config.status: creating include/ogg/Makefile
+config.status: creating include/ogg/config_types.h
+config.status: creating libogg.spec
+config.status: creating ogg.pc
+config.status: creating ogg-uninstalled.pc
+config.status: creating config.h
+config.status: executing libtool commands
+config.status: executing depfiles commands
+make  all-recursive
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+Making all in src
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+/tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I..  -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include  -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions -MT test_bitwise-bitwise.o -MD -MP -MF .deps/test_bitwise-bitwise.Tpo -c -o test_bitwise-bitwise.o `test -f 'bitwise.c' || echo '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/'`bitwise.c
+/tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I..  -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include  -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions -MT test_framing-framing.o -MD -MP -MF .deps/test_framing-framing.Tpo -c -o test_framing-framing.o `test -f 'framing.c' || echo '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/'`framing.c
+/bin/sh ../libtool  --tag=CC   --mode=compile /tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I..  -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include   -O2 -fsigned-char -O2 -fwasm-exceptions -MT framing.lo -MD -MP -MF .deps/framing.Tpo -c -o framing.lo /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/framing.c
+/bin/sh ../libtool  --tag=CC   --mode=compile /tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I..  -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include   -O2 -fsigned-char -O2 -fwasm-exceptions -MT bitwise.lo -MD -MP -MF .deps/bitwise.Tpo -c -o bitwise.lo /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/bitwise.c
+libtool: compile:  /tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I.. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include -O2 -fsigned-char -O2 -fwasm-exceptions -MT bitwise.lo -MD -MP -MF .deps/bitwise.Tpo -c /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/bitwise.c -o bitwise.o
+libtool: compile:  /tmp/glob2-opus-tools-k1qlwss4/cc -DHAVE_CONFIG_H -I. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src -I.. -I/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include -I../include -O2 -fsigned-char -O2 -fwasm-exceptions -MT framing.lo -MD -MP -MF .deps/framing.Tpo -c /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/src/framing.c -o framing.o
+mv -f .deps/bitwise.Tpo .deps/bitwise.Plo
+mv -f .deps/framing.Tpo .deps/framing.Plo
+/bin/sh ../libtool  --tag=CC   --mode=link /tmp/glob2-opus-tools-k1qlwss4/cc  -O2 -fsigned-char -O2 -fwasm-exceptions -no-undefined -version-info 8:6:8 -O2 -fwasm-exceptions -o libogg.la -rpath /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib framing.lo bitwise.lo  
+libtool: link: /tmp/glob2-opus-tools-k1qlwss4/ar cr .libs/libogg.a  framing.o bitwise.o
+mv -f .deps/test_bitwise-bitwise.Tpo .deps/test_bitwise-bitwise.Po
+/bin/sh ../libtool  --tag=CC   --mode=link /tmp/glob2-opus-tools-k1qlwss4/cc -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions  -O2 -fwasm-exceptions -o test_bitwise test_bitwise-bitwise.o  
+libtool: link: /tmp/glob2-opus-tools-k1qlwss4/cc -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions -O2 -fwasm-exceptions -o test_bitwise test_bitwise-bitwise.o 
+libtool: link: /tmp/glob2-opus-tools-k1qlwss4/ranlib .libs/libogg.a
+mv -f .deps/test_framing-framing.Tpo .deps/test_framing-framing.Po
+/bin/sh ../libtool  --tag=CC   --mode=link /tmp/glob2-opus-tools-k1qlwss4/cc -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions  -O2 -fwasm-exceptions -o test_framing test_framing-framing.o  
+libtool: link: /tmp/glob2-opus-tools-k1qlwss4/cc -D_V_SELFTEST -O2 -fsigned-char -O2 -fwasm-exceptions -O2 -fwasm-exceptions -o test_framing test_framing-framing.o 
+libtool: link: ( cd ".libs" && rm -f "libogg.la" && ln -s "../libogg.la" "libogg.la" )
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+Making all in include
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+Making all in ogg
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+Making all in doc
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+Making all in libogg
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[3]: Nothing to be done for 'all-am'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+Making install in src
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+ /bin/sh ../libtool   --mode=install /usr/bin/install -c   libogg.la '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+libtool: install: /usr/bin/install -c .libs/libogg.lai /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libogg.la
+libtool: install: /usr/bin/install -c .libs/libogg.a /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libogg.a
+libtool: install: chmod 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libogg.a
+libtool: install: /tmp/glob2-opus-tools-k1qlwss4/ranlib /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libogg.a
+make[2]: Nothing to be done for 'install-data-am'.
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/src'
+Making install in include
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+Making install in ogg
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[3]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/ogg'
+ /usr/bin/install -c -m 644 config_types.h '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/ogg'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/ogg'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include/ogg/ogg.h /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/include/ogg/os_types.h '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/ogg'
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include/ogg'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[3]: Nothing to be done for 'install-exec-am'.
+make[3]: Nothing to be done for 'install-data-am'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/include'
+Making install in doc
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+Making install in libogg
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[3]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/libogg/libogg'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/bitpacking.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/datastructures.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/decoding.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/encoding.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/general.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/index.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_iovec_t.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_packet.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_packet_clear.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_bos.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_checksum_set.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_continued.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_eos.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_granulepos.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_packets.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_pageno.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_serialno.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_page_version.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_check.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_clear.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_destroy.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_eos.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_flush.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_flush_fill.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_init.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_iovecin.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_packetin.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_packetout.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_packetpeek.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_pagein.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_pageout.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_pageout_fill.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_reset.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_reset_serialno.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_stream_state.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_buffer.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_check.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_clear.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_destroy.html '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/libogg/libogg'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_init.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_pageout.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_pageseek.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_reset.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_state.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/ogg_sync_wrote.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_adv.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_adv1.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_bits.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_buffer.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_bytes.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_get_buffer.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_look.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_look1.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_read.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_read1.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_readinit.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_reset.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_write.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writealign.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writecheck.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writeclear.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writecopy.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writeinit.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/oggpack_writetrunc.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/overview.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/reference.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/libogg/style.css '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/libogg/libogg'
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc/libogg'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[3]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/libogg'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/framing.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/index.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/oggstream.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/ogg-multiplex.html /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/fish_xiph_org.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/multiplex1.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/packets.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/pages.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/stream.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/vorbisword2.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/white-ogg.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/white-xifish.png /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/rfc3533.txt /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/rfc5334.txt /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/doc/skeleton.html '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/libogg'
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build/doc'
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+make[2]: Nothing to be done for 'install-exec-am'.
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/aclocal'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/libogg-1.3.6/ogg.m4 '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/aclocal'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+ /usr/bin/install -c -m 644 ogg.pc '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/ogg-build'
+checking whether make supports nested variables... yes
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for wasm32-unknown-emscripten-strip... no
+checking for strip... strip
+checking for a race-free mkdir -p... /usr/bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether to enable maintainer-specific portions of Makefiles... yes
+checking build system type... x86_64-pc-linux-gnux32
+checking host system type... wasm32-unknown-emscripten
+checking how to print strings... printf
+checking whether make supports the include directive... yes (GNU style)
+checking for wasm32-unknown-emscripten-gcc... /tmp/glob2-opus-tools-k1qlwss4/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc accepts -g... yes
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to enable C11 features... none needed
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc understands -c and -o together... yes
+checking dependency style of /tmp/glob2-opus-tools-k1qlwss4/cc... gcc3
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by /tmp/glob2-opus-tools-k1qlwss4/cc... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /tmp/glob2-opus-tools-k1qlwss4/nm
+checking the name lister (/tmp/glob2-opus-tools-k1qlwss4/nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert x86_64-pc-linux-gnux32 file names to wasm32-unknown-emscripten format... func_convert_file_noop
+checking how to convert x86_64-pc-linux-gnux32 file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for wasm32-unknown-emscripten-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... unknown
+checking for wasm32-unknown-emscripten-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for wasm32-unknown-emscripten-ar... /tmp/glob2-opus-tools-k1qlwss4/ar
+checking for archiver @FILE support... @
+checking for wasm32-unknown-emscripten-strip... strip
+checking for wasm32-unknown-emscripten-ranlib... /tmp/glob2-opus-tools-k1qlwss4/ranlib
+checking command to parse /tmp/glob2-opus-tools-k1qlwss4/nm output from /tmp/glob2-opus-tools-k1qlwss4/cc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for wasm32-unknown-emscripten-mt... no
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -fno-rtti -fno-exceptions... no
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to produce PIC... -fPIC -DPIC
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc PIC flag -fPIC -DPIC works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc static flag -static works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... (cached) yes
+checking whether the /tmp/glob2-opus-tools-k1qlwss4/cc linker (/bin/ld) supports shared libraries... yes
+checking dynamic linker characteristics... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... no
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking dependency style of /tmp/glob2-opus-tools-k1qlwss4/cc... gcc3
+checking for C/C++ restrict keyword... __restrict
+checking for C99 variable-size arrays... yes
+checking for cos in -lm... yes
+checking how to run the C preprocessor... /tmp/glob2-opus-tools-k1qlwss4/cc -E
+checking argument osce training data... no
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -fvisibility=hidden... yes
+checking whether to add -D_FORTIFY_SOURCE=2 to CFLAGS... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes... yes
+checking for lrintf... yes
+checking for lrint... yes
+checking for __malloc_hook... no
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating opus.pc
+config.status: creating opus-uninstalled.pc
+config.status: creating celt/arm/armopts.s
+config.status: creating doc/Makefile
+config.status: creating doc/Doxyfile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+configure:
+------------------------------------------------------------------------
+  opus 1.5.2:  Automatic configuration OK.
+
+    Compiler support:
+
+      C99 var arrays: ................ yes
+      C99 lrintf: .................... yes
+      Use alloca: .................... no (using var arrays)
+
+    General configuration:
+
+      Floating point support: ........ yes
+      Fast float approximations: ..... no
+      Fixed point debugging: ......... no
+      Inline Assembly Optimizations: . No inline ASM for your platform, please send patches
+      External Assembly Optimizations: 
+      Intrinsics Optimizations: ...... no
+      Run-time CPU detection: ........ no
+      Custom modes: .................. no
+      Assertion checking: ............ no
+      Hardening: ..................... yes
+      Fuzzing: ....................... no
+      Check ASM: ..................... no
+
+      API documentation: ............. no
+      Extra programs: ................ no
+------------------------------------------------------------------------
+
+ Type "make; make install" to compile and install
+ Type "make check" to run the test suite
+
+make  all-recursive
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+  CC       celt/bands.lo
+  CC       celt/celt.lo
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+  CC       celt/celt_encoder.lo
+  CC       celt/celt_decoder.lo
+  CC       celt/cwrs.lo
+  CC       celt/entcode.lo
+  CC       celt/entdec.lo
+  CC       celt/entenc.lo
+  CC       celt/kiss_fft.lo
+  CC       celt/laplace.lo
+  CC       celt/mathops.lo
+  CC       celt/mdct.lo
+  CC       celt/modes.lo
+  CC       celt/pitch.lo
+  CC       celt/celt_lpc.lo
+  CC       celt/quant_bands.lo
+  CC       celt/rate.lo
+  CC       celt/vq.lo
+  CC       silk/CNG.lo
+  CC       silk/code_signs.lo
+  CC       silk/init_decoder.lo
+  CC       silk/decode_core.lo
+  CC       silk/decode_frame.lo
+  CC       silk/decode_parameters.lo
+  CC       silk/decode_indices.lo
+  CC       silk/decode_pulses.lo
+  CC       silk/decoder_set_fs.lo
+  CC       silk/dec_API.lo
+  CC       silk/enc_API.lo
+  CC       silk/encode_indices.lo
+  CC       silk/encode_pulses.lo
+  CC       silk/gain_quant.lo
+  CC       silk/interpolate.lo
+  CC       silk/LP_variable_cutoff.lo
+  CC       silk/NLSF_decode.lo
+  CC       silk/NSQ.lo
+  CC       silk/NSQ_del_dec.lo
+  CC       silk/PLC.lo
+  CC       silk/shell_coder.lo
+  CC       silk/tables_gain.lo
+  CC       silk/tables_LTP.lo
+  CC       silk/tables_NLSF_CB_NB_MB.lo
+  CC       silk/tables_NLSF_CB_WB.lo
+  CC       silk/tables_other.lo
+  CC       silk/tables_pitch_lag.lo
+  CC       silk/tables_pulses_per_block.lo
+  CC       silk/VAD.lo
+  CC       silk/control_audio_bandwidth.lo
+  CC       silk/quant_LTP_gains.lo
+  CC       silk/VQ_WMat_EC.lo
+  CC       silk/HP_variable_cutoff.lo
+  CC       silk/NLSF_encode.lo
+  CC       silk/NLSF_VQ.lo
+  CC       silk/NLSF_unpack.lo
+  CC       silk/NLSF_del_dec_quant.lo
+  CC       silk/process_NLSFs.lo
+  CC       silk/stereo_LR_to_MS.lo
+  CC       silk/stereo_MS_to_LR.lo
+  CC       silk/check_control_input.lo
+  CC       silk/control_SNR.lo
+  CC       silk/init_encoder.lo
+  CC       silk/control_codec.lo
+  CC       silk/A2NLSF.lo
+  CC       silk/ana_filt_bank_1.lo
+  CC       silk/biquad_alt.lo
+  CC       silk/bwexpander_32.lo
+  CC       silk/bwexpander.lo
+  CC       silk/debug.lo
+  CC       silk/decode_pitch.lo
+  CC       silk/inner_prod_aligned.lo
+  CC       silk/lin2log.lo
+  CC       silk/log2lin.lo
+  CC       silk/LPC_analysis_filter.lo
+  CC       silk/LPC_inv_pred_gain.lo
+  CC       silk/table_LSF_cos.lo
+  CC       silk/NLSF2A.lo
+  CC       silk/NLSF_stabilize.lo
+  CC       silk/NLSF_VQ_weights_laroia.lo
+  CC       silk/pitch_est_tables.lo
+  CC       silk/resampler.lo
+  CC       silk/resampler_down2_3.lo
+  CC       silk/resampler_down2.lo
+  CC       silk/resampler_private_AR2.lo
+  CC       silk/resampler_private_down_FIR.lo
+  CC       silk/resampler_private_IIR_FIR.lo
+  CC       silk/resampler_private_up2_HQ.lo
+  CC       silk/resampler_rom.lo
+  CC       silk/sigm_Q15.lo
+  CC       silk/sort.lo
+  CC       silk/sum_sqr_shift.lo
+  CC       silk/stereo_decode_pred.lo
+  CC       silk/stereo_encode_pred.lo
+  CC       silk/stereo_find_predictor.lo
+  CC       silk/stereo_quant_pred.lo
+  CC       silk/LPC_fit.lo
+  CC       silk/float/apply_sine_window_FLP.lo
+  CC       silk/float/corrMatrix_FLP.lo
+  CC       silk/float/encode_frame_FLP.lo
+  CC       silk/float/find_LPC_FLP.lo
+  CC       silk/float/find_LTP_FLP.lo
+  CC       silk/float/find_pitch_lags_FLP.lo
+  CC       silk/float/find_pred_coefs_FLP.lo
+  CC       silk/float/LPC_analysis_filter_FLP.lo
+  CC       silk/float/LTP_analysis_filter_FLP.lo
+  CC       silk/float/LTP_scale_ctrl_FLP.lo
+  CC       silk/float/noise_shape_analysis_FLP.lo
+  CC       silk/float/process_gains_FLP.lo
+  CC       silk/float/regularize_correlations_FLP.lo
+  CC       silk/float/residual_energy_FLP.lo
+  CC       silk/float/warped_autocorrelation_FLP.lo
+  CC       silk/float/wrappers_FLP.lo
+  CC       silk/float/autocorrelation_FLP.lo
+  CC       silk/float/burg_modified_FLP.lo
+  CC       silk/float/bwexpander_FLP.lo
+  CC       silk/float/energy_FLP.lo
+  CC       silk/float/inner_product_FLP.lo
+  CC       silk/float/k2a_FLP.lo
+  CC       silk/float/LPC_inv_pred_gain_FLP.lo
+  CC       silk/float/pitch_analysis_core_FLP.lo
+  CC       silk/float/scale_copy_vector_FLP.lo
+  CC       silk/float/scale_vector_FLP.lo
+  CC       silk/float/schur_FLP.lo
+  CC       silk/float/sort_FLP.lo
+  CC       src/opus.lo
+  CC       src/opus_decoder.lo
+  CC       src/opus_encoder.lo
+  CC       src/extensions.lo
+  CC       src/opus_multistream.lo
+  CC       src/opus_multistream_encoder.lo
+  CC       src/opus_multistream_decoder.lo
+  CC       src/repacketizer.lo
+  CC       src/opus_projection_encoder.lo
+  CC       src/opus_projection_decoder.lo
+  CC       src/mapping_matrix.lo
+  CC       src/analysis.lo
+  CC       src/mlp.lo
+  CC       src/mlp_data.lo
+  CCLD     libopus.la
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make  install-recursive
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[2]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[3]: Nothing to be done for 'all'.
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[3]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+ /bin/sh ./libtool   --mode=install /usr/bin/install -c   libopus.la '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+libtool: install: /usr/bin/install -c .libs/libopus.lai /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopus.la
+libtool: install: /usr/bin/install -c .libs/libopus.a /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopus.a
+libtool: install: chmod 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopus.a
+libtool: install: /tmp/glob2-opus-tools-k1qlwss4/ranlib /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopus.a
+make[4]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[5]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[5]: Nothing to be done for 'install-exec-am'.
+make[5]: Nothing to be done for 'install-data-am'.
+make[5]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+make[4]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build/doc'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/aclocal'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/opus.m4 '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/aclocal'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+ /usr/bin/install -c -m 644 opus.pc '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+ /usr/bin/mkdir -p '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/opus'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/include/opus.h /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/include/opus_multistream.h /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/include/opus_types.h /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/include/opus_defines.h /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-1.5.2/include/opus_projection.h '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/opus'
+make[3]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[2]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opus-build'
+checking for wasm32-unknown-emscripten-gcc... /tmp/glob2-opus-tools-k1qlwss4/cc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc accepts -g... yes
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to accept ISO C89... none needed
+checking whether /tmp/glob2-opus-tools-k1qlwss4/cc understands -c and -o together... yes
+checking how to run the C preprocessor... /tmp/glob2-opus-tools-k1qlwss4/cc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking minix/config.h usability... no
+checking minix/config.h presence... no
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for special C compiler options needed for large files... no
+checking for _FILE_OFFSET_BITS value needed for large files... no
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/install-sh -c -d
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports the include directive... yes (GNU style)
+checking whether make supports nested variables... yes
+checking dependency style of /tmp/glob2-opus-tools-k1qlwss4/cc... gcc3
+checking whether to enable maintainer-specific portions of Makefiles... yes
+checking build system type... x86_64-pc-linux-gnux32
+checking host system type... wasm32-unknown-emscripten
+checking how to print strings... printf
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by /tmp/glob2-opus-tools-k1qlwss4/cc... /bin/ld
+checking if the linker (/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /tmp/glob2-opus-tools-k1qlwss4/nm
+checking the name lister (/tmp/glob2-opus-tools-k1qlwss4/nm) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert x86_64-pc-linux-gnux32 file names to wasm32-unknown-emscripten format... func_convert_file_noop
+checking how to convert x86_64-pc-linux-gnux32 file names to toolchain format... func_convert_file_noop
+checking for /bin/ld option to reload object files... -r
+checking for wasm32-unknown-emscripten-objdump... no
+checking for objdump... objdump
+checking how to recognize dependent libraries... unknown
+checking for wasm32-unknown-emscripten-dlltool... no
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for wasm32-unknown-emscripten-ar... /tmp/glob2-opus-tools-k1qlwss4/ar
+checking for archiver @FILE support... @
+checking for wasm32-unknown-emscripten-strip... no
+checking for strip... strip
+checking for wasm32-unknown-emscripten-ranlib... /tmp/glob2-opus-tools-k1qlwss4/ranlib
+checking command to parse /tmp/glob2-opus-tools-k1qlwss4/nm output from /tmp/glob2-opus-tools-k1qlwss4/cc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for wasm32-unknown-emscripten-mt... no
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -fno-rtti -fno-exceptions... no
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc option to produce PIC... -fPIC -DPIC
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc PIC flag -fPIC -DPIC works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc static flag -static works... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -c -o file.o... (cached) yes
+checking whether the /tmp/glob2-opus-tools-k1qlwss4/cc linker (/bin/ld) supports shared libraries... yes
+checking dynamic linker characteristics... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... no
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking whether make supports nested variables... (cached) yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -std=c89 flag... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -pedantic flag... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -Wall flag... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -Wextra flag... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -Wno-parentheses flag... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -Wno-long-long flag... yes
+checking for wasm32-unknown-emscripten-pkg-config... no
+checking for pkg-config... /usr/bin/pkg-config
+checking pkg-config is at least version 0.9.0... yes
+checking for ogg >= 1.3 opus >= 1.0.1... yes
+checking for library containing lrintf... none required
+checking for /tmp/glob2-opus-tools-k1qlwss4/cc way to treat warnings as errors... 
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports __attribute__(( visibility("default") ))... yes
+checking if /tmp/glob2-opus-tools-k1qlwss4/cc supports -fvisibility=hidden... yes
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating opusfile.pc
+config.status: creating opusurl.pc
+config.status: creating opusfile-uninstalled.pc
+config.status: creating opusurl-uninstalled.pc
+config.status: creating doc/Doxyfile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+configure:
+------------------------------------------------------------------------
+  opusfile 0.12: Automatic configuration OK.
+
+    Assertions ................... no
+
+    HTTP support ................. no
+    Fixed-point .................. no
+    Floating-point API ........... yes
+    Library for lrintf() ......... none required
+
+    Hidden visibility ............ yes
+
+    API code examples ............ no
+    API documentation ............ no
+------------------------------------------------------------------------
+
+make  all-am
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-build'
+  CC       src/info.lo
+  CC       src/internal.lo
+  CC       src/opusfile.lo
+  CC       src/stream.lo
+  CC       src/libopusurl_la-http.lo
+  CC       src/libopusurl_la-internal.lo
+/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/src/http.c:3470:31: warning: performing pointer subtraction with a null pointer has undefined behavior [-Wnull-pointer-subtraction]
+ 3470 |     request=va_arg(_ap,char *)-(char *)NULL;
+      |                               ^~~~~~~~~~~~~
+1 warning generated.
+  CCLD     libopusfile.la
+  CCLD     libopusurl.la
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-build'
+make[1]: Entering directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-build'
+ /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/install-sh -c -d '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+ /bin/sh ./libtool   --mode=install /usr/bin/install -c   libopusfile.la libopusurl.la '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib'
+libtool: install: /usr/bin/install -c .libs/libopusfile.lai /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusfile.la
+libtool: install: /usr/bin/install -c .libs/libopusurl.lai /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusurl.la
+libtool: install: /usr/bin/install -c .libs/libopusfile.a /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusfile.a
+libtool: install: chmod 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusfile.a
+libtool: install: /tmp/glob2-opus-tools-k1qlwss4/ranlib /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusfile.a
+libtool: install: /usr/bin/install -c .libs/libopusurl.a /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusurl.a
+libtool: install: chmod 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusurl.a
+libtool: install: /tmp/glob2-opus-tools-k1qlwss4/ranlib /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/libopusurl.a
+ /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/install-sh -c -d '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/opusfile'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/COPYING /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/AUTHORS /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/README.md '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/share/doc/opusfile'
+ /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/install-sh -c -d '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/opus'
+ /usr/bin/install -c -m 644 /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/include/opusfile.h '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/include/opus'
+ /home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-0.12/install-sh -c -d '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+ /usr/bin/install -c -m 644 opusfile.pc opusurl.pc '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/opus/lib/pkgconfig'
+make[1]: Leaving directory '/home/bradley/.codex/worktrees/4d06/glob2/build/music-web/sources/opusfile-build'
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 817 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                          1.32 kB │ gzip:   0.61 kB
+dist/assets/hospital-CZ8mxl8H.webp                       4.16 kB
+dist/assets/glob-64-DRYAgOz9.png                         4.51 kB
+dist/assets/school-3kPEHozp.webp                         4.60 kB
+dist/assets/war-flag-ClpBapaP.webp                       4.61 kB
+dist/assets/exploration-flag-DEYVuIyb.webp               5.54 kB
+dist/assets/wood-BvhIq-A_.webp                           5.59 kB
+dist/assets/clearing-flag-Dr2FX3nZ.webp                  5.94 kB
+dist/assets/stone-CR7HLFDE.webp                          6.14 kB
+dist/assets/racetrack-BEfp0i51.webp                      6.45 kB
+dist/assets/inn-pEFHk1BY.webp                            6.51 kB
+dist/assets/fruit-C8P4nJfl.webp                          7.36 kB
+dist/assets/papyrus-sl-e5iDV.webp                        7.49 kB
+dist/assets/algae-Cf7k497T.webp                          7.53 kB
+dist/assets/swarm-C7Cw-oud.webp                          9.26 kB
+dist/assets/wordmark-letters-Cs-rHGsD.webp              14.87 kB
+dist/assets/studio-demo-ready-6TPlwnsP.png              15.58 kB
+dist/assets/studio-river-LCG01wyA.webp                  18.11 kB
+dist/assets/worker-east-Bqinqqlq.webp                   22.38 kB
+dist/assets/studio-islands-I4eUbnJe.webp                26.99 kB
+dist/assets/nunito-latin-wght-normal-BzFMHfZw.woff2     39.12 kB
+dist/assets/studio-demo-layout-DGT4ihyt.png             58.33 kB
+dist/assets/studio-demo-crop-CdI6sdAV.png               58.96 kB
+dist/assets/studio-hills-JCRT_X_C.webp                 116.12 kB
+dist/assets/colony-960-DI2K-hM_.webp                   159.77 kB
+dist/assets/colony-1600-yR11DKDO.webp                  385.40 kB
+dist/assets/colony-loop-DySpPHVm.mp4                 6,831.27 kB
+dist/assets/Account-BY2xzm8t.css                         1.05 kB │ gzip:   0.43 kB
+dist/assets/Ais-BmfZ4wy1.css                             2.80 kB │ gzip:   1.04 kB
+dist/assets/MapStudio-eGnNSmWg.css                      31.80 kB │ gzip:   6.80 kB
+dist/assets/index-7UUiK2vr.css                          72.89 kB │ gzip:  18.73 kB
+dist/assets/LineChart-CONgewj1.js                        4.36 kB │ gzip:   1.91 kB │ map:    16.65 kB
+dist/assets/art-CKgAmf9B.js                              6.06 kB │ gzip:   4.46 kB │ map:    10.17 kB
+dist/assets/Player-DhZ80kXj.js                           8.91 kB │ gzip:   3.01 kB │ map:    26.65 kB
+dist/assets/Admin-C4hGoJ_r.js                           12.13 kB │ gzip:   3.79 kB │ map:    35.67 kB
+dist/assets/Match-CtSPwnwz.js                           16.02 kB │ gzip:   5.13 kB │ map:    46.48 kB
+dist/assets/state-BHyFyeJV.js                           16.40 kB │ gzip:   6.10 kB │ map:    55.25 kB
+dist/assets/Ais-B0tbjIrC.js                             17.58 kB │ gzip:   5.62 kB │ map:    52.27 kB
+dist/assets/Maps-BwtMWYuP.js                            19.04 kB │ gzip:   5.80 kB │ map:    56.17 kB
+dist/assets/Library-Df1s8RsV.js                         19.22 kB │ gzip:   6.08 kB │ map:    58.90 kB
+dist/assets/Account-BWO4_gbc.js                         33.60 kB │ gzip:  10.18 kB │ map:   110.30 kB
+dist/assets/MapStudio-Cdcqo5GP.js                       41.61 kB │ gzip:  12.82 kB │ map:   129.19 kB
+dist/assets/index-Ams_Mm67.js                          505.65 kB │ gzip: 155.30 kB │ map: 2,531.63 kB
+
+✓ built in 881ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

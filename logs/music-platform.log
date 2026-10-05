@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/4d06/glob2/platform
+
+
+ Test Files  15 passed | 1 skipped (16)
+      Tests  106 passed | 5 skipped (111)
+   Start at  20:59:23
+   Duration  13.86s (tests 55%, import 25%, transform 18%, environment 2%)
+
