@@ -110,6 +110,7 @@ class StudioBoundaryTests(unittest.TestCase):
                         str(seed),
                     ],
                     check=True,
+                    cwd=ROOT,
                 )
                 return (job / "score.json").read_text()
 
