@@ -1,0 +1,4 @@
+PASS glob2-unit-tests ImageAssets (6 cases) (0.0s)
+
+1 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: artifacts/asset-loader/review-master-inventory.xml (6 cases)
