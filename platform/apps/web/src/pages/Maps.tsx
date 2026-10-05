@@ -12,6 +12,7 @@ import {
   PlayerLink,
   TableWrap,
 } from '../components/common.tsx';
+import { MapPreview } from '../components/MapPreview.tsx';
 import { date } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -572,7 +573,8 @@ export function MapPage({ id }: { id: string }) {
             )}
             <div className="map-hero">
               <div className="preview">
-                <MapImage src={v?.previewUrl} alt={`Preview of ${map.title}`} />
+                {/* CLI exports include a two-pixel Glob2Style frame. */}
+                <MapPreview src={v?.previewUrl} alt={`Preview of ${map.title}`} frameInset={2} />
               </div>
               <div>
                 <div className="tiles">
