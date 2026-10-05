@@ -32,6 +32,31 @@
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
           "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "manifestSha256",
+            "textureSha256",
+            "materialSha256"
+          ],
+          "properties": {
+            "manifestSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "textureSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "materialSha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            }
+          }
         }
       }
     },
