@@ -450,7 +450,7 @@ def verify_highres_atlases(root):
         row = line.split()
         if len(row) == 6:
             entries[row[0]] = row[4]
-    for prefix, columns, border in (("terrain", 16, 64), ("ressource", 8, 32)):
+    for prefix, border in (("terrain", 64), ("ressource", 32)):
         path = directory / (prefix + "-atlas-mip0.png")
         if not path.is_file():
             continue
@@ -459,15 +459,52 @@ def verify_highres_atlases(root):
             frames.append(directory / entries[prefix + str(len(frames))])
         if not frames:
             raise ValueError("Atlas has no indexed frames: " + str(path))
-        if prefix == "terrain" and len(frames) == 16:
-            columns = 4
         atlas = decoded_rgba(path.read_bytes())
+        columns = atlas.width // 256
+        if not columns or atlas.width % 256 or atlas.height % 256 or len(frames) > columns * (atlas.height // 256):
+            raise ValueError("Invalid legacy atlas dimensions: " + str(path))
         for i, frame_path in enumerate(frames):
             frame = decoded_rgba(frame_path.read_bytes())
             x, y = (i % columns) * 256 + border, (i // columns) * 256 + border
             tile = atlas.crop((x, y, x + frame.width, y + frame.height))
             if tile.tobytes() != frame.tobytes():
                 raise ValueError("Source atlas frame placement differs: " + str(frame_path))
+
+
+def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
+    """Attest to the pixels Sprite will load, including encoded sheet frames.
+
+    Original PNG hashes remain provenance; decoded runtime fingerprints distinguish
+    valid lossy exports from stale packs and user artwork overrides at startup.
+    """
+    from PIL import Image
+
+    fingerprints = {}
+    for sprite, plan in sheets.items():
+        for sheet in plan:
+            relevant = [
+                (i, frame.relative_to(root).as_posix())
+                for i, frame in enumerate(sheet["frames"])
+                if frame.relative_to(root).as_posix() in sources
+            ]
+            if not relevant:
+                continue
+            path = stage / Path(sprite).parent / Path(sheet["name"]).with_suffix(".webp")
+            with Image.open(path) as decoded:
+                image = decoded.convert("RGBA")
+            width, height = sheet["size"]
+            for index, name in relevant:
+                x, y = index % SHEET_COLUMNS * width, index // SHEET_COLUMNS * height
+                fingerprints[name] = compiler.pixel_fingerprint(
+                    image.crop((x, y, x + width, y + height))
+                )
+    for name in sources:
+        if name not in fingerprints:
+            path = stage / name
+            encoded = path.with_suffix(".webp")
+            with Image.open(encoded if encoded.exists() else path) as image:
+                fingerprints[name] = compiler.pixel_fingerprint(image)
+    return fingerprints
 
 
 def _export_assets(
@@ -480,6 +517,14 @@ def _export_assets(
     worker=False,
 ):
     root, output = Path(root).resolve(), Path(output).resolve()
+    catalog = root / "data/terrain/tileset.json"
+    if catalog.is_file():
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("terrain_tileset", root / "tools/terrain_tileset.py")
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        compiler.validate(json.loads(catalog.read_text()), root)
+
     if root.is_relative_to(output) or any(
         output == root / d or output.is_relative_to(root / d) for d in ASSET_DIRS
     ):
@@ -629,6 +674,31 @@ def _export_assets(
                     recipe=None,
                 )
             )
+        if catalog.is_file():
+            document = json.loads(catalog.read_text())
+            compiled = document.get("compiled_pack")
+            if compiled:
+                with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=output.parent) as temporary_pack:
+                    pack = Path(temporary_pack)
+                    fingerprints = terrain_runtime_fingerprints(
+                        compiler, compiler.validate(document, root), root, stage, sheets
+                    )
+                    compiler.compile_tileset(
+                        document, pack, root=root, runtime_fingerprints=fingerprints
+                    )
+                    for generated in sorted(pack.iterdir()):
+                        destination = Path(compiled).parent / generated.name
+                        if destination in destinations:
+                            raise ValueError("Duplicate compiled terrain path: " + str(destination))
+                        destinations.add(destination)
+                        target = stage / destination
+                        target.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copyfile(generated, target)
+                        records.append(dict(source="data/terrain/tileset.json", output=destination.as_posix(),
+                            source_sha256=hashlib.sha256(catalog.read_bytes()).hexdigest(),
+                            output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
+                            source_bytes=0, output_bytes=target.stat().st_size, lossy=False,
+                            recipe=None, generated_by="tools/terrain_tileset.py"))
         audit = dict(
             policy=POLICY,
             platform=platform,

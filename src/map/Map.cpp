@@ -3,7 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
-#include "TerrainPresentation.h"
+#include "TerrainCompatibility.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
@@ -286,7 +286,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 			adjustTerrainFeatures(TerrainType(t), true);
 	for (std::size_t i = 0; i < terrainIds.size(); ++i)
 	{
-		const auto &p = terrainPresentation(terrainIds[i]);
+		const auto &p = terrainRegistry().compatibility(terrainIds[i]);
 		if (!p.legacyCorners)
 			tiles[i].terrain =
 				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
@@ -441,7 +441,7 @@ void Map::setCellTerrain(size_t index, TerrainType type)
 {
 	if (index >= size) throw std::out_of_range("Terrain cell index");
 	changeTerrainIdentity(index, type);
-	const auto &p = terrainPresentation(type);
+	const auto &p = terrainRegistry().compatibility(type);
 	tiles[index].terrain =
 		p.firstFrame + terrainVisualHash(int(index & wMask), int(index >> wDec)) % p.variants;
 }

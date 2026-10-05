@@ -87,7 +87,9 @@ and retry. For example:
 
 Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
 or `road` (the compatibility key for Trail). The base supplies all simulation
-defaults; appearance supplies artwork and preview colors independently. Every
+defaults; appearance selects a shipped material and resolved preview colors independently.
+Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);
+custom types sharing an appearance resolve to the same material. Every
 entry requires `key`, `name`, `base`, `properties` and `appearance`; use an empty
 `properties` object to inherit all base values. Bases cannot refer to custom keys. Custom tiles have full-tile presentation and do
 not participate in the legacy corner adapter. Existing corner rules above describe

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Build decorative whole-cell borders from the prototype's ice and trail textures.
+"""Reproduce retained legacy border sprites from ice and trail textures.
+
+The material compositor does not use these sprites. Keep this recipe for the
+existing asset provenance in datasrc/gfx/trail/.
 
 The 32x32 frame always remains inside the receiving cell. Bits N/E/S/W select
 four-pixel-wide edge bands, so visual blending never changes gameplay coverage.

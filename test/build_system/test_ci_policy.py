@@ -102,6 +102,10 @@ class PolicyTest(unittest.TestCase):
                      'src/hud/input/GameGUIInput.cpp', 'browser/shell.html']:
             self.assertFalse(self.select([path])['platform_stack'], path)
 
+    def test_terrain_catalog_and_compiler_are_shared_boundaries(self):
+        for path in ('data/terrain/tileset.json','tools/terrain_tileset.py','tools/test_terrain_tileset.py'):
+            self.assertEqual(self.select([path]),policy.full())
+
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):
         for path in ['src/app/Version.h','libgag/include/Surface.h','libgag/include/AudioFormat.h','scons/opus_dependencies.py','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
             self.assertEqual(self.select([path]), policy.full(), path)

@@ -699,13 +699,13 @@ captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
 
-Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
-resources use canonical map rows, with sorted source-tile indices selecting the
-contiguous visible vertex range. Translation places a canonical chunk or row at
-its current wrapped-map position, so camera panning does not change its vertices.
-Each entry compares the exact current tile frame/visibility vector before reuse:
-a resource amount, terrain frame or discovery change must invalidate the entry.
-Partial-discovery resources keep the ordinary drawing path. The geometry budget
+Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
+on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
+Fully revealed resources use canonical map rows, with sorted source-tile indices
+selecting the contiguous visible vertex range. Translation places a canonical row
+at its wrapped-map position, so camera panning does not change its vertices.
+Each resource entry compares its exact frame/visibility vector before reuse.
+Partial-discovery resources keep the ordinary drawing path. The resource geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
 eviction; CPU metadata and driver allocation overhead are additional. Each scene
 attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
@@ -846,28 +846,31 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unknown category for legacy shores; never use it to index the property table.
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
-- Presentation metadata is separate in `TerrainPresentation.h`: atlas, frame range,
-  animation, backdrop, decorative edges and independent map/preview/export colors.
-  Runtime types inherit a shipped appearance and use full tiles; the original
-  corner adapters apply only to built-ins. Import definitions through
+- Saved sprite ranges, corner semantics and authoring frame selection are frozen in
+  `TerrainCompatibility.h`. Detailed terrain rendering resolves shipped appearances
+  through a presentation-only material catalog, corner coverage resolver and CPU
+  compositor. `data/terrain/tileset.json` defines those materials independently of
+  gameplay IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
+  metadata. See [terrain material authoring](../assets/terrain-materials.md) for
+  variants, boundary profiles, asset validation and cache behavior. Visual catalog
+  changes must not change saved frames or simulation RNG use.
+- Runtime types inherit a shipped appearance and use full tiles; legacy corner
+  adapters apply only to built-ins. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
-  registry snapshot; inner loops borrow indexed data. Render caches bind registry
-  identity and shipped asset revisions without scanning custom definitions per chunk.
-  Drawing profiles deduplicate resolved appearance fields independently of simulation
-  properties and authoring names. Scene cells retain a two-byte visual-profile index;
-  adjacent aliases of the same appearance contribute one combined edge mask. Saved
-  color, animation timing or priority differences keep profiles distinct. Use registry
-  `presentation(id)` for authoring labels; drawing profiles intentionally omit labels.
-  Experimental authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
-  into matches, while saves retain them independently of the user's current settings.
-- Trail uses the stable terrain ID `4` (`TRAIL`) and experiment position `3`
-  (`TrailTerrain`). Its external terrain name and translation keys retain `road`,
-  and its serialized experiment key remains `road-terrain`. Keep these legacy
-  identifiers for scripting, reports, editor actions and existing files; the
-  user-facing name is Trail. Classic frames 288–303 and decorative edge frames
-  319–333 come from the generated material and recipe in `datasrc/gfx/trail/`.
+  registry snapshot; inner loops borrow indexed data. Scenes cache the shipped
+  appearance in a two-byte cell plane; the compositor resolves equivalent aliases
+  to the same material without scanning custom definitions. Render caches bind the
+  registry snapshot and actual asset revisions. Saved custom colors remain
+  authoritative for previews and minimaps; built-ins use catalog palettes.
+  Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
+  experiments into matches, while saves retain them independently of user settings.
+- Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
+  (`TrailTerrain`). Its external name, translation keys and serialized experiment
+  key remain `road` / `road-terrain` for scripting, reports, editor actions and
+  existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
+  material catalog independently chooses the detailed appearance for that ID.
 - Ecology caches terrain-only land and aquatic fields for the map's lifetime.
   Normal growth, harvesting, unit movement and building placement do not rebuild
   them. Map replacement invalidates them; terrain edits invalidate them only when
@@ -884,7 +887,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
 - Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
-  before the tile data. Bounded JSON byte chunks support binary and text streams.
+  before the tile data. Legacy numeric presentation fields are retained verbatim
+  for round trips and checksums; the material catalog controls detailed drawing.
+  Bounded JSON byte chunks support binary and text streams.
   Serialization emits definitions in canonical ID order, with object fields in key
   order, and import/load
   releases the parsed JSON tree before compilation to bound temporary memory.
@@ -925,7 +930,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 - Keep the terrain index domains explicit when changing this code:
   canonical `TerrainType` IDs identify saved definitions; property indices select
   deduplicated simulation structs; per-swimming-class profile bytes select movement
-  costs; scene visual indices select deduplicated drawing metadata. None is a valid
+  costs; scene appearance IDs select shipped visual materials. None is a valid
   substitute for a canonical ID in serialization or scripts. These derived planes
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
@@ -1534,25 +1539,33 @@ existing game rendering entry point. Presentation state a view keeps between fra
 animation phases, the cloud field, the overlay scratch buffer and the software terrain
 cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
 the simulation neither reads nor writes it and each view animates independently. The
-terrain cache is transient presentation state: 16×16 tile chunks, a 32 MiB storage
-reservation including pixels, layer descriptors and borrowed views, with
-least-recently-used eviction.
-The cache is used during transformed software passes. Ordinary native drawing keeps
-its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
-transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
-chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
-over transparent chunk holes. Views are destroyed before their backing chunk.
-Each chunk validates canonical terrain IDs, material-owned layer frames, animation
-phases, the existing discovery decisions and source content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
-are detected during preparation. Resources, actors, fog and overlays keep their existing
+terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
+software storage reservation including pixels, recipes and borrowed views, and a
+separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native and
+HD rendering share CPU composition; GPU backends upload the resulting pages.
+The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
+boundary resolver, source preparation, budgets and asset pipeline.
+
+Within a software page, adjacent opaque tiles become borrowed surface views over
+the raw pixels. Fully transparent tiles submit no draw. Partially transparent
+coastlines retain individual source blits, avoiding repeated alpha scans over
+transparent holes. Views are destroyed before their backing page.
+Each page validates the canonical terrain neighborhood, discovery decisions and
+revisions of the materials its recipes use. Animation or source changes in unrelated
+materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
+animated water once. Map replacement (a new `Map::identity()`) clears the cache;
+editor terrain changes, wrapped neighbors and visible-team changes are detected
+during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;
 partially covered tiles retain their original source mapping and animation phase.
 Coverage includes the original water pass's overshoot outside the viewport, which a
 transform can bring onscreen. Fragmented coverage falls back to the full pass after
-64 rectangles. Oversized working sets and allocation failures use
-uncached terrain. None of these caches enter saves, simulation checksums or orders.
+64 rectangles. Oversized working sets stream one temporary canonical page at a time
+at the same sampling density as the full view. If a page cannot fit the device or
+allocation fails, an emergency composed-tile path preserves coverage but can differ
+in fractional resampling and HD mip filtering. None of these caches enter saves,
+simulation checksums or orders.
 
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
@@ -1616,8 +1629,10 @@ python3 tools/software_render_benchmark.py \
 ```
 
 The runner records raw logs/captures, exact commands and CPU distributions for native,
-half, double and fractional-offset scenarios. Use `--no-terrain-cache` for the primitive
-phase; compare the same binary with `--baseline-no-terrain-cache` to isolate caching.
+half, double and fractional-offset scenarios. `--no-terrain-cache` now streams
+composed pages without retaining them between frames; it measures repeated
+composition and upload, not the old sprite-only terrain primitives. Compare the
+same binary with `--baseline-no-terrain-cache` to isolate retained-page caching.
 Use `--present --visible --scenario native --baseline-preserve-frame` with the same
 binary to measure the retention-copy savings. `PROFILE_PRESERVE_FRAME=1` begins each
 benchmark frame in preserve-content mode before the full redraw. Keep other heavy
@@ -2025,8 +2040,8 @@ happen outside the device callback. Preview screens send typed controls and read
 consumed playback snapshots instead of locking SDL or owning live decoders. Preview
 session tokens prevent an old screen from controlling or closing a newer preview.
 
-The producer maintains 36 blocks of 1,024 stereo frames (768 ms at 48 kHz), refills
-at 24 blocks, and cannot exceed 48 blocks. Native output consumes a single-producer,
+The producer maintains 24 blocks of 1,024 stereo frames (512 ms at 48 kHz), refills
+at 20 blocks (427 ms), and cannot exceed 48 blocks. Native output consumes a single-producer,
 single-consumer ring without waiting for gameplay or decoder locks. Volume and
 mute are applied at consumption. Native voice decoding stays on the application
 thread and publishes bounded PCM to separate per-player rings; the music look-ahead

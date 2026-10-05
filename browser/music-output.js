@@ -8,7 +8,8 @@ const Shared = { Read: 0, Write: 1, Generation: 2, Acknowledged: 3, NeedsPrefill
 const Rate = 48000,
   BlockFrames = 1024,
   BlockSamples = BlockFrames * 2;
-const TargetBlocks = 36,
+// Half-second target rounded up to whole 1,024-frame blocks (512 ms).
+const TargetBlocks = 24,
   CapacityBlocks = 48,
   StorageBlocks = 64;
 const RampFrames = 240; // five milliseconds at the source rate

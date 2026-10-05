@@ -51,16 +51,17 @@ class SceneMap
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
 	TerrainType terrainTypeAt(int x, int y) const { return terrainTypes[coordToIndex(x, y)]; }
+	// Detailed materials use shipped appearance IDs; custom canonical IDs never
+	// index the renderer's fixed builtin binding table or legacy corner adapter.
+	TerrainType appearanceAt(int x, int y) const { return terrainAppearances[coordToIndex(x, y)]; }
 	// Legacy preview hues are corner based; authored terrain has whole-cell identity.
 	TerrainType presentationTypeAt(int x, int y) const
 	{
 		const auto type = terrainTypeAt(x, y);
-		return terrainPresentation(type).legacyCorners
+		return unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type)
 				   ? static_cast<TerrainType>(getUMTerrain(x, y))
 				   : type;
 	}
-	TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
-	int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
 	const Resource &getResource(size_t pos) const { return resources[pos]; }
 	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
@@ -113,10 +114,9 @@ class SceneMap
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
 	std::vector<TerrainType> terrainTypes;
-	// Canonical IDs remain available to UI/script consumers. Drawing indexes the
-	// compact immutable visual profiles so aliases share cache lines and edges.
-	std::vector<std::uint16_t> terrainVisuals;
-	bool layeredTerrain = false;
+	// Aliases share this compact appearance plane while canonical terrainTypes
+	// retain gameplay, persistence and authoring identity.
+	std::vector<TerrainType> terrainAppearances;
 	std::vector<Uint32> discovered, fogOfWar;
 	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

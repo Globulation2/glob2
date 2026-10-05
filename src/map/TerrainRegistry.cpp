@@ -8,7 +8,6 @@
 #include <set>
 #include <unordered_map>
 #include <stdexcept>
-#include <tuple>
 #include <type_traits>
 
 namespace
@@ -133,18 +132,6 @@ auto propertyKey(const TerrainProperties &p)
 }
 #undef TERRAIN_FIELDS
 
-// Names and keys do not affect pixels. Include every resolved visual field and
-// the shipped asset identity so distinct saved colors/timing never alias.
-auto visualKey(const TerrainPresentation &p, TerrainType appearance)
-{
-	const auto color = [](TerrainColor c) { return std::array{c.r, c.g, c.b}; };
-	return std::tuple{appearance,         p.firstFrame,     p.variants,           p.editorFrame,
-					  p.animatedBackdrop, p.legacyCorners,  p.edgeFirstFrame,     p.layerPriority,
-					  p.animationFrames,  p.animationTicks, p.backdropFirstFrame, p.backdropFrames,
-					  p.backdropTicks,    color(p.minimap), color(p.overview),    color(p.image),
-					  color(p.preview)};
-}
-
 Json parse(std::string_view source)
 {
 	if (source.size() > TerrainRegistry::MaximumDefinitionBytes)
@@ -176,6 +163,26 @@ Json parse(std::string_view source)
 }
 } // namespace
 
+TerrainRegistry::SavedPresentation TerrainRegistry::savedPreset(TerrainType appearance)
+{
+	SavedPresentation result;
+	static_cast<TerrainCompatibility &>(result) = terrainCompatibility(appearance);
+	// Frozen format-136 defaults, unrelated to the current terrain material pack.
+	result.editorFrame = appearance == WATER ? 259 : result.firstFrame;
+	result.animatedBackdrop = appearance == WATER;
+	if (appearance == ICE)
+	{
+		result.edgeFirstFrame = 304;
+		result.layerPriority = 2;
+	}
+	else if (appearance == TRAIL)
+	{
+		result.edgeFirstFrame = 319;
+		result.layerPriority = 1;
+	}
+	return result;
+}
+
 TerrainRegistry::TerrainRegistry()
 	: properties_(TERRAIN_PROPERTIES.begin(), TERRAIN_PROPERTIES.end()),
 	  presentations_(TerrainPresentations.begin(), TerrainPresentations.end())
@@ -185,6 +192,7 @@ TerrainRegistry::TerrainRegistry()
 		keys_.emplace_back(TerrainPresentations[i].name);
 		names_.emplace_back(TerrainPresentations[i].label);
 		appearances_.push_back(TerrainType(i));
+		savedPresentations_.push_back(savedPreset(TerrainType(i)));
 	}
 }
 std::shared_ptr<const TerrainRegistry> TerrainRegistry::builtins()
@@ -236,6 +244,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 			result->properties_.push_back(p);
 			result->appearances_.push_back(appearance);
 			result->presentations_.push_back(TerrainPresentations[appearance]);
+			result->savedPresentations_.push_back(savedPreset(appearance));
 		}
 		else
 		{
@@ -243,8 +252,9 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::importJson(std::string_v
 			result->properties_[id] = p;
 			result->appearances_[id] = appearance;
 			result->presentations_[id] = TerrainPresentations[appearance];
+			result->savedPresentations_[id] = savedPreset(appearance);
 		}
-		result->presentations_[id].legacyCorners = false;
+		result->savedPresentations_[id].legacyCorners = false;
 		result->presentations_[id].editorSelectable = true;
 	}
 	// Release the authoring DOM before compiling/canonical hashing large registries.
@@ -260,7 +270,8 @@ std::string TerrainRegistry::serialize() const
 	std::string result = R"({"schemaVersion":1,"terrains":[)";
 	for (unsigned i = TERRAIN_COUNT; i < size(); ++i)
 	{
-		const auto &p = presentations_[i];
+		const auto &p = savedPresentations_[i];
+		const auto &colors = presentations_[i];
 		Json visual = {{"firstFrame", p.firstFrame},
 					   {"variants", p.variants},
 					   {"editorFrame", p.editorFrame},
@@ -273,10 +284,10 @@ std::string TerrainRegistry::serialize() const
 					   {"backdropFrames", p.backdropFrames},
 					   {"backdropTicks", p.backdropTicks}};
 		auto color = [](TerrainColor c) { return Json::array({c.r, c.g, c.b}); };
-		visual["minimap"] = color(p.minimap);
-		visual["overview"] = color(p.overview);
-		visual["image"] = color(p.image);
-		visual["preview"] = color(p.preview);
+		visual["minimap"] = color(colors.minimap);
+		visual["overview"] = color(colors.overview);
+		visual["image"] = color(colors.image);
+		visual["preview"] = color(colors.preview);
 		if (i != TERRAIN_COUNT)
 			result += ',';
 		result += Json{
@@ -312,9 +323,10 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		result->names_.push_back(text(item, "name"));
 		result->properties_.push_back(readProperties(item.at("properties"), {}, true));
 		result->appearances_.push_back(appearance);
-		auto p = TerrainPresentations[appearance];
+		auto p = savedPreset(appearance);
 		p.legacyCorners = false;
-		p.editorSelectable = true;
+		auto presentation = TerrainPresentations[appearance];
+		presentation.editorSelectable = true;
 		const auto &visual = item.at("presentation");
 		fields(visual,
 			   {"firstFrame", "variants", "editorFrame", "animatedBackdrop", "edgeFirstFrame",
@@ -345,12 +357,12 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 			}
 			return out;
 		};
-		p.minimap = color("minimap");
-		p.overview = color("overview");
-		p.image = color("image");
-		p.preview = color("preview");
+		presentation.minimap = color("minimap");
+		presentation.overview = color("overview");
+		presentation.image = color("image");
+		presentation.preview = color("preview");
 		// V1 only uses shipped frame ranges; a saved registry cannot expand the asset capability.
-		const auto &original = TerrainPresentations[appearance];
+		const auto original = savedPreset(appearance);
 		if (p.firstFrame != original.firstFrame || p.variants != original.variants ||
 			p.editorFrame != original.editorFrame || p.edgeFirstFrame != original.edgeFirstFrame ||
 			p.animationFrames != original.animationFrames || p.animationTicks < 1 ||
@@ -358,7 +370,8 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 			p.backdropFrames != original.backdropFrames || p.backdropTicks < 1 ||
 			p.animatedBackdrop != original.animatedBackdrop)
 			throw std::invalid_argument("Saved terrain references unsupported shipped artwork");
-		result->presentations_.push_back(p);
+		result->presentations_.push_back(presentation);
+		result->savedPresentations_.push_back(p);
 	}
 	j.clear();
 	result->compile();
@@ -396,23 +409,6 @@ void TerrainRegistry::compile()
 		if (inserted)
 			propertyProfiles_.push_back(p);
 		propertyIndices_.push_back(it->second);
-	}
-
-	std::map<decltype(visualKey(TerrainPresentation{}, WATER)), std::uint16_t> visuals;
-	visuals_.clear();
-	visualIndices_.clear();
-	visualIndices_.reserve(size());
-	for (unsigned i = 0; i < size(); ++i)
-	{
-		const auto &p = presentations_[i];
-		auto [it, inserted] = visuals.emplace(visualKey(p, appearances_[i]), visuals_.size());
-		if (inserted)
-		{
-			auto drawing = p;
-			drawing.name = drawing.label = nullptr;
-			visuals_.push_back({drawing, appearances_[i]});
-		}
-		visualIndices_.push_back(it->second);
 	}
 
 	airCosts_.resize(size());

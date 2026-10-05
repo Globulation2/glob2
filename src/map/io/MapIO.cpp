@@ -3,7 +3,7 @@
 
 #include "BuildingGradientSearch.h"
 #include "Map.h"
-#include "TerrainPresentation.h"
+#include "TerrainCompatibility.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "MapInternal.h"
@@ -166,7 +166,7 @@ try
 				if (!validTerrainType(id)) co_return false;
 				terrainIds[i] = static_cast<TerrainType>(id);
 			}
-			const auto& visual = terrainPresentation(terrainIds[i]);
+			const auto& visual = terrainRegistry().compatibility(terrainIds[i]);
 			if (tiles[i].terrain < visual.firstFrame || tiles[i].terrain >= visual.firstFrame + visual.variants) co_return false;
 		}
 		if (!packed) tiles[i].building = stream->readUint16("building");
