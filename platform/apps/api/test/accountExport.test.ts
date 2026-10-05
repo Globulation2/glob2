@@ -491,7 +491,7 @@ describe('downloading my data', () => {
     const response = await exportOf(owner);
     expect(response.status).toBe(200);
     const data = (await response.json()) as AccountExport;
-    expect(data.skins.drafts).toEqual([
+    expect(data.skins?.drafts).toEqual([
       expect.objectContaining({
         contentType: 'image/webp',
         imageBase64: stored.image.toString('base64'),
