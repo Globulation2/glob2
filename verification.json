@@ -1,0 +1,24 @@
+{
+  "tested_head": "a16be97d32bf564418e05acd972a6c527bea9d8f",
+  "artifact_source": "86df5ea49ef7fdf7914a57bf72bb527043876373",
+  "current_master": "d7e3af8ec3e58455a55a55e3ce347df0ec930115",
+  "artifact_id": 11360934602,
+  "artifact_sha256": "e36829cc7a08055cc6f8ed98312804709fe34a46a8bda83afa4337a1e4275c76",
+  "artifact_run": 37343408601,
+  "artifact_reuse": "PR changes only browser/tests/threading.spec.js; all production source, compiler, flags and dependencies match the downloaded hosted web-client build at the PR base. Current master terrain change assessed separately, not claimed as rebuilt/retested by these binaries.",
+  "commands": [
+    "node --check browser/tests/threading.spec.js",
+    "git diff --check",
+    "GLOB2_TEST_URL=http://127.0.0.1:8784 taskset -c 4-7 browser/node_modules/.bin/playwright test --config=browser/playwright.config.js --project=chromium browser/tests/threading.spec.js --grep \"audio produces PCM\"",
+    "GLOB2_TEST_URL=http://127.0.0.1:8784 taskset -c 4-7 browser/node_modules/.bin/playwright test --config=browser/playwright.config.js --project=firefox --project=webkit browser/tests/threading.spec.js --grep \"audio produces PCM\""
+  ],
+  "os": "Ubuntu 26.04.1 x86_64",
+  "node": "22.22.1",
+  "playwright": "1.63.0",
+  "results": {
+    "chromium": "2 passed (38.3s), exit 0",
+    "firefox_webkit": "4 passed (1.3m), exit 0",
+    "syntax_diff": "node --check and git diff --check exit 0",
+    "integration_assessment": "Fetched master d7e3af8ec3e58455a55a55e3ce347df0ec930115. merge-tree clean. Production browser audio files, src/audio and original threading tests unchanged versus artifact source; terrain packaging/render changes are independently covered by pending full master CI. No new terrain binary validation claimed."
+  }
+}

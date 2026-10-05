@@ -1,0 +1,74 @@
+[
+  {
+    "title": "serial audio produces PCM, keeps settings responsive and shuts down cleanly",
+    "projectName": "firefox",
+    "outcome": "expected",
+    "results": [
+      {
+        "status": "passed",
+        "duration": 18550,
+        "audio": [
+          {
+            "name": "audio-output-diagnostics",
+            "contentType": "application/json",
+            "body": "{\"executionMode\":\"serial\",\"contextState\":\"running\",\"status\":{\"track\":1,\"next\":1,\"pending\":-1,\"mode\":1,\"preview\":false,\"playing\":true,\"audition\":false,\"failed\":false,\"duration\":24.0001875,\"weights\":[1,0,0],\"position\":3.3546666666666667,\"commandTime\":0,\"audibleAt\":0,\"queuedFrames\":23296,\"starvationFrames\":0,\"underruns\":0,\"consumedFrames\":161024,\"maxRenderUs\":3340,\"recording\":false,\"captureFrames\":0,\"droppedCaptureFrames\":0,\"captureBuffers\":8,\"captureAt\":0,\"maxCommandLatencyUs\":0},\"peak\":0.29760658740997314}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "threaded audio produces PCM, keeps settings responsive and shuts down cleanly",
+    "projectName": "firefox",
+    "outcome": "expected",
+    "results": [
+      {
+        "status": "passed",
+        "duration": 15362,
+        "audio": [
+          {
+            "name": "audio-output-diagnostics",
+            "contentType": "application/json",
+            "body": "{\"executionMode\":\"threaded\",\"contextState\":\"running\",\"status\":{\"track\":1,\"next\":1,\"pending\":-1,\"mode\":1,\"preview\":false,\"playing\":true,\"audition\":false,\"failed\":false,\"duration\":24.0001875,\"weights\":[1,0,0],\"position\":1.5626666666666666,\"commandTime\":0,\"audibleAt\":0,\"queuedFrames\":23296,\"starvationFrames\":0,\"underruns\":0,\"consumedFrames\":75008,\"maxRenderUs\":4700,\"recording\":false,\"captureFrames\":0,\"droppedCaptureFrames\":0,\"captureBuffers\":8,\"captureAt\":0,\"maxCommandLatencyUs\":0},\"peak\":0.2677088975906372}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "serial audio produces PCM, keeps settings responsive and shuts down cleanly",
+    "projectName": "webkit",
+    "outcome": "expected",
+    "results": [
+      {
+        "status": "passed",
+        "duration": 19806,
+        "audio": [
+          {
+            "name": "audio-output-diagnostics",
+            "contentType": "application/json",
+            "body": "{\"executionMode\":\"serial\",\"contextState\":\"running\",\"status\":{\"track\":1,\"next\":1,\"pending\":-1,\"mode\":1,\"preview\":false,\"playing\":true,\"audition\":false,\"failed\":false,\"duration\":24.0001875,\"weights\":[1,0,0],\"position\":3.488810232426304,\"commandTime\":0,\"audibleAt\":0,\"queuedFrames\":20954,\"starvationFrames\":0,\"underruns\":0,\"consumedFrames\":167462,\"maxRenderUs\":9960,\"recording\":false,\"captureFrames\":0,\"droppedCaptureFrames\":0,\"captureBuffers\":8,\"captureAt\":0,\"maxCommandLatencyUs\":0},\"peak\":0.3860850930213928}"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "threaded audio produces PCM, keeps settings responsive and shuts down cleanly",
+    "projectName": "webkit",
+    "outcome": "expected",
+    "results": [
+      {
+        "status": "passed",
+        "duration": 18100,
+        "audio": [
+          {
+            "name": "audio-output-diagnostics",
+            "contentType": "application/json",
+            "body": "{\"executionMode\":\"threaded\",\"contextState\":\"running\",\"status\":{\"track\":1,\"next\":1,\"pending\":-1,\"mode\":1,\"preview\":false,\"playing\":true,\"audition\":false,\"failed\":false,\"duration\":24.0001875,\"weights\":[1,0,0],\"position\":2.150764880952381,\"commandTime\":0,\"audibleAt\":0,\"queuedFrames\":23740,\"starvationFrames\":0,\"underruns\":0,\"consumedFrames\":103236,\"maxRenderUs\":7200,\"recording\":false,\"captureFrames\":0,\"droppedCaptureFrames\":0,\"captureBuffers\":8,\"captureAt\":0,\"maxCommandLatencyUs\":0},\"peak\":0.2254234105348587}"
+          }
+        ]
+      }
+    ]
+  }
+]
