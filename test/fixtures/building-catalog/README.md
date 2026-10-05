@@ -21,3 +21,27 @@ Uncompressed SHA-256:
 `7042a7400248e4e5dcb78e617785cb6a21116300a331c71f4540cb008af3cbe7`.
 Compressed SHA-256:
 `532f293dd638565b7b9dcf82db0538786b6b180d7c26b239c519b7b915e55f32`.
+
+## Retained compositions
+
+`composition/seed-{713,714,715}.manifest.json` load fixed, identity-free catalogs.
+The first two combine feeding, healing and training; independently priced unit
+recipes and projectile combat; shared storage and direct withdrawal; and all three
+attraction roles on rectangular overlays. Seed 715 removes feeding and production.
+The files retain randomized footprints, display tiers, recipe durations and costs,
+and definition ordering. They use installed artwork.
+
+`composition/generate.py` documents the seeded construction. Run it deliberately
+when designing a new fixture, then review and retain the resulting JSON. Tests
+load the committed definitions rather than regenerating from changing stock data.
+The engine harness checks every continuation tick, inventories and reservations,
+plus exact production resource conservation including cancellation. Retained
+traces cover the new custom rules; they are distinct from stock parity evidence.
+
+`terrain136.game.gz` was produced by unchanged master `71d7eee1b` with
+`--run-game --map-file maps/SmallForTwo.map.gz --game-seed 716 --player numbi
+--player castor --ticks 257 --save final --replay false`. It exercises the format
+136 embedded terrain catalog alongside frozen building definitions and active AI
+state. The regression imports it, resaves to the current format, and compares
+subsequent AI orders and simulation components. Compressed SHA-256:
+`2c9945b6b909b8ad014ec488c1eeb2091049f23b331eb5fbd7dd17e2249b1d6a`.

@@ -154,7 +154,8 @@ namespace Cortex
 	/// hunger-commuting home across the long march.
 	/// v21 adds effective rule capabilities to observation-only planning state.
 	/// v22 projects semantic building roles and independent construction qualification.
-	static const Uint32 OBSERVATION_VERSION = 22;
+	/// v23 adds policy-only per-class production bindings; model vectors stay unchanged.
+	static const Uint32 OBSERVATION_VERSION = 23;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -330,6 +331,12 @@ namespace Cortex
         Sint32 hasModelProjection;
         Sint32 modelBuildingCountPerLevel[CORTEX_BUILDING_TYPES][CORTEX_BUILDING_LONG_LEVELS];
         Sint32 modelUpgradableTotal;
+        // Runtime policy facts only: not added to either learned-model vector.
+        Sint32 productionMask;
+        Sint32 productionPlannedMask;
+        Sint32 productionMissingMask;
+        Sint32 productionPlacementType;
+        Sint32 productionNeedsRetune;
 
 		// --- candidate build locations, per building type ---
 		// Filled by the placement helper for the building types the AI may build;

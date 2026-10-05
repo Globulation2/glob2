@@ -994,6 +994,27 @@ TEST_SUITE("MapGeneratorDefaults")
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::eatenMapContracts();
 	}
+    TEST_CASE("Drowned Forest circulation uses the configured starting definition")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto& definition=GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("drowned-forest"));
+        GenerationRequest request; request.setMethodDefaults(definition.legacyId);
+        request.wDec=request.hDec=7; request.nbTeams=2; request.seed=7;
+        GenerationService service;
+        auto stock=std::make_unique<Game>(nullptr);
+        auto renamed=std::make_unique<Game>(nullptr);
+        auto catalog=nlohmann::json::parse(renamed->buildingsTypes.snapshotJson());
+        for(auto& variant : catalog["variants"])
+            if(variant["properties"]["type"]=="swarm") variant["properties"]["type"]="colony-anchor";
+        renamed->buildingsTypes.loadSnapshotJson(catalog.dump()); renamed->configureBuildingCatalog();
+        const auto original=service.generate(*stock,request);
+        REQUIRE_MESSAGE(bool(original),original.diagnostic());
+        const auto replacement=service.generate(*renamed,request);
+        REQUIRE_MESSAGE(bool(replacement),replacement.diagnostic());
+        CHECK(mapFingerprint(*stock)==mapFingerprint(*renamed));
+        for(int team=0;team<request.nbTeams;++team)
+            CHECK(renamed->teams[team]->myBuildings[0]->typeNum==renamed->buildingsTypes.getStartingBuildingTypeNum());
+    }
 	TEST_CASE("Drowned Forest contracts [slow]")
 	{
 		DefaultsFixture fixture;

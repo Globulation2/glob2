@@ -38,6 +38,9 @@ ENGINE_TESTS = [
     ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
+    '#src/building/BuildingCatalogFixtureHarness.cpp',
+    '#src/building/BuildingCatalogBenchmark.cpp',
+    ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingServicesTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     '#libgag/src/ScreenExecutionHarness.cpp',

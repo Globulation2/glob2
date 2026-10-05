@@ -114,7 +114,7 @@ void Team::clearMem(void)
 
 void Team::removeFromAbilitiesLists(Building *building)
 {
-	if (building->type->runtimeSuppliesStock) map->invalidateSupplierLocations();
+	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
 	building->cancelProduction();
 	stockSuppliers.remove(building);
 	directStockSuppliers.remove(building);
@@ -147,9 +147,9 @@ void Team::removeFromAbilitiesLists(Building *building)
 
 void Team::addToStaticAbilitiesLists(Building *building)
 {
-	if (building->type->runtimeSuppliesDirectStock && std::find(directStockSuppliers.begin(),directStockSuppliers.end(),building)==directStockSuppliers.end()) directStockSuppliers.push_back(building);
+	if (building->type->runtimeSuppliesDirectStock && building->buildingState == Building::ALIVE && std::find(directStockSuppliers.begin(),directStockSuppliers.end(),building)==directStockSuppliers.end()) directStockSuppliers.push_back(building);
 	if (building->type->zonable[WARRIOR] && std::find(combatFlags.begin(),combatFlags.end(),building)==combatFlags.end()) combatFlags.push_back(building);
-	if (building->type->runtimeSuppliesStock) map->invalidateSupplierLocations();
+	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
 	if (building->type->runtimeSuppliesStock && building->buildingState == Building::ALIVE &&
 		std::find(stockSuppliers.begin(), stockSuppliers.end(), building) == stockSuppliers.end())
 		stockSuppliers.push_back(building);

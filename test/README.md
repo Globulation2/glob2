@@ -1774,3 +1774,31 @@ and captures screenshots. `TerrainPresentation` covers software and GPU
 registry/asset invalidation, plus explicit edge-mask expectations for custom aliases
 at wrapped map boundaries. Cache-versus-direct pixel equality alone is insufficient:
 both paths can share the same wrong layer description.
+
+### Building catalog composition and performance
+
+`BuildingCatalogFixtures` loads retained manifests under
+`test/fixtures/building-catalog/composition/`; it never regenerates definitions at
+runtime. The seeded combinations exercise mixed services, split recipes, shared
+stock, rectangular overlays and missing capabilities. Per-tick save continuation,
+resource conservation and retained custom-rule traces complement the focused
+`BuildingCatalog`, `BuildingServices` and `BuildingProductionCombat` suites.
+`AICustomCatalog` checks actual replacement-provider selection and split-production
+orders across the native controllers. These custom traces do not establish stock
+behavior parity.
+
+`BuildingGradientBenchmark` is opt-in (`--tag benchmark --filter
+'BuildingGradientBenchmark/*'`). It measures actual building/resource field
+preparation and a fixed stock simulation without AI decisions. The source compiles
+unchanged against the pre-catalog engine for paired measurements. Kernel rows
+include input dimensions, repetitions, iteration counts and output digests;
+simulation rows retain endpoint unit/building counts, health and inventory.
+Run matched release toolchains one process at a time on an otherwise idle host.
+Timing thresholds are evaluated from retained interleaved runs, not asserted in CI.
+
+`BuildingCatalogBenchmark` separates catalog setup from steady simulation with
+55, 256 and 1,024 definitions, keeping live entities fixed. Its private supply
+routing workload reports cold, warm and depletion passes below, at and above the
+cache budget, including retained cell bytes. These custom-catalog measurements
+complement the unchanged-source stock comparison; they have no historical
+baseline equivalent.

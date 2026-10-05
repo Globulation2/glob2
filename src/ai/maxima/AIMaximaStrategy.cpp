@@ -51,9 +51,9 @@ namespace
 
 	const ParameterSpec parameterSpecs[] =
 	{
-		INT_SPEC(model, inn_capacity_level1, "model.inn_capacity_level1", 1, 1000, "units", "model", "Estimated level-one inn feeding capacity", StrategyImpactHigh),
-		INT_SPEC(model, inn_capacity_level2, "model.inn_capacity_level2", 1, 1000, "units", "model", "Estimated level-two inn feeding capacity", StrategyImpactHigh),
-		INT_SPEC(model, inn_capacity_level3, "model.inn_capacity_level3", 1, 1000, "units", "model", "Estimated level-three inn feeding capacity", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level1, "model.inn_capacity_level1", 1, 1000, "units", "model", "Legacy level-one feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level2, "model.inn_capacity_level2", 1, 1000, "units", "model", "Legacy level-two feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level3, "model.inn_capacity_level3", 1, 1000, "units", "model", "Legacy level-three feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
 
 		INT_SPEC(staffing, control_window_samples, "staffing.control_window_samples", 1, 1000, "samples", "staffing", "Length of each building's rolling stock and staffing averages, in control passes", StrategyImpactHigh),
 		INT_SPEC(staffing, control_low_permille, "staffing.control_low_permille", 0, 1000, "permille", "staffing", "Stock below this share of a building's own capacity earns another carrier", StrategyImpactHigh),

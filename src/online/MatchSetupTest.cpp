@@ -101,7 +101,16 @@ TEST_SUITE("MatchSetup")
 		CHECK(header.getBuildingCatalogSnapshot() == catalog.snapshotJson());
 		CHECK(header.getExperiments().has("catalog-fixture"));
 		CHECK(!knownExperimentKey("catalog-fixture"));
-		CHECK(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion).toJson() == document);
+        const auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion).toJson();
+        // Account IDs and closed lobby slots are not simulation-header state.
+        // Every durable setup field, especially embedded experiment identity,
+        // must survive this conversion unchanged.
+        auto durable=document;durable.erase("seats");
+        auto restoredDurable=restored;restoredDurable.erase("seats");
+        CHECK(restoredDurable==durable);
+        REQUIRE(restored["seats"].size()==2);
+        CHECK(restored["seats"][0]["name"]=="Alice");
+        CHECK(restored["seats"][1]["team"]==2);
 		document["buildingCatalog"]["hash"] = std::string(64, '0');
 		CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
 		document["buildingCatalog"]["hash"] = catalog.fingerprint();

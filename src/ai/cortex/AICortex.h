@@ -217,7 +217,7 @@ private:
 	/// resolve->emit->arm step (the candidate SOURCE is all that differs between them).
 	/// Returns true when an OrderCreate was actually queued (false when the type has no
 	/// buildable site), so translateActionBuildForward can record the ordered position.
-	bool emitBuildOrder(int type, int x, int y, int tick);
+	bool emitBuildOrder(int type, int x, int y, int tick, int placementType = -1);
 
 	/// Shared "decode GID → verify building → dedup → push OrderModifyBuilding"
 	/// loop used by translateActionTuneWorkers for all three building sets

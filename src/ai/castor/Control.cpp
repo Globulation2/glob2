@@ -135,6 +135,8 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	else
 		workerGoal=AI_CASTOR_WORKER_GOAL_HIGH;
 
+    if(auto order=AIPlanning::missingProductionOrder(*game,*team,{workerGoal,explorerGoal,warriorGoal},4,4)) return order;
+
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		Building *b=myBuildings[bi];
@@ -208,7 +210,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	if (b==NULL)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
 									   shared_ptr<Order>());
-	if (!provides(*b, AICastor::FeedUnits) && !provides(*b, AICastor::ProduceWorkers))
+	if (!provides(*b, AICastor::FeedUnits) && !(game->buildingCapabilities().intentMask(b->type->isBuildingSite ? b->type->nextLevel : b->typeNum)&7u))
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlFood_result,
 									   shared_ptr<Order>());
 
@@ -294,7 +296,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 				AITrace::AI2::AICastor_controlFood_result,
 				shared_ptr<Order>(new OrderModifyBuilding(b->gid, workers)));
 		}
-		else if (provides(*b, AICastor::ProduceWorkers))
+		else if (game->buildingCapabilities().intentMask(b->type->isBuildingSite ? b->type->nextLevel : b->typeNum)&7u)
 		{
 			Sint32 workers;
 			if (foodWarning)

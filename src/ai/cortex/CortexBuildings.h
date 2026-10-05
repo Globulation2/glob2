@@ -37,7 +37,7 @@ inline unsigned buildingRoles(const Game& game, const BuildingType& type)
  add(CORTEX_BUILD_EXPLORATION, b->zonable[EXPLORER] != 0);
  add(CORTEX_BUILD_WAR, b->zonable[WARRIOR] != 0);
  add(CORTEX_BUILD_CLEARING, b->zonable[WORKER] != 0);
- add(CORTEX_BUILD_EXCHANGE, (s.market.interTeamFruitExchange || s.market.suppliesDirectStock) || b->runtimeSuppliesStock);
+ add(CORTEX_BUILD_EXCHANGE, (s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock) || b->runtimeSuppliesStock);
  return roles;
 }
 inline bool servesRole(const Game& game, const BuildingType& type, int role)
@@ -55,7 +55,7 @@ inline int primaryResource(const BuildingResourceCost& cost)
 // Resolve once before a placement search; never enumerate the catalog per tile.
 // Cost then footprint then numeric ID give deterministic choices for unfamiliar
 // providers while preserving the policy's existing strategic role demands.
-inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int role)
+inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int role, int productionClass = WORKER)
 {
  using I = AIPlanning::BuildingIntent;
  AIPlanning::BuildingCandidate best;
@@ -70,7 +70,7 @@ inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int 
    const auto* completed = game.buildingsTypes.get(candidate.completedType);
    if (!placement || !completed || placement->semantics.requiredWorkerLevel > qualification) continue;
    long long cost = 0;
-   if (placement->isBuildingSite) for (int amount : placement->maxResource) cost += amount;
+   if (placement->isBuildingSite) for (int amount : placement->semantics.constructionCost) cost += amount;
    const int area = placement->width * placement->height;
    if (cost < bestCost || (cost == bestCost && (area < bestArea || (area == bestArea && candidate.placementType < best.placementType))))
    { best = candidate; bestCost = cost; bestArea = area; }
@@ -78,7 +78,7 @@ inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int 
  };
  switch (role)
  {
- case CORTEX_BUILD_SWARM: consider(I::ProduceWorker); consider(I::ProduceExplorer); consider(I::ProduceWarrior); break;
+ case CORTEX_BUILD_SWARM: consider(productionClass == EXPLORER ? I::ProduceExplorer : productionClass == WARRIOR ? I::ProduceWarrior : I::ProduceWorker); break;
  case CORTEX_BUILD_FOOD: consider(I::Feed); break;
  case CORTEX_BUILD_HEAL: consider(I::Heal); break;
  case CORTEX_BUILD_WALKSPEED: consider(I::TrainWalk); break;

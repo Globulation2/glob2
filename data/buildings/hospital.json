@@ -71,7 +71,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -103,7 +115,10 @@
         "constructionCost": {
           "wood": 3
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "hospital",
@@ -171,7 +186,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -203,7 +222,8 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 3
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "hospital",
@@ -289,7 +309,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -316,12 +348,15 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "hospital",
@@ -389,7 +424,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -416,12 +455,13 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 8
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "hospital",
@@ -508,7 +548,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -535,13 +591,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 3,
           "stone": 5
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "hospital",
@@ -609,7 +669,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -636,13 +700,14 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 3,
           "stone": 5
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "hospital",

@@ -74,7 +74,8 @@ void GameGUIDefaultAssignManager::load(GAGCore::InputStream* stream, Sint32 vers
 		int s = stream->readSint32("default_assigned");
 		if (f < 0 || static_cast<std::size_t>(f) >= game.buildingsTypes.size() || s < 0 || s > Unit::MAX_COUNT)
 			throw std::runtime_error("Invalid saved building assignment");
-		unitCount[game.buildingsTypes.get(f)->key] = s;
+		if (!unitCount.emplace(game.buildingsTypes.get(f)->key,s).second)
+            throw std::runtime_error("Duplicate saved building assignment");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

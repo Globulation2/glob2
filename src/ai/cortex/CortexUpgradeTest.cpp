@@ -95,12 +95,12 @@ protected:
 		CHECK_EQ((Sint32)-1, a.unitCount);
 	}
 
-	// C++: CortexTypes.h — the observation layout is at v22 (semantic policy/model projection);
+	// C++: CortexTypes.h — the observation layout is at v23 (per-class production policy bindings);
 	// the action layout is at v14 (catalog-independent role requests). Bump these in lockstep with the OBSERVATION_VERSION /
 	// ACTION_VERSION constants.
 	void testVersionBump(void)
 	{
-		CHECK_EQ((Uint32)22, (Uint32)OBSERVATION_VERSION);
+		CHECK_EQ((Uint32)23, (Uint32)OBSERVATION_VERSION);
 		CHECK_EQ((Uint32)14, (Uint32)ACTION_VERSION);
 		// makeEmptyObservation must stamp the current version (so a stale
 		// observation from an old layout is rejected by the policy).

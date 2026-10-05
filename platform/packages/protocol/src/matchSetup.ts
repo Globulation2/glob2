@@ -253,7 +253,10 @@ export function buildingCatalogExperimentKeys(catalog: BuildingCatalog): string[
       throw new Error('invalid catalog experiment');
     return e['key'];
   });
-  if (keys.length > 64 || new Set(keys).size !== keys.length)
+  if (
+    new Set([...BUILTIN_EXPERIMENT_KEYS, ...keys]).size > 64 ||
+    new Set(keys).size !== keys.length
+  )
     throw new Error('duplicate or excessive catalog experiments');
   return keys;
 }

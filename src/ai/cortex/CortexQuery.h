@@ -107,6 +107,9 @@ namespace Cortex
 		obs.maxBuildLevel = 0;
 		obs.hasModelProjection = 0;
 		obs.modelUpgradableTotal = 0;
+        obs.productionMask = obs.productionPlannedMask = obs.productionMissingMask = 0;
+        obs.productionPlacementType = -1;
+        obs.productionNeedsRetune = 0;
 
 		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
 		{

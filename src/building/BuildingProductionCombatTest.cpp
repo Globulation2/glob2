@@ -316,9 +316,12 @@ TEST_CASE("direct stock withdrawal is independent of food and fruit exchange")
     auto& sink=json["variants"][9];
     source["semantics"]["market"]["suppliesDirectStock"]=true;
     source["properties"]["maxResource"][WOOD]=10;
+    source["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
     sink["semantics"]["market"]["fetchesDirectStock"]=true;
     sink["semantics"]["market"]["fetchesStock"]=false;
     sink["properties"]["maxResource"][WOOD]=10;
+    sink["semantics"]["replenishResources"]={"wood"};
+    sink["semantics"]["market"]["fetchesDirectStockResources"]={"wood"};
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* supplier=world.addBuilding("inn",8,8);
     Building* consumer=world.addBuilding("hospital",16,16);
@@ -352,6 +355,7 @@ TEST_CASE("construction reserves independent costs beyond storage and survives c
     auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
     auto& site=json["variants"][2];
     site["properties"]["maxResource"][WOOD]=0;
+    site["semantics"]["replenishResources"]=nlohmann::json::array();
     site["semantics"]["constructionCost"]={{"wood",3}};
     site["semantics"]["market"]["sharedStock"]=true;
     json["variants"][3]["semantics"]["market"]["sharedStock"]=true;
@@ -490,6 +494,7 @@ TEST_CASE("partial supplier packets preserve raw equivalents and save continuati
     json["variants"][3]["properties"]["multiplierResource"][WOOD]=4;
     json["variants"][9]["properties"]["maxResource"][WOOD]=20;
     json["variants"][9]["properties"]["multiplierResource"][WOOD]=3;
+    json["variants"][9]["semantics"]["replenishResources"]={"wood"};
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* source=world.addBuilding("inn",8,8);
     Building* sink=world.addBuilding("hospital",16,16);
@@ -549,6 +554,387 @@ TEST_CASE("zero cost repair preserves damage received after the repair started")
     b->launchConstruction(1,1); REQUIRE(b->tryToBuildingSiteRoom());
     b->hp-=20; b->step();
     CHECK(b->type->key=="inn.0.finished"); CHECK(b->hp==180);
+}
+
+TEST_CASE("shared repair sites restore each recorded origin and staffing cap")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const int inn=world.game.buildingsTypes.findByKey("inn.0.finished");
+    const int hospital=world.game.buildingsTypes.findByKey("hospital.0.finished");
+    const int site=world.game.buildingsTypes.findByKey("inn.0.site");
+    for (int origin : {inn,hospital})
+    {
+        auto& variant=json["variants"][origin];
+        variant["previous"]="inn.0.site";
+        variant["semantics"]["repairCost"]={{"wood",4}};
+        variant["semantics"]["assignmentLimit"]=origin==inn ? 1 : 7;
+        variant["presentation"]["defaultAssigned"]=1;
+        variant["properties"]["hpMax"]=origin==inn ? 200 : 400;
+        variant["properties"]["hpInit"]=origin==inn ? 200 : 400;
+    }
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* a=world.addBuilding("inn",8,8);
+    Building* b=world.addBuilding("hospital",20,20);
+    for (Building* building : {a,b})
+    {
+        const int origin=building->typeNum;
+        const int maxHp=building->getEffectiveMaxHp();
+        const int staffing=building->type->semantics.assignmentLimit;
+        building->hp=maxHp/2;
+        building->launchConstruction(1,staffing);
+        REQUIRE(building->tryToBuildingSiteRoom());
+        REQUIRE(building->typeNum==site);
+        CHECK(building->getEffectiveMaxHp()==maxHp);
+        CHECK(building->getConstructionCompletionTypeNum()==origin);
+        building->addResourceIntoBuilding(WOOD);
+        CHECK(building->hp==maxHp*3/4);
+    }
+    glob2test::HeadlessGame resumed({.loadDefaultRace=true});
+    REQUIRE(loadProductionGame(resumed.game,saveProductionGame(world.game,false),false));
+    for (Building* building : {a,b})
+    {
+        const int origin=building->getConstructionOriginTypeNum();
+        Building* copy=resumed.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
+        REQUIRE(copy);
+        building->addResourceIntoBuilding(WOOD); copy->addResourceIntoBuilding(WOOD);
+        CHECK(building->typeNum==origin); CHECK(copy->typeNum==origin);
+        CHECK(building->hp==building->getEffectiveMaxHp()); CHECK(copy->hp==building->hp);
+        CHECK(building->maxUnitWorking==building->type->semantics.assignmentLimit);
+        CHECK(copy->maxUnitWorking==building->maxUnitWorking);
+    }
+}
+
+TEST_CASE("unfunded new-site cooldown uses job state and counts fruit funding")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const int site=world.game.buildingsTypes.findByKey("inn.0.site");
+    json["variants"][site]["properties"]["level"]=3;
+    json["variants"][site]["semantics"]["constructionCost"]={{"cherry",3}};
+    json["variants"][site]["properties"]["multiplierResource"][CHERRY]=1;
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* funded=world.game.addBuilding(8,8,site,0,1,1);
+    REQUIRE(funded);
+    funded->addResourceIntoBuilding(CHERRY);
+    funded->kill();
+    CHECK(world.team->noMoreBuildingSitesCountdown==0);
+    Building* empty=world.game.addBuilding(20,20,site,0,1,1);
+    REQUIRE(empty);
+    empty->kill();
+    CHECK(world.team->noMoreBuildingSitesCountdown==int(Team::noMoreBuildingSitesCountdownMax));
+}
+
+TEST_CASE("resource permissions separate storage replenishment and direct withdrawal")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& source=json["variants"][3]; auto& sink=json["variants"][9];
+    for (auto* variant : {&source,&sink}) {
+        (*variant)["properties"]["maxResource"][WOOD]=20;
+        (*variant)["properties"]["maxResource"][WHEAT]=20;
+        (*variant)["semantics"]["replenishResources"]={"wood"};
+    }
+    source["semantics"]["market"]["suppliesDirectStock"]=true;
+    source["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
+    sink["semantics"]["market"]["fetchesDirectStock"]=true;
+    sink["semantics"]["market"]["fetchesDirectStockResources"]={"wood","wheat"};
+    sink["semantics"]["market"]["fetchesStock"]=false;
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* supplier=world.addBuilding("inn",8,8);
+    Building* receiver=world.addBuilding("hospital",20,20);
+    supplier->resources[WOOD]=30; supplier->resources[WHEAT]=10;
+    CHECK(receiver->resourceDeliveryNeed(WHEAT)==0);
+    CHECK(receiver->deliverResourcePacket(WHEAT,{}).acceptedStock==0);
+    CHECK(receiver->resourceDeliveryNeed(WOOD)==20);
+    int distance=0;
+    CHECK(world.game.map.resourceAvailable(0,WOOD,0,19,20,&distance,false,receiver));
+    CHECK_FALSE(world.game.map.resourceAvailable(0,WHEAT,0,19,20,&distance,false,receiver));
+    Unit* worker=world.addUnit(WORKER,7,8);
+    receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
+    REQUIRE(receiver->subscribeToBringResourcesStep());
+    CHECK(worker->attachedBuilding==receiver);
+    CHECK(world.game.map.touchedStockedMarket(worker,WOOD)==supplier);
+    CHECK(world.game.map.touchedStockedMarket(worker,WHEAT)==nullptr);
+    worker->standardRandomActivity();
+}
+
+TEST_CASE("bounded supply cache excludes the recipient and its shared inventory and resumes eviction")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    for (int id : {1,3,9}) {
+        auto& variant=json["variants"][id];
+        variant["semantics"]["market"]["suppliesDirectStock"]=true;
+        variant["semantics"]["market"]["suppliesDirectStockResources"]={"wood","wheat"};
+        variant["semantics"]["market"]["fetchesDirectStock"]=true;
+        variant["semantics"]["market"]["fetchesDirectStockResources"]={"wood","wheat"};
+        variant["semantics"]["market"]["fetchesStock"]=false;
+        variant["semantics"]["market"]["sharedStock"]=id!=1;
+    }
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* receiver=world.addBuilding("inn",8,8);
+    Building* shared=world.addBuilding("hospital",20,20);
+    receiver->resources[WOOD]=receiver->resources[WHEAT]=10;
+    int distance=0;
+    CHECK_FALSE(world.game.map.resourceAvailable(0,WOOD,0,7,8,&distance,false,receiver));
+    CHECK(receiver->resources==shared->resources);
+    Building* local=world.addBuilding("swarm",30,30);
+    local->resources[WOOD]=local->resources[WHEAT]=10;
+    world.game.map.dirtyMarketGradients(0,WOOD); world.game.map.dirtyMarketGradients(0,WHEAT);
+    const Uint64 oneField=Uint64(world.game.map.getW())*world.game.map.getH()*sizeof(Uint16);
+    world.game.map.setResourceRoutingCacheBudget(oneField);
+    CHECK(world.game.map.resourceAvailable(0,WOOD,0,7,8,&distance,false,receiver));
+    CHECK(world.game.map.resourceAvailable(0,WHEAT,0,7,8,&distance,false,receiver));
+    CHECK(world.game.map.resourceRoutingCacheBytes()==oneField);
+    glob2test::HeadlessGame copy({.loadDefaultRace=true});
+    REQUIRE(loadProductionGame(copy.game,saveProductionGame(world.game,false),false));
+    Building* copied=copy.game.teams[0]->myBuildings[Building::GIDtoID(receiver->gid)];
+    REQUIRE(copied);
+    CHECK(copy.game.map.resourceRoutingCacheBytes()==oneField);
+    for (int resource : {WOOD,WHEAT,WOOD}) {
+        const Uint16* expected=world.game.map.getResourceGradient(0,resource,0,false,receiver);
+        const Uint16* actual=copy.game.map.getResourceGradient(0,resource,0,false,copied);
+        CHECK(std::equal(expected,expected+world.game.map.getW()*world.game.map.getH(),actual));
+        CHECK(world.game.map.checkSum(true)==copy.game.map.checkSum(true));
+        CHECK(copy.game.map.resourceRoutingCacheBytes()==oneField);
+    }
+}
+
+TEST_CASE("combined stock routes include both provider modes and track direct overlay relocation")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& routed=json["variants"][3]["semantics"]["market"];
+    routed["suppliesStock"]=true; routed["suppliesStockExperiment"]=""; routed["suppliesStockResources"]={"wood"};
+    routed["suppliesDirectStock"]=false;
+    auto& direct=json["variants"][9];
+    direct["semantics"]["occupiesGround"]=false; direct["semantics"]["relocatable"]=true;
+    direct["semantics"]["market"]["suppliesDirectStock"]=true;
+    direct["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
+    auto& recipient=json["variants"][1]["semantics"]["market"];
+    recipient["fetchesStock"]=true; recipient["fetchesStockExperiment"]=""; recipient["fetchesStockResources"]={"wood"};
+    recipient["fetchesDirectStock"]=true; recipient["fetchesDirectStockResources"]={"wood"};
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* a=world.addBuilding("inn",8,8); Building* b=world.addBuilding("hospital",20,20);
+    Building* sink=world.addBuilding("swarm",30,30); a->resources[WOOD]=b->resources[WOOD]=5;
+    auto& map=world.game.map;
+    CHECK(map.resourceSupplyModes(sink,WOOD)==3);
+    const Uint16* field=map.getResourceGradient(0,WOOD,0,false,sink);
+    const Uint16 aGoal=GRADIENT_AT_GOAL-a->type->semantics.market.pickupPenalty*GRADIENT_STEP;
+    const Uint16 bGoal=GRADIENT_AT_GOAL-b->type->semantics.market.pickupPenalty*GRADIENT_STEP;
+    CHECK(field[map.coordToIndex(8,8)]==aGoal); CHECK(field[map.coordToIndex(20,20)]==bGoal);
+    Unit* worker=world.addUnit(WORKER,19,20); worker->attachedBuilding=sink;
+    CHECK(map.touchedStockedMarket(worker,WOOD)==b); // warms sparse overlay index
+    auto move=std::make_shared<OrderMoveFlag>(b->gid,24,24,false); move->sender=0;
+    world.game.executeOrder(move,0);
+    CHECK(b->posX==24); CHECK(map.touchedStockedMarket(worker,WOOD)==nullptr);
+    field=map.getResourceGradient(0,WOOD,0,false,sink);
+    CHECK(field[map.coordToIndex(24,24)]==bGoal); CHECK(field[map.coordToIndex(20,20)]<bGoal);
+    worker->attachedBuilding=nullptr;
+}
+
+TEST_CASE("shared ammunition consumption invalidates stock advertised by another building")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& supplier=json["variants"][3]["semantics"]["market"];
+    supplier["sharedStock"]=true; supplier["suppliesDirectStock"]=true; supplier["suppliesDirectStockResources"]={"stone"};
+    auto& turret=json["variants"][9]; turret["semantics"]["market"]["sharedStock"]=true;
+    turret["properties"]["shootingRange"]=4; turret["properties"]["shootSpeed"]=1024;
+    turret["properties"]["shootRhythm"]=65535; turret["properties"]["maxBullets"]=2;
+    turret["properties"]["multiplierStoneToBullets"]=1; turret["semantics"]["projectileDamage"]={1,1,1};
+    auto& sink=json["variants"][1]["semantics"]["market"];
+    sink["fetchesDirectStock"]=true; sink["fetchesDirectStockResources"]={"stone"};
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* source=world.addBuilding("inn",8,8); Building* gun=world.addBuilding("hospital",20,20);
+    Building* receiver=world.addBuilding("swarm",30,30); source->resources[STONE]=1;
+    int distance=0;
+    REQUIRE(world.game.map.resourceAvailable(0,STONE,0,29,30,&distance,false,receiver));
+    gun->turretStep(0);
+    CHECK(source->resources[STONE]==0);
+    CHECK_FALSE(world.game.map.resourceAvailable(0,STONE,0,29,30,&distance,false,receiver));
+}
+
+TEST_CASE("production transitions initialize new recipes and restore canceled preferences")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    for (int id : {3,5}) {
+        auto& production=json["variants"][id]["semantics"]["production"];
+        production["scheduling"]="weighted_committed_job";
+        production["initialRatios"]={0,0,2};
+        production["recipes"]={{"warrior",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
+        if (id==5) { production["recipes"]["worker"]={{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}; production["initialRatios"]={3,0,2}; }
+    }
+    json["variants"][2]["semantics"]["constructionCost"]=nlohmann::json::object();
+    json["variants"][4]["semantics"]["constructionCost"]={{"wood",1}};
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* b=world.game.addBuilding(8,8,2,0,1,1); REQUIRE(b); b->step();
+    REQUIRE(b->typeNum==3); CHECK(b->runtime==world.game.buildingsTypes.getRuntime(3)); CHECK(b->ratio[WARRIOR]==2); CHECK(b->ratio[WORKER]==0);
+    CHECK(b->canAffordProduction(WARRIOR));
+    b->siteCompletionPending=true; CHECK_FALSE(b->canAffordProduction(WARRIOR)); b->siteCompletionPending=false;
+    b->ratio[WARRIOR]=7;
+    b->launchConstruction(1,1); REQUIRE(b->tryToBuildingSiteRoom());
+    glob2test::HeadlessGame copy({.loadDefaultRace=true});
+    REQUIRE(loadProductionGame(copy.game,saveProductionGame(world.game,false),false));
+    Building* resumed=copy.game.teams[0]->myBuildings[Building::GIDtoID(b->gid)]; REQUIRE(resumed);
+    CHECK(resumed->runtime==copy.game.buildingsTypes.getRuntime(resumed->typeNum));
+    resumed->cancelConstruction(1); CHECK(resumed->ratio[WARRIOR]==7);
+    CHECK(resumed->runtime==copy.game.buildingsTypes.getRuntime(3));
+    b->addResourceIntoBuilding(WOOD);
+    CHECK(b->typeNum==5); CHECK(b->runtime==world.game.buildingsTypes.getRuntime(5)); CHECK(b->ratio[WARRIOR]==7); CHECK(b->ratio[WORKER]==3);
+}
+
+TEST_CASE("overlay transition and cancellation discard cached footprint routes")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    for (int id : {3,4}) json["variants"][id]["semantics"]["occupiesGround"]=false;
+    json["variants"][4]["properties"]["width"]=4;
+    json["variants"][4]["properties"]["height"]=1;
+    json["variants"][4]["properties"]["decLeft"]=2;
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* b=world.addBuilding("inn",8,8); auto& map=world.game.map;
+    REQUIRE(map.buildingGradient(b,0,BuildingRoute::Footprint));
+    b->launchConstruction(1,1); REQUIRE(b->tryToBuildingSiteRoom());
+    CHECK(b->globalGradient[b->routeSlot(0,BuildingRoute::Footprint)]==nullptr);
+    CHECK(b->runtime->width==4);
+    const Uint16* site=map.buildingGradient(b,0,BuildingRoute::Footprint); REQUIRE(site);
+    CHECK(site[map.coordToIndex(b->posX+3,b->posY)]==GRADIENT_AT_GOAL);
+    b->cancelConstruction(1);
+    CHECK(b->globalGradient[b->routeSlot(0,BuildingRoute::Footprint)]==nullptr);
+    const Uint16* restored=map.buildingGradient(b,0,BuildingRoute::Footprint); REQUIRE(restored);
+    CHECK(b->runtime->width==2);
+    CHECK(b->posX==8); CHECK(restored[map.coordToIndex(8,8)]==GRADIENT_AT_GOAL);
+    CHECK(restored[map.coordToIndex(14,8)]<GRADIENT_AT_GOAL);
+}
+
+TEST_CASE("mixed attraction borrows quota from an unavailable unit class")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& inn=json["variants"][3]; inn["properties"]["zonable"]={0,1,1};
+    inn["properties"]["defaultUnitStayRange"]=5; inn["properties"]["maxUnitStayRange"]=5;
+    inn["semantics"]["assignmentLimit"]=3; inn["semantics"]["replenishResources"]=nlohmann::json::array();
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* b=world.addBuilding("inn",8,8); b->maxUnitWorking=3; b->update();
+    for (int i=0;i<3;++i) world.addUnit(WARRIOR,6,7+i);
+    for (int tick=0;tick<33;++tick) b->subscribeWorkStep();
+    CHECK(b->unitsWorking.size()==3);
+    for (const Unit* unit : b->unitsWorking) CHECK(unit->typeNum==WARRIOR);
+}
+
+TEST_CASE("late choice advances the common timer and selects ratios only at completion")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& production=json["variants"][1]["semantics"]["production"];
+    production["scheduling"]="weighted_late_choice";
+    for (auto& recipe : production["recipes"]) { recipe["duration"]=5; recipe["cost"]={{"wheat",1}}; }
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* b=world.addBuilding("swarm",8,8); b->resources[WHEAT]=1;
+    b->swarmStep(); b->swarmStep(); CHECK(b->productionTimeout==3);
+    b->resources[WHEAT]=0; b->ratio[WORKER]=0; b->ratio[WARRIOR]=1;
+    b->swarmStep(); CHECK(b->productionTimeout==3);
+    b->resources[WHEAT]=1;
+    for (int y=7;y<=12;++y) for (int x=7;x<=12;++x)
+        if (x==7 || x==12 || y==7 || y==12) world.game.map.setResource(x,y,STONE,1);
+    for (int tick=0;tick<4;++tick) b->swarmStep();
+    CHECK(b->productionTimeout<0); CHECK(world.team->stats.measurements.births[WARRIOR]==0);
+    b->ratio[WARRIOR]=0; b->swarmStep();
+    CHECK(world.team->stats.measurements.births[WORKER]==0); // fallback is also ground-blocked
+    b->ratio[EXPLORER]=1; b->swarmStep();
+    CHECK(world.team->stats.measurements.births[EXPLORER]==1);
+    CHECK(b->resources[WHEAT]==0); CHECK(b->productionTimeout==5);
+}
+
+
+TEST_CASE("sole supplier demolition and cancellation preserve routing across save continuation")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool direct : {false,true}) {
+        CAPTURE(direct);
+        glob2test::HeadlessGame world({.loadDefaultRace=true});
+        auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& source=json["variants"][3]["semantics"]["market"];
+        source["suppliesStock"]=!direct; source["suppliesStockExperiment"]="";
+        source["suppliesStockResources"]={"wood"};
+        source["suppliesDirectStock"]=direct; source["suppliesDirectStockResources"]={"wood"};
+        auto& sink=json["variants"][9]["semantics"]["market"];
+        sink["fetchesStock"]=!direct; sink["fetchesStockExperiment"]="";
+        sink["fetchesStockResources"]={"wood"};
+        sink["fetchesDirectStock"]=direct; sink["fetchesDirectStockResources"]={"wood"};
+        world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+        Building* supplier=world.addBuilding("inn",8,8);
+        Building* receiver=world.addBuilding("hospital",20,20);
+        supplier->resources[WOOD]=10;
+        const unsigned mode=direct ? 2 : 1;
+        CHECK(world.game.map.resourceSupplyModes(receiver,WOOD)==mode);
+        REQUIRE(world.game.map.resourceAvailable(0,WOOD,0,19,20,false,receiver));
+        supplier->launchDelete();
+        REQUIRE(supplier->buildingState==Building::WAITING_FOR_DESTRUCTION);
+        CHECK(world.team->stockSuppliers.empty()); CHECK(world.team->directStockSuppliers.empty());
+        CHECK(world.game.map.resourceSupplyModes(receiver,WOOD)==0);
+        CHECK_FALSE(world.game.map.resourceAvailable(0,WOOD,0,19,20,false,receiver));
+        glob2test::HeadlessGame restored({.loadDefaultRace=true});
+        REQUIRE(loadProductionGame(restored.game,saveProductionGame(world.game,false),false));
+        auto* copiedSupplier=restored.game.teams[0]->myBuildings[Building::GIDtoID(supplier->gid)];
+        auto* copiedReceiver=restored.game.teams[0]->myBuildings[Building::GIDtoID(receiver->gid)];
+        REQUIRE(copiedSupplier); REQUIRE(copiedReceiver);
+        CHECK(restored.game.teams[0]->stockSuppliers.empty()); CHECK(restored.game.teams[0]->directStockSuppliers.empty());
+        CHECK(restored.game.map.resourceSupplyModes(copiedReceiver,WOOD)==0);
+        CHECK_FALSE(restored.game.map.resourceAvailable(0,WOOD,0,19,20,false,copiedReceiver));
+        CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));
+        supplier->cancelDelete(); copiedSupplier->cancelDelete();
+        CHECK(world.game.map.resourceSupplyModes(receiver,WOOD)==mode);
+        CHECK(restored.game.map.resourceSupplyModes(copiedReceiver,WOOD)==mode);
+        CHECK(world.game.map.resourceAvailable(0,WOOD,0,19,20,false,receiver));
+        CHECK(restored.game.map.resourceAvailable(0,WOOD,0,19,20,false,copiedReceiver));
+        CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));
+    }
+}
+
+TEST_CASE("current saves reject construction origins outside the explicit job graph")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool repair : {false,true}) for (int invalidKind : {0,1,2}) {
+        CAPTURE(repair); CAPTURE(invalidKind);
+        glob2test::HeadlessGame world({.loadDefaultRace=true});
+        Building* building=world.addBuilding("inn",8,8);
+        if (repair) building->hp-=10;
+        building->launchConstruction(1,1);
+        REQUIRE(building->tryToBuildingSiteRoom());
+        REQUIRE(building->type->isBuildingSite);
+        // A site cannot be its own origin, an unrelated completed building
+        // cannot become the result, and an existing-building job needs an origin.
+        building->constructionOriginTypeNum=invalidKind==0 ? building->typeNum : invalidKind==1 ? 9 : -1;
+        const auto bytes=saveProductionGame(world.game,false);
+        glob2test::HeadlessGame restored({.loadDefaultRace=true});
+        CHECK_THROWS_AS(loadProductionGame(restored.game,bytes,false),std::runtime_error);
+    }
+    for (bool repair : {false,true}) {
+        glob2test::HeadlessGame world({.loadDefaultRace=true});
+        Building* building=world.addBuilding("inn",8,8);
+        // This malformed pending job still names a completed type, but records
+        // another building as its cancellation origin.
+        building->buildingState=Building::WAITING_FOR_CONSTRUCTION;
+        building->constructionResultState=repair ? Building::REPAIR : Building::UPGRADE;
+        building->constructionOriginTypeNum=9;
+        const auto bytes=saveProductionGame(world.game,false);
+        glob2test::HeadlessGame restored({.loadDefaultRace=true});
+        CHECK_THROWS_AS(loadProductionGame(restored.game,bytes,false),std::runtime_error);
+    }
 }
 
 }

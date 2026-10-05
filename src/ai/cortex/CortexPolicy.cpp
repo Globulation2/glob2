@@ -290,6 +290,13 @@ namespace Cortex
 		return f;
 	}
 
+    void CortexPolicy::productionTargets(const CortexObservation& obs, Sint32 out[CORTEX_UNIT_TYPES])
+    {
+        const auto facts = computeFacts(obs);
+        out[0] = facts.growWorker; out[1] = facts.growExplorer; out[2] = facts.growWarrior;
+        if (facts.panic) { out[0] = out[1] = 0; out[2] = 1; }
+    }
+
 	// DECIDE_CONTRACT action-map class indices for the three war-flag decisions.
 	// They are still EVALUATED inside decide() (for the 19-class eligibility mask +
 	// trace), but their SELECTION moved to decideCombat() so a busy economy can never

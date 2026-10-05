@@ -70,7 +70,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -102,7 +114,10 @@
         "constructionCost": {
           "stone": 1
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "stonewall",
@@ -168,7 +183,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -200,7 +219,8 @@
         "constructionCost": {},
         "repairCost": {
           "stone": 1
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "stonewall",

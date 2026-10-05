@@ -82,6 +82,8 @@ private:
 	std::vector<CatalogExperimentDefinition> entries;
 };
 
+// Pure validation shared by startup registration and embedded catalog loading.
+void validateCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
 void registerCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions);
 // Built-ins first in their historical order, followed by installed dynamic keys.
 std::vector<CatalogExperimentDefinition> registeredExperimentDefinitions();

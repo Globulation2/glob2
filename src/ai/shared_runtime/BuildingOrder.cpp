@@ -42,6 +42,19 @@ unsigned BuildingOrder::input_resource_mask(Runtime& runtime) const
  return recurring ? recurring : construction;
 }
 
+void BuildingOrder::add_input_distance_constraints(Runtime& runtime,int defaultWeight,
+    std::initializer_list<std::pair<int,int>> resourceWeights,int maximumDistance)
+{
+    const unsigned inputs=input_resource_mask(runtime);
+    for(int resource=0;resource<MAX_NB_RESOURCES;++resource) if(inputs&(1u<<resource)) {
+        int weight=defaultWeight;
+        for(const auto& [selected,preference]:resourceWeights) if(selected==resource) weight=preference;
+        GradientInfo gradient;gradient.add_source(new Entities::Resource(resource));
+        add_constraint(new MinimizedDistance(gradient,weight));
+        if(maximumDistance>=0) add_constraint(new MaximumDistance(gradient,maximumDistance));
+    }
+}
+
 bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("BuildingOrder");
@@ -170,6 +183,9 @@ position BuildingOrder::find_location(Runtime& runtime, Map* map, GradientManage
 			bool passes=true;
 			for(std::vector<std::shared_ptr<Constraint> >::iterator i=constraints.begin(); i!=constraints.end(); ++i)
 			{
+				if ((*i)->applies_to_origin())
+					passes=(*i)->passes_constraint(runtime,x,y);
+				else
 				for(int x2=0; x2<type->width && passes; ++x2)
 					for(int y2=0; y2<type->height && passes; ++y2)
 						if((x2==0 || y2==0 || x2==type->width-1 || y2==type->height-1))

@@ -23,7 +23,7 @@ bool disposableRally(const Building& building)
 {
 	const auto& p = building.type->semantics;
 	return !p.feeding.enabled && !p.healing.enabled && building.type->shootingRange == 0
-		&& !p.market.interTeamFruitExchange && !p.market.suppliesStock
+		&& !p.market.interTeamFruitExchange && !p.market.suppliesStock && !p.market.suppliesDirectStock
 		&& std::none_of(p.production.recipes.begin(), p.production.recipes.end(), [](const auto& r) { return r.enabled; })
 		&& std::none_of(p.training.begin(), p.training.end(), [](const auto& r) { return r.enabled; });
 }

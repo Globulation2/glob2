@@ -127,6 +127,10 @@ void BuildingsTypes::initLegacy()
 		bt.presentation.skinSlot = bt.type == "swarm" && !bt.isBuildingSite ? "swarm" : "";
 		if (bt.crossConnectMultiImage) bt.presentation.connectionGroup = bt.key;
 		BuildingSemantics& p = bt.semantics;
+		p.replenishResourceMask=0;
+		for (int r=0; r<MAX_RESOURCES; ++r) if (bt.maxResource[r]>0) p.replenishResourceMask|=1u<<r;
+		p.market.suppliesStockMask=p.market.suppliesDirectStockMask=p.replenishResourceMask;
+		p.market.fetchesStockMask=p.market.fetchesDirectStockMask=p.replenishResourceMask;
 		p.requiredWorkerLevel = bt.level;
 		p.assignmentLimit = bt.maxUnitWorking ? 20 : 0;
 		p.regenerationPerTick = bt.unitProductionTime ? 1 : 0;
@@ -138,7 +142,7 @@ void BuildingsTypes::initLegacy()
 		p.placeable = bt.previousKey.empty();
 		p.instantPlacement = p.relocatable = bt.isVirtual;
 		p.occupiesGround = !bt.isVirtual;
-		p.workPriorityBias = bt.canFeedUnit ? 2 : 1;
+		p.workPriorityBias = (bt.canFeedUnit ? 2 : 1) + bt.level * 10;
 		p.sightSharing = bt.canExchange ? BuildingSightSharing::Exchange :
 			bt.canFeedUnit ? BuildingSightSharing::Food : BuildingSightSharing::Other;
 		p.feeding.enabled = bt.canFeedUnit;
@@ -192,15 +196,13 @@ void BuildingsTypes::loadSprites()
 void BuildingsTypes::loadSpritesForTypes(std::vector<BuildingType>& types)
 {
 	// Resolve sprite pointers, replacing the lazy load that happened inside
-	// the old loadFromConfigFile. Skips the "null" default block (not in
-	// this table). The caller explicitly requests artwork, including offline tools.
+	// the old loadFromConfigFile. The legacy default block is not in this table.
+	// The caller explicitly requests artwork, including offline tools.
 	// GlobalContainer loads them with the rest of the game graphics.
 	const std::size_t count = types.size();
 	for (std::size_t i = 0; i < count; ++i)
 	{
 		BuildingType *bt = &types[i];
-		if (bt->type == "null")
-			continue;
 		bt->gameSpritePtr = Toolkit::getSprite(bt->gameSprite.c_str());
 		if (!bt->gameSpritePtr) throw std::runtime_error("Cannot load building sprite: " + bt->gameSprite);
 		if (bt->miniSpriteImage >= 0)
@@ -316,6 +318,7 @@ void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
 	const std::set<std::string> enabled(keys.begin(), keys.end());
 	const auto permitted = [&](const std::string& key) { return key.empty() || enabled.count(key) != 0; };
 	usesMarketRouting_ = false;
+	stockSupplyMask_ = directSupplyMask_ = extraDirectSupplyMask_ = 0;
 	usesOverlaySuppliers_ = false;
 	for (auto& b : *entries_)
 	{
@@ -323,16 +326,28 @@ void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
 		b.runtimeSuppliesStock = b.runtimeAvailable && b.semantics.market.suppliesStock && permitted(b.semantics.market.suppliesStockExperiment);
 		b.runtimeFetchesStock = b.runtimeAvailable && b.semantics.market.fetchesStock && permitted(b.semantics.market.fetchesStockExperiment);
 		b.runtimeSuppliesDirectStock = b.runtimeAvailable && b.semantics.market.suppliesDirectStock;
-		b.runtimeFetchesDirectStock = b.runtimeAvailable && b.semantics.market.fetchesDirectStock && !b.runtimeFetchesStock;
+		b.runtimeSuppliesStockMask=b.runtimeSuppliesStock ? b.semantics.market.suppliesStockMask : 0;
+		b.runtimeSuppliesDirectStockMask=b.runtimeSuppliesDirectStock ? b.semantics.market.suppliesDirectStockMask : 0;
+		b.runtimeFetchesStockMask=b.runtimeFetchesStock ? b.semantics.market.fetchesStockMask : 0;
+		b.runtimeFetchesDirectStockMask=b.runtimeAvailable && b.semantics.market.fetchesDirectStock
+			? b.semantics.market.fetchesDirectStockMask : 0;
+		b.runtimeSuppliesStock=b.runtimeSuppliesStockMask!=0;
+		b.runtimeSuppliesDirectStock=b.runtimeSuppliesDirectStockMask!=0;
+		b.runtimeFetchesStock=b.runtimeFetchesStockMask!=0;
+		b.runtimeFetchesDirectStock=b.runtimeFetchesDirectStockMask!=0;
+		stockSupplyMask_ |= b.runtimeSuppliesStockMask;
+		directSupplyMask_ |= b.runtimeSuppliesDirectStockMask;
+		extraDirectSupplyMask_ |= b.runtimeSuppliesDirectStockMask & ~b.runtimeSuppliesStockMask;
 		usesMarketRouting_ = usesMarketRouting_ || b.runtimeSuppliesStock;
 		usesOverlaySuppliers_ = usesOverlaySuppliers_ || (b.runtimeSuppliesStock && !b.semantics.occupiesGround);
 	}
+	compileRuntimeTraits();
 }
 
 BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
-	: entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
+	: runtimeTypes_(other.runtimeTypes_), entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
 	  experiments_(other.experiments_), catalogKey_(other.catalogKey_),
-	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
+	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), stockSupplyMask_(other.stockSupplyMask_), directSupplyMask_(other.directSupplyMask_), extraDirectSupplyMask_(other.extraDirectSupplyMask_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
 {
 }
 
@@ -344,4 +359,31 @@ BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
 		*this = std::move(copy);
 	}
 	return *this;
+}
+
+
+void BuildingsTypes::compileRuntimeTraits()
+{
+    runtimeTypes_.resize(entries_->size());
+    for (std::size_t id=0; id<entries_->size(); ++id)
+    {
+        const auto& b=(*entries_)[id]; const auto& s=b.semantics;
+        auto& hot=runtimeTypes_[id]; hot={};
+        hot.hpMax=b.hpMax; hot.armor=b.armor; hot.regenerationPerTick=s.regenerationPerTick;
+        hot.projectileDamage=s.projectileDamage; hot.projectileBuildingDamage=s.projectileBuildingDamage;
+        hot.shootSpeed=b.shootSpeed; hot.workPriorityBias=s.workPriorityBias;
+        for (int ability=0; ability<NB_ABILITY; ++ability) if (s.training[ability].enabled) hot.trainingMask|=1u<<ability;
+        hot.width=b.width; hot.height=b.height; hot.decLeft=b.decLeft; hot.decTop=b.decTop;
+        hot.shootRhythm=b.shootingRange ? b.shootRhythm : 0; hot.shootingRange=b.shootingRange; hot.assignmentLimit=s.assignmentLimit;
+        hot.flags=(s.occupiesGround ? BuildingRuntimeTraits::OccupiesGround : 0)
+            | (b.useTeamResources ? BuildingRuntimeTraits::SharedStock : 0) | (b.isBuildingSite ? BuildingRuntimeTraits::Site : 0)
+            | (s.feeding.enabled ? BuildingRuntimeTraits::Feeds : 0) | (s.healing.enabled ? BuildingRuntimeTraits::Heals : 0)
+            | (s.trainingInParallel ? BuildingRuntimeTraits::TrainingParallel : 0) | (b.runtimeAvailable ? BuildingRuntimeTraits::Available : 0);
+        hot.admittedUnitMask=s.admittedUnitMask; hot.requiredWorkerLevel=s.requiredWorkerLevel;
+        for (int unit=0; unit<NB_UNIT_TYPE; ++unit) if (b.zonable[unit]) hot.attractionMask|=1u<<unit;
+        hot.suppliesStockMask=b.runtimeSuppliesStockMask; hot.suppliesDirectStockMask=b.runtimeSuppliesDirectStockMask;
+        hot.fetchesStockMask=b.runtimeFetchesStockMask; hot.fetchesDirectStockMask=b.runtimeFetchesDirectStockMask;
+        hot.replenishResourceMask=s.replenishResourceMask; hot.productionEnabledMask=s.production.enabledUnitMask;
+        if (s.production.scheduling==BuildingProductionScheduling::WeightedCommittedJob) hot.flags|=BuildingRuntimeTraits::CommittedProduction;
+    }
 }

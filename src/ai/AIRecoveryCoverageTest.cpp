@@ -161,6 +161,7 @@ TEST_SUITE("AIRecoveryCoverage")
         w.team->enemies=w.game.teams[1]->me;
         threatened->underAttackTimer=100;
         AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
+        MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
         runtime.gm.reset(new AISharedRuntime::Gradients::GradientManager(&w.game.map));
         runtime.br.initiate();
         auto& ai=*static_cast<NewNicowar*>(runtime.runtimeai.get());
@@ -195,6 +196,7 @@ TEST_SUITE("AIRecoveryCoverage")
         auto* enemy=w.addUnit(WARRIOR,8,8,1);
         w.team->enemies=w.game.teams[1]->me;
         Cabino::AICabino ai(w.game.players[0]);
+        MersenneTwister controllerRandom(713);ai.setRandomEngine(controllerRandom);
         auto& defense=*static_cast<Cabino::SimpleBuildingDefense*>(ai.getDefenseModule());
         auto flush=[&] {
             while(!ai.orders.empty()) { auto order=ai.orders.front(); ai.orders.pop();

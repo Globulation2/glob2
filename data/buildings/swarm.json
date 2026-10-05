@@ -72,7 +72,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wheat"
+          ],
+          "suppliesDirectStockResources": [
+            "wheat"
+          ],
+          "fetchesStockResources": [
+            "wheat"
+          ],
+          "fetchesDirectStockResources": [
+            "wheat"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -104,7 +116,10 @@
         "constructionCost": {
           "wheat": 35
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wheat"
+        ]
       },
       "presentation": {
         "displayName": "swarm",
@@ -190,7 +205,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wheat"
+          ],
+          "suppliesDirectStockResources": [
+            "wheat"
+          ],
+          "fetchesStockResources": [
+            "wheat"
+          ],
+          "fetchesDirectStockResources": [
+            "wheat"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -244,7 +271,10 @@
         "constructionCost": {},
         "repairCost": {
           "wheat": 35
-        }
+        },
+        "replenishResources": [
+          "wheat"
+        ]
       },
       "presentation": {
         "displayName": "swarm",

@@ -9,6 +9,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <BinaryStream.h>
+#include <algorithm>
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
@@ -65,8 +66,13 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
 void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
 {
     if (!map.getIsSavedGame())
-        {
-        header.setExperiments(globalContainer->settings.experiments);
+    {
+        ExperimentSet enabled;
+        const auto& allowed = header.buildingExperimentKeys();
+        for (const auto& key : globalContainer->settings.experiments.keys())
+            if (parseExperimentKey(key) || std::find(allowed.begin(), allowed.end(), key) != allowed.end())
+                enabled.set(key, true, allowed);
+        header.setExperiments(enabled);
         for (const auto& definition : experimentDefinitions())
             if (map.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
     }
@@ -370,6 +376,7 @@ void Engine::createRandomGame()
 	}
 
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	game.setBuildingCatalogSnapshot(loadGameHeader(map.getFileName()).getBuildingCatalogSnapshot());
 	// Mirror the syncRand seed (captured at runTestGames entry) into the
 	// GameHeader so a saved .game file reloads with the same syncRand
 	// state. GameHeader's ctor defaults seed to time(NULL) at header-

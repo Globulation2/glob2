@@ -2,6 +2,8 @@
 #include <algorithm>
 #include "Version.h"
 #include "AIMaximaBuildings.h"
+#include "AIMaximaFeedingEstimate.h"
+#include <nlohmann/json.hpp>
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -962,4 +964,186 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);
     CHECK(elapsed==AIMaximaBuildings::serviceTicks(*inn->type,inn->type->semantics.feeding.duration));
     CHECK(inn->resources[WHEAT]==9);
+}
+
+TEST_CASE("feeding estimate shares resources and seats across capability combinations" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    const int id=world.game.buildingsTypes.getTypeNum("inn",2,false);
+    const auto baseline=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
+    auto estimate=[&](nlohmann::json snapshot,const AIMaxima::FeedingPlan& p) {
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        return AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),p);
+    };
+    const auto normal=estimate(baseline,plan);
+    auto costly=baseline;costly["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",2},{"wood",1}};
+    costly["variants"][id]["properties"]["maxResource"][WOOD]=20;
+    const auto mixedCost=estimate(costly,plan);
+    CHECK(mixedCost.supportedUnits<=normal.supportedUnits);
+    CHECK(mixedCost.resources[WHEAT]==2*mixedCost.resources[WOOD]);
+    auto distant=plan;distant.oneWayTravelTicks*=2;
+    CHECK(estimate(baseline,distant).supportedUnits<=normal.supportedUnits);
+    auto free=baseline;free["variants"][id]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+    auto nobody=plan;nobody.carriers=0;
+    const auto freeEstimate=estimate(free,nobody);
+    CHECK(freeEstimate.supportedUnits>=normal.supportedUnits);
+    CHECK(freeEstimate.resources[WHEAT]==0);
+    CHECK(freeEstimate.haulingWorkerTicks==0);
+    auto hybrid=baseline;auto& spec=hybrid["variants"][id]["semantics"];
+    spec["healing"]["enabled"]=true;spec["healing"]["duration"]=12;spec["healing"]["cost"]={{"wheat",1}};
+    spec["production"]["recipes"]={{"worker",{{"enabled",true},{"duration",80},{"cost",{{"wheat",2}}}}}};
+    const auto shared=estimate(hybrid,plan);
+    CHECK(shared.supportedUnits<=normal.supportedUnits);
+    CHECK(shared.haulingWorkerTicks<=plan.carriers*AIMaxima::FeedingEstimate::Scale);
+    CHECK(shared.resources[WHEAT]>shared.visitsPerTick);
+    CHECK(normal.resources[WHEAT]==normal.visitsPerTick);
+    CHECK(normal.supportedUnits==normal.visitsPerTick*plan.ticksPerMeal/AIMaxima::FeedingEstimate::Scale);
+}
+
+TEST_CASE("sustained stock feeding reports capability estimates and historical strategy targets" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    const int historical[]={19,25,34};
+    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
+    for(int stage=0;stage<3;++stage)for(int distance:{4,16})for(bool forecastPopulation:{false,true}) {
+        glob2test::HeadlessGame world({.wDec=6,.hDec=6,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=71});
+        world.game.gameHeader.setResourceGrowthDisabled(true);
+        // A fixed walkable catchment prevents random idling from taking the
+        // population arbitrarily far away. Harvestable inputs are replenished
+        // at source, never in the building: real workers must deliver them.
+        for(int y=0;y<64;++y)for(int x=0;x<64;++x)
+            if(x<8 || y<8 || x>48 || y>48)world.game.map.setCellTerrain(x,y,WATER);
+        auto* inn=world.addBuilding("inn",16,16,stage);
+        auto order=std::make_shared<OrderModifyBuilding>(inn->gid,plan.carriers);order->sender=0;world.game.executeOrder(order,0);
+        const auto prediction=AIMaxima::estimateFeeding(*inn->type,plan);
+        const int population=forecastPopulation?prediction.supportedUnits:historical[stage];
+        for(int unit=0;unit<population;++unit)world.addUnit(unit<plan.carriers?WORKER:WARRIOR);
+        const int warmup=20000,window=40000;
+        Uint64 previousMeals=0,previousDelivered=0,reservedSeatTicks=0,workingTicks=0,hungryTicks=0;
+        for(int tick=0;tick<warmup+window;++tick) {
+            for(int cell=0;cell<8;++cell) {
+                const int x=16+distance+cell%2,y=16+cell/2;
+                if(!world.game.map.getTile(x,y).resource.amount)world.game.map.setResource(x,y,WHEAT,1);
+            }
+            world.step();
+            if(tick+1==warmup) {
+                previousMeals=world.team->stats.measurements.meals;
+                previousDelivered=world.team->stats.measurements.delivered[WHEAT];
+            }
+            if(tick>=warmup) {
+                reservedSeatTicks+=inn->unitsInside.size();workingTicks+=inn->unitsWorking.size();
+                for(int unit=0;unit<Unit::MAX_COUNT;++unit)if(const auto* u=world.team->myUnits[unit];u && u->hungry<=u->trigHungry)++hungryTicks;
+            }
+        }
+        int survivors=0;for(int unit=0;unit<Unit::MAX_COUNT;++unit)survivors+=world.team->myUnits[unit]!=nullptr;
+        const auto meals=world.team->stats.measurements.meals-previousMeals;
+        std::cout<<"MAXIMA_FEEDING_MEASUREMENT stage="<<stage<<" route="<<distance<<" population="<<population
+            <<" old_target="<<historical[stage]<<" estimate="<<prediction.supportedUnits<<" survivors="<<survivors
+            <<" meals="<<meals<<" delivered="<<world.team->stats.measurements.delivered[WHEAT]-previousDelivered
+            <<" seat_ticks="<<reservedSeatTicks<<" carrier_ticks="<<workingTicks<<" hungry_ticks="<<hungryTicks
+            <<" window="<<window<<'\n';
+        CAPTURE(stage);CAPTURE(distance);CAPTURE(population);
+        CHECK(meals>0);
+        CHECK(reservedSeatTicks<=Uint64(window)*inn->maxUnitInside);
+        CHECK(workingTicks<=Uint64(window)*plan.carriers);
+    }
+}
+
+TEST_CASE("operating estimates use one production clock and packet denominators" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& variant=snapshot["variants"][id];
+    variant["properties"]["maxResource"][WOOD]=20;
+    variant["semantics"]["feeding"]["enabled"]=false;
+    variant["semantics"]["production"]["initialRatios"]={0,0,0};
+    variant["semantics"]["production"]["scheduling"]="weighted_committed_job";
+    variant["semantics"]["production"]["recipes"]={
+        {"worker",{{"enabled",true},{"duration",10},{"cost",{{"wheat",1}}}}},
+        {"explorer",{{"enabled",true},{"duration",100},{"cost",{{"wood",3}}}}}};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    const AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    const auto ordinary=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
+    const auto rate=AIMaxima::FeedingEstimate::Scale/(11+101);
+    CHECK(ordinary.resources[WHEAT]==rate);
+    CHECK(ordinary.resources[WOOD]==3*rate);
+    CHECK(ordinary.productionRates[WORKER]==rate*1000/AIMaxima::FeedingEstimate::Scale);
+    CHECK(ordinary.productionRates[EXPLORER]==ordinary.productionRates[WORKER]);
+    variant["properties"]["multiplierResource"][WHEAT]=10;
+    variant["properties"]["multiplierResource"][WOOD]=10;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    const auto packet=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
+    CHECK(packet.resources==ordinary.resources);
+    CHECK(packet.resourcePackets[WHEAT]==ordinary.resourcePackets[WHEAT]/10);
+    CHECK(packet.resourcePackets[WOOD]==ordinary.resourcePackets[WOOD]/10);
+    CHECK(packet.productionRates==ordinary.productionRates);
+    CHECK(packet.haulingWorkerTicks==ordinary.resources[WHEAT]/10+ordinary.resources[WOOD]/10);
+    CHECK(packet.haulingWorkerTicks<ordinary.haulingWorkerTicks);
+}
+
+TEST_CASE("parallel training budgets separate compatible recipients and disabled services" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());auto& variant=snapshot["variants"][id];
+    variant["properties"]["maxUnitInside"]=2;
+    variant["properties"]["maxResource"][WOOD]=20;variant["properties"]["maxResource"][STONE]=20;
+    variant["semantics"]["feeding"]["enabled"]=false;
+    variant["semantics"]["trainingInParallel"]=true;
+    variant["semantics"]["training"]={
+        {"walk",{{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",10},{"cost",{{"wood",1}}}}},
+        {"attackStrength",{{"enabled",true},{"unitMask",4},{"targetLevel",1},{"duration",100},{"cost",{{"stone",3}}}}},
+        {"swim",{{"enabled",true},{"unitMask",1},{"targetLevel",0},{"constructionLevel",0},{"duration",500},{"cost",{{"wheat",5}}}}}};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    const auto* type=world.game.buildingsTypes.get(id);
+    const auto trained=AIMaxima::estimateFeeding(*type,plan);
+    CHECK(trained.resources[WOOD]==AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,10));
+    CHECK(trained.resources[STONE]==3*(AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,100)));
+    CHECK(trained.resources[WHEAT]==0); // no level-zero improvement
+    variant["semantics"]["feeding"]["enabled"]=true;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();type=world.game.buildingsTypes.get(id);
+    const auto hybrid=AIMaxima::estimateFeeding(*type,plan);
+    plan.training=false;const auto disabled=AIMaxima::estimateFeeding(*type,plan);
+    CHECK(disabled.supportedUnits>hybrid.supportedUnits);
+    CHECK(disabled.resources[WOOD]==0);CHECK(disabled.resources[STONE]==0);
+    plan.feeding=false;CHECK(AIMaxima::estimateFeeding(*type,plan).supportedUnits==0);
+}
+
+TEST_CASE("projectile profiles reserve ammunition workers and cache nominal feeding" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture world;auto& ai=*world.ai;ai.ensure_strategy();
+    const int tower=world.game.buildingsTypes.getPlaceableTypeNum("defencetower");
+    const int inn=world.game.buildingsTypes.getPlaceableTypeNum("inn");
+    const auto* profile=ai.profile_variant(tower,1);REQUIRE(profile);
+    CHECK(profile->operatingResources[STONE]>0);
+    CHECK(profile->serviceRates[AIMaximaBuildings::ProjectileDefense]>0);
+    const auto* cached=ai.development_feeding_capacity.data();
+    const int capacity=ai.feeding_capacity(inn,1);
+    REQUIRE(capacity>0);
+    for(int read=0;read<100;++read)CHECK(ai.feeding_capacity(inn,1)==capacity);
+    CHECK(ai.development_feeding_capacity.data()==cached);
+}
+
+TEST_CASE("feeding budget scaling handles maximum seats without overflowing intermediate products" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& variant=snapshot["variants"][id];
+    variant["properties"]["maxUnitInside"]=32767;
+    variant["properties"]["insideSpeed"]=256;
+    variant["semantics"]["feeding"]["duration"]=0;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    const auto estimate=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),{1024,0,0,1});
+    CHECK(estimate.visitsPerTick==1024*AIMaxima::FeedingEstimate::Scale);
+    CHECK(estimate.supportedUnits==1024);
+    CHECK(estimate.haulingWorkerTicks==1024*AIMaxima::FeedingEstimate::Scale);
 }

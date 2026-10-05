@@ -71,7 +71,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -103,7 +115,10 @@
         "constructionCost": {
           "wood": 3
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "inn",
@@ -190,7 +205,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": true
+          "fetchesDirectStock": true,
+          "suppliesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -222,7 +261,13 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 3
-        }
+        },
+        "replenishResources": [
+          "wheat",
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "inn",
@@ -308,7 +353,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -335,12 +392,15 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "inn",
@@ -429,7 +489,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": true
+          "fetchesDirectStock": true,
+          "suppliesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -456,12 +540,18 @@
         "sightSharing": "food",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 2,
+        "workPriorityBias": 12,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
           "wood": 8
-        }
+        },
+        "replenishResources": [
+          "wheat",
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "inn",
@@ -548,7 +638,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -575,13 +681,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 7,
           "stone": 5
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "inn",
@@ -669,7 +779,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": true
+          "fetchesDirectStock": true,
+          "suppliesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -696,13 +830,19 @@
         "sightSharing": "food",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 2,
+        "workPriorityBias": 22,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
           "wood": 7,
           "stone": 5
-        }
+        },
+        "replenishResources": [
+          "wheat",
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "inn",

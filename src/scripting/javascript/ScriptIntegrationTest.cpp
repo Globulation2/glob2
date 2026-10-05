@@ -1,3 +1,4 @@
+#include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScriptObservations.h"
@@ -1167,9 +1168,12 @@ TEST_CASE("JavaScript solid attraction placement keeps both radius and footprint
     glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     const int variant = world.game.buildingsTypes.getPlaceableTypeNum("inn");
     REQUIRE(variant >= 0);
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["zonable"]={0,0,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=5;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
     auto* type = world.game.buildingsTypes.get(variant);
-    type->zonable[WARRIOR] = 1;
-    type->maxUnitStayRange = 5;
     REQUIRE(type->semantics.occupiesGround);
     Observations observations(world.game, -1);
     observations.setProfile(2);
@@ -1435,12 +1439,18 @@ TEST_CASE("JavaScript custom building descriptors and orders follow services" * 
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-    auto* b = world.addBuilding("inn", 4, 4);
-    b->type->type = "new-service";
-    b->type->shortTypeNum = IntBuildingType::STONE_WALL;
-    b->type->semantics.production.recipes[EXPLORER].enabled = true;
-    b->type->semantics.production.recipes[EXPLORER].duration = 20;
-    b->type->semantics.production.enabledUnitMask = 1u << EXPLORER;
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& spec=snapshot["variants"][variant];
+    spec["properties"]["type"]="new-service";
+    spec["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    spec["semantics"]["production"]["recipes"]={{"explorer",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+    spec["semantics"]["production"]["fallbackUnit"]=EXPLORER;
+    spec["semantics"]["production"]["initialRatios"]={0,0,0};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* b=world.game.addBuilding(4,4,variant,0,1,1);
+    REQUIRE(b);
     Observations observations(world.game, 0);
     auto types = observations.query("buildingTypes", {});
     const Value* descriptor = nullptr;
@@ -1463,11 +1473,14 @@ TEST_CASE("JavaScript managed controls use capabilities and independent bombing 
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("swarm");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    snapshot["variants"][variant]["properties"]["zonable"]={1,1,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=12;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
     auto* building=world.addBuilding("swarm",4,4);
-    building->type->shortTypeNum=IntBuildingType::STONE_WALL;
-    building->shortTypeNum=IntBuildingType::STONE_WALL;
-    building->type->zonable[EXPLORER]=1;building->type->zonable[WARRIOR]=1;building->type->zonable[WORKER]=1;
-    building->type->maxUnitStayRange=12;
     Observations observations(world.game,0);observations.setProfile(2);observations.observe();
     Services services(world.game,0,observations);services.begin();
     Host host;host.profile=2;host.team=0;host.width=world.game.map.getW();host.height=world.game.map.getH();host.random=[] {return 0u;};

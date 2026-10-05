@@ -27,6 +27,7 @@ namespace
 		bool clearingResources[BASIC_COUNT];
 		Building::ConstructionResultState constructionResultState;
 		int constructionOriginTypeNum;
+		std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios;
 		int repairInitialDeficit, repairHealthGranted;
 		BuildingResourceCost constructionBudget, constructionReserved;
 	};
@@ -118,6 +119,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				b->priority, b->unitStayRange, b->minLevelToFlag, b->minWorkerLevelToFlag, b->explorersRequireBombing, b->receiveResourceMask, b->sendResourceMask, {}, {}, {}};
 			bt.constructionResultState=b->constructionResultState;
 			bt.constructionOriginTypeNum=b->constructionOriginTypeNum;
+			bt.constructionOriginRatios=b->constructionOriginRatios;
 			bt.repairInitialDeficit=b->repairInitialDeficit; bt.repairHealthGranted=b->repairHealthGranted;
 			bt.constructionBudget=b->constructionBudget;
 			bt.constructionReserved=b->constructionReserved;
@@ -244,6 +246,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 						b->resources[r] = bt.resources[r];
 					b->constructionResultState=bt.constructionResultState;
 					b->constructionOriginTypeNum=bt.constructionOriginTypeNum;
+					b->constructionOriginRatios=bt.constructionOriginRatios;
 					b->repairInitialDeficit=bt.repairInitialDeficit; b->repairHealthGranted=bt.repairHealthGranted;
 					b->constructionBudget=bt.constructionBudget;
 					b->constructionReserved=bt.constructionReserved;

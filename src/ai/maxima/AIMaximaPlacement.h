@@ -183,7 +183,7 @@ struct BuildingLevelProfile
 	int serviceRates[AIMaximaBuildings::RoleCount]{};
 	unsigned productionUnitMask=0;
 	int productionRates[3]{};
-	int operatingResources[8]{};
+	int operatingResources[8]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;

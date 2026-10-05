@@ -87,7 +87,7 @@ void AICortex::translateActionBuild(const Cortex::CortexAction& action, const Co
 	if (!cand.valid)
 		return; // policy chose a stale/empty slot; drop rather than misbuild.
 
-	emitBuildOrder(type, cand.x, cand.y, obs.tick);
+	emitBuildOrder(type, cand.x, cand.y, obs.tick, type == Cortex::CORTEX_BUILD_SWARM ? obs.productionPlacementType : -1);
 }
 
 void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, const Cortex::CortexObservation& obs)
@@ -134,10 +134,15 @@ void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, c
 	}
 }
 
-bool AICortex::emitBuildOrder(int type, int x, int y, int tick)
+bool AICortex::emitBuildOrder(int type, int x, int y, int tick, int placementType)
 {
 	Game& game = *player->team->game;
-    const auto choice = Cortex::selectBuilding(game, *player->team, type);
+    AIPlanning::BuildingCandidate choice;
+    if (placementType<0) choice = Cortex::selectBuilding(game, *player->team, type);
+    if (placementType>=0) {
+        choice.placementType=placementType;
+        choice.completedType=game.buildingsTypes.getFinishedTypeNum(game.buildingsTypes.get(placementType)->key);
+    }
     if (choice.placementType < 0) return false;
     const int typeNum = choice.placementType;
     const auto* placement = game.buildingsTypes.get(typeNum);

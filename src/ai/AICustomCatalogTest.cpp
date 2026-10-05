@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AI.h"
+#include "Version.h"
 #include "AINumbi.h"
 #include "AICastor.h"
 #include "AIWarrush.h"
@@ -18,6 +19,7 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
+#include <functional>
 
 namespace
 {
@@ -32,7 +34,8 @@ struct CatalogWorld
     glob2test::HeadlessGame world{glob2test::GameOptions{
         .wDec=6,.hDec=6,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true}};
     int replacement=-1,completed=-1,anchor=-1;
-    explicit CatalogWorld(AI::ImplementationID ai,bool missing=false,bool populatedProvider=false)
+    explicit CatalogWorld(AI::ImplementationID ai,bool missing=false,bool populatedProvider=false,bool splitProduction=false,
+        const std::function<void(nlohmann::json&)>& customize={})
     {
         auto& game=world.game;
         auto stock=game.buildingsTypes;
@@ -57,7 +60,23 @@ struct CatalogWorld
                 variant["semantics"]["assignmentLimit"]=20;
                 variant["properties"]["maxResource"][WHEAT]=32;
             }
+            if(splitProduction) {
+                auto& recipes=variant["semantics"]["production"]["recipes"];
+                recipes=nlohmann::json::object();
+                int output=-1;
+                if(old->type=="swarm" && !old->isBuildingSite) output=WORKER;
+                if(old->type=="hospital" && old->level==0 && !old->isBuildingSite) output=EXPLORER;
+                if(old->type=="barracks" && old->level==0 && !old->isBuildingSite) output=WARRIOR;
+                if(output>=0) {
+                    static const char* names[]={"worker","explorer","warrior"};
+                    recipes[names[output]]={{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}};
+                    variant["semantics"]["production"]["scheduling"]="weighted_committed_job";
+                    variant["semantics"]["assignmentLimit"]=20;
+                    if(output!=WORKER) {variant["semantics"]["placeable"]=true;variant["semantics"]["instantPlacement"]=true;}
+                }
+            }
         }
+        if(customize) customize(snapshot);
         game.buildingsTypes.loadSnapshotJson(snapshot.dump());
         game.configureBuildingCatalog();
         replacement=game.buildingsTypes.findByKey(siteKey);
@@ -84,7 +103,7 @@ struct CatalogWorld
             for(int i=0;i<12;++i)world.addUnit(i<10?WORKER:WARRIOR,4+offset+i,12+offset,team);
             for(int y=18;y<24;++y)for(int x=8;x<24;++x)game.map.setResource(x+offset,y+offset,WHEAT,1);
             for(int x=24;x<29;++x)for(int y=18;y<24;++y)game.map.setResource(x+offset,y+offset,WOOD,5);
-            game.teams[team]->stats.step(game.teams[team]);
+            for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) game.teams[team]->stats.step(game.teams[team]);
         }
         // Nicowar's existing siting policy requires a finite distance from water.
         game.map.setCellTerrain(0,0,WATER);
@@ -177,13 +196,282 @@ TEST_CASE("all native controllers select renamed mixed providers and release mis
         }
     }
 }
+TEST_CASE("Nicowar and Econo keep independent weighted material objectives and stone clearance")
+{
+    glob2test::HeadlessGlobals globals;
+    for(auto controller:{AI::NICOWAR,AI::ECONO}) for(bool pool:{false,true}) {
+        CAPTURE(controller);CAPTURE(pool);
+        CatalogWorld fixture(controller,false,false,false,[&](nlohmann::json& snapshot) {
+            // Stock pools need only wood. Add a second ingredient to exercise
+            // the existing wheat preference with a genuinely mixed recipe.
+            if(pool) for(auto& variant:snapshot["variants"])
+                if(variant["key"]=="swimmingpool.0.site") variant["semantics"]["constructionCost"]["wheat"]=1;
+        });
+        auto& game=fixture.world.game;
+        for(int y=0;y<64;++y)for(int x=0;x<64;++x) game.map.setNoResource(x,y,0);
+        game.map.setResource(4,20,WOOD,5);game.map.setResource(28,20,STONE,5);game.map.setResource(28,40,WHEAT,5);
+        auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
+        if(controller==AI::NICOWAR) {
+            auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
+            if(pool) ai.order_regular_swimmingpool(runtime);else ai.order_regular_racetrack(runtime);
+        } else {
+            auto& ai=*dynamic_cast<AISharedRuntime::Econo*>(runtime.runtimeai.get());
+            ai.timer=pool?AISharedRuntime::AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_OFFSET_TICKS:AISharedRuntime::AI_SHARED_RUNTIME_RTI_RACETRACK_OFFSET_TICKS;
+            if(pool) ai.tick_swimmingpool_near_wheat_wood(runtime);else ai.tick_racetrack_near_stone_wood(runtime);
+        }
+        REQUIRE(runtime.building_orders.size()==1);
+        std::map<int,std::shared_ptr<AISharedRuntime::Construction::MinimizedDistance>> objectives;
+        std::shared_ptr<AISharedRuntime::Construction::MinimumDistance> stoneClearance;
+        for(const auto& constraint:runtime.building_orders.front()->constraints) {
+            auto* gradient=constraint->get_gradient_info();if(!gradient || gradient->sources.size()!=1) continue;
+            auto resource=std::dynamic_pointer_cast<AISharedRuntime::Gradients::Entities::Resource>(gradient->sources.front());
+            if(!resource) continue;
+            if(auto objective=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimizedDistance>(constraint)) objectives.emplace(resource->resource_type,objective);
+            if(resource->resource_type==STONE) if(auto clearance=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimumDistance>(constraint)) stoneClearance=clearance;
+        }
+        REQUIRE(objectives.contains(WOOD));REQUIRE(objectives.contains(pool?WHEAT:STONE));
+        CHECK(objectives.size()==2);
+        CHECK(objectives.at(WOOD)->weight==4);CHECK(objectives.at(pool?WHEAT:STONE)->weight==1);
+        REQUIRE(stoneClearance);
+        CHECK(stoneClearance->passes_constraint(runtime,4,20));
+        CHECK_FALSE(stoneClearance->passes_constraint(runtime,28,20));
+        if(!pool) {
+            CHECK(objectives.at(WOOD)->calculate_constraint(runtime,6,20)==objectives.at(WOOD)->calculate_constraint(runtime,4,22));
+            CHECK(objectives.at(STONE)->calculate_constraint(runtime,6,20)>objectives.at(STONE)->calculate_constraint(runtime,4,22));
+        }
+    }
+}
+TEST_CASE("shared runtime retirement distinguishes attraction and feeding and preserves mixed services")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int variant:{0,1,2}) {
+        CAPTURE(variant);
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game=world.game;
+        const int flagType=game.buildingsTypes.getTypeNum("warflag",0,false);
+        const int foodType=game.buildingsTypes.getTypeNum("inn",0,false);
+        auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        auto& flag=snapshot["variants"][flagType];auto& food=snapshot["variants"][foodType];
+        if(variant==1) {
+            flag["properties"]["maxUnitInside"]=1;
+            flag["semantics"]["training"]["armor"]={{"enabled",true},{"unitMask",7},{"targetLevel",1},{"duration",32},{"cost",nlohmann::json::object()}};
+            food["semantics"]["healing"]={{"enabled",true},{"unitMask",7},{"duration",32},{"cost",nlohmann::json::object()}};
+        }
+        if(variant==2) {
+            flag["semantics"]["market"]["suppliesDirectStock"]=true;
+            flag["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
+            flag["properties"]["maxResource"][WOOD]=8;
+            food["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+        }
+        game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+        auto* flagBuilding=game.addBuilding(4,4,flagType,0,2,2);
+        auto* foodBuilding=game.addBuilding(12,12,foodType,0,2,2);
+        REQUIRE(flagBuilding);REQUIRE(foodBuilding);
+        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);runtime.br.initiate();
+        using namespace AISharedRuntime::Management;
+        for(int id:{0,1}) {
+            std::unique_ptr<ManagementOrder> retirement(id==0 ? static_cast<ManagementOrder*>(new RetireAttraction(id)) : new RetireFeeding(id));
+            auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(memory);
+            ManagementOrder::save_order(retirement.get(),&output);output.flush();const auto bytes=memory->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+            runtime.add_management_order(ManagementOrder::load_order(&input,game.players[0],VERSION_MINOR));
+            runtime.update_management_orders();
+            if(variant==0) {
+                REQUIRE(runtime.orders.size()==1);
+                auto deletion=std::dynamic_pointer_cast<OrderDelete>(runtime.orders.front());REQUIRE(deletion);
+                CHECK(deletion->gid==(id==0?flagBuilding:foodBuilding)->gid);
+            } else CHECK(runtime.orders.empty());
+            runtime.orders.clear();
+        }
+        // Explicit demolition remains available; the two retirement policies
+        // carry their own preservation rules instead of changing every delete.
+        runtime.add_management_order(new DestroyBuilding(1));runtime.update_management_orders();
+        REQUIRE(runtime.orders.size()==1);CHECK(runtime.orders.front()->getOrderType()==ORDER_DELETE);
+    }
+}
+TEST_CASE("production placement falls back from an obstructed preferred footprint")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+    auto& game=world.game;
+    const int anchor=game.buildingsTypes.getTypeNum("swarm",0,false);
+    const int large=game.buildingsTypes.getTypeNum("hospital",0,false);
+    const int small=game.buildingsTypes.getTypeNum("barracks",0,true);
+    const int complete=game.buildingsTypes.getTypeNum("barracks",0,false);
+    auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    auto& variants=snapshot["variants"];
+    for(auto& variant:variants) {
+        variant["semantics"]["production"]["recipes"]=nlohmann::json::object();
+        variant["semantics"]["placeable"]=false;
+    }
+    for(int type:{anchor,large,complete}) {
+        auto& variant=variants[type];
+        variant["semantics"]["production"]["scheduling"]="weighted_committed_job";
+        variant["semantics"]["production"]["recipes"]={{type==anchor?"worker":"explorer",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
+        variant["semantics"]["assignmentLimit"]=20;
+    }
+    variants[large]["semantics"]["placeable"]=true;variants[large]["semantics"]["instantPlacement"]=true;
+    variants[large]["properties"]["width"]=4;variants[large]["properties"]["height"]=4;
+    for(int type:{small,complete}) {variants[type]["properties"]["width"]=2;variants[type]["properties"]["height"]=2;}
+    variants[small]["semantics"]["placeable"]=true;
+    variants[small]["semantics"]["constructionCost"]={{"wood",1}};
+    variants[small]["semantics"]["requiredWorkerLevel"]=0;
+    game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+    REQUIRE(game.addBuilding(4,4,anchor,0,4,4));world.addUnit(WORKER,8,4);
+    for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) world.team->stats.step(world.team);
+    for(int y=0;y<32;++y)for(int x=0;x<32;++x)
+        if(!((x>=4 && x<8 && y>=4 && y<8) || (x>=14 && x<16 && y>=14 && y<16) || (y==8 && x>=8 && x<=14) || (x==14 && y>=8 && y<14))) game.map.setResource(x,y,STONE,1);
+    const auto& candidates=game.buildingCapabilities().placementsByCost(Intent::ProduceExplorer);
+    REQUIRE(candidates.size()==2);CHECK(candidates.front().placementType==large);
+    for(int repeat=0;repeat<2;++repeat) {
+        auto order=std::dynamic_pointer_cast<OrderCreate>(AIPlanning::missingProductionOrder(game,*world.team,{1,1,0},2,2));
+        REQUIRE(order);CHECK(order->typeNum==small);CHECK(order->posX==14);CHECK(order->posY==14);
+    }
+}
+TEST_CASE("Nicowar resolves one aggregate production demand per colony management pass")
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool missing:{false,true}) {
+        CAPTURE(missing);
+        CatalogWorld fixture(AI::NICOWAR,false,false,true,[missing](auto& snapshot) {
+            if(!missing) return;
+            for(auto& variant:snapshot["variants"]) {
+                variant["semantics"]["placeable"]=false;
+                auto& recipes=variant["semantics"]["production"]["recipes"];
+                recipes.erase("explorer");recipes.erase("warrior");
+            }
+        });
+        auto& game=fixture.world.game;auto& team=*game.teams[0];
+        game.gameHeader.setHungerDisabled(true);game.gameHeader.setUnitUpgradesDisabled(true);
+        CHECK(game.buildingsTypes.get(fixture.anchor)->semantics.production.enabledUnitMask==(1u<<WORKER));
+        CHECK(game.buildingsTypes.getRuntime(fixture.anchor)->productionEnabledMask==(1u<<WORKER));
+        for(int n=0;n<4;++n) REQUIRE(game.addBuilding(4+8*n,28,fixture.anchor,0,4,4));
+        auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
+        auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
+        NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");
+        ai.war_preparation=true;ai.growth_phase=true;ai.starving_recovery=false;
+        for(auto it=runtime.br.begin();it!=runtime.br.end();++it) {
+            AISharedRuntime::Management::AddResourceTracker tracker(16,AISharedRuntime::Management::RecurringInputStock,it->first);tracker.modify(runtime);
+        }
+        ai.manage_buildings(runtime);
+        int creates=0;for(const auto& order:runtime.orders) creates+=order->getOrderType()==ORDER_CREATE;
+        CHECK(creates==(missing?0:1));
+        CHECK(runtime.br.pending_buildings.size()==std::size_t(missing?0:1));
+        CHECK_FALSE(runtime.management_orders.empty());
+    }
+}
+TEST_CASE("six native strategies construct and use separate demanded production classes")
+{
+    glob2test::HeadlessGlobals globals;
+    for(auto controller:{AI::NUMBI,AI::CASTOR,AI::WARRUSH,AI::ECONO,AI::NICOWAR,AI::CABINO}) {
+        CAPTURE(controller);
+        CatalogWorld fixture(controller,false,false,true);auto& game=fixture.world.game;
+        auto& team=*game.teams[0];auto* implementation=game.players[0]->ai->aiImplementation;
+        game.gameHeader.setHungerDisabled(true);game.gameHeader.setUnitUpgradesDisabled(true);
+        game.stepCounter=50000;
+        auto* runtime=dynamic_cast<AISharedRuntime::Runtime*>(implementation);
+        if(runtime) {
+            runtime->gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);
+            runtime->br.initiate();
+            if(controller==AI::NICOWAR) {
+                auto& ai=*dynamic_cast<NewNicowar*>(runtime->runtimeai.get());
+                NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");
+                ai.war_preparation=true;ai.growth_phase=true;ai.starving_recovery=false;
+                ai.initialize(*runtime);runtime->update_management_orders();
+            }
+        }
+        unsigned created=0,configured=0;
+        auto apply=[&](const std::shared_ptr<Order>& order) {
+            if(!order) return;
+            if(auto create=std::dynamic_pointer_cast<OrderCreate>(order)) {
+                const auto& recipes=game.buildingsTypes.get(create->typeNum)->semantics.production.recipes;
+                for(int unit=EXPLORER;unit<=WARRIOR;++unit) if(recipes[unit].enabled) created|=1u<<unit;
+            }
+            if(auto ratios=std::dynamic_pointer_cast<OrderModifySwarm>(order))
+                for(int unit=EXPLORER;unit<=WARRIOR;++unit) if(ratios->ratio[unit]>0) configured|=1u<<unit;
+            order->sender=0;game.executeOrder(order,0);
+            for(int id=0;id<Building::MAX_COUNT;++id) if(auto* b=team.myBuildings[id];b && (game.buildingCapabilities().intentMask(b->typeNum)&7u))
+                if(std::find(team.swarms.begin(),team.swarms.end(),b)==team.swarms.end()) team.addToStaticAbilitiesLists(b);
+        };
+        for(int turn=0;turn<20;++turn) {
+            if(controller==AI::NUMBI) apply(dynamic_cast<AINumbi*>(implementation)->swarmsForWorkers(1,8,4,1,1));
+            if(controller==AI::CASTOR) {
+                auto& ai=*dynamic_cast<AICastor*>(implementation);ai.warLevel=1;apply(ai.controlSwarms());
+            }
+            if(controller==AI::WARRUSH) {
+                auto& ai=*dynamic_cast<AIWarrush*>(implementation);ai.buildingDelay=1000;ai.areaUpdatingDelay=1000;apply(ai.getOrder());
+            }
+            if(controller==AI::CABINO) {
+                auto& ai=*dynamic_cast<Cabino::AICabino*>(implementation);
+                auto& manager=*dynamic_cast<Cabino::BasicDistributedSwarmManager*>(ai.unit_module);
+                manager.module_records.clear();
+                for(int unit=0;unit<NB_UNIT_TYPE;++unit) manager.module_records["fixture demand"].requested[unit][HARVEST][0]=100;
+                manager.moderateSwarms();
+                while(!ai.orders.empty()) {auto order=ai.orders.front();ai.orders.pop();apply(order);}
+            }
+            if(runtime) {
+                runtime->br.tick();runtime->update_management_orders();
+                if(controller==AI::ECONO) {
+                    auto& ai=*dynamic_cast<AISharedRuntime::Econo*>(runtime->runtimeai.get());
+                    ai.timer=AISharedRuntime::AI_SHARED_RUNTIME_RTI_SWARM_OFFSET_TICKS;ai.tick_swarms_near_wheat(*runtime);
+                } else dynamic_cast<NewNicowar*>(runtime->runtimeai.get())->manage_buildings(*runtime);
+                runtime->update_management_orders();
+                auto orders=std::move(runtime->orders);runtime->orders.clear();for(const auto& order:orders) apply(order);
+            }
+        }
+        const unsigned expected=controller==AI::ECONO ? 1u<<EXPLORER : (1u<<EXPLORER)|(1u<<WARRIOR);
+        CHECK((created&expected)==expected);CHECK((configured&expected)==expected);
+        for(int unit=EXPLORER;unit<=WARRIOR;++unit) if(expected&(1u<<unit)) {
+            const auto before=team.stats.measurements.births[unit];
+            for(auto* producer:team.swarms) if(producer->type->semantics.production.recipes[unit].enabled) {
+                REQUIRE(producer->ratio[unit]>0);
+                for(int step=0;step<3;++step) producer->swarmStep();
+            }
+            CHECK(team.stats.measurements.births[unit]>before);
+        }
+    }
+}
+TEST_CASE("shared runtime exact anchors support rectangular attractors across the torus")
+{
+    glob2test::HeadlessGlobals globals;
+    CatalogWorld fixture(AI::NICOWAR,false,false,false,[](auto& snapshot) {
+        for(auto& variant:snapshot["variants"]) if(variant["key"]=="warflag.0.finished") {
+            variant["properties"]["width"]=2;variant["properties"]["height"]=3;
+        }
+    });
+    auto& game=fixture.world.game;
+    const int flag=game.buildingsTypes.findByKey("warflag.0.finished");
+    REQUIRE(flag>=0);
+    const auto* type=game.buildingsTypes.get(flag);
+    CHECK(game.buildingsTypes.getRuntime(flag)->width==2);CHECK(game.buildingsTypes.getRuntime(flag)->height==3);
+    auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+    runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);
+    REQUIRE(game.checkRoomForBuilding(63,62,type,0));
+    using namespace AISharedRuntime::Construction;
+    BuildingOrder order(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
+    order.add_constraint(new SinglePosition(127,-2));
+    const auto placed=order.find_location(runtime,&game.map,*runtime.gm);
+    CHECK(order.get_concrete_type()==flag);
+    CHECK(placed.x==63);CHECK(placed.y==62);
+    BuildingOrder conflicting(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
+    conflicting.add_constraint(new SinglePosition(127,-2));
+    conflicting.add_constraint(new SinglePosition(2,62));
+    const auto absent=conflicting.find_location(runtime,&game.map,*runtime.gm);
+    CHECK(absent.x==-1);CHECK(absent.y==-1);
+}
 TEST_CASE("Maxima exact anchors support rectangular footprints across the torus")
 {
     glob2test::HeadlessGlobals globals;
-    CatalogWorld fixture(AI::MAXIMA);
+    CatalogWorld fixture(AI::MAXIMA,false,false,false,[](auto& snapshot) {
+        for(auto& variant:snapshot["variants"]) if(variant["key"]=="hospital.0.site" || variant["key"]=="hospital.0.finished") {
+            variant["properties"]["width"]=4;variant["properties"]["height"]=2;
+        }
+    });
     auto& game=fixture.world.game;
-    auto* type=game.buildingsTypes.get(fixture.replacement);
-    type->width=4;type->height=2;
+    const auto* type=game.buildingsTypes.get(fixture.replacement);
+    CHECK(game.buildingsTypes.getRuntime(fixture.replacement)->width==4);CHECK(game.buildingsTypes.getRuntime(fixture.replacement)->height==2);
     auto& ai=*dynamic_cast<AIMaxima::Maxima*>(game.players[0]->ai->aiImplementation);
     REQUIRE(game.checkRoomForBuilding(62,60,type,0));
     AIMaximaRuntime::Construction::BuildingOrder order(AIMaximaBuildings::Feeding,2);

@@ -85,7 +85,7 @@ struct BuildingType
 	Sint32 armor = 0; // (Uint8) Any damage the building takes is reduced by this much, although it has a minumum of 1
 	                  // for most damage, 0 only for Explorers.
 	Sint32 level = 0; // (Uint8)
-	Sint32 shortTypeNum = 0; // BuildingTypeShortNumber, Should not be used by the main engine, but only to choose the next level building.
+	Sint32 shortTypeNum = 0; // Frozen family alias for old saves, authored scripts and legacy statistics only.
 	Sint32 isBuildingSite = 0;
 
 	// Flag useful
@@ -113,6 +113,8 @@ struct BuildingType
 	BuildingPresentationSpec presentation;
 	// Effective match gates; rebuilt once from the saved feature keys.
 	Sint32 terminalTypeNum = -1; // compiled final forward successor
+	std::uint8_t runtimeSuppliesStockMask = 0, runtimeSuppliesDirectStockMask = 0;
+	std::uint8_t runtimeFetchesStockMask = 0, runtimeFetchesDirectStockMask = 0;
 	bool runtimeSuppliesDirectStock = false, runtimeFetchesDirectStock = false;
 	bool runtimeAvailable = true;
 	bool runtimeSuppliesStock = false;
@@ -146,10 +148,14 @@ public:
 	Sint32 findByKey(const std::string& key) const;
 	bool isAvailable(std::size_t id, const std::set<std::string>& enabledExperiments) const;
 	void configureExperiments(const std::vector<std::string>& keys);
+	std::uint8_t stockSupplyMask() const { return stockSupplyMask_; }
+	std::uint8_t directSupplyMask() const { return directSupplyMask_; }
+	std::uint8_t extraDirectSupplyMask() const { return extraDirectSupplyMask_; }
 	bool usesMarketRouting() const { return usesMarketRouting_; }
 	bool usesOverlaySuppliers() const { return usesOverlaySuppliers_; }
 	void loadSprites();
 	static void loadSpritesForTypes(std::vector<BuildingType>& types);
+	const BuildingRuntimeTraits* getRuntime(std::size_t id) const { return &runtimeTypes_.at(id); }
 	BuildingType *get(std::size_t id);
 	const BuildingType *get(std::size_t id) const;
 	std::size_t size() const { return entries_->size(); }
@@ -162,11 +168,16 @@ public:
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
 private:
 	void resolveAndValidate();
+	void compileRuntimeTraits();
+	std::vector<BuildingRuntimeTraits> runtimeTypes_;
 	std::shared_ptr<std::vector<BuildingType>> entries_ = std::make_shared<std::vector<BuildingType>>();
 	std::vector<BuildingCatalogExperiment> experiments_;
 	std::string catalogKey_;
 	std::string startingBuildingKey_;
 	Sint32 startingBuildingId_ = -1;
+	std::uint8_t stockSupplyMask_ = 0;
+	std::uint8_t directSupplyMask_ = 0;
+	std::uint8_t extraDirectSupplyMask_ = 0;
 	bool usesMarketRouting_ = false;
 	bool usesOverlaySuppliers_ = false;
 };

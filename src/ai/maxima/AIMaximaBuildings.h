@@ -32,7 +32,7 @@ inline unsigned capabilities(const Game& game, const BuildingType& type)
  for(const auto& t:s.training) add(ConstructionTraining,b->maxUnitInside>0&&t.enabled&&t.constructionLevel>0&&(t.unitMask&s.admittedUnitMask&(1u<<WORKER)));
  add(ProjectileDefense,b->shootingRange>0&&b->shootRhythm>0&&std::any_of(s.projectileDamage.begin(),s.projectileDamage.end(),[](int damage){return damage>0;}));
  add(ExploreAttraction,b->zonable[EXPLORER]);add(WarriorAttraction,b->zonable[WARRIOR]);add(WorkerAttraction,b->zonable[WORKER]);
- add(ResourceExchange,(s.market.interTeamFruitExchange || s.market.suppliesDirectStock)||b->runtimeSuppliesStock);
+ add(ResourceExchange,(s.market.interTeamFruitExchange || b->runtimeSuppliesDirectStock)||b->runtimeSuppliesStock);
  return result;
 }
 inline bool serves(const Game& game,const BuildingType& type,int role)

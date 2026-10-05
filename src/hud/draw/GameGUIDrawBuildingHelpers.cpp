@@ -486,8 +486,6 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 
 	if (selBuild->constructionResultState==Building::REPAIR)
 	{
-		if (buildingType->isBuildingSite)
-			assert(buildingType->nextLevel!=-1);
 		drawBlueButton(btnX, primaryY, "[cancel repair]");
 	}
 	else if (selBuild->constructionResultState==Building::UPGRADE)

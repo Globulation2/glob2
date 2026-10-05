@@ -254,7 +254,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		if (Building* b = myBuildings[i])
 		{
 			if (b->type->runtimeSuppliesStock && b->buildingState == Building::ALIVE) stockSuppliers.push_back(b);
-			if (b->type->runtimeSuppliesDirectStock) directStockSuppliers.push_back(b);
+			if (b->type->runtimeSuppliesDirectStock && b->buildingState == Building::ALIVE) directStockSuppliers.push_back(b);
 			if (b->type->zonable[WARRIOR]) combatFlags.push_back(b);
 			b->reservedResources.fill(0);
 			b->restoreServiceReservations();

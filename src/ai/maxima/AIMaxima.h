@@ -645,6 +645,7 @@ private:
 	mutable std::vector<AIMaximaPlacement::BuildingProfile>
 		development_building_profiles;
 	mutable std::vector<int> development_profile_index;
+	mutable std::vector<int> development_feeding_capacity;
 	mutable bool development_profiles_initialized=false;
 	AIMaximaPlacement::Planner development_planner;
 	bool development_planner_initialized;

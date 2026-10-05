@@ -22,6 +22,23 @@ using std::shared_ptr;
 
 
 
+bool Runtime::ensure_production(const std::array<int,3>& desired,int workers,int futureWorkers)
+{
+    std::vector<int> pending;
+    for(const auto& order:building_orders) pending.push_back(order->get_concrete_type());
+    for(const auto& [id,record]:br.pending_buildings) pending.push_back(std::get<2>(record));
+    auto order=AIPlanning::missingProductionOrder(*player->game,*player->team,desired,workers,futureWorkers,pending);
+    if(!order) return false;
+    const auto& create=static_cast<const OrderCreate&>(*order);
+    const int id=br.register_building();br.issue_order(id,create.posX,create.posY,create.typeNum);
+    push_order(order);
+    auto* ratios=new ChangeSwarm(desired[WORKER],desired[EXPLORER],desired[WARRIOR],id);
+    ratios->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(ratios);
+    auto* tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH,RecurringInputStock,id);
+    tracker->add_condition(new ParticularBuilding(new NotUnderConstruction,id));add_management_order(tracker);
+    return true;
+}
+
 void AISharedRuntime::signature_write(GAGCore::OutputStream *stream)
 {
 	// This marker is part of existing save files; renaming it would break loading.

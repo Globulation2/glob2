@@ -4,6 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
+#include "CortexPolicy.h"
 #include "CortexPlacementGeo.h"
 #include "CortexWheat.h"
 #include "CortexWater.h"
@@ -269,7 +270,39 @@ namespace Cortex
 			// observation. placeCandidates writes exactly CORTEX_BUILD_CANDIDATES
 			// slots (zero-filling unused trailing ones).
 			placeCandidates(game, team, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD]);
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_SWARM,   0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWARM]);
+            for (const auto& project:game->buildProjects) {
+                if(project.teamNumber!=team->teamNumber)continue;
+                const auto* type=game->buildingsTypes.get(project.typeNum);
+                if(type->isBuildingSite)type=game->buildingsTypes.get(type->nextLevel);
+                obs.productionPlannedMask|=type->semantics.production.enabledUnitMask;
+            }
+            Sint32 productionTargets[CORTEX_UNIT_TYPES];
+            CortexPolicy::productionTargets(obs, productionTargets);
+            auto productionChoice = selectBuilding(*game,*team,CORTEX_BUILD_SWARM,WORKER);
+            for (int unit=0;unit<CORTEX_UNIT_TYPES;++unit) {
+                if (!productionTargets[unit] || (obs.productionPlannedMask & (1u<<unit))) continue;
+                const auto candidate=selectBuilding(*game,*team,CORTEX_BUILD_SWARM,unit);
+                if(candidate.placementType<0) continue;
+                obs.productionMissingMask|=1u<<unit;
+                if(obs.productionPlacementType<0) {
+                    productionChoice=candidate;
+                    obs.productionPlacementType=candidate.placementType;
+                }
+            }
+            obs.productionPlacementType=productionChoice.placementType;
+            if(productionChoice.placementType>=0)
+                placeCandidates(game,team,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType);
+            for(int id=0;id<Building::MAX_COUNT;++id) {
+                const auto* building=team->myBuildings[id];
+                if(!building || building->buildingState!=Building::ALIVE || building->type->isBuildingSite)continue;
+                const auto mask=building->type->semantics.production.enabledUnitMask;
+                if(!mask)continue;
+                for(int unit=0;unit<CORTEX_UNIT_TYPES;++unit)
+                    // Strategy changes output presence, not the exact positive weight.
+                    // Recipe masking also lets a deliberately paused specialist settle.
+                    obs.productionNeedsRetune |= (building->ratio[unit]>0) !=
+                        bool((mask&(1u<<unit)) && productionTargets[unit]>0);
+            }
 			placeCandidates(game, team, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL]);
 			placeCandidates(game, team, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE]);
 			placeCandidates(game, team, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED]);

@@ -265,7 +265,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		    }
 		    if(enemy_count == 0)
 		    {
-		            ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+		            ManagementOrder* mo_destroyed=new RetireAttraction(*i);
 		            runtime.add_management_order(mo_destroyed);
 		    }
 		    else
@@ -497,7 +497,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 	{
 		if(runtime.get_building_register().is_building_found(*i))
 		{
-			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+			ManagementOrder* mo_destroyed=new RetireAttraction(*i);
 			runtime.add_management_order(mo_destroyed);
 		}
 	}

@@ -5,9 +5,13 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <memory>
 
 class BuildingsTypes;
 class GameHeader;
+class Game;
+class Team;
+class Order;
 
 namespace AIPlanning
 {
@@ -32,6 +36,12 @@ struct BuildingCandidate
 	bool operator==(const BuildingCandidate&) const = default;
 };
 
+// Cold strategy fallback for a nonzero production demand whose output class has
+// no current or pending provider. Pending placement IDs include queued AI plans.
+std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
+    const std::array<int, 3>& desired, int workers, int futureWorkers,
+    const std::vector<int>& pendingPlacements = {});
+
 // Build once after the game's catalog is installed. The catalog must outlive
 // this index and remain immutable; rebuild the index when replacing a catalog.
 // Lookups never scan all definitions, allocate, consume RNG or resolve names.
@@ -41,6 +51,7 @@ public:
 	explicit BuildingCapabilityIndex(const BuildingsTypes& catalog);
 	const std::vector<int>& providers(BuildingIntent intent) const;
 	const std::vector<BuildingCandidate>& placements(BuildingIntent intent) const;
+	const std::vector<BuildingCandidate>& placementsByCost(BuildingIntent intent) const;
 	// unitType == -1 accepts any supported recipient/output/target. Otherwise
 	// admission and the service's own eligibility must both permit that unit.
 	bool matches(int completedType, BuildingIntent intent, int unitType = -1) const;
@@ -65,6 +76,6 @@ private:
 	std::vector<std::uint64_t> intentMasks_;
 	std::vector<int> lineageRoots_, lineagePositions_;
 	std::array<std::vector<int>, IntentCount> providers_;
-	std::array<std::vector<BuildingCandidate>, IntentCount> placements_;
+	std::array<std::vector<BuildingCandidate>, IntentCount> placements_, placementsByCost_;
 };
 }

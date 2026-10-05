@@ -160,7 +160,7 @@ public:
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
-	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false);
+	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
 	void advanceHiringGradients(Building *building);
@@ -839,7 +839,16 @@ public:
 	//! withMarkets: the variant where the team's stocked markets are goals too,
 	//! priced by each supplier's configured pickup penalty. Used when a
 	//! consumer enables stock fetching (Building::fetchesFromMarkets).
-	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false);
+	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
+	// Consumer-aware requests are simulation-thread only. Returned cache pointers
+	// remain valid until the next consumer-aware request (which may evict them).
+	unsigned resourceSupplyModes(const Building* consumer, int resource) const;
+	Uint16 *cachedResourceGradient(const Building* consumer, int resource, int swim, unsigned modes);
+	bool stockSupplierEligible(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
+	void setResourceRoutingCacheBudget(Uint64 bytes);
+	Uint64 resourceRoutingCacheBytes() const;
+	void saveResourceRoutingCache(GAGCore::OutputStream* stream) const;
+	void loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed);
 	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
 	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
 	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
@@ -849,9 +858,9 @@ public:
 	//! untouched, when the team has no such warrior.
 	bool computeWarriorCrowding(int teamNumber, Uint16 *out) const;
 	
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false);
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false);
-	bool resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false);
+	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
+	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
+	bool resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
 	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
 	Building *touchedStockedMarket(Unit *unit, int resourceType) const;
 	//! A stock of resourceType in one of the team's markets appeared or ran out:
@@ -871,9 +880,9 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
-	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false)
+	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-		return getResourceGradient(teamNumber, resourceType, swimClass, withMarkets)[coordToIndex(x, y)];
+		return getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, consumer)[coordToIndex(x, y)];
 	}
 	
 	// Chamfer distance transform on a pre-seeded Uint8 buffer. Caller fills the

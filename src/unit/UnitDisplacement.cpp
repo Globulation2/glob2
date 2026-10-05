@@ -49,7 +49,7 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
-				else if (attachedBuilding->fetchesFromMarkets())
+				else if ((attachedBuilding->runtime->fetchesStockMask | attachedBuilding->runtime->fetchesDirectStockMask)&(1u<<destinationPurpose))
 				{
 					// The gradient led here to a stocked market of ours: take the
 					// resource at its door and carry it home.
@@ -128,7 +128,7 @@ void Unit::handleDisplacement(void)
 				{
 					assert(targetBuilding);
 					assert(ownExchangeBuilding);
-					if (!targetBuilding->type->runtimeSuppliesDirectStock || !attachedBuilding->type->runtimeFetchesDirectStock
+					if (!(targetBuilding->runtime->suppliesDirectStockMask&(1u<<destinationPurpose)) || !(attachedBuilding->runtime->fetchesDirectStockMask&(1u<<destinationPurpose))
 						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->resources == attachedBuilding->resources)
 					{
 						stopAttachedForBuilding(false);
@@ -193,53 +193,19 @@ void Unit::handleDisplacement(void)
 						{
 							int bestResource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
-							bool takeInExchangeBuilding=false;
-							Map* map=owner->map;
-							for (int r=0; r<MAX_NB_RESOURCES; r++)
-							{
-								int need=needs[r];
-								if (need>0)
-								{
-									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource, attachedBuilding->fetchesFromMarkets());
-									if (available)
-									{
-										if ((distToResource<<1)>=timeLeft)
-											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
-										int value=distToResource/need;
-										if (value<minValue)
-										{
-											bestResource=r;
-											minValue=value;
-											takeInExchangeBuilding=false;
-										}
-									}
-									if (attachedBuilding->type->runtimeFetchesDirectStock)
-										for (std::list<Building *>::iterator bi=owner->directStockSuppliers.begin(); bi!=owner->directStockSuppliers.end(); ++bi)
-											if ((*bi)!=attachedBuilding && (*bi)->resources!=attachedBuilding->resources && (*bi)->buildingState==Building::ALIVE && (*bi)->type->runtimeSuppliesDirectStock && (*bi)->availableResource(r)>0)
-											{
-												int buildingDist;
-												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist, BuildingRoute::Footprint))
-												{
-													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
-													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
-													int value=(buildingDist+(*bi)->type->semantics.market.pickupPenalty)/need;
-													if (value<minValue)
-													{
-														bestResource=r;
-														minValue=value;
 
-														ownExchangeBuilding=*bi;
-														setTargetBuilding(*bi);
-														takeInExchangeBuilding=true;
-													}
-												}
-											}
-								}
+							Map* map=owner->map;
+							for (int r=0; r<MAX_RESOURCES; ++r)
+							{
+								const int need=needs[r];
+								if (need<=0) continue;
+								int distance;
+								bool available=map->roundTripDistance(attachedBuilding,r,swimClass(),posX,posY,&distance);
+								if (available) distance=(distance+1)/2;
+								else available=map->resourceAvailable(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								if (!available || (distance<<1)>=timeLeft) continue;
+								const int value=distance/need;
+								if (value<minValue) { bestResource=r; minValue=value; }
 							}
 
 							if (verbose)
@@ -249,15 +215,6 @@ void Unit::handleDisplacement(void)
 							{
 								destinationPurpose=bestResource;
 								assert(activity==ACT_FILLING);
-								if (takeInExchangeBuilding)
-								{
-									displacement=DIS_GOING_TO_BUILDING;
-									targetX=targetBuilding->getMidX();
-									targetY=targetBuilding->getMidY();
-									targetBuilding->insertUnitToHarvesting(this);
-									validTarget=true;
-								}
-								else
 								{
 									int dummyDist;
 									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
@@ -267,7 +224,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets()))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
@@ -503,7 +460,7 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
-				if((b)&&(b->type->shootingRange>0)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->type->shootingRange + 1)
+				if((b)&&(b->runtime->shootingRange>0)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->runtime->shootingRange + 1)
                     && b->hasClearShotTo(x,y)) return true;
 			}
 		}

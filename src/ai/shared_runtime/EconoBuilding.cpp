@@ -44,14 +44,8 @@ void Econo::tick_inns_near_wheat(Runtime& runtime)
 		{
 			//The main order for the inn
 			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Feed, 2);
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT));
-			//You can't be farther than 10 units from wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_MAX_DIST));
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT,{},AI_SHARED_RUNTIME_RTI_INN_WHEAT_MAX_DIST);
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -100,6 +94,7 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 	telemetry.count(AITrace::AI4::Econo_tick_swarms_near_wheat_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SWARM_OFFSET_TICKS)
 	{
+        if(runtime.ensure_production({AI_SHARED_RUNTIME_RTI_SWARM_RATIO_WORKER,AI_SHARED_RUNTIME_RTI_SWARM_RATIO_EXPLORER,AI_SHARED_RUNTIME_RTI_SWARM_RATIO_WARRIOR},AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_NEW,AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_FINISHED)) return;
 		BuildingSearch bs(runtime);
 		bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::ProduceWorker));
 		const int number=bs.count_buildings();
@@ -109,12 +104,8 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 //			std::cout<<"Constructing swarm"<<std::endl;
 			//The main order for the swarm
 			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::ProduceWorker, AI_SHARED_RUNTIME_RTI_SWARM_WORKERS_NEW);
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT));
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_INN_WHEAT_WEIGHT);
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -169,18 +160,12 @@ void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 		{
 			//The main order for the racetrack
 			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainWalk, AI_SHARED_RUNTIME_RTI_RACETRACK_WORKERS);
-
-			//Constraints around the location of wood
-			AISharedRuntime::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to wood
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_SHARED_RUNTIME_RTI_RACETRACK_WOOD_WEIGHT));
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT,{{WOOD,AI_SHARED_RUNTIME_RTI_RACETRACK_WOOD_WEIGHT},{STONE,AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT}});
 
 			//Constraints around the location of stone
 			AISharedRuntime::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to stone
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_WEIGHT));
+			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
 			//But not to close, so you have room to upgrade
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_SHARED_RUNTIME_RTI_RACETRACK_STONE_MIN_DIST));
 
@@ -219,22 +204,13 @@ void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 		{
 			//The main order for the swimming pool
 			BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainSwim, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WORKERS);
+			// Keep each required ingredient as an independent distance objective.
+			bo->add_input_distance_constraints(runtime,AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT,{{WOOD,AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WOOD_WEIGHT},{WHEAT,AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT}});
 
-			//Constraints around the location of wood
-			AISharedRuntime::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to wood
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WOOD_WEIGHT));
-
-			//Constraints around the location of wheat
-			AISharedRuntime::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-			//You want to be close to wheat
-			bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_WHEAT_WEIGHT));
 
 			//Constraints around the location of stone
 			AISharedRuntime::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
+			gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
 			//You don't want to be too close, so you have room to upgrade
 			bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_STONE_MIN_DIST));
 
@@ -469,7 +445,7 @@ void Econo::tick_delete_old_inns(Runtime& runtime)
 				{
 					if(rt->get_total_level() < AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL*runtime.get_building_register().get_level(*i))
 					{
-						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
+						ManagementOrder* mo_destroy=new RetireFeeding(*i);
 						runtime.add_management_order(mo_destroy);
 					}
 				}

@@ -71,7 +71,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -103,7 +115,10 @@
         "constructionCost": {
           "wood": 8
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -171,7 +186,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -211,7 +230,8 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 8
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -300,7 +320,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -327,13 +363,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 12,
           "wheat": 6
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "wheat"
+        ]
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -401,7 +441,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -436,13 +480,14 @@
           }
         },
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 12,
           "wheat": 6
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -531,7 +576,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -558,7 +627,7 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8,
@@ -566,7 +635,13 @@
           "stone": 6,
           "algae": 8
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "wheat",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "swimmingpool",
@@ -634,7 +709,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -669,7 +748,7 @@
           }
         },
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
@@ -677,7 +756,8 @@
           "wheat": 4,
           "stone": 6,
           "algae": 8
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "swimmingpool",

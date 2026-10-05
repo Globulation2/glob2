@@ -368,7 +368,7 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 	}
  if(message.starts_with("update services ")) {
   const int id=std::stoi(message.substr(16));
-  if(runtime.get_building_register().provides(id,BuildingDemand::ProduceWorker)) manage_swarm(runtime,id);
+  if((runtime.get_building_register().provides(id,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(id,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(id,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior)))) manage_swarm(runtime,id);
   if(runtime.get_building_register().provides(id,BuildingDemand::Feed)) manage_inn(runtime,id);
  }
 	if(message.substr(0,13) == "update swarm ")
@@ -422,7 +422,7 @@ void NewNicowar::initialize(Runtime& runtime)
 	BuildingSearch bs(runtime);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		if(runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker))
+		if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 		{
 			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));

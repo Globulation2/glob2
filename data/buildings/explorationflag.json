@@ -56,7 +56,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": false,
         "placeable": true,
@@ -86,7 +90,8 @@
         "workPriorityBias": 1,
         "assignmentLimit": 20,
         "constructionCost": {},
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "explorationflag",

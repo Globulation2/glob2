@@ -55,14 +55,13 @@ Game::~Game()
 
 const AIPlanning::BuildingCapabilityIndex& Game::buildingCapabilities() const
 {
-	if (!buildingCapabilityIndex)
-		buildingCapabilityIndex = std::make_unique<AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
-	return *buildingCapabilityIndex;
+    // Published during setup, before any AI workers may inspect the catalog.
+    assert(buildingCapabilityIndex);
+    return *buildingCapabilityIndex;
 }
 
 void Game::configureBuildingCatalog()
 {
-	buildingCapabilityIndex.reset();
 	const auto routingFlags=[](const BuildingType* type) {
 		return Uint8(type->runtimeSuppliesStock | (type->runtimeFetchesStock<<1) |
 			(type->runtimeSuppliesDirectStock<<2) | (type->runtimeFetchesDirectStock<<3));
@@ -71,6 +70,7 @@ void Game::configureBuildingCatalog()
 	previous.reserve(buildingsTypes.size());
 	for (size_t id=0; id<buildingsTypes.size(); ++id) previous.push_back(routingFlags(buildingsTypes.get(id)));
 	buildingsTypes.configureExperiments(gameHeader.getExperiments().keys());
+    buildingCapabilityIndex = std::make_unique<const AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
 	bool routingChanged=false;
 	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
 	if (routingChanged) map.invalidateSupplierLocations();

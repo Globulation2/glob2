@@ -84,7 +84,7 @@ void retireRally(AICabino& ai,unsigned gid)
  if(!building) return;
  const auto& s=building->type->semantics;
  if(s.feeding.enabled || s.healing.enabled || building->type->shootingRange>0
-  || s.market.interTeamFruitExchange || s.market.suppliesStock
+  || s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock
   || std::any_of(s.production.recipes.begin(),s.production.recipes.end(),[](const auto& r){return r.enabled;})
   || std::any_of(s.training.begin(),s.training.end(),[](const auto& r){return r.enabled;})) return;
  if(s.instantPlacement && !s.occupiesGround) ai.orders.push(std::make_shared<OrderDelete>(gid));
@@ -3826,6 +3826,10 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	unsigned int assigned_per_swarm=MAXIMUM_UNITS_FOR_SWARM;
+    if(auto order=AIPlanning::missingProductionOrder(*ai.game,*ai.team,{ratios[0],ratios[1],ratios[2]},assigned_per_swarm,assigned_per_swarm)) {
+        ai.orders.push(order);return true;
+    }
+
 
 	bool need_to_output=true;
 	for (std::list<Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)

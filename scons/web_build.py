@@ -121,6 +121,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                        'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
+        plan_inputs += [str(p) for p in Path('data/buildings').rglob('*.json')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
@@ -187,6 +188,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp', '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
                 '#src/map/gradient/PathGradientHarness.cpp',
+                '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
+                '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
+                ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:
             source, options = (entry, {}) if isinstance(entry, str) else entry
             local = tests.Clone()

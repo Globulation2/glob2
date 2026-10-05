@@ -209,15 +209,10 @@ int placeBuilding(Game &game, int team, const char *typeName, int level, double 
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
+	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
-	// The colony's lists were built when its swarm went down (Team::createLists); a building placed
-	// since joins the lists that function fills from the type, the way it would have taken it in.
-	if (buildingType->shootingRange)
-		game.teams[team]->turrets.push_back(building);
-	if (buildingType->semantics.production.enabledUnitMask)
-		game.teams[team]->swarms.push_back(building);
+	game.teams[team]->addToStaticAbilitiesLists(building);
 	return best;
 }
 
@@ -237,13 +232,14 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 			   const std::vector<unsigned char> &allowed, bool stocked,
 			   const std::vector<MapGeneratorPoint> &cover, bool supplyStone)
 {
+	// Authored map kits explicitly request the historical tower definition.
 	const int type = game.buildingsTypes.getTypeNum("defencetower", level, false);
 	const BuildingType *tower = type>=0 ? game.buildingsTypes.get(type) : nullptr;
 	const int best = startingBuildingSite(game, team, tower, x, y, within, allowed, cover);
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, 1, 0);
+	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	building->bullets = stocked ? tower->maxBullets : 0;
@@ -256,9 +252,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 		building->resources[STONE] = tower->maxResource[STONE];
 		building->updateCallLists();
 	}
-	// The colony's lists were built when its swarm went down; the tower joins its turrets the way
-	// Team::createLists would have taken it in.
-	game.teams[team]->turrets.push_back(building);
+	game.teams[team]->addToStaticAbilitiesLists(building);
 	return best;
 }
 int placeStartingBuilding(Game &game, int team, const char *name, int level, double x, double y,
@@ -270,26 +264,18 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
-		if (resource < 0 || resource >= MAX_NB_RESOURCES)
+		if (resource < 0 || resource >= MAX_RESOURCES)
 			return -1;
 	const int site = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (site < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(site % w, site / w, type, team, 1, 0);
+	Building *building = game.addBuilding(site % w, site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	for (int resource : supplies)
 		building->resources[resource] = buildingType->maxResource[resource];
-	// Game::addBuilding already registers markets and virtual buildings. Add
-	// only the static lists it leaves to the setup caller; createLists cannot
-	// be called again on a colony that already owns a swarm or towers.
-	if (buildingType->semantics.production.enabledUnitMask)
-		game.teams[team]->swarms.push_back(building);
-	if (buildingType->shootingRange)
-		game.teams[team]->turrets.push_back(building);
-	if (buildingType->zonable[WORKER])
-		game.teams[team]->clearingFlags.push_back(building);
+	game.teams[team]->addToStaticAbilitiesLists(building);
 	// Register this building's feeding/work services, leaving existing task
 	// order alone. Normal tick logic resumes deliveries as supplies run out.
 	building->update();

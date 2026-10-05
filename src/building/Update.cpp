@@ -34,7 +34,8 @@ void Building::updateBuildingSite(void)
 		// Complete existing visits using their original service definition before
 		// replacing it. Reserved service budgets cannot become construction costs.
 		if (!unitsInside.empty()) return;
-		BuildingType* completed=owner->game->buildingsTypes.get(type->nextLevel);
+		const int completedTypeNum=getConstructionCompletionTypeNum();
+		BuildingType* completed=owner->game->buildingsTypes.get(completedTypeNum);
 		if (!canTransferResourcesTo(completed)) return;
 		const int completedX=(posX-type->decLeft+completed->decLeft)&owner->map->getMaskW();
 		const int completedY=(posY-type->decTop+completed->decTop)&owner->map->getMaskH();
@@ -47,9 +48,9 @@ void Building::updateBuildingSite(void)
 															: GameplayMeasurements::NEW_BUILDING;
 			auto& measurements=owner->stats.measurements;
 			measurements.variants.resize(owner->game->buildingsTypes.size());
-			++measurements.variants[type->nextLevel].completed[kind];
-			if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && type->level<NB_UNIT_LEVELS)
-				++measurements.completed[kind][type->shortTypeNum][type->level];
+			++measurements.variants[completedTypeNum].completed[kind];
+			if (completed->shortTypeNum>=0 && completed->shortTypeNum<IntBuildingType::NB_BUILDING && completed->level<NB_UNIT_LEVELS)
+				++measurements.completed[kind][completed->shortTypeNum][completed->level];
 		}
 		const bool wasShared=type->useTeamResources;
 		const bool wasRepair=constructionResultState==REPAIR;
@@ -62,14 +63,17 @@ void Building::updateBuildingSite(void)
 		}
 		const bool zeroCost = constructionBudget == BuildingResourceCost{};
 		constructionBudget.fill(0);
+		const BuildingType* originType=constructionOriginTypeNum>=0 ? owner->game->buildingsTypes.get(constructionOriginTypeNum) : nullptr;
 		constructionOriginTypeNum=-1;
 		repairInitialDeficit=repairHealthGranted=0;
 
 		if (type->semantics.occupiesGround)
 			owner->map->setBuilding(posX,posY,type->width,type->height,NOGBID);
 		owner->prestige-=type->prestige;
-		typeNum=type->nextLevel;
-		type=completed;
+		const BuildingType* previousType=type;
+		bindType(completedTypeNum);
+		transitionProductionPreferences(previousType,originType);
+		constructionOriginRatios.fill(0);
 		posX=completedX; posY=completedY;
 		if (type->semantics.occupiesGround)
 			owner->map->setBuilding(posX,posY,type->width,type->height,gid);
@@ -349,8 +353,9 @@ bool Building::tryToBuildingSiteRoom(void)
 
 
 		owner->prestige-=type->prestige;
-		typeNum=targetLevelTypeNum;
-		type=targetBt;
+		const BuildingType* previousType=type;
+		bindType(targetLevelTypeNum);
+		transitionProductionPreferences(previousType);
 		owner->prestige+=type->prestige;
 
 		//Update the pointer resources to the newly changed type
@@ -374,6 +379,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		// position
 		posX=newPosX;
 		posY=newPosY;
+		resetPathfindGradients();
 
 		// flag useful :
 		unitStayRange=type->defaultUnitStayRange;
@@ -384,13 +390,6 @@ bool Building::tryToBuildingSiteRoom(void)
 		// preferred parameters
 		resetProduction();
 
-		totalRatio=0;
-		for (int i=0; i<NB_UNIT_TYPE; i++)
-		{
-			ratio[i]=1;
-			totalRatio++;
-			percentUsed[i]=0;
-		}
 	}
 	return isRoom;
 }

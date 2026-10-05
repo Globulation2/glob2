@@ -117,6 +117,7 @@ namespace AISharedRuntime
 	  Construction::BuildingRegister &get_building_register();
 	  Construction::FlagMap &get_flag_map();
 	  void push_order(std::shared_ptr<Order> order);
+      bool ensure_production(const std::array<int,3>& desired,int workers,int futureWorkers);
 	  Gradients::GradientManager &get_gradient_manager();
 	  std::set<int> &get_starting_buildings();
 

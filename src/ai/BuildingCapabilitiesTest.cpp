@@ -4,6 +4,9 @@
 #include "BuildingType.h"
 #include "GameHeader.h"
 #include <algorithm>
+#include <array>
+#include <barrier>
+#include <thread>
 #include <nlohmann/json.hpp>
 #include <set>
 
@@ -67,6 +70,22 @@ TEST_SUITE("BuildingCapabilities")
 		const int market=catalog.getTypeNum("market",0,false);
 		CHECK(index.available(market,BuildingIntent::ExchangeResources,rules));
 	}
+
+    TEST_CASE("direct stock supply is independently available without market experiments")
+    {
+        BuildingsTypes catalog;catalog.initLegacy();
+        const int flag=catalog.getTypeNum("warflag",0,false);
+        auto& type=*catalog.get(flag);
+        type.semantics.market.suppliesDirectStock=true;
+        type.semantics.market.suppliesStock=false;
+        type.semantics.market.interTeamFruitExchange=false;
+        BuildingCapabilityIndex index(catalog);
+        GameHeader rules;
+        CHECK(index.matches(flag,BuildingIntent::ExchangeResources));
+        CHECK(index.available(flag,BuildingIntent::ExchangeResources,rules));
+        CHECK(std::any_of(index.placements(BuildingIntent::ExchangeResources).begin(),
+            index.placements(BuildingIntent::ExchangeResources).end(),[&](auto candidate){return candidate.placementType==flag;}));
+    }
 
 	TEST_CASE("lineage follows forward transitions without treating repair links as ancestry")
 	{
@@ -187,4 +206,34 @@ TEST_SUITE("BuildingCapabilities")
 			CHECK(std::is_sorted(changed.providers(intent).begin(), changed.providers(intent).end()));
 		}
 	}
+}
+
+TEST_SUITE("BuildingCapabilities")
+{
+TEST_CASE("concurrent first reads share one immutable catalog index")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int repetition=0;repetition<16;++repetition)
+    {
+        glob2test::HeadlessGame world;
+        std::barrier start(8);
+        std::array<const BuildingCapabilityIndex*,8> indexes{};
+        std::array<std::size_t,8> providerCounts{};
+        std::array<std::thread,8> workers;
+        for(std::size_t thread=0;thread<workers.size();++thread)
+            workers[thread]=std::thread([&,thread] {
+                start.arrive_and_wait();
+                const auto& index=world.game.buildingCapabilities();
+                indexes[thread]=&index;
+                providerCounts[thread]=index.providers(BuildingIntent::Feed).size();
+            });
+        for(auto& worker:workers) worker.join();
+        REQUIRE(providerCounts[0]>0);
+        for(std::size_t thread=1;thread<workers.size();++thread)
+        {
+            CHECK(indexes[thread]==indexes[0]);
+            CHECK(providerCounts[thread]==providerCounts[0]);
+        }
+    }
+}
 }

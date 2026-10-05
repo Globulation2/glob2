@@ -71,7 +71,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -104,7 +120,11 @@
           "wood": 6,
           "stone": 1
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "racetrack",
@@ -172,7 +192,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -213,7 +237,8 @@
         "repairCost": {
           "wood": 6,
           "stone": 1
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "racetrack",
@@ -302,7 +327,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -329,13 +370,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 10,
           "stone": 5
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "racetrack",
@@ -404,7 +449,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -439,13 +488,14 @@
           }
         },
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 10,
           "stone": 5
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "racetrack",
@@ -534,7 +584,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -561,13 +627,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 15,
           "stone": 5
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "racetrack",
@@ -635,7 +705,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -670,13 +744,14 @@
           }
         },
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 15,
           "stone": 5
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "racetrack",

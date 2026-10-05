@@ -519,6 +519,11 @@ void Map::clear()
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();
 	growthCoverageValid = false;
+	gradientRuntime->resourceFields.clear();
+	gradientRuntime->resourceLru.clear();
+	gradientRuntime->stockRevision={};
+	gradientRuntime->resourceCacheClock=0;
+	gradientRuntime->resourceCacheBudget=64ull*1024*1024;
 	topologyGeneration=1;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)

@@ -164,36 +164,48 @@ bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) cons
 	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 	// The stock is the team's shared pool; only a market whose level takes the
 	// resource at all hands it out.
-	return b && b->type->runtimeSuppliesStock && b->buildingState == Building::ALIVE
-		&& b->type->maxResource[resourceType] > 0 && b->availableResource(resourceType) > 0;
+	return stockSupplierEligible(b,nullptr,resourceType,1);
 }
 
 void Map::invalidateSupplierLocations()
 {
 	gradientRuntime->supplierLocationsDirty=true;
+	for (auto& team : gradientRuntime->stockRevision) for (auto& revision : team) ++revision;
 }
 
 Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 {
 	const int teamNumber=unit->owner->teamNumber;
-	const bool overlays=game->buildingsTypes.usesOverlaySuppliers();
+	const Building* consumer=unit->attachedBuilding;
+	const unsigned modes=resourceSupplyModes(consumer,resourceType);
+	const bool overlays=(modes&2) || game->buildingsTypes.usesOverlaySuppliers();
 	if (overlays && gradientRuntime->supplierLocationsDirty)
 	{
 		auto& locations=gradientRuntime->overlaySupplierLocations;
 		locations.clear();
 		for (int team=0; team<game->mapHeader.getNumberOfTeams(); ++team)
 			for (const Building* supplier : game->teams[team]->stockSuppliers)
-				if (!supplier->type->semantics.occupiesGround)
+				if (!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround))
 					for (int y=0; y<supplier->type->height; ++y)
 						for (int x=0; x<supplier->type->width; ++x)
 							locations[coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
-		for (auto& [tile, suppliers] : locations) std::sort(suppliers.begin(),suppliers.end());
+		for (int team=0; team<game->mapHeader.getNumberOfTeams(); ++team)
+			for (const Building* supplier : game->teams[team]->directStockSuppliers)
+				if (!supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround))
+					for (int y=0; y<supplier->type->height; ++y)
+						for (int x=0; x<supplier->type->width; ++x)
+							locations[coordToIndex(supplier->posX+x,supplier->posY+y)].push_back(supplier->gid);
+		for (auto& [tile, suppliers] : locations) {
+			std::sort(suppliers.begin(),suppliers.end());
+			suppliers.erase(std::unique(suppliers.begin(),suppliers.end()),suppliers.end());
+		}
 		gradientRuntime->supplierLocationsDirty=false;
 	}
 	Building* best=nullptr;
 	const auto consider = [&](Uint16 gid) {
-		if (!isStockedMarketTile(gid,teamNumber,resourceType)) return;
+		if (gid==NOGBID || Building::GIDtoTeam(gid)!=teamNumber) return;
 		Building* supplier=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+		if (!stockSupplierEligible(supplier,consumer,resourceType,modes)) return;
 		if (!best || supplier->type->semantics.market.pickupPenalty < best->type->semantics.market.pickupPenalty ||
 			(supplier->type->semantics.market.pickupPenalty == best->type->semantics.market.pickupPenalty && supplier->gid<best->gid)) best=supplier;
 	};
@@ -203,7 +215,10 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 			const Uint16 gid=getBuilding(unit->posX+dx,unit->posY+dy);
 			if (!overlays)
 			{
-				if (isStockedMarketTile(gid,teamNumber,resourceType)) return game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+				if (isStockedMarketTile(gid,teamNumber,resourceType)) {
+					Building* candidate=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+					if (stockSupplierEligible(candidate,consumer,resourceType,1)) return candidate;
+				}
 				continue;
 			}
 			consider(gid);
@@ -259,7 +274,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					Building *b=game->teams[otherTeam]->myBuildings[otherID];
 					if (!b->type->defaultUnitStayRange)
 					{
-						if (b->type->shootingRange)
+						if (b->runtime->shootingRange)
 						{
 							// Unconditional write — later shooter wins ties.
 							bdx=tdx;

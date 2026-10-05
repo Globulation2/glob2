@@ -1,6 +1,12 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { MatchSetup, matchSetupProblems, parse, simVersionKey } from '../src/index.ts';
+import {
+  MatchSetup,
+  matchSetupProblems,
+  parse,
+  simVersionKey,
+  buildingCatalogExperimentKeys,
+} from '../src/index.ts';
 import { catalogRulesVersion, checkBuildingCatalogHash } from '../src/node/index.ts';
 import { SETUP_SAVE_SHARED, SIM_VERSION } from '../scripts/fixtureCases.ts';
 
@@ -37,6 +43,30 @@ describe('building catalog contracts', () => {
         buildingCatalog: { ...buildingCatalog, snapshot: '{}' },
       }).some((p) => p.path === '/buildingCatalog/snapshot'),
     ).toBe(true);
+  });
+
+  it('shares the native experiment metadata and total-key bounds', () => {
+    const catalogWith = (experiments: unknown[]) => ({
+      ...buildingCatalog,
+      snapshot: JSON.stringify({ schemaVersion: 1, variants: [], experiments }),
+    });
+    const definition = { key: 'new-building', label: 'Label', help: 'Help' };
+    for (const key of ['new_building', 'new.building', '-building', 'building-', 'new--building'])
+      expect(() => buildingCatalogExperimentKeys(catalogWith([{ ...definition, key }]))).toThrow();
+    expect(() =>
+      buildingCatalogExperimentKeys(catalogWith([{ ...definition, label: '' }])),
+    ).toThrow();
+    expect(() =>
+      buildingCatalogExperimentKeys(catalogWith([{ ...definition, help: '' }])),
+    ).toThrow();
+    const definitions = Array.from({ length: 59 }, (_, i) => ({
+      ...definition,
+      key: `feature-${i}`,
+    }));
+    expect(() => buildingCatalogExperimentKeys(catalogWith(definitions))).not.toThrow();
+    expect(() =>
+      buildingCatalogExperimentKeys(catalogWith([...definitions, definition])),
+    ).toThrow();
   });
 
   it('rejects snapshot substitution and separates rules from engine routing identity', () => {

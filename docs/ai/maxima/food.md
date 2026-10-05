@@ -11,9 +11,21 @@ yield = fertility / 65536 / food.growth_period_ticks
 ```
 
 Full resource stacks, buildings and unsuitable terrain cannot absorb growth.
-Transient units do not affect this standing estimate. Swarm demand comes from
-the engine's wheat cost and production period; inn demand uses modelled service
-capacity and `food.ticks_per_meal`. These rates are configurable estimates.
+Transient units do not affect this standing estimate. Production demand comes from the available recipes. Feeding capacity and
+resource claims use one per-variant operating estimate: reserved-seat occupancy
+includes service time and travel, while replenishment uses a separate hauling
+cycle. Concurrent services share seats and all resource-consuming recipes share
+one planned carrier allowance for the physical building. A nominal production
+mix gives each permitted output equal job weight and uses the sum of complete
+job durations. Training forecasts separate recipient classes and exclude
+unlearnable or rule-disabled courses. Stock consumption and carried packets
+are distinct: storage multipliers convert consumption into hauling and farm
+claims. Free services consume
+no hauling allowance. `food.ticks_per_meal` converts meal throughput to supported
+population; coverage and the existing reliability margin then express shortages.
+Temporary carrier shortages do not reduce the nominal estimate and trigger
+additional building demand. These rates remain strategy estimates, not promises
+that a colony can sustain the theoretical maximum.
 
 ## Claims and placement
 

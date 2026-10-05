@@ -73,7 +73,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -106,7 +122,11 @@
           "wood": 4,
           "stone": 4
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "market",
@@ -190,7 +210,27 @@
           "suppliesStock": true,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -223,7 +263,12 @@
         "repairCost": {
           "wood": 4,
           "stone": 4
-        }
+        },
+        "replenishResources": [
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "market",
@@ -312,7 +357,27 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -339,14 +404,19 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 6,
           "stone": 6,
           "algae": 4
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "market",
@@ -431,7 +501,35 @@
           "suppliesStock": true,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat",
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -458,14 +556,21 @@
         "sightSharing": "exchange",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
           "wood": 6,
           "stone": 6,
           "algae": 4
-        }
+        },
+        "replenishResources": [
+          "wood",
+          "wheat",
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "market",
@@ -554,7 +659,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "papyrus",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "papyrus",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "papyrus",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "papyrus",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -581,7 +710,7 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8,
@@ -589,7 +718,13 @@
           "stone": 8,
           "algae": 8
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "papyrus",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "market",
@@ -674,7 +809,47 @@
           "suppliesStock": true,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": true,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat",
+            "papyrus",
+            "stone",
+            "algae",
+            "cherry",
+            "orange",
+            "prune"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -701,7 +876,7 @@
         "sightSharing": "exchange",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
@@ -709,7 +884,17 @@
           "papyrus": 4,
           "stone": 8,
           "algae": 8
-        }
+        },
+        "replenishResources": [
+          "wood",
+          "wheat",
+          "papyrus",
+          "stone",
+          "algae",
+          "cherry",
+          "orange",
+          "prune"
+        ]
       },
       "presentation": {
         "displayName": "market",

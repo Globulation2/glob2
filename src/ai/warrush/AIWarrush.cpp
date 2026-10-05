@@ -445,6 +445,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		//anything. (It can only issue one order per tick, so it has to do it over several
 		//ticks and calculate the orders separately.)
 		const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : AI_WARRUSH_SWARM_RATIO_WARRIOR;
+        if(auto order=AIPlanning::missingProductionOrder(*game,*team,{AI_WARRUSH_SWARM_RATIO_WORKER,AI_WARRUSH_SWARM_RATIO_EXPLORER,warriors},AI_WARRUSH_SWARM_WORKER_COUNT,AI_WARRUSH_SWARM_WORKER_COUNT)) return order;
 		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors);
 		if(out_of_date_swarm)
 		{
@@ -456,7 +457,9 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 	}
 
 	//all swarms should always have 5 workers at them!
-	Building *weak_swarm = getBuildingWithoutWorkersAssigned(Intent::ProduceWorker, AI_WARRUSH_SWARM_WORKER_COUNT);
+    Building* weak_swarm=nullptr;
+    for(int unit=0;unit<NB_UNIT_TYPE && !weak_swarm;++unit)
+        weak_swarm=getBuildingWithoutWorkersAssigned(static_cast<Intent>(unit),AI_WARRUSH_SWARM_WORKER_COUNT);
 	if (weak_swarm) return shared_ptr<Order>(new OrderModifyBuilding(weak_swarm->gid, std::min(AI_WARRUSH_SWARM_WORKER_COUNT, weak_swarm->type->semantics.assignmentLimit)));
 
 	//all inns should always have 3 workers at them! (best to build fast, make sure they're fed)

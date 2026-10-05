@@ -70,22 +70,29 @@ std::string translated(const CatalogExperimentDefinition &definition, bool help)
 }
 }
 
-void CatalogExperimentRegistry::install(const std::vector<CatalogExperimentDefinition> &definitions)
+void validateCatalogExperiments(const std::vector<CatalogExperimentDefinition> &definitions)
 {
-	std::vector<CatalogExperimentDefinition> candidate;
 	std::set<std::string> seen;
+	std::size_t customCount=0;
 	for (const auto &definition : definitions)
 	{
 		if (!validKey(definition.key) || definition.label.empty() || definition.help.empty())
 			throw std::invalid_argument("Invalid catalog experiment definition: " + definition.key);
 		if (!seen.insert(definition.key).second)
 			throw std::invalid_argument("Duplicate catalog experiment: " + definition.key);
-		// Built-in definitions keep their established labels and enum identity.
-		if (!parseExperimentKey(definition.key))
-			candidate.push_back(definition);
+		if (!parseExperimentKey(definition.key)) ++customCount;
 	}
-	if (candidate.size() + ExperimentSet::COUNT > ExperimentSet::MAX_STORED)
+	if (customCount + ExperimentSet::COUNT > ExperimentSet::MAX_STORED)
 		throw std::invalid_argument("Too many catalog experiments");
+}
+
+void CatalogExperimentRegistry::install(const std::vector<CatalogExperimentDefinition> &definitions)
+{
+	validateCatalogExperiments(definitions);
+	std::vector<CatalogExperimentDefinition> candidate;
+	for (const auto &definition : definitions)
+		// Built-in definitions keep their established labels and enum identity.
+		if (!parseExperimentKey(definition.key)) candidate.push_back(definition);
 	std::sort(candidate.begin(), candidate.end(), [](const auto &a, const auto &b) { return a.key < b.key; });
 	if (installed && candidate != entries)
 		throw std::logic_error("Catalog experiments cannot change after startup");

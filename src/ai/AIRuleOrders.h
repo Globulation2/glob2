@@ -22,9 +22,16 @@ inline std::shared_ptr<Order> createOrder(const Game& game,int team,int x,int y,
 inline std::shared_ptr<Order> constructionOrder(const Game& game,const Building& building,
     int workers,int futureWorkers)
 {
-    const int target=building.hp<building.getEffectiveMaxHp() ? building.type->prevLevel : building.type->nextLevel;
+    const bool repair=building.type->isBuildingSite ? building.constructionResultState==Building::REPAIR
+        : building.hp<building.getEffectiveMaxHp();
+    const int target=building.type->isBuildingSite ? building.typeNum
+        : repair ? building.type->prevLevel : building.type->nextLevel;
     const auto* placement=target>=0 ? game.buildingsTypes.get(target) : building.type;
-    const auto* completed=placement->isBuildingSite ? game.buildingsTypes.get(placement->nextLevel) : placement;
+    // Repair restores the origin even when its site is shared with another
+    // lineage whose normal forward completion is a different variant.
+    const int origin=building.type->isBuildingSite ? building.getConstructionOriginTypeNum() : building.typeNum;
+    const auto* completed=repair && origin>=0 ? game.buildingsTypes.get(origin)
+        : placement->isBuildingSite ? game.buildingsTypes.get(placement->nextLevel) : placement;
     return std::make_shared<OrderConstruction>(building.gid,
         std::clamp(workers,0,placement->semantics.assignmentLimit),
         std::clamp(futureWorkers,0,completed->semantics.assignmentLimit));

@@ -10,6 +10,9 @@
 #include "EngineFixtures.h"
 
 #include <memory>
+#include <map>
+#include <functional>
+#include <nlohmann/json.hpp>
 #include <random>
 #include <vector>
 
@@ -53,8 +56,15 @@ struct Fixture
 	Building* ownFlag = nullptr;
 	Building* foreignFlag = nullptr;
 
-	Fixture()
+	Fixture(std::function<void(nlohmann::json&)> configure = {})
 	{
+        if(configure)
+        {
+            auto catalog=nlohmann::json::parse(game.game.buildingsTypes.snapshotJson());
+            configure(catalog);
+            game.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+            game.game.configureBuildingCatalog();
+        }
 		game.gui.localPlayer = 0;
 		game.gui.localTeamNo = 0;
 		ownInn = game.addBuilding("inn", 4, 4, 0, 0);
@@ -113,7 +123,12 @@ TEST_SUITE("OrderValidation")
 		Sint32 ratios[NB_UNIT_TYPE]={1,0,0};
 		bool clearing[BASIC_COUNT]={true,false,false,false,false};
 		Building* hospital=f.game.addBuilding("hospital",20,20);
-		expect(f.check(OrderModifyBuilding(hospital->gid,0)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifyBuilding(hospital->gid,0)),Verdict::Accepted);
+		expect(f.check(OrderModifyBuilding(hospital->gid,1)),Verdict::Rejected,Reason::OutOfRange);
+		hospital->maxUnitWorking=2; // retained staff from an older state may be released
+		auto release=std::make_shared<OrderModifyBuilding>(hospital->gid,0); release->sender=0;
+		f.game.game.executeOrder(release,0);
+		CHECK(hospital->maxUnitWorking==0);
 		expect(f.check(OrderModifySwarm(inn,ratios)),Verdict::Rejected,Reason::BadState);
 		expect(f.check(OrderModifyFlag(inn,0)),Verdict::Rejected,Reason::BadState);
 		expect(f.check(OrderModifyClearingFlag(inn,clearing)),Verdict::Rejected,Reason::BadState);
@@ -127,13 +142,18 @@ TEST_SUITE("OrderValidation")
 
 	GLOB2_TEST_CASE("catalog stage limits independently bound construction and completed staffing", "[orders]")
 	{
-		Fixture f;
-		auto& catalog=f.game.game.buildingsTypes;
-		const int root=Fixture::type("inn",true);
-		catalog.get(root)->semantics.assignmentLimit=30;
-		catalog.get(root+1)->semantics.assignmentLimit=40;
-		catalog.get(root+2)->semantics.assignmentLimit=3;
-		catalog.get(root+3)->semantics.assignmentLimit=7;
+        Fixture f([](nlohmann::json& catalog) {
+            const std::map<std::string,int> caps={{"inn.0.site",30},{"inn.0.finished",40},
+                {"inn.1.site",3},{"inn.1.finished",7}};
+            for(auto& variant : catalog["variants"])
+                if(auto cap=caps.find(variant["key"].get<std::string>());cap!=caps.end())
+                {
+                    variant["semantics"]["assignmentLimit"]=cap->second;
+                    variant["presentation"]["defaultAssigned"]=std::min(2,cap->second);
+                }
+        });
+        const int root=f.game.game.buildingsTypes.getTypeNum("inn",0,true);
+        CHECK(f.ownInn->runtime->assignmentLimit==40);
 		expect(f.check(OrderCreate(0,20,20,root,30,40)),Verdict::Accepted);
 		expect(f.check(OrderCreate(0,20,20,root,31,40)),Verdict::Rejected,Reason::OutOfRange);
 		expect(f.check(OrderCreate(0,20,20,root,30,41)),Verdict::Rejected,Reason::OutOfRange);

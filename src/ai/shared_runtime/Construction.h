@@ -10,6 +10,7 @@
 #include "shared_runtime/BuildingDemands.h"
 
 #include <map>
+#include <initializer_list>
 #include <memory>
 #include <tuple>
 #include <vector>
@@ -93,6 +94,8 @@ namespace AISharedRuntime
 			friend class AISharedRuntime::Construction::BuildingOrder;
 			virtual int calculate_constraint(Runtime& runtime, int x, int y)=0;
 			virtual bool passes_constraint(Runtime& runtime, int x, int y)=0;
+			// Exact anchors constrain the origin; terrain/distance constraints cover the perimeter.
+			virtual bool applies_to_origin() const { return false; }
 			///This function is meant for the registering of GradientInfo, return NULL if the Constraint doesn't use a gradient
 			virtual Gradients::GradientInfo* get_gradient_info()=0;
 			virtual ConstraintType get_type()=0;
@@ -197,6 +200,7 @@ namespace AISharedRuntime
 			friend class Constraint;
 			int calculate_constraint(Runtime& runtime, int x, int y);
 			bool passes_constraint(Runtime& runtime, int x, int y);
+			bool applies_to_origin() const override { return true; }
 			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -218,6 +222,7 @@ namespace AISharedRuntime
 			friend class Constraint;
 			int calculate_constraint(Runtime& runtime, int x, int y);
 			bool passes_constraint(Runtime& runtime, int x, int y);
+			bool applies_to_origin() const override { return true; }
 			Gradients::GradientInfo* get_gradient_info() { return NULL; }
 			ConstraintType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -236,6 +241,8 @@ namespace AISharedRuntime
 			BuildingOrder(int building_type, int number_of_workers);
    BuildingOrder(Runtime& runtime,int demand,int workers);
    unsigned input_resource_mask(Runtime& runtime) const;
+   void add_input_distance_constraints(Runtime& runtime,int defaultWeight,
+       std::initializer_list<std::pair<int,int>> resourceWeights={},int maximumDistance=-1);
 			///Adds a constraint to be used in finding a location of the building. This class takes ownership of the constraint.
 			void add_constraint(Constraint*  constraint);
 			///Adds a new condition to the building order. This assumes ownership of the condition.

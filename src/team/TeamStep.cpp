@@ -69,8 +69,8 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 	if(lhs->priority != rhs->priority)
 		return lhs->priority > rhs->priority;
 
-	const int priority_lhs = lhs->type->semantics.workPriorityBias + lhs->type->level * 10;
-	const int priority_rhs = rhs->type->semantics.workPriorityBias + rhs->type->level * 10;
+	const int priority_lhs = lhs->runtime->workPriorityBias;
+	const int priority_rhs = rhs->runtime->workPriorityBias;
 
 	if(priority_lhs != priority_rhs)
 	{
@@ -185,13 +185,13 @@ namespace
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedResource >= 0)
-			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost);
+			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
 		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
 			return true;
 		// No round-trip field for this class yet: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
-		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding)
-			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets()))
+		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
+			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -214,7 +214,7 @@ namespace
 			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
 			return true;
 		}
-		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost);
+		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.
@@ -242,7 +242,7 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets());
+			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
 		u->validTarget = true;
 	}

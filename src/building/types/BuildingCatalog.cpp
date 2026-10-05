@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BuildingType.h"
+#include "ExperimentalFeatures.h"
 #include "Sha256.h"
 #include "UnitUtils.h"
 #include <FileManager.h>
@@ -147,12 +148,34 @@ Json serviceJson(const BuildingServiceSpec& s)
         {"cost", costJson(s.cost)}, {"partial", s.partial == BuildingPartialService::None ? "none" : "proportional_full_cost"},
         {"holdAdmissionUntilExit", s.holdAdmissionUntilExit}, {"optionalFruitMask", s.optionalFruitMask}, {"convertsUnits", s.convertsUnits}};
 }
+std::uint8_t resourceMask(const Json& j, const std::string& context)
+{
+    if (!j.is_array()) fail(context, "expected an array of resource names");
+    std::uint8_t mask=0;
+    for (const auto& item : j)
+    {
+        const auto name=string(item,context);
+        int resource=-1;
+        for (int r=0; r<MAX_RESOURCES; ++r) if (name==RESOURCE_NAMES[r]) resource=r;
+        if (resource<0) fail(context,"unknown resource '"+name+"'");
+        if (mask&(1u<<resource)) fail(context,"duplicate resource '"+name+"'");
+        mask|=1u<<resource;
+    }
+    return mask;
+}
+Json resourceMaskJson(std::uint8_t mask)
+{
+    auto j=Json::array();
+    for (int r=0; r<MAX_RESOURCES; ++r) if (mask&(1u<<r)) j.push_back(RESOURCE_NAMES[r]);
+    return j;
+}
 BuildingSemantics semantics(const Json& j)
 {
-    keys(j, {"requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
+    keys(j, {"replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
         "admittedUnitMask", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
         "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost"}, "semantics");
     BuildingSemantics s;
+    if (j.contains("replenishResources")) s.replenishResourceMask=resourceMask(j.at("replenishResources"),"replenishResources");
 #define READ(n) optional(j, #n, s.n)
     READ(requiredWorkerLevel); READ(assignmentLimit); READ(regenerationPerTick); READ(repairable); READ(placeable); READ(instantPlacement); READ(relocatable);
     READ(occupiesGround); READ(admittedUnitMask); READ(workPriorityBias); READ(trainingInParallel);
@@ -213,10 +236,14 @@ BuildingSemantics semantics(const Json& j)
     {
         const auto& m = j.at("market");
         keys(m, {"sharedStock", "interTeamFruitExchange", "suppliesStock", "suppliesStockExperiment",
-            "fetchesStock", "fetchesStockExperiment", "pickupPenalty", "suppliesDirectStock", "fetchesDirectStock"}, "market");
+            "fetchesStock", "fetchesStockExperiment", "pickupPenalty", "suppliesDirectStock", "fetchesDirectStock", "suppliesStockResources", "suppliesDirectStockResources", "fetchesStockResources", "fetchesDirectStockResources"}, "market");
 #define READ(n) optional(m, #n, s.market.n)
         READ(sharedStock); READ(interTeamFruitExchange); READ(suppliesStock); READ(suppliesStockExperiment);
         READ(fetchesStock); READ(fetchesStockExperiment); READ(pickupPenalty); READ(suppliesDirectStock); READ(fetchesDirectStock);
+        for (auto [name, mask] : {std::pair{"suppliesStockResources", &s.market.suppliesStockMask},
+            {"suppliesDirectStockResources", &s.market.suppliesDirectStockMask},
+            {"fetchesStockResources", &s.market.fetchesStockMask}, {"fetchesDirectStockResources", &s.market.fetchesDirectStockMask}})
+            if (m.contains(name)) *mask=resourceMask(m.at(name),name);
 #undef READ
     }
     return s;
@@ -224,6 +251,7 @@ BuildingSemantics semantics(const Json& j)
 Json semanticsJson(const BuildingSemantics& s)
 {
     Json j;
+    j["replenishResources"]=resourceMaskJson(s.replenishResourceMask);
 #define WRITE(n) j[#n] = s.n
     WRITE(requiredWorkerLevel); WRITE(assignmentLimit); WRITE(regenerationPerTick); WRITE(repairable); WRITE(placeable); WRITE(instantPlacement); WRITE(relocatable);
     WRITE(occupiesGround); WRITE(admittedUnitMask); WRITE(workPriorityBias); WRITE(trainingInParallel);
@@ -253,6 +281,10 @@ Json semanticsJson(const BuildingSemantics& s)
             p["recipes"][UNIT_NAMES[u]] = {{"enabled", r.enabled}, {"duration", r.duration}, {"cost", costJson(r.cost)}};
     }
     auto& m = j["market"];
+    m["suppliesStockResources"]=resourceMaskJson(s.market.suppliesStockMask);
+    m["suppliesDirectStockResources"]=resourceMaskJson(s.market.suppliesDirectStockMask);
+    m["fetchesStockResources"]=resourceMaskJson(s.market.fetchesStockMask);
+    m["fetchesDirectStockResources"]=resourceMaskJson(s.market.fetchesDirectStockMask);
 #define WRITE(n) m[#n] = s.market.n
     WRITE(sharedStock); WRITE(interTeamFruitExchange); WRITE(suppliesStock); WRITE(suppliesStockExperiment);
     WRITE(fetchesStock); WRITE(fetchesStockExperiment); WRITE(pickupPenalty); WRITE(suppliesDirectStock); WRITE(fetchesDirectStock);
@@ -379,7 +411,7 @@ void BuildingsTypes::loadSnapshotJson(const std::string& text)
     stableKey(parsed.catalogKey_, "catalogKey");
     if (root.contains("experiments"))
     {
-        if (!root.at("experiments").is_array() || root.at("experiments").size() > 256) fail("experiments", "invalid metadata array");
+        if (!root.at("experiments").is_array() || root.at("experiments").size() > ExperimentSet::MAX_STORED) fail("experiments", "invalid metadata array");
         for (const auto& e : root.at("experiments"))
         {
             keys(e, {"key", "label", "help"}, "experiment");
@@ -406,6 +438,8 @@ void BuildingsTypes::loadSnapshotJson(const std::string& text)
         if (v.contains("presentation")) presentation(v.at("presentation"), b.presentation);
     }
     parsed.resolveAndValidate();
+    if (parsed.snapshotJson().size() > MAX_CATALOG_BYTES)
+        fail("JSON", "resolved catalog exceeds the 8 MiB snapshot limit");
     *this = std::move(parsed); // Atomic: invalid input cannot damage the active catalog.
 }
 
@@ -432,6 +466,9 @@ void BuildingsTypes::resolveAndValidate()
     std::set<std::string> variantKeys, experimentKeys;
     std::map<std::string, Sint32> connectionGroups;
     std::set<std::tuple<std::string, int, bool>> oldNames;
+    std::vector<CatalogExperimentDefinition> definitions;
+    for (const auto& e : experiments_) definitions.push_back({e.key,e.label,e.help});
+    validateCatalogExperiments(definitions);
     std::sort(experiments_.begin(), experiments_.end(), [](const auto& a, const auto& b) { return a.key < b.key; });
     for (const auto& e : experiments_)
     {
@@ -508,6 +545,7 @@ void BuildingsTypes::resolveAndValidate()
         range(b.width, 1, 64, b.key + ".width"); range(b.height, 1, 64, b.key + ".height");
         range(b.level, 0, 3, b.key + ".level"); range(b.shortTypeNum, -1, 4095, b.key + ".shortTypeNum");
         range(b.hpInit, 0, 1000000, b.key + ".hpInit"); range(b.hpMax, 0, 1000000, b.key + ".hpMax");
+        if (b.hpInit > b.hpMax) fail(b.key, "initial health exceeds maximum health");
         if (b.semantics.repairable && b.hpMax == 0) fail(b.key, "repairable buildings require positive maximum health");
         range(b.hpInc, 0, 1000000, b.key + ".hpInc"); range(b.armor, 0, 1000000, b.key + ".armor");
         range(b.maxUnitInside, 0, 32767, b.key + ".maxUnitInside"); range(b.maxUnitWorking, 0, 32767, b.key + ".maxUnitWorking");
@@ -516,7 +554,7 @@ void BuildingsTypes::resolveAndValidate()
         range(b.insideSpeed, 1, 256, b.key + ".insideSpeed");
         for (int r = 0; r < MAX_NB_RESOURCES; ++r)
         {
-            range(b.maxResource[r], 0, 1000000, b.key + ".maxResource");
+            range(b.maxResource[r], 0, r < MAX_RESOURCES ? 1000000 : 0, b.key + ".maxResource");
             range(b.multiplierResource[r], 1, 1000000, b.key + ".multiplierResource");
         }
         auto& s = b.semantics;
@@ -582,8 +620,6 @@ void BuildingsTypes::resolveAndValidate()
             fail(b.key, "repair requires a construction variant");
         if (!b.isBuildingSite && b.nextLevel >= 0 && !(*entries_)[b.nextLevel].isBuildingSite)
             fail(b.key, "upgrade must target a construction variant; use a zero-cost site for instant upgrades");
-        if (s.repairable && (*entries_)[b.prevLevel].nextKey != b.key)
-            fail(b.key, "repair construction variant must complete to this building");
         if (b.isBuildingSite && (b.nextLevel < 0 || (*entries_)[b.nextLevel].isBuildingSite))
             fail(b.key, "construction requires a completed result variant");
         if (s.placeable && !b.isBuildingSite && !s.instantPlacement)
@@ -631,5 +667,7 @@ void BuildingsTypes::resolveAndValidate()
         const Sint32 terminal=(*entries_)[at].terminalTypeNum >= 0 ? (*entries_)[at].terminalTypeNum : at;
         for (Sint32 id : path) (*entries_)[id].terminalTypeNum=terminal;
     }
+
+    compileRuntimeTraits();
 
 }

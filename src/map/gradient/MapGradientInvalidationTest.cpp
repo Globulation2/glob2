@@ -53,7 +53,7 @@ TEST_SUITE("MapGradientInvalidation")
 	  for(auto* b:bs){m.buildingGradient(b,swim);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);}
 	  m.getForbiddenGradient(0,swim);m.getGuardAreasGradient(0,swim);m.getClearAreasGradient(0,swim);
 	  edit(f,20,20,add,mixed);
-	  for(auto* b:bs){auto* g=m.buildingGradient(b,swim);m.finishBuildingGradient(b,swim);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[swim]));++checks;}
+	  for(auto* b:bs){auto* g=m.buildingGradient(b,swim);m.finishBuildingGradient(b,swim);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[b->routeSlot(swim, BuildingRoute::Automatic)]));++checks;}
 	  auto area=[&](auto get,auto update){const Uint16* g=(m.*get)(0,swim);std::vector<Uint16> before(g,g+n);(m.*update)(0,swim);REQUIRE(std::equal(before.begin(),before.end(),(m.*get)(0,swim)));++checks;};
 	  area(&Map::getForbiddenGradient,static_cast<void(Map::*)(int,int)>(&Map::updateForbiddenGradient));
 	  area(&Map::getGuardAreasGradient,static_cast<void(Map::*)(int,int)>(&Map::updateGuardAreasGradient));

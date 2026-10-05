@@ -121,6 +121,16 @@ TEST_CASE("construction staffing uses separate site and completed capacities")
     const auto& construction=static_cast<const OrderConstruction&>(*upgrade);
     CHECK(construction.unitWorking==game.buildingsTypes.get(building->type->nextLevel)->semantics.assignmentLimit);
     CHECK(construction.unitWorkingFuture==0);
+    // A shared repair site still restores this hospital, not the inn its
+    // ordinary forward link names. Completed staffing must remain zero.
+    building->type->prevLevel=game.buildingsTypes.getTypeNum("inn",0,true);
+    building->hp=building->getEffectiveMaxHp()-1;
+    const auto repair=AIRules::constructionOrder(game,*building,7,7);
+    CHECK(static_cast<const OrderConstruction&>(*repair).unitWorking==7);
+    CHECK(static_cast<const OrderConstruction&>(*repair).unitWorkingFuture==0);
+    OrderConstruction imported(building->gid,7,7);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,imported,135);
+    CHECK(imported.unitWorking==7);CHECK(imported.unitWorkingFuture==0);
 }
 TEST_CASE("legacy queued staffing imports explicit 135 wire without weakening modern validation")
 {
@@ -139,8 +149,8 @@ TEST_CASE("legacy queued staffing imports explicit 135 wire without weakening mo
     const auto& created=static_cast<const OrderCreate&>(*legacy);
     CHECK(created.typeNum==site);CHECK(created.unitWorking==7);CHECK(created.unitWorkingFuture==0);CHECK(legacy->sender==17);
     CHECK(OrderValidation::validate(game,0,*legacy).verdict==OrderValidation::Verdict::Accepted);
-    auto modern=Order::getOrder(wire.data(),wire.size(),136);REQUIRE(modern);
-    AIStateSerialization::normalizeLegacyOrderStaffing(game,*modern,136);
+    auto modern=Order::getOrder(wire.data(),wire.size(),FILE_FORMAT_VERSION_BUILDING_CATALOG);REQUIRE(modern);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*modern,FILE_FORMAT_VERSION_BUILDING_CATALOG);
     CHECK(static_cast<const OrderCreate&>(*modern).unitWorkingFuture==1);
     CHECK(OrderValidation::validate(game,0,*modern).verdict==OrderValidation::Verdict::Rejected);
     addSint32(wire.data()+1,-1,16);

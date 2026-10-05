@@ -265,7 +265,7 @@ void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer
 	Building *b=lookupBuilding(omb.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		if (b->type->semantics.assignmentLimit <= 0 || omb.numberRequested > b->type->semantics.assignmentLimit) return;
+		if (omb.numberRequested > b->type->semantics.assignmentLimit) return;
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
 		b->update();
@@ -358,7 +358,7 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		}
 		b->posX=omf.x;
 		b->posY=omf.y;
-		if (b->type->runtimeSuppliesStock)
+		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{
 			map.invalidateSupplierLocations();
 			for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(b->owner->teamNumber, resource);

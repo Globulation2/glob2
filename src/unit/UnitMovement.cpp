@@ -253,8 +253,7 @@ void Unit::handleMovementAttackingAround()
 							int id=Building::GIDtoID(gid);
 							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
 							Building *b=owner->game->teams[team]->myBuildings[id];
-							BuildingType *bt=b->type;
-							int shootDamage=bt->semantics.projectileDamage[typeNum];
+							int shootDamage=b->runtime->projectileDamage[typeNum];
 							newQuality/=(1+shootDamage);
 							tryAcquireAttackTarget(x, y, newQuality, quality);
 						}
@@ -597,7 +596,7 @@ void Unit::handleMovementGoingToResource()
 		// itself only when it actually goes stale.
 		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim, withMarkets);
+			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

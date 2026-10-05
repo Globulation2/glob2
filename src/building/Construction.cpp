@@ -26,7 +26,7 @@ int Building::constructionResourceNeed(int r) const
 
 int Building::resourceDeliveryTarget(int r) const
 {
-	return type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]) ? constructionBudget[r] : type->maxResource[r];
+	return type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]) ? constructionBudget[r] : (runtime->replenishResourceMask & (1u<<r)) ? type->maxResource[r] : 0;
 }
 
 int Building::resourceDeliveryNeed(int r) const
@@ -36,7 +36,7 @@ int Building::resourceDeliveryNeed(int r) const
 		const int uncommitted = constructionResultState == REPAIR ? 0 : availableResource(r);
 		return std::max(0, constructionResourceNeed(r)-uncommitted);
 	}
-	return std::max(0, type->maxResource[r]-resources[r]);
+	return (runtime->replenishResourceMask & (1u<<r)) ? std::max(0, type->maxResource[r]-resources[r]) : 0;
 }
 
 void Building::fundConstructionFromInventory()
@@ -184,6 +184,12 @@ int Building::totalWishedResource()
 
 
 
+int Building::getConstructionCompletionTypeNum() const
+{
+	if (constructionResultState == REPAIR && constructionOriginTypeNum >= 0) return constructionOriginTypeNum;
+	return type->isBuildingSite ? type->nextLevel : typeNum;
+}
+
 void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	if ((buildingState==ALIVE) && (!type->isBuildingSite))
@@ -191,7 +197,8 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		const int target = hp < getEffectiveMaxHp() ? type->prevLevel : type->nextLevel;
 		if (target < 0) return;
 		const BuildingType* site = owner->game->buildingsTypes.get(target);
-		const BuildingType* completed = site->isBuildingSite ? owner->game->buildingsTypes.get(site->nextLevel) : site;
+		const BuildingType* completed = hp < getEffectiveMaxHp() ? type
+			: site->isBuildingSite ? owner->game->buildingsTypes.get(site->nextLevel) : site;
 		if (unitWorking < 0 || unitWorking > site->semantics.assignmentLimit || unitWorkingFuture < 0
 			|| unitWorkingFuture > completed->semantics.assignmentLimit) return;
 		if (hp<getEffectiveMaxHp())
@@ -213,6 +220,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		cancelProduction();
 		constructionOriginTypeNum = typeNum;
+		std::copy_n(ratio,NB_UNIT_TYPE,constructionOriginRatios.begin());
 		owner->removeFromAbilitiesLists(this);
 
 		// We remove all units who are going to the building:
@@ -240,7 +248,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
-		if (type->runtimeSuppliesStock)
+		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
@@ -317,8 +325,10 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	int midPosY=posY-type->decTop;
 	owner->removeFromAbilitiesLists(this);
 	owner->prestige-=type->prestige;
-	typeNum=recoverTypeNum;
-	type=recoverType;
+	const BuildingType* previousType=type;
+	bindType(recoverTypeNum);
+	transitionProductionPreferences(previousType,nullptr,true);
+	constructionOriginRatios.fill(0);
 	owner->prestige+=type->prestige;
 	owner->addToStaticAbilitiesLists(this);
 
@@ -327,6 +337,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
+	resetPathfindGradients();
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
@@ -343,15 +354,6 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	resetProduction();
 
 
-	totalRatio=0;
-
-	for (int i=0; i<NB_UNIT_TYPE; i++)
-	{
-		ratio[i]=1;
-		totalRatio++;
-		percentUsed[i]=0;
-	}
-
 	setMapDiscovered();
 }
 
@@ -361,7 +363,10 @@ void Building::launchDelete(void)
 	{
 		cancelProduction();
 		buildingState=WAITING_FOR_DESTRUCTION;
-		if (type->runtimeSuppliesStock)
+		owner->stockSuppliers.remove(this);
+		owner->directStockSuppliers.remove(this);
+		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
@@ -376,7 +381,11 @@ void Building::launchDelete(void)
 
 void Building::cancelDelete(void)
 {
+	if (buildingState!=WAITING_FOR_DESTRUCTION) return;
 	buildingState=ALIVE;
+	owner->addToStaticAbilitiesLists(this);
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
+		for (int resource=0; resource<MAX_RESOURCES; ++resource) owner->map->dirtyMarketGradients(owner->teamNumber,resource);
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();

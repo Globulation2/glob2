@@ -92,6 +92,29 @@ class WebAssetPlanTests(unittest.TestCase):
                 ['data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet', 'data/materials/rock12.png'], names),
                 {'data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet', 'data/materials/rock12.png'})
 
+    def test_building_definition_artwork_including_experiments_is_packaged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'src/app').mkdir(parents=True)
+            (root / 'src/map').mkdir(parents=True)
+            (root / 'src/app/GlobalContainer.cpp').write_text(
+                'void GlobalContainer::loadGameGraphics() {\n'
+                'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
+                'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
+            (root / 'src/map/TerrainPresentation.h').write_text('')
+            definitions = root / 'data/buildings/experimental'
+            definitions.mkdir(parents=True)
+            (definitions / 'manifest.json').write_text('{"files":["refuge.json"]}')
+            (definitions / 'refuge.json').write_text(json.dumps({'variants': [{
+                'requiredExperiment': 'refuge', 'properties': {
+                    'gameSprite': 'data/custom/refuge', 'miniSprite': 'data/gfx/refuge-icon'}}]}))
+            names = web_assets.game_sprites(root)
+            self.assertIn('data/custom/refuge', names)
+            self.assertIn('refuge-icon', names)
+            self.assertEqual(web_assets.game_files(
+                ['data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png', 'data/custom/unrelated0.png'], names),
+                {'data/custom/refuge0.png', 'data/gfx/refuge-icon3r.png'})
+
     def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
         tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
         inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)

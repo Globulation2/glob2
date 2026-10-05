@@ -44,7 +44,7 @@ inline int channel(const BuildingsTypes& catalog,const BuildingType& input)
     if(type.zonable[EXPLORER])return Exploration;
     if(type.zonable[WARRIOR])return WarriorAttraction;
     if(type.zonable[WORKER])return WorkerAttraction;
-    if((s.market.interTeamFruitExchange || s.market.suppliesDirectStock) || type.runtimeSuppliesStock)return Exchange;
+    if((s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock)return Exchange;
     return s.occupiesGround ? PassiveGround : -1;
 }
 inline std::vector<int> channels(const BuildingsTypes& catalog)

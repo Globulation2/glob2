@@ -117,7 +117,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	int distResource = 0;
 	if(!owner->map->resourceAvailable(owner->teamNumber, wantedResource, unit->swimClass(),
-	                                  unit->posX, unit->posY, &distResource, fetchesFromMarkets()))
+	                                  unit->posX, unit->posY, &distResource, fetchesFromMarkets(), this))
 	{
 		if(wantedResource<BASIC_COUNT)
 			noteUnitFailing(unit, UnitCantAccessResource);
@@ -270,7 +270,7 @@ int Building::workRoleTarget(int role) const
 	for (int r=0; r<MAX_RESOURCES; ++r)
 		active[0] |= resourceDeliveryNeed(r)>0;
 	int count=active[0];
-	for (int unit=0; unit<NB_UNIT_TYPE; ++unit) count += active[unit+1]=type->zonable[unit];
+	for (int unit=0; unit<NB_UNIT_TYPE; ++unit) count += active[unit+1]=runtime->attracts(unit);
 	if (!count || !active[role+1]) return 0;
 	int rank=0;
 	for (int i=0; i<role+1; ++i) rank+=active[i];
@@ -279,13 +279,19 @@ int Building::workRoleTarget(int role) const
 
 bool Building::subscribeWorkStep()
 {
-	const bool attracts=type->zonable[WORKER] || type->zonable[EXPLORER] || type->zonable[WARRIOR];
+	const bool attracts=runtime->attracts(WORKER) || runtime->attracts(EXPLORER) || runtime->attracts(WARRIOR);
 	if (!attracts) return subscribeToBringResourcesStep();
+	const bool recruitmentRound=subscriptionWorkingTimer>=32;
 	bool hired=subscribeToBringResourcesStep();
-	return subscribeForFlagingStep() || hired;
+	// Fill fair delivery quota before the attraction round can borrow it.
+	if (recruitmentRound) while (subscribeToBringResourcesStep()) hired=true;
+	hired=subscribeForFlagingStep() || hired;
+	// Attraction exhausted its eligible candidates; unused seats may deliver.
+	if (recruitmentRound) while (subscribeToBringResourcesStep(true)) hired=true;
+	return hired;
 }
 
-bool Building::subscribeToBringResourcesStep()
+bool Building::subscribeToBringResourcesStep(bool borrowUnused)
 {
 	resetFailureTallies();
 	if (buildingState==DEAD)
@@ -296,7 +302,7 @@ bool Building::subscribeToBringResourcesStep()
 	bool hired=false;
 	int delivering=0;
 	for (const Unit* unit : unitsWorking) delivering += unit->activity == Unit::ACT_FILLING;
-	if ((Sint32)unitsWorking.size()<desiredMaxUnitWorking && delivering<workRoleTarget(-1))
+	if ((Sint32)unitsWorking.size()<desiredMaxUnitWorking && (borrowUnused || delivering<workRoleTarget(-1)))
 	{
 		int targets[MAX_NB_RESOURCES];
 		int served[MAX_NB_RESOURCES];
@@ -486,7 +492,7 @@ bool Building::subscribeForFlagingStep()
 		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
 			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
 			[&map](int x,int y) { return map.terrainRegistry().airCost(map.terrainTypeAt(x,y)); },
-			type->zonable[EXPLORER] && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
+			runtime->attracts(EXPLORER) && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
 			field::AirDistanceDirection::ToDestination);
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
@@ -508,7 +514,7 @@ bool Building::subscribeForFlagingStep()
 					continue;
 				if(unit->attachedBuilding == this)
 					continue;
-				if(unit->typeNum == EXPLORER && type->zonable[EXPLORER])
+				if(unit->typeNum == EXPLORER && runtime->attracts(EXPLORER))
 				{
 					if(unit->typeNum != EXPLORER)
 						continue;
@@ -521,14 +527,14 @@ bool Building::subscribeForFlagingStep()
 					if(considerUnitForExplorerFlag(unit, &distances[n],travelDistance))
 						possibleUnits[n]=unit;
 				}
-				else if(unit->typeNum == WORKER && type->zonable[WORKER])
+				else if(unit->typeNum == WORKER && runtime->attracts(WORKER))
 				{
 					if(unit->typeNum != WORKER)
 						continue;
 					if(considerUnitForWorkerFlag(unit, &distances[n]))
 						possibleUnits[n]=unit;
 				}
-				else if(unit->typeNum == WARRIOR && type->zonable[WARRIOR])
+				else if(unit->typeNum == WARRIOR && runtime->attracts(WARRIOR))
 				{
 					if(unit->typeNum != WARRIOR)
 						continue;
@@ -544,9 +550,10 @@ bool Building::subscribeForFlagingStep()
 			int chosenCount=INT_MAX;
 			// Choose the least staffed eligible attraction role, then use that
 			// role's established ranking among its candidate units.
+			for (int pass=0; pass<2 && !choosen; ++pass)
 			for (int role=0; role<NB_UNIT_TYPE; ++role)
 			{
-				if (!type->zonable[role] || assigned[role] >= workRoleTarget(role)) continue;
+				if (!runtime->attracts(role) || (!pass && assigned[role] >= workRoleTarget(role))) continue;
 				Unit* best=nullptr;
 				int bestLevel=role == WARRIOR ? INT_MIN : INT_MAX;
 				Sint64 bestValue=INT64_MAX;

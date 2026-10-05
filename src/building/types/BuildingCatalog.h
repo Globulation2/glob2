@@ -63,6 +63,8 @@ struct BuildingProductionSpec
 
 struct BuildingMarketSpec
 {
+	std::uint8_t suppliesStockMask = 255, suppliesDirectStockMask = 255;
+	std::uint8_t fetchesStockMask = 255, fetchesDirectStockMask = 255;
 	bool sharedStock = false;
 	bool interTeamFruitExchange = false;
 	bool suppliesDirectStock = false;
@@ -85,6 +87,7 @@ struct BuildingPresentationSpec
 
 struct BuildingSemantics
 {
+	std::uint8_t replenishResourceMask = 255;
 	Sint32 requiredWorkerLevel = 0;
 	Sint32 assignmentLimit = 0;
 	Sint32 regenerationPerTick = 0;
@@ -108,3 +111,23 @@ struct BuildingSemantics
 	// This is independent of upgrade tier; each training output names its level.
 	bool trainingInParallel = false;
 };
+
+// Immutable, dense simulation projection. No strings, graphics handles, recipes
+// or variable-size storage enter this single cache line.
+struct alignas(64) BuildingRuntimeTraits
+{
+    Sint32 hpMax=0, armor=0, regenerationPerTick=0;
+    std::array<Sint32,NB_UNIT_TYPE> projectileDamage{};
+    Sint32 shootSpeed=0, projectileBuildingDamage=0, workPriorityBias=0;
+    std::uint32_t trainingMask=0;
+    Sint16 width=0,height=0,decLeft=0,decTop=0;
+    Uint16 shootRhythm=0,assignmentLimit=0,shootingRange=0;
+    Uint8 flags=0,admittedUnitMask=0,attractionMask=0,requiredWorkerLevel=0;
+    Uint8 suppliesStockMask=0,suppliesDirectStockMask=0,fetchesStockMask=0,fetchesDirectStockMask=0;
+    Uint8 replenishResourceMask=0,productionEnabledMask=0;
+    enum Flag : Uint8 { OccupiesGround=1,SharedStock=2,Site=4,Feeds=8,Heals=16,TrainingParallel=32,Available=64,CommittedProduction=128 };
+    bool has(Flag flag) const { return flags&flag; }
+    bool attracts(int unit) const { return attractionMask&(1u<<unit); }
+};
+static_assert(sizeof(BuildingRuntimeTraits)==64);
+static_assert(NB_ABILITY<=32 && NB_UNIT_TYPE<=8 && MAX_RESOURCES<=8);

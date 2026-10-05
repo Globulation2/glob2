@@ -40,12 +40,15 @@ inline void normalizeLegacyOrderStaffing(Game& game, Order& order, Sint32 versio
         const auto* team = game.teams[Building::GIDtoTeam(construction.gid)];
         const auto* building = team ? team->myBuildings[Building::GIDtoID(construction.gid)] : nullptr;
         if (!building) return;
-        int target = building->typeNum;
-        if (!building->type->isBuildingSite)
-            target = building->hp < building->getEffectiveMaxHp() ? building->type->prevLevel : building->type->nextLevel;
+        const bool repair = building->type->isBuildingSite ? building->constructionResultState==Building::REPAIR
+            : building->hp < building->getEffectiveMaxHp();
+        const int target = building->type->isBuildingSite ? building->typeNum
+            : repair ? building->type->prevLevel : building->type->nextLevel;
         if (target < 0 || std::size_t(target) >= game.buildingsTypes.size()) return;
         placement = game.buildingsTypes.get(target);
-        const auto* completed = placement->isBuildingSite && placement->nextLevel >= 0
+        const int origin = building->type->isBuildingSite ? building->getConstructionOriginTypeNum() : building->typeNum;
+        const auto* completed = repair && origin >= 0 && std::size_t(origin)<game.buildingsTypes.size()
+            ? game.buildingsTypes.get(origin) : placement->isBuildingSite && placement->nextLevel >= 0
             ? game.buildingsTypes.get(placement->nextLevel) : placement;
         construction.unitWorking = std::min(construction.unitWorking, Uint32(placement->semantics.assignmentLimit));
         construction.unitWorkingFuture = std::min(construction.unitWorkingFuture, Uint32(completed->semantics.assignmentLimit));

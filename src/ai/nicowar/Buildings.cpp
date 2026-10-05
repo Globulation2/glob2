@@ -342,14 +342,8 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_inn_calls);
 	//The main order for the inn
 	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Feed, AI_NICOWAR_INN_ORDER_WORKERS);
-
-	//Constraints around the location of wheat
-	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wheat
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_INN_WHEAT_MIN_DIST));
-	//You can't be farther than 10 units from wheat
-	bo->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_wheat, AI_NICOWAR_INN_WHEAT_MAX_DIST));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_INN_WHEAT_MIN_DIST,{},AI_NICOWAR_INN_WHEAT_MAX_DIST);
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -415,12 +409,8 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swarm_calls);
 	//The main order for the swarm
 	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::ProduceWorker, AI_NICOWAR_SWARM_ORDER_WORKERS);
-
-	//Constraints around the location of wheat
-	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wheat
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWARM_WHEAT_PREF));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_SWARM_WHEAT_PREF);
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -467,12 +457,8 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_racetrack_calls);
 	//The main order for the racetrack
 	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainWalk, AI_NICOWAR_RACETRACK_ORDER_WORKERS);
-
-	//Constraints around the location of wood
-	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wood
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_RACETRACK_WOOD_PREF));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_RACETRACK_STONE_PREF,{{WOOD,AI_NICOWAR_RACETRACK_WOOD_PREF},{STONE,AI_NICOWAR_RACETRACK_STONE_PREF}});
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -482,9 +468,7 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 
 	//Constraints around the location of stone
 	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to stone
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_RACETRACK_STONE_PREF));
+	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
 	//But not to close, so you have room to upgrade
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_NICOWAR_RACETRACK_STONE_MIN));
 
@@ -523,12 +507,8 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swimmingpool_calls);
 	//The main order for the swimming pool
 	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainSwim, AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS);
-
-	//Constraints around the location of wood
-	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wood
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_SWIMMINGPOOL_WOOD_PREF));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF,{{WOOD,AI_NICOWAR_SWIMMINGPOOL_WOOD_PREF},{WHEAT,AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF}});
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -536,15 +516,10 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_water, AI_NICOWAR_SWIMMINGPOOL_WATER_MIN_DIST));
 
-	//Constraints around the location of wheat
-	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wheat
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF));
 
 	//Constraints around the location of stone
 	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
+	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
 	//You don't want to be too close, so you have room to upgrade
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_NICOWAR_SWIMMINGPOOL_STONE_MIN));
 
@@ -635,18 +610,9 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 	gi_water.add_source(new AISharedRuntime::Gradients::Entities::Water);
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_water, AI_NICOWAR_BARRACKS_WATER_MIN_DIST));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_BARRACKS_STONE_PREF,{{WOOD,AI_NICOWAR_BARRACKS_WOOD_PREF},{STONE,AI_NICOWAR_BARRACKS_STONE_PREF}});
 
-	//Constraints around the location of stone
-	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to stone
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_BARRACKS_STONE_PREF));
-
-	//Constraints around the location of wood
-	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wood
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_BARRACKS_WOOD_PREF));
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -678,12 +644,8 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_hospital_calls);
 	//The main order for the hospital
 	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Heal, AI_NICOWAR_HOSPITAL_ORDER_WORKERS);
-
-	//Constraints around the location of wood
-	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
-	//You want to be close to wood
-	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_HOSPITAL_WOOD_PREF));
+	// Keep each required ingredient as an independent distance objective.
+	bo->add_input_distance_constraints(runtime,AI_NICOWAR_HOSPITAL_WOOD_PREF);
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -718,19 +680,25 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 
 void NewNicowar::manage_buildings(Runtime& runtime)
 {
+	ProductionDemand demand;
 	BuildingSearch bs(runtime);
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	
-		if(runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker))
+		if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 		{
-			manage_swarm(runtime, *i);
+            const auto provider=manage_swarm(runtime,*i);
+            if(provider.workers>0) {
+                demand.workers=std::max(demand.workers,provider.workers);
+                for(int unit=0;unit<NB_UNIT_TYPE;++unit) demand.ratios[unit]=std::max(demand.ratios[unit],provider.ratios[unit]);
+            }
 		}
 		if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 		{
 			manage_inn(runtime, *i);
 		}
 	}
+    if(demand.workers>0) runtime.ensure_production(demand.ratios,demand.workers,demand.workers);
 }
 
 
@@ -769,13 +737,13 @@ void NewNicowar::manage_inn(Runtime& runtime, int id)
 }
 
 
-void NewNicowar::manage_swarm(Runtime& runtime, int id)
+NewNicowar::ProductionDemand NewNicowar::manage_swarm(Runtime& runtime, int id)
 {
 	//Get some statistics
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	int total_explorers=stat->numberUnitPerType[EXPLORER];
 	if(stat->totalUnit == 0)
-		return;
+		return {};
 	int total_starving_percent = stat->needFoodCritical * 100 / stat->totalUnit;
 	int total_hungry_percent = stat->needFood * 100 / stat->totalUnit;
 
@@ -784,7 +752,7 @@ void NewNicowar::manage_swarm(Runtime& runtime, int id)
 
 	//Do nothing if the resource_tracker order hasn't been processed yet
 	if(! runtime.get_resource_tracker(id))
-		return;
+		return {};
 	int total_resource_level = runtime.get_resource_tracker(id)->get_total_level();
 
 	int worker_ratio=0;
@@ -855,6 +823,7 @@ void NewNicowar::manage_swarm(Runtime& runtime, int id)
 	//Change the ratio of the swarm when its finished
 	ManagementOrder* mo_ratios=new ChangeSwarm(worker_ratio, explorer_ratio, warrior_ratio, id);
 	runtime.add_management_order(mo_ratios);
+	return {{worker_ratio,explorer_ratio,warrior_ratio},to_assign};
 }
 
 

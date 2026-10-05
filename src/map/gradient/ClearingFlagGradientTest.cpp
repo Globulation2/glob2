@@ -43,7 +43,8 @@ void fruitIsNeverAClearingTarget() {
     const auto end=reinterpret_cast<unsigned char*>(&flag->minLevelToFlag)-bytes;
     REQUIRE(end>=begin);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
-        flag->globalGradient[swim]=new Uint16[64*64];
+        const int slot=flag->routeSlot(swim, BuildingRoute::Clearing);
+        f.game.map.buildingGradient(flag,swim,BuildingRoute::Clearing);
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
             for(int resource:{WOOD,WHEAT,PAPYRUS,STONE,ALGA,CHERRY,ORANGE,PRUNE,NO_RES_TYPE}) {
@@ -51,9 +52,10 @@ void fruitIsNeverAClearingTarget() {
                 tile.type=resource;tile.amount=resource==NO_RES_TYPE?0:1;
                 for(bool enabled:{false,true}) {
                     if(resource<BASIC_COUNT)flag->clearingResources[resource]=enabled;
-                    f.game.map.updateGlobalGradient(flag,swim);
+                    f.game.map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
+                    f.game.map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
                     const bool expected=resource<BASIC_COUNT && enabled;
-                    REQUIRE((flag->globalGradient[swim][21+20*64]==GRADIENT_AT_GOAL)==expected);
+                    REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
                 }
             }
         }

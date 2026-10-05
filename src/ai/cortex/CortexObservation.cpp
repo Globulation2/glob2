@@ -50,6 +50,11 @@ namespace Cortex
 				continue;
 			BuildingType* bt = b->type;
             const unsigned roles = buildingRoles(*team->game, *bt);
+            if (b->buildingState == Building::ALIVE) {
+                const auto& completed = ModelBuildingProjection::completed(team->game->buildingsTypes,*bt);
+                obs.productionPlannedMask |= completed.semantics.production.enabledUnitMask;
+                if (!bt->isBuildingSite) obs.productionMask |= completed.semantics.production.enabledUnitMask;
+            }
             if (b->buildingState == Building::ALIVE)
                 for (int role = 0; role < CORTEX_BUILDING_TYPES; ++role)
                     if (roles & (1u << role))

@@ -73,7 +73,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -105,7 +117,10 @@
         "constructionCost": {
           "wood": 7
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "barracks",
@@ -172,7 +187,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -219,7 +238,8 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 7
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "barracks",
@@ -308,7 +328,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -335,13 +371,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 3,
           "stone": 10
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "barracks",
@@ -409,7 +449,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -451,13 +495,14 @@
           }
         },
         "trainingInParallel": true,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 3,
           "stone": 10
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "barracks",
@@ -546,7 +591,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -573,13 +634,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 10,
           "stone": 10
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "barracks",
@@ -647,7 +712,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -689,13 +758,14 @@
           }
         },
         "trainingInParallel": true,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 10,
           "stone": 10
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "barracks",

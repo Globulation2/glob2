@@ -73,7 +73,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -105,7 +117,10 @@
         "constructionCost": {
           "wood": 6
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",
@@ -196,7 +211,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -228,7 +255,10 @@
         "constructionCost": {},
         "repairCost": {
           "wood": 6
-        }
+        },
+        "replenishResources": [
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",
@@ -318,7 +348,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -345,13 +391,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 10,
           "stone": 14
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",
@@ -444,7 +494,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -471,13 +533,16 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
           "wood": 10,
           "stone": 14
-        }
+        },
+        "replenishResources": [
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",
@@ -567,7 +632,27 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -594,14 +679,19 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 8,
           "stone": 14,
           "algae": 2
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",
@@ -693,7 +783,19 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "stone"
+          ],
+          "suppliesDirectStockResources": [
+            "stone"
+          ],
+          "fetchesStockResources": [
+            "stone"
+          ],
+          "fetchesDirectStockResources": [
+            "stone"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -720,14 +822,17 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
           "wood": 8,
           "stone": 14,
           "algae": 2
-        }
+        },
+        "replenishResources": [
+          "stone"
+        ]
       },
       "presentation": {
         "displayName": "defencetower",

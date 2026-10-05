@@ -185,18 +185,23 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
 	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const bool withMarkets=building->fetchesFromMarkets();
-	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets);
+	const unsigned modes=resourceSupplyModes(building,resourceType);
+	const bool withMarkets=modes!=0;
+	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the
 	// unit harvests, to the building. A stocked market's tile is a goal as
 	// well, its seed the detour dearer.
+	const auto visitSuppliers=[&](auto visit) {
+		if (modes&1) for (const Building* supplier : building->owner->stockSuppliers) visit(supplier);
+		if (modes&2) for (const Building* supplier : building->owner->directStockSuppliers)
+			if (!(modes&1) || !(supplier->runtime->suppliesStockMask&(1u<<resourceType))) visit(supplier);
+	};
 	std::array<int, Building::MAX_COUNT> supplierPenalties;
 	if (withMarkets)
 	{
 		supplierPenalties.fill(0);
-		for (const Building *supplier : building->owner->stockSuppliers)
-			supplierPenalties[Building::GIDtoID(supplier->gid)] = supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP;
+		visitSuppliers([&](const Building* supplier) { supplierPenalties[Building::GIDtoID(supplier->gid)] = supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP; });
 	}
 	Uint16 bestSeed=GRADIENT_UNREACHABLE;
 	for (size_t i=0; i<size; i++)
@@ -222,12 +227,9 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 		if (best>bestSeed)
 			bestSeed=best;
 	}
-	if (withMarkets && game->buildingsTypes.usesOverlaySuppliers())
-		for (const Building* supplier : building->owner->stockSuppliers)
-		{
-			if (supplier->type->semantics.occupiesGround || supplier->buildingState != Building::ALIVE
-				|| !supplier->type->runtimeSuppliesStock || supplier->availableResource(resourceType) <= 0
-				|| supplier->type->maxResource[resourceType] <= 0) continue;
+	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
+		visitSuppliers([&](const Building* supplier) {
+			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligible(supplier,building,resourceType,modes)) return;
 			for (int y=0; y<supplier->type->height; ++y)
 				for (int x=0; x<supplier->type->width; ++x)
 				{
@@ -244,7 +246,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 					gradient[i] = std::max(gradient[i], best);
 					bestSeed = std::max(bestSeed, best);
 				}
-		}
+		});
 	// Units farther than this from the cheapest fetch are scored by the plain
 	// distances instead (the callers fall back when a cell is unreachable
 	// here), which keeps the build small on big maps.

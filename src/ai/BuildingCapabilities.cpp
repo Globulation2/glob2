@@ -3,11 +3,60 @@
 
 #include "BuildingType.h"
 #include "GameHeader.h"
+#include "Game.h"
+#include "Building.h"
+#include "TeamStat.h"
+#include "AIRuleOrders.h"
+#include <tuple>
 #include <algorithm>
 #include <stdexcept>
 
 namespace AIPlanning
 {
+std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
+    const std::array<int,3>& desired, int workers, int futureWorkers,
+    const std::vector<int>& pendingPlacements)
+{
+    const auto& index=game.buildingCapabilities();
+    unsigned required=0,provided=0;
+    for(int unit=0;unit<NB_UNIT_TYPE;++unit)
+        if(desired[unit]>0 && BuildingCapabilityIndex::allowed(static_cast<BuildingIntent>(unit),game.gameHeader)) required|=1u<<unit;
+    if(!required) return {};
+    Building* anchor=nullptr;
+    auto include=[&](int type) {
+        if(type<0 || std::size_t(type)>=game.buildingsTypes.size()) return;
+        const auto* descriptor=game.buildingsTypes.get(type);
+        if(descriptor->isBuildingSite) type=descriptor->nextLevel;
+        provided|=unsigned(index.intentMask(type))&7u;
+    };
+    for(int id=0;id<Building::MAX_COUNT;++id) if(auto* building=team.myBuildings[id];building && building->buildingState==Building::ALIVE) {
+        include(building->type->isBuildingSite ? building->getConstructionCompletionTypeNum() : building->typeNum);
+        if(!anchor || (index.intentMask(building->typeNum)&7u)) anchor=building;
+        if((provided&required)==required) return {};
+    }
+    for(int type:pendingPlacements) include(type);
+    if((provided&required)==required || !anchor) return {};
+    for(int unit=0;unit<NB_UNIT_TYPE;++unit) {
+        if(!(required&(1u<<unit)) || (provided&(1u<<unit))) continue;
+        const auto intent=static_cast<BuildingIntent>(unit);
+        for(const auto& candidate:index.placementsByCost(intent)) {
+            const auto* type=game.buildingsTypes.get(candidate.placementType);
+            int eligible=0;
+            for(int level=type->semantics.requiredWorkerLevel;level<NB_UNIT_LEVELS;++level) eligible+=team.stats.getWorkersLevel(level);
+            if(!index.available(candidate,intent,game.gameHeader) || eligible==0) continue;
+            // Try each provider in cached cost/ID order. An obstructed large
+            // footprint must not hide a smaller usable alternative.
+            for(int radius=1;radius<=32;++radius) for(int dx=-radius;dx<=radius;++dx) for(int dy=-radius;dy<=radius;++dy) {
+                if(std::abs(dx)!=radius && std::abs(dy)!=radius) continue;
+                const int x=game.map.normalizeX(anchor->posX+dx),y=game.map.normalizeY(anchor->posY+dy);
+                if(!game.map.isMapDiscovered(x,y,team.allies) || !game.checkRoomForBuilding(x,y,type,team.teamNumber)) continue;
+                return AIRules::createOrder(game,team.teamNumber,x,y,candidate.placementType,workers,futureWorkers);
+            }
+        }
+    }
+    return {};
+}
+
 namespace
 {
 using Intent = BuildingIntent;
@@ -72,7 +121,7 @@ unsigned serviceMask(const BuildingType& type, Intent intent)
 		case Intent::AttractExplorers: return type.zonable[EXPLORER] ? 1u << EXPLORER : 0;
 		case Intent::AttractWarriors: return type.zonable[WARRIOR] ? 1u << WARRIOR : 0;
 		case Intent::ExchangeResources:
-			return semantics.market.interTeamFruitExchange || semantics.market.suppliesStock ? NoUnitRequired : 0;
+			return semantics.market.interTeamFruitExchange || semantics.market.suppliesStock || semantics.market.suppliesDirectStock ? NoUnitRequired : 0;
 		default: return 0;
 	}
 	return semantics.production.recipes[produced].enabled ? 1u << produced : 0;
@@ -137,6 +186,14 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 			if (masks_[complete][demand])
 				placements_[demand].push_back({static_cast<int>(id), complete});
 	}
+    placementsByCost_=placements_;
+    std::vector<int> costs(catalog.size());
+    for(std::size_t id=0;id<catalog.size();++id)
+        for(int amount:catalog.get(id)->semantics.constructionCost) costs[id]+=amount;
+    for(auto& candidates:placementsByCost_)
+        std::sort(candidates.begin(),candidates.end(),[&](const auto& a,const auto& b) {
+            return std::tie(costs[a.placementType],a.placementType)<std::tie(costs[b.placementType],b.placementType);
+        });
 }
 
 const std::vector<int>& BuildingCapabilityIndex::providers(BuildingIntent intent) const
@@ -147,6 +204,11 @@ const std::vector<int>& BuildingCapabilityIndex::providers(BuildingIntent intent
 const std::vector<BuildingCandidate>& BuildingCapabilityIndex::placements(BuildingIntent intent) const
 {
 	return placements_[index(intent)];
+}
+
+const std::vector<BuildingCandidate>& BuildingCapabilityIndex::placementsByCost(BuildingIntent intent) const
+{
+    return placementsByCost_[index(intent)];
 }
 
 bool BuildingCapabilityIndex::matches(int type, BuildingIntent intent, int unit) const
@@ -197,7 +259,7 @@ bool BuildingCapabilityIndex::available(int type, BuildingIntent intent,
 	if (intent == Intent::ExchangeResources)
 	{
 		const auto& market = definition.semantics.market;
-		return market.interTeamFruitExchange
+		return market.interTeamFruitExchange || market.suppliesDirectStock
 			|| (market.suppliesStock && experimentEnabled(market.suppliesStockExperiment, rules));
 	}
 	return true;

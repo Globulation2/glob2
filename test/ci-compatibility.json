@@ -45,7 +45,9 @@
     "BuildingServices/*",
     "BuildingProductionCombat/*",
     "BuildingCapabilities/*",
-    "SceneExtract/*"
+    "SceneExtract/*",
+    "BuildingCatalogFixtures/*",
+    "AICustomCatalog/*"
   ],
   "unit_filters": [
     "*"

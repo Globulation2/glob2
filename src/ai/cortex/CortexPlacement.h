@@ -32,7 +32,7 @@ namespace Cortex
 	/// Returns the number of valid candidates written (0..CORTEX_BUILD_CANDIDATES).
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES]);
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1);
 
 	/// Forward-base variant of placeCandidates: the single best legal spot for
 	/// `buildingType` whose distance to the attack target (targetX, targetY) lies

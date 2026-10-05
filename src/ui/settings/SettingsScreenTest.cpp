@@ -352,6 +352,29 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
+    TEST_CASE("catalog building defaults in compact layout [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI","1");
+        glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=480,.height=800};
+        options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="en";};
+        glob2test::HeadlessGlobals globals(options);
+        FrontendTheme theme;FrontendScope frontend;NativeSettings screen;
+        screen.selectCategory(SettingsScreen::Category::Buildings);
+        screen.capture((glob2test::artifactDir()/"building-defaults-compact-list.bmp").string());
+        REQUIRE(screen.row("buildings.open.inn.0.site").enabled);
+        screen.activateSetting("buildings.open.inn.0.site");
+        const auto& type=*globalContainer->buildingsTypes.getByType("inn",2,false);
+        const auto control="units."+type.key;
+        CHECK(screen.row(control).maximum==type.semantics.assignmentLimit);
+        REQUIRE(screen.changeSetting(control,6));
+        const auto fingerprint=globalContainer->buildingsTypes.fingerprint();
+        CHECK(globalContainer->settings.buildingAssignment(fingerprint,type)==6);
+        Settings loaded;loaded.load();CHECK(loaded.buildingAssignment(fingerprint,type)==6);
+        screen.host().scrollIntoView(control);
+        screen.capture((glob2test::artifactDir()/"building-defaults-compact-detail.bmp").string());
+        screen.done();
+    }
+
     TEST_CASE("render FPS dropdown in compact layout [display][artifacts][writes-preferences]")
     {
         glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI", "1");

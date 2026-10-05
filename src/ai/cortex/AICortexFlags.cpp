@@ -41,7 +41,7 @@ shared_ptr<Order> retireWarAttractor(const Building& building)
  const auto& type=*building.type;
  const auto& s=type.semantics;
  bool otherService=s.production.enabledUnitMask || s.feeding.enabled || s.healing.enabled ||
-  type.shootingRange>0 || (s.market.interTeamFruitExchange || s.market.suppliesDirectStock) || type.runtimeSuppliesStock ||
+  type.shootingRange>0 || (s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock ||
   type.zonable[WORKER] || type.zonable[EXPLORER];
  for(const auto& training:s.training)otherService|=training.enabled;
  if(otherService)return {};

@@ -12,6 +12,7 @@
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
+#include <nlohmann/json.hpp>
 
 // SDL compiler flags may rename main even when SDL_MAIN_HANDLED is set.
 using namespace AISharedRuntime::Gradients;
@@ -110,8 +111,21 @@ class RuntimeContinuationTest
     }
     static void completedTransitionsReleaseWaits()
     {
-        Game game(nullptr); setup(game);
+        Game game(nullptr);
         const int initial=game.buildingsTypes.getTypeNum("inn",0,false);
+        const int site=game.buildingsTypes.get(initial)->nextLevel;
+        REQUIRE(site>=0);
+        const int destination=game.buildingsTypes.get(site)->nextLevel;
+        REQUIRE(destination>=0);
+        auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        snapshot["variants"][initial]["properties"]["level"]=3;
+        snapshot["variants"][site]["properties"]["level"]=0;
+        snapshot["variants"][destination]["properties"]["level"]=0;
+        // These are key-only variants: presentation levels need not form a
+        // unique legacy family/level tuple.
+        for(auto& variant:snapshot["variants"]) variant["properties"]["type"]="";
+        game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+        setup(game);
         auto* building=game.addBuilding(4,4,initial,0);
         REQUIRE(building);
         auto& registry=runtime(game,0).get_building_register();
@@ -119,20 +133,12 @@ class RuntimeContinuationTest
         REQUIRE(registry.get_building(0)==building);
         registry.set_upgrading(0);
         CHECK(registry.is_building_upgrading(0));
-        const int site=building->type->nextLevel;
-        REQUIRE(site>=0);
-        const int destination=game.buildingsTypes.get(site)->nextLevel;
-        REQUIRE(destination>=0);
-        game.buildingsTypes.get(initial)->level=3;
-        game.buildingsTypes.get(site)->level=0;
-        game.buildingsTypes.get(destination)->level=0;
         AISharedRuntime::Conditions::ParticularBuilding firstStage(new AISharedRuntime::Conditions::BuildingLevel(1),0);
         AISharedRuntime::Conditions::ParticularBuilding nextStage(new AISharedRuntime::Conditions::BeingUpgradedTo(2),0);
         CHECK(bool(firstStage.passes(runtime(game,0))));
         CHECK(bool(nextStage.passes(runtime(game,0))));
         // A short transition may complete between the controller's observations.
-        building->typeNum=destination;
-        building->type=game.buildingsTypes.get(destination);
+        building->bindType(destination);
         registry.tick();
         CHECK_FALSE(registry.is_building_upgrading(0));
         CHECK(registry.get_type(0)==destination);
@@ -149,16 +155,18 @@ class RuntimeContinuationTest
     }
     static void placementInputsUseConstructionPrice()
     {
-        Game game(nullptr);setup(game);
+        Game game(nullptr);
         const int site=game.buildingsTypes.getTypeNum("inn",0,true);
         const int completed=game.buildingsTypes.get(site)->nextLevel;
-        auto* placement=game.buildingsTypes.get(site);
-        placement->semantics.constructionCost.fill(0);
-        placement->semantics.constructionCost[STONE]=5;
-        std::fill(std::begin(placement->maxResource),std::end(placement->maxResource),0);
-        placement->maxResource[WOOD]=9;
-        game.buildingsTypes.get(completed)->semantics.feeding.cost.fill(0);
-        game.configureBuildingCatalog();
+        auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        snapshot["variants"][site]["semantics"]["constructionCost"]={{"stone",5}};
+        auto& storage=snapshot["variants"][site]["properties"]["maxResource"];
+        for(auto& value:storage) value=0;
+        storage[WOOD]=9;
+        snapshot["variants"][completed]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+        game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+        CHECK(game.buildingsTypes.get(completed)->semantics.feeding.costMask==0);
+        setup(game);
         auto& controller=runtime(game,0);MersenneTwister random(713);controller.setRandomEngine(random);
         AISharedRuntime::Construction::BuildingOrder order(controller,AISharedRuntime::BuildingDemand::Feed,2);
         CHECK(order.input_resource_mask(controller)==(1u<<STONE));

@@ -692,6 +692,8 @@ TEST_SUITE("LanMatchHarness")
 				value = std::move(bytes.front()); bytes.pop_front(); return true;
 			}
 		};
+		for(int scenario=0;scenario<4;++scenario) {
+		CAPTURE(scenario);
 		auto transport = std::make_unique<Wire>();
 		auto& wire = *transport;
 		Lan::LanLink link(std::move(transport));
@@ -699,7 +701,7 @@ TEST_SUITE("LanMatchHarness")
 		REQUIRE(link.send(original));
 		REQUIRE(wire.bytes.size() > 1);
 		for (const auto& frame : wire.bytes) CHECK(frame.size() <= Lan::MAX_FRAME_BYTES + 2);
-		SUBCASE("exact reconstruction followed by ordinary frame")
+		if(scenario==0)
 		{
 			const auto next = Lan::encodeJson({{"type", "ready"}});
 			REQUIRE(link.send(next));
@@ -708,14 +710,15 @@ TEST_SUITE("LanMatchHarness")
 			REQUIRE(link.receive(received)); CHECK(received == next);
 			CHECK_FALSE(link.closed());
 		}
-		SUBCASE("missing initial fragment") { wire.bytes.pop_front(); }
-		SUBCASE("repeated fragment") { wire.bytes.insert(wire.bytes.begin() + 1, wire.bytes.front()); }
-		SUBCASE("interleaved regular frame")
+		if(scenario==1) { wire.bytes.pop_front(); }
+		if(scenario==2) { wire.bytes.insert(wire.bytes.begin() + 1, wire.bytes.front()); }
+		if(scenario==3)
 		{
 			wire.bytes.insert(wire.bytes.begin() + 1, NetFrame::encode(Lan::encodeJson({{"type", "ready"}})));
 		}
 		std::vector<std::uint8_t> received;
 		if (!wire.bytes.empty()) { CHECK_FALSE(link.receive(received)); CHECK(link.closed()); }
+		}
 	}
 
 	TEST_CASE("LAN departure waits for asynchronous transport writes")

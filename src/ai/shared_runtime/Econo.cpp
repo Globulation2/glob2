@@ -98,7 +98,7 @@ void Econo::tick_initial_setup(Runtime& runtime)
 		BuildingSearch bs(runtime);
 		for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 		{
-			if(runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker))
+			if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 			{
 				ManagementOrder* mo_completion=new AssignWorkers(AI_SHARED_RUNTIME_RTI_INITIAL_SWARM_WORKERS, *i);
 				runtime.add_management_order(mo_completion);

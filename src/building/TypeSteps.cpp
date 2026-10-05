@@ -27,7 +27,7 @@ int Building::selectProductionRecipe() const
 	Sint64 best = std::numeric_limits<Sint64>::max();
 	int chosen = -1;
 	for (int u = 0; u < NB_UNIT_TYPE; ++u)
-		if (type->semantics.production.recipes[u].enabled && ratio[u] > 0)
+		if ((runtime->productionEnabledMask&(1u<<u)) && ratio[u] > 0)
 		{
 			const Sint64 proportion = (Sint64(percentUsed[u]) << FIXED_POINT_SHIFT_16) / ratio[u];
 			if (proportion <= best) { best = proportion; chosen = u; }
@@ -37,7 +37,7 @@ int Building::selectProductionRecipe() const
 
 bool Building::canAffordProduction(int unitType) const
 {
-	if (buildingState != ALIVE) return false;
+	if (buildingState != ALIVE || siteCompletionPending) return false;
 	if (unitType < 0 || unitType >= NB_UNIT_TYPE) return false;
 	const auto& recipe = type->semantics.production.recipes[unitType];
 	if (!recipe.enabled) return false;
@@ -82,14 +82,14 @@ void Building::restoreProductionReservations()
 void Building::regenerationStep()
 {
 	if (buildingState == DEAD || hp >= getEffectiveMaxHp()) return;
-	hp += std::min(type->semantics.regenerationPerTick, getEffectiveMaxHp() - hp);
+	hp += std::min(runtime->regenerationPerTick, getEffectiveMaxHp() - hp);
 }
 
 void Building::swarmStep(void)
 {
 	if (buildingState != ALIVE || siteCompletionPending) return;
 	const auto& production = type->semantics.production;
-	const bool committed = production.scheduling == BuildingProductionScheduling::WeightedCommittedJob;
+	const bool committed = runtime->has(BuildingRuntimeTraits::CommittedProduction);
 	int chosen;
 	if (committed)
 	{
@@ -105,12 +105,18 @@ void Building::swarmStep(void)
 	}
 	else
 	{
-		chosen = selectProductionRecipe();
-		if (chosen >= 0 && canAffordProduction(chosen) && productionTimeout > std::numeric_limits<Sint32>::min())
-			--productionTimeout;
-		if (chosen < 0) chosen = production.fallbackUnit;
+		// Late-choice recipes have identical validated costs and durations. A
+		// pending timer needs only availability and an active ratio, not ranking.
+		const bool affordable=canAffordProduction(production.fallbackUnit);
+		bool active=false;
+		for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+			active |= (runtime->productionEnabledMask&(1u<<unit)) && ratio[unit]>0;
+		if (active && affordable && productionTimeout>std::numeric_limits<Sint32>::min()) --productionTimeout;
+		if (productionTimeout>=0 || !affordable) return;
+		chosen=selectProductionRecipe();
+		if (chosen<0) chosen=production.fallbackUnit;
 	}
-	if (productionTimeout >= 0 || !canAffordProduction(chosen)) return;
+	if (committed && (productionTimeout>=0 || !canAffordProduction(chosen))) return;
 
 	int x, y, dx, dy;
 	const UnitType* ut = owner->race.getUnitType(chosen, 0);
@@ -170,7 +176,7 @@ void Building::convertStoneToBullet()
 		resources[resource] -= cost;
 		owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-		if (cost && type->runtimeSuppliesStock) owner->map->dirtyMarketGradients(owner->teamNumber, resource);
+		if (cost && (type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradients(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }
@@ -179,7 +185,7 @@ bool Building::tickShootingCooldown()
 {
 	if (shootingCooldown > 0)
 	{
-		shootingCooldown -= type->shootRhythm;
+		shootingCooldown -= runtime->shootRhythm;
 		return false;
 	}
 	return true;
@@ -214,7 +220,7 @@ int Building::scoreWarriorTarget(const Unit* target, int ring) const
 	int targetWeakness = 0; // 0 to 512
 	if (target->hp > 0)
 	{
-		if (target->hp < type->semantics.projectileDamage[target->typeNum]) // hahaha, how mean!
+		if (target->hp < runtime->projectileDamage[target->typeNum]) // hahaha, how mean!
 			targetWeakness = 512;
 		else
 			targetWeakness = 256 / target->hp;
@@ -272,12 +278,12 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				if (targetTicks <= ticksToHit)
 					return;
 				// shoot warrior first, then workers if no warrior
-				if (testUnit->typeNum == WARRIOR && type->semantics.projectileDamage[WARRIOR] > 0)
+				if (testUnit->typeNum == WARRIOR && runtime->projectileDamage[WARRIOR] > 0)
 				{
 					applyCandidate(best, scoreWarriorTarget(testUnit, ring),
 						targetTicks, targetX, targetY, TARGETTYPE_WARRIOR);
 				}
-				else if ((best.type != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER) && type->semantics.projectileDamage[WORKER] > 0)
+				else if ((best.type != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER) && runtime->projectileDamage[WORKER] > 0)
 				{
 					// adjust score for range
 					applyCandidate(best, -testUnit->hp,
@@ -288,7 +294,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	}
 	//explorers are now priority targets as defined later
 
-	if (airTargetGUID != NOGUID && type->semantics.projectileDamage[EXPLORER] > 0)
+	if (airTargetGUID != NOGUID && runtime->projectileDamage[EXPLORER] > 0)
 	{
 		Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
 		Sint32 targetID = Unit::GIDtoID(airTargetGUID);
@@ -311,7 +317,7 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 	}
 
 	// shoot building only if no unit is found
-	if (best.type == TARGETTYPE_NONE && type->semantics.projectileBuildingDamage > 0)
+	if (best.type == TARGETTYPE_NONE && runtime->projectileBuildingDamage > 0)
 	{
 		Uint16 targetGBID = map->getBuilding(targetX, targetY);
 		if (targetGBID != NOGBID)
@@ -330,29 +336,29 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 
 Building::TurretTarget Building::findBestTarget() const
 {
-	int range = type->shootingRange;
+	int range = runtime->shootingRange;
 
 	Uint32 enemies = owner->attackableTeams();
 	Map *map = owner->map;
 	assert(map);
 
 	// half the building's pixel width — the centre offset of the turret footprint
-	const int halfWidthPx = (type->width << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfWidthPx = (runtime->width << Map::TILE_PIXEL_SHIFT) / 2;
 
 	TurretTarget best;
-	if (type->width != TURRET_SIZE || type->height != TURRET_SIZE)
+	if (runtime->width != TURRET_SIZE || runtime->height != TURRET_SIZE)
 	{
 		const auto consider = [&](int x, int y, int ring) {
 			const auto shot = computeFiringSolution(x, y);
 			considerScanTile(x, y, ring, shot.ticksLeft, enemies, map, best);
 		};
 		// The footprint may contain targets for a non-occupying structure.
-		for (int y = posY; y < posY + type->height; ++y)
-			for (int x = posX; x < posX + type->width; ++x) consider(x, y, 0);
+		for (int y = posY; y < posY + runtime->height; ++y)
+			for (int x = posX; x < posX + runtime->width; ++x) consider(x, y, 0);
 		for (int ring = 1; ring <= range && best.type != TARGETTYPE_EXPLORER; ++ring)
 		{
-			const int left = posX - ring, right = posX + type->width - 1 + ring;
-			const int top = posY - ring, bottom = posY + type->height - 1 + ring;
+			const int left = posX - ring, right = posX + runtime->width - 1 + ring;
+			const int top = posY - ring, bottom = posY + runtime->height - 1 + ring;
 			for (int x = left; x <= right; ++x) { consider(x, top, ring); consider(x, bottom, ring); }
 			for (int y = top + 1; y < bottom; ++y) { consider(left, y, ring); consider(right, y, ring); }
 		}
@@ -362,7 +368,7 @@ Building::TurretTarget Building::findBestTarget() const
 	for (int i=0; i<=range ; i++)
 	{
 		// The number of ticks before the bullet hits the target at range "i".
-		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + halfWidthPx) / (type->shootSpeed>>Q8_FIXED_POINT_SHIFT);
+		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + halfWidthPx) / (runtime->shootSpeed>>Q8_FIXED_POINT_SHIFT);
 		for (int j=0; j<=i ; j++)
 		{
 			for (int k=0; k<8; k++)
@@ -384,8 +390,8 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 	Map *map = owner->map;
 
 	// half the building's pixel width/height — the centre offset of the footprint
-	const int halfWidthPx = (type->width << Map::TILE_PIXEL_SHIFT) / 2;
-	const int halfHeightPx = (type->height << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfWidthPx = (runtime->width << Map::TILE_PIXEL_SHIFT) / 2;
+	const int halfHeightPx = (runtime->height << Map::TILE_PIXEL_SHIFT) / 2;
 
 	TurretFiringSolution sol;
 	sol.originX = ((posX)<<Map::TILE_PIXEL_SHIFT)+halfWidthPx;
@@ -416,16 +422,16 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 	if (abs(dpx)>abs(dpy)) //we avoid a square root, since all distances are squares lengthed.
 	{
 		mdp=abs(dpx);
-		sol.speedX=static_cast<int>((Sint64(dpx)*type->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
-		sol.speedY=static_cast<int>((Sint64(dpy)*type->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedX=static_cast<int>((Sint64(dpx)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedY=static_cast<int>((Sint64(dpy)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
 		assert(sol.speedX!=0);
 		sol.ticksLeft=abs(mdp/sol.speedX);
 	}
 	else
 	{
 		mdp=abs(dpy);
-		sol.speedX=static_cast<int>((Sint64(dpx)*type->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
-		sol.speedY=static_cast<int>((Sint64(dpy)*type->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedX=static_cast<int>((Sint64(dpx)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
+		sol.speedY=static_cast<int>((Sint64(dpy)*runtime->shootSpeed)/(Sint64(mdp)<<Q8_FIXED_POINT_SHIFT));
 		assert(sol.speedY!=0);
 		sol.ticksLeft=abs(mdp/sol.speedY);
 	}
@@ -441,8 +447,8 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 	if (sol.ticksLeft < target.ticks)
 	{
-		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, type->semantics.projectileBuildingDamage, target.x, target.y, posX-1, posY-1, type->width+2, type->height+2);
-		b->unitDamage = type->semantics.projectileDamage;
+		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, runtime->projectileBuildingDamage, target.x, target.y, posX-1, posY-1, runtime->width+2, runtime->height+2);
+		b->unitDamage = runtime->projectileDamage;
 		b->sourceTeam = owner->teamNumber;
 		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);
@@ -457,3 +463,18 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 
 
+
+
+void Building::transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin, bool restoring)
+{
+    totalRatio=0;
+    for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+    {
+        if (restoring) ratio[unit]=constructionOriginRatios[unit];
+        else if (!type->semantics.production.recipes[unit].enabled) ratio[unit]=0;
+        else if (previous->semantics.production.recipes[unit].enabled) {} // retain the current preference
+        else if (origin && origin->semantics.production.recipes[unit].enabled) ratio[unit]=constructionOriginRatios[unit];
+        else ratio[unit]=type->semantics.production.initialRatios[unit];
+        totalRatio+=ratio[unit]; percentUsed[unit]=0;
+    }
+}

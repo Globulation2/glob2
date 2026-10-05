@@ -65,6 +65,8 @@ class Building : public BuildingUtils
 
   public:
 	static const int MAX_COUNT=1024;
+	const BuildingRuntimeTraits* runtime=nullptr;
+	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.
@@ -225,12 +227,11 @@ class Building : public BuildingUtils
 	///This function subscribes any building that needs resources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
-	bool subscribeToBringResourcesStep(void);
+	bool subscribeToBringResourcesStep(bool borrowUnused = false);
 	//! Whether the unit's type and level qualify it to work for this building.
 	bool canUnitWorkHere(Unit* unit, bool attraction = false);
-	/// Whether fetches for this building may take from the team's stocked
-	/// markets. Markets fetch for themselves from the map only, so stock never
-	/// circulates between markets.
+	/// Whether any configured resource uses routed team-stock fetching.
+	/// Consumer-aware Map queries apply per-resource gates and exclude own pools.
 	bool fetchesFromMarkets() const;
 	/// Game-aware upgrade availability; the static type table is shared by games.
 	bool isUpgradeAvailable() const;
@@ -296,6 +297,7 @@ class Building : public BuildingUtils
 	ResourceDeliveryResult deliverResourcePacket(int resourceType, ResourcePacket packet);
 	ResourcePacket withdrawResourcePacket(int resourceType);
 	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
+	int getConstructionCompletionTypeNum() const;
 	int constructionResourceNeed(int resource) const;
 	int resourceDeliveryNeed(int resource) const;
 	int resourceDeliveryTarget(int resource) const;
@@ -306,6 +308,8 @@ class Building : public BuildingUtils
 	void transferResourcesPointer(bool wasShared);
 	BuildingResourceCost constructionBudget{}, constructionReserved{};
 	Sint32 constructionOriginTypeNum = -1;
+	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
+	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
 	Sint32 repairInitialDeficit = 0, repairHealthGranted = 0;
 	void applyConstructionHealth(int funded, bool finishRepair = false);
 	void cancelConstructionMaterials();

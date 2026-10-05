@@ -7,7 +7,8 @@ track (quantizer in `quantize.py`, numpy reference in `int_ref.py`, C++ loader i
 
 ## Building catalog projection
 
-Cortex observation v22 and action v14 use semantic strategy roles rather than
+Cortex observation v23 adds per-class production selection in policy-only fields; model vector dimensions remain unchanged.
+Cortex observation v23 and action v14 use semantic strategy roles rather than
 engine family IDs. The policy counts every capability of a mixed building. The
 fixed model input keeps a lossy, exclusive projection: each building contributes
 to its lowest-numbered supported role, and upgrade totals count each building

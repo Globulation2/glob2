@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "Bullet.h"
 #include "Sector.h"
 #include "Utilities.h"
@@ -44,6 +45,18 @@ Uint32 Map::checkSum(bool heavy)
 			cs = rotl1(cs) ^ static_cast<Uint32>(sectors[sector].bullets.size());
 			for (const Bullet* bullet : sectors[sector].bullets) cs = rotl1(cs) ^ bullet->checkSum();
 		}
+	// Cache age and eviction order affect subsequent routes and are simulation state.
+	const auto mix64=[&](Uint64 value) { cs=rotl1(cs)^Uint32(value)^Uint32(value>>32); };
+	mix64(std::max<Uint64>(gradientRuntime->resourceCacheBudget,Uint64(size)*sizeof(Uint16))); mix64(gradientRuntime->resourceCacheClock);
+	for (const auto& team : gradientRuntime->stockRevision) for (Uint64 revision : team) mix64(revision);
+	for (Uint64 key : gradientRuntime->resourceLru)
+	{
+		const auto& entry=gradientRuntime->resourceFields.at(key);
+		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
+		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
+		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
+	}
+
 	return cs;
 }
 

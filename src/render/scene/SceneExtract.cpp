@@ -73,7 +73,8 @@ namespace
 		s.generation = b.scriptIdentity;
 		s.team = b.owner->teamNumber;
 		s.type = b.type;
-		s.lastUpgradeType = b.owner->game->buildingsTypes.getLastLevel(b.typeNum);
+		s.lastUpgradeType = b.owner->game->buildingsTypes.getLastLevel(
+			b.constructionResultState==Building::REPAIR ? b.getConstructionCompletionTypeNum() : b.typeNum);
 		s.typeNum = b.typeNum;
 		s.shortTypeNum = b.shortTypeNum;
 		s.posX = b.posX;
@@ -345,7 +346,7 @@ namespace
 				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->prevLevel)->semantics.requiredWorkerLevel;
 				b->getResourceCountToRepair(bp.repairCost);
 			}
-			bp.showLevel = b->type->presentation.showLevel && (b->type->prevLevel>=0 || b->isUpgradeAvailable());
+			bp.showLevel = b->type->presentation.showLevel;
 			if (constructible && b->isUpgradeAvailable())
 				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel;
 			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();

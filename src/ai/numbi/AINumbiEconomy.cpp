@@ -156,6 +156,7 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 	int ss=swarms.size();
 	Sint32 numberRequested=1+(nbWorkersFactor/(ss+1));
 	int nbu=countUnits();
+	if(auto order=AIPlanning::missingProductionOrder(*game,*team,{workers,explorers,warriors},numberRequested,numberRequested)) return order;
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{

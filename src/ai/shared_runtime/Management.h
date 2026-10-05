@@ -44,6 +44,8 @@ namespace AISharedRuntime
 			MSendMessage,
 			MChangeFlagPosition,
 			MAdjustPriority,
+            MRetireAttraction,
+            MRetireFeeding,
 		};
 
 
@@ -133,6 +135,26 @@ namespace AISharedRuntime
 			void save(GAGCore::OutputStream *stream);
 			int building_id;
 		};
+
+
+        // Retire one strategic use without destroying an independent service
+        // supplied by the same concrete building.
+        class RetireAttraction : public DestroyBuilding
+        {
+        public:
+            using DestroyBuilding::DestroyBuilding;
+        protected:
+            void modify(Runtime& runtime) override;
+            ManagementOrderType get_type() override {return MRetireAttraction;}
+        };
+        class RetireFeeding : public DestroyBuilding
+        {
+        public:
+            using DestroyBuilding::DestroyBuilding;
+        protected:
+            void modify(Runtime& runtime) override;
+            ManagementOrderType get_type() override {return MRetireFeeding;}
+        };
 
 
 		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep

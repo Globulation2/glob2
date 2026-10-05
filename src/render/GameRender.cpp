@@ -15,6 +15,7 @@
 
 
 #include "BuildingType.h"
+#include "building/hud/BuildingPresentation.h"
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "GameUtilities.h"
@@ -500,7 +501,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 						globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 					if (flagIcon > 0)
 						view.render.overlays.glyph(*globalContainer->gfx, x, y, x+32, y+32,
-							std::clamp(int(building->shortTypeNum), 0, 10), MapOverlayQueue::Disc, 0, false, 180,
+							type->presentation.iconFrame, type->presentation.iconTile ? MapOverlayQueue::Tile : MapOverlayQueue::Disc, 0, false, type->presentation.iconPriority,
 							entities.teams[team].color.r, entities.teams[team].color.g, entities.teams[team].color.b, flagIcon);
 
 					// flag circle:
@@ -528,8 +529,8 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255, 2, drawnRender);
 
 						anchorBars(x, y, drawnRender);
-						if ((type->canFeedUnit) || (type->semantics.production.enabledUnitMask))
-							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
+						if (const int resource=buildingResourceBarResource(*type,building->resources); resource>=0)
+							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[resource], building->resources[resource], 255, 255, 120, drawnRender);
 					}
 				});
 			}

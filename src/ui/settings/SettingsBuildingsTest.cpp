@@ -69,6 +69,29 @@ TEST_CASE("version one preferences import only into frozen stock catalog")
     CHECK(saved.find("defaultFlagRadius[")==std::string::npos);
     CHECK(saved.find("version=2")!=std::string::npos);
 }
+TEST_CASE("per game assignment loads reject duplicate stable and legacy identities")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    const int type=world.game.buildingsTypes.getTypeNum("inn",0,false);
+    for(const int version:{135,FILE_FORMAT_VERSION_BUILDING_CATALOG})
+    {
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        output.writeEnterSection("GameGUIDefaultAssignManager");output.writeEnterSection("unitCount");output.writeUint32(2,"size");
+        for(int i=0;i<2;++i) {
+            output.writeEnterSection(i);
+            if(version>=FILE_FORMAT_VERSION_BUILDING_CATALOG) output.writeText(world.game.buildingsTypes.get(type)->key,"building_key");
+            else output.writeSint32(type,"building_type");
+            output.writeSint32(i+7,"default_assigned");output.writeLeaveSection();
+        }
+        output.writeLeaveSection();output.writeLeaveSection();output.flush();
+        const auto bytes=backend->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+        GameGUIDefaultAssignManager manager(world.game);
+        CHECK_THROWS_AS(manager.load(&input,version),std::runtime_error);
+    }
+}
 TEST_CASE("per game assignment overrides use stable keys and import old numeric saves")
 {
     glob2test::HeadlessGlobals globals;

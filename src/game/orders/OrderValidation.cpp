@@ -167,7 +167,8 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 			if (target >= 0)
 			{
 				const BuildingType* site = c.game.buildingsTypes.get(target);
-				const BuildingType* completed = site->isBuildingSite ? c.game.buildingsTypes.get(site->nextLevel) : site;
+				const BuildingType* completed = b->hp < b->getEffectiveMaxHp() ? b->type
+					: site->isBuildingSite ? c.game.buildingsTypes.get(site->nextLevel) : site;
 				if (o.unitWorking > Uint32(site->semantics.assignmentLimit) || o.unitWorkingFuture > Uint32(completed->semantics.assignmentLimit))
 					return rejected(Reason::OutOfRange);
 			}
@@ -213,7 +214,6 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o = static_cast<OrderModifyBuilding&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
-		if (b && b->type->semantics.assignmentLimit <= 0) return rejected(Reason::BadState);
 		return o.numberRequested <= (b ? b->type->semantics.assignmentLimit : Unit::MAX_COUNT) ? accepted() : rejected(Reason::OutOfRange);
 	}
 

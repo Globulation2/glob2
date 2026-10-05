@@ -227,9 +227,8 @@ std::shared_ptr<Order>AICastor::getOrder()
 // by the pre-fill loop (only SWARM, FOOD, DEFENSE were re-assigned).
 // Encoding -1 explicitly here preserves identical post-init state.
 //
-// Behavior is byte-for-byte preserved vs the previous column-by-column
-// init in GetOrder.cpp:257-333. Network checksums and replay output
-// are unaffected.
+// Semantic demand policies retain Castor's economic priorities; concrete
+// providers are selected separately from the installed catalog.
 namespace
 {
 	struct CastorStrategyDefaults
@@ -245,20 +244,20 @@ namespace
 		Sint32 maxAmountGoal;
 	};
 
-	// Per-hard-building base/new policy table.
+	// Base/new policies for the first eight economic and defense demands.
 	// Column order matches Strategy::Build field order.
 	// Row order matches int 0..7.
 	static constexpr AICastor::Strategy::Build DEFAULT_BUILD_POLICIES[AICastor::NB_HARD_BUILDING] =
 	{
 		// baseOrder, base, baseWorkers, baseUpgrade, finalWorkers, newOrder, news, newWorkers, newUpgrade
-		/* 0 SWARM_BUILDING     */ { 1, 2, 2, 0,  2, 1,  1, 3,  0 },
-		/* 1 FOOD_BUILDING      */ { 4, 4, 3, 2,  1, 2,  7, 2,  3 },
-		/* 2 HEAL_BUILDING      */ { 5, 2, 1, 2, -1, 5,  5, 2,  5 },
-		/* 3 WALKSPEED_BUILDING */ { 7, 1, 5, 0, -1, 6,  1, 4,  0 },
-		/* 4 SWIMSPEED_BUILDING */ { 6, 1, 3, 0, -1, 7,  1, 4,  0 },
-		/* 5 ATTACK_BUILDING    */ { 2, 2, 2, 2, -1, 4,  2, 5,  2 },
-		/* 6 SCIENCE_BUILDING   */ { 0, 2, 5, 2, -1, 3,  2, 7,  2 },
-		/* 7 DEFENSE_BUILDING   */ { 3, 2, 2, 1,  2, 0, 10, 4, 10 },
+		/* 0 ProduceWorkers     */ { 1, 2, 2, 0,  2, 1,  1, 3,  0 },
+		/* 1 FeedUnits      */ { 4, 4, 3, 2,  1, 2,  7, 2,  3 },
+		/* 2 HealUnits      */ { 5, 2, 1, 2, -1, 5,  5, 2,  5 },
+		/* 3 TrainWalking */ { 7, 1, 5, 0, -1, 6,  1, 4,  0 },
+		/* 4 TrainSwimming */ { 6, 1, 3, 0, -1, 7,  1, 4,  0 },
+		/* 5 TrainAttack    */ { 2, 2, 2, 2, -1, 4,  2, 5,  2 },
+		/* 6 TrainConstruction   */ { 0, 2, 5, 2, -1, 3,  2, 7,  2 },
+		/* 7 ProjectileDefense   */ { 3, 2, 2, 1,  2, 0, 10, 4, 10 },
 	};
 
 	// Scalar strategy defaults set once per game by defineStrategy().
@@ -282,20 +281,10 @@ void AICastor::defineStrategy()
 {
 	strategy.defined=true;
 
-	// Pre-fill all NB_BUILDING (=13) slots, including the non-hard
-	// EXPLORATION_FLAG / WAR_FLAG / CLEARING_FLAG / STONE_WALL /
-	// MARKET_BUILDING entries, with the "unset" sentinel for the three
-	// fields the original code touched in this pre-pass. The remaining
-	// six Build fields stay uninitialized for slots 8..12, matching the
-	// pre-refactor behavior (Strategy::Build has no default ctor).
-	for (int bi=0; bi<AICastor::DemandCount; bi++)
-	{
-		strategy.build[bi].baseOrder    = -1;
-		strategy.build[bi].newOrder     = -1;
-		strategy.build[bi].finalWorkers = -1;
-	}
+    // Every policy is initialized, including demands handled by other modules.
+    for(auto& policy:strategy.build) policy=Strategy::Build{};
 
-	// Apply the per-hard-building default policy table to slots 0..7.
+	// Apply the configured economic and defense demand priorities.
 	for (int bi=0; bi<NB_HARD_BUILDING; bi++)
 		strategy.build[bi] = DEFAULT_BUILD_POLICIES[bi];
 

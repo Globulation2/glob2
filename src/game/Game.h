@@ -160,7 +160,7 @@ public:
 	//! Bind syncRandom for other code that advances this game's simulation.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 private:
-	mutable std::unique_ptr<AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
+	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;

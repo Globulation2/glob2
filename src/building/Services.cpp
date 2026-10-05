@@ -32,7 +32,7 @@ bool Building::restoreResourcesReservation(const BuildingResourceCost& cost)
 bool Building::reserveResources(const BuildingResourceCost& cost)
 {
 	if (!restoreResourcesReservation(cost)) return false;
-	if (type->useTeamResources || type->runtimeSuppliesStock)
+	if (type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			if (cost[r] && availableResource(r)==0) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	return true;
@@ -50,7 +50,7 @@ void Building::releaseResources(const BuildingResourceCost& cost)
 			assert(owner->reservedTeamResources[r] >= cost[r]);
 			owner->reservedTeamResources[r] -= cost[r];
 		}
-		if ((type->useTeamResources || type->runtimeSuppliesStock) && cost[r] && before==0)
+		if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
 			owner->map->dirtyMarketGradients(owner->teamNumber,r);
 	}
 }

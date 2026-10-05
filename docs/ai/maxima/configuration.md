@@ -22,6 +22,11 @@ GLOB2_MAXIMA_TEAM_OVERRIDES="0:farming.enabled=false|2:tactics.min_force=6"
 GLOB2_MAXIMA_PLAYER_OVERRIDES="0:tactics.min_force=8"
 ```
 
+The historical `model.inn_capacity_level1`, `model.inn_capacity_level2` and
+`model.inn_capacity_level3` keys remain accepted so existing strategy files and
+saved configurations load. They no longer affect decisions: feeding estimates
+come from building capabilities and the planned shared staffing budget.
+
 The base file and schema are the reference for available keys and defaults.
 The schema exposes types, units, descriptions, hard bounds and recommended tuning
 bounds. `MaximaStrategyDump` also reports resolved values and source provenance:

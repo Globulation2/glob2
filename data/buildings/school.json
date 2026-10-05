@@ -73,7 +73,23 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": true,
@@ -106,7 +122,11 @@
           "wood": 7,
           "algae": 2
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "school",
@@ -174,7 +194,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -223,7 +247,8 @@
         "repairCost": {
           "wood": 7,
           "algae": 2
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "school",
@@ -310,7 +335,27 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -337,14 +382,19 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 5,
           "stone": 5,
           "algae": 12
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "school",
@@ -413,7 +463,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -456,14 +510,15 @@
           }
         },
         "trainingInParallel": true,
-        "workPriorityBias": 1,
+        "workPriorityBias": 11,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
           "wood": 5,
           "stone": 5,
           "algae": 12
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "school",
@@ -552,7 +607,31 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ]
         },
         "occupiesGround": true,
         "placeable": false,
@@ -579,7 +658,7 @@
         "sightSharing": "other",
         "training": {},
         "trainingInParallel": false,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 20,
         "constructionCost": {
           "wood": 7,
@@ -587,7 +666,13 @@
           "stone": 12,
           "algae": 10
         },
-        "repairCost": {}
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "wheat",
+          "stone",
+          "algae"
+        ]
       },
       "presentation": {
         "displayName": "school",
@@ -656,7 +741,11 @@
           "suppliesStock": false,
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
-          "fetchesDirectStock": false
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -706,7 +795,7 @@
           }
         },
         "trainingInParallel": true,
-        "workPriorityBias": 1,
+        "workPriorityBias": 21,
         "assignmentLimit": 0,
         "constructionCost": {},
         "repairCost": {
@@ -714,7 +803,8 @@
           "wheat": 4,
           "stone": 12,
           "algae": 10
-        }
+        },
+        "replenishResources": []
       },
       "presentation": {
         "displayName": "school",

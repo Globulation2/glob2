@@ -1,6 +1,7 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
 #include <algorithm>
+#include <nlohmann/json.hpp>
 #include <utility>
 #include "GlobalContainer.h"
 #include "Version.h"
@@ -1288,18 +1289,23 @@ static void fittedForceUsesOnlyVisibleUnits()
 
 static void retirementPreservesIndependentTraining()
 {
-    for(bool training:{false,true}) {
+    for(int service:{0,1,2}) {
         Fixture f;
         const int typeId=f.game.buildingsTypes.getTypeNum("warflag",0,false);
-        auto& type=*f.game.buildingsTypes.get(typeId);
-        if(training) {
-            type.maxUnitInside=1;
-            type.semantics.admittedUnitMask=1u<<WARRIOR;
-            type.semantics.training[ARMOR].enabled=true;
-            type.semantics.training[ARMOR].unitMask=1u<<WARRIOR;
-            type.semantics.training[ARMOR].targetLevel=1;
-            type.semantics.training[ARMOR].duration=32;
+        CAPTURE(service);
+        auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+        auto& variant=snapshot["variants"][typeId];
+        if(service==1) {
+            variant["properties"]["maxUnitInside"]=1;
+            variant["semantics"]["admittedUnitMask"]=1u<<WARRIOR;
+            variant["semantics"]["training"]["armor"]={{"enabled",true},{"unitMask",1u<<WARRIOR},{"targetLevel",1},{"duration",32},{"cost",nlohmann::json::object()}};
         }
+        if(service==2) {
+            variant["semantics"]["market"]["suppliesDirectStock"]=true;
+            variant["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
+            variant["properties"]["maxResource"][WOOD]=8;
+        }
+        f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
         f.game.configureBuildingCatalog();
         auto* building=f.building(20,20,0,"warflag");
         auto& context=f.ai->context;context.initialize();
@@ -1308,7 +1314,7 @@ static void retirementPreservesIndependentTraining()
         auto* retirement=dynamic_cast<Management::RetireAttraction*>(context.managementOrders.front().get());
         REQUIRE(retirement);
         retirement->modify(context);
-        if(training) {
+        if(service!=0) {
             REQUIRE(context.orders.empty());
             REQUIRE(f.player.team->myBuildings[::Building::GIDtoID(building->gid)]==building);
         } else {
@@ -1321,8 +1327,9 @@ static void retirementPreservesIndependentTraining()
 static void unavailableAttractionHasNoPlacement()
 {
     Fixture f;
-    for(size_t id=0;id<f.game.buildingsTypes.size();++id)
-        f.game.buildingsTypes.get(id)->zonable[WARRIOR]=0;
+    auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+    for(auto& variant:snapshot["variants"]) variant["properties"]["zonable"][WARRIOR]=0;
+    f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
     f.game.configureBuildingCatalog();
     Construction::BuildingOrder order(AIMaximaBuildings::WarriorAttraction,4);
     bool complete=false;

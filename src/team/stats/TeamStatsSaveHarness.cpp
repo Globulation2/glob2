@@ -1459,11 +1459,20 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
  {
   CAPTURE(kind);
   TeamStatsMeasurementFixture w;
-  auto* site=w.building("inn",8,8,0,true,kind==Building::UPGRADE?1:0);
-  site->constructionResultState=kind;
+  auto* site=w.building("inn",8,8,0,kind==Building::NEW_BUILDING,0);
   auto generations=w.game.scriptGenerations; auto identity=site->scriptIdentity;
-  for(int resource=0;resource<MAX_RESOURCES;++resource) site->resources[resource]=site->type->maxResource[resource];
+  if(kind!=Building::NEW_BUILDING) {
+   if(kind==Building::REPAIR)--site->hp;
+   site->launchConstruction(1,1);
+   for(int step=0;step<4 && !site->type->isBuildingSite;++step)site->update();
+  }
+  REQUIRE(site->type->isBuildingSite);
+  REQUIRE(site->constructionResultState==kind);
+  for(int resource=0;resource<MAX_RESOURCES;++resource)site->resources[resource]=site->constructionBudget[resource];
+  REQUIRE(site->reserveResources(site->constructionBudget));
+  site->constructionReserved=site->constructionBudget;
   site->update(); site->update();
+  REQUIRE_FALSE(site->type->isBuildingSite);
   CHECK(site->scriptIdentity==identity);
   CHECK(w.game.scriptGenerations==generations);
   auto loaded=roundTrip(w.game);

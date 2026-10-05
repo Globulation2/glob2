@@ -100,17 +100,17 @@ public:
 	public:
 		struct Build
 		{
-			int baseOrder;
-			int base;
-			int baseWorkers;
-			int baseUpgrade;
+			int baseOrder = -1;
+			int base = 0;
+			int baseWorkers = 0;
+			int baseUpgrade = 0;
 			
-			int finalWorkers;
+			int finalWorkers = -1;
 			
-			int newOrder;
-			int news;
-			int newWorkers;
-			int newUpgrade;
+			int newOrder = -1;
+			int news = 0;
+			int newWorkers = 0;
+			int newUpgrade = 0;
 		};
 		
 	public:

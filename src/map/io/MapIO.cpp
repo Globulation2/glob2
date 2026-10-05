@@ -430,6 +430,11 @@ void Map::removeTeam(void)
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
 	int t=numberOfTeam;
+	for (auto it=gradientRuntime->resourceFields.begin(); it!=gradientRuntime->resourceFields.end();) {
+		if (it->second.team==t) { gradientRuntime->resourceLru.erase(it->second.lru); it=gradientRuntime->resourceFields.erase(it); }
+		else ++it;
+	}
+	gradientRuntime->stockRevision[t]={};
 	for (int s=0; s<SWIM_CLASS_COUNT; s++)
 	{
 		for (int r=0; r<MAX_RESOURCES; r++)
@@ -664,6 +669,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	});
 	stream->writeLeaveSection();
+	saveResourceRoutingCache(stream);
 	stream->writeLeaveSection();
 }
 
@@ -849,5 +855,93 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 	}
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadResourceRoutingCache(stream,packed);
 	stream->readLeaveSection();
+}
+
+
+void Map::saveResourceRoutingCache(GAGCore::OutputStream* stream) const
+{
+    const auto& cache=*gradientRuntime;
+    const auto write64=[&](Uint64 value,const char* name) {
+        stream->writeEnterSection(name); stream->writeUint32(value>>32,"high"); stream->writeUint32(value,"low"); stream->writeLeaveSection();
+    };
+    stream->writeEnterSection("resourceRoutingCache");
+    write64(std::max<Uint64>(cache.resourceCacheBudget,Uint64(size)*sizeof(Uint16)),"budget"); write64(cache.resourceCacheClock,"clock");
+    stream->writeEnterSection("revisions");
+    for (int team=0; team<Team::MAX_COUNT; ++team) {
+        stream->writeEnterSection(team);
+        for (int resource=0; resource<MAX_RESOURCES; ++resource) {
+            stream->writeEnterSection(resource); write64(cache.stockRevision[team][resource],"revision"); stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+    stream->writeUint32(cache.resourceFields.size(),"count");
+    unsigned index=0;
+    // Saving least-to-most recently used retains eviction and refresh behavior.
+    for (const auto key : cache.resourceLru) {
+        const auto& entry=cache.resourceFields.at(key);
+        stream->writeEnterSection(index++);
+        stream->writeSint32(entry.consumer,"consumer"); stream->writeSint32(entry.type,"type");
+        stream->writeSint32(entry.x,"x"); stream->writeSint32(entry.y,"y");
+        stream->writeUint32(entry.identity,"identity"); stream->writeUint32(entry.topology,"topology");
+        stream->writeUint32(entry.builtStep,"builtStep"); write64(entry.sourceRevision,"sourceRevision"); write64(entry.recency,"recency");
+        stream->writeUint8(entry.team,"team"); stream->writeUint8(entry.resource,"resource");
+        stream->writeUint8(entry.swim,"swim"); stream->writeUint8(entry.modes,"modes");
+        saveGradient(stream,entry.cells.get(),size);
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+
+void Map::loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed)
+{
+    auto& cache=*gradientRuntime;
+    const auto read64=[&](const char* name) {
+        stream->readEnterSection(name); const Uint64 high=stream->readUint32("high"), low=stream->readUint32("low"); stream->readLeaveSection();
+        return (high<<32)|low;
+    };
+    stream->readEnterSection("resourceRoutingCache");
+    const Uint64 budget=read64("budget"), clock=read64("clock");
+    const Uint64 fieldBytes=Uint64(size)*sizeof(Uint16), maxBudget=std::max<Uint64>(fieldBytes,64ull*1024*1024);
+    if (budget<fieldBytes || budget>maxBudget || clock==std::numeric_limits<Uint64>::max()) throw std::runtime_error("Invalid resource routing cache budget or clock");
+    cache.resourceFields.clear(); cache.resourceLru.clear(); cache.resourceCacheBudget=budget; cache.resourceCacheClock=clock;
+    stream->readEnterSection("revisions");
+    for (int team=0; team<Team::MAX_COUNT; ++team) {
+        stream->readEnterSection(team);
+        for (int resource=0; resource<MAX_RESOURCES; ++resource) {
+            stream->readEnterSection(resource); cache.stockRevision[team][resource]=read64("revision"); stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
+    stream->readLeaveSection();
+    const Uint32 count=stream->readUint32("count");
+    if (count>budget/fieldBytes) throw std::runtime_error("Resource routing cache exceeds budget");
+    Uint64 prior=0;
+    for (Uint32 index=0; index<count; ++index) {
+        stream->readEnterSection(index);
+        GradientRuntime::ResourceField entry;
+        entry.consumer=stream->readSint32("consumer"); entry.type=stream->readSint32("type");
+        entry.x=stream->readSint32("x"); entry.y=stream->readSint32("y");
+        entry.identity=stream->readUint32("identity"); entry.topology=stream->readUint32("topology");
+        entry.builtStep=stream->readUint32("builtStep"); entry.sourceRevision=read64("sourceRevision"); entry.recency=read64("recency");
+        entry.team=stream->readUint8("team"); entry.resource=stream->readUint8("resource");
+        entry.swim=stream->readUint8("swim"); entry.modes=stream->readUint8("modes");
+        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MAX_RESOURCES || entry.swim>=SWIM_CLASS_COUNT
+            || entry.consumer < -1 || entry.consumer>=Team::MAX_COUNT*Building::MAX_COUNT
+            || (entry.consumer>=0 && Building::GIDtoTeam(entry.consumer)!=entry.team)
+            || entry.type < -1 || entry.type>=int(game->buildingsTypes.size())
+            || !entry.recency || entry.recency<=prior || entry.recency>clock)
+            throw std::runtime_error("Invalid resource routing cache entry");
+        prior=entry.recency;
+        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MAX_RESOURCES+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
+        if (cache.resourceFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
+        Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);
+        if (!field) throw std::runtime_error("Missing resource routing cache field");
+        cache.resourceLru.push_back(key); entry.lru=std::prev(cache.resourceLru.end());
+        cache.resourceFields.emplace(key,std::move(entry));
+        stream->readLeaveSection();
+    }
+    stream->readLeaveSection();
 }

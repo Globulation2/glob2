@@ -92,7 +92,7 @@ void AssignWorkers::modify(Runtime& runtime)
  int services=spec.feeding.enabled+spec.healing.enabled+(building->type->shootingRange>0);
  services+=std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& recipe){return recipe.enabled;});
  services+=std::any_of(spec.training.begin(),spec.training.end(),[](const auto& training){return training.enabled;});
- services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock;
+ services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock;
  services+=building->type->zonable[WORKER] || building->type->zonable[WARRIOR] || building->type->zonable[EXPLORER];
  if(services>1 && !building->type->isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
  runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,building->type->semantics.assignmentLimit)));
@@ -194,13 +194,34 @@ DestroyBuilding::DestroyBuilding(int building_id) : building_id(building_id)
 
 void DestroyBuilding::modify(Runtime& runtime)
 {
-	auto* building=runtime.get_building_register().get_building(building_id);
- const auto& spec=building->type->semantics;
- if(spec.feeding.enabled || spec.healing.enabled || building->type->shootingRange>0
-  || spec.market.interTeamFruitExchange || spec.market.suppliesStock
-  || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
-  || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;})) return;
- runtime.push_order(std::make_shared<OrderDelete>(building->gid));
+    if(auto* building=runtime.get_building_register().get_building(building_id))
+        runtime.push_order(std::make_shared<OrderDelete>(building->gid));
+}
+
+void RetireAttraction::modify(Runtime& runtime)
+{
+    auto* building=runtime.get_building_register().get_building(building_id);
+    if(!building) return;
+    const auto& spec=building->type->semantics;
+    if(spec.feeding.enabled || spec.healing.enabled || building->type->shootingRange>0
+        || spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock
+        || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
+        || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;})) return;
+    if(spec.instantPlacement && !spec.occupiesGround) DestroyBuilding::modify(runtime);
+    else runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
+}
+
+void RetireFeeding::modify(Runtime& runtime)
+{
+    auto* building=runtime.get_building_register().get_building(building_id);
+    if(!building) return;
+    const auto& index=runtime.player->game->buildingCapabilities();
+    constexpr auto feeding=AIPlanning::BuildingIntent::Feed;
+    // A free feeding service cannot be starved of input, and a mixed provider
+    // must remain available to its other strategic consumers.
+    if(!index.matches(building->typeNum,feeding) || !building->type->semantics.feeding.costMask
+        || (index.intentMask(building->typeNum)&~(std::uint64_t(1)<<static_cast<unsigned>(feeding)))) return;
+    DestroyBuilding::modify(runtime);
 }
 
 

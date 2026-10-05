@@ -7,10 +7,33 @@
 #include "SceneExtract.h"
 #include "render/UnitMotion.h"
 #include "UnitTiming.h"
+#include "building/hud/BuildingPresentation.h"
 #include <nlohmann/json.hpp>
 
 TEST_SUITE("SceneExtract")
 {
+    TEST_CASE("map service indicators follow arbitrary and free recipes")
+    {
+        BuildingType type;
+        type.semantics.feeding.enabled=true;
+        type.semantics.feeding.cost[ALGA]=2;
+        type.maxResource[ALGA]=20;
+        Sint32 stock[MAX_RESOURCES]{}; stock[ALGA]=2;
+        CHECK_FALSE(buildingFeedingUnfunded(type,stock));
+        CHECK(buildingResourceBarResource(type,stock)==ALGA);
+        stock[ALGA]=1;
+        CHECK(buildingFeedingUnfunded(type,stock));
+        type.semantics.feeding.cost[ALGA]=0;
+        CHECK_FALSE(buildingFeedingUnfunded(type,stock));
+        CHECK(buildingResourceBarResource(type,stock)==-1);
+        auto& recipe=type.semantics.production.recipes[WARRIOR];
+        recipe.enabled=true; recipe.cost[STONE]=3;
+        type.maxResource[STONE]=30;stock[STONE]=9;
+        CHECK(buildingResourceBarResource(type,stock)==STONE);
+        type.semantics.feeding.cost[ALGA]=2;
+        CHECK(buildingResourceBarResource(type,stock)==ALGA);
+    }
+
 	TEST_CASE("script area snapshots are opt-in and independent of later map edits")
 	{
 		glob2test::HeadlessGlobals globals;
