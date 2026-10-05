@@ -41,8 +41,9 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
     const fixture = JSON.parse(
       await readFile(join(cwd, 'test/fixtures/skins/authorization.json'), 'utf8'),
     ) as {
-      textureHex: string;
-      materialHex: string;
+      sourceTextureHex: string;
+      sourceMaterialHex: string;
+      source: { manifestSha256: string };
       claims: {
         version: { id: string; skinId: string; manifestSha256: string; buildingColor: number };
       };
@@ -56,7 +57,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       await prepareJobQueue(database.pool, logger);
       await db.insertInto('skin_render_revisions').values({ revision }).execute();
       const hashes: string[] = [];
-      for (const hex of [fixture.textureHex, fixture.materialHex]) {
+      for (const hex of [fixture.sourceTextureHex, fixture.sourceMaterialHex]) {
         const stored = await putContent(blobs, Buffer.from(hex, 'hex'));
         hashes.push(stored.sha256);
         await db
@@ -65,11 +66,11 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
             sha256: stored.sha256,
             size: stored.size,
             storage_key: stored.key,
-            content_type: 'image/webp',
+            content_type: 'image/png',
           })
           .execute();
       }
-      const version = fixture.claims.version;
+      const version = { ...fixture.claims.version, manifestSha256: fixture.source.manifestSha256 };
       await db
         .insertInto('colony_skins')
         .values({ id: version.skinId, kind: 'preset', name: 'Native', entitlement: 'skins:test' })

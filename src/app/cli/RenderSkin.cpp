@@ -87,7 +87,7 @@ void checkImageHeader(const std::string &bytes)
 	if (width != 512 || height != 512)
 		throw std::runtime_error("skin inputs must be 512x512");
 }
-void checkPixels(const std::string &bytes, bool material)
+std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bool material)
 {
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> loaded(
 		IMG_Load_IO(SDL_IOFromConstMem(bytes.data(), bytes.size()), true), SDL_DestroySurface);
@@ -112,6 +112,16 @@ void checkPixels(const std::string &bytes, bool material)
 	if (!valid)
 		throw std::runtime_error(material ? "invalid material ids or alpha"
 										  : "skin paint must be opaque");
+	// Offline inputs may be immutable PNG sources. The game's asset loader
+	// accepts only WebP, so adopt these already bounded and validated pixels.
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+		SDL_ConvertSurface(rgba.get(), SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+	if (!pixels)
+		throw std::runtime_error(SDL_GetError());
+	auto result = std::make_unique<GAGCore::DrawableSurface>(
+		pixels.get(), GAGCore::DrawableSurface::AdoptPixels{});
+	pixels.release();
+	return result;
 }
 std::string encodeCandidate(const std::vector<uint8_t> &rgba, unsigned size, bool lossless)
 {
@@ -255,21 +265,8 @@ int runRenderSkin(int argc, char **argv)
 		auto *gfx = GAGCore::Toolkit::initGraphic(
 			128, 128, GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::NOAUDIO,
 			"Skin export");
-		checkPixels(texture, false);
-		checkPixels(material, true);
-		GAGCore::DrawableSurface paint(options.at("--texture"));
-		auto ids = GAGCore::loadSkinMaterialMap(options.at("--material"));
-		if (paint.getW() != 512 || paint.getH() != 512 || !ids || ids->getW() != 512 ||
-			ids->getH() != 512)
-			throw std::runtime_error("skin images must be 512x512");
-		// Canonical material ids must stay discrete and fully opaque.
-		auto *surface = ids->getSDLSurface();
-		for (int y = 0; y < 512; ++y)
-			for (int x = 0; x < 512; ++x)
-				if ((reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) +
-													  y * surface->pitch)[x] &
-					 255) > 3)
-					throw std::runtime_error("invalid material id");
+		auto paint = loadInput(texture, false);
+		auto ids = loadInput(material, true);
 		const std::filesystem::path candidate = output.string() + ".partial";
 		if (!std::filesystem::create_directory(candidate))
 			throw std::runtime_error("output staging directory already exists");
@@ -314,7 +311,8 @@ int runRenderSkin(int argc, char **argv)
 				for (unsigned frame = 0; frame < frames; ++frame)
 				{
 					if (!gfx->readSkinMesh(
-							{&mesh, page * 64 + frame, &paint, ids.get(), uint8_t(region)}, tile))
+							{&mesh, page * 64 + frame, paint.get(), ids.get(), uint8_t(region)},
+							tile))
 						throw std::runtime_error("OpenGL skin rendering unavailable");
 					const unsigned col = frame % 8, row = frame / 8;
 					for (unsigned y = 0; y < 128; ++y)
