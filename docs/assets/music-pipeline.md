@@ -386,6 +386,13 @@ credits and AI-disclosure tags. Missing checks, skipped measurements and failure
 prevent delivery; warnings remain visible. Candidate evidence and composition
 sources stay private. Revisions edit the selected version's saved source. One
 request includes at most three render attempts within its model and CPU budgets.
+An attempt is reserved durably before execution; an interrupted render consumes
+that attempt. Completed candidate bytes are checkpointed in private blob storage
+and reused after recovery without rerendering or repeating a provider call.
+Python and NumPy's global random generators are seeded before recipe import and
+arrangement; compositions should use those generators or explicitly seed their
+own generators from the requested seed. Pipeline identity includes both the
+Python audio modules and the worker's prompt, tools and isolation implementation.
 These automated checks do not replace listening; the service and each palette
 need listening and cost qualification before operators enable credit sales.
 

@@ -1,11 +1,13 @@
 import { readFile, readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import type { MusicStudio, RequestRow, Delivery } from '@glob2/music-studio';
 import type { AgentBlobs } from '@glob2/engine/blobs';
 import {
   parse,
   MusicStudioCheck,
+  MusicMetadata,
   type MusicStudioConfig,
   type MusicStudioSettings,
   type MusicStudioStageId,
@@ -25,6 +27,13 @@ interface AgentState {
   report?: CandidateReport;
   delivery?: Delivery;
   renderedSource?: string;
+  // Persist allocation before execution; a crash consumes this cycle. Completed
+  // bytes live in the blob store so recovery never needs worker-local scratch.
+  candidate?: {
+    attempt: number;
+    step: number;
+    completed?: { report: CandidateReport; score: string; files: Record<string, string> };
+  };
 }
 export class Pipeline {
   readonly studio: MusicStudio;
@@ -77,6 +86,7 @@ export class Pipeline {
         .catch(() => controller.abort());
     }, 10000);
     try {
+      if (Date.now() >= end) throw Error('The music execution budget was exhausted.');
       await this.work(row, cfg, combined);
     } catch (error) {
       if (error instanceof ProviderUncertain) {
@@ -96,6 +106,7 @@ export class Pipeline {
     return true;
   }
   private async work(row: RequestRow, cfg: MusicStudioConfig, signal: AbortSignal) {
+    signal.throwIfAborted();
     const version = await this.sourceVersion();
     if (row.checkpoints['sourceVersion'] && row.checkpoints['sourceVersion'] !== version)
       throw Error('The pipeline source changed during recovery. Retry with the installed version.');
@@ -110,6 +121,7 @@ export class Pipeline {
     if (row.kind === 'chat') {
       const prompt = `You are the Globulation 2 music studio assistant. Discuss original CPU-composed instrumental sets, explain changes clearly and keep a concise rolling brief. Never claim to generate until the user presses Generate. Respond with JSON {"text":"reply","brief":"accumulated design brief"}.\n${guide}\nBrief: ${row.input.brief}\nConversation: ${JSON.stringify(row.input.messages)}`;
       this.budget(prompt, 0, cfg);
+      signal.throwIfAborted();
       const reply = await attempts.run(row, 'chat', model, { prompt }, () =>
         this.provider.text(model, prompt, Math.min(4000, cfg.maxOutputTokens ?? 4000), signal),
       );
@@ -138,8 +150,43 @@ export class Pipeline {
         throw Error('Parent composition is unavailable.');
       state = { source: parentState?.source ?? '', step: 0, renders: 0, tokens: 0, history: [] };
     }
-    const thread = await this.studio.own(row.account_id, row.thread_id);
-    const metadata = this.metadata(settings, thread.title);
+    if (state.candidate) {
+      const pending = state.candidate;
+      let feedback =
+        'The worker stopped during this candidate. Its render cycle was consumed; inspect or revise before retrying.';
+      if (pending.completed) {
+        const recovered: Rendered = {
+          report: pending.completed.report,
+          score: Buffer.from(
+            await this.blobs.read(pending.completed.score, 4 * 1024 ** 2),
+          ).toString(),
+          files: Object.fromEntries(
+            await Promise.all(
+              Object.entries(pending.completed.files).map(
+                async ([name, hash]) =>
+                  [name, Buffer.from(await this.blobs.read(hash, 32 * 1024 ** 2))] as const,
+              ),
+            ),
+          ),
+        };
+        feedback = await this.completeCandidate(
+          row,
+          recovered,
+          state,
+          settings,
+          pending.attempt,
+          pending.step,
+        );
+      }
+      state.history.push(`render: ${feedback}`);
+      state.history = state.history.slice(-8);
+      state.step = pending.step + 1;
+      delete state.candidate;
+      await this.studio.checkpoint(row, 'processing', { agent: state });
+      if (state.renders >= 3 && !state.delivery)
+        throw Error('No candidate passed within three render attempts. Your credit was returned.');
+    }
+    const metadata = this.metadata(settings);
     const example = settings.pipeline === 'acoustic-v1' ? 'moss-lanterns' : 'glass-garden';
     const exampleText = await readFile(
       join(this.musicRoot, 'sets', example, 'composition.py'),
@@ -170,6 +217,7 @@ export class Pipeline {
       const prompt = `${SYSTEM}\nPipeline: ${settings.pipeline}, seed ${settings.seed}\n${guide}\nAPI:\n${api}\nExample (write original music):\n${exampleText}\nBrief: ${row.input.brief}\nConversation: ${JSON.stringify(row.input.messages)}\nCurrent source:\n${state.source}\nTool history:\n${state.history.slice(-8).join('\n')}\nRemaining calls: ${(cfg.maxCalls ?? 12) - state.step}; remaining renders: ${3 - state.renders}`;
       this.budget(prompt, state.tokens, cfg);
       const step = state.step;
+      signal.throwIfAborted();
       const reply = await attempts.run(
         row,
         `agent:${step}`,
@@ -221,7 +269,11 @@ export class Pipeline {
           const render = action.action === 'render';
           if (render && state.renders >= 3)
             throw Error('All three render attempts have been used.');
-          if (render) state.renders++;
+          if (render) {
+            state.renders++;
+            state.candidate = { attempt: state.renders, step };
+            await this.studio.checkpoint(row, 'processing', { agent: state });
+          }
           const attempt = Math.max(1, state.renders);
           await this.studio.stage(row, 'prepare', 'complete');
           if (attempt > 1)
@@ -283,30 +335,53 @@ export class Pipeline {
           }
           if (eventError) throw eventError;
           if (
-            Object.values(rendered.files).reduce((n, b) => n + b.length, 0) >
+            Object.values(rendered.files).reduce((n, b) => n + b.length, 0) +
+              Buffer.byteLength(rendered.score) +
+              Buffer.byteLength(JSON.stringify(rendered.report)) >
             (cfg.maxOutputBytes ?? 134217728)
           )
             throw Error('The rendered output size budget was exceeded.');
-          await this.studio.stage(
-            row,
-            render ? 'checks' : 'score',
-            rendered.report.passed ? 'complete' : 'failed',
-            `Candidate ${attempt}`,
-          );
-          state.report = rendered.report;
-          feedback = JSON.stringify(rendered.report.checks).slice(0, 32000);
-          await this.saveCandidate(row, rendered, attempt, step);
           if (render) {
-            if (rendered.report.passed && rendered.report.result) {
-              state.delivery = await this.delivery(row, rendered, settings, attempt, step);
-              state.renderedSource = hash(state.source);
-            } else
-              await this.studio.stage(
-                row,
-                'repair',
-                'running',
-                `Candidate ${attempt} needs repairs; ${3 - state.renders} attempts remain`,
-              );
+            // Publish a durable completed checkpoint before journalling checks or
+            // delivery; replay uses these exact bytes after a process restart.
+            state.candidate = {
+              attempt,
+              step,
+              completed: {
+                report: rendered.report,
+                score: await this.blobs.write(Buffer.from(rendered.score), 'application/json'),
+                files: Object.fromEntries(
+                  await Promise.all(
+                    Object.entries(rendered.files).map(
+                      async ([name, bytes]) =>
+                        [
+                          name,
+                          await this.blobs.write(
+                            bytes,
+                            name.endsWith('.opus')
+                              ? 'audio/ogg'
+                              : name.endsWith('.zip')
+                                ? 'application/zip'
+                                : 'application/json',
+                          ),
+                        ] as const,
+                    ),
+                  ),
+                ),
+              },
+            };
+            await this.studio.checkpoint(row, 'processing', { agent: state });
+            feedback = await this.completeCandidate(row, rendered, state, settings, attempt, step);
+          } else {
+            await this.studio.stage(
+              row,
+              'score',
+              rendered.report.passed ? 'complete' : 'failed',
+              `Candidate ${attempt}`,
+            );
+            state.report = rendered.report;
+            feedback = JSON.stringify(rendered.report.checks).slice(0, 32000);
+            await this.saveCandidate(row, rendered, attempt, step);
           }
         } else if (action.action === 'done')
           feedback = 'A complete passing render is required. Use write/check/render.';
@@ -338,6 +413,7 @@ export class Pipeline {
           );
         }
       }
+      delete state.candidate;
       state.history.push(`${action.action}: ${feedback}`);
       state.history = state.history.slice(-8);
       state.step++;
@@ -351,8 +427,45 @@ export class Pipeline {
     }
     throw Error('The composition budget was exhausted. Your credit was returned.');
   }
+  private async completeCandidate(
+    row: RequestRow,
+    rendered: Rendered,
+    state: AgentState,
+    settings: MusicStudioSettings,
+    attempt: number,
+    step: number,
+  ) {
+    await this.studio.stage(
+      row,
+      'checks',
+      rendered.report.passed ? 'complete' : 'failed',
+      `Candidate ${attempt}`,
+    );
+    state.report = rendered.report;
+    await this.saveCandidate(row, rendered, attempt, step);
+    if (rendered.report.passed && rendered.report.result) {
+      state.delivery = await this.delivery(row, rendered, settings, attempt, step);
+      state.renderedSource = hash(state.source);
+    } else {
+      await this.studio.stage(
+        row,
+        'repair',
+        'running',
+        `Candidate ${attempt} needs repairs; ${3 - state.renders} attempts remain`,
+      );
+    }
+    return JSON.stringify(rendered.report.checks).slice(0, 32000);
+  }
+
   private async sourceVersion() {
     const digest = createHash('sha256');
+    // Prompt/tool semantics and sandbox/controller behavior are part of the
+    // executable pipeline, just as the Python renderer and pinned assets are.
+    const workerRoot = dirname(fileURLToPath(import.meta.url));
+    for (const path of (await readdir(workerRoot)).filter((p) => p.endsWith('.ts')).sort()) {
+      digest.update('worker/' + path + '\0');
+      digest.update(await readFile(join(workerRoot, path)));
+    }
     for (const directory of ['glob2music', 'sets']) {
       const paths = (await readdir(join(this.musicRoot, directory), { recursive: true }))
         .filter((p) => /\.(py|lock|toml)$/.test(p))
@@ -445,17 +558,46 @@ export class Pipeline {
       'dropout',
     ];
     if (
+      candidate.report.passed !== true ||
+      candidate.report.checks.length !== mandatory.length ||
+      new Set(candidate.report.checks.map((check) => check.name)).size !== mandatory.length ||
       !mandatory.every((name) =>
         candidate.report.checks.some(
           (c) =>
             c.name === name &&
-            !['fail', 'skip', 'waived'].includes(c.status) &&
+            ['pass', 'warn'].includes(c.status) &&
             c.measures.length > 0 &&
-            c.measures.every((m) => !['fail', 'skip', 'waived'].includes(m.status)),
+            c.measures.every((m) => ['pass', 'warn', 'info'].includes(m.status)),
         ),
       )
     )
       throw Error('Incomplete validation cannot deliver music.');
+    const metadata = parse(MusicMetadata, candidate.report.metadata);
+    if (!metadata.aiGenerated || metadata.license !== (settings.license ?? 'CC-BY-4.0'))
+      throw Error('Delivery metadata does not match the requested license and AI disclosure.');
+    const { frames, tracks } = candidate.report.result;
+    if (
+      !Number.isSafeInteger(frames) ||
+      frames < 50 * 48000 ||
+      frames > 120 * 48000 ||
+      tracks.length !== 3
+    )
+      throw Error('Invalid delivery timeline.');
+    for (const [mood, file] of [
+      ['calm', 'a1.opus'],
+      ['building', 'a2.opus'],
+      ['combat', 'a3.opus'],
+    ] as const) {
+      const track = tracks.find((value) => value.mood === mood);
+      const bytes = candidate.files[file];
+      if (
+        !track ||
+        !bytes ||
+        track.bytes !== bytes.length ||
+        track.sha256 !== createHash('sha256').update(bytes).digest('hex')
+      )
+        throw Error('Delivery audio does not match its validation report.');
+    }
     const assets = [];
     for (const [kind, file] of [
       ['calm', 'a1.opus'],
@@ -478,17 +620,16 @@ export class Pipeline {
         ),
       });
     }
-    const thread = await this.studio.own(row.account_id, row.thread_id);
     return {
-      metadata: candidate.report.metadata ?? this.metadata(settings, thread.title),
+      metadata,
       result: candidate.report.result,
       assets,
       checks: candidate.report.checks.map((c) => this.check(c, attempt, step)),
     };
   }
-  private metadata(settings: MusicStudioSettings, title: string): Delivery['metadata'] {
+  private metadata(settings: MusicStudioSettings): Delivery['metadata'] {
     return {
-      title,
+      title: 'AI music composition',
       artist: 'Globulation 2 Music Studio',
       description:
         'An original instrumental soundtrack with synchronized calm, building and combat moods.',

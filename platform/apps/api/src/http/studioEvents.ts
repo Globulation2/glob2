@@ -1,11 +1,10 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { PgPubSub } from '@glob2/db';
-import { type Studio, STUDIO_CHANNEL } from '@glob2/map-studio';
 
 /** Durable replay owns delivery; Postgres notifications only wake the next drain. */
 export async function streamStudioEvents({
   studio,
-  channel = STUDIO_CHANNEL,
+  channel,
   pubsub,
   request,
   reply,
@@ -14,17 +13,15 @@ export async function streamStudioEvents({
   cursor,
   authenticate,
 }: {
-  studio:
-    | Pick<Studio, 'get' | 'events'>
-    | {
-        get(account: string, thread: string): Promise<{ cursor?: string }>;
-        events(
-          account: string,
-          thread: string,
-          after: string,
-        ): Promise<{ id: string; createdAt: string }[]>;
-      };
-  channel?: string;
+  studio: {
+    get(account: string, thread: string): Promise<{ cursor?: string }>;
+    events(
+      account: string,
+      thread: string,
+      after: string,
+    ): Promise<{ id: string; createdAt: string }[]>;
+  };
+  channel: string;
   pubsub: Pick<PgPubSub, 'subscribe' | 'addReconnectListener'>;
   request: FastifyRequest;
   reply: FastifyReply;

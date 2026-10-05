@@ -239,3 +239,64 @@
 .music-preview-panel::backdrop {
   background: #17281f80;
 }
+
+.music-check {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin: 0.65rem 0;
+  padding: 0.85rem;
+}
+.music-check summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+.music-check summary small {
+  margin-left: auto;
+  opacity: 1;
+}
+.music-check-status {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  background: var(--surface);
+}
+.music-check-status.pass {
+  color: var(--success);
+}
+.music-check-status.warn {
+  color: var(--warn);
+}
+.music-check-status.fail {
+  color: var(--danger);
+}
+.music-measure {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+.music-measure:first-of-type {
+  margin-top: 1rem;
+}
+.music-measure p {
+  grid-column: 1/-1;
+  margin: 0.2rem 0;
+  opacity: 1;
+}
+.music-measure small {
+  opacity: 1;
+}
+@media (max-width: 850px) {
+  .music-measure {
+    grid-template-columns: 1fr;
+  }
+  .music-measure p {
+    grid-column: 1;
+  }
+}

@@ -1,7 +1,7 @@
 import { readFile, mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { it, expect } from 'vitest';
-import { createRunner } from '../src/runner.ts';
+import { createRunner, requireBoundedMemory } from '../src/runner.ts';
 // Opt-in integration test: preprovision assets, dependencies and a bounded tmpfs.
 // MUSIC_SANDBOX_TEST=1 MUSIC_PYTHON=... MUSIC_ASSETS=... npm test -- runner.test.ts
 it.skipIf(process.env['MUSIC_SANDBOX_TEST'] !== '1')(
@@ -156,3 +156,22 @@ it.skipIf(process.env['MUSIC_RENDER_TEST'] !== '1')(
   },
   2500000,
 );
+
+it('requires a finite aggregate memory limit on the worker cgroup or an ancestor', async () => {
+  const directory = await mkdtemp('/tmp/music-cgroup-');
+  try {
+    await mkdir(resolve(directory, 'parent/worker'), { recursive: true });
+    const membership = resolve(directory, 'membership');
+    await writeFile(membership, '0::/parent/worker\n');
+    await writeFile(resolve(directory, 'parent/worker/memory.max'), 'max\n');
+    await expect(requireBoundedMemory(directory, membership)).rejects.toThrow(/12 GiB/);
+    await writeFile(resolve(directory, 'parent/memory.max'), String(12 * 1024 ** 3));
+    await expect(requireBoundedMemory(directory, membership)).resolves.toBeUndefined();
+    await writeFile(resolve(directory, 'parent/memory.max'), String(16 * 1024 ** 3));
+    await expect(requireBoundedMemory(directory, membership)).rejects.toThrow(/12 GiB/);
+    await writeFile(membership, '0::/../../elsewhere\n');
+    await expect(requireBoundedMemory(directory, membership)).rejects.toThrow(/cgroup v2/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});

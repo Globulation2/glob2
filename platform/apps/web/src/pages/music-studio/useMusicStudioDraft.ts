@@ -60,3 +60,15 @@ export function useMusicStudioDraft(accountId: string, id?: string) {
     setParent: (parent: string | undefined) => setDesign((current) => ({ ...current, parent })),
   };
 }
+
+/** Remove only this conversation's browser state after server deletion succeeds. */
+export function clearMusicStudioDraft(accountId: string, threadId: string) {
+  const suffix = `${accountId}:${threadId}`;
+  for (const kind of ['draft', 'pending', 'settings', 'autosend'])
+    sessionStorage.removeItem(`music-studio-${kind}:${suffix}`);
+  const checkoutKey = `music-studio-checkout:${accountId}`;
+  if (sessionStorage.getItem(checkoutKey) === threadId) {
+    sessionStorage.removeItem(checkoutKey);
+    sessionStorage.removeItem(`music-studio-checkout-balance:${accountId}`);
+  }
+}

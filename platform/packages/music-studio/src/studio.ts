@@ -785,6 +785,25 @@ export class MusicStudio {
         )
       ).rows;
       for (const row of rows) {
+        const attempts = (
+          await sql<{
+            status: string;
+          }>`SELECT status FROM music_studio_attempts WHERE request_id=${row.id}`.execute(db)
+        ).rows;
+        // Older workers could save a known rejection before clearing the
+        // dispatched request state. Replay that failure so normal settlement
+        // returns the reservation; only missing or ambiguous outcomes require
+        // operator reconciliation. Never dispatch another paid call here.
+        if (
+          attempts.some((attempt) => attempt.status === 'failed') &&
+          attempts.every((attempt) => ['completed', 'failed'].includes(attempt.status))
+        ) {
+          await sql`UPDATE music_studio_requests SET status='processing',error=NULL WHERE id=${row.id}`.execute(
+            db,
+          );
+          await emitState(db, row, 'processing');
+          continue;
+        }
         await sql`UPDATE music_studio_attempts SET status='uncertain' WHERE request_id=${row.id} AND status='dispatched'`.execute(
           db,
         );

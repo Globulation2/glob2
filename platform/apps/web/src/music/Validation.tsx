@@ -13,24 +13,42 @@ export function MusicValidation({ checks }: { checks: unknown[] }) {
       <h2>Automated validation</h2>
       <p>Measured on the delivered audio. These checks do not replace listening.</p>
       {valid.map((check) => (
-        <details key={check.id}>
-          <summary>
-            {check.label}: {check.status}
-          </summary>
-          {check.measures.map((m, i) => (
-            <div key={i}>
-              <strong>{m.name}</strong>
-              <p>
-                {m.status} ·{' '}
-                {typeof m.value === 'object' ? JSON.stringify(m.value) : String(m.value ?? '—')}{' '}
-                {m.unit}
-              </p>
-              <p>{m.threshold}</p>
-              <p>{m.detail}</p>
-            </div>
-          ))}
-        </details>
+        <MusicCheckDetails key={check.id} check={check} />
       ))}
     </section>
+  );
+}
+
+/** Keep public delivery and private attempt measurements consistent. */
+export function MusicCheckDetails({
+  check,
+  showAttempt = false,
+}: {
+  check: MusicStudioCheck;
+  showAttempt?: boolean;
+}) {
+  return (
+    <details className="music-check" data-status={check.status}>
+      <summary>
+        <span className={`music-check-status ${check.status}`}>{check.status}</span>
+        <strong>{check.label}</strong>
+        {showAttempt && <small>Candidate {check.attempt}</small>}
+      </summary>
+      {check.detail && <p>{check.detail}</p>}
+      {check.measures.map((measure, index) => (
+        <div className="music-measure" key={`${measure.name}:${index}`}>
+          <strong>{measure.name}</strong>
+          <span>
+            {measure.status} ·{' '}
+            {typeof measure.value === 'object'
+              ? JSON.stringify(measure.value)
+              : String(measure.value ?? '—')}{' '}
+            {measure.unit}
+          </span>
+          <small>{measure.threshold}</small>
+          <p>{measure.detail}</p>
+        </div>
+      ))}
+    </details>
   );
 }

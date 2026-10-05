@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { sql } from 'kysely';
 import { type MusicStudio, emitState, type RequestRow } from '@glob2/music-studio';
 export class ProviderUncertain extends Error {}
@@ -22,13 +23,24 @@ export class Attempts {
       await sql<{
         status: string;
         output: T;
-      }>`SELECT status,output FROM music_studio_attempts WHERE request_id=${row.id} AND stage=${stage}`.execute(
+        model: string;
+        input: unknown;
+      }>`SELECT status,output,model,input FROM music_studio_attempts WHERE request_id=${row.id} AND stage=${stage}`.execute(
         this.studio.db,
       )
     ).rows[0];
     if (previous) {
+      // Changed inputs cannot establish the outcome of an already dispatched call.
+      if (!['completed', 'failed'].includes(previous.status))
+        throw new ProviderUncertain('A previous provider call needs reconciliation.');
+      if (previous.model !== model || !isDeepStrictEqual(previous.input, input))
+        throw new ProviderRejected(
+          'The saved provider call has different inputs; start a new request.',
+        );
       if (previous.status === 'completed') return previous.output;
-      throw new ProviderUncertain('A previous provider call needs reconciliation.');
+      throw new ProviderRejected(
+        'The saved provider call failed; it will not be dispatched again.',
+      );
     }
     await this.studio.db.transaction().execute(async (db) => {
       await sql`SELECT pg_advisory_xact_lock(hashtextextended('music-studio-provider-budget',0))`.execute(
@@ -84,17 +96,66 @@ export class Attempts {
       row.status = 'processing';
       return output;
     } catch (error) {
+      // A lost COMMIT acknowledgement is not a lost provider result. Check the
+      // durable journal before turning a successfully saved response uncertain.
+      if (returned) {
+        try {
+          const saved = (
+            await sql<{
+              status: string;
+              output: T;
+            }>`SELECT status,output FROM music_studio_attempts WHERE request_id=${row.id} AND stage=${stage}`.execute(
+              this.studio.db,
+            )
+          ).rows[0];
+          if (saved?.status === 'completed') return saved.output;
+        } catch {
+          throw new ProviderUncertain('Provider outcome requires reconciliation.');
+        }
+      }
       const uncertain = returned || error instanceof ProviderUncertain;
       try {
-        await sql`UPDATE music_studio_attempts SET status=${uncertain ? 'uncertain' : 'failed'} WHERE request_id=${row.id} AND stage=${stage} AND status='dispatched'`.execute(
-          this.studio.db,
-        );
+        await this.studio.db.transaction().execute(async (db) => {
+          const current =
+            await sql`SELECT id FROM music_studio_requests WHERE id=${row.id} AND lease=${row.lease} AND status='dispatched' FOR UPDATE`.execute(
+              db,
+            );
+          if (!current.rows.length)
+            throw new ProviderUncertain('Provider result arrived after its lease was lost.');
+          await sql`UPDATE music_studio_attempts SET status=${uncertain ? 'uncertain' : 'failed'} WHERE request_id=${row.id} AND stage=${stage} AND status='dispatched'`.execute(
+            db,
+          );
+          if (!uncertain) {
+            await sql`UPDATE music_studio_requests SET status='processing' WHERE id=${row.id}`.execute(
+              db,
+            );
+            await emitState(db, row, 'processing');
+          }
+        });
         if (uncertain) {
           const current = await this.studio.request(row.id);
           if (current?.status !== 'uncertain')
             await this.studio.checkpoint(row, 'uncertain', { failedStage: stage });
         }
       } catch {
+        // The error transaction may also commit before its acknowledgement is
+        // lost. Preserve a known rejection instead of trapping its reservation.
+        let saved: { status: string; output: T } | undefined;
+        try {
+          saved = (
+            await sql<{
+              status: string;
+              output: T;
+            }>`SELECT status,output FROM music_studio_attempts WHERE request_id=${row.id} AND stage=${stage}`.execute(
+              this.studio.db,
+            )
+          ).rows[0];
+        } catch {
+          throw new ProviderUncertain('Provider outcome requires reconciliation.');
+        }
+        if (saved?.status === 'completed') return saved.output;
+        if (saved?.status === 'failed')
+          throw new ProviderRejected('The saved provider call failed.');
         throw new ProviderUncertain('Provider outcome requires reconciliation.');
       }
       if (uncertain && !(error instanceof ProviderUncertain))
@@ -125,6 +186,7 @@ export class OpenAIMusic implements MusicProvider {
     maxOutput: number,
     signal: AbortSignal,
   ): Promise<ModelReply> {
+    if (signal.aborted) throw new ProviderRejected('Provider call cancelled before dispatch.');
     let response: Response;
     try {
       response = await fetch('https://api.openai.com/v1/responses', {

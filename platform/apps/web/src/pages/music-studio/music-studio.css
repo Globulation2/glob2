@@ -200,8 +200,7 @@
   opacity: 1;
 }
 .mu-artifacts,
-.mu-notes,
-.mu-checks details {
+.mu-notes {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 1rem;
@@ -215,56 +214,6 @@
   font-size: 0.85rem;
   opacity: 1;
   line-height: 1.6;
-}
-.mu-checks details {
-  margin: 0.65rem 0;
-  padding: 0.85rem;
-}
-.mu-checks summary {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  cursor: pointer;
-}
-.mu-checks summary small {
-  margin-left: auto;
-  opacity: 1;
-}
-.mu-status {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  padding: 0.25rem 0.5rem;
-  border-radius: 5px;
-  background: var(--surface);
-}
-.mu-status.pass {
-  color: var(--success);
-}
-.mu-status.warn {
-  color: var(--warn);
-}
-.mu-status.fail {
-  color: var(--danger);
-}
-.mu-measure {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.4rem;
-  padding: 0.8rem 0;
-  border-top: 1px solid var(--line);
-  font-size: 0.78rem;
-  overflow-wrap: anywhere;
-}
-.mu-measure:first-of-type {
-  margin-top: 1rem;
-}
-.mu-measure p {
-  grid-column: 1/-1;
-  margin: 0.2rem 0;
-  opacity: 1;
-}
-.mu-measure small {
-  opacity: 1;
 }
 .mu-candidate audio {
   width: 100%;
@@ -406,12 +355,6 @@
   .mu-score-art {
     width: 65%;
     opacity: 0.18;
-  }
-  .mu-measure {
-    grid-template-columns: 1fr;
-  }
-  .mu-measure p {
-    grid-column: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {

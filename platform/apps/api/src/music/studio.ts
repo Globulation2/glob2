@@ -13,7 +13,7 @@ import { Type } from 'typebox';
 import { requireAccount } from '../identity.ts';
 import { body } from '../http/validate.ts';
 import { apiError } from '../errors.ts';
-import { streamStudioEvents } from '../maps/studioEvents.ts';
+import { streamStudioEvents } from '../http/studioEvents.ts';
 export async function musicStudioRoutes(app: FastifyInstance) {
   const studio = new MusicStudio(app.services.db),
     config = app.services.config.instance.musicStudio;

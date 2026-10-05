@@ -54,6 +54,38 @@ export interface MusicRunner {
     metadata: MusicMetadata & { id: string; origin: string },
   ): Promise<Rendered>;
 }
+/** RLIMIT_AS is per process. Require a cgroup ceiling for the whole worker,
+ * including recipe children and tmpfs pages, before accepting untrusted code. */
+export async function requireBoundedMemory(
+  root = '/sys/fs/cgroup',
+  membership = '/proc/self/cgroup',
+) {
+  const path = (await readFile(membership, 'utf8'))
+    .split('\n')
+    .find((line) => line.startsWith('0::'))
+    ?.slice(3);
+  if (!path?.startsWith('/') || path.split('/').includes('..'))
+    throw Error('Music authoring requires cgroup v2 memory accounting.');
+  let current = resolve(root, '.' + path);
+  for (;;) {
+    const value = await readFile(join(current, 'memory.max'), 'utf8').catch(
+      (error: NodeJS.ErrnoException) => {
+        if (error.code === 'ENOENT') return 'max';
+        throw error;
+      },
+    );
+    if (
+      /^[0-9]+$/.test(value.trim()) &&
+      BigInt(value.trim()) > 0n &&
+      BigInt(value.trim()) <= 12n * 1024n ** 3n
+    )
+      return;
+    if (current === resolve(root)) break;
+    current = dirname(current);
+  }
+  throw Error('Music authoring requires an ancestor cgroup memory.max of at most 12 GiB.');
+}
+
 /** Each invocation is a fresh namespace. Generated code never runs with the
  * controller's database/blob/provider credentials or in the trusted QA process. */
 export async function createRunner(
@@ -64,6 +96,7 @@ export async function createRunner(
 ): Promise<MusicRunner> {
   if (process.platform !== 'linux')
     throw Error('Music authoring requires Linux namespace isolation.');
+  await requireBoundedMemory();
   const fs = await statfs(scratch);
   if (fs.type !== 0x01021994 || fs.blocks * fs.bsize > 6 * 1024 ** 3)
     throw Error('Music authoring requires a dedicated scratch tmpfs of at most 6 GiB.');
@@ -238,9 +271,11 @@ export async function createRunner(
         await writeFile(join(trusted, 'score.json'), score, { flag: 'wx' });
         await writeFile(join(trusted, 'metadata.json'), JSON.stringify(metadata), { flag: 'wx' });
         await invoke(trusted, render ? 'render' : 'check', settings, signal, progress);
-        const report = JSON.parse(
-          await readFile(join(trusted, 'result.json'), 'utf8'),
-        ) as CandidateReport;
+        const reportPath = join(trusted, 'result.json');
+        const reportInfo = await lstat(reportPath);
+        if (!reportInfo.isFile() || reportInfo.size > 16 * 1024 ** 2)
+          throw Error('Invalid or oversized validation report.');
+        const report = JSON.parse(await readFile(reportPath, 'utf8')) as CandidateReport;
         const files: Record<string, Buffer> = {};
         if (render && report.result)
           for (const name of [

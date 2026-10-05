@@ -1,7 +1,7 @@
 import { Type, type Static } from 'typebox';
 import { MusicLicense } from './music.ts';
 import { Strict, Uuid } from './common.ts';
-import { StudioCreate, StudioMessage, MapStudioConfig } from './mapStudio.ts';
+import { StudioCreate, StudioMessage, StudioCreditPack } from './studioCommon.ts';
 export const MusicStudioCreate = StudioCreate;
 export const MusicStudioMessage = StudioMessage;
 export const MusicStudioSettings = Strict({
@@ -21,7 +21,7 @@ export const MusicStudioConfig = Strict({
   salesEnabled: Type.Boolean(),
   textModel: Type.Optional(Type.String({ minLength: 1 })),
   pipelineVersion: Type.Optional(Type.Literal('music-v1')),
-  packs: MapStudioConfig.properties.packs,
+  packs: Type.Optional(Type.Array(StudioCreditPack, { maxItems: 20 })),
   chatPerHour: Type.Optional(Type.Integer({ minimum: 1, maximum: 1000 })),
   providerCallsPerDay: Type.Optional(Type.Integer({ minimum: 1, maximum: 100000 })),
   maxCalls: Type.Optional(Type.Integer({ minimum: 3, maximum: 30 })),

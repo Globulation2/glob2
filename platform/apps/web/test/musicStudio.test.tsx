@@ -191,3 +191,103 @@ it('aligns comparisons only when both duration and musical timeline match', asyn
   expect(screen.getByTestId('music-player').getAttribute('data-position')).toBe('0');
   expect(screen.getAllByTestId('music-player')).toHaveLength(1);
 });
+
+function mockRevisionEvidence() {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (path: string) => {
+      const first = path.includes('/requests/v1/') || path.endsWith('music1');
+      const id = first ? 'v1' : 'v2';
+      return new Response(
+        JSON.stringify(
+          path.includes('/progress')
+            ? {
+                requestId: id,
+                stages: [],
+                artifacts: [
+                  {
+                    id: `${id}:preview`,
+                    kind: 'preview',
+                    label: `${id} preview`,
+                    url: `/${id}.opus`,
+                  },
+                ],
+                checks: [
+                  {
+                    id: `${id}:seam`,
+                    label: `${id} seam`,
+                    attempt: 1,
+                    status: 'warn',
+                    measures: [],
+                    detail: `${id} measured evidence`,
+                  },
+                ],
+                notes: [],
+                historical: false,
+              }
+            : {
+                id: first ? 'music1' : 'music2',
+                status: 'ready',
+                metadata: { license: 'CC0-1.0' },
+                frames: 2880000,
+              },
+        ),
+      );
+    }),
+  );
+}
+const secondVersion = { ...version, id: 'v2', release_id: 'music2' };
+
+it('shows checks and candidate artifacts belonging to the audible comparison revision', async () => {
+  mockRevisionEvidence();
+  render(<MusicWorkspace {...props} thread={{ ...thread, requests: [version, secondVersion] }} />);
+  await screen.findByText('music2');
+  await screen.findByText('v2 measured evidence');
+  fireEvent.change(screen.getByLabelText('Compare revision'), { target: { value: 'v1' } });
+  await screen.findByText('music1');
+  await screen.findByText('v1 measured evidence');
+  expect(screen.queryByText('v2 measured evidence')).toBeNull();
+  expect(screen.getByRole('heading', { name: 'Version 1 · comparing' })).toBeTruthy();
+  expect(screen.getByText('v1 preview')).toBeTruthy();
+  expect(screen.queryByText('v2 preview')).toBeNull();
+});
+
+it('clears an older candidate preview when following a live revision without delivery', async () => {
+  mockRevisionEvidence();
+  const view = render(
+    <MusicWorkspace
+      {...props}
+      thread={{
+        ...thread,
+        requests: [version, { ...secondVersion, status: 'processing', release_id: null }],
+      }}
+    />,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  await screen.findByText('music1');
+  fireEvent.click(screen.getByText('v1 preview'));
+  expect(view.container.querySelector('audio')?.getAttribute('src')).toBe('/v1.opus');
+  fireEvent.click(screen.getByRole('button', { name: 'Follow live' }));
+  await screen.findByText('v2 measured evidence');
+  expect(view.container.querySelector('audio')).toBeNull();
+  expect(screen.queryByText('Candidate preview · may need repairs')).toBeNull();
+});
+
+it('does not carry a candidate preview across an automatically followed new request', async () => {
+  mockRevisionEvidence();
+  const view = render(<MusicWorkspace {...props} />);
+  await screen.findByText('music1');
+  fireEvent.click(screen.getByText('v1 preview'));
+  expect(view.container.querySelector('audio')).not.toBeNull();
+  view.rerender(
+    <MusicWorkspace
+      {...props}
+      thread={{
+        ...thread,
+        requests: [version, { ...secondVersion, status: 'processing', release_id: null }],
+      }}
+    />,
+  );
+  await screen.findByText('v2 measured evidence');
+  expect(view.container.querySelector('audio')).toBeNull();
+});

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { MusicRelease, MusicStudioSettings, MusicStudioProgress } from '@glob2/protocol';
 import { request } from '../../api.ts';
 import { MusicPlayer } from '../../music/Player.tsx';
+import { MusicCheckDetails } from '../../music/Validation.tsx';
 import { useDeliveryCelebration } from '../studio/useDeliveryCelebration.ts';
 import { MUSIC_IDEAS } from '../MusicStudioLanding.tsx';
 import { ROOT, type Thread, type Wallet, type Delivered } from './types.ts';
@@ -32,7 +33,7 @@ export function MusicWorkspace(p: Props) {
     [release, setRelease] = useState<MusicRelease>(),
     [error, setError] = useState('');
   const [compare, setCompare] = useState(''),
-    [preview, setPreview] = useState('');
+    [preview, setPreview] = useState<{ requestId: string; url: string }>();
   const [initialPosition, setInitialPosition] = useState(0);
   const [cancelling, setCancelling] = useState(false);
   const position = useRef(0),
@@ -47,15 +48,23 @@ export function MusicWorkspace(p: Props) {
   const displayed = compare
     ? versions.find((v) => v.id === compare)
     : versions.find((v) => v.id === current?.id);
-  const celebration = useDeliveryCelebration(p.celebrate, current?.id, !!displayed, follow);
-  const currentId = current?.id,
+  const celebration = useDeliveryCelebration(
+    p.celebrate,
+    current?.id,
+    !!displayed,
+    follow && !compare,
+  );
+  // The evidence follows the audible revision, including when comparing history.
+  const inspected = displayed ?? current;
+  const inspectedId = inspected?.id,
     releaseId = displayed?.release_id;
+  const previewUrl = preview?.requestId === inspectedId ? preview?.url : undefined;
   useEffect(() => {
-    if (!p.id || !currentId) return;
+    if (!p.id || !inspectedId) return;
     const abort = new AbortController();
     void request<MusicStudioProgress>(
       'GET',
-      `${ROOT}/threads/${p.id}/requests/${currentId}/progress`,
+      `${ROOT}/threads/${p.id}/requests/${inspectedId}/progress`,
       { signal: abort.signal },
     )
       .then((value) => {
@@ -68,7 +77,7 @@ export function MusicWorkspace(p: Props) {
         if (!abort.signal.aborted) setError(String(e));
       });
     return () => abort.abort();
-  }, [p.id, currentId, p.revision]);
+  }, [p.id, inspectedId, p.revision]);
   useEffect(() => {
     if (!releaseId) return;
     const abort = new AbortController();
@@ -86,7 +95,7 @@ export function MusicWorkspace(p: Props) {
         previousTimeline.current = value.timelineId;
         previousFrames.current = value.frames;
         setInitialPosition(position.current);
-        setPreview('');
+        setPreview(undefined);
         setRelease(value);
       })
       .catch((e) => {
@@ -94,7 +103,7 @@ export function MusicWorkspace(p: Props) {
       });
     return () => abort.abort();
   }, [releaseId]);
-  const shown = progress?.requestId === current?.id ? progress : undefined;
+  const shown = progress?.requestId === inspectedId ? progress : undefined;
   const playable = release?.id === displayed?.release_id ? release : undefined;
   const canSend = !!p.wallet?.enabled && !!p.wallet.available && !p.busy && !active;
   async function cancel() {
@@ -284,16 +293,17 @@ export function MusicWorkspace(p: Props) {
             <div>
               <span className="ms-eyebrow">THE LISTENING ROOM</span>
               <h2>
-                {current
-                  ? `Version ${generations.indexOf(current) + 1}`
+                {inspected
+                  ? `Version ${generations.indexOf(inspected) + 1}${compare ? ' · comparing' : ''}`
                   : 'Your music takes shape here'}
               </h2>
             </div>
             <button
-              aria-pressed={follow}
+              aria-pressed={follow && !compare}
               onClick={() => {
                 setFollow(true);
                 setCompare('');
+                setPreview(undefined);
               }}
             >
               Follow live
@@ -309,7 +319,7 @@ export function MusicWorkspace(p: Props) {
                     setSelected(v.id);
                     setFollow(false);
                     setCompare('');
-                    setPreview('');
+                    setPreview(undefined);
                   }}
                 >
                   V{i + 1} <small>{v.status}</small>
@@ -318,7 +328,7 @@ export function MusicWorkspace(p: Props) {
             </nav>
           )}
           {error && <p role="alert">{error}</p>}
-          {current?.error && <p role="alert">{current.error}</p>}
+          {inspected?.error && <p role="alert">{inspected.error}</p>}
           {!current && (
             <div className="mu-empty">
               <span aria-hidden="true">♫</span>
@@ -346,7 +356,7 @@ export function MusicWorkspace(p: Props) {
               ))}
             </ol>
           )}
-          {active?.kind === 'generate' && current?.id === active.id && (
+          {active?.kind === 'generate' && inspectedId === active.id && (
             <button
               disabled={cancelling || ['dispatched', 'uncertain'].includes(active.status)}
               onClick={() => void cancel()}
@@ -354,14 +364,17 @@ export function MusicWorkspace(p: Props) {
               Cancel generation
             </button>
           )}
-          {playable && !preview && (
+          {playable && !previewUrl && (
             <>
               <div className="mu-audition-header">
                 <h3>{compare ? 'Comparing saved version' : 'Ready to listen'}</h3>
                 <select
                   aria-label="Compare revision"
                   value={compare}
-                  onChange={(e) => setCompare(e.target.value)}
+                  onChange={(e) => {
+                    setCompare(e.target.value);
+                    setPreview(undefined);
+                  }}
                 >
                   <option value="">Selected version</option>
                   {versions
@@ -417,7 +430,10 @@ export function MusicWorkspace(p: Props) {
               <summary>Candidate previews & reports</summary>
               {shown.artifacts.map((a) =>
                 a.kind === 'preview' ? (
-                  <button key={a.id} onClick={() => setPreview(a.url)}>
+                  <button
+                    key={a.id}
+                    onClick={() => setPreview({ requestId: shown.requestId, url: a.url })}
+                  >
                     {a.label}
                   </button>
                 ) : (
@@ -428,11 +444,11 @@ export function MusicWorkspace(p: Props) {
               )}
             </details>
           )}
-          {preview && (
+          {previewUrl && (
             <div className="mu-candidate">
               <p>Candidate preview · may need repairs</p>
-              <audio key={preview} src={preview} controls />
-              <button onClick={() => setPreview('')}>Return to final set</button>
+              <audio key={previewUrl} src={previewUrl} controls />
+              <button onClick={() => setPreview(undefined)}>Return to final set</button>
             </div>
           )}
           {shown && !!shown.notes.length && (
@@ -453,28 +469,7 @@ export function MusicWorkspace(p: Props) {
                 right.
               </p>
               {shown.checks.map((c) => (
-                <details key={c.id} data-status={c.status}>
-                  <summary>
-                    <span className={`mu-status ${c.status}`}>{c.status}</span>
-                    <strong>{c.label}</strong>
-                    <small>Candidate {c.attempt}</small>
-                  </summary>
-                  {c.detail && <p>{c.detail}</p>}
-                  {c.measures.map((m, i) => (
-                    <div className="mu-measure" key={`${m.name}:${i}`}>
-                      <strong>{m.name}</strong>
-                      <span>
-                        {m.status} ·{' '}
-                        {typeof m.value === 'object'
-                          ? JSON.stringify(m.value)
-                          : String(m.value ?? '—')}{' '}
-                        {m.unit}
-                      </span>
-                      <small>{m.threshold}</small>
-                      <p>{m.detail}</p>
-                    </div>
-                  ))}
-                </details>
+                <MusicCheckDetails key={c.id} check={c} showAttempt />
               ))}
             </section>
           )}

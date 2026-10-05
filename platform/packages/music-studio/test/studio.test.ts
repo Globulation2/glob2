@@ -155,6 +155,7 @@ it('orders events, records repair cycles, and protects artifacts', async () => {
   const next = await studio.events(account, thread, snapshot.cursor!);
   expect(next).toHaveLength(1);
   expect(BigInt(next[0]!.id)).toBeGreaterThan(BigInt(snapshot.cursor!));
+  await studio.finish(row, undefined, 'Test completed.');
 });
 it('requires reconciliation after unknown provider outcomes and preserves daily usage after deletion', async () => {
   const { account, thread, row } = await submit();
@@ -206,4 +207,69 @@ it('deleting history preserves free-chat rate limits', async () => {
       1,
     ),
   ).rejects.toThrow('Please wait');
+});
+
+it('recovers a journalled rejection without reconciliation and returns its reservation once', async () => {
+  const { account, row } = await submit();
+  await sql`UPDATE music_studio_requests SET status='dispatched',lease_until=now()-interval '1 second' WHERE id=${row.id}`.execute(
+    database.db,
+  );
+  await sql`INSERT INTO music_studio_attempts(id,request_id,stage,model,status,input) VALUES(${randomUUID()},${row.id},'agent:0','test','failed','{}')`.execute(
+    database.db,
+  );
+  await studio.recoverUncertain();
+  expect((await studio.request(row.id))?.status).toBe('processing');
+  const recovered = (await studio.claim())!;
+  expect(recovered.id).toBe(row.id);
+  await Promise.all([
+    studio.finish(recovered, undefined, 'Provider rejected the request.'),
+    studio.finish(recovered, undefined, 'Provider rejected the request.'),
+  ]);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 3, reserved: 0, available: 3 });
+  expect(
+    await database.db
+      .selectFrom('music_ledger')
+      .select('id')
+      .where('id', '=', `generation:${row.id}`)
+      .execute(),
+  ).toHaveLength(1);
+});
+
+it('keeps an ambiguous later provider call uncertain even after a recorded rejection', async () => {
+  const { account, row } = await submit();
+  await sql`UPDATE music_studio_requests SET status='dispatched',lease_until=now()-interval '1 second' WHERE id=${row.id}`.execute(
+    database.db,
+  );
+  for (const [stage, status] of [
+    ['agent:0', 'failed'],
+    ['agent:1', 'dispatched'],
+  ] as const)
+    await sql`INSERT INTO music_studio_attempts(id,request_id,stage,model,status,input) VALUES(${randomUUID()},${row.id},${stage},'test',${status},'{}')`.execute(
+      database.db,
+    );
+  await studio.recoverUncertain();
+  expect((await studio.request(row.id))?.status).toBe('uncertain');
+  expect((await studio.credits.balance(account)).reserved).toBe(1);
+  await studio.finish((await studio.request(row.id))!, undefined, 'Reconciled.');
+});
+
+it('rejects delivery and checkpoints from an old lease after another worker claims the request', async () => {
+  const { account, row } = await submit();
+  const stale = (await studio.claim())!;
+  expect(stale.id).toBe(row.id);
+  await sql`UPDATE music_studio_requests SET lease_until=now()-interval '1 second' WHERE id=${row.id}`.execute(
+    database.db,
+  );
+  const current = (await studio.claim())!;
+  expect(current.id).toBe(row.id);
+  expect(current.lease).not.toBe(stale.lease);
+  const result = await delivery();
+  await expect(studio.finish(stale, result)).rejects.toThrow('lease expired');
+  await expect(studio.checkpoint(stale, 'processing', { overwritten: true })).rejects.toThrow(
+    'lease expired',
+  );
+  expect(await studio.heartbeat(stale)).toBe(false);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 3, reserved: 1, available: 2 });
+  await studio.finish(current, result);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 2, reserved: 0, available: 2 });
 });

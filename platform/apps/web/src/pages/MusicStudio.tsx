@@ -5,7 +5,11 @@ import { useSession } from '../state.tsx';
 import { MusicStudioLanding } from './MusicStudioLanding.tsx';
 import { MusicWorkspace } from './music-studio/Workspace.tsx';
 import { useMusicStudioStream } from './music-studio/useMusicStudioStream.ts';
-import { useMusicStudioDraft, type Pending } from './music-studio/useMusicStudioDraft.ts';
+import {
+  clearMusicStudioDraft,
+  useMusicStudioDraft,
+  type Pending,
+} from './music-studio/useMusicStudioDraft.ts';
 import { CreditControls } from './music-studio/CreditControls.tsx';
 import {
   ROOT,
@@ -290,6 +294,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
                     return;
                   void action(async () => {
                     await request('DELETE', `${ROOT}/threads/${id}`);
+                    clearMusicStudioDraft(accountId, id);
                     navigate('/music-studio');
                   });
                 }}

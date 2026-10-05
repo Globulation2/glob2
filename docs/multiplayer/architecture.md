@@ -1112,6 +1112,8 @@ cancellation, private artifacts and checkout. `packages/music-studio` owns the
 transactional journal and delivery; `apps/ai-music-worker` owns provider calls,
 bounded agent tools and isolated Python execution. The score/rendering contracts
 are described in the [music pipeline](../assets/music-pipeline.md#online-ai-music-studio).
+Common project/message and credit-pack schemas live in `protocol/src/studioCommon.ts`;
+studio-specific settings, products and balances remain separate.
 
 Music uses its own wallets, ledger and Stripe purchases. A generation reserves one
 credit; creating its private immutable music release and consuming the credit
@@ -1119,9 +1121,15 @@ commit together. Failure or cancellation returns the reservation once. Unknown
 provider outcomes keep the reservation pending for administrative reconciliation
 at `POST /api/v1/admin/music-studio/requests/:id/fail`. Provider attempts are
 journalled before dispatch and anonymous daily usage survives history deletion.
+Known rejections are replayed as failures without another provider call. Completed
+provider results survive worker recovery; only outcomes that cannot be established
+from the journal require reconciliation. Render cycles are recorded before execution,
+and completed candidates retain reports plus content-addressed score and audio references.
+A worker restart consumes an interrupted cycle or resumes a completed candidate;
+it does not silently reset the three-cycle budget.
 
-The event stream reuses Map Studio's ordered, transactional SSE transport and
-reconnect/authentication behavior on a separate notification channel. Stage,
+Both studios use `apps/api/src/http/studioEvents.ts` for ordered SSE replay and
+reconnect/authentication behavior, with separate notification channels. Stage,
 check, candidate and composer-progress events remain with each request. History
 snapshots omit worker-only source/configuration checkpoints; account exports
 include them without lease credentials. Account deletion fences workers and
@@ -1138,4 +1146,7 @@ Deleting a Music Studio conversation removes its private source, messages, candi
 and event history; finished releases remain independently managed in the music
 library. Free-chat usage is retained as zero-credit ledger entries and anonymous
 daily provider counters survive history/account deletion. Private pipeline source
-fingerprints fence recovery across an incompatible worker upgrade.
+fingerprints cover worker tools, Python sources and dependency/asset definitions,
+and fence recovery across an incompatible worker upgrade. Successful history deletion
+also clears that conversation's browser draft and checkout-return state; other projects
+are retained.

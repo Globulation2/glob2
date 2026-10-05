@@ -135,3 +135,62 @@ it('bounds concurrent SSE connections', async () => {
     await Promise.all(connections.map((r) => r.body?.cancel()));
   }
 });
+
+it('deleting an account refunds uncertain work and fences its worker without restoring provider capacity', async () => {
+  const creator = await registeredPlayer(instance, 'MusicDeletionOwner');
+  try {
+    await studio.credits.adjust(creator.accountId, randomUUID(), 1, 'grant');
+    const thread = (await studio.create(creator.accountId, 'Private unfinished music')).id;
+    await sql`INSERT INTO music_studio_messages(id,thread_id,role,text) VALUES(${randomUUID()},${thread},'user','Private request')`.execute(
+      harness.database.db,
+    );
+    const { id } = await studio.submit(
+      creator.accountId,
+      thread,
+      'generate',
+      { id: randomUUID(), settings: { pipeline: 'acoustic-v1', seed: 0 } },
+      'music-v1',
+    );
+    const leased = (await studio.claim())!;
+    expect(leased.id).toBe(id);
+    await sql`INSERT INTO music_studio_attempts(id,request_id,stage,model,status,input) VALUES(${randomUUID()},${id},'agent:0','test','uncertain','{}')`.execute(
+      harness.database.db,
+    );
+    await studio.checkpoint(leased, 'uncertain', {});
+    const usage = async () =>
+      (
+        await sql<{
+          count: string;
+        }>`SELECT sum(calls)::text AS count FROM music_studio_provider_usage`.execute(
+          harness.database.db,
+        )
+      ).rows[0]?.count;
+    const before = await usage();
+    expect(
+      (
+        await call('DELETE', '/api/v1/accounts/me', creator, {
+          confirmDisplayName: creator.displayName,
+        })
+      ).status,
+    ).toBe(204);
+    expect(await studio.request(id)).toBeUndefined();
+    expect(await studio.list(creator.accountId)).toEqual([]);
+    expect(await studio.credits.balance(creator.accountId)).toEqual({
+      balance: 1,
+      reserved: 0,
+      available: 1,
+    });
+    expect(await usage()).toBe(before);
+    expect(await studio.heartbeat(leased)).toBe(false);
+    await expect(studio.finish(leased, undefined, 'Late worker result')).rejects.toThrow();
+    const ledger = await harness.database.db
+      .selectFrom('music_ledger')
+      .selectAll()
+      .where('id', '=', `generation:${id}`)
+      .execute();
+    expect(ledger).toHaveLength(1);
+    expect(ledger[0]?.details).toMatchObject({ returned: true, accountDeleted: true });
+  } finally {
+    creator.client.close();
+  }
+});

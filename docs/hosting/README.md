@@ -1353,6 +1353,12 @@ the container. Startup probes the isolated Python runtime and refuses to start
 when isolation is unavailable. Standard Docker seccomp/AppArmor policies may
 deny nested namespaces; use an operator-reviewed policy that permits the
 Bubblewrap probe, or run the worker on an appropriately isolated Linux host.
+Startup also requires a cgroup v2 ancestor with `memory.max` at most 12 GiB.
+This bounds the entire worker and its children; per-process address-space limits
+alone cannot constrain a recipe that forks. A bare-host worker or integration
+test therefore needs a bounded systemd service/scope (for example,
+`systemd-run --user --scope -p MemoryMax=12G ...`), alongside the scratch tmpfs.
+Missing or unlimited cgroup accounting fails closed.
 Do not replace this with unrestricted execution
 or mount a container-engine socket. Recipes get read-only pipeline/assets and a
 private writable job directory, with no network, database, blob store or provider
