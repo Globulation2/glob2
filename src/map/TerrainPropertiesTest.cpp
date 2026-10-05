@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
+#include "TerrainExperiments.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Version.h"
@@ -23,7 +24,30 @@ TEST_CASE("exclusive movement modes and bounded compile-time definitions")
     invalid.groundSpeedQ8 = 0;
     CHECK_FALSE(validTerrainProperties(invalid));
     CHECK_EQ(terrainProperties(ICE).groundSpeedQ8,128);
-    CHECK_EQ(terrainProperties(ROAD).groundSpeedQ8,512);
+    CHECK_EQ(terrainProperties(TRAIL).groundSpeedQ8,512);
+}
+
+TEST_CASE("Trail retains legacy identities and terrain behavior")
+{
+    // Trail replaces Road's name and artwork, so old maps and scripts must
+    // still resolve the same material and experiment without changing rules.
+    CHECK_EQ(static_cast<unsigned>(TRAIL),4);
+    CHECK_EQ(static_cast<unsigned>(ExperimentId::TrailTerrain),3);
+    CHECK_EQ(parseExperimentKey("road-terrain"),ExperimentId::TrailTerrain);
+    CHECK_EQ(terrainExperiment(TRAIL),ExperimentId::TrailTerrain);
+    CHECK_EQ(std::string(terrainPresentation(TRAIL).name),"road");
+    CHECK_EQ(std::string(terrainPresentation(TRAIL).label),"[road]");
+    const auto& properties = terrainProperties(TRAIL);
+    CHECK(properties.walkable);
+    CHECK(properties.buildable);
+    CHECK_FALSE(properties.swimmable);
+    CHECK_FALSE(properties.resourcesGrow);
+    CHECK_EQ(properties.allowedResources,0);
+    CHECK_EQ(properties.groundSpeedQ8,512);
+    CHECK_EQ(properties.groundHealthQ8,0);
+    CHECK(properties.flyable);
+    CHECK_EQ(properties.airSpeedQ8,256);
+    CHECK_EQ(properties.airHealthQ8,0);
 }
 
 TEST_CASE("canonical terrain survives presentation regeneration and batches snapshot invalidation")
@@ -35,7 +59,7 @@ TEST_CASE("canonical terrain survives presentation regeneration and batches snap
     const auto generation = map.terrainGeneration();
     {
         auto batch = map.editTerrain();
-        map.setCellTerrain(8,8,ROAD);
+        map.setCellTerrain(8,8,TRAIL);
         const auto partial=map.frozenTerrainSnapshot();
         map.resourceGrowthField();
         map.setCellTerrain(9,8,ICE);
@@ -47,16 +71,16 @@ TEST_CASE("canonical terrain survives presentation regeneration and batches snap
     CHECK_EQ(map.terrainGeneration(),generation+1);
     CHECK_FALSE(map.growthCache.validFor(map));
     CHECK_EQ((*old)[map.coordToIndex(8,8)],WATER);
-    CHECK_EQ(map.terrainTypeAt(8,8),ROAD);
+    CHECK_EQ(map.terrainTypeAt(8,8),TRAIL);
     CHECK_EQ(map.terrainTypeAt(9,8),ICE);
     map.rebuildTerrain();
-    CHECK_EQ(map.terrainTypeAt(8,8),ROAD);
+    CHECK_EQ(map.terrainTypeAt(8,8),TRAIL);
     CHECK_EQ(map.terrainTypeAt(9,8),ICE);
     CHECK_EQ(map.terrainTypeAt(7,8),WATER);
     CHECK(map.requiredTerrainExperiments().has(ExperimentId::IceTerrain));
-    CHECK(map.requiredTerrainExperiments().has(ExperimentId::RoadTerrain));
+    CHECK(map.requiredTerrainExperiments().has(ExperimentId::TrailTerrain));
     map.tile(2,1);
-    CHECK_EQ(map.terrainTypeAt(40,8),ROAD);
+    CHECK_EQ(map.terrainTypeAt(40,8),TRAIL);
     CHECK_EQ(map.terrainTypeAt(41,8),ICE);
 }
 
@@ -70,7 +94,7 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
     const auto old = escape[map.coordToIndex(8,8)];
     {
         auto batch = map.editTerrain();
-        for (int x=8;x<12;++x) map.setCellTerrain(x,8,ROAD);
+        for (int x=8;x<12;++x) map.setCellTerrain(x,8,TRAIL);
     }
     CHECK(escape[map.coordToIndex(8,8)] > old);
     map.setResource(15,15,WHEAT,1);
@@ -99,7 +123,7 @@ TEST_CASE("required terrain experiments survive tiling and distinguish map heade
     map.tile(2,1);
     CHECK(world.game.mapHeader.requiredTerrainExperiments.has(ExperimentId::IceTerrain));
     MapHeader plain, required;
-    required.requiredTerrainExperiments.set(ExperimentId::RoadTerrain);
+    required.requiredTerrainExperiments.set(ExperimentId::TrailTerrain);
     CHECK(plain != required);
     CHECK_FALSE(plain == required);
     CHECK(plain.checkSum() != required.checkSum());

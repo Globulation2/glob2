@@ -849,6 +849,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Add a stable enum entry and complete both tables for a new material. Experimental
   authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
   into matches, while saves retain them independently of the user's current settings.
+- Trail uses the stable terrain ID `4` (`TRAIL`) and experiment position `3`
+  (`TrailTerrain`). Its external terrain name and translation keys retain `road`,
+  and its serialized experiment key remains `road-terrain`. Keep these legacy
+  identifiers for scripting, reports, editor actions and existing files; the
+  user-facing name is Trail. Classic frames 288–303 and decorative edge frames
+  319–333 come from the generated material and recipe in `datasrc/gfx/trail/`.
 - Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,

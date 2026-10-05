@@ -40,7 +40,7 @@ enum class ExperimentId : Uint8
 	// the connected field and keeps one grain on every tile as seed.
 	FarmAreas = 1,
 	IceTerrain = 2,
-	RoadTerrain = 3,
+	TrailTerrain = 3, // Legacy serialized key: road-terrain.
 	MarketsV2 = 4,
 	Count
 };

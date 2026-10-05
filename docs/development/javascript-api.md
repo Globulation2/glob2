@@ -296,7 +296,7 @@ The array is ID-indexed and includes internal shoreline profiles and experimenta
 materials even when the current match has not enabled their authoring options.
 All nested registry values are read-only in both scripting profiles, including
 commander and map scripts. Existing IDs remain water `0`, sand `1`, grass `2`,
-ice `3`, road `4`, grass/sand shore `5`, and sand/water shore `6`; scripts should
+ice `3`, Trail `4` (legacy registry name `road`), grass/sand shore `5`, and sand/water shore `6`; scripts should
 query capabilities instead of comparing those IDs or graphic frame ranges.
 `ctx.spatial.passable` additionally checks known occupancy and movement rules;
 spatial placement and connectivity use the same canonical terrain properties.

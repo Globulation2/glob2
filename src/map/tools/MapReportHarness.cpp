@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 			game.map.getResource(7, 5) = {WHEAT, 0, 7, 0};
 			emit(game, std::filesystem::path(argv[1]) / "grass.json");
 			game.map.setCellTerrain(20, 20, ICE);
-			game.map.setCellTerrain(21, 20, ROAD);
+			game.map.setCellTerrain(21, 20, TRAIL);
 			game.map.setCellTerrain(22, 20, GRASS_SAND_SHORE);
 			game.map.setCellTerrain(23, 20, SAND_WATER_SHORE);
 			emit(game, std::filesystem::path(argv[1]) / "materials.json");

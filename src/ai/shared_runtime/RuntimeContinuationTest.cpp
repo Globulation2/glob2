@@ -116,7 +116,7 @@ class RuntimeContinuationTest
             diagonal.terrainTravel=field::TerrainTravel::Walk;
             GradientManager manager(&neutral);
             REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
-            neutral.setCellTerrain(8,8,ROAD);
+            neutral.setCellTerrain(8,8,TRAIL);
             REQUIRE(manager.get_gradient(diagonal).get_height(3,3)==3);
         }
         Game game(nullptr); game.map.setSize(4,4,WATER); game.map.setGame(&game);
@@ -128,7 +128,7 @@ class RuntimeContinuationTest
         GradientManager original(&map);
         REQUIRE(original.get_gradient(walking).get_height(4,1)==4);
         REQUIRE(original.get_gradient(geometry).get_height(4,1)==4);
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
         for(bool text:{false,true})
         {
             GradientManager restored(&map);
@@ -200,15 +200,15 @@ TEST_SUITE("RuntimeContinuation")
 	}
 }
 
-TEST_CASE("terrain weighted influence retains obstacles and sub-tile road costs" *
+TEST_CASE("terrain weighted influence retains obstacles and sub-tile trail costs" *
           doctest::test_suite("RuntimeContinuation"))
 {
-    // Isolate a corridor from toroidal shortcuts; two road entries cost one
+    // Isolate a corridor from toroidal shortcuts; two trail entries cost one
     // strength unit, while one ice entry costs two.
     std::vector<unsigned char> values(64,0);
     std::vector<TerrainType> terrain(64,GRASS);
     for(int x=1;x<=6;++x)values[8+x]=1;
-    values[9]=20;terrain[10]=terrain[11]=ROAD;terrain[12]=ICE;
+    values[9]=20;terrain[10]=terrain[11]=TRAIL;terrain[12]=ICE;
     field::expandTerrainInfluence(values.data(),8,8,[&](size_t i){return terrain[i];});
     CHECK(values[9]==20);CHECK(values[10]==19);CHECK(values[11]==19);
     CHECK(values[12]==17);CHECK(values[13]==16);CHECK(values[8]==0);
