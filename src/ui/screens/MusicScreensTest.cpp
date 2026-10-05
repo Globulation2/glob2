@@ -75,7 +75,7 @@ void views(int width, int height)
 	for (unsigned mood = 0; mood < 3; ++mood)
 		detail.info.waveforms[mood].assign(512, .25f + .2f * mood);
 	capture(detail, "music-detail.bmp");
-	CHECK(detail.preview.ready());
+	CHECK(detail.previewSession != 0);
 }
 } // namespace
 TEST_SUITE("CommunityMusicUI")

@@ -2,7 +2,7 @@
 #pragma once
 #include "ui/FrontendUI.h"
 #include "MusicLibrary.h"
-#include "MusicStream.h"
+#include "MusicProducer.h"
 #include <functional>
 #include "ui/OnlineUI.h"
 class MusicSetScreen : public Glob2UI::Screen
@@ -22,7 +22,7 @@ class MusicSetScreen : public Glob2UI::Screen
 
   private:
 	Music::Metadata info;
-	Music::Preview preview;
+	unsigned previewSession = 0;
 	std::string notice, primaryAction;
 	int blend = 0, fadeMs = 371;
 	std::array<std::string, 3> paths;
@@ -30,5 +30,5 @@ class MusicSetScreen : public Glob2UI::Screen
 	unsigned waveformMood = 0;
 	std::int64_t waveformFrame = 0;
 	Glob2UI::PreviewImages images;
-	void control(const std::function<void()> &fn);
+	void control(Music::Control command, double value = 0);
 };
