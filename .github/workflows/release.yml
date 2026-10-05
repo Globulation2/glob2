@@ -211,6 +211,9 @@ jobs:
           stage="$PWD/artifacts/size-baseline"
           scons -j2 release=1 server=0 lean_images=0 optimized_assets=0 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
+          # Original bytes are an offline measurement tree, not playable artwork.
+          python3 tools/package_assets.py --platform linux --original --output artifacts/source-asset-baseline
+          python3 -c 'from scons.runtime_assets import install_export; import sys; install_export("artifacts/source-asset-baseline", sys.argv[1])' "$stage/usr/share/glob2"
           mkdir -p artifacts/package-sizes
           tar -C "$stage" -czf artifacts/package-sizes/baseline.tar.gz usr
           python3 tools/release/package_sizes.py report --staged-root "$stage" \

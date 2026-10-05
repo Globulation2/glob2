@@ -771,7 +771,7 @@ namespace GAGCore
 		//! Load every frame from the sheets listed in <filename>.sheet, return false and load nothing if there is no usable index
 		bool loadSheets(const std::string &filename);
 		//! Load a frame from two file pointers
-		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
+		bool loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary

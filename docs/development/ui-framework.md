@@ -287,10 +287,12 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
 - `backdrop.kind` is `colony` (the live colony), `image` (`backdrop.image`,
   cropped to cover), `terrain` (the original tiled grass) or `solid`
   (`palette.backdrop` only). `veil` washes over it. `wordmark` replaces the main
-  menu wordmark with an image shown as drawn; without it the shipped wordmark is
+  menu wordmark with an image shown as drawn. Backdrop and wordmark overrides
+  must name `.webp` artwork under `data/`; lookup retains user-directory priority.
+  Without an override the shipped wordmark is
   recoloured with `ink` and `accent`.
 - `buttons.kind` `sprite` paints bordered buttons with a three-slice sprite set
-  (`<sprite>0..5.png`, left, middle and right with their highlights, as
+  (`<sprite>0..5.webp`, left, middle and right with their highlights, as
   `data/gfx/guitheme`); their labels use `ink`. Flat buttons keep the palette.
 - Asset paths must stay under `data/`. Unknown tokens and invalid values are
   reported on standard error and leave the inherited value.

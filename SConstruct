@@ -34,7 +34,7 @@ def establish_options(env):
     opts.Add(BoolVariable("release", "Build for release", 0))
     opts.Add("size_optimization", "Opt-in GCC release experiment: none, gc, lto, size", "none")
     opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
-    opts.Add("optimized_assets", "Optimize installed client assets: auto, 0, or 1", "auto")
+    opts.Add("optimized_assets", "Offer lossy WebP artwork: auto (release), 0 (lossless), or 1", "auto")
     opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
     opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
     opts.Add(BoolVariable("wss", "Enable native secure WebSocket transport", 1))
@@ -84,6 +84,7 @@ def configure(env, server_only, relay=False):
     else:
     	configfile.add("PACKAGE_DATA_DIR", "data directory", "\"" + env["DATADIR"] + "\"")
     configfile.add("PACKAGE_SOURCE_DIR", "source directory", "\"" +env.Dir("#").abspath.replace("\\", "\\\\") + "\"")
+    configfile.add("PACKAGE_RUNTIME_ASSET_DIR", "generated WebP artwork for source builds", '\"' + str(Path(env["BUILDDIR"]).resolve() / "runtime-assets").replace("\\", "\\\\") + '\"')
     configfile.add("PACKAGE_NAME", "Define to the full name of this package.", "\"Globulation 2\"")
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
@@ -597,10 +598,12 @@ def main():
         "tools",
         "windows"
     ]
-    from runtime_assets import optimized_install_enabled
-    optimized_install = optimized_install_enabled(env['release'], env['optimized_assets']) and not env['server'] and 'install' in COMMAND_LINE_TARGETS
+    optimized_install = not env['server'] and env.get('role') != 'relay' and 'install' in COMMAND_LINE_TARGETS
     if optimized_install and 'dist' in COMMAND_LINE_TARGETS:
         raise ValueError('Run release install and source dist as separate SCons invocations')
+    if not env['server'] and env.get('role') != 'relay':
+        from runtime_assets import prepare_assets
+        prepare_assets(env)
     if optimized_install:
         from runtime_assets import install_assets
         install_assets(env)

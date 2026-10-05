@@ -284,12 +284,26 @@ and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
 Release packagers share `tools/package_assets.py`. Original artwork stays in
 `data/` and `datasrc/`; generated runtime trees and per-image caches stay under
-`build/`. The exporter retains the smallest of original PNG, optimized PNG and
-pixel-exact lossless WebP. It preserves RGB beneath transparent pixels, dimensions,
-team-color masks and HD frame geometry. Normal source/debug builds use the
-originals. Image lookup searches directories in their existing order, checking a
-logical PNG first and its WebP alternative second within each directory; an
-original PNG override therefore retains precedence.
+`build/`. Runtime artwork is WebP in every client build: units, buildings,
+terrain, resources, effects, UI, icons, wordmarks and browser menu art. Release
+bundles choose the smaller of lossless WebP Q75/method 4 and lossy WebP
+Q90/method 6. Both candidates use `exact=True`; lossy explicitly uses
+`lossless=False`. Dimensions and decoded alpha must match for every candidate.
+Lossless candidates also require full RGBA equality, including RGB beneath
+transparent pixels. Higher-depth RGBA PNG sources use the renderer's 8-bit RGBA
+representation (rounded normalized 16-bit channels, as SDL converts RGBA64) for
+both candidates. Unsupported higher-depth modes fail the export without
+quantization; their source artwork remains untouched. Fonts, meshes, music and
+platform icon containers are outside this policy.
+
+Source PNG artwork stays in the repository. SCons prepares lossless WebP for
+normal source/debug builds and exposes that generated tree to the client and
+native test programs. Release builds select the smaller permitted WebP encoding.
+Image lookup searches existing directories in order using the exact WebP name;
+custom artwork overrides must therefore use `.webp`. Theme backdrop and wordmark
+paths also use WebP. Sprite frames, sheets, and HD atlas loaders decode only WebP;
+there is no PNG fallback for bundled artwork. PNG/JPEG decoding remains available
+for end-user imports, map/save previews, screenshots and downloaded skin textures.
 
 Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
 (currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
@@ -298,23 +312,31 @@ any other image. `<name>.sheet` beside them lists each sheet's file, layer
 (`image` or `rotated`), first frame, frame count and tile size. When that index
 exists, `GAGCore::Sprite::load` cuts the tiles out of the sheets and ignores the
 per-frame files; without one, or if any sheet does not match it, the sprite loads
-one file per frame as in the source tree. The exporter checks that every tile is
-byte-identical to its frame, and the audit lists each sheet's frames under
-`packed_from` so release installs can remove per-frame copies left by older
+one WebP file per frame. The exporter checks exact tile placement
+before encoding (including cached sheets) and exact per-frame alpha after
+decoding; lossless sheets also retain full RGBA. The audit lists each sheet's frames under
+`packed_from` so client installs can remove per-frame copies left by older
 installs. Opening thousands of small files dominated unit-sprite loading.
+HD terrain/resource atlases also have exact source frame placement verified before
+encoding; the renderer checks their exact alpha against decoded HD frames, allowing
+independently encoded lossy RGB to differ.
 
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
 never application content. It requires network access on first setup; subsequent
-exports reuse cached verified conversions. Flatpak supplies checksum-pinned
-encoder sources and build dependencies for its offline sandbox. RPM uses
+exports reuse cached verified conversions. Image recipe identity includes the
+recipe version, encoder pins, Q90 quality/method and depth conversion policy;
+older recipes regenerate automatically. Corrupt cache entries regenerate from
+source artwork. Export/install ownership remains `runtime-assets-v1`, so older
+generated trees can be replaced and obsolete managed files removed safely.
+Flatpak supplies checksum-pinned encoder sources and build dependencies for its offline sandbox. RPM uses
 `tools/build_asset_encoder.py` with checksum-pinned Source archives; the helper
 builds a private encoder with pip's `--no-index --no-build-isolation` options.
 Fetch sources before entering an offline build with
 `python3 tools/build_asset_encoder.py fetch --sources <source-directory>`.
 Distro installs can request `optimized_assets=1` independently of `release=0`,
 preserving distro compiler flags and debug information. `optimized_assets=0`
-retains original asset bytes for a measurement baseline; `auto` follows `release`.
+selects lossless WebP for comparison/rollback; `auto` follows `release`.
 Windows CI uses standard CPython for encoding and MinGW Python for building;
 `GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
 Python tests can use the same environment:
@@ -326,14 +348,15 @@ python3 tools/package_assets.py --platform linux --output build/runtime-assets
 
 The export audit is beside the generated tree, outside shipped assets. Build
 helpers and the HD source provenance manifest are omitted, while `frames.txt`,
-font coverage, notices, music and all HD images are retained. Store screenshots
-remain in Linux packages where metainfo requires them. Android's installed asset
+font coverage, notices, music and all HD images are retained. Linux's public
+AppStream screenshot remains original PNG because external metadata references
+it. Other platforms omit store screenshots. Android's installed asset
 index hashes the exported bytes. Run source `dist` and release `install` as
 separate SCons invocations; the latter installs the exported runtime tree.
-Release installs retain a compact compressed ownership index to remove obsolete
+Client installs retain a compact compressed ownership index to remove obsolete
 managed files on upgrades. Unrelated files and modified obsolete files are kept.
 On the first upgrade from an install without that index, PNGs at current shipped
-image paths are replaced when WebP is selected, including artwork from older
+image paths are removed when replaced by WebP, including artwork from older
 releases. Keep custom image overrides in the user profile so they retain priority.
 
 Windows distributions stage assets and recursively imported DLLs through
@@ -367,9 +390,14 @@ Its executable is stripped only after a matching dSYM has been retained in the
 build's `symbols/` directory, and before dependency rewriting and signing.
 Preserve that dSYM with release evidence for crash symbolication.
 
-The opaque `menu-colony.png` illustration uses visually reviewed quality-85
-lossy WebP in release exports. Use `--lossless-background` for an exact-artwork
-comparison export. Wordmarks, icons, sprites, masks and atlases remain lossless. No save,
+Q90 changes visual fidelity and packaging bytes, including sprite and team-color
+RGB. In-game review should cover animation, recoloring, terrain seams, sheet
+boundaries, HD art, cursors and lettering. `--lossless-images` selects exact RGBA
+for comparison/rollback; `--original` produces a source-byte comparison tree with per-frame PNGs; it is
+not a playable runtime tree for the WebP-only artwork loader.
+`--lossy-images` is the optimized default. The former `--lossy-background` and
+`--lossless-background` flags are deprecated aliases for these global image flags.
+Audits record the global image policy and each selected lossy encoding. No save,
 replay, network or simulation format changes are involved. Measure complete
 packages and startup separately: smaller compressed assets need not decode
 faster or use less GPU memory.
@@ -380,7 +408,7 @@ source revision, architecture and compiler. Its `compare` command rejects
 reports from different sources, platforms, compilers or measurement scopes.
 Use `--scope asset-only` for an export without a binary/runtime; it must not be
 reported as a complete application download. Candidate release CI retains
-same-source original/optimized reports for Linux tarballs and Windows ZIPs.
+same-source source-byte/runtime reports for Linux tarballs and Windows ZIPs.
 Installed sizes exclude symlink targets counted elsewhere; download size is the
 actual archive byte count. Shared system runtimes are outside these artifacts.
 

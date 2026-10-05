@@ -82,7 +82,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--original-assets",
         action="store_true",
-        help="Size measurement baseline using original image bytes",
+        help="Offline size measurement baseline using original image bytes (not playable)",
     )
     parser.add_argument("--stage-dir", type=Path, help="Epic BuildPatchTool build root")
     parser.add_argument(

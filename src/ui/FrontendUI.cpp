@@ -50,7 +50,7 @@ IconRef uiIcon(UIIcon icon)
 	{
 		auto surface = std::make_shared<GAGCore::DrawableSurface>(1, 1);
 		const std::string path =
-			"data/gui/tabler-" + asset->name + "-" + std::to_string(pixels) + ".png";
+			"data/gui/tabler-" + asset->name + "-" + std::to_string(pixels) + ".webp";
 		if (surface->loadImage(path))
 			asset->rasters.push_back({pixels, std::move(surface)});
 		else
