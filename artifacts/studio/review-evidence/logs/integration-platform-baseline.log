@@ -1,0 +1,41 @@
+
+> test
+> vitest run --maxWorkers=6
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/f800/glob2/platform
+
+ ❯ packages/db/test/schema.test.ts (8 tests | 1 failed) 22239ms
+   ❯ migrations (6)
+     × upgrades an existing platform database through all skin migrations 4101ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/db/test/schema.test.ts > migrations > upgrades an existing platform database through all skin migrations
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) }, …(12) ] to have a length of 14 but got 15
+
+- Expected
++ Received
+
+- 14
++ 15
+
+ ❯ packages/db/test/schema.test.ts:779:24
+    777|         .executeTakeFirstOrThrow();
+    778|       const upgraded = await migrateToLatest(existing.db);
+    779|       expect(upgraded).toHaveLength(15);
+       |                        ^
+    780|       expect(upgraded.every((migration) => migration.status === 'Succe…
+    781|       expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 75 passed (76)
+      Tests  1 failed | 560 passed (561)
+   Start at  20:11:08
+   Duration  93.46s (tests 74%, import 19%, transform 4%, environment 3%)
+
+    Isolate  76 workers spawned · ~434ms startup each (spawn + environment, per file)
+             at least ~5.07s faster with isolate: false — reuses workers across files instead of one per file
+

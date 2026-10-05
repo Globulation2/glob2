@@ -1,0 +1,331 @@
+{
+  "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+  "stages": [
+    {
+      "id": "prepare",
+      "label": "Prepare the design",
+      "detail": "Your design and native landscape references are prepared.",
+      "status": "complete",
+      "completedAt": "2026-10-05T00:14:25.248Z"
+    },
+    {
+      "id": "terrain",
+      "label": "Shape the terrain",
+      "detail": "The generated layout is ready to become game terrain.",
+      "status": "complete",
+      "completedAt": "2026-10-05T00:14:25.549Z"
+    },
+    {
+      "id": "build",
+      "label": "Build the playable map",
+      "detail": "The native engine has built the terrain and settled the colonies.",
+      "status": "complete",
+      "completedAt": "2026-10-05T00:14:36.451Z"
+    },
+    {
+      "id": "checks",
+      "label": "Check the essentials",
+      "detail": "Playability checks passed.",
+      "status": "complete",
+      "completedAt": "2026-10-05T00:14:38.495Z"
+    },
+    {
+      "id": "ready",
+      "label": "Ready",
+      "status": "complete",
+      "completedAt": "2026-10-05T00:14:38.631Z"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "3ad1b251-362f-4604-be15-9a7862470206",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 1",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/3ad1b251-362f-4604-be15-9a7862470206"
+    },
+    {
+      "id": "cc504a77-ae8e-4d62-a140-66584cde06ba",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 2",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/cc504a77-ae8e-4d62-a140-66584cde06ba"
+    },
+    {
+      "id": "3e2f3f10-b2f2-44e4-a87f-6d12d7d4ff68",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 3",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/3e2f3f10-b2f2-44e4-a87f-6d12d7d4ff68"
+    },
+    {
+      "id": "4f186e77-0eb8-4365-b127-ae00cbdf0476",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 4",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/4f186e77-0eb8-4365-b127-ae00cbdf0476"
+    },
+    {
+      "id": "13ff03de-8662-4285-aba4-f017e9986475",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 5",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/13ff03de-8662-4285-aba4-f017e9986475"
+    },
+    {
+      "id": "d3b0c005-0185-4d74-aa94-60a5edac21ee",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "prepare",
+      "kind": "reference",
+      "label": "Landscape reference 6",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/d3b0c005-0185-4d74-aa94-60a5edac21ee"
+    },
+    {
+      "id": "ad7209a6-a02d-44a5-a86b-4c6ad89a9e8b",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "terrain",
+      "kind": "generated",
+      "label": "Generated layout · intermediate image",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/ad7209a6-a02d-44a5-a86b-4c6ad89a9e8b"
+    },
+    {
+      "id": "fa9aaa04-b6b8-4f99-acad-03e065f3424e",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "build",
+      "kind": "crop",
+      "label": "Selected map area",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/fa9aaa04-b6b8-4f99-acad-03e065f3424e"
+    },
+    {
+      "id": "4019bb4d-763f-4777-8352-e99237b34754",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "build",
+      "kind": "crop",
+      "label": "Cropped layout · intermediate image",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/4019bb4d-763f-4777-8352-e99237b34754"
+    },
+    {
+      "id": "2ee4eec2-5166-476c-8832-a9b82dd67adf",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "build",
+      "kind": "categorical",
+      "label": "Converted terrain",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/2ee4eec2-5166-476c-8832-a9b82dd67adf",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "1ce1d806-6447-4355-ab8d-3b67679abdca",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "build",
+      "kind": "preview",
+      "label": "Native terrain preview · awaiting checks",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/1ce1d806-6447-4355-ab8d-3b67679abdca",
+      "width": 512,
+      "height": 512
+    },
+    {
+      "id": "f43dc040-68b8-4cf2-8364-ea750bb0f913",
+      "requestId": "2151f248-dc11-4459-b9d0-1992f869e883",
+      "stage": "ready",
+      "kind": "preview",
+      "label": "Ready to play",
+      "url": "/api/v1/map-studio/threads/9231633f-3330-467e-9e21-dc0e07e462b8/artifacts/f43dc040-68b8-4cf2-8364-ea750bb0f913",
+      "width": 512,
+      "height": 512
+    }
+  ],
+  "checks": [
+    {
+      "id": "request",
+      "label": "Requested size and players",
+      "status": "passed"
+    },
+    {
+      "id": "starts",
+      "label": "Valid colony starts",
+      "status": "passed"
+    },
+    {
+      "id": "growth",
+      "label": "Resource growth enabled",
+      "status": "passed"
+    },
+    {
+      "id": "routes",
+      "label": "Connected walking routes",
+      "status": "passed"
+    },
+    {
+      "id": "economy",
+      "label": "Opening economy measured",
+      "status": "passed"
+    },
+    {
+      "id": "building-0",
+      "label": "Colony 1: building space",
+      "colony": 0,
+      "status": "passed",
+      "location": {
+        "x": 50,
+        "y": 28
+      }
+    },
+    {
+      "id": "wheat-0",
+      "label": "Colony 1: starter food",
+      "colony": 0,
+      "status": "passed",
+      "location": {
+        "x": 50,
+        "y": 28
+      }
+    },
+    {
+      "id": "wood-0",
+      "label": "Colony 1: starter timber",
+      "colony": 0,
+      "status": "passed",
+      "location": {
+        "x": 50,
+        "y": 28
+      }
+    },
+    {
+      "id": "renewable-0",
+      "label": "Colony 1: renewable food ground",
+      "colony": 0,
+      "status": "passed",
+      "location": {
+        "x": 50,
+        "y": 28
+      }
+    },
+    {
+      "id": "building-1",
+      "label": "Colony 2: building space",
+      "colony": 1,
+      "status": "passed",
+      "location": {
+        "x": 168,
+        "y": 50
+      }
+    },
+    {
+      "id": "wheat-1",
+      "label": "Colony 2: starter food",
+      "colony": 1,
+      "status": "passed",
+      "location": {
+        "x": 168,
+        "y": 50
+      }
+    },
+    {
+      "id": "wood-1",
+      "label": "Colony 2: starter timber",
+      "colony": 1,
+      "status": "passed",
+      "location": {
+        "x": 168,
+        "y": 50
+      }
+    },
+    {
+      "id": "renewable-1",
+      "label": "Colony 2: renewable food ground",
+      "colony": 1,
+      "status": "passed",
+      "location": {
+        "x": 168,
+        "y": 50
+      }
+    },
+    {
+      "id": "building-2",
+      "label": "Colony 3: building space",
+      "colony": 2,
+      "status": "passed",
+      "location": {
+        "x": 28,
+        "y": 146
+      }
+    },
+    {
+      "id": "wheat-2",
+      "label": "Colony 3: starter food",
+      "colony": 2,
+      "status": "passed",
+      "location": {
+        "x": 28,
+        "y": 146
+      }
+    },
+    {
+      "id": "wood-2",
+      "label": "Colony 3: starter timber",
+      "colony": 2,
+      "status": "passed",
+      "location": {
+        "x": 28,
+        "y": 146
+      }
+    },
+    {
+      "id": "renewable-2",
+      "label": "Colony 3: renewable food ground",
+      "colony": 2,
+      "status": "passed",
+      "location": {
+        "x": 28,
+        "y": 146
+      }
+    },
+    {
+      "id": "building-3",
+      "label": "Colony 4: building space",
+      "colony": 3,
+      "status": "passed",
+      "location": {
+        "x": 146,
+        "y": 168
+      }
+    },
+    {
+      "id": "wheat-3",
+      "label": "Colony 4: starter food",
+      "colony": 3,
+      "status": "passed",
+      "location": {
+        "x": 146,
+        "y": 168
+      }
+    },
+    {
+      "id": "wood-3",
+      "label": "Colony 4: starter timber",
+      "colony": 3,
+      "status": "passed",
+      "location": {
+        "x": 146,
+        "y": 168
+      }
+    },
+    {
+      "id": "renewable-3",
+      "label": "Colony 4: renewable food ground",
+      "colony": 3,
+      "status": "passed",
+      "location": {
+        "x": 146,
+        "y": 168
+      }
+    }
+  ],
+  "historical": false
+}

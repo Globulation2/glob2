@@ -1,0 +1,52 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts studio.spec.ts smoke.spec.ts
+
+[WebServer] (node:2571640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:2571909) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (6.7s)
+  ✓   2 [desktop] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (1.3s)
+  ✓   3 [desktop] › e2e/smoke.spec.ts:162:1 › missing pages and items have a heading and a title (1.1s)
+  ✓   4 [desktop] › e2e/smoke.spec.ts:170:1 › join with code opens the invite page; bad codes explain themselves (1.6s)
+  ✓   5 [desktop] › e2e/smoke.spec.ts:183:1 › server-rendered invite and sign-in pages share the look (10.5s)
+  ✓   6 [desktop] › e2e/smoke.spec.ts:204:1 › leaderboard ranks players and lists AIs per version (5.7s)
+  ✓   7 [desktop] › e2e/smoke.spec.ts:216:1 › player profile shows ratings, graph, aggregates and matches (12.6s)
+  ✓   8 [desktop] › e2e/smoke.spec.ts:234:1 › match page shows players, charts, verification and the replay (17.7s)
+  ✓   9 [desktop] › e2e/smoke.spec.ts:262:1 › recent matches list filters by queue (6.9s)
+  ✓  10 [desktop] › e2e/smoke.spec.ts:268:1 › map catalog, map page and signed-in like (27.8s)
+  ✓  11 [desktop] › e2e/smoke.spec.ts:308:1 › moderation pages for administrators only (20.4s)
+  ✓  12 [desktop] › e2e/smoke.spec.ts:331:1 › account page signed out and signed in (7.2s)
+  ✓  13 [desktop] › e2e/smoke.spec.ts:344:1 › the theme toggle cycles system, light and dark and is remembered (2.1s)
+  ✓  14 [desktop] › e2e/smoke.spec.ts:370:1 › keyboard: skip link first, visible focus, focus moves to new pages (1.4s)
+  ✓  15 [desktop] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (1.4s)
+  -  16 [desktop] › e2e/smoke.spec.ts:404:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets
+  -  17 [desktop] › e2e/smoke.spec.ts:453:1 › watch in browser opens the replay in the browser game
+  ✓  18 [desktop] › e2e/studio.spec.ts:8:1 › design conversation, private versions and explicit generation fit desktop and phone (4.0s)
+(node:2578603) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [phone] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (9.1s)
+  ✓  20 [phone] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (1.4s)
+  ✓  21 [phone] › e2e/smoke.spec.ts:162:1 › missing pages and items have a heading and a title (1.0s)
+  ✓  22 [phone] › e2e/smoke.spec.ts:170:1 › join with code opens the invite page; bad codes explain themselves (1.1s)
+  ✓  23 [phone] › e2e/smoke.spec.ts:183:1 › server-rendered invite and sign-in pages share the look (8.9s)
+  ✓  24 [phone] › e2e/smoke.spec.ts:204:1 › leaderboard ranks players and lists AIs per version (4.4s)
+  ✓  25 [phone] › e2e/smoke.spec.ts:216:1 › player profile shows ratings, graph, aggregates and matches (15.2s)
+  ✓  26 [phone] › e2e/smoke.spec.ts:234:1 › match page shows players, charts, verification and the replay (20.8s)
+  ✓  27 [phone] › e2e/smoke.spec.ts:262:1 › recent matches list filters by queue (12.6s)
+  ✓  28 [phone] › e2e/smoke.spec.ts:268:1 › map catalog, map page and signed-in like (48.1s)
+  ✓  29 [phone] › e2e/smoke.spec.ts:308:1 › moderation pages for administrators only (20.0s)
+  ✓  30 [phone] › e2e/smoke.spec.ts:331:1 › account page signed out and signed in (7.5s)
+  ✓  31 [phone] › e2e/smoke.spec.ts:344:1 › the theme toggle cycles system, light and dark and is remembered (3.8s)
+  -  32 [phone] › e2e/smoke.spec.ts:370:1 › keyboard: skip link first, visible focus, focus moves to new pages
+  ✓  33 [phone] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (2.8s)
+  ✓  34 [phone] › e2e/smoke.spec.ts:404:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets (40.7s)
+  -  35 [phone] › e2e/smoke.spec.ts:453:1 › watch in browser opens the replay in the browser game
+  ✓  36 [phone] › e2e/studio.spec.ts:8:1 › design conversation, private versions and explicit generation fit desktop and phone (6.8s)
+
+  4 skipped
+  32 passed (5.8m)

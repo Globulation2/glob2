@@ -1,0 +1,21 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts players.spec.ts
+
+[WebServer] (node:2562474) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:2562928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/players.spec.ts:13:3 › directory, AI profile, rankings and photos (light) (7.3s)
+  ✓  2 [desktop] › e2e/players.spec.ts:13:3 › directory, AI profile, rankings and photos (dark) (6.9s)
+  ✓  3 [desktop] › e2e/players.spec.ts:146:1 › keyboard directory navigation keeps the active result in view (682ms)
+(node:2563609) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › e2e/players.spec.ts:13:3 › directory, AI profile, rankings and photos (light) (7.3s)
+  ✓  5 [phone] › e2e/players.spec.ts:13:3 › directory, AI profile, rankings and photos (dark) (6.9s)
+  ✓  6 [phone] › e2e/players.spec.ts:146:1 › keyboard directory navigation keeps the active result in view (570ms)
+
+  6 passed (37.5s)

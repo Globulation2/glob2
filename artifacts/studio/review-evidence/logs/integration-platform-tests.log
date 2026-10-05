@@ -1,0 +1,16 @@
+
+> test
+> vitest run --maxWorkers=6
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/f800/glob2/platform
+
+
+ Test Files  76 passed (76)
+      Tests  561 passed (561)
+   Start at  20:14:02
+   Duration  131.95s (tests 72%, import 22%, environment 3%, transform 3%)
+
+    Isolate  76 workers spawned · ~709ms startup each (spawn + environment, per file)
+             at least ~8.27s faster with isolate: false — reuses workers across files instead of one per file
+
