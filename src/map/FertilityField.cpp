@@ -4,6 +4,7 @@
 #include "TerrainProperties.h"
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <queue>
 #include <utility>
@@ -51,20 +52,92 @@ std::vector<std::int64_t> triangular(const std::vector<T>& input, int width, int
 struct WrappedIndexes
 {
     int width,height;
-    std::vector<int> xs,ys;
-    WrappedIndexes(int w,int h):width(w),height(h),xs(91*w),ys(91*h)
+    std::array<int,91> xs{},ys{};
+    WrappedIndexes(int w,int h):width(w),height(h)
     {
         for(int d=-45;d<=45;++d)
         {
-            const int bx=d%w,by=d%h;
-            for(int x=0;x<w;++x) xs[(d+45)*w+x]=(x+bx+w)%w;
-            for(int y=0;y<h;++y) ys[(d+45)*h+y]=(y+by+h)%h;
+            xs[d+45]=wrap(d,w);
+            ys[d+45]=wrap(d,h);
         }
     }
-    int x(int position,int delta) const { return xs[(delta+45)*width+position]; }
-    int y(int position,int delta) const { return ys[(delta+45)*height+position]; }
+    int x(int position,int delta) const
+    { const int value=position+xs[delta+45];return value>=width?value-width:value; }
+    int y(int position,int delta) const
+    { const int value=position+ys[delta+45];return value>=height?value-height:value; }
 };
 constexpr int offsetWeight(int offset) { return 16-(offset<0 ? -offset : offset); }
+constexpr auto offsetWeights=[] {
+    std::array<int,31> result{};
+    for(int i=0;i<31;++i)result[i]=offsetWeight(i-15);
+    return result;
+}();
+
+// Split a 31-tap stamp only where its destination crosses the torus seam.
+// Within a span every write has a fixed stride and a distinct destination;
+// this remains true on one-cell and other narrower-than-kernel maps.
+template<int Step,class Apply> void wrappedSpans(int width,int start,Apply&& apply)
+{
+    for(int offset=0;offset<31;)
+    {
+        const int count=std::min(31-offset,(width-1-start)/Step+1);
+        apply(start,offset,count);
+        offset+=count;
+        start+=Step*count;
+        if(start>=width)start-=width;
+        if constexpr(Step==2)if(start>=width)start-=width;
+    }
+}
+
+template<class T> class PaddedRows
+{
+    int stride;
+    std::vector<T> values;
+public:
+    PaddedRows(const std::vector<T>& source,int w,int h):stride(w+60),values(std::size_t(h)*stride)
+    {
+        for(int y=0;y<h;++y)
+        {
+            auto* target=values.data()+std::size_t(y)*stride;
+            const auto* row=source.data()+std::size_t(y)*w;
+            int x=wrap(-30,w);
+            for(int i=0;i<stride;++i)
+            {target[i]=row[x];if(++x==w)x=0;}
+        }
+    }
+    const T* at(int row,int start) const
+    {return values.data()+std::size_t(row)*stride+(start+30);}
+};
+
+// Aquatic offsets follow diagonals (x-2d,y+d) or (x+d,y-2d).
+// Lay those diagonals out as contiguous lines. Padding keeps logical coordinates
+// across the torus seam, including maps whose width and height differ: wrapping
+// one coordinate must not reset the other coordinate's diagonal phase.
+template<class T> class DiagonalSamples
+{
+    int stride;
+    std::vector<T> values;
+public:
+    DiagonalSamples(const std::vector<T>& source,int w,int h,bool alongX)
+        :stride((alongX?w:h)+90),values(std::size_t(alongX?h:w)*stride)
+    {
+        const int length=alongX?w:h,lines=alongX?h:w,step=2%lines;
+        for(int line=0;line<lines;++line)
+        {
+            int forward=wrap(-45,length),other=wrap(line+90,lines);
+            auto* target=values.data()+std::size_t(line)*stride;
+            for(int i=0;i<stride;++i)
+            {
+                target[i]=alongX?source[other*w+forward]:source[forward*w+other];
+                if(++forward==length)forward=0;
+                other-=step;
+                if(other<0)other+=lines;
+            }
+        }
+    }
+    const T* at(int line,int start) const
+    { return values.data()+std::size_t(line)*stride+(start+45); }
+};
 
 std::uint32_t q16(std::int64_t value)
 {
@@ -102,49 +175,57 @@ void Field::rebuildWeighted(int w, int h, const std::vector<std::int16_t>& contr
     usedPath=path==Path::Adaptive
         ? (4*std::uint64_t(size)+961*std::uint64_t(sandTiles)<=961*std::uint64_t(waterTiles)
             ? Path::SandCorrection : Path::WaterSplat) : path;
-    std::vector<std::int64_t> totals(size,0);
+    if(!waterTiles)
+    {
+        fertility.assign(size,0);
+        return;
+    }
+    std::vector<std::int64_t> totals;
     const WrappedIndexes wrapped(w,h);
     if(usedPath==Path::SandCorrection)
     {
         totals=triangular(contributionQ8,w,h,15);
         for(auto& value:totals)value*=256;
+        const PaddedRows<std::int16_t> samples(contributionQ8,w,h);
         // A donor and its opposite inhibitor act on the same weighted offset.
         // Iterate only inhibitors; no grid-sized 961-tap scan is needed.
         for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
         {
             const int inhibition=std::min<int>(inhibitionQ8[sy*w+sx],256);
             if(!inhibition)continue;
-            int targetX[31],donorX[31];
-            for(int dx=-15;dx<=15;++dx)
-            {targetX[dx+15]=wrapped.x(sx,dx);donorX[dx+15]=wrapped.x(sx,2*dx);}
+            const int start=wrapped.x(sx,-15);
             for(int dy=-15;dy<=15;++dy)
             {
                 auto* target=&totals[wrapped.y(sy,dy)*w];
-                const auto* donor=&contributionQ8[wrapped.y(sy,2*dy)*w];
+                const auto* donor=samples.at(wrapped.y(sy,2*dy),sx-30);
                 const std::int64_t scale=inhibition*offsetWeight(dy);
-                for(int dx=-15;dx<=15;++dx)
-                    target[targetX[dx+15]]-=scale*offsetWeight(dx)*donor[donorX[dx+15]];
+                wrappedSpans<1>(w,start,[&](int x,int offset,int count) {
+                    for(int i=0;i<count;++i)
+                        target[x+i]-=scale*(offsetWeights[offset+i]*donor[2*(offset+i)]);
+                });
             }
         }
     }
     else
     {
+        totals.assign(size,0);
+        const PaddedRows<std::uint16_t> samples(inhibitionQ8,w,h);
         // Sparse donor alternative; signed contributions remain signed until
         // every pair is accumulated, so nearby deficits cancel bonuses exactly.
         for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
         {
             const int donor=contributionQ8[sy*w+sx];
             if(!donor)continue;
-            int targetX[31],inhibitorX[31];
-            for(int dx=-15;dx<=15;++dx)
-            {targetX[dx+15]=wrapped.x(sx,-dx);inhibitorX[dx+15]=wrapped.x(sx,-2*dx);}
+            const int start=wrapped.x(sx,-15);
             for(int dy=-15;dy<=15;++dy)
             {
                 auto* target=&totals[wrapped.y(sy,-dy)*w];
-                const auto* inhibitors=&inhibitionQ8[wrapped.y(sy,-2*dy)*w];
+                const auto* inhibitors=samples.at(wrapped.y(sy,-2*dy),sx-30);
                 const std::int64_t scale=donor*offsetWeight(dy);
-                for(int dx=-15;dx<=15;++dx)
-                    target[targetX[dx+15]]+=scale*offsetWeight(dx)*(256-std::min<int>(inhibitors[inhibitorX[dx+15]],256));
+                wrappedSpans<1>(w,start,[&](int x,int offset,int count) {
+                    for(int i=0;i<count;++i)
+                        target[x+i]+=scale*(offsetWeights[offset+i]*(256-std::min<int>(inhibitors[2*(offset+i)],256)));
+                });
             }
         }
     }
@@ -165,39 +246,45 @@ std::vector<std::uint32_t> shoreGrowthField(int w,int h,
     const WrappedIndexes wrapped(w,h);
     if(shores<=donors)
     {
+        const DiagonalSamples<std::int16_t> samples(contributionQ8,w,h,false);
         // Shore at (x+2dy,y+2dx), donor at (x+dx,y+dy). Invert the
         // former relation to stamp only from nonzero support cells.
         for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
         {
             const int support=supportQ8[sy*w+sx];
             if(!support)continue;
-            int targetX[31];
-            for(int dy=-15;dy<=15;++dy)targetX[dy+15]=wrapped.x(sx,-2*dy);
+            const int start=wrapped.x(sx,-30);
+            const int diagonal=wrap(sx+2*sy,w);
             for(int dx=-15;dx<=15;++dx)
             {
                 auto* target=&totals[wrapped.y(sy,-2*dx)*w];
                 const std::int64_t scale=support*offsetWeight(dx);
-                for(int dy=-15;dy<=15;++dy)
-                    target[targetX[dy+15]]+=scale*offsetWeight(dy)*
-                        contributionQ8[wrapped.y(sy,dy-2*dx)*w+wrapped.x(sx,dx-2*dy)];
+                const auto* donor=samples.at(wrapped.x(diagonal,-3*dx),sy-2*dx-15);
+                wrappedSpans<2>(w,start,[&](int x,int offset,int count) {
+                    for(int i=0;i<count;++i)
+                        target[x+2*i]+=scale*(offsetWeights[offset+i]*donor[30-offset-i]);
+                });
             }
         }
     }
     else
     {
+        const DiagonalSamples<std::uint16_t> samples(supportQ8,w,h,true);
         for(int sy=0;sy<h;++sy)for(int sx=0;sx<w;++sx)
         {
             const int donor=contributionQ8[sy*w+sx];
             if(!donor)continue;
-            int targetX[31];
-            for(int dx=-15;dx<=15;++dx)targetX[dx+15]=wrapped.x(sx,-dx);
+            const int start=wrapped.x(sx,-15);
+            const int diagonal=wrap(2*sx+sy,h);
             for(int dy=-15;dy<=15;++dy)
             {
                 auto* target=&totals[wrapped.y(sy,-dy)*w];
                 const std::int64_t scale=donor*offsetWeight(dy);
-                for(int dx=-15;dx<=15;++dx)
-                    target[targetX[dx+15]]+=scale*offsetWeight(dx)*
-                        supportQ8[wrapped.y(sy,2*dx-dy)*w+wrapped.x(sx,2*dy-dx)];
+                const auto* support=samples.at(wrapped.y(diagonal,3*dy),sx+2*dy-15);
+                wrappedSpans<1>(w,start,[&](int x,int offset,int count) {
+                    for(int i=0;i<count;++i)
+                        target[x+i]+=scale*(offsetWeights[offset+i]*support[offset+i]);
+                });
             }
         }
     }
@@ -214,8 +301,28 @@ void Field::multiplyLocal(const std::vector<std::uint16_t>& growthQ8)
 
 bool GrowthCache::validFor(const Map& map) const
 {
-	return land.getW()==map.getW() && land.getH()==map.getH() &&
-		generation==map.terrainGeneration() && aquatic.size()==std::size_t(map.getW())*map.getH();
+	return ready && land.getW()==map.getW() && land.getH()==map.getH() &&
+		aquatic.size()==std::size_t(map.getW())*map.getH();
+}
+
+void GrowthCache::terrainChanged(std::size_t index, const TerrainProperties& before,
+	const TerrainProperties& after)
+{
+	if (!ready) return;
+	// These are the actual kernel inputs. Inhibition saturates at one, and a
+	// disabled fertility source contributes zero regardless of its stored value.
+	if ((before.fertilitySource ? before.fertilityQ8 : 0) !=
+		(after.fertilitySource ? after.fertilityQ8 : 0) ||
+		std::min<unsigned>(before.inhibitionQ8, 256) != std::min<unsigned>(after.inhibitionQ8, 256) ||
+		before.shoreSupportQ8 != after.shoreSupportQ8 || before.growthQ8 != after.growthQ8)
+	{
+		invalidate();
+		return;
+	}
+	// Habitat permissions affect only this cell's resource-rate lookup. The
+	// terrain-weighted fields remain exact, including the exposed landField().
+	assert(index < growthHabitats.size());
+	growthHabitats[index] = after.resourcesGrow ? after.allowedResources : 0;
 }
 
 void GrowthCache::rebuild(const Map& map)
@@ -238,7 +345,7 @@ void GrowthCache::rebuild(const Map& map)
 	land.rebuildWeighted(w,h,contribution,inhibition);
 	aquatic=shoreGrowthField(w,h,contribution,shore);
 	land.multiplyLocal(localGrowth);
-	generation=map.terrainGeneration();
+	ready=true;
 }
 
 std::uint32_t GrowthCache::rate(std::size_t index, int resourceType) const

@@ -312,8 +312,8 @@ filesystem reads; CPU workers decode WebP directly to ARGB8888, cut sheets, buil
 native atlases and prepare upload pixels and alpha-weighted mip chains. Fonts
 share immutable source bytes but open their SDL_ttf objects on the owner thread.
 Mesh parsing and stereo Opus stream preparation use the same scheduler. Mutable
-music cursors are independent requests. GPU creation/upload, SDL renderer textures
-and live object publication run on the owner thread. Workers never wait on child
+music playback cursors belong to the dedicated music producer. GPU creation/upload,
+SDL renderer textures and live object publication run on the owner thread. Workers never wait on child
 jobs or call renderer APIs.
 
 Use `requestSprite`/`findSprite` and `pollAssets` for asynchronous families;
@@ -839,8 +839,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   an editor brush or a generator's material selection).
 - `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
   state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
-  batch edits with `editTerrain()` so snapshots, topology and ecology caches are
-  invalidated together. The compatibility `getTerrainType` query returns an
+  batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
+  consistent with the canonical IDs. The compatibility `getTerrainType` query returns an
   unknown category for legacy shores; never use it to index the property table.
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
@@ -858,7 +858,13 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
   existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
   material catalog independently chooses the detailed appearance for that ID.
-- Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
+- Ecology caches terrain-only land and aquatic fields for the map's lifetime.
+  Normal growth, harvesting, unit movement and building placement do not rebuild
+  them. Map replacement invalidates them; terrain edits invalidate them only when
+  effective fertility contributions, inhibition, shore support or local growth
+  factors change. Habitat-only edits update one cell's resource mask, and other
+  capability changes retain the fields. A query inside an edit batch observes all
+  preceding changes; closing the batch does not discard an already-current field.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,
   while opportunity rates use `Fertility::kRateScale` (three times Q16) so wheat
@@ -1825,3 +1831,46 @@ preserved from the previous 44.1 kHz mixer. Browser builds compile checksum-pinn
 Opus, opusfile and Ogg libraries separately for serial and threaded runtimes;
 opusfile HTTP support is disabled. Native/mobile builds use their package-managed
 opusfile dependencies with libogg retained.
+
+### Buffered music playback
+
+`SoundMixer` is an application-thread facade. Its value-only controls, snapshots
+and diagnostics live in `MusicTypes.h`; UI callers do not include decoder or queue
+internals. Native playback owns one dedicated producer thread; browser playback
+uses a separate Wasm decoder worker. Both run
+`Music::Producer`, retaining the existing Opus timeline, loop handling, mood
+selection and fixed-point fades. Loading, replacing, seeking and decoder cleanup
+happen outside the device callback. Preview screens send typed controls and read
+consumed playback snapshots instead of locking SDL or owning live decoders. Preview
+session tokens prevent an old screen from controlling or closing a newer preview.
+
+The producer maintains 36 blocks of 1,024 stereo frames (768 ms at 48 kHz), refills
+at 24 blocks, and cannot exceed 48 blocks. Native output consumes a single-producer,
+single-consumer ring without waiting for gameplay or decoder locks. Volume and
+mute are applied at consumption. Native voice decoding stays on the application
+thread and publishes bounded PCM to separate per-player rings; the music look-ahead
+does not add voice latency. The producer requests high scheduling priority, but
+failure to obtain it is supported and is not an audio initialization failure.
+Set `GLOB2_AUDIO_THREAD_PRIORITY=0` to qualify ordinary-priority production.
+
+Mood requests affect future prepared samples, normally within one second. A
+request during an existing fade still waits for that fade to complete; rapid
+requests coalesce to the latest mood. Replacement and preview controls use queue
+generations to reject obsolete samples. Preview pause retains the queue and partial
+block; its clock freezes at consumption and resumes without skipping look-ahead
+music. Seek invalidates the old generation even while paused. A real underrun fades
+out over five milliseconds and resumes with a fade after refilling; it never loops
+a stale block.
+No finite queue can cover indefinite OS/browser audio-thread starvation.
+
+Loading and replacement on native playback synchronously wait for the producer to
+finish preparation; the audio callback continues consuming the old queue meanwhile.
+Only a successful replacement invalidates those samples. Routine mood and preview
+controls coalesce and never make the callback wait. Decoder ownership and destruction
+stay with the producer; only the consumer advances the queue read cursor.
+
+`SoundMixer::diagnostics()` exposes buffered and consumed frames, underruns,
+starvation frames, maximum producer render time, callback time, and observed mood
+command latency. Browser diagnostics are available through `Module.glob2Music`.
+Do not log from the device callback. Queue diagnostics and dummy audio tests cover
+application supply; device-loopback capture and listening are separate evidence.
