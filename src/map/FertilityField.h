@@ -9,6 +9,7 @@
 #include <vector>
 
 class Map;
+struct TerrainProperties;
 
 /// Deterministic terrain ecology. Contributions and inhibition are averaged by
 /// a weighted coupled kernel; runtime growth samples the resulting exact rates
@@ -85,7 +86,11 @@ namespace Fertility
 	class GrowthCache
 	{
 	public:
-		void invalidate() { generation = 0; }
+		void invalidate() { ready = false; }
+		/// Preserve cached fields when only habitat permissions or non-ecology
+		/// capabilities change. Map replacement always calls invalidate().
+		void terrainChanged(std::size_t index, const TerrainProperties& before,
+			const TerrainProperties& after);
 		bool validFor(const Map& map) const;
 		void rebuild(const Map& map);
 		/// Expected opportunities per visit divided by kRateScale; bonuses permit up to four.
@@ -93,7 +98,7 @@ namespace Fertility
 		const Field& landField() const { return land; }
 		const std::vector<std::uint32_t>& aquaticField() const { return aquatic; }
 	private:
-		std::uint64_t generation = 0;
+		bool ready = false;
 		Field land;
 		std::vector<std::uint32_t> aquatic;
 		std::vector<std::uint16_t> localGrowth;
