@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "test/benchmark_building_pipeline.py",
+    "--binary",
+    "/home/bradley/glob2-building-gradient-20261004-9520/build-v138/src/glob2",
+    "--checkpoint",
+    "/home/bradley/glob2-building-gradient-20261004-9520/evidence/busy.game.gz",
+    "--start-tick",
+    "16000",
+    "--checkpoint",
+    "/home/bradley/glob2-building-gradient-20261004-9520/evidence/mixed.game.gz",
+    "--start-tick",
+    "12000",
+    "--checkpoint",
+    "/home/bradley/glob2-building-gradient-20261004-9520/evidence/scheduled-v138-small.game",
+    "--start-tick",
+    "30000",
+    "--output",
+    "/home/bradley/glob2-building-gradient-20261004-9520/evidence/scheduled-v138-timing-linux",
+    "--phase",
+    "timing",
+    "--repeats",
+    "10",
+    "--ticks",
+    "2048"
+  ],
+  "environment": "/home/bradley/glob2-verify/sdl3/prefix/lib"
+}

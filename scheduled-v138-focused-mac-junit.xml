@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="45" failures="0" errors="0" skipped="0"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.001774" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.001587" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.002056" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.001788" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="actual map harvest and market pickup emit distinct resource outcomes" time="0.002162" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an oversized building bundle retains its fixed deadline through save and load" time="0.200374" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="building queue admission is bounded and stable across completed-result restoration" time="0.280922" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.002815" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.025574" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="first construction of a new round-trip field remains synchronous during a pending bundle" time="0.003259" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="fresh oracle exposes closing and opening routes and moved flag goals" time="0.003237" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="hiring audit detects a newly opened route without hiring or consuming RNG" time="0.00282" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.003171" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="impact oracle never changes published fields or simulation random draws" time="0.002055" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="later invalidation remains dirty and multiple building jobs share a deadline" time="0.001739" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="movement audit preserves forbidden escape and published resource goal stops" time="0.001999" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="parallel fields" time="0.026651" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="0.002956" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.002215" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="published access metadata remains independent across swim-cost classes and saves" time="0.001735" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="queued walking and round-trip bundles match synchronous kernels for weighted swim classes" time="0.009531" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="resource audit distinguishes a stale market route from harvesting" time="0.002583" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.001523" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building bundles publish at fixed deadlines across worker counts" time="0.007967" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled bundles retain captured terrain costs across edits and private save restoration" time="0.002691" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled rules repair A-star decreased keys and choose a shortest legal step" time="0.003405" status="run" />
+  </testsuite><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="resolved director budget survives saves and reads the older layout" time="0.01303" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="canonical terrain survives presentation regeneration and batches snapshot invalidation" time="0.003068" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorer flag eligibility applies route accessibility and hunger distance" time="0.001353" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="0.00129" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="0.001325" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="0.04101" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="required terrain experiments survive tiling and distinguish map headers" time="0.001894" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs and supersede queued route snapshots" time="0.002192" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="0.002734" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="pure building bundles are identical with slow workers and thread creation failure" time="0.109581" status="run" />
+    <testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.447632" status="run" />
+  </testsuite><testsuite name="Maxima.Placement"><testcase classname="Maxima.Placement" name="Frozen wood reservations survive saves while older planner layouts remain readable" time="0.002483" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0.000202" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="0.047818" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.021397" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="0.16001" status="run" />
+  </testsuite></testsuites>

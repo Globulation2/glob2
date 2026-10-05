@@ -1,0 +1,146 @@
+{
+  "base": "79c8d65",
+  "master": "ee67fd5f3d423567690551e0da685d1d555f2e73",
+  "overlaps": [
+    {
+      "path": "browser/tests/fixtures/README.md",
+      "resolution": "Current replay/Studio fixtures are regenerated at 138, superseding the upstream 134 refresh."
+    },
+    {
+      "path": "browser/tests/fixtures/cross-replay.replay",
+      "resolution": "Current replay/Studio fixtures are regenerated at 138, superseding the upstream 134 refresh."
+    },
+    {
+      "path": "browser/tests/fixtures/studio-trace.json",
+      "resolution": "Current replay/Studio fixtures are regenerated at 138, superseding the upstream 134 refresh."
+    },
+    {
+      "path": "data/texts.ar.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.br.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.ca.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.cz.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.de.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.dk.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.eo.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.es.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.eu.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.fa.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.fi.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.fr.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.gr.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.hu.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.id.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.it.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.ja.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.ko.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.nl.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.pl.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.pt.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.ro.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.ru.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.si.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.sk.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.sr.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.sv.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.tr.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.uk.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.vi.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.zh-cn.txt",
+      "merge_exit": 0
+    },
+    {
+      "path": "data/texts.zh-tw.txt",
+      "merge_exit": 0
+    }
+  ]
+}

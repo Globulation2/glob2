@@ -1,0 +1,13 @@
+{
+  "commit": "8e272eb89571d3497bccecf529ebe5a748ba276c",
+  "tree": "8eb471fdaa69dbb8a10bd9f0265b7a9d465a2103",
+  "validated_working_source": "84e1ab28c75de5b833e0f541311a534efd89720e1a4ada79bee9217f6b4aece4",
+  "committed_source": {
+    "dirty": false,
+    "revision": "8e272eb89571d3497bccecf529ebe5a748ba276c",
+    "sourceStatus": [],
+    "sourceTreeSha256": "b44fc5e4a0b18fbb581805e5feccf594d26036b5899ccfff015c803be168e7cb"
+  },
+  "exact_content_match": true,
+  "method": "Reconstructed validated tracked patch plus untracked-source archive in an isolated Git index; tree exactly matches committed tree."
+}

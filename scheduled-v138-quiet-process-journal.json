@@ -1,0 +1,34 @@
+[
+  {
+    "pid": 1968565,
+    "state": "S",
+    "ppid": 1,
+    "start_time": "232862650",
+    "args": "/usr/bin/python3 /home/bradley/glob2-farming-techniques-worker-20260927/packages/14e0e64a98ed48a7afa7a014a63206fbf62d81934d3bbbb69ba067b5062d6df2.pyz daemon /home/bradley/glob2-farming-techniques-worker-20260927/workers/14e0e64a98ed48a7afa7a014a63206fbf62d81934d3bbbb69ba067b5062d6df2 ",
+    "restored": true
+  },
+  {
+    "pid": 3774736,
+    "state": "S",
+    "ppid": 1,
+    "start_time": "291862375",
+    "args": "/usr/bin/python3 /home/bradley/glob2-map-library-workers/packages/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26.pyz daemon /home/bradley/glob2-map-library-workers/workers/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26 ",
+    "restored": true
+  },
+  {
+    "pid": 3684078,
+    "state": "S",
+    "ppid": 1,
+    "start_time": "290766475",
+    "args": "/usr/bin/python3 /home/bradley/glob2-map-library-extra-workers/packages/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26.pyz daemon /home/bradley/glob2-map-library-extra-workers/workers/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26 ",
+    "restored": true
+  },
+  {
+    "pid": 3694120,
+    "state": "S",
+    "ppid": 1,
+    "start_time": "290821843",
+    "args": "/usr/bin/python3 /home/bradley/glob2-map-library-roomy-workers/packages/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26.pyz daemon /home/bradley/glob2-map-library-roomy-workers/workers/c27ae64f03152c1fb9d6eef0d72bc4b3bd8747160552dc2d62975d2ee46a1b26 ",
+    "restored": true
+  }
+]

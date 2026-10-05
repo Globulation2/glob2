@@ -1,0 +1,362 @@
+{
+  "cases": [
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d8-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d4-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d0-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/busy.game.gz/verify-d2-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w2-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w4-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d8-w4-audit1/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w0-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d4-w8-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d0-w1-audit0/measurement.json",
+    "scheduled-v138-verify-linux/mixed.game.gz/verify-d2-w8-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w2-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w1-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w1-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w2-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w4-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w8-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w1-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w0-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w8-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w0-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w0-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w2-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w4-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w4-audit1/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w4-audit1/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w4-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w2-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w4-audit1/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w4-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d8-w4-audit1/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w0-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d4-w8-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d0-w1-audit0/measurement.json",
+    "scheduled-v138-small-verify-linux/scheduled-v138-small.game/verify-d2-w8-audit0/measurement.json"
+  ],
+  "matched_cases": 72,
+  "mac_binary_sha256": "be1d83b0fd17a326ddc716d4fa95e64b9cbdab72010bda44f9157c90dde78f85",
+  "save_phase_cases": 28,
+  "save_checks": [
+    {
+      "delay": 2,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "74cb3b70e3a146f9cd630032e58e3d9a907e1ffddb85ec3ff8a4a918816fc1f3",
+      "output_hashes": {
+        "game.replay": "b812301d29f6522a16867a5d9d04fccb73e32f4ea8878f15aea99a3446afef7b"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "74cb3b70e3a146f9cd630032e58e3d9a907e1ffddb85ec3ff8a4a918816fc1f3",
+      "output_hashes": {
+        "game.replay": "b812301d29f6522a16867a5d9d04fccb73e32f4ea8878f15aea99a3446afef7b"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "b569cffe47eb6ce9952ebb92e952d98b72d278b7fe4e01af3809d340e79aa89f",
+      "output_hashes": {
+        "game.replay": "f5d9ad7e9d5f7d938bac49a58e23183b4863812b193912b1dfceb90f36712bdf"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "b569cffe47eb6ce9952ebb92e952d98b72d278b7fe4e01af3809d340e79aa89f",
+      "output_hashes": {
+        "game.replay": "f5d9ad7e9d5f7d938bac49a58e23183b4863812b193912b1dfceb90f36712bdf"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "0efb9e355864ba5d6c412a0c289b430207712f4cda4c74c1c2c97ea478b1e41a",
+      "output_hashes": {
+        "game.replay": "c0e4cf23f02f764a6e196cf03e98e65164ba1533461225f759fe7876d70222a2"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "0efb9e355864ba5d6c412a0c289b430207712f4cda4c74c1c2c97ea478b1e41a",
+      "output_hashes": {
+        "game.replay": "c0e4cf23f02f764a6e196cf03e98e65164ba1533461225f759fe7876d70222a2"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "0abd90f3cefb63dd3a9da8e0532affd4b164e9303caa5d54ec94d5535c1b0e9e",
+      "output_hashes": {
+        "game.replay": "7884fd3c34675820065d6cf52686e50eff11f82f7599fa7573a98127d1549793"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "0abd90f3cefb63dd3a9da8e0532affd4b164e9303caa5d54ec94d5535c1b0e9e",
+      "output_hashes": {
+        "game.replay": "7884fd3c34675820065d6cf52686e50eff11f82f7599fa7573a98127d1549793"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 3,
+      "workers": 0,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "58b087576d298f5d1d76cfe21b071cb1ced97f3ad38f5fe772605a9547b74939",
+      "output_hashes": {
+        "game.replay": "9373ed1bf1c485fbee15fbf687e1f10dd19837d9ac4b1269de46333ac7655790"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 3,
+      "workers": 4,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "58b087576d298f5d1d76cfe21b071cb1ced97f3ad38f5fe772605a9547b74939",
+      "output_hashes": {
+        "game.replay": "9373ed1bf1c485fbee15fbf687e1f10dd19837d9ac4b1269de46333ac7655790"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 4,
+      "workers": 0,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "da4b5fe5bf7d04547d6864a58157c313718bcda698a0d22c4bc03ffebdcad5e0",
+      "output_hashes": {
+        "game.replay": "ec4e8d51ad173a18fe47644317fa09396fe3780264c7359ce1cb2581e1426a90"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 4,
+      "workers": 4,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "da4b5fe5bf7d04547d6864a58157c313718bcda698a0d22c4bc03ffebdcad5e0",
+      "output_hashes": {
+        "game.replay": "ec4e8d51ad173a18fe47644317fa09396fe3780264c7359ce1cb2581e1426a90"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "7ac700c7da4e2b90ae4af8d8799941889a2bcc8f691bdfc328d33a48ad25f3a5",
+      "output_hashes": {
+        "game.replay": "fe57e88158043bfb7b73e8f91d02b7f1166e41facfd247794946fd9ed274a44a"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "7ac700c7da4e2b90ae4af8d8799941889a2bcc8f691bdfc328d33a48ad25f3a5",
+      "output_hashes": {
+        "game.replay": "fe57e88158043bfb7b73e8f91d02b7f1166e41facfd247794946fd9ed274a44a"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "2caf72505fd7b7f93f06afd02e645bc7e8393f826cc33e784b1f1e8d398f2ff2",
+      "output_hashes": {
+        "game.replay": "ef814e26e3d60919492c7ec0ba10919b1c05a115a84dbcf1bdc3b73a6d3c3409"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "2caf72505fd7b7f93f06afd02e645bc7e8393f826cc33e784b1f1e8d398f2ff2",
+      "output_hashes": {
+        "game.replay": "ef814e26e3d60919492c7ec0ba10919b1c05a115a84dbcf1bdc3b73a6d3c3409"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 3,
+      "workers": 0,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "03d8327f7d62e9e50e6a3a92205abd0c10846129dd993bfe1a663a5d2c13f262",
+      "output_hashes": {
+        "game.replay": "0bfc20e771133cf5173d5102ed0e548292e5eddd52435985810e522e904b959e"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 3,
+      "workers": 4,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "03d8327f7d62e9e50e6a3a92205abd0c10846129dd993bfe1a663a5d2c13f262",
+      "output_hashes": {
+        "game.replay": "0bfc20e771133cf5173d5102ed0e548292e5eddd52435985810e522e904b959e"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 4,
+      "workers": 0,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "883551509d60600ab8aabcf86acd1a5e23acdbc69d0d28c8ac066372f8a66ce0",
+      "output_hashes": {
+        "game.replay": "0690c869ff2d343e776e1ab6966b7fe63c5f163c9a8ea0c0fcbaab5379a9b225"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 4,
+      "workers": 4,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "883551509d60600ab8aabcf86acd1a5e23acdbc69d0d28c8ac066372f8a66ce0",
+      "output_hashes": {
+        "game.replay": "0690c869ff2d343e776e1ab6966b7fe63c5f163c9a8ea0c0fcbaab5379a9b225"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 5,
+      "workers": 0,
+      "compared_ticks": 27,
+      "checkpoint_sha256": "811d19af547d87eac149afe77ae2b85ef2857590524b48ec920d14161ac7d99f",
+      "output_hashes": {
+        "game.replay": "be7b90bd6b1a9c9d3783d00f168d5363d709b5ba6634d253583f10689124c891"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 5,
+      "workers": 4,
+      "compared_ticks": 27,
+      "checkpoint_sha256": "811d19af547d87eac149afe77ae2b85ef2857590524b48ec920d14161ac7d99f",
+      "output_hashes": {
+        "game.replay": "be7b90bd6b1a9c9d3783d00f168d5363d709b5ba6634d253583f10689124c891"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 6,
+      "workers": 0,
+      "compared_ticks": 26,
+      "checkpoint_sha256": "718553d59b607f4bfa96203378d1242ad56d8249a3a3c53494bbe3d68249cd78",
+      "output_hashes": {
+        "game.replay": "35e9b2da8a1728bc09e111061c03f58ae0b961173b8a3e9bb3cac33e72f8f546"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 6,
+      "workers": 4,
+      "compared_ticks": 26,
+      "checkpoint_sha256": "718553d59b607f4bfa96203378d1242ad56d8249a3a3c53494bbe3d68249cd78",
+      "output_hashes": {
+        "game.replay": "35e9b2da8a1728bc09e111061c03f58ae0b961173b8a3e9bb3cac33e72f8f546"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 7,
+      "workers": 0,
+      "compared_ticks": 25,
+      "checkpoint_sha256": "ff97668cafba62a9cfa6c46c888b160b61d7d75a692da79f551ea9079042ecb8",
+      "output_hashes": {
+        "game.replay": "bab9051c9fe214abf2cf4e09ec3c715f55d08e364e4aaa2a05279d0275f00d17"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 7,
+      "workers": 4,
+      "compared_ticks": 25,
+      "checkpoint_sha256": "ff97668cafba62a9cfa6c46c888b160b61d7d75a692da79f551ea9079042ecb8",
+      "output_hashes": {
+        "game.replay": "bab9051c9fe214abf2cf4e09ec3c715f55d08e364e4aaa2a05279d0275f00d17"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 8,
+      "workers": 0,
+      "compared_ticks": 24,
+      "checkpoint_sha256": "6b8c0087616846dfbe843edd9ce837ee62bad4413046521b2a963616c9214be5",
+      "output_hashes": {
+        "game.replay": "65690724fb182ef8a80955a1ec28ac956527f7fc251398442c8443c62a797cb2"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 8,
+      "workers": 4,
+      "compared_ticks": 24,
+      "checkpoint_sha256": "6b8c0087616846dfbe843edd9ce837ee62bad4413046521b2a963616c9214be5",
+      "output_hashes": {
+        "game.replay": "65690724fb182ef8a80955a1ec28ac956527f7fc251398442c8443c62a797cb2"
+      }
+    }
+  ],
+  "linux_binary_sha256": "9ec468fe5b96bdc67a3235b9f23e392350d6da02bec82e0ee455cc50d57c18dd"
+}

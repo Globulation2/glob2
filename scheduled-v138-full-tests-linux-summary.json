@@ -1,0 +1,17 @@
+{
+  "total": 1571,
+  "passed": 1453,
+  "skipped": 116,
+  "failures": [
+    {
+      "suite": "FontKerning",
+      "case": "the bundled SDL3_ttf moves the pen for kerned pairs",
+      "details": "\nlibgag/src/FontKerningTest.cpp:92:\nCHECK( TrueTypeFont::kerningMovesPen(kerned, unkerned) ) is NOT correct!\n  values: CHECK( false )\n\n      "
+    },
+    {
+      "suite": "ImageAssets",
+      "case": "16-bit RGBA rounds normalized channels to the exporter reference",
+      "details": "\nlibgag/src/ImageAssetTest.cpp:74:\nCHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!\n  values: CHECK( -1 == 0 )\n\n      "
+    }
+  ]
+}

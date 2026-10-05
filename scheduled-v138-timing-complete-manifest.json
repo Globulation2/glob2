@@ -1,0 +1,18 @@
+{
+  "measurement_count": 360,
+  "warmup_count": 36,
+  "ticks_per_measurement": 2048,
+  "paired_repetitions_per_variant": 10,
+  "auditing": false,
+  "measured_source_sha256": "04f28cf67c1949cf4b576a7c63b9b1b116a05bc6d65d5820ae7227804643a90d",
+  "measured_binary_sha256": "9ec468fe5b96bdc67a3235b9f23e392350d6da02bec82e0ee455cc50d57c18dd",
+  "final_source_sha256": "84e1ab28c75de5b833e0f541311a534efd89720e1a4ada79bee9217f6b4aece4",
+  "commands": "scheduled-v138-timing-command.json",
+  "equivalence_proof": "scheduled-v138-final-cross-native-proof.json",
+  "restored_processes": 4,
+  "artifacts": {
+    "scheduled-v138-timing-linux/busy.game.gz/timings.json": "563c1ea192d9bb49ffe4cebf85036caab84e2fea904c3a7b535bd1c70c65bcef",
+    "scheduled-v138-timing-linux/mixed.game.gz/timings.json": "5ce4b468eb4e9d284ca898c1b4324c4ee2657247869df27eedef3930ef2e209c",
+    "scheduled-v138-timing-linux/scheduled-v138-small.game/timings.json": "5405434743617dca59d2a656b13bf650ef124a22dcb5e6129a6569791846ae07"
+  }
+}

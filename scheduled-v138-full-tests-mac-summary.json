@@ -1,0 +1,22 @@
+{
+  "total": 1573,
+  "passed": 1452,
+  "skipped": 118,
+  "failures": [
+    {
+      "suite": "JavaScriptCompatibility",
+      "case": "Terrain simulation change rejects released replays and enforces acceptance boundaries",
+      "details": "\nsrc/scripting/javascript/ScriptCompatibilityTest.cpp:137:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 138 ) is NOT correct!\n  values: CHECK( 134 == 138 )\n\n      "
+    },
+    {
+      "suite": "TeamStatsSave",
+      "case": "32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]",
+      "details": "\nsrc/team/stats/TeamStatsSaveHarness.cpp:45:\nREQUIRE( static_cast<bool>(ok) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: integrated simulation uses current replay and network gates\n\n      "
+    },
+    {
+      "suite": "ImageAssets",
+      "case": "16-bit RGBA rounds normalized channels to the exporter reference",
+      "details": "\nlibgag/src/ImageAssetTest.cpp:75:\nCHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!\n  values: CHECK( -1 == 0 )\n\n      "
+    }
+  ]
+}

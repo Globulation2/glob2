@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+    "--nox",
+    "/Users/bradley/.codex/worktrees/9520/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ],
+  "binary_sha256": "16542ad8e8f7d6019e34f384c0ed91016172b30c59f73e9d692b9eee19385c9b",
+  "environment": {
+    "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-experiment/scheduled-v138-browser-profile",
+    "GLOB2_TEST_SEED": "42",
+    "GLOB2_REPLAY_PATH": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-experiment/scheduled-v138-cross-replay.replay",
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy"
+  },
+  "fixture_sha256": "4310e5914259e6f63f30b6c7a78ea6c6b9c1d97c6e0ea13128e2cc418f6321d6"
+}

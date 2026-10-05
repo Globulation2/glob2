@@ -1,0 +1,1249 @@
+{
+  "independent_seed_count": 32,
+  "spec": {
+    "seeds": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232
+    ],
+    "map": "maps/Oazis.map.gz",
+    "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+    "players": [
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima"
+    ],
+    "checkpoint_tick": 16000,
+    "observed_ticks": 10000,
+    "delays": [
+      0,
+      4
+    ],
+    "workers": 4,
+    "compute_threads": 4,
+    "compute_experiments": "hiring",
+    "audit": false,
+    "stopping_rule": "complete all 32 predetermined seeds; no outcome-based stopping",
+    "independent_unit": "seeded match",
+    "purpose": "Independent confirmation on terrain-integrated format-138 candidate; same map and AI setup, construction and delivery endpoints retained.",
+    "counter_baseline": "Final warm-up team-timeline counters at checkpoint tick; no exporter or engine tick is used to obtain the baseline."
+  },
+  "binary_sha256": "9ec468fe5b96bdc67a3235b9f23e392350d6da02bec82e0ee455cc50d57c18dd",
+  "source": {
+    "dirty": true,
+    "revision": "79c8d65f52cfea0a91efa3c104f97d79fd5de54d",
+    "sourceStatus": [
+      "M  data/texts.ar.txt",
+      "M  data/texts.br.txt",
+      "M  data/texts.ca.txt",
+      "M  data/texts.cz.txt",
+      "M  data/texts.de.txt",
+      "M  data/texts.dk.txt",
+      "M  data/texts.en.txt",
+      "M  data/texts.eo.txt",
+      "M  data/texts.es.txt",
+      "M  data/texts.eu.txt",
+      "M  data/texts.fa.txt",
+      "M  data/texts.fi.txt",
+      "M  data/texts.fr.txt",
+      "M  data/texts.gr.txt",
+      "M  data/texts.hu.txt",
+      "M  data/texts.id.txt",
+      "M  data/texts.it.txt",
+      "M  data/texts.ja.txt",
+      "M  data/texts.keys.txt",
+      "M  data/texts.ko.txt",
+      "M  data/texts.nl.txt",
+      "M  data/texts.pending.txt",
+      "M  data/texts.pl.txt",
+      "M  data/texts.pt.txt",
+      "M  data/texts.ro.txt",
+      "M  data/texts.ru.txt",
+      "M  data/texts.si.txt",
+      "M  data/texts.sk.txt",
+      "M  data/texts.sr.txt",
+      "M  data/texts.sv.txt",
+      "M  data/texts.tr.txt",
+      "M  data/texts.uk.txt",
+      "M  data/texts.vi.txt",
+      "M  data/texts.zh-cn.txt",
+      "M  data/texts.zh-tw.txt",
+      "M  docs/development/headless-replays.md",
+      "M  docs/development/performance-telemetry.md",
+      "M  docs/features/experimental-features.md",
+      "M  docs/tools/tournaments.md",
+      "M  platform/packages/protocol/fixtures/invalid/EngineJob/verify-match-bad-setup.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchDetail/array-timeline.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/account-in-two-seats.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/closed-seat-before-player.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/closed-seat-with-name.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/closed-team-played.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/future-schema-version.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/generated-without-hash.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/generator-team-count-mismatch.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/javascript-ai-unsupported.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/name-too-long-in-bytes.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/only-closed-seats.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/pause-limit-out-of-range.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/rule-level-out-of-range.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/seat-on-missing-team.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/seats-not-contiguous.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/seed-out-of-range.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/teams-out-of-order.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/unknown-ai.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/unknown-property.json",
+      "M  platform/packages/protocol/fixtures/invalid/MatchSetup/uppercase-map-hash.json",
+      "M  platform/packages/protocol/fixtures/invalid/RealtimeEventMatchStart/assignment-preview-missing-ifLost.json",
+      "M  platform/packages/protocol/fixtures/invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",
+      "M  platform/packages/protocol/fixtures/manifest.json",
+      "M  platform/packages/protocol/fixtures/schemas/EngineJob.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/MatchAssignment.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/MatchDetail.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/MatchRules.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/MatchSetup.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeEventMatchStart.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeEventRoomState.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeMatchReconnectResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeMatchRematchResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateParams.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomJoinResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomKickResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomSetReadyResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomSetSeatResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateParams.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateResult.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/RoomState.schema.json",
+      "M  platform/packages/protocol/fixtures/schemas/VerifyMatchPayload.schema.json",
+      "M  platform/packages/protocol/fixtures/valid/EngineJob/verify-match.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchDetail/verified.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchSetup/generated-human-vs-ais.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchSetup/queue-pause-limit.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchSetup/room-closed-seats.json",
+      "M  platform/packages/protocol/fixtures/valid/MatchSetup/save-shared-control-all-rules.json",
+      "M  platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment-rated-preview.json",
+      "M  platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment-with-relay.json",
+      "M  platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment.json",
+      "M  platform/packages/protocol/fixtures/valid/RealtimeResponse/ok.json",
+      "M  platform/packages/protocol/fixtures/valid/RealtimeServerMessage/room-state-event.json",
+      "M  platform/packages/protocol/fixtures/valid/RoomState/generating-map-locked-seat.json",
+      "M  platform/packages/protocol/fixtures/valid/RoomState/open-room.json",
+      "M  platform/packages/protocol/scripts/fixtureCases.ts",
+      "M  platform/packages/protocol/src/matchSetup.ts",
+      "M  platform/packages/protocol/test/protocol.test.ts",
+      "M  scons/sources.py",
+      "M  src/ai/maxima/AIMaxima.h",
+      "M  src/ai/maxima/AIMaximaPlacement.cpp",
+      "M  src/ai/maxima/AIMaximaState.cpp",
+      "M  src/ai/maxima/MaximaImplementationIntegrationTest.cpp",
+      "M  src/ai/maxima/MaximaPlacementStandaloneTest.cpp",
+      "M  src/app/FileFormatVersions.h",
+      "M  src/app/Version.h",
+      "M  src/app/cli/Headless.cpp",
+      "M  src/building/Building.h",
+      "M  src/building/Lifecycle.cpp",
+      "M  src/building/Step.cpp",
+      "M  src/game/ExperimentalFeatures.cpp",
+      "M  src/game/ExperimentalFeatures.h",
+      "M  src/game/ExperimentalFeaturesTest.cpp",
+      "M  src/game/GameHeader.cpp",
+      "M  src/game/GameHeader.h",
+      "M  src/game/GameHeaderTextSaveLoadTest.cpp",
+      "M  src/game/Game_sync.cpp",
+      "M  src/game/SimRevision.h",
+      "M  src/game/rules/GameRuleOverrides.h",
+      "M  src/map/Map.cpp",
+      "M  src/map/Map.h",
+      "M  src/map/MapStep.cpp",
+      "M  src/map/TerrainPropertiesTest.cpp",
+      "M  src/map/gradient/BuildingGradientInvalidationHarness.cpp",
+      "M  src/map/gradient/BuildingGradientSearch.cpp",
+      "M  src/map/gradient/BuildingGradientSearch.h",
+      "M  src/map/gradient/GradientPipeline.h",
+      "M  src/map/gradient/GradientPipelineHarness.cpp",
+      "M  src/map/gradient/GradientRuntime.h",
+      "M  src/map/gradient/MapGradientBuilding.cpp",
+      "M  src/map/gradient/MapGradientDirection.cpp",
+      "M  src/map/gradient/PathGradientHarness.cpp",
+      "M  src/map/io/MapIO.cpp",
+      "M  src/map/pathfind/MapPathfindBuilding.cpp",
+      "M  src/online/MatchSetup.cpp",
+      "M  src/online/MatchSetup.h",
+      "M  src/online/MatchSetupTest.cpp",
+      "M  src/scripting/javascript/ScriptCompatibilityTest.cpp",
+      "M  src/team/TeamStep.cpp",
+      "M  src/team/stats/TeamStatsSaveHarness.cpp",
+      "M  src/unit/Unit.h",
+      "M  src/unit/UnitDisplacement.cpp",
+      "M  src/unit/UnitMovement.cpp",
+      "M  test/fixtures/multiplayer/FourSquares1.g2mr",
+      "M  test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+      "M  test/fixtures/protocol/invalid/MatchSetup/account-in-two-seats.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/closed-seat-before-player.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/closed-seat-with-name.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/closed-team-played.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/future-schema-version.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/generated-without-hash.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/generator-team-count-mismatch.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/javascript-ai-unsupported.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/name-too-long-in-bytes.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/only-closed-seats.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/pause-limit-out-of-range.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/rule-level-out-of-range.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/seat-on-missing-team.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/seats-not-contiguous.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/seed-out-of-range.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/teams-out-of-order.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/unknown-ai.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/unknown-property.json",
+      "M  test/fixtures/protocol/invalid/MatchSetup/uppercase-map-hash.json",
+      "M  test/fixtures/protocol/manifest.json",
+      "M  test/fixtures/protocol/valid/MatchSetup/catalog-1v1.json",
+      "M  test/fixtures/protocol/valid/MatchSetup/generated-human-vs-ais.json",
+      "M  test/fixtures/protocol/valid/MatchSetup/queue-pause-limit.json",
+      "M  test/fixtures/protocol/valid/MatchSetup/room-closed-seats.json",
+      "M  test/fixtures/protocol/valid/MatchSetup/save-shared-control-all-rules.json",
+      "M  test/unit/stubs/MapSectorStubs.cpp",
+      "?? home/",
+      "?? platform/packages/protocol/fixtures/invalid/MatchSetup/building-gradient-delay-three.json",
+      "?? platform/packages/protocol/fixtures/valid/MatchSetup/building-gradient-pipeline-delay-two.json",
+      "?? src/map/gradient/AsyncGradientExecutor.h",
+      "?? src/map/gradient/BuildingGradientBuild.h",
+      "?? src/map/gradient/BuildingGradientCapture.h",
+      "?? src/map/gradient/BuildingGradientDiagnostics.h",
+      "?? src/map/gradient/BuildingGradientImpact.h",
+      "?? src/map/gradient/BuildingGradientResultStorage.h",
+      "?? src/map/gradient/BuildingGradientScheduler.h",
+      "?? src/map/gradient/ForbiddenDirectionDecision.h",
+      "?? src/map/gradient/MapGradientImpact.cpp",
+      "?? src/map/gradient/MapGradientScheduling.cpp",
+      "?? test/analyze_building_gradient_impact.py",
+      "?? test/analyze_building_gradients.py",
+      "?? test/benchmark_building_pipeline.py",
+      "?? test/fixtures/protocol/invalid/MatchSetup/building-gradient-delay-three.json",
+      "?? test/fixtures/protocol/schemas/",
+      "?? test/fixtures/protocol/valid/MatchSetup/building-gradient-pipeline-delay-two.json",
+      "?? test/report_building_pipeline.py",
+      "?? test/test_building_gradient_analysis.py",
+      "?? test/test_building_gradient_impact_analysis.py",
+      "?? test/test_building_gradient_statistics.py",
+      "?? test/verify_building_pipeline_continuation.py"
+    ],
+    "sourceTreeSha256": "ae609f9baed6c94d56e249e82da9623b3aadf5e7ab850a20d248dc8632ed86e3"
+  },
+  "metrics": {
+    "deliveries": {
+      "baseline": {
+        "count": 32,
+        "mean": 7743.84375,
+        "min": 6905,
+        "max": 8491,
+        "ci95": [
+          7612.675138118866,
+          7875.012361881134
+        ],
+        "sd": 363.32169246790363
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 7775.34375,
+        "min": 7134,
+        "max": 8591,
+        "ci95": [
+          7646.923100568746,
+          7903.764399431254
+        ],
+        "sd": 355.71015832257444
+      },
+      "difference": {
+        "count": 32,
+        "mean": 31.5,
+        "min": -519,
+        "max": 645,
+        "ci95": [
+          -65.65893578313108,
+          128.65893578313108
+        ],
+        "sd": 269.1188728832214
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.004747136777658541,
+        "min": -0.06781654253234026,
+        "max": 0.09341057204923975,
+        "ci95": [
+          -0.008138307613438934,
+          0.017632581168756017
+        ],
+        "sd": 0.03569117182254739
+      },
+      "pooled_relative_change": 0.004067747363833307
+    },
+    "gathered": {
+      "baseline": {
+        "count": 32,
+        "mean": 7725.6875,
+        "min": 7057,
+        "max": 8510,
+        "ci95": [
+          7598.656334786204,
+          7852.718665213796
+        ],
+        "sd": 351.8614497763426
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 7743.5625,
+        "min": 7062,
+        "max": 8629,
+        "ci95": [
+          7608.330706996209,
+          7878.794293003791
+        ],
+        "sd": 374.57622829866233
+      },
+      "difference": {
+        "count": 32,
+        "mean": 17.875,
+        "min": -556,
+        "max": 616,
+        "ci95": [
+          -78.80199247821828,
+          114.55199247821828
+        ],
+        "sd": 267.783946373721
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.0027828690351913293,
+        "min": -0.06598623308806073,
+        "max": 0.08604880801241355,
+        "ci95": [
+          -0.009867701253114286,
+          0.015433439323496945
+        ],
+        "sd": 0.03504059806622412
+      },
+      "pooled_relative_change": 0.0023137099449077603
+    },
+    "new_buildings": {
+      "baseline": {
+        "count": 32,
+        "mean": 146.8125,
+        "min": 127,
+        "max": 163,
+        "ci95": [
+          143.84185309296961,
+          149.78314690703039
+        ],
+        "sd": 8.228344010874261
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 148.65625,
+        "min": 134,
+        "max": 170,
+        "ci95": [
+          145.942761744008,
+          151.369738255992
+        ],
+        "sd": 7.5160446658701305
+      },
+      "difference": {
+        "count": 32,
+        "mean": 1.84375,
+        "min": -13,
+        "max": 15,
+        "ci95": [
+          -0.7305905152864156,
+          4.418090515286416
+        ],
+        "sd": 7.130621721072592
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.014033974820501883,
+        "min": -0.08280254777070062,
+        "max": 0.11450381679389321,
+        "ci95": [
+          -0.0036808424446847995,
+          0.031748792085688565
+        ],
+        "sd": 0.049067969068543396
+      },
+      "pooled_relative_change": 0.012558535547041227
+    },
+    "upgrades": {
+      "baseline": {
+        "count": 32,
+        "mean": 67.03125,
+        "min": 49,
+        "max": 83,
+        "ci95": [
+          64.25817963550527,
+          69.80432036449473
+        ],
+        "sd": 7.6810801281775385
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 68.1875,
+        "min": 51,
+        "max": 86,
+        "ci95": [
+          64.89209010514315,
+          71.48290989485685
+        ],
+        "sd": 9.127899450974292
+      },
+      "difference": {
+        "count": 32,
+        "mean": 1.15625,
+        "min": -11,
+        "max": 16,
+        "ci95": [
+          -1.1836630479330745,
+          3.4961630479330745
+        ],
+        "sd": 6.481285092604159
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.019198762946676065,
+        "min": -0.15625,
+        "max": 0.24615384615384617,
+        "ci95": [
+          -0.014821279723195364,
+          0.053218805616547495
+        ],
+        "sd": 0.09423153377462663
+      },
+      "pooled_relative_change": 0.01724941724941731
+    },
+    "repairs": {
+      "baseline": {
+        "count": 32,
+        "mean": 12.1875,
+        "min": 6,
+        "max": 21,
+        "ci95": [
+          10.879558710331384,
+          13.495441289668616
+        ],
+        "sd": 3.6228441865473595
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 13.46875,
+        "min": 7,
+        "max": 20,
+        "ci95": [
+          12.259188740479265,
+          14.678311259520735
+        ],
+        "sd": 3.3503430252881232
+      },
+      "difference": {
+        "count": 32,
+        "mean": 1.28125,
+        "min": -8,
+        "max": 11,
+        "ci95": [
+          -0.2373160664097964,
+          2.7998160664097966
+        ],
+        "sd": 4.206250149786701
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.18441730348899465,
+        "min": -0.47058823529411764,
+        "max": 1.2222222222222223,
+        "ci95": [
+          0.03302010664704741,
+          0.3358145003309419
+        ],
+        "sd": 0.41935250364133847
+      },
+      "pooled_relative_change": 0.1051282051282052
+    },
+    "construction": {
+      "baseline": {
+        "count": 32,
+        "mean": 213.84375,
+        "min": 193,
+        "max": 240,
+        "ci95": [
+          210.5334818191706,
+          217.1540181808294
+        ],
+        "sd": 9.169055162918651
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 216.84375,
+        "min": 195,
+        "max": 237,
+        "ci95": [
+          213.06159899917745,
+          220.62590100082255
+        ],
+        "sd": 10.476115307473657
+      },
+      "difference": {
+        "count": 32,
+        "mean": 3,
+        "min": -17,
+        "max": 31,
+        "ci95": [
+          -0.7909126384553518,
+          6.790912638455351
+        ],
+        "sd": 10.500384017555216
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.014960033376165853,
+        "min": -0.07727272727272727,
+        "max": 0.15816326530612246,
+        "ci95": [
+          -0.00315705490962773,
+          0.03307712166195943
+        ],
+        "sd": 0.050182212681719206
+      },
+      "pooled_relative_change": 0.014028934677772886
+    },
+    "starvation_deaths": {
+      "baseline": {
+        "count": 32,
+        "mean": 37.09375,
+        "min": 8,
+        "max": 110,
+        "ci95": [
+          28.89570596638078,
+          45.29179403361922
+        ],
+        "sd": 22.70762181976962
+      },
+      "candidate": {
+        "count": 32,
+        "mean": 40.25,
+        "min": 9,
+        "max": 112,
+        "ci95": [
+          32.155366000809835,
+          48.344633999190165
+        ],
+        "sd": 22.42118813576468
+      },
+      "difference": {
+        "count": 32,
+        "mean": 3.15625,
+        "min": -55,
+        "max": 51,
+        "ci95": [
+          -3.8916583996378407,
+          10.20415839963784
+        ],
+        "sd": 19.52188081730757
+      },
+      "relative_change": {
+        "count": 32,
+        "mean": 0.2802038207251734,
+        "min": -0.6547619047619048,
+        "max": 3.615384615384615,
+        "ci95": [
+          0.00042322910346537235,
+          0.5599844123468815
+        ],
+        "sd": 0.7749594709425343
+      },
+      "pooled_relative_change": 0.08508845829823075
+    }
+  },
+  "rows": {
+    "seed-201.game.gz": {
+      "0": {
+        "deliveries": 7839,
+        "gathered": 7883,
+        "new_buildings": 144,
+        "upgrades": 80,
+        "repairs": 12,
+        "construction": 224,
+        "starvation_deaths": 34
+      },
+      "4": {
+        "deliveries": 8151,
+        "gathered": 8133,
+        "new_buildings": 140,
+        "upgrades": 86,
+        "repairs": 7,
+        "construction": 226,
+        "starvation_deaths": 28
+      }
+    },
+    "seed-202.game.gz": {
+      "0": {
+        "deliveries": 7739,
+        "gathered": 7572,
+        "new_buildings": 150,
+        "upgrades": 57,
+        "repairs": 13,
+        "construction": 207,
+        "starvation_deaths": 37
+      },
+      "4": {
+        "deliveries": 7962,
+        "gathered": 7793,
+        "new_buildings": 145,
+        "upgrades": 62,
+        "repairs": 17,
+        "construction": 207,
+        "starvation_deaths": 43
+      }
+    },
+    "seed-203.game.gz": {
+      "0": {
+        "deliveries": 7562,
+        "gathered": 7635,
+        "new_buildings": 151,
+        "upgrades": 63,
+        "repairs": 9,
+        "construction": 214,
+        "starvation_deaths": 35
+      },
+      "4": {
+        "deliveries": 7398,
+        "gathered": 7612,
+        "new_buildings": 153,
+        "upgrades": 70,
+        "repairs": 8,
+        "construction": 223,
+        "starvation_deaths": 42
+      }
+    },
+    "seed-204.game.gz": {
+      "0": {
+        "deliveries": 7718,
+        "gathered": 7674,
+        "new_buildings": 159,
+        "upgrades": 54,
+        "repairs": 12,
+        "construction": 213,
+        "starvation_deaths": 22
+      },
+      "4": {
+        "deliveries": 7473,
+        "gathered": 7638,
+        "new_buildings": 156,
+        "upgrades": 59,
+        "repairs": 11,
+        "construction": 215,
+        "starvation_deaths": 45
+      }
+    },
+    "seed-205.game.gz": {
+      "0": {
+        "deliveries": 7754,
+        "gathered": 7722,
+        "new_buildings": 140,
+        "upgrades": 71,
+        "repairs": 12,
+        "construction": 211,
+        "starvation_deaths": 48
+      },
+      "4": {
+        "deliveries": 7527,
+        "gathered": 7480,
+        "new_buildings": 149,
+        "upgrades": 71,
+        "repairs": 16,
+        "construction": 220,
+        "starvation_deaths": 32
+      }
+    },
+    "seed-206.game.gz": {
+      "0": {
+        "deliveries": 7839,
+        "gathered": 7879,
+        "new_buildings": 148,
+        "upgrades": 71,
+        "repairs": 21,
+        "construction": 219,
+        "starvation_deaths": 25
+      },
+      "4": {
+        "deliveries": 7649,
+        "gathered": 7615,
+        "new_buildings": 150,
+        "upgrades": 72,
+        "repairs": 18,
+        "construction": 222,
+        "starvation_deaths": 39
+      }
+    },
+    "seed-207.game.gz": {
+      "0": {
+        "deliveries": 7453,
+        "gathered": 7263,
+        "new_buildings": 140,
+        "upgrades": 68,
+        "repairs": 10,
+        "construction": 208,
+        "starvation_deaths": 8
+      },
+      "4": {
+        "deliveries": 7389,
+        "gathered": 7206,
+        "new_buildings": 145,
+        "upgrades": 79,
+        "repairs": 10,
+        "construction": 224,
+        "starvation_deaths": 13
+      }
+    },
+    "seed-208.game.gz": {
+      "0": {
+        "deliveries": 7653,
+        "gathered": 7655,
+        "new_buildings": 149,
+        "upgrades": 70,
+        "repairs": 15,
+        "construction": 219,
+        "starvation_deaths": 13
+      },
+      "4": {
+        "deliveries": 7134,
+        "gathered": 7176,
+        "new_buildings": 148,
+        "upgrades": 63,
+        "repairs": 14,
+        "construction": 211,
+        "starvation_deaths": 60
+      }
+    },
+    "seed-209.game.gz": {
+      "0": {
+        "deliveries": 7960,
+        "gathered": 7687,
+        "new_buildings": 152,
+        "upgrades": 67,
+        "repairs": 13,
+        "construction": 219,
+        "starvation_deaths": 39
+      },
+      "4": {
+        "deliveries": 8097,
+        "gathered": 7897,
+        "new_buildings": 158,
+        "upgrades": 69,
+        "repairs": 13,
+        "construction": 227,
+        "starvation_deaths": 43
+      }
+    },
+    "seed-210.game.gz": {
+      "0": {
+        "deliveries": 7790,
+        "gathered": 8026,
+        "new_buildings": 131,
+        "upgrades": 65,
+        "repairs": 15,
+        "construction": 196,
+        "starvation_deaths": 16
+      },
+      "4": {
+        "deliveries": 8153,
+        "gathered": 8283,
+        "new_buildings": 146,
+        "upgrades": 81,
+        "repairs": 14,
+        "construction": 227,
+        "starvation_deaths": 27
+      }
+    },
+    "seed-211.game.gz": {
+      "0": {
+        "deliveries": 8008,
+        "gathered": 8014,
+        "new_buildings": 163,
+        "upgrades": 65,
+        "repairs": 9,
+        "construction": 228,
+        "starvation_deaths": 52
+      },
+      "4": {
+        "deliveries": 8172,
+        "gathered": 8156,
+        "new_buildings": 170,
+        "upgrades": 62,
+        "repairs": 14,
+        "construction": 232,
+        "starvation_deaths": 50
+      }
+    },
+    "seed-212.game.gz": {
+      "0": {
+        "deliveries": 7217,
+        "gathered": 7298,
+        "new_buildings": 146,
+        "upgrades": 68,
+        "repairs": 12,
+        "construction": 214,
+        "starvation_deaths": 34
+      },
+      "4": {
+        "deliveries": 7785,
+        "gathered": 7914,
+        "new_buildings": 156,
+        "upgrades": 67,
+        "repairs": 16,
+        "construction": 223,
+        "starvation_deaths": 44
+      }
+    },
+    "seed-213.game.gz": {
+      "0": {
+        "deliveries": 8121,
+        "gathered": 8082,
+        "new_buildings": 144,
+        "upgrades": 78,
+        "repairs": 8,
+        "construction": 222,
+        "starvation_deaths": 15
+      },
+      "4": {
+        "deliveries": 7692,
+        "gathered": 7649,
+        "new_buildings": 144,
+        "upgrades": 75,
+        "repairs": 11,
+        "construction": 219,
+        "starvation_deaths": 19
+      }
+    },
+    "seed-214.game.gz": {
+      "0": {
+        "deliveries": 7456,
+        "gathered": 7545,
+        "new_buildings": 142,
+        "upgrades": 61,
+        "repairs": 16,
+        "construction": 203,
+        "starvation_deaths": 74
+      },
+      "4": {
+        "deliveries": 7510,
+        "gathered": 7544,
+        "new_buildings": 147,
+        "upgrades": 59,
+        "repairs": 12,
+        "construction": 206,
+        "starvation_deaths": 79
+      }
+    },
+    "seed-215.game.gz": {
+      "0": {
+        "deliveries": 7437,
+        "gathered": 7351,
+        "new_buildings": 156,
+        "upgrades": 64,
+        "repairs": 8,
+        "construction": 220,
+        "starvation_deaths": 34
+      },
+      "4": {
+        "deliveries": 7285,
+        "gathered": 7062,
+        "new_buildings": 149,
+        "upgrades": 54,
+        "repairs": 16,
+        "construction": 203,
+        "starvation_deaths": 24
+      }
+    },
+    "seed-216.game.gz": {
+      "0": {
+        "deliveries": 6905,
+        "gathered": 7089,
+        "new_buildings": 144,
+        "upgrades": 59,
+        "repairs": 10,
+        "construction": 203,
+        "starvation_deaths": 84
+      },
+      "4": {
+        "deliveries": 7550,
+        "gathered": 7699,
+        "new_buildings": 149,
+        "upgrades": 57,
+        "repairs": 12,
+        "construction": 206,
+        "starvation_deaths": 29
+      }
+    },
+    "seed-217.game.gz": {
+      "0": {
+        "deliveries": 8491,
+        "gathered": 8510,
+        "new_buildings": 148,
+        "upgrades": 78,
+        "repairs": 14,
+        "construction": 226,
+        "starvation_deaths": 34
+      },
+      "4": {
+        "deliveries": 8266,
+        "gathered": 8479,
+        "new_buildings": 161,
+        "upgrades": 69,
+        "repairs": 13,
+        "construction": 230,
+        "starvation_deaths": 66
+      }
+    },
+    "seed-218.game.gz": {
+      "0": {
+        "deliveries": 7820,
+        "gathered": 7809,
+        "new_buildings": 147,
+        "upgrades": 66,
+        "repairs": 10,
+        "construction": 213,
+        "starvation_deaths": 27
+      },
+      "4": {
+        "deliveries": 8027,
+        "gathered": 7934,
+        "new_buildings": 147,
+        "upgrades": 67,
+        "repairs": 15,
+        "construction": 214,
+        "starvation_deaths": 28
+      }
+    },
+    "seed-219.game.gz": {
+      "0": {
+        "deliveries": 7129,
+        "gathered": 7057,
+        "new_buildings": 141,
+        "upgrades": 67,
+        "repairs": 17,
+        "construction": 208,
+        "starvation_deaths": 62
+      },
+      "4": {
+        "deliveries": 7412,
+        "gathered": 7304,
+        "new_buildings": 150,
+        "upgrades": 65,
+        "repairs": 9,
+        "construction": 215,
+        "starvation_deaths": 47
+      }
+    },
+    "seed-220.game.gz": {
+      "0": {
+        "deliveries": 7584,
+        "gathered": 7558,
+        "new_buildings": 157,
+        "upgrades": 49,
+        "repairs": 16,
+        "construction": 206,
+        "starvation_deaths": 41
+      },
+      "4": {
+        "deliveries": 7515,
+        "gathered": 7400,
+        "new_buildings": 144,
+        "upgrades": 51,
+        "repairs": 12,
+        "construction": 195,
+        "starvation_deaths": 44
+      }
+    },
+    "seed-221.game.gz": {
+      "0": {
+        "deliveries": 7910,
+        "gathered": 7653,
+        "new_buildings": 151,
+        "upgrades": 57,
+        "repairs": 15,
+        "construction": 208,
+        "starvation_deaths": 30
+      },
+      "4": {
+        "deliveries": 7833,
+        "gathered": 7754,
+        "new_buildings": 152,
+        "upgrades": 56,
+        "repairs": 13,
+        "construction": 208,
+        "starvation_deaths": 47
+      }
+    },
+    "seed-222.game.gz": {
+      "0": {
+        "deliveries": 7674,
+        "gathered": 7682,
+        "new_buildings": 141,
+        "upgrades": 70,
+        "repairs": 20,
+        "construction": 211,
+        "starvation_deaths": 27
+      },
+      "4": {
+        "deliveries": 7810,
+        "gathered": 7586,
+        "new_buildings": 134,
+        "upgrades": 70,
+        "repairs": 20,
+        "construction": 204,
+        "starvation_deaths": 31
+      }
+    },
+    "seed-223.game.gz": {
+      "0": {
+        "deliveries": 7197,
+        "gathered": 7394,
+        "new_buildings": 154,
+        "upgrades": 65,
+        "repairs": 8,
+        "construction": 219,
+        "starvation_deaths": 110
+      },
+      "4": {
+        "deliveries": 7502,
+        "gathered": 7517,
+        "new_buildings": 162,
+        "upgrades": 69,
+        "repairs": 14,
+        "construction": 231,
+        "starvation_deaths": 92
+      }
+    },
+    "seed-224.game.gz": {
+      "0": {
+        "deliveries": 8404,
+        "gathered": 8409,
+        "new_buildings": 139,
+        "upgrades": 73,
+        "repairs": 6,
+        "construction": 212,
+        "starvation_deaths": 48
+      },
+      "4": {
+        "deliveries": 8504,
+        "gathered": 8629,
+        "new_buildings": 152,
+        "upgrades": 85,
+        "repairs": 11,
+        "construction": 237,
+        "starvation_deaths": 41
+      }
+    },
+    "seed-225.game.gz": {
+      "0": {
+        "deliveries": 7793,
+        "gathered": 7832,
+        "new_buildings": 151,
+        "upgrades": 59,
+        "repairs": 14,
+        "construction": 210,
+        "starvation_deaths": 61
+      },
+      "4": {
+        "deliveries": 7727,
+        "gathered": 7824,
+        "new_buildings": 147,
+        "upgrades": 64,
+        "repairs": 14,
+        "construction": 211,
+        "starvation_deaths": 112
+      }
+    },
+    "seed-226.game.gz": {
+      "0": {
+        "deliveries": 7845,
+        "gathered": 7700,
+        "new_buildings": 152,
+        "upgrades": 63,
+        "repairs": 9,
+        "construction": 215,
+        "starvation_deaths": 21
+      },
+      "4": {
+        "deliveries": 7882,
+        "gathered": 7721,
+        "new_buildings": 145,
+        "upgrades": 58,
+        "repairs": 20,
+        "construction": 203,
+        "starvation_deaths": 33
+      }
+    },
+    "seed-227.game.gz": {
+      "0": {
+        "deliveries": 8269,
+        "gathered": 8426,
+        "new_buildings": 162,
+        "upgrades": 78,
+        "repairs": 16,
+        "construction": 240,
+        "starvation_deaths": 17
+      },
+      "4": {
+        "deliveries": 7966,
+        "gathered": 7870,
+        "new_buildings": 151,
+        "upgrades": 76,
+        "repairs": 18,
+        "construction": 227,
+        "starvation_deaths": 9
+      }
+    },
+    "seed-228.game.gz": {
+      "0": {
+        "deliveries": 7461,
+        "gathered": 7523,
+        "new_buildings": 149,
+        "upgrades": 67,
+        "repairs": 9,
+        "construction": 216,
+        "starvation_deaths": 45
+      },
+      "4": {
+        "deliveries": 7427,
+        "gathered": 7444,
+        "new_buildings": 146,
+        "upgrades": 62,
+        "repairs": 16,
+        "construction": 208,
+        "starvation_deaths": 38
+      }
+    },
+    "seed-229.game.gz": {
+      "0": {
+        "deliveries": 7607,
+        "gathered": 7493,
+        "new_buildings": 142,
+        "upgrades": 71,
+        "repairs": 10,
+        "construction": 213,
+        "starvation_deaths": 18
+      },
+      "4": {
+        "deliveries": 7648,
+        "gathered": 7457,
+        "new_buildings": 140,
+        "upgrades": 82,
+        "repairs": 17,
+        "construction": 222,
+        "starvation_deaths": 11
+      }
+    },
+    "seed-230.game.gz": {
+      "0": {
+        "deliveries": 8155,
+        "gathered": 7957,
+        "new_buildings": 135,
+        "upgrades": 83,
+        "repairs": 11,
+        "construction": 218,
+        "starvation_deaths": 8
+      },
+      "4": {
+        "deliveries": 8122,
+        "gathered": 7963,
+        "new_buildings": 140,
+        "upgrades": 72,
+        "repairs": 10,
+        "construction": 212,
+        "starvation_deaths": 19
+      }
+    },
+    "seed-231.game.gz": {
+      "0": {
+        "deliveries": 8229,
+        "gathered": 8100,
+        "new_buildings": 143,
+        "upgrades": 72,
+        "repairs": 8,
+        "construction": 215,
+        "starvation_deaths": 19
+      },
+      "4": {
+        "deliveries": 8591,
+        "gathered": 8407,
+        "new_buildings": 145,
+        "upgrades": 80,
+        "repairs": 9,
+        "construction": 225,
+        "starvation_deaths": 24
+      }
+    },
+    "seed-232.game.gz": {
+      "0": {
+        "deliveries": 7784,
+        "gathered": 7744,
+        "new_buildings": 127,
+        "upgrades": 66,
+        "repairs": 12,
+        "construction": 193,
+        "starvation_deaths": 49
+      },
+      "4": {
+        "deliveries": 7652,
+        "gathered": 7648,
+        "new_buildings": 136,
+        "upgrades": 70,
+        "repairs": 11,
+        "construction": 206,
+        "starvation_deaths": 29
+      }
+    }
+  },
+  "screening": {
+    "deliveries": 9,
+    "construction": 8
+  }
+}
