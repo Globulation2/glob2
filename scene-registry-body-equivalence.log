@@ -1,0 +1,1 @@
+PASS: terrainPresentation and isHardSpaceForBuilding bodies are identical modulo whitespace; constructor retains TerrainRegistry::builtins() default initialization.

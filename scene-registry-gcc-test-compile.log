@@ -1,0 +1,84 @@
+$ g++ -o artifacts/browser-e163/scene-registry-native-SceneExtractTest.o -c -std=gnu++20 -g2 -O2 -DHAVE_CONFIG_H '-DGLOB2_OFFICIAL_INSTANCE_ORIGIN="https://app.glob2online.com"' '-DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS="https://glob2online.com"' -Iartifacts/browser-e163/profile-build/include -Iartifacts/browser-e163/profile-build/sdl3/prefix/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Iartifacts/browser-e163/profile-build/opus/prefix/include -Iartifacts/browser-e163/profile-build/opus/prefix/include/opus -Ithird_party/quickjs-ng src/render/scene/SceneExtractTest.cpp -Itest -Itest/support -Itest/third_party -Isrc/render -Isrc/render/scene -Isrc/map/image -Isrc/map/thumbnail
+$ g++ -o artifacts/browser-e163/scene-registry-native-TerrainPresentationTest.o -c -std=gnu++20 -g2 -O2 -DHAVE_CONFIG_H '-DGLOB2_OFFICIAL_INSTANCE_ORIGIN="https://app.glob2online.com"' '-DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS="https://glob2online.com"' -Iartifacts/browser-e163/profile-build/include -Iartifacts/browser-e163/profile-build/sdl3/prefix/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Iartifacts/browser-e163/profile-build/opus/prefix/include -Iartifacts/browser-e163/profile-build/opus/prefix/include/opus -Ithird_party/quickjs-ng src/render/TerrainPresentationTest.cpp -Itest -Itest/support -Itest/third_party -Isrc/render -Isrc/render/scene -Isrc/map/image -Isrc/map/thumbnail
+src/render/TerrainPresentationTest.cpp: In lambda function:
+src/render/TerrainPresentationTest.cpp:63:14: error: ‘static void Game::drawMapWater(int, int, int, int, int)’ is private within this context
+   63 |         game.drawMapWater(640,480,29,30,19);
+      |              ^~~~~~~~~~~~
+In file included from test/support/EngineFixtures.h:9,
+                 from src/render/TerrainPresentationTest.cpp:5:
+src/game/Game.h:391:21: note: declared private here
+  391 |         static void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
+      |                     ^~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp:63:26: error: ‘static void Game::drawMapWater(int, int, int, int, int)’ is private within this context
+   63 |         game.drawMapWater(640,480,29,30,19);
+      |         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+src/game/Game.h:391:21: note: declared private here
+  391 |         static void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
+      |                     ^~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp: In lambda function:
+src/render/TerrainPresentationTest.cpp:79:22: error: ‘static void Game::drawMapTerrain(int, int, int, int, int, int, int, Uint32, const SceneMap&, int)’ is private within this context
+   79 |         if(gpu) game.drawMapTerrain(0,0,19,14,29,30,0,Game::DRAW_WHOLE_MAP,scene);
+      |                      ^~~~~~~~~~~~~~
+src/game/Game.h:393:21: note: declared private here
+  393 |         static void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime = 0);
+      |                     ^~~~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp:79:36: error: ‘static void Game::drawMapTerrain(int, int, int, int, int, int, int, Uint32, const SceneMap&, int)’ is private within this context
+   79 |         if(gpu) game.drawMapTerrain(0,0,19,14,29,30,0,Game::DRAW_WHOLE_MAP,scene);
+      |                 ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/game/Game.h:393:21: note: declared private here
+  393 |         static void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime = 0);
+      |                     ^~~~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp: In function ‘void {anonymous}::layeredCache(bool)’:
+src/render/TerrainPresentationTest.cpp:110:15: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::images’ is protected within this context
+  110 |     alternate.images.resize(globals->terrain->getFrameCount());
+      |               ^~~~~~
+In file included from libgag/include/GraphicContext.h:6,
+                 from src/game/GameEvent.h:9,
+                 from src/team/Team.h:16,
+                 from src/map/Map.h:21,
+                 from src/game/Game.h:12:
+libgag/include/SDLGraphicContext.h:744:49: note: declared protected here
+  744 |                 std::vector <DrawableSurface *> images;
+      |                                                 ^~~~~~
+src/render/TerrainPresentationTest.cpp:111:15: error: ‘std::vector<GAGCore::Sprite::RotatedImage*> GAGCore::Sprite::rotated’ is protected within this context
+  111 |     alternate.rotated.resize(alternate.images.size(),nullptr);
+      |               ^~~~~~~
+libgag/include/SDLGraphicContext.h:745:46: note: declared protected here
+  745 |                 std::vector <RotatedImage *> rotated;
+      |                                              ^~~~~~~
+src/render/TerrainPresentationTest.cpp:111:40: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::images’ is protected within this context
+  111 |     alternate.rotated.resize(alternate.images.size(),nullptr);
+      |                                        ^~~~~~
+libgag/include/SDLGraphicContext.h:744:49: note: declared protected here
+  744 |                 std::vector <DrawableSurface *> images;
+      |                                                 ^~~~~~
+src/render/TerrainPresentationTest.cpp:114:15: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::experimentImages’ is protected within this context
+  114 |     alternate.experimentImages.resize(alternate.images.size(),nullptr);
+      |               ^~~~~~~~~~~~~~~~
+libgag/include/SDLGraphicContext.h:748:49: note: declared protected here
+  748 |                 std::vector <DrawableSurface *> experimentImages;
+      |                                                 ^~~~~~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp:114:49: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::images’ is protected within this context
+  114 |     alternate.experimentImages.resize(alternate.images.size(),nullptr);
+      |                                                 ^~~~~~
+libgag/include/SDLGraphicContext.h:744:49: note: declared protected here
+  744 |                 std::vector <DrawableSurface *> images;
+      |                                                 ^~~~~~
+src/render/TerrainPresentationTest.cpp:115:15: error: ‘std::vector<GAGCore::Sprite::RotatedImage*> GAGCore::Sprite::experimentRotated’ is protected within this context
+  115 |     alternate.experimentRotated.resize(alternate.images.size(),nullptr);
+      |               ^~~~~~~~~~~~~~~~~
+libgag/include/SDLGraphicContext.h:749:46: note: declared protected here
+  749 |                 std::vector <RotatedImage *> experimentRotated;
+      |                                              ^~~~~~~~~~~~~~~~~
+src/render/TerrainPresentationTest.cpp:115:50: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::images’ is protected within this context
+  115 |     alternate.experimentRotated.resize(alternate.images.size(),nullptr);
+      |                                                  ^~~~~~
+libgag/include/SDLGraphicContext.h:744:49: note: declared protected here
+  744 |                 std::vector <DrawableSurface *> images;
+      |                                                 ^~~~~~
+src/render/TerrainPresentationTest.cpp:116:33: error: ‘std::vector<GAGCore::DrawableSurface*> GAGCore::Sprite::images’ is protected within this context
+  116 |     for(auto &frame : alternate.images) {
+      |                                 ^~~~~~
+libgag/include/SDLGraphicContext.h:744:49: note: declared protected here
+  744 |                 std::vector <DrawableSurface *> images;
+      |                                                 ^~~~~~
