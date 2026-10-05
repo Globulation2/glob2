@@ -178,7 +178,8 @@ void expandTerrainBucket(std::uint16_t *__restrict gradient, GradientBucket *que
 
 template <unsigned BucketCount, bool DirectProfiles = false, class TerrainAt>
 void propagate(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
-			   GradientWorkspace &workspace, TerrainAt terrainAt, const TerrainRegistry &registry)
+			   GradientWorkspace &workspace, TerrainAt terrainAt,
+			   const TerrainRegistry::Movement &movement)
 {
 	if (!workspace.terrain)
 		workspace.terrain = std::make_unique<TerrainGradientWorkspace>();
@@ -215,8 +216,7 @@ void propagate(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
 			++pending;
 		}
 		expandTerrainBucket<BucketCount, DirectProfiles>(gradient, buckets, pending, cur, limit,
-														 grid, registry.movement(swim), scratch,
-														 terrainAt);
+														 grid, movement, scratch, terrainAt);
 	}
 }
 } // namespace gradient_kernel::runtime_terrain
@@ -224,19 +224,27 @@ namespace gradient_kernel
 {
 inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxCost,
 									 field::Grid grid, GradientWorkspace &workspace,
-									 const std::uint8_t *profiles, const TerrainRegistry &registry,
-									 unsigned buckets)
+									 const std::uint8_t *profiles,
+									 const TerrainRegistry::Movement &movement, unsigned buckets)
 {
 	const auto profileAt = [profiles](std::size_t i) { return profiles[i]; };
 	if (buckets == 64)
 		runtime_terrain::propagate<64, true>(gradient, swim, maxCost, grid, workspace, profileAt,
-											 registry);
+											 movement);
 	else if (buckets == 128)
 		runtime_terrain::propagate<128, true>(gradient, swim, maxCost, grid, workspace, profileAt,
-											  registry);
+											  movement);
 	else
 		runtime_terrain::propagate<256, true>(gradient, swim, maxCost, grid, workspace, profileAt,
-											  registry);
+											  movement);
+}
+inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxCost,
+									 field::Grid grid, GradientWorkspace &workspace,
+									 const std::uint8_t *profiles, const TerrainRegistry &registry,
+									 unsigned buckets)
+{
+	propagateTerrainProfiles(gradient, swim, maxCost, grid, workspace, profiles,
+							 registry.movement(swim), buckets);
 }
 template <class TerrainAt>
 void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
@@ -261,12 +269,12 @@ void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field
 	}
 	if (buckets == 64)
 		runtime_terrain::propagate<64>(gradient, swim, maxCost, grid, workspace, terrainAt,
-									   registry);
+									   registry.movement(swim));
 	else if (buckets == 128)
 		runtime_terrain::propagate<128>(gradient, swim, maxCost, grid, workspace, terrainAt,
-										registry);
+										registry.movement(swim));
 	else
 		runtime_terrain::propagate<256>(gradient, swim, maxCost, grid, workspace, terrainAt,
-										registry);
+										registry.movement(swim));
 }
 } // namespace gradient_kernel

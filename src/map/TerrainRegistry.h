@@ -65,3 +65,12 @@ class TerrainRegistry
 	std::uint32_t checksum_ = 0;
 	std::string digest_;
 };
+
+// Cached with a map's terrain snapshot. Compact only the profiles actually used
+// by its cells, so unused definitions cannot increase per-cost-layer setup.
+struct TerrainMovementSnapshot
+{
+	TerrainRegistry::Movement movement;
+	std::vector<std::uint8_t> cells;
+	const std::uint8_t *data() const { return cells.data(); }
+};

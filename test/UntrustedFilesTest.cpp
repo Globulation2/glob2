@@ -150,15 +150,22 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
     world.game.map.tiles[0]=original;
-    auto bad=bytes; bad[12]=char(254); // Invalid packed undermap encoding.
-    auto stream=input(bad);
-    Map restored;
+	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
+	auto stream = input(bad);
+	Map restored;
     CHECK_FALSE(restored.load(stream.get(),header,&world.game));
-    for (const char* field : {"wSector", "hSector"}) {
-        auto stream = input(poisoned(bytes, out, field, 0));
+	for (const char *field : {"chunks", "length"})
+	{
+		auto malformed = input(poisoned(bytes, out, field, 0xffffffff));
+		Map map;
+		CHECK_FALSE(map.load(malformed.get(), header, &world.game));
+	}
+	for (const char *field : {"wSector", "hSector"})
+	{
+		auto stream = input(poisoned(bytes, out, field, 0));
         Map restored;
         CHECK_FALSE(restored.load(stream.get(), header, &world.game));
-    }
+	}
 }
 TEST_CASE("compressed file size is checked before allocation") {
     glob2test::TempDir directory;

@@ -95,8 +95,8 @@ void BuildingGradientSearch::resolve(std::size_t target)
 				popped += custom->buckets[unsigned(currentCost) % N].size;
 				gradient_kernel::runtime_terrain::expandTerrainBucket<N, true>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
-					{widthMask + 1, heightMask + 1}, registry->movement(swimClass), *custom,
-					[&](size_t i) { return (*profiles)[i]; });
+					{widthMask + 1, heightMask + 1}, profiles->movement, *custom,
+					[&](size_t i) { return profiles->cells[i]; });
 				++currentCost;
 			}
 		};

@@ -34,7 +34,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 		gradient_kernel::propagateTerrainProfiles(
 			gradient, swimClass, maxCost, {getW(), getH()},
 			gradientRuntime->workspaces[compute.slot()].propagation, profiles->data(),
-			terrainRegistry(), terrainQueueBuckets());
+			profiles->movement, terrainQueueBuckets());
 		return;
 	}
 	gradient_kernel::propagateTerrainField(

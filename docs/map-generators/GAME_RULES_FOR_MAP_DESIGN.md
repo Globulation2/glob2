@@ -83,7 +83,7 @@ scrollable palette and paint it. For example:
 ```
 
 Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
-or `road`. The base supplies all simulation defaults; appearance supplies artwork
+or `road` (the compatibility key for Trail). The base supplies all simulation defaults; appearance supplies artwork
 and preview colors independently. Custom tiles have full-tile presentation and do
 not participate in the legacy corner adapter. Existing corner rules above describe
 classic terrain. Eligibility is controlled by properties: for example custom

@@ -873,8 +873,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
 - Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
-  before the tile data. Bounded text chunks support the same layout in binary and
-  text streams. Loading rebuilds compiled tables before restoring dependent caches;
+  before the tile data. Bounded JSON byte chunks support binary and text streams. Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   and replay floor 134 remain unchanged; network protocol 56 gates registry support.
@@ -890,7 +889,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Capability counters keep health, air and projectile shortcuts independent of
   registry size. A* retains the historical built-in lower bound and lowers it only
   for faster custom terrain actually present, preserving old route choices.
-  Maps lazily cache a one-byte cost-profile plane per queried swimming class,
+  Maps lazily cache a one-byte cost-profile plane and only the distinct costs
+  present in that plane per queried swimming class,
   removing the ID-to-profile lookup from general-cost cell loops. These planes
   share ownership with searches/jobs and invalidate together with terrain snapshots.
   Eager fields, resumed building searches, worker snapshots and strategic travel

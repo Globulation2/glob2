@@ -30,7 +30,7 @@ public:
 		std::shared_ptr<const std::vector<std::uint8_t>> water; // Test callback compatibility.
 		std::shared_ptr<const std::vector<TerrainType>> terrain;
 		std::shared_ptr<const TerrainRegistry> registry;
-		std::shared_ptr<const std::vector<std::uint8_t>> profiles;
+		std::shared_ptr<const TerrainMovementSnapshot> profiles;
 		unsigned terrainBuckets = 64;
 		bool modifiedCosts = false;
 		int swim = 0;

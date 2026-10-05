@@ -94,7 +94,7 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
-	mutable std::array<std::shared_ptr<const std::vector<Uint8>>, 7> terrainMovementSnapshots;
+	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
 	std::vector<TerrainType> terrainIds;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
@@ -451,7 +451,8 @@ public:
 	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
 	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
-	std::shared_ptr<const std::vector<Uint8>> frozenTerrainMovementSnapshot(unsigned swim) const;
+	std::shared_ptr<const TerrainMovementSnapshot>
+	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
 	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
 	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }

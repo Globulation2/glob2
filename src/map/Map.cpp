@@ -125,16 +125,40 @@ std::shared_ptr<const std::vector<TerrainType>> Map::frozenTerrainSnapshot() con
 	return terrainSnapshot;
 }
 
-std::shared_ptr<const std::vector<Uint8>> Map::frozenTerrainMovementSnapshot(unsigned swim) const
+std::shared_ptr<const TerrainMovementSnapshot>
+Map::frozenTerrainMovementSnapshot(unsigned swim) const
 {
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	auto &cached = terrainMovementSnapshots[swim];
 	if (!cached)
 	{
-		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
-		const auto &profiles = terrainRegistry().movement(swim).profileIds;
+		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
+		snapshot->cells.resize(size);
+		const auto &source = terrainRegistry().movement(swim);
+		auto &movement = snapshot->movement;
+		movement.profiles.reserve(source.profiles.size());
+		movement.steps.reserve(256);
+		std::array<unsigned, 256> remap;
+		remap.fill(256);
+		std::array<bool, 256> usedSteps{};
 		for (std::size_t i = 0; i < size; ++i)
-			(*snapshot)[i] = profiles[terrainIds[i]];
+		{
+			const auto original = source.profileIds[terrainIds[i]];
+			auto &profile = remap[original];
+			if (profile == 256)
+			{
+				profile = movement.profiles.size();
+				const auto costs = source.profiles[original];
+				movement.profiles.push_back(costs);
+				for (auto step : {costs.cardinal, costs.diagonal})
+					if (!usedSteps[step])
+					{
+						usedSteps[step] = true;
+						movement.steps.push_back(step);
+					}
+			}
+			snapshot->cells[i] = static_cast<Uint8>(profile);
+		}
 		cached = std::move(snapshot);
 	}
 	return cached;

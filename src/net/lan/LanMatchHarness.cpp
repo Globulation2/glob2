@@ -49,6 +49,8 @@
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
+#include "BinaryStream.h"
+#include "FileManager.h"
 #include "GlobalContainer.h"
 #include "LanRoom.h"
 #include "MapCache.h"
@@ -466,14 +468,16 @@ struct LanMatch
 	}
 };
 
-std::shared_ptr<Lan::LanRoom> hostRoom(std::uint16_t port, const fs::path& directory, std::uint8_t bundleInterval = 0)
+std::shared_ptr<Lan::LanRoom> hostRoom(std::uint16_t port, const fs::path &directory,
+									   std::uint8_t bundleInterval = 0,
+									   const std::string &mapFile = mapPath())
 {
 	Lan::LanHost::Options options;
 	if (bundleInterval)
 		options.sequencer.bundleInterval = bundleInterval;
 	options.hostName = "Host";
-	options.map = Engine::loadMapHeader(mapPath());
-	options.mapFile = mapPath();
+	options.map = Engine::loadMapHeader(mapFile);
+	options.mapFile = mapFile;
 	options.port = port;
 	options.broadcast = false;
 	options.recordPath = (directory / "match.g2mr").string();
@@ -602,6 +606,48 @@ TEST_SUITE("LanMatchHarness")
 		CHECK_FALSE(link.outboxEmpty());
 		wire.pending = 0; // the platform completes the queued write
 		CHECK(link.outboxEmpty());
+	}
+
+	GLOB2_TEST_CASE("custom terrain survives LAN map transfer", "[network][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		LanMatch match;
+		match.directory = glob2test::artifactDir() / "custom";
+		fs::create_directories(match.directory);
+		const auto path = (match.directory / "author.map").string();
+		std::string digest;
+		{
+			GameGUI author;
+			GAGCore::BinaryInputStream input(
+				glob2OpenMapOrSaveInputStreamBackend(*globalContainer->fileManager, mapPath()));
+			REQUIRE(author.game.load(&input));
+			auto &map = author.game.map;
+			map.game = nullptr;
+			map.importTerrainDefinitions(
+				R"({"schemaVersion":1,"terrains":[{"key":"lan:mud","name":"Mud","base":"grass","appearance":"sand","properties":{"groundSpeedQ8":192}}]})");
+			map.setGame(&author.game);
+			map.setCellTerrain(8, 8, *map.terrainRegistry().find("lan:mud"));
+			digest = map.terrainRegistry().digest();
+			REQUIRE(globalContainer->fileManager->writeAtomically(
+				path, [&](GAGCore::OutputStream &out)
+				{ author.game.save(&out, true, "LAN custom terrain"); }));
+		}
+		match.players.push_back(std::make_unique<LanPlayer>(
+			"Host", hostRoom(testPort(), match.directory, 0, path), 101));
+		match.players.push_back(std::make_unique<LanPlayer>(
+			"Guest", guestRoom(match.host().room->shareText(), "Guest", match.directory / "cache"),
+			102));
+		joinAndStart(match, {"nicowar", "warrush"});
+		std::string source, received;
+		REQUIRE(Online::readMapBytes(path, source));
+		REQUIRE(Online::readMapBytes(match.players[1]->room->guestSide()->mapFile(), received));
+		CHECK(source == received);
+		for (const auto &player : match.players)
+			CHECK(player->engine->gui.game.map.terrainRegistry().digest() == digest);
+		match.runFor(6000);
+		CHECK(requireIdenticalChecksums({match.players[0].get(), match.players[1].get()},
+										&match.hostSide()) > 100);
 	}
 
 	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")

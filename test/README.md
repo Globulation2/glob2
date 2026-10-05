@@ -1695,9 +1695,14 @@ and frozen traces in serial and threaded Wasm builds.
 cost profiles, maximum registry size, serialization and scalar/SIMD queue results
 against a heap oracle. `TerrainRuntime/*` covers map isolation, match immutability,
 capability summaries, custom movement, resumed/worker gradients and embedded save
-continuation. Run these with `python3 test/run_tests.py --filter 'TerrainRegistry/*'
+continuation. Run these with `python3 test/run_tests.py --filter 'TerrainRegistry/*'`
 and `python3 test/run_tests.py --filter 'TerrainRuntime/*'`. Also run existing
 terrain, gradient, save, replay, scene and editor suites when changing this boundary.
 The scalar kernel can be compiled explicitly with `GLOB2_GRADIENT_SCALAR`; NEON
 requires an ARM build. Native success alone does not establish cross-platform
 checksum equivalence or performance qualification.
+
+The custom-map cases in `TurnEngineHarness` and `LanMatch` exercise shared-map
+loading, content-hash transfer, per-tick agreement and match verification without
+local authoring files. `EditorActionCoverage` captures the import palette on both
+layouts; `TerrainPresentation` covers software and GPU registry/asset invalidation.

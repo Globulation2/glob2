@@ -231,7 +231,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 		{
 			gradient_kernel::propagateTerrainProfiles(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
 													  geometry, scratch, job.profiles->data(),
-													  *job.registry, job.terrainBuckets);
+													  job.profiles->movement, job.terrainBuckets);
 			return;
 		}
 		const auto *types = job.terrain ? job.terrain->data() : nullptr;

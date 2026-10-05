@@ -447,6 +447,40 @@ TEST_SUITE("TerrainRuntime")
 			delete[] field;
 		}
 	}
+	TEST_CASE("unused distinct costs do not expand map movement setup")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(5, 5, GRASS);
+		map.setCellTerrain(8, 8, ICE);
+		std::vector<Uint16> expected(1024, 1);
+		expected[0] = GRADIENT_AT_GOAL;
+		map.propagateGradient(expected.data(), 6);
+		nlohmann::json definitions = nlohmann::json::array();
+		for (unsigned speed = 64; speed <= 1024; ++speed)
+			definitions.push_back({{"key", "unused:s" + std::to_string(speed)},
+								   {"name", "Unused"},
+								   {"base", "water"},
+								   {"appearance", "water"},
+								   {"properties", {{"groundSpeedQ8", speed}}}});
+		map.importTerrainDefinitions(
+			nlohmann::json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+		REQUIRE(map.terrainRegistry().movement(6).profiles.size() > 50);
+		const auto snapshot = map.frozenTerrainMovementSnapshot(6);
+		CHECK(snapshot->movement.profiles.size() == 2);
+		CHECK(snapshot->movement.steps.size() == 4);
+		CHECK(map.terrainQueueBuckets() == 64);
+		std::vector<Uint16> actual(1024, 1);
+		actual[0] = GRADIENT_AT_GOAL;
+		map.propagateGradient(actual.data(), 6);
+		CHECK(actual == expected);
+		BuildingGradientSearch search;
+		actual.assign(1024, 1);
+		actual[0] = GRADIENT_AT_GOAL;
+		search.begin(map, actual.data(), 6);
+		search.finish();
+		CHECK(actual == expected);
+	}
 	TEST_CASE("large embedded registry crosses the stream string limit")
 	{
 		glob2test::HeadlessGlobals globals;

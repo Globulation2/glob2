@@ -68,21 +68,28 @@ try
 		stream->readEnterSection("terrainRegistry");
 		const auto chunks = stream->readUint32("chunks");
 		if (!chunks || chunks > 512)
-			throw std::runtime_error("Invalid terrain registry size");
+			throw std::ios_base::failure("Invalid terrain registry size");
 		std::string definitions;
 		for (unsigned i = 0; i < chunks; ++i)
 		{
 			stream->readEnterSection(i);
 			const auto length = stream->readUint32("length");
 			if (length > 65536)
-				throw std::runtime_error("Invalid terrain registry chunk");
+				throw std::ios_base::failure("Invalid terrain registry chunk");
 			std::string chunk(length, '\0');
 			stream->read(chunk.data(), chunk.size(), "definitions");
 			definitions += chunk;
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
-		terrainRegistryValue = TerrainRegistry::deserialize(definitions);
+		try
+		{
+			terrainRegistryValue = TerrainRegistry::deserialize(definitions);
+		}
+		catch (const std::exception &error)
+		{
+			throw std::ios_base::failure(std::string("Invalid terrain registry: ") + error.what());
+		}
 	}
 	terrainCounts.assign(terrainRegistry().size(), 0);
 
