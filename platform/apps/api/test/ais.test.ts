@@ -296,3 +296,12 @@ it('rejects repeated source under another label and database mutation of publish
   expect(detail.versions).toHaveLength(1);
   expect(detail.versions[0]!.label).toBe('1.0');
 });
+
+it('keeps bookmarked unlisted releases visible only to their authorised viewer', async () => {
+  const { ai } = await publish({ visibility: 'unlisted' });
+  await call('PUT', '/api/v1/ais/' + ai.id + '/favourite', owner);
+  const list = (await (await call('GET', '/api/v1/ais?favourites=true', owner)).json()) as AiList;
+  expect(list.items.some((x) => x.id === ai.id)).toBe(true);
+  const publicList = (await (await call('GET', '/api/v1/ais')).json()) as AiList;
+  expect(publicList.items.some((x) => x.id === ai.id)).toBe(false);
+});

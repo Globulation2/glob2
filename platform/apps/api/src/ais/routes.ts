@@ -171,7 +171,12 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
       .selectAll('a')
       .select(ranking.as('rank'));
     if (q.owner === 'me' && a) query = query.where('a.owner_account_id', '=', a.id);
-    else query = query.where('a.visibility', '=', 'public').where('a.hidden', '=', false);
+    else if (q.favourites === 'true' && a) {
+      if (!moderator(a))
+        query = query.where(
+          sql<boolean>`(a.owner_account_id=${a.id} OR (NOT a.hidden AND a.visibility <> 'private'))`,
+        );
+    } else query = query.where('a.visibility', '=', 'public').where('a.hidden', '=', false);
     if (q.favourites === 'true' && a)
       query = query.where((eb) =>
         eb.exists(

@@ -151,12 +151,12 @@ test('AI discovery, version details, social actions and gated publishing', async
   }
   await page.getByRole('heading', { name: 'Patient Gardener' }).click();
   await expect(page.getByRole('link', { name: 'Download JavaScript (.js)' })).toBeVisible();
-  await page.getByLabel('Version', { exact: true }).selectOption('old-release');
+  await page.getByRole('combobox', { name: 'Version', exact: true }).selectOption('old-release');
   await expect(page.getByRole('link', { name: 'Download JavaScript (.js)' })).toHaveAttribute(
     'href',
     '/api/v1/ais/' + id + '/versions/old-release/file',
   );
-  await page.getByLabel('Version', { exact: true }).selectOption(vId);
+  await page.getByRole('combobox', { name: 'Version', exact: true }).selectOption(vId);
   await page.getByRole('button', { name: '☆ Favourite' }).click();
   await expect(page.getByRole('button', { name: '★ Favourited' })).toBeVisible();
   await page.screenshot({
