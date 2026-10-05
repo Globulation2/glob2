@@ -1,0 +1,16 @@
+
+Running 6 tests using 1 worker
+
+(node:2991263) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › platform/apps/web/e2e/map-preview.spec.ts:25:1 › map preview wraps full periods, captures drags beyond its edge, and resets (1.8s)
+  -  2 [desktop] › platform/apps/web/e2e/map-preview.spec.ts:70:1 › touch panning works at full-map scale and cancellation ends the drag
+  ✓  3 [desktop] › platform/apps/web/e2e/map-preview.spec.ts:92:1 › rectangular maps retain their proportions (786ms)
+(node:2991862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › platform/apps/web/e2e/map-preview.spec.ts:25:1 › map preview wraps full periods, captures drags beyond its edge, and resets (2.3s)
+  ✓  5 [phone] › platform/apps/web/e2e/map-preview.spec.ts:70:1 › touch panning works at full-map scale and cancellation ends the drag (557ms)
+  ✓  6 [phone] › platform/apps/web/e2e/map-preview.spec.ts:92:1 › rectangular maps retain their proportions (953ms)
+
+  1 skipped
+  5 passed (9.0s)
