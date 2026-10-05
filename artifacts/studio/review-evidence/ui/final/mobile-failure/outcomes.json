@@ -1,0 +1,79 @@
+[
+  {
+    "name": "phone-failed",
+    "reduced": {
+      "matches": true,
+      "animations": []
+    }
+  },
+  {
+    "name": "phone-failed",
+    "swipeOnMap": {
+      "before": {
+        "top": 0,
+        "height": 727,
+        "scrollHeight": 777
+      },
+      "after": 50
+    },
+    "touchAction": "pan-y"
+  },
+  {
+    "name": "phone-failed",
+    "caption": "Map preview · validation did not pass",
+    "failedChecklistOpen": true,
+    "failureAction": true
+  },
+  {
+    "name": "phone-failed",
+    "recoveryComposerVisible": true
+  },
+  {
+    "name": "small-phone-failed",
+    "reduced": {
+      "matches": true,
+      "animations": []
+    }
+  },
+  {
+    "name": "small-phone-failed",
+    "swipeOnMap": {
+      "before": {
+        "top": 0,
+        "height": 623,
+        "scrollHeight": 777
+      },
+      "after": 154
+    },
+    "touchAction": "pan-y"
+  },
+  {
+    "name": "small-phone-failed",
+    "caption": "Map preview · validation did not pass",
+    "failedChecklistOpen": true,
+    "failureAction": true
+  },
+  {
+    "name": "small-phone-failed",
+    "recoveryComposerVisible": true
+  },
+  {
+    "name": "desktop-reduced-focus",
+    "focus": {
+      "outline": "rgb(255, 214, 120) solid 2px",
+      "outlineOffset": "-3px",
+      "active": true
+    },
+    "transform": "translate(-24px, 0px) scale(1.25)",
+    "reduced": {
+      "matches": true,
+      "animations": []
+    }
+  },
+  {
+    "name": "desktop-reduced-focus",
+    "caption": "Map preview · validation did not pass\n512 × 512 preview pixels",
+    "failedChecklistOpen": true,
+    "failureAction": true
+  }
+]

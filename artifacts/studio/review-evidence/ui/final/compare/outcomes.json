@@ -1,0 +1,27 @@
+[
+  {
+    "name": "desktop",
+    "state": "ready",
+    "overflow": false,
+    "violations": []
+  },
+  {
+    "name": "desktop",
+    "state": "compare-after-inspect",
+    "captions": [
+      "Version 2Drag to explore when zoomed",
+      "Version 1Drag to explore when zoomed"
+    ],
+    "labels": [
+      "PLAYABLE MAP",
+      "PLAYABLE MAP"
+    ]
+  },
+  {
+    "name": "desktop",
+    "state": "new-generation-during-compare",
+    "inspected": "f8e56e31-26b3-4d83-8c0e-bf319d2bbe38",
+    "expected": "f8e56e31-26b3-4d83-8c0e-bf319d2bbe38",
+    "compareCount": 1
+  }
+]

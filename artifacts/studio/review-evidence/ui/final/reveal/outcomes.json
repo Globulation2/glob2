@@ -1,0 +1,28 @@
+[
+  {
+    "state": "delayed-ready-image",
+    "held": 2,
+    "celebrating": 0,
+    "imageCount": 1,
+    "caption": "Native terrain preview · awaiting checks\n512 × 512 preview pixels",
+    "zoom": "125%"
+  },
+  {
+    "state": "decoded-ready-image",
+    "celebrating": 1,
+    "caption": "Ready to play\n512 × 512 preview pixels",
+    "zoom": "125%"
+  },
+  {
+    "state": "reveal-completed",
+    "celebrating": 0,
+    "previousImages": 0
+  },
+  {
+    "state": "reinspect-ready",
+    "celebrating": 0
+  },
+  {
+    "violations": []
+  }
+]

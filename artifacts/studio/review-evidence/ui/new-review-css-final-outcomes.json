@@ -1,0 +1,92 @@
+[
+  {
+    "name": "desktop",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "desktop",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "desktop",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "short-laptop",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "short-laptop",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "short-laptop",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tablet",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tablet",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tablet",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "phone",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "phone",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "phone",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "small-phone",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "small-phone",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "small-phone",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  }
+]

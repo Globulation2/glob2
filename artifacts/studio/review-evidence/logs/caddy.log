@@ -1,0 +1,25 @@
+{"level":"info","ts":1791154655.6026058,"msg":"maxprocs: Leaving GOMAXPROCS=32: CPU quota undefined"}
+{"level":"info","ts":1791154655.6027682,"msg":"GOMEMLIMIT is updated","GOMEMLIMIT":119257358745,"previous":9223372036854775807}
+{"level":"info","ts":1791154655.6028087,"msg":"using config from file","file":"/etc/caddy/Caddyfile"}
+{"level":"info","ts":1791154655.6028347,"msg":"adapted config to JSON","adapter":"caddyfile"}
+{"level":"info","ts":1791154655.604332,"logger":"admin","msg":"admin endpoint started","address":"localhost:2019","enforce_origin":false,"origins":["//localhost:2019","//[::1]:2019","//127.0.0.1:2019"]}
+{"level":"info","ts":1791154655.6050565,"logger":"tls.cache.maintenance","msg":"started background certificate maintenance","cache":"0x14695f40be00"}
+{"level":"warn","ts":1791154655.6110337,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":18081"}
+{"level":"warn","ts":1791154655.6110957,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":18081"}
+{"level":"info","ts":1791154655.6110983,"logger":"http.log","msg":"server running","name":"srv0","protocols":["h1","h2","h3"]}
+{"level":"warn","ts":1791154655.61116,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":18082"}
+{"level":"warn","ts":1791154655.6111643,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":18082"}
+{"level":"info","ts":1791154655.611169,"logger":"http.log","msg":"server running","name":"srv1","protocols":["h1","h2","h3"]}
+{"level":"warn","ts":1791154655.611225,"logger":"http","msg":"HTTP/2 skipped because it requires TLS","network":"tcp","addr":":2015"}
+{"level":"warn","ts":1791154655.611232,"logger":"http","msg":"HTTP/3 skipped because it requires TLS","network":"tcp","addr":":2015"}
+{"level":"info","ts":1791154655.6112356,"logger":"http.log","msg":"server running","name":"srv2","protocols":["h1","h2","h3"]}
+{"level":"info","ts":1791154655.6133304,"msg":"autosaved config (load with --resume flag)","file":"/config/caddy/autosave.json"}
+{"level":"info","ts":1791154655.6133575,"msg":"serving initial configuration"}
+{"level":"info","ts":1791154655.6148508,"logger":"tls","msg":"cleaning storage unit","storage":"FileStorage:/data/caddy"}
+{"level":"info","ts":1791154655.6159122,"logger":"tls","msg":"finished cleaning storage units"}
+{"level":"warn","ts":1791154656.4008207,"logger":"http.handlers.reverse_proxy","msg":"aborting with incomplete response","upstream":"127.0.0.1:8080","duration":0.00150508,"request":{"remote_ip":"127.0.0.1","remote_port":"55700","client_ip":"127.0.0.1","proto":"HTTP/1.1","method":"GET","host":"127.0.0.1:18081","uri":"/api/v1/map-studio/threads/test/events","headers":{"Via":["1.1 Caddy"],"Accept-Encoding":["identity"],"User-Agent":["Python-urllib/3.14"],"X-Forwarded-For":["127.0.0.1"],"X-Forwarded-Proto":["http"],"X-Forwarded-Host":["127.0.0.1:18081"]}},"error":"reading: context canceled"}
+{"level":"info","ts":1791154656.4394479,"msg":"shutting down apps, then terminating","signal":"SIGTERM"}
+{"level":"warn","ts":1791154656.439517,"msg":"exiting; byeee!! 👋","signal":"SIGTERM"}
+{"level":"info","ts":1791154656.439588,"logger":"http","msg":"servers shutting down with eternal grace period"}
+{"level":"info","ts":1791154656.4399722,"logger":"admin","msg":"stopped previous server","address":"localhost:2019"}
+{"level":"info","ts":1791154656.440009,"msg":"shutdown complete","signal":"SIGTERM","exit_code":0}

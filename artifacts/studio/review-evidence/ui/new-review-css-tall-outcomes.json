@@ -1,0 +1,38 @@
+[
+  {
+    "name": "tall-desktop",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tall-desktop",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tall-desktop",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tall-phone",
+    "state": "ready",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tall-phone",
+    "state": "long-title",
+    "differences": [],
+    "violations": []
+  },
+  {
+    "name": "tall-phone",
+    "state": "landing",
+    "differences": [],
+    "violations": []
+  }
+]

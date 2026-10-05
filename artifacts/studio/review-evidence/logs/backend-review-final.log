@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/f800/glob2/platform
+
+
+ Test Files  5 passed (5)
+      Tests  38 passed (38)
+   Start at  19:53:51
+   Duration  21.02s (tests 83%, import 11%, transform 6%)
+

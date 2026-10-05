@@ -1,0 +1,7 @@
+{
+  "first": ": connected",
+  "first_seconds": 0.003,
+  "event_seconds": 0.753,
+  "upstream_closes_after_seconds": 2.75,
+  "proxy": "repository deploy/Caddyfile through glob2-caddy:smoke"
+}
