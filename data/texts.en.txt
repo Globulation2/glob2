@@ -5538,3 +5538,9 @@ Filters
 Leave without saving
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.
+[settings Target render FPS]
+Target render FPS
+[settings Unlimited]
+Unlimited
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.

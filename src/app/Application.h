@@ -15,6 +15,7 @@ class Application : public GAGCore::ApplicationHost::Loop
 	~Application() override;
 	bool frame(std::uint32_t tick, const std::vector<SDL_Event> &events) override;
 	std::uint32_t delay(std::uint32_t now) override;
+    void draw() override;
 
   private:
 	// The online services of this run (Online::services()). Declared first so they

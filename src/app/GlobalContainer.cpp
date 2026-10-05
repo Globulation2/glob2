@@ -178,6 +178,7 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+        gfx->setTargetRenderFps(settings.targetRenderFps);
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
 		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)
 		{
