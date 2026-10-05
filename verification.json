@@ -1,0 +1,14 @@
+{
+  "head": "0b5977df864b49501fb7590b78103539666168b6",
+  "base": "c6f9be8dcda9b4d4c7e8c8b8cc151ea5ce6e1155",
+  "environment": "Ubuntu 26.04.1 x86_64; Python3.14.4; pinned Pillow12.2.0 libwebp1.6.0",
+  "pinned_python": "/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python",
+  "tests": "29 package tests pass1.512s; full332 build-system=331passed1skipped57.999s;6terrain tests1.648s",
+  "original_export": {
+    "files": 7422,
+    "source_files_preserved": 7418,
+    "generated_files": 4
+  },
+  "coverage": "Pillow-free optimized web and original Linux callers, real repository assets; identical hashes to direct pinned worker; malformed terrain catalogs covered by existing tests; no compiler/recipe/validation changes",
+  "omissions": "No native/WASM game rebuild or non-Linux execution; only Python packaging handoff changed. Full hosted master confirms cross-platform recovery. No gameplay/SIM_REVISION changes."
+}

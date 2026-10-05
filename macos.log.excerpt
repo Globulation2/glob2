@@ -1,0 +1,39 @@
+2026-10-05T18:25:24.3729560Z Exporting verified runtime assets
+2026-10-05T18:25:24.3830990Z scons: *** [build/darwin/client/release/runtime-assets.json] ModuleNotFoundError : No module named 'PIL'
+2026-10-05T18:25:24.3891230Z Traceback (most recent call last):
+2026-10-05T18:25:24.3942410Z   File "/opt/homebrew/Cellar/scons/4.11.1/libexec/lib/python3.14/site-packages/SCons/Action.py", line 1439, in execute
+2026-10-05T18:25:24.3981540Z     result = self.execfunction(target=target, source=rsources, env=env)
+2026-10-05T18:25:24.3982190Z   File "/Users/runner/work/glob2/glob2/scons/runtime_assets.py", line 101, in export
+2026-10-05T18:25:24.3982710Z     export_assets(root, exported, platform=platform, lossy=lossy)
+2026-10-05T18:25:24.3983120Z     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:25:24.3983930Z   File "/Users/runner/work/glob2/glob2/tools/package_assets.py", line 789, in export_assets
+2026-10-05T18:25:24.3984520Z     return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+2026-10-05T18:25:24.3985080Z   File "/Users/runner/work/glob2/glob2/tools/package_assets.py", line 525, in _export_assets
+2026-10-05T18:25:24.3985590Z     spec.loader.exec_module(compiler)
+2026-10-05T18:25:24.3985890Z     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+2026-10-05T18:25:24.3986270Z   File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+2026-10-05T18:25:24.3986760Z   File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+2026-10-05T18:25:24.3987280Z   File "/Users/runner/work/glob2/glob2/tools/terrain_tileset.py", line 14, in <module>
+2026-10-05T18:25:24.3987750Z     from PIL import Image
+2026-10-05T18:25:24.3988040Z ModuleNotFoundError: No module named 'PIL'
+2026-10-05T18:25:26.3103030Z verify_symbols(["build/darwin/client/release/third_party/quickjs-ng/quickjs.o"], ["third_party/quickjs-ng/quickjs.c"])
+2026-10-05T18:25:26.4054560Z scons: building terminated because of errors.
+2026-10-05T18:25:27.1536670Z ##[error]Process completed with exit code 2.
+2026-10-05T18:25:27.1836520Z ##[group]Run actions/upload-artifact@v4
+2026-10-05T18:25:27.1836850Z with:
+2026-10-05T18:25:27.1837020Z   name: browser-determinism-macos
+2026-10-05T18:25:27.1837240Z   path: artifacts/browser-determinism/
+2026-10-05T18:25:27.1843640Z   if-no-files-found: error
+2026-10-05T18:25:27.1843850Z   compression-level: 6
+2026-10-05T18:25:27.1844010Z   overwrite: false
+2026-10-05T18:25:27.1844190Z   include-hidden-files: false
+2026-10-05T18:25:27.1844380Z env:
+2026-10-05T18:25:27.1844520Z   GLOB2_DEV_MODE: isolated
+2026-10-05T18:25:27.1844680Z ##[endgroup]
+2026-10-05T18:25:27.9194390Z (node:30852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-05T18:25:27.9195430Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-05T18:25:27.9250390Z ##[error]No files were found with the provided path: artifacts/browser-determinism/. No artifacts will be uploaded.
+2026-10-05T18:25:27.9411890Z ##[group]Run actions/upload-artifact@v4
+2026-10-05T18:25:27.9412260Z with:
+2026-10-05T18:25:27.9412570Z   name: javascript-profile-macos
+2026-10-05T18:25:27.9412910Z   path: artifacts/javascript-corpus/

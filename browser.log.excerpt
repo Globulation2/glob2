@@ -1,0 +1,39 @@
+2026-10-05T18:18:09.9855506Z Preparing pinned Emscripten ports
+2026-10-05T18:18:09.9882619Z scons: *** [build/emscripten/client/release/runtime-assets.json] ModuleNotFoundError : No module named 'PIL'
+2026-10-05T18:18:09.9890098Z Traceback (most recent call last):
+2026-10-05T18:18:09.9892460Z   File "/usr/lib/python3/dist-packages/SCons/Action.py", line 1310, in execute
+2026-10-05T18:18:09.9893272Z     result = self.execfunction(target=target, source=rsources, env=env)
+2026-10-05T18:18:09.9893892Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:18:09.9894609Z   File "/home/runner/work/glob2/glob2/scons/web_build.py", line 108, in prepare_assets
+2026-10-05T18:18:09.9895528Z     export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release')
+2026-10-05T18:18:09.9896456Z   File "/home/runner/work/glob2/glob2/tools/package_assets.py", line 789, in export_assets
+2026-10-05T18:18:09.9897320Z     return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+2026-10-05T18:18:09.9898057Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:18:09.9899167Z   File "/home/runner/work/glob2/glob2/tools/package_assets.py", line 525, in _export_assets
+2026-10-05T18:18:09.9899887Z     spec.loader.exec_module(compiler)
+2026-10-05T18:18:09.9900495Z   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+2026-10-05T18:18:09.9901272Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2026-10-05T18:18:09.9902295Z   File "/home/runner/work/glob2/glob2/tools/terrain_tileset.py", line 14, in <module>
+2026-10-05T18:18:09.9902961Z     from PIL import Image
+2026-10-05T18:18:09.9903368Z ModuleNotFoundError: No module named 'PIL'
+2026-10-05T18:18:10.0743543Z ports:INFO: retrieving port: zlib from https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz
+2026-10-05T18:18:10.3927237Z ports:INFO: unpacking port: zlib
+2026-10-05T18:18:10.4374247Z cache:INFO: generating port: sysroot/lib/wasm32-emscripten/libz.a... (this will be cached in "/home/runner/work/glob2/glob2/build/emscripten/client/release/threaded/cache/sysroot/lib/wasm32-emscripten/libz.a" for subsequent builds)
+2026-10-05T18:18:11.1071177Z system_libs:INFO: compiled 15 inputs in 0.67s
+2026-10-05T18:18:11.1612841Z cache:INFO:  - ok
+2026-10-05T18:18:11.2764549Z scons: building terminated because of errors.
+2026-10-05T18:18:12.0518361Z ##[error]Process completed with exit code 2.
+2026-10-05T18:18:12.1340257Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-05T18:18:12.1340645Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-05T18:18:12.1407863Z shell: /usr/bin/bash -e {0}
+2026-10-05T18:18:12.1408134Z env:
+2026-10-05T18:18:12.1408354Z   GLOB2_DEV_MODE: isolated
+2026-10-05T18:18:12.1408624Z   CCACHE_DIR: /tmp/glob2-wasm-ccache
+2026-10-05T18:18:12.1408918Z   CCACHE_COMPILERCHECK: content
+2026-10-05T18:18:12.1409396Z   CCACHE_MAXSIZE: 500M
+2026-10-05T18:18:12.1409630Z   WASM_CACHE_START: 1791223766
+2026-10-05T18:18:12.1416170Z   CI_STEPS_JSON: {
+  "actions_checkout_v4_1": {
+    "outputs": {
+      "commit": "c6f9be8dcda9b4d4c7e8c8b8cc151ea5ce6e1155",
+      "ref": ""

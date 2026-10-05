@@ -1,0 +1,55 @@
+2026-10-05T18:22:31.5168298Z #239 714.7 g++ -o build/linux/client/release/libgag/src/AssetLoader.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -Ibuild/linux/client/release/recording/prefix/include -Ibuild/sdl3/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Ibuild/sdl3/prefix/include/webp libgag/src/AssetLoader.cpp
+2026-10-05T18:22:31.5168526Z #239 714.7 scons: *** [build/linux/client/release/runtime-assets.json] ModuleNotFoundError : No module named 'PIL'
+2026-10-05T18:22:31.5168593Z #239 714.7 Traceback (most recent call last):
+2026-10-05T18:22:31.5168764Z #239 714.7   File "/usr/lib/python3/dist-packages/SCons/Action.py", line 1310, in execute
+2026-10-05T18:22:31.5168884Z #239 714.7     result = self.execfunction(target=target, source=rsources, env=env)
+2026-10-05T18:22:31.5168962Z #239 714.7              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:22:31.5169086Z #239 714.7   File "/source/scons/runtime_assets.py", line 101, in export
+2026-10-05T18:22:31.5169191Z #239 714.7     export_assets(root, exported, platform=platform, lossy=lossy)
+2026-10-05T18:22:31.5169299Z #239 714.7   File "/source/tools/package_assets.py", line 789, in export_assets
+2026-10-05T18:22:31.5169434Z #239 714.7     return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+2026-10-05T18:22:31.5169518Z #239 714.7            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:22:31.5169629Z #239 714.7   File "/source/tools/package_assets.py", line 525, in _export_assets
+2026-10-05T18:22:31.5169698Z #239 714.7     spec.loader.exec_module(compiler)
+2026-10-05T18:22:31.5169812Z #239 714.7   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+2026-10-05T18:22:31.5169933Z #239 714.7   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2026-10-05T18:22:31.5170028Z #239 714.7   File "/source/tools/terrain_tileset.py", line 14, in <module>
+2026-10-05T18:22:31.5170088Z #239 714.7     from PIL import Image
+2026-10-05T18:22:31.5170167Z #239 714.7 ModuleNotFoundError: No module named 'PIL'
+2026-10-05T18:22:31.5170370Z #239 723.8 verify_symbols(["build/linux/client/release/third_party/quickjs-ng/quickjs.o"], ["third_party/quickjs-ng/quickjs.c"])
+2026-10-05T18:22:31.5170451Z #239 723.8 scons: building terminated because of errors.
+2026-10-05T18:22:31.5171997Z #239 ERROR: process "/bin/sh -c python3 scons/sdl3_dependencies.py --prefix \"$GLOB2_SDL3_PREFIX\" --work /source/build/sdl3/sources --jobs ${JOBS} &&     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 &&     mkdir -p /output/bin /output/lib/glob2 /output/share &&     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 &&     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ &&     cp -a build/sdl3/prefix/share/licenses /output/licenses &&     cp -a build/linux/client/release/runtime-assets/. /output/share/ &&     find /output/share -name SConscript -delete &&     python3 /usr/local/bin/glob2-sim-version /source --expect \"${GLOB2_SIM_VERSION}\" > /output/sim-version &&     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash &&     echo \"sim version $(cat /output/sim-version)\"" did not complete successfully: exit code: 2
+2026-10-05T18:22:31.5172038Z 
+2026-10-05T18:22:31.5173635Z #240 [skin-render-worker engine-build 4/4] RUN --mount=type=cache,id=glob2-engine-build-amd64,target=/source/build,sharing=locked     python3 scons/sdl3_dependencies.py --prefix "/source/build/sdl3/prefix" --work /source/build/sdl3/sources --jobs 4 &&     scons release=1 server=0 -j4 build/linux/client/release/src/glob2 &&     mkdir -p /output/bin /output/lib/glob2 /output/share &&     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 &&     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ &&     cp -a build/sdl3/prefix/share/licenses /output/licenses &&     cp -a build/linux/client/release/runtime-assets/. /output/share/ &&     find /output/share -name SConscript -delete &&     python3 /usr/local/bin/glob2-sim-version /source --expect "" > /output/sim-version &&     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash &&     echo "sim version $(cat /output/sim-version)"
+2026-10-05T18:22:31.5173684Z #240 CANCELED
+2026-10-05T18:22:31.5173756Z ------
+2026-10-05T18:22:31.5175873Z  > [engine-agent engine-build 4/4] RUN --mount=type=cache,id=glob2-engine-build-amd64,target=/source/build,sharing=locked     python3 scons/sdl3_dependencies.py --prefix "/source/build/sdl3/prefix" --work /source/build/sdl3/sources --jobs 4 &&     scons release=1 server=0 -j4 build/linux/client/release/src/glob2 &&     mkdir -p /output/bin /output/lib/glob2 /output/share &&     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 &&     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ &&     cp -a build/sdl3/prefix/share/licenses /output/licenses &&     cp -a build/linux/client/release/runtime-assets/. /output/share/ &&     find /output/share -name SConscript -delete &&     python3 /usr/local/bin/glob2-sim-version /source --expect "136-56-bb6b84ab023aa2940906caab3a3bac5c6eb10212c789267a724bad698eae0d9c" > /output/sim-version &&     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash &&     echo "sim version $(cat /output/sim-version)":
+2026-10-05T18:22:31.5175999Z 714.7            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:22:31.5176107Z 714.7   File "/source/tools/package_assets.py", line 525, in _export_assets
+2026-10-05T18:22:31.5176174Z 714.7     spec.loader.exec_module(compiler)
+2026-10-05T18:22:31.5176285Z 714.7   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+2026-10-05T18:22:31.5176400Z 714.7   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2026-10-05T18:22:31.5176492Z 714.7   File "/source/tools/terrain_tileset.py", line 14, in <module>
+2026-10-05T18:22:31.5176549Z 714.7     from PIL import Image
+2026-10-05T18:22:31.5176622Z 714.7 ModuleNotFoundError: No module named 'PIL'
+2026-10-05T18:22:31.5176820Z 723.8 verify_symbols(["build/linux/client/release/third_party/quickjs-ng/quickjs.o"], ["third_party/quickjs-ng/quickjs.c"])
+2026-10-05T18:22:31.5176892Z 723.8 scons: building terminated because of errors.
+2026-10-05T18:22:31.5176936Z ------
+2026-10-05T18:22:31.5176940Z 
+2026-10-05T18:22:31.5178502Z target engine-agent: failed to solve: process "/bin/sh -c python3 scons/sdl3_dependencies.py --prefix \"$GLOB2_SDL3_PREFIX\" --work /source/build/sdl3/sources --jobs ${JOBS} &&     scons release=1 server=0 -j${JOBS} build/linux/client/release/src/glob2 &&     mkdir -p /output/bin /output/lib/glob2 /output/share &&     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 &&     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ &&     cp -a build/sdl3/prefix/share/licenses /output/licenses &&     cp -a build/linux/client/release/runtime-assets/. /output/share/ &&     find /output/share -name SConscript -delete &&     python3 /usr/local/bin/glob2-sim-version /source --expect \"${GLOB2_SIM_VERSION}\" > /output/sim-version &&     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash &&     echo \"sim version $(cat /output/sim-version)\"" did not complete successfully: exit code: 2
+2026-10-05T18:22:31.5178545Z 
+2026-10-05T18:22:31.5178548Z 
+2026-10-05T18:22:31.5178632Z [18:22:31] tearing down
+2026-10-05T18:22:31.5178683Z [18:22:31] passed: []
+2026-10-05T18:22:31.5178734Z [18:22:31] failed: ['stack up']
+2026-10-05T18:22:31.5187042Z ##[error]Process completed with exit code 1.
+2026-10-05T18:22:31.5243759Z ##[group]Run actions/upload-artifact@v4
+2026-10-05T18:22:31.5243814Z with:
+2026-10-05T18:22:31.5243881Z   name: platform-stack-smoke
+2026-10-05T18:22:31.5243938Z   path: artifacts/platform-stack
+2026-10-05T18:22:31.5244000Z   if-no-files-found: ignore
+2026-10-05T18:22:31.5244052Z   compression-level: 6
+2026-10-05T18:22:31.5244102Z   overwrite: false
+2026-10-05T18:22:31.5244161Z   include-hidden-files: false
+2026-10-05T18:22:31.5244205Z env:
+2026-10-05T18:22:31.5244303Z   GLOB2_DEV_MODE: isolated

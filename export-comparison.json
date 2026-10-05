@@ -1,0 +1,16 @@
+{
+  "files": 4617,
+  "generated_terrain_files": {
+    "data/terrain/compiled/atlas.json": "97873ee02d549f1342590ba688ceada21cfadf0444f8ff6074be032fa5f78edd",
+    "data/terrain/compiled/textures-0-mip0.webp": "5d86a9576fe58c2f1b3c37a4b932cd247ec22e9718a03505c854170467e6f599",
+    "data/terrain/compiled/textures-0-mip1.webp": "7fbad42d4c3f5b67e1106eaafc09d5834c9e9a1237795e353a5c4a02563ca656",
+    "data/terrain/compiled/textures-0-mip2.webp": "c1bcfb4654faefd8abb4b1e0ca24aabf9d22caf4dba14962ad10f8d361c2e9a2"
+  },
+  "all_exported_hashes_identical": true,
+  "source_bytes": 174113989,
+  "output_bytes": 150386468,
+  "commands": [
+    "python3 -S tools/package_assets.py --output artifacts/terrain-ci-repair/runtime-delegated --platform web --cache /home/bradley/.codex/worktrees/repair-browser-png16/glob2/build/asset-cache",
+    "PINNED_PYTHON tools/package_assets.py --output artifacts/terrain-ci-repair/runtime-direct --platform web --cache /home/bradley/.codex/worktrees/repair-browser-png16/glob2/build/asset-cache"
+  ]
+}

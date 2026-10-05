@@ -1,0 +1,40 @@
+2026-10-05T18:18:17.9343866Z Exporting verified runtime assets
+2026-10-05T18:18:17.9541920Z scons: *** [build/linux/client/release/runtime-assets.json] ModuleNotFoundError : No module named 'PIL'
+2026-10-05T18:18:17.9573444Z /usr/bin/ccache g++-13 -o build/linux/client/release/libgag/src/SpriteLoad.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -Ibuild/sdl3-ci/prefix/recording/include -Ibuild/sdl3-ci/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Ibuild/sdl3-ci/prefix/include/webp libgag/src/SpriteLoad.cpp
+2026-10-05T18:18:17.9580585Z Traceback (most recent call last):
+2026-10-05T18:18:17.9581146Z   File "/usr/lib/python3/dist-packages/SCons/Action.py", line 1310, in execute
+2026-10-05T18:18:17.9581778Z     result = self.execfunction(target=target, source=rsources, env=env)
+2026-10-05T18:18:17.9582296Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:18:17.9582891Z   File "/home/runner/work/glob2/glob2/scons/runtime_assets.py", line 101, in export
+2026-10-05T18:18:17.9583521Z     export_assets(root, exported, platform=platform, lossy=lossy)
+2026-10-05T18:18:17.9584188Z   File "/home/runner/work/glob2/glob2/tools/package_assets.py", line 789, in export_assets
+2026-10-05T18:18:17.9584894Z     return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+2026-10-05T18:18:17.9585656Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-05T18:18:17.9586337Z   File "/home/runner/work/glob2/glob2/tools/package_assets.py", line 525, in _export_assets
+2026-10-05T18:18:17.9587004Z     spec.loader.exec_module(compiler)
+2026-10-05T18:18:17.9587521Z   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+2026-10-05T18:18:17.9588135Z   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+2026-10-05T18:18:17.9588801Z   File "/home/runner/work/glob2/glob2/tools/terrain_tileset.py", line 14, in <module>
+2026-10-05T18:18:17.9589239Z     from PIL import Image
+2026-10-05T18:18:17.9590386Z ModuleNotFoundError: No module named 'PIL'
+2026-10-05T18:18:18.8037387Z In file included from src/online/SimVersion.cpp:7:
+2026-10-05T18:18:18.8055924Z libgag/include/StreamBackend.h: In member function 'virtual void GAGCore::FileStreamBackend::read(void*, size_t)':
+2026-10-05T18:18:18.8057358Z libgag/include/StreamBackend.h:58:79: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+2026-10-05T18:18:18.8058659Z    58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+2026-10-05T18:18:18.8059397Z       |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+2026-10-05T18:18:20.9771685Z scons: building terminated because of errors.
+2026-10-05T18:18:21.6056581Z ##[error]Process completed with exit code 2.
+2026-10-05T18:18:21.6109835Z ##[group]Run ccache -s -v
+2026-10-05T18:18:21.6110109Z [36;1mccache -s -v[0m
+2026-10-05T18:18:21.6144665Z shell: /usr/bin/bash -e {0}
+2026-10-05T18:18:21.6144919Z env:
+2026-10-05T18:18:21.6145120Z   GLOB2_DEV_MODE: isolated
+2026-10-05T18:18:21.6145347Z   CCACHE: 1
+2026-10-05T18:18:21.6145734Z   CCACHE_DIR: /tmp/glob2-ccache
+2026-10-05T18:18:21.6145987Z   CCACHE_COMPILERCHECK: content
+2026-10-05T18:18:21.6146383Z   CCACHE_MAXSIZE: 5G
+2026-10-05T18:18:21.6146687Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-05T18:18:21.6147016Z   CCACHE_RUN_START: 1791223757
+2026-10-05T18:18:21.6147245Z ##[endgroup]
+2026-10-05T18:18:21.6228946Z Cache directory:    /tmp/glob2-ccache
+2026-10-05T18:18:21.6229486Z Config file:        /tmp/glob2-ccache/ccache.conf
