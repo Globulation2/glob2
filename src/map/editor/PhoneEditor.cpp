@@ -305,7 +305,7 @@ void PhoneEditor::applyUndo()
 	for (size_t i = 0; i < undo->cells.size(); ++i)
 	{
 		const auto [x, y] = undo->cells[i];
-		map.getTile(x, y) = undo->tiles[i];
+		map.replaceTile(x, y, undo->tiles[i]);
 		if (undo->zoneView)
 			undo->zoneView->set(size_t(map.w * y + x), undo->view[i]);
 	}

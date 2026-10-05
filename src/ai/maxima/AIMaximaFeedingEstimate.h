@@ -15,7 +15,6 @@ struct FeedingPlan
     int carriers=0;
     int oneWayTravelTicks=0;
     int handlingTicks=0;
-    int ticksPerMeal=1;
     bool feeding=true;
     bool training=true;
     bool projectiles=true;
@@ -28,7 +27,6 @@ struct FeedingEstimate
     long long visitsPerTick=0; // fixed point Scale
     long long haulingWorkerTicks=0; // fixed point Scale workers
     long long projectileRate=0; // fixed point Scale shots/tick
-    int supportedUnits=0;
     std::array<int,8> resources{}; // stock units, not carried packets
     std::array<int,8> productionResourcePackets{}; // independent production component
     std::array<int,8> feedingResourcePackets{}; // feeding component of recurring packets
@@ -85,7 +83,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             const auto& spec=s.training[ability];
             if(!spec.enabled || !(spec.unitMask&(1u<<unit)) || !Race::unitTypes[unit][3].performance[ability] ||
                 !(spec.targetLevel>0 || (unit==WORKER && spec.constructionLevel>0)))continue;
-            const int speed=std::max(1,type.insideSpeed/std::max(1,spec.targetLevel));
+            const int speed=std::clamp(type.insideSpeed/std::max(1,spec.targetLevel),1,UNIT_DELTA_QUANTUM);
             const long long ticks=(static_cast<long long>(spec.duration+1)*UNIT_DELTA_QUANTUM+speed-1)/speed;
             if(s.trainingInParallel) {
                 bundle.roles|=trainingRole(spec,ability,unit);
@@ -179,7 +177,6 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         result.productionResourcePackets[resource]=int(std::min<long long>(INT_MAX,productionStock[resource]/std::max(1,type.multiplierResource[resource])));
         result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.multiplierResource[resource])));
     }
-    result.supportedUnits=int(std::min<long long>(1000000,result.visitsPerTick*std::max(1,plan.ticksPerMeal)/FeedingEstimate::Scale));
     return result;
 }
 }

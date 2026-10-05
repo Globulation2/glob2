@@ -21,10 +21,11 @@ TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 	for (int y = 0; y < 16; ++y)
 		for (int x = 0; x < 16; ++x)
 		{
-			auto &tile = world.game.map.getTile(x, y);
+			auto tile = world.game.map.getTile(x, y);
 			tile.fertility = (x * 17 + y * 31) % 256;
 			tile.resource.type = (x + y) % BASIC_COUNT;
 			tile.resource.amount = (x * 3 + y * 7) % 12;
+			world.game.map.replaceTile(x, y, tile);
 		}
 	world.game.map.setMapDiscovered(0, 0, 32, 32, ~0u);
 	world.game.players[0] = new Player(0, "script", world.game.teams[0], BasePlayer::P_LOCAL);

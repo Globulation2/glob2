@@ -13,6 +13,8 @@
 
 #include <mutex>
 #include <array>
+#include "SeedTerrain.h"
+#include <type_traits>
 
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
 {
@@ -57,12 +59,9 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 	if (!modes && withMarkets && marketsV2Enabled()) modes=1;
 	withMarkets=modes!=0;
 	assert(gradient);
-	bool canSwim = swimClass > 0;
 
 	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
-	// Only fogged resources of a type that must be seen to be collected are hidden.
-	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
 	// Compile supplier eligibility and cost once; the map-sized loop only reads
 	// compact instance-indexed values, never the building catalog.
 	std::array<Uint16, Building::MAX_COUNT> supplierSeeds;
@@ -80,33 +79,11 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 					GRADIENT_AT_GOAL - supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP);
 		});
 	}
+	const Uint16* seeds = withMarkets ? supplierSeeds.data() : nullptr;
+	if (!gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, seeds))
+		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, seeds);
 	const Tile *tile = tiles.data();
 	const Uint8 *immobile = immobileUnits;
-	const Uint32 *fog = fogOfWar;
-	initializeGradientCells([&](size_t begin, size_t end) {
-	for (size_t i=begin; i<end; i++)
-	{
-		const Tile& c=tile[i];
-		Uint16 value;
-		if ((c.forbidden & teamMask) || immobile[i] != IMMOBILE_UNIT_NONE)
-			value=GRADIENT_FORBIDDEN;
-		else if (c.resource.type==NO_RES_TYPE)
-		{
-			if (c.building!=NOGBID)
-				value=withMarkets && Building::GIDtoTeam(c.building) == teamNumber
-					? supplierSeeds[Building::GIDtoID(c.building)] : GRADIENT_FORBIDDEN;
-			else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
-				value=GRADIENT_FORBIDDEN;
-			else
-				value=GRADIENT_UNREACHABLE;
-		}
-		else if (c.resource.type==resourceType)
-			value=(hideFogged && !(fog[i]&teamMask)) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL;
-		else
-			value=GRADIENT_FORBIDDEN;
-		gradient[i]=value;
-	}
-	});
 	// Overlay providers have no tile occupancy entry. Seed their small
 	// footprints after the cell loop, retaining the stock-catalog fast path.
 	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
@@ -121,6 +98,66 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
+}
+
+void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Uint16 *supplierSeeds)
+{
+	const bool withMarkets = supplierSeeds != nullptr;
+	assert(gradient);
+	const bool canSwim = swimClass > 0;
+
+	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	assert(globalContainer);
+	// Only fogged resources of a type that must be seen to be collected are hidden.
+	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
+	const Tile *tile = tiles.data();
+	const Uint8 *immobile = immobileUnits;
+	const Uint32 *fog = fogOfWar;
+	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
+		// Compile-time tags select four kernels, removing market and visibility
+		// policy branches from the cell loop. Initialization joins before returning.
+		auto seed = [&](auto marketsTag, auto hideFoggedTag) {
+			initializeGradientCells([&](size_t begin, size_t end) {
+				for (size_t i = begin; i < end; ++i)
+				{
+					const Tile &c = tile[i];
+					Uint16 value = GRADIENT_FORBIDDEN;
+					if (!(c.forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+					{
+						if (c.resource.type == NO_RES_TYPE)
+						{
+							if (c.building == NOGBID)
+								value = terrainAt(i).open;
+							else if constexpr (decltype(marketsTag)::value)
+							{
+								if (Building::GIDtoTeam(c.building) == teamNumber)
+									value = supplierSeeds[Building::GIDtoID(c.building)];
+							}
+						}
+						else if (c.resource.type == resourceType)
+						{
+							// Resource goals override terrain/buildings, but not
+							// the forbidden/immobile blockers checked above.
+							value = GRADIENT_AT_GOAL;
+							if constexpr (decltype(hideFoggedTag)::value)
+								if (!(fog[i] & teamMask)) value = GRADIENT_FORBIDDEN;
+						}
+					}
+					gradient[i] = value;
+				}
+			});
+		};
+		if (withMarkets)
+		{
+			if (hideFogged) seed(std::true_type{}, std::true_type{});
+			else seed(std::true_type{}, std::false_type{});
+		}
+		else
+		{
+			if (hideFogged) seed(std::false_type{}, std::true_type{});
+			else seed(std::false_type{}, std::false_type{});
+		}
+	});
 }
 
 void Map::dirtyMarketGradients(int teamNumber, int resourceType)

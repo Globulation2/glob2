@@ -224,7 +224,7 @@ bool loadMapBytes(Game &game, const std::string &bytes)
 std::uint64_t worldHash(const Game &game)
 {
 	std::uint64_t hash = kFnvOffset;
-	for (const auto &tile : game.map.tiles)
+	for (const auto &tile : game.map.getTiles())
 	{
 		hash = fnv(hash, tile.terrain);
 		hash = fnv(hash, tile.resource.getUint32());
@@ -363,8 +363,9 @@ void shiftTeams(Game &game, int shift)
 				building->seenByMask = mask(building->seenByMask);
 			}
 	}
-	for (auto &tile : game.map.tiles)
+	for (size_t index = 0; index < game.map.getTiles().size(); ++index)
 	{
+		auto tile = game.map.getTile(index);
 		tile.building = buildingGid(tile.building);
 		tile.groundUnit = unitGid(tile.groundUnit);
 		tile.airUnit = unitGid(tile.airUnit);
@@ -372,6 +373,7 @@ void shiftTeams(Game &game, int shift)
 		tile.guardArea = mask(tile.guardArea);
 		tile.clearArea = mask(tile.clearArea);
 		tile.farmArea = mask(tile.farmArea);
+		game.map.replaceTile(index, tile);
 	}
 	for (auto &bits : game.map.mapDiscovered)
 		bits = mask(bits);

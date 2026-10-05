@@ -56,7 +56,7 @@ Policy::Policy()
 }
 
 ConsumerResult::ConsumerResult()
-	: key(0), kind(InnConsumer), colony(false), retirable(true), demand(0),
+	: key(0), level(1), kind(InnConsumer), colony(false), retirable(true), demand(0),
 	  claimed(0), available(0), coveragePercent(0), availablePercent(0),
 	  quality(0), qualityBand(0), order(0)
 {
@@ -218,7 +218,7 @@ void Ledger::evaluate(const Input& input, Result& result) const
 			consumer.width,consumer.height,reachScratch);
 		reachByConsumer[i]=reachScratch;
 		ConsumerResult& value=values[i];
-		value.key=consumer.key;value.kind=consumer.kind;
+		value.key=consumer.key;value.level=consumer.level;value.kind=consumer.kind;
 		value.colony=consumer.colony;value.retirable=consumer.retirable;
 		value.demand=std::max(0,consumer.demand);
 		result.totalDemand+=value.demand;

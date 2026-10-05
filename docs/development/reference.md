@@ -1390,8 +1390,8 @@ simulation, saves and replays are unaffected.
   on. `Game::drawMap` updates it once per frame from the drawn Scene, and resets it while
   the fade is not drawn (setting off, or `DRAW_WHOLE_MAP`), so it is `active()` exactly when
   the frame draws the fog faded. A tile changing state fades linearly from wherever it had
-  reached, into the fog over `FogFade::DARKEN_TICKS` (25) and out of it over
-  `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
+  reached, into the fog over `FogFade::DARKEN_TICKS` (37.5, or 1.5 seconds at normal speed)
+  and out of it over `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
   forward of more than `FogFade::SETTLE_JUMP_TICKS` (64) or a reset settle every tile
   without fading.
 - Fades run in game time: the Scene's tick plus the elapsed fraction of the tick interval

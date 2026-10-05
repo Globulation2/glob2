@@ -32,6 +32,39 @@ Uint64 renderPanel(GameGUI& gui)
 }
 TEST_SUITE("GUIInteractionCoverage")
 {
+    TEST_CASE("construction choice displays recipe costs independently of storage [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=world.gui;
+        auto* site=world.game.buildingsTypes.getByType("inn",0,true);
+        REQUIRE(site);
+        auto* gfx=globalContainer->gfx;
+        const auto render=[&]() {
+            gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+            gfx->setClipRect();
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            gui.drawChoiceInfoPanel("inn"); gfx->nextFrame();
+            auto* frame=gfx->completedFrame(); REQUIRE(frame);
+            Uint64 hash=1469598103934665603ull;
+            const auto* pixels=static_cast<const Uint8*>(frame->pixels);
+            for (int i=0; i<frame->h*frame->pitch; ++i) hash=(hash^pixels[i])*1099511628211ull;
+            return hash;
+        };
+        const auto original=render();
+        site->maxResource[WOOD]+=17;
+        CHECK(render()==original);
+        site->semantics.constructionCost[WOOD]+=17;
+        const auto changedCost=render(); CHECK(changedCost!=original);
+        for (int resource=HAPPINESS_BASE; resource<MAX_RESOURCES; ++resource)
+        {
+            const auto before=render();
+            site->semantics.constructionCost[resource]=resource+1;
+            CHECK(render()!=before);
+        }
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fruit-costs.bmp").string().c_str()));
+    }
+
     TEST_CASE("custom mixed building panels render without mutating simulation [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});

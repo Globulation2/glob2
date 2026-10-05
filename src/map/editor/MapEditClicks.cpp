@@ -127,11 +127,9 @@ void MapEdit::handleBrushClick(int mx, int my)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY)
 					&& !(honourFarmTerrain && !game.map.canPaintFarmArea(x, y)))
 				{
-					Uint32& tileMask = game.map.getTile(x, y).*target.tileMask;
-					if (add)
-						tileMask |= teamBit;
-					else
-						tileMask &= ~teamBit; // clears the team bit, same as the old `mask ^= mask & teamBit`
+					const size_t index = game.map.coordToIndex(x, y);
+					const Uint32 mask = game.map.getTile(index).*target.tileMask;
+					game.map.setAreaMask(index, target.tileMask, add ? mask | teamBit : mask & ~teamBit);
 					target.view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), add);
 				}
 	}
@@ -216,7 +214,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
-								game.map.getResource(tx, ty).clear();
+								game.map.replaceResource(tx, ty, Resource{});
 						break;
 					case TerrainSelector::Sand:
 						game.map.setUMatPos(x, y, SAND, 1);
@@ -284,7 +282,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
-								game.map.getResource(tx, ty).clear();
+								game.map.replaceResource(tx, ty, Resource{});
 						break;
 					case TerrainSelector::Wheat:
 						if(game.map.isResourceTakeable(x, y, WHEAT))
@@ -363,7 +361,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.setPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getTile(x, y).canResourcesGrow=false;
+						game.map.setResourcesGrow(x, y, false);
 						break;
 					}
 				}
@@ -380,7 +378,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.unsetPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getTile(x, y).canResourcesGrow=true;
+						game.map.setResourcesGrow(x, y, true);
 						break;
 					default:break;
 					}

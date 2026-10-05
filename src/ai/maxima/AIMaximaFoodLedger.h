@@ -89,6 +89,7 @@ struct ConsumerResult
 {
 	ConsumerResult();
 	int key;
+    int level; // exact profile stage charged, including authorized upgrades
 	ConsumerKind kind;
 	bool colony;
 	bool retirable;

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/ResourceSeedCache.h"
 #include "Utilities.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
@@ -19,7 +20,8 @@
 
 void Map::decResource(int x, int y)
 {
-	Resource &r = getTile(x, y).resource;
+	const size_t index = coordToIndex(x, y);
+	Resource &r = tiles[index].resource;
 	
 	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
@@ -36,7 +38,10 @@ void Map::decResource(int x, int y)
 	else
 	{
 		if (!fulltype->granular || r.amount<=1)
+		{
 			r.clear();
+			resourceSeedChanged(index, ResourceSeedCache::Resource);
+		}
 		else
 			r.amount--;
 	}
@@ -246,7 +251,8 @@ bool Map::takeHarvest(int x, int y, int dx, int dy, int resourceType, Uint32 tea
 bool Map::incResource(int x, int y, int resourceType, int variety)
 {
 	if (!terrainSupportsResource(terrainPropertiesAt(x,y),resourceType)) return false;
-	Resource &r = getTile(x, y).resource;
+	const size_t index = coordToIndex(x, y);
+	Resource &r = tiles[index].resource;
 	const ResourceType *fulltype;
 	if (r.type == NO_RES_TYPE)
 	{
@@ -262,6 +268,7 @@ bool Map::incResource(int x, int y, int resourceType, int variety)
 			r.variety = variety;
 			r.amount = RESOURCE_INITIAL_AMOUNT;
 			r.animation = 0;
+			resourceSeedChanged(index, ResourceSeedCache::Resource);
 			return true;
 		}
 		else
@@ -298,7 +305,7 @@ void Map::setNoResource(int x, int y, int l)
 	assert(l<h);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			tiles[coordToIndex(dx, dy)].resource.clear();
+			replaceResource(dx, dy, Resource{});
 }
 
 void Map::removeUnallowedResources(int x, int y, int w, int h)
@@ -308,7 +315,7 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 		{
 			Resource& r=tiles[coordToIndex(dx, dy)].resource;
 			if (r.type!=NO_RES_TYPE && !terrainSupportsResource(terrainPropertiesAt(dx, dy), r.type))
-				r.clear();
+				replaceResource(dx, dy, Resource{});
 		}
 }
 
@@ -322,12 +329,14 @@ void Map::setResource(int x, int y, int type, int l)
 			if (isResourceAllowed(dx, dy, type))
 			{
 				Resource& rp=tiles[coordToIndex(dx, dy)].resource;
+				const bool changedType = rp.type != type;
 				rp.type=type;
 				const ResourceType *rt=globalContainer->resourcesTypes.get(type);
 				rp.variety=syncRand()%rt->varietiesCount;
 				assert(rt->sizesCount>1);
 				rp.amount=RESOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
 				rp.animation=0;
+				if (changedType) resourceSeedChanged(coordToIndex(dx, dy), ResourceSeedCache::Resource);
 			}
 }
 
@@ -338,17 +347,17 @@ bool Map::isResourceAllowed(int x, int y, int type)
 
 bool Map::isPointSet(int n, int x, int y) const
 {
-	return getTile(x, y).scriptAreas & 1<<n;
+	return tiles[coordToIndex(x, y)].scriptAreas & 1<<n;
 }
 
 void Map::setPoint(int n, int x, int y)
 {
-	getTile(x, y).scriptAreas |= 1<<n;
+	tiles[coordToIndex(x, y)].scriptAreas |= 1<<n;
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	getTile(x, y).scriptAreas ^= getTile(x, y).scriptAreas & (1<<n);
+	tiles[coordToIndex(x, y)].scriptAreas ^= tiles[coordToIndex(x, y)].scriptAreas & (1<<n);
 }
 
 std::string Map::getAreaName(int n) const

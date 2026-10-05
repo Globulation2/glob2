@@ -103,7 +103,10 @@ guaranteed static population limit.
 A building persistently below its coverage threshold can be retired after a
 confirmation period. Recovery clears the timer. Retirement requires a safe
 colony, elapsed cooldown, another building of the same kind, and enough reliable
-inn seats for the population. Establishing colony swarms are protected. Independent training or combat services
+feeding throughput for every admitted recipient class. The capacity check tests
+all seven subsets of the three unit classes against shared provider rates, so
+excess worker-only seats cannot justify removing the only explorer feeder.
+Establishing colony swarms are protected. Independent training or combat services
 also prevent food-only retirement of mixed buildings.
 
 Persistent poor route quality can instead nominate one inn or swarm for

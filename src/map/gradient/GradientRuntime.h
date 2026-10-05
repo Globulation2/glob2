@@ -4,6 +4,7 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
+#include "ResourceSeedCache.h"
 #include "field/GradientWorkspace.h"
 
 #include <vector>
@@ -44,4 +45,5 @@ struct GradientRuntime
 	GradientPipeline pipeline;
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
+	ResourceSeedCache resourceSeeds;
 };

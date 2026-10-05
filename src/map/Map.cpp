@@ -275,6 +275,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 	}
 	gradientRuntime->pipeline.finish();
 	terrainRegistryValue = std::move(next);
+	invalidateResourceSeeds();
 	terrainPropertyIndices = std::move(propertyIndices);
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
 	terrainCounts = std::move(counts);
@@ -317,6 +318,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 
 void Map::rebuildTerrainCounts()
 {
+	invalidateResourceSeeds();
 	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
 	terrainPropertyIndices.resize(terrainIds.size());
 	for (std::size_t i = 0; i < terrainIds.size(); ++i)
@@ -370,6 +372,7 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 		adjustTerrainFeatures(type, true);
 	terrainIds[index] = type;
 	terrainPropertyIndices[index] = terrainRegistry().propertyIndex(type);
+	resourceSeedChanged(index, ResourceSeedCache::Terrain);
 	terrainEditChanged = true;
 	// Queries inside a batch may have materialized a partial snapshot. Every
 	// subsequent mutation invalidates it; generation is published at commit so
@@ -494,6 +497,7 @@ void Map::clear()
 	gradientRuntime->pipeline.reset();
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;
+	gradientRuntime->resourceSeeds.reset();
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{

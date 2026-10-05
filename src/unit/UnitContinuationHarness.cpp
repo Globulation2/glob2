@@ -80,7 +80,7 @@ static void checkContinuation(int checkpoint)
     for (int x = 12; x < 15; ++x)
     {
         game.map.setResource(x, 12, WOOD, 1);
-        game.map.getTile(x, 12).clearArea = game.teams[0]->me;
+        game.map.setAreaMask(game.map.coordToIndex(x, 12), &Tile::clearArea, game.teams[0]->me);
     }
     auto* first = game.addUnit(7, 12, 0, WORKER, 0, 0, 0, 0);
     auto* second = game.addUnit(7, 14, 0, WORKER, 0, 0, 0, 0);

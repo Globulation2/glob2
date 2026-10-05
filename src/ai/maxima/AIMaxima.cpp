@@ -74,7 +74,6 @@ namespace
         plan.carriers=std::min({requested,type.semantics.assignmentLimit,strategy.staffing.control_maximum_workers});
         plan.oneWayTravelTicks=strategy.farming.management_radius*strategy.food.carrier_ticks_per_tile;
         plan.handlingTicks=strategy.food.carrier_fixed_ticks_per_trip;
-        plan.ticksPerMeal=strategy.food.ticks_per_meal;
         return estimateFeeding(type,plan);
     }
 
@@ -1005,11 +1004,13 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.buildable_tiles=0;
 	observed.water_tiles=0;
     collect_building_profiles();
-	observed.feeding_capacity=0;
+	std::array<long long,8> feedingRates{};
 	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.player->team->myBuildings[id];
 	 if(!b||b->type->isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::Feeding))continue;
-     observed.feeding_capacity+=feeding_capacity_for_type(b->typeNum);
+     const unsigned mask=b->type->semantics.feeding.unitMask&b->type->semantics.admittedUnitMask&7u;
+     feedingRates[mask]+=development_feeding_visit_rate[b->typeNum];
 	}
+    observed.feeding_capacity=aggregate_feeding_capacity(feedingRates);
 	observed.terrain_abundance=global_terrain_abundance;
 	observed.connected_abundance=global_connected_abundance;
 	observed.mobility_opportunity=global_mobility_opportunity;
@@ -4132,7 +4133,7 @@ int Maxima::feeding_capacity_for_type(int type) const
      for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
          const auto* base=context.player->team->race.getUnitType(unit,0);
          const int action=base->performance[FLY]>0?FLY:WALK;
-         const int trigger=unit==WARRIOR?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
          const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
              base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
          const int count=std::max(1,populations[unit]);
@@ -4142,6 +4143,26 @@ int Maxima::feeding_capacity_for_type(int type) const
  }
  if(!demand || !population)return 0;
  return int(std::min<long long>(1000000,static_cast<long long>(development_feeding_visit_rate[type])*population/demand));
+}
+
+int Maxima::aggregate_feeding_capacity(const std::array<long long,8>& rates) const
+{
+ std::array<int,3> demand{snapshot.feeding_demand[0],snapshot.feeding_demand[1],snapshot.feeding_demand[2]};
+ if(demand==std::array<int,3>{} && !context.player->game->gameHeader.isHungerDisabled()) {
+     // Empty or manually constructed planning observations use the loaded race;
+     // live observations already contain actual per-recipient recurring rates.
+     std::array<int,3> population{snapshot.workers,snapshot.explorers,snapshot.warriors};
+     if(population==std::array<int,3>{})population[WORKER]=snapshot.population;
+     for(int unit=0;unit<3;++unit)if(population[unit]) {
+         const auto* base=context.player->team->race.getUnitType(unit,0);
+         const int action=base->performance[FLY]>0?FLY:WALK;
+         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
+             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+         demand[unit]=int(std::min<long long>(INT_MAX,(rate*population[unit]+MealRatePrecision/2)/MealRatePrecision));
+     }
+ }
+ return feedingPopulationCapacity(demand,snapshot.population,rates);
 }
 
 long long Maxima::birth_food_acreage() const
@@ -5122,7 +5143,7 @@ void Maxima::update_food_retirement(Context& runtime,
 	{
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
         const AIMaximaPlacement::BuildingLevelProfile* definition=nullptr;
-        if(const auto* building=world.building(value.key))definition=profile_variant(building->buildingType,std::max(1,building->level));
+        if(const auto* building=world.building(value.key))definition=profile_variant(building->buildingType,std::max(1,value.level));
         else if(value.key<0) {
             const auto action=development_planner.actions().find(-value.key-1);
             if(action!=development_planner.actions().end())definition=profile_variant(action->second.buildingType,std::max(1,action->second.targetLevel));
@@ -5212,20 +5233,22 @@ void Maxima::update_food_retirement(Context& runtime,
 		return;
 
 	int completed_inns=0,completed_swarms=0;
-	std::map<int,int> inn_level;
+	std::map<int,std::pair<unsigned,long long>> inn_rates;
+    std::array<long long,8> remainingRates{};
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
 		if(building.site||food_building_pending_deletion(runtime,building.id))continue;
 		if(profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
-		{++completed_inns;inn_level[building.id]=feeding_capacity(building.buildingType,building.level)*strategy.economy.reliable_inn_percent/100;}
+		{
+            const auto* definition=profile_variant(building.buildingType,building.level);
+            const unsigned mask=definition->feedingMask&7u;
+            const long long rate=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*strategy.economy.reliable_inn_percent/100;
+            ++completed_inns;inn_rates[building.id]={mask,rate};remainingRates[mask]+=rate;
+        }
 		else if(profile_serves(building.buildingType,AIMaximaBuildings::Production,building.level))
 			++completed_swarms;
 	}
-	const auto seats_of=[](int capacity){return capacity;};
-	int seats=0;
-	for(std::map<int,int>::const_iterator i=inn_level.begin();i!=inn_level.end();++i)
-		seats+=seats_of(i->second);
 
 	const AIMaximaPlacement::DevelopmentAction* relocation=current_food_relocation();
 	const int replacement=relocation?relocation->buildingId:-1;
@@ -5247,11 +5270,12 @@ void Maxima::update_food_retirement(Context& runtime,
 		   ||timer-since->second<budget.food_burden_confirm_ticks)continue;
 		if(value.kind==AIMaximaFoodLedger::InnConsumer)
 		{
-			const std::map<int,int>::const_iterator level=inn_level.find(value.key);
-			if(level==inn_level.end()||completed_inns<=1)continue;
+			const auto provider=inn_rates.find(value.key);
+			if(provider==inn_rates.end()||completed_inns<=1)continue;
 			// The ledger is an accounting view: workers stock whichever inn they
 			// reach. Never remove seats the population is still eating from.
-			if(seats-seats_of(level->second)<snapshot.population)continue;
+			auto without=remainingRates;without[provider->second.first]-=provider->second.second;
+            if(aggregate_feeding_capacity(without)<snapshot.population)continue;
 		}
 		// Only completed buildings are retirable, so a swarm reaching here is
 		// physically present; never remove the settlement's last one.
@@ -5420,11 +5444,11 @@ void Maxima::update_food_relocation(Context& runtime,
 				if(old&&profile_serves(old->buildingType,AIMaximaBuildings::Feeding,old->level))
 				{
 
-					long long seats=0,oldSeats=0;
+					std::array<long long,8> rates{};
 					for(size_t b=0;b<world.buildings.size();++b)
 					{
 						const WorldBuilding& building=world.buildings[b];
-						if(building.site
+						if(building.site || building.id==target
 						   ||food_building_pending_deletion(runtime,building.id)
 						   ||!profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
 							continue;
@@ -5432,11 +5456,10 @@ void Maxima::update_food_relocation(Context& runtime,
 							ledger.consumer(building.id);
 						const int coverage=supplied
 							? std::min(100,std::max(0,supplied->coveragePercent)) : 100;
-						const long long reliable=static_cast<long long>(feeding_capacity(building.buildingType,building.level))*coverage*strategy.economy.reliable_inn_percent/10000;
-						seats+=reliable;
-						if(building.id==target)oldSeats=reliable;
-					}
-					seatsRemain=seats-oldSeats>=snapshot.population;
+                        const auto* definition=profile_variant(building.buildingType,building.level);
+                        rates[definition->feedingMask&7u]+=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*coverage*strategy.economy.reliable_inn_percent/10000;
+                    }
+                    seatsRemain=aggregate_feeding_capacity(rates)>=snapshot.population;
 				}
 				if(hungry||!seatsRemain)
 				{

@@ -16,7 +16,9 @@ inline const BuildingType* completed(const Game& game, const BuildingType& type)
 // insideSpeed advances the unit's fixed-point action clock each simulation tick.
 inline int serviceTicks(const BuildingType& type,int duration)
 {
- return int((static_cast<long long>(std::max(0,duration)+1)*UNIT_DELTA_QUANTUM+type.insideSpeed-1)/std::max(1,type.insideSpeed));
+ // Nominal cardinal cadence; the engine never completes two actions in one tick.
+ const int advance=std::clamp(type.insideSpeed,1,UNIT_DELTA_QUANTUM);
+ return int(((static_cast<long long>(std::max(0,duration))+1)*UNIT_DELTA_QUANTUM+advance-1)/advance);
 }
 inline unsigned capabilities(const Game& game, const BuildingType& type)
 {

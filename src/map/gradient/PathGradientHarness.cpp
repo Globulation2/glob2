@@ -431,7 +431,7 @@ TEST_CASE("legacy terrain import rejects unregistered sprite IDs [pathfinding]")
     {
         bool rejected=false;
         PathMap map(4,4,std::vector<Uint16>(256,0));
-        map.getTile(0,0).terrain=sprite;
+        auto tile=map.getTile(0,0);tile.terrain=sprite;map.replaceTile(0,0,tile);
         try { map.importLegacyTerrain(); }
         catch(const std::invalid_argument&) { rejected=true; }
         CHECK(rejected);

@@ -626,6 +626,7 @@ private:
 	int preferred_profile(int role) const;
 	int feeding_capacity(int root,int position) const;
     int feeding_capacity_for_type(int concreteType) const;
+    int aggregate_feeding_capacity(const std::array<long long,8>& rates) const;
     long long recipient_meal_rate(const Unit& unit) const;
     long long birth_food_acreage() const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&

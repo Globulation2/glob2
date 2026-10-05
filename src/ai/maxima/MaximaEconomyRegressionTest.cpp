@@ -318,13 +318,13 @@ void nearbyCornDeterminesStaffing()
     long long previous=0;
     for(int amount=0;amount<=8;++amount)
     {
-        f.game.map.getTile(16,11).resource.amount=amount;
+        f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), amount);
         const long long capacity=ai.nearby_farm_capacity(c,0);
         if(amount==0) REQUIRE(capacity==0);
         else REQUIRE((capacity>0 && capacity>=previous));
         previous=capacity;
     }
-    f.game.map.getTile(16,11).resource.amount=originalAmount;
+    f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), originalAmount);
     auto world=ai.collect_development_world(c);
     REQUIRE(world.tile(16,11).foodOpportunity>0);
     REQUIRE(world.tile(15,11).fertility>0);
@@ -974,7 +974,7 @@ TEST_CASE("feeding estimate shares resources and seats across capability combina
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     const int id=world.game.buildingsTypes.getTypeNum("inn",2,false);
     const auto baseline=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
-    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
+    const AIMaxima::FeedingPlan plan{4,16*23,105};
     auto estimate=[&](nlohmann::json snapshot,const AIMaxima::FeedingPlan& p) {
         world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
         return AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),p);
@@ -983,29 +983,32 @@ TEST_CASE("feeding estimate shares resources and seats across capability combina
     auto costly=baseline;costly["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",2},{"wood",1}};
     costly["variants"][id]["properties"]["maxResource"][WOOD]=20;
     const auto mixedCost=estimate(costly,plan);
-    CHECK(mixedCost.supportedUnits<=normal.supportedUnits);
+    CHECK(mixedCost.visitsPerTick<=normal.visitsPerTick);
     CHECK(mixedCost.resources[WHEAT]==2*mixedCost.resources[WOOD]);
     auto distant=plan;distant.oneWayTravelTicks*=2;
-    CHECK(estimate(baseline,distant).supportedUnits<=normal.supportedUnits);
+    CHECK(estimate(baseline,distant).visitsPerTick<=normal.visitsPerTick);
     auto free=baseline;free["variants"][id]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
     auto nobody=plan;nobody.carriers=0;
     const auto freeEstimate=estimate(free,nobody);
-    CHECK(freeEstimate.supportedUnits>=normal.supportedUnits);
+    CHECK(freeEstimate.visitsPerTick>=normal.visitsPerTick);
     CHECK(freeEstimate.resources[WHEAT]==0);
     CHECK(freeEstimate.haulingWorkerTicks==0);
     auto hybrid=baseline;auto& spec=hybrid["variants"][id]["semantics"];
     spec["healing"]["enabled"]=true;spec["healing"]["duration"]=12;spec["healing"]["cost"]={{"wheat",1}};
     spec["production"]["recipes"]={{"worker",{{"enabled",true},{"duration",80},{"cost",{{"wheat",2}}}}}};
     const auto shared=estimate(hybrid,plan);
-    CHECK(shared.supportedUnits<=normal.supportedUnits);
+    CHECK(shared.visitsPerTick<=normal.visitsPerTick);
     CHECK(shared.haulingWorkerTicks<=plan.carriers*AIMaxima::FeedingEstimate::Scale);
     CHECK(shared.resources[WHEAT]>shared.visitsPerTick);
     CHECK(normal.resources[WHEAT]==normal.visitsPerTick);
-    CHECK(normal.supportedUnits==normal.visitsPerTick*plan.ticksPerMeal/AIMaxima::FeedingEstimate::Scale);
 }
 
 namespace
 {
+// Historical overload diagnostic only: this old policy period is not a production capacity model.
+int historicalFeedingForecast(const AIMaxima::FeedingEstimate& estimate)
+{ return int(estimate.visitsPerTick*11759/AIMaxima::FeedingEstimate::Scale); }
+
 struct FeedingSceneResult { int survivors; Uint64 meals; size_t distinctCarriers; int additionalFeeders; int settledSurvivors; };
 
 FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,int population,
@@ -1089,7 +1092,7 @@ TEST_CASE("sustained stock feeding reports capability estimates and historical s
 {
     glob2test::HeadlessGlobals globals;
     const int historical[]={19,25,34};
-    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
+    const AIMaxima::FeedingPlan plan{4,16*23,105};
     for(int stage=0;stage<3;++stage)for(int distance:{4,16}) {
         CAPTURE(stage);CAPTURE(distance);
         const auto baseline=measureFeedingScene("historical_army",stage,distance,historical[stage],plan.carriers,0,plan);
@@ -1098,13 +1101,13 @@ TEST_CASE("sustained stock feeding reports capability estimates and historical s
         const auto* inn=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getTypeNum("inn",stage,false));
         const auto estimate=AIMaxima::estimateFeeding(*inn,plan);
         std::cout<<"MAXIMA_FEEDING_FORECAST stage="<<stage<<" historical="<<historical[stage]
-            <<" nominal="<<estimate.supportedUnits<<" ticks_per_meal="<<plan.ticksPerMeal<<'\n';
+            <<" historical_period_forecast="<<historicalFeedingForecast(estimate)<<" ticks_per_meal="<<11759<<'\n';
         // Deliberately hostile workload: only four total workers (no replacement
         // carriers), almost all recipients warriors, and raw nominal population
         // without the planner's reliability margin. Report losses, including a
         // possible complete collapse, without claiming this overload is safe.
-        const auto overload=measureFeedingScene("nominal_army_overload",stage,distance,estimate.supportedUnits,plan.carriers,0,plan);
-        CHECK(overload.survivors<=estimate.supportedUnits);
+        const auto overload=measureFeedingScene("nominal_army_overload",stage,distance,historicalFeedingForecast(estimate),plan.carriers,0,plan);
+        CHECK(overload.survivors<=historicalFeedingForecast(estimate));
     }
 }
 
@@ -1114,7 +1117,7 @@ TEST_CASE("observed hunger expands feeding for an opening colony mix beyond nomi
     const auto policy=[] {Fixture f;f.ai->ensure_strategy();return f.ai->strategy;}();
     const AIMaxima::FeedingPlan plan{policy.staffing.new_inn_workers,
         policy.farming.management_radius*policy.food.carrier_ticks_per_tile,
-        policy.food.carrier_fixed_ticks_per_trip,policy.food.ticks_per_meal};
+        policy.food.carrier_fixed_ticks_per_trip};
     // Shipped opening worker weight plus low-utility explorer/warrior weights.
     // This fixes a documented colony mix; it is not tuned to these outcomes.
     const int workerWeight=policy.economy.early_worker_ratio;
@@ -1124,7 +1127,7 @@ TEST_CASE("observed hunger expands feeding for an opening colony mix beyond nomi
     for(int stage=0;stage<3;++stage)for(int distance:{4,16}) {
         CAPTURE(stage);CAPTURE(distance);
         const auto* inn=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getTypeNum("inn",stage,false));
-        const int nominal=AIMaxima::estimateFeeding(*inn,plan).supportedUnits;
+        const int nominal=historicalFeedingForecast(AIMaxima::estimateFeeding(*inn,plan));
         const int population=nominal*policy.economy.reliable_inn_percent/100;
         const int workers=population*workerWeight/totalWeight;
         const int explorers=population*explorerWeight/totalWeight;
@@ -1183,7 +1186,7 @@ TEST_CASE("operating estimates use one production clock and packet denominators"
         {"worker",{{"enabled",true},{"duration",10},{"cost",{{"wheat",1}}}}},
         {"explorer",{{"enabled",true},{"duration",100},{"cost",{{"wood",3}}}}}};
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
-    const AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    const AIMaxima::FeedingPlan plan{1000,0,1};
     const auto ordinary=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
     const auto rate=AIMaxima::FeedingEstimate::Scale/(11+101);
     CHECK(ordinary.resources[WHEAT]==rate);
@@ -1217,7 +1220,7 @@ TEST_CASE("parallel training budgets separate compatible recipients and disabled
         {"attackStrength",{{"enabled",true},{"unitMask",4},{"targetLevel",1},{"duration",100},{"cost",{{"stone",3}}}}},
         {"swim",{{"enabled",true},{"unitMask",1},{"targetLevel",0},{"constructionLevel",0},{"duration",500},{"cost",{{"wheat",5}}}}}};
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
-    AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    AIMaxima::FeedingPlan plan{1000,0,1};
     const auto* type=world.game.buildingsTypes.get(id);
     const auto trained=AIMaxima::estimateFeeding(*type,plan);
     CHECK(trained.resources[WOOD]==AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,10));
@@ -1227,9 +1230,9 @@ TEST_CASE("parallel training budgets separate compatible recipients and disabled
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();type=world.game.buildingsTypes.get(id);
     const auto hybrid=AIMaxima::estimateFeeding(*type,plan);
     plan.training=false;const auto disabled=AIMaxima::estimateFeeding(*type,plan);
-    CHECK(disabled.supportedUnits>hybrid.supportedUnits);
+    CHECK(disabled.visitsPerTick>hybrid.visitsPerTick);
     CHECK(disabled.resources[WOOD]==0);CHECK(disabled.resources[STONE]==0);
-    plan.feeding=false;CHECK(AIMaxima::estimateFeeding(*type,plan).supportedUnits==0);
+    plan.feeding=false;CHECK(AIMaxima::estimateFeeding(*type,plan).visitsPerTick==0);
 }
 
 TEST_CASE("projectile profiles reserve ammunition workers and cache nominal feeding" * doctest::test_suite("Maxima.Economy"))
@@ -1259,9 +1262,8 @@ TEST_CASE("feeding budget scaling handles maximum seats without overflowing inte
     variant["properties"]["insideSpeed"]=256;
     variant["semantics"]["feeding"]["duration"]=0;
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
-    const auto estimate=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),{1024,0,0,1});
+    const auto estimate=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),{1024,0,0});
     CHECK(estimate.visitsPerTick==1024*AIMaxima::FeedingEstimate::Scale);
-    CHECK(estimate.supportedUnits==1024);
     CHECK(estimate.haulingWorkerTicks==1024*AIMaxima::FeedingEstimate::Scale);
 }
 
@@ -1277,7 +1279,7 @@ TEST_CASE("one training course credits independent movement and worker construct
     variant["semantics"]["training"]={{"walk",{{"enabled",true},{"unitMask",5},{"targetLevel",1},
         {"constructionLevel",1},{"duration",10},{"cost",{{"wood",1}}}}}};
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
-    const AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    const AIMaxima::FeedingPlan plan{1000,0,1};
     const auto both=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
     CHECK(both.services[AIMaximaBuildings::WalkTraining]>0);
     CHECK(both.services[AIMaximaBuildings::ConstructionTraining]>0);
@@ -1388,7 +1390,7 @@ TEST_CASE("feeding packet denominations preserve large stock rates and profile c
     snapshot["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",1000000}};
     f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();
     f.ai->ensure_strategy();
-    const auto estimate=AIMaxima::estimateFeeding(*f.game.buildingsTypes.get(id),{4,16*23,105,11759});
+    const auto estimate=AIMaxima::estimateFeeding(*f.game.buildingsTypes.get(id),{4,16*23,105});
     CHECK(estimate.resources[WHEAT]==INT_MAX);
     CHECK(estimate.resourcePackets[WHEAT]>INT_MAX/1000000);
     CHECK(estimate.resourcePackets[WHEAT]==estimate.feedingResourcePackets[WHEAT]);
@@ -1460,7 +1462,7 @@ TEST_CASE("mechanical production ceilings are separate from planned carrier thro
 {
     glob2test::HeadlessGlobals globals;
     Fixture f;const auto* producer=f.game.buildingsTypes.get(f.game.buildingsTypes.getFinishedTypeNum("swarm"));
-    AIMaxima::FeedingPlan plan{8,16*23,105,11759};plan.productionMask=1u<<WORKER;
+    AIMaxima::FeedingPlan plan{8,16*23,105};plan.productionMask=1u<<WORKER;
     const auto planned=AIMaxima::estimateFeeding(*producer,plan);
     plan.constrainHauling=false;
     const auto ceiling=AIMaxima::estimateFeeding(*producer,plan);
@@ -1514,4 +1516,71 @@ TEST_CASE("birth funding counts production packets without independent hybrid se
     ai.update_food_retirement(ai.context,world);
     CHECK(ai.food_supported_swarms==0);
     CHECK(ai.food_birth_crop_rate==0);
+}
+
+TEST_CASE("feeding capacity preserves independently admitted recipient classes" * doctest::test_suite("Maxima.Economy"))
+{
+    const std::array<int,3> demand{1000,1000,0};
+    std::array<long long,8> rates{};
+    rates[1u<<WORKER]=1000000;
+    rates[1u<<EXPLORER]=1000;
+    CHECK(AIMaxima::feedingPopulationCapacity(demand,20,rates)==20);
+    rates[1u<<EXPLORER]=0;
+    CHECK(AIMaxima::feedingPopulationCapacity(demand,20,rates)==0);
+    rates[3]=500;
+    CHECK(AIMaxima::feedingPopulationCapacity(demand,20,rates)==10);
+    rates={};rates[3]=1000;
+    CHECK(AIMaxima::feedingPopulationCapacity(demand,20,rates)==10);
+    rates[3]=2000;
+    CHECK(AIMaxima::feedingPopulationCapacity(demand,20,rates)==20);
+    CHECK(AIMaxima::feedingPopulationCapacity({INT_MAX,INT_MAX,INT_MAX},INT_MAX,rates)>=0);
+}
+
+TEST_CASE("service ceilings respect the engine action clock and crop funding avoids overflow" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;ai.ensure_strategy();
+    BuildingType type=*f.game.buildingsTypes.get(f.game.buildingsTypes.getFinishedTypeNum("inn"));
+    type.insideSpeed=32000;
+    CHECK(AIMaximaBuildings::serviceTicks(type,10)==11);
+    type.insideSpeed=256;
+    CHECK(AIMaximaBuildings::serviceTicks(type,10)==11);
+    ai.food_birth_crop_rate=INT_MAX;
+    ai.strategy.food.growth_period_ticks=100000;
+    const long long crop=static_cast<long long>(INT_MAX)*100000;
+    CHECK(ai.birth_food_acreage()==crop/AIMaximaFoodLedger::RateScale*65536
+        +(crop%AIMaximaFoodLedger::RateScale)*65536/AIMaximaFoodLedger::RateScale);
+}
+
+TEST_CASE("food retirement preserves the only explorer feeder despite surplus worker seats" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;
+    const int workerType=f.game.buildingsTypes.getTypeNum("inn",0,false);
+    const int explorerType=f.game.buildingsTypes.getTypeNum("inn",1,false);
+    auto catalog=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+    auto& workers=catalog["variants"][workerType];
+    workers["semantics"]["feeding"]["unitMask"]=1u<<WORKER;
+    workers["semantics"]["feeding"]["duration"]=0;
+    workers["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+    workers["properties"]["maxUnitInside"]=100;
+    catalog["variants"][explorerType]["semantics"]["feeding"]["unitMask"]=1u<<EXPLORER;
+    f.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.configureBuildingCatalog();
+    REQUIRE(f.game.addBuilding(10,10,workerType,0));
+    REQUIRE(f.game.addBuilding(26,26,explorerType,0));
+    for(int i=0;i<10;++i) {
+        REQUIRE(f.game.addUnit(5+i,5,0,WORKER,0,0,0,0));
+        REQUIRE(f.game.addUnit(5+i,6,0,EXPLORER,0,0,0,0));
+    }
+    auto& ai=*f.ai;ai.ensure_strategy();ai.context.initialize();
+    ai.initialize_farming_cache(ai.context);ai.configure_development_planner();
+    ai.snapshot.population=20;ai.snapshot.workers=10;ai.snapshot.explorers=10;
+    ai.snapshot.feeding_demand[WORKER]=1000;ai.snapshot.feeding_demand[EXPLORER]=1000;
+    ai.budget.food_ledger_enabled=ai.budget.food_retirement_enabled=true;
+    ai.budget.recovery_active=false;ai.timer=7000;ai.relocation_target_building=-1;
+    ai.food_burden_since[0]=ai.food_burden_since[1]=1000;
+    ai.update_food_retirement(ai.context,ai.collect_development_world(ai.context));
+    CHECK(ai.food_burden_since.count(1)==1);
+    for(const auto& order:ai.context.managementOrders)
+        CHECK(dynamic_cast<Management::DestroyBuilding*>(order.get())==nullptr);
 }

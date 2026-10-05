@@ -138,14 +138,15 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
     const auto bytes = backend->takeContents();
     auto header = world.game.mapHeader;
     // Exercise semantic validation after decoding, independent of the tile encoding.
-    const auto original=world.game.map.tiles[0];
+    const auto original=world.game.map.getTile(0);
     for(int field=0;field<5;++field) {
-        auto& tile=world.game.map.tiles[0]; tile=original;
+        auto tile=original;
         if(field==0) tile.terrain=272;
         if(field==1) tile.building=65534;
         if(field==2) tile.resource.type=254;
         if(field==3) tile.groundUnit=65534;
         if(field==4) tile.airUnit=65534;
+        world.game.map.replaceTile(0,tile);
         auto* storage=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream writer(storage);
         world.game.map.save(&writer);
@@ -153,7 +154,7 @@ TEST_CASE("terrain loaders reject invalid resources occupants and sector dimensi
         Map restored;
         CHECK_FALSE(restored.load(stream.get(),header,&world.game));
     }
-    world.game.map.tiles[0]=original;
+    world.game.map.replaceTile(0,original);
 	auto bad = poisoned(bytes, out, "encoding", 254); // First packed array is the undermap.
 	auto stream = input(bad);
 	Map restored;

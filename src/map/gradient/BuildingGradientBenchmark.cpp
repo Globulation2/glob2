@@ -167,11 +167,11 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
             const auto seed=[&] {
                 map.initializeGradientCells([&](size_t begin,size_t end) {
                     for(size_t i=begin;i<end;++i) {
-                        const auto& tile=map.tiles[i];
+                        const auto& tile=map.getTile(i);
                         if(tile.building!=NOGBID)
                             gradient[i]=tile.building==gid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
                         else if((tile.forbidden&teamMask) || tile.resource.type!=NO_RES_TYPE ||
-                            map.immobileUnits[i]!=IMMOBILE_UNIT_NONE ||
+                            map.isImmobileUnit(i & map.wMask, i >> map.wDec) ||
                             (!map.terrainPropertiesAt(i).walkable && !(swim>0 && map.terrainPropertiesAt(i).swimmable)))
                             gradient[i]=GRADIENT_FORBIDDEN;
                         else gradient[i]=GRADIENT_UNREACHABLE;

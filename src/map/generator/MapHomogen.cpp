@@ -68,6 +68,7 @@ void Map::controlSand(void)
 // the Resource struct.
 void Map::smoothResources(int times)
 {
+	invalidateResourceSeeds();
 	for (int s=0; s<times; s++)
 		for (int y=0; y<h; y++)
 			for (int x=0; x<w; x++)

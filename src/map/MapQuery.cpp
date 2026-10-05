@@ -11,6 +11,7 @@
 #include "Game.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
+#include "gradient/ResourceSeedCache.h"
 
 
 
@@ -348,13 +349,19 @@ int Map::isClearingAreaClaimed(int x, int y, int teamNumber) const
 
 void Map::markImmobileUnit(int x, int y, int teamNumber)
 {
-	immobileUnits[coordToIndex(x, y)] = teamNumber;
+	const auto index = coordToIndex(x, y);
+	if (immobileUnits[index] == teamNumber) return;
+	immobileUnits[index] = teamNumber;
+	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
 
 
 void Map::clearImmobileUnit(int x, int y)
 {
-	immobileUnits[coordToIndex(x, y)] = IMMOBILE_UNIT_NONE;
+	const auto index = coordToIndex(x, y);
+	if (immobileUnits[index] == IMMOBILE_UNIT_NONE) return;
+	immobileUnits[index] = IMMOBILE_UNIT_NONE;
+	resourceSeedChanged(index, ResourceSeedCache::Immobile);
 }
 
 

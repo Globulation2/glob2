@@ -77,7 +77,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	// Another unit fully harvests the near tile. This mutates the resource
 	// layer directly, the same way Map::decResource does; the cached
 	// gradient is untouched until something rebuilds it.
-	game.map.getTile(nearX, nearY).resource.clear();
+	game.map.replaceResource(nearX, nearY, Resource{});
 	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) == GRADIENT_AT_GOAL,
 		"the cached gradient does not notice the depletion by itself");
 
@@ -166,7 +166,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 
 	// The near-building tile gets fully harvested by someone else. Neither
 	// the resource gradient nor the round-trip field notice by themselves.
-	game.map.getTile(nearBuildingX, nearBuildingY).resource.clear();
+	game.map.replaceResource(nearBuildingX, nearBuildingY, Resource{});
 	game.map.updateResourcesGradient(teamNumber, WHEAT, swimClass);
 	game.map.updateRoundTripGradient(inn, WHEAT, swimClass);
 

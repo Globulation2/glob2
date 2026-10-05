@@ -451,9 +451,9 @@ void alterAreaMask(Map& map, const OrderAlterArea& oaa, bool local, Uint32 Tile:
 				continue;
 			const size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 			if (adding)
-				map.tiles[index].*field |= teamMask;
+				map.setAreaMask(index, field, (map.getTile(index).*field) | teamMask);
 			else
-				map.tiles[index].*field &= ~teamMask;
+				map.setAreaMask(index, field, (map.getTile(index).*field) & ~teamMask);
 			if (local)
 				view.set(index, adding);
 		}

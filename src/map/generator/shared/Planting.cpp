@@ -16,10 +16,10 @@ ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
 	ResourceStock stock;
 	for (int i = 0; i < map.getW() * map.getH(); ++i)
 	{
-		auto &resource = map.getResource(i);
+		const auto &resource = map.getResource(i);
 		if (resource.type != type)
 			continue;
-		resource.amount = std::min<int>(resource.amount, maximumAmount);
+		map.setResourceAmount(i, std::min<int>(resource.amount, maximumAmount));
 		++stock.tiles;
 		stock.amount += resource.amount;
 	}

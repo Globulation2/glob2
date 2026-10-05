@@ -86,7 +86,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	auto before = explored.get("resource").encode();
 	game.map.switchFogOfWar();
 	game.map.switchFogOfWar();
-	game.map.getResource(22, 22).amount = 7;
+	game.map.setResourceAmount(game.map.coordToIndex(22, 22), 7);
 	game.stepCounter++;
 	fair.observe();
 	auto remembered = fair.query("tile", {22, 22});
@@ -959,7 +959,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	game.map.switchFogOfWar();
 	game.map.switchFogOfWar();
 	game.map.setMapDiscovered(0, 0, 8, 8, game.teams[0]->me);
-	game.map.getTile(2, 2).fertility = 321;
+	game.map.setFertility(2, 2, 321);
 	Observations before(game, 0);
 	before.setProfile(2);
 	before.observe();
@@ -989,7 +989,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 		return result.set("work", double(work)).encode();
 	};
 	auto initial = answers(before);
-	game.map.getTile(22, 22).fertility = 65535;
+	game.map.setFertility(22, 22, 65535);
 	game.map.setCellTerrain(22, 22,WATER);
 	game.map.setResource(21, 21, WHEAT, 1);
 	enemy->hp = 999;
@@ -1000,7 +1000,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	CHECK(answers(after) == initial);
 	game.map.switchFogOfWar();
 	game.map.switchFogOfWar();
-	game.map.getTile(2, 2).fertility = 999;
+	game.map.setFertility(2, 2, 999);
 	Spatial remembered(game, 0, before);
 	remembered.begin(Value::array());
 	auto summary = remembered.query(

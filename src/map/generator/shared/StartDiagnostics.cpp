@@ -227,7 +227,7 @@ int removeResourceNear(Game &game, int team, int resource, int radius)
 				continue;
 			// Clear in place: setResource/decResource draw from the synchronised random stream,
 			// and a perturbation must leave every other tile and the game's RNG untouched.
-			map.getTile(x, y).resource.clear();
+			map.replaceResource(x, y, Resource{});
 			++removed;
 		}
 	return removed;

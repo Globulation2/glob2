@@ -580,7 +580,7 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 		const int type = resources[i];
 		if (type == NO_RES)
 			continue;
-		auto &resource = map.getTile(x, y).resource;
+		auto resource = map.getResource(x, y);
 		resource.type = Uint8(type);
 		const auto *resourceType = globalContainer->resourcesTypes.get(type);
 		// Match normal authored deposits: valid amounts are 1..sizesCount-1.
@@ -596,6 +596,7 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 		resource.amount = Uint8(minimum + context.bounded("map-image-amounts", maximum - minimum + 1));
 		resource.variety = Uint8(context.bounded(
 			"map-image-resources", globalContainer->resourcesTypes.get(type)->varietiesCount));
+		map.replaceResource(x, y, resource);
 	}
 }
 

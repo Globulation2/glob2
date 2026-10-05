@@ -71,6 +71,8 @@ namespace
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
+			// Test-only private access initializes the deliberately partial map;
+			// subsequent mutations use the same cache notifications as gameplay.
 			tiles.assign(size, Tile());   // Tile() defaults: terrain=0 (grass), no building, no unit
             importLegacyTerrain();
 		}
@@ -95,23 +97,21 @@ namespace
 
 		void putBuilding(int x, int y, Uint16 gbid = 0)
 		{
-			tiles[coordToIndex(x, y)].building = gbid;
+			auto cell = getTile(x, y);
+			cell.building = gbid;
+			replaceTile(x, y, cell);
 		}
 		void putGroundUnit(int x, int y, Uint16 guid = 0)
 		{
-			tiles[coordToIndex(x, y)].groundUnit = guid;
+			setGroundUnit(x, y, guid);
 		}
 		void putResource(int x, int y, int type = 0)
 		{
-			Resource &r = tiles[coordToIndex(x, y)].resource;
-			r.type = type;
-			r.amount = 1;
-			r.variety = 0;
-			r.animation = 0;
+			replaceResource(x, y, Resource{static_cast<Uint8>(type), 0, 1, 0});
 		}
 		void setForbidden(int x, int y, Uint32 mask)
 		{
-			tiles[coordToIndex(x, y)].forbidden = mask;
+			setAreaMask(coordToIndex(x, y), &Tile::forbidden, mask);
 		}
 		// Terrain encoding (see Map.h:336-361):
 		//   grass : terrain <  16

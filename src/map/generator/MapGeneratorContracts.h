@@ -1103,7 +1103,7 @@ inline void bajadaContracts()
 		for (int i = 0; i < 256 * 256 && !damaged; ++i)
 			if (zero.map.isResource(i % 256, i / 256) && zero.map.getResource(i % 256, i / 256).type == STONE)
 			{
-				zero.map.getResource(i % 256, i / 256).clear();
+				zero.map.replaceResource(i % 256, i / 256, Resource{});
 				damaged = true;
 			}
 		assert(damaged && !definition.validateWorld(zero, check).empty());
@@ -1252,7 +1252,7 @@ inline void evenGroundContracts()
 		for (int y = 0; y < 256; ++y)
 			for (int x = 0; x < 256; ++x)
 				if (g.map.isResource(x, y) && g.map.getResource(x, y).type == WHEAT)
-					g.map.getResource(x, y).clear();
+					g.map.replaceResource(x, y, Resource{});
 		assert(!definition.validateWorld(g, check).empty());
 	}
 	puts("PASS Even Ground: envelope including thin maps and refusal, water budget ordering, "
@@ -1560,7 +1560,7 @@ inline void encircledKingdomContracts()
 			for (int x = 0; x < abundant.map.getW(); ++x)
 				if (abundant.map.getResource(x, y).type == STONE)
 				{
-					abundant.map.getResource(x, y).clear();
+					abundant.map.replaceResource(x, y, Resource{});
 					removed = true;
 				}
 		assert(removed && !definition.validateWorld(abundant, check).empty());
@@ -1826,7 +1826,7 @@ inline void portageLakesContracts()
 		for (int x = 0; x < 256; ++x)
 			if (repeated.map.getResource(x, y).type == WOOD && !fertility.at(x, y))
 			{
-				repeated.map.getResource(x, y).clear();
+				repeated.map.replaceResource(x, y, Resource{});
 				removed = true;
 			}
 	assert(removed && !definition.validateWorld(repeated, context).empty());

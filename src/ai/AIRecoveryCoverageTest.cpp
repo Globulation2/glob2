@@ -113,7 +113,7 @@ TEST_SUITE("AIRecoveryCoverage")
         auto restored=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
         apply(BrushTool::MODE_ADD,restored.add);
         // Depletion must still retire farm paint when the entire field is gone.
-        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.getResource(x,y).type=NO_RES_TYPE;
+        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) {auto resource=w.game.map.getResource(x,y);resource.type=NO_RES_TYPE;w.game.map.replaceResource(x,y,resource);}
         auto depleted=Cortex::reconcileWheatForbidden(w.game.players[0],0,true,false,true);
         CHECK(depleted.addCount==0); CHECK(depleted.delCount==restored.addCount);
     }

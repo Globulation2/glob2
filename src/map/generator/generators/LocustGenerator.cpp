@@ -192,10 +192,10 @@ bool generate(Game &game, GenerationContext &context)
 	// is given its harvests here from the map's own stream, in tile order.
 	std::int64_t food = 0;
 	for (int i = 0; i < t.size(); ++i)
-		if (auto &resource = map.getResource(i); resource.type == WHEAT)
+		if (const auto &resource = map.getResource(i); resource.type == WHEAT)
 		{
-			resource.amount = kLeastRations + int(context.bounded(
-												  "vultures-rations", kMostRations - kLeastRations + 1));
+			map.setResourceAmount(i, kLeastRations + int(context.bounded(
+												  "vultures-rations", kMostRations - kLeastRations + 1)));
 			food += resource.amount;
 		}
 	context.telemetry.measure("locust.food.total-rations", food);

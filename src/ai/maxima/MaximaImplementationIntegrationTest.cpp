@@ -1434,18 +1434,18 @@ static void economicResourceAccessRegressions()
     verify(0,0);
     worker->performance[SWIM]=1; verify(1,1);
     // Deposits reserved against harvesting must not become available supply.
-    game.map.getTile(19,12).forbidden|=player.team->me; verify(0,1);
-    game.map.getTile(19,12).forbidden&=~player.team->me;
+    game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden | (player.team->me)); verify(0,1);
+    game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden & (~player.team->me));
     worker->performance[SWIM]=0; verify(0,0);
     // A local worker on the second island can reach its resources without swimming.
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
     // Sharing connectivity must preserve algae's unit counts and shore access.
     game.map.setResource(16,24,ALGA,1);
-    game.map.getTile(16,24).resource.amount=4;
+    game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
     for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.setCellTerrain(x,y,WATER);
     game.map.setResource(21,19,ALGA,1);
-    game.map.getTile(21,19).resource.amount=3;
+    game.map.setResourceAmount(game.map.coordToIndex(21,19), 3);
     ai.update_environment_model(c);
     REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
     REQUIRE((ai.accessible_algae_units==4 && ai.environment.accessible_algae==1));

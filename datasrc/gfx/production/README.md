@@ -1,10 +1,20 @@
-# Original-source production inputs
+# Approved artwork inputs
 
-`original-derived/` contains approved original exports and the 4× unit renders; `pack-metadata/` contains
-frame layout and source hashes. No AI assets are included; the hand-authored vector frames in `authored/`
-are rendered from SVG sources in `datasrc/gfx/authored`. Package with
-`python3 tools/artwork/package_runtime.py`; unlisted frames use classic artwork.
+Production inputs are separated by origin: `original-derived/` contains preserved
+artist exports and Blender unit renders; `authored/` contains rendered SVG
+markers; `ai-upscaled/` contains reviewed enhanced sprites; `ai-materials/`
+contains generated terrain and water; `resampled-masks/` contains deterministic
+mask resizes. `atlases/` holds the padded mip levels, and `pack-metadata/` the
+PNG source index, provenance and hashes. Classic fallback assets remain unchanged.
 
-Native unit sprites remain in `data/gfx`; their Blender sources remain in
-`datasrc/gfx/originals/units`. Unit render recipes are documented in
-[`tools/unit-animation/README.md`](../../../tools/unit-animation/README.md).
+Run `python3 tools/artwork/package_runtime.py --check` before packaging, then
+`python3 tools/artwork/package_runtime.py`. No model inference runs during either
+operation. This assembles lossless PNG sources; the shared client exporter
+`tools/package_assets.py` builds WebP runtime artwork and rewrites its index.
+Use `package_runtime.py --runtime-output artifacts/ai-runtime` to perform both
+steps and `validate_runtime.py --export artifacts/ai-runtime` to check decoded
+runtime alpha, geometry, hashes and encoding policy. Future candidates use the staging-only workflow in
+[`tools/artwork/ai/README.md`](../../../tools/artwork/ai/README.md); promote a
+complete reviewed selection explicitly, with base/team pairs and hashes intact.
+The [unit pipeline](../../../tools/unit-animation/README.md) preserves the
+original Blender sources and controls animation exports.

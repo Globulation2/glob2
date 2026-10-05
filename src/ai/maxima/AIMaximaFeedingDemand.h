@@ -30,6 +30,27 @@ inline long long recipientMealRate(int hungerMaximum,int hungerTrigger,int hungr
     return AIMaximaFoodLedger::RateScale*precision*precision/std::max(precision,cycle);
 }
 
+// Uniform growth of the observed recipient mix is feasible exactly when every
+// recipient subset can reach enough shared service capacity (the seven cuts of
+// this three-class bipartite network). Flexible seats are never counted twice.
+inline int feedingPopulationCapacity(const std::array<int,3>& demand,int population,
+    const std::array<long long,8>& visitsByAdmission)
+{
+    if(population<=0)return 0;
+    long long result=1000000;
+    for(unsigned subset=1;subset<8;++subset) {
+        long long required=0,available=0;
+        for(int unit=0;unit<3;++unit)if(subset&(1u<<unit))required+=std::max(0,demand[unit]);
+        if(!required)continue;
+        for(unsigned admitted=1;admitted<8;++admitted)
+            if(admitted&subset)available+=std::max(0LL,visitsByAdmission[admitted]);
+        // Bound before multiplying, also for diagnostic fixtures with huge rates.
+        if(available>=(required*1000000+population-1)/population)continue;
+        result=std::min(result,available*population/required);
+    }
+    return int(result);
+}
+
 struct FeedingProvider
 {
     int colony=0;

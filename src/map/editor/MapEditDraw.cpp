@@ -12,6 +12,8 @@
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
+#include "render/UnitAnimation.h"
+#include "render/UnitSkin.h"
 #include "UnitType.h"
 #include "Utilities.h"
 #include <SDL3/SDL.h>
@@ -345,18 +347,7 @@ void MapEdit::drawPlacingUnitOnMap()
 		isRoom=game.map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM], Team::teamNumberToMask(team));
 	}
 
-	int imgid;
-	if (type==WORKER)
-		imgid=64;
-	else if (type==EXPLORER)
-		imgid=0;
-	else if (type==WARRIOR)
-		imgid=256;
-	else
-	{
-		imgid=0;
-		assert(false);
-	}
+	const int imgid=unitAnimationFrame(g_unitSkins[type].startImage[STOP_WALK], 0, 0);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(game.teams[team]->color);

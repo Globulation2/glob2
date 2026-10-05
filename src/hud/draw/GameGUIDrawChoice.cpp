@@ -16,6 +16,7 @@
 #include "IntBuildingType.h"
 #include "SpriteCentering.h"
 #include "BuildingPresentation.h"
+#include "Ressource.h"
 
 namespace {
 
@@ -37,7 +38,7 @@ constexpr int CHOICE_PANEL_CLIP_TOP_Y = 128;
 
 // The info block at the bottom of the right panel is anchored this many pixels above
 // the bottom of the screen.
-constexpr int CHOICE_INFO_BOTTOM_OFFSET_PX = 50;
+constexpr int CHOICE_INFO_BOTTOM_OFFSET_PX = 61; // Four resource rows, including fruit.
 
 // Find the index of `name` in `types`, or nullopt if absent.
 std::optional<size_t> findChoiceIndex(const std::vector<std::string>& types, const std::string& name)
@@ -52,7 +53,7 @@ std::optional<size_t> findChoiceIndex(const std::vector<std::string>& types, con
 
 int GameGUI::choiceVisibleRows(int panelTopY,unsigned columns) const
 {
-    return columns==3 ? 1 : std::max(1,(globalContainer->gfx->getH()-82-panelTopY)/CHOICE_ROW_HEIGHT_PX);
+    return columns==3 ? 1 : std::max(1,(globalContainer->gfx->getH()-CHOICE_INFO_BOTTOM_OFFSET_PX-32-panelTopY)/CHOICE_ROW_HEIGHT_PX);
 }
 
 bool GameGUI::scrollBuildingChoices(double delta)
@@ -184,22 +185,18 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 		return;
 
 	const int colLeftX = panelLeftX + 4 + (RIGHT_MENU_WIDTH - 128) / 2;
-	const int colRightX = colLeftX + 64;
-
-	// maxResource[] indexes are the engine-wide resource ordering: 0=Wood, 1=Wheat,
-	// 2=Papyrus, 3=Stone, 4=Alga. Don't reorder without auditing every consumer.
-	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 6, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxResource[0]).c_str());
-	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 17, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxResource[3]).c_str());
-
-	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 6, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxResource[4]).c_str());
-	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 17, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wheat]")).arg(bt->maxResource[1]).c_str());
-
-	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 28, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxResource[2]).c_str());
+	// Preserve the familiar resource positions while allowing every construction
+	// input. Storage capacity is independent of the construction recipe.
+	constexpr int resources[] = {WOOD, ALGA, STONE, WHEAT, PAPYRUS, CHERRY, ORANGE, PRUNE};
+	for (size_t i=0; i<std::size(resources); ++i)
+	{
+		const int resource=resources[i];
+		const int cost=bt->semantics.constructionCost[resource];
+		if (resource>=HAPPINESS_BASE && cost==0) continue;
+		globalContainer->gfx->drawString(colLeftX+int(i%2)*64, buildingInfoStart+6+int(i/2)*11,
+			globalContainer->littleFont,
+			FormattableString("%0: %1").arg(getResourceName(resource)).arg(cost).c_str());
+	}
 }
 
 void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine)
