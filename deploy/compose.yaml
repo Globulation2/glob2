@@ -406,6 +406,8 @@ networks:
     ipam:
       config:
         - subnet: ${GLOB2_BACKEND_SUBNET:-172.30.89.0/24}
+          # Keep dynamic service addresses away from Caddy's fixed proxy address.
+          ip_range: ${GLOB2_BACKEND_IP_RANGE:-172.30.89.128/25}
   egress: {}
   public: {}
 

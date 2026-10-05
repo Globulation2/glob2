@@ -186,6 +186,7 @@ class Smoke:
             'GLOB2_RELAY_REPLICAS': '2',
             'GLOB2_ENGINE_AGENT_REPLICAS': '1',
             'GLOB2_BACKEND_SUBNET': str(subnet),
+            'GLOB2_BACKEND_IP_RANGE': str(list(subnet.subnets(prefixlen_diff=1))[1]),
             'GLOB2_PROXY_ADDRESS': str(subnet.network_address + 10),
             'GLOB2_RELAY_DRAIN_SECONDS': '5',
             'GLOB2_RELAY_STOP_GRACE': '20s',

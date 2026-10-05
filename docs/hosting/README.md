@@ -36,7 +36,12 @@ Networks:
 
 - `backend` is internal (no route to the internet). Every service is on it; Caddy
   has a fixed address there (`GLOB2_PROXY_ADDRESS`) that relays trust for
-  `X-Forwarded-For`.
+  `X-Forwarded-For`. Automatic service addresses come from
+  `GLOB2_BACKEND_IP_RANGE`, which must be inside the backend subnet and exclude
+  the fixed proxy address so startup order cannot allocate it to another service.
+  Changing the address pool requires recreating the backend network: schedule
+  downtime, stop the stack with `docker compose down` (without `--volumes`), then
+  start it again. Existing data volumes are retained.
 - `egress` gives `platform-api` outbound access for sign-in providers (OIDC
   discovery, token exchange, Apple keys).
 - `public` carries Caddy's published ports and its ACME traffic.
@@ -406,7 +411,7 @@ its default.
 | `GLOB2_INSTANCE_CONFIG` | `./instance.yaml` | Instance settings file |
 | `GLOB2_*_IMAGE` | local `:development` tags | Images to run ([Images](#images)) |
 | `GLOB2_SIM_VERSION` | unset | Label for locally built engine-agent images; the build fails if it does not match the source |
-| `GLOB2_BACKEND_SUBNET`, `GLOB2_PROXY_ADDRESS` | `172.30.89.0/24`, `.10` | Backend network; change together if the range is taken |
+| `GLOB2_BACKEND_SUBNET`, `GLOB2_BACKEND_IP_RANGE`, `GLOB2_PROXY_ADDRESS` | `172.30.89.0/24`, `172.30.89.128/25`, `172.30.89.10` | Backend subnet, automatic allocation pool, fixed proxy address; change together for a custom subnet, keeping the proxy outside the pool |
 | provider secrets | | Named in `instance.yaml`, e.g. `GOOGLE_CLIENT_SECRET` |
 
 `instance.yaml` holds the settings players see: name, guests, sign-in providers,
