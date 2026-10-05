@@ -1,0 +1,24 @@
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... FAIL
+
+======================================================================
+FAIL: test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-browser-png16/glob2/test/deployment/test_online_deploy.py", line 172, in test_completion_between_status_checks_is_reported_as_done
+    self.assertEqual((status['state'], status['exit'], status['rollback']),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     ('done', '1', 'rolled-back'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('lost', '', '') != ('done', '1', 'rolled-back')
+
+First differing element 0:
+'lost'
+'done'
+
+- ('lost', '', '')
++ ('done', '1', 'rolled-back')
+
+----------------------------------------------------------------------
+Ran 1 test in 0.195s
+
+FAILED (failures=1)

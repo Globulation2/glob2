@@ -1,0 +1,25 @@
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+test_completion_between_status_checks_is_reported_as_done (online_deploy_test.HostDriverTests.test_completion_between_status_checks_is_reported_as_done) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 4.085s
+
+OK
