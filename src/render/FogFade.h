@@ -30,9 +30,9 @@ class SceneMap;
 class FogFade
 {
 public:
-	//! Ticks to fade fully into the fog (about a second at the default speed) and
+	//! Ticks to fade fully into the fog (1.5 seconds at the default speed) and
 	//! fully out of it.
-	static constexpr int DARKEN_TICKS = 25;
+	static constexpr double DARKEN_TICKS = 37.5;
 	static constexpr int REVEAL_TICKS = 4;
 	//! A jump forward of more than this many ticks (a load, a minimised window, a
 	//! fast-forward) settles every tile in its state instead of fading it.
