@@ -19,6 +19,6 @@ test_native_coverage_audit_rejects_duplicate_missing_and_disagreeing_shards (tes
 test_restored_dependencies_require_matching_identity_and_exact_content (test_ci_policy.ReuseTest.test_restored_dependencies_require_matching_identity_and_exact_content) ... ok
 
 ----------------------------------------------------------------------
-Ran 19 tests in 0.230s
+Ran 19 tests in 0.110s
 
 OK

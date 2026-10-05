@@ -9,3 +9,7 @@ Set GLOB2_ASSET_ENCODER_PYTHON to that private interpreter, run `python3 tools/p
 Actual Windows hosted verification: run 37259325633/job111603582115. Prepare pinned asset encoder passed at 03:30:01 UTC on final PR head; engine build/testing is still running. This is the missing standard-CPython setup, not a test expectation change. The release workflows already prepare standard CPython separately from MinGW. Actual Windows/MSYS venv layout and binary-wheel restriction are documented by https://www.msys2.org/docs/python/ .
 
 Full engine and platform matrices omitted locally because only Windows CI interpreter setup changes. No simulation, asset recipe or loader source changes.
+
+## Integration refresh after PR 758
+
+PR 758 changes pinned SDL dependency inputs. Rebased the Windows setup repair to that current master to request fresh hosted integration. New head 52872ea50324840462dbf1a9fcd8a66572c59896; base 42df42802f0a7ed8729fb221d5de419657aed2b3. Same 30 changed-path and 19 CI-policy checks pass again; separate pinned encoder probe and actual Windows asset worker export pass again (mingw-encoder-external-export-refreshed.log). The earlier Windows bootstrap pass belongs to the previous revision and is not claimed as final integration coverage. PR remains draft awaiting the refreshed hosted Windows result.

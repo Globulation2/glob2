@@ -30,6 +30,6 @@ test_windows_git_newline_policy_is_pinned_before_cache_and_build (test_ci_change
 test_workspace_compiler_caches_do_not_dirty_source_provenance (test_ci_changed_paths.ChangedPathsTest.test_workspace_compiler_caches_do_not_dirty_source_provenance) ... ok
 
 ----------------------------------------------------------------------
-Ran 30 tests in 0.028s
+Ran 30 tests in 0.017s
 
 OK
