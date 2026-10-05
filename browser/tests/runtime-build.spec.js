@@ -22,14 +22,17 @@ test('loading page presents branded progress before the runtime is ready', async
 
 // The asset-startup host completes before creating Application on the same
 // worker. Ending startup must not terminate the replacement host's callbacks.
-test('threaded startup transfers its worker lifetime to gameplay and exits cleanly', async ({page}) => {
+test('threaded startup transfers its worker lifetime to gameplay and exits cleanly', async ({page}, info) => {
   test.setTimeout(180000);
   const url = new URL(gameURL(), 'http://localhost');
   url.searchParams.delete('threads');
   await page.goto(url.pathname + url.search);
   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().screen), {timeout:120000})
     .toContain('MainMenuScreen');
-  expect(await page.evaluate(() => Module.executionMode)).toBe('threaded');
+  const executionMode = await page.evaluate(() => Module.executionMode);
+  test.skip(info.project.name === 'webkit' && executionMode === 'serial',
+    'This WebKit host does not support the threaded runtime capability probe');
+  expect(executionMode).toBe('threaded');
   // A replacement host must continue pumping events, not merely publish one
   // successful startup snapshot before its application worker disappears.
   await clickMainMenu(page, 'settings');
