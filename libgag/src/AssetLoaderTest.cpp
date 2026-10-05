@@ -53,6 +53,10 @@ TEST_CASE("read backpressure yields to decoders and retained metadata cannot sta
                std::chrono::steady_clock::now() < deadline) { loader.poll(); std::this_thread::yield(); }
         for (const auto& image : images) CHECK(image.get() != nullptr);
         CHECK(retained.get()->size() == sizeof(webp));
+        // A ready image can precede destruction of its completed reader job,
+        // which still owns the encoded bytes. Verify cleanup within the same deadline.
+        while (loader.metrics().bufferedEncodedBytes && std::chrono::steady_clock::now() < deadline)
+            std::this_thread::yield();
         CHECK(loader.metrics().bufferedEncodedBytes == 0);
     }
 }
