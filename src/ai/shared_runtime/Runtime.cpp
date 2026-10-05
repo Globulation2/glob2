@@ -78,9 +78,34 @@ unsigned int Runtime::add_building_order(Construction::BuildingOrder* bo)
 	bo->queue_gradients(get_gradient_manager());
 	unsigned int id=br.register_building();
 	bo->id=id;
+    const auto intent=buildingIntent(bo->get_building_type());
+    if(intent==AIPlanning::BuildingIntent::AttractWarriors) begin_attraction(id,1u<<WARRIOR);
+    if(intent==AIPlanning::BuildingIntent::AttractExplorers) begin_attraction(id,1u<<EXPLORER);
+    if(intent==AIPlanning::BuildingIntent::AttractWorkers || intent==AIPlanning::BuildingIntent::ClearResources) begin_attraction(id,1u<<WORKER);
 	return id;
 }
 
+
+bool Runtime::begin_attraction(int id,unsigned unitMask)
+{
+    auto found=retired_attractions.find(id);
+    if(found==retired_attractions.end() || !(found->second&unitMask)) return false;
+    found->second&=~unitMask;
+    if(!found->second) retired_attractions.erase(found);
+    return true;
+}
+
+unsigned Runtime::complete_attraction_retirement(int buildingId,unsigned unitMask)
+{
+    return retired_attractions[buildingId]|=unitMask;
+}
+
+bool Runtime::attraction_retired_or_destroyed(int buildingId,unsigned unitMask) const
+{
+    const auto found=retired_attractions.find(buildingId);
+    if(found!=retired_attractions.end() && (found->second&unitMask)==unitMask) return true;
+    return !br.is_building_found(buildingId) && !br.is_building_pending(buildingId);
+}
 
 void Runtime::add_management_order(Management::ManagementOrder* mo)
 {
@@ -298,6 +323,7 @@ std::shared_ptr<Order> Runtime::getOrder(void)
 	}
 	gm->update();
 	br.tick();
+    std::erase_if(retired_attractions,[&](const auto& entry){return !br.is_building_found(entry.first) && !br.is_building_pending(entry.first);});
 	update_resource_trackers();
 	update_management_orders();
 	runtimeai->telemetry = telemetry;

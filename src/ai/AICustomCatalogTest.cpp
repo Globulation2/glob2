@@ -271,7 +271,7 @@ TEST_CASE("shared runtime retirement distinguishes attraction and feeding and pr
         AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);runtime.br.initiate();
         using namespace AISharedRuntime::Management;
         for(int id:{0,1}) {
-            std::unique_ptr<ManagementOrder> retirement(id==0 ? static_cast<ManagementOrder*>(new RetireAttraction(id)) : new RetireFeeding(id));
+            std::unique_ptr<ManagementOrder> retirement(id==0 ? static_cast<ManagementOrder*>(new RetireAttraction(id,1u<<WARRIOR)) : new RetireFeeding(id));
             auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(memory);
             ManagementOrder::save_order(retirement.get(),&output);output.flush();const auto bytes=memory->takeContents();
             GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
@@ -288,6 +288,70 @@ TEST_CASE("shared runtime retirement distinguishes attraction and feeding and pr
         // carry their own preservation rules instead of changing every delete.
         runtime.add_management_order(new DestroyBuilding(1));runtime.update_management_orders();
         REQUIRE(runtime.orders.size()==1);CHECK(runtime.orders.front()->getOrderType()==ORDER_DELETE);
+    }
+}
+TEST_CASE("Nicowar retained attraction retirement completes missions across save load")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int kind:{0,1,2}) {
+        CAPTURE(kind);
+        CatalogWorld fixture(AI::NICOWAR,false,false,false,[kind](auto& snapshot) {
+            for(auto& variant:snapshot["variants"]) if(variant["key"]=="warflag.0.finished") {
+                if(kind==0) {
+                    variant["properties"]["maxUnitInside"]=1;
+                    variant["semantics"]["healing"]={{"enabled",true},{"unitMask",7},{"duration",32},{"cost",nlohmann::json::object()}};
+                }
+                if(kind==1) {
+                    variant["semantics"]["occupiesGround"]=true;
+                    variant["properties"]["hpMax"]=100;variant["properties"]["hpInit"]=100;
+                }
+                if(kind==2) variant["properties"]["zonable"][EXPLORER]=1;
+            }
+        });
+        auto& game=fixture.world.game;
+        auto* flag=game.addBuilding(20,28,game.buildingsTypes.findByKey("warflag.0.finished"),0,4,4);REQUIRE(flag);
+        game.teams[1]->myBuildings[0]->seenByMask|=game.teams[0]->me;
+        auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
+        int id=-1;for(auto it=runtime.br.begin();it!=runtime.br.end();++it) if(runtime.br.get_building(it->first)==flag) id=it->first;
+        REQUIRE(id>=0);
+        auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
+        NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");ai.target=1;ai.war=true;
+        ai.attack_flags.push_back(id);ai.defense_flags.push_back(id);ai.explorer_attack_flags.push_back(id);
+        using namespace AISharedRuntime::Management;using namespace AISharedRuntime::Conditions;
+        RetireAttraction retire(id,1u<<WARRIOR);retire.modify(runtime);
+        CHECK(runtime.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        CHECK_FALSE(runtime.attraction_retired_or_destroyed(id,1u<<EXPLORER));
+        if(kind==1) {REQUIRE(runtime.orders.size()==1);CHECK(runtime.orders.front()->getOrderType()==ORDER_MODIFY_BUILDING);}
+        else CHECK(runtime.orders.empty());
+        for(const auto& message:{"attack finished ","guard flag deleted "}) {
+            auto* completion=new SendMessage(std::string(message)+std::to_string(id));
+            completion->add_condition(new AttractionRetiredOrDestroyed(id,1u<<WARRIOR));runtime.add_management_order(completion);
+        }
+        auto* explorerCompletion=new SendMessage("explorer attack flag deleted "+std::to_string(id));
+        explorerCompletion->add_condition(new AttractionRetiredOrDestroyed(id,1u<<EXPLORER));runtime.add_management_order(explorerCompletion);
+        auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(memory);runtime.save(&output);output.flush();const auto bytes=memory->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);REQUIRE(runtime.load(&input,game.players[0],VERSION_MINOR));
+        CHECK(runtime.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        runtime.update_management_orders();CHECK(ai.attack_flags.empty());CHECK(ai.defense_flags.empty());CHECK(ai.explorer_attack_flags.size()==1);
+        ai.handle_message(runtime,"attack finished "+std::to_string(id));
+        ai.handle_message(runtime,"guard flag deleted "+std::to_string(id));
+        REQUIRE(flag->buildingState==Building::ALIVE);
+        ai.control_attacks(runtime);REQUIRE(ai.attack_flags.size()==1);CHECK(ai.attack_flags.front()!=id);
+        CHECK(runtime.begin_attraction(id,1u<<WARRIOR));
+        CHECK_FALSE(runtime.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        {
+            auto* again=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream savedAgain(again);runtime.save(&savedAgain);savedAgain.flush();const auto state=again->takeContents();
+            GAGCore::BinaryInputStream reloaded(new GAGCore::MemoryStreamBackend(state.data(),state.size()));reloaded.seekFromStart(0);REQUIRE(runtime.load(&reloaded,game.players[0],VERSION_MINOR));
+            CHECK_FALSE(runtime.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        }
+        RetireAttraction secondRetirement(id,1u<<WARRIOR);secondRetirement.modify(runtime);
+        CHECK(runtime.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        if(kind==2) {
+            RetireAttraction retireExplorer(id,1u<<EXPLORER);retireExplorer.modify(runtime);runtime.update_management_orders();
+            CHECK(ai.explorer_attack_flags.empty());
+            ai.handle_message(runtime,"explorer attack flag deleted "+std::to_string(id));
+        }
     }
 }
 TEST_CASE("production placement falls back from an obstructed preferred footprint")

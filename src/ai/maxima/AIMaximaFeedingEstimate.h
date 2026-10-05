@@ -61,10 +61,15 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     };
     if(plan.feeding)service(roleBit(Feeding),s.feeding,s.feeding.holdAdmissionUntilExit);
     service(roleBit(Healing),s.healing,s.healing.holdAdmissionUntilExit);
-    auto trainingRole=[](const auto& spec,int ability) {
-        const int role=spec.constructionLevel>0?ConstructionTraining:ability==WALK?WalkTraining:ability==SWIM?SwimTraining:
-            (ability==ATTACK_SPEED || ability==ATTACK_STRENGTH)?CombatTraining:-1;
-        return role<0?0u:roleBit(role);
+    auto trainingRole=[](const auto& spec,int ability,int unit) {
+        unsigned roles=0;
+        if(unit==WORKER && spec.constructionLevel>0)roles|=roleBit(ConstructionTraining);
+        if(spec.targetLevel>0) {
+            if(ability==WALK)roles|=roleBit(WalkTraining);
+            if(ability==SWIM)roles|=roleBit(SwimTraining);
+            if(ability==ATTACK_SPEED || ability==ATTACK_STRENGTH)roles|=roleBit(CombatTraining);
+        }
+        return roles;
     };
     // Nominal trainees start at ability/construction level zero. A bundle is
     // formed for one recipient class at a time, using the same learnability
@@ -80,11 +85,11 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             const int speed=std::max(1,type.insideSpeed/std::max(1,spec.targetLevel));
             const long long ticks=(static_cast<long long>(spec.duration+1)*UNIT_DELTA_QUANTUM+speed-1)/speed;
             if(s.trainingInParallel) {
-                bundle.roles|=trainingRole(spec,ability);
+                bundle.roles|=trainingRole(spec,ability,unit);
                 bundle.seatTicks=std::max(bundle.seatTicks,ticks);
                 for(int resource=0;resource<8;++resource)bundle.cost[resource]+=spec.cost[resource];
             } else {
-                auto& f=flows[flowCount++];f.roles=trainingRole(spec,ability);
+                auto& f=flows[flowCount++];f.roles=trainingRole(spec,ability,unit);
                 f.seatTicks=ticks+std::max(0,plan.oneWayTravelTicks);
                 std::copy_n(spec.cost.begin(),8,f.cost.begin());++seatFlows;
             }

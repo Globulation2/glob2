@@ -97,6 +97,12 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
             if(!trace){world.step(ticks);return;}
             for(int tick=0;tick<ticks;++tick) {
                 world.step();
+                if(const auto* watched=world.game.teams[1]->myUnits[88])
+                    std::printf("building_unit,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+                        world.game.stepCounter,watched->posX,watched->posY,watched->hp,watched->hungry,
+                        int(watched->activity),int(watched->displacement),int(watched->action),watched->delta,
+                        watched->attachedBuilding?int(watched->attachedBuilding->gid):-1,
+                        watched->targetBuilding?int(watched->targetBuilding->gid):-1);
                 for(int team=0;team<2;++team)for(int id=0;id<Unit::MAX_COUNT;++id) {
                     const auto* unit=world.game.teams[team]->myUnits[id];
                     const int index=team*Unit::MAX_COUNT+id;

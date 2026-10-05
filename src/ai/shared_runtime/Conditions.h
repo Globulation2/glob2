@@ -43,6 +43,7 @@ namespace AISharedRuntime
 			CEitherCondition = 3,
 			// value 4 reserved (was CAllConditions, removed — never instantiated by any AI)
 			CPopulation = 5,
+            CAttractionRetiredOrDestroyed = 6,
 		};
 
 		class BuildingCondition;
@@ -101,6 +102,22 @@ namespace AISharedRuntime
 		private:
 			int id = 0;
 		};
+
+        class AttractionRetiredOrDestroyed : public Condition
+        {
+        public:
+            AttractionRetiredOrDestroyed(int id,unsigned unitMask):id(id),unitMask(unitMask) {}
+        protected:
+            friend class Condition;
+            AttractionRetiredOrDestroyed() = default;
+            tribool passes(Runtime&) override;
+            ConditionType get_type() override {return CAttractionRetiredOrDestroyed;}
+            bool load(GAGCore::InputStream*,Player*,Sint32) override;
+            void save(GAGCore::OutputStream*) override;
+        private:
+            int id=-1;
+            unsigned unitMask=0;
+        };
 
 		///This condition matches when the provided gid of the enemy building, obtained from an enemy_building_iterator,
 		///is destroyed. It's meant for use with war flags or exploration flags.

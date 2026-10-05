@@ -13,6 +13,17 @@
 
 namespace AIPlanning
 {
+bool hasIndependentAttractionUse(const BuildingType& type,unsigned retiringUnitMask)
+{
+    const auto& spec=type.semantics;
+    for(int unit=0;unit<NB_UNIT_TYPE;++unit)
+        if(type.zonable[unit] && !(retiringUnitMask&(1u<<unit))) return true;
+    return spec.feeding.enabled || spec.healing.enabled || type.shootingRange>0
+        || spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock
+        || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
+        || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;});
+}
+
 std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
     const std::array<int,3>& desired, int workers, int futureWorkers,
     const std::vector<int>& pendingPlacements)

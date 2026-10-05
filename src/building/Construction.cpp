@@ -395,6 +395,12 @@ void Building::cancelDelete(void)
 }
 
 
+void Building::resetServiceListState()
+{
+	inCanFeedUnit=inCanHealUnit=LS_OUT;
+	std::fill_n(inUpgrade,NB_ABILITY,LS_OUT);
+}
+
 void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)

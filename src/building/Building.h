@@ -190,6 +190,8 @@ class Building : public BuildingUtils
 	///This function updates the call lists that the Building is on. A call list is a list
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
+	/// Synchronize cached membership after Team removes every service-list entry.
+	void resetServiceListState();
 	///When a building is waiting for room, this will make sure that the building is in the
 	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hard space, etc if
 	///resources grow into the space or a building is placed, it becomes impossible

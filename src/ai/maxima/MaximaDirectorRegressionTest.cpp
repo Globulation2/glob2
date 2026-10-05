@@ -387,7 +387,7 @@ static void proactiveProtection() {
     }
     REQUIRE(openWood>0);
     // Releasing the flag must allow the ordinary farming policy to resume.
-    c.cancel_or_destroy_building(a.proactive_clearing_flag);
+    c.cancel_or_destroy_building(a.proactive_clearing_flag,1u<<WORKER);
     c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int protectedAgain=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD

@@ -267,7 +267,7 @@ void BuildingRegister::tick()
  }
 }
 
-bool BuildingRegister::is_building_pending(unsigned int id)
+bool BuildingRegister::is_building_pending(unsigned int id) const
 {
 	if(pending_buildings.find(id)!=pending_buildings.end())
 	{
@@ -278,7 +278,7 @@ bool BuildingRegister::is_building_pending(unsigned int id)
 
 
 
-bool BuildingRegister::is_building_found(unsigned int id)
+bool BuildingRegister::is_building_found(unsigned int id) const
 {
 	if(found_buildings.find(id)!=found_buildings.end())
 	{

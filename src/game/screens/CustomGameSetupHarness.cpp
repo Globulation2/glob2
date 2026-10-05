@@ -94,7 +94,7 @@ struct CustomGameSetupHarness
             CHECK(screen.getGameHeader().getExperiments().has("preview-building"));
             CHECK(screen.getGameHeader().getBuildingCatalogSnapshot() == world.game.buildingsTypes.snapshotJson());
         }
-        REQUIRE(screen.loadMap("maps/FourSquares1.map.gz"));
+        REQUIRE(screen.loadMap((glob2test::sourceRoot() / "maps/FourSquares1.map.gz").string()));
         CHECK_FALSE(screen.getGameHeader().getExperiments().has("preview-building"));
         globalContainer->settings.experiments.clear();
     }

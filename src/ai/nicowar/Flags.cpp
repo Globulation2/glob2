@@ -265,7 +265,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		    }
 		    if(enemy_count == 0)
 		    {
-		            ManagementOrder* mo_destroyed=new RetireAttraction(*i);
+		            ManagementOrder* mo_destroyed=new RetireAttraction(*i,1u<<WARRIOR);
 		            runtime.add_management_order(mo_destroyed);
 		    }
 		    else
@@ -297,7 +297,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		runtime.add_management_order(mo_completion);
 
 		ManagementOrder* mo_destroyed=new SendMessage("guard flag deleted " + std::to_string(id_flag));
-		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		mo_destroyed->add_condition(new AttractionRetiredOrDestroyed(id_flag,1u<<WARRIOR));
 		runtime.add_management_order(mo_destroyed);
 	}
 	
@@ -497,7 +497,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 	{
 		if(runtime.get_building_register().is_building_found(*i))
 		{
-			ManagementOrder* mo_destroyed=new RetireAttraction(*i);
+			ManagementOrder* mo_destroyed=new RetireAttraction(*i,1u<<EXPLORER);
 			runtime.add_management_order(mo_destroyed);
 		}
 	}
@@ -521,7 +521,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 		explorer_attack_flags.push_back(id_flag);
 		
 		ManagementOrder* mo_destroyed=new SendMessage("explorer attack flag deleted " + std::to_string(id_flag));
-		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		mo_destroyed->add_condition(new AttractionRetiredOrDestroyed(id_flag,1u<<EXPLORER));
 		runtime.add_management_order(mo_destroyed);
 	}
 }

@@ -120,13 +120,13 @@ void Team::removeFromAbilitiesLists(Building *building)
 	directStockSuppliers.remove(building);
 	combatFlags.remove(building);
 	for (int ui=0; ui<NB_ABILITY; ui++)
-		if (building->type->upgrade[ui])
-			canUpgrade[ui].remove(building);
+		if (building->type->upgrade[ui]) canUpgrade[ui].remove(building);
 
 	if (building->type->canFeedUnit)
 		canFeedUnit.remove(building);
 	if (building->type->canHealUnit)
 		canHealUnit.remove(building);
+	building->resetServiceListState();
 	if (building->type->canExchange)
 		canExchange.remove(building);
 

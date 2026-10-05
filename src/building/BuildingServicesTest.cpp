@@ -203,4 +203,164 @@ TEST_CASE("save loading rejects a reservation detached from its visitor list")
     b->unitsInside.push_back(eater);
 }
 
+
+TEST_CASE("canceling a service capable site restores each origin service exactly once")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    for (int type : {3,4}) {
+        auto& variant=catalog["variants"][type];
+        variant["properties"]["maxUnitInside"]=3;
+        for (const char* service : {"feeding","healing"}) {
+            variant["semantics"][service]["enabled"]=true;
+            variant["semantics"][service]["cost"]=nlohmann::json::object();
+        }
+        variant["semantics"]["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",1}};
+    }
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    Building* b=world.addBuilding("inn",8,8);
+    const auto checkMembership=[&] {
+        CHECK(std::count(world.team->canFeedUnit.begin(),world.team->canFeedUnit.end(),b)==1);
+        CHECK(std::count(world.team->canHealUnit.begin(),world.team->canHealUnit.end(),b)==1);
+        CHECK(std::count(world.team->canUpgrade[WALK].begin(),world.team->canUpgrade[WALK].end(),b)==1);
+    };
+    b->updateCallLists(); checkMembership();
+    b->launchConstruction(0,0); REQUIRE(b->tryToBuildingSiteRoom());
+    b->updateCallLists(); checkMembership();
+    b->cancelConstruction(0); REQUIRE(b->typeNum==3);
+    b->updateCallLists(); checkMembership();
+    b->updateCallLists(); checkMembership();
+}
+
+TEST_CASE("zero duration parallel courses select the slowest inclusive action clock")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& b=catalog["variants"][3]; b["properties"]["insideSpeed"]=12;
+    b["semantics"]["trainingInParallel"]=true;
+    b["semantics"]["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",0}};
+    b["semantics"]["training"]["build"]={{"enabled",true},{"unitMask",1},{"targetLevel",3},{"duration",0}};
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    Building* school=world.addBuilding("inn",8,8);
+    Unit* worker=world.addUnit(WORKER);
+    admit(school,worker,WALK);
+    worker->displacement=Unit::DIS_ENTERING_BUILDING; worker->delta=255; worker->syncStep();
+    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
+    CHECK(worker->speed==4); worker->delta=0;
+    for (int tick=1;tick<64;++tick) {
+        worker->syncStep(); CHECK(worker->level[BUILD]==0); CHECK(worker->level[WALK]==0);
+    }
+    worker->syncStep(); CHECK(worker->level[BUILD]==3); CHECK(worker->level[WALK]==1);
+}
+
+
+TEST_CASE("parallel training compares whole remaining ticks from the entry phase")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& b=catalog["variants"][3]; b["properties"]["insideSpeed"]=12;
+    b["semantics"]["trainingInParallel"]=true;
+    b["semantics"]["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",2},{"duration",0}};
+    b["semantics"]["training"]["build"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",1}};
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    Building* school=world.addBuilding("inn",8,8);
+    Unit* worker=world.addUnit(WORKER);
+    admit(school,worker,WALK);
+    worker->displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->action=STOP_WALK; worker->speed=32; worker->delta=255;
+    worker->syncStep();
+    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
+    REQUIRE(worker->delta==31);
+    CHECK(worker->insideTimeout==-1); CHECK(worker->speed==12);
+    // WALK would finish at ceil((256-31)/6)=38, but BUILD needs
+    // ceil((512-31)/12)=41. Equal duration/speed ratios are insufficient.
+    for (int tick=1;tick<41;++tick) {
+        worker->syncStep(); CHECK(worker->level[BUILD]==0); CHECK(worker->level[WALK]==0);
+    }
+    worker->syncStep(); CHECK(worker->level[BUILD]==1); CHECK(worker->level[WALK]==2);
+}
+
+TEST_CASE("minimum service speed completes after diagonal entry")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& b=catalog["variants"][3]; b["properties"]["insideSpeed"]=1;
+    b["semantics"]["trainingInParallel"]=true;
+    b["semantics"]["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",0}};
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    Building* school=world.addBuilding("inn",8,8);
+    Unit* worker=world.addUnit(WORKER);
+    admit(school,worker,WALK);
+    worker->displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->action=WALK; worker->dx=worker->dy=1; worker->speed=2; worker->delta=255;
+    worker->syncStep();
+    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
+    REQUIRE(worker->delta==0); CHECK(worker->speed==1);
+    for (int tick=1;tick<256;++tick) { worker->syncStep(); CHECK(worker->level[WALK]==0); }
+    worker->syncStep(); CHECK(worker->level[WALK]==1);
+}
+
+
+TEST_CASE("long high speed healing retains bounded phase across save continuation")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& b=catalog["variants"][3]; b["properties"]["insideSpeed"]=256;
+    b["semantics"]["healing"]={{"enabled",true},{"unitMask",1},{"duration",1000000}};
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    world.game.gameHeader.setHungerDisabled(true);
+    Building* hospital=world.addBuilding("inn",8,8);
+    Unit* patient=world.addUnit(WORKER,7,8);
+    patient->hp=patient->performance[HP]-1;
+    admit(hospital,patient,HEAL);
+    patient->displacement=Unit::DIS_ENTERING_BUILDING;
+    patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;
+    patient->syncStep();
+    REQUIRE(patient->displacement==Unit::DIS_INSIDE);
+    REQUIRE(patient->speed>256); REQUIRE(patient->delta==0);
+    for (int tick=0;tick<1024;++tick) { patient->syncStep(); REQUIRE(patient->delta==0); }
+    CHECK(patient->insideTimeout==-1000000+1024);
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    world.game.save(&output,false,"Bounded healing phase"); output.flush();
+    auto* data=new GAGCore::MemoryStreamBackend(*bytes); data->seekFromStart(0);
+    GAGCore::BinaryInputStream input(data);
+    glob2test::HeadlessGame copy({.loadDefaultRace=true,.header=true});
+    REQUIRE(copy.game.load(&input));
+    Unit* resumed=copy.game.teams[0]->myUnits[Unit::GIDtoID(patient->gid)]; REQUIRE(resumed);
+    for (int tick=0;tick<256;++tick) {
+        patient->syncStep(); resumed->syncStep();
+        CHECK(patient->delta==0); CHECK(resumed->delta==0);
+        CHECK(resumed->insideTimeout==patient->insideTimeout);
+        CHECK(resumed->hp==patient->hp);
+    }
+    patient->insideTimeout=0; resumed->insideTimeout=0;
+    patient->syncStep(); resumed->syncStep();
+    CHECK(patient->hp==patient->performance[HP]); CHECK(resumed->hp==patient->hp);
+    CHECK(patient->delta==0); CHECK(resumed->delta==0);
+}
+
+TEST_CASE("stock tiny deficit healing completes without storing a post exit speed burst")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    Building* hospital=world.addBuilding("hospital",8,8);
+    Unit* patient=world.addUnit(WORKER,7,8);
+    patient->hp=patient->performance[HP]-1;
+    for (int resource=0;resource<MAX_NB_RESOURCES;++resource)
+        hospital->resources[resource]=hospital->type->semantics.healing.cost[resource];
+    admit(hospital,patient,HEAL);
+    patient->displacement=Unit::DIS_ENTERING_BUILDING;
+    patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;
+    patient->syncStep(); REQUIRE(patient->speed>256);
+    const int duration=hospital->type->semantics.healing.duration;
+    for (int tick=0;tick<duration;++tick) { patient->syncStep(); CHECK(patient->hp==patient->performance[HP]-1); }
+    patient->syncStep(); CHECK(patient->hp==patient->performance[HP]); CHECK(patient->delta==0);
+}
+
 }

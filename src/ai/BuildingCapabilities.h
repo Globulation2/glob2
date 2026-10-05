@@ -8,6 +8,7 @@
 #include <memory>
 
 class BuildingsTypes;
+class BuildingType;
 class GameHeader;
 class Game;
 class Team;
@@ -35,6 +36,9 @@ struct BuildingCandidate
 	int completedType = -1;
 	bool operator==(const BuildingCandidate&) const = default;
 };
+
+// Retiring one attraction must preserve unrelated services and other unit roles.
+bool hasIndependentAttractionUse(const BuildingType& type,unsigned retiringUnitMask);
 
 // Cold strategy fallback for a nonzero production demand whose output class has
 // no current or pending provider. Pending placement IDs include queued AI plans.

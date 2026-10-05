@@ -937,4 +937,61 @@ TEST_CASE("current saves reject construction origins outside the explicit job gr
     }
 }
 
+
+TEST_CASE("demolition settles shared partial construction only when removal becomes final")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool repair : {false,true}) {
+        CAPTURE(repair);
+        glob2test::HeadlessGame world({.loadDefaultRace=true});
+        auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        for (int type : {2,3}) json["variants"][type]["semantics"]["market"]["sharedStock"]=true;
+        json["variants"][2]["properties"]["multiplierResource"][WOOD]=1;
+        json["variants"][2]["semantics"]["constructionCost"]={{"wood",4}};
+        json["variants"][3]["semantics"]["repairCost"]={{"wood",8}};
+        world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+        Building* b=world.game.addBuilding(8,8,repair ? 3 : 2,0,0,0); REQUIRE(b);
+        if (repair) {
+            b->hp=b->getEffectiveMaxHp()/2;
+            b->launchConstruction(0,0); REQUIRE(b->tryToBuildingSiteRoom());
+        }
+        if (repair) b->addResourceIntoBuilding(WOOD);
+        else { b->resources[WOOD]=1; b->fundConstructionFromInventory(); }
+        REQUIRE(b->constructionReserved[WOOD]==1);
+        REQUIRE(world.team->reservedTeamResources[WOOD]==1);
+        b->launchDelete(); CHECK(world.team->reservedTeamResources[WOOD]==1);
+        b->cancelDelete(); CHECK(world.team->reservedTeamResources[WOOD]==1);
+        CHECK(b->resources[WOOD]==1);
+        b->launchDelete();
+        const int id=Building::GIDtoID(b->gid);
+        glob2test::HeadlessGame copy({.loadDefaultRace=true});
+        REQUIRE(loadProductionGame(copy.game,saveProductionGame(world.game,false),false));
+        auto* copiedTeam=copy.game.teams[0];
+        REQUIRE(copiedTeam->reservedTeamResources[WOOD]==1);
+        world.team->syncStep(); copiedTeam->syncStep();
+        CHECK(world.team->myBuildings[id]==nullptr); CHECK(copiedTeam->myBuildings[id]==nullptr);
+        CHECK(world.team->reservedTeamResources[WOOD]==0); CHECK(copiedTeam->reservedTeamResources[WOOD]==0);
+        CHECK(world.team->teamResources[WOOD]==(repair ? 0 : 1));
+        CHECK(copiedTeam->teamResources[WOOD]==world.team->teamResources[WOOD]);
+    }
+}
+
+TEST_CASE("ground buildings with attraction radii remain melee targets")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true});
+    auto json=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& variant=json["variants"][3];
+    variant["properties"]["zonable"]={1,1,1};
+    variant["properties"]["defaultUnitStayRange"]=4;
+    variant["properties"]["maxUnitStayRange"]=8;
+    world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
+    Building* target=world.game.addBuilding(8,8,3,1); REQUIRE(target);
+    Unit* attacker=world.addUnit(WARRIOR,7,8);
+    world.team->enemies=world.game.teams[1]->me;
+    const auto touched=world.game.map.doesUnitTouchEnemy(attacker);
+    REQUIRE(touched);
+    CHECK(world.game.map.getBuilding(attacker->posX+touched->dx,attacker->posY+touched->dy)==target->gid);
+}
+
 }

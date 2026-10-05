@@ -326,7 +326,7 @@ void Maxima::retire_clearing_campaign(Context& runtime, const char* reason,
 	const std::string& details)
 {
 	telemetry.count(AITrace::AI7::Maxima_retire_clearing_campaign_calls);
-	runtime.add_management_order(new RetireAttraction(proactive_clearing_flag));
+	runtime.add_management_order(new RetireAttraction(proactive_clearing_flag,1u<<WORKER));
 	emit_telemetry(runtime, "land_clearing_finished",
 		"\tflag="+telemetryText(proactive_clearing_flag)
 		+details+"\treason="+reason);
@@ -405,7 +405,7 @@ void Maxima::manage_land_clearing(Context& runtime)
 				proactive_clearing_flag)
 			||runtime.get_building_register().is_building_pending(
 				proactive_clearing_flag)))
-			runtime.add_management_order(new RetireAttraction(proactive_clearing_flag));
+			runtime.add_management_order(new RetireAttraction(proactive_clearing_flag,1u<<WORKER));
 		proactive_clearing_flag=-1;
 		farming_urgent=false;
 		return;

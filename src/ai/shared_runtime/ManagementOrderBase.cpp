@@ -202,13 +202,24 @@ void RetireAttraction::modify(Runtime& runtime)
 {
     auto* building=runtime.get_building_register().get_building(building_id);
     if(!building) return;
+    const unsigned completedMask=runtime.complete_attraction_retirement(building_id,retiringUnitMask);
     const auto& spec=building->type->semantics;
-    if(spec.feeding.enabled || spec.healing.enabled || building->type->shootingRange>0
-        || spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock
-        || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
-        || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;})) return;
+    if(AIPlanning::hasIndependentAttractionUse(*building->type,completedMask)) return;
     if(spec.instantPlacement && !spec.occupiesGround) DestroyBuilding::modify(runtime);
     else runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
+}
+
+bool RetireAttraction::load(GAGCore::InputStream* stream,Player* player,Sint32 versionMinor)
+{
+    if(!DestroyBuilding::load(stream,player,versionMinor)) return false;
+    retiringUnitMask=stream->readUint8("retiringUnitMask");
+    return retiringUnitMask && !(retiringUnitMask&~((1u<<NB_UNIT_TYPE)-1));
+}
+
+void RetireAttraction::save(GAGCore::OutputStream* stream)
+{
+    DestroyBuilding::save(stream);
+    stream->writeUint8(retiringUnitMask,"retiringUnitMask");
 }
 
 void RetireFeeding::modify(Runtime& runtime)

@@ -7,11 +7,17 @@
 // keep their action speed even when the unit faces a diagonal direction.
 // 181/256 approximates 1/sqrt(2), rounded down with integer arithmetic so all
 // peers use the same result. Keep this quantization for replay compatibility.
-inline constexpr int unitActionStepSpeed(int speed, int action, int dx, int dy)
+inline constexpr int unitActionStepSpeed(int speed, int action, int dx, int dy, bool inside = false)
 {
-	if (dx != 0 && dy != 0 && (action == WALK || action == SWIM || action == FLY))
-		return (speed * 181) >> 8;
-	return speed;
+	const int advance = dx != 0 && dy != 0 && (action == WALK || action == SWIM || action == FLY)
+		? (speed * 181) >> 8 : speed;
+	// Entry retains its direction/action while inside. Even the smallest
+	// configured service speed must make progress after diagonal quantization.
+	// The action clock executes at most once per tick. Larger healing speeds
+	// must not accumulate surplus phase or overflow during a long visit.
+	if (!inside) return advance;
+	if (advance < 1) return 1;
+	return advance > UNIT_DELTA_QUANTUM ? UNIT_DELTA_QUANTUM : advance;
 }
 
 // Movement advances at most one cell per tick. Keep the action phase byte in

@@ -32,6 +32,38 @@ Uint64 renderPanel(GameGUI& gui)
 }
 TEST_SUITE("GUIInteractionCoverage")
 {
+    TEST_CASE("custom mixed building panels render without mutating simulation [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        world.game.buildingsTypes.loadManifest(glob2test::fixture("building-catalog/composition/seed-713.manifest.json").string());
+        world.game.buildingsTypes.loadSprites();
+        world.game.configureBuildingCatalog();
+        auto& gui=world.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
+        auto* gfx=globalContainer->gfx;
+        int x=4;
+        for(const char* key : {"refuge","forge","signal","warehouse"})
+        {
+            CAPTURE(key);
+            const int type=world.game.buildingsTypes.findByKey(key);
+            REQUIRE(type>=0);
+            auto* building=world.game.addBuilding(x,4,type,0,0,0);
+            REQUIRE(building);
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+            const auto before=world.checksum();
+            gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+            gfx->setClipRect();
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            gui.extractScene(gui.frameScene);
+            gui.drawBuildingInfos();
+            gfx->nextFrame();
+            CHECK(world.checksum()==before);
+            REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/(std::string(key)+".bmp")).string().c_str()));
+            x+=6;
+        }
+        gui.clearSelection();
+    }
+
     TEST_CASE("unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{

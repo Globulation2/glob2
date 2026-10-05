@@ -476,6 +476,9 @@ Condition* Condition::load(GAGCore::InputStream* stream)
 	if(kind==0){const int id=stream->readSint32("id");result=new ParticularBuilding(BuildingCondition::load(stream),id);}
 	else if(kind==1)result=new BuildingDestroyed(stream->readSint32("id"));
 	else if(kind==2)result=new EnemyBuildingDestroyed(stream->readSint32("gid"));
+    else if(kind==4) {const int id=stream->readSint32("id");const unsigned mask=stream->readUint8("unitMask");
+        if(id<0 || !mask || (mask&~((1u<<NB_UNIT_TYPE)-1))) throw std::runtime_error("Invalid attraction retirement condition");
+        result=new AttractionRetiredOrDestroyed(id,mask);}
 	else if(kind==3){std::unique_ptr<Condition> first(Condition::load(stream));std::unique_ptr<Condition> second(Condition::load(stream));result=new EitherCondition(first.release(),second.release());}
 	stream->readLeaveSection();if(!result)throw std::runtime_error("Unknown saved AI type");return result;
 }
@@ -504,6 +507,10 @@ Result BuildingDestroyed::passes(Context& context) const
 }
 void BuildingDestroyed::save(GAGCore::OutputStream* stream) const
 {stream->writeEnterSection("Condition");stream->writeSint32(type(),"type");stream->writeSint32(id,"id");stream->writeLeaveSection();}
+Result AttractionRetiredOrDestroyed::passes(Context& context) const
+{return context.attraction_retired_or_destroyed(id,unitMask)?Ready:Waiting;}
+void AttractionRetiredOrDestroyed::save(GAGCore::OutputStream* stream) const
+{stream->writeEnterSection("Condition");stream->writeSint32(type(),"type");stream->writeSint32(id,"id");stream->writeUint8(unitMask,"unitMask");stream->writeLeaveSection();}
 Result EnemyBuildingDestroyed::passes(Context& context) const
 { return building_from_gid(context.player,gid)?Waiting:Ready; }
 void EnemyBuildingDestroyed::save(GAGCore::OutputStream* stream) const
@@ -611,7 +618,9 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream,Sint32 versi
 		case 10:order.reset(new UpgradeRepair(stream->readSint32("id")));break;
 		case 11:{const RuntimeEvent::Type eventType=static_cast<RuntimeEvent::Type>(stream->readSint32("event_type"));const int first=stream->readSint32("first");const int second=stream->readSint32("second");order.reset(new Notify(RuntimeEvent(eventType,first,second)));break;}
 		case 12:{const int priority=stream->readSint32("value");order.reset(new ChangePriority(priority,stream->readSint32("id")));break;}
-		case 13:order.reset(new RetireAttraction(stream->readSint32("id")));break;
+        case 13:{const int id=stream->readSint32("id");const unsigned mask=stream->readUint8("unitMask");
+            if(id<0 || !mask || (mask&~((1u<<NB_UNIT_TYPE)-1))) throw std::runtime_error("Invalid attraction retirement order");
+            order.reset(new RetireAttraction(id,mask));break;}
 		default:break;
 	}
 	const Uint32 count=stream->readCount("condition_count");for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);Conditions::Condition* condition=Conditions::Condition::load(stream);if(order&&condition)order->add_condition(condition);else delete condition;stream->readLeaveSection();}
@@ -636,20 +645,14 @@ void RetireAttraction::modify(Context& c)
 {
 	const auto* building=c.get_building_register().get_building(id);
 	if(!building)return;
-	const unsigned attractions=AIMaximaBuildings::roleBit(AIMaximaBuildings::WorkerAttraction)
-		|AIMaximaBuildings::roleBit(AIMaximaBuildings::WarriorAttraction)
-		|AIMaximaBuildings::roleBit(AIMaximaBuildings::ExploreAttraction);
-	if(AIMaximaBuildings::capabilities(*c.player->game,*building->type)&~attractions)return;
-	const auto& semantics=building->type->semantics;
-	// The strategic role projection deliberately omits some training services.
-	// Retiring a rally must still preserve those independent uses of a hybrid.
-	if(std::any_of(semantics.training.begin(),semantics.training.end(),
-		[](const auto& training){return training.enabled;}))return;
+    const unsigned completedMask=c.complete_attraction_retirement(id,unitMask);
+    if(AIPlanning::hasIndependentAttractionUse(*building->type,completedMask)) return;
+    const auto& semantics=building->type->semantics;
 	if(semantics.instantPlacement&&!semantics.occupiesGround)
 		c.push_order(std::make_shared<OrderDelete>(building->gid));
 	else c.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
 }
-void RetireAttraction::save_payload(GAGCore::OutputStream* s) const {s->writeSint32(id,"id");}
+void RetireAttraction::save_payload(GAGCore::OutputStream* s) const {s->writeSint32(id,"id");s->writeUint8(unitMask,"unitMask");}
 AddResourceTracker::AddResourceTracker(int length,int resource,int id):length(length),resource(resource),id(id){}
 Result AddResourceTracker::wait(Context& c) const{return wait_for_building(c,id);}
 void AddResourceTracker::modify(Context& c){c.add_resource_tracker(new ResourceTracker(c,id,length,resource),id);}
@@ -1145,7 +1148,11 @@ void Context::detect_fruit()
 unsigned Context::add_building_order(Construction::BuildingOrder* order)
 {
 	telemetry.count(AITrace::AI7::runtime_building_queued);
-	buildingOrders.push_back(shared_ptr<Construction::BuildingOrder>(order));order->queue_gradients(gradients);order->id=buildings.register_building();return order->id;
+	buildingOrders.push_back(shared_ptr<Construction::BuildingOrder>(order));order->queue_gradients(gradients);order->id=buildings.register_building();
+    if(order->type==AIMaximaBuildings::WarriorAttraction) begin_attraction(order->id,1u<<WARRIOR);
+    if(order->type==AIMaximaBuildings::ExploreAttraction) begin_attraction(order->id,1u<<EXPLORER);
+    if(order->type==AIMaximaBuildings::WorkerAttraction) begin_attraction(order->id,1u<<WORKER);
+    return order->id;
 }
 
 bool Context::get_building_position(int id, int& x, int& y)
@@ -1164,7 +1171,25 @@ bool Context::get_building_position(int id, int& x, int& y)
 	return false;
 }
 
-void Context::cancel_or_destroy_building(int id)
+bool Context::begin_attraction(int id,unsigned unitMask)
+{
+    auto found=retiredAttractions.find(id);
+    if(found==retiredAttractions.end() || !(found->second&unitMask)) return false;
+    found->second&=~unitMask;
+    if(!found->second) retiredAttractions.erase(found);
+    return true;
+}
+
+unsigned Context::complete_attraction_retirement(int id,unsigned unitMask)
+{return retiredAttractions[id]|=unitMask;}
+bool Context::attraction_retired_or_destroyed(int id,unsigned unitMask) const
+{
+    const auto found=retiredAttractions.find(id);
+    return (found!=retiredAttractions.end() && (found->second&unitMask)==unitMask)
+        || (!buildings.is_building_found(id) && !buildings.is_building_pending(id));
+}
+
+void Context::cancel_or_destroy_building(int id,unsigned retiringUnitMask)
 {
 	for(size_t i=0; i<buildingOrders.size(); ++i)
 		if(buildingOrders[i]->id==id)
@@ -1174,7 +1199,7 @@ void Context::cancel_or_destroy_building(int id)
 			return;
 		}
 	if(buildings.is_building_found(id) || buildings.is_building_pending(id))
-		add_management_order(new Management::RetireAttraction(id));
+		add_management_order(new Management::RetireAttraction(id,retiringUnitMask));
 }
 
 std::vector<int> Context::resource_flags(int resource) const
@@ -1391,6 +1416,7 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 	if(profiling)phaseStarted=std::chrono::steady_clock::now();
 	if(housekeepingDue)
 		buildings.tick();
+        std::erase_if(retiredAttractions,[&](const auto& entry){return !buildings.is_building_found(entry.first) && !buildings.is_building_pending(entry.first);});
 	// Tracker ages and their ten-tick sample period use the AI's logical clock,
 	// independently of the slower building-discovery/management cadence.
 	update_trackers();
@@ -1431,6 +1457,10 @@ void Context::save(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("building_orders");stream->writeUint32(buildingOrders.size(),"size");for(size_t i=0;i<buildingOrders.size();++i){stream->writeEnterSection(i);buildingOrders[i]->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
 	stream->writeEnterSection("management_orders");stream->writeUint32(managementOrders.size(),"size");for(size_t i=0;i<managementOrders.size();++i){stream->writeEnterSection(i);managementOrders[i]->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
 	stream->writeEnterSection("trackers");stream->writeUint32(trackers.size(),"size");n=0;for(std::map<int,shared_ptr<Management::ResourceTracker> >::const_iterator i=trackers.begin();i!=trackers.end();++i,++n){stream->writeEnterSection(n);stream->writeSint32(i->first,"id");i->second->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
+    stream->writeEnterSection("retiredAttractions");stream->writeUint32(retiredAttractions.size(),"size");
+    Uint32 retiredIndex=0;
+    for(const auto& [id,mask]:retiredAttractions) {stream->writeEnterSection(retiredIndex++);stream->writeSint32(id,"id");stream->writeUint8(mask,"unitMask");stream->writeLeaveSection();}
+    stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 void Context::saveExecutionState(GAGCore::OutputStream* stream) const
@@ -1507,6 +1537,16 @@ bool Context::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 		order->queue_gradients(gradients);buildingOrders.push_back(order);}stream->readLeaveSection();}stream->readLeaveSection();
 	managementOrders.clear();stream->readEnterSection("management_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Management::ManagementOrder> order(Management::ManagementOrder::load(stream,versionMinor));if(order)managementOrders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();
 	trackers.clear();stream->readEnterSection("trackers");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int id=stream->readSint32("id");trackers[id]=shared_ptr<Management::ResourceTracker>(Management::ResourceTracker::load(*this,stream));stream->readLeaveSection();}stream->readLeaveSection();
+    retiredAttractions.clear();
+    if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+        stream->readEnterSection("retiredAttractions");const auto count=stream->readCount("size");
+        for(Uint32 i=0;i<count;++i) {
+            stream->readEnterSection(i);const int id=stream->readSint32("id");const unsigned mask=stream->readUint8("unitMask");
+            if(id<0 || !mask || (mask&~((1u<<NB_UNIT_TYPE)-1)) || !retiredAttractions.emplace(id,mask).second) return false;
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
 	stream->readLeaveSection();return true;
 }
 

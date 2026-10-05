@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "Unit.h"
+#include "UnitTiming.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -306,16 +307,27 @@ void Unit::handleDisplacement(void)
 					};
 					int duration=spec.training[destinationPurpose].duration;
 					speed=trainingSpeed(destinationPurpose);
-					// Parallel bundles finish when their slowest requested course finishes.
+					const auto remainingTicks=[&](int courseDuration,int courseSpeed) {
+						const int advance=unitActionStepSpeed(courseSpeed,action,dx,dy,true);
+						const Sint64 remaining=(Sint64(courseDuration)+1)*UNIT_DELTA_QUANTUM-delta;
+						// Legacy saves may carry surplus phase, but syncStep still
+						// completes at most one inside action per tick.
+						return std::max(Sint64(courseDuration)+1,(remaining+advance-1)/advance);
+					};
+					Sint64 slowestTicks=remainingTicks(duration,speed);
+					// Entry phase and integer delta advances affect the final action.
+					// Keep the first course when their actual remaining ticks tie.
 					if (spec.trainingInParallel)
 						for (int ability=WALK; ability<NB_ABILITY; ++ability)
 							if (needsTraining(spec.training[ability],ability))
 							{
 								const int candidateSpeed=trainingSpeed(ability);
-								if (Sint64(spec.training[ability].duration)*speed > Sint64(duration)*candidateSpeed)
+								const Sint64 candidateTicks=remainingTicks(spec.training[ability].duration,candidateSpeed);
+								if (candidateTicks>slowestTicks)
 								{
 									duration=spec.training[ability].duration;
 									speed=candidateSpeed;
+									slowestTicks=candidateTicks;
 								}
 							}
 					insideTimeout=-duration;

@@ -384,17 +384,17 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 	if(message.substr(0,16)  == "attack finished ")
 	{
 		int id=std::stoi(message.substr(16, message.size()-1));
-		attack_flags.erase(std::find(attack_flags.begin(), attack_flags.end(), id));
+		if(auto found=std::find(attack_flags.begin(),attack_flags.end(),id);found!=attack_flags.end()) attack_flags.erase(found);
 	}
 	if(message.substr(0,19)  == "guard flag deleted ")
 	{
 		int id=std::stoi(message.substr(19, message.size()-1));
-		defense_flags.erase(std::find(defense_flags.begin(), defense_flags.end(), id));
+		if(auto found=std::find(defense_flags.begin(),defense_flags.end(),id);found!=defense_flags.end()) defense_flags.erase(found);
 	}
 	if(message.substr(0,29)  == "explorer attack flag deleted ")
 	{
 		int id=std::stoi(message.substr(29, message.size()-1));
-		explorer_attack_flags.erase(std::find(explorer_attack_flags.begin(), explorer_attack_flags.end(), id));
+		if(auto found=std::find(explorer_attack_flags.begin(),explorer_attack_flags.end(),id);found!=explorer_attack_flags.end()) explorer_attack_flags.erase(found);
 	}
 	if(message == "finished digging out")
 	{

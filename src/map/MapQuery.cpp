@@ -272,23 +272,20 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					assert(game->teams[otherTeam]);
 					int otherID=Building::GIDtoID(gbid);
 					Building *b=game->teams[otherTeam]->myBuildings[otherID];
-					if (!b->type->defaultUnitStayRange)
+					if (b->runtime->shootingRange)
 					{
-						if (b->runtime->shootingRange)
-						{
-							// Unconditional write — later shooter wins ties.
-							bdx=tdx;
-							bdy=tdy;
-							bestTime=ENEMY_TOUCH_SCORE_SHOOTER;
-						}
-						else if (bestTime>ENEMY_TOUCH_SCORE_BUILDING_FALLBACK)
-						{
-							// Only fall back to a non-shooting enemy building
-							// when no other candidate has been seen yet.
-							bdx=tdx;
-							bdy=tdy;
-							bestTime=ENEMY_TOUCH_SCORE_BUILDING_FALLBACK;
-						}
+						// Unconditional write — later shooter wins ties.
+						bdx=tdx;
+						bdy=tdy;
+						bestTime=ENEMY_TOUCH_SCORE_SHOOTER;
+					}
+					else if (bestTime>ENEMY_TOUCH_SCORE_BUILDING_FALLBACK)
+					{
+						// Only fall back to a non-shooting enemy building
+						// when no other candidate has been seen yet.
+						bdx=tdx;
+						bdy=tdy;
+						bestTime=ENEMY_TOUCH_SCORE_BUILDING_FALLBACK;
 					}
 				}
 			}

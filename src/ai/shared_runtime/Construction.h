@@ -314,8 +314,8 @@ namespace AISharedRuntime
 			friend class ::RuntimeContinuationTest;
 		public:
 			BuildingRegister(Player* player, Runtime& runtime);
-			bool is_building_pending(unsigned int id);
-			bool is_building_found(unsigned int id);
+			bool is_building_pending(unsigned int id) const;
+			bool is_building_found(unsigned int id) const;
 			bool is_building_upgrading(unsigned int id);
 			int get_type(unsigned int id); // concrete match-local descriptor ID
    bool provides(unsigned int id,int demand);

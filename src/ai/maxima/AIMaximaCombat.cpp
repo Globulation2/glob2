@@ -661,7 +661,7 @@ void Maxima::end_offense(Context& runtime, const char* reason)
 	std::set<int> flags(attack_flags.begin(),attack_flags.end());
 	for(const auto& wave:offense_waves)flags.insert(wave.flagId);
 	flags.erase(tactical_mission.flagId);
-	for(int id:flags)runtime.cancel_or_destroy_building(id);
+	for(int id:flags)runtime.cancel_or_destroy_building(id,1u<<WARRIOR);
 	offense_waves.clear();
 	if(tactical_mission.flagId>=0)
 	{
@@ -672,7 +672,7 @@ void Maxima::end_offense(Context& runtime, const char* reason)
 			+"\treason="+reason
 			+"\tduration="+diagnostic_value(timer-tactical_mission.startedTick));
 		attack_flag_end_reasons[tactical_mission.flagId]=reason;
-		runtime.cancel_or_destroy_building(tactical_mission.flagId);
+		runtime.cancel_or_destroy_building(tactical_mission.flagId,1u<<WARRIOR);
 	}
 	attack_flags.clear();
 	tactical_mission.reset();
@@ -915,7 +915,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		}
 		if(retire)
 		{
-			runtime.cancel_or_destroy_building(wave.flagId);
+			runtime.cancel_or_destroy_building(wave.flagId,1u<<WARRIOR);
 			it=offense_waves.erase(it);
 			continue;
 		}
@@ -938,7 +938,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		runtime.add_management_order(new ChangeFlagSize(policy.muster_radius,wave.flagId));
 		runtime.add_management_order(new ChangePriority(0,wave.flagId));
 		ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished,wave.flagId));
-		deleted->add_condition(new BuildingDestroyed(wave.flagId));
+		deleted->add_condition(new AttractionRetiredOrDestroyed(wave.flagId,1u<<WARRIOR));
 		runtime.add_management_order(deleted);
 		offense_waves.push_back(wave);
 		attack_flag_started_ticks[wave.flagId]=timer;
@@ -1044,7 +1044,7 @@ void Maxima::control_offense(Context& runtime)
 		|| int(attack_flags.size())!=wanted;
 	while(int(attack_flags.size())>wanted)
 	{
-		runtime.cancel_or_destroy_building(attack_flags.back());
+		runtime.cancel_or_destroy_building(attack_flags.back(),1u<<WARRIOR);
 		attack_flags.pop_back();
 	}
 	const int retained=attack_flags.size();
@@ -1068,7 +1068,7 @@ void Maxima::control_offense(Context& runtime)
 		runtime.add_management_order(new ChangeFlagMinimumLevel(budget.tactical_flag_level,flag));
 		runtime.add_management_order(new ChangeFlagSize(radius,flag));
 		ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished,flag));
-		deleted->add_condition(new BuildingDestroyed(flag));
+		deleted->add_condition(new AttractionRetiredOrDestroyed(flag,1u<<WARRIOR));
 		runtime.add_management_order(deleted);
 		attack_flags.push_back(flag);
 		attack_flag_started_ticks[flag]=timer;
@@ -1401,7 +1401,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 			unsigned int id_flag=runtime.add_building_order(bo_flag);
 			flags_created+=1;
 
-			ManagementOrder* mo_destroyed=new RetireAttraction(id_flag);
+			ManagementOrder* mo_destroyed=new RetireAttraction(id_flag,1u<<WORKER);
 			mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, building));
 			runtime.add_management_order(mo_destroyed);
 
@@ -1715,7 +1715,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			flag!=defense_flags.end(); ++flag)
 			if(runtime.get_building_register().is_building_found(*flag)
 			   ||runtime.get_building_register().is_building_pending(*flag))
-				runtime.add_management_order(new RetireAttraction(*flag));
+				runtime.add_management_order(new RetireAttraction(*flag,1u<<WARRIOR));
 		defense_flags.clear();
 		return;
 	}
@@ -2081,7 +2081,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			}
 			else
 			{
-				runtime.add_management_order(new RetireAttraction(*i));
+				runtime.add_management_order(new RetireAttraction(*i,1u<<WARRIOR));
 				destroyed_flags+=1;
 			}
 		}
@@ -2109,7 +2109,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		runtime.add_management_order(mo_completion);
 
 		ManagementOrder* mo_destroyed=new Notify(RuntimeEvent(RuntimeEvent::GuardFlagDeleted, id_flag));
-		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		mo_destroyed->add_condition(new AttractionRetiredOrDestroyed(id_flag,1u<<WARRIOR));
 		runtime.add_management_order(mo_destroyed);
 	}
 	if(moved_flags || deadband_flags || locally_retained_flags
@@ -2335,7 +2335,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	{
 		if(runtime.get_building_register().is_building_found(*i))
 		{
-			ManagementOrder* mo_destroyed=new RetireAttraction(*i);
+			ManagementOrder* mo_destroyed=new RetireAttraction(*i,1u<<EXPLORER);
 			runtime.add_management_order(mo_destroyed);
 		}
 	}
@@ -2370,7 +2370,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 		ManagementOrder* mo_destroyed=new Notify(
 			RuntimeEvent(RuntimeEvent::ExplorerAttackFlagDeleted, id_flag));
-		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
+		mo_destroyed->add_condition(new AttractionRetiredOrDestroyed(id_flag,1u<<EXPLORER));
 		runtime.add_management_order(mo_destroyed);
 	}
 }

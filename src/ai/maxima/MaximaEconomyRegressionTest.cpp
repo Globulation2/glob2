@@ -1019,7 +1019,12 @@ TEST_CASE("sustained stock feeding reports capability estimates and historical s
         auto order=std::make_shared<OrderModifyBuilding>(inn->gid,plan.carriers);order->sender=0;world.game.executeOrder(order,0);
         const auto prediction=AIMaxima::estimateFeeding(*inn->type,plan);
         const int population=forecastPopulation?prediction.supportedUnits:historical[stage];
-        for(int unit=0;unit<population;++unit)world.addUnit(unit<plan.carriers?WORKER:WARRIOR);
+        for(int unit=0;unit<population;++unit) {
+            auto* created=world.addUnit(unit<plan.carriers?WORKER:WARRIOR);
+            // Supply carriers meet this building's explicit qualification;
+            // movement, work speed and hunger remain the same at every stage.
+            if(unit<plan.carriers)created->constructionLevel=inn->type->semantics.requiredWorkerLevel;
+        }
         const int warmup=20000,window=40000;
         Uint64 previousMeals=0,previousDelivered=0,reservedSeatTicks=0,workingTicks=0,hungryTicks=0;
         for(int tick=0;tick<warmup+window;++tick) {
@@ -1146,4 +1151,28 @@ TEST_CASE("feeding budget scaling handles maximum seats without overflowing inte
     CHECK(estimate.visitsPerTick==1024*AIMaxima::FeedingEstimate::Scale);
     CHECK(estimate.supportedUnits==1024);
     CHECK(estimate.haulingWorkerTicks==1024*AIMaxima::FeedingEstimate::Scale);
+}
+
+TEST_CASE("one training course credits independent movement and worker construction outcomes" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());auto& variant=snapshot["variants"][id];
+    variant["properties"]["maxResource"][WOOD]=20;
+    variant["semantics"]["feeding"]["enabled"]=false;
+    variant["semantics"]["trainingInParallel"]=true;
+    variant["semantics"]["training"]={{"walk",{{"enabled",true},{"unitMask",5},{"targetLevel",1},
+        {"constructionLevel",1},{"duration",10},{"cost",{{"wood",1}}}}}};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    const AIMaxima::FeedingPlan plan{1000,0,1,11759};
+    const auto both=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
+    CHECK(both.services[AIMaximaBuildings::WalkTraining]>0);
+    CHECK(both.services[AIMaximaBuildings::ConstructionTraining]>0);
+    CHECK(both.services[AIMaximaBuildings::WalkTraining]==2*both.services[AIMaximaBuildings::ConstructionTraining]);
+    variant["semantics"]["training"]["walk"]["unitMask"]=4;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+    const auto warrior=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
+    CHECK(warrior.services[AIMaximaBuildings::WalkTraining]>0);
+    CHECK(warrior.services[AIMaximaBuildings::ConstructionTraining]==0);
 }

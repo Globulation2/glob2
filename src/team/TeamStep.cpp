@@ -390,6 +390,9 @@ void Team::syncStep(void)
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					isDirtyGlobalGradient=true;
 				}
+				// Keep commitments while demolition can still be canceled. Once
+				// removal is final, release construction funding or pay repaired HP.
+				building->cancelConstructionMaterials();
 				building->buildingState=Building::DEAD;
 				prestige-=(*it)->type->prestige;
 				buildingsToBeDestroyed.push_front(building);

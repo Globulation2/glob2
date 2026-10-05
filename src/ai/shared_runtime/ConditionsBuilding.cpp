@@ -330,3 +330,23 @@ void BuildingLevel::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(building_level, "building_level");
 	stream->writeLeaveSection();
 }
+
+tribool AttractionRetiredOrDestroyed::passes(Runtime& runtime)
+{
+    return runtime.attraction_retired_or_destroyed(id,unitMask);
+}
+
+bool AttractionRetiredOrDestroyed::load(GAGCore::InputStream* stream,Player*,Sint32)
+{
+    stream->readEnterSection("AttractionRetiredOrDestroyed");
+    id=stream->readSint32("id");unitMask=stream->readUint8("unitMask");
+    stream->readLeaveSection();
+    return id>=0 && unitMask && !(unitMask&~((1u<<NB_UNIT_TYPE)-1));
+}
+
+void AttractionRetiredOrDestroyed::save(GAGCore::OutputStream* stream)
+{
+    stream->writeEnterSection("AttractionRetiredOrDestroyed");
+    stream->writeSint32(id,"id");stream->writeUint8(unitMask,"unitMask");
+    stream->writeLeaveSection();
+}

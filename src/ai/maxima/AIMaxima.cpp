@@ -1713,7 +1713,7 @@ void Maxima::remove_reconnaissance_missions(Context& runtime,
 	{
 		if(runtime.get_building_register().is_building_found(mission->flagId)
 		   || runtime.get_building_register().is_building_pending(mission->flagId))
-			runtime.add_management_order(new RetireAttraction(mission->flagId));
+			runtime.add_management_order(new RetireAttraction(mission->flagId,1u<<EXPLORER));
 		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission->flagId)
 			+"\ttarget_team="+telemetryText(mission->targetTeam)
@@ -1808,7 +1808,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 				budget.reconnaissance_flag_radius, flag));
 			ManagementOrder* removed=new Notify(
 				RuntimeEvent(RuntimeEvent::ReconFlagDeleted, flag));
-			removed->add_condition(new BuildingDestroyed(flag));
+			removed->add_condition(new AttractionRetiredOrDestroyed(flag,1u<<EXPLORER));
 			runtime.add_management_order(removed);
 			missions.push_back(Recon::ReconMission(flag, objective.targetTeam,
 				objective.frontier, objective.x, objective.y, timer,
@@ -1876,7 +1876,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 		const Recon::ReconMission mission=missions.back();
 		if(runtime.get_building_register().is_building_found(mission.flagId)
 		   || runtime.get_building_register().is_building_pending(mission.flagId))
-			runtime.add_management_order(new RetireAttraction(mission.flagId));
+			runtime.add_management_order(new RetireAttraction(mission.flagId,1u<<EXPLORER));
 		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission.flagId)
 			+"\ttarget_team="+telemetryText(mission.targetTeam)
@@ -5774,12 +5774,16 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 		const size_t keep=(source>=0 && strategy.fruit.units_per_flag>0)?1:0;
 		for(size_t n=keep;n<flags.size();++n)
 		{
-			runtime.cancel_or_destroy_building(flags[n]);
+			runtime.cancel_or_destroy_building(flags[n],1u<<EXPLORER);
 		}
 		if(!keep)continue;
 		const int x=source%field.width,y=source/field.width;
 		if(!flags.empty())
 		{
+            if(runtime.begin_attraction(flags[0],1u<<EXPLORER)) {
+                runtime.add_management_order(new AssignWorkers(budget.fruit_units_per_flag,flags[0]));
+                runtime.add_management_order(new ChangeFlagSize(budget.fruit_flag_radius,flags[0]));
+            }
 			int oldX,oldY;
 			if(runtime.get_building_position(flags[0],oldX,oldY) && (x!=oldX || y!=oldY))
 				runtime.add_management_order(new ChangeFlagPosition(x,y,flags[0]));

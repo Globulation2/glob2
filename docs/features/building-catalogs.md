@@ -74,7 +74,16 @@ the operating replenishment set.
 Unit-class masks use worker=1, explorer=2 and warrior=4; 7 accepts all classes.
 Arrays follow that same class order. Service durations advance on inside-unit
 updates using `properties.insideSpeed`; healing also scales with missing health,
-and training uses the relevant race/ability speed. Production uses an inclusive
+and training divides that speed by the number of ability levels being gained.
+Training includes the completion action: a duration of N takes N+1 inside
+actions. Parallel training waits for the slowest requested course under this
+inclusive clock, including zero-duration courses, the entry phase, and integer
+per-tick advances. Inside services advance by 1–256 delta units per tick,
+including the minimum speed after diagonal entry. The upper bound matches the
+one-action-per-tick clock and prevents long healing visits from overflowing the
+phase counter. It also removes the old post-exit speed burst caused by surplus
+phase accumulating during tiny-deficit healing, including stock hospitals;
+healing completion still takes at least one tick per inside action. Production uses an inclusive
 timeout: a recipe duration of N completes after N+1 eligible producer ticks
 (duration zero completes on its first tick). Do not compare these clocks without
 conversion.
@@ -100,7 +109,9 @@ conversion.
 Interior services share seats and inventory. A unit requests a service, and unpaid
 resource reservations are distinct from occupancy. Completion, cancellation,
 expulsion and destruction settle each reservation once. Repair materials that
-already restored health are consumed when a repair is canceled. Cumulative paid
+already restored health are consumed when a repair is canceled. Demolition keeps
+construction commitments until removal is final, so cancellation remains safe;
+final removal releases new/upgrade funding and consumes paid repair materials. Cumulative paid
 materials earn the corresponding fraction of the initial health deficit; damage
 received after repair begins remains. A repair returns
 to its recorded original variant even when several variants share a repair site.

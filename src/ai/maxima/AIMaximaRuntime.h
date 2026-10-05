@@ -353,6 +353,17 @@ namespace Conditions
 		void save(GAGCore::OutputStream*) const;
 	private: int id;
 	};
+    class AttractionRetiredOrDestroyed : public Condition
+    {
+    public:
+        AttractionRetiredOrDestroyed(int id,unsigned unitMask):id(id),unitMask(unitMask) {}
+        Result passes(Context&) const override;
+        int type() const override {return 4;}
+        void save(GAGCore::OutputStream*) const override;
+    private:
+        int id;unsigned unitMask;
+    };
+
 	class EnemyBuildingDestroyed : public Condition
 	{
 	public:
@@ -567,7 +578,7 @@ namespace Management
 	{ public: explicit DestroyBuilding(int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 2;} void save_payload(GAGCore::OutputStream*)const; private:int id; };
 	// Tactical cleanup must not demolish a building providing another service.
 	class RetireAttraction : public ManagementOrder
-	{ public: explicit RetireAttraction(int id) : id(id) {} Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 13;} void save_payload(GAGCore::OutputStream*)const; private:int id; };
+	{ public: RetireAttraction(int id,unsigned unitMask) : id(id),unitMask(unitMask) {} Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 13;} void save_payload(GAGCore::OutputStream*)const; private:int id; unsigned unitMask; };
 	class AddResourceTracker : public ManagementOrder
 	{ public: AddResourceTracker(int length,int resource,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 3;} void save_payload(GAGCore::OutputStream*)const; private:int length,resource,id; };
 	class ChangeFlagSize : public ManagementOrder
@@ -672,7 +683,11 @@ class Context
 	std::shared_ptr<Order> getOrder(RuntimeAI& ai);
 	unsigned add_building_order(Construction::BuildingOrder*);
 	///Cancel an unissued request, or delete the building once its issued order resolves.
-	void cancel_or_destroy_building(int id);
+	void cancel_or_destroy_building(int id,unsigned retiringUnitMask);
+    // Bind a new task after its predecessor completed; never call for routine staffing.
+    bool begin_attraction(int id,unsigned unitMask);
+    unsigned complete_attraction_retirement(int id,unsigned unitMask);
+    bool attraction_retired_or_destroyed(int id,unsigned unitMask) const;
 	///Find queued, issued, and observed exploration flags anchored on a resource.
 	std::vector<int> resource_flags(int resource) const;
 	///Issue an exact planner-selected construction after a final engine-space
@@ -713,6 +728,7 @@ private:
 	std::vector<std::shared_ptr<Construction::BuildingOrder> > buildingOrders;
 	std::vector<std::shared_ptr<Management::ManagementOrder> > managementOrders;
 	std::map<int, std::shared_ptr<Management::ResourceTracker> > trackers;
+    std::map<int,unsigned> retiredAttractions;
 	int timer;
 	int previousBuildingId;
 	bool initialized;

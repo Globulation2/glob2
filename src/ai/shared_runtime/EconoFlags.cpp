@@ -149,7 +149,7 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 						ManagementOrder* mo_completion=new ChangeFlagSize(AI_SHARED_RUNTIME_RTI_ENEMY_FLAG_RADIUS, id);
 						runtime.add_management_order(mo_completion);
 
-						ManagementOrder* mo_destroyed=new RetireAttraction(id);
+						ManagementOrder* mo_destroyed=new RetireAttraction(id,1u<<EXPLORER);
 						mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, *ebi));
 						runtime.add_management_order(mo_destroyed);
 

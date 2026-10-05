@@ -346,7 +346,7 @@ void Unit::syncStep(void)
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	stepSpeed=unitActionStepSpeed(speed, action, dx, dy);
+	stepSpeed=unitActionStepSpeed(speed, action, dx, dy, displacement==DIS_INSIDE);
 	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
 		delta+=stepSpeed;

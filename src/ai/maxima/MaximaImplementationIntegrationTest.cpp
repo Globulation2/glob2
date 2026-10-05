@@ -296,7 +296,7 @@ static void executionRegressions()
         REQUIRE(ai.explorer_attack_flags.size()==1);
         location=c.buildingOrders.back()->find_location(c,1,complete);
         REQUIRE((location.found && location.value.x==(team==1 ? 30 : 40)));
-        c.cancel_or_destroy_building(ai.explorer_attack_flags.front());
+        c.cancel_or_destroy_building(ai.explorer_attack_flags.front(),1u<<EXPLORER);
         c.update_management_orders();
         REQUIRE(ai.explorer_attack_flags.empty());
     }

@@ -142,10 +142,15 @@ namespace AISharedRuntime
         class RetireAttraction : public DestroyBuilding
         {
         public:
-            using DestroyBuilding::DestroyBuilding;
+            RetireAttraction() = default;
+            RetireAttraction(int id,unsigned retiringUnitMask):DestroyBuilding(id),retiringUnitMask(retiringUnitMask) {}
         protected:
             void modify(Runtime& runtime) override;
+            bool load(GAGCore::InputStream*,Player*,Sint32) override;
+            void save(GAGCore::OutputStream*) override;
             ManagementOrderType get_type() override {return MRetireAttraction;}
+        private:
+            unsigned retiringUnitMask=0;
         };
         class RetireFeeding : public DestroyBuilding
         {

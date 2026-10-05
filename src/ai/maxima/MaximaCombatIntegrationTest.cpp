@@ -1309,7 +1309,7 @@ static void retirementPreservesIndependentTraining()
         f.game.configureBuildingCatalog();
         auto* building=f.building(20,20,0,"warflag");
         auto& context=f.ai->context;context.initialize();
-        context.cancel_or_destroy_building(f.id(building));
+        context.cancel_or_destroy_building(f.id(building),1u<<WARRIOR);
         REQUIRE(context.managementOrders.size()==1);
         auto* retirement=dynamic_cast<Management::RetireAttraction*>(context.managementOrders.front().get());
         REQUIRE(retirement);
@@ -1320,6 +1320,68 @@ static void retirementPreservesIndependentTraining()
         } else {
             REQUIRE(context.orders.size()==1);
             REQUIRE(dynamic_cast<OrderDelete*>(context.orders.front().get()));
+        }
+    }
+}
+
+static void retainedAttractionCompletesSavedMissions()
+{
+    for(int kind:{0,1,2}) {
+        CAPTURE(kind);Fixture f;
+        const int type=f.game.buildingsTypes.getTypeNum("warflag",0,false);
+        auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());auto& variant=snapshot["variants"][type];
+        if(kind==0) {
+            variant["properties"]["maxUnitInside"]=1;
+            variant["semantics"]["healing"]={{"enabled",true},{"unitMask",7},{"duration",32},{"cost",nlohmann::json::object()}};
+        }
+        if(kind==1) {
+            variant["semantics"]["occupiesGround"]=true;
+            variant["properties"]["hpMax"]=100;variant["properties"]["hpInit"]=100;
+        }
+        if(kind==2) variant["properties"]["zonable"][EXPLORER]=1;
+        f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();
+        f.building(10,10,0);auto* target=f.building(35,30,1);auto* flag=f.building(20,20,0,"warflag");
+        for(int i=0;i<20;++i)f.warrior(2+i%5,2+i/5,3);
+        auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);const int id=f.id(flag);
+        a.attack_flags.push_back(id);a.defense_flags.push_back(id);a.explorer_attack_flags.push_back(id);
+        Management::RetireAttraction retire(id,1u<<WARRIOR);retire.modify(c);
+        CHECK(c.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        CHECK_FALSE(c.attraction_retired_or_destroyed(id,1u<<EXPLORER));
+        if(kind==1) {REQUIRE(c.orders.size()==1);CHECK(c.orders.front()->getOrderType()==ORDER_MODIFY_BUILDING);}
+        else CHECK(c.orders.empty());
+        for(auto event:{RuntimeEvent::AttackFinished,RuntimeEvent::GuardFlagDeleted}) {
+            auto* notify=new Management::Notify(RuntimeEvent(event,id));
+            notify->add_condition(new Conditions::AttractionRetiredOrDestroyed(id,1u<<WARRIOR));c.add_management_order(notify);
+        }
+        auto* explorer=new Management::Notify(RuntimeEvent(RuntimeEvent::ExplorerAttackFlagDeleted,id));
+        explorer->add_condition(new Conditions::AttractionRetiredOrDestroyed(id,1u<<EXPLORER));c.add_management_order(explorer);
+        auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(memory);a.save(&output);output.flush();const auto bytes=memory->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+        Maxima restored(&f.player);REQUIRE(restored.load(&input,&f.player,VERSION_MINOR));
+        struct EventForwarder : RuntimeAI {
+            Maxima& ai;explicit EventForwarder(Maxima& ai):ai(ai) {}
+            void tick(Context&) override {}
+            void handle_event(Context& context,const RuntimeEvent& event) override {ai.handle_event(context,event);}
+        } events(restored);
+        auto& resumed=restored.context;resumed.activeAI=&events;
+        CHECK(resumed.attraction_retired_or_destroyed(id,1u<<WARRIOR));resumed.update_management_orders();
+        CHECK(restored.attack_flags.empty());CHECK(restored.defense_flags.empty());CHECK(restored.explorer_attack_flags.size()==1);
+        REQUIRE(flag->buildingState==::Building::ALIVE);
+        restored.plan_offense(resumed);restored.control_offense(resumed);
+        REQUIRE_FALSE(resumed.buildingOrders.empty());
+        CHECK(resumed.buildingOrders.front()->id!=id);
+        CHECK(resumed.begin_attraction(id,1u<<WARRIOR));
+        CHECK_FALSE(resumed.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        {
+            auto* again=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream savedAgain(again);resumed.save(&savedAgain);savedAgain.flush();const auto state=again->takeContents();
+            GAGCore::BinaryInputStream reloaded(new GAGCore::MemoryStreamBackend(state.data(),state.size()));reloaded.seekFromStart(0);REQUIRE(resumed.load(&reloaded,VERSION_MINOR));
+            CHECK_FALSE(resumed.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        }
+        Management::RetireAttraction secondRetirement(id,1u<<WARRIOR);secondRetirement.modify(resumed);
+        CHECK(resumed.attraction_retired_or_destroyed(id,1u<<WARRIOR));
+        if(kind==2) {
+            Management::RetireAttraction explorerRetirement(id,1u<<EXPLORER);explorerRetirement.modify(resumed);resumed.update_management_orders();
+            CHECK(restored.explorer_attack_flags.empty());
         }
     }
 }
@@ -1393,6 +1455,7 @@ static void fittedPowerControlsAttackGate()
 
 TEST_SUITE("Maxima.Combat")
 {
+	TEST_CASE("retained attraction completes saved missions") { glob2test::HeadlessGlobals globals; combat_regressions::retainedAttractionCompletesSavedMissions(); }
 	TEST_CASE("retirement preserves independent training") { glob2test::HeadlessGlobals globals; combat_regressions::retirementPreservesIndependentTraining(); }
 	TEST_CASE("unavailable attraction has no placement") { glob2test::HeadlessGlobals globals; combat_regressions::unavailableAttractionHasNoPlacement(); }
 	TEST_CASE("fitted force uses only visible units") { glob2test::HeadlessGlobals globals; combat_regressions::fittedForceUsesOnlyVisibleUnits(); }

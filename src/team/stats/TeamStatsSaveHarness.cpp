@@ -1464,7 +1464,10 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   if(kind!=Building::NEW_BUILDING) {
    if(kind==Building::REPAIR)--site->hp;
    site->launchConstruction(1,1);
-   for(int step=0;step<4 && !site->type->isBuildingSite;++step)site->update();
+   REQUIRE(site->constructionResultState==kind);
+   // Team::syncStep normally performs this queued transition. Updating the
+   // building alone cannot move an upgrade or repair into its site stage.
+   REQUIRE(site->tryToBuildingSiteRoom());
   }
   REQUIRE(site->type->isBuildingSite);
   REQUIRE(site->constructionResultState==kind);

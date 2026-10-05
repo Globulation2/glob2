@@ -33,6 +33,7 @@ Condition* Condition::load_condition(GAGCore::InputStream *stream, Player *playe
 		LOAD_CASE(CEnemyBuildingDestroyed, EnemyBuildingDestroyed)
 		LOAD_CASE(CEitherCondition,        EitherCondition)
 		LOAD_CASE(CPopulation,             Population)
+        LOAD_CASE(CAttractionRetiredOrDestroyed, AttractionRetiredOrDestroyed)
 	}
 	stream->readLeaveSection();
 	if (!condition) throw std::runtime_error("Unknown saved AI object type");
