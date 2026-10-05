@@ -1,0 +1,1157 @@
+{
+  "captures": 192,
+  "comparisons": [
+    {
+      "file": "view-paint0-heading0-page0.png",
+      "differentPixels": 14,
+      "maxChannelError": 1,
+      "meanChannelError": 1.998812134502924e-05
+    },
+    {
+      "file": "view-paint0-heading0-page1.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint0-heading0-page2.png",
+      "differentPixels": 7,
+      "maxChannelError": 1,
+      "meanChannelError": 1.1421783625730994e-05
+    },
+    {
+      "file": "view-paint0-heading0-page3.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint0-heading0-page4.png",
+      "differentPixels": 4,
+      "maxChannelError": 1,
+      "meanChannelError": 5.710891812865497e-06
+    },
+    {
+      "file": "view-paint0-heading0-page5.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint0-heading0-page6.png",
+      "differentPixels": 43,
+      "maxChannelError": 14,
+      "meanChannelError": 0.0004668654057017544
+    },
+    {
+      "file": "view-paint0-heading0-page7.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint0-heading1-page0.png",
+      "differentPixels": 326,
+      "maxChannelError": 6,
+      "meanChannelError": 0.0008380733735380117
+    },
+    {
+      "file": "view-paint0-heading1-page1.png",
+      "differentPixels": 148,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00023700201023391812
+    },
+    {
+      "file": "view-paint0-heading1-page2.png",
+      "differentPixels": 178,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003226653874269006
+    },
+    {
+      "file": "view-paint0-heading1-page3.png",
+      "differentPixels": 153,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025127923976608186
+    },
+    {
+      "file": "view-paint0-heading1-page4.png",
+      "differentPixels": 167,
+      "maxChannelError": 3,
+      "meanChannelError": 0.00040261787280701755
+    },
+    {
+      "file": "view-paint0-heading1-page5.png",
+      "differentPixels": 93,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00015133863304093566
+    },
+    {
+      "file": "view-paint0-heading1-page6.png",
+      "differentPixels": 123,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00020273665935672513
+    },
+    {
+      "file": "view-paint0-heading1-page7.png",
+      "differentPixels": 216,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00036264163011695907
+    },
+    {
+      "file": "view-paint0-heading2-page0.png",
+      "differentPixels": 164,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002712673611111111
+    },
+    {
+      "file": "view-paint0-heading2-page1.png",
+      "differentPixels": 199,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003397980628654971
+    },
+    {
+      "file": "view-paint0-heading2-page2.png",
+      "differentPixels": 218,
+      "maxChannelError": 83,
+      "meanChannelError": 0.002631293402777778
+    },
+    {
+      "file": "view-paint0-heading2-page3.png",
+      "differentPixels": 404,
+      "maxChannelError": 9,
+      "meanChannelError": 0.001453421966374269
+    },
+    {
+      "file": "view-paint0-heading2-page4.png",
+      "differentPixels": 173,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002655564692982456
+    },
+    {
+      "file": "view-paint0-heading2-page5.png",
+      "differentPixels": 246,
+      "maxChannelError": 3,
+      "meanChannelError": 0.0004554436220760234
+    },
+    {
+      "file": "view-paint0-heading2-page6.png",
+      "differentPixels": 151,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025699013157894735
+    },
+    {
+      "file": "view-paint0-heading2-page7.png",
+      "differentPixels": 199,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003897683662280702
+    },
+    {
+      "file": "view-paint0-heading3-page0.png",
+      "differentPixels": 130,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00021558616593567252
+    },
+    {
+      "file": "view-paint0-heading3-page1.png",
+      "differentPixels": 253,
+      "maxChannelError": 30,
+      "meanChannelError": 0.0012378358004385965
+    },
+    {
+      "file": "view-paint0-heading3-page2.png",
+      "differentPixels": 169,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002769782529239766
+    },
+    {
+      "file": "view-paint0-heading3-page3.png",
+      "differentPixels": 173,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00028126142178362576
+    },
+    {
+      "file": "view-paint0-heading3-page4.png",
+      "differentPixels": 324,
+      "maxChannelError": 6,
+      "meanChannelError": 0.000675312956871345
+    },
+    {
+      "file": "view-paint0-heading3-page5.png",
+      "differentPixels": 221,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00036978024488304093
+    },
+    {
+      "file": "view-paint0-heading3-page6.png",
+      "differentPixels": 168,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00027412280701754384
+    },
+    {
+      "file": "view-paint0-heading3-page7.png",
+      "differentPixels": 142,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00023700201023391812
+    },
+    {
+      "file": "view-paint0-heading4-page0.png",
+      "differentPixels": 239,
+      "maxChannelError": 58,
+      "meanChannelError": 0.0022329586988304095
+    },
+    {
+      "file": "view-paint0-heading4-page1.png",
+      "differentPixels": 122,
+      "maxChannelError": 6,
+      "meanChannelError": 0.00036406935307017543
+    },
+    {
+      "file": "view-paint0-heading4-page2.png",
+      "differentPixels": 170,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00026841191520467835
+    },
+    {
+      "file": "view-paint0-heading4-page3.png",
+      "differentPixels": 120,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0001727544773391813
+    },
+    {
+      "file": "view-paint0-heading4-page4.png",
+      "differentPixels": 205,
+      "maxChannelError": 7,
+      "meanChannelError": 0.0005068416483918129
+    },
+    {
+      "file": "view-paint0-heading4-page5.png",
+      "differentPixels": 90,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00013706140350877192
+    },
+    {
+      "file": "view-paint0-heading4-page6.png",
+      "differentPixels": 101,
+      "maxChannelError": 7,
+      "meanChannelError": 0.0003455089546783626
+    },
+    {
+      "file": "view-paint0-heading4-page7.png",
+      "differentPixels": 233,
+      "maxChannelError": 3,
+      "meanChannelError": 0.00045687134502923974
+    },
+    {
+      "file": "view-paint0-heading5-page0.png",
+      "differentPixels": 378,
+      "maxChannelError": 10,
+      "meanChannelError": 0.0009108872441520468
+    },
+    {
+      "file": "view-paint0-heading5-page1.png",
+      "differentPixels": 349,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0005582396747076024
+    },
+    {
+      "file": "view-paint0-heading5-page2.png",
+      "differentPixels": 239,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0004154673793859649
+    },
+    {
+      "file": "view-paint0-heading5-page3.png",
+      "differentPixels": 185,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00028697231359649125
+    },
+    {
+      "file": "view-paint0-heading5-page4.png",
+      "differentPixels": 196,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003169544956140351
+    },
+    {
+      "file": "view-paint0-heading5-page5.png",
+      "differentPixels": 142,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00022558022660818712
+    },
+    {
+      "file": "view-paint0-heading5-page6.png",
+      "differentPixels": 369,
+      "maxChannelError": 19,
+      "meanChannelError": 0.0012763843201754387
+    },
+    {
+      "file": "view-paint0-heading5-page7.png",
+      "differentPixels": 291,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00045258817616959066
+    },
+    {
+      "file": "view-paint0-heading6-page0.png",
+      "differentPixels": 523,
+      "maxChannelError": 74,
+      "meanChannelError": 0.002749794407894737
+    },
+    {
+      "file": "view-paint0-heading6-page1.png",
+      "differentPixels": 303,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00048114263523391814
+    },
+    {
+      "file": "view-paint0-heading6-page2.png",
+      "differentPixels": 441,
+      "maxChannelError": 5,
+      "meanChannelError": 0.0009037486293859649
+    },
+    {
+      "file": "view-paint0-heading6-page3.png",
+      "differentPixels": 338,
+      "maxChannelError": 3,
+      "meanChannelError": 0.0006196317616959065
+    },
+    {
+      "file": "view-paint0-heading6-page4.png",
+      "differentPixels": 312,
+      "maxChannelError": 19,
+      "meanChannelError": 0.001175015990497076
+    },
+    {
+      "file": "view-paint0-heading6-page5.png",
+      "differentPixels": 300,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00048828125
+    },
+    {
+      "file": "view-paint0-heading6-page6.png",
+      "differentPixels": 273,
+      "maxChannelError": 14,
+      "meanChannelError": 0.0008023802997076024
+    },
+    {
+      "file": "view-paint0-heading6-page7.png",
+      "differentPixels": 436,
+      "maxChannelError": 63,
+      "meanChannelError": 0.00242570129751462
+    },
+    {
+      "file": "view-paint0-heading7-page0.png",
+      "differentPixels": 224,
+      "maxChannelError": 8,
+      "meanChannelError": 0.0005668060124269005
+    },
+    {
+      "file": "view-paint0-heading7-page1.png",
+      "differentPixels": 315,
+      "maxChannelError": 9,
+      "meanChannelError": 0.0007138614766081871
+    },
+    {
+      "file": "view-paint0-heading7-page2.png",
+      "differentPixels": 241,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003883406432748538
+    },
+    {
+      "file": "view-paint0-heading7-page3.png",
+      "differentPixels": 299,
+      "maxChannelError": 8,
+      "meanChannelError": 0.0007738258406432748
+    },
+    {
+      "file": "view-paint0-heading7-page4.png",
+      "differentPixels": 258,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0004126119334795322
+    },
+    {
+      "file": "view-paint0-heading7-page5.png",
+      "differentPixels": 246,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00040261787280701755
+    },
+    {
+      "file": "view-paint0-heading7-page6.png",
+      "differentPixels": 290,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0004854258040935672
+    },
+    {
+      "file": "view-paint0-heading7-page7.png",
+      "differentPixels": 240,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00040261787280701755
+    },
+    {
+      "file": "view-paint1-heading0-page0.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint1-heading0-page1.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint1-heading0-page2.png",
+      "differentPixels": 12,
+      "maxChannelError": 1,
+      "meanChannelError": 2.2843567251461987e-05
+    },
+    {
+      "file": "view-paint1-heading0-page3.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint1-heading0-page4.png",
+      "differentPixels": 11,
+      "maxChannelError": 1,
+      "meanChannelError": 1.5704952485380116e-05
+    },
+    {
+      "file": "view-paint1-heading0-page5.png",
+      "differentPixels": 8,
+      "maxChannelError": 1,
+      "meanChannelError": 1.1421783625730994e-05
+    },
+    {
+      "file": "view-paint1-heading0-page6.png",
+      "differentPixels": 43,
+      "maxChannelError": 16,
+      "meanChannelError": 0.00046258223684210524
+    },
+    {
+      "file": "view-paint1-heading0-page7.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint1-heading1-page0.png",
+      "differentPixels": 387,
+      "maxChannelError": 7,
+      "meanChannelError": 0.0009265921966374269
+    },
+    {
+      "file": "view-paint1-heading1-page1.png",
+      "differentPixels": 173,
+      "maxChannelError": 1,
+      "meanChannelError": 0.000289827759502924
+    },
+    {
+      "file": "view-paint1-heading1-page2.png",
+      "differentPixels": 218,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003597861842105263
+    },
+    {
+      "file": "view-paint1-heading1-page3.png",
+      "differentPixels": 190,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002941109283625731
+    },
+    {
+      "file": "view-paint1-heading1-page4.png",
+      "differentPixels": 171,
+      "maxChannelError": 3,
+      "meanChannelError": 0.0003926238121345029
+    },
+    {
+      "file": "view-paint1-heading1-page5.png",
+      "differentPixels": 124,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00021415844298245613
+    },
+    {
+      "file": "view-paint1-heading1-page6.png",
+      "differentPixels": 136,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00021130299707602338
+    },
+    {
+      "file": "view-paint1-heading1-page7.png",
+      "differentPixels": 215,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003497921235380117
+    },
+    {
+      "file": "view-paint1-heading2-page0.png",
+      "differentPixels": 179,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002941109283625731
+    },
+    {
+      "file": "view-paint1-heading2-page1.png",
+      "differentPixels": 268,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0004554436220760234
+    },
+    {
+      "file": "view-paint1-heading2-page2.png",
+      "differentPixels": 260,
+      "maxChannelError": 134,
+      "meanChannelError": 0.002617016173245614
+    },
+    {
+      "file": "view-paint1-heading2-page3.png",
+      "differentPixels": 335,
+      "maxChannelError": 4,
+      "meanChannelError": 0.0006596080043859649
+    },
+    {
+      "file": "view-paint1-heading2-page4.png",
+      "differentPixels": 219,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00035835846125730994
+    },
+    {
+      "file": "view-paint1-heading2-page5.png",
+      "differentPixels": 264,
+      "maxChannelError": 3,
+      "meanChannelError": 0.000465437682748538
+    },
+    {
+      "file": "view-paint1-heading2-page6.png",
+      "differentPixels": 151,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00024128517909356725
+    },
+    {
+      "file": "view-paint1-heading2-page7.png",
+      "differentPixels": 183,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003369426169590643
+    },
+    {
+      "file": "view-paint1-heading3-page0.png",
+      "differentPixels": 142,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00023129111842105262
+    },
+    {
+      "file": "view-paint1-heading3-page1.png",
+      "differentPixels": 244,
+      "maxChannelError": 31,
+      "meanChannelError": 0.001110768457602339
+    },
+    {
+      "file": "view-paint1-heading3-page2.png",
+      "differentPixels": 182,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00029268320540935675
+    },
+    {
+      "file": "view-paint1-heading3-page3.png",
+      "differentPixels": 232,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003754911366959064
+    },
+    {
+      "file": "view-paint1-heading3-page4.png",
+      "differentPixels": 335,
+      "maxChannelError": 8,
+      "meanChannelError": 0.0006938733552631579
+    },
+    {
+      "file": "view-paint1-heading3-page5.png",
+      "differentPixels": 210,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003612139071637427
+    },
+    {
+      "file": "view-paint1-heading3-page6.png",
+      "differentPixels": 205,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003369426169590643
+    },
+    {
+      "file": "view-paint1-heading3-page7.png",
+      "differentPixels": 167,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002884000365497076
+    },
+    {
+      "file": "view-paint1-heading4-page0.png",
+      "differentPixels": 182,
+      "maxChannelError": 63,
+      "meanChannelError": 0.001934564601608187
+    },
+    {
+      "file": "view-paint1-heading4-page1.png",
+      "differentPixels": 141,
+      "maxChannelError": 5,
+      "meanChannelError": 0.0003440812317251462
+    },
+    {
+      "file": "view-paint1-heading4-page2.png",
+      "differentPixels": 154,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00026412874634502927
+    },
+    {
+      "file": "view-paint1-heading4-page3.png",
+      "differentPixels": 123,
+      "maxChannelError": 38,
+      "meanChannelError": 0.0009251644736842105
+    },
+    {
+      "file": "view-paint1-heading4-page4.png",
+      "differentPixels": 177,
+      "maxChannelError": 8,
+      "meanChannelError": 0.00045116045321637424
+    },
+    {
+      "file": "view-paint1-heading4-page5.png",
+      "differentPixels": 143,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002270079495614035
+    },
+    {
+      "file": "view-paint1-heading4-page6.png",
+      "differentPixels": 93,
+      "maxChannelError": 7,
+      "meanChannelError": 0.00024556834795321636
+    },
+    {
+      "file": "view-paint1-heading4-page7.png",
+      "differentPixels": 208,
+      "maxChannelError": 116,
+      "meanChannelError": 0.0026712696454678363
+    },
+    {
+      "file": "view-paint1-heading5-page0.png",
+      "differentPixels": 372,
+      "maxChannelError": 10,
+      "meanChannelError": 0.0007367050438596491
+    },
+    {
+      "file": "view-paint1-heading5-page1.png",
+      "differentPixels": 421,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0006696020650584795
+    },
+    {
+      "file": "view-paint1-heading5-page2.png",
+      "differentPixels": 245,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003983347039473684
+    },
+    {
+      "file": "view-paint1-heading5-page3.png",
+      "differentPixels": 244,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003840574744152047
+    },
+    {
+      "file": "view-paint1-heading5-page4.png",
+      "differentPixels": 224,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003597861842105263
+    },
+    {
+      "file": "view-paint1-heading5-page5.png",
+      "differentPixels": 178,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00027983369883040934
+    },
+    {
+      "file": "view-paint1-heading5-page6.png",
+      "differentPixels": 383,
+      "maxChannelError": 45,
+      "meanChannelError": 0.001613326937134503
+    },
+    {
+      "file": "view-paint1-heading5-page7.png",
+      "differentPixels": 241,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003954792580409357
+    },
+    {
+      "file": "view-paint1-heading6-page0.png",
+      "differentPixels": 484,
+      "maxChannelError": 32,
+      "meanChannelError": 0.0016104714912280702
+    },
+    {
+      "file": "view-paint1-heading6-page1.png",
+      "differentPixels": 272,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00043688322368421053
+    },
+    {
+      "file": "view-paint1-heading6-page2.png",
+      "differentPixels": 456,
+      "maxChannelError": 5,
+      "meanChannelError": 0.0009108872441520468
+    },
+    {
+      "file": "view-paint1-heading6-page3.png",
+      "differentPixels": 317,
+      "maxChannelError": 33,
+      "meanChannelError": 0.001170732821637427
+    },
+    {
+      "file": "view-paint1-heading6-page4.png",
+      "differentPixels": 348,
+      "maxChannelError": 60,
+      "meanChannelError": 0.0019002992507309942
+    },
+    {
+      "file": "view-paint1-heading6-page5.png",
+      "differentPixels": 275,
+      "maxChannelError": 1,
+      "meanChannelError": 0.000442594115497076
+    },
+    {
+      "file": "view-paint1-heading6-page6.png",
+      "differentPixels": 298,
+      "maxChannelError": 13,
+      "meanChannelError": 0.0008180852521929825
+    },
+    {
+      "file": "view-paint1-heading6-page7.png",
+      "differentPixels": 349,
+      "maxChannelError": 66,
+      "meanChannelError": 0.0021658557200292397
+    },
+    {
+      "file": "view-paint1-heading7-page0.png",
+      "differentPixels": 220,
+      "maxChannelError": 109,
+      "meanChannelError": 0.002414279513888889
+    },
+    {
+      "file": "view-paint1-heading7-page1.png",
+      "differentPixels": 310,
+      "maxChannelError": 11,
+      "meanChannelError": 0.0007595486111111111
+    },
+    {
+      "file": "view-paint1-heading7-page2.png",
+      "differentPixels": 206,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003555030153508772
+    },
+    {
+      "file": "view-paint1-heading7-page3.png",
+      "differentPixels": 302,
+      "maxChannelError": 8,
+      "meanChannelError": 0.0007024396929824562
+    },
+    {
+      "file": "view-paint1-heading7-page4.png",
+      "differentPixels": 326,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0005196911549707603
+    },
+    {
+      "file": "view-paint1-heading7-page5.png",
+      "differentPixels": 255,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003940515350877193
+    },
+    {
+      "file": "view-paint1-heading7-page6.png",
+      "differentPixels": 263,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00043545550073099417
+    },
+    {
+      "file": "view-paint1-heading7-page7.png",
+      "differentPixels": 184,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00032409311038011695
+    },
+    {
+      "file": "view-paint2-heading0-page0.png",
+      "differentPixels": 3,
+      "maxChannelError": 1,
+      "meanChannelError": 4.2831688596491226e-06
+    },
+    {
+      "file": "view-paint2-heading0-page1.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading0-page2.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading0-page3.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading0-page4.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading0-page5.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading0-page6.png",
+      "differentPixels": 35,
+      "maxChannelError": 16,
+      "meanChannelError": 0.0004240337171052632
+    },
+    {
+      "file": "view-paint2-heading0-page7.png",
+      "differentPixels": 0,
+      "maxChannelError": 0,
+      "meanChannelError": 0.0
+    },
+    {
+      "file": "view-paint2-heading1-page0.png",
+      "differentPixels": 294,
+      "maxChannelError": 17,
+      "meanChannelError": 0.0008694832785087719
+    },
+    {
+      "file": "view-paint2-heading1-page1.png",
+      "differentPixels": 142,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00022843567251461987
+    },
+    {
+      "file": "view-paint2-heading1-page2.png",
+      "differentPixels": 219,
+      "maxChannelError": 4,
+      "meanChannelError": 0.00037977430555555556
+    },
+    {
+      "file": "view-paint2-heading1-page3.png",
+      "differentPixels": 187,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002998218201754386
+    },
+    {
+      "file": "view-paint2-heading1-page4.png",
+      "differentPixels": 174,
+      "maxChannelError": 3,
+      "meanChannelError": 0.00034122578581871344
+    },
+    {
+      "file": "view-paint2-heading1-page5.png",
+      "differentPixels": 147,
+      "maxChannelError": 106,
+      "meanChannelError": 0.002407140899122807
+    },
+    {
+      "file": "view-paint2-heading1-page6.png",
+      "differentPixels": 162,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025413468567251463
+    },
+    {
+      "file": "view-paint2-heading1-page7.png",
+      "differentPixels": 174,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002769782529239766
+    },
+    {
+      "file": "view-paint2-heading2-page0.png",
+      "differentPixels": 148,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00023985745614035086
+    },
+    {
+      "file": "view-paint2-heading2-page1.png",
+      "differentPixels": 183,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00029268320540935675
+    },
+    {
+      "file": "view-paint2-heading2-page2.png",
+      "differentPixels": 175,
+      "maxChannelError": 83,
+      "meanChannelError": 0.0023443210891812864
+    },
+    {
+      "file": "view-paint2-heading2-page3.png",
+      "differentPixels": 204,
+      "maxChannelError": 4,
+      "meanChannelError": 0.0003869129203216374
+    },
+    {
+      "file": "view-paint2-heading2-page4.png",
+      "differentPixels": 229,
+      "maxChannelError": 3,
+      "meanChannelError": 0.00042260599415204676
+    },
+    {
+      "file": "view-paint2-heading2-page5.png",
+      "differentPixels": 229,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003840574744152047
+    },
+    {
+      "file": "view-paint2-heading2-page6.png",
+      "differentPixels": 141,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00021701388888888888
+    },
+    {
+      "file": "view-paint2-heading2-page7.png",
+      "differentPixels": 151,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00026412874634502927
+    },
+    {
+      "file": "view-paint2-heading3-page0.png",
+      "differentPixels": 120,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00019845349049707603
+    },
+    {
+      "file": "view-paint2-heading3-page1.png",
+      "differentPixels": 204,
+      "maxChannelError": 28,
+      "meanChannelError": 0.0009694238852339181
+    },
+    {
+      "file": "view-paint2-heading3-page2.png",
+      "differentPixels": 162,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025841785453216377
+    },
+    {
+      "file": "view-paint2-heading3-page3.png",
+      "differentPixels": 188,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002941109283625731
+    },
+    {
+      "file": "view-paint2-heading3-page4.png",
+      "differentPixels": 275,
+      "maxChannelError": 6,
+      "meanChannelError": 0.0005753723501461988
+    },
+    {
+      "file": "view-paint2-heading3-page5.png",
+      "differentPixels": 161,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025841785453216377
+    },
+    {
+      "file": "view-paint2-heading3-page6.png",
+      "differentPixels": 157,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00024842379385964914
+    },
+    {
+      "file": "view-paint2-heading3-page7.png",
+      "differentPixels": 134,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00021701388888888888
+    },
+    {
+      "file": "view-paint2-heading4-page0.png",
+      "differentPixels": 134,
+      "maxChannelError": 88,
+      "meanChannelError": 0.0014933982090643274
+    },
+    {
+      "file": "view-paint2-heading4-page1.png",
+      "differentPixels": 74,
+      "maxChannelError": 3,
+      "meanChannelError": 0.00016847130847953215
+    },
+    {
+      "file": "view-paint2-heading4-page2.png",
+      "differentPixels": 131,
+      "maxChannelError": 99,
+      "meanChannelError": 0.001777515076754386
+    },
+    {
+      "file": "view-paint2-heading4-page3.png",
+      "differentPixels": 135,
+      "maxChannelError": 5,
+      "meanChannelError": 0.0002769782529239766
+    },
+    {
+      "file": "view-paint2-heading4-page4.png",
+      "differentPixels": 155,
+      "maxChannelError": 7,
+      "meanChannelError": 0.0004126119334795322
+    },
+    {
+      "file": "view-paint2-heading4-page5.png",
+      "differentPixels": 82,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00012706734283625732
+    },
+    {
+      "file": "view-paint2-heading4-page6.png",
+      "differentPixels": 63,
+      "maxChannelError": 7,
+      "meanChannelError": 0.0002612733004385965
+    },
+    {
+      "file": "view-paint2-heading4-page7.png",
+      "differentPixels": 134,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00022843567251461987
+    },
+    {
+      "file": "view-paint2-heading5-page0.png",
+      "differentPixels": 287,
+      "maxChannelError": 11,
+      "meanChannelError": 0.0007881030701754386
+    },
+    {
+      "file": "view-paint2-heading5-page1.png",
+      "differentPixels": 309,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00048685352704678364
+    },
+    {
+      "file": "view-paint2-heading5-page2.png",
+      "differentPixels": 193,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00030410498903508774
+    },
+    {
+      "file": "view-paint2-heading5-page3.png",
+      "differentPixels": 159,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0002655564692982456
+    },
+    {
+      "file": "view-paint2-heading5-page4.png",
+      "differentPixels": 190,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00030124954312865497
+    },
+    {
+      "file": "view-paint2-heading5-page5.png",
+      "differentPixels": 163,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00025413468567251463
+    },
+    {
+      "file": "view-paint2-heading5-page6.png",
+      "differentPixels": 249,
+      "maxChannelError": 50,
+      "meanChannelError": 0.0012306971856725147
+    },
+    {
+      "file": "view-paint2-heading5-page7.png",
+      "differentPixels": 204,
+      "maxChannelError": 108,
+      "meanChannelError": 0.0020030953033625732
+    },
+    {
+      "file": "view-paint2-heading6-page0.png",
+      "differentPixels": 444,
+      "maxChannelError": 135,
+      "meanChannelError": 0.00278405975877193
+    },
+    {
+      "file": "view-paint2-heading6-page1.png",
+      "differentPixels": 278,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00043973866959064325
+    },
+    {
+      "file": "view-paint2-heading6-page2.png",
+      "differentPixels": 277,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0004668654057017544
+    },
+    {
+      "file": "view-paint2-heading6-page3.png",
+      "differentPixels": 249,
+      "maxChannelError": 2,
+      "meanChannelError": 0.00042831688596491226
+    },
+    {
+      "file": "view-paint2-heading6-page4.png",
+      "differentPixels": 277,
+      "maxChannelError": 110,
+      "meanChannelError": 0.002856873629385965
+    },
+    {
+      "file": "view-paint2-heading6-page5.png",
+      "differentPixels": 214,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003440812317251462
+    },
+    {
+      "file": "view-paint2-heading6-page6.png",
+      "differentPixels": 207,
+      "maxChannelError": 6,
+      "meanChannelError": 0.0003869129203216374
+    },
+    {
+      "file": "view-paint2-heading6-page7.png",
+      "differentPixels": 281,
+      "maxChannelError": 89,
+      "meanChannelError": 0.0016347427814327486
+    },
+    {
+      "file": "view-paint2-heading7-page0.png",
+      "differentPixels": 162,
+      "maxChannelError": 127,
+      "meanChannelError": 0.0028254637244152048
+    },
+    {
+      "file": "view-paint2-heading7-page1.png",
+      "differentPixels": 234,
+      "maxChannelError": 9,
+      "meanChannelError": 0.0005925050255847954
+    },
+    {
+      "file": "view-paint2-heading7-page2.png",
+      "differentPixels": 229,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00036264163011695907
+    },
+    {
+      "file": "view-paint2-heading7-page3.png",
+      "differentPixels": 327,
+      "maxChannelError": 8,
+      "meanChannelError": 0.0007466991045321637
+    },
+    {
+      "file": "view-paint2-heading7-page4.png",
+      "differentPixels": 204,
+      "maxChannelError": 2,
+      "meanChannelError": 0.0003483644005847953
+    },
+    {
+      "file": "view-paint2-heading7-page5.png",
+      "differentPixels": 239,
+      "maxChannelError": 1,
+      "meanChannelError": 0.00036835252192982457
+    },
+    {
+      "file": "view-paint2-heading7-page6.png",
+      "differentPixels": 242,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0003826297514619883
+    },
+    {
+      "file": "view-paint2-heading7-page7.png",
+      "differentPixels": 156,
+      "maxChannelError": 1,
+      "meanChannelError": 0.0002469960709064328
+    }
+  ]
+}

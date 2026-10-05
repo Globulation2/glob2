@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "family": null,
+  "profile": "full",
+  "binary": "unit",
+  "shard": null,
+  "eligible": [
+    "LiveWorkerRig/fractional translations interpolate without changing topology or normals",
+    "LiveWorkerRig/heading rotates model-space geometry continuously",
+    "LiveWorkerRig/loader rejects malformed candidates and preserves a loaded rig",
+    "LiveWorkerRig/periodic keys preserve identity and eviction remains bounded",
+    "SkinMesh/bounded transactional decoding",
+    "SkinMesh/rotated swarms render independently with every material [display][artifacts]",
+    "SkinMesh/static camera ring preserves UVs, scale and independent cache identities",
+    "SkinMesh/static swarm pose",
+    "SkinMesh/virtual asset streams use the same bounded decoder"
+  ],
+  "assigned": [
+    "LiveWorkerRig/fractional translations interpolate without changing topology or normals",
+    "LiveWorkerRig/heading rotates model-space geometry continuously",
+    "LiveWorkerRig/loader rejects malformed candidates and preserves a loaded rig",
+    "LiveWorkerRig/periodic keys preserve identity and eviction remains bounded",
+    "SkinMesh/bounded transactional decoding",
+    "SkinMesh/rotated swarms render independently with every material [display][artifacts]",
+    "SkinMesh/static camera ring preserves UVs, scale and independent cache identities",
+    "SkinMesh/static swarm pose",
+    "SkinMesh/virtual asset streams use the same bounded decoder"
+  ],
+  "excluded": [
+    "SkinAtlasCache/paint and material revisions, lifetimes, region, mesh and pose are independent cache keys",
+    "SkinAtlasCache/visible hits survive a full atlas eviction batch",
+    "SkinMaterialMap/greyscale material maps decode to exact ids",
+    "SkinReadback/export readback matches live compositing for every pose and rotated swarm [display]"
+  ],
+  "jobs": [
+    "SkinMesh/rotated swarms render independently with every material [display][artifacts]",
+    "glob2-unit-tests SkinMesh (4 cases)",
+    "glob2-unit-tests LiveWorkerRig (4 cases)"
+  ],
+  "fingerprint": "8e70c6f8ddf8f73fdcd6ca1ca6a697f7fce1b614744f115ff2e0c95e13c41896"
+}

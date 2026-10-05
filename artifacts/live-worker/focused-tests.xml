@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="9" failures="0" errors="0" skipped="0"><testsuite name="SkinMesh"><testcase classname="SkinMesh" name="rotated swarms render independently with every material [display][artifacts]" time="0.213115" status="run" />
+  <testcase classname="SkinMesh" name="virtual asset streams use the same bounded decoder" time="0.00016" status="run" />
+    <testcase classname="SkinMesh" name="static swarm pose" time="0.000321" status="run" />
+    <testcase classname="SkinMesh" name="static camera ring preserves UVs, scale and independent cache identities" time="0.047782" status="run" />
+    <testcase classname="SkinMesh" name="bounded transactional decoding" time="0.001653" status="run" />
+  </testsuite><testsuite name="LiveWorkerRig"><testcase classname="LiveWorkerRig" name="loader rejects malformed candidates and preserves a loaded rig" time="0.012741" status="run" />
+    <testcase classname="LiveWorkerRig" name="periodic keys preserve identity and eviction remains bounded" time="0.003044" status="run" />
+    <testcase classname="LiveWorkerRig" name="fractional translations interpolate without changing topology or normals" time="0.001432" status="run" />
+    <testcase classname="LiveWorkerRig" name="heading rotates model-space geometry continuously" time="0.001402" status="run" />
+  </testsuite></testsuites>

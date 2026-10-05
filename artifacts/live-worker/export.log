@@ -1,0 +1,16 @@
+Warning: Library file, loading empty scene
+heading 0: 5.661977939830365e-07 px / 2.980211766256957e-08 normal
+heading 1: 5.661728120776033e-07 px / 2.980209101721698e-08 normal
+heading 2: 4.358243684907809e-05 px / 1.75827584137922e-05 normal
+heading 3: 3.871199518094143e-05 px / 4.556750178096383e-05 normal
+heading 4: 7.149022345426942e-05 px / 2.155696656237771e-05 normal
+heading 5: 5.12087531834432e-05 px / 3.407020341172906e-05 normal
+heading 6: 4.7720373431370255e-05 px / 2.982891121972031e-05 normal
+heading 7: 5.752155948337591e-05 px / 2.4982241155047102e-05 normal
+Exported 430731 bytes; max position 0.00007149px; normal 0.00004557
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:31:24)
+Device with name Apple M3 supports metal minimum requirements
+Read blend: "/Users/bradley/.codex/worktrees/dd1e/glob2/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+
+Blender quit

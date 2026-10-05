@@ -1,0 +1,13 @@
+{
+  "bakedBytes": 17502756,
+  "bakedDeflateBytes": 16181493,
+  "cacheAndInterpolationPassed": true,
+  "geometryBytes": 20307968,
+  "malformedCases": 12,
+  "maxNormalVectorError": 6.876705557100525e-05,
+  "maxPositionPixels": 6.490573287010193e-05,
+  "referencePoses": 256,
+  "rigBytes": 430731,
+  "rigDeflateBytes": 96379,
+  "socketTopologyPassed": true
+}

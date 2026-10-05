@@ -1,0 +1,6 @@
+PASS glob2-unit-tests SkinMesh (4 cases) (0.1s)
+PASS glob2-unit-tests LiveWorkerRig (4 cases) (0.1s)
+PASS SkinMesh/rotated swarms render independently with every material [display][artifacts] (0.2s)
+
+3 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/live-worker/focused-tests.xml (9 cases)

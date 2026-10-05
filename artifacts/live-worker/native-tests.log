@@ -1,0 +1,5 @@
+PASS ColonySkinPreview/shared images retain each owner's fresh appearance [display:64x64] (0.2s)
+PASS ColonySkinPreview/expired and cancelled subscribers cannot affect another owner [display:64x64] (0.2s)
+
+2 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/live-worker/native-tests.xml (2 cases)
