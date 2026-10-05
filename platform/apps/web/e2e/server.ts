@@ -42,10 +42,16 @@ const TYPES: Record<string, string> = {
 };
 const PLATFORM = /^\/(api\/|realtime$|signin(\/|$)|auth\/|\.well-known\/|j\/)/;
 
-function sendFile(res: ServerResponse, path: string) {
+function sendFile(res: ServerResponse, path: string, isolated = false) {
   res.writeHead(200, {
     'content-type': TYPES[extname(path)] ?? 'application/octet-stream',
     'cache-control': 'no-cache',
+    ...(isolated
+      ? {
+          'cross-origin-opener-policy': 'same-origin',
+          'cross-origin-embedder-policy': 'require-corp',
+        }
+      : {}),
   });
   createReadStream(path).pipe(res);
 }
@@ -215,7 +221,7 @@ const front = createServer((req, res) => {
   }
   if (url.pathname.startsWith('/play/')) {
     const file = inside(gameDir, url.pathname.slice('/play/'.length) || 'index.html');
-    if (file) return sendFile(res, file);
+    if (file) return sendFile(res, file, true);
     res.writeHead(404, { 'content-type': 'text/plain' });
     res.end('No browser game build here.');
     return;

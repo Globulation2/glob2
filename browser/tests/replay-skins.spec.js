@@ -36,7 +36,7 @@ test(`online replay uses signed ${renderer} appearance without a preview overrid
   const threads=process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded'?'':'&threads=serial';
   await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=${renderer}&gl-errors=1${threads}`);
   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().watchReplay), {timeout:120000}).toBe('ready');
-  if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')expect(await page.evaluate(()=>glob2Diagnostics.snapshot().workerCount)).toBeGreaterThan(0);
+  if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')expect(await page.evaluate(()=>Module.executionMode)).toBe('threaded');
   if(renderer==='webgl2')await expect.poll(() => page.evaluate(() => globalThis.replaySkinDraws), {timeout:120000}).toBeGreaterThan(5);
   else {
     await expect.poll(()=>seen.filter(path=>/\/sprites\/[0-9a-f]{64}\/pages\/[0-9a-f]{64}$/.test(path)).length,{timeout:120000}).toBeGreaterThan(0);
