@@ -1,5 +1,6 @@
 import importlib.util
 import os
+import re
 import stat
 from pathlib import Path
 import tempfile
@@ -14,6 +15,18 @@ spec.loader.exec_module(module)
 
 
 class BrowserPackageTests(unittest.TestCase):
+    def test_ci_artifacts_publish_the_complete_music_runtime(self):
+        workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
+        steps = workflow.split("\n      - ")
+        for artifact in ("web-client", "glob2-web-development"):
+            matches = [step for step in steps if step.startswith("uses: actions/upload-artifact@") and re.search(
+                rf"(?m)^          name: {re.escape(artifact)}$", step)]
+            with self.subTest(artifact=artifact):
+                self.assertEqual(len(matches), 1)
+                paths = {line.strip() for line in matches[0].splitlines()}
+                for name in module.MUSIC_FILES:
+                    self.assertIn("build/emscripten/client/release/" + name, paths)
+
     @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
     def test_threaded_package_is_public_readable_under_private_build_umask(self):
         self.threaded_source()
