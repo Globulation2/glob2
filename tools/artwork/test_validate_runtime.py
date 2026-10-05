@@ -45,6 +45,16 @@ class ExportValidationTests(unittest.TestCase):
     def test_exact_webp_and_rewritten_index_pass(self):
         self.check()
 
+    def test_generated_terrain_can_have_multiple_outputs_per_catalog_source(self):
+        self.audit['files'] += [dict(source='data/terrain/tileset.json',
+                                     output=f'data/terrain/compiled/texture{i}.webp') for i in range(2)]
+        self.write_audit()
+        self.check()
+        self.audit['files'].append(dict(self.record))
+        self.write_audit()
+        with self.assertRaisesRegex(ValueError, 'Duplicate exported HD'):
+            self.check()
+
     def test_source_png_runtime_name_and_stale_index_fail(self):
         self.record['output'] = 'data/highres/v1/inn0b0.png'
         self.write_audit()

@@ -188,8 +188,12 @@ def validate_export(root, pack, manifest, exported):
 
     audit = json.loads(exported.with_suffix('.json').read_text())
     require(audit['optimized'], 'Original-byte measurement exports are not runtime artwork')
-    records = {record['source']: record for record in audit['files']}
-    require(len(records) == len(audit['files']), 'Duplicate exported source records')
+    # The shared terrain compiler legitimately emits several textures from
+    # one catalog source. HD PNG layers each have exactly one runtime output.
+    hd_records = [record for record in audit['files']
+                  if record['source'].startswith('data/highres/v1/')]
+    records = {record['source']: record for record in hd_records}
+    require(len(records) == len(hd_records), 'Duplicate exported HD source records')
     images = [layer for frame in manifest['frames'] for layer in frame['layers']]
     images += [level for key in ('terrain_atlas', 'resource_atlas') for level in manifest[key]['levels']]
     for image in images:
