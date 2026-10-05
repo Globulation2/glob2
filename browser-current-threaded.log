@@ -1,0 +1,83 @@
+
+Running 6 tests using 1 worker
+
+(node:3288675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override (9.3s)
+  ✓  2 [chromium] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override (8.3s)
+(node:3289173) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override (26.7s)
+  ✓  4 [firefox] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override (6.6s)
+(node:3290436) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override (5.0s)
+(node:3290950) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override (4.3s)
+
+
+  1) [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "threaded"
+    Received: "serial"
+
+      37 |   await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=${renderer}&gl-errors=1${threads}`);
+      38 |   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().watchReplay), {timeout:120000}).toBe('ready');
+    > 39 |   if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')expect(await page.evaluate(()=>Module.executionMode)).toBe('threaded');
+         |                                                                                                               ^
+      40 |   if(renderer==='webgl2') {
+      41 |     // Threaded GL runs in the application worker, outside the UI-realm hook.
+      42 |     if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().assets.skins),{timeout:120000}).toBe('ready');
+        at /home/bradley/.codex/worktrees/7f73/glob2/browser/tests/replay-skins.spec.js:39:111
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-skins-online-replay-a76a7--without-a-preview-override-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/replay-skins-online-replay-a76a7--without-a-preview-override-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-skins-online-replay-a76a7--without-a-preview-override-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/replay-skins-online-replay-a76a7--without-a-preview-override-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "threaded"
+    Received: "serial"
+
+      37 |   await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=${renderer}&gl-errors=1${threads}`);
+      38 |   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().watchReplay), {timeout:120000}).toBe('ready');
+    > 39 |   if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')expect(await page.evaluate(()=>Module.executionMode)).toBe('threaded');
+         |                                                                                                               ^
+      40 |   if(renderer==='webgl2') {
+      41 |     // Threaded GL runs in the application worker, outside the UI-realm hook.
+      42 |     if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().assets.skins),{timeout:120000}).toBe('ready');
+        at /home/bradley/.codex/worktrees/7f73/glob2/browser/tests/replay-skins.spec.js:39:111
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-skins-online-replay-0ac5d--without-a-preview-override-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/replay-skins-online-replay-0ac5d--without-a-preview-override-webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-skins-online-replay-0ac5d--without-a-preview-override-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/replay-skins-online-replay-0ac5d--without-a-preview-override-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override 
+    [webkit] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override 
+  4 passed (1.2m)
