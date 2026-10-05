@@ -1,3 +1,5 @@
+Latest reviewed revision and refreshed evidence: [review/README.md](review/README.md). The captures and logs below retain their original revision.
+
 # Software colony skin verification
 
 Feature revision: `13949a60f6cd1907be11bdf6cf4bb1cdc8af9f18`. Integrated base: `857b69530254983efe1659b85467a17fa1973dfb`. Current master was fetched and overlapping WebP, PNG decoder, theme and render-pacing changes were integrated. Evidence belongs on this separate branch, not in the feature diff.

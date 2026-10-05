@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+(node:3676951) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override (11.9s)
+  ✓  2 [chromium] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override (8.3s)
+(node:3677593) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › tests/replay-skins.spec.js:8:1 › online replay uses signed webgl2 appearance without a preview override (28.6s)
+  ✓  4 [firefox] › tests/replay-skins.spec.js:8:1 › online replay uses signed software appearance without a preview override (5.7s)
+
+  4 passed (57.3s)
