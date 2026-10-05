@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <SurfaceRaster.h>
 #include "OpaqueRectangleBatch.h"
 
 #include <algorithm>
@@ -776,4 +777,16 @@ namespace GAGCore
 			renderBatch->barrier();
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
+}
+
+namespace GAGCore {
+void GraphicContext::drawSkinSprite(float x,float y,float w,float h,DrawableSurface *surface,int sx,int sy,int sw,int sh,Uint8 alpha)
+{
+    if (!surface || w<=0 || h<=0) return;
+    prepareDraw();Sprite::flushBatches(this);
+    auto *source=surface->getSDLSurface();if(!source)return;
+    if(renderer) renderer->blitLinear(surface,source,surface->contentRevision(),SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
+    else SurfaceRaster::skinBlitFloat(getSDLSurface(),source,SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
+    ++drawCalls;markPixelsChanged();
+}
 }

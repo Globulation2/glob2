@@ -134,7 +134,9 @@ struct ScheduledLoop {
 // Each callback retains the state; completion clears the loop so a late callback
 // becomes a no-op instead of touching a destroyed application.
 using ScheduledReference = std::shared_ptr<ScheduledLoop>;
-thread_local unsigned activeLoops = 0;
+// Completion can synchronously replace startup with the gameplay loop.
+// Only a terminal completion may release their shared application worker.
+thread_local std::uint64_t loopGeneration = 0;
 void schedule(void (*callback)(void *), const ScheduledReference &state, int delay)
 {
     emscripten_async_call(callback, new ScheduledReference(state), delay);
@@ -222,14 +224,13 @@ void scheduledFrame(void* opaque)
     publishDiagnostics(true);
     if (!running) {
         state->loop.reset();
-        --activeLoops;
+        const auto completingGeneration = loopGeneration;
         {
             auto complete = std::move(state->complete);
             complete();
         }
-        // Completion may hand off from asset startup to the application loop.
-        // Keep its thread (and asset ownership/TLS) alive until that loop ends.
-        if (!activeLoops) Glob2Browser::releaseApplicationThread();
+        if (loopGeneration == completingGeneration)
+            Glob2Browser::releaseApplicationThread();
         return;
     }
     // Each callback completes before the next frame is scheduled. Browser UI
@@ -245,7 +246,7 @@ void scheduledFrame(void* opaque)
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
     Glob2Browser::hosted = true;
-    ++activeLoops;
+    ++loopGeneration;
     auto state = std::make_shared<ScheduledLoop>();
     state->loop = std::move(loop);
     state->complete = std::move(complete);

@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target: [platform, music-worker, engine-agent, relay, caddy]
+        target: [platform, music-worker, skin-render-worker, engine-agent, relay, caddy]
     steps:
       - uses: actions/checkout@v4
       - name: Read the sim version
@@ -86,7 +86,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        target: [platform, music-worker, engine-agent, relay, caddy]
+        target: [platform, music-worker, skin-render-worker, engine-agent, relay, caddy]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3

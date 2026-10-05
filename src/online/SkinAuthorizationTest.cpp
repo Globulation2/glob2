@@ -56,20 +56,53 @@ TEST_SUITE("SkinAuthorization")
             CHECK(auth.skin()->swarmViewAngle==entry.second);
         }
     }
-    TEST_CASE("untrusted key sets and bounded malformed inputs fail closed")
+    TEST_CASE("signed optional sprite descriptors bind derivatives and ignore future formats")
     {
-        auto f=fixture();
-        const auto check=[&](const std::string &token,const std::string &keys,std::int64_t now=1700000000){
-            SkinAuthorization auth(token,keys,"https://example.test",f["claims"]["matchId"],2,now);
-            CHECK(auth.state()==SkinAuthorization::State::Rejected);
-            CHECK(auth.skin()==nullptr);
-        };
-        check(f["valid"],"{}");check(f["valid"],"not json");
-        check("..",f["jwks"].dump());check(std::string(8193,'a'),f["jwks"].dump());
-        check(f["valid"],std::string(65537,' '));
-        check(f["valid"],f["jwks"].dump(),std::numeric_limits<std::int64_t>::max());
-        check(f["valid"],f["jwks"].dump(),-1);
-        f["jwks"]["keys"].push_back(f["jwks"]["keys"][0]);
-        check(f["valid"],f["jwks"].dump());
+        const auto f=fixture();
+        for(const auto &name:{"ready","unknown"}) {
+            SkinAuthorization auth(f["software"][name],f["jwks"].dump(),"https://example.test",f["claims"]["matchId"],2,1700000000);
+            REQUIRE(auth.state()==SkinAuthorization::State::Verified);
+            CHECK(auth.skin()->spriteManifestHash==(std::string(name)=="ready"?std::string(64,'a'):std::string()));
+            CHECK(auth.skin()->spriteRenderRevision==(std::string(name)=="ready"?std::string(64,'b'):std::string()));
+        }
     }
+    TEST_CASE("signed immutable source identity survives live WebP renditions")
+    {
+        const auto f=fixture();
+        SkinAuthorization auth(f["software"]["rendition"],f["jwks"].dump(),"https://example.test",f["claims"]["matchId"],2,1700000000);
+        REQUIRE(auth.state()==SkinAuthorization::State::Verified);
+        REQUIRE(auth.skin());
+        CHECK(auth.skin()->spriteSourceManifestHash==f["source"]["manifestSha256"].get<std::string>());
+        CHECK(auth.skin()->spriteSourceTextureHash==f["source"]["textureSha256"].get<std::string>());
+		CHECK(auth.skin()->spriteSourceMaterialHash ==
+			  f["source"]["materialSha256"].get<std::string>());
+		CHECK(auth.skin()->spriteSourceManifestHash != auth.skin()->manifestHash);
+		CHECK(auth.skin()->spriteSourceTextureHash != auth.skin()->textureHash);
+		CHECK(auth.skin()->spriteSourceMaterialHash != auth.skin()->materialHash);
+		SkinAuthorization legacy(f["software"]["ready"], f["jwks"].dump(), "https://example.test",
+								 f["claims"]["matchId"], 2, 1700000000);
+		REQUIRE(legacy.skin());
+		CHECK(legacy.skin()->spriteSourceManifestHash.empty());
+	}
+	TEST_CASE("untrusted key sets and bounded malformed inputs fail closed")
+	{
+		auto f = fixture();
+		const auto check =
+			[&](const std::string &token, const std::string &keys, std::int64_t now = 1700000000)
+		{
+			SkinAuthorization auth(token, keys, "https://example.test", f["claims"]["matchId"], 2,
+								   now);
+			CHECK(auth.state() == SkinAuthorization::State::Rejected);
+			CHECK(auth.skin() == nullptr);
+		};
+		check(f["valid"], "{}");
+		check(f["valid"], "not json");
+		check("..", f["jwks"].dump());
+		check(std::string(8193, 'a'), f["jwks"].dump());
+		check(f["valid"], std::string(65537, ' '));
+		check(f["valid"], f["jwks"].dump(), std::numeric_limits<std::int64_t>::max());
+		check(f["valid"], f["jwks"].dump(), -1);
+		f["jwks"]["keys"].push_back(f["jwks"]["keys"][0]);
+        check(f["valid"],f["jwks"].dump());
+	}
 }

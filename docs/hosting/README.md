@@ -26,6 +26,7 @@ import (see [the former YOG lobby](#the-former-yog-lobby)).
 | `postgres` | `postgres:16-alpine` | 1 | All state, the job queue, pub/sub and the matchmaker's leader lock. |
 | `init` | `platform` | one-shot | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
 | `platform-api` | `platform` | `GLOB2_API_REPLICAS` (2) | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless. |
+| `skin-render-worker` | `skin-render-worker` | 1 | Transparent colony sprite generation using the current client, meshes, Mesa/llvmpipe and Xvfb. |
 | `music-worker` | `music-worker` | 1 | Community music inspection, conversion and final media storage. |
 | `platform-worker` | `platform` | `GLOB2_WORKER_REPLICAS` (1) | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time). |
 | `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key. |
@@ -879,9 +880,28 @@ Each image knows its own version (from its binary and data), registers it, and
 takes only that version's jobs; `GET /api/v1/instance` lists every version with a
 live agent. Remove the service when the version is retired.
 
+The dedicated `skin-render-worker` service uses the worker database role and
+shared blob store, with one render process, two CPU threads, a 3 GiB container
+limit and a six-minute shutdown grace period. The display entrypoint starts Xvfb
+and executes Node as the primary process, so termination reaches the worker's
+graceful shutdown handlers directly. The current engine and its meshes ship
+together; this service is independent of match simulation-version agents.
+Its capability probe verifies the pinned runtime WebP encoder before registering
+a content-derived render revision, and startup
+queues existing enabled skin versions and presets for that revision. Publication
+continues while artwork is pending or failed. Watch `Skin sprites ready` and
+`Skin sprite generation failed` logs for duration, compressed size, retries and
+failures. Three attempts and a five-minute process timeout bound each job.
+Ready derivatives commit atomically and the API's normal appearance refresh
+makes them available to active matches; matches retain the first ready bundle
+they received. Deploy the updated API, migration, web interface and renderer
+worker together. Source versions and their derivative references remain in blob
+retention, including history for disabled skins; download endpoints honor
+moderation immediately.
+
 ### Images
 
-The Dockerfile targets are `platform` (API, worker and CLI), `music-worker`, `engine-agent`,
+The Dockerfile targets are `platform` (API, worker and CLI), `music-worker`, `skin-render-worker`, `engine-agent`,
 `relay` and `caddy` (Caddy with the built web app). A `server-v*` tag pushed by
 the owner to the release mirror `genixpro/glob2-release` runs
 `.github/workflows/server-image.yml` (it skips every job in any other repository; a
@@ -894,6 +914,7 @@ agents are also tagged `simver-<sim version>` and labelled
 ```dotenv
 GLOB2_PLATFORM_IMAGE=ghcr.io/<owner>/<repository>-platform@sha256:…
 GLOB2_MUSIC_IMAGE=ghcr.io/<owner>/<repository>-music-worker@sha256:…
+GLOB2_SKIN_RENDER_IMAGE=ghcr.io/<owner>/<repository>-skin-render-worker@sha256:…
 GLOB2_ENGINE_AGENT_IMAGE=ghcr.io/<owner>/<repository>-engine-agent@sha256:…
 GLOB2_RELAY_IMAGE=ghcr.io/<owner>/<repository>-relay@sha256:…
 GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…

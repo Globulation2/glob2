@@ -11,6 +11,7 @@
     "apps/web/e2e",
     "*.ts",
     "apps/music-worker",
+    "apps/skin-render-worker",
     "apps/ai-music-worker"
   ],
   "exclude": ["**/node_modules"]

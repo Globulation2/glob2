@@ -107,6 +107,7 @@ def prepare_assets(env):
         + [
             "tools/package_assets.py",
             "tools/asset-requirements.txt",
+            "tools/image_encoding.json",
             "scons/runtime_assets.py",
             Value(inputs),
             Value(lossy),

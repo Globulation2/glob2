@@ -37,6 +37,7 @@ struct SkinDownloads::Impl {
     std::unique_ptr<HttpFetch::Fetch> keyRequest;
     std::vector<Entry> entries;
     std::vector<Ready> ready;
+    bool software=false;
     bool failed=false;
     bool refreshEnabled=true;
     std::int64_t nextRefresh=0;
@@ -56,6 +57,7 @@ struct SkinDownloads::Impl {
         // downloads cannot reinstall a team removed by a newer response.
         if(keyRequest || !std::all_of(entries.begin(),entries.end(),[](const auto &e){return e.finished;}))return;
         if(refreshDownloads) {
+            refreshDownloads->setSoftware(software);
             refreshDownloads->poll(now);
             for(auto &entry:refreshDownloads->takeReady())ready.push_back(std::move(entry));
             if(refreshDownloads->done())refreshDownloads.reset();
@@ -138,6 +140,9 @@ SkinDownloads::SkinDownloads(OnlineStorage &storage,std::string origin,std::stri
     } catch(const std::exception &){impl->failed=true;}
 }
 SkinDownloads::~SkinDownloads()=default;
+void SkinDownloads::setSoftware(bool value){impl->software=value;}
+OnlineStorage &SkinDownloads::storage(){return impl->storage;}
+SkinDownloads::FetchStarter SkinDownloads::fetchStarter()const{return impl->fetch;}
 const std::string &SkinDownloads::origin()const{return impl->origin;}
 const std::string &SkinDownloads::matchId()const{return impl->match;}
 void SkinDownloads::poll(std::int64_t now)
@@ -163,6 +168,7 @@ void SkinDownloads::poll(std::int64_t now)
         if(entry.authorization->state()==SkinAuthorization::State::Pending)continue;
         const auto *skin=entry.authorization->skin();
         if(!skin || now>=skin->expiresAt){cancel(entry);continue;}
+        if(p.software) { p.ready.push_back({*skin,{},{}});entry.finished=true;continue; }
         const std::array<std::string,2> hashes{skin->textureHash,skin->materialHash};
         const std::array<std::size_t,2> limits{textureLimit,materialLimit};
         const std::array<const char*,2> kinds{"/texture","/material"};

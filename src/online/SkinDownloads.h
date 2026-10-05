@@ -18,6 +18,9 @@ public:
     SkinDownloads(OnlineStorage &, std::string origin, std::string match,
                   std::vector<Ticket>, FetchStarter fetch=HttpFetch::start, bool refresh=true);
     ~SkinDownloads();
+    void setSoftware(bool value);
+    OnlineStorage &storage();
+    FetchStarter fetchStarter() const;
     void poll(std::int64_t nowSeconds);
     std::vector<Ready> takeReady();
     std::vector<int> takeRemoved();

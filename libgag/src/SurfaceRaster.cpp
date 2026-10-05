@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SurfaceRaster.h>
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <stdexcept>
 #include <vector>
@@ -365,6 +366,44 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 	else
 		nearest(target, source, sourceRect, destination, alpha, isOpaque,
 				blend == BlitBlend::Triangle);
+}
+
+// Skin-only bilinear sampling in premultiplied space, then source-over. Map
+// from the original rectangle even when clipped; never sample adjacent frames.
+void skinBlit(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,SDL_Rect dst,Uint8 opacity)
+{
+    skinBlitFloat(target,source,src,SDL_FRect{float(dst.x),float(dst.y),float(dst.w),float(dst.h)},opacity);
+}
+void skinBlitFloat(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,SDL_FRect dst,Uint8 opacity)
+{
+    if(!target || !source || !opacity || dst.w<=0 || dst.h<=0 || src.w<=0 || src.h<=0)return;
+    if(source->format!=SDL_PIXELFORMAT_ARGB8888 || target->format!=SDL_PIXELFORMAT_ARGB8888)
+        throw std::invalid_argument("Skin sprites require ARGB8888 surfaces");
+    const int left=int(std::ceil(dst.x-.5f)),top=int(std::ceil(dst.y-.5f));
+    const SDL_Rect bounds{left,top,int(std::ceil(dst.x+dst.w-.5f))-left,int(std::ceil(dst.y+dst.h-.5f))-top};
+    SDL_Rect clip,visible;SDL_GetSurfaceClipRect(target,&clip);
+    if(!SDL_GetRectIntersection(&bounds,&clip,&visible))return;
+    if(src.x<0 || src.y<0 || src.x+src.w>source->w || src.y+src.h>source->h)return;
+    check(SDL_LockSurface(source));
+    if(!SDL_LockSurface(target)){SDL_UnlockSurface(source);throw std::runtime_error(SDL_GetError());}
+    for(int y=visible.y;y<visible.y+visible.h;++y)for(int x=visible.x;x<visible.x+visible.w;++x) {
+        const float u=std::clamp((x-dst.x+0.5f)*src.w/dst.w-0.5f,0.f,float(src.w-1));
+        const float v=std::clamp((y-dst.y+0.5f)*src.h/dst.h-0.5f,0.f,float(src.h-1));
+        const int x0=int(u),y0=int(v),x1=std::min(x0+1,src.w-1),y1=std::min(y0+1,src.h-1);
+        const float fx=u-x0,fy=v-y0,weights[]{(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy};
+        const auto pixel=[&](int a,int b){return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(source->pixels)+(src.y+b)*source->pitch)[src.x+a];};
+        const Uint32 samples[]{pixel(x0,y0),pixel(x1,y0),pixel(x0,y1),pixel(x1,y1)};
+        float a=0,r=0,g=0,b=0;
+        for(unsigned i=0;i<4;++i) {
+            const float coverage=float(samples[i]>>24)*weights[i]/255.f;
+            a+=coverage;r+=((samples[i]>>16)&255)*coverage;g+=((samples[i]>>8)&255)*coverage;b+=(samples[i]&255)*coverage;
+        }
+        const float fade=opacity/255.f; a*=fade;r*=fade;g*=fade;b*=fade;
+        auto &out=reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels)+y*target->pitch)[x];
+        const auto channel=[&](float color,unsigned original){return Uint32(std::clamp(std::lround(color+original*(1-a)),0l,255l));};
+        out=(channel(a*255,out>>24)<<24)|(channel(r,(out>>16)&255)<<16)|(channel(g,(out>>8)&255)<<8)|channel(b,out&255);
+    }
+    SDL_UnlockSurface(target);SDL_UnlockSurface(source);
 }
 
 void fill(SDL_Surface *target, SDL_Rect rect, Uint32 color, Uint8 alpha, FillBlend blend)

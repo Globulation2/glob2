@@ -14,6 +14,22 @@
     "swarmMesh"
   ],
   "properties": {
+    "softwareStatus": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
     "id": {
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",

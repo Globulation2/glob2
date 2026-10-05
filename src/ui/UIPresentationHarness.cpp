@@ -478,6 +478,9 @@ void run(const Viewport &viewport)
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 	                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE};
 	glob2test::HeadlessGlobals globals(options);
+	// This sweep advances a synthetic host clock without sleeping. Render every
+	// requested frame so deferred screenshots and visual assertions use that frame.
+	globalContainer->gfx->setTargetRenderFps(0);
 	// This sweep constructs LAN discovery screens, just as Glob2::run does
 	// after network initialization. SDL3_net resolvers require initialized
 	// synchronization even when no connection is made by the fixture.

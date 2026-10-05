@@ -18,16 +18,17 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
-WEBP_VERSION = "1.6.0"
+ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
+WEBP_VERSION = ENCODING["webpVersion"]
 POLICY = "runtime-assets-v1"
-IMAGE_RECIPE = "bundled-images-v3-webp-only"
+IMAGE_RECIPE = ENCODING["recipe"]
 
 
 def image_recipe(lossy=True):
     """Stable encoding identity, also used by browser derivative provenance."""
     return dict(image_recipe=IMAGE_RECIPE, pillow=PILLOW_VERSION, webp=WEBP_VERSION,
-                lossless_quality=75, method=4, lossy=lossy,
-                lossy_quality=90, lossy_method=6, exact=True,
+                lossless_quality=ENCODING["losslessQuality"], method=ENCODING["losslessMethod"], lossy=lossy,
+                lossy_quality=ENCODING["quality"], lossy_method=ENCODING["method"], exact=ENCODING["exact"],
                 conversion="16-bit-rgba-to-renderer-8-bit; reject-other-high-depth")
 
 
