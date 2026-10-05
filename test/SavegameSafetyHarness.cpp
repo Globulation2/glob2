@@ -879,8 +879,10 @@ static void checkReplayImports(GameGUI& gui, const fs::path& directory)
         REQUIRE(writer.isValid());
         writer.advanceStep();
         if (finished) writer.finish();
-        REQUIRE(writer.write(recording.string()));
-        const auto bytes = contents(recording);
+        // Export separately: Windows cannot replace the writer's open recording.
+        const auto exported = directory / (finished ? "exported-finished.replay" : "exported-live.replay");
+        REQUIRE(writer.write(exported.string()));
+        const auto bytes = contents(exported);
         const auto validate = [&](const std::string& name, const std::string& payload) {
             FileImport operation(ApplicationHost::SelectedFile{name,
                 std::vector<unsigned char>(payload.begin(), payload.end())}, "replay");
