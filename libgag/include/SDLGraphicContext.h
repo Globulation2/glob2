@@ -672,6 +672,8 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		//! Maximum supported texture dimension, or zero when no limit is reported.
+		int maximumTextureSize() const;
 		RenderBatch* getRenderBatch() const { return renderBatchEnabled?renderBatch.get():nullptr; }
         void countRenderBatchDraw() { ++drawCalls; }
         // Diagnostic comparison switches use the same context and assets.

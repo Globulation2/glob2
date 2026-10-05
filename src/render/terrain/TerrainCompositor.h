@@ -26,13 +26,12 @@ class Compositor
 {
   public:
 	explicit Compositor(Catalog catalog);
-	static Catalog loadCatalog();
 	const Catalog &catalog() const { return definitions; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale) const;
-	std::uint64_t revision() const { return generation; }
+	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;
 
@@ -52,8 +51,7 @@ class Compositor
 	std::vector<Texture> backgrounds;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
-	std::vector<int> phases;
-	std::uint64_t generation = 1;
-	int resolution = 1, animationTime = 0;
+	std::vector<std::uint64_t> materialRevisions;
+	int resolution = 1;
 };
 } // namespace TerrainVisual

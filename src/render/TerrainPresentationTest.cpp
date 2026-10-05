@@ -9,12 +9,14 @@
 #include <fstream>
 #include "TerrainPresentation.h"
 #include "terrain/TerrainCompositor.h"
+#include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
 #include <SDL3_image/SDL_image.h>
+#include <RenderBackend.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -24,9 +26,109 @@
 #endif
 #include <algorithm>
 #include <cstring>
+#include <cmath>
 
 namespace
 {
+// Preserve real portable rendering while making device limits strict and visible.
+// No test-only limit controls are needed in production rendering code.
+class LimitedTerrainBackend final : public GAGCore::RenderBackend
+{
+	GAGCore::RenderBackend &delegate;
+	void check(SDL_Surface *pixels)
+	{
+		if (!pixels)
+			return;
+		REQUIRE(pixels->w <= limit);
+		REQUIRE(pixels->h <= limit);
+		largestTexture = std::max({largestTexture, pixels->w, pixels->h});
+	}
+
+  public:
+	int limit = 1024, largestTexture = 0;
+	explicit LimitedTerrainBackend(GAGCore::RenderBackend &backend) : delegate(backend) {}
+	int maximumTextureSize() const override { return limit; }
+	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision) override
+	{
+		check(pixels);
+		delegate.prepareTexture(key, pixels, revision);
+	}
+	void blit(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool opaque,
+			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+	{
+		check(pixels);
+		delegate.blit(key, pixels, revision, opaque, src, dst, alpha);
+	}
+	void blitLinear(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+					const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+	{
+		check(pixels);
+		delegate.blitLinear(key, pixels, revision, src, dst, alpha);
+	}
+	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
+				   std::uint64_t revision) override
+	{
+		check(pixels);
+		delegate.triangles(vertices, key, pixels, revision);
+	}
+	void fill(const SDL_FRect &rect, SDL_Color color) override { delegate.fill(rect, color); }
+	void clip(const SDL_Rect *rect) override { delegate.clip(rect); }
+	void transform(float scale, float x, float y, const SDL_Rect *bounds) override
+	{
+		delegate.transform(scale, x, y, bounds);
+	}
+	void screenTriangles(std::span<const SDL_Vertex> vertices) override
+	{
+		delegate.screenTriangles(vertices);
+	}
+	void forget(const void *key) override { delegate.forget(key); }
+	void reset() override { delegate.reset(); }
+	void present() override { delegate.present(); }
+	void flush() override { delegate.flush(); }
+	void logicalSize(int width, int height) override { delegate.logicalSize(width, height); }
+	void nativeLogicalSize(int width, int height) override
+	{
+		delegate.nativeLogicalSize(width, height);
+	}
+	void bindTarget(SDL_Surface *surface) override { delegate.bindTarget(surface); }
+	SDL_Surface *capture() override { return delegate.capture(); }
+	void outputSize(int &width, int &height) override { delegate.outputSize(width, height); }
+	GAGCore::RenderOperations operations() const override { return delegate.operations(); }
+};
+class ScopedTerrainDeviceLimit
+{
+	GAGCore::GraphicContext &context;
+	std::unique_ptr<GAGCore::RenderBackend> original;
+	GAGCore::RenderBackend *previous;
+
+  public:
+	explicit ScopedTerrainDeviceLimit(GAGCore::GraphicContext &gfx)
+		: context(gfx), original(std::move(gfx.portableRenderer)), previous(gfx.renderer)
+	{
+		REQUIRE(original);
+		// Construct before publishing the wrapper so failure restores ownership.
+		try
+		{
+			context.portableRenderer = std::make_unique<LimitedTerrainBackend>(*original);
+			context.renderer = context.portableRenderer.get();
+		}
+		catch (...)
+		{
+			context.portableRenderer = std::move(original);
+			throw;
+		}
+	}
+	~ScopedTerrainDeviceLimit()
+	{
+		context.portableRenderer.reset();
+		context.portableRenderer = std::move(original);
+		context.renderer = previous;
+	}
+	LimitedTerrainBackend &backend()
+	{
+		return static_cast<LimitedTerrainBackend &>(*context.portableRenderer);
+	}
+};
 std::vector<Uint8> terrainPixels(bool gpu)
 {
 	auto *gfx = globalContainer->gfx;
@@ -51,20 +153,26 @@ std::vector<Uint8> terrainPixels(bool gpu)
 	SDL_DestroySurface(surface);
 	return result;
 }
+std::filesystem::path highResolutionFixture()
+{
+	const auto directory = glob2test::artifactDir() / "synthetic-hd";
+	std::filesystem::create_directories(directory);
+	std::filesystem::copy_file(
+		glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
+		directory / "grass.webp", std::filesystem::copy_options::overwrite_existing);
+	std::ofstream frames(directory / "frames.txt");
+	frames << "GLOB2_HIGHRES 1\n";
+	for (int variant = 0; variant < 16; ++variant)
+		frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+	return directory;
+}
+
 void layeredCache(bool gpu, bool hd = false)
 {
 	std::optional<glob2test::ScopedEnvironment> hdPath;
 	if (hd)
 	{
-		const auto directory = glob2test::artifactDir() / "synthetic-hd";
-		std::filesystem::create_directories(directory);
-		std::filesystem::copy_file(
-			glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
-			directory / "grass.webp", std::filesystem::copy_options::overwrite_existing);
-		std::ofstream frames(directory / "frames.txt");
-		frames << "GLOB2_HIGHRES 1\nterrain0 32 32 4 grass.webp -\n";
-		frames.close();
-		hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
+		hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR", highResolutionFixture().string().c_str());
 	}
 	glob2test::HeadlessGlobals globals(
 		{.display = true,
@@ -161,6 +269,32 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
+	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto catalog = TerrainVisual::loadCatalog();
+		auto &water = catalog.materials[catalog.bindings.at("water")];
+		water.minimap = {1, 2, 3};
+		water.preview = {4, 5, 6};
+		catalog.bindings["grass"] = catalog.bindings.at("ice");
+		const auto minimap = TerrainVisual::minimapPalette(catalog);
+		const auto overview = TerrainVisual::overviewPalette(catalog);
+		const auto check = [](TerrainColor actual, TerrainColor expected)
+		{
+			CHECK(actual.r == expected.r);
+			CHECK(actual.g == expected.g);
+			CHECK(actual.b == expected.b);
+		};
+		check(minimap[WATER], {1, 2, 3});
+		check(overview[WATER], {4, 5, 6});
+		check(minimap[GRASS], minimap[ICE]);
+		check(overview[GRASS], overview[ICE]);
+		for (auto shore : {GRASS_SAND_SHORE, SAND_WATER_SHORE})
+		{
+			check(minimap[shore], terrainPresentation(shore).minimap);
+			check(overview[shore], terrainPresentation(shore).overview);
+		}
+	}
 	TEST_CASE("whole-cell layers preserve software terrain caching [display][artifacts]")
 	{
 		layeredCache(false);
@@ -176,46 +310,181 @@ TEST_SUITE("TerrainPresentation")
 		layeredCache(true, true);
 	}
 #endif
-	TEST_CASE("tile fallback matches cached pages when a map cannot admit a page [display]")
+	TEST_CASE(
+		"streaming pages match cached fractional pixels across wraps and small maps [display]")
 	{
 		for (bool gpu : {false, true})
-		{
+			for (bool hd : {false, true})
+				for (bool smallMap : {false, true})
+				{
 #ifndef HAVE_OPENGL
-			if (gpu) continue;
+					if (gpu)
+						continue;
 #endif
-			glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
-				.screenFlags = gpu ? Uint32(GAGCore::GraphicContext::USEGPU) : 0u});
-			glob2test::HeadlessGame fixture({.wDec = 3, .hDec = 3, .discovered = true});
-			auto &map = fixture.game.map;
-			const auto populate = [&] {
-				for (int y = 0; y < 8; ++y)
-					for (int x = 0; x < 8; ++x)
-						map.setCellTerrain(x, y, x < 3 ? WATER :
-							(y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
-			};
-			populate();
-			SceneMap scene;
-			scene.extract(map);
+					if (!gpu && hd)
+						continue; // Software terrain uses native source pixels.
+					CAPTURE(gpu);
+					CAPTURE(hd);
+					CAPTURE(smallMap);
+					std::optional<glob2test::ScopedEnvironment> hdPath;
+					if (hd)
+						hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR",
+									   highResolutionFixture().string().c_str());
+					glob2test::HeadlessGlobals globals(
+						{.display = true,
+						 .width = 256,
+						 .height = 256,
+						 .screenFlags = gpu ? Uint32(GAGCore::GraphicContext::USEGPU) : 0u});
+					glob2test::HeadlessGame fixture(
+						{.wDec = smallMap ? 3 : 5, .hDec = smallMap ? 3 : 5, .discovered = true});
+					auto &map = fixture.game.map;
+					for (int y = 0; y < map.getH(); ++y)
+						for (int x = 0; x < map.getW(); ++x)
+							map.setCellTerrain(
+								x, y,
+								x < 3 ? WATER : (y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
+					GAGCore::Sprite::setHighResolution(hd);
+					SceneMap scene;
+					scene.extract(map);
+					const int vx = map.getW() - 3, vy = map.getH() - 2;
+					const auto begin = [&]
+					{
+						globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+						globals->gfx->beginMapTransform(.73f, .375f, .625f, 0, 0, 256, 256);
+					};
+					SoftwareTerrainCache cache;
+					begin();
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, vx, vy,
+										  fixture.team->me, true));
+					cache.draw(*globals->gfx);
+					globals->gfx->endMapTransform();
+					const auto expected = terrainPixels(gpu);
+					const auto gpuBefore = GAGCore::DrawableSurface::allocatedTextureBytes();
+					begin();
+					fixture.game.drawMapTerrain(0, 0, 7, 7, vx, vy, 0, Game::DRAW_WHOLE_MAP, scene);
+					globals->gfx->endMapTransform();
+					CHECK(terrainPixels(gpu) == expected);
+					CHECK(GAGCore::DrawableSurface::allocatedTextureBytes() == gpuBefore);
+				}
+	}
+	TEST_CASE("emergency tiles remain deterministic and cover opaque fractional terrain [display]")
+	{
+		for (bool gpu : {false, true})
+			for (bool hd : {false, true})
+			{
+#ifndef HAVE_OPENGL
+				if (gpu)
+					continue;
+#endif
+				if (!gpu && hd)
+					continue;
+				CAPTURE(gpu);
+				CAPTURE(hd);
+				std::optional<glob2test::ScopedEnvironment> hdPath;
+				if (hd)
+					hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR",
+								   highResolutionFixture().string().c_str());
+				glob2test::HeadlessGlobals globals(
+					{.display = true,
+					 .width = 256,
+					 .height = 256,
+					 .screenFlags = gpu ? Uint32(GAGCore::GraphicContext::USEGPU) : 0u});
+				glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+				for (int y = 0; y < 32; ++y)
+					for (int x = 0; x < 32; ++x)
+						fixture.game.map.setCellTerrain(
+							x, y, y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS));
+				GAGCore::Sprite::setHighResolution(hd);
+				SceneMap scene;
+				scene.extract(fixture.game.map);
+				const auto checksum = fixture.checksum();
+				const auto draw = [&](float zoom, bool emergency)
+				{
+					globals->gfx->drawFilledRect(0, 0, 256, 256, 251, 3, 249);
+					globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+					if (emergency)
+						SoftwareTerrainCache::drawUncached(
+							scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true, 0,
+							SoftwareTerrainCache::FallbackMode::EmergencyTiles);
+					else
+					{
+						SoftwareTerrainCache cache;
+						REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0,
+											  fixture.team->me, true));
+						cache.draw(*globals->gfx);
+					}
+					globals->gfx->endMapTransform();
+					return terrainPixels(gpu);
+				};
+				if (!hd)
+					CHECK(draw(1.f, true) == draw(1.f, false));
+				const auto pixels = draw(.73f, true);
+				CHECK(pixels == draw(.73f, true));
+				// Full opacity must hide the conspicuous clear color at every shared
+				// tile edge. Do not confuse this invariant with equal resampling phases:
+				// emergency tile mip/nearest sampling differs from page sampling.
+				const int side = int(std::sqrt(pixels.size() / 4));
+				REQUIRE(side * side * 4 == int(pixels.size()));
+				unsigned holes = 0;
+				for (int y = 10 * side / 256; y < 170 * side / 256; ++y)
+					for (int x = 10 * side / 256; x < 170 * side / 256; ++x)
+					{
+						const int row = gpu ? side - 1 - y : y;
+						const auto at = (row * side + x) * 4;
+						holes += pixels[at] == 251 && pixels[at + 1] == 3 && pixels[at + 2] == 249;
+					}
+				CHECK(holes == 0);
+				CHECK(fixture.checksum() == checksum);
+			}
+	}
+	TEST_CASE(
+		"portable texture limits reduce HD pages and admit only fitting fallback tiles [display]")
+	{
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
+											highResolutionFixture().string().c_str());
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 256,
+			 .height = 256,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		GAGCore::Sprite::setHighResolution(true);
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		ScopedTerrainDeviceLimit device(*globals->gfx);
+		auto &backend = device.backend();
+		for (int limit : {1024, 512, 128, 32})
+		{
+			CAPTURE(limit);
+			backend.limit = limit;
+			backend.largestTexture = 0;
+			CHECK(globals->gfx->maximumTextureSize() == limit);
 			SoftwareTerrainCache cache;
-			CHECK_FALSE(cache.prepare(scene, *globals->terrain, 1, 1, 6, 6, 0, 0,
-				fixture.team->me, true));
-			const auto clear = [&] {
-				globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
-			};
-			clear();
-			fixture.game.drawMapTerrain(1, 1, 6, 6, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
-			const auto fallback = terrainPixels(gpu);
-			// Expand only the unseen map. The visible labels, canonical positions and
-			// their neighbors are identical, but now normal page admission succeeds.
-			map.setSize(5, 5, GRASS);
-			populate();
-			scene.extract(map);
-			clear();
-			REQUIRE(cache.prepare(scene, *globals->terrain, 1, 1, 6, 6, 0, 0,
-				fixture.team->me, true));
-			cache.draw(*globals->gfx);
-			CHECK(terrainPixels(gpu) == fallback);
+			const bool admitted =
+				cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true);
+			CHECK(globals->terrainCompositor().scale() == 4);
+			CHECK(admitted == (limit >= SoftwareTerrainCache::ChunkPixels));
+			if (admitted)
+			{
+				CHECK(cache.resolution == limit / SoftwareTerrainCache::ChunkPixels);
+				cache.draw(*globals->gfx);
+				CHECK(backend.largestTexture == limit);
+			}
+			else
+			{
+				CHECK(cache.bytes() == 0);
+				SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 7, 7, 0, 0,
+												   fixture.team->me, true);
+				CHECK(backend.largestTexture == 32);
+			}
+			globals->gfx->renderer->flush();
 		}
+		backend.limit = 16;
+		backend.largestTexture = 0;
+		CHECK_THROWS_AS(SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 7, 7, 0,
+														   0, fixture.team->me, true),
+						std::runtime_error);
+		CHECK(backend.largestTexture == 0);
 	}
 	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
 	{

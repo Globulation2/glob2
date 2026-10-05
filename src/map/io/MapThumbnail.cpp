@@ -164,7 +164,7 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 	const int mw = map.getW(), mh = map.getH();
 	if (mw <= 0 || mh <= 0 || mw > 32767 || mh > 32767)
 		return;
-    const auto palette=TerrainVisual::previewPalette(TerrainVisual::loadCatalog());
+	const auto palette = TerrainVisual::minimapPalette(TerrainVisual::loadCatalog());
 	const int longest = std::max(mw, mh), resolution = std::min(MaxResolution, longest);
 	auto result = std::make_shared<Image>();
 	result->width = std::max(1, mw * resolution / longest);

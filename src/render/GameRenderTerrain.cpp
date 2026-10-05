@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <new>
 #include "terrain/TerrainCompositor.h"
+#include "terrain/TerrainCatalogIO.h"
 #include "SoftwareTerrainCache.h"
 
 namespace
@@ -130,27 +131,9 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    auto *gfx=globalContainer->gfx;
-    // A disposable page cache gives uncached draws identical chunk sampling,
-    // including HD mips. Under memory/texture limits, use one small tile below.
-    SoftwareTerrainCache transient;
-    if(transient.prepare(sceneMap,*globalContainer->terrain,left,top,right,bot,viewportX,viewportY,
-                         visibleTeams,drawOptions & DRAW_WHOLE_MAP,animationTime)) {
-        transient.draw(*gfx);return;
-    }
-    auto &compositor=globalContainer->terrainCompositor();
-    compositor.prepare(bool(gfx->getOptionFlags() & (GraphicContext::USEGPU|GraphicContext::PORTABLEGPU)),animationTime);
-    const int scale=compositor.scale();
-    auto *pixels=SDL_CreateSurface(32*scale,32*scale,SDL_PIXELFORMAT_ARGB8888);
-    if(!pixels)throw std::bad_alloc();
-    TerrainVisual::Surface tile(pixels,scale>1);
-    for(int y=top;y<=bot;++y)for(int x=left;x<=right;++x)
-        if((drawOptions & DRAW_WHOLE_MAP) || sceneMap.isMapPartiallyDiscovered(
-            x+viewportX-1,y+viewportY-1,x+viewportX+1,y+viewportY+1,visibleTeams)) {
-            compositor.compose(compositor.describe(sceneMap,x+viewportX,y+viewportY),tile.getSDLSurface(),0,0,scale);
-            tile.markPixelsChanged();
-            gfx->drawSurface(x*32,y*32,32,32,&tile);
-        }
+	SoftwareTerrainCache::drawUncached(sceneMap, *globalContainer->terrain, left, top, right, bot,
+									   viewportX, viewportY, visibleTeams,
+									   drawOptions & DRAW_WHOLE_MAP, animationTime);
 }
 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
@@ -206,17 +189,14 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	// Averages of the lit terrain artwork, indexed by undermap type (water,
-	// sand, grass), so the cross-fade from the detailed tiles keeps its hue.
-
+	// Resolve palette bindings once per draw, including the two legacy shore colors.
+	const auto palette =
+		TerrainVisual::overviewPalette(globalContainer->terrainCompositor().catalog());
 	const auto colorOf = [&](int x, int y) -> Uint32
 	{
-		const auto &catalog=globalContainer->terrainCompositor().catalog();
-        const auto type=sceneMap.presentationTypeAt(x+viewportX,y+viewportY);
-        const auto key=terrainPresentation(type).name;
-        const auto found=catalog.bindings.find(key);
-        const auto color=found!=catalog.bindings.end()?catalog.materials[found->second].preview:std::array<unsigned char,3>{106,140,39};
-        int r=color[0], g=color[1], b=color[2];
+		const auto type = sceneMap.presentationTypeAt(x + viewportX, y + viewportY);
+		const auto color = palette[unsigned(type)];
+		int r = color.r, g = color.g, b = color.b;
 		const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 		if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 			sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))

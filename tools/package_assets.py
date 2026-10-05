@@ -471,6 +471,42 @@ def verify_highres_atlases(root):
                 raise ValueError("Source atlas frame placement differs: " + str(frame_path))
 
 
+def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets):
+    """Attest to the pixels Sprite will load, including encoded sheet frames.
+
+    Original PNG hashes remain provenance; decoded runtime fingerprints distinguish
+    valid lossy exports from stale packs and user artwork overrides at startup.
+    """
+    from PIL import Image
+
+    fingerprints = {}
+    for sprite, plan in sheets.items():
+        for sheet in plan:
+            relevant = [
+                (i, frame.relative_to(root).as_posix())
+                for i, frame in enumerate(sheet["frames"])
+                if frame.relative_to(root).as_posix() in sources
+            ]
+            if not relevant:
+                continue
+            path = stage / Path(sprite).parent / Path(sheet["name"]).with_suffix(".webp")
+            with Image.open(path) as decoded:
+                image = decoded.convert("RGBA")
+            width, height = sheet["size"]
+            for index, name in relevant:
+                x, y = index % SHEET_COLUMNS * width, index // SHEET_COLUMNS * height
+                fingerprints[name] = compiler.pixel_fingerprint(
+                    image.crop((x, y, x + width, y + height))
+                )
+    for name in sources:
+        if name not in fingerprints:
+            path = stage / name
+            encoded = path.with_suffix(".webp")
+            with Image.open(encoded if encoded.exists() else path) as image:
+                fingerprints[name] = compiler.pixel_fingerprint(image)
+    return fingerprints
+
+
 def _export_assets(
     root,
     output,
@@ -644,7 +680,12 @@ def _export_assets(
             if compiled:
                 with tempfile.TemporaryDirectory(prefix="terrain-pack-", dir=output.parent) as temporary_pack:
                     pack = Path(temporary_pack)
-                    compiler.compile_tileset(document, pack, root=root)
+                    fingerprints = terrain_runtime_fingerprints(
+                        compiler, compiler.validate(document, root), root, stage, sheets
+                    )
+                    compiler.compile_tileset(
+                        document, pack, root=root, runtime_fingerprints=fingerprints
+                    )
                     for generated in sorted(pack.iterdir()):
                         destination = Path(compiled).parent / generated.name
                         if destination in destinations:

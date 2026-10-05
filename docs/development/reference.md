@@ -1353,25 +1353,32 @@ existing game rendering entry point. Presentation state a view keeps between fra
 animation phases, the cloud field, the overlay scratch buffer and the software terrain
 cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
 the simulation neither reads nor writes it and each view animates independently. The
-terrain cache is transient presentation state: 16×16 tile chunks, a 32 MiB storage
-reservation including pixels, layer descriptors and borrowed views, with
-least-recently-used eviction.
-The cache is used during transformed software passes. Ordinary native drawing keeps
-its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
-transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
-chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
-over transparent chunk holes. Views are destroyed before their backing chunk.
-Each chunk validates canonical terrain IDs, material-owned layer frames, animation
-phases, the existing discovery decisions and source content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
-are detected during preparation. Resources, actors, fog and overlays keep their existing
+terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
+software storage reservation including pixels, recipes and borrowed views, and a
+separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native and
+HD rendering share CPU composition; GPU backends upload the resulting pages.
+The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
+boundary resolver, source preparation, budgets and asset pipeline.
+
+Within a software page, adjacent opaque tiles become borrowed surface views over
+the raw pixels. Coastlines retain individual source blits, avoiding repeated alpha
+scans over transparent holes. Views are destroyed before their backing page.
+Each page validates the canonical terrain neighborhood, discovery decisions and
+revisions of the materials its recipes use. Animation or source changes in unrelated
+materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
+animated water once. Map replacement (a new `Map::identity()`) clears the cache;
+editor terrain changes, wrapped neighbors and visible-team changes are detected
+during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;
 partially covered tiles retain their original source mapping and animation phase.
 Coverage includes the original water pass's overshoot outside the viewport, which a
 transform can bring onscreen. Fragmented coverage falls back to the full pass after
-64 rectangles. Oversized working sets and allocation failures use
-uncached terrain. None of these caches enter saves, simulation checksums or orders.
+64 rectangles. Oversized working sets stream one temporary canonical page at a time
+at the same sampling density as the full view. If a page cannot fit the device or
+allocation fails, an emergency composed-tile path preserves coverage but can differ
+in fractional resampling and HD mip filtering. None of these caches enter saves,
+simulation checksums or orders.
 
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
@@ -1435,8 +1442,10 @@ python3 tools/software_render_benchmark.py \
 ```
 
 The runner records raw logs/captures, exact commands and CPU distributions for native,
-half, double and fractional-offset scenarios. Use `--no-terrain-cache` for the primitive
-phase; compare the same binary with `--baseline-no-terrain-cache` to isolate caching.
+half, double and fractional-offset scenarios. `--no-terrain-cache` now streams
+composed pages without retaining them between frames; it measures repeated
+composition and upload, not the old sprite-only terrain primitives. Compare the
+same binary with `--baseline-no-terrain-cache` to isolate retained-page caching.
 Use `--present --visible --scenario native --baseline-preserve-frame` with the same
 binary to measure the retention-copy savings. `PROFILE_PRESERVE_FRAME=1` begins each
 benchmark frame in preserve-content mode before the full redraw. Keep other heavy

@@ -1,22 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
 #include "TerrainCompiledPack.h"
-#include "TerrainCatalogIO.h"
+#include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
-#include <FileManager.h>
-#include <nlohmann/json.hpp>
-#include <fstream>
 #include <algorithm>
 #include <stdexcept>
 #include <cstring>
 
 namespace TerrainVisual
 {
-Catalog Compositor::loadCatalog()
-{
-	return TerrainVisual::loadCatalog();
-}
 Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 {
 	pack = CompiledPack::load(definitions);
@@ -60,7 +53,7 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 		backgrounds.emplace_back();
 		sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
-		phases.push_back(-1);
+		materialRevisions.push_back(0);
 	}
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
@@ -100,17 +93,13 @@ std::size_t Compositor::sourceBytes() const
 }
 void Compositor::prepare(bool hd, int time)
 {
-	animationTime = time;
 	int nextResolution = 1;
-	bool changed = false;
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
 		if (m.ocean)
 			continue;
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
-		changed |= phases[id] != phase;
-		phases[id] = phase;
 		bool refresh = false;
 		for (unsigned i = 0; i < m.variants.size(); ++i)
 		{
@@ -144,7 +133,7 @@ void Compositor::prepare(bool hd, int time)
 		}
 		if (!refresh)
 			continue;
-		changed = true;
+		++materialRevisions[id];
 		bool packaged = pack && !backdropSprites[id];
 		if (packaged)
 			for (const auto &variant : m.variants)
@@ -155,7 +144,8 @@ void Compositor::prepare(bool hd, int time)
 				packaged &= source == sprites[id]->nativeFrame(frame) &&
 							clean != cleanSources.end() &&
 							clean->second == source->contentRevision() &&
-							pack->contains(m.sprite + std::to_string(frame) + ".png");
+							pack->matches(m.sprite + std::to_string(frame) + ".png",
+										  source->getSDLSurface());
 			}
 		for (unsigned i = 0; i < m.variants.size(); ++i)
 		{
@@ -193,7 +183,8 @@ void Compositor::prepare(bool hd, int time)
 						p[3] = (a + 127) / 255;
 					}
 		// One periodic master boundary per material, not a different edge for
-		// each variant. Keep interior detail and original alpha intact.
+		// each variant. Blend premultiplied color and alpha together so
+		// translucent variants cannot reintroduce rectangular seams.
 		const auto master = textures[id][0];
 		for (auto &t : textures[id])
 			for (int y = 0; y < t.size; ++y)
@@ -208,16 +199,17 @@ void Compositor::prepare(bool hd, int time)
 					const int xx = std::min(mx, master.size - 1 - mx),
 							  yy = std::min(my, master.size - 1 - my);
 					const auto &p = master.pixels[yy * master.size + xx];
+					auto &destination = t.pixels[y * t.size + x];
+					const unsigned alpha = p[3] * (band - distance) + destination[3] * distance;
 					for (int k = 0; k < 3; ++k)
-						t.pixels[y * t.size + x][k] =
-							(p[k] * (band - distance) + t.pixels[y * t.size + x][k] * distance) /
-							band;
+						destination[k] = alpha ? (p[k] * p[3] * (band - distance) +
+												  destination[k] * destination[3] * distance) /
+													 alpha
+											   : 0;
+					destination[3] = alpha / band;
 				}
 	}
-	changed |= resolution != nextResolution;
 	resolution = nextResolution;
-	if (changed)
-		++generation;
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -249,17 +241,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	for (auto id : r.samples)
 		if (!selected[id] && !definitions.materials[id].ocean)
 		{
-			const auto &m = definitions.materials[id];
-			unsigned n = hash(r.x, r.y, m.salt) % m.totalWeight;
-			for (unsigned i = 0; i < m.variants.size(); ++i)
-			{
-				if (n < m.variants[i].weight)
-				{
-					selected[id] = &textures[id][i];
-					break;
-				}
-				n -= m.variants[i].weight;
-			}
+			selected[id] = &textures[id][definitions.variantIndex(id, r.x, r.y)];
 		}
 	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
 									 [&](auto id) { return id == r.samples[0]; });
@@ -286,11 +268,11 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 		return;
 	}
+	const PreparedCoverage prepared(definitions, r);
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x)
 		{
-			const auto mask =
-				coverage(definitions, r, (x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			const auto mask = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
 			std::uint64_t rgb[3] = {};
 			unsigned alpha = 0;
 			for (int i = 0; i < 4; ++i)

@@ -26,6 +26,8 @@ inline constexpr bool terrainUsesLegacyCorners(TerrainType type)
 {
 	return terrainCompatibility(type).legacyCorners;
 }
+// Historical "visual" names below select serialized frames during map authoring.
+// Renderer-only variation must use Catalog::variantIndex instead of these helpers.
 inline constexpr unsigned terrainVisualHash(int x, int y)
 {
 	std::uint32_t h = std::uint32_t(x) * 73856093u ^ std::uint32_t(y) * 19349663u;

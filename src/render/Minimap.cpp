@@ -272,7 +272,8 @@ void Minimap::refreshPixelRows(int start, int end, int localteam)
 void Minimap::computeColors(int row, int localTeam)
 {
 	if (noX) return;
-    const auto palette=TerrainVisual::previewPalette(globalContainer->terrainCompositor().catalog());
+	const auto palette =
+		TerrainVisual::minimapPalette(globalContainer->terrainCompositor().catalog());
 
 	assert(localTeam>=0);
 	assert(localTeam<Team::MAX_COUNT);

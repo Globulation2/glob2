@@ -1,8 +1,3 @@
-#include "render/terrain/TerrainCompositor.h"
-#include "TerrainPresentation.h"
-#ifndef __EMSCRIPTEN__
-#include <SDL3_net/SDL_net.h>
-#endif
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -18,6 +13,9 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include "TerrainPresentation.h"
+#include "render/terrain/TerrainCatalogIO.h"
+#include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
 #include "IntBuildingType.h"
 #include "KeyboardManager.h"
@@ -118,7 +116,7 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
-    terrainCompositor_.reset();
+	terrainCompositor_.reset();
 
 	// SDL_net owns resolver threads and conditions. Join them before the
 	// graphics backend calls SDL_Quit and destroys SDL thread resources.
@@ -297,9 +295,9 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	// load terrain data
 	if (!terrain)
 		terrain = sprite("data/gfx/terrain");
-    terrainCompositor(); // Validate all registered material sources before drawing.
-    terrainWater = sprite(TerrainOceanBackdrop.sprite);
-    if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
+	terrainCompositor(); // Validate all registered material sources before drawing.
+	terrainWater = sprite(TerrainOceanBackdrop.sprite);
+	if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
         throw std::runtime_error("Terrain ocean backdrop has missing frames");
     }
     for(int f=TerrainOceanBackdrop.firstFrame;f<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames;++f) {
@@ -356,12 +354,14 @@ void GlobalContainer::requestGameGraphics()
         "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
-    for (const auto &material : TerrainVisual::Compositor::loadCatalog().materials) {
-        Toolkit::requestSprite(material.sprite);
-        if(!material.backdrop.sprite.empty())Toolkit::requestSprite(material.backdrop.sprite);
-    }
-    Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
-    for (size_t i = 0; i < buildingsTypes.size(); ++i) {
+	for (const auto &material : TerrainVisual::loadCatalog().materials)
+	{
+		Toolkit::requestSprite(material.sprite);
+		if (!material.backdrop.sprite.empty())
+			Toolkit::requestSprite(material.backdrop.sprite);
+	}
+	Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
+	for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);
         if (type->type == "null") continue;
         Toolkit::requestSprite(type->gameSprite);
@@ -461,7 +461,10 @@ void GlobalContainer::loadOffscreenGraphics()
 	if (!gameGraphics) loadGameGraphics(false);
 }
 
-TerrainVisual::Compositor &GlobalContainer::terrainCompositor() {
-    if (!terrainCompositor_) terrainCompositor_=std::make_unique<TerrainVisual::Compositor>(TerrainVisual::Compositor::loadCatalog());
-    return *terrainCompositor_;
+TerrainVisual::Compositor &GlobalContainer::terrainCompositor()
+{
+	if (!terrainCompositor_)
+		terrainCompositor_ =
+			std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
+	return *terrainCompositor_;
 }

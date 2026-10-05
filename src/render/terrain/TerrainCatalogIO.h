@@ -4,7 +4,9 @@
 #include "TerrainPresentation.h"
 namespace TerrainVisual
 {
-// Catalog and preview metadata load without creating sprites or a graphics context.
+// Catalog and palette metadata load without creating sprites or a graphics context.
 Catalog loadCatalog();
-std::array<TerrainColor, TERRAIN_COUNT> previewPalette(const Catalog &);
+using TerrainPalette = std::array<TerrainColor, TERRAIN_COUNT>;
+TerrainPalette minimapPalette(const Catalog &);
+TerrainPalette overviewPalette(const Catalog &);
 } // namespace TerrainVisual

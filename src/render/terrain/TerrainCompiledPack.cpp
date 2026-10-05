@@ -8,8 +8,25 @@
 #include <fstream>
 #include <stdexcept>
 #include <cstring>
+#include <charconv>
 namespace TerrainVisual
 {
+namespace
+{
+std::optional<std::uint64_t> parseFingerprint(const nlohmann::json &frame)
+{
+	// Old development packs have no attestation. Their sources remain usable.
+	if (!frame.contains("native_rgba_fnv1a64"))
+		return std::nullopt;
+	const auto text = frame.at("native_rgba_fnv1a64").get<std::string>();
+	std::uint64_t result = 0;
+	const auto parsed = std::from_chars(text.data(), text.data() + text.size(), result, 16);
+	if (text.size() != 16 || parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size())
+		throw std::runtime_error("Invalid compiled terrain source fingerprint");
+	return result;
+}
+} // namespace
+
 std::shared_ptr<CompiledPack> CompiledPack::load(const Catalog &catalog)
 {
 	if (catalog.compiledPack.empty())
@@ -45,11 +62,33 @@ std::shared_ptr<CompiledPack> CompiledPack::load(const Catalog &catalog)
 		if (page >= result->pages.size() || rect.w != 32 || rect.h != 32 || rect.x < 0 ||
 			rect.y < 0 || rect.x > result->pages[page].width - 32 ||
 			rect.y > result->pages[page].height - 32 ||
-			!result->frames.emplace(source, Frame{page, rect}).second)
+			!result->frames.emplace(source, Frame{page, rect, parseFingerprint(f)}).second)
 			throw std::runtime_error("Invalid compiled terrain frame");
 	}
 	return result;
 }
+bool CompiledPack::matches(const std::string &source, SDL_Surface *native) const
+{
+	const auto frame = frames.find(source);
+	if (frame == frames.end() || !frame->second.nativeFingerprint || !native || native->w != 32 ||
+		native->h != 32)
+		return false;
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+		SDL_ConvertSurface(native, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+	if (!rgba)
+		throw std::bad_alloc();
+	// Explicit byte order and fixed-width arithmetic match the asset compiler;
+	// pitch padding is excluded. This is a cache identity, not a security hash.
+	std::uint64_t fingerprint = 14695981039346656037ull;
+	for (int y = 0; y < rgba->h; ++y)
+	{
+		const auto *row = static_cast<const unsigned char *>(rgba->pixels) + y * rgba->pitch;
+		for (int x = 0; x < rgba->w * 4; ++x)
+			fingerprint = (fingerprint ^ row[x]) * 1099511628211ull;
+	}
+	return fingerprint == *frame->second.nativeFingerprint;
+}
+
 void CompiledPack::read(const std::string &source,
 						std::vector<std::array<unsigned char, 4>> &pixels)
 {

@@ -16,20 +16,36 @@ Catalog loadCatalog()
 		throw std::runtime_error("Cannot read data/terrain/tileset.json");
 	return Catalog::parse(nlohmann::json::parse(*input));
 }
-std::array<TerrainColor, TERRAIN_COUNT> previewPalette(const Catalog &catalog)
+namespace
 {
-	std::array<TerrainColor, TERRAIN_COUNT> result{};
+// Legacy shoreline identities need not have catalog bindings. Keep their distinct
+// semantic colors instead of treating both shore profiles as grass/sand.
+TerrainPalette palette(const Catalog &catalog, bool overview)
+{
+	TerrainPalette result{};
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
 		const auto &semantic = terrainPresentation(TerrainType(type));
-		result[type] = semantic.preview;
+		result[type] = overview ? semantic.overview : semantic.minimap;
 		const auto binding = catalog.bindings.find(semantic.name);
 		if (binding != catalog.bindings.end())
 		{
-			const auto &color = catalog.materials[binding->second].minimap;
+			const auto &material = catalog.materials[binding->second];
+			const auto &color = overview ? material.preview : material.minimap;
 			result[type] = {color[0], color[1], color[2]};
 		}
 	}
 	return result;
+}
+} // namespace
+
+TerrainPalette minimapPalette(const Catalog &catalog)
+{
+	return palette(catalog, false);
+}
+
+TerrainPalette overviewPalette(const Catalog &catalog)
+{
+	return palette(catalog, true);
 }
 } // namespace TerrainVisual

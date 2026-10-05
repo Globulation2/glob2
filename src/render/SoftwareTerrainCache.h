@@ -35,12 +35,15 @@ class SoftwareTerrainCache
 		std::unique_ptr<GAGCore::DrawableSurface> image;
 		std::vector<OpaqueRun> opaqueRuns;
 		bool valid = false;
-		std::uint64_t used = 0, revision = 0;
+		// Only materials present in discovered recipes invalidate this page.
+		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
+		std::uint64_t used = 0;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
 		ChunkTiles * ChunkTiles *
-			(sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface));
+			(sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface) +
+			 16 * sizeof(std::pair<TerrainVisual::MaterialId, std::uint64_t>));
 	struct Copy
 	{
 		Chunk *chunk;
@@ -48,6 +51,9 @@ class SoftwareTerrainCache
 	};
 
   private:
+	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
+							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
+							 int animationTime, int preferredResolution);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
@@ -56,6 +62,18 @@ class SoftwareTerrainCache
 	bool gpu = false;
 
   public:
+	enum class FallbackMode
+	{
+		StreamPages,
+		// Same coverage geometry, but fractional sampling and HD mip neighborhoods
+		// can differ from pages. Requires only one reusable native/HD tile.
+		EmergencyTiles
+	};
+	// Stream the same canonical pages as a full-view cache, with at most one
+	// page alive. EmergencyTiles is explicit for diagnostics and severe limits.
+	static void drawUncached(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
+							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
+							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages);
 	bool enabled = true;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
 				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);

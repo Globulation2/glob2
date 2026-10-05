@@ -30,6 +30,21 @@
 
 namespace GAGCore
 {
+int GraphicContext::maximumTextureSize() const
+{
+	if (portableRenderer)
+		return portableRenderer->maximumTextureSize();
+#ifdef HAVE_OPENGL
+	if (optionFlags & USEGPU)
+	{
+		GLint limit = 0;
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &limit);
+		return limit;
+	}
+#endif
+	return 0;
+}
+
 	// Storage for the static globals declared in graphic_context_private.h.
 	GraphicContext *_gc = NULL;
 	SDL_PixelFormatDetails _glFormat = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);

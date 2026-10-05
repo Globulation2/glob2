@@ -17,34 +17,73 @@ ROOT = Path(__file__).resolve().parents[1]
 BINDINGS = ("water", "sand", "grass", "ice", "road")
 
 
+def pixel_fingerprint(image):
+    """FNV-1a of decoded RGBA bytes; cache identity, not a security signature.
+
+    The runtime computes the same fixed-width hash of the loaded native surface.
+    Exporters must fingerprint their decoded runtime image after any lossy encoding.
+    """
+    value = 14695981039346656037
+    for byte in image.convert("RGBA").tobytes():
+        value = ((value ^ byte) * 1099511628211) & 0xFFFFFFFFFFFFFFFF
+    return f"{value:016x}"
+
+
+def integer(value, minimum, maximum, field):
+    if type(value) is not int or not minimum <= value <= maximum:
+        raise ValueError(f"{field} must be an integer in {minimum}..{maximum}")
+    return value
+
+
+def data_path(value, field):
+    if not isinstance(value, str) or not value.startswith("data/") or "\\" in value or ":" in value:
+        raise ValueError(f"{field} must be a data-relative path")
+    path = Path(value)
+    if ".." in path.parts or len(path.parts) < 2 or value != path.as_posix() or "\0" in value:
+        raise ValueError(f"{field} must be a data-relative path")
+    return path
+
+
 def validate(document, root=ROOT):
-    if document.get("version") != 1:
+    """Validate the runtime schema and all native source images before packaging."""
+    try:
+        return _validate(document, root)
+    except (KeyError, TypeError, IndexError, AttributeError) as error:
+        raise ValueError(f"Malformed terrain catalog: {error}") from error
+
+
+def _validate(document, root):
+    if type(document.get("version")) is not int or document["version"] != 1:
         raise ValueError("Unsupported terrain catalog version")
     compiled = document.get("compiled_pack", "")
+    if not isinstance(compiled, str):
+        raise ValueError("Compiled pack path must be a string")
     if compiled:
-        path = Path(compiled)
+        path = data_path(compiled, "Compiled pack")
         if (
-            path.is_absolute()
-            or ".." in path.parts
-            or len(path.parts) < 4
-            or path.parts[0] != "data"
+            len(path.parts) < 4
             or path.name != "atlas.json"
         ):
             raise ValueError(
                 "Compiled pack must name atlas.json in its own data subdirectory"
             )
+    if not isinstance(document["profiles"], list) or not document["profiles"]:
+        raise ValueError("Profiles must be a nonempty array")
+    if not isinstance(document["materials"], list) or not document["materials"]:
+        raise ValueError("Materials must be a nonempty array")
     profiles = {}
     for p in document["profiles"]:
         if (
-            not p["key"]
+            not isinstance(p["key"], str)
+            or not p["key"]
             or p["key"] in profiles
             or type(p["roughness_q8"]) is not int
             or not 0 <= p["roughness_q8"] <= 512
         ):
             raise ValueError("Invalid or duplicate profile")
         curves = p["contours_q12"]
-        if len(curves) != 4 or any(
-            len(c) != 5
+        if not isinstance(curves, list) or len(curves) != 4 or any(
+            not isinstance(c, list) or len(c) != 5
             or c[0] != 0
             or c[-1] != 0
             or any(type(n) is not int or abs(n) > 256 for n in c)
@@ -57,17 +96,22 @@ def validate(document, root=ROOT):
     materials = {}
     sources = {}
     for m in document["materials"]:
-        if not m["key"] or m["key"] in materials or m["profile"] not in profiles:
+        if (
+            not isinstance(m["key"], str)
+            or not m["key"]
+            or m["key"] in materials
+            or m["profile"] not in profiles
+        ):
             raise ValueError("Invalid material key or profile")
-        sprite = Path(m["sprite"])
-        if sprite.is_absolute() or ".." in sprite.parts or sprite.parts[0] != "data":
-            raise ValueError("Sprite must be a data-relative path")
-        if len(m["preview"]) != 3 or any(
+        sprite = data_path(m["sprite"], "Sprite")
+        if type(m.get("ocean", False)) is not bool:
+            raise ValueError("Ocean must be a boolean")
+        if not isinstance(m["preview"], list) or len(m["preview"]) != 3 or any(
             type(n) is not int or not 0 <= n <= 255 for n in m["preview"]
         ):
             raise ValueError("Invalid preview color")
         minimap = m.get("minimap", m["preview"])
-        if len(minimap) != 3 or any(
+        if not isinstance(minimap, list) or len(minimap) != 3 or any(
             type(n) is not int or not 0 <= n <= 255 for n in minimap
         ):
             raise ValueError("Invalid minimap color")
@@ -84,7 +128,11 @@ def validate(document, root=ROOT):
             or (phases > 1 and stride == 0)
         ):
             raise ValueError("Invalid animation")
-        if not m["variants"] or sum(v["weight"] for v in m["variants"]) > 1_000_000_000:
+        if (
+            not isinstance(m["variants"], list)
+            or not m["variants"]
+            or sum(v["weight"] for v in m["variants"]) > 1_000_000_000
+        ):
             raise ValueError("Invalid variant weights")
         for v in m["variants"]:
             if type(v["weight"]) is not int or not 1 <= v["weight"] <= 1_000_000:
@@ -103,19 +151,11 @@ def validate(document, root=ROOT):
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
         if "backdrop" in m:
             b = m["backdrop"]
-            path = Path(b["sprite"])
-            first = b.get("first_frame", 0)
-            count = b.get("frames", 1)
-            if (
-                m.get("ocean", False)
-                or path.is_absolute()
-                or ".." in path.parts
-                or path.parts[0] != "data"
-                or first < 0
-                or not 1 <= count <= 256
-                or first + count > 65536
-                or b.get("ticks", 1) < 1
-            ):
+            path = data_path(b["sprite"], "Backdrop sprite")
+            first = integer(b.get("first_frame", 0), 0, 65535, "Backdrop first_frame")
+            count = integer(b.get("frames", 1), 1, 256, "Backdrop frames")
+            integer(b.get("ticks", 1), 1, 2147483647, "Backdrop ticks")
+            if m.get("ocean", False) or first + count > 65536:
                 raise ValueError("Invalid backdrop")
             for frame in range(first, first + count):
                 relative = f"{path.as_posix()}{frame}.png"
@@ -127,13 +167,21 @@ def validate(document, root=ROOT):
         materials[m["key"]] = m
     if not 0 < len(materials) < 65536:
         raise ValueError("Invalid material count")
+    if not isinstance(document["bindings"], dict):
+        raise ValueError("Bindings must be an object")
+    for name, material in document["bindings"].items():
+        if material not in materials:
+            raise ValueError(f"Unknown material in binding: {name}")
     for name in BINDINGS:
         if document["bindings"][name] not in materials:
             raise ValueError(f"Missing binding: {name}")
     if not materials[document["bindings"]["water"]].get("ocean", False):
         raise ValueError("Water requires ocean backdrop")
     pairs = set()
-    for p in document.get("pair_treatments", []):
+    treatments = document.get("pair_treatments", [])
+    if not isinstance(treatments, list):
+        raise ValueError("Pair treatments must be an array")
+    for p in treatments:
         pair = tuple(sorted((p["a"], p["b"])))
         if (
             pair in pairs
@@ -165,13 +213,14 @@ def seamless_sources(document, root):
                             continue
                         source = master.getpixel((min(x, 31 - x), min(y, 31 - y)))
                         pixel = image.getpixel((x, y))
+                        alpha = source[3] * (4 - distance) + pixel[3] * distance
                         image.putpixel(
                             (x, y),
                             tuple(
-                                (source[k] * (4 - distance) + pixel[k] * distance) // 4
+                                (source[k] * source[3] * (4 - distance)
+                                 + pixel[k] * pixel[3] * distance) // alpha if alpha else 0
                                 for k in range(3)
-                            )
-                            + (pixel[3],),
+                            ) + (alpha // 4,),
                         )
                 # One source can deliberately be shared by multiple materials.
                 if name in result and result[name].tobytes() != image.tobytes():
@@ -202,7 +251,7 @@ def padded(image, border):
     return page
 
 
-def compile_tileset(document, output, root=ROOT, page_size=1024):
+def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerprints=None):
     sources = validate(document, root)
     if page_size < 64 or page_size > 8192 or page_size & (page_size - 1):
         raise ValueError("Page size must be a power of two from 64 to 8192")
@@ -224,8 +273,14 @@ def compile_tileset(document, output, root=ROOT, page_size=1024):
                     image = im.convert("RGBA")
             x, y = (i % columns) * tile, (i // columns) * tile
             page.paste(padded(image, border), (x, y))
+            if runtime_fingerprints is None:
+                with Image.open(root / name) as native:
+                    fingerprint = pixel_fingerprint(native)
+            else:
+                fingerprint = runtime_fingerprints[name]
             entries.append(
-                dict(source=name, page=page_id, rect=[x + border, y + border, 32, 32])
+                dict(source=name, page=page_id, rect=[x + border, y + border, 32, 32],
+                     native_rgba_fnv1a64=fingerprint)
             )
         levels = []
         for mip in range(3):

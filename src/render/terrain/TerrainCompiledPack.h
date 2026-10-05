@@ -2,6 +2,8 @@
 #pragma once
 #include <SDL3/SDL_surface.h>
 #include <array>
+#include <cstdint>
+#include <optional>
 #include <map>
 #include <memory>
 #include <string>
@@ -15,7 +17,9 @@ class CompiledPack
 {
   public:
 	static std::shared_ptr<CompiledPack> load(const Catalog &);
-	bool contains(const std::string &source) const { return frames.contains(source); }
+	// Prepared pixels are valid only for the native artwork actually loaded by
+	// Sprite, which may be a user override or an encoded export of the PNG source.
+	bool matches(const std::string &source, SDL_Surface *native) const;
 	void read(const std::string &, std::vector<std::array<unsigned char, 4>> &);
 	std::size_t bytes() const;
 
@@ -24,6 +28,7 @@ class CompiledPack
 	{
 		unsigned page;
 		SDL_Rect rect;
+		std::optional<std::uint64_t> nativeFingerprint;
 	};
 	struct Page
 	{
