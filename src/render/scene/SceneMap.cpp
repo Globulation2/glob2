@@ -106,7 +106,7 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 
 TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
 {
-	const auto &own = visualAt(x, y);
+	const auto &own = registry->visual(terrainVisuals[coordToIndex(x, y)]);
 	const auto &base = own.presentation;
 	auto result = terrainBaseLayers(own.appearance, getTerrain(x, y), base, animationTime);
 	if (!layeredTerrain)

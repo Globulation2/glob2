@@ -116,10 +116,6 @@ class SceneMap
 	// Canonical IDs remain available to UI/script consumers. Drawing indexes the
 	// compact immutable visual profiles so aliases share cache lines and edges.
 	std::vector<std::uint16_t> terrainVisuals;
-	const TerrainRegistry::Visual &visualAt(int x, int y) const
-	{
-		return registry->visual(terrainVisuals[coordToIndex(x, y)]);
-	}
 	bool layeredTerrain = false;
 	std::vector<Uint32> discovered, fogOfWar;
 	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
