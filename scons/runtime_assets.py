@@ -35,7 +35,7 @@ def install_export(exported, destination):
     obsolete = set(previous) - set(current)
     # A legacy install has no hashes for its shipped artwork. Replace PNGs at
     # current managed image paths even when an older release had different art;
-    # otherwise PNG precedence would hide the new WebP indefinitely. User-profile
+    # obsolete bundled PNG copies would waste space. User-profile
     # overrides live outside this installation tree and keep their precedence.
     for item in audit["files"]:
         if item["source"] != item["output"]:
@@ -76,9 +76,11 @@ def install_export(exported, destination):
     )
 
 
-def install_assets(env):
+def prepare_assets(env):
     from SCons.Script import Action, Value
 
+    if env.get("RUNTIME_ASSET_STAMP") is not None:
+        return env["RUNTIME_ASSET_STAMP"]
     root = Path.cwd()
     sys.path.insert(0, str(root))
     from tools.package_assets import export_assets, source_files
@@ -93,8 +95,10 @@ def install_assets(env):
     exported = Path(env["BUILDDIR"]).resolve() / "runtime-assets"
     inputs = [str(p) for p in source_files(root, platform)]
 
+    lossy = optimized_install_enabled(env.get("release", True), env.get("optimized_assets", "auto"))
+
     def export(target, source, env):
-        export_assets(root, exported, platform=platform)
+        export_assets(root, exported, platform=platform, lossy=lossy)
         return 0
 
     stamp = env.Command(
@@ -105,12 +109,22 @@ def install_assets(env):
             "tools/asset-requirements.txt",
             "scons/runtime_assets.py",
             Value(inputs),
+            Value(lossy),
         ],
         Action(export, "Exporting verified runtime assets"),
     )
     env.Precious(stamp)  # SCons must not unlink the previous ownership audit.
     if not (exported / "data").is_dir():
         env.AlwaysBuild(stamp)
+    env["RUNTIME_ASSET_STAMP"] = stamp
+    return stamp
+
+
+def install_assets(env):
+    from SCons.Script import Action
+
+    stamp = prepare_assets(env)
+    exported = Path(env["BUILDDIR"]).resolve() / "runtime-assets"
     destination = Path(env["INSTALLDIR"]) / "glob2"
 
     def install(target, source, env):

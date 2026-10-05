@@ -253,7 +253,10 @@ two-finger navigation. The view menu and +/− keys also adjust inspection zoom.
 Animation starts paused and painting freezes its displayed
 pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
 material swatches, model and pose strips float over the viewport; shop, saved
-skins, settings and patterns are dialogs that preserve the document.
+skins, settings and patterns are dialogs that preserve the document. The workspace
+and its dialogs use the web application’s shared Meadow and Night colony themes,
+following the device setting or saved preference. Skin settings includes the shared
+theme control; changing themes preserves paint and editing state.
 
 Glob meshes share paint coordinates across matching front/back and top/bottom
 surfaces, including limb pairs exchanged by their flipping gait. A depth-tested

@@ -30,7 +30,7 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 	wordmarkTheme = themeGeneration();
 	const auto &own = theme().backdrop.wordmark;
 	GAGCore::DrawableSurface source(1, 1);
-	if (!source.loadImage(own.empty() ? "data/gfx/menu-wordmark.png" : own))
+	if (!source.loadImage(own.empty() ? "data/gfx/menu-wordmark.webp" : own))
 		return;
 	// A theme's own wordmark is shown whole and as drawn.
 	SDL_Rect crop = own.empty() ? SDL_Rect{76, 232, 1956, 284} : SDL_Rect{0, 0, source.getW(), source.getH()};

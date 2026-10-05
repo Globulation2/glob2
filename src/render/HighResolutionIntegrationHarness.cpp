@@ -79,10 +79,21 @@ class HighResolutionIntegrationHarness
         auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);REQUIRE(building);
         editor.regenerateGameHeader();editor.minimap.setGame(editor.game);editor.updateCamera();
         editor.game.map.displayViewportW=editor.game.map.displayViewportH=512;
+        // Setup can destroy a staging GameGUI, which releases shared HD caches.
+        Sprite::setHighResolution(true);
         // An incomplete NPOT mip chain samples white without producing a GL
         // error. Verify that both atlas-backed sprite families produce color.
         for(auto sprite:{globalContainer->terrain,globalContainer->resources})
         {
+            const std::string prefix = sprite == globalContainer->terrain ? "terrain" : "ressource";
+            auto atlas = Toolkit::getFileManager()->openImage("data/highres/v1/" + prefix + "-atlas-mip0.webp");
+            if (atlas)
+            {
+                SDL_CloseIO(atlas);
+                REQUIRE(sprite->highResolutionAtlas != nullptr);
+            }
+            // The bundled pack has HD resource frames but no HD terrain/atlases.
+            if (sprite == globalContainer->resources) REQUIRE(sprite->experimentImages[0] != nullptr);
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
             gfx->drawSprite(100,100,128,128,sprite,sprite==globalContainer->terrain?0:9);
             gfx->finishDrawingSprite(sprite,255);auto data=pixels();

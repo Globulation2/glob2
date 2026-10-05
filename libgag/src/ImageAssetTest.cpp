@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "LossyAlphaFixture.h"
 #include <FileManager.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
@@ -22,6 +23,30 @@ TEST_CASE("WebP decoder preserves exact RGBA including transparent RGB") {
     auto rgba=SDL_ConvertSurface(surface,SDL_PIXELFORMAT_RGBA32); REQUIRE(rgba!=nullptr);
     CHECK(rgba->w==2); CHECK(rgba->h==2);
     for(int y=0;y<2;++y) CHECK(std::memcmp(static_cast<char*>(rgba->pixels)+y*rgba->pitch,pixels+y*8,8)==0);
+    SDL_DestroySurface(rgba); SDL_DestroySurface(surface);
+}
+TEST_CASE("Q90 lossy WebP preserves dimensions and exact alpha") {
+    using namespace lossyAlphaFixture;
+    auto surface = IMG_Load_IO(SDL_IOFromConstMem(lossyAlphaFixture::webp, sizeof(lossyAlphaFixture::webp)), true);
+    REQUIRE(surface != nullptr);
+    CHECK(surface->w == width); CHECK(surface->h == height);
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x) {
+            Uint8 r, g, b, a;
+            REQUIRE(SDL_ReadSurfacePixel(surface, x, y, &r, &g, &b, &a));
+            CHECK(a == alpha[y * width + x]);
+        }
+    SDL_DestroySurface(surface);
+}
+TEST_CASE("16-bit RGBA rounds normalized channels to the exporter reference") {
+    auto surface = IMG_Load_IO(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+    REQUIRE(surface != nullptr);
+    auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
+    REQUIRE(rgba != nullptr);
+    CHECK(rgba->w == 2); CHECK(rgba->h == 2);
+    for (int y = 0; y < 2; ++y)
+        CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch,
+                          rgba16Fixture::rgba + y * 8, 8) == 0);
     SDL_DestroySurface(rgba); SDL_DestroySurface(surface);
 }
 #ifndef __EMSCRIPTEN__
@@ -56,21 +81,21 @@ TEST_CASE("Native PNG and JPEG loading and saving remain available") {
     SDL_DestroySurface(loaded);
 }
 #endif
-TEST_CASE("Image alternatives preserve directory and original file precedence") {
+TEST_CASE("WebP artwork lookup preserves directories without PNG alternatives") {
     glob2test::ToolkitScope toolkit;
-    glob2test::TempDir scratch("image-alternatives");
+    glob2test::TempDir scratch("image-artwork");
     auto root=scratch.path;
     std::filesystem::create_directories(root/"first");std::filesystem::create_directories(root/"second");
     std::ofstream(root/"first"/"logical.webp")<<"first-webp";
-    std::ofstream(root/"first"/"only-image.webp")<<"image-only";
-    std::ofstream(root/"second"/"logical.png")<<"second-png";
-    GAGCore::FileManager files("asset-tests");files.addDir((root/"first").string());files.addDir((root/"second").string());
-    CHECK(read(files.openImage("logical.png"))=="first-webp");
     std::ofstream(root/"first"/"logical.png")<<"first-png";
-    CHECK(read(files.openImage("logical.png"))=="first-png");
-    CHECK(read(files.openImage((root/"first"/"logical.png").string()))=="first-png");
-    CHECK(files.openImage("absent.png")==nullptr);
-    CHECK(read(files.openImage((root/"first"/"only-image.png").string()))=="image-only");
-    CHECK(files.open("only-image.png")==nullptr);
+    std::ofstream(root/"second"/"logical.webp")<<"second-webp";
+    std::ofstream(root/"first"/"png-only.png")<<"png-only";
+    GAGCore::FileManager files("asset-tests");files.addDir((root/"first").string());files.addDir((root/"second").string());
+    CHECK(read(files.openImage("logical.webp"))=="first-webp");
+    CHECK(read(files.openImage((root/"first"/"logical.webp").string()))=="first-webp");
+    CHECK(files.openImage("png-only.webp")==nullptr);
+    // External previews and imports still open their exact PNG names.
+    CHECK(read(files.openImage("png-only.png"))=="png-only");
+    CHECK(files.openImage((root/"second"/"logical.png").string())==nullptr);
 }
 }

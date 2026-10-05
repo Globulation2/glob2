@@ -12,6 +12,32 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @unittest.skipUnless(shutil.which("scons"), "SCons command unavailable")
 class SConsAssetInstallTests(unittest.TestCase):
+    def test_debug_client_prepares_lossless_webp_without_install(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "tools").symlink_to(ROOT / "tools", target_is_directory=True)
+            (root / "scons").symlink_to(ROOT / "scons", target_is_directory=True)
+            folder = root / "data/gfx"
+            folder.mkdir(parents=True)
+            original = folder / "frame0.png"
+            Image.new("RGBA", (8, 8), (20, 80, 130, 17)).save(original)
+            (root / "SConstruct").write_text(
+                "import sys\nsys.path.insert(0, " + repr(str(ROOT)) + ")\n"
+                "from scons.runtime_assets import prepare_assets\n"
+                'env=Environment(tools=[], BUILDDIR="build", release=False, optimized_assets="auto")\n'
+                "stamp=prepare_assets(env)\nDefault(stamp)\n")
+            subprocess.run([shutil.which("scons"), "-Q"], cwd=root, check=True,
+                           capture_output=True, text=True)
+            import json
+            audit = json.loads((root / "build/runtime-assets.json").read_text())
+            self.assertFalse(audit["lossy_images"])
+            self.assertFalse(audit["files"][0]["lossy"])
+            target = root / "build/runtime-assets/data/gfx/frame0.webp"
+            self.assertEqual(Image.open(target).convert("RGBA").tobytes(),
+                             Image.open(original).tobytes())
+            self.assertFalse((target.with_suffix(".png")).exists())
+
+
     def test_rebuild_retains_ownership_and_removes_obsolete_installed_assets(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

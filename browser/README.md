@@ -95,9 +95,20 @@ simulation data file, so
 the sim version and checksum traces are unchanged. Three of its files are smaller
 browser copies checked in under `browser/assets/` (`browser/derive_assets.py`):
 the font without its Chinese, Japanese and Korean outlines, the menu's still
-backdrop as a JPEG and the wordmark without the area the menu never shows. The
-build uses a copy only while it matches its source; regenerate them after
-changing the font, those images or a language's own name.
+backdrop and the wordmark without the area the menu never shows. Both images
+use the shared exporter's smallest permitted lossy/lossless WebP selection, including Q90
+WebP/method 6 with exact alpha. Target-keyed `sources.json` records source/content
+hashes and image recipe identity; old Q85 derivatives are rejected. The build
+uses a copy only while its hashes and recipe match; regenerate with
+`"$(python3 tools/package_assets.py --encoder-python)" browser/derive_assets.py`
+after changing source images, the font, language names or the encoding recipe.
+The selected filename is used to locate the derivative, while the package retains
+the runtime export's WebP lookup path.
+Package content hashes cover those selected bytes. Explicit lossless exports
+reject lossy browser substitutions. Debug browser builds also prepare lossless
+WebP artwork. Source PNGs remain untouched; PNG decoding for imports, previews
+and skin textures remains available. Lossless WebP provides the rollback profile;
+original exports are source-byte measurement baselines (see the packaging reference).
 The loading page shows megabytes, a percentage and an estimate of the time left.
 
 The rest follows in the background once the main menu is up, most needed first:

@@ -139,10 +139,10 @@ void apply(const Json &root, Theme &theme, const std::string &where, std::vector
 		for (auto [key, field] : {std::pair{"image", &Backdrop::image}, std::pair{"wordmark", &Backdrop::wordmark}})
 			if (auto value = backdrop->find(key); value != backdrop->end())
 			{
-				if (value->is_string() && (value->get<std::string>().empty() || safeAssetPath(*value)))
+				if (value->is_string() && (value->get<std::string>().empty() || (safeAssetPath(*value) && value->get<std::string>().ends_with(".webp"))))
 					b.*field = value->get<std::string>();
 				else
-					errors.push_back(where + " backdrop." + key + ": expected a path under data/");
+					errors.push_back(where + " backdrop." + key + ": expected a WebP path under data/");
 			}
 		if (auto veil = backdrop->find("veil"); veil != backdrop->end())
 		{

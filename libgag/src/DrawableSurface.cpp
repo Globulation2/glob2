@@ -344,7 +344,7 @@ namespace GAGCore
 			if ((imageStream = Toolkit::getFileManager()->openImage(name)) != NULL)
 			{
 				SDL_Surface *loadedSurface;
-				loadedSurface = IMG_Load_IO(imageStream, 0);
+				loadedSurface = (name.size() >= 5 && name.compare(name.size()-5, 5, ".webp") == 0) ? IMG_LoadWEBP_IO(imageStream) : IMG_Load_IO(imageStream, 0);
 				SDL_CloseIO(imageStream);
 				if (loadedSurface)
 				{

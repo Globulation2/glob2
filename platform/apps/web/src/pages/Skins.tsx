@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SWARM_MESHES, type SwarmMeshId } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
+import { ThemeToggle } from '../theme.tsx';
 import { MeshPreview, type SceneView, type Tool } from '../skins/MeshPreview.tsx';
 import { ACTIONS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
 import { MODELS, type Model } from '../skins/atlas.ts';
@@ -643,6 +644,10 @@ function SkinStudio() {
       {dialog === 'settings' && (
         <StudioDialog title="Skin settings" onClose={() => setDialog(null)}>
           <div className="skin-settings">
+            <div className="skin-color-field">
+              <ThemeToggle />
+              <strong>Application theme</strong>
+            </div>
             <label className="skin-color-field">
               <input
                 type="color"
@@ -661,7 +666,7 @@ function SkinStudio() {
                   fill="currentColor"
                   d="M18 69V32L36 13l18 19v37zm37 0V17L73 2l18 15v52zm38 0V43l12-13 12 13v26Z"
                 />
-                <path fill="#211d28" d="M28 69V48h14v21m25 0V39h13v30" />
+                <path fill="var(--bg)" d="M28 69V48h14v21m25 0V39h13v30" />
               </svg>
             </div>
             <p className="skin-muted">

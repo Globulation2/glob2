@@ -43,7 +43,7 @@
 	"backdrop": {
 		"kind": "terrain",
 		"veil": "#00000000",
-		"wordmark": "data/themes/classic/title.png"
+		"wordmark": "data/themes/classic/title.webp"
 	},
 	"buttons": {
 		"kind": "sprite",

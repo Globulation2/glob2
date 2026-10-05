@@ -8,6 +8,8 @@ if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcr
     
 Import("env")
 l1 = env.StaticLibrary("gag", libgag_sources)
+if env.get("RUNTIME_ASSET_STAMP"):
+    env.Requires(l1, env["RUNTIME_ASSET_STAMP"])
 
 if env.get('role') != 'relay':
     Default(l1)

@@ -142,7 +142,6 @@
   border-radius: var(--r-lg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
-  transform: rotate(-0.6deg);
 }
 @media (max-width: 760px) {
   .map-hero {
