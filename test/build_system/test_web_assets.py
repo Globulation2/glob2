@@ -1,4 +1,5 @@
 """Browser data packages: what ships, where it goes, and how it is installed."""
+import ast
 import json
 from pathlib import Path
 import subprocess
@@ -84,6 +85,14 @@ class WebAssetPlanTests(unittest.TestCase):
             self.assertEqual(web_assets.game_files(
                 ['data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'], names),
                 {'data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'})
+
+    def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
+        tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
+        inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
+                          for target in node.targets)]
+        self.assertEqual(len(inputs), 1)
+        self.assertIn('src/map/TerrainPresentation.h', ast.literal_eval(inputs[0]))
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',
