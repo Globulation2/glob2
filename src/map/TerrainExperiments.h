@@ -9,10 +9,11 @@
 inline constexpr auto TERRAIN_EXPERIMENTS = [] {
     std::array<std::optional<ExperimentId>, TERRAIN_COUNT> values{};
     values[ICE] = ExperimentId::IceTerrain;
-    values[ROAD] = ExperimentId::RoadTerrain;
+    values[TRAIL] = ExperimentId::TrailTerrain;
     return values;
 }();
 inline constexpr std::optional<ExperimentId> terrainExperiment(TerrainType type)
 {
-    return TERRAIN_EXPERIMENTS[static_cast<unsigned>(type)];
+	return unsigned(type) < TERRAIN_COUNT ? TERRAIN_EXPERIMENTS[static_cast<unsigned>(type)]
+										  : std::nullopt;
 }

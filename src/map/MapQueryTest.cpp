@@ -368,10 +368,10 @@ void MapQueryTest::testLocalTeam_SentinelValueIsMinusOne()
 
 TEST_SUITE("MapQuery")
 {
-TEST_CASE("road and ice placement use properties independent of sprite variants")
+TEST_CASE("trail and ice placement use properties independent of sprite variants")
 {
     GrassMap map;
-    map.setCellTerrain(2,2,ROAD);
+    map.setCellTerrain(2,2,TRAIL);
     CHECK(map.isFreeForGroundUnit(2,2,false,1));
     CHECK(map.isFreeForGroundUnit(2,2,true,1));
     CHECK(map.isFreeForBuilding(2,2));
@@ -382,10 +382,10 @@ TEST_CASE("road and ice placement use properties independent of sprite variants"
     CHECK(map.isFreeForAirUnit(2,2));
 }
 
-TEST_CASE("point routes prefer roads and reject impassable destination terrain")
+TEST_CASE("point routes prefer trails and reject impassable destination terrain")
 {
     GrassMap map;map.enableRouting();
-    for(int x=0;x<8;++x)map.setCellTerrain(x,2,ROAD);
+    for(int x=0;x<8;++x)map.setCellTerrain(x,2,TRAIL);
     for(int x=2;x<=4;++x)map.setCellTerrain(x,3,ICE);
     int dx=0,dy=0;
     REQUIRE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,0,1,100));
@@ -435,8 +435,8 @@ TEST_CASE("air property profiles honor no-fly barriers and weighted travel witho
     for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.setCellTerrain(x,y,GRASS);
     properties[ICE].flyable=true;
     properties[ICE].airSpeedQ8=64;
-    properties[ROAD].airSpeedQ8=1024;
-    for(int x=0;x<8;++x) map.setCellTerrain(x,2,ROAD);
+    properties[TRAIL].airSpeedQ8=1024;
+    for(int x=0;x<8;++x) map.setCellTerrain(x,2,TRAIL);
     for(int x=2;x<=4;++x) map.setCellTerrain(x,3,ICE);
     REQUIRE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
     CHECK_EQ(dy,-1); CHECK_EQ(std::abs(dx),1);

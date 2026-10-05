@@ -1,9 +1,9 @@
 import importlib.util
 import os
+import re
 import stat
 from pathlib import Path
 import tempfile
-import os
 import unittest
 from unittest.mock import patch
 
@@ -15,6 +15,18 @@ spec.loader.exec_module(module)
 
 
 class BrowserPackageTests(unittest.TestCase):
+    def test_ci_artifacts_publish_the_complete_music_runtime(self):
+        workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
+        steps = workflow.split("\n      - ")
+        for artifact in ("web-client", "glob2-web-development"):
+            matches = [step for step in steps if step.startswith("uses: actions/upload-artifact@") and re.search(
+                rf"(?m)^          name: {re.escape(artifact)}$", step)]
+            with self.subTest(artifact=artifact):
+                self.assertEqual(len(matches), 1)
+                paths = {line.strip() for line in matches[0].splitlines()}
+                for name in module.MUSIC_FILES:
+                    self.assertIn("build/emscripten/client/release/" + name, paths)
+
     @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
     def test_threaded_package_is_public_readable_under_private_build_umask(self):
         self.threaded_source()
@@ -122,6 +134,62 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertFalse((self.output / "recording-runtime.wasm").exists())
         (self.source / "recording-runtime.wasm").write_bytes(b"new codec wasm")
         self.assertNotEqual(version, module.package(self.source, self.output))
+
+    def music_source(self):
+        self.threaded_source()
+        assets = {
+            "music-worker.js": b"importScripts('music-runtime.js');",
+            "music-output.js": b"registerProcessor('glob2-music', Processor);",
+            "music-runtime.js": b"const wasm='music-runtime.wasm';",
+            "music-runtime.wasm": b"music decoder wasm",
+        }
+        for name, data in assets.items():
+            (self.source / name).write_bytes(data)
+        for script in (self.source / "index.js", self.source / "threaded/index.js"):
+            script.write_text(script.read_text() + "new Worker('music-worker.js');addModule('music-output.js');")
+        notices = self.source / "licenses/opus"
+        notices.mkdir(parents=True)
+        (notices / "COPYING").write_text("Opus notices")
+
+    def test_music_assets_and_notices_follow_release_identity(self):
+        self.music_source()
+        version = module.package(self.source, self.output)
+        module.verify(self.output)
+        for name in module.MUSIC_FILES:
+            target = name.replace("music-", f"music-{version}-", 1)
+            self.assertTrue((self.output / target).is_file())
+            self.assertTrue((self.output / (target + ".gz")).is_file())
+            self.assertFalse((self.output / name).exists())
+        for script in (self.output / f"index-{version}.js", self.output / f"threaded/index-{version}.js"):
+            self.assertIn(f"music-{version}-worker.js", script.read_text())
+            self.assertIn(f"music-{version}-output.js", script.read_text())
+        self.assertIn(f"music-{version}-runtime.js", (self.output / f"music-{version}-worker.js").read_text())
+        self.assertIn(f"music-{version}-runtime.wasm", (self.output / f"music-{version}-runtime.js").read_text())
+        self.assertEqual((self.output / "licenses/opus/COPYING").read_text(), "Opus notices")
+        self.assertEqual(version, module.package(self.source, self.output))
+        (self.source / "music-output.js").write_text("changed worklet")
+        self.assertNotEqual(version, module.package(self.source, self.output))
+
+    def test_missing_music_input_keeps_previous_package(self):
+        self.music_source()
+        module.package(self.source, self.output)
+        previous = (self.output / "SHA256SUMS").read_bytes()
+        for name in module.MUSIC_FILES:
+            (self.source / name).unlink()
+            with self.assertRaisesRegex(ValueError, "Incomplete music runtime"):
+                module.package(self.source, self.output)
+            self.assertEqual((self.output / "SHA256SUMS").read_bytes(), previous)
+
+    def test_music_sidecars_required_even_without_checksum_entry(self):
+        self.music_source()
+        version = module.package(self.source, self.output)
+        missing = f"music-{version}-output.js.gz"
+        (self.output / missing).unlink()
+        sums = self.output / "SHA256SUMS"
+        sums.write_text("".join(line + "\n" for line in sums.read_text().splitlines()
+                                if not line.endswith("  " + missing)))
+        with self.assertRaises(ValueError):
+            module.verify(self.output)
 
     def test_package_requires_game_data(self):
         self.package.unlink()

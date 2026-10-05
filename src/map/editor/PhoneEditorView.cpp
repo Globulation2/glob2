@@ -201,8 +201,11 @@ void PhoneEditor::drawInteractionPreview()
 		{
             if (TerrainSelector::isBaseTerrain(editor.terrainType))
             {
-                const auto color = terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType)).preview;
-                fill = Color(color.r, color.g, color.b, 130);
+				const auto color =
+					editor.game.map
+						.terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType))
+						.preview;
+				fill = Color(color.r, color.g, color.b, 130);
             }
 		}
 		const Color edge = erase ? Color(255, 128, 110) : Color(255, 235, 156);

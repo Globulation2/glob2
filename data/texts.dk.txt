@@ -5547,16 +5547,20 @@ Begræns tegningen i hele programmet. Lavere værdier reducerer tegningsarbejdet
 [ice]
 Is
 [road]
-Vej
+Sti
 [experiment ice-terrain]
 Isterræn
 [experiment ice-terrain help]
 Tilføjer is til korteditoren. Landenheder bevæger sig med halv hastighed og mister ét livspoint for hver 32 simulationstrin på isen. Is kan ikke rumme bygninger eller ressourcer.
 [experiment road-terrain]
-Vejterræn
+Stiterræn
 [experiment road-terrain help]
-Tilføjer brostensveje til korteditoren. Landenheder bevæger sig med dobbelt hastighed. Veje tillader bygninger, men ikke ressourcer.
+Tilføjer slidte stier til korteditoren. Landenheder bevæger sig med dobbelt hastighed. Stier tillader bygninger, men ingen ressourcer. Flyvende enheder påvirkes ikke.
 [experiment markets-v2]
 Markeder V2
 [experiment markets-v2 help]
 Arbejdere kan hente forsyninger fra markedernes fælles lager. Markeder kan opgraderes til at lagre hvede og træ og derefter alle ressourcer. Handel mellem hold omfatter stadig kun frugt. Gælder nye spil; gemte spil beholder deres oprindelige indstilling.
+[Import Terrain Definitions]
+Importér terrændefinitioner
+[Terrain palette]
+Terrænpalet

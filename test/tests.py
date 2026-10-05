@@ -28,6 +28,8 @@ ENGINE_TESTS = [
     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',
     '#src/audio/MusicStreamTest.cpp',
+    # SDL driver/device fixtures run in their own engine-test process.
+    '#src/audio/SoundMixerTrackSelectionHarness.cpp',
     ('#src/ui/screens/MusicScreensTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
@@ -137,6 +139,7 @@ ENGINE_TESTS = [
     ('#src/render/HighResolutionIntegrationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#libgag/src/PortableRendererHarness.cpp',
     '#src/render/SoftwareRendererTest.cpp',
+    '#src/render/terrain/TerrainMaterialsTest.cpp',
     ('#src/render/TerrainPresentationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#libgag/src/RuntimePackCheck.cpp', dict(require={'opengl'})),
     ('#libgag/src/TextRasterHarness.cpp', dict(require={'opengl'})),
@@ -165,6 +168,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/AssetLoaderTest.cpp',
     '#libgag/src/SpriteLoadTest.cpp',
@@ -287,7 +291,8 @@ UNIT_TESTS = [
     '#libgag/src/GestureScrollTest.cpp',
     '#src/hud/GameSpeedControlTest.cpp',
     '#src/hud/GameEventFeedTest.cpp',
-    '#src/audio/SoundMixerTrackSelectionHarness.cpp',
+    '#src/audio/MusicBufferTest.cpp',
+    '#src/audio/MusicProducerTest.cpp',
     '#libgag/src/ui/UILayoutHarness.cpp',
     '#src/map/gradient/GlobalGradientHarness.cpp',
     '#src/map/gradient/PathGradientHarness.cpp',
@@ -306,6 +311,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/map/TerrainRegistry.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',
@@ -327,6 +333,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/hud/input/GameGUIKeyActions.cpp',
     '#src/audio/GameMusicController.cpp',
     '#src/audio/MusicStream.cpp',
+    '#src/audio/MusicProducer.cpp',
     '#src/map/FertilityField.cpp',
     '#src/map/Map.cpp',
     '#src/map/MapQuery.cpp',

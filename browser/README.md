@@ -51,7 +51,8 @@ The default build packages two runtimes: the root `index.js`/`index.wasm` serial
 fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
 data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
 runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
-the versioned release package with verified gzip sidecars for both runtimes. `web-tests` additionally builds serial and
+the versioned release package with verified gzip sidecars for both runtimes, the
+independent music backend, and its Opus license notices. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
 
 The loader prefers real shared-memory threads when isolation and worker startup
@@ -296,8 +297,11 @@ Dedicated renderer tests exercise resize and actual context loss/restoration.
 New multiplayer features, including reconnect recovery, are outside this change.
 
 Build outputs and the SDK are ignored local files. Serve the output directory;
-opening the HTML as a `file:` URL is unsupported. The SDL audio backend still
-uses deprecated ScriptProcessorNode.
+opening the HTML as a `file:` URL is unsupported. Music uses a dedicated decoder worker and AudioWorklet in both serial and threaded
+builds, with a half-second prepared-audio target (512 ms in whole blocks). Isolated
+browsers use shared memory when supported; other browsers retain bounded MessagePort transport. Hidden tabs
+pause music. See [audio ownership](../docs/browser/implementation.md) for buffering,
+recording, and the MessagePort limitation in some WebKit builds.
 
 ### Performance investigation
 

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainPresentation.h"
+#include "render/terrain/TerrainCatalogIO.h"
 #include "MapThumbnail.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
@@ -163,6 +164,7 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 	const int mw = map.getW(), mh = map.getH();
 	if (mw <= 0 || mh <= 0 || mw > 32767 || mh > 32767)
 		return;
+	const auto palette = TerrainVisual::minimapPalette(TerrainVisual::loadCatalog());
 	const int longest = std::max(mw, mh), resolution = std::min(MaxResolution, longest);
 	auto result = std::make_shared<Image>();
 	result->width = std::max(1, mw * resolution / longest);
@@ -178,9 +180,12 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 				for (int sx = x * mw / result->width; sx < (x + 1) * mw / result->width; ++sx)
 				{
 					const auto type = map.terrainTypeAt(sx,sy);
-                    const auto terrain = terrainUsesLegacyCorners(type) ? map.getUMTerrain(sx,sy) : type;
-                    const auto color = terrainPresentation(terrain).preview;
-                    int channels[3] = {color.r,color.g,color.b};
+					const auto terrain =
+						map.terrainUsesLegacyCorners(type) ? map.getUMTerrain(sx, sy) : type;
+					const auto color = unsigned(terrain) < TERRAIN_COUNT
+										   ? palette[terrain]
+										   : map.terrainPresentation(terrain).preview;
+					int channels[3] = {color.r,color.g,color.b};
 					const int resources[] = {WOOD, WHEAT, STONE, ALGA};
 					for (int r = 0; r < 4; ++r)
 						if (map.isResourceTakeable(sx, sy, resources[r]))

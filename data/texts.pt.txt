@@ -5547,16 +5547,20 @@ Limita o desenho em toda a aplicação. Valores mais baixos reduzem o trabalho d
 [ice]
 Gelo
 [road]
-Estrada
+Trilho
 [experiment ice-terrain]
 Terreno de gelo
 [experiment ice-terrain help]
 Adiciona gelo ao editor de mapas. As unidades terrestres movem-se a metade da velocidade e perdem um ponto de vida por cada 32 passos de simulação expostas ao gelo. O gelo não pode conter edifícios nem recursos.
 [experiment road-terrain]
-Terreno de estrada
+Terreno de trilho
 [experiment road-terrain help]
-Adiciona estradas de calçada ao editor de mapas. As unidades terrestres movem-se ao dobro da velocidade. As estradas permitem edifícios, mas não recursos.
+Adiciona trilhos desgastados ao editor de mapas. As unidades terrestres movem-se ao dobro da velocidade. Os trilhos permitem construções, mas não recursos. As unidades voadoras não são afetadas.
 [experiment markets-v2]
 Mercados V2
 [experiment markets-v2 help]
 Os trabalhadores podem buscar provisões no estoque compartilhado dos mercados. Os mercados podem ser melhorados para armazenar trigo e madeira, depois todos os recursos. As trocas entre equipes continuam limitadas a frutas. Aplica-se a jogos novos; os jogos salvos mantêm a configuração original.
+[Import Terrain Definitions]
+Importar definições de terreno
+[Terrain palette]
+Paleta de terrenos

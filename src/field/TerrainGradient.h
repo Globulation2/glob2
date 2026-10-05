@@ -2,82 +2,99 @@
 #pragma once
 
 #include "GradientPropagation.h"
-#include "TerrainMovementCosts.h"
+#include "PreparedTerrainCosts.h"
+
+#ifndef GLOB2_GRADIENT_BENCH_EVENT
+#define GLOB2_GRADIENT_BENCH_EVENT(name, count) ((void)0)
+#endif
 
 namespace gradient_kernel
 {
-// General terrain-cost relaxation. Distinct edge costs share one queue cursor,
+// General terrain-cost relaxation. Equal edge costs share one queue cursor,
 // including cardinal/diagonal aliases, rather than assuming four distinct costs.
 // Reserve once per chunk, outside neighbor loops; retain vector relaxation on
 // SSE2/NEON and the same scalar wrapped-edge path as the legacy specialization.
-template<class TerrainAt>
-void expandTerrainBucket(std::uint16_t *__restrict gradient, GradientBucket *queue,
+template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS>
+void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue,
     std::size_t &pending, int cur, int limit, const field::Grid &grid,
-    const TerrainEntryCosts &costs, TerrainAt terrainAt)
+    const PreparedTerrainCosts<N> &profile, ClassAt classAt)
 {
-    auto &bucket = queue[unsigned(cur) % BUCKETS];
+    auto &bucket = queue[unsigned(cur) % QueueBuckets];
     const auto count = bucket.size;
     if (!count) return;
-    std::array<unsigned, 2 * TERRAIN_COUNT> steps{};
-    unsigned stepCount = 0;
-    std::array<bool, BUCKETS> used{};
-    for (const auto cost : costs)
-        for (auto step : {cost.cardinal, cost.diagonal})
-            if (!used[step]) { used[step] = true; steps[stepCount++] = step; }
-    std::array<std::uint16_t, BUCKETS> values{};
+    GLOB2_GRADIENT_BENCH_EVENT(occupied, 1);
+    GLOB2_GRADIENT_BENCH_EVENT(popped, count);
+    const auto &steps = profile.steps;
+    const unsigned stepCount = profile.stepCount;
+    // Class/slot membership is invariant; only candidate values depend on cur.
+    std::array<std::uint16_t, 2 * N> values;
     for (unsigned s = 0; s < stepCount; ++s)
     {
         const auto step = steps[s];
-        values[step] = unsigned(cur) + step <= unsigned(limit)
+        if constexpr (N > TERRAIN_COUNT || QueueBuckets != BUCKETS)
+            if (step >= QueueBuckets) { values[s] = 1; continue; }
+        values[s] = unsigned(cur) + step <= unsigned(limit)
             ? std::uint16_t(GRADIENT_AT_GOAL - unsigned(cur) - step) : std::uint16_t(1);
     }
-#if defined(GLOB2_GRADIENT_SSE2)
-    __m128i vectors[TERRAIN_COUNT], limits[TERRAIN_COUNT];
-    const auto one = _mm_set1_epi16(1), bias = _mm_set1_epi16(short(0x8000));
-    for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
+    struct LayerClass { std::uint16_t cardinalValue, diagonalValue, cardinalSlot, diagonalSlot; };
+    std::array<LayerClass, N> layer;
+    for (unsigned t = 0; t < profile.classCount; ++t)
     {
-        const short c = values[costs[t].cardinal], d = values[costs[t].diagonal];
+        const auto cs = profile.cardinalSlots[t], ds = profile.diagonalSlots[t];
+        layer[t] = {values[cs], values[ds], cs, ds};
+    }
+#if defined(GLOB2_GRADIENT_SSE2)
+    __m128i vectors[N], limits[N];
+    const auto one = _mm_set1_epi16(1), bias = _mm_set1_epi16(short(0x8000));
+    for (unsigned t = 0; t < profile.classCount; ++t)
+    {
+        const short c = values[profile.cardinalSlots[t]], d = values[profile.diagonalSlots[t]];
         vectors[t] = _mm_setr_epi16(d,c,d,1,d,c,d,1);
         limits[t] = _mm_xor_si128(_mm_sub_epi16(vectors[t], one), bias);
     }
 #elif defined(GLOB2_GRADIENT_NEON)
-    uint16x8_t vectors[TERRAIN_COUNT], limits[TERRAIN_COUNT];
-    for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
+    uint16x8_t vectors[N], limits[N];
+    for (unsigned t = 0; t < profile.classCount; ++t)
     {
-        const auto c = values[costs[t].cardinal], d = values[costs[t].diagonal];
+        const auto c = values[profile.cardinalSlots[t]], d = values[profile.diagonalSlots[t]];
         const auto half = vset_lane_u16(1, vset_lane_u16(c, vdup_n_u16(d), 1), 3);
         vectors[t] = vcombine_u16(half, half);
         limits[t] = vsubq_u16(vectors[t], vdupq_n_u16(1));
     }
 #endif
+    // Positive edge costs below QueueBuckets keep every target distinct from this
+    // source bucket, so reserving target storage cannot invalidate cells.
     const auto *cells = bucket.cells.data();
-    const bool masked = grid.powerOfTwo();
-    const unsigned width = grid.width(), height = grid.height(), shift = masked ? grid.widthShift() : 0;
+    const unsigned width = grid.width(), height = grid.height(), shift = Masked ? grid.widthShift() : 0;
     for (std::size_t begin = 0; begin < count; begin += CHUNK)
     {
         const auto end = std::min(count, begin + CHUNK);
-        std::array<std::uint32_t *, BUCKETS> ends{};
+        std::array<std::uint32_t *, 2 * N> ends;
         for (unsigned s = 0; s < stepCount; ++s)
         {
-            auto &target = queue[(unsigned(cur) + steps[s]) % BUCKETS];
-            target.reserveExtra(8 * (end - begin));
-            ends[steps[s]] = target.cells.data() + target.size;
+            if constexpr (N > TERRAIN_COUNT || QueueBuckets != BUCKETS)
+                if (steps[s] >= QueueBuckets) continue;
+            auto &target = queue[(unsigned(cur) + steps[s]) % QueueBuckets];
+            GLOB2_GRADIENT_BENCH_EVENT(chunkReserves, 1);
+            target.reserveExtra(profile.maxAppends[s] * (end - begin));
+            ends[s] = target.cells.data() + target.size;
         }
         for (auto ci = begin; ci < end; ++ci)
         {
             const auto i = cells[ci];
-            if (gradient[i] != GRADIENT_AT_GOAL - cur) continue;
-            const unsigned x = masked ? i & (width-1) : i % width;
-            const unsigned y = masked ? i >> shift : i / width;
+            if (gradient[i] != GRADIENT_AT_GOAL - cur) { GLOB2_GRADIENT_BENCH_EVENT(stale, 1); continue; }
+            const unsigned x = Masked ? i & (width-1) : i % width;
+            const unsigned y = Masked ? i >> shift : i / width;
             const unsigned left = x ? x-1 : width-1, right = x+1 == width ? 0 : x+1;
             const auto above = std::size_t(y ? y-1 : height-1) * width;
             const auto below = std::size_t(y+1 == height ? 0 : y+1) * width;
             const auto row = std::size_t(y) * width;
-            const unsigned t = terrainAt(i);
-            const auto cost = costs[t];
-            auto &ce = ends[cost.cardinal];
-            auto &de = ends[cost.diagonal];
-            const auto cv = values[cost.cardinal], dv = values[cost.diagonal];
+            const unsigned t = classAt(i);
+            const auto descriptor = layer[t];
+            const auto cs = descriptor.cardinalSlot, ds = descriptor.diagonalSlot;
+            auto &ce = ends[cs];
+            auto &de = ends[ds];
+            const auto cv = descriptor.cardinalValue, dv = descriptor.diagonalValue;
             auto relax = [&](std::size_t n, std::uint16_t value, std::uint32_t *&cursor) {
                 const bool better = unsigned(gradient[n])-1u < unsigned(value)-1u;
                 gradient[n] = better ? value : gradient[n];
@@ -119,12 +136,97 @@ void expandTerrainBucket(std::uint16_t *__restrict gradient, GradientBucket *que
         }
         for (unsigned s = 0; s < stepCount; ++s)
         {
-            auto &target = queue[(unsigned(cur)+steps[s])%BUCKETS];
-            const auto newSize = std::size_t(ends[steps[s]]-target.cells.data());
+            if constexpr (N > TERRAIN_COUNT || QueueBuckets != BUCKETS)
+                if (steps[s] >= QueueBuckets) continue;
+            auto &target = queue[(unsigned(cur)+steps[s])%QueueBuckets];
+            const auto newSize = std::size_t(ends[s]-target.cells.data());
+            GLOB2_GRADIENT_BENCH_EVENT(relaxations, newSize-target.size);
             pending += newSize-target.size; target.size=newSize;
         }
     }
     pending -= count; bucket.clear();
+}
+
+template<unsigned QueueBuckets = BUCKETS, std::size_t N, class ClassAt>
+void expandPreparedTerrainBucket(std::uint16_t *gradient, GradientBucket *queue,
+    std::size_t &pending, int cur, int limit, const field::Grid &grid,
+    const PreparedTerrainCosts<N> &profile, ClassAt classAt)
+{
+    if (grid.powerOfTwo())
+        expandPreparedTerrainBucketAddressed<true,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt);
+    else
+        expandPreparedTerrainBucketAddressed<false,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt);
+}
+
+template<std::size_t N, class TerrainAt>
+void expandTerrainBucket(std::uint16_t *gradient, GradientBucket *queue,
+    std::size_t &pending, int cur, int limit, const field::Grid &grid,
+    const PreparedTerrainCosts<N> &profile, TerrainAt terrainAt)
+{
+    expandPreparedTerrainBucket(gradient, queue, pending, cur, limit, grid, profile,
+        [&](std::size_t i) { return profile.terrainClasses[terrainAt(i)]; });
+}
+
+// Compatibility entry point for independently supplied cost tables.
+template<std::size_t N, class TerrainAt>
+void expandTerrainBucket(std::uint16_t *gradient, GradientBucket *queue,
+    std::size_t &pending, int cur, int limit, const field::Grid &grid,
+    const std::array<EntrySteps, N> &costs, TerrainAt terrainAt)
+{
+    const PreparedTerrainCosts<N> profile(costs);
+    expandTerrainBucket(gradient, queue, pending, cur, limit, grid, profile, terrainAt);
+}
+
+template<std::size_t N, class ClassAt>
+void propagatePreparedTerrainField(std::uint16_t *gradient, int maxCost,
+    field::Grid grid, GradientWorkspace &workspace, const PreparedTerrainCosts<N> &profile, ClassAt classAt)
+{
+    auto *buckets=workspace.buckets.data();
+    for (auto &bucket:workspace.buckets) bucket.clear();
+    auto &deferred=workspace.deferredSeeds; deferred.clear();
+    std::size_t pending=0;
+    auto enqueueSeed = [&](std::size_t i) {
+        if(gradient[i] <= GRADIENT_UNREACHABLE) return;
+        const int cost=GRADIENT_AT_GOAL-gradient[i];
+        if(cost<int(BUCKETS)) {buckets[cost].push(i);++pending;}
+        else deferred.push_back({cost,int(i)});
+    };
+    // Prove equivalence across every non-forbidden cell, including goals and
+    // currently unreachable cells. A distant cheaper tile may still provide
+    // the best route, and a goal's entry cost affects its incoming edges.
+    // Collect seeds during the same scan; after the first mismatch only seed
+    // collection is needed. N is outside the prepared class index range.
+    unsigned uniformClass = N;
+    std::size_t i = 0;
+    for (; i < grid.cells(); ++i)
+    {
+        if (gradient[i] == GRADIENT_FORBIDDEN) continue;
+        const unsigned c = classAt(i);
+        if (uniformClass == N) uniformClass = c;
+        else if (uniformClass != c) break;
+        enqueueSeed(i);
+    }
+    const bool uniform = i == grid.cells();
+    for (; i < grid.cells(); ++i) enqueueSeed(i);
+    std::sort(deferred.begin(),deferred.end());
+    const int limit=std::min(maxCost,COST_LIMIT);
+    auto sweep = [&](const auto &selectedProfile, auto selectedClassAt) {
+        std::size_t next=0;
+        for(int cur=0;(pending || next<deferred.size()) && cur<=limit;++cur)
+        {
+            if(!pending) cur=deferred[next].first;
+            for(;next<deferred.size()&&deferred[next].first==cur;++next)
+            {buckets[unsigned(cur)%BUCKETS].push(deferred[next].second);++pending;}
+            expandPreparedTerrainBucket(gradient,buckets,pending,cur,limit,grid,selectedProfile,selectedClassAt);
+        }
+    };
+    if (uniform && uniformClass < N)
+    {
+        const PreparedTerrainCosts<1> single(std::array<EntrySteps, 1>{profile.classes[uniformClass]});
+        sweep(single, [](std::size_t) { return 0; });
+    }
+    else
+        sweep(profile, classAt);
 }
 
 template<class TerrainAt>
@@ -138,25 +240,8 @@ void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost,
         });
         return;
     }
-    auto *buckets=workspace.buckets.data();
-    for (auto &bucket:workspace.buckets) bucket.clear();
-    auto &deferred=workspace.deferredSeeds; deferred.clear();
-    std::size_t pending=0;
-    for(std::size_t i=0;i<grid.cells();++i) if(gradient[i]>GRADIENT_UNREACHABLE)
-    {
-        const int cost=GRADIENT_AT_GOAL-gradient[i];
-        if(cost<int(BUCKETS)) {buckets[cost].push(i);++pending;}
-        else deferred.push_back({cost,int(i)});
-    }
-    std::sort(deferred.begin(),deferred.end());
-    const int limit=std::min(maxCost,COST_LIMIT);
-    std::size_t next=0;
-    for(int cur=0;(pending || next<deferred.size()) && cur<=limit;++cur)
-    {
-        if(!pending) cur=deferred[next].first;
-        for(;next<deferred.size()&&deferred[next].first==cur;++next)
-        {buckets[unsigned(cur)%BUCKETS].push(deferred[next].second);++pending;}
-        expandTerrainBucket(gradient,buckets,pending,cur,limit,grid,TERRAIN_ENTRY_COSTS[swim],terrainAt);
-    }
+    const auto &profile = PREPARED_TERRAIN_COSTS[swim];
+    propagatePreparedTerrainField(gradient,maxCost,grid,workspace,profile,
+        [&](std::size_t i) { return profile.terrainClasses[terrainAt(i)]; });
 }
 }

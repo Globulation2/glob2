@@ -274,8 +274,10 @@ void Gradient::recalculate(Player* player, field::Frontier& frontier)
 	if(info.terrainTravel!=field::TerrainTravel::Geometric &&
         (info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
     {
-        field::expandTerrainTravel(values,width,height,info.terrainTravel,[&](std::size_t i){return map->terrainTypeAt(i);});
-        queue.clear();
+		field::expandTerrainTravel(
+			values, width, height, info.terrainTravel,
+			[&](std::size_t i) { return map->terrainTypeAt(i); }, map->terrainRegistry());
+		queue.clear();
     }
     else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
 }

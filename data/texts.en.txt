@@ -5547,16 +5547,20 @@ Limit drawing across the application. Lower values reduce rendering work. Game s
 [ice]
 Ice
 [road]
-Road
+Trail
 [experiment ice-terrain]
 Ice terrain
 [experiment ice-terrain help]
 Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
 [experiment road-terrain]
-Road terrain
+Trail terrain
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected.
 [experiment markets-v2]
 Markets V2
 [experiment markets-v2 help]
 Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.
+[Import Terrain Definitions]
+Import Terrain Definitions
+[Terrain palette]
+Terrain palette

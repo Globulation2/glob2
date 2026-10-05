@@ -10,3 +10,7 @@ frame while alpha is exact. Lower levels use bilinear resampling.
 The native sprite test verifies that this atlas is accepted, keeps every frame's
 alpha and retains native logical dimensions. Test artwork is original synthetic
 content under the repository's GPL-3.0-or-later license.
+
+`terrain-hd-solid.webp` is a synthetic 128×128 lossless RGBA tile (23, 57, 91,
+255). Terrain tests use it to verify compiled-page reads, partial HD packs and
+fractional sampling without depending on optional production HD terrain art.

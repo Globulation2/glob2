@@ -135,8 +135,8 @@ TEST_CASE("Terrain simulation change rejects released replays and enforces accep
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 134);
-	CHECK(VERSION_MINOR == 135);
-	CHECK(NET_PROTOCOL_VERSION == 55);
+	CHECK(VERSION_MINOR == 136);
+	CHECK(NET_PROTOCOL_VERSION == 56);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;

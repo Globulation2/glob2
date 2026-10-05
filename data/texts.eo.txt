@@ -5547,16 +5547,20 @@ Limigu desegnadon en la tuta aplikaĵo. Pli malaltaj valoroj reduktas la desegna
 [ice]
 Glacio
 [road]
-Vojo
+Pado
 [experiment ice-terrain]
 Glacia tereno
 [experiment ice-terrain help]
 Aldonas glacion al la mapredaktilo. Teraj unuoj moviĝas je duona rapido kaj perdas unu sanpoenton ĉiun 32-an simulpaŝon sur glacio. Glacio ne povas enhavi konstruaĵojn aŭ rimedojn.
 [experiment road-terrain]
-Voja tereno
+Pada tereno
 [experiment road-terrain help]
-Aldonas pavimitajn vojojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapido. Vojoj permesas konstruaĵojn sed ne rimedojn.
+Aldonas eluzitajn padojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapideco. Padoj permesas konstruaĵojn, sed ne rimedojn. Flugantaj unuoj ne estas influataj.
 [experiment markets-v2]
 Merkatoj V2
 [experiment markets-v2 help]
 Laboristoj povas preni provizojn el la komuna merkata stoko. Merkatoj povas plialtniveliĝi por stoki tritikon kaj lignon, poste ĉiujn rimedojn. Inter teamoj oni ankoraŭ interŝanĝas nur fruktojn. Validas por novaj ludoj; konservitaj ludoj retenas sian originan agordon.
+[Import Terrain Definitions]
+Importi terendifinojn
+[Terrain palette]
+Terenpaletro

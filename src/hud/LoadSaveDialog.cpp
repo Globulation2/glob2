@@ -14,10 +14,12 @@ namespace fe = Glob2UI;
 using fe::Element;
 using fe::Presentation;
 
-LoadSaveDialog::LoadSaveDialog(const char *directory, const char *extension, bool isLoad, std::string title,
-							   const char *defaultFileName, NameFunction filenameToName, PathFunction nameToFilename,
-							   Glob2UI::Surface surface)
-	: InGameDialog(surface), isLoad(isLoad), title(std::move(title)), filenameToName(filenameToName), nameToFilename(nameToFilename)
+LoadSaveDialog::LoadSaveDialog(const char *directory, const char *extension, bool isLoad,
+							   std::string title, const char *defaultFileName,
+							   NameFunction filenameToName, PathFunction nameToFilename,
+							   Glob2UI::Surface surface, bool includeGzip)
+	: InGameDialog(surface), isLoad(isLoad), includeGzip(includeGzip), title(std::move(title)),
+	  filenameToName(filenameToName), nameToFilename(nameToFilename)
 {
 	if (nameToFilename)
 	{
@@ -45,7 +47,7 @@ void LoadSaveDialog::refresh()
 	auto &manager = *GAGCore::Toolkit::getFileManager();
 	for (const std::string &suffix : {ext, ext + ".gz"})
 	{
-		if (ext.empty() && suffix != ext)
+		if ((!includeGzip || ext.empty()) && suffix != ext)
 			continue;
 		if (!manager.initDirectoryListing(dir, suffix, false))
 			continue;
@@ -130,6 +132,14 @@ void LoadSaveDialog::exportPresentedFile()
 	if (persistence)
 		return;
 	exportSave();
+}
+
+void LoadSaveDialog::showLoadFailure(const std::string &message)
+{
+	saveFailed = true;
+	status = message;
+	resume();
+	invalidate();
 }
 
 void LoadSaveDialog::showSaveFailure()

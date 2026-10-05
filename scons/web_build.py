@@ -66,10 +66,6 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             "'-sPTHREAD_POOL_SIZE=Math.max(navigator.hardwareConcurrency||1,1)'",
             '-sALLOW_BLOCKING_ON_MAIN_THREAD=0',
             '--js-library', 'browser/threaded-egl.js'])
-    if threaded:
-        env.Append(LINKFLAGS=['-Wl,--wrap=' + name for name in
-            ('SDL_OpenAudioDeviceStream', 'SDL_DestroyAudioStream', 'SDL_PutAudioStreamData',
-             'SDL_LockAudioStream', 'SDL_UnlockAudioStream', 'SDL_PauseAudioDevice', 'SDL_ResumeAudioDevice')])
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once
 #define HAVE_OPENGL 1
@@ -89,6 +85,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
+        "'-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]'",
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js',
         '--post-js', 'browser/webgl-shaders.js'] + PORTS)
@@ -112,7 +109,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             return 0
         asset_inputs = list(source_files(root, 'web'))
         exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+            ['tools/package_assets.py', 'tools/terrain_tileset.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
@@ -121,7 +118,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         # The plan also reads the browser copies (browser/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
         plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py',
-                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h']
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
@@ -149,8 +146,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
-    if threaded:
-        files += ['browser/Audio.cpp']
+    files += ['browser/Audio.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -246,6 +242,21 @@ def build_web(directory, identity, arguments):
         return 0
     page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html')],
         ['browser/shell.html', 'browser/studio.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    # The music decoder has independent Wasm memory in both browser variants.
+    music = env.Clone()
+    music['LIBS'] = [music.File(str(Path(directory).resolve() / 'opus/prefix/lib' / ('lib' + name + '.a')))
+                     for name in ('opusfile', 'opus', 'ogg')]
+    music['LINKFLAGS'] = ['-O2', '-fwasm-exceptions', '--no-entry',
+        '-sMODULARIZE=1', '-sEXPORT_NAME=createMusicRuntime', '-sENVIRONMENT=worker',
+        '-sALLOW_MEMORY_GROWTH=1', '-sMAXIMUM_MEMORY=268435456',
+        '-sEXPORTED_FUNCTIONS=["_malloc","_free"]',
+        '-sEXPORTED_RUNTIME_METHODS=["UTF8ToString","HEAPU8","HEAP16"]']
+    music_objects = [music.Object(str(Path(directory) / 'music-obj' / (source + '.o')), source)
+        for source in ('browser/MusicWorker.cpp', 'src/audio/MusicProducer.cpp', 'src/audio/MusicStream.cpp')]
+    music_program = music.Program(str(Path(directory) / 'music-runtime.js'), music_objects)
+    music.SideEffect(str(Path(directory) / 'music-runtime.wasm'), music_program)
+    music_scripts = env.Install(directory, ['browser/music-worker.js', 'browser/music-output.js'])
+    env.Depends(page, [music_program, music_scripts])
     # One recording module serves both game runtimes, and is fetched only on use.
     from recording_dependencies import build as build_recording, attach as attach_recording
     recording_prefix = Path(directory) / 'recording/prefix'

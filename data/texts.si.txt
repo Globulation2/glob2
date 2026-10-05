@@ -5547,16 +5547,20 @@ Omeji izris v celotni aplikaciji. Nižje vrednosti zmanjšajo delo pri izrisu. H
 [ice]
 Led
 [road]
-Cesta
+Steza
 [experiment ice-terrain]
 Ledeni teren
 [experiment ice-terrain help]
 Doda led v urejevalnik zemljevidov. Kopenske enote se premikajo s polovično hitrostjo in izgubijo eno točko zdravja vsakih 32 simulacijskih korakov na ledu. Na ledu ne more biti zgradb ali virov.
 [experiment road-terrain]
-Cestni teren
+Teren steze
 [experiment road-terrain help]
-Doda tlakovane ceste v urejevalnik zemljevidov. Kopenske enote se premikajo z dvojno hitrostjo. Ceste omogočajo zgradbe, ne pa virov.
+V urejevalnik zemljevidov doda obrabljene steze. Kopenske enote se premikajo z dvojno hitrostjo. Steze omogočajo zgradbe, vendar ne virov. Na leteče enote to ne vpliva.
 [experiment markets-v2]
 Tržnice V2
 [experiment markets-v2 help]
 Delavci lahko jemljejo zaloge iz skupnega skladišča tržnic. Tržnice je mogoče nadgraditi za shranjevanje pšenice in lesa, nato vseh surovin. Med ekipami se še vedno izmenjuje le sadje. Velja za nove igre; shranjene igre ohranijo prvotno nastavitev.
+[Import Terrain Definitions]
+Uvozi definicije terena
+[Terrain palette]
+Paleta terenov

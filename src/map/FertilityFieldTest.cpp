@@ -312,10 +312,117 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     map.makeWater(9,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
-    map.setCellTerrain(8,8,ROAD);
+    map.setCellTerrain(8,8,TRAIL);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)==0);
     map.setCellTerrain(8,8,GRASS);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)>0);
+}
+
+TEST_CASE("habitat and movement edits reuse exact ecology fields")
+{
+    TinyMap map;
+    map.makeWater(9,8);
+    const auto index=map.coordToIndex(8,8);
+    const auto& cache=map.resourceGrowthField();
+    const auto land=cache.landField().values(), aquatic=cache.aquaticField();
+    const auto wheat=cache.rate(index,WHEAT);
+    REQUIRE(wheat>0);
+    for(const auto type : {TRAIL,ICE,GRASS_SAND_SHORE,GRASS})
+    {
+        map.setCellTerrain(index,type);
+        // This also checks validity after each edit's terrain-generation bump.
+        REQUIRE(cache.validFor(map));
+        CHECK(map.resourceGrowthField().landField().values()==land);
+        CHECK(cache.aquaticField()==aquatic);
+        CHECK(cache.rate(index,WHEAT)==(type==GRASS ? wheat : 0));
+    }
+    map.putResource(8,8,WHEAT);
+    map.tiles[index].resource.amount=8;
+    map.tiles[index].canResourcesGrow=false;
+    CHECK(cache.validFor(map));
+    // Occupancy and the scenario override are checked by growth's caller, not
+    // dependencies of the cached terrain-only opportunity rate.
+    CHECK(cache.rate(index,WHEAT)==wheat);
+}
+
+TEST_CASE("ecology rebuilt inside a terrain batch survives its commit")
+{
+    TinyMap map;
+    const auto& cache=map.resourceGrowthField();
+    {
+        auto outer=map.editTerrain();
+        map.makeWater(9,8);
+        CHECK_FALSE(cache.validFor(map));
+        REQUIRE(map.resourceGrowthField().landField().at(8,8)>0);
+        {
+            auto inner=map.editTerrain();
+            map.makeSand(7,8);
+            CHECK_FALSE(cache.validFor(map));
+            map.resourceGrowthField();
+        }
+        CHECK(cache.validFor(map));
+    }
+    CHECK(cache.validFor(map));
+    Fertility::GrowthCache fresh;
+    fresh.rebuild(map);
+    CHECK(cache.landField().values()==fresh.landField().values());
+    CHECK(cache.aquaticField()==fresh.aquaticField());
+}
+
+TEST_CASE("future terrain ecology properties invalidate only their effective inputs")
+{
+    TinyMap map;
+    map.makeWater(9,8);
+    const auto index=map.coordToIndex(8,8);
+    auto& cache=map.growthCache;
+    const auto grass=terrainProperties(GRASS);
+    // Exercise properties not varied by today's built-in definitions. Each
+    // change can alter a field or rate even when the terrain enum stays fixed.
+    for(int input=0;input<5;++input)
+    {
+        cache.rebuild(map);
+        auto changed=grass;
+        switch(input)
+        {
+        case 0: changed.fertilitySource=true; changed.fertilityQ8=-128; break;
+        case 1: changed.inhibitionQ8=128; break;
+        case 2: changed.shoreSupportQ8=128; break;
+        case 3: changed.growthQ8=0; break;
+        case 4: changed.growthQ8=512; break;
+        }
+        cache.terrainChanged(index,grass,changed);
+        CHECK_FALSE(cache.validFor(map));
+    }
+
+    cache.rebuild(map);
+    const auto land=cache.landField().values(), aquatic=cache.aquaticField();
+    const auto wood=cache.rate(index,WOOD);
+    auto changed=grass;
+    changed.fertilityQ8=1024; // Disabled source: this value contributes nothing.
+    changed.allowedResources &= ~(1u<<WHEAT);
+    changed.walkable=false;
+    changed.groundHealthQ8=-8;
+    cache.terrainChanged(index,grass,changed);
+    REQUIRE(cache.validFor(map));
+    CHECK(cache.rate(index,WHEAT)==0);
+    CHECK(cache.rate(index,WOOD)==wood);
+    CHECK(cache.landField().values()==land);
+    CHECK(cache.aquaticField()==aquatic);
+    auto enabled=changed;
+    enabled.fertilitySource=true;
+    cache.terrainChanged(index,changed,enabled);
+    CHECK_FALSE(cache.validFor(map));
+
+    map.makeSand(8,8);
+    cache.rebuild(map);
+    const auto sand=terrainProperties(SAND);
+    changed=sand;
+    changed.inhibitionQ8=1024; // Both inhibit fully after saturation.
+    cache.terrainChanged(index,sand,changed);
+    CHECK(cache.validFor(map));
+    changed.inhibitionQ8=255;
+    cache.terrainChanged(index,sand,changed);
+    CHECK_FALSE(cache.validFor(map));
 }
 
 TEST_CASE("growth throughput includes multiple opportunities before occupancy")
@@ -328,7 +435,8 @@ TEST_CASE("growth throughput includes multiple opportunities before occupancy")
 
 TEST_CASE("weighted coupled land and shoreline kernels match independent probes")
 {
-    for(const auto dimensions:{std::pair{1,1},std::pair{7,5},std::pair{32,16}})
+    for(const auto dimensions:{std::pair{1,1},std::pair{1,7},std::pair{7,1},
+        std::pair{7,5},std::pair{23,17},std::pair{32,16}})
         for(int sparse: {0,1,2})
         {
             const auto [w,h]=dimensions;

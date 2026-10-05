@@ -5547,16 +5547,20 @@ Bevenniñ an tresañ en arload a-bezh. An talvoudoù izeloc’h a ziskar al labo
 [ice]
 Gelo
 [road]
-Estrada
+Trilha
 [experiment ice-terrain]
 Terreno de gelo
 [experiment ice-terrain help]
 Adiciona gelo ao editor de mapas. As unidades terrestres se movem à metade da velocidade e perdem um ponto de vida a cada 32 passos de simulação expostas ao gelo. O gelo não pode conter construções nem recursos.
 [experiment road-terrain]
-Terreno de estrada
+Terreno de trilha
 [experiment road-terrain help]
-Adiciona estradas de paralelepípedos ao editor de mapas. As unidades terrestres se movem ao dobro da velocidade. As estradas permitem construções, mas não recursos.
+Adiciona trilhas desgastadas ao editor de mapas. As unidades terrestres se movem ao dobro da velocidade. As trilhas permitem construções, mas não recursos. As unidades voadoras não são afetadas.
 [experiment markets-v2]
 Marc’hadoù V2
 [experiment markets-v2 help]
 Gallout a ra al labourerien kemer pourvezioù e stok boutin ar marc’hadoù. Gwellaat ar marc’hadoù a c’haller evit mirout gwinizh ha koad, ha goude-se pep danvez. Frouezh hepken a vez eskemmet etre skipailhoù. Evit ar c’hoarioù nevez; ar c’hoarioù enrollet a vir o arventenn orin.
+[Import Terrain Definitions]
+Enporzhiañ despizadurioù an tachennoù
+[Terrain palette]
+Paletenn an tachennoù

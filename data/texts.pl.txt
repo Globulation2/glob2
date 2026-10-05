@@ -5547,16 +5547,20 @@ Ogranicza rysowanie w całej aplikacji. Niższe wartości zmniejszają nakład p
 [ice]
 Lód
 [road]
-Droga
+Ścieżka
 [experiment ice-terrain]
 Teren lodowy
 [experiment ice-terrain help]
 Dodaje lód do edytora map. Jednostki lądowe poruszają się z połową prędkości i tracą jeden punkt zdrowia co 32 kroki symulacji na lodzie. Na lodzie nie mogą znajdować się budynki ani zasoby.
 [experiment road-terrain]
-Teren dróg
+Teren ścieżki
 [experiment road-terrain help]
-Dodaje brukowane drogi do edytora map. Jednostki lądowe poruszają się z podwójną prędkością. Drogi dopuszczają budynki, ale nie zasoby.
+Dodaje wydeptane ścieżki do edytora map. Jednostki lądowe poruszają się z podwójną prędkością. Na ścieżkach można stawiać budynki, ale nie mogą się na nich znajdować surowce. Nie wpływa to na jednostki latające.
 [experiment markets-v2]
 Rynki V2
 [experiment markets-v2 help]
 Robotnicy mogą pobierać zapasy ze wspólnego magazynu rynków. Rynki można ulepszać, aby przechowywały pszenicę i drewno, a następnie wszystkie zasoby. Między drużynami nadal wymienia się tylko owoce. Dotyczy nowych gier; zapisy zachowują pierwotne ustawienie.
+[Import Terrain Definitions]
+Importuj definicje terenu
+[Terrain palette]
+Paleta terenów

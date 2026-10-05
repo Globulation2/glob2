@@ -1,114 +1,51 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
-
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_audio.h>
-#include <opusfile.h>
-#include <AudioFormat.h>
-#include <vector>
-#include <queue>
-#include <map>
+#include "MusicTrack.h"
+#include "MusicTypes.h"
 #include <memory>
 #include <string>
-
-#include "MusicTrack.h"
-#include "PlayerVoice.h"
-
-namespace Music
-{
-class Preview;
-}
+#include <vector>
 class OrderVoiceData;
-
+// Application-thread facade. Playback state belongs to the producer/consumer;
+// callers send controls and inspect value snapshots, never lock the audio device.
+// All public methods, including destruction, run on the application's owner thread.
 class SoundMixer
 {
-public:
-	//! Preserve the original fade duration (16384 frames at 44100 Hz).
-	static constexpr unsigned FadeSampleCount = 2 * ((16384 * GAGCore::AudioSampleRate + 22050) / 44100);
-	enum MusicMode
-	{
-		MODE_STOPPED = 0,
-		MODE_NORMAL,
-		MODE_EARLY_CHANGE,
-		MODE_STOP,
-		MODE_START
-	} mode;
-	std::vector<OggOpusFile *> tracks;
-	int actTrack, nextTrack;
-	//! How far the current fade has advanced, in Sint16 samples. Carried
-	//! across callbacks so a fade lasts the same time whatever the device
-	//! buffer size. Read and written on the audio thread.
-	unsigned fadePos;
-	//! Track asked for while a fade was already running, or -1 for none. A
-	//! fade spans many callbacks, so the request is held here and started by
-	//! mixaudio() once the fade lands, rather than cutting it off mid-mix.
-	//! Guarded by SDL_LockAudioStream, like mode and fadePos.
-	int pendingTrack;
-	bool soundEnabled;
-    SDL_AudioStream *audioStream = nullptr;
-	unsigned musicVolume;
-	unsigned voiceVolume;
-	
-	//! Map of voices to players. PlayerVoice (the SDL-free resampling state
-	//! machine) lives in PlayerVoice.h.
-	std::map<int, PlayerVoice> voices;
-	//! pointer to the structure holding the speex decoder
-	void *speexDecoderState;
-	
-	//! if voice data is available, insert it to output
-	inline void handleVoiceInsertion(int *outputSample, int voicevol);
-	
-protected:
-	void openAudio(void);
-	std::string activeMusicSet = "original";
-
-public:
+  public:
+	static constexpr unsigned FadeSampleCount = 2 * Music::GameFadeFrames;
 	SoundMixer(unsigned musicvol = 255, unsigned voicevol = 255, bool mute = false);
-
 	~SoundMixer();
-
-	//! Load an Ogg Opus file and add (or replace at `index`) into the track list.
-	//! Returns the resulting track index on success, -1 if the file cannot be
-	//! opened, or -2 if it is not a usable Ogg Opus stream. On success the
-	//! OggOpusFile takes ownership of the underlying FILE* and closes it via
-	//! op_free in ~SoundMixer.
-	int loadTrack(const std::string name, int index = -1);
-
-	//! Load `name` into the slot for the given enum track. Convenience wrapper
-	//! over the int-indexed overload so callers don't hard-code track numbers.
-	int loadTrack(const std::string name, MusicTrack track);
-    bool loadTracks(const std::vector<std::pair<std::string, MusicTrack>>& requests);
-
-	void setNextTrack(unsigned i, bool earlyChange=false);
-
-	//! Enum-typed overload of setNextTrack. Prefer this in new code so call
-	//! sites read as `setNextTrack(MusicTrack::WarEvent, true)` rather than
-	//! `setNextTrack(4, true)`.
-	void setNextTrack(MusicTrack track, bool earlyChange=false);
-
+	// Loading may wait for preparation, but a failure retains the installed track/set.
+	// loadTrack returns its slot, -1 for an unreadable file, or -2 for invalid music.
+	// loadTracks attempts every request and reports whether they all succeeded.
+	int loadTrack(std::string name, int index = -1);
+	int loadTrack(std::string name, MusicTrack index);
+	bool loadTracks(const std::vector<std::pair<std::string, MusicTrack>> &requests);
+	void setNextTrack(unsigned index, bool early = false);
+	void setNextTrack(MusicTrack index, bool early = false);
+	void stopMusic();
+	void setVolume(unsigned music, unsigned voice, bool mute);
+	bool selectMusicSet(const std::string &preference);
+	const std::string &getMusicSet() const { return activeMusicSet; }
 	static std::vector<std::string> getMusicSets();
-	static std::string musicSetLabel(const std::string& name);
-	//! Empty preference chooses randomly. Replaces the complete trio atomically.
-	bool selectMusicSet(const std::string& preference);
-	const std::string& getMusicSet() const { return activeMusicSet; }
-
-	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
-	
-	void stopMusic(void);
-	// A screen-owned preview temporarily replaces music while retaining gameplay
-	// cursor/mood state. Guard lifetime and control changes with the stream lock.
-	Music::Preview *preview = nullptr;
-	void setPreview(Music::Preview *value);
-	
-	//! Tells whether the given player is being heard in voip
+	static std::string musicSetLabel(const std::string &name);
+	// Zero means preparation failed. A token controls only the preview that issued it;
+	// late controls and closes from older screens are ignored.
+	unsigned openPreview(const std::array<std::string, 3> &paths);
+	void closePreview(unsigned session);
+	void previewControl(unsigned session, Music::Control command, double value = 0);
+	// Consumer position excludes the producer's look-ahead. Snapshots may lag by a
+	// block/report interval; they are never a mutable view of the decoder.
+	Music::Snapshot playbackSnapshot();
+	Music::Diagnostics diagnostics() const;
+	bool enabled() const;
 	bool isPlayerTransmittingVoice(int player);
-	
-	//! Add voice data from order. Data should be copied as order will be destroyed after this call
 	void addVoiceData(std::shared_ptr<OrderVoiceData> order);
+
+  private:
+	struct Impl;
+	std::unique_ptr<Impl> impl;
+	std::string activeMusicSet = "original";
+	unsigned previewSession = 0, nextPreviewSession = 0;
 };
-
-
-
-

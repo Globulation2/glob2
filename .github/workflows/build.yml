@@ -76,6 +76,7 @@ jobs:
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v' \
             --check 'terrain ecology analysis contracts' 'python3 tools/test_terrain_ecology.py' \
+            --check 'gradient benchmark contracts' 'python3 tools/test_gradient_benchmark.py' \
             --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
       - name: Check that the sim version follows the simulation
         env:
@@ -876,6 +877,10 @@ jobs:
             build/emscripten/client/release/recording-video.js
             build/emscripten/client/release/recording-runtime.js
             build/emscripten/client/release/recording-runtime.wasm
+            build/emscripten/client/release/music-worker.js
+            build/emscripten/client/release/music-output.js
+            build/emscripten/client/release/music-runtime.js
+            build/emscripten/client/release/music-runtime.wasm
             build/emscripten/client/release/licenses/
             build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
@@ -909,6 +914,10 @@ jobs:
             build/emscripten/client/release/recording-video.js
             build/emscripten/client/release/recording-runtime.js
             build/emscripten/client/release/recording-runtime.wasm
+            build/emscripten/client/release/music-worker.js
+            build/emscripten/client/release/music-output.js
+            build/emscripten/client/release/music-runtime.js
+            build/emscripten/client/release/music-runtime.wasm
             build/emscripten/client/release/licenses/
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm

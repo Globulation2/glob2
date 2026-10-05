@@ -14,7 +14,7 @@
 
 Uint32 Map::checkSum(bool heavy)
 {
-	Uint32 cs=size;
+	Uint32 cs = size ^ terrainRegistry().checksum();
 	if (heavy)
 	{
 		for (size_t index = 0; index < tiles.size(); ++index)

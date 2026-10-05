@@ -2,12 +2,17 @@
 #include "SceneMap.h"
 
 #include "Map.h"
+#include "TerrainRegistry.h"
 #include <algorithm>
 
-void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.displayViewportH); }
+void SceneMap::extract(const Map &map)
+{
+	extract(map, map.displayViewportW, map.displayViewportH);
+}
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
+	registry = map.frozenTerrainRegistry();
 	w = map.getW();
 	h = map.getH();
 	wMask = map.getMaskW();
@@ -17,8 +22,8 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	sourceKey = &map;
 	const size_t size = size_t(w) * h;
 	terrain.resize(size);
-    terrainTypes = map.terrainTypes();
-    layeredTerrain = false;
+	terrainTypes = map.terrainTypes();
+	terrainAppearances.resize(size);
 	resources.resize(size);
 	resourcesGrow.resize(size);
 	groundUnits.resize(size);
@@ -28,7 +33,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.tiles[i];
-        layeredTerrain |= terrainPresentation(terrainTypes[i]).edgeFirstFrame >= 0 || terrainPresentation(terrainTypes[i]).backdropSprite;
+		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
 		resourcesGrow[i] = tile.canResourcesGrow;
@@ -38,8 +43,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 		if (includeScriptAreas)
 		{
 			scriptAreas[i] = 0;
-			for (int n=0; n<9; ++n)
-				if (map.isPointSet(n, int(i)&wMask, int(i>>wDec))) scriptAreas[i] |= 1 << n;
+			for (int n = 0; n < 9; ++n)
+				if (map.isPointSet(n, int(i) & wMask, int(i >> wDec)))
+					scriptAreas[i] |= 1 << n;
 		}
 	}
 	undermap.resize(size);
@@ -69,7 +75,8 @@ bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 v
 }
 
 // Same conversions as Map's, reading the extracted viewport bounds.
-void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
+void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX,
+									int viewportY) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -81,7 +88,8 @@ void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewpo
 	*py = y << 5;
 }
 
-void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
+void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX,
+										  int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -93,37 +101,22 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 	*py = y << 5;
 }
 
-TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
+SceneMap::SceneMap() : registry(TerrainRegistry::builtins()) {}
+
+const TerrainPresentation &SceneMap::terrainPresentation(TerrainType type) const
 {
-    const auto own = terrainTypeAt(x,y);
-    const auto &base = terrainPresentation(own);
-    auto result = terrainBaseLayers(own,getTerrain(x,y),base,animationTime);
-    const int firstEdge = base.backdropSprite ? 2 : 1;
-    if (!layeredTerrain) return result;
-    // Blend only a narrow decorative border into neighboring cells. The material
-    // and movement boundary remain exactly on the gameplay-cell boundary.
-    constexpr int dx[4] = {0,1,0,-1}, dy[4] = {-1,0,1,0};
-    std::array<TerrainType,4> types{};
-    std::array<unsigned,4> masks{};
-    int count = 0;
-    for (int side=0; side<4; ++side)
-    {
-        const auto other = terrainTypeAt(x+dx[side],y+dy[side]);
-        const auto &p = terrainPresentation(other);
-        if (p.edgeFirstFrame < 0 || p.layerPriority <= base.layerPriority) continue;
-        int slot=0;
-        while (slot<count && types[slot]!=other) ++slot;
-        if (slot==count) types[count++]=other;
-        masks[slot] |= 1u << side;
-    }
-    for (int i=0; i<count; ++i)
-        for (int j=i+1; j<count; ++j)
-            if (terrainPresentation(types[j]).layerPriority < terrainPresentation(types[i]).layerPriority)
-            { std::swap(types[i],types[j]); std::swap(masks[i],masks[j]); }
-    for (int i=0; i<count; ++i)
-        {
-        result.frames[i+firstEdge] = terrainPresentation(types[i]).edgeFirstFrame + masks[i]-1;
-        result.materials[i+firstEdge] = types[i];
-    }
-    return result;
+	return registry->presentation(type);
+}
+
+bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
+{
+	for (int yi = y; yi < y + h; yi++)
+		for (int xi = x; xi < x + w; xi++)
+		{
+			const size_t i = coordToIndex(xi, yi);
+			if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
+				!registry->properties(terrainTypes[i]).buildable)
+				return false;
+		}
+	return true;
 }

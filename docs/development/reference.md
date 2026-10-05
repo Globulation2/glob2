@@ -312,8 +312,8 @@ filesystem reads; CPU workers decode WebP directly to ARGB8888, cut sheets, buil
 native atlases and prepare upload pixels and alpha-weighted mip chains. Fonts
 share immutable source bytes but open their SDL_ttf objects on the owner thread.
 Mesh parsing and stereo Opus stream preparation use the same scheduler. Mutable
-music cursors are independent requests. GPU creation/upload, SDL renderer textures
-and live object publication run on the owner thread. Workers never wait on child
+music playback cursors belong to the dedicated music producer. GPU creation/upload,
+SDL renderer textures and live object publication run on the owner thread. Workers never wait on child
 jobs or call renderer APIs.
 
 Use `requestSprite`/`findSprite` and `pollAssets` for asynchronous families;
@@ -699,13 +699,13 @@ captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
 
-Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
-resources use canonical map rows, with sorted source-tile indices selecting the
-contiguous visible vertex range. Translation places a canonical chunk or row at
-its current wrapped-map position, so camera panning does not change its vertices.
-Each entry compares the exact current tile frame/visibility vector before reuse:
-a resource amount, terrain frame or discovery change must invalidate the entry.
-Partial-discovery resources keep the ordinary drawing path. The geometry budget
+Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
+on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
+Fully revealed resources use canonical map rows, with sorted source-tile indices
+selecting the contiguous visible vertex range. Translation places a canonical row
+at its wrapped-map position, so camera panning does not change its vertices.
+Each resource entry compares its exact frame/visibility vector before reuse.
+Partial-discovery resources keep the ordinary drawing path. The resource geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
 eviction; CPU metadata and driver allocation overhead are additional. Each scene
 attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
@@ -831,25 +831,53 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unaffected.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
-- Terrain simulation properties live in `src/map/TerrainProperties.h`, indexed by
-  stable `TerrainType` IDs. Walking, swimming, flying, building eligibility,
+- Terrain simulation properties retain the fixed layout in `src/map/TerrainProperties.h`,
+  indexed by stable 16-bit `TerrainType` IDs in a map-owned immutable `TerrainRegistry`.
+  Use `map.terrainProperties(type)` or `map.terrainPropertiesAt(...)`; the global
+  constexpr table defines only the seven built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
   an editor brush or a generator's material selection).
 - `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
   state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
-  batch edits with `editTerrain()` so snapshots, topology and ecology caches are
-  invalidated together. The compatibility `getTerrainType` query returns an
+  batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
+  consistent with the canonical IDs. The compatibility `getTerrainType` query returns an
   unknown category for legacy shores; never use it to index the property table.
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
-- Presentation metadata is separate in `TerrainPresentation.h`: atlas, frame range,
-  animation, backdrop, decorative edges and independent map/preview/export colors.
-  Add a stable enum entry and complete both tables for a new material. Experimental
-  authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
-  into matches, while saves retain them independently of the user's current settings.
-- Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
+- Saved sprite ranges, corner semantics and authoring frame selection are frozen in
+  `TerrainCompatibility.h`. Detailed terrain rendering resolves shipped appearances
+  through a presentation-only material catalog, corner coverage resolver and CPU
+  compositor. `data/terrain/tileset.json` defines those materials independently of
+  gameplay IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
+  metadata. See [terrain material authoring](../assets/terrain-materials.md) for
+  variants, boundary profiles, asset validation and cache behavior. Visual catalog
+  changes must not change saved frames or simulation RNG use.
+- Runtime types inherit a shipped appearance and use full tiles; legacy corner
+  adapters apply only to built-ins. Import definitions through
+  `Map::importTerrainDefinitions` before a match or in the editor. It validates and
+  compiles the complete replacement before publishing it, preserves existing IDs,
+  and appends new keys in sorted order. Scenes and gradient jobs retain the same
+  registry snapshot; inner loops borrow indexed data. Scenes cache the shipped
+  appearance in a two-byte cell plane; the compositor resolves equivalent aliases
+  to the same material without scanning custom definitions. Render caches bind the
+  registry snapshot and actual asset revisions. Saved custom colors remain
+  authoritative for previews and minimaps; built-ins use catalog palettes.
+  Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
+  experiments into matches, while saves retain them independently of user settings.
+- Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
+  (`TrailTerrain`). Its external name, translation keys and serialized experiment
+  key remain `road` / `road-terrain` for scripting, reports, editor actions and
+  existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
+  material catalog independently chooses the detailed appearance for that ID.
+- Ecology caches terrain-only land and aquatic fields for the map's lifetime.
+  Normal growth, harvesting, unit movement and building placement do not rebuild
+  them. Map replacement invalidates them; terrain edits invalidate them only when
+  effective fertility contributions, inhibition, shore support or local growth
+  factors change. Habitat-only edits update one cell's resource mask, and other
+  capability changes retain the fields. A query inside an edit batch observes all
+  preceding changes; closing the batch does not discard an already-current field.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,
   while opportunity rates use `Fertility::kRateScale` (three times Q16) so wheat
@@ -858,10 +886,55 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   classic terrain probabilities retain their exact integer numerators.
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
-- Save format 134 stores canonical terrain IDs and fractional terrain health effects.
-  Earlier supported saves derive IDs from their classic sprite ranges and adopt the
-  current simulation. Save floor 58 remains supported; replay floor 134 and network
-  protocol 55 separate clients using the new movement and ecology rules.
+- Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
+  before the tile data. Legacy numeric presentation fields are retained verbatim
+  for round trips and checksums; the material catalog controls detailed drawing.
+  Bounded JSON byte chunks support binary and text streams.
+  Serialization emits definitions in canonical ID order, with object fields in key
+  order, and import/load
+  releases the parsed JSON tree before compilation to bound temporary memory.
+  Loading rebuilds compiled tables before restoring dependent caches;
+  it never consults authoring JSON files. Earlier files use the built-in registry;
+  pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
+  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  Custom registry checksums hash canonical serialized fields, not struct padding.
+  Built-in-only maps keep their previous terrain checksum contribution. Existing
+  map-content hashes cover the embedded section for LAN, online and verification.
+- Registry compilation calculates movement and air costs once, deduplicates cost
+  profiles and caches distinct edge steps. Runtime gradient setup scales with
+  distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
+  kernels dispatch outside cell loops. The general kernel has scalar, SSE2 and NEON
+  implementations and compiled 64/128/256 bucket rings. Map counts select the smallest
+  safe ring from terrain present; unused slow definitions cannot enlarge it. Search
+  setup validates reachable edge costs against the selected ring before changing a
+  field, because a too-small ring can alias a future cost layer. Keep validation out
+  of cell/neighbor expansion; compact production snapshots bound it by distinct costs.
+  Capability counters keep health, air and projectile shortcuts independent of
+  registry size. A* retains the historical built-in lower bound and lowers it only
+  for faster custom terrain actually present, preserving old route choices.
+  Map property queries use a derived two-byte index plane into deduplicated
+  fixed-layout property structs, keeping equivalent custom IDs out of the hot
+  property working set. Canonical tile IDs and persistence remain unchanged.
+  Maps lazily cache a one-byte cost-profile plane and only the distinct costs
+  present in that plane per queried swimming class,
+  removing the ID-to-profile lookup from general-cost cell loops. These planes
+  share ownership with searches/jobs and invalidate together with terrain snapshots.
+  Eager fields, resumed building searches, worker snapshots and strategic travel
+  share compiled integer costs and reusable scratch storage.
+- Runtime-terrain performance qualification compares equivalent maps with 7, 259
+  and 1,024 definitions, plus distinct-cost and 16,384-type stress cases. Use release
+  builds on a quiet machine, warm up, randomize paired execution order and collect
+  at least ten repetitions. Report CPU and wall time separately, with rendering
+  and memory costs. Repeatable regressions over 2% full-match CPU or 5% terrain
+  kernel time block acceptance; noisy measurements do not establish a pass.
+- Keep the terrain index domains explicit when changing this code:
+  canonical `TerrainType` IDs identify saved definitions; property indices select
+  deduplicated simulation structs; per-swimming-class profile bytes select movement
+  costs; scene appearance IDs select shipped visual materials. None is a valid
+  substitute for a canonical ID in serialization or scripts. These derived planes
+  are rebuilt from the registry and cells, never serialized. Registry factories
+  publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
+  authoring presentation strings borrow its owned key/name storage.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.
@@ -953,6 +1026,134 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   SCons does not track `DET_INIT`:
   rebuild affected objects when changing it. Report the actual sanitizer or diagnostic
   coverage and its limits.
+
+
+### Terrain gradient benchmarks
+
+Engine movement profiles are prepared once from the compiled terrain table in
+`src/field/PreparedTerrainCosts.h`. Terrain identities with the same cardinal and
+diagonal entry costs share a cost class; equal edge costs share queue destinations,
+including cardinal/diagonal aliases. Eager propagation can select a one-class
+kernel only after checking every non-forbidden cell, including source cells.
+Lazy searches retain the profile selected by their captured swimming class and
+an immutable terrain snapshot. Each search or worker owns its mutable queue;
+prepared profiles contain no search state and introduce no serialized cache.
+
+Strategic AI travel fields in `src/field/TerrainTravel.h` use a separate bounded
+integer queue. Their historical metric charges all eight neighbors the same
+terrain entry cost, then rounds the completed wide distances to tile units. Do
+not substitute the engine's cardinal/diagonal metric or round intermediate costs.
+
+`tools/gradient_benchmark.py` builds an opt-in standalone, paired benchmark; it
+needs a C++20 compiler but no SDL or game build. Capture the pre-optimization
+source when comparing against the original terrain kernel:
+
+```sh
+mkdir -p artifacts/gradient-baseline
+# This historical revision is the reference accepted for this optimization.
+git archive 3266c8e51 src/field src/map/TerrainProperties.h src/map/TerrainType.h | \
+  tar -x -C artifacts/gradient-baseline
+python3 tools/gradient_benchmark.py \
+  --baseline-dir artifacts/gradient-baseline/src \
+  --output artifacts/gradient-bench --suite representative --repeats 11
+```
+
+The runner copies candidate headers and harness source before compiling, records
+compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
+median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
+scalar implementation; otherwise the compiler target selects SSE2 or NEON.
+`--suite full` adds 64² and 256² cases; `--suite smoke` reduces the main timing
+matrix to 32² while retaining the correctness corner cases. The baseline adapter
+is specific to the historical revision above and rejects changed source anchors
+rather than silently omitting counter hooks. Use a fresh output directory for each
+comparison to retain its raw evidence.
+
+`--case '{"size":128,"pattern":"network","swim":3,"mode":"terrain"}'` selects
+one custom case; repeat the option for a custom matrix. Optional keys are `width`,
+`height`, `registry`, `costs`, `seeds`, `travel` and `cap`. The runner owns both
+allocation layouts and the repetition count; cases cannot override them.
+
+The benchmark retains the `road` pattern key for historical comparisons; it
+uses the current Trail terrain identity with the same movement cost.
+
+Cases cover classic terrain, uniform Trail/ice, sparse/connected trails, mixed
+terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
+seeds and capped propagation; thin and rectangular tori; and synthetic registries
+of 8, 32 and 64 identities with equivalent or distinct movement costs. The real
+registry is measured separately. Synthetic registries call the generic prepared
+profile API; they do not add game terrain definitions. `--bucket-count 256`
+is an isolated future-cost experiment that changes only copied headers.
+
+The original general bucket function is adapted only to accept the registry
+extent and a distinct name. It shares queue storage types and field constants
+with the candidate, so these timings isolate relaxation changes; compare full
+baseline/candidate game binaries when changing those shared components.
+Independent heap oracles check engine fields and strategic distances outside the
+timed region.
+
+| Mode | What it measures |
+| --- | --- |
+| `terrain` | Both general engine kernels, including prepared cost classes and eager uniform-cost selection. |
+| `dispatch` | Production dispatch for the real registry, including the classic fast path. |
+| `plane` | General propagation through a precomputed cost-class plane; construction is reported separately. |
+| `strategic` | AI travel fields against the original heap implementation. Report these separately from engine gradients. |
+
+Travel modes 1, 2 and 3 mean walking, amphibious and flying. Production dispatch
+and strategic travel use the real terrain costs, not synthetic distinct costs.
+Strategic fields do not have an engine propagation cap or deferred seed costs.
+
+Samples alternate implementations in one process, using both shared and separate
+output/workspace allocations. Repetition -1 measures fresh queue storage; warm
+samples retain capacity. Initialization, profile preparation, class-plane
+preparation and snapshot copying are reported separately from propagation.
+Preparation/snapshot timings are illustrative single constructions, not stable
+microsecond-level comparisons. AI propagation includes its internal allocations,
+wide-distance initialization and final rounding. This harness does not reproduce
+Map seeding, worker publication or production lazy-search scheduling; validate
+those with the integration harnesses and whole-game traces.
+
+Use a second `--instrumented` run for popped/stale entries, successful relaxations,
+occupied layers, reservation calls and allocation counts. Its allocator and
+counter hooks change timing: never use instrumented times for speed claims.
+Memory output separates caller input/output, prepared profile/plane, workspace
+object, retained queue capacity, AI-local queue/cost-table objects, and the maximum
+additional live heap bytes during each call. Compiler stack frames and register
+spills are not measured. Cold separate-workspace samples show each algorithm's own
+capacity; shared warm samples inherit capacity from both implementations. Global
+allocator accounting covers ordinary `new`/`new[]` allocations used by these
+kernels, not process RSS or unrelated engine memory. Zero counters in the
+uninstrumented build mean unmeasured, not zero work. Keep timing assertions out of
+routine CI; attach raw measurements and simulation checksums to the PR. The
+runner's adapter and sampling contracts can be checked without a compiler:
+
+```sh
+python3 tools/test_gradient_benchmark.py
+```
+
+Before accepting an optimization, include preparation and allocation costs in the
+comparison, inspect individual scenarios as well as aggregates, and validate
+whole-game behavior with identical initial states and orders. Compare every tick
+across serial and parallel workers, including save/load continuation. A standalone
+kernel gain is not sufficient evidence of an integrated game improvement.
+
+The production resumable-search benchmark is separately opt-in after building
+unit tests:
+
+```sh
+python3 test/run_tests.py --binary unit --no-display \
+  --filter 'production lazy gradient phases*' --tag benchmark --verbose
+```
+
+It exercises nearby, distant and unreachable requests across classic, connected
+road, dense mixed, uniform road and uniform ice maps at 32², 128² and 512² for all
+swimming profiles. CSV layout values 0–4 follow that order; query values 0–2 mean
+nearby, distant and unreachable. Rows separate initial snapshot construction,
+search initialization and resolution. The same initial snapshot timing is repeated
+for each row of its map and must not be summed as per-query work. Repeat zero
+starts with cold queues and later repeats retain search capacity.
+Every requested result is checked against the independent heap oracle. Run this
+on both revisions with matching inputs and compare it separately from full-field
+propagation; ordinary test runs exclude the benchmark tag.
 
 
 ## Local conventions
@@ -1338,25 +1539,33 @@ existing game rendering entry point. Presentation state a view keeps between fra
 animation phases, the cloud field, the overlay scratch buffer and the software terrain
 cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
 the simulation neither reads nor writes it and each view animates independently. The
-terrain cache is transient presentation state: 16×16 tile chunks, a 32 MiB storage
-reservation including pixels, layer descriptors and borrowed views, with
-least-recently-used eviction.
-The cache is used during transformed software passes. Ordinary native drawing keeps
-its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
-transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
-chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
-over transparent chunk holes. Views are destroyed before their backing chunk.
-Each chunk validates canonical terrain IDs, material-owned layer frames, animation
-phases, the existing discovery decisions and source content revisions. It stores raw color/alpha, so coastlines blend over animated water
-once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
-are detected during preparation. Resources, actors, fog and overlays keep their existing
+terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
+software storage reservation including pixels, recipes and borrowed views, and a
+separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native and
+HD rendering share CPU composition; GPU backends upload the resulting pages.
+The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
+boundary resolver, source preparation, budgets and asset pipeline.
+
+Within a software page, adjacent opaque tiles become borrowed surface views over
+the raw pixels. Fully transparent tiles submit no draw. Partially transparent
+coastlines retain individual source blits, avoiding repeated alpha scans over
+transparent holes. Views are destroyed before their backing page.
+Each page validates the canonical terrain neighborhood, discovery decisions and
+revisions of the materials its recipes use. Animation or source changes in unrelated
+materials do not invalidate it. Pages store raw color/alpha, so coastlines blend over
+animated water once. Map replacement (a new `Map::identity()`) clears the cache;
+editor terrain changes, wrapped neighbors and visible-team changes are detected
+during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
 boundaries. A complete animated water tile is omitted only when all of it is covered;
 partially covered tiles retain their original source mapping and animation phase.
 Coverage includes the original water pass's overshoot outside the viewport, which a
 transform can bring onscreen. Fragmented coverage falls back to the full pass after
-64 rectangles. Oversized working sets and allocation failures use
-uncached terrain. None of these caches enter saves, simulation checksums or orders.
+64 rectangles. Oversized working sets stream one temporary canonical page at a time
+at the same sampling density as the full view. If a page cannot fit the device or
+allocation fails, an emergency composed-tile path preserves coverage but can differ
+in fractional resampling and HD mip filtering. None of these caches enter saves,
+simulation checksums or orders.
 
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
@@ -1420,8 +1629,10 @@ python3 tools/software_render_benchmark.py \
 ```
 
 The runner records raw logs/captures, exact commands and CPU distributions for native,
-half, double and fractional-offset scenarios. Use `--no-terrain-cache` for the primitive
-phase; compare the same binary with `--baseline-no-terrain-cache` to isolate caching.
+half, double and fractional-offset scenarios. `--no-terrain-cache` now streams
+composed pages without retaining them between frames; it measures repeated
+composition and upload, not the old sprite-only terrain primitives. Compare the
+same binary with `--baseline-no-terrain-cache` to isolate retained-page caching.
 Use `--present --visible --scenario native --baseline-preserve-frame` with the same
 binary to measure the retention-copy savings. `PROFILE_PRESERVE_FRAME=1` begins each
 benchmark frame in preserve-content mode before the full redraw. Keep other heavy
@@ -1816,3 +2027,46 @@ preserved from the previous 44.1 kHz mixer. Browser builds compile checksum-pinn
 Opus, opusfile and Ogg libraries separately for serial and threaded runtimes;
 opusfile HTTP support is disabled. Native/mobile builds use their package-managed
 opusfile dependencies with libogg retained.
+
+### Buffered music playback
+
+`SoundMixer` is an application-thread facade. Its value-only controls, snapshots
+and diagnostics live in `MusicTypes.h`; UI callers do not include decoder or queue
+internals. Native playback owns one dedicated producer thread; browser playback
+uses a separate Wasm decoder worker. Both run
+`Music::Producer`, retaining the existing Opus timeline, loop handling, mood
+selection and fixed-point fades. Loading, replacing, seeking and decoder cleanup
+happen outside the device callback. Preview screens send typed controls and read
+consumed playback snapshots instead of locking SDL or owning live decoders. Preview
+session tokens prevent an old screen from controlling or closing a newer preview.
+
+The producer maintains 24 blocks of 1,024 stereo frames (512 ms at 48 kHz), refills
+at 20 blocks (427 ms), and cannot exceed 48 blocks. Native output consumes a single-producer,
+single-consumer ring without waiting for gameplay or decoder locks. Volume and
+mute are applied at consumption. Native voice decoding stays on the application
+thread and publishes bounded PCM to separate per-player rings; the music look-ahead
+does not add voice latency. The producer requests high scheduling priority, but
+failure to obtain it is supported and is not an audio initialization failure.
+Set `GLOB2_AUDIO_THREAD_PRIORITY=0` to qualify ordinary-priority production.
+
+Mood requests affect future prepared samples, normally within one second. A
+request during an existing fade still waits for that fade to complete; rapid
+requests coalesce to the latest mood. Replacement and preview controls use queue
+generations to reject obsolete samples. Preview pause retains the queue and partial
+block; its clock freezes at consumption and resumes without skipping look-ahead
+music. Seek invalidates the old generation even while paused. A real underrun fades
+out over five milliseconds and resumes with a fade after refilling; it never loops
+a stale block.
+No finite queue can cover indefinite OS/browser audio-thread starvation.
+
+Loading and replacement on native playback synchronously wait for the producer to
+finish preparation; the audio callback continues consuming the old queue meanwhile.
+Only a successful replacement invalidates those samples. Routine mood and preview
+controls coalesce and never make the callback wait. Decoder ownership and destruction
+stay with the producer; only the consumer advances the queue read cursor.
+
+`SoundMixer::diagnostics()` exposes buffered and consumed frames, underruns,
+starvation frames, maximum producer render time, callback time, and observed mood
+command latency. Browser diagnostics are available through `Module.glob2Music`.
+Do not log from the device callback. Queue diagnostics and dummy audio tests cover
+application supply; device-loopback capture and listening are separate evidence.

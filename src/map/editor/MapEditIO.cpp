@@ -14,6 +14,8 @@
 #include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include <Stream.h>
+#include <StreamBackend.h>
+#include <FileManager.h>
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
@@ -133,7 +135,7 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
             return false;
 	}
 
-	if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
+	if (!hasDialog())
 	{
 		if (!phone) handleMapScroll();
 		if (phone) phone->advance(tick);
@@ -251,4 +253,24 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})
         widget->area.y += height - oldHeight;
     if (auto *dialog = activeDialog()) dialog->cancelInput();
+}
+
+void MapEdit::importTerrainFile(const std::string &filename)
+{
+	std::unique_ptr<GAGCore::StreamBackend> input(
+		Toolkit::getFileManager()->openInputStreamBackend(filename));
+	if (!input || !input->isValid())
+		throw std::runtime_error("Cannot open terrain definitions");
+	input->seekFromEnd(0);
+	const auto bytes = input->getPosition();
+	input->seekFromStart(0);
+	if (bytes > TerrainRegistry::MaximumDefinitionBytes)
+		throw std::runtime_error("Terrain definitions exceed 32 MiB");
+	std::string json(bytes, '\0');
+	if (bytes && !input->readExact(json.data(), bytes))
+		throw std::runtime_error("Cannot read terrain definitions");
+	game.map.importTerrainDefinitions(json);
+	minimap.resetMinimapDrawing();
+	hasMapBeenModified = true;
+	fertilityRequested = true;
 }

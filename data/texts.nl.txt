@@ -5547,16 +5547,20 @@ Beperk het tekenen in de hele toepassing. Lagere waarden verminderen het tekenwe
 [ice]
 IJs
 [road]
-Weg
+Pad
 [experiment ice-terrain]
 IJsterrein
 [experiment ice-terrain help]
 Voegt ijs toe aan de kaarteditor. Grondeenheden bewegen met halve snelheid en verliezen één gezondheidspunt per 32 simulatiestappen op het ijs. Op ijs kunnen geen gebouwen of grondstoffen staan.
 [experiment road-terrain]
-Wegterrein
+Padterrein
 [experiment road-terrain help]
-Voegt klinkerwegen toe aan de kaarteditor. Grondeenheden bewegen met dubbele snelheid. Wegen ondersteunen gebouwen, maar geen grondstoffen.
+Voegt verweerde paden toe aan de kaarteditor. Grondeenheden bewegen met dubbele snelheid. Paden staan gebouwen toe, maar geen grondstoffen. Vliegende eenheden worden niet beïnvloed.
 [experiment markets-v2]
 Markten V2
 [experiment markets-v2 help]
 Werkers kunnen voorraden uit de gedeelde marktvoorraad halen. Markten kunnen worden verbeterd om tarwe en hout en daarna alle grondstoffen op te slaan. Teams wisselen nog steeds alleen fruit uit. Geldt voor nieuwe spellen; opgeslagen spellen behouden hun oorspronkelijke instelling.
+[Import Terrain Definitions]
+Terreindefinities importeren
+[Terrain palette]
+Terreinpalet

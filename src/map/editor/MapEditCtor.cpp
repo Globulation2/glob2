@@ -153,8 +153,8 @@ MapEdit::MapEdit()
     for (unsigned id=0; id<TERRAIN_COUNT; ++id)
     {
         const auto type = static_cast<::TerrainType>(id);
-        const auto& presentation = terrainPresentation(type);
-        if (!presentation.editorSelectable || type==GRASS || type==SAND || type==WATER) continue;
+		const auto &presentation = game.map.terrainPresentation(type);
+		if (!presentation.editorSelectable || type==GRASS || type==SAND || type==WATER) continue;
         const auto requirement = terrainExperiment(type);
         if (requirement && !globalContainer->settings.experiments.has(*requirement)) continue;
         const int slot = int(additionalTerrainSelectors.size());

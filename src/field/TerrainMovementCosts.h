@@ -50,6 +50,19 @@ inline constexpr auto TERRAIN_ENTRY_COSTS = [] {
     for (unsigned sw = 0; sw < result.size(); ++sw) result[sw] = terrainEntryCosts(sw);
     return result;
 }();
+// Keep the legacy admissible heuristic even when a built-in material is absent.
+inline constexpr auto MINIMUM_TERRAIN_ENTRY_COSTS = []
+{
+	std::array<unsigned, std::size(WATER_STEP)> result{};
+	for (unsigned sw = 0; sw < result.size(); ++sw)
+	{
+		result[sw] = GRADIENT_STEP;
+		for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
+			if (TERRAIN_PROPERTIES[t].walkable || (sw && TERRAIN_PROPERTIES[t].swimmable))
+				result[sw] = std::min(result[sw], TERRAIN_ENTRY_COSTS[sw][t].cardinal);
+	}
+	return result;
+}();
 static_assert([] {
     for (const auto &profile : TERRAIN_ENTRY_COSTS)
         for (const auto &cost : profile)
