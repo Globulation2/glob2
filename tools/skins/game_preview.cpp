@@ -63,9 +63,17 @@ int main(int argc, char **argv)
             const auto *team = gui.game.teams[0];
             for (int i=0; i<8; ++i)
             {
-                const int x = (team->startPosX - 4 + i) & (gui.game.map.getW()-1);
-                const int y = (team->startPosY + 4) & (gui.game.map.getH()-1);
-                if (auto *unit = gui.game.addUnit(x,y,i<4 ? 0 : 1,WORKER,0,0,0,0))
+                int x = (team->startPosX - 4 + i) & (gui.game.map.getW()-1);
+                int y = (team->startPosY + 4) & (gui.game.map.getH()-1);
+                auto *unit = gui.game.addUnit(x,y,i<4 ? 0 : 1,WORKER,0,0,0,0);
+                if(!unit && !std::getenv("SKIN_PREVIEW_BENCHMARK")) {
+                    const int startX=x,startY=y;
+                    for(int offset=1;offset<64 && !unit;++offset) {
+                        x=(startX+offset%8)&(gui.game.map.getW()-1);y=(startY+offset/8)&(gui.game.map.getH()-1);
+                        unit=gui.game.addUnit(x,y,i<4 ? 0 : 1,WORKER,0,0,0,0);
+                    }
+                }
+                if (unit)
                 { unit->direction = i; gui.game.map.setMapDiscovered(x,y,Team::teamNumberToMask(0)); }
                 else if (!std::getenv("SKIN_PREVIEW_BENCHMARK")) throw std::runtime_error("Diagnostic worker placement failed");
             }
