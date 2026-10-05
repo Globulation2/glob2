@@ -967,6 +967,85 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   coverage and its limits.
 
 
+### Terrain gradient benchmarks
+
+`tools/gradient_benchmark.py` builds an opt-in standalone, paired benchmark; it
+needs a C++20 compiler but no SDL or game build. Capture the pre-optimization
+source when comparing against the original terrain kernel:
+
+```sh
+mkdir -p artifacts/gradient-baseline
+# This historical revision is the reference accepted for this optimization.
+git archive 3266c8e51 src/field src/map/TerrainProperties.h src/map/TerrainType.h | tar -x -C artifacts/gradient-baseline
+python3 tools/gradient_benchmark.py --baseline-dir artifacts/gradient-baseline/src --output artifacts/gradient-bench --suite representative --repeats 11
+```
+
+The runner copies candidate headers and harness source before compiling, records
+compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
+median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
+scalar implementation; otherwise the compiler target selects SSE2 or NEON.
+`--suite full` adds 64² and 256² cases; `--suite smoke` reduces the main timing
+matrix to 32² while retaining the correctness corner cases. `--case '{...}'`
+accepts a custom case; see the runner's matrix for its keys.
+
+Cases cover classic terrain, uniform road/ice, sparse/connected roads, mixed
+terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
+seeds and capped propagation; thin and rectangular tori; and synthetic registries
+of 8, 32 and 64 identities with equivalent or distinct movement costs. The real
+registry is measured separately. Synthetic registries call the generic prepared
+profile API; they do not add game terrain definitions. `--bucket-count 256`
+is an isolated future-cost experiment that changes only copied headers.
+
+The original general bucket function is adapted only to accept the registry
+extent and a distinct name. It shares queue storage types and field constants
+with the candidate, so these timings isolate relaxation changes; compare full
+baseline/candidate game binaries when changing those shared components. A
+separate heap Dijkstra checks every engine-field result. `mode=dispatch` tests
+the real classic fast path; `mode=terrain` deliberately compares both general
+kernels. `mode=plane` includes separately reported cost-class plane preparation.
+`mode=strategic` compares AI travel fields with the original heap implementation;
+its results are separate from engine-gradient performance claims. Travel modes
+1, 2 and 3 mean walking, amphibious and flying.
+
+Samples alternate implementations in one process, using both shared and separate
+output/workspace allocations. Repetition -1 measures fresh queue storage; warm
+samples retain capacity. Initialization, profile preparation, class-plane
+preparation and snapshot copying are reported separately from propagation.
+Preparation/snapshot timings are illustrative single constructions, not stable
+microsecond-level comparisons. AI propagation includes its internal allocations,
+wide-distance initialization and final rounding. This harness does not reproduce
+Map seeding, worker publication or production lazy-search scheduling; validate
+those with the integration harnesses and whole-game traces.
+
+Use a second `--instrumented` run for popped/stale entries, successful relaxations,
+occupied layers, reservation calls and allocation counts. Its allocator and
+counter hooks change timing: never use instrumented times for speed claims.
+Memory output separates caller input/output, prepared profile/plane, workspace
+object, retained queue capacity, AI-local queue/cost-table objects, and the maximum
+additional live heap bytes during each call. Compiler stack frames and register
+spills are not measured. Cold separate-workspace samples show each algorithm's own
+capacity; shared warm samples inherit capacity from both implementations. Global
+allocator accounting covers ordinary `new`/`new[]` allocations used by these
+kernels, not process RSS or unrelated engine memory. Zero counters in the
+uninstrumented build mean unmeasured, not zero work. Keep timing assertions out of
+routine CI; attach raw measurements and simulation checksums to the PR.
+
+The production resumable-search benchmark is separately opt-in after building
+unit tests:
+
+```sh
+python3 test/run_tests.py --binary unit --no-display --filter 'production lazy gradient phases*' --tag benchmark --verbose
+```
+
+It exercises nearby, distant and unreachable requests across classic, connected
+road and dense mixed maps at 32², 128² and 512² for all swimming profiles. CSV rows
+separate initial snapshot construction, search initialization and resolution;
+repeat zero starts with cold queues and later repeats retain search capacity.
+Every requested result is checked against the independent heap oracle. Run this
+on both revisions with matching inputs and compare it separately from full-field
+propagation; ordinary test runs exclude the benchmark tag.
+
+
 ## Local conventions
 
 Preserve other contributors' work; use an isolated checkout when work overlaps.
