@@ -630,12 +630,12 @@ public:
 
 private:
 	//! Allocate/refresh and mark use, without exposing the possibly partial field.
-	bool prepareBuildingGradient(Building *building, int swimClass);
+	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Read or move on a prepared field. Both settle their input cell first;
 	//! neither refreshes the field or changes its use timestamp.
-	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell) const;
+	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingGradientDirection(Building *building, int swimClass, int x, int y,
-		int *dx, int *dy, bool strict) const;
+		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
 	struct TileChecks {
@@ -800,8 +800,8 @@ public:
 	// Gradients are built per team and swim class the first time a unit of that
 	// class asks for one, so classes nobody uses cost nothing.
 	//! withMarkets: the variant where the team's stocked markets are goals too,
-	//! priced MARKET_DETOUR_TILES beyond a tile of the resource. Used by every
-	//! fetch for a building that is not itself a market (Building::fetchesFromMarkets).
+	//! priced by each supplier's configured pickup penalty. Used when a
+	//! consumer enables stock fetching (Building::fetchesFromMarkets).
 	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false);
 	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
 	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
@@ -821,6 +821,7 @@ public:
 	//! rebuild the "with markets" gradients for it at the next step.
 	bool marketsV2Enabled() const;
 	void dirtyMarketGradients(int teamNumber, int resourceType);
+	void invalidateSupplierLocations();
 	
 	//! Follow the gradient uphill from (x, y). Returns whether a goal cell was reached; the
 	//! last position is in (targetX, targetY). Works on the Uint16 pathfinding gradients and
@@ -867,7 +868,7 @@ public:
 
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
-	void updateGlobalGradient(Building *building, int swimClass);
+	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
 	//! every tile of that resource is seeded with its distance to the building, so a
 	//! cell's value is the cheapest fetch-and-carry trip from there.
@@ -881,12 +882,12 @@ public:
 	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
-	const Uint16 *buildingGradient(Building *building, int swimClass);
+	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Finish a cached field without refreshing its age or last-use timestamp.
-	void finishBuildingGradient(Building *building, int swimClass) const;
-	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
+	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
+	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
-	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy);
+	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
 
 	//! Bumped whenever a footprint or a forbidden mask changes. A route field
 	//! spans the map, so any such change may cross it: each field records the

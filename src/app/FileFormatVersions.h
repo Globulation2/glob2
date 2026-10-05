@@ -198,3 +198,6 @@ static constexpr int FILE_FORMAT_VERSION_TERRAIN_PROPERTIES = 134;
 
 //! Optional market resource fields and their scheduling/publication state.
 static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 135;
+
+//! Per-game immutable building specifications and capability state.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_CATALOG = 136;

@@ -18,6 +18,8 @@ void MapEdit::addWidget(MapEditorWidget* widget)
 
 bool MapEdit::findAction(int x, int y)
 {
+	layoutBuildingSelectors();
+	layoutBuildingEditRows();
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		MapEditorWidget* mi=*i;
@@ -53,6 +55,8 @@ void MapEdit::enableOnlyGroup(const std::string& group)
 
 void MapEdit::drawWidgets()
 {
+	layoutBuildingSelectors();
+	layoutBuildingEditRows();
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		(*i)->drawSelf();

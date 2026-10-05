@@ -1,0 +1,732 @@
+{
+  "variants": [
+    {
+      "key": "school.0.site",
+      "next": "school.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 1,
+        "height": 2,
+        "hpInc": 40,
+        "hpInit": 1,
+        "hpMax": 360,
+        "isBuildingSite": 1,
+        "maxResource": [
+          7,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 1,
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 7,
+          "algae": 2
+        },
+        "repairCost": {}
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 5
+      }
+    },
+    {
+      "key": "school.0.finished",
+      "next": "school.1.site",
+      "previous": "school.0.site",
+      "properties": {
+        "armor": 3,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/school0b",
+        "gameSpriteCount": 2,
+        "height": 2,
+        "hpInit": 360,
+        "hpMax": 360,
+        "maxUnitInside": 4,
+        "miniSprite": "data/gfx/minischool0b",
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {
+          "build": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7,
+            "constructionLevel": 1
+          },
+          "harvest": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 7,
+          "algae": 2
+        }
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "school.1.site",
+      "next": "school.1.finished",
+      "previous": "school.0.finished",
+      "properties": {
+        "armor": 3,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/school1c",
+        "height": 2,
+        "hpInc": 8,
+        "hpInit": 360,
+        "hpMax": 520,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxResource": [
+          5,
+          0,
+          0,
+          5,
+          12,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minischool1c",
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 5,
+          "stone": 5,
+          "algae": 12
+        },
+        "repairCost": {}
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 10
+      }
+    },
+    {
+      "key": "school.1.finished",
+      "next": "school.2.site",
+      "previous": "school.1.site",
+      "properties": {
+        "armor": 8,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/school1b",
+        "gameSpriteCount": 3,
+        "height": 2,
+        "hpInit": 520,
+        "hpMax": 520,
+        "level": 1,
+        "maxUnitInside": 7,
+        "miniSprite": "data/gfx/minischool1b",
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {
+          "build": {
+            "cost": {},
+            "duration": 33,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7,
+            "constructionLevel": 2
+          },
+          "harvest": {
+            "cost": {},
+            "duration": 33,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 5,
+          "stone": 5,
+          "algae": 12
+        }
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "school.2.site",
+      "next": "school.2.finished",
+      "previous": "school.1.finished",
+      "properties": {
+        "armor": 8,
+        "decLeft": -1,
+        "decTop": -1,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 1,
+        "height": 2,
+        "hpInc": 6,
+        "hpInit": 520,
+        "hpMax": 700,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxResource": [
+          7,
+          4,
+          0,
+          12,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 1,
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 7,
+          "wheat": 4,
+          "stone": 12,
+          "algae": 10
+        },
+        "repairCost": {}
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 20
+      }
+    },
+    {
+      "key": "school.2.finished",
+      "next": "",
+      "previous": "school.2.site",
+      "properties": {
+        "armor": 12,
+        "decLeft": -1,
+        "decTop": -1,
+        "gameSprite": "data/gfx/school2b",
+        "height": 2,
+        "hpInit": 700,
+        "hpMax": 700,
+        "level": 2,
+        "maxUnitInside": 9,
+        "miniSprite": "data/gfx/minischool2b",
+        "prestige": 50,
+        "shortTypeNum": 6,
+        "type": "school",
+        "width": 2
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {
+          "build": {
+            "cost": {},
+            "duration": 42,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7,
+            "constructionLevel": 3
+          },
+          "harvest": {
+            "cost": {},
+            "duration": 42,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          },
+          "magicAttackGround": {
+            "cost": {},
+            "duration": 42,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": true,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 7,
+          "wheat": 4,
+          "stone": 12,
+          "algae": 10
+        }
+      },
+      "presentation": {
+        "displayName": "school",
+        "iconFrame": 6,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

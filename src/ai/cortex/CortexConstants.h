@@ -30,27 +30,22 @@ namespace Cortex
 	/// caps nothing (OrderModifySwarm writes ratios verbatim), so this is Cortex's
 	/// own bound, not an engine constant; no static_assert needed.
 	static const int CORTEX_MAX_RATIO = 16;
-	/// Mirrors IntBuildingType::NB_BUILDING (number of distinct building types).
+	/// Bounded semantic policy channels, independent of catalog size and identity.
 	static const int CORTEX_BUILDING_TYPES = 13;
-	/// Mirrors TeamStat.h NB_BUILDING_LONG_LEVELS. The "long level" packs both a
-	/// building's level and whether it is still a site into one index via
-	/// longLevel = (level << 1) + 1 - isBuildingSite, range 0..5. So odd indices
-	/// (1,3,5) are FINISHED buildings at level 0,1,2 and even indices (0,2,4) are
-	/// their construction SITES. Use the cortex* helpers below rather than
-	/// reading raw slots, so the encoding lives in exactly one place.
+	/// Six site/finished buckets; levels above two project into the last pair.
 	static const int CORTEX_BUILDING_LONG_LEVELS = 6;
-
-	// Cortex-local mirrors of the IntBuildingType::Number values the policy
-	// names directly. The policy layer must not include engine headers, so it
-	// refers to building types through these; CortexObservation.cpp
-	// static_asserts each against IntBuildingType so they cannot drift.
-	static const int CORTEX_BUILD_SWARM     = 0; ///< IntBuildingType::SWARM_BUILDING
-	static const int CORTEX_BUILD_FOOD      = 1; ///< IntBuildingType::FOOD_BUILDING (inn)
-	static const int CORTEX_BUILD_HEAL      = 2; ///< IntBuildingType::HEAL_BUILDING (hospital)
-	static const int CORTEX_BUILD_WALKSPEED = 3; ///< IntBuildingType::WALKSPEED_BUILDING (racetrack; trains WALK)
-	static const int CORTEX_BUILD_SWIMSPEED = 4; ///< IntBuildingType::SWIMSPEED_BUILDING (swimming pool; trains SWIM)
-	static const int CORTEX_BUILD_ATTACK    = 5; ///< IntBuildingType::ATTACK_BUILDING (barracks)
-	static const int CORTEX_BUILD_SCIENCE   = 6; ///< IntBuildingType::SCIENCE_BUILDING (school; trains BUILD+HARVEST)
+	static const int CORTEX_BUILD_SWARM = 0;     ///< Unit production.
+	static const int CORTEX_BUILD_FOOD = 1;      ///< Feeding.
+	static const int CORTEX_BUILD_HEAL = 2;      ///< Healing.
+	static const int CORTEX_BUILD_WALKSPEED = 3; ///< Walking training.
+	static const int CORTEX_BUILD_SWIMSPEED = 4; ///< Swimming training.
+	static const int CORTEX_BUILD_ATTACK = 5;    ///< Combat training.
+	static const int CORTEX_BUILD_SCIENCE = 6;   ///< Construction/work training.
+	static const int CORTEX_BUILD_DEFENSE = 7;   ///< Projectile defense.
+	static const int CORTEX_BUILD_EXPLORATION = 8;
+	static const int CORTEX_BUILD_WAR = 9;
+	static const int CORTEX_BUILD_CLEARING = 10;
+	static const int CORTEX_BUILD_EXCHANGE = 12;
 
 	/// Engine building-priority values (Building::priority; OrderChangePriority).
 	/// -1 = low, 0 = normal, +1 = high. The panic defense raises a swarm to HIGH so
@@ -77,7 +72,7 @@ namespace Cortex
 	/// Self-imposed upper bound on a war flag's attraction radius (the building's
 	/// unitStayRange). The engine clamps nothing, so this is Cortex's bound for a
 	/// discrete/normalizable action param; the action layer clamps to it. Roughly
-	/// the GUI's war-flag scale (Settings defaultFlagRadius[war] == 4).
+	/// the shipped warrior-attractor default radius (4 tiles).
 	static const int CORTEX_MAX_FLAG_RADIUS = 16;
 	/// Upper bound on warriors assigned to one war flag. A war flag is a building
 	/// and its summon count is its maxUnitWorking (the worker request), so it is

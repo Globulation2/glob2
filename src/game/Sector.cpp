@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Bullet.h"
+#include "FileFormatVersions.h"
+#include <algorithm>
 #include "Game.h"
 #include "Sector.h"
 #include "Unit.h"
@@ -64,7 +66,9 @@ bool Sector::load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
 	for (Uint32 i=0; i<bulletCount; i++)
 	{
 		stream->readEnterSection(i);
-		bullets.push_front(new Bullet(stream, versionMinor));
+		Bullet* bullet = new Bullet(stream, versionMinor);
+		if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) bullets.push_back(bullet);
+		else bullets.push_front(bullet);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -113,9 +117,9 @@ void Sector::step(void)
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 
-				int damage = bullet->shootDamage - game->teams[team]->myUnits[id]->getRealArmor(false);
-				if (damage <= 0)
-					damage = BULLET_MIN_DAMAGE;
+				const Unit* target = game->teams[team]->myUnits[id];
+				const int baseDamage = bullet->unitDamage[target->typeNum];
+				const int damage = baseDamage > 0 ? std::max(BULLET_MIN_DAMAGE, baseDamage - target->getRealArmor(false)) : 0;
 				Unit *victim = game->teams[team]->myUnits[id];
 				TeamStats::recordDamage(bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam]
 																: nullptr,
@@ -137,19 +141,16 @@ void Sector::step(void)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 
 					Building *building = game->teams[team]->myBuildings[id];
-					int damage = bullet->shootDamage-building->type->armor;
+					const int damage = bullet->shootDamage > 0 ? std::max(BULLET_MIN_DAMAGE, bullet->shootDamage-building->type->armor) : 0;
 
-					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->shortTypeNum));
+					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->typeNum));
 
 					TeamStats::recordDamage(
 						bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam] : nullptr,
 						building->owner, GameplayMeasurements::TOWER,
 						GameplayMeasurements::BUILDING, building->hp,
-						damage > 0 ? damage : BULLET_MIN_DAMAGE);
-					if (damage > 0)
-						building->hp -= damage;
-					else
-						building->hp -= BULLET_MIN_DAMAGE;
+						damage);
+					building->hp -= damage;
 					if (building->hp <= 0)
 						building->kill(GameplayMeasurements::DESTROYED);
 				}

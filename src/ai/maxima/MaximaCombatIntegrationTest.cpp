@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Utilities.h"
 #include "TeamStat.h"
+#include "AIMaximaBuildings.h"
 #include <memory>
 #include <limits>
 #include <locale>
@@ -30,7 +31,6 @@
 #include "../../src/ai/maxima/AIMaxima.h"
 #include "../../src/building/Building.h"
 #include "BuildingType.h"
-#include "../../src/building/IntBuildingType.h"
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -89,7 +89,7 @@ struct Fixture
     ::Building* building(int x, int y, int team, const char* type="inn", int level=0)
     {
         ::Building* result=game.addBuilding(game.map.normalizeX(x),game.map.normalizeY(y),
-            globalContainer->buildingsTypes.getTypeNum(type,level,false),team);
+            game.buildingsTypes.getTypeNum(type,level,false),team);
         REQUIRE(result);
         return result;
     }
@@ -122,7 +122,7 @@ struct Fixture
     {
         ai->reconnaissance.beginObservation(ai->timer,{building->owner->teamNumber});
         ai->reconnaissance.observeBuilding(Recon::BuildingSighting(building->gid,
-            building->owner->teamNumber,building->type->shortTypeNum,
+            building->owner->teamNumber,building->typeNum,
             building->posX,building->posY,building->type->width,
             building->type->height,false,ai->timer));
         ai->reconnaissance.finishObservation();
@@ -343,8 +343,10 @@ static ::Building* materializeFlag(Fixture& f)
     c.orders.clear();
     c.update_management_orders();
     for(auto order:c.orders) {
-        if(auto minimum=std::dynamic_pointer_cast<OrderModifyMinLevelToFlag>(order))
-            flag->minLevelToFlag=minimum->minLevelToFlag;
+        if(auto minimum=std::dynamic_pointer_cast<OrderModifyMinLevelToFlag>(order)) {
+            if(minimum->targetRole==1) flag->explorersRequireBombing=minimum->minLevelToFlag!=0;
+            else flag->minLevelToFlag=minimum->minLevelToFlag;
+        }
         if(auto size=std::dynamic_pointer_cast<OrderModifyFlag>(order))
             flag->unitStayRange=size->range;
         if(auto staffing=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
@@ -465,7 +467,7 @@ static void rallyAssemblesByMovement()
         REQUIRE(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
         REQUIRE(flag->unitStayRange==4);
         for(auto* warrior:warriors) {
-            warrior->subscriptionSuccess(flag,false);
+            warrior->subscriptionSuccess(flag,false,true);
             flag->unitsWorking.push_back(warrior);
         }
         // Readiness includes the two-tile margin: crowding at the flag edge
@@ -771,7 +773,7 @@ static void streamingScalesWithArmy()
     for(int id:active) {
         bool cancelled=false;
         for(auto order:c.managementOrders)
-            if(auto* destroy=dynamic_cast<Management::DestroyBuilding*>(order.get()))cancelled|=destroy->id==id;
+            if(auto* destroy=dynamic_cast<Management::RetireAttraction*>(order.get()))cancelled|=destroy->id==id;
         REQUIRE(cancelled);
     }
     std::cout << "streaming: real flags, full army, growth, shrink, loss, retarget and reload PASS\n";
@@ -1243,7 +1245,7 @@ static void offensiveControlSwitches()
         REQUIRE(a.attack_flags.empty());
         bool removed=false;
         for(auto order:c.managementOrders)
-            removed|=dynamic_cast<Management::DestroyBuilding*>(order.get())!=nullptr;
+            removed|=dynamic_cast<Management::RetireAttraction*>(order.get())!=nullptr;
         REQUIRE(removed);
         REQUIRE(!a.budget.explorer_campaign_active);
     }
@@ -1282,6 +1284,53 @@ static void fittedForceUsesOnlyVisibleUnits()
     a.reconnaissance.configure(10000,2500,2500,false);
     a.sample_reconnaissance_forces(c);
     REQUIRE(a.reconnaissance.opponent(1)->estimatedWarriors==1);
+}
+
+static void retirementPreservesIndependentTraining()
+{
+    for(bool training:{false,true}) {
+        Fixture f;
+        const int typeId=f.game.buildingsTypes.getTypeNum("warflag",0,false);
+        auto& type=*f.game.buildingsTypes.get(typeId);
+        if(training) {
+            type.maxUnitInside=1;
+            type.semantics.admittedUnitMask=1u<<WARRIOR;
+            type.semantics.training[ARMOR].enabled=true;
+            type.semantics.training[ARMOR].unitMask=1u<<WARRIOR;
+            type.semantics.training[ARMOR].targetLevel=1;
+            type.semantics.training[ARMOR].duration=32;
+        }
+        f.game.configureBuildingCatalog();
+        auto* building=f.building(20,20,0,"warflag");
+        auto& context=f.ai->context;context.initialize();
+        context.cancel_or_destroy_building(f.id(building));
+        REQUIRE(context.managementOrders.size()==1);
+        auto* retirement=dynamic_cast<Management::RetireAttraction*>(context.managementOrders.front().get());
+        REQUIRE(retirement);
+        retirement->modify(context);
+        if(training) {
+            REQUIRE(context.orders.empty());
+            REQUIRE(f.player.team->myBuildings[::Building::GIDtoID(building->gid)]==building);
+        } else {
+            REQUIRE(context.orders.size()==1);
+            REQUIRE(dynamic_cast<OrderDelete*>(context.orders.front().get()));
+        }
+    }
+}
+
+static void unavailableAttractionHasNoPlacement()
+{
+    Fixture f;
+    for(size_t id=0;id<f.game.buildingsTypes.size();++id)
+        f.game.buildingsTypes.get(id)->zonable[WARRIOR]=0;
+    f.game.configureBuildingCatalog();
+    Construction::BuildingOrder order(AIMaximaBuildings::WarriorAttraction,4);
+    bool complete=false;
+    const auto result=order.find_location(f.ai->context,1,complete);
+    REQUIRE(complete);
+    REQUIRE_FALSE(result.found);
+    REQUIRE(f.ai->context.issue_building_at(-1,4,20,20)==-1);
+    REQUIRE(f.ai->context.orders.empty());
 }
 
 static void fittedHistorySurvivesSave()
@@ -1337,6 +1386,8 @@ static void fittedPowerControlsAttackGate()
 
 TEST_SUITE("Maxima.Combat")
 {
+	TEST_CASE("retirement preserves independent training") { glob2test::HeadlessGlobals globals; combat_regressions::retirementPreservesIndependentTraining(); }
+	TEST_CASE("unavailable attraction has no placement") { glob2test::HeadlessGlobals globals; combat_regressions::unavailableAttractionHasNoPlacement(); }
 	TEST_CASE("fitted force uses only visible units") { glob2test::HeadlessGlobals globals; combat_regressions::fittedForceUsesOnlyVisibleUnits(); }
 	TEST_CASE("fitted power controls attack gate") { glob2test::HeadlessGlobals globals; combat_regressions::fittedPowerControlsAttackGate(); }
 	TEST_CASE("fitted history survives save") { glob2test::HeadlessGlobals globals; combat_regressions::fittedHistorySurvivesSave(); }

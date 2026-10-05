@@ -10,6 +10,7 @@
 #include "Unit.h"
 #include "FormatableString.h"
 #include "FileFormatVersions.h"
+#include "AIMaximaBuildings.h"
 
 #include <stdexcept>
 
@@ -637,6 +638,22 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	if(player && player->map)
 		initialize_farming_cache(context);
 	loadExecutionState(stream, versionMinor);
+	if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+	 // All old bytes have been read and validated. Only the obsolete family-
+	 // keyed planning projection is discarded; live jobs, clocks, entities,
+	 // staffing controllers, and already issued runtime orders remain intact.
+	 for(auto& [team,intel]:reconnaissance.mutableReport().opponents)for(auto& [gid,b]:intel.buildings){
+	  const int oldRole=b.type;b.type=-1;
+	  for(size_t id=0;id<player->game->buildingsTypes.size();++id){const auto* t=player->game->buildingsTypes.get(id);
+	   if(t->shortTypeNum==oldRole&&bool(t->isBuildingSite)==b.construction&&t->width==b.width&&t->height==b.height){b.type=int(id);break;}
+	  }
+	 }
+	 development_planner.reset();development_building_profiles.clear();development_profiles_initialized=false;configure_development_planner();
+	 development_reported_states.clear();development_cycle_pending=true;
+	 operating_colonies.clear();last_colony_accounted_action_id=0;
+	}
+	else for(const auto& [team,intel]:reconnaissance.report().opponents)for(const auto& [gid,b]:intel.buildings)
+	 if(b.type < -1 || (b.type>=0&&!player->game->buildingsTypes.get(b.type)))throw std::runtime_error("Invalid saved Maxima catalog variant");
 	stream->readLeaveSection();
 	return true;
 }

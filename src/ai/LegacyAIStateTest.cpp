@@ -115,7 +115,7 @@ TEST_CASE("old layouts default omitted clocks without consuming the following fi
         });
         read(numbi,text,[&](auto* in){
             AINumbi loaded(in,w.player(),version); CHECK(loaded.timer==0);
-            CHECK(loaded.phase==7); CHECK(loaded.mainBuilding[4]==4);
+            CHECK(loaded.phase==7); CHECK(loaded.mainBuilding[static_cast<unsigned>(AIPlanning::BuildingIntent::TrainSwim)]==4);
             CHECK(in->readUint32("sentinel")==sentinel);
         });
     }

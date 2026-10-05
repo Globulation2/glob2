@@ -115,7 +115,8 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	if (implementationID!=JAVASCRIPT && player->game->gameHeader.isUnitUpgradesDisabled())
 		for (int i=0;i<Building::MAX_COUNT;++i)
 			if (auto* b=player->team->myBuildings[i]; b && !b->type->isBuildingSite
-				&& AIRules::trainingBuilding(b->type->shortTypeNum) && b->maxUnitWorking>0)
+				&& AIRules::trainingBuilding(*b->type) && b->maxUnitWorking>0
+				&& !AIRules::usefulWithoutTraining(*player->game,b->typeNum))
 			{ order=std::make_shared<OrderModifyBuilding>(b->gid,0); break; }
 	if (!order) order = aiImplementation->getOrder();
 	// Qualification audits planning at selection time. A replay sees orders

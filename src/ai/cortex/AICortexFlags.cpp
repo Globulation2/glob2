@@ -21,7 +21,7 @@
 #include "Player.h"
 #include "team/Team.h"
 #include "GlobalContainer.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "BuildingType.h"
 #include "building/Building.h"
 #include "unit/Unit.h"
@@ -31,6 +31,27 @@
 
 using std::shared_ptr;
 
+namespace
+{
+// Mission retirement cannot demolish a building that also serves the economy,
+// another unit attraction, or training. A physical attractor can release its
+// workforce while keeping the constructed structure for a later mission.
+shared_ptr<Order> retireWarAttractor(const Building& building)
+{
+ const auto& type=*building.type;
+ const auto& s=type.semantics;
+ bool otherService=s.production.enabledUnitMask || s.feeding.enabled || s.healing.enabled ||
+  type.shootingRange>0 || s.market.interTeamFruitExchange || type.runtimeSuppliesStock ||
+  type.zonable[WORKER] || type.zonable[EXPLORER];
+ for(const auto& training:s.training)otherService|=training.enabled;
+ if(otherService)return {};
+ if(s.instantPlacement && !s.occupiesGround)return std::make_shared<OrderDelete>(building.gid);
+ if(building.maxUnitWorking)return std::make_shared<OrderModifyBuilding>(building.gid,0);
+ return {};
+}
+}
+
+
 // Map distance (warp-safe) beyond which an existing war flag is recalled to a new
 // target rather than left in place. Small slack so a flag already sitting on (or
 // right next to) the target isn't pointlessly re-ordered every cycle.
@@ -38,19 +59,17 @@ static const int FLAG_MOVE_THRESHOLD = 3;
 
 Building* AICortex::findFlagByGid(Uint16 gid) const
 {
-	// War flags are VIRTUAL buildings: they live in team->virtualBuildings, not
-	// team->myBuildings (which holds only real, map-footprint buildings). The
-	// container is a std::list — iterate it in insertion order (deterministic);
-	// never a std::set. Resolve a tracked gid to its live flag, or NULL if unset /
-	// already gone.
+	// Attraction is independent of ground occupancy. Resolve the stable gid in
+	// the complete team registry, including physical mixed-service buildings.
 	if (gid == NOGBID)
 		return NULL;
 	Team* team = player->team;
-	for (Building* b : team->virtualBuildings)
+	for (int index=0;index<Building::MAX_COUNT;++index)
 	{
+		Building* b=team->myBuildings[index];
 		if (b
 		    && b->gid == gid
-		    && b->type->shortTypeNum == IntBuildingType::WAR_FLAG
+		    && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
 		    && b->buildingState == Building::ALIVE)
 			return b;
 	}
@@ -80,10 +99,11 @@ Building* AICortex::rediscoverFlag(Uint16& gid, int tx, int ty)
 	Team* team = player->team;
 	Building* best = NULL;
 	int bestDist = 0;
-	for (Building* b : team->virtualBuildings)
+	for (int index=0;index<Building::MAX_COUNT;++index)
 	{
+		Building* b=team->myBuildings[index];
 		if (!b
-		    || b->type->shortTypeNum != IntBuildingType::WAR_FLAG
+		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != Building::ALIVE)
 			continue;
 		if (isOwnedGid(b->gid))
@@ -139,17 +159,13 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 		if (obs.tick < cooldown)
 			return;
 
-		// Resolve WAR_FLAG the VIRTUAL way: flags have no building-site variant, so pass
-		// isBuildingSite==false. (The economy path passes true, which returns -1 for
-		// flags — that is exactly why the build path skips them.)
-		const std::string& name = IntBuildingType::reverseConversionMap[IntBuildingType::WAR_FLAG];
-		Sint32 typeNum = globalContainer->buildingsTypes.getTypeNum(name, 0, false);
-		if (typeNum < 0)
-			return;
+		const auto choice = Cortex::selectBuilding(*game, *player->team, Cortex::CORTEX_BUILD_WAR);
+        const int typeNum = choice.placementType;
+        if (typeNum < 0) return;
+        BuildingType* bt = game->buildingsTypes.get(typeNum);
+        count = std::min(count, int(bt->semantics.assignmentLimit));
+        radius = std::min(radius, int(bt->maxUnitStayRange));
 
-		// Virtual-building room gate: for a flag this just checks no other own-flag
-		// occupies the tile and ignores fog (checkFow defaulted true is harmless here).
-		BuildingType* bt = globalContainer->buildingsTypes.get(typeNum);
 		if (!game->checkRoomForBuilding(tx, ty, bt, player->team->teamNumber))
 			return;
 
@@ -159,7 +175,7 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 		// is unknown until it registers; rediscoverFlag claims it a later cycle.
 		orderQueue.push(shared_ptr<Order>(new OrderCreate(
 			player->team->teamNumber, tx, ty, typeNum,
-			count, count, radius)));
+			count, std::min(count, int(game->buildingsTypes.get(choice.completedType)->semantics.assignmentLimit)), radius)));
 		cooldown = obs.tick + BUILD_COOLDOWN_TICKS;
 		return;
 	}
@@ -168,13 +184,14 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	// size, veteran filter, and engine priority. (radius retargeting for an in-place
 	// flag is still deferred — only count + minLevel + priority are reconciled here.)
 	int dist = game->map.warpDistMax(existing->posX, existing->posY, tx, ty);
-	if (dist > FLAG_MOVE_THRESHOLD)
+	if (dist > FLAG_MOVE_THRESHOLD && existing->type->semantics.relocatable)
 		orderQueue.push(shared_ptr<Order>(new OrderMoveFlag(existing->gid, tx, ty, false)));
 
 	// Scale the standing flag's summon count to the requested size. Dedup against — and
 	// locally mirror — the live building field, the executor-mirroring pattern the swarm
 	// worker-tuning uses, so a steady-state count emits no order and we do not re-spam
 	// the order until the engine applies it.
+	count = std::min(count, int(existing->type->semantics.assignmentLimit));
 	if (count != existing->maxUnitWorking)
 	{
 		orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(existing->gid, count)));
@@ -209,7 +226,7 @@ void AICortex::clearOneFlag(Uint16& gid)
 {
 	Building* existing = findFlagByGid(gid);
 	if (existing)
-		orderQueue.push(shared_ptr<Order>(new OrderDelete(existing->gid)));
+		if (auto order=retireWarAttractor(*existing))orderQueue.push(order);
 	gid = NOGBID; // forget it either way: a stale gid must not block a future create.
 }
 
@@ -269,7 +286,7 @@ bool AICortex::computeRallyPoint(int& rx, int& ry) const
 			continue;
 		if (fallback == NULL)
 			fallback = b;
-		if (b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+		if (Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 		{
 			rx = b->posX;
 			ry = b->posY;
@@ -317,10 +334,11 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// forward. A flag can appear more than once when walking virtualBuildings; keying by
 	// gid dedups the bookkeeping so a duplicate entry cannot reset (or advance) the window.
 	std::map<Uint16, Sint32> seenNow;
-	for (Building* b : team->virtualBuildings)
+	for (int index=0;index<Building::MAX_COUNT;++index)
 	{
+		Building* b=team->myBuildings[index];
 		if (!b
-		    || b->type->shortTypeNum != IntBuildingType::WAR_FLAG
+		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != Building::ALIVE
 		    || isOwnedGid(b->gid))
 			continue;
@@ -332,17 +350,18 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// cycle). Iterate virtualBuildings in insertion order (deterministic — never a set) to
 	// emit the OrderDeletes; erase each swept gid from seenNow so a duplicate list entry
 	// neither re-deletes it nor keeps it armed for next cycle.
-	for (Building* b : team->virtualBuildings)
+	for (int index=0;index<Building::MAX_COUNT;++index)
 	{
+		Building* b=team->myBuildings[index];
 		if (!b
-		    || b->type->shortTypeNum != IntBuildingType::WAR_FLAG
+		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != Building::ALIVE
 		    || isOwnedGid(b->gid))
 			continue;
 		std::map<Uint16, Sint32>::iterator it = seenNow.find(b->gid);
 		if (it != seenNow.end() && it->second < obs.tick)
 		{
-			orderQueue.push(shared_ptr<Order>(new OrderDelete(b->gid)));
+			if (auto order=retireWarAttractor(*b))orderQueue.push(order);
 			seenNow.erase(it);
 		}
 	}

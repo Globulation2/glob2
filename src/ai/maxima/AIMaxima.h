@@ -620,6 +620,10 @@ private:
 	void configure_development_planner();
 	AIMaximaPlacement::WorldState collect_development_world(
 		AIMaximaRuntime::Context& runtime, uint32_t* signature=NULL) const;
+	const AIMaximaPlacement::BuildingLevelProfile* profile_variant(int root,int position=1) const;
+	bool profile_serves(int root,int role,int position=1) const;
+	int preferred_profile(int role) const;
+	int feeding_capacity(int root,int position) const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;
 	std::vector<AIMaximaPlacement::DevelopmentIntent>
@@ -640,6 +644,8 @@ private:
 		const AIMaximaPlacement::DevelopmentAction* action) const;
 	mutable std::vector<AIMaximaPlacement::BuildingProfile>
 		development_building_profiles;
+	mutable std::vector<int> development_profile_index;
+	mutable bool development_profiles_initialized=false;
 	AIMaximaPlacement::Planner development_planner;
 	bool development_planner_initialized;
 	std::map<int, AIMaximaPlacement::ActionLifecycleState>

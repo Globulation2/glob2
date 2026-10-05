@@ -872,8 +872,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `Map::canResourcesGrow` also checks the terrain capability.
 - Save format 134 stores canonical terrain IDs and fractional terrain health effects.
   Earlier supported saves derive IDs from their classic sprite ranges and adopt the
-  current simulation. Save floor 58 remains supported; replay floor 134 and network
-  protocol 55 separate clients using the new movement and ecology rules.
+  current simulation. Building format 136 extends runtime capabilities to buildings.
+  Save floor 58 remains supported; replay floor 136 and network protocol 56 separate
+  clients using the current simulation rules.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.

@@ -288,7 +288,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		int flag_y = *i % h;
 
 		//The main order for the war flag
-		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::WAR_FLAG, enemy);
+		BuildingOrder* bo_flag = new BuildingOrder(runtime, BuildingDemand::AttractWarriors, enemy);
 		bo_flag->add_constraint(new Construction::SinglePosition(flag_x, flag_y));
 		unsigned int id_flag=runtime.add_building_order(bo_flag);
 		defense_flags.push_back(id_flag);
@@ -508,17 +508,14 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 		groups.erase(groups.begin());
 		total_attacks -= 1;
 			
-		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, strategy.offense_explorer_flag_assigned);
+		BuildingOrder* bo_flag = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, strategy.offense_explorer_flag_assigned);
 		bo_flag->add_constraint(new Construction::SinglePosition(std::get<1>(groupInfo), std::get<2>(groupInfo)));
 		unsigned int id_flag=runtime.add_building_order(bo_flag);
 
 		ManagementOrder* mo_completion=new ChangeFlagSize(AI_NICOWAR_EXPLORER_ATTACK_FLAG_SIZE, id_flag);
 		runtime.add_management_order(mo_completion);
 
-		// [POSSIBLE BUG / preserved] Skill levels run 0..3; passing 4 here
-		// either locks the flag entirely or is silently capped at 3 by the
-		// engine. See bugs_surfaced_during_magic_number_audit.md M8.
-		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(AI_NICOWAR_EXPLORER_ATTACK_MIN_LEVEL, id_flag);
+		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(1, id_flag, 1);
 		runtime.add_management_order(mo_level);
 		
 		explorer_attack_flags.push_back(id_flag);

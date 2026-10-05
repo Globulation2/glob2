@@ -51,6 +51,7 @@ namespace AISharedRuntime
 				EPosition,
 				ESand,
 				EUnwalkable,
+    EResourceSet,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -75,6 +76,24 @@ namespace AISharedRuntime
 				static Entity* load_entity(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				static void save_entity(Entity* entity, GAGCore::OutputStream *stream);
 			};
+
+   // Cold-compiled resource mask: tile scans never look up building definitions.
+   class ResourceSet : public Entity
+   {
+   public:
+    explicit ResourceSet(unsigned mask=0):mask(mask) {}
+   protected:
+    friend class Entity;
+    bool is_entity(Map*,int,int) override;
+    bool operator==(const Entity&) const override;
+    bool can_change() override { return true; }
+    EntityType get_type() override { return EResourceSet; }
+    std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceSet>(*this); }
+    bool load(GAGCore::InputStream*,Player*,Sint32) override;
+    void save(GAGCore::OutputStream*) override;
+   private:
+    unsigned mask;
+   };
 
 			///Matches any building of a particular type, team, and construction state
 			class Building : public Entity

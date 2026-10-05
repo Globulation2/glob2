@@ -1,3 +1,4 @@
+#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -56,7 +57,7 @@ bool GameGUI::requestWorkerAllocation(Building& building, int requested)
 {
     if (globalContainer->isViewingGame() || building.owner->teamNumber!=localTeamNo ||
         !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
-    requested=std::clamp(requested,0,int(MAX_UNIT_WORKING));
+    requested=std::clamp(requested,0,building.type->semantics.assignmentLimit);
     if (requested==displayedMaxUnitWorking(building)) return false;
     pendingFor(building.gid).pendingMaxUnitWorking=requested;
     orderQueue.push_back(std::make_shared<OrderModifyBuilding>(building.gid,requested));
@@ -78,7 +79,7 @@ bool GameGUI::requestBuildingPriority(Building& building, int requested)
 bool GameGUI::requestFlagRange(Building& building, int requested)
 {
     if (globalContainer->isViewingGame() || building.owner->teamNumber!=localTeamNo ||
-        !building.type->defaultUnitStayRange) return false;
+        !(building.type->zonable[WORKER] || building.type->zonable[WARRIOR] || building.type->zonable[EXPLORER])) return false;
     requested=std::clamp(requested,0,building.type->maxUnitStayRange);
     if (requested==displayedUnitStayRange(building)) return false;
     pendingFor(building.gid).pendingUnitStayRange=requested;
@@ -93,6 +94,16 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	assert (selBuild);
 	if (selBuild->owner->teamNumber!=localTeamNo)
 		return;
+	if (my>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4)
+	{
+		if (my>globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET && my<globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET+BOTTOM_BUTTON_HEIGHT)
+			requestBuildingConstruction(*selBuild);
+		if (my>globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET && my<globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET+BOTTOM_BUTTON_HEIGHT)
+			requestBuildingDestruction(*selBuild);
+		return;
+	}
+	if (my<YPOS_BASE_BUILDING) return;
+	my+=buildingInfoScroll;
 	int ypos = YPOS_BASE_BUILDING +  YOFFSET_NAME + YOFFSET_ICON + YOFFSET_B_SEP;
 	BuildingType *buildingType = selBuild->type;
 	int lmx = mx - RIGHT_MENU_OFFSET; // local mx
@@ -107,7 +118,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			&& lmx < SCROLLBOX_BAR_WIDTH)
 		{
 			const int current = displayedMaxUnitWorking(*selBuild);
-			if (auto nbReq = interpretScrollBoxClick(lmx, current, MAX_UNIT_WORKING))
+			if (auto nbReq = interpretScrollBoxClick(lmx, current, buildingType->semantics.assignmentLimit))
 			{
                 requestWorkerAllocation(*selBuild,*nbReq);
 			}
@@ -167,7 +178,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 		// cleared resources for clearing flags: one checkbox row per clearable
 		// resource (stone is never cleared, so it has no row)
-		if (buildingType->type == "clearingflag")
+		if (buildingType->zonable[WORKER])
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<BASIC_COUNT; i++)
@@ -189,9 +200,27 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 				}
 		}
 
+		// minimum worker level for war flags: one radio row per worker level;
+		// row i requests minLevelToFlag==i (drawn as level 1+i)
+		if (buildingType->zonable[WORKER])
+		{
+			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
+			for (int i=0; i<NB_UNIT_LEVELS; i++)
+			{
+				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+				{
+					pendingFor(selBuild->gid).pendingMinWorkerLevelToFlag = i;
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 2)));
+				}
+
+				ypos+=YOFFSET_TEXT_PARA;
+			}
+
+		}
+
 		// minimum warrior level for war flags: one radio row per warrior level;
 		// row i requests minLevelToFlag==i (drawn as level 1+i)
-		if (buildingType->type == "warflag")
+		if (buildingType->zonable[WARRIOR])
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<NB_UNIT_LEVELS; i++)
@@ -208,17 +237,16 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		}
 
 		// explorer requirement for exploration flags: one radio row per
-		// EXPLORATION_FLAG_OPTION_* value (see GameGUIInternal.h — the flag
-		// reuses minLevelToFlag as a which-explorers-may-answer choice)
-		if (buildingType->type == "explorationflag")
+		// EXPLORATION_FLAG_OPTION_* value, independent of ground-unit filters.
+		if (buildingType->zonable[EXPLORER])
 		{
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<EXPLORATION_FLAG_OPTION_COUNT; i++)
 			{
 				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
-					pendingFor(selBuild->gid).pendingMinLevelToFlag = i;
-					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
+					pendingFor(selBuild->gid).pendingExplorersRequireBombing = bool(i);
+					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 1)));
 				}
 
 				ypos+=YOFFSET_TEXT_PARA;
@@ -230,8 +258,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		ypos+=YOFFSET_TEXT_LINE;
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
-	if (buildingType->shootDamage)
-		ypos += YOFFSET_TOWER;
+	ypos += buildingProjectileStatsHeight(*buildingType);
 	ypos += YOFFSET_B_SEP;
 
 	//Exchange building
@@ -294,12 +321,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	}
 	ypos+=5;
 
-	if (selBuild->type->unitProductionTime)
+	if (selBuild->type->semantics.production.enabledUnitMask)
 	{
 		ypos+=15;
 		for (int i=0; i<NB_UNIT_TYPE; i++)
 		{
-			if ((my>ypos+(i*20))&&(my<ypos+(i*20)+16)&&(lmx<SCROLLBOX_BAR_WIDTH))
+			if (!buildingType->semantics.production.recipes[i].enabled) continue;
+			if ((my>ypos)&&(my<ypos+16)&&(lmx<SCROLLBOX_BAR_WIDTH))
 			{
 				const std::array<Sint32, NB_UNIT_TYPE> current = displayedRatio(*selBuild);
 				if (auto nbReq = interpretScrollBoxClick(lmx, current[i], MAX_RATIO_RANGE))
@@ -313,16 +341,8 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifySwarm(selBuild->gid, wire)));
 				}
 			}
+			ypos+=YOFFSET_SWARM_RATIO_LINE;
 		}
 	}
 
-	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
-	{
-        requestBuildingConstruction(*selBuild);
-	}
-
-	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
-	{
-        requestBuildingDestruction(*selBuild);
-	}
 }

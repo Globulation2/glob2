@@ -254,7 +254,7 @@ void Unit::handleMovementAttackingAround()
 							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
 							Building *b=owner->game->teams[team]->myBuildings[id];
 							BuildingType *bt=b->type;
-							int shootDamage=bt->shootDamage;
+							int shootDamage=bt->semantics.projectileDamage[typeNum];
 							newQuality/=(1+shootDamage);
 							tryAcquireAttackTarget(x, y, newQuality, quality);
 						}
@@ -412,7 +412,7 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy))
+	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy, BuildingRoute::Clearing))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -528,7 +528,8 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy))
+	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy,
+		activity == ACT_FLAG ? (typeNum == WORKER ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint))
 	{
 		movement=MOV_GOING_DX_DY;
 	}

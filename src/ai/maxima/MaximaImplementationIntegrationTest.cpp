@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "Version.h"
 #include "AIMaximaFoodSupply.h"
+#include "AIMaximaBuildings.h"
 #include "TeamStat.h"
 #include <memory>
 #include <limits>
@@ -76,7 +77,7 @@ template<class T> static void payloadRoundTrip(const T& original)
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     std::unique_ptr<T> loaded;
-    if constexpr (std::is_same_v<T,Construction::Constraint>) loaded.reset(T::load(&input,VERSION_MINOR));
+    if constexpr (std::is_same_v<T,Construction::Constraint> || std::is_same_v<T,Management::ManagementOrder>) loaded.reset(T::load(&input,VERSION_MINOR));
     else loaded.reset(T::load(&input));
     GAGCore::MemoryStreamBackend* second=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream roundtrip(second);
@@ -184,7 +185,7 @@ static void integrationRegressions()
     std::vector<int> living(1,1);
     ai.reconnaissance.beginObservation(0,living);
     ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
-        gid,1,replacement->type->shortTypeNum,5,5,
+        gid,1,replacement->typeNum,5,5,
         replacement->type->width,replacement->type->height,false,0));
     ai.reconnaissance.finishObservation();
     ai.timer=1;
@@ -219,7 +220,7 @@ static void integrationRegressions()
     {
         Management::AssignWorkers* assignment=dynamic_cast<Management::AssignWorkers*>(context.managementOrders[i].get());
         if(assignment) assigned+=assignment->workers;
-        if(dynamic_cast<Management::DestroyBuilding*>(context.managementOrders[i].get())) ++destroyed;
+        if(dynamic_cast<Management::RetireAttraction*>(context.managementOrders[i].get())) ++destroyed;
     }
     REQUIRE((assigned==3 && destroyed==1));
     context.managementOrders.clear();
@@ -229,7 +230,7 @@ static void integrationRegressions()
     for(size_t i=0;i<context.managementOrders.size();++i)
     {
         REQUIRE(!dynamic_cast<Management::AssignWorkers*>(context.managementOrders[i].get()));
-        if(dynamic_cast<Management::DestroyBuilding*>(context.managementOrders[i].get())) ++destroyed;
+        if(dynamic_cast<Management::RetireAttraction*>(context.managementOrders[i].get())) ++destroyed;
     }
     REQUIRE(destroyed==2);
 }
@@ -261,7 +262,7 @@ static void executionRegressions()
     REQUIRE(gradient.get_height(0,64)==0);
     REQUIRE(gradient.get_height(-64,-128)==0);
     REQUIRE(gradient.get_height(-1,64)==gradient.get_height(63,0));
-    Construction::BuildingOrder wrapped(IntBuildingType::WAR_FLAG,4);
+    Construction::BuildingOrder wrapped(AIMaximaBuildings::WarriorAttraction,4);
     wrapped.add_constraint(new Construction::SinglePosition(64,-64));
     bool complete=false;
     PlacementResult location=wrapped.find_location(c,1,complete);
@@ -449,7 +450,7 @@ static void fruitStrategyRegressions()
     // Completed building vision replaces the pending explorer assignment.
     ::Building* covering=game.addBuilding(22,11,innType,0);REQUIRE(covering);
     const int coverId=c.buildings.register_building();
-    c.buildings.issue_order(coverId,22,11,IntBuildingType::FOOD_BUILDING);
+    c.buildings.issue_order(coverId,22,11,innType);
     c.buildings.tick();
     ai.update_fruit_flags(c);
     REQUIRE(c.resource_flags(CHERRY).empty());
@@ -502,7 +503,7 @@ static void reviewBugRegressions()
     across->seenByMask|=player.team->me;
     ai.reconnaissance.beginObservation(ai.timer,std::vector<int>(1,2));
     ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
-        across->gid,2,across->type->shortTypeNum,across->posX,across->posY,
+        across->gid,2,across->typeNum,across->posX,across->posY,
         across->type->width,across->type->height,false,ai.timer));
     ai.reconnaissance.finishObservation();
     ai.strategy.tactics.min_force=4;
@@ -584,7 +585,7 @@ static void missionForceRegressions()
     ai.strategy.tactics.min_force=4; ai.strategy.raiding.enabled=false;
     ai.reconnaissance.beginObservation(100,std::vector<int>(1,2));
     ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
-        enemy->gid,2,enemy->type->shortTypeNum,40,40,
+        enemy->gid,2,enemy->typeNum,40,40,
         enemy->type->width,enemy->type->height,false,100));
     ai.reconnaissance.finishObservation();
     // Warriors already on the offensive flag count toward continuing it.
@@ -702,11 +703,13 @@ static void directorUpgradeRegressions()
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int raceType=globalContainer->buildingsTypes.getTypeNum("racetrack",0,false);
     REQUIRE(game.addBuilding(25,25,raceType,0));
+    REQUIRE(game.addUnit(4,4,0,WORKER,1,0,0,0));
+    auto* builder=game.addUnit(30,30,0,WORKER,1,0,0,0);REQUIRE(builder);
     c.initialize(); c.activeAI=&ai;
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     TeamStat* stat=player.team->stats.getLatestStat();
-    stat->totalUnit=100; stat->upgradeState[BUILD][1]=20;
+    stat->totalUnit=100; stat->workersByConstructionLevel[1]=20;
     ai.snapshot.population=100; ai.snapshot.schools=1;
     ai.budget.allow_upgrades=true;
     ai.configure_development_planner();
@@ -735,8 +738,9 @@ static void directorUpgradeRegressions()
 
     // Prestige is a school level-two to level-three upgrade. Its thresholds
     // must use the current workforce and completed schools, not stale snapshots.
-    const int schoolType=IntBuildingType::SCIENCE_BUILDING;
-    const int trainingSchool=globalContainer->buildingsTypes.getTypeNum("school",1,false);
+    const int trainingSchool=game.buildingsTypes.getTypeNum("school",1,false);
+    builder->constructionLevel=2;
+    const int schoolType=AIMaximaBuildings::lineageRoot(game,trainingSchool);
     REQUIRE(game.addBuilding(10,10,trainingSchool,0)); c.buildings.initiate();
     ai.budget.allow_level2_upgrades=true; ai.finalize_director_plan(c);
     world=ai.collect_development_world(c);
@@ -746,17 +750,17 @@ static void directorUpgradeRegressions()
     const auto selectPrestige=[&]() {
         return ai.development_planner.selectAction(world,{},ai.collect_development_limits(c),action);
     };
-    stat->upgradeState[BUILD][2]=ai.budget.first_prestige_trained_workers-1;
+    stat->workersByConstructionLevel[2]=ai.budget.first_prestige_trained_workers-1;
     REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
     REQUIRE(!selectPrestige());
-    ++stat->upgradeState[BUILD][2];
+    ++stat->workersByConstructionLevel[2];
     REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)!=0);
     REQUIRE((selectPrestige() && action.fromLevel==2 && action.targetLevel==3));
     const int prestigeType=globalContainer->buildingsTypes.getTypeNum("school",2,false);
     REQUIRE(game.addBuilding(45,45,prestigeType,0)); c.buildings.initiate();
-    stat->upgradeState[BUILD][2]=ai.budget.second_prestige_trained_workers-1;
+    stat->workersByConstructionLevel[2]=ai.budget.second_prestige_trained_workers-1;
     REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
-    ++stat->upgradeState[BUILD][2];
+    ++stat->workersByConstructionLevel[2];
     stat->totalUnit=ai.budget.second_prestige_population_min-1;
     REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
     ++stat->totalUnit;
@@ -919,7 +923,7 @@ static void foodRelocationExecutorRegression()
     bool offered=false;
     for(const auto& intent:ai.collect_development_intents(world))
         if(intent.purpose==Relocation&&intent.replacesBuildingId==0
-           &&intent.buildingType==IntBuildingType::FOOD_BUILDING) offered=true;
+           &&intent.buildingType==game.buildingsTypes.getPlaceableTypeNum("inn")) offered=true;
     REQUIRE(offered);
 
     // The planner never finds a site: the offer expires after the offer window.
@@ -933,7 +937,7 @@ static void foodRelocationExecutorRegression()
     REQUIRE(ai.relocation_target_building==0);
     DevelopmentAction action; action.id=77; action.type=BuildStandalone;
     action.purpose=Relocation; action.replacesBuildingId=0; action.buildingId=1;
-    action.buildingType=IntBuildingType::FOOD_BUILDING; action.state=SiteObserved;
+    action.buildingType=game.buildingsTypes.getPlaceableTypeNum("inn"); action.state=SiteObserved;
     ai.development_planner.actionMap[77]=action;
     offered=false;
     for(const auto& intent:ai.collect_development_intents(world))
@@ -1013,7 +1017,7 @@ static void innCompletionStaffingRegressions()
     game.map.setMapDiscovered(19,19,2,2,player.team->me);
     AIMaximaPlacement::DevelopmentAction action;
     action.type=AIMaximaPlacement::BuildStandalone;
-    action.buildingType=IntBuildingType::FOOD_BUILDING;
+    action.buildingType=game.buildingsTypes.getPlaceableTypeNum("inn");
     action.centerX=20; action.centerY=20; action.workers=2;
     action.initialFootprint=AIMaximaPlacement::Footprint(-1,-1,2,2);
     REQUIRE(ai.issue_development_action(c,action));
@@ -1047,24 +1051,25 @@ static void directorUpgradePriorityRegressions()
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     ai.snapshot.population=100; ai.snapshot.schools=1;
+    REQUIRE(game.addUnit(4,4,0,WORKER,2,0,0,0));
     ai.budget.allow_upgrades=true; ai.budget.allow_level2_upgrades=true;
     ai.posture=AIMaxima::Maxima::PostureRecover;
     ai.finalize_director_plan(c);
     const auto limits=ai.collect_development_limits(c);
     for(int level:{1,2})
     {
-        REQUIRE(limits.upgradePriority(IntBuildingType::FOOD_BUILDING,level)
+        REQUIRE(limits.upgradePriority(game.buildingsTypes.getPlaceableTypeNum("inn"),level)
             ==ai.strategy.upgrades.recovery_inn_weight);
-        for(int type:{IntBuildingType::HEAL_BUILDING,IntBuildingType::WALKSPEED_BUILDING,
-                      IntBuildingType::SWIMSPEED_BUILDING,IntBuildingType::ATTACK_BUILDING})
+        for(int type:{game.buildingsTypes.getPlaceableTypeNum("hospital"),game.buildingsTypes.getPlaceableTypeNum("racetrack"),
+                      game.buildingsTypes.getPlaceableTypeNum("swimmingpool"),game.buildingsTypes.getPlaceableTypeNum("barracks")})
             REQUIRE(limits.upgradePriority(type,level)==0);
     }
     ai.posture=AIMaxima::Maxima::PostureExpand;
     ai.finalize_director_plan(c);
     const auto healthy=ai.collect_development_limits(c);
-    REQUIRE(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)
+    REQUIRE(healthy.upgradePriority(game.buildingsTypes.getPlaceableTypeNum("barracks"),1)
         ==ai.budget.upgrade_level1_barracks_weight);
-    REQUIRE(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(healthy.upgradePriority(game.buildingsTypes.getPlaceableTypeNum("barracks"),1)>0);
 }
 
 static void placementMaintenanceRegressions()
@@ -1085,7 +1090,7 @@ static void placementMaintenanceRegressions()
         REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
         ai.initialize_farming_cache(c);ai.configure_development_planner();
         WorldState world=ai.collect_development_world(c);
-        DevelopmentIntent intent;intent.buildingType=IntBuildingType::WALKSPEED_BUILDING;
+        DevelopmentIntent intent;intent.buildingType=game.buildingsTypes.getPlaceableTypeNum("racetrack");
         intent.unmetCount=1;intent.priority=100;intent.workers=2;
         DevelopmentLimits limits;limits.newConstruction=1;DevelopmentAction action;
         REQUIRE(ai.development_planner.selectAction(world,{intent},limits,action));
@@ -1139,7 +1144,7 @@ static void placementMaintenanceRegressions()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
         ai.initialize_farming_cache(c);ai.configure_development_planner();
         REQUIRE(game.addUnit(10,10,0,WORKER,0,0,0,0));
-        DevelopmentIntent intent;intent.buildingType=IntBuildingType::HEAL_BUILDING;
+        DevelopmentIntent intent;intent.buildingType=game.buildingsTypes.getPlaceableTypeNum("hospital");
         intent.unmetCount=4;intent.priority=100;intent.workers=2;
         DevelopmentLimits limits;limits.newConstruction=4;
         std::vector<Building*> members;
@@ -1209,7 +1214,7 @@ static void upgradeClearingRegressions()
         REQUIRE(expansion.size()==20);
         ai.budget.construction_sites=0;ai.budget.allow_upgrades=true;ai.budget.allow_level2_upgrades=false;
         ai.budget.upgrade_level1_racetrack_weight=100;
-        player.team->stats.getLatestStat()->upgradeState[BUILD][1]=ai.budget.upgrade_level1_trained_units_per_slot;
+        player.team->stats.getLatestStat()->workersByConstructionLevel[1]=ai.budget.upgrade_level1_trained_units_per_slot;
         ai.budget.farming_enabled=true;ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_resource_preserving_circulation_enabled=true;
         ai.budget.farming_wood_firebreak_enabled=false;ai.budget.farming_wheat_invasion_clearing_enabled=false;
@@ -1250,13 +1255,14 @@ static void rejectedPlacementUpgradeRegressions()
     Building* building=game.addBuilding(20,20,
         globalContainer->buildingsTypes.getTypeNum("racetrack",0,false),0);
     REQUIRE(building);
+    REQUIRE(game.addUnit(4,4,0,WORKER,1,0,0,0));
     AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
     ai.initialize_farming_cache(c);ai.configure_development_planner();
     WorldState world=ai.collect_development_world(c);ai.development_planner.adoptStartingBuildings(world);
     const int id=world.buildings[0].id;
     DevelopmentAction action;action.id=100;action.type=UpgradeBuilding;
-    action.buildingType=IntBuildingType::WALKSPEED_BUILDING;
+    action.buildingType=game.buildingsTypes.getPlaceableTypeNum("racetrack");
     action.buildingId=id;action.fromLevel=1;action.targetLevel=2;action.workers=4;
     action.centerX=22;action.centerY=22;
     REQUIRE(ai.development_planner.reserve(world,action));
@@ -1268,7 +1274,7 @@ static void rejectedPlacementUpgradeRegressions()
     REQUIRE(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
     REQUIRE(c.buildings.is_building_upgrading(id));
     game.map.setResource(19,19,WOOD,1);
-    building->launchConstruction(1,1);
+    building->launchConstruction(1,0);
     REQUIRE(building->constructionResultState==Building::NO_CONSTRUCTION);
     c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
     ai.timer=1000;ai.development_planner.observe(ai.collect_development_world(c));
@@ -1278,7 +1284,7 @@ static void rejectedPlacementUpgradeRegressions()
     // throughout its actual construction lifetime.
     building->hp-=1;
     REQUIRE(c.issue_upgrade_repair(id,true));c.orders.clear();
-    building->launchConstruction(1,1);c.buildings.tick();
+    building->launchConstruction(1,0);c.buildings.tick();
     REQUIRE(building->constructionResultState!=Building::NO_CONSTRUCTION);
     REQUIRE(c.buildings.is_building_upgrading(id));
     building->cancelConstruction(1);c.buildings.tick();
@@ -1512,6 +1518,7 @@ static void categoryMaintenanceCapacityRegressions()
         Game game(NULL);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
         game.addTeam();game.teams[0]->race.loadDefault();
         Player player;player.setTeam(game.teams[0]);
+        REQUIRE(game.addUnit(30,30,0,WORKER,2,0,0,0));
         const int engineType=globalContainer->buildingsTypes.getTypeNum(name,0,false);
         for(int i=0;i<count;++i)REQUIRE(game.addBuilding(4+i*9,20,engineType,0));
         AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
@@ -1522,7 +1529,7 @@ static void categoryMaintenanceCapacityRegressions()
         ai.budget.upgrade_level1_pool_weight=10;
         ai.budget.upgrade_level1_barracks_weight=10;
         ai.snapshot.warriors=100;ai.snapshot.trained_warriors=0;
-        const int type=globalContainer->buildingsTypes.get(engineType)->shortTypeNum;
+        const int type=AIMaximaBuildings::lineageRoot(game,engineType);
         std::vector<int> ids;for(const auto& entry:c.buildings.found())ids.push_back(entry.first);
         const int allowed=std::max(1,count/2);
         for(int i=0;i<allowed;++i)
@@ -1558,7 +1565,7 @@ static void categoryMaintenanceCapacityRegressions()
         GAGCore::BinaryOutputStream output(memory);c.buildings.save(&output);
         std::string bytes(memory->getBuffer(),memory->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-        input.seekFromStart(0);c.buildings.load(&input);
+        input.seekFromStart(0);c.buildings.load(&input,VERSION_MINOR);
         REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)==0);
         REQUIRE(!ai.collect_development_limits(c).repairAllowed(type));
         // A rejected order frees its slot when the registry observes rejection.
@@ -1580,6 +1587,7 @@ void upgradeWorkerPriorityRegressions()
     game.map.setSize(6,6,GRASS); game.map.setGame(&game);
     game.addTeam(); game.teams[0]->race.loadDefault();
     Player player; player.setTeam(game.teams[0]);
+    REQUIRE(game.addUnit(30,30,0,WORKER,1,0,0,0));
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int raceType=globalContainer->buildingsTypes.getTypeNum("racetrack",0,false);
     ::Building* track=game.addBuilding(25,25,raceType,0);
@@ -1588,7 +1596,7 @@ void upgradeWorkerPriorityRegressions()
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     TeamStat* stat=player.team->stats.getLatestStat();
-    stat->totalUnit=100; stat->upgradeState[BUILD][1]=20;
+    stat->totalUnit=100; stat->workersByConstructionLevel[1]=20;
     ai.snapshot.population=100; ai.snapshot.schools=1;
     ai.budget.allow_upgrades=true;
     ai.configure_development_planner();
@@ -1635,6 +1643,8 @@ void upgradeWorkerPriorityRegressions()
     REQUIRE(workerRequests().empty());
 
     // Once the site is live it receives the configured upgrade staffing.
+    const int upgradeSite=track->type->nextLevel;
+    track->typeNum=upgradeSite;track->type=game.buildingsTypes.get(upgradeSite);
     track->buildingState=::Building::ALIVE;
     c.orders.clear();
     c.update_management_orders();
@@ -1646,6 +1656,7 @@ void upgradeWorkerPriorityRegressions()
     REQUIRE(priorities().empty());
 
     // Completion restores the normal priority exactly once.
+    track->typeNum=track->type->nextLevel;track->type=game.buildingsTypes.get(track->typeNum);
     track->constructionResultState=::Building::NO_CONSTRUCTION;
     c.buildings.tick();
     c.orders.clear();

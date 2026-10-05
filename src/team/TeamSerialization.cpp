@@ -9,6 +9,7 @@
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <stdexcept>
+#include <algorithm>
 
 bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
@@ -70,7 +71,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		{
 			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
 			if (Building::GIDtoID(myBuildings[i]->gid) != i) throw std::runtime_error("Building identity does not match slot");
-			if (myBuildings[i]->type->unitProductionTime)
+			if (myBuildings[i]->type->semantics.production.enabledUnitMask)
 				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
 				turrets.push_back(myBuildings[i]);
@@ -131,6 +132,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	{
 		stream->readEnterSection(i);
 		teamResources[i] = stream->readUint32("teamRessources");
+		if (teamResources[i]<0) throw std::runtime_error("Invalid shared inventory");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -219,6 +221,46 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 			throw std::runtime_error("Invalid construction cooldown");
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
+	{
+		std::array<bool,Unit::MAX_COUNT> visits{};
+		for (int slot=0; slot<Building::MAX_COUNT; ++slot)
+			if (Building* building=myBuildings[slot])
+				for (Unit* unit : building->unitsInside)
+				{
+					const int id=Unit::GIDtoID(unit->gid);
+					const int purpose=unit->destinationPurpose;
+					const auto& spec=building->type->semantics;
+					const bool validService=purpose==FEED ? spec.feeding.enabled :
+						purpose==HEAL ? spec.healing.enabled :
+						purpose>=0 && purpose<NB_ABILITY && spec.training[purpose].enabled;
+					const unsigned serviceMask=purpose==FEED ? spec.feeding.unitMask : purpose==HEAL ? spec.healing.unitMask :
+						purpose>=0 && purpose<NB_ABILITY ? spec.training[purpose].unitMask : 0;
+					if (!(spec.admittedUnitMask & serviceMask & (1u<<unit->typeNum)) || visits[id] || unit->attachedBuilding!=building || unit->activity!=Unit::ACT_UPGRADING
+						|| !validService || (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
+						throw std::runtime_error("Invalid saved building service membership");
+					visits[id]=true;
+				}
+		for (int id=0; id<Unit::MAX_COUNT; ++id)
+			if (myUnits[id] && myUnits[id]->serviceResourcesReserved && !visits[id])
+				throw std::runtime_error("Saved unit reservation has no building service visit");
+	}
+
+	std::fill_n(reservedTeamResources, MAX_NB_RESOURCES, 0);
+	stockSuppliers.clear();
+	directStockSuppliers.clear();
+	combatFlags.clear();
+	for (int i=0; i<Building::MAX_COUNT; ++i)
+		if (Building* b = myBuildings[i])
+		{
+			if (b->type->runtimeSuppliesStock && b->buildingState == Building::ALIVE) stockSuppliers.push_back(b);
+			if (b->type->runtimeSuppliesDirectStock) directStockSuppliers.push_back(b);
+			if (b->type->zonable[WARRIOR]) combatFlags.push_back(b);
+			b->reservedResources.fill(0);
+			b->restoreServiceReservations();
+			b->restoreProductionReservations();
+			b->restoreConstructionReservations();
+		}
 	stream->readLeaveSection();
 	co_return true;
 }

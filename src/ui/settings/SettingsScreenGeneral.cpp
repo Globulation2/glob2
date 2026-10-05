@@ -360,20 +360,19 @@ void SettingsScreen::buildGeneral()
 	{
 		info(tr("Try features we are still testing. They can change balance and pacing."));
 		info(tr("Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with."));
-		if (experimentDefinitions().empty())
+		const auto definitions = registeredExperimentDefinitions();
+		if (definitions.empty())
 			info(tr("No experiments in this build."));
-		auto *strings = Toolkit::getStringTable();
-		for (const auto &definition : experimentDefinitions())
+		for (const auto &definition : definitions)
 		{
 			// Labels come from the experiment's own keys rather than the
 			// "[settings ...]" prefix, so the lobby and this page share them.
 			const std::string key = definition.key;
-			auto &r = add("experiments." + key, Kind::Toggle, strings->getString("[experiment " + key + "]"),
-						  strings->getString("[experiment " + key + " help]"));
-			r.number = s.experiments.has(definition.id);
-			r.change = [this, id = definition.id](int v)
+			auto &r = add("experiments." + key, Kind::Toggle, experimentLabel(definition), experimentHelp(definition));
+			r.number = s.experiments.has(key);
+			r.change = [this, key](int v)
 			{
-				globalContainer->settings.experiments.set(id, v != 0);
+				globalContainer->settings.experiments.set(key, v != 0);
 				commit();
 			};
 		}

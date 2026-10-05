@@ -6,6 +6,7 @@
 #pragma once
 
 #include "AIImplementation.h"
+#include "BuildingCapabilities.h"
 #include <valarray>
 
 class Game;
@@ -72,18 +73,21 @@ public:
 	
 	std::shared_ptr<Order> getOrder(void);
 private:
+	using Intent = AIPlanning::BuildingIntent;
+	bool provides(const Building& building, Intent intent) const;
+	int selectBuilding(Intent intent) const;
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
 	//these should be improved, and some should be moved to Team.h.
-	Building *getBuildingWithoutWorkersAssigned(Sint32 shortTypeNum, int num_workers)const;
-	bool allOfBuildingTypeAreCompleted(Sint32 shortTypeNum)const;
-	bool allOfBuildingTypeAreFull(Sint32 shortTypeNum)const;
-	bool allOfBuildingTypeAreFullyWorked(Sint32 shortTypeNum)const;
+	Building *getBuildingWithoutWorkersAssigned(Intent intent, int num_workers)const;
+	bool allOfBuildingTypeAreCompleted(Intent intent)const;
+	bool allOfBuildingTypeAreFull(Intent intent)const;
+	bool allOfBuildingTypeAreFullyWorked(Intent intent)const;
 	int numberOfExtraBuildings()const;
 	bool percentageOfBuildingsAreFullyWorked(int percentage)const;
 	int numberOfUnitsWithSkillGreaterThanValue(int skill, int value)const;
 	int numberOfUnitsWithSkillEqualToValue(int skill, int value)const;
-	int numberOfBuildingsOfType(Sint32 shortTypeNum)const;
+	int numberOfBuildingsOfType(Intent intent)const;
 	bool isAnyUnitWithLessThanOneThirdFood()const;
 	Building *getSwarmWithoutSettings(int workerRatio, int explorerRatio, int warriorRatio)const;
 	Building *getSwarmAtRandom()const;
@@ -95,7 +99,7 @@ private:
 	std::shared_ptr<Order> setupExploreFlagForTeam(Team *enemy_team);
 	bool locationIsAvailableForBuilding(int x, int y, int width, int height);
 	void initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type);
-	std::shared_ptr<Order> buildBuildingOfType(Sint32 shortTypeNum);
+	std::shared_ptr<Order> buildBuildingOfType(Intent intent);
 };
 
 

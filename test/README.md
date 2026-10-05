@@ -879,11 +879,8 @@ Older saves do not carry it and load leaves the member at `-1`, the sentinel
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
-decoding from the right offset. `test/unit/stubs/RuntimeStubs.cpp` satisfies the
-`find_location` / `passes_conditions` link surface (`BuildingsTypes`, `FlagMap`,
-`GradientManager`, and the `Constraint` / `Condition` factories) that a
-constraint-free order never reaches at runtime. It is the `RuntimeBuildingOrderSaveLoad`
-suite of `glob2-unit-tests`.
+decoding from the right offset. The `RuntimeBuildingOrderSaveLoad` suite runs in
+`glob2-engine-tests`, linking the real catalog, placement and runtime components.
 
 ### Native main Settings redesign
 

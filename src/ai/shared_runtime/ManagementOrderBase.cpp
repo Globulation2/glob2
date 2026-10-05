@@ -3,6 +3,7 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Order.h"
+#include <algorithm>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
@@ -85,7 +86,16 @@ AssignWorkers::AssignWorkers(int number_of_workers, int building_id) : number_of
 
 void AssignWorkers::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderModifyBuilding(runtime.get_building_register().get_building(building_id)->gid, number_of_workers)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ int requested=number_of_workers;
+ const auto& spec=building->type->semantics;
+ int services=spec.feeding.enabled+spec.healing.enabled+(building->type->shootingRange>0);
+ services+=std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& recipe){return recipe.enabled;});
+ services+=std::any_of(spec.training.begin(),spec.training.end(),[](const auto& training){return training.enabled;});
+ services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock;
+ services+=building->type->zonable[WORKER] || building->type->zonable[WARRIOR] || building->type->zonable[EXPLORER];
+ if(services>1 && !building->type->isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
+ runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,building->type->semantics.assignmentLimit)));
 }
 
 
@@ -132,7 +142,10 @@ void ChangeSwarm::modify(Runtime& runtime)
 	ratio[0]=worker_ratio;
 	ratio[1]=explorer_ratio;
 	ratio[2]=warrior_ratio;
-	runtime.push_order(shared_ptr<Order>(new OrderModifySwarm(runtime.get_building_register().get_building(building_id)->gid, ratio)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ for(int unit=0;unit<NB_UNIT_TYPE;++unit)
+  if(!building->type->semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.player->game->gameHeader.isPeacefulModeEnabled())) ratio[unit]=0;
+ runtime.push_order(std::make_shared<OrderModifySwarm>(building->gid,ratio));
 }
 
 
@@ -181,7 +194,13 @@ DestroyBuilding::DestroyBuilding(int building_id) : building_id(building_id)
 
 void DestroyBuilding::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderDelete(runtime.get_building_register().get_building(building_id)->gid)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ const auto& spec=building->type->semantics;
+ if(spec.feeding.enabled || spec.healing.enabled || building->type->shootingRange>0
+  || spec.market.interTeamFruitExchange || spec.market.suppliesStock
+  || std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& r){return r.enabled;})
+  || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;})) return;
+ runtime.push_order(std::make_shared<OrderDelete>(building->gid));
 }
 
 

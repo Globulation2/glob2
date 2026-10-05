@@ -71,14 +71,19 @@ export async function matchRatingPreview(
 ): Promise<MatchRatingPreview | undefined> {
   const match = await db
     .selectFrom('matches')
-    .select(['rated', 'origin', 'queue_id', 'setup', 'sim_version'])
+    .select(['rated', 'origin', 'queue_id', 'setup', 'sim_version', 'rules_identity'])
     .where('id', '=', matchId)
     .executeTakeFirst();
   if (!match || !match.rated || match.origin !== 'queue' || !match.queue_id) return undefined;
   const setup = readStored(STORED_MATCH_SETUP, match.setup);
   const mine = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
   if (!mine) return undefined;
-  const ratings = await seatRatings(db, setup, match.sim_version, match.queue_id);
+  const ratings = await seatRatings(
+    db,
+    setup,
+    match.rules_identity ?? match.sim_version,
+    match.queue_id,
+  );
   return previewFor(setup, mine.seat, ratings, match.queue_id);
 }
 

@@ -20,6 +20,8 @@
     "GameplayRecording*/*",
     "MacScrollMonitor/*",
     "GameDiagnostics/*",
+    "DatasetWriter/*",
+    "LanMatchHarness/*",
     "WinProbability/*",
     "AIRules/*",
     "MusicSet/*",
@@ -35,7 +37,12 @@
     "ScreenExecution/*",
     "SettingsGraphics/*",
     "MarketFetch/*",
-    "MarketsV2/*"
+    "MarketsV2/*",
+    "BuildingCatalog/*",
+    "BuildingServices/*",
+    "BuildingProductionCombat/*",
+    "BuildingCapabilities/*",
+    "SceneExtract/*"
   ],
   "unit_filters": [
     "*"

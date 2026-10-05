@@ -93,6 +93,7 @@ public:
 
 	///Initializes all variables
 	void init();
+	void rebuildBuildingChoices(bool preserve = false);
 	///Moves the local viewport
 	void adjustInitialViewport();
 	void adjustLocalTeam();
@@ -417,7 +418,7 @@ private:
 	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
-	void drawCosts(int resources[BASIC_COUNT], Font *font);
+	void drawCosts(const int resources[MAX_RESOURCES], Font *font);
 	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
@@ -463,6 +464,11 @@ private:
 	std::optional<size_t> pickChoiceUnderMouse(int panelTopY, size_t count, unsigned numberPerLine) const;
 	//! Paint the resource/info text block at the bottom of the right panel for the given type.
 	void drawChoiceInfoPanel(const std::string& type);
+	int choiceVisibleRows(int panelTopY,unsigned columns) const;
+	bool scrollBuildingChoices(double delta);
+	int buildingChoiceRow=0, flagChoiceRow=0;
+	int buildingInfoScroll=0, buildingInfoScrollMaximum=0;
+	Uint16 buildingInfoScrollGid=0xffff;
 	//! Draw a choice of flags
 	void drawFlagView(void);
 	//! Draw the infos from a unit
@@ -855,6 +861,8 @@ private:
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;
 	Sint32 displayedMinLevelToFlag(const Building& b) const;
+	template<class B> Sint32 displayedMinWorkerLevelToFlag(const B& b) const { return ::displayedMinWorkerLevelToFlag(buildingGuiState,b); }
+	template<class B> bool displayedExplorersRequireBombing(const B& b) const { return ::displayedExplorersRequireBombing(buildingGuiState,b); }
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 	// The same for the selected building's panel model.
 	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }

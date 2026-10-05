@@ -22,47 +22,65 @@ void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
 
-	// Custom-game "instant construction" rule: skip waiting for resource
-	// delivery. When it's the rule (not real delivered resources) completing
-	// the site, also skip debiting resources[] -- nothing was actually
-	// delivered, so there's nothing to consume, and subtracting the full
-	// cost from an unfilled resources[] would leave a negative balance that
-	// makes the *next* level demand extra resources to pay it off. Whatever
-	// genuinely was delivered short of a full site carries forward as a head
-	// start on the next level, same as the overflow above a full site
-	// already carries forward today.
-	const bool resourceFull = isResourceFull();
+	fundConstructionFromInventory();
+	const bool resourceFull = constructionReserved == constructionBudget;
 	const bool instantComplete = !resourceFull && owner->game->gameHeader.isInstantConstructionEnabled();
-	if ((resourceFull || instantComplete) && (buildingState!=WAITING_FOR_DESTRUCTION))
+	if ((resourceFull || instantComplete || siteCompletionPending) && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
+		siteCompletionPending=true;
+		cancelProduction();
+		maxUnitInside=0;
+		updateCallLists();
+		// Complete existing visits using their original service definition before
+		// replacing it. Reserved service budgets cannot become construction costs.
+		if (!unitsInside.empty()) return;
+		BuildingType* completed=owner->game->buildingsTypes.get(type->nextLevel);
+		if (!canTransferResourcesTo(completed)) return;
+		const int completedX=(posX-type->decLeft+completed->decLeft)&owner->map->getMaskW();
+		const int completedY=(posY-type->decTop+completed->decTop)&owner->map->getMaskH();
+		if (completed->semantics.occupiesGround && !owner->map->isFreeForBuilding(completedX,completedY,completed->width,completed->height,gid)) return;
+		owner->removeFromAbilitiesLists(this);
 		if (!type->isVirtual)
 		{
 			int kind = constructionResultState == REPAIR    ? GameplayMeasurements::REPAIRED
 					   : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADED
 															: GameplayMeasurements::NEW_BUILDING;
-			++owner->stats.measurements.completed[kind][type->shortTypeNum][type->level];
-			if (constructionResultState != REPAIR && !instantComplete)
-				for (int r = 0; r < MAX_RESOURCES; ++r)
-					owner->stats.measurements
-						.consumed[constructionResultState == UPGRADE
-									  ? GameplayMeasurements::UPGRADE
-									  : GameplayMeasurements::CONSTRUCTION][r] +=
-						type->maxResource[r];
+			auto& measurements=owner->stats.measurements;
+			measurements.variants.resize(owner->game->buildingsTypes.size());
+			++measurements.variants[type->nextLevel].completed[kind];
+			if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && type->level<NB_UNIT_LEVELS)
+				++measurements.completed[kind][type->shortTypeNum][type->level];
 		}
-		// we really uses the resources of the building site:
-		if (!instantComplete)
-			for(int i=0; i<MAX_RESOURCES; i++)
-				resources[i]-=type->maxResource[i];
+		const bool wasShared=type->useTeamResources;
+		const bool wasRepair=constructionResultState==REPAIR;
+		if (wasRepair) applyConstructionHealth(0,instantComplete);
+		if (instantComplete) releaseConstructionReservations();
+		else
+		{
+			consumeReservedResources(constructionReserved, constructionResultState == REPAIR ? -1 : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADE : GameplayMeasurements::CONSTRUCTION);
+			constructionReserved.fill(0);
+		}
+		const bool zeroCost = constructionBudget == BuildingResourceCost{};
+		constructionBudget.fill(0);
+		constructionOriginTypeNum=-1;
+		repairInitialDeficit=repairHealthGranted=0;
 
+		if (type->semantics.occupiesGround)
+			owner->map->setBuilding(posX,posY,type->width,type->height,NOGBID);
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
-		type=globalContainer->buildingsTypes.get(type->nextLevel);
+		type=completed;
+		posX=completedX; posY=completedY;
+		if (type->semantics.occupiesGround)
+			owner->map->setBuilding(posX,posY,type->width,type->height,gid);
+		siteCompletionPending=false;
+		resetPathfindGradients();
 		assert(constructionResultState!=NO_CONSTRUCTION);
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
 
 		//Update the pointer resources to the newly changed type
-		updateResourcesPointer();
+		transferResourcesPointer(wasShared);
 
 
 		//now that building is complete clear the workers
@@ -87,23 +105,14 @@ void Building::updateBuildingSite(void)
 		// (scaled by the fortress-buildings rule);
 		// otherwise a new building would finish at the site's 1 HP and a
 		// repair would finish no less damaged than it started.
-		if (instantComplete || hp>=getEffectiveInitHp())
+		if (!wasRepair && (instantComplete || zeroCost || hp>=getEffectiveInitHp()))
 			hp=getEffectiveInitHp();
 
-		productionTimeout=type->unitProductionTime;
-		if (type->unitProductionTime)
-			owner->swarms.push_back(this);
-		if (type->shootingRange)
-			owner->turrets.push_back(this);
-		if (type->canExchange)
-			owner->canExchange.push_back(this);
-		if (type->isVirtual)
-			owner->virtualBuildings.push_back(this);
-		if (type->zonable[WORKER])
-			owner->clearingFlags.push_back(this);
+		resetProduction();
+		owner->addToStaticAbilitiesLists(this);
 
 		setMapDiscovered();
-		owner->pushGameEvent(GameEvent::buildingCompleted(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
+		owner->pushGameEvent(GameEvent::buildingCompleted(owner->game->stepCounter, getMidX(), getMidY(), typeNum));
 
 		// we need to do an update again
 		updateCallLists();
@@ -209,7 +218,7 @@ void Building::updateUnitsHarvesting(void)
 		it++;
 		
 		// if the building is not available to fetch from (invisible or broken)
-		if ((buildingState != ALIVE) || ((owner->sharedVisionExchange & u->owner->me) == 0))
+		if ((buildingState != ALIVE) || !type->runtimeSuppliesDirectStock || ((owner->sharedVisionExchange & u->owner->me) == 0))
 		{
 			// cancel the task u were just doing
 		    u->attachedBuilding->removeUnitFromWorking(u);
@@ -245,26 +254,31 @@ void Building::setMapDiscovered(void)
 {
 	assert(type);
 	int vr=type->viewingRange;
-	if (type->canExchange)
+	if (type->semantics.sightSharing == BuildingSightSharing::Exchange)
 		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionExchange);
-	else if (type->canFeedUnit)
+	else if (type->semantics.sightSharing == BuildingSightSharing::Food)
 		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionFood);
 	else
 		owner->map->setMapDiscovered(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->sharedVisionOther);
 	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 }
 
-void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
+void Building::getResourceCountToRepair(int resources[MAX_RESOURCES])
 {
 	assert(!type->isBuildingSite);
-	int repairLevelTypeNum=type->prevLevel;
-	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
-	assert(repairBt);
-	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
-	Sint32 fTotErr=0;
-	for (int i=0; i<BASIC_COUNT; i++)
+	if (!type->semantics.repairable || type->prevLevel < 0)
 	{
-		int fVal=fDestructionRatio*repairBt->maxResource[i];
+		std::fill(resources, resources + MAX_RESOURCES, 0);
+		return;
+	}
+	int repairLevelTypeNum=type->prevLevel;
+	BuildingType *repairBt=owner->game->buildingsTypes.get(repairLevelTypeNum);
+	assert(repairBt);
+	Sint64 fDestructionRatio=(Sint64(hp)<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
+	Sint32 fTotErr=0;
+	for (int i=0; i<MAX_RESOURCES; i++)
+	{
+		Sint64 fVal=fDestructionRatio*type->semantics.repairCost[i];
 		int iVal=(fVal>>FIXED_POINT_SHIFT_16);
 		fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
 		if (fTotErr>=(int)FIXED_POINT_ONE)
@@ -272,7 +286,7 @@ void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
 			fTotErr-=(int)FIXED_POINT_ONE;
 			iVal++;
 		}
-		resources[i]=repairBt->maxResource[i]-iVal;
+		resources[i]=type->semantics.repairCost[i]-iVal;
 	}
 }
 
@@ -292,46 +306,46 @@ bool Building::tryToBuildingSiteRoom(void)
 	if (targetLevelTypeNum==BUILDING_LEVEL_NONE)
 		return false;
 
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	BuildingType *targetBt=owner->game->buildingsTypes.get(targetLevelTypeNum);
+	if (!canTransferResourcesTo(targetBt)) return false;
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 
 	int newWidth=targetBt->width;
 	int newHeight=targetBt->height;
 
-	bool isRoom=owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
+	bool isRoom=!targetBt->semantics.occupiesGround || owner->map->isFreeForBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 	if (isRoom)
 	{
 		if(constructionResultState == UPGRADE)
 			removeForbiddenZoneFromUpgradeArea();
 
-		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
+		// Repair requires only the damaged fraction. Healthy-material credits
+		// are neither inventory nor refundable construction materials.
+		constructionBudget = targetBt->semantics.constructionCost;
+		constructionReserved.fill(0);
+		repairInitialDeficit=repairHealthGranted=0;
 		if (constructionResultState==REPAIR)
 		{
-			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
-			Sint32 fTotErr=0;
-			// Experimental markets keep shared stock separate from repair materials.
-			Sint32 *repairResources = owner->map->marketsV2Enabled() && type->canExchange
-				? localResource : resources;
-			for (int i=0; i<MAX_RESOURCES; i++)
+			repairInitialDeficit=std::max(0,getEffectiveMaxHp()-hp);
+			const Sint64 ratio=(Sint64(hp)<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
+			Sint32 remainder=0;
+			for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			{
-				int fVal=fDestructionRatio*targetBt->maxResource[i];
-				int iVal=(fVal>>FIXED_POINT_SHIFT_16);
-				fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
-				if (fTotErr>=(int)FIXED_POINT_ONE)
-				{
-					fTotErr-=(int)FIXED_POINT_ONE;
-					iVal++;
-				}
-				repairResources[i]=iVal;
+				const Sint64 value=ratio*type->semantics.repairCost[r];
+				int healthy=value>>FIXED_POINT_SHIFT_16;
+				remainder += value&FIXED_POINT_FRAC_MASK;
+				if (remainder>=FIXED_POINT_ONE) { remainder-=FIXED_POINT_ONE; ++healthy; }
+				constructionBudget[r]=type->semantics.repairCost[r]-healthy;
 			}
 		}
+		const bool wasShared=type->useTeamResources;
 
-		if (!type->isVirtual)
-		{
+		if (type->semantics.occupiesGround)
 			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+		if (targetBt->semantics.occupiesGround)
 			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
-		}
+		siteCompletionPending=false;
 
 
 		owner->prestige-=type->prestige;
@@ -340,27 +354,13 @@ bool Building::tryToBuildingSiteRoom(void)
 		owner->prestige+=type->prestige;
 
 		//Update the pointer resources to the newly changed type
-		updateResourcesPointer();
+		transferResourcesPointer(wasShared);
+		fundConstructionFromInventory();
 
 		buildingState=ALIVE;
 		owner->addToStaticAbilitiesLists(this);
 
-		// towers may already have some stone!
-		if (constructionResultState==UPGRADE)
-			for (int i=0; i<MAX_NB_RESOURCES; i++)
-			{
-				int res=resources[i];
-				int resMax=type->maxResource[i];
-				if (res>0 && resMax>0)
-				{
-					if (res>resMax)
-						res=resMax;
-					if (verbose)
-						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*getEffectiveHpInc());
-					hp+=res*getEffectiveHpInc();
-					hp = std::min(hp, getEffectiveMaxHp());
-				}
-			}
+		siteCompletionPending = constructionReserved == constructionBudget;
 
 		// units
 		if (verbose)
@@ -382,7 +382,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		// hp=type->hpInit; // (Uint16)
 
 		// preferred parameters
-		productionTimeout=type->unitProductionTime;
+		resetProduction();
 
 		totalRatio=0;
 		for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -409,7 +409,7 @@ void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(type->nextLevel);
+	BuildingType *targetBt=owner->game->buildingsTypes.get(type->nextLevel);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
@@ -444,6 +444,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 {
 	// Also informs extracted scene controls and AI feasibility checks.
 	if (requestedState==UPGRADE && owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
+	if (requestedState==REPAIR && !type->semantics.repairable) return false;
 	int futureBuildingTypeId=BUILDING_LEVEL_NONE;
 	if (requestedState==UPGRADE)
 		futureBuildingTypeId=type->nextLevel;
@@ -454,7 +455,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 
 	if (futureBuildingTypeId==BUILDING_LEVEL_NONE)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.get(futureBuildingTypeId);
+	BuildingType *bt=owner->game->buildingsTypes.get(futureBuildingTypeId);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;
@@ -467,7 +468,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 
 bool Building::fullInside(void)
 {
-	if ((type->canFeedUnit) && (resources[WHEAT]<=(int)unitsInside.size()))
+	if (type->canFeedUnit && !canOfferService(nullptr, FEED))
 		return true;
 	else
 		return ((signed)unitsInside.size()>=maxUnitInside);
@@ -478,20 +479,20 @@ int Building::desiredNumberOfWorkers(void)
 {
 	//If It's virtual, then this building is a flag and always gets
 	//full resources
-	if(type->isVirtual)
+	if(type->zonable[WORKER] || type->zonable[EXPLORER] || type->zonable[WARRIOR])
 	{
-		return maxUnitWorking;
+		return std::min(maxUnitWorking, type->semantics.assignmentLimit);
 	}
 	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed resource,
 	//thus if no resources are needed, then no units will be working here.
 	int neededResourcesSum = 0;
 	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
 	{
-		int neededResources = (type->maxResource[ri] - resources[ri]) / type->multiplierResource[ri];
+		int neededResources = (resourceDeliveryNeed(ri) + type->multiplierResource[ri] - 1) / type->multiplierResource[ri];
 		if (neededResources > 0)
 			neededResourcesSum += neededResources;
 	}
-	int user_num = maxUnitWorking;
+	int user_num = std::min(maxUnitWorking, type->semantics.assignmentLimit);
 	int max_considering_resources = (WISHED_RESOURCE_NUM * neededResourcesSum) / WISHED_RESOURCE_DEN;
 	return std::min(user_num, max_considering_resources);
 }

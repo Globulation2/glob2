@@ -289,6 +289,7 @@ export async function applyMatchRatings(
         'rating_status',
         'setup',
         'sim_version',
+        'rules_identity',
         'final_tick',
       ])
       .where('id', '=', matchId)
@@ -347,7 +348,10 @@ export async function applyMatchRatings(
         entities.set(p.seat, { entityId: await ensureAccountEntity(trx, p.account_id) });
       } else {
         const ai = p.ai_id as RatedAi;
-        entities.set(p.seat, { entityId: await ensureAiEntity(trx, ai, match.sim_version), ai });
+        entities.set(p.seat, {
+          entityId: await ensureAiEntity(trx, ai, match.rules_identity ?? match.sim_version),
+          ai,
+        });
       }
     }
     const entityIds = [...entities.values()].map((e) => e.entityId);

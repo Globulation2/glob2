@@ -41,18 +41,18 @@ void NewNicowar::queue_inns(Runtime& runtime)
 
 	//Count the number of inns there are at each level
 	BuildingSearch bs_level1(runtime);
-	bs_level1.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+	bs_level1.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 	bs_level1.add_condition(new BuildingLevel(1));
 	bs_level1.add_condition(new NotUnderConstruction);
 	const int number1=bs_level1.count_buildings() + buildings_under_construction_per_type[RegularInn];
 
 	BuildingSearch bs_level2(runtime);
-	bs_level2.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+	bs_level2.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 	bs_level2.add_condition(new BuildingLevel(2));
 	const int number2=bs_level2.count_buildings();
 
 	BuildingSearch bs_level3(runtime);
-	bs_level3.add_condition(new SpecificBuildingType(IntBuildingType::FOOD_BUILDING));
+	bs_level3.add_condition(new ProvidesBuildingCapability(BuildingDemand::Feed));
 	bs_level3.add_condition(new BuildingLevel(3));
 	const int number3=bs_level3.count_buildings();
 
@@ -84,7 +84,7 @@ void NewNicowar::queue_inns(Runtime& runtime)
 void NewNicowar::queue_swarms(Runtime& runtime)
 {
 	BuildingSearch bs(runtime);
-	bs.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
+	bs.add_condition(new ProvidesBuildingCapability(BuildingDemand::ProduceWorker));
 	bs.add_condition(new NotUnderConstruction);
 	const int swarm_count = bs.count_buildings() + buildings_under_construction_per_type[RegularSwarm];
 	const int total_unit = runtime.player->team->stats.getLatestStat()->totalUnit;
@@ -110,11 +110,11 @@ void NewNicowar::queue_racetracks(Runtime& runtime)
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
-	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
+	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainWalk));
 	bs_finished.add_condition(new NotUnderConstruction);
 
 	BuildingSearch bs_upgrading(runtime);
-	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
+	bs_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainWalk));
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int racetrack_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularRacetrack];
@@ -136,11 +136,11 @@ void NewNicowar::queue_swimmingpools(Runtime& runtime)
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
-	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
+	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainSwim));
 	bs_finished.add_condition(new NotUnderConstruction);
 
 	BuildingSearch bs_upgrading(runtime);
-	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
+	bs_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainSwim));
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int swimmingpool_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularSwimmingpool];
@@ -162,11 +162,11 @@ void NewNicowar::queue_schools(Runtime& runtime)
 	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
-	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	bs_finished.add_condition(new NotUnderConstruction);
 
 	BuildingSearch bs_upgrading(runtime);
-	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	bs_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int school_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularSchool];
@@ -189,11 +189,11 @@ void NewNicowar::queue_barracks(Runtime& runtime)
 	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()
 		|| runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
-	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainAttackStrength));
 	bs_finished.add_condition(new NotUnderConstruction);
 
 	BuildingSearch bs_upgrading(runtime);
-	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	bs_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainAttackStrength));
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int barracks_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularBarracks];
@@ -216,11 +216,11 @@ void NewNicowar::queue_barracks(Runtime& runtime)
 void NewNicowar::queue_hospitals(Runtime& runtime)
 {
 	BuildingSearch bs_finished(runtime);
-	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::HEAL_BUILDING));
+	bs_finished.add_condition(new ProvidesBuildingCapability(BuildingDemand::Heal));
 	bs_finished.add_condition(new NotUnderConstruction);
 
 	BuildingSearch bs_upgrading(runtime);
-	bs_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::HEAL_BUILDING));
+	bs_upgrading.add_condition(new ProvidesBuildingCapability(BuildingDemand::Heal));
 	bs_upgrading.add_condition(new BeingUpgraded);
 
 	const int hospital_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularHospital];
@@ -341,11 +341,11 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_inn_calls);
 	//The main order for the inn
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, AI_NICOWAR_INN_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Feed, AI_NICOWAR_INN_ORDER_WORKERS);
 
 	//Constraints around the location of wheat
 	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
+	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wheat
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_INN_WHEAT_MIN_DIST));
 	//You can't be farther than 10 units from wheat
@@ -402,7 +402,7 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	runtime.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	runtime.add_management_order(mo_tracker);
 
@@ -414,11 +414,11 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swarm_calls);
 	//The main order for the swarm
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, AI_NICOWAR_SWARM_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::ProduceWorker, AI_NICOWAR_SWARM_ORDER_WORKERS);
 
 	//Constraints around the location of wheat
 	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
+	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wheat
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWARM_WHEAT_PREF));
 
@@ -454,7 +454,7 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	runtime.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	runtime.add_management_order(mo_tracker);
 
@@ -466,11 +466,11 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_racetrack_calls);
 	//The main order for the racetrack
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, AI_NICOWAR_RACETRACK_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainWalk, AI_NICOWAR_RACETRACK_ORDER_WORKERS);
 
 	//Constraints around the location of wood
 	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
+	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wood
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_RACETRACK_WOOD_PREF));
 
@@ -482,7 +482,7 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 
 	//Constraints around the location of stone
 	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
+	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to stone
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_RACETRACK_STONE_PREF));
 	//But not to close, so you have room to upgrade
@@ -522,11 +522,11 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swimmingpool_calls);
 	//The main order for the swimming pool
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainSwim, AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS);
 
 	//Constraints around the location of wood
 	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
+	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wood
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_SWIMMINGPOOL_WOOD_PREF));
 
@@ -538,13 +538,13 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 
 	//Constraints around the location of wheat
 	AISharedRuntime::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::Resource(WHEAT));
+	gi_wheat.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wheat
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF));
 
 	//Constraints around the location of stone
 	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
+	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You don't want to be too close, so you have room to upgrade
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_stone, AI_NICOWAR_SWIMMINGPOOL_STONE_MIN));
 
@@ -582,7 +582,7 @@ int NewNicowar::order_regular_school(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_school_calls);
 	//The main order for the school
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, AI_NICOWAR_SCHOOL_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainConstruction, AI_NICOWAR_SCHOOL_ORDER_WORKERS);
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -628,7 +628,7 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_barracks_calls);
 	//The main order for the barracks
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::ATTACK_BUILDING, AI_NICOWAR_BARRACKS_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::TrainAttackStrength, AI_NICOWAR_BARRACKS_ORDER_WORKERS);
 
 	//Constraints about the distance to water.
 	AISharedRuntime::Gradients::GradientInfo gi_water;
@@ -638,13 +638,13 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 
 	//Constraints around the location of stone
 	AISharedRuntime::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::Resource(STONE));
+	gi_stone.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to stone
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_BARRACKS_STONE_PREF));
 
 	//Constraints around the location of wood
 	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
+	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wood
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_BARRACKS_WOOD_PREF));
 
@@ -677,11 +677,11 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_regular_hospital_calls);
 	//The main order for the hospital
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::HEAL_BUILDING, AI_NICOWAR_HOSPITAL_ORDER_WORKERS);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Heal, AI_NICOWAR_HOSPITAL_ORDER_WORKERS);
 
 	//Constraints around the location of wood
 	AISharedRuntime::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::Resource(WOOD));
+	gi_wood.add_source(new AISharedRuntime::Gradients::Entities::ResourceSet(bo->input_resource_mask(runtime)));
 	//You want to be close to wood
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_HOSPITAL_WOOD_PREF));
 
@@ -722,11 +722,11 @@ void NewNicowar::manage_buildings(Runtime& runtime)
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{	
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker))
 		{
 			manage_swarm(runtime, *i);
 		}
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 		{
 			manage_inn(runtime, *i);
 		}

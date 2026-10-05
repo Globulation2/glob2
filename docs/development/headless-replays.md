@@ -10,9 +10,10 @@ Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
 seed. Older saved games still load, with shared gradient cache state copied into
-each controller. Terrain format 134 adds property-driven movement and ecology;
-replays recorded before version 134 are refused and network protocol 55 separates
-clients using those rules. Saved games adopt the current simulation.
+each controller. Terrain format 134 adds property-driven movement and ecology.
+Building format 136 adds configurable services and capability-driven AI; replays
+recorded before version 136 are refused and network protocol 56 separates clients
+using these rules. Supported saved games still load and adopt the current simulation.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
@@ -225,32 +226,31 @@ GLOB2_REPLAY_PATH=/tmp/game.replay \
   ./glob2 -test-games-nox 1 --map A_big_pond --matchup nicowar,warrush,numbi
 ```
 
-Format (little-endian):
+New output uses **GDS2**, a little-endian format with an embedded, immutable
+building catalog. Its header is `GDS2`, a u32 record count, a u32 metadata byte
+length, and UTF-8 JSON metadata. Metadata contains the engine simulation version,
+canonical catalog snapshot and SHA-256 hash, projection version, and one model
+channel per concrete variant. Empty files have zero records and metadata bytes.
 
-```
-HEADER (8 bytes)
-  [4B] magic "GDS1"
-  [4B] u32 num_records          (patched at close)
+Each record stores a u32 tick, u8 sender, u8 order type, a u32 state length and
+state bytes, then a u32 payload length and order payload. State contains the
+sender team's prestige, flags, resource and unit counts, 13 bounded model building
+counts, then a fog-filtered grid up to 32×32. Each building contributes to exactly
+one model channel (or none for an unsupported overlay); combined capabilities
+never inflate the count. This projection is a model compatibility adapter, not an
+engine building classification.
 
-PER-RECORD
-  [4B] u32 tick
-  [1B] u8  sender_player_index
-  [1B] u8  order_type
-  [4B] u32 state_blob_len
-  [state_blob_len bytes]        state features
-  [4B] u32 order_payload_len
-  [order_payload_len bytes]     order payload (Order::getData())
-```
+Grid cells are nine bytes: four u8 terrain/resource/own-unit/enemy-unit values,
+two u16 own/enemy building values, then u8 discovery. Building values are concrete
+catalog IDs plus one; zero means absent. Enemy state remains vision filtered.
+See `src/game/diagnostics/DatasetWriter.h` for the complete layout.
 
-`state_blob_len` is currently always 0 — observation features land
-alongside the trainer's training loop. The wire format doesn't change
-shape when that happens; the blob just stops being empty.
-
-No version field: single producer, single consumer, regenerating
-datasets is cheap. If the schema ever changes wire-incompatibly, bump
-the magic to `GDS2` and parsers reject by magic mismatch.
-
-See `glob2/src/DatasetWriter.{h,cpp}` for the writer.
+Readers, including the external `glob2-ai-trainer` reader, must branch on magic
+and add GDS2 support before consuming new files. Retain the GDS1 branch for old
+datasets: its header has no metadata and its grid uses two u8 legacy family
+channels (seven bytes per cell). Never reinterpret those family IDs as concrete
+GDS2 catalog IDs. The repository's decoder fixtures cover both layouts; the
+external trainer implementation is maintained separately.
 
 ## Replay Output
 

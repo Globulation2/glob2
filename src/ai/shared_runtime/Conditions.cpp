@@ -4,7 +4,7 @@
 #include "shared_runtime/Runtime.h"
 #include <memory>
 #include "Building.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Conditions;
@@ -63,8 +63,8 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 		LOAD_CASE(CUnderConstruction,       UnderConstruction)
 		LOAD_CASE(CBeingUpgraded,           BeingUpgraded)
 		LOAD_CASE(CBeingUpgradedTo,         BeingUpgradedTo)
-		LOAD_CASE(CSpecificBuildingType,    SpecificBuildingType)
-		LOAD_CASE(CNotSpecificBuildingType, NotSpecificBuildingType)
+		LOAD_CASE(CSpecificBuildingType,    ProvidesBuildingCapability)
+		LOAD_CASE(CNotSpecificBuildingType, LacksBuildingCapability)
 		LOAD_CASE(CBuildingLevel,           BuildingLevel)
 		LOAD_CASE(CUpgradable,              Upgradable)
 		LOAD_CASE(CResourceTrackerAmount,  ResourceTrackerAmount)
@@ -117,18 +117,11 @@ bool BeingUpgraded::passes(Runtime& runtime, int id)
 bool Upgradable::passes(Runtime& runtime, int id)
 {
 	Building* building = runtime.get_building_register().get_building(id);
-	if((building->type->shortTypeNum==IntBuildingType::FOOD_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::HEAL_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING ||
-	    building->type->shortTypeNum==IntBuildingType::DEFENSE_BUILDING) &&
-	   building->constructionResultState==Building::NO_CONSTRUCTION &&
-	   building->type->level!=AI_SHARED_RUNTIME_MAX_BUILDING_LEVEL_INDEX &&
-	   building->isHardSpaceForBuildingSite(Building::UPGRADE) &&
-	   building->hp == building->getEffectiveMaxHp()
-	    )
+ if(building && !runtime.player->game->gameHeader.isUnitUpgradesDisabled()
+    && building->constructionResultState==Building::NO_CONSTRUCTION
+    && building->isUpgradeAvailable()
+    && building->isHardSpaceForBuildingSite(Building::UPGRADE)
+    && building->hp==building->getEffectiveMaxHp())
 		return true;
 	return false;
 }

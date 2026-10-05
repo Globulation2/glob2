@@ -330,7 +330,7 @@ namespace Cortex
 			if (b->posX > bbMaxX) bbMaxX = b->posX;
 			if (b->posY < bbMinY) bbMinY = b->posY;
 			if (b->posY > bbMaxY) bbMaxY = b->posY;
-			if (b->type && b->type->canFeedUnit)
+			if (b->type && b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[WHEAT] > 0)
 				seeds.push_back(static_cast<int>(map.coordToIndex(b->posX, b->posY)));
 		}
 

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Settlements.h"
+#include "StartingLayout.h"
 #include "Building.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -25,10 +26,10 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	if (team < 0 || team >= game.teamsCount() || !game.teams[team] ||
 		home.size() != size_t(w) * h || context.request.nbWorkers < 1)
 		return fail("invalid home region or colony");
-	int type = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
-	const auto *buildingType = globalContainer->buildingsTypes.get(type);
-	if (!buildingType)
-		return fail("missing swarm type");
+	int type = game.buildingsTypes.getStartingBuildingTypeNum();
+	const auto *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	if (!buildingType || !buildingType->runtimeAvailable)
+		return fail("catalog has no available starting building");
 	auto inside = [&](int x, int y)
 	{ return home[game.map.normalizeY(y) * w + game.map.normalizeX(x)] != 0; };
 	std::vector<MapGeneratorPoint> candidates;
@@ -113,14 +114,14 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 									  team);
 		}
 	}
-	Building *building = game.addBuilding(p.x, p.y, type, team, 1, 0);
+	Building *building = game.addBuilding(p.x, p.y, type, team, std::min(1,buildingType->semantics.assignmentLimit), 0);
 	if (!building)
 		return fail("swarm placement failed");
 	std::vector<MapGeneratorPoint> workers;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 			if (inside(x, y) && game.map.isFreeForGroundUnit(x, y, false, 1u << team) &&
-				game.map.doesPosTouchBuilding(x, y, building->gid))
+				touchesStartingFootprint(x,y,building->posX,building->posY,buildingType->width,buildingType->height,game.map.getMaskW(),game.map.getMaskH()))
 				workers.emplace_back(x, y);
 	context.telemetry.measure("settlement.worker_tiles", int(workers.size()), team);
 	if (workers.size() < size_t(context.request.nbWorkers))
@@ -202,8 +203,8 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 int placeBuilding(Game &game, int team, const char *typeName, int level, double x, double y,
 				  int within, const std::vector<unsigned char> &allowed)
 {
-	const int type = globalContainer->buildingsTypes.getTypeNum(typeName, level, false);
-	const BuildingType *buildingType = globalContainer->buildingsTypes.get(type);
+	const int type = game.buildingsTypes.getTypeNum(typeName, level, false);
+	const BuildingType *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
 	const int best = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (best < 0)
 		return -1;
@@ -215,7 +216,7 @@ int placeBuilding(Game &game, int team, const char *typeName, int level, double 
 	// since joins the lists that function fills from the type, the way it would have taken it in.
 	if (buildingType->shootingRange)
 		game.teams[team]->turrets.push_back(building);
-	if (buildingType->unitProductionTime)
+	if (buildingType->semantics.production.enabledUnitMask)
 		game.teams[team]->swarms.push_back(building);
 	return best;
 }
@@ -236,8 +237,8 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 			   const std::vector<unsigned char> &allowed, bool stocked,
 			   const std::vector<MapGeneratorPoint> &cover, bool supplyStone)
 {
-	const int type = globalContainer->buildingsTypes.getTypeNum("defencetower", level, false);
-	const BuildingType *tower = globalContainer->buildingsTypes.get(type);
+	const int type = game.buildingsTypes.getTypeNum("defencetower", level, false);
+	const BuildingType *tower = type>=0 ? game.buildingsTypes.get(type) : nullptr;
 	const int best = startingBuildingSite(game, team, tower, x, y, within, allowed, cover);
 	if (best < 0)
 		return -1;
@@ -264,8 +265,8 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 						  int within, const std::vector<unsigned char> &allowed,
 						  const std::vector<int> &supplies)
 {
-	const int type = globalContainer->buildingsTypes.getTypeNum(name, level, false);
-	const BuildingType *buildingType = globalContainer->buildingsTypes.get(type);
+	const int type = game.buildingsTypes.getTypeNum(name, level, false);
+	const BuildingType *buildingType = type>=0 ? game.buildingsTypes.get(type) : nullptr;
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
@@ -283,7 +284,7 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	// Game::addBuilding already registers markets and virtual buildings. Add
 	// only the static lists it leaves to the setup caller; createLists cannot
 	// be called again on a colony that already owns a swarm or towers.
-	if (buildingType->unitProductionTime)
+	if (buildingType->semantics.production.enabledUnitMask)
 		game.teams[team]->swarms.push_back(building);
 	if (buildingType->shootingRange)
 		game.teams[team]->turrets.push_back(building);

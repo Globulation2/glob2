@@ -10,51 +10,30 @@
   Triggered by the GLOB2_DATASET_PATH env var, mirroring GLOB2_REPLAY_PATH
   and GLOB2_CHECKSUM_SIDECAR.
 
-  Binary format (little-endian, fixed-size where shown):
+  GDS2 is little-endian. Header: magic[4], u32 record count, u32 metadata
+  byte length, UTF-8 JSON metadata. Metadata is written on the first action,
+  contains the exact catalog snapshot/hash, engine identity, and bounded model
+  channel projection. Empty datasets have zero metadata bytes and records.
 
-    HEADER (8 bytes)
-      [4B] magic "GDS1"
-      [4B] u32 num_records          (patched on close())
+  Records: u32 tick, u8 sender, u8 order type, u32 state length, state bytes,
+  u32 payload length, order payload bytes. State begins with u32 teams (=1),
+  i32 prestige, u32 flags, 15 i32 resources, 3 i32 unit counts and 13 i32 bounded
+  model building counts, then u32 grid width/height. Each grid cell is 9 bytes:
+  u8 terrain, resource amount, own units, visible enemy units; u16 own building,
+  visible enemy building; u8 discovery. Building values are concrete catalog
+  IDs + 1; zero means absent. Terrain 255 means unrepresentable.
 
-    PER-RECORD
-      [4B] u32 tick
-      [1B] u8  sender_player_index
-      [1B] u8  order_type
-      [4B] u32 state_blob_len
-      [state_blob_len bytes]        observation features (see layout below)
-      [4B] u32 order_payload_len
-      [order_payload_len bytes]     order payload from Order::getData()
-
-  STATE BLOB (variable size; ~7.3 KB at GRID_W=GRID_H=32)
-    [4B] u32 num_teams              (always 1 — bot-team-only by design)
-    per team:
-      [4B] i32 prestige
-      [4B] u32 flags                (bit0=isAlive, bit1=hasWon, bit2=hasLost)
-      [4B × 15] i32 teamResources  (MAX_NB_RESOURCES)
-      [4B × 3]  i32 unit_count_by_type     (WORKER, EXPLORER, WARRIOR)
-      [4B × 13] i32 building_count_by_type (NB_BUILDING)
-    [4B] u32 grid_w                 (≤32, == min(map_w, 32))
-    [4B] u32 grid_h                 (≤32, == min(map_h, 32))
-    per cell × 7 channels (HWC; row-major, gy outer, gx inner):
-      [1B] terrain                  (stable TerrainType ID: 0=WATER, 1=SAND, 2=GRASS; 255=unrepresentable)
-      [1B] resource_amount          (sum across cell, capped at 255; FOW: visible only)
-      [1B] my_unit_count            (capped at 255; always shown — units are mine)
-      [1B] enemy_unit_count         (capped at 255; FOW: visible only)
-      [1B] my_building_type         (0=none, 1..NB_BUILDING; always shown)
-      [1B] enemy_building_type      (0=none, 1..NB_BUILDING; FOW: visible only)
-      [1B] discovery                (0=unknown, 1=previously seen, 2=currently visible)
-
-  No version field: there's a single producer (this writer) and a single
-  consumer (the trainer's `dataset.rs` parser), regenerating datasets is
-  cheap, and we'd never need to support multiple wire formats in flight.
-  If the schema ever changes wire-incompatibly, bump the magic to "GDS2"
-  and parsers reject by magic mismatch.
+  Readers must branch on the magic. GDS1 has no metadata and its two building
+  channels are u8 legacy families + 1 (7 bytes/cell). Never reinterpret those
+  family numbers as GDS2 catalog IDs. The external trainer reader must add
+  GDS2 support; old datasets remain readable through its GDS1 branch.
 */
 
 #pragma once
 
 #include <cstdio>
 #include <string>
+#include <vector>
 #include "GAGSys.h"
 
 class Order;
@@ -93,7 +72,10 @@ public:
 private:
 	FILE* file;
 	Uint32 numRecords;
+	const Game* catalogGame = nullptr;
+	std::vector<int> modelChannels;
 
+	void writeU16(Uint16 v);
 	void writeU32(Uint32 v);
 	void writeI32(Sint32 v);
 	void writeStateBlob(int senderTeamNum, Game& game);

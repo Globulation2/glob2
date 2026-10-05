@@ -31,3 +31,8 @@ void GameAnimations::resize(int) {}
 #include "Map.h"
 #include <cstdlib>
 void Map::updateForbiddenGradient(int, int) { std::abort(); }
+
+// Supplier discovery is exercised by the real-engine catalog fixtures. Unit map
+// fixtures have no teams/buildings and must not accidentally test a fake balance.
+#include "Building.h"
+Sint32 Building::availableResource(int) const { std::abort(); }

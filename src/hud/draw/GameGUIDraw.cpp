@@ -106,9 +106,9 @@ void GameGUI::drawValueAlignedRight(int y, int v)
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
 
-void GameGUI::drawCosts(int resources[BASIC_COUNT], Font *font)
+void GameGUI::drawCosts(const int resources[MAX_RESOURCES], Font *font)
 {
-	for (int i=0; i<BASIC_COUNT; i++)
+	for (int i=0; i<MAX_RESOURCES; i++)
 	{
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(i&0x1)*64, 256+172-42+y*12,

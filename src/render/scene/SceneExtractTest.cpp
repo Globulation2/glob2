@@ -1,3 +1,4 @@
+#include "GameEvent.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Scene extraction: entities by gid, the selection's map-view contribution, and
 // the overlay map's refresh cadence.
@@ -6,6 +7,7 @@
 #include "SceneExtract.h"
 #include "render/UnitMotion.h"
 #include "UnitTiming.h"
+#include <nlohmann/json.hpp>
 
 TEST_SUITE("SceneExtract")
 {
@@ -173,4 +175,65 @@ TEST_SUITE("SceneExtract")
 		scene.tickInterval = 0;
 		CHECK(unitMotionFraction(scene, 1020) == 0.f);
 	}
+    TEST_CASE("connected overlays use configured groups and scene retains its catalog")
+    {
+        glob2test::HeadlessGlobals globals;
+        Scene scene;
+        const SceneBuilding* extracted=nullptr;
+        std::string key;
+        {
+        glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true});
+        const int firstId=world.game.buildingsTypes.getFinishedTypeNum("warflag");
+        const int otherId=world.game.buildingsTypes.getFinishedTypeNum("explorationflag");
+        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        for (int id : {firstId,otherId})
+        {
+            catalog["variants"][id]["properties"]["crossConnectMultiImage"]=1;
+            catalog["variants"][id]["presentation"]["connectionGroup"]="joined-canopies";
+        }
+        world.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+        world.game.configureBuildingCatalog();
+        Building* first=world.addBuilding("warflag",4,4);
+        world.addBuilding("explorationflag",4+first->type->width,4);
+        world.addBuilding("explorationflag",4,4+first->type->height,0,1);
+        SceneRequest request;
+        extractScene(world.game,request,scene);
+        extracted=scene.entities.building(first->gid);
+        REQUIRE(extracted);
+        CHECK(extracted->connectionMask==1);
+        CHECK(scene.map.getBuilding(4,4)==NOGBID);
+        key=extracted->type->key;
+        }
+        CHECK(extracted->type->key==key);
+        CHECK(extracted->type->presentation.connectionGroup=="joined-canopies");
+    }
+
+    TEST_CASE("building events preserve concrete catalog IDs and key-only display names")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=1,.loadDefaultRace=true});
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& variants=snapshot["variants"];
+        const auto prototype=variants[3];
+        while (variants.size()<=256)
+        {
+            auto variant=prototype;
+            variant["id"]=variants.size();
+            variant["key"]="fixture.event."+std::to_string(variants.size());
+            variant["properties"].erase("type");
+            variant["properties"].erase("shortTypeNum");
+            variant["previous"]=""; variant["next"]="";
+            variant["semantics"]["repairable"]=false;
+            variant["presentation"]["displayName"]="Custom refuge";
+            variants.push_back(std::move(variant));
+        }
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        world.game.configureBuildingCatalog();
+        for (const auto event : {GameEvent::buildingUnderAttack(0,1,2,256),GameEvent::buildingCompleted(0,1,2,256)})
+        {
+            CHECK(event.getTypeNum()==256);
+            CHECK(event.formatMessage(world.game).find("Custom refuge")!=std::string::npos);
+        }
+    }
+
 }

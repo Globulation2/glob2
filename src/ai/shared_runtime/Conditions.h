@@ -253,12 +253,12 @@ namespace AISharedRuntime
 			int level;
 		};
 
-		///This condition tells whether a building is a particular type, as defined in IntBuildingType.h
-		class SpecificBuildingType : public BuildingCondition
+		///Matches a semantic capability; mixed buildings may match several such conditions.
+		class ProvidesBuildingCapability : public BuildingCondition
 		{
 		public:
-			SpecificBuildingType() : building_type(0) {}
-			explicit SpecificBuildingType(int building_type);
+			ProvidesBuildingCapability() : building_type(0) {}
+			explicit ProvidesBuildingCapability(int building_type);
 		protected:
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
@@ -268,12 +268,12 @@ namespace AISharedRuntime
 			int building_type;
 		};
 
-		///This condition matches any building that isn't of a particular type
-		class NotSpecificBuildingType : public BuildingCondition
+		///Matches buildings without the requested semantic capability.
+		class LacksBuildingCapability : public BuildingCondition
 		{
 		public:
-			NotSpecificBuildingType() : building_type(0) {}
-			explicit NotSpecificBuildingType(int building_type);
+			LacksBuildingCapability() : building_type(0) {}
+			explicit LacksBuildingCapability(int building_type);
 		protected:
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
@@ -394,14 +394,14 @@ inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Condi
 
 
 
-inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::SpecificBuildingType::get_type()
+inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::ProvidesBuildingCapability::get_type()
 {
 	return CSpecificBuildingType;
 }
 
 
 
-inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::NotSpecificBuildingType::get_type()
+inline AISharedRuntime::Conditions::BuildingConditionType AISharedRuntime::Conditions::LacksBuildingCapability::get_type()
 {
 	return CNotSpecificBuildingType;
 }

@@ -5,8 +5,9 @@
 #include "Building.h"
 #include "Game.h"
 #include "BuildingType.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include <tuple>
+#include "FileFormatVersions.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;
@@ -87,7 +88,7 @@ void BuildingRegister::initiate()
 		Building* b=player->team->myBuildings[i];
 		if(b!=NULL)
 		{
-			found_buildings[building_id++]=std::make_tuple(b->posX, b->posY, b->type->shortTypeNum, b->gid, false);
+			found_buildings[building_id++]=std::make_tuple(b->posX, b->posY, b->typeNum, b->gid, false);
 		}
 	}
 }
@@ -132,6 +133,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 y=stream->readSint32("ypos");
 		Uint32 type=stream->readSint32("building_type");
 		Uint32 ticks=stream->readSint32("ticks_since_registered");
+  if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG && int(type)>=0) type=importLegacyBuildingId(*player->game,type,0,true);
 		pending_buildings[id]=std::make_tuple(x, y, type, ticks);
 		stream->readLeaveSection();
 	}
@@ -148,7 +150,11 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 building_type=stream->readUint32("building_type");
 		Uint32 gid=stream->readUint32("gid");
 		if (gid >= ::Building::MAX_COUNT * Team::MAX_COUNT || ::Building::GIDtoTeam(gid) != player->team->teamNumber) return false;
-		Uint8 upgrade_status=stream->readUint8("upgrade_status");
+		if(versionMinor<FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+   auto* building=player->team->myBuildings[::Building::GIDtoID(gid)];
+   building_type=building ? building->typeNum : importLegacyBuildingId(*player->game,building_type);
+  }
+  Uint8 upgrade_status=stream->readUint8("upgrade_status");
 		tribool t;
 		if(upgrade_status==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
 			t=false;
@@ -226,114 +232,39 @@ void BuildingRegister::set_upgrading(unsigned int id)
 
 void BuildingRegister::tick()
 {
-	for(pending_iterator i=pending_buildings.begin(); i!=pending_buildings.end();)
-	{
-		//When get<3>() is AI_SHARED_RUNTIME_PENDING_NOT_ISSUED, it means that the building order
-		//hasen't been sent to the glob2 engine yet. This is used when the building is
-		//registered, but awaiting conditions to be satisfied.
-		if(std::get<3>(i->second)!=AI_SHARED_RUNTIME_PENDING_NOT_ISSUED)
-		{
-			std::get<3>(i->second)++;
-			if(std::get<3>(i->second) > AI_SHARED_RUNTIME_PENDING_BUILDING_TIMEOUT_TICKS)
-			{
-				pending_iterator current=i;
-				++i;
-				pending_buildings.erase(current);
-				continue;
-			}
-			int gbid=NOGBID;
-			if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
-			{
-				gbid=is_flag(runtime, std::get<0>(i->second), std::get<1>(i->second));
-			}
-			else
-			{
-				gbid=player->map->getBuilding(std::get<0>(i->second), std::get<1>(i->second));
-			}
-			if(gbid!=NOGBID)
-			{
-				if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
-				{
-					runtime.get_flag_map().set_flag(std::get<0>(i->second), std::get<1>(i->second), gbid);
-				}
-				found_buildings[i->first]=std::make_tuple(std::get<0>(i->second), std::get<1>(i->second), std::get<2>(i->second), gbid, false);
-				pending_iterator current=i;
-				++i;
-				pending_buildings.erase(current);
-				continue;
-			}
-		}
-		++i;
-	}
-	for(found_iterator i = found_buildings.begin(); i!=found_buildings.end();)
-	{
-		if(std::get<2>(i->second) > IntBuildingType::DEFENSE_BUILDING && std::get<2>(i->second) < IntBuildingType::STONE_WALL)
-		{
-			if(runtime.get_flag_map().get_flag(std::get<0>(i->second), std::get<1>(i->second))==NOGBID)
-			{
-				found_iterator current=i;
-				++i;
-				found_buildings.erase(current);
-				continue;
-			}
-			if(player->team->myBuildings[::Building::GIDtoID(std::get<3>(i->second))]==NULL)
-			{
-				runtime.get_flag_map().set_flag(std::get<0>(i->second), std::get<1>(i->second), NOGBID);
-				found_iterator current=i;
-				++i;
-				found_buildings.erase(current);
-				continue;
-			}
-		}
-		else
-		{
-			const int gbid=player->map->getBuilding(std::get<0>(i->second), std::get<1>(i->second));
-			if(gbid==NOGBID || gbid != std::get<3>(i->second))
-			{
-				found_iterator current=i;
-				++i;
-				found_buildings.erase(current);
-				continue;
-			}
-			Building* b=player->team->myBuildings[::Building::GIDtoID(gbid)];
-			if(b==NULL)
-			{
-				found_iterator current=i;
-				++i;
-				found_buildings.erase(current);
-				continue;
-			}
-			// A saved indeterminate upgrade may have been drained by the rule
-			// gate. Release its wait once no construction is possible or pending.
-			if(player->game->gameHeader.isUnitUpgradesDisabled()
-				&& b->constructionResultState==::Building::NO_CONSTRUCTION
-				&& b->hp>=b->getEffectiveMaxHp()) std::get<4>(i->second)=false;
-			//True
-			if(std::get<4>(i->second))
-			{
-				std::get<0>(i->second)=b->posX;
-				std::get<1>(i->second)=b->posY;
-				if(b->constructionResultState==::Building::NO_CONSTRUCTION)
-				{
-					std::get<4>(i->second)=false;
-				}
-			}
-			//False
-			else if(!std::get<4>(i->second))
-			{
-
-			}
-			//Indeterminate
-			else
-			{
-				if(b->constructionResultState!=::Building::NO_CONSTRUCTION)
-				{
-					std::get<4>(i->second)=true;
-				}
-			}
-		}
-		++i;
-	}
+ for(auto i=pending_buildings.begin();i!=pending_buildings.end();) {
+  auto& pending=i->second;
+  auto& ticks=std::get<3>(pending);
+  if(ticks==AI_SHARED_RUNTIME_PENDING_NOT_ISSUED) { ++i; continue; }
+  const int type=std::get<2>(pending);
+  if(++ticks>AI_SHARED_RUNTIME_PENDING_BUILDING_TIMEOUT_TICKS || type<0 || size_t(type)>=player->game->buildingsTypes.size()) { i=pending_buildings.erase(i); continue; }
+  const auto* definition=player->game->buildingsTypes.get(type);
+  const int x=std::get<0>(pending),y=std::get<1>(pending);
+  const int gid=definition->semantics.occupiesGround ? player->map->getBuilding(x,y) : is_flag(runtime,x,y);
+  auto* building=gid!=NOGBID && ::Building::GIDtoTeam(gid)==player->team->teamNumber ? player->team->myBuildings[::Building::GIDtoID(gid)] : nullptr;
+  if(building && (building->typeNum==type || (definition->isBuildingSite && building->typeNum==definition->nextLevel))) {
+   if(!building->type->semantics.occupiesGround) runtime.get_flag_map().set_flag(x,y,gid);
+   found_buildings[i->first]=std::make_tuple(x,y,building->typeNum,gid,false);
+   i=pending_buildings.erase(i); continue;
+  }
+  ++i;
+ }
+ for(auto i=found_buildings.begin();i!=found_buildings.end();) {
+  auto& found=i->second;
+  const int gid=std::get<3>(found);
+  auto* building=player->team->myBuildings[::Building::GIDtoID(gid)];
+  const int oldX=std::get<0>(found),oldY=std::get<1>(found);
+  if(runtime.get_flag_map().get_flag(oldX,oldY)==gid) runtime.get_flag_map().set_flag(oldX,oldY,NOGBID);
+  if(!building) { i=found_buildings.erase(i); continue; }
+  std::get<0>(found)=building->posX; std::get<1>(found)=building->posY; std::get<2>(found)=building->typeNum;
+  if(!building->type->semantics.occupiesGround) runtime.get_flag_map().set_flag(building->posX,building->posY,gid);
+  auto& upgrading=std::get<4>(found);
+  if(building->constructionResultState!=::Building::NO_CONSTRUCTION) upgrading=true;
+  // Queued engine orders drain before this observation. A transition can
+  // finish between observations, including a repair that keeps the same type.
+  else upgrading=false;
+  ++i;
+ }
 }
 
 bool BuildingRegister::is_building_pending(unsigned int id)
@@ -402,9 +333,10 @@ int BuildingRegister::get_type(unsigned int id)
 {
 	if(found_buildings.find(id)==found_buildings.end())
 	{
-		return 0;
+		return -1;
 	}
-	return std::get<2>(found_buildings[id]);
+	auto* building=get_building(id);
+ return building ? building->typeNum : -1;
 }
 
 
@@ -415,7 +347,7 @@ int BuildingRegister::get_level(unsigned int id)
 	{
 		return 0;
 	}
-	return get_building(id)->type->level+1;
+	return runtime.player->game->buildingCapabilities().lineagePosition(get_building(id)->typeNum);
 }
 
 
@@ -427,4 +359,9 @@ int BuildingRegister::get_assigned(unsigned int id)
 		return 0;
 	}
 	return get_building(id)->maxUnitWorking;
+}
+
+bool BuildingRegister::provides(unsigned int id,int demand)
+{
+ return buildingProvides(*player->game,get_type(id),demand);
 }

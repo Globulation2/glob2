@@ -67,7 +67,7 @@ static void run(int width,int height,bool gl,bool expanded)
     glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
     if(expanded)writeExpandedStrings();
     glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=width,.height=height,.screenFlags=gl?Uint32(GraphicContext::USEGPU):0u};
-    options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="en";globals.settings.defaultFlagRadius[0]=0;};
+    options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="en";};
     glob2test::HeadlessGlobals globals(options);
     auto& s=globalContainer->settings;
     REQUIRE(NET_Init());
@@ -126,13 +126,17 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         for(const auto& row:screen.rows())REQUIRE((row.id!="graphics.torus" && row.id!="gameplay.torus"));
         screen.selectCategory(SettingsScreen::Category::Buildings);
-        const auto defaults=s.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1];
+        const auto fingerprint=globalContainer->buildingsTypes.fingerprint();
+        const auto& inn=*globalContainer->buildingsTypes.getByType("inn",0,false);
+        const auto& exploration=*globalContainer->buildingsTypes.getByType("explorationflag",0,false);
+        const auto& war=*globalContainer->buildingsTypes.getByType("warflag",0,false);
+        const auto defaults=s.buildingAssignment(fingerprint,inn);
         for(int tab=0;tab<4;++tab){screen.activateSetting("buildings.tab."+std::to_string(tab));screen.capture(output+"/buildings-"+std::to_string(tab)+".bmp");}
-        REQUIRE(s.defaultUnitsAssigned[IntBuildingType::FOOD_BUILDING][1]==defaults);
-        REQUIRE(s.defaultFlagRadius[0]==0);
-        REQUIRE(screen.row("radius.0").value=="Default");
-        REQUIRE(screen.changeSetting("radius.0",3));
-        REQUIRE((s.defaultFlagRadius[0]==3 && s.defaultFlagRadius[1]==4));
+        REQUIRE(s.buildingAssignment(fingerprint,inn)==defaults);
+        const auto warRadius=s.buildingRadius(fingerprint,war);
+        REQUIRE(screen.changeSetting("radius."+exploration.key,3));
+        REQUIRE(s.buildingRadius(fingerprint,exploration)==3);
+        REQUIRE(s.buildingRadius(fingerprint,war)==warRadius);
         screen.selectCategory(SettingsScreen::Category::Audio);
         REQUIRE(!screen.row("audio.music").enabled);
         CHECK(screen.row("audio.set").label == "Music set");

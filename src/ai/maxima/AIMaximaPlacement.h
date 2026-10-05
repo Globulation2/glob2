@@ -11,6 +11,7 @@
 
 #include "field/Frontier.h"
 #include "AIMaximaFoodLedger.h"
+#include "AIMaximaBuildingRoles.h"
 #include "AIMaximaDistanceField.h"
 #include <memory>
 
@@ -142,6 +143,7 @@ struct DevelopmentTemplate
 {
 	DevelopmentTemplate();
 	TemplateId id;
+	TemplateId style;
 	int buildingType;
 	std::vector<PlannedSlot> slots;
 	Footprint parcel;
@@ -175,7 +177,18 @@ struct BuildingLevelProfile
 	int level;
 	int engineType;
 	Footprint footprint;
-	int constructionResources[5];
+	int constructionResources[8];
+	int completedType=-1;
+	unsigned roles=0;
+	int serviceRates[AIMaximaBuildings::RoleCount]{};
+	unsigned productionUnitMask=0;
+	int productionRates[3]{};
+	int operatingResources[8]{};
+	int seats=0;
+	int assignmentLimit=20;
+	int requiredWorkerLevel=0;
+	bool repairable=true;
+	bool available=true;
 	int serviceThroughput;
 	int durability;
 	int capability;
@@ -188,6 +201,7 @@ struct BuildingProfile
 	std::vector<BuildingLevelProfile> levels;
 	const BuildingLevelProfile* atLevel(int level) const;
 	int maximumLevel() const;
+	Footprint envelope(int throughLevel) const;
 };
 
 struct WorldTile
@@ -252,6 +266,7 @@ struct WorldState
 	const WorldTile& tile(int x, int y) const;
 	WorldTile& tile(int x, int y);
 	const BuildingProfile* profile(int buildingType) const;
+	void invalidateProfileIndex() const;
 	const WorldBuilding* building(int id) const;
 	uint32_t computeSignature() const;
 
@@ -259,10 +274,16 @@ struct WorldState
 	int height;
 	int tick;
 	int swimmingBuilders;
-	int accessibleSupplies[5];
+	int accessibleSupplies[8];
 	std::vector<WorldTile> tiles;
 	std::vector<WorldBuilding> buildings;
 	std::vector<BuildingProfile> profiles;
+private:
+	// Derived per-snapshot lookup. Copying a world changes profiles.data(), so
+	// copied caches rebuild before use; deserialization invalidates explicitly.
+	mutable const BuildingProfile* indexedProfiles=nullptr;
+	mutable size_t indexedProfileCount=0;
+	mutable std::vector<int> profileIndexes;
 };
 
 struct DevelopmentIntent
@@ -556,6 +577,8 @@ public:
 	const std::map<int, Reservation>& reservations() const { return reservationMap; }
 	const std::map<int, DevelopmentAction>& actions() const { return actionMap; }
 	int committedBuildingCount(const WorldState& world, int buildingType) const;
+	int committedRoleCount(const WorldState& world,int role,unsigned productionMask=0) const;
+	int activeRoleBuildCount(int role,DevelopmentPurpose purpose) const;
 	int activeBuildCount(int buildingType, DevelopmentPurpose purpose) const;
 	/// True once a Relocation intent for this building has been scanned to the
 	/// end without a single acceptable site, so the executor can stop offering
@@ -610,6 +633,7 @@ private:
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;
+	bool serves(int type,int role,int level=1) const;
 	const DevelopmentTemplate* findTemplate(TemplateId id) const;
 	std::vector<int> footprintTiles(const WorldState& world, int centerX,
 		int centerY, const Footprint& footprint) const;
@@ -735,6 +759,7 @@ private:
 	PlacementPolicy placementPolicy;
 	PlacementDiagnostics lastDiagnostics;
 	std::vector<BuildingProfile> configuredProfiles;
+	std::vector<int> profileIndexes;
 	std::vector<DevelopmentTemplate> templateList;
 	std::vector<Campus> campusList;
 	std::vector<StandaloneContract> standaloneList;

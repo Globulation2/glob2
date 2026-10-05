@@ -14,7 +14,7 @@
 #include "TeamStat.h"
 #include "unit/UnitConsts.h"
 #include "unit/Unit.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "building/Building.h"
 #include "BuildingType.h"
 #include "map/Map.h"
@@ -97,7 +97,7 @@ namespace Cortex
 		//                    isVirtual, Game_editor.cpp:261), so they show up in this
 		//                    same index scan — no separate virtualBuildings pass.
 		//                    Reading our OWN state is not a fog-of-war cheat.
-		//   upgradableCount = per IntBuildingType, the count of FINISHED instances
+		//   upgradableCount = per semantic role, the count of FINISHED instances
 		//                    that pass the full engine "Upgradable" predicate right
 		//                    now. The predicate mirrors Runtime's
 		//                    (ai/shared_runtime/Conditions.cpp:112-129) and the GUI enable-gate
@@ -135,7 +135,7 @@ namespace Cortex
 		// training / upgrade level buckets (one slice per array)
 		for (int lvl = 0; lvl < CORTEX_UNIT_LEVELS; lvl++)
 		{
-			obs.buildLevel[lvl]               = stat->upgradeState[BUILD][lvl];
+			obs.buildLevel[lvl] = stat->workersByConstructionLevel[lvl];
 			// WALK == 3 (unit/UnitConsts.h:13). Any-type row == workers+warriors:
 			// explorers have performance[WALK]==0 at every level (game/entities/Race.cpp),
 			// so they never enter this bucket. Racetrack expand-vs-upgrade gate.
@@ -162,11 +162,6 @@ namespace Cortex
 		for (int lvl = 1; lvl < CORTEX_UNIT_LEVELS; lvl++)
 			obs.swimWarriors += obs.warriorSwimLevel[lvl];
 
-		// full per-type, per-long-level building histogram (verbatim mirror;
-		// the long-level encoding is decoded by the cortex* helpers, not here).
-		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
-			for (int l = 0; l < CORTEX_BUILDING_LONG_LEVELS; l++)
-				obs.buildingCountPerLevel[t][l] = stat->numberBuildingPerTypePerLevel[t][l];
 
 		// --- defense triggers: our own entities currently taking fire ---
 		// Reading our OWN units/buildings is not a fog cheat. underAttackTimer is
@@ -273,13 +268,13 @@ namespace Cortex
 			// phase reasons about. Other types keep valid==0 from the empty
 			// observation. placeCandidates writes exactly CORTEX_BUILD_CANDIDATES
 			// slots (zero-filling unused trailing ones).
-			placeCandidates(game, team, IntBuildingType::FOOD_BUILDING,    0, obs.buildCandidates[IntBuildingType::FOOD_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::SWARM_BUILDING,   0, obs.buildCandidates[IntBuildingType::SWARM_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::HEAL_BUILDING,    0, obs.buildCandidates[IntBuildingType::HEAL_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::SCIENCE_BUILDING, 0, obs.buildCandidates[IntBuildingType::SCIENCE_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::WALKSPEED_BUILDING, 0, obs.buildCandidates[IntBuildingType::WALKSPEED_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::SWIMSPEED_BUILDING, 0, obs.buildCandidates[IntBuildingType::SWIMSPEED_BUILDING]);
-			placeCandidates(game, team, IntBuildingType::ATTACK_BUILDING,  0, obs.buildCandidates[IntBuildingType::ATTACK_BUILDING]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_SWARM,   0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWARM]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_SWIMSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWIMSPEED]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_ATTACK,  0, obs.buildCandidates[Cortex::CORTEX_BUILD_ATTACK]);
 
 			// OFFENSE targets: discovered enemy buildings, nearest-first. Filled
 			// ONLY from buildings we have legitimately seen (Building::seenByMask),
@@ -306,7 +301,7 @@ namespace Cortex
 					if (b == NULL || b->buildingState != Building::ALIVE
 					 || b->type->isBuildingSite)
 						continue;
-					if (b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					if (!Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
 					const int d = map.warpDistMax(obs.flagTargets[t].x, obs.flagTargets[t].y,
 					                              b->posX, b->posY);
@@ -391,14 +386,14 @@ namespace Cortex
 						minD = CORTEX_FORWARD_MIN_ENEMY_DIST;
 						maxD = range - CORTEX_FORWARD_RANGE_SLACK;
 					}
-					placeForwardCandidate(game, team, IntBuildingType::FOOD_BUILDING,
+					placeForwardCandidate(game, team, Cortex::CORTEX_BUILD_FOOD,
 					                      tx, ty, minD, maxD,
 					                      obs.forwardInn);
 					// A forward hospital is surfaced only when a finished hospital
 					// already exists (advisory support; the inn binds the envelope);
 					// the forward inn always leads.
 					if (cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL) > 0)
-						placeForwardCandidate(game, team, IntBuildingType::HEAL_BUILDING,
+						placeForwardCandidate(game, team, Cortex::CORTEX_BUILD_HEAL,
 						                      tx, ty, minD, maxD,
 						                      obs.forwardHeal);
 				}

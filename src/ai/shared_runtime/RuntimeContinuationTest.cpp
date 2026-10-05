@@ -5,7 +5,7 @@
 #include <iostream>
 #include "GlobalContainer.h"
 #include "FileManager.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "Version.h"
 #include "shared_runtime/Runtime.h"
@@ -108,6 +108,61 @@ class RuntimeContinuationTest
         legacyCopy->update();
         REQUIRE(save(first,false)==originalFirst);
     }
+    static void completedTransitionsReleaseWaits()
+    {
+        Game game(nullptr); setup(game);
+        const int initial=game.buildingsTypes.getTypeNum("inn",0,false);
+        auto* building=game.addBuilding(4,4,initial,0);
+        REQUIRE(building);
+        auto& registry=runtime(game,0).get_building_register();
+        registry.initiate();
+        REQUIRE(registry.get_building(0)==building);
+        registry.set_upgrading(0);
+        CHECK(registry.is_building_upgrading(0));
+        const int site=building->type->nextLevel;
+        REQUIRE(site>=0);
+        const int destination=game.buildingsTypes.get(site)->nextLevel;
+        REQUIRE(destination>=0);
+        game.buildingsTypes.get(initial)->level=3;
+        game.buildingsTypes.get(site)->level=0;
+        game.buildingsTypes.get(destination)->level=0;
+        AISharedRuntime::Conditions::ParticularBuilding firstStage(new AISharedRuntime::Conditions::BuildingLevel(1),0);
+        AISharedRuntime::Conditions::ParticularBuilding nextStage(new AISharedRuntime::Conditions::BeingUpgradedTo(2),0);
+        CHECK(bool(firstStage.passes(runtime(game,0))));
+        CHECK(bool(nextStage.passes(runtime(game,0))));
+        // A short transition may complete between the controller's observations.
+        building->typeNum=destination;
+        building->type=game.buildingsTypes.get(destination);
+        registry.tick();
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        CHECK(registry.get_type(0)==destination);
+        CHECK(registry.get_level(0)==2);
+        AISharedRuntime::Conditions::ParticularBuilding secondStage(new AISharedRuntime::Conditions::BuildingLevel(2),0);
+        CHECK(bool(secondStage.passes(runtime(game,0))));
+        REQUIRE(building->isUpgradeAvailable());
+        registry.set_upgrading(0);
+        CHECK(registry.is_building_upgrading(0));
+        // An instant repair retains this variant and its next upgrade edge.
+        registry.tick();
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        CHECK(registry.get_type(0)==destination);
+    }
+    static void placementInputsUseConstructionPrice()
+    {
+        Game game(nullptr);setup(game);
+        const int site=game.buildingsTypes.getTypeNum("inn",0,true);
+        const int completed=game.buildingsTypes.get(site)->nextLevel;
+        auto* placement=game.buildingsTypes.get(site);
+        placement->semantics.constructionCost.fill(0);
+        placement->semantics.constructionCost[STONE]=5;
+        std::fill(std::begin(placement->maxResource),std::end(placement->maxResource),0);
+        placement->maxResource[WOOD]=9;
+        game.buildingsTypes.get(completed)->semantics.feeding.cost.fill(0);
+        game.configureBuildingCatalog();
+        auto& controller=runtime(game,0);MersenneTwister random(713);controller.setRandomEngine(random);
+        AISharedRuntime::Construction::BuildingOrder order(controller,AISharedRuntime::BuildingDemand::Feed,2);
+        CHECK(order.input_resource_mask(controller)==(1u<<STONE));
+    }
     static void terrainTravelContinuation()
     {
         {
@@ -160,6 +215,8 @@ public:
             avoidsIrrigation.add_obstacle(new Entities::Water);
             original.get_gradient(wheat);
             original.get_gradient(avoidsIrrigation);
+            const auto resources=info(new Entities::ResourceSet((1u<<WHEAT)|(1u<<WOOD)));
+            original.get_gradient(resources);
             // Save a stale field, an uncomputed queued field and duplicate
             // queue entries. Reload must retain their age/order, not rebuild.
             original.ticks_since_update[0]=151;
@@ -187,6 +244,8 @@ public:
             REQUIRE(!load(badQueue,save(original,text),text));
         }
         independentManagers();
+        completedTransitionsReleaseWaits();
+        placementInputsUseConstructionPrice();
         terrainTravelContinuation();
         std::cout<<"Runtime gradient continuation: independent managers, binary/text fields, stale ages, queued work and invalid indices PASS\n";
     }

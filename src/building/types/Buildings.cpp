@@ -1,8 +1,9 @@
 #include <stdexcept>
+#include <algorithm>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// Umbrella file for the static building-type table (was data/buildings.txt +
+// Frozen stock importer retains the previous tables (was data/buildings.txt +
 // data/buildings.default.txt parsed at startup). The 55 entries are grouped
 // by role across four siblings, following the grouping IntBuildingType::Number
 // already uses:
@@ -25,11 +26,11 @@
 #include <cassert>
 #include <cstddef>
 #include <iostream>
+#include <map>
 
 #include <Toolkit.h>
 
 #include "BuildingType.h"
-#include "GlobalContainer.h"
 
 using namespace GAGCore;
 
@@ -64,169 +65,140 @@ static const TablePart g_tableParts[] = {
 	{ g_buildingTypesMarket,       g_buildingTypesMarketCount },        // 49..50
 };
 
-// Resolve table[i] for a flat 0..(N-1) index across the parts.
-static BuildingType *entry(std::size_t i)
-{
-	for (const TablePart &part : g_tableParts)
-	{
-		if (i < part.count)
-			return &part.entries[i];
-		i -= part.count;
-	}
-	assert(false && "building type index out of range");
-	return nullptr;
-}
-
-static std::size_t entryCount()
-{
-	std::size_t total = 0;
-	for (const TablePart &part : g_tableParts)
-		total += part.count;
-	return total;
-}
-
-// Mirror of the legacy ConfigVector::checkIntegrity assertions.
-static void checkIntegrity()
-{
-	const std::size_t count = entryCount();
-	for (std::size_t i = 0; i < count; ++i)
-	{
-		BuildingType *bt = entry(i);
-
-		// Need resource integrity:
-		bool needResource = false;
-		for (unsigned j = 0; j < MAX_RESOURCES; ++j)
-			if (bt->maxResource[j])
-			{
-				needResource = true;
-				break;
-			}
-		if (needResource)
-			assert(bt->fillable || bt->foodable);
-
-		// hpInc integrity:
-		if (bt->isBuildingSite)
-			assert(bt->hpInc > 0);
-		else
-			assert(bt->hpInc == 0);
-
-		// hpMax/hpInit integrity (warning only, matches legacy std::cerr behavior):
-		if (bt->isBuildingSite && bt->level)
-		{
-			assert(bt->prevLevel != -1);
-			BuildingType *bt2 = entry(static_cast<std::size_t>(bt->prevLevel));
-			if (bt->hpInit != bt2->hpMax)
-			{
-				std::cerr << "BuildingsTypes::init() : warning : " << bt->type
-					<< " : Building site has hpInit=" << bt->hpInit
-					<< ", but final building (level " << bt2->level
-					<< ") has hpMax=" << bt2->hpMax << std::endl;
-			}
-		}
-
-		// hpInit/hpInc integrity (warning only):
-		if (bt->isBuildingSite)
-		{
-			int resSum = 0;
-			for (int j = 0; j < MAX_RESOURCES; ++j)
-				resSum += bt->maxResource[j];
-			int hpSum = bt->hpInit + resSum * bt->hpInc;
-			if (hpSum < bt->hpMax)
-			{
-				std::cerr << "BuildingsTypes::init() : warning : " << bt->type
-					<< " : hpSum(" << hpSum << ") < hpMax(" << bt->hpMax
-					<< ") with hpInit=" << bt->hpInit << ", hpInc=" << bt->hpInc
-					<< ", resSum=" << resSum << ". Make hpInc>="
-					<< (resSum ? (bt->hpMax - bt->hpInit + resSum - 1) / resSum : 0)
-					<< std::endl;
-			}
-		}
-
-		// flag integrity:
-		if (bt->isVirtual)
-		{
-			assert(bt->isCloaked);
-			assert(bt->defaultUnitStayRange);
-		}
-		if (bt->isCloaked)
-		{
-			assert(bt->isVirtual);
-			assert(bt->defaultUnitStayRange);
-		}
-		if (bt->defaultUnitStayRange)
-		{
-			assert(bt->isCloaked);
-			assert(bt->isVirtual);
-		}
-		if (bt->zonableForbidden)
-		{
-			assert(bt->isCloaked);
-			assert(bt->isVirtual);
-			assert(bt->defaultUnitStayRange);
-		}
-	}
-}
-
-// Walk the table once to set prevLevel/nextLevel, mirroring the loader's
-// resolveUpgradeReferences. Bidirectional: building-site entries link
-// forward to the completed building of the same type+level, and that
-// completed building links forward to the next-level building site.
-static void resolveUpgradeReferences()
-{
-	const std::size_t count = entryCount();
-	for (std::size_t i = 0; i < count; ++i)
-	{
-		entry(i)->prevLevel = -1;
-		entry(i)->nextLevel = -1;
-	}
-
-	for (std::size_t i = 0; i < count; ++i)
-	{
-		BuildingType *bt1 = entry(i);
-		for (std::size_t j = 0; j < count; ++j)
-		{
-			BuildingType *bt2 = entry(j);
-			if (bt1 == bt2)
-				continue;
-
-			if (bt1->isBuildingSite)
-			{
-				if (bt2->level == bt1->level && bt2->type == bt1->type && !bt2->isBuildingSite)
-				{
-					bt1->nextLevel = static_cast<int>(j);
-					bt2->prevLevel = static_cast<int>(i);
-					break;
-				}
-			}
-			else
-			{
-				if (bt2->level == bt1->level + 1 && bt2->type == bt1->type && bt2->isBuildingSite)
-				{
-					bt1->nextLevel = static_cast<int>(j);
-					bt2->prevLevel = static_cast<int>(i);
-					break;
-				}
-			}
-		}
-	}
-}
-
 void BuildingsTypes::init()
 {
-	resolveUpgradeReferences();
-	checkIntegrity();
+	loadManifest("data/buildings/manifest.json");
+}
+
+void BuildingsTypes::initLegacy()
+{
+	BuildingsTypes imported;
+	imported.catalogKey_ = "stock";
+	imported.startingBuildingKey_ = "swarm.0.finished";
+	imported.experiments_.push_back({"markets-v2", "Markets V2",
+		"Workers fetch shared market stock; upgrades add wheat and wood, then all resources."});
+	for (const TablePart& part : g_tableParts)
+		for (std::size_t i = 0; i < part.count; ++i)
+		{
+			BuildingType bt = part.entries[i];
+			bt.gameSpritePtr = bt.miniSpritePtr = nullptr;
+			bt.key = bt.type + "." + std::to_string(bt.level) + (bt.isBuildingSite ? ".site" : ".finished");
+			bt.previousKey.clear(); bt.nextKey.clear();
+			bt.prevLevel = bt.nextLevel = -1;
+			imported.entries_->push_back(std::move(bt));
+		}
+	for (BuildingType& bt : *imported.entries_)
+	{
+		for (const BuildingType& other : *imported.entries_)
+		{
+			if (other.type != bt.type) continue;
+			if (bt.isBuildingSite && !other.isBuildingSite && other.level == bt.level)
+				bt.nextKey = other.key;
+			if (!bt.isBuildingSite && other.isBuildingSite && other.level == bt.level + 1)
+				bt.nextKey = other.key;
+			if (!bt.isBuildingSite && other.isBuildingSite && other.level == bt.level)
+				bt.previousKey = other.key;
+			if (bt.isBuildingSite && !other.isBuildingSite && other.level == bt.level - 1)
+				bt.previousKey = other.key;
+		}
+		// Identity tests are confined to this frozen old-save importer.
+		if (bt.type == "market" && bt.level > 0) bt.requiredExperiment = "markets-v2";
+		bt.presentation.displayName = bt.type;
+		static const std::map<std::string, std::array<int,6>> stockAssigned = {
+			{"swarm", {7,4,0,0,0,0}},
+			{"inn", {3,2,5,3,15,8}},
+			{"hospital", {2,0,4,0,6,0}},
+			{"racetrack", {3,0,7,0,12,0}},
+			{"swimmingpool", {2,0,5,0,12,0}},
+			{"barracks", {3,0,6,0,9,0}},
+			{"school", {5,0,10,0,20,0}},
+			{"defencetower", {3,2,5,2,8,2}},
+			{"stonewall", {1,0,0,0,0,0}},
+			{"market", {3,3,0,0,0,0}},
+			{"warflag", {0,10,0,0,0,0}},
+			{"clearingflag", {0,5,0,0,0,0}},
+			{"explorationflag", {0,2,0,0,0,0}},
+		};
+		bt.presentation.defaultAssigned = stockAssigned.at(bt.type)[bt.level*2+!bt.isBuildingSite];
+
+		bt.presentation.iconFrame = bt.type == "market" ? 11 : std::clamp(bt.shortTypeNum, 0, 10);
+		bt.presentation.iconTile = bt.type == "stonewall";
+		bt.presentation.iconPriority = bt.type == "defencetower" ? 150 : bt.type == "swarm" ? 120 : 100;
+		bt.presentation.skinSlot = bt.type == "swarm" && !bt.isBuildingSite ? "swarm" : "";
+		if (bt.crossConnectMultiImage) bt.presentation.connectionGroup = bt.key;
+		BuildingSemantics& p = bt.semantics;
+		p.requiredWorkerLevel = bt.level;
+		p.assignmentLimit = bt.maxUnitWorking ? 20 : 0;
+		p.regenerationPerTick = bt.unitProductionTime ? 1 : 0;
+		p.repairable = !bt.isBuildingSite && !bt.previousKey.empty();
+		if (bt.isBuildingSite) std::copy_n(bt.maxResource, MAX_NB_RESOURCES, p.constructionCost.begin());
+		if (p.repairable)
+			for (const auto& site : *imported.entries_)
+				if (site.key == bt.previousKey) std::copy_n(site.maxResource, MAX_NB_RESOURCES, p.repairCost.begin());
+		p.placeable = bt.previousKey.empty();
+		p.instantPlacement = p.relocatable = bt.isVirtual;
+		p.occupiesGround = !bt.isVirtual;
+		p.workPriorityBias = bt.canFeedUnit ? 2 : 1;
+		p.sightSharing = bt.canExchange ? BuildingSightSharing::Exchange :
+			bt.canFeedUnit ? BuildingSightSharing::Food : BuildingSightSharing::Other;
+		p.feeding.enabled = bt.canFeedUnit;
+		p.feeding.duration = bt.timeToFeedUnit;
+		if (bt.canFeedUnit)
+		{
+			p.feeding.cost[WHEAT] = 1;
+			p.feeding.partial = BuildingPartialService::ProportionalFullCost;
+			p.feeding.holdAdmissionUntilExit = true;
+			p.feeding.optionalFruitMask = (1u << HAPPINESS_COUNT) - 1;
+			p.feeding.convertsUnits = true;
+		}
+		p.healing.enabled = bt.canHealUnit;
+		p.healing.duration = bt.timeToHealUnit;
+		if (bt.canHealUnit) p.healing.partial = BuildingPartialService::ProportionalFullCost;
+		p.trainingInParallel = bt.upgradeInParallel;
+		for (int a = 0; a < NB_ABILITY; ++a)
+		{
+			p.training[a].enabled = bt.upgrade[a];
+			p.training[a].duration = bt.upgradeTime[a];
+			p.training[a].targetLevel = bt.upgrade[a] ? bt.level + 1 : 0;
+			if (a == BUILD && bt.upgrade[a]) p.training[a].constructionLevel = bt.level + 1;
+		}
+		p.production.scheduling = BuildingProductionScheduling::WeightedLateChoice;
+		for (auto& recipe : p.production.recipes)
+		{
+			recipe.enabled = bt.unitProductionTime != 0;
+			recipe.duration = bt.unitProductionTime;
+			if (recipe.enabled) recipe.cost[WHEAT] = bt.resourceForOneUnit;
+		}
+		p.market.sharedStock = bt.useTeamResources;
+		p.market.interTeamFruitExchange = bt.canExchange;
+		p.market.suppliesDirectStock = bt.canExchange;
+		p.market.fetchesDirectStock = bt.canFeedUnit;
+		p.market.suppliesStock = bt.canExchange;
+		p.market.suppliesStockExperiment = "markets-v2";
+		p.market.fetchesStock = bt.type != "market";
+		p.market.fetchesStockExperiment = "markets-v2";
+		p.projectileDamage.fill(bt.shootDamage);
+		p.projectileBuildingDamage = bt.shootDamage;
+	}
+	imported.resolveAndValidate();
+	*this = std::move(imported);
 }
 
 void BuildingsTypes::loadSprites()
+{
+	loadSpritesForTypes(*entries_);
+}
+
+void BuildingsTypes::loadSpritesForTypes(std::vector<BuildingType>& types)
 {
 	// Resolve sprite pointers, replacing the lazy load that happened inside
 	// the old loadFromConfigFile. Skips the "null" default block (not in
 	// this table). The caller explicitly requests artwork, including offline tools.
 	// GlobalContainer loads them with the rest of the game graphics.
-	const std::size_t count = entryCount();
+	const std::size_t count = types.size();
 	for (std::size_t i = 0; i < count; ++i)
 	{
-		BuildingType *bt = entry(i);
+		BuildingType *bt = &types[i];
 		if (bt->type == "null")
 			continue;
 		bt->gameSpritePtr = Toolkit::getSprite(bt->gameSprite.c_str());
@@ -241,44 +213,42 @@ void BuildingsTypes::loadSprites()
 
 BuildingType *BuildingsTypes::get(std::size_t id)
 {
-	if (id < entryCount())
-		return entry(id);
-	std::cerr << "BuildingsTypes::get(" << static_cast<unsigned int>(id)
-		<< ") : warning : id is not valid" << std::endl;
-	assert(false);
-	return nullptr;
+	return const_cast<BuildingType*>(static_cast<const BuildingsTypes&>(*this).get(id));
 }
 
-std::size_t BuildingsTypes::size() const
+const BuildingType *BuildingsTypes::get(std::size_t id) const
 {
-	return entryCount();
+	if (id >= entries_->size()) throw std::out_of_range("Invalid building type ID: " + std::to_string(id));
+	return &(*entries_)[id];
+}
+
+Sint32 BuildingsTypes::findByKey(const std::string& key) const
+{
+	for (std::size_t i = 0; i < entries_->size(); ++i)
+		if ((*entries_)[i].key == key) return static_cast<Sint32>(i);
+	return -1;
+}
+
+bool BuildingsTypes::isAvailable(std::size_t id, const std::set<std::string>& enabled) const
+{
+	if (id >= entries_->size()) return false;
+	const auto& key = (*entries_)[id].requiredExperiment;
+	return key.empty() || enabled.count(key) != 0;
 }
 
 BuildingType *BuildingsTypes::getLastLevel(Sint32 typeNum)
 {
-	BuildingType *bt = get(typeNum);
-	int max = 0;
-	while (bt->nextLevel >= 0)
-	{
-		bt = get(bt->nextLevel);
-		if (max++ > 200)
-		{
-			// Only reachable if nextLevel forms a cycle.
-			std::cerr << "BuildingsTypes::getLastLevel() : error : nextLevel architecture is broken" << std::endl;
-			assert(false);
-			break;
-		}
-	}
-	return bt;
+    return get(get(typeNum)->terminalTypeNum);
 }
 
 Sint32 BuildingsTypes::getTypeNum(const char *type, int level, bool isBuildingSite)
 {
 	assert(type);
-	const std::size_t count = entryCount();
+	if (!*type) return -1;
+	const std::size_t count = entries_->size();
 	for (std::size_t i = 0; i < count; ++i)
 	{
-		const BuildingType *bt = entry(i);
+		const BuildingType *bt = &(*entries_)[i];
 		if (bt->type == type && bt->level == level && (bt->isBuildingSite != 0) == isBuildingSite)
 			return static_cast<Sint32>(i);
 	}
@@ -293,34 +263,43 @@ Sint32 BuildingsTypes::getTypeNum(const std::string &s, int level, bool isBuildi
 
 Sint32 BuildingsTypes::getPlaceableTypeNum(const std::string &name)
 {
-	// Try to get the building site; if it doesn't exist, get the finished
-	// building (for flags).
-	Sint32 typeNum = getTypeNum(name, 0, true);
-	if (typeNum == -1)
-	{
-		typeNum = getTypeNum(name, 0, false);
-		// Check the name resolved at all before handing it to get(), which
-		// would otherwise convert -1 to SIZE_MAX and return nullptr.
-		assert(typeNum != -1);
-		assert(get(typeNum)->isVirtual);
-	}
-	return typeNum;
+	if (name.empty()) return -1;
+	const int keyed = findByKey(name);
+	if (keyed >= 0) return get(keyed)->semantics.placeable ? keyed : -1;
+	for (std::size_t i = 0; i < entries_->size(); ++i)
+		if ((*entries_)[i].type == name && (*entries_)[i].semantics.placeable)
+			return static_cast<Sint32>(i);
+	return -1;
 }
 
 Sint32 BuildingsTypes::getFinishedTypeNum(const std::string &name)
 {
-	Sint32 typeNum = getTypeNum(name, 0, false);
-	assert(typeNum != -1);
+	if (name.empty()) return -1;
+	Sint32 typeNum = findByKey(name);
+	if (typeNum < 0) typeNum = getPlaceableTypeNum(name);
+	if (typeNum < 0) return -1;
+	while (get(typeNum)->isBuildingSite)
+	{
+		typeNum = get(typeNum)->nextLevel;
+		if (typeNum < 0) return -1;
+	}
 	return typeNum;
 }
 
 BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuildingSite)
 {
 	assert(type);
-	const std::size_t count = entryCount();
+	if (!*type) return nullptr;
+	// A stable key identifies a concrete variant, so its authored tier is already explicit.
+	if (const int keyed=findByKey(type); keyed>=0)
+	{
+		const int resolved=isBuildingSite ? keyed : getFinishedTypeNum(type);
+		return resolved>=0 && (get(resolved)->isBuildingSite!=0)==isBuildingSite ? get(resolved) : nullptr;
+	}
+	const std::size_t count = entries_->size();
 	for (std::size_t i = 0; i < count; ++i)
 	{
-		BuildingType *bt = entry(i);
+		BuildingType *bt = &(*entries_)[i];
 		if (bt->type == type && bt->level == level && (bt->isBuildingSite != 0) == isBuildingSite)
 			return bt;
 	}
@@ -330,4 +309,39 @@ BuildingType *BuildingsTypes::getByType(const char *type, int level, bool isBuil
 BuildingType *BuildingsTypes::getByType(const std::string &s, int level, bool isBuildingSite)
 {
 	return getByType(s.c_str(), level, isBuildingSite);
+}
+
+void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
+{
+	const std::set<std::string> enabled(keys.begin(), keys.end());
+	const auto permitted = [&](const std::string& key) { return key.empty() || enabled.count(key) != 0; };
+	usesMarketRouting_ = false;
+	usesOverlaySuppliers_ = false;
+	for (auto& b : *entries_)
+	{
+		b.runtimeAvailable = permitted(b.requiredExperiment);
+		b.runtimeSuppliesStock = b.runtimeAvailable && b.semantics.market.suppliesStock && permitted(b.semantics.market.suppliesStockExperiment);
+		b.runtimeFetchesStock = b.runtimeAvailable && b.semantics.market.fetchesStock && permitted(b.semantics.market.fetchesStockExperiment);
+		b.runtimeSuppliesDirectStock = b.runtimeAvailable && b.semantics.market.suppliesDirectStock;
+		b.runtimeFetchesDirectStock = b.runtimeAvailable && b.semantics.market.fetchesDirectStock && !b.runtimeFetchesStock;
+		usesMarketRouting_ = usesMarketRouting_ || b.runtimeSuppliesStock;
+		usesOverlaySuppliers_ = usesOverlaySuppliers_ || (b.runtimeSuppliesStock && !b.semantics.occupiesGround);
+	}
+}
+
+BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
+	: entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
+	  experiments_(other.experiments_), catalogKey_(other.catalogKey_),
+	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
+{
+}
+
+BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
+{
+	if (this != &other)
+	{
+		BuildingsTypes copy(other);
+		*this = std::move(copy);
+	}
+	return *this;
 }

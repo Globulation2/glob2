@@ -46,7 +46,7 @@ namespace
 	/// The engine's corn resource index, as carried in WorldTile::resourceType.
 	const int CornResourceType=1;
 
-	int clamp100(int value) { return std::max(0, std::min(100, value)); }
+	int clamp100(long long value) { return int(std::clamp<long long>(value,0,100)); }
 
 	template<typename T> void sortUnique(std::vector<T>& values)
 	{
@@ -155,7 +155,7 @@ int TileMask::count() const
 PlannedSlot::PlannedSlot()
 	: index(-1), centerX(0), centerY(0), initialLevel(1), maximumLevel(1) {}
 DevelopmentTemplate::DevelopmentTemplate()
-	: id(NoTemplate), buildingType(-1), compact(false) {}
+	: id(NoTemplate), style(NoTemplate), buildingType(-1), compact(false) {}
 CampusSlotState::CampusSlotState()
 	: buildingId(-1), actionId(-1), currentLevel(0), unusable(false) {}
 Campus::Campus()
@@ -163,10 +163,16 @@ Campus::Campus()
 	  fallbackWaterTier(false) {}
 BuildingLevelProfile::BuildingLevelProfile()
 	: level(0), engineType(-1), serviceThroughput(0), durability(0), capability(0)
-{ std::fill(constructionResources, constructionResources+5, 0); }
+{ std::fill(constructionResources, constructionResources+8, 0); }
 BuildingProfile::BuildingProfile() : buildingType(-1) {}
 const BuildingLevelProfile* BuildingProfile::atLevel(int requested) const
 {
+    // Compiled explicit-edge lineages have dense one-based positions. Preserve
+    // sparse authored planner fixtures without slowing the normal query path.
+    if(requested>0 && size_t(requested)<=levels.size() && levels[requested-1].level==requested)
+    {
+        return &levels[requested-1];
+    }
 	for(size_t i=0; i<levels.size(); ++i)
 		if(levels[i].level==requested) return &levels[i];
 	return NULL;
@@ -176,6 +182,15 @@ int BuildingProfile::maximumLevel() const
 	int result=0;
 	for(size_t i=0; i<levels.size(); ++i) result=std::max(result, levels[i].level);
 	return result;
+}
+
+Footprint BuildingProfile::envelope(int throughLevel) const
+{
+ bool first=true;int left=0,top=0,right=0,bottom=0;
+ for(const auto& v:levels)if(v.level<=throughLevel){const auto& f=v.footprint;
+  if(first){left=f.left;top=f.top;right=f.left+f.width;bottom=f.top+f.height;first=false;}
+  else{left=std::min(left,f.left);top=std::min(top,f.top);right=std::max(right,f.left+f.width);bottom=std::max(bottom,f.top+f.height);}
+ }return Footprint(left,top,right-left,bottom-top);
 }
 
 WorldTile::WorldTile()
@@ -188,12 +203,12 @@ WorldBuilding::WorldBuilding()
 	: id(-1), gid(-1), buildingType(-1), level(0), centerX(0), centerY(0),
 	  hp(0), hpMax(0), age(0), site(false), upgrading(false) {}
 WorldState::WorldState() : width(0), height(0), tick(0), swimmingBuilders(0)
-{ std::fill(accessibleSupplies, accessibleSupplies+5, 0); }
+{ std::fill(accessibleSupplies, accessibleSupplies+8, 0); }
 void WorldState::reset(int w, int h)
 {
 	width=w; height=h; tick=0; swimmingBuilders=0;
-	std::fill(accessibleSupplies, accessibleSupplies+5, 0);
-	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear();
+	std::fill(accessibleSupplies, accessibleSupplies+8, 0);
+	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear(); invalidateProfileIndex();
 }
 namespace
 {
@@ -225,10 +240,20 @@ const WorldTile& WorldState::tile(int x, int y) const { return tiles[index(x,y)]
 WorldTile& WorldState::tile(int x, int y) { return tiles[index(x,y)]; }
 const BuildingProfile* WorldState::profile(int type) const
 {
-	for(size_t i=0; i<profiles.size(); ++i)
-		if(profiles[i].buildingType==type) return &profiles[i];
-	return NULL;
+	if(indexedProfiles!=profiles.data() || indexedProfileCount!=profiles.size())
+	{
+		int maxType=-1;
+		for(const auto& p:profiles)maxType=std::max(maxType,p.buildingType);
+		profileIndexes.assign(maxType+1,-1);
+		for(size_t i=0;i<profiles.size();++i)
+			if(profiles[i].buildingType>=0)profileIndexes[profiles[i].buildingType]=int(i);
+		indexedProfiles=profiles.data();indexedProfileCount=profiles.size();
+	}
+	if(type<0 || size_t(type)>=profileIndexes.size() || profileIndexes[type]<0)return NULL;
+	return &profiles[profileIndexes[type]];
 }
+void WorldState::invalidateProfileIndex() const
+{ indexedProfiles=nullptr;indexedProfileCount=0;profileIndexes.clear(); }
 const WorldBuilding* WorldState::building(int id) const
 {
 	for(size_t i=0; i<buildings.size(); ++i) if(buildings[i].id==id) return &buildings[i];
@@ -425,7 +450,10 @@ void Planner::configure(const std::vector<BuildingProfile>& profiles,
 	int innType, int hospitalType, int schoolType, int barracksType, int towerType,
 	int swarmType)
 {
-	configuredProfiles=profiles; configuredInnType=innType;
+	configuredProfiles=profiles;
+	int maxType=-1;for(const auto& p:profiles)maxType=std::max(maxType,p.buildingType);
+	profileIndexes.assign(maxType+1,-1);for(size_t i=0;i<profiles.size();++i)if(profiles[i].buildingType>=0)profileIndexes[profiles[i].buildingType]=int(i);
+	configuredInnType=innType;
 	configuredHospitalType=hospitalType; configuredSchoolType=schoolType;
 	configuredBarracksType=barracksType; configuredTowerType=towerType;
 	configuredSwarmType=swarmType;
@@ -434,9 +462,12 @@ void Planner::configure(const std::vector<BuildingProfile>& profiles,
 
 const BuildingProfile* Planner::configuredProfile(int type) const
 {
-	for(size_t i=0; i<configuredProfiles.size(); ++i)
-		if(configuredProfiles[i].buildingType==type) return &configuredProfiles[i];
-	return NULL;
+	return type>=0 && size_t(type)<profileIndexes.size() && profileIndexes[type]>=0 ? &configuredProfiles[profileIndexes[type]] : nullptr;
+}
+bool Planner::serves(int type,int role,int level) const
+{
+	const auto* profile=configuredProfile(type);const auto* variant=profile?profile->atLevel(level):nullptr;
+	return variant && (variant->roles&AIMaximaBuildings::roleBit(role));
 }
 
 void Planner::buildTemplates()
@@ -450,58 +481,60 @@ void Planner::buildTemplates()
 		if(!initial || !terminal) continue;
 
 		std::vector<std::pair<TemplateId,int> > descriptions;
-		if(profile.buildingType==configuredInnType)
+		if(serves(profile.buildingType,configuredInnType))
 		{
 			descriptions.push_back(std::make_pair(InnCompact, 4));
 			descriptions.push_back(std::make_pair(InnExpandable, 1));
 		}
-		else if(profile.buildingType==configuredHospitalType)
+		else if(serves(profile.buildingType,configuredHospitalType))
 		{
 			descriptions.push_back(std::make_pair(HospitalCompact, 4));
 			descriptions.push_back(std::make_pair(HospitalDispersed, 1));
 		}
-		else if(profile.buildingType==configuredSchoolType)
+		else if(serves(profile.buildingType,configuredSchoolType))
 			descriptions.push_back(std::make_pair(SchoolProtectedCampus, 4));
-		else if(profile.buildingType==configuredBarracksType)
+		else if(serves(profile.buildingType,configuredBarracksType))
 			descriptions.push_back(std::make_pair(BarracksDefended, 1));
-		else if(profile.buildingType==configuredTowerType)
+		else if(serves(profile.buildingType,configuredTowerType))
 			descriptions.push_back(std::make_pair(TowerDefended, 1));
 		else
 			descriptions.push_back(std::make_pair(StandaloneReserved, 1));
 
 		for(size_t d=0; d<descriptions.size(); ++d)
 		{
-			DevelopmentTemplate t; t.id=descriptions[d].first;
+			DevelopmentTemplate t; t.style=descriptions[d].first;t.id=t.style;
+			if(findTemplate(t.id))t.id=static_cast<TemplateId>(TowerDefended+1+templateList.size());
 			t.buildingType=profile.buildingType; t.compact=descriptions[d].second==4;
-			const int maximum=(t.id==InnCompact) ? std::min(2,profile.maximumLevel())
+			const int maximum=(t.style==InnCompact) ? std::min(2,profile.maximumLevel())
 				: profile.maximumLevel();
 			const BuildingLevelProfile* slotTerminal=profile.atLevel(maximum);
 			if(!slotTerminal) slotTerminal=initial;
+			const Footprint envelope=profile.envelope(maximum);
 			if(t.compact)
 			{
-				const int cellW=slotTerminal->footprint.width;
-				const int cellH=slotTerminal->footprint.height;
+				const int cellW=envelope.width;
+				const int cellH=envelope.height;
 				t.parcel=Footprint(0,0,cellW*2,cellH*2);
 				for(int sy=0; sy<2; ++sy) for(int sx=0; sx<2; ++sx)
 				{
 					PlannedSlot slot; slot.index=sy*2+sx;
-					slot.centerX=sx*cellW-slotTerminal->footprint.left;
-					slot.centerY=sy*cellH-slotTerminal->footprint.top;
+					slot.centerX=sx*cellW-envelope.left;
+					slot.centerY=sy*cellH-envelope.top;
 					slot.initialLevel=1; slot.maximumLevel=maximum;
 					slot.initialFootprint=initial->footprint;
-					slot.terminalFootprint=slotTerminal->footprint;
+					slot.terminalFootprint=envelope;
 					t.slots.push_back(slot);
 				}
 			}
 			else
 			{
-				t.parcel=Footprint(0,0,slotTerminal->footprint.width,
-					slotTerminal->footprint.height);
+				t.parcel=Footprint(0,0,envelope.width,
+					envelope.height);
 				PlannedSlot slot; slot.index=0;
-				slot.centerX=-slotTerminal->footprint.left;
-				slot.centerY=-slotTerminal->footprint.top;
+				slot.centerX=-envelope.left;
+				slot.centerY=-envelope.top;
 				slot.maximumLevel=maximum; slot.initialFootprint=initial->footprint;
-				slot.terminalFootprint=slotTerminal->footprint;
+				slot.terminalFootprint=envelope;
 				t.slots.push_back(slot);
 			}
 			t.accessRing.reset(t.parcel.width+2,t.parcel.height+2);
@@ -559,7 +592,7 @@ bool Planner::validateTemplates(std::string* error) const
 					}
 			}
 		}
-		if(item.id==InnCompact)
+		if(item.style==InnCompact)
 			for(size_t s=0; s<item.slots.size(); ++s)
 				if(item.slots[s].maximumLevel>2)
 				{ if(error) *error="compact inn reaches level 3"; return false; }
@@ -769,12 +802,12 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 			const int index=world.index(building.centerX,building.centerY);
 			if(!building.site&&completedBuildingDistanceCache[index]==INT_MAX)
 			{completedBuildingDistanceCache[index]=0;queues[0].push_back(index);}
-			if((building.buildingType==configuredSwarmType
-			   ||building.buildingType==configuredInnType
-			   ||building.buildingType==configuredSchoolType)
+			if((serves(building.buildingType,configuredSwarmType,building.level)
+			   ||serves(building.buildingType,configuredInnType,building.level)
+			   ||serves(building.buildingType,configuredSchoolType,building.level))
 			   &&criticalBuildingDistanceCache[index]==INT_MAX)
 			{criticalBuildingDistanceCache[index]=0;queues[1].push_back(index);}
-			if(building.buildingType==configuredTowerType
+			if(serves(building.buildingType,configuredTowerType,building.level)
 			   &&towerBuildingDistanceCache[index]==INT_MAX)
 			{towerBuildingDistanceCache[index]=0;queues[2].push_back(index);}
 		}
@@ -1008,8 +1041,8 @@ void Planner::prepareColonyClaims(const WorldState& world,int excludeAction) con
 	};
 	for(const WorldBuilding& building:world.buildings)
 	{
-		if(building.buildingType!=configuredSwarmType
-		   && building.buildingType!=configuredInnType)continue;
+		if(!serves(building.buildingType,configuredSwarmType,building.level)
+		   && !serves(building.buildingType,configuredInnType,building.level))continue;
 		const BuildingProfile* profile=world.profile(building.buildingType);
 		const BuildingLevelProfile* level=profile?profile->atLevel(std::max(1,building.level)):NULL;
 		if(level)claim(building.centerX,building.centerY,level->footprint);
@@ -1017,8 +1050,8 @@ void Planner::prepareColonyClaims(const WorldState& world,int excludeAction) con
 	for(const auto& entry:actionMap)
 	{
 		const DevelopmentAction& action=entry.second;
-		if(action.id==excludeAction || (action.buildingType!=configuredSwarmType
-		   && action.buildingType!=configuredInnType))continue;
+		if(action.id==excludeAction || (!serves(action.buildingType,configuredSwarmType,action.targetLevel)
+		   && !serves(action.buildingType,configuredInnType,action.targetLevel)))continue;
 		if(action.state==ParcelReserved||action.state==CreateIssued||action.state==SiteObserved)
 			claim(action.centerX,action.centerY,action.initialFootprint);
 	}
@@ -1072,15 +1105,13 @@ bool Planner::colonyCandidatePasses(const WorldState& world,
 bool Planner::foodManagedType(int buildingType) const
 {
 	return placementPolicy.foodLedgerEnabled
-		&& (buildingType==configuredInnType||buildingType==configuredSwarmType);
+		&& (serves(buildingType,configuredInnType)||serves(buildingType,configuredSwarmType));
 }
 
 int Planner::foodDemandFor(int buildingType, int level) const
 {
-	if(buildingType==configuredSwarmType)return placementPolicy.foodSwarmDemand;
-	if(buildingType!=configuredInnType)return 0;
-	const int slot=std::min(3,std::max(1,level))-1;
-	return placementPolicy.foodInnDemand[slot];
+	const auto* p=configuredProfile(buildingType);const auto* v=p?p->atLevel(level):nullptr;
+	return v ? v->operatingResources[CornResourceType] : 0;
 }
 
 void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
@@ -1144,7 +1175,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		if(!shape)continue;
 		ConsumerInput consumer;
 		consumer.key=building.id;
-		consumer.kind=building.buildingType==configuredInnType
+		consumer.kind=serves(building.buildingType,configuredInnType,building.level)
 			?InnConsumer:SwarmConsumer;
 		consumer.stage=building.site?SiteStage:CompletedStage;
 		consumer.level=level;
@@ -1153,7 +1184,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		consumer.left=shape->footprint.left;consumer.top=shape->footprint.top;
 		consumer.width=shape->footprint.width;consumer.height=shape->footprint.height;
 		consumer.colony=colonyBuilding.count(building.id)>0;
-		consumer.retirable=!building.site;
+		consumer.retirable=!building.site && (shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding) || shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Production));
 		foodInput.consumers.push_back(consumer);
 	}
 	// Planned inns and swarms claim as soon as their parcel is reserved, so a
@@ -1169,7 +1200,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		ConsumerInput consumer;
 		// Planned actions cannot collide with building ids in the same ledger.
 		consumer.key=-(action.id+1);
-		consumer.kind=action.buildingType==configuredInnType
+		consumer.kind=serves(action.buildingType,configuredInnType,action.targetLevel)
 			?InnConsumer:SwarmConsumer;
 		consumer.stage=ReservedStage;
 		consumer.level=1;
@@ -1254,7 +1285,7 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 	{
 		const BuildingLevelProfile* rebuilt=profile?profile->atLevel(level):NULL;
 		if(!rebuilt)continue;
-		for(int r=0;r<5;++r)
+		for(int r=0;r<8;++r)
 		{
 			const int units=rebuilt->constructionResources[r];
 			if(units<=0)continue;
@@ -1301,7 +1332,7 @@ bool Planner::foodCandidatePasses(const WorldState& world,
 	// The first inn and the first swarm have nothing to be measured against and
 	// would otherwise deadlock a settlement that has not started farming.
 	const AIMaximaFoodLedger::ConsumerKind kind=
-		action.buildingType==configuredInnType
+		serves(action.buildingType,configuredInnType,action.targetLevel)
 			?AIMaximaFoodLedger::InnConsumer:AIMaximaFoodLedger::SwarmConsumer;
 	size_t existing=0;
 	for(size_t i=0;i<foodResult.consumers.size();++i)
@@ -1815,10 +1846,10 @@ int Planner::adjoiningBarracks(const WorldState& world,const DevelopmentAction& 
 	std::vector<int>& sharedEdge,std::vector<int>& neighborFootprint) const
 {
 	sharedEdge.clear();neighborFootprint.clear();
-	if(action.type!=BuildStandalone||action.buildingType!=configuredBarracksType)
+	if(action.type!=BuildStandalone||!serves(action.buildingType,configuredBarracksType,action.targetLevel))
 		return -1;
 	const Footprint& f=action.terminalFootprint;
-	const BuildingProfile* profile=configuredProfile(configuredBarracksType);
+	const BuildingProfile* profile=configuredProfile(action.buildingType);
 	if(!profile||f.empty())return -1;
 	// Only fixed-size barracks can share an edge without sacrificing upgrades.
 	for(const auto& level:profile->levels)
@@ -1826,7 +1857,7 @@ int Planner::adjoiningBarracks(const WorldState& world,const DevelopmentAction& 
 		   ||level.footprint.width!=f.width||level.footprint.height!=f.height)return -1;
 	for(const auto& contract:standaloneList)
 	{
-		if(contract.buildingType!=configuredBarracksType)continue;
+		if(!serves(contract.buildingType,configuredBarracksType))continue;
 		const WorldBuilding* building=world.building(contract.buildingId);
 		if(!building||building->site||building->upgrading)continue;
 		const bool horizontal=world.normalizeY(action.centerY)==world.normalizeY(building->centerY)
@@ -1874,13 +1905,13 @@ bool Planner::campusMemberSlot(const DevelopmentTemplate& campus, size_t slotInd
 	if(campus.buildingType==buildingType)return true;
 	// The saved template owns the parcel geometry; each member keeps its own
 	// upgrade limits and location scoring regardless of who founded the campus.
-	if(campus.id!=InnCompact&&campus.id!=HospitalCompact
-	   &&campus.id!=SchoolProtectedCampus)return false;
-	if(buildingType!=configuredInnType&&buildingType!=configuredHospitalType
-	   &&buildingType!=configuredTowerType&&buildingType!=configuredSchoolType)return false;
+	if(campus.style!=InnCompact&&campus.style!=HospitalCompact
+	   &&campus.style!=SchoolProtectedCampus)return false;
+	if(!serves(buildingType,configuredInnType)&&!serves(buildingType,configuredHospitalType)
+	   &&!serves(buildingType,configuredTowerType)&&!serves(buildingType,configuredSchoolType))return false;
 	const BuildingProfile* profile=configuredProfile(buildingType);
 	if(!profile)return false;
-	const int maximum=buildingType==configuredInnType
+	const int maximum=serves(buildingType,configuredInnType)
 		?std::min(2,profile->maximumLevel()):profile->maximumLevel();
 	const Footprint reserved=slot.terminalFootprint;
 	for(int level=1;level<=maximum;++level)
@@ -1895,7 +1926,7 @@ bool Planner::campusMemberSlot(const DevelopmentTemplate& campus, size_t slotInd
 	if(maximum<1)return false;
 	slot.initialLevel=1;slot.maximumLevel=maximum;
 	slot.initialFootprint=profile->atLevel(1)->footprint;
-	slot.terminalFootprint=profile->atLevel(maximum)->footprint;
+	slot.terminalFootprint=profile->envelope(maximum);
 	return true;
 }
 int Planner::contractMaximumLevel(int buildingId, int buildingType) const
@@ -1952,7 +1983,7 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 
 		if(building.hp<building.hpMax)
 		{
-			if(!limits.repairAllowed(building.buildingType))
+			if(!limits.repairAllowed(building.buildingType) || !profile->atLevel(building.level)->repairable)
 				continue;
 			Candidate candidate;candidate.action.type=RepairBuilding;
 			candidate.action.buildingId=building.id;candidate.action.buildingType=building.buildingType;
@@ -1966,21 +1997,22 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 			continue;
 		}
 		if(!limits.allowUpgrades)continue;
+		const auto* nextVariant=profile->atLevel(building.level+1);if(!nextVariant || !nextVariant->available)continue;
 		const int priority=limits.upgradePriority(building.buildingType,building.level);
 		if(priority==0)continue;
 		if(building.level==1 && limits.activeLevel1Upgrades>=limits.level1Upgrades)continue;
-		if(building.level==2 && (!limits.allowLevel2Upgrades
+		if(building.level>=2 && (!limits.allowLevel2Upgrades
 		   ||limits.activeLevel2Upgrades>=limits.level2Upgrades))continue;
 		if(building.level<1||building.level>=profile->maximumLevel())continue;
 		const int maximum=contractMaximumLevel(building.id,building.buildingType);
 		if(maximum<=building.level){lastDiagnostics.rejected[RejectedUpgradeContract]++;continue;}
-		if(building.buildingType==configuredSchoolType&&building.level==2)
+		if(serves(building.buildingType,configuredSchoolType,building.level)&&building.level==2)
 		{
 			bool specialistActive=false;
 			for(std::map<int,DevelopmentAction>::const_iterator a=actionMap.begin();
 				a!=actionMap.end();++a)
 				if(activeState(a->second.state)&&a->second.type==UpgradeBuilding
-				   &&a->second.buildingType==configuredSchoolType
+				   &&serves(a->second.buildingType,configuredSchoolType)
 				   &&a->second.targetLevel==3){specialistActive=true;break;}
 			if(specialistActive)continue;
 		}
@@ -2025,7 +2057,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	const BuildingLevelProfile* target=profile?profile->atLevel(action.targetLevel):NULL;
 	const int fromService=(action.type==UpgradeBuilding&&from)?from->serviceThroughput:0;
 	const int targetService=target?target->serviceThroughput:0;
-	u.serviceGain=clamp100((targetService-fromService)*placementPolicy.serviceGainScale);
+	u.serviceGain=clamp100(static_cast<long long>(targetService-fromService)*placementPolicy.serviceGainScale);
 	u.capabilityGain=clamp100(target
 		?(target->capability-(from?from->capability:0))
 			*placementPolicy.capabilityGainScale:0);
@@ -2121,7 +2153,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	int spacingQuality=100;
 	const int barracksRing=2*action.terminalFootprint.width+2*action.terminalFootprint.height;
 	const bool packedBarracks=action.type==BuildStandalone
-		&&action.buildingType==configuredBarracksType
+		&&serves(action.buildingType,configuredBarracksType,action.targetLevel)
 		&&!action.accessTiles.empty()&&int(action.accessTiles.size())<barracksRing;
 	const bool opensNewParcel=(candidate.newCampus
 		||action.type==BuildStandalone)&&purpose!=ColonySeed&&!packedBarracks;
@@ -2137,7 +2169,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		spacingQuality=placementPolicy.spacingTargetTiles<=0 ? 100
 			:clamp100(gap*100/placementPolicy.spacingTargetTiles);
 	}
-	if(action.buildingType==configuredSchoolType)
+	if(serves(action.buildingType,configuredSchoolType,action.targetLevel))
 		u.threatExposure=clamp100(threat+threat/2);
 
 	auto resourceQuality=[this,&world,&action](int resourceType)->int
@@ -2147,11 +2179,13 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		return best==INT_MAX?0:clamp100(100-best*placementPolicy.resourceDistanceWeight);
 	};
 	int materialType=-1,materialNeed=0;
-	if(target)for(int resource=0;resource<5;++resource)
+	if(target)for(int resource=0;resource<8;++resource)
 		if(target->constructionResources[resource]>materialNeed)
 		{materialNeed=target->constructionResources[resource];materialType=resource;}
 	const int materialQuality=materialType>=0?resourceQuality(materialType):0;
-	if(action.buildingType==configuredInnType)
+	int operatingQuality=0,operatingKinds=0;
+	if(target)for(int resource=0;resource<8;++resource)if(target->operatingResources[resource]>0){operatingQuality+=resourceQuality(resource);++operatingKinds;}
+	if(serves(action.buildingType,configuredInnType,action.targetLevel))
 	{
 		int fruitQuality=0;
 		for(int fruit=5;fruit<=7;++fruit)fruitQuality=std::max(fruitQuality,resourceQuality(fruit));
@@ -2162,23 +2196,23 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
 		u.roleLocationQuality=clamp100((foodQuality*3+fruitQuality)/4);
 	}
-	else if(action.buildingType==configuredSwarmType)
+	else if(serves(action.buildingType,configuredSwarmType,action.targetLevel))
 	{
 		const int foodQuality=foodManagedType(action.buildingType)
 			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
 		u.roleLocationQuality=clamp100((foodQuality*3+protection)/4);
 	}
-	else if(action.buildingType==configuredSchoolType)
+	else if(serves(action.buildingType,configuredSchoolType,action.targetLevel))
 		u.roleLocationQuality=clamp100(protection-threat);
-	else if(action.buildingType==configuredHospitalType)
+	else if(serves(action.buildingType,configuredHospitalType,action.targetLevel))
 	{
 		u.roleLocationQuality=clamp100(protection-threat/2);
-		if(t&&t->id==HospitalDispersed)
+		if(t&&t->style==HospitalDispersed)
 			u.roleLocationQuality=clamp100(u.roleLocationQuality+threat/2);
 	}
-	else if(action.buildingType==configuredBarracksType)
+	else if(serves(action.buildingType,configuredBarracksType,action.targetLevel))
 		u.roleLocationQuality=clamp100(protection-threat); // no deployment reward
-	else if(action.buildingType==configuredTowerType)
+	else if(serves(action.buildingType,configuredTowerType,action.targetLevel))
 	{
 		int criticalDistance=INT_MAX,towerDistance=INT_MAX;
 		if(action.buildingId<0&&!criticalBuildingDistanceCache.empty())
@@ -2192,11 +2226,11 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 			const WorldBuilding& building=world.buildings[i];
 			const int distance=world.wrappedManhattan(action.centerX,action.centerY,
 				building.centerX,building.centerY);
-			if(building.buildingType==configuredSwarmType
-			   ||building.buildingType==configuredInnType
-			   ||building.buildingType==configuredSchoolType)
+			if(serves(building.buildingType,configuredSwarmType,building.level)
+			   ||serves(building.buildingType,configuredInnType,building.level)
+			   ||serves(building.buildingType,configuredSchoolType,building.level))
 				criticalDistance=std::min(criticalDistance,distance);
-			if(building.buildingType==configuredTowerType&&building.id!=action.buildingId)
+			if(serves(building.buildingType,configuredTowerType,building.level)&&building.id!=action.buildingId)
 				towerDistance=std::min(towerDistance,distance);
 		}
 		const int criticalQuality=criticalDistance==INT_MAX?0:
@@ -2301,8 +2335,8 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	// discourages new inner-settlement parcels from claiming the nearby sites
 	// where inns and swarms are most useful.
 	if((action.type==BuildCampusMember||action.type==BuildStandalone)
-	   && !reserved.empty() && action.buildingType!=configuredInnType
-	   && action.buildingType!=configuredSwarmType)
+	   && !reserved.empty() && !serves(action.buildingType,configuredInnType,action.targetLevel)
+	   && !serves(action.buildingType,configuredSwarmType,action.targetLevel))
 	{
 		uint64_t strongest=0;
 		for(size_t i=0;i<reserved.size();++i)
@@ -2310,9 +2344,9 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		const int radius=placementPolicy.foodZoneRadius;
 		const uint64_t maximum=maximumFoodOpportunityCache*uint64_t(radius+1);
 		int multiplier=placementPolicy.innerFoodZoneMultiplier;
-		if(action.buildingType==configuredHospitalType)
+		if(serves(action.buildingType,configuredHospitalType,action.targetLevel))
 			multiplier=placementPolicy.hospitalFoodZoneMultiplier;
-		else if(action.buildingType==configuredTowerType)
+		else if(serves(action.buildingType,configuredTowerType,action.targetLevel))
 			multiplier=placementPolicy.towerFoodZoneMultiplier;
 		u.foodZonePressure=clamp100(int(strongest*100
 			/std::max<uint64_t>(1,maximum)));
@@ -2322,17 +2356,18 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(target)
 	{
 		int scarcity=0,needed=0;
-		for(int r=0;r<5;++r)if(target->constructionResources[r]>0)
+		for(int r=0;r<8;++r)if(target->constructionResources[r]>0)
 		{needed+=target->constructionResources[r];scarcity+=std::max(0,target->constructionResources[r]-world.accessibleSupplies[r]);}
 		u.resourceScarcity=needed?clamp100(scarcity*100/needed):0;
 	}
+	if(operatingKinds)u.roleLocationQuality=(u.roleLocationQuality+operatingQuality/operatingKinds)/2;
 	u.constructionLabor=clamp100(action.workers*placementPolicy.laborScale);
 	if((action.type==UpgradeBuilding||action.type==RepairBuilding)&&from)
 	{
 		int constructionWork=1;
-		if(target)for(int resource=0;resource<5;++resource)
+		if(target)for(int resource=0;resource<8;++resource)
 			constructionWork+=target->constructionResources[resource];
-		u.serviceDowntime=clamp100(from->serviceThroughput*constructionWork
+		u.serviceDowntime=clamp100(static_cast<long long>(from->serviceThroughput)*constructionWork
 			/std::max(1,action.workers*placementPolicy.downtimeWorkerScale));
 	}
 	u.newArteryLength=clamp100(int(action.arteryTiles.size())
@@ -2390,7 +2425,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	// on live demand, mobility, resources and utility, so use a separate key.
 	uint32_t signature=2166136261u;
 	hashValue(signature,world.swimmingBuilders);
-	for(int r=0;r<5;++r)hashValue(signature,world.accessibleSupplies[r]);
+	for(int r=0;r<8;++r)hashValue(signature,world.accessibleSupplies[r]);
 	for(const WorldTile& tile:world.tiles)
 	{
 		hashValue(signature,tile.fertility);hashValue(signature,tile.farmCapacity);
@@ -2413,7 +2448,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 		{
 			hashValue(signature,level.level);hashValue(signature,level.serviceThroughput);
 			hashValue(signature,level.capability);
-			for(int r=0;r<5;++r)hashValue(signature,level.constructionResources[r]);
+			for(int r=0;r<8;++r)hashValue(signature,level.constructionResources[r]);
 		}
 	}
 	hashValue(signature,placementPolicy.arteryRoutingEnabled);
@@ -2717,6 +2752,26 @@ void Planner::finishRelocation(int replacesBuildingId)
 	clearRelocationRefusal(replacesBuildingId);
 }
 
+int Planner::committedRoleCount(const WorldState& world,int role,unsigned productionMask) const
+{
+ auto matches=[&](int type,int level) {
+  const auto* p=world.profile(type);const auto* v=p?p->atLevel(level):nullptr;
+  return v && (v->roles&AIMaximaBuildings::roleBit(role)) &&
+   (!productionMask || (v->productionUnitMask&productionMask)==productionMask);
+ };
+ int count=0;std::map<int,const WorldBuilding*> known;
+ for(const auto& b:world.buildings){known[b.id]=&b;if(matches(b.buildingType,b.level))++count;}
+ for(const auto& [id,a]:actionMap)if(activeState(a.state)&&(a.type==BuildCampusMember||a.type==BuildStandalone)&&matches(a.buildingType,a.targetLevel)) {
+  const auto old=known.find(a.replacesBuildingId);
+  const bool replacing=a.purpose==Relocation && old!=known.end() && matches(old->second->buildingType,old->second->level);
+  if(!known.count(a.buildingId)){if(!replacing)++count;}else if(replacing)--count;
+ }
+ return count;
+}
+int Planner::activeRoleBuildCount(int role,DevelopmentPurpose purpose) const
+{
+ int count=0;for(const auto& [id,a]:actionMap)if(activeState(a.state)&&a.purpose==purpose&&(a.type==BuildCampusMember||a.type==BuildStandalone)&&serves(a.buildingType,role,a.targetLevel))++count;return count;
+}
 int Planner::committedBuildingCount(const WorldState& world,int buildingType) const
 {
 	int count=0;
@@ -2883,7 +2938,7 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 		blockedIntentSignatures[std::make_pair(action.buildingType,
 			int(action.purpose))]=stateSignature(world);
 	 lastDiagnostics.rejected[reason]++;return false;}
-	if(action.type==BuildStandalone&&action.buildingType==configuredBarracksType
+	if(action.type==BuildStandalone&&serves(action.buildingType,configuredBarracksType,action.targetLevel)
 	   &&action.reservationId<0)
 	{
 		std::vector<int> edge,neighbor;
@@ -3026,7 +3081,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 	if(!fillsExistingCampus)
 	{
 		std::vector<int> sharedEdge,neighbor;
-		if(action.type==BuildStandalone&&action.buildingType==configuredBarracksType)
+		if(action.type==BuildStandalone&&serves(action.buildingType,configuredBarracksType,action.targetLevel))
 		{
 			auto expected=ringTiles(world,action.parcelTiles);
 			if(action.reservationId<0)
@@ -3163,8 +3218,8 @@ void Planner::adoptStartingBuildings(const WorldState& world)
 	std::sort(ordered.begin(),ordered.end(),[this](const WorldBuilding* a,
 		const WorldBuilding* b)
 	{
-		const bool aSwarm=a->buildingType==configuredSwarmType;
-		const bool bSwarm=b->buildingType==configuredSwarmType;
+		const bool aSwarm=serves(a->buildingType,configuredSwarmType);
+		const bool bSwarm=serves(b->buildingType,configuredSwarmType);
 		if(aSwarm!=bSwarm)return aSwarm;
 		if(a->age!=b->age)return a->age>b->age;
 		return a->id<b->id;
@@ -3206,7 +3261,7 @@ void Planner::adoptStartingBuildings(const WorldState& world)
 		{
 			const BuildingLevelProfile* terminal=profile->atLevel(level);
 			if(!terminal)continue;
-			std::vector<int> footprint=footprintTiles(world,building.centerX,building.centerY,terminal->footprint);
+			std::vector<int> footprint=footprintTiles(world,building.centerX,building.centerY,profile->envelope(level));
 			std::vector<int> terminalRing=ringTiles(world,footprint);
 			RejectionReason reason=RejectedTerrain;
 			bool ringLegal=true;
@@ -3528,7 +3583,7 @@ void Planner::save(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("actions");stream->writeUint32(actionMap.size(),"size");n=0;for(std::map<int,DevelopmentAction>::const_iterator i=actionMap.begin();i!=actionMap.end();++i,++n){stream->writeEnterSection(n);const DevelopmentAction& a=i->second;stream->writeSint32(a.id,"id");stream->writeSint32(a.type,"type");stream->writeSint32(a.purpose,"purpose");stream->writeSint32(a.state,"state");stream->writeSint32(a.templateId,"template_id");stream->writeSint32(a.campusId,"campus_id");stream->writeSint32(a.slotId,"slot_id");stream->writeSint32(a.buildingId,"building_id");stream->writeSint32(a.buildingType,"building_type");stream->writeSint32(a.fromLevel,"from_level");stream->writeSint32(a.targetLevel,"target_level");stream->writeSint32(a.centerX,"x");stream->writeSint32(a.centerY,"y");stream->writeSint32(a.workers,"workers");stream->writeUint8(a.fallbackWaterTier,"fallback");stream->writeUint8(a.requiresSwimmingBuilders,"requires_swimming_builders");stream->writeSint32(a.reservationId,"reservation_id");stream->writeSint32(a.issuedTick,"issued_tick");stream->writeUint32(a.worldSignature,"signature");stream->writeSint32(a.initialFootprint.left,"initial_left");stream->writeSint32(a.initialFootprint.top,"initial_top");stream->writeSint32(a.initialFootprint.width,"initial_width");stream->writeSint32(a.initialFootprint.height,"initial_height");stream->writeSint32(a.terminalFootprint.left,"terminal_left");stream->writeSint32(a.terminalFootprint.top,"terminal_top");stream->writeSint32(a.terminalFootprint.width,"terminal_width");stream->writeSint32(a.terminalFootprint.height,"terminal_height");writeIntVector(stream,"parcel",a.parcelTiles);writeIntVector(stream,"access",a.accessTiles);writeIntVector(stream,"artery",a.arteryTiles);stream->writeEnterSection("utility");writeUtility(stream,a.utility);stream->writeLeaveSection();stream->writeLeaveSection();}stream->writeLeaveSection();stream->writeLeaveSection();
 }
 
-bool Planner::load(GAGCore::InputStream* stream,int)
+bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 {
 	auto readEnum = [stream](const char* name, int maximum) {
 		const int value=stream->readSint32(name);
@@ -3549,13 +3604,13 @@ bool Planner::load(GAGCore::InputStream* stream,int)
 	scoringGeneration=0;
 	footprintReferenceRevision=1;
 	stream->readEnterSection("V3PlacementPlanner");nextCampusId=stream->readSint32("next_campus_id");nextReservationId=stream->readSint32("next_reservation_id");nextActionId=stream->readSint32("next_action_id");uint32_t size;
-	stream->readEnterSection("campuses");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Campus c;c.id=stream->readSint32("id");c.templateId=static_cast<TemplateId>(readEnum("template_id", TowerDefended));c.originX=stream->readSint32("origin_x");c.originY=stream->readSint32("origin_y");c.fallbackWaterTier=stream->readUint8("fallback");uint32_t slots=stream->readCount("slot_size");const auto* definition=findTemplate(c.templateId);if(!definition || slots!=definition->slots.size()) throw std::runtime_error("Invalid saved campus slots");c.slots.assign(slots,CampusSlotState());for(uint32_t s=0;s<slots;++s){stream->readEnterSection(s);c.slots[s].buildingId=stream->readSint32("building_id");c.slots[s].actionId=stream->readSint32("action_id");c.slots[s].currentLevel=stream->readSint32("level");c.slots[s].unusable=stream->readUint8("unusable");stream->readLeaveSection();}campusList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("campuses");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Campus c;c.id=stream->readSint32("id");c.templateId=static_cast<TemplateId>(readEnum("template_id", versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? 100000 : TowerDefended));c.originX=stream->readSint32("origin_x");c.originY=stream->readSint32("origin_y");c.fallbackWaterTier=stream->readUint8("fallback");uint32_t slots=stream->readCount("slot_size");const auto* definition=findTemplate(c.templateId);if(!definition || slots!=definition->slots.size()) throw std::runtime_error("Invalid saved campus slots");c.slots.assign(slots,CampusSlotState());for(uint32_t s=0;s<slots;++s){stream->readEnterSection(s);c.slots[s].buildingId=stream->readSint32("building_id");c.slots[s].actionId=stream->readSint32("action_id");c.slots[s].currentLevel=stream->readSint32("level");c.slots[s].unusable=stream->readUint8("unusable");stream->readLeaveSection();}campusList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("standalone");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);StandaloneContract c;c.buildingId=stream->readSint32("building_id");c.buildingType=stream->readSint32("building_type");c.centerX=stream->readSint32("x");c.centerY=stream->readSint32("y");c.maximumLevel=stream->readSint32("maximum_level");c.reservationId=stream->readSint32("reservation_id");c.preexisting=stream->readUint8("preexisting");standaloneList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("reservations");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Reservation r;r.id=stream->readSint32("id");r.campusId=stream->readSint32("campus_id");r.buildingId=stream->readSint32("building_id");r.actionId=stream->readSint32("action_id");r.permanent=stream->readUint8("permanent");readIntVector(stream,"footprint",r.footprintTiles);readIntVector(stream,"circulation",r.circulationTiles);reservationMap[r.id]=r;stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("reference_masks");size=stream->readCount("size");footprintRefs.resize(size);circulationRefs.resize(size);for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);footprintRefs[i]=stream->readUint16("footprint");circulationRefs[i]=stream->readUint16("circulation");if(circulationRefs[i])++circulationReservedTileCount;stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("blocked");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=stream->readSint32("purpose");blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("quarantines");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int coordinate=stream->readSint32("coordinate");coordinateQuarantines[coordinate]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("actions");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(readEnum("type", RepairBuilding));a.purpose=static_cast<DevelopmentPurpose>(readEnum("purpose", Fortification));a.state=static_cast<ActionLifecycleState>(readEnum("state", EngineRejected));a.templateId=static_cast<TemplateId>(readEnum("template_id", TowerDefended));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
+	stream->readEnterSection("actions");size=stream->readCount("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(readEnum("type", RepairBuilding));a.purpose=static_cast<DevelopmentPurpose>(readEnum("purpose", Fortification));a.state=static_cast<ActionLifecycleState>(readEnum("state", EngineRejected));a.templateId=static_cast<TemplateId>(readEnum("template_id", versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? 100000 : TowerDefended));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();
 	auto validTiles = [this](const std::vector<int>& tiles) {
 		for (int tile : tiles) if (tile<0 || size_t(tile)>=footprintRefs.size()) return false;
 		return true;

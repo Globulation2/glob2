@@ -57,7 +57,7 @@ void NewNicowar::attack_building(Runtime& runtime)
 			}
 		return;
 	}
-	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WAR_FLAG, strategy.war_phase_war_flag_units_assigned);
+	BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::AttractWarriors, strategy.war_phase_war_flag_units_assigned);
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=runtime.add_building_order(bo);
 
@@ -98,7 +98,7 @@ void NewNicowar::control_attacks(Runtime& runtime)
 	}
 
 	BuildingSearch bs_pool(runtime);
-	bs_pool.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
+	bs_pool.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainSwim));
 	int num_pool=bs_pool.count_buildings();
 	
 	AISharedRuntime::Gradients::GradientInfo gi_building;
@@ -321,7 +321,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 		{
 			flag_dist_count=0;
 			//The main order for the clearing flag
-			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG, AI_NICOWAR_DIG_CLEARING_WORKERS);
+			BuildingOrder* bo_flag = new BuildingOrder(runtime, BuildingDemand::ClearResources, AI_NICOWAR_DIG_CLEARING_WORKERS);
 			//Place it on the current point
 			bo_flag->add_constraint(new Construction::SinglePosition(xpos, ypos));
 			//Add the building order to the list of orders

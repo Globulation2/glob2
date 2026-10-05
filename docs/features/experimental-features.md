@@ -9,7 +9,10 @@ covers what players see, the compatibility rules, and how to add an experiment.
 ## What players see
 
 - **Settings → Experiments** lists one switch per experiment in this build, with
-  a line explaining what it changes. The page says when a build has none.
+  a line explaining what it changes. Building catalogs can declare additional
+  switches with their own stable keys and English labels and help. Translations
+  take precedence when available; untranslated catalog entries use that English
+  text. The page says when a build has none.
 - The set applies to **new games only**: a custom game, a map file played from the
   load screen, a headless `-test-games` match, and a multiplayer game the player
   hosts online or on LAN. A joiner plays with the host's set, whatever their own
@@ -41,8 +44,9 @@ save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replay
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
 format and introduced network protocol 47. Terrain format 134 adds required
-experiments to `MapHeader`; network protocol 55 and replay floor 134 separate the
-new terrain simulation from earlier clients. The supported save floor remains 58.
+experiments to `MapHeader`. Building format 136 embeds the building catalog and
+its experiment definitions; network protocol 56 and replay floor 136 separate the
+current simulation from earlier clients. The supported save floor remains 58.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable
 kebab-case string such as `guard-area-balancing`), never a bit position. Retiring
@@ -58,7 +62,17 @@ rejects the map instead of silently changing its behavior. A save containing
 experimental terrain must already carry the matching enabled experiments.
 
 Preferences store the set as `experiments=<key>,<key>` in `preferences.txt`;
-unknown keys are dropped there too.
+unknown keys are dropped there too. Installed building-catalog experiment
+definitions must therefore be registered before preferences are loaded. Registration
+is deterministic and immutable after startup; loading a saved game's embedded
+catalog does not change the installed definitions or the settings page.
+
+Catalog-aware readers supply the validated embedded catalog's experiment keys
+when reading its enabled set. Those keys survive even if their definitions have
+been removed from the installed catalog. This explicit allowlist does not admit
+unrelated unknown keys or teach subsequent games about the embedded definitions.
+Built-in keys retain their existing serialized order; dynamic keys follow them
+in byte-wise order. The existing limit of 64 enabled keys still applies.
 
 Headless runs: `GLOB2_TEST_RULES` accepts every experiment key as a 0/1 rule for
 `-test-games` matches, and `--run-game` takes `--experiment <key>` (repeatable;
@@ -83,6 +97,25 @@ rules. Its generated source and classic-frame recipe are recorded in
 [`datasrc/gfx/trail/`](../../datasrc/gfx/trail/).
 
 ## Adding an experiment
+
+For a building-catalog experiment, declare its stable `key`, English `label` and
+`help` in the catalog and reference that key from the gated building definition.
+No `ExperimentId` or C++ registry entry is needed. Keys use lowercase ASCII
+letters, digits and single separating hyphens, up to 128 bytes. Labels and help
+must be nonempty. The startup loader registers the installed catalog's definitions
+with `registerCatalogExperiments`; built-in keys such as `markets-v2` retain their
+existing enum identity and interface text. Duplicate declarations are rejected.
+
+Engine code can query `ExperimentSet::has(key)` for a catalog gate. Keep key
+resolution outside simulation hot loops by preparing the game's available
+building variants once. When reading embedded catalogs, pass their validated keys
+to `ExperimentSet::fromKeys` or `load` instead of registering them globally.
+Unknown keys remain subject to the reader's existing ignore/reject policy.
+Catalog labels can optionally use the same `[experiment <key>]` and
+`[experiment <key> help]` translation keys as built-ins. Cover enabled and disabled
+availability, missing local definitions, and saved continuation for new gates.
+
+For a built-in engine experiment:
 
 1. Append an `ExperimentId` before `Count` in `src/game/ExperimentalFeatures.h` and add
    its definition (stable key, English label and help) to the table in

@@ -7,6 +7,7 @@
 #include "field/GradientWorkspace.h"
 
 #include <vector>
+#include <unordered_map>
 
 struct GradientRuntime
 {
@@ -22,4 +23,6 @@ struct GradientRuntime
 	};
 	std::vector<Workspace> workspaces{1};
 	GradientPipeline pipeline;
+	bool supplierLocationsDirty = true;
+	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 };

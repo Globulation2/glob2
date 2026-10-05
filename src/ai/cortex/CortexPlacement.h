@@ -22,7 +22,7 @@ class Map;
 namespace Cortex
 {
 	/// Fill `out` with up to CORTEX_BUILD_CANDIDATES ranked candidate locations
-	/// for placing a building of `buildingType` (an IntBuildingType::Number) at
+	/// for placing a building of `buildingType` (a Cortex semantic role) at
 	/// internal level `level` (0-based; use 0 for a fresh building) for `team`.
 	///
 	/// Candidates are returned best-first (highest BuildCandidate::score in slot

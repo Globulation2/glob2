@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
+#include <iostream>
 #include "TeamStat.h"
 #include "WinProbability.h"
 #include "WinningConditions.h"
@@ -14,6 +16,41 @@
 
 TEST_SUITE("WinProbability")
 {
+    TEST_CASE("combat facilities count concrete providers once, including explicit construction targets")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto& catalog=world.game.buildingsTypes;
+        const int finished=catalog.getFinishedTypeNum("barracks");
+        const int site=catalog.getPlaceableTypeNum("barracks");
+        const int passive=catalog.getFinishedTypeNum("stonewall");
+        catalog.get(finished)->shortTypeNum=11;
+        catalog.get(passive)->shortTypeNum=5;
+        auto* stat=world.team->stats.getLatestStat();
+        stat->buildingCountByVariant.assign(catalog.size(),0);
+        stat->buildingCountByVariant[finished]=2;
+        stat->buildingCountByVariant[site]=3;
+        stat->buildingCountByVariant[passive]=7;
+        // Two combat services on each facility still describe one building.
+        std::vector<int> alliances;
+        auto slots=WinProbability::slotsOf(world.game,alliances);
+        REQUIRE(slots.size()==1);
+        CHECK(slots[0].barracks==5);
+        catalog.get(finished)->semantics.admittedUnitMask=1u<<WORKER;
+        slots=WinProbability::slotsOf(world.game,alliances);
+        CHECK(slots[0].barracks==0);
+        catalog.get(finished)->semantics.admittedUnitMask=1u<<WARRIOR;
+        world.game.stepCounter=512;
+        std::ostringstream log;
+        {
+            glob2test::ScopedEnvironment enabled("GLOB2_TEAM_TIMELINE","1");
+            struct Capture {std::streambuf* previous;~Capture(){std::cout.rdbuf(previous);}} capture{std::cout.rdbuf(log.rdbuf())};
+            world.team->stats.step(world.team);
+        }
+        CHECK(log.str().find(" barracks=5 ")!=std::string::npos);
+        CHECK(log.str().find(" variant_"+std::to_string(passive)+"=7")!=std::string::npos);
+    }
+
     TEST_CASE("equal alliances share chances and eliminated allies contribute nothing")
     {
         glob2test::HeadlessGlobals globals;

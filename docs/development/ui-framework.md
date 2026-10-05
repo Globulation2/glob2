@@ -178,6 +178,18 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   `libgag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
   painted line crosses a control's edge, at 100% and 150%.
 
+### Building assignment preferences
+
+Settings > Buildings enumerates variants from the installed building catalog;
+construction and upgrade controls follow explicit variant links. Assignment and
+attraction-radius bounds come from each descriptor. Initial assignments come
+from `presentation.defaultAssigned`, and initial radii from the descriptor's
+`defaultUnitStayRange`. Remembered choices are stored by catalog fingerprint and
+stable variant key, so custom catalogs that reuse stock names cannot overwrite
+stock preferences. A changed catalog starts from its authored defaults. Version
+1 preferences import their historical family/level slots through the frozen
+stock catalog; current preferences and per-game overrides use stable keys.
+
 ### Map scrolling preferences
 
 Settings > Controls has independent edge scrolling toggles for fullscreen and

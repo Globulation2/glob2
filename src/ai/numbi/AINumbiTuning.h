@@ -28,12 +28,6 @@ static constexpr int AI_NUMBI_CRITICAL_WARRIORS_DEFAULT = 20;
 // Initial timeout (ticks) before an attack is forced regardless of warrior count.
 static constexpr int AI_NUMBI_CRITICAL_TIME_DEFAULT_TICKS = 1024;
 
-// Legacy save-format compatibility: the header `mainBuilding[]` array is
-// hardcoded to 15 because IntBuildingType::NB_BUILDING was 15 in older save
-// versions. Today NB_BUILDING is smaller, so 15 is the upper-bound "legacy"
-// dimension. [POSSIBLE BUG M7] — preserved verbatim.
-static constexpr int AI_NUMBI_LEGACY_NB_BUILDING = 15;
-
 // Round-robin slot mask: getOrder() runs one of up to 32 sub-decisions per
 // tick by picking `timer & 0x1F` as the slot index.
 static constexpr int AI_NUMBI_DECISION_SLOT_MASK = 0x1F;

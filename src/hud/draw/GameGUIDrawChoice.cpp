@@ -15,6 +15,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "SpriteCentering.h"
+#include "BuildingPresentation.h"
 
 namespace {
 
@@ -49,23 +50,51 @@ std::optional<size_t> findChoiceIndex(const std::vector<std::string>& types, con
 
 } // namespace
 
+int GameGUI::choiceVisibleRows(int panelTopY,unsigned columns) const
+{
+    return columns==3 ? 1 : std::max(1,(globalContainer->gfx->getH()-82-panelTopY)/CHOICE_ROW_HEIGHT_PX);
+}
+
+bool GameGUI::scrollBuildingChoices(double delta)
+{
+    if (mouseX<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH) return false;
+    if (selectionMode==BUILDING_SELECTION)
+    {
+        if (mouseY<YPOS_BASE_BUILDING || mouseY>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4) return false;
+        buildingInfoScroll=std::clamp(buildingInfoScroll+(delta>0 ? -32 : delta<0 ? 32 : 0),0,buildingInfoScrollMaximum);
+        return true;
+    }
+    const bool flags=displayMode==FLAG_VIEW;
+    if (!flags && displayMode!=CONSTRUCTION_VIEW) return false;
+    const int top=flags ? YPOS_BASE_FLAG : YPOS_BASE_CONSTRUCTION;
+    const unsigned columns=flags ? 3 : 2;
+    const int rows=choiceVisibleRows(top,columns);
+    if (mouseY<top || mouseY>=top+rows*CHOICE_ROW_HEIGHT_PX) return false;
+    const int count=static_cast<int>((flags ? flagsChoiceName : buildingsChoiceName).size());
+    int& offset=flags ? flagChoiceRow : buildingChoiceRow;
+    offset=std::clamp(offset+(delta>0 ? -1 : delta<0 ? 1 : 0),0,std::max(0,(count+int(columns)-1)/int(columns)-rows));
+    return true;
+}
+
 void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine)
 {
 	const int width = RIGHT_MENU_WIDTH / static_cast<int>(numberPerLine);
 	const int panelLeftX = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
 
-	for (size_t i = 0; i < types.size(); i++)
+	const int offset=numberPerLine==3 ? flagChoiceRow : buildingChoiceRow;
+	const int rows=choiceVisibleRows(panelTopY,numberPerLine);
+	for (size_t i = size_t(offset)*numberPerLine; i < std::min(types.size(),size_t(offset+rows)*numberPerLine); i++)
 	{
 		if (!states[i])
 			continue;
 
 		const std::string& type = types[i];
-		BuildingType *bt = globalContainer->buildingsTypes.getByType(type.c_str(), 0, false);
+		BuildingType *bt = game.buildingsTypes.getByType(type.c_str(), 0, false);
 		assert(bt);
 		int imgid = bt->miniSpriteImage;
 
 		const int x = (static_cast<int>(i % numberPerLine) * width) + panelLeftX;
-		const int y = (static_cast<int>(i / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
+		const int y = ((static_cast<int>(i / numberPerLine)-offset) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
 		globalContainer->gfx->setClipRect(x, y, CHOICE_SPRITE_CLIP_W_PX, CHOICE_ROW_HEIGHT_PX);
 
 		Sprite *buildingSprite;
@@ -86,7 +115,7 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 		globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 		globalContainer->gfx->setClipRect();
-		if (highlights.find(HighlightBuildingOnPanel + IntBuildingType::shortNumberFromType(type)) != highlights.end())
+		if (bt->shortTypeNum>=0 && highlights.find(HighlightBuildingOnPanel + bt->shortTypeNum) != highlights.end())
 		{
 			arrowPositions.push_back(HighlightArrowPosition(x + off.dx - 36, y - 6 + off.dy, 38));
 		}
@@ -103,7 +132,9 @@ void GameGUI::drawChoiceHighlight(int panelTopY, size_t selIdx, unsigned numberP
 	const int sw = globalContainer->gamegui->getW(spriteId);
 
 	const int x = (static_cast<int>(selIdx % numberPerLine) * width) + panelLeftX;
-	const int y = (static_cast<int>(selIdx / numberPerLine) * CHOICE_ROW_HEIGHT_PX) + panelTopY;
+	const int row=static_cast<int>(selIdx/numberPerLine)-(numberPerLine==3 ? flagChoiceRow : buildingChoiceRow);
+	if (row<0 || row>=choiceVisibleRows(panelTopY,numberPerLine)) return;
+	const int y=row*CHOICE_ROW_HEIGHT_PX+panelTopY;
 	const int decX = (width - sw) / 2;
 
 	globalContainer->gfx->drawSprite(x + decX, y + decYNudge, globalContainer->gamegui, spriteId);
@@ -121,7 +152,9 @@ std::optional<size_t> GameGUI::pickChoiceUnderMouse(int panelTopY, size_t count,
 
 	const int xNum = (mouseX - panelLeftX) / width;
 	const int yNum = (mouseY - panelTopY) / CHOICE_ROW_HEIGHT_PX;
-	const size_t id = static_cast<size_t>(yNum) * numberPerLine + static_cast<size_t>(xNum);
+	if (xNum<0 || xNum>=int(numberPerLine) || yNum>=choiceVisibleRows(panelTopY,numberPerLine)) return std::nullopt;
+	const int offset=numberPerLine==3 ? flagChoiceRow : buildingChoiceRow;
+	const size_t id = static_cast<size_t>(yNum+offset) * numberPerLine + static_cast<size_t>(xNum);
 	if (id >= count)
 		return std::nullopt;
 	return id;
@@ -132,17 +165,21 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 	const int panelLeftX = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
 	const int buildingInfoStart = globalContainer->gfx->getH() - CHOICE_INFO_BOTTOM_OFFSET_PX;
 
-	std::string key = "[" + type + "]";
-	drawTextCenter(panelLeftX, buildingInfoStart - 32, key.c_str());
+	const int selected=game.buildingsTypes.getPlaceableTypeNum(type);
+	if (selected<0) return;
+	const auto* definition=game.buildingsTypes.get(selected);
+	std::string key;
+	const auto name=buildingDisplayName(*definition);
+	globalContainer->gfx->drawString(panelLeftX+(RIGHT_MENU_WIDTH-globalContainer->littleFont->getStringWidth(name))/2,buildingInfoStart-32,globalContainer->littleFont,name);
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 128, 128, 128));
-	key = "[" + type + " explanation]";
-	drawTextCenter(panelLeftX, buildingInfoStart - 20, key.c_str());
-	key = "[" + type + " explanation 2]";
-	drawTextCenter(panelLeftX, buildingInfoStart - 8, key.c_str());
+	key = "[" + definition->type + " explanation]";
+	if (Toolkit::getStringTable()->doesStringExist(key)) drawTextCenter(panelLeftX, buildingInfoStart - 20, key.c_str());
+	key = "[" + definition->type + " explanation 2]";
+	if (Toolkit::getStringTable()->doesStringExist(key)) drawTextCenter(panelLeftX, buildingInfoStart - 8, key.c_str());
 	globalContainer->littleFont->popStyle();
 
-	BuildingType *bt = globalContainer->buildingsTypes.getByType(type, 0, true);
+	BuildingType *bt = game.buildingsTypes.getByType(type, 0, true);
 	if (!bt)
 		return;
 

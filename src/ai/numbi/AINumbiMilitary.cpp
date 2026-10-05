@@ -1,19 +1,33 @@
+#include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AITelemetryFields.h"
 #include <array>
+#include <algorithm>
+#include <vector>
+#include <span>
 
 #include "AINumbi.h"
 #include "Game.h"
-#include "AIRules.h"
-#include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
 #include "Utilities.h"
 #include "Unit.h"
 
 using std::shared_ptr;
+
+namespace
+{
+bool disposableRally(const Building& building)
+{
+	const auto& p = building.type->semantics;
+	return !p.feeding.enabled && !p.healing.enabled && building.type->shootingRange == 0
+		&& !p.market.interTeamFruitExchange && !p.market.suppliesStock
+		&& std::none_of(p.production.recipes.begin(), p.production.recipes.end(), [](const auto& r) { return r.enabled; })
+		&& std::none_of(p.training.begin(), p.training.end(), [](const auto& r) { return r.enabled; });
+}
+}
 
 std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
@@ -58,18 +72,18 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 
 		int teamNumber=player->team->teamNumber;
 
-		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+		for (Building* rally : std::span<Building*>(team->myBuildings, Building::MAX_COUNT))
+			if (rally && provides(*rally, Intent::AttractWarriors))
 			{
-				Building *b=*bit;
+				Building *b=rally;
 				int gbid=map->getBuilding(b->posX, b->posY);
-				if (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber)
+				if (disposableRally(*b) && (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber))
 					return telemetry.returnedOrder(
 						AITrace::AI1::AINumbi_mayAttack_result,
 						shared_ptr<Order>(
 							new OrderDelete(b->gid))); // The target has beed successfully killed.
 
-				if (b->maxUnitWorking!=numberRequested)
+				if (b->maxUnitWorking!=numberRequested && (disposableRally(*b) || b->maxUnitWorking<numberRequested))
 				{
 					//printf("AI: OrderModifyBuilding(%d, %d)\n", b->gid, numberRequested);
 					return telemetry.returnedOrder(
@@ -104,11 +118,11 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 				{
 					bool already=false;
 					count=0;
-					for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-						if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+					for (Building* rally : std::span<Building*>(team->myBuildings, Building::MAX_COUNT))
+						if (rally && provides(*rally, Intent::AttractWarriors))
 						{
 							count++;
-							if ((*bit)->posX==ex &&(*bit)->posY==ey)
+							if (rally->posX==ex &&rally->posY==ey)
 							{
 								already=true;
 								break;
@@ -125,13 +139,22 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 
 		if (ex!=-1 && ey!=-1 && found && count<AI_NUMBI_MAX_WAR_FLAGS)
 		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+			const int typeNum = selectBuilding(Intent::AttractWarriors);
+			if (typeNum < 0) return std::make_shared<NullOrder>();
+			const auto* placement = game->buildingsTypes.get(typeNum);
+			bool room = false;
+			for (int radius = 0; radius <= 8 && !room; ++radius)
+				for (int dy = -radius; dy <= radius && !room; ++dy)
+					for (int dx = -radius; dx <= radius && !room; ++dx)
+						if (game->checkRoomForBuilding(ex+dx, ey+dy, placement, teamNumber))
+						{ ex += dx; ey += dy; room = true; }
+			if (!room) return std::make_shared<NullOrder>();
 			//printf("AI: OrderCreateWarFlag(%d, %d)\n", ex, ey);
 			return telemetry.returnedOrder(
 				AITrace::AI1::AINumbi_mayAttack_result,
-				shared_ptr<Order>(new OrderCreate(teamNumber, ex, ey, typeNum,
+				AIRules::createOrder(*game, teamNumber, ex, ey, typeNum,
 												  AI_NUMBI_WAR_FLAG_INIT_UNITS_WORKING,
-												  AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS)));
+												  AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS));
 		}
 		else
 			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
@@ -145,10 +168,10 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 	}
 	else if (attackPhase==3)
 	{
-		for (std::list<Building *>::iterator bit=team->virtualBuildings.begin(); bit!=team->virtualBuildings.end(); ++bit)
-			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
+		for (Building* rally : std::span<Building*>(team->myBuildings, Building::MAX_COUNT))
+			if (rally && provides(*rally, Intent::AttractWarriors) && disposableRally(*rally))
 				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
-											   shared_ptr<Order>(new OrderDelete((*bit)->gid)));
+											   shared_ptr<Order>(new OrderDelete(rally->gid)));
 		attackPhase=0;
 		criticalWarriors*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
 		criticalTime*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
@@ -164,172 +187,70 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 
 }
 
-namespace {
-
-// The five building kinds AINumbi considers for level upgrades. Iteration
-// order is the upgrade-priority order — food first, defense last — and is
-// part of the deterministic order stream; do not reorder without rebaselining.
-enum UpgradeKind
-{
-	UK_FOOD = 0,
-	UK_HEAL,
-	UK_ATTACK,
-	UK_SCIENCE,
-	UK_DEFENSE,
-	NB_UPGRADE_KINDS
-};
-
-// Extra in-flight upgrades tolerated at each kind's rung threshold. Only
-// SCIENCE carries a non-zero value; the original C++ added
-// AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE inline in two of ten copy-pasted
-// conditionals.
-constexpr int kUpgradeKindTolerance[NB_UPGRADE_KINDS] = {
-	0,                                  // UK_FOOD
-	0,                                  // UK_HEAL
-	0,                                  // UK_ATTACK
-	AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE, // UK_SCIENCE
-	0,                                  // UK_DEFENSE
-};
-
-struct UpgradeInventory
-{
-	int number[NB_UNIT_LEVELS] = {};      // completed (non-site) buildings per level
-	int upgrading[NB_UNIT_LEVELS] = {};   // sites currently upgrading to this level
-	Building *exemplar[NB_UNIT_LEVELS] = {}; // a chosen instance per level, or null
-};
-
-int upgradeKindFor(int shortTypeNum)
-{
-	switch (shortTypeNum)
-	{
-		case IntBuildingType::FOOD_BUILDING:    return UK_FOOD;
-		case IntBuildingType::HEAL_BUILDING:    return UK_HEAL;
-		case IntBuildingType::ATTACK_BUILDING:  return UK_ATTACK;
-		case IntBuildingType::SCIENCE_BUILDING: return UK_SCIENCE;
-		case IntBuildingType::DEFENSE_BUILDING: return UK_DEFENSE;
-		default:                                return -1;
-	}
-}
-
-// Walks every building owned by `team` and tallies, per (kind, level): the
-// count of completed buildings, the count of upgrading sites, and one
-// "exemplar" — a deterministically chosen building used as the target for
-// the next upgrade order. The exemplar is selected by an unbiased AI-owned RNG
-// coin flip on each completed building, so for k buildings at one (kind,
-// level) the last one wins with probability 1/2, the previous with 1/4,
-// etc. The owning AI supplies its saved random stream.
-template <class Random>
-std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *team, Random draw)
-{
-	std::array<UpgradeInventory, NB_UPGRADE_KINDS> inv{};
-	Building **myBuildings = team->myBuildings;
-	for (int i = 0; i < Building::MAX_COUNT; i++)
-	{
-		Building *b = myBuildings[i];
-		if (!b)
-			continue;
-		const int kind = upgradeKindFor(b->type->shortTypeNum);
-		if (kind < 0)
-			continue;
-		const int l = b->type->level;
-		if (b->type->isBuildingSite)
-			inv[kind].upgrading[l]++;
-		else
-		{
-			inv[kind].number[l]++;
-			if (draw() & 1)
-				inv[kind].exemplar[l] = b;
-		}
-	}
-	return inv;
-}
-
-// Tries one ladder rung: for each upgradeable kind in priority order,
-// checks whether the colony has more completed level-srcLevel buildings
-// than are currently being upgraded to level srcLevel+1 (plus the per-kind
-// tolerance). Returns an OrderConstruction targeting the first eligible
-// kind's exemplar at srcLevel, or nullptr if none.
-//
-// Pre BH-220, the C++ original passed exemplar[0] for both rungs (level
-// 0→1 and 1→2), so the level-1→2 path always re-issued level-0→1 upgrades
-// and AINumbi's tech tree stalled at level 1. This helper reads
-// exemplar[srcLevel] uniformly, fixing that behavior.
-std::shared_ptr<Order> tryUpgradeRung(
-	const std::array<UpgradeInventory, NB_UPGRADE_KINDS> &inv,
-	int srcLevel)
-{
-	for (int kind = 0; kind < NB_UPGRADE_KINDS; ++kind)
-	{
-		const UpgradeInventory &slot = inv[kind];
-		if (slot.number[srcLevel] > slot.upgrading[srcLevel + 1] + kUpgradeKindTolerance[kind])
-		{
-			Building *b = slot.exemplar[srcLevel];
-			if (b)
-				return std::make_shared<OrderConstruction>(b->gid, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR);
-		}
-	}
-	return nullptr;
-}
-
-} // namespace
-
-// Issues one building-upgrade order if (a) the colony has enough free or
-// schooled units to staff higher-level buildings — gated against ptrigger
-// (potential = working units at higher levels, weighted by SCIENCE stock)
-// and ntrigger (now = free units at higher levels) — and (b) there is a
-// completed building of an upgradeable kind that is not already saturated
-// with in-flight upgrades. Tries level 0→1 first, then 1→2; returns
-// NullOrder if neither rung is eligible.
 std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
-	// Both building upgrades and their trained-worker prerequisites are unavailable.
-	// Gate before collecting inventory, which also shuffles the default candidates.
 	if (game->gameHeader.isUnitUpgradesDisabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);
 	telemetry.count(AITrace::AI1::AINumbi_mayUpgrade_calls);
-	const auto inv = collectUpgradeInventory(team, [this] { return random(); });
-
-	Unit **myUnits = team->myUnits;
-	int wun[NB_UNIT_LEVELS] = {}; // working units per BUILD level
-	int fun[NB_UNIT_LEVELS] = {}; // free (ACT_RANDOM) units per BUILD level
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
+    // This controller retains its bounded strategic tiers. Authored display
+    // levels do not determine which explicit transition belongs to each tier.
+    const auto stage=[&](int type) {return std::clamp(game->buildingCapabilities().lineagePosition(type)-1,0,NB_UNIT_LEVELS-1);};
+	const Intent priorities[] = {Intent::Feed, Intent::Heal, Intent::TrainAttackStrength,
+		Intent::TrainConstruction, Intent::ProjectileDefense};
+	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
+	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
+	for (Unit* u : std::span<Unit*>(team->myUnits, Unit::MAX_COUNT))
+		if (u && u->typeNum == WORKER)
+			for (int level = 0; level <= u->workerLevel() && level < NB_UNIT_LEVELS; ++level)
+			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
+	for (Building* b : std::span<Building*>(team->myBuildings, Building::MAX_COUNT))
 	{
-		Unit *u = myUnits[i];
-		if (!u)
-			continue;
-		const int l = u->level[BUILD];
-		if (u->activity == Unit::ACT_RANDOM)
-			fun[l]++;
-		wun[l]++;
-	}
-
-	const UpgradeInventory &science = inv[UK_SCIENCE];
-
-	// Level 0 → 1 rung.
-	{
-		const int sciencePool = science.number[0] + science.number[1] + science.number[2] + science.number[3];
-		const int potential = wun[1] + wun[2] + wun[3] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT * sciencePool;
-		const int now = fun[1] + fun[2] + fun[3];
-		if (potential > ptrigger && now > ntrigger)
+		if (!b) continue;
+		if (!b->type->isBuildingSite && provides(*b, Intent::TrainConstruction))
 		{
-			if (auto order = tryUpgradeRung(inv, 0))
-				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result, order);
+			int qualification = 0;
+			for (const auto& grant : b->type->semantics.training)
+				if (grant.enabled && (grant.unitMask & (1u << WORKER)))
+					qualification = std::max(qualification, grant.constructionLevel);
+			for (int level = 0; level <= qualification && level < NB_UNIT_LEVELS; ++level)
+				++training[level];
+		}
+		for (unsigned demand = 0; demand < std::size(priorities); ++demand)
+			if (provides(*b, priorities[demand]))
+			{
+				const int completed = b->type->isBuildingSite ? b->type->nextLevel : b->typeNum;
+				const int level = stage(completed);
+				if (level >= 0 && level < NB_UNIT_LEVELS)
+					++(b->type->isBuildingSite ? underway[demand][level] : ready[demand][level]);
+			}
+	}
+	for (unsigned demand = 0; demand < std::size(priorities); ++demand)
+
+	{
+		const Intent intent = priorities[demand];
+		if (!AIPlanning::BuildingCapabilityIndex::allowed(intent, game->gameHeader)) continue;
+		std::vector<Building*> choices;
+		for (Building* b : std::span<Building*>(team->myBuildings, Building::MAX_COUNT))
+		{
+			if (!b || b->type->isBuildingSite || !provides(*b, intent) || !b->isUpgradeAvailable() || b->type->nextLevel < 0) continue;
+			const auto* next = game->buildingsTypes.get(b->type->nextLevel);
+			const int targetId = next->isBuildingSite ? next->nextLevel : b->type->nextLevel;
+			if (targetId < 0) continue;
+			if (!game->buildingCapabilities().available(targetId, intent, game->gameHeader)) continue;
+			const int required = next->semantics.requiredWorkerLevel;
+			const int tolerance = intent == Intent::TrainConstruction ? AI_NUMBI_SCIENCE_UPGRADE_TOLERANCE : 0;
+			if (required >= 0 && required < NB_UNIT_LEVELS
+				&& workers[required] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT*training[required] > ptrigger && idle[required] > ntrigger
+				&& ready[demand][stage(b->typeNum)] > underway[demand][stage(targetId)]+tolerance && b->isHardSpaceForBuildingSite(Building::UPGRADE))
+				choices.push_back(b);
+		}
+		if (!choices.empty())
+		{
+			Building* selected = choices[choices.size() == 1 ? 0 : random()%choices.size()];
+			return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result,
+				AIRules::constructionOrder(*game, *selected, AI_NUMBI_UPGRADE_ORDER_LEVEL, AI_NUMBI_UPGRADE_ORDER_REPAIR));
 		}
 	}
-
-	// Level 1 → 2 rung.
-	{
-		const int sciencePool = science.number[1] + science.number[2] + science.number[3];
-		const int potential = wun[2] + wun[3] + AI_NUMBI_SCHOOL_POTENTIAL_WEIGHT * sciencePool;
-		const int now = fun[2] + fun[3];
-		if (potential > ptrigger && now > ntrigger)
-		{
-			if (auto order = tryUpgradeRung(inv, 1))
-				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result, order);
-		}
-	}
-
-	return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result,
-								   std::make_shared<NullOrder>());
+	return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayUpgrade_result, std::make_shared<NullOrder>());
 }

@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "Bullet.h"
+#include "Sector.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
@@ -33,6 +35,15 @@ Uint32 Map::checkSum(bool heavy)
 			cs=rotl1(cs);
 		}
 	};
+	// Bullets retain launch-time recipe state after their source disappears.
+	// Include list order: multiple impacts can change destruction and attribution.
+	for (int sector = 0; sector < sizeSector; ++sector)
+		if (!sectors[sector].bullets.empty())
+		{
+			cs = rotl1(cs) ^ static_cast<Uint32>(sector);
+			cs = rotl1(cs) ^ static_cast<Uint32>(sectors[sector].bullets.size());
+			for (const Bullet* bullet : sectors[sector].bullets) cs = rotl1(cs) ^ bullet->checkSum();
+		}
 	return cs;
 }
 

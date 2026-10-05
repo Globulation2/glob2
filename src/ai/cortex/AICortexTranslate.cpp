@@ -11,7 +11,7 @@
 #include "team/Team.h"
 #include "GlobalContainer.h"
 #include "Settings.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "BuildingType.h"
 #include "building/Building.h"
 #include "unit/UnitConsts.h"
@@ -136,17 +136,14 @@ void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, c
 
 bool AICortex::emitBuildOrder(int type, int x, int y, int tick)
 {
-	// Resolve the long building-site type id for a fresh (level 0)
-	// building, exactly as the GUI/Runtime build path does.
-	const std::string& name = IntBuildingType::reverseConversionMap[type];
-	Sint32 typeNum = globalContainer->buildingsTypes.getTypeNum(name, 0, true);
-	if (typeNum < 0)
-		return false; // no buildable site type (e.g. a virtual/flag type) — skip.
-
-	// Worker counts from the engine's canonical defaults: column 0 is the
-	// construction-site assignment, column 1 the finished-building one.
-	const int unitWorking       = globalContainer->settings.defaultUnitsAssigned[type][0];
-	const int unitWorkingFuture = globalContainer->settings.defaultUnitsAssigned[type][1];
+	Game& game = *player->team->game;
+    const auto choice = Cortex::selectBuilding(game, *player->team, type);
+    if (choice.placementType < 0) return false;
+    const int typeNum = choice.placementType;
+    const auto* placement = game.buildingsTypes.get(typeNum);
+    const auto* completed = game.buildingsTypes.get(choice.completedType);
+    const int unitWorking = std::min(4, int(placement->semantics.assignmentLimit));
+    const int unitWorkingFuture = completed->maxUnitWorking ? std::min(2, int(completed->semantics.assignmentLimit)) : 0;
 
 	orderQueue.push(shared_ptr<Order>(new OrderCreate(
 		player->team->teamNumber, x, y, typeNum,
@@ -177,7 +174,7 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 		Building* b = team->myBuildings[i];
 		if (!b)
 			continue;
-		if (b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+		if (!Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 			continue;
 		if (b->buildingState != Building::ALIVE || b->type->isBuildingSite)
 			continue; // finished swarm only — not a site, a swarm under upgrade, or dead.
@@ -186,9 +183,12 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 		// Dedup: only emit when this swarm's current ratio differs from
 		// the target, so a steady-state policy that re-issues the same
 		// ACTION_SET_PRODUCTION every cycle doesn't spam redundant orders.
+		Sint32 supported[NB_UNIT_TYPE];
+		for (int t = 0; t < NB_UNIT_TYPE; ++t)
+			supported[t] = b->type->semantics.production.recipes[t].enabled ? target[t] : 0;
 		bool differs = false;
 		for (int t = 0; t < NB_UNIT_TYPE; t++)
-			if (b->ratio[t] != target[t])
+			if (b->ratio[t] != supported[t])
 			{
 				differs = true;
 				break;
@@ -196,7 +196,7 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 		if (!differs)
 			continue;
 
-		orderQueue.push(shared_ptr<Order>(new OrderModifySwarm(b->gid, target)));
+		orderQueue.push(shared_ptr<Order>(new OrderModifySwarm(b->gid, supported)));
 	}
 }
 
@@ -360,7 +360,7 @@ void AICortex::translateActionClearFlags()
 		std::cerr << "CORTEX_POSTURE t=" << (player->team->game ? (int)player->team->game->stepCounter : -1)
 		          << " team=" << (int)player->team->teamNumber << " teardown=retire";
 		for (Building* b : player->team->virtualBuildings)
-			if (b && b->type->shortTypeNum == IntBuildingType::WAR_FLAG
+			if (b && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
 			      && b->buildingState == Building::ALIVE)
 				std::cerr << " flag[gid=" << b->gid << " at=" << b->posX << "," << b->posY
 				          << " units=" << b->unitsWorking.size() << "/" << b->maxUnitWorking
@@ -402,34 +402,11 @@ void AICortex::translateActionUpgradeBuilding(const Cortex::CortexAction& action
 	if (!b)
 		return; // no instance currently passes the full Upgradable predicate.
 
-	// Worker counts from the engine's canonical defaults, mirroring the GUI
-	// upgrade path (gui/GameGUIInput.cpp:409-427). There typeNum =
-	// building->typeNum + 1 (the level-(L+1) construction SITE variant) and
-	// unitWorking = getDefaultAssignedUnits(typeNum) /
-	// unitWorkingFuture = getDefaultAssignedUnits(typeNum + 1) (the level-(L+1)
-	// FINISHED variant). Per GameGUIDefaultAssignManager.cpp:14-29, a
-	// (shortType, level, site) variant maps to defaultUnitsAssigned column
-	// level*2 and a finished variant to column level*2 + 1
-	// (Settings.h:73, defaultUnitsAssigned[NB_BUILDING][6]). With
-	// targetLevel = type->level + 1 the GUI's two lookups are therefore
-	// exactly columns [targetLevel*2] (site assign) and [targetLevel*2 + 1]
-	// (finished assign) — equivalent, so we read them directly.
-	const int targetLevel = b->type->level + 1;
-	const int siteCol     = targetLevel * 2;
-	const int finishedCol = targetLevel * 2 + 1;
-	// Guard the column indices defensively (defaultUnitsAssigned has 6 cols,
-	// levels 0..2; an upgradable building always has nextLevel so targetLevel
-	// is 1 or 2 and both columns are in range, but clamp rather than trust it).
-	if (siteCol < 0 || finishedCol < 0
-	 || siteCol >= 6 || finishedCol >= 6)
-		return;
-	const int unitWorking       = globalContainer->settings.defaultUnitsAssigned[type][siteCol];
-	// NOTE: for some types (e.g. ATTACK_BUILDING) the finished-building
-	// columns (1,3,5) are 0 in Settings::resetDefaultUnitsAssigned — that is
-	// the engine default, NOT a missing value. The GUI upgrade path passes the
-	// same 0 here; launchConstruction uses the site column (unitWorking) as the
-	// meaningful crew. Do not "fix" this to a nonzero default.
-	const int unitWorkingFuture = globalContainer->settings.defaultUnitsAssigned[type][finishedCol];
+	const auto& catalog = player->team->game->buildingsTypes;
+    const auto* site = catalog.get(b->type->nextLevel);
+    const auto* completed = site->isBuildingSite ? catalog.get(site->nextLevel) : site;
+    const int unitWorking = std::min(4, int(site->semantics.assignmentLimit));
+    const int unitWorkingFuture = completed->maxUnitWorking ? std::min(2, int(completed->semantics.assignmentLimit)) : 0;
 
 	orderQueue.push(shared_ptr<Order>(new OrderConstruction(b->gid, unitWorking, unitWorkingFuture)));
 	buildCooldownUntil[type] = obs.tick + BUILD_COOLDOWN_TICKS;
@@ -477,6 +454,9 @@ void AICortex::applyWorkerCounts(const Tracked* tracked, int count, const Sint32
 		// takes OrderModifyBuilding (mirrors executeModifyBuilding's guard).
 		if (!accept(b))
 			continue;
+
+		desired = b->type->maxUnitWorking ? std::min(desired, int(b->type->semantics.assignmentLimit)) : 0;
+		if (desired == b->maxUnitWorking) continue;
 
 		// Update the AI's local view immediately (AICastor pattern) so the
 		// dedup won't re-trigger on the next cycle before the order executes.
@@ -540,14 +520,14 @@ void AICortex::translateActionTuneWorkers(const Cortex::CortexAction& action, co
 	applyWorkerCounts(obs.trackedSwarms, obs.swarmCount, action.swarmWorkers, /*maxClamp=*/-1,
 		[](const Building* b) {
 			return b->buildingState == Building::ALIVE && !b->type->isBuildingSite
-			    && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING;
+			    && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM);
 		});
 
 	// --- inns (FOOD_BUILDING): finished, alive FOOD_BUILDING only ---
 	applyWorkerCounts(obs.trackedInns, obs.innCount, action.innWorkers, /*maxClamp=*/-1,
 		[](const Building* b) {
 			return b->buildingState == Building::ALIVE && !b->type->isBuildingSite
-			    && b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING;
+			    && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_FOOD);
 		});
 
 	// --- construction sites (pour idle workers into in-progress builds) ---
@@ -567,7 +547,7 @@ void AICortex::translateActionTuneWorkers(const Cortex::CortexAction& action, co
 	applyPriorities(obs.trackedInns, obs.innCount, action.innPriority,
 		[](const Building* b) {
 			return b->buildingState == Building::ALIVE && !b->type->isBuildingSite
-			    && b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING;
+			    && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_FOOD);
 		});
 
 	// --- site priority: pin construction sites to LOW so construction never
@@ -613,7 +593,7 @@ void AICortex::translateActionSetPriority(const Cortex::CortexAction& action, co
 			continue;
 		if (b->buildingState != Building::ALIVE || b->type->isBuildingSite)
 			continue;
-		if (b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
+		if (!Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 			continue;
 
 		b->priority = target;

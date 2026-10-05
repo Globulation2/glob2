@@ -366,6 +366,11 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 		runtime.add_management_order(mo_clearing);
 		runtime.add_management_order(mo_remove_clearing);
 	}
+ if(message.starts_with("update services ")) {
+  const int id=std::stoi(message.substr(16));
+  if(runtime.get_building_register().provides(id,BuildingDemand::ProduceWorker)) manage_swarm(runtime,id);
+  if(runtime.get_building_register().provides(id,BuildingDemand::Feed)) manage_inn(runtime,id);
+ }
 	if(message.substr(0,13) == "update swarm ")
 	{
 		int id=std::stoi(message.substr(13, message.size()-1));
@@ -417,15 +422,15 @@ void NewNicowar::initialize(Runtime& runtime)
 	BuildingSearch bs(runtime);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}

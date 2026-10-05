@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "shared_runtime/BuildingDemands.h"
 
 #include "shared_runtime/Position.h"
 #include "shared_runtime/Gradients.h"

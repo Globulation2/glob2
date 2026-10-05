@@ -4,7 +4,7 @@
 #include "AITelemetryFields.h"
 #include "Game.h"
 #include "shared_runtime/Runtime.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -31,7 +31,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_cherry)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_cherry = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_cherry->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
@@ -62,7 +62,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_orange)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_orange = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_orange->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
@@ -92,7 +92,7 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 				if(!flag_on_prune)
 				{
 					//The main order for the exploration flag
-					BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 2);
+					BuildingOrder* bo_prune = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 2);
 
 					//You want the closest fruit to your settlement possible
 					bo_prune->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, 1));
@@ -135,12 +135,12 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 		{
 			for(enemy_team_iterator i(runtime); i!=enemy_team_iterator(); ++i)
 			{
-				for(enemy_building_iterator ebi(runtime, *i, IntBuildingType::SWARM_BUILDING, AI_SHARED_RUNTIME_WILDCARD_LEVEL, false); ebi!=enemy_building_iterator(); ++ebi)
+				for(enemy_building_iterator ebi(runtime, *i, BuildingDemand::ProduceWorker, AI_SHARED_RUNTIME_WILDCARD_LEVEL, false); ebi!=enemy_building_iterator(); ++ebi)
 				{
 					if(flags_on_enemy.find(*i)!=flags_on_enemy.end())
 						continue;
 
-					BuildingOrder* bo = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, 1);
+					BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, 1);
 					bo->add_constraint(new CenterOfBuilding(*ebi));
 					unsigned int id=runtime.add_building_order(bo);
 

@@ -17,10 +17,17 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
 	a("level",value.level);
 	a("engineType",value.engineType);
 	a("footprint",value.footprint);
-	a("constructionResources",value.constructionResources);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) a("constructionResources",value.constructionResources);
+	else { int old[5]{};for(int i=0;i<5;++i)old[i]=value.constructionResources[i];a("constructionResources",old);for(int i=0;i<5;++i)value.constructionResources[i]=old[i]; }
 	a("serviceThroughput",value.serviceThroughput);
 	a("durability",value.durability);
 	a("capability",value.capability);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+	 a("completedType",value.completedType);a("roles",value.roles);a("serviceRates",value.serviceRates);
+	 a("productionUnitMask",value.productionUnitMask);a("productionRates",value.productionRates);
+	 a("operatingResources",value.operatingResources);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
+	}
 }
 
 template<class A> void fields(A& a, BuildingProfile& value)
@@ -87,10 +94,12 @@ template<class A> void fields(A& a, WorldState& value)
 	a("height",value.height);
 	a("tick",value.tick);
 	a("swimmingBuilders",value.swimmingBuilders);
-	a("accessibleSupplies",value.accessibleSupplies);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) a("accessibleSupplies",value.accessibleSupplies);
+	else { int old[5]{};for(int i=0;i<5;++i)old[i]=value.accessibleSupplies[i];a("accessibleSupplies",old);for(int i=0;i<5;++i)value.accessibleSupplies[i]=old[i]; }
 	a("tiles",value.tiles);
 	a("buildings",value.buildings);
 	a("profiles",value.profiles);
+	value.invalidateProfileIndex();
 }
 
 template<class A> void fields(A& a, DevelopmentIntent& value)

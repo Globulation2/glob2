@@ -1,0 +1,262 @@
+{
+  "variants": [
+    {
+      "key": "swarm.0.site",
+      "next": "swarm.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/swarm0c",
+        "height": 4,
+        "hpInc": 20,
+        "hpInit": 1,
+        "hpMax": 700,
+        "hueImage": 1,
+        "isBuildingSite": 1,
+        "maxResource": [
+          0,
+          35,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniswarm0c",
+        "type": "swarm",
+        "width": 4,
+        "shortTypeNum": 0
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wheat": 35
+        },
+        "repairCost": {}
+      },
+      "presentation": {
+        "displayName": "swarm",
+        "iconFrame": 0,
+        "iconTile": false,
+        "iconPriority": 120,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 7
+      }
+    },
+    {
+      "key": "swarm.0.finished",
+      "next": "",
+      "previous": "swarm.0.site",
+      "properties": {
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/swarm0b",
+        "height": 4,
+        "hpInit": 700,
+        "hpMax": 700,
+        "hueImage": 1,
+        "maxResource": [
+          0,
+          20,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/miniswarm0b",
+        "regenerationSpeed": 3,
+        "type": "swarm",
+        "viewingRange": 4,
+        "width": 4,
+        "shortTypeNum": 0
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {
+            "explorer": {
+              "cost": {
+                "wheat": 5
+              },
+              "duration": 150,
+              "enabled": true
+            },
+            "warrior": {
+              "cost": {
+                "wheat": 5
+              },
+              "duration": 150,
+              "enabled": true
+            },
+            "worker": {
+              "cost": {
+                "wheat": 5
+              },
+              "duration": 150,
+              "enabled": true
+            }
+          },
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 1,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {},
+        "repairCost": {
+          "wheat": 35
+        }
+      },
+      "presentation": {
+        "displayName": "swarm",
+        "iconFrame": 0,
+        "iconTile": false,
+        "iconPriority": 120,
+        "skinSlot": "swarm",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 4
+      }
+    }
+  ]
+}

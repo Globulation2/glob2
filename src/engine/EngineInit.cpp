@@ -136,7 +136,31 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     state.networkKind = start.networkKind;
     state.relayId = start.relayId;
     state.relayRegion = start.relayRegion;
-    state.map = loadMapHeader(start.mapFile);
+    GameHeader embedded;
+    if (!openGameInput(start.mapFile, state.map, embedded))
+    {
+        initializationDiagnostic = "Cannot read the match map headers";
+        co_return false;
+    }
+    // Old schema-1 setups omitted catalog identity. They can only mean the
+    // frozen stock rules; a custom map must explicitly bind its catalog so
+    // clients, match verification and ratings all identify the same rules.
+    std::string authoritative = embedded.getBuildingCatalogSnapshot();
+    std::string requested = start.setup.buildingCatalogSnapshot;
+    if (authoritative.empty() || requested.empty())
+    {
+        BuildingsTypes legacy; legacy.initLegacy();
+        const auto stock = legacy.snapshotJson();
+        if (authoritative.empty()) authoritative = stock;
+        if (requested.empty()) requested = stock;
+    }
+    if (authoritative != requested)
+    {
+        initializationDiagnostic = start.setup.buildingCatalogSnapshot.empty()
+            ? "The match setup omits the custom building catalog embedded in this map"
+            : "The match setup building catalog does not match the map's embedded catalog";
+        co_return false;
+    }
     try { state.header = start.setup.toGameHeader(state.map); }
     catch (const Online::MatchSetupError& error)
     {

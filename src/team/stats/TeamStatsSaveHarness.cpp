@@ -639,10 +639,13 @@ static void measurementScenarios()
 		site->constructionResultState = kind == Measurements::NEW_BUILDING ? Building::NEW_BUILDING
 										: kind == Measurements::UPGRADED   ? Building::UPGRADE
 																		   : Building::REPAIR;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
-			site->resources[r] = site->type->maxResource[r];
+        // Seed a fully paid construction ledger. Storage capacity is independent
+        // of the construction budget; repair deliveries are reserved as they arrive.
+        for (int r = 0; r < MAX_RESOURCES; ++r) site->resources[r]=site->constructionBudget[r];
+        require(site->reserveResources(site->constructionBudget),"fixture construction resources reserve");
+        site->constructionReserved=site->constructionBudget;
 		int level = site->type->level, shortType = site->type->shortTypeNum;
-		const int wheatCost = site->type->maxResource[WHEAT];
+		const int wheatCost = site->constructionBudget[WHEAT];
 		site->update();
 		site->update();
 		auto &m = w.game.teams[0]->stats.measurements;
@@ -796,9 +799,12 @@ static void measurementAttributionFields()
 	GAGCore::BinaryOutputStream writer(storage);
 	bullet.save(&writer);
 	const std::string bytes(storage->getBuffer(), storage->getPosition());
-	// All pre-105 projectile fields are an unchanged prefix.
+	// Thirteen fixed-width fields precede sourceTeam. Per-unit damage fields
+	// follow it in building-catalog saves, so attribution is no longer the tail.
+	constexpr size_t sourceOffset = 13 * sizeof(Sint32);
+	require(bytes.size() >= sourceOffset + sizeof(Sint32), "projectile attribution exists");
 	GAGCore::BinaryInputStream oldReader(
-		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size() - 4));
+		new GAGCore::MemoryStreamBackend(bytes.data(), sourceOffset));
 	oldReader.seekFromStart(0);
 	Bullet old(&oldReader, 100);
 	require(old.sourceTeam == -1 && old.shootDamage == 6,
@@ -806,11 +812,11 @@ static void measurementAttributionFields()
 	for (bool truncated : {false, true})
 	{
 		auto *input =
-			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size() - (truncated ? 2 : 0));
+			new GAGCore::MemoryStreamBackend(bytes.data(), truncated ? sourceOffset + 2 : bytes.size());
 		if (!truncated)
 		{
 			GAGCore::BinaryOutputStream patch(input);
-			patch.seekFromStart(bytes.size() - 4);
+			patch.seekFromStart(sourceOffset);
 			patch.writeSint32(Team::MAX_COUNT, "invalidSource");
 			input = new GAGCore::MemoryStreamBackend(*input);
 		}
@@ -834,10 +840,10 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Terrain format 134 changes movement/ecology and uses replay floor 134, protocol 55.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 134 && NET_PROTOCOL_VERSION == 55,
+	// Building format 136 changes services/AI and uses replay floor 136, protocol 56.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 136 && NET_PROTOCOL_VERSION == 56,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);

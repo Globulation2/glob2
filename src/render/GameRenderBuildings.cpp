@@ -60,27 +60,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	int imgid;
 	if (type->crossConnectMultiImage)
 	{
-		// Cross-connect grid lookup. Only non-virtual buildings have
-		// crossConnectMultiImage, and non-virtual buildings can never be
-		// moved by the player, so the authoritative posX/posY is correct
-		// here — no pending shadow to consult.
-		auto sameTypeNeighbour = [&](int nx, int ny)
-		{
-			Uint16 b = map.getBuilding(nx, ny);
-			return (b != NOGBID)
-				&& (Building::GIDtoTeam(b) == team->teamNumber)
-				&& (entities.building(b)->type == type);
-		};
-		int add = 0;
-		if (sameTypeNeighbour(building->posX, building->posY-1))               // up
-			add |= (1<<3);
-		if (sameTypeNeighbour(building->posX, building->posY+type->height))    // bottom
-			add |= (1<<2);
-		if (sameTypeNeighbour(building->posX-1, building->posY))               // left
-			add |= (1<<1);
-		if (sameTypeNeighbour(building->posX+type->width, building->posY))     // right
-			add |= (1<<0);
-		imgid = type->gameSpriteImage + add;
+		imgid=type->gameSpriteImage+building->connectionMask;
 	}
 	else
 	{
@@ -88,7 +68,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
 		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
 		assert(building->hp <= building->effectiveMaxHp);
-		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (building->effectiveMaxHp+1)) - 1;
+		int damageImgShift = type->gameSpriteCount - ((Sint64(building->hp) * type->gameSpriteCount) / (Sint64(building->effectiveMaxHp)+1)) - 1;
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
@@ -113,7 +93,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	// the chip is solid: a translucent sprite would leave the sprite batch.
 	if (spriteOpacity > 0)
 	{
-		const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+		const bool skinned = view && type->presentation.skinSlot == "swarm"
 			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
 				*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
 				buildingSprite->getW(imgid), buildingSprite->getH(imgid));
@@ -121,15 +101,13 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	}
 	if (detail && detail->buildingIcon > 0)
 	{
-		// Icon frames follow IntBuildingType up to the clearing flag; the market comes last.
-		const int shortType = building->shortTypeNum;
-		const bool wall = shortType==IntBuildingType::STONE_WALL;
-		const int icon = shortType==IntBuildingType::MARKET_BUILDING ? 11 : std::clamp(shortType, 0, 10);
-		const bool hurt = type->hpMax && building->hp!=building->effectiveMaxHp && !type->isBuildingSite;
-		const int priority = hurt ? 200 : shortType==IntBuildingType::DEFENSE_BUILDING ? 150
-			: shortType==IntBuildingType::SWARM_BUILDING ? 120 : 100;
+		const auto& presentation=type->presentation;
+		const bool wall=presentation.iconTile;
+		const int icon=presentation.iconFrame;
+		const bool hurt=type->hpMax && building->hp!=building->effectiveMaxHp && !type->isBuildingSite;
+		const int priority=hurt ? 200 : presentation.iconPriority;
 		drawnRender->overlays.glyph(*globalContainer->gfx, x, y, x+type->width*32, y+type->height*32,
-			icon, wall ? MapOverlayQueue::Tile : MapOverlayQueue::Chip, type->level, type->isBuildingSite,
+			icon, wall ? MapOverlayQueue::Tile : MapOverlayQueue::Chip, presentation.showLevel ? type->level : 0, type->isBuildingSite,
 			priority, color.r, color.g, color.b, detail->buildingIcon);
 	}
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
@@ -140,7 +118,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		int rectH=(type->height)<<5;
 		globalContainer->gfx->drawRect(x, y, rectW, rectH, 255, 255, 255, 127);
 
-		BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(building->typeNum);
+		BuildingType *upgradedType=building->lastUpgradeType;
 		int upgradedRectX=x+((upgradedType->decLeft-type->decLeft)<<5);
 		int upgradedRectY=y+((upgradedType->decTop-type->decTop)<<5);
 		int upgradedRectW=(upgradedType->width)<<5;
@@ -193,7 +171,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 0, 255, 255, 255, 255, 64, 0, 2, drawnRender);
 
 		anchorBars(x, y, drawnRender);
-		if ((type->canFeedUnit) || (type->unitProductionTime))
+		if ((type->canFeedUnit) || (type->semantics.production.enabledUnitMask))
 			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
 
 		anchorBars(x, y, drawnRender);
@@ -218,7 +196,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str());
 	}
 
-	if(entities.highlightBuildingType & (1<<building->shortTypeNum))
+	if(building->shortTypeNum>=0 && building->shortTypeNum<32 && (entities.highlightBuildingType & (1u<<building->shortTypeNum)))
 	{
 		globalContainer->gfx->drawSprite(x + buildingSprite->getW(imgid)/2 - 16, y-36, globalContainer->gamegui, 36);
 	}

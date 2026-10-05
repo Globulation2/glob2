@@ -277,7 +277,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 		int bx=bpi->posX&map->getMaskW();
 		int by=bpi->posY&map->getMaskH();
 		Sint32 typeNum=(bpi->typeNum);
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *bt=game->buildingsTypes.get(typeNum);
 		int bw=bt->width;
 		int bh=bt->height;
 		computeBuildingNeighbourMapOfBuilding(bx, by, bw, bh, dw, dh);

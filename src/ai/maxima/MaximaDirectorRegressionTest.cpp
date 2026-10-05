@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
+#include "Version.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "../../src/team/Team.h"
@@ -77,7 +78,7 @@ struct Fixture
     ::Building* building(int x, int y, int team, const char* type="inn", int level=0)
     {
         ::Building* result=game.addBuilding(game.map.normalizeX(x),game.map.normalizeY(y),
-            globalContainer->buildingsTypes.getTypeNum(type,level,false),team);
+            game.buildingsTypes.getTypeNum(type,level,false),team);
         REQUIRE(result);
         return result;
     }
@@ -110,7 +111,7 @@ struct Fixture
     {
         ai->reconnaissance.beginObservation(ai->timer,{building->owner->teamNumber});
         ai->reconnaissance.observeBuilding(Recon::BuildingSighting(building->gid,
-            building->owner->teamNumber,building->type->shortTypeNum,
+            building->owner->teamNumber,building->typeNum,
             building->posX,building->posY,building->type->width,
             building->type->height,false,ai->timer));
         ai->reconnaissance.finishObservation();
@@ -259,7 +260,7 @@ static void reusedOwnId() {
         std::string bytes(backend->getBuffer(),backend->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
-        Construction::BuildingRegister loaded(&f.player);loaded.load(&input);
+        Construction::BuildingRegister loaded(&f.player);loaded.load(&input,VERSION_MINOR);
         REQUIRE(!loaded.is_building_found(oldId));
         c.buildings.tick(); REQUIRE(c.buildings.found().empty());
     }
@@ -272,20 +273,21 @@ static void reusedOwnId() {
     std::string bytes(backend->getBuffer(),backend->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
-    Construction::BuildingRegister loaded(&f.player);loaded.load(&input);
+    Construction::BuildingRegister loaded(&f.player);loaded.load(&input,VERSION_MINOR);
     REQUIRE(loaded.get_building(id)==flag);
 }
 
 static void fortificationUsesOnlySpareLabour()
 {
     Fixture f;auto& a=*f.ai;
-    AIMaximaPlacement::WorldState world;world.reset(16,16);
+    AIMaximaPlacement::WorldState world;world.reset(16,16);world.profiles=a.collect_building_profiles();
+    const int towerType=f.game.buildingsTypes.getPlaceableTypeNum("defencetower");
     a.strategy.staffing.construction_large_workers=6;
     a.labour_plan.trainingReserve=2;
     auto count=[&](AIMaximaPlacement::DevelopmentPurpose purpose) {
         int result=0;
         for(const auto& intent:a.collect_development_intents(world))
-            if(intent.buildingType==IntBuildingType::DEFENSE_BUILDING && intent.purpose==purpose)
+            if(intent.buildingType==towerType && intent.purpose==purpose)
                 ++result;
         return result;
     };
@@ -296,7 +298,7 @@ static void fortificationUsesOnlySpareLabour()
     a.budget.desired_towers=1;
     REQUIRE(count(AIMaximaPlacement::Fortification)==0);
     REQUIRE(count(AIMaximaPlacement::CoreCapacity)==1);
-    AIMaximaPlacement::WorldBuilding tower;tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
+    AIMaximaPlacement::WorldBuilding tower;tower.buildingType=towerType;tower.level=1;
     world.buildings.push_back(tower);
     REQUIRE(count(AIMaximaPlacement::Fortification)==1);
 }
@@ -306,19 +308,20 @@ static void unifiedHospitalCapacity() {
     Fixture f; auto& a=*f.ai;
     a.snapshot.warriors=20;
     a.strategy.military.hospital_beds_per_warrior_percent=50;
-    WorldState world;
+    WorldState world;world.profiles=a.collect_building_profiles();
+    const int hospitalType=f.game.buildingsTypes.getPlaceableTypeNum("hospital");
     WorldBuilding hospital; hospital.id=10;
-    hospital.buildingType=IntBuildingType::HEAL_BUILDING; hospital.level=1;
+    hospital.buildingType=hospitalType; hospital.level=1;
     world.buildings.push_back(hospital);
     const auto unmet=[&]() {
         for(const auto& intent:a.collect_development_intents(world))
-            if(intent.buildingType==IntBuildingType::HEAL_BUILDING) return intent.unmetCount;
+            if(intent.buildingType==hospitalType) return intent.unmetCount;
         return 0;
     };
     REQUIRE(a.committed_hospital_beds(world.buildings)==2);
     REQUIRE(unmet()==4);
     DevelopmentAction upgrade; upgrade.id=1; upgrade.type=UpgradeBuilding;
-    upgrade.buildingType=IntBuildingType::HEAL_BUILDING;
+    upgrade.buildingType=hospitalType;
     upgrade.buildingId=10; upgrade.targetLevel=2; upgrade.state=ParcelReserved;
     a.development_planner.actionMap[1]=upgrade;
     REQUIRE(a.committed_hospital_beds(world.buildings)==5);
@@ -327,7 +330,7 @@ static void unifiedHospitalCapacity() {
     world.buildings[0].level=2; world.buildings[0].site=true;
     REQUIRE(a.committed_hospital_beds(world.buildings)==5); // No double credit.
     DevelopmentAction build; build.id=2; build.type=BuildStandalone;
-    build.buildingType=IntBuildingType::HEAL_BUILDING;
+    build.buildingType=hospitalType;
     build.buildingId=11; build.state=CreateIssued;
     a.development_planner.actionMap[2]=build;
     REQUIRE(a.committed_hospital_beds(world.buildings)==7);
@@ -340,18 +343,19 @@ static void unifiedHospitalCapacity() {
     // Existing hospitals upgrade only while the same capacity target is unmet.
     a.development_planner.actionMap.clear();
     f.building(20,20,0,"hospital"); a.context.initialize();
+    REQUIRE(f.game.addUnit(4,4,0,WORKER,1,0,0,0));
     a.budget.upgrade_level1_hospital_weight=20;
     a.snapshot.warriors=4;
-    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(hospitalType,1)==0);
     a.snapshot.warriors=10;
-    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(hospitalType,1)==20);
     int id=-1;
     for(const auto& entry:a.context.get_building_register().found())
-        if(a.context.get_building_register().get_building(entry.first)->type->shortTypeNum==IntBuildingType::HEAL_BUILDING) id=entry.first;
+        if(a.context.get_building_register().get_building(entry.first)->typeNum==f.game.buildingsTypes.getTypeNum("hospital",0,false)) id=entry.first;
     REQUIRE(id>=0); upgrade.buildingId=id;
     a.development_planner.actionMap[1]=upgrade;
-    REQUIRE(a.collect_development_limits(a.context).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==0);
-    REQUIRE(a.collect_development_limits(a.context,1).upgradePriority(IntBuildingType::HEAL_BUILDING,1)==20);
+    REQUIRE(a.collect_development_limits(a.context).upgradePriority(hospitalType,1)==0);
+    REQUIRE(a.collect_development_limits(a.context,1).upgradePriority(hospitalType,1)==20);
 }
 
 static void proactiveProtection() {

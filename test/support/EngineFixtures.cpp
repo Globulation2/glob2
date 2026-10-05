@@ -126,11 +126,12 @@ namespace glob2test
 
 	Building* HeadlessGame::addBuilding(const char* typeName, int x, int y, int level, int teamNumber)
 	{
-		const int typeNum = globalContainer->buildingsTypes.getTypeNum(typeName, level, false);
+		const int typeNum = game.buildingsTypes.getTypeNum(typeName, level, false);
 		REQUIRE_MESSAGE(typeNum >= 0, "building type exists: " << typeName);
 		Building* building = game.addBuilding(x, y, typeNum, teamNumber);
 		REQUIRE_MESSAGE(building != nullptr, "building placed: " << typeName << " at " << x << "," << y);
-		game.map.setBuilding(x, y, building->type->width, building->type->height, building->gid);
+		if (building->type->semantics.occupiesGround)
+			game.map.setBuilding(x, y, building->type->width, building->type->height, building->gid);
 		return building;
 	}
 

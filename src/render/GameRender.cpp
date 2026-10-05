@@ -529,7 +529,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255, 2, drawnRender);
 
 						anchorBars(x, y, drawnRender);
-						if ((type->canFeedUnit) || (type->unitProductionTime))
+						if ((type->canFeedUnit) || (type->semantics.production.enabledUnitMask))
 							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
 					}
 				});

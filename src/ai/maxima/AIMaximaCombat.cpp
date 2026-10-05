@@ -19,6 +19,7 @@
 // Combat control for Maxima: objectives, waves, and defensive flags.
 #include "field/UniformTraversal.h"
 #include "AIMaxima.h"
+#include "AIMaximaBuildings.h"
 #include "AIMaximaWorldHelpers.h"
 #include "AITelemetryFields.h"
 #include "Game.h"
@@ -49,17 +50,23 @@ namespace
 		return stream.str();
 	}
 
-	int tactical_building_value(int type, const MaximaStrategy::Tactics& policy)
+	int tactical_building_value(const Game& game, int type, const MaximaStrategy::Tactics& policy)
 	{
-		switch(type)
-		{
-			case IntBuildingType::SWARM_BUILDING: return policy.target_swarm_value;
-			case IntBuildingType::FOOD_BUILDING: return policy.target_food_value;
-			case IntBuildingType::ATTACK_BUILDING: return policy.target_barracks_value;
-			case IntBuildingType::SCIENCE_BUILDING: return policy.target_school_value;
-			case IntBuildingType::HEAL_BUILDING: return policy.target_hospital_value;
-			default: return policy.target_default_value;
-		}
+		if (type < 0 || size_t(type) >= game.buildingsTypes.size()) return policy.target_default_value;
+		const auto& building = *game.buildingsTypes.get(type);
+		const unsigned roles = AIMaximaBuildings::capabilities(game, building);
+		int value = policy.target_default_value;
+		bool matched = false;
+		auto consider = [&](int role, int weight) {
+			if (roles & AIMaximaBuildings::roleBit(role))
+			{ value = matched ? std::max(value, weight) : weight; matched = true; }
+		};
+		consider(AIMaximaBuildings::Production, policy.target_swarm_value);
+		consider(AIMaximaBuildings::Feeding, policy.target_food_value);
+		consider(AIMaximaBuildings::CombatTraining, policy.target_barracks_value);
+		consider(AIMaximaBuildings::ConstructionTraining, policy.target_school_value);
+		consider(AIMaximaBuildings::Healing, policy.target_hospital_value);
+		return value;
 	}
 
 	bool tactical_warrior_available(const Unit* warrior,
@@ -110,7 +117,7 @@ namespace
 						++(*diagnostics)["busy"];
 						if(warrior->attachedBuilding)
 							++(*diagnostics)["busy_attached_type"+diagnostic_value(
-								warrior->attachedBuilding->type->shortTypeNum)];
+								warrior->attachedBuilding->typeNum)];
 						else if(warrior->activity!=Unit::ACT_RANDOM)
 							++(*diagnostics)["busy_activity"+diagnostic_value(int(warrior->activity))];
 						else
@@ -386,7 +393,7 @@ void Maxima::plan_offense(Context& runtime)
 	{
 		const Building* b=runtime.player->team->myBuildings[id];
 		if(runtime.player->game->gameHeader.isUnitUpgradesDisabled()
-		   || !b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
+		   || !b || !AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::CombatTraining)
 		   || b->type->isBuildingSite)continue;
 		const int capacity=b->maxUnitInside-int(b->unitsInside.size());
 		if(capacity>0){barracks.push_back(b);capacities.push_back(capacity);}
@@ -395,9 +402,9 @@ void Maxima::plan_offense(Context& runtime)
 	std::vector<std::vector<int>> choices(trainees.size());
 	for(size_t u=0;u<trainees.size();++u)
 		for(size_t b=0;b<barracks.size();++b)
-			for(int ability=WALK;ability<ARMOR;++ability)
-				if(trainees[u]->canLearn[ability] && barracks[b]->type->upgrade[ability]
-				   && trainees[u]->level[ability]<=barracks[b]->type->level)
+			for (int ability : {ATTACK_SPEED, ATTACK_STRENGTH})
+				if ((barracks[b]->type->semantics.admittedUnitMask & (1u << WARRIOR))
+				   && trainees[u]->needsTraining(barracks[b]->type->semantics.training[ability], ability))
 				{choices[u].push_back(int(b));break;}
 	std::function<bool(int,std::vector<bool>&)> assignTraining=
 		[&](int unit,std::vector<bool>& visited) {
@@ -540,11 +547,17 @@ void Maxima::plan_offense(Context& runtime)
 				for(std::map<int, Recon::BuildingSighting>::const_iterator tower=
 					opponent->second.buildings.begin();
 					tower!=opponent->second.buildings.end(); ++tower)
-					if(tower->second.type==IntBuildingType::DEFENSE_BUILDING
-					   && map->warpDistSquare(sighting.x, sighting.y,
-						tower->second.x, tower->second.y)<=64)
+				{
+					const auto& defense = tower->second;
+					if (defense.construction || defense.type < 0
+						|| size_t(defense.type) >= runtime.player->game->buildingsTypes.size()) continue;
+					const auto& type = *runtime.player->game->buildingsTypes.get(defense.type);
+					if (type.shootRhythm > 0 && type.semantics.projectileDamage[WARRIOR] > 0
+						&& map->warpDistSquare(sighting.x,sighting.y,defense.x,defense.y)
+							<= type.shootingRange * type.shootingRange)
 						++nearby_towers;
-				int score=tactical_building_value(sighting.type, strategy.tactics)
+				}
+				int score=tactical_building_value(*runtime.player->game,sighting.type, strategy.tactics)
 					+std::max(0, opponents[opponent->first].score)
 					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
 					-nearby_towers*strategy.tactics.target_tower_penalty
@@ -747,8 +760,8 @@ bool Maxima::control_offense_waves(Context& runtime)
 	{
 		const Building* home=runtime.player->team->myBuildings[id];
 		if(!home || home->type->isBuildingSite
-		   || (home->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING
-			&& home->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING))continue;
+		   || (!AIMaximaBuildings::serves(*runtime.player->game,*home->type,AIMaximaBuildings::Production)
+			&& !AIMaximaBuildings::serves(*runtime.player->game,*home->type,AIMaximaBuildings::Feeding)))continue;
 		landHome=landHome || route.get_height(map->normalizeX(home->posX),map->normalizeY(home->posY))>=0;
 		const int margin=std::max(6,policy.muster_radius+2);
 		const int width=home->type->width+2*margin,height=home->type->height+2*margin;
@@ -918,7 +931,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		wave.startedTick=wave.progressTick=timer;
 		wave.rallyX=rallyX;wave.rallyY=rallyY;
 		wave.targetX=targetX;wave.targetY=targetY;
-		BuildingOrder* order=new BuildingOrder(IntBuildingType::WAR_FLAG,wave.requestedForce);
+		BuildingOrder* order=new BuildingOrder(AIMaximaBuildings::WarriorAttraction,wave.requestedForce);
 		order->add_constraint(new Construction::SinglePosition(rallyX,rallyY));
 		wave.flagId=runtime.add_building_order(order);
 		runtime.add_management_order(new ChangeFlagMinimumLevel(budget.tactical_flag_level,wave.flagId));
@@ -1038,7 +1051,7 @@ void Maxima::control_offense(Context& runtime)
 	while(int(attack_flags.size())<wanted)
 	{
 		const int force=std::min(capacity,requested-int(attack_flags.size())*capacity);
-		BuildingOrder* order=new BuildingOrder(IntBuildingType::WAR_FLAG,force);
+		BuildingOrder* order=new BuildingOrder(AIMaximaBuildings::WarriorAttraction,force);
 		// Creation cannot overlap another flag. Use the nearest free anchor;
 		// every flag's attack radius still covers the planned objective.
 		if(attack_flags.empty())
@@ -1380,7 +1393,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 		{
 			flag_dist_count=0;
 			//The main order for the clearing flag
-			BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::CLEARING_FLAG,
+			BuildingOrder* bo_flag = new BuildingOrder(AIMaximaBuildings::WorkerAttraction,
 				budget.attack_clearing_workers);
 			//Place it on the current point
 			bo_flag->add_constraint(new Construction::SinglePosition(xpos, ypos));
@@ -1388,7 +1401,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 			unsigned int id_flag=runtime.add_building_order(bo_flag);
 			flags_created+=1;
 
-			ManagementOrder* mo_destroyed=new DestroyBuilding(id_flag);
+			ManagementOrder* mo_destroyed=new RetireAttraction(id_flag);
 			mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, building));
 			runtime.add_management_order(mo_destroyed);
 
@@ -1431,7 +1444,7 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
 		Building* building=runtime.player->team->myBuildings[id];
-		if(!building || building->type->isVirtual
+		if(!building || !building->type->semantics.occupiesGround
 		   || building->type->isBuildingSite)
 			continue;
 		add_preemptive_hash(signature, 0x4f574e00u);
@@ -1451,7 +1464,7 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 		{
 			Building* building=
 				enemy_team->myBuildings[Building::GIDtoID(*item)];
-			if(!building || building->type->isVirtual
+			if(!building || !building->type->semantics.occupiesGround
 			   || building->type->isBuildingSite)
 				continue;
 			add_preemptive_hash(signature, 0x454e4d59u);
@@ -1548,7 +1561,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
 		Building* building=runtime.player->team->myBuildings[id];
-		if(building && !building->type->isVirtual
+		if(building && building->type->semantics.occupiesGround
 		   && !building->type->isBuildingSite)
 			own_buildings.push_back(PreemptiveBuilding(
 				runtime.player->team->teamNumber, building));
@@ -1563,7 +1576,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		{
 			Building* building=
 				enemy_team->myBuildings[Building::GIDtoID(*item)];
-			if(building && !building->type->isVirtual
+			if(building && building->type->semantics.occupiesGround
 			   && !building->type->isBuildingSite)
 				enemy_buildings[*enemy].push_back(
 					PreemptiveBuilding(*enemy, building));
@@ -1702,7 +1715,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			flag!=defense_flags.end(); ++flag)
 			if(runtime.get_building_register().is_building_found(*flag)
 			   ||runtime.get_building_register().is_building_pending(*flag))
-				runtime.add_management_order(new DestroyBuilding(*flag));
+				runtime.add_management_order(new RetireAttraction(*flag));
 		defense_flags.clear();
 		return;
 	}
@@ -1785,7 +1798,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			for(int b=0; b<Building::MAX_COUNT; ++b)
 			{
 				Building* own=runtime.player->team->myBuildings[b];
-				if(own && !own->type->isVirtual
+				if(own && own->type->semantics.occupiesGround
 				   && runtime.player->map->warpDistSquare(unit->posX, unit->posY,
 					own->posX, own->posY)<=144)
 				{
@@ -2068,7 +2081,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			}
 			else
 			{
-				runtime.add_management_order(new DestroyBuilding(*i));
+				runtime.add_management_order(new RetireAttraction(*i));
 				destroyed_flags+=1;
 			}
 		}
@@ -2083,7 +2096,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		int flag_y = *i % h;
 
 		//The main order for the war flag
-		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::WAR_FLAG, enemy);
+		BuildingOrder* bo_flag = new BuildingOrder(AIMaximaBuildings::WarriorAttraction, enemy);
 		bo_flag->add_constraint(new Construction::SinglePosition(flag_x, flag_y));
 		unsigned int id_flag=runtime.add_building_order(bo_flag);
 		defense_flags.push_back(id_flag);
@@ -2322,7 +2335,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	{
 		if(runtime.get_building_register().is_building_found(*i))
 		{
-			ManagementOrder* mo_destroyed=new DestroyBuilding(*i);
+			ManagementOrder* mo_destroyed=new RetireAttraction(*i);
 			runtime.add_management_order(mo_destroyed);
 		}
 	}
@@ -2333,7 +2346,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		groups.erase(groups.begin());
 		total_attacks -= 1;
 
-		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG,
+		BuildingOrder* bo_flag = new BuildingOrder(AIMaximaBuildings::ExploreAttraction,
 			budget.explorer_campaign_units_per_flag);
 		bo_flag->add_constraint(new Construction::SinglePosition(std::get<1>(groupInfo), std::get<2>(groupInfo)));
 		unsigned int id_flag=runtime.add_building_order(bo_flag);
@@ -2341,7 +2354,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		ManagementOrder* mo_completion=new ChangeFlagSize(6, id_flag);
 		runtime.add_management_order(mo_completion);
 
-		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(4, id_flag);
+		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(1, id_flag, 1);
 		runtime.add_management_order(mo_level);
 
 		explorer_attack_flags.push_back(id_flag);

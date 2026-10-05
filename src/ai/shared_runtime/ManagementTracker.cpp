@@ -3,6 +3,7 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
+#include "FileFormatVersions.h"
 
 #include <limits>
 #include <stdexcept>
@@ -20,14 +21,22 @@ ResourceTracker::ResourceTracker(Runtime& runtime, int building_id, int length, 
 
 void ResourceTracker::tick()
 {
-	if (record.empty() || position >= record.size() || resource < 0 || resource >= MAX_RESOURCES)
+	if (record.empty() || position >= record.size() || resource < 0 || resource > RecurringInputStock)
 		return;
 	timer = (timer == std::numeric_limits<int>::max()) ? 0 : timer + 1;
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
 		Building* b = runtime.get_building_register().get_building(building_id);
 		if (!b) return;
-		record[position]=b->resources[resource];
+		if(resource==RecurringInputStock) {
+   int amount=0;
+   for(int input=0;input<MAX_NB_RESOURCES;++input) {
+    bool consumed=b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[input]>0;
+    for(const auto& recipe:b->type->semantics.production.recipes) consumed |= recipe.enabled && recipe.cost[input]>0;
+    if(consumed) amount+=b->resources[input];
+   }
+   record[position]=amount;
+  } else record[position]=b->resources[resource];
 		position++;
 		if(position>=record.size())
 			position=0;
@@ -78,7 +87,7 @@ bool ResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	if (rawTimer > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawLength > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
-		rawResource >= MAX_RESOURCES || position >= record.size() || rawLength != record.size())
+		rawResource > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MAX_RESOURCES-1) || position >= record.size() || rawLength != record.size())
 		throw std::runtime_error("Invalid saved resource tracker");
 	timer=static_cast<int>(rawTimer);
 	building_id=static_cast<int>(rawBuildingId);
@@ -121,7 +130,7 @@ AddResourceTracker::AddResourceTracker(int length, int resource, int building_id
 
 void AddResourceTracker::modify(Runtime& runtime)
 {
-	if (length <= 0 || length > 1048576 || resource < 0 || resource >= MAX_RESOURCES)
+	if (length <= 0 || length > 1048576 || resource < 0 || resource > RecurringInputStock)
 		return;
 	runtime.add_resource_tracker(new ResourceTracker(runtime, building_id, length, resource), building_id);
 }
@@ -143,7 +152,7 @@ bool AddResourceTracker::load(GAGCore::InputStream *stream, Player *player, Sint
 	const Uint32 rawBuildingId=stream->readUint32("building_id");
 	const Uint32 rawResource=stream->readUint32("ressource");
 	if (rawLength == 0 || rawLength > 1048576 ||
-		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawResource >= MAX_RESOURCES)
+		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawResource > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MAX_RESOURCES-1))
 		throw std::runtime_error("Invalid resource tracker order");
 	length=static_cast<int>(rawLength);
 	building_id=static_cast<int>(rawBuildingId);

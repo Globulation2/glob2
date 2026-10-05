@@ -4,50 +4,35 @@
 
 #include "GameGUIDefaultAssignManager.h"
 #include "BuildingType.h"
-#include "IntBuildingType.h"
+#include "Game.h"
+#include "Unit.h"
+#include <algorithm>
+#include "FileFormatVersions.h"
 #include "GlobalContainer.h"
 #include "Stream.h"
 #include <stdexcept>
 
-GameGUIDefaultAssignManager::GameGUIDefaultAssignManager()
-{
-	BuildingsTypes& types = globalContainer->buildingsTypes;
-	for(int i = IntBuildingType::SWARM_BUILDING; i!=IntBuildingType::NB_BUILDING; ++i)
-	{
-		for(int level=0; level<3; ++level)
-		{
-			//the normal building
-			if(types.getByType(IntBuildingType::typeFromShortNumber(i), level, false))
-			{
-				unitCount[types.getTypeNum(IntBuildingType::typeFromShortNumber(i), level, false)] = globalContainer->settings.defaultUnitsAssigned[i][level*2 + 1];
-			}
-			//the construction site
-			if(types.getByType(IntBuildingType::typeFromShortNumber(i), level, true))
-			{
-				unitCount[types.getTypeNum(IntBuildingType::typeFromShortNumber(i), level, true)] = globalContainer->settings.defaultUnitsAssigned[i][level*2];
-			}
-		}
-	}
-}
-
-
+GameGUIDefaultAssignManager::GameGUIDefaultAssignManager(Game& game) : game(game) {}
 
 int GameGUIDefaultAssignManager::getDefaultAssignedUnits(int typenum)
 {
-	return unitCount[typenum];
+	if (typenum < 0 || static_cast<std::size_t>(typenum) >= game.buildingsTypes.size()) return 0;
+	const auto* type = game.buildingsTypes.get(typenum);
+	if (const auto saved = unitCount.find(type->key); saved != unitCount.end())
+        return std::clamp(saved->second,0,type->semantics.assignmentLimit);
+    return globalContainer->settings.buildingAssignment(game.buildingsTypes.fingerprint(),*type);
 }
 
 
 
 void GameGUIDefaultAssignManager::setDefaultAssignedUnits(int typenum, int value)
 {
-	unitCount[typenum] = value;
-	if (!globalContainer->settings.rememberUnit)
-		return;
-	// carry the choice over to the next game through the settings
-	const BuildingType* type = globalContainer->buildingsTypes.get(typenum);
-	if (type)
-		globalContainer->settings.defaultUnitsAssigned[type->shortTypeNum][type->level*2 + (type->isBuildingSite ? 0 : 1)] = value;
+    if(typenum<0 || std::size_t(typenum)>=game.buildingsTypes.size()) return;
+    const auto& type=*game.buildingsTypes.get(typenum);
+    value=std::clamp(value,0,type.semantics.assignmentLimit);
+    unitCount[type.key]=value;
+    if(globalContainer->settings.rememberUnit)
+        globalContainer->settings.setBuildingAssignment(game.buildingsTypes.fingerprint(),type,value);
 }
 
 
@@ -58,10 +43,10 @@ void GameGUIDefaultAssignManager::save(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("unitCount");
 	stream->writeUint32(unitCount.size(), "size");
 	Uint32 n = 0;
-	for(std::map<int, int>::const_iterator i = unitCount.begin(); i != unitCount.end(); ++i)
+	for(auto i = unitCount.begin(); i != unitCount.end(); ++i)
 	{
 		stream->writeEnterSection(n);
-		stream->writeSint32(i->first, "building_type");
+		stream->writeText(i->first, "building_key");
 		stream->writeSint32(i->second, "default_assigned");
 		stream->writeLeaveSection();
 		n+=1;
@@ -77,14 +62,19 @@ void GameGUIDefaultAssignManager::load(GAGCore::InputStream* stream, Sint32 vers
 	stream->readEnterSection("GameGUIDefaultAssignManager");
 	stream->readEnterSection("unitCount");
 	Uint32 size = stream->readUint32("size");
-	if (size > globalContainer->buildingsTypes.size()) throw std::runtime_error("Invalid default assignment count");
+	if (size > game.buildingsTypes.size()) throw std::runtime_error("Invalid default assignment count");
 	unitCount.clear();
 	for(int i=0; i<(int)size; ++i)
 	{
 		stream->readEnterSection(i);
-		int f = stream->readSint32("building_type");
+		        const std::string key = versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG
+            ? stream->readText("building_key") : std::string();
+        const int f = versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG
+            ? game.buildingsTypes.findByKey(key) : stream->readSint32("building_type");
 		int s = stream->readSint32("default_assigned");
-		unitCount[f] = s;
+		if (f < 0 || static_cast<std::size_t>(f) >= game.buildingsTypes.size() || s < 0 || s > Unit::MAX_COUNT)
+			throw std::runtime_error("Invalid saved building assignment");
+		unitCount[game.buildingsTypes.get(f)->key] = s;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

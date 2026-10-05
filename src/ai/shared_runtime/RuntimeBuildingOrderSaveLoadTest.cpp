@@ -23,7 +23,7 @@
 //   3. pre-96 stream (no id on the wire) -> id left at the -1 sentinel, and
 //      every following field still decodes from the right offset
 //
-// Links libgagserver.a for BinaryStream + MemoryStreamBackend.
+// Runs in the engine harness with the real catalog and runtime components.
 
 #include "Glob2Test.h"
 
@@ -118,7 +118,7 @@ public:
 		loaded.load(istream.get(), NULL, 95);
 
 		check(loaded.id == -1, "pre96: id left at the -1 sentinel for Runtime::load to replace");
-		check(loaded.building_type == 5, "pre96: building_type still aligned");
+		check(loaded.building_type == AISharedRuntime::BuildingDemand::TrainAttackStrength, "pre96: legacy type imports its semantic intent");
 		check(loaded.number_of_workers == 3, "pre96: number_of_workers still aligned");
 		check(loaded.constraints.empty(), "pre96: constraint list still aligned");
 		check(loaded.conditions.empty(), "pre96: condition list still aligned");

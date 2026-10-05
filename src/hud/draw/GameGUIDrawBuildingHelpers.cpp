@@ -1,3 +1,4 @@
+#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -24,8 +25,7 @@ void GameGUI::drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingTyp
 
 	// draw "building" of "player"
 	std::string title;
-	std::string key = "[" + buildingType->type + "]";
-	title += Toolkit::getStringTable()->getString(key.c_str());
+	title += buildingDisplayName(*buildingType);
 	{
 		title += " (";
 		title += displayPlayerName(selBuild->owner.firstPlayerName);
@@ -202,7 +202,7 @@ void GameGUI::drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, Bu
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, working);
 			globalContainer->littleFont->popStyle();
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4+len, ypos, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->unitsWorking).arg(maxUnitsWorking).c_str());
-			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, selBuild->unitsWorking, MAX_UNIT_WORKING);
+			drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos+YOFFSET_TEXT_BAR, maxUnitsWorking, selBuild->unitsWorking, buildingType->semantics.assignmentLimit);
 		}
 		else
 		{
@@ -289,11 +289,17 @@ void GameGUI::drawBuildingCombatStats(const SceneBuildingPanel* selBuild, Buildi
 	}
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
-	if (buildingType->shootDamage)
+	const int damageRows=buildingProjectileDamageRows(*buildingType);
+	if (damageRows)
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+1, globalContainer->littleFont, FormattableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[damage]")).arg(buildingType->shootDamage).c_str());
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+12, globalContainer->littleFont, FormattableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[range]")).arg(buildingType->shootingRange).c_str());
-		ypos += YOFFSET_TOWER;
+		for (int row=0; row<damageRows; ++row)
+		{
+			const std::string label=damageRows==1 ? Toolkit::getStringTable()->getString("[damage]") : getUnitName(row);
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+1+row*11, globalContainer->littleFont,
+				FormattableString("%0 : %1").arg(label).arg(buildingType->semantics.projectileDamage[row]).c_str());
+		}
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+1+damageRows*11, globalContainer->littleFont, FormattableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[range]")).arg(buildingType->shootingRange).c_str());
+		ypos += buildingProjectileStatsHeight(*buildingType);
 	}
 }
 
@@ -373,10 +379,11 @@ void GameGUI::drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, Buildi
 {
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
-	if (!buildingType->unitProductionTime)
+	if (!buildingType->semantics.production.enabledUnitMask)
 		return;
 
-	int left=(selBuild->productionTimeout*SWARM_PROGRESS_BAR_WIDTH)/buildingType->unitProductionTime;
+	const int duration=std::max(1,selBuild->productionDuration);
+	int left=std::clamp(int(Sint64(selBuild->productionTimeout)*SWARM_PROGRESS_BAR_WIDTH/duration),0,SWARM_PROGRESS_BAR_WIDTH);
 	int elapsed=SWARM_PROGRESS_BAR_WIDTH-left;
 	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, elapsed, SWARM_PROGRESS_BAR_HEIGHT, 100, 100, 255);
 	globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+elapsed, ypos, left, SWARM_PROGRESS_BAR_HEIGHT, 128, 128, 128);
@@ -385,6 +392,7 @@ void GameGUI::drawBuildingSwarmRatios(const SceneBuildingPanel* selBuild, Buildi
 	const std::array<Sint32, NB_UNIT_TYPE> displayed = displayedRatio(*selBuild);
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 	{
+		if (!buildingType->semantics.production.recipes[i].enabled) continue;
 		drawScrollBox(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, displayed[i], selBuild->ratio[i], MAX_RATIO_RANGE);
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+24, ypos, globalContainer->littleFont, getUnitName(i));
 
@@ -485,8 +493,6 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 	else if (selBuild->constructionResultState==Building::UPGRADE)
 	{
 		assert(buildingType->nextLevel!=-1);
-		if (buildingType->isBuildingSite)
-			assert(buildingType->prevLevel!=-1);
 		drawBlueButton(btnX, primaryY, "[cancel upgrade]");
 	}
 	else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
@@ -494,15 +500,15 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 		if (selBuild->hp<selBuild->effectiveMaxHp)
 		{
 			// repair
-			if (selBuild->type->regenerationSpeed==0 && selBuild->hardSpaceForRepair && drawnScene().panels.local.maxBuildLevel>=buildingType->level)
+			if (selBuild->type->semantics.repairable && selBuild->hardSpaceForRepair)
 			{
 				drawBlueButton(btnX, primaryY, "[repair]");
 				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12
 					&& mouseY>primaryY && mouseY<primaryY+BOTTOM_BUTTON_HEIGHT )
 					{
 						globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-						int resources[BASIC_COUNT];
-						std::copy(selBuild->repairCost, selBuild->repairCost + BASIC_COUNT, resources);
+						int resources[MAX_RESOURCES];
+						std::copy(selBuild->repairCost, selBuild->repairCost + MAX_RESOURCES, resources);
 						drawCosts(resources, globalContainer->littleFont);
 						globalContainer->littleFont->popStyle();
 					}
@@ -511,7 +517,7 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 		else if (buildingType->nextLevel!=-1)
 		{
 			// upgrade
-			if (selBuild->hardSpaceForUpgrade && (drawnScene().panels.local.maxBuildLevel>buildingType->level))
+			if (selBuild->hardSpaceForUpgrade)
 			{
 				drawBlueButton(btnX, primaryY, "[upgrade]");
 				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12
@@ -598,7 +604,7 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 
 	// cleared resources for clearing flags: one checkbox row per clearable
 	// resource (stone is never cleared, so it has no row)
-	if (buildingType->type == "clearingflag")
+	if (buildingType->zonable[WORKER])
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
@@ -619,9 +625,30 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 				ypos+=YOFFSET_TEXT_PARA;
 			}
 	}
+	// min worker qualification for war flags: one radio row per worker level;
+	// row i means minLevelToFlag==i, shown to the player as level 1+i
+	if (buildingType->zonable[WORKER])
+	{
+		ypos += YOFFSET_B_SEP;
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
+			std::string(getUnitName(WORKER))+": "+Toolkit::getStringTable()->getString("[Min required level:]"));
+		ypos += YOFFSET_TEXT_PARA;
+		for (int i=0; i<NB_UNIT_LEVELS; i++)
+		{
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont, 1+i);
+			int spriteId;
+			if (i==displayedMinWorkerLevelToFlag(*selBuild))
+				spriteId=20;
+			else
+				spriteId=19;
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+10, ypos+2, globalContainer->gamegui, spriteId);
+
+			ypos+=YOFFSET_TEXT_PARA;
+		}
+	}
 	// min war level for war flags: one radio row per warrior level;
 	// row i means minLevelToFlag==i, shown to the player as level 1+i
-	else if (buildingType->type == "warflag")
+	if (buildingType->zonable[WARRIOR])
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
@@ -641,9 +668,8 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 		}
 	}
 	// explorer requirement for exploration flags: one radio row per
-	// EXPLORATION_FLAG_OPTION_* value (see GameGUIInternal.h — the flag
-	// reuses minLevelToFlag as a which-explorers-may-answer choice)
-	else if (buildingType->type == "explorationflag")
+	// EXPLORATION_FLAG_OPTION_* value, independent of ground-unit filters.
+	if (buildingType->zonable[EXPLORER])
 	{
 		static const char* const optionKeys[EXPLORATION_FLAG_OPTION_COUNT] = {
 			"[any explorer]",  // EXPLORATION_FLAG_OPTION_ANY_EXPLORER
@@ -660,7 +686,7 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
 				Toolkit::getStringTable()->getString(optionKeys[i]));
 			int spriteId;
-			if (displayedMinLevelToFlag(*selBuild) == i)
+			if (displayedExplorersRequireBombing(*selBuild) == i)
 				spriteId = 20;
 			else
 				spriteId = 19;
@@ -675,13 +701,13 @@ void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, Bui
 {
 	// We draw the resources cost.
 	int typeNum=buildingType->nextLevel;
-	BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
-	drawCosts(bt->maxResource, globalContainer->littleFont);
+	BuildingType *bt=game.buildingsTypes.get(typeNum);
+	drawCosts(bt->semantics.constructionCost.data(), globalContainer->littleFont);
 
 	// We draw the new abilities:
 	int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
 
-	bt=globalContainer->buildingsTypes.get(bt->nextLevel);
+	bt=game.buildingsTypes.get(bt->nextLevel);
 
 	if (bt->hpMax)
 		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE,
@@ -702,11 +728,12 @@ void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, Bui
 	}
 	if (buildingType->maxUnitInside)
 		blueYpos += YOFFSET_INFOS;
-	if (bt->shootDamage)
+	if (const int rows=buildingProjectileDamageRows(*bt))
 	{
-		drawValueAlignedRight(blueYpos+1, bt->shootDamage);
-		drawValueAlignedRight(blueYpos+12, bt->shootingRange);
-		blueYpos += YOFFSET_TOWER;
+		for (int row=0; row<rows; ++row)
+			drawValueAlignedRight(blueYpos+1+row*11, bt->semantics.projectileDamage[row]);
+		drawValueAlignedRight(blueYpos+1+rows*11, bt->shootingRange);
+		blueYpos += buildingProjectileStatsHeight(*bt);
 	}
 	blueYpos += unitInsideBarYDec;
 	blueYpos += YOFFSET_B_SEP;

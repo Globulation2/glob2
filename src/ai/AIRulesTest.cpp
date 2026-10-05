@@ -3,6 +3,8 @@
 #include "AI.h"
 #include "AIRules.h"
 #include "AIRuleOrders.h"
+#include "AIStateSerialization.h"
+#include "Marshaling.h"
 #include "ai/cortex/AICortex.h"
 #include "AICastor.h"
 #include "AICabino.h"
@@ -62,8 +64,7 @@ void checkOrder(Game& g, Order& o)
     if(o.getOrderType()==ORDER_CREATE)
     {
         const auto& c=static_cast<const OrderCreate&>(o);
-        const auto* type=globalContainer->buildingsTypes.get(c.typeNum);
-        CHECK(AIRules::usefulBuilding(g.gameHeader,type->shortTypeNum));
+        CHECK(AIRules::usefulBuilding(g,c.typeNum));
     }
     if(g.gameHeader.isPeacefulModeEnabled() && o.getOrderType()==ORDER_MODIFY_SWARM)
         CHECK(static_cast<const OrderModifySwarm&>(o).ratio[WARRIOR]==0);
@@ -84,6 +85,114 @@ std::string tick(Game& g)
 }
 TEST_SUITE("AIRules")
 {
+TEST_CASE("disabled training preserves independent services of mixed providers")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    auto& game=world.game;
+    game.gameHeader.setUnitUpgradesDisabled(true);
+    const int school=game.buildingsTypes.getTypeNum("school",0,false);
+    const int site=game.buildingsTypes.getTypeNum("school",0,true);
+    REQUIRE(school>=0); REQUIRE(site>=0);
+    CHECK_FALSE(AIRules::usefulBuilding(game,site));
+    CHECK_FALSE(AIRules::usefulWithoutTraining(game,school));
+    auto& type=*game.buildingsTypes.get(school);
+    type.semantics.healing.enabled=true;
+    type.semantics.healing.unitMask=1u<<WORKER;
+    game.configureBuildingCatalog();
+    CHECK(AIRules::trainingBuilding(type));
+    CHECK(AIRules::usefulWithoutTraining(game,school));
+    CHECK(AIRules::usefulBuilding(game,site));
+    OrderCreate create(0,4,4,site,1,1);
+    CHECK(AIRules::permittedQueuedOrder(game,create));
+}
+TEST_CASE("construction staffing uses separate site and completed capacities")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    auto& game=world.game;
+    const int site=game.buildingsTypes.getTypeNum("hospital",0,true);
+    const auto order=AIRules::createOrder(game,0,2,2,site,100,100);
+    const auto& create=static_cast<const OrderCreate&>(*order);
+    CHECK(create.unitWorking==game.buildingsTypes.get(site)->semantics.assignmentLimit);
+    CHECK(create.unitWorkingFuture==0);
+    auto* building=world.addBuilding("hospital",2,2);
+    const auto upgrade=AIRules::constructionOrder(game,*building,100,100);
+    const auto& construction=static_cast<const OrderConstruction&>(*upgrade);
+    CHECK(construction.unitWorking==game.buildingsTypes.get(building->type->nextLevel)->semantics.assignmentLimit);
+    CHECK(construction.unitWorkingFuture==0);
+}
+TEST_CASE("legacy queued staffing imports explicit 135 wire without weakening modern validation")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;
+    const int site=game.buildingsTypes.getTypeNum("hospital",0,true);
+    std::array<Uint8,29> wire{}; wire[0]=ORDER_CREATE;
+    addSint32(wire.data()+1,0,0);addSint32(wire.data()+1,20,4);addSint32(wire.data()+1,20,8);
+    addSint32(wire.data()+1,site,12);addSint32(wire.data()+1,7,16);addSint32(wire.data()+1,1,20);
+    addSint32(wire.data()+1,ORDER_CREATE_NO_FLAG_RADIUS,24);
+    auto legacy=Order::getOrder(wire.data(),wire.size(),135);REQUIRE(legacy);
+    CHECK(OrderValidation::validate(game,0,*legacy).verdict==OrderValidation::Verdict::Rejected);
+    legacy->sender=17;
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*legacy,135);
+    const auto& created=static_cast<const OrderCreate&>(*legacy);
+    CHECK(created.typeNum==site);CHECK(created.unitWorking==7);CHECK(created.unitWorkingFuture==0);CHECK(legacy->sender==17);
+    CHECK(OrderValidation::validate(game,0,*legacy).verdict==OrderValidation::Verdict::Accepted);
+    auto modern=Order::getOrder(wire.data(),wire.size(),136);REQUIRE(modern);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*modern,136);
+    CHECK(static_cast<const OrderCreate&>(*modern).unitWorkingFuture==1);
+    CHECK(OrderValidation::validate(game,0,*modern).verdict==OrderValidation::Verdict::Rejected);
+    addSint32(wire.data()+1,-1,16);
+    auto invalid=Order::getOrder(wire.data(),wire.size(),135);REQUIRE(invalid);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*invalid,135);
+    CHECK(static_cast<const OrderCreate&>(*invalid).unitWorking==-1);
+    CHECK(OrderValidation::validate(game,0,*invalid).verdict==OrderValidation::Verdict::Rejected);
+    addSint32(wire.data()+1,MAX_BUILDING_WORKER_REQUEST+1,16);
+    auto oversized=Order::getOrder(wire.data(),wire.size(),135);REQUIRE(oversized);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*oversized,135);
+    CHECK(static_cast<const OrderCreate&>(*oversized).unitWorking==MAX_BUILDING_WORKER_REQUEST+1);
+    CHECK(static_cast<const OrderCreate&>(*oversized).unitWorkingFuture==1);
+    CHECK(OrderValidation::validate(game,0,*oversized).verdict==OrderValidation::Verdict::Rejected);
+
+    auto* hospital=world.addBuilding("hospital",2,2);
+    auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=1;
+    std::array<Uint8,11> upgradeWire{};upgradeWire[0]=ORDER_CONSTRUCTION;
+    addUint16(upgradeWire.data()+1,hospital->gid,0);
+    addUint32(upgradeWire.data()+1,7,2);addUint32(upgradeWire.data()+1,1,6);
+    auto upgrade=Order::getOrder(upgradeWire.data(),upgradeWire.size(),135);REQUIRE(upgrade);
+    AIStateSerialization::normalizeLegacyOrderStaffing(game,*upgrade,135);
+    CHECK(static_cast<const OrderConstruction&>(*upgrade).gid==hospital->gid);
+    CHECK(static_cast<const OrderConstruction&>(*upgrade).unitWorking==7);
+    CHECK(static_cast<const OrderConstruction&>(*upgrade).unitWorkingFuture==0);
+    CHECK(OrderValidation::validate(game,0,*upgrade).verdict==OrderValidation::Verdict::Accepted);
+}
+TEST_CASE("Cabino reservations match unit class and qualification instead of building level")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true});
+    Player player;player.setTeam(world.game.teams[0]);
+    Cabino::AICabino ai(&player);
+    struct Reservations:Cabino::DistributedUnitManager {
+        using Cabino::DistributedUnitManager::DistributedUnitManager;
+        using Cabino::DistributedUnitManager::getNeededUnits;
+        bool perform(unsigned)override{return false;}
+        unsigned numberOfTicks()const override{return 1;}
+    } reservations(ai);
+    auto* building=world.addBuilding("inn",2,2);
+    building->maxUnitWorking=7;
+    REQUIRE(reservations.request("construction",WORKER,BUILD,2,4,building->gid));
+    CHECK(reservations.getNeededUnits(WORKER,BUILD,0,false)==0);
+    CHECK(reservations.getNeededUnits(WARRIOR,BUILD,1,false)==0);
+    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==4);
+    auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=1;
+    auto* unqualified=world.addUnit(WORKER,11,10);unqualified->constructionLevel=0;
+    auto* warrior=world.addUnit(WARRIOR,12,10);warrior->constructionLevel=1;
+    building->unitsWorking={worker,unqualified,warrior};
+    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==3);
+    CHECK(reservations.getNeededUnits(WORKER,BUILD,2,true)==3);
+    building->unitsWorking.clear();
+}
 TEST_CASE("retained tournament replay contains no unavailable orders")
 {
     const char* path=std::getenv("GLOB2_RULE_REPLAY");

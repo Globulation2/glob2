@@ -40,11 +40,13 @@ struct TeamStat
 
 	int totalUnit;
 	int numberUnitPerType[NB_UNIT_TYPE];
+	int workersByConstructionLevel[NB_UNIT_LEVELS];
 	int totalFree;
 	int isFree[NB_UNIT_TYPE];
 	int totalNeeded;
 	int totalNeededPerLevel[NB_UNIT_LEVELS];
 
+	std::vector<int> buildingCountByVariant; // concrete catalog IDs, including construction variants
 	int totalBuilding; // Note that this is the total number of *finished* buildings, building sites are ignored
 	int numberBuildingPerType[IntBuildingType::NB_BUILDING];
 	int numberBuildingPerTypePerLevel[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS];
@@ -100,6 +102,16 @@ struct EndOfGameStat
 	int value[TYPE_NB_STATS];
 };
 
+// Per-variant diagnostics use the catalog's concrete IDs; no family/tier limit.
+struct BuildingMeasurement
+{
+	Uint64 count = 0;
+	Uint64 completed[3]{};
+	Uint64 removed[3]{};
+	Uint64 trapped[2][2]{};
+	bool operator==(const BuildingMeasurement&) const = default;
+};
+
 // Diagnostic only: never used by AI, orders, RNG or simulation checksums.
 struct GameplayMeasurements
 {
@@ -132,6 +144,8 @@ struct GameplayMeasurements
 		AMMUNITION,
 		CONSTRUCTION,
 		UPGRADE,
+		HEALING_COST,
+		TRAINING_COST,
 		PURPOSES
 	};
 	enum Completion
@@ -204,6 +218,7 @@ struct GameplayMeasurements
 		ASSIGNMENTS
 	};
 	bool operator==(const GameplayMeasurements &) const = default;
+	std::vector<BuildingMeasurement> variants;
 	Uint32 tick = 0;
 	Uint64 births[NB_UNIT_TYPE]{};
 	Uint64 deaths[NB_UNIT_TYPE][DEATH_CAUSES]{};
@@ -217,6 +232,7 @@ struct GameplayMeasurements
 	Uint64 transferredOut[MAX_NB_RESOURCES]{};
 	Uint64 consumed[PURPOSES][MAX_NB_RESOURCES]{};
 	Uint64 repairDelivered[MAX_NB_RESOURCES]{};
+	Uint64 resourceSpillageEvents{};
 	Uint64 meals{};
 	Uint64 healingVisits{};
 	Uint64 hpRestored{};

@@ -103,6 +103,10 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	Building* flag = game.addBuilding(20, 40, flagType, 0);
 	require(flag != nullptr, "place a clearing flag");
 	flag->clearingResources[WOOD] = false;
+	flag->minWorkerLevelToFlag=2;
+	for (int i=0; i<Unit::MAX_COUNT; ++i)
+		if (auto* unit=game.teams[0]->myUnits[i]; unit && unit->typeNum==WORKER)
+			unit->constructionLevel=2;
 
 	int anchorX[2], anchorY[2];
 	for (int t = 0; t < mapTeams; ++t)
@@ -156,9 +160,13 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 						{
 							flags++;
 							require(!copy->clearingResources[WOOD] && copy->clearingResources[WHEAT], "the clearing flag keeps its choice");
+							require(copy->minWorkerLevelToFlag==2,"the clearing flag keeps independent worker qualification");
 						}
 					}
 					require(flags == 1, "the copy has its clearing flag");
+					for (int u=0; u<Unit::MAX_COUNT; ++u)
+						if (const auto* unit=game.teams[k]->myUnits[u]; unit && unit->typeNum==WORKER)
+							require(unit->constructionLevel==2,"workers keep independent construction qualification");
 				}
 			}
 	std::puts("PASS a repeated map deals each colony, its areas and its flag settings to one team");

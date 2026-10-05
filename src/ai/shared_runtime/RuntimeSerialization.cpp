@@ -41,6 +41,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		} else stream->read(buffer.data(),buffer.size(),"data");
 		auto order = Order::getOrder(buffer.data(), buffer.size(), versionMinor);
 		if (!order) return false;
+		AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);
 		orders.push_back(order);
 		stream->readLeaveSection();
 	}

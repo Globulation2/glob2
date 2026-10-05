@@ -184,6 +184,26 @@
             ],
             "additionalProperties": false
           }
+        },
+        "buildingCatalog": {
+          "type": "object",
+          "description": "Frozen canonical building specification and its SHA-256. Optional in older schema-2 reports.",
+          "properties": {
+            "snapshot": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8388608
+            },
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "snapshot",
+            "hash"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

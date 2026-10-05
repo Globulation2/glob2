@@ -1,6 +1,7 @@
 #include "EngineFixtures.h"
 #include <algorithm>
 #include "Version.h"
+#include "AIMaximaBuildings.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -175,16 +176,17 @@ void birthBudgetScalesBeyondTwenty()
     auto world=ai.collect_development_world(ai.context);
     ai.budget.colony_swarm_requested=true;
     ai.budget.desired_swarms=0;
+    ai.budget.desired_explorers=0;ai.budget.desired_warriors=0;
     int colonies=0;
     for(const auto& intent:ai.collect_development_intents(world))
-        if(intent.buildingType==IntBuildingType::SWARM_BUILDING) {
+        if(intent.buildingType==f.game.buildingsTypes.getPlaceableTypeNum("swarm")) {
             REQUIRE(intent.purpose==AIMaximaPlacement::ColonySeed);
             REQUIRE(intent.unmetCount==1); ++colonies;
         }
     REQUIRE(colonies==1);
     ai.budget.colony_swarm_requested=false;
     for(const auto& intent:ai.collect_development_intents(world))
-        REQUIRE(intent.buildingType!=IntBuildingType::SWARM_BUILDING);
+        REQUIRE(intent.buildingType!=f.game.buildingsTypes.getPlaceableTypeNum("swarm"));
     ai.snapshot.critical_food=30; ai.build_policy_bids(); ai.arbitrate_policy_bids();
     REQUIRE((ai.budget.swarm_workers>0 && ai.budget.swarm_workers<workers));
 }
@@ -485,6 +487,7 @@ void barracksUpgradesKeepTrainingOpen()
 {
     using namespace AIMaximaPlacement;
     Fixture f;
+    REQUIRE(f.game.addUnit(20,20,0,WORKER,1,0,0,0));
     for(int i=0;i<2;++i)
         REQUIRE(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
             .getTypeNum("barracks",0,false),0));
@@ -492,26 +495,26 @@ void barracksUpgradesKeepTrainingOpen()
     a.snapshot.warriors=20;a.snapshot.trained_warriors=0;
     a.budget.upgrade_level1_barracks_weight=50;
     auto limits=a.collect_development_limits(c);
-    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(f.game.buildingsTypes.getPlaceableTypeNum("barracks"),1)>0);
     DevelopmentAction action;
     action.id=7;action.type=UpgradeBuilding;action.state=CreateIssued;
-    action.buildingType=IntBuildingType::ATTACK_BUILDING;
+    action.buildingType=f.game.buildingsTypes.getPlaceableTypeNum("barracks");
     action.buildingId=0;action.fromLevel=1;action.targetLevel=2;
     auto& actions=const_cast<std::map<int,DevelopmentAction>&>(a.development_planner.actions());
     actions[action.id]=action;
     const auto seats=a.barracks_capacity(c);
     REQUIRE((seats.first==2 && seats.second==6));
     limits=a.collect_development_limits(c);
-    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)==0);
+    REQUIRE(limits.upgradePriority(f.game.buildingsTypes.getPlaceableTypeNum("barracks"),1)==0);
     // An unissued reservation must not prevent its own first upgrade.
     actions[action.id].state=ParcelReserved;
     limits=a.collect_development_limits(c,action.id);
-    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(f.game.buildingsTypes.getPlaceableTypeNum("barracks"),1)>0);
     // Once the army is trained, this queue-protection gate no longer applies.
     actions[action.id].state=CreateIssued;
     a.snapshot.trained_warriors=20;
     limits=a.collect_development_limits(c);
-    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(f.game.buildingsTypes.getPlaceableTypeNum("barracks"),1)>0);
 }
 
 void armyBirthsMatchPlatformChecksums()
@@ -628,7 +631,7 @@ void completionReallocatesColony()
     ai.budget.explorer_ratio=1; ai.budget.desired_explorers=5;
     AIMaximaPlacement::DevelopmentAction action;
     action.type=AIMaximaPlacement::BuildStandalone;
-    action.buildingType=IntBuildingType::SWARM_BUILDING;
+    action.buildingType=f.game.buildingsTypes.getPlaceableTypeNum("swarm");
     action.centerX=30; action.centerY=30; action.workers=2;
     action.initialFootprint=AIMaximaPlacement::Footprint(-2,-2,4,4);
     REQUIRE(ai.issue_development_action(c,action));
@@ -764,11 +767,11 @@ static void schoolsDoNotRequireKnownAlgae()
     ai.known_algae_units=0; ai.accessible_algae_units=0;
     ai.build_policy_bids(); ai.arbitrate_policy_bids(); ai.finalize_director_plan(c);
     REQUIRE(ai.budget.desired_schools>0);
-    AIMaximaPlacement::WorldState world;
+    AIMaximaPlacement::WorldState world;world.profiles=ai.collect_building_profiles();
     const auto intents=ai.collect_development_intents(world);
     bool schoolRequested=false;
     for(const auto& intent:intents)
-        if(intent.buildingType==IntBuildingType::SCIENCE_BUILDING)
+        if(intent.buildingType==f.game.buildingsTypes.getPlaceableTypeNum("school"))
         {
             schoolRequested=true;
             REQUIRE(intent.requiredResourceType==-1);
@@ -938,4 +941,25 @@ TEST_SUITE("Maxima.Economy")
 	TEST_CASE("completion reallocates colony") { glob2test::HeadlessGlobals globals; completionReallocatesColony(); }
 	TEST_CASE("tracker logical cadence") { glob2test::HeadlessGlobals globals; trackerLogicalCadence(); }
 	TEST_CASE("holiday harvest capacity") { glob2test::HeadlessGlobals globals; holidayHarvestCapacity(); }
+}
+
+TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    Building* inn=world.addBuilding("inn",8,8);
+    inn->resources[WHEAT]=10;
+    Unit* worker=world.addUnit(WORKER);
+    worker->destinationPurpose=FEED;
+    inn->subscribeUnitForInside(worker);
+    REQUIRE(worker->serviceResourcesReserved);
+    worker->displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->delta=255;worker->syncStep();
+    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
+    worker->delta=0;
+    int elapsed=0;
+    while(worker->displacement==Unit::DIS_INSIDE && elapsed<2000){worker->syncStep();++elapsed;}
+    CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);
+    CHECK(elapsed==AIMaximaBuildings::serviceTicks(*inn->type,inn->type->semantics.feeding.duration));
+    CHECK(inn->resources[WHEAT]==9);
 }

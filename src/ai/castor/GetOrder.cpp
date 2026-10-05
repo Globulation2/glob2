@@ -147,14 +147,14 @@ std::shared_ptr<Order>AICastor::getOrder()
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->priority<=priority)
 		{
-			int real=buildingSum[(*pi)->shortTypeNum][0];
+			int real=buildingSum[(*pi)->demand][0];
 			if (minReal>real)
 				minReal=real;
 		}
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->priority<=priority)
 		{
-			int real=buildingSum[(*pi)->shortTypeNum][0];
+			int real=buildingSum[(*pi)->demand][0];
 			if (real<=minReal)
 			{
 				std::shared_ptr<Order>order=continueProject(*pi);
@@ -165,7 +165,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if ((*pi)->priority<=priority)
 		{
-			int real=buildingSum[(*pi)->shortTypeNum][0];
+			int real=buildingSum[(*pi)->demand][0];
 			if (real>minReal)
 			{
 				std::shared_ptr<Order>order=continueProject(*pi);
@@ -217,7 +217,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 
 // Default build-policy table for AICastor::defineStrategy().
 //
-// One row per hard building, indexed by IntBuildingType::Number 0..7
+// One row per hard building, indexed by int 0..7
 // (SWARM, FOOD, HEAL, WALKSPEED, SWIMSPEED, ATTACK, SCIENCE, DEFENSE).
 // Field names mirror Strategy::Build exactly so the table copies into
 // strategy.build[i] field-for-field.
@@ -247,7 +247,7 @@ namespace
 
 	// Per-hard-building base/new policy table.
 	// Column order matches Strategy::Build field order.
-	// Row order matches IntBuildingType::Number 0..7.
+	// Row order matches int 0..7.
 	static constexpr AICastor::Strategy::Build DEFAULT_BUILD_POLICIES[AICastor::NB_HARD_BUILDING] =
 	{
 		// baseOrder, base, baseWorkers, baseUpgrade, finalWorkers, newOrder, news, newWorkers, newUpgrade
@@ -288,7 +288,7 @@ void AICastor::defineStrategy()
 	// fields the original code touched in this pre-pass. The remaining
 	// six Build fields stay uninitialized for slots 8..12, matching the
 	// pre-refactor behavior (Strategy::Build has no default ctor).
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<AICastor::DemandCount; bi++)
 	{
 		strategy.build[bi].baseOrder    = -1;
 		strategy.build[bi].newOrder     = -1;

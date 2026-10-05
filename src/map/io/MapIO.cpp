@@ -526,7 +526,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(sw);
 				// Materialize the old full-field representation from its frozen inputs.
 				// This changes no routing answers, timestamps, RNG or save bytes.
-				finishBuildingGradient(building, sw);
+				finishBuildingGradient(building, sw, BuildingRoute::Footprint);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -555,6 +555,27 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(sw);
 				stream->writeUint8(building->locked[sw], "locked");
 				stream->writeUint8(building->anyResourceToClear[sw], "resourceState");
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
+			stream->writeEnterSection("routes");
+			for (int profile=1; profile<BUILDING_ROUTE_COUNT; ++profile)
+			{
+				stream->writeEnterSection(profile);
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->writeEnterSection(sw);
+					const int slot=profile*SWIM_CLASS_COUNT+sw;
+					finishBuildingGradient(building, sw, BuildingRoute(profile));
+					saveGradient(stream, building->globalGradient[slot], size);
+					stream->writeUint8(building->dirtyGradient[slot], "dirty");
+					stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[slot], "lastUpdate");
+					stream->writeUint32(building->gradientGeneration[slot], "generation");
+					stream->writeUint32(building->globalGradientUsedStep[slot], "usedStep");
+					stream->writeLeaveSection();
+				}
+				for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+					stream->writeUint8(building->locked[profile*SWIM_VARIANT_COUNT+sw], sw ? "swimLocked" : "walkLocked");
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -671,17 +692,18 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		for (int b=0; b<Building::MAX_COUNT; ++b) if (auto *building=game->teams[t]->myBuildings[b])
 		{
 			stream->readEnterSection(b);
+			const BuildingRoute savedRoute = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG ? BuildingRoute::Footprint : BuildingRoute::Automatic;
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->readEnterSection(sw);
 				// Existing saves contain complete fields; discard any previous queue
 				// before replacing its buffer, including when reusing a loaded object.
-				building->globalGradientSearch[sw].reset();
-				loadGradient(stream, building->globalGradient[sw], size, packed);
-				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
-				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
+				building->globalGradientSearch[building->routeSlot(sw, savedRoute)].reset();
+				loadGradient(stream, building->globalGradient[building->routeSlot(sw, savedRoute)], size, packed);
+				building->dirtyGradient[building->routeSlot(sw, savedRoute)]=loadFlag(stream,"dirty");
+				building->lastGlobalGradientUpdateStepCounter[building->routeSlot(sw, savedRoute)]=stream->readUint32("lastUpdate");
 				// An older save restored its fields as current; keep them so.
-				building->gradientGeneration[sw]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
+				building->gradientGeneration[building->routeSlot(sw, savedRoute)]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
 					? stream->readUint32("generation") : topologyGeneration;
 				stream->readLeaveSection();
 			}
@@ -691,7 +713,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 				{
 					stream->readEnterSection(sw);
-					building->globalGradientUsedStep[sw]=stream->readUint32("usedStep");
+					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
 					for (int r=0; r<MAX_NB_RESOURCES; ++r)
 					{
 						stream->readEnterSection(r);
@@ -708,12 +730,36 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
 			{
 				stream->readEnterSection(sw);
-				building->locked[sw]=loadFlag(stream,"locked");
+				building->locked[building->routeAccess(sw, savedRoute)]=loadFlag(stream,"locked");
 				building->anyResourceToClear[sw]=stream->readUint8("resourceState");
 				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
+			if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
+			{
+				stream->readEnterSection("routes");
+				for (int profile=1; profile<BUILDING_ROUTE_COUNT; ++profile)
+				{
+					stream->readEnterSection(profile);
+					for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+					{
+						stream->readEnterSection(sw);
+						const int slot=profile*SWIM_CLASS_COUNT+sw;
+						building->globalGradientSearch[slot].reset();
+						loadGradient(stream, building->globalGradient[slot], size, packed);
+						building->dirtyGradient[slot]=loadFlag(stream,"dirty");
+						building->lastGlobalGradientUpdateStepCounter[slot]=stream->readUint32("lastUpdate");
+						building->gradientGeneration[slot]=stream->readUint32("generation");
+						building->globalGradientUsedStep[slot]=stream->readUint32("usedStep");
+						stream->readLeaveSection();
+					}
+					for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+						building->locked[profile*SWIM_VARIANT_COUNT+sw]=loadFlag(stream, sw ? "swimLocked" : "walkLocked");
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();

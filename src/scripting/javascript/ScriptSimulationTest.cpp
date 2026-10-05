@@ -230,10 +230,10 @@ void fixture(const std::string &name)
 	const auto expected = glob2test::readFile(glob2test::inflated(terrainFixture));
 	CHECK(serial.trace == expected);
 	const auto parallel = execute(initial, directory / "workers4", 4, false, true);
-	CHECK(parallel.trace == expected);
+	CHECK(parallel.trace == serial.trace);
 	CHECK(parallel.finalSave == serial.finalSave);
 	CHECK(parallel.replay == serial.replay);
-	const auto expectedRecords = records(expected);
+	const auto expectedRecords = records(serial.trace);
 	for (int boundary : {32, 128})
 	{
 		CAPTURE(boundary);
@@ -252,7 +252,7 @@ void fixture(const std::string &name)
 	}
 	const auto playback =
 		execute(directory / "workers1/game.replay", directory / "playback", 1, true);
-	CHECK(playback.trace == expected);
+	CHECK(playback.trace == serial.trace);
 }
 } // namespace
 TEST_CASE("JavaScript original fixture executes, resumes and replays 256 ticks" *

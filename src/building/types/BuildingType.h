@@ -6,6 +6,10 @@
 #include <GAGSys.h>
 #include <cstddef>
 #include <string>
+#include <set>
+#include <vector>
+#include <memory>
+#include "BuildingCatalog.h"
 
 #include "Ressource.h"
 #include "UnitConsts.h"
@@ -13,17 +17,10 @@
 namespace GAGCore { class Sprite; }
 using GAGCore::Sprite;
 
-// BuildingType describes the static configuration of one building variant
-// (e.g. "swarm0c" — the level-0 swarm under construction). Historically these
-// values were loaded at runtime from data/buildings.default.txt + data/buildings.txt
-// via the ConfigVector<BuildingType> template; they are now baked into a
-// per-variant table in buildings.cpp. The fields remain Sint32 for ABI parity
-// with the old loader (booleans were stored as ints).
-//
-// The default member initializers below mirror data/buildings.default.txt so
-// that each entry in the table only has to spell out the fields that differ
-// from the defaults — same defaults+overrides shape as the text format used
-// to provide.
+// Runtime descriptor of one concrete building variant. The catalog owns these
+// values and resolves links once, before a match starts. No parsing or string
+// lookup belongs in a simulation loop. Legacy scalar fields remain during the
+// consumer migration; semantic descriptors remove the old family assumptions.
 struct BuildingType
 {
 	// basic infos
@@ -105,48 +102,71 @@ struct BuildingType
 	Sprite *miniSpritePtr = nullptr;
 	int prevLevel = -1;
 	int nextLevel = -1;
+
+	// Stable authored identity and explicit variant transitions. Numeric IDs are
+	// dense within the immutable match snapshot, never inferred from filenames.
+	std::string key;
+	std::string previousKey;
+	std::string nextKey;
+	std::string requiredExperiment;
+	BuildingSemantics semantics;
+	BuildingPresentationSpec presentation;
+	// Effective match gates; rebuilt once from the saved feature keys.
+	Sint32 terminalTypeNum = -1; // compiled final forward successor
+	bool runtimeSuppliesDirectStock = false, runtimeFetchesDirectStock = false;
+	bool runtimeAvailable = true;
+	bool runtimeSuppliesStock = false;
+	bool runtimeFetchesStock = false;
+
 };
 
-// BuildingsTypes is the read-only registry of building variants, indexed by an
-// integer ID that is the position in the const table (0=swarm0c, 1=swarm0,
-// 2=inn0c, …). Those IDs are persisted in saves, replays and network traffic,
-// so reordering is a behavioral change. The class keeps the same external
-// surface (.get / .getTypeNum / .getByType) as the old ConfigVector<BuildingType>
-// subclass so existing callers compile unchanged; it is now backed by a
-// static array rather than a parsed text file.
+// Value-owned catalog: copying it makes independent descriptors and indexes.
+// Sprite handles refer to Toolkit-owned graphics and are deliberately non-owning.
 class BuildingsTypes
 {
 public:
-	// Resolve prev/next-level cross-references and run the same integrity
-	// checks the old loader did. Replaces the old
-	// load("data/buildings.default.txt") + load("data/buildings.txt") chain.
+	BuildingsTypes() = default;
+	BuildingsTypes(const BuildingsTypes& other);
+	BuildingsTypes& operator=(const BuildingsTypes& other);
+	BuildingsTypes(BuildingsTypes&&) noexcept = default;
+	BuildingsTypes& operator=(BuildingsTypes&&) noexcept = default;
+	std::shared_ptr<const std::vector<BuildingType>> retainTypes() const { return entries_; }
 	void init();
-	// Resolve sprite pointers (no-op without graphics). Part of
-	// GlobalContainer's game graphics, which the browser loads after the menu.
+	// Frozen pre-catalog definitions for importing older supported saves. Never
+	// reads installed JSON files or shares mutable descriptors with another game.
+	void initLegacy();
+	void loadManifest(const std::string& path);
+	void loadSnapshotJson(const std::string& json);
+	std::string snapshotJson() const;
+	std::string fingerprint() const;
+	const std::string& catalogKey() const { return catalogKey_; }
+	Sint32 getStartingBuildingTypeNum() const { return startingBuildingId_; }
+	const std::vector<BuildingCatalogExperiment>& experiments() const { return experiments_; }
+	// Returns -1 when no stable key matches.
+	Sint32 findByKey(const std::string& key) const;
+	bool isAvailable(std::size_t id, const std::set<std::string>& enabledExperiments) const;
+	void configureExperiments(const std::vector<std::string>& keys);
+	bool usesMarketRouting() const { return usesMarketRouting_; }
+	bool usesOverlaySuppliers() const { return usesOverlaySuppliers_; }
 	void loadSprites();
-
+	static void loadSpritesForTypes(std::vector<BuildingType>& types);
 	BuildingType *get(std::size_t id);
-	std::size_t size() const;
-
-	// Walk the upgrade chain from typeNum to its top level. Used by the
-	// placement previews, which outline the footprint the building will
-	// occupy once fully upgraded.
+	const BuildingType *get(std::size_t id) const;
+	std::size_t size() const { return entries_->size(); }
 	BuildingType *getLastLevel(Sint32 typeNum);
-
 	Sint32 getTypeNum(const char *type, int level, bool isBuildingSite);
 	Sint32 getTypeNum(const std::string &s, int level, bool isBuildingSite);
-	// Resolve the variant a new player placement of `name` creates: the
-	// level-0 construction site if one exists, otherwise the finished
-	// level-0 building (flags and other virtual buildings have no
-	// construction site). Asserts that the fallback only happens for
-	// virtual buildings and that the name resolves at all.
 	Sint32 getPlaceableTypeNum(const std::string &name);
-	// Resolve the finished level-0 variant of `name` — the form wanted for
-	// placement previews and footprint queries, where the construction-site
-	// sprite is not. Every placeable name has a finished level-0 variant, so
-	// unlike getTypeNum this never legitimately misses: a miss is a
-	// programming error and asserts rather than returning -1.
 	Sint32 getFinishedTypeNum(const std::string &name);
 	BuildingType *getByType(const char *type, int level, bool isBuildingSite);
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
+private:
+	void resolveAndValidate();
+	std::shared_ptr<std::vector<BuildingType>> entries_ = std::make_shared<std::vector<BuildingType>>();
+	std::vector<BuildingCatalogExperiment> experiments_;
+	std::string catalogKey_;
+	std::string startingBuildingKey_;
+	Sint32 startingBuildingId_ = -1;
+	bool usesMarketRouting_ = false;
+	bool usesOverlaySuppliers_ = false;
 };

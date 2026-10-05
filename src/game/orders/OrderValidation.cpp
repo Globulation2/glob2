@@ -11,6 +11,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
+#include "Unit.h"
 #include "GameGUI.h"
 
 namespace OrderValidation
@@ -63,17 +64,16 @@ Result checkCreate(const Context& c, const OrderCreate& o)
 		return r;
 	if (!c.game.isBuildingTypeAvailable(o.typeNum))
 		return rejected(Reason::BadBuildingType);
-	const BuildingType* type = globalContainer->buildingsTypes.get(o.typeNum);
-	// What GameGUIToolManager::placeBuildingAt and ScriptOrders create: a level-0
-	// building site, or a level-0 flag (which has no site).
-	if (!type || type->level != 0 || !(type->isBuildingSite || type->isVirtual))
+	const BuildingType* type = c.game.buildingsTypes.get(o.typeNum);
+	// The catalog explicitly identifies roots available for initial placement.
+	if (!type || !type->semantics.placeable)
 		return rejected(Reason::BadBuildingType);
-	if (!inRange(o.unitWorking, 0, MAX_BUILDING_WORKER_REQUEST) ||
-	    !inRange(o.unitWorkingFuture, 0, MAX_BUILDING_WORKER_REQUEST))
+	if (!inRange(o.unitWorking, 0, type->semantics.assignmentLimit) ||
+	    !inRange(o.unitWorkingFuture, 0, (type->isBuildingSite ? c.game.buildingsTypes.get(type->nextLevel) : type)->semantics.assignmentLimit))
 		return rejected(Reason::OutOfRange);
 	// posX/posY are masked to the map by executeCreate. The radius only applies to
 	// flags; for other buildings the client sends 0 and the executor ignores it.
-	if (type->isVirtual && o.flagRadius && !inRange(*o.flagRadius, 0, MAX_CREATE_FLAG_RADIUS))
+	if (o.flagRadius && !inRange(*o.flagRadius, 0, type->maxUnitStayRange))
 		return rejected(Reason::OutOfRange);
 	return accepted();
 }
@@ -159,15 +159,27 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
 		// The values travel as Uint32 and are applied as Sint32 worker counts.
-		if (o.unitWorking > Uint32(MAX_BUILDING_WORKER_REQUEST) || o.unitWorkingFuture > Uint32(MAX_BUILDING_WORKER_REQUEST))
+		if (o.unitWorking > Uint32(Unit::MAX_COUNT) || o.unitWorkingFuture > Uint32(Unit::MAX_COUNT))
 			return rejected(Reason::OutOfRange);
+		if (b && !b->type->isBuildingSite)
+		{
+			const int target = b->hp < b->getEffectiveMaxHp() ? b->type->prevLevel : b->type->nextLevel;
+			if (target >= 0)
+			{
+				const BuildingType* site = c.game.buildingsTypes.get(target);
+				const BuildingType* completed = site->isBuildingSite ? c.game.buildingsTypes.get(site->nextLevel) : site;
+				if (o.unitWorking > Uint32(site->semantics.assignmentLimit) || o.unitWorkingFuture > Uint32(completed->semantics.assignmentLimit))
+					return rejected(Reason::OutOfRange);
+			}
+		}
 		// Construction is also the repair command. Use rule-adjusted maximum HP
 		// to reject only a healthy building's upgrade, including fortress games.
 		if (c.game.gameHeader.isUnitUpgradesDisabled() && b && !b->type->isBuildingSite
 			&& b->hp >= b->getEffectiveMaxHp()) return rejected(Reason::BadState);
 		if (b && !b->type->isBuildingSite && b->hp >= b->getEffectiveMaxHp()
-			&& b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING
 			&& !b->isUpgradeAvailable()) return rejected(Reason::BadState);
+		if (b && !b->type->isBuildingSite && b->hp < b->getEffectiveMaxHp()
+			&& !b->type->semantics.repairable) return rejected(Reason::BadState);
 		return accepted();
 	}
 
@@ -181,9 +193,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		// repair (a new building's site) and on a site without the level to return to.
 		if (b && b->type->isBuildingSite)
 		{
-			const int target = b->constructionResultState == Building::UPGRADE  ? b->type->prevLevel
-			                   : b->constructionResultState == Building::REPAIR ? b->type->nextLevel
-			                                                                    : BUILDING_LEVEL_NONE;
+			const int target = b->getConstructionOriginTypeNum();
 			if (b->buildingState != Building::ALIVE || target == BUILDING_LEVEL_NONE)
 				return stale();
 		}
@@ -203,12 +213,15 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o = static_cast<OrderModifyBuilding&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
-		return o.numberRequested <= MAX_BUILDING_WORKER_REQUEST ? accepted() : rejected(Reason::OutOfRange);
+		if (b && b->type->semantics.assignmentLimit <= 0) return rejected(Reason::BadState);
+		return o.numberRequested <= (b ? b->type->semantics.assignmentLimit : Unit::MAX_COUNT) ? accepted() : rejected(Reason::OutOfRange);
 	}
 
 	case ORDER_MODIFY_EXCHANGE:
-		// The masks are only ever tested bit by bit; any value is harmless.
-		return ownBuilding(c, static_cast<OrderModifyExchange&>(order).gid, b);
+	{
+		if (Result r=ownBuilding(c, static_cast<OrderModifyExchange&>(order).gid, b); r.verdict != Verdict::Accepted) return r;
+		return b && !b->type->canExchange ? rejected(Reason::BadState) : accepted();
+	}
 
 	case ORDER_MODIFY_SWARM:
 	{
@@ -218,6 +231,13 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			if (!inRange(o.ratio[i], 0, MAX_RATIO_RANGE))
 				return rejected(Reason::OutOfRange);
+		if (b)
+		{
+			const auto enabled=b->type->semantics.production.enabledUnitMask;
+			if (!enabled) return rejected(Reason::BadState);
+			for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+				if (!(enabled & (1u<<unit)) && o.ratio[unit]) return rejected(Reason::BadState);
+		}
 		return accepted();
 	}
 
@@ -226,22 +246,30 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o = static_cast<OrderModifyFlag&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
+		if (b && !(b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR])) return rejected(Reason::BadState);
 		// GameGUI::requestFlagRange clamps to the flag type's maximum.
-		const int maximum = b && b->type->defaultUnitStayRange ? b->type->maxUnitStayRange : MAX_CREATE_FLAG_RADIUS;
+		const int maximum = b ? b->type->maxUnitStayRange : MAX_CREATE_FLAG_RADIUS;
 		return inRange(o.range, 0, maximum) ? accepted() : rejected(Reason::OutOfRange);
 	}
 
 	case ORDER_MODIFY_CLEARING_FLAG:
-		// Decoded as booleans; nothing else to check.
-		return ownBuilding(c, static_cast<OrderModifyClearingFlag&>(order).gid, b);
+	{
+		const auto& o=static_cast<OrderModifyClearingFlag&>(order);
+		if (Result r=ownBuilding(c,o.gid,b); r.verdict != Verdict::Accepted) return r;
+		if (b && !b->type->zonable[WORKER]) return rejected(Reason::BadState);
+		return o.clearingResources[STONE] ? rejected(Reason::OutOfRange) : accepted();
+	}
 
 	case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
 	{
 		const auto& o = static_cast<OrderModifyMinLevelToFlag&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
-		// A war flag's level row (0..NB_UNIT_LEVELS-1) or an exploration flag's option.
-		return o.minLevelToFlag < NB_UNIT_LEVELS ? accepted() : rejected(Reason::OutOfRange);
+		if (o.targetRole > 2) return rejected(Reason::OutOfRange);
+		if (b && !b->type->zonable[o.targetRole == 1 ? EXPLORER : o.targetRole == 2 ? WORKER : WARRIOR]
+			&& !(o.legacyCombinedRole && b->type->zonable[EXPLORER])) return rejected(Reason::BadState);
+		// Ground experience threshold or independent explorer bombing option.
+		return o.targetRole <= 2 && o.minLevelToFlag < (o.targetRole == 1 ? 2 : NB_UNIT_LEVELS) ? accepted() : rejected(Reason::OutOfRange);
 	}
 
 	case ORDER_MOVE_FLAG:
@@ -249,6 +277,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		const auto& o = static_cast<OrderMoveFlag&>(order);
 		if (Result r = ownBuilding(c, o.gid, b); r.verdict != Verdict::Accepted)
 			return r;
+		if (b && !b->type->semantics.relocatable) return rejected(Reason::BadState);
 		// Game::executeMoveFlag stores the position unwrapped; the user interface
 		// always sends a wrapped one (Map::cursorToBuildingPos).
 		if (!inRange(o.x, 0, game.map.getW() - 1) || !inRange(o.y, 0, game.map.getH() - 1))

@@ -17,7 +17,7 @@ static constexpr int AI_CABINO_SAVE_FORMAT_CONTINUATION = 132;
 #include <queue>
 #include <list>
 #include <algorithm>
-#include "IntBuildingType.h"
+#include "BuildingCapabilities.h"
 #include <map>
 #include "Utilities.h"
 #include <set>
@@ -34,6 +34,16 @@ class Team;
 ///just how devestating an attack of level 3 warriros can be to a guard half the size of level 1 warriors!
 namespace Cabino
 {
+ // Independent strategic demands; each concrete variant can fulfill several.
+ enum Demand { ProduceWorkers, FeedUnits, HealUnits, TrainWalking, TrainSwimming,
+  TrainAttack, TrainConstruction, DefendWithProjectiles, AttractExplorers,
+  AttractWarriors, ClearResources, ExchangeResources, DemandCount };
+ AIPlanning::BuildingIntent intentForDemand(unsigned demand);
+ bool provides(const Game& game,const Building& building,unsigned demand);
+ class AICabino;
+ int selectBuilding(AICabino& ai,unsigned demand);
+ unsigned upgradeWeight(const Game& game,const Building& building);
+
 	///This constant turns on status output. status is output to the file "CabinoStatus.txt" in the current
 	///working directory. It has plenty of information that explains Cabino's choices, which is good for
 	///fine tuning Cabino as well as debugging it.
@@ -441,7 +451,6 @@ namespace Cabino
 			unsigned int getUnits(unsigned int type, unsigned int ability, unsigned int level, bool isMinimum);
 
 			///Returns the highest level that the team has for a particular building type, or 0 for none.
-			unsigned int getMaximumBuildingLevel(unsigned int building_type);
 
 			///The team that this team stats generator is connected to
 			Team* team;
@@ -609,6 +618,7 @@ namespace Cabino
 		{
 			unsigned int flag;
 			unsigned int enemy_flag;
+			int x = -1, y = -1;
 		};
 
 			std::vector<defenseRecord> defending_flags;
@@ -732,7 +742,8 @@ namespace Cabino
 				unsigned int x;
 				unsigned int y;
 				unsigned int assigned;
-				unsigned int building_type;
+				unsigned int building_type; // strategic demand
+    int concreteType = -1; // exact queued placement
 				int no_build_timeout;
 			};
 
@@ -767,11 +778,12 @@ namespace Cabino
 			///at the level, looking for the largest size. It will also set the offsets
 			///correctly, which are used if a building expands in multiple directions,
 			///if the current level is provided.
-			upgradeData findMaxSize(unsigned int building_type, unsigned int cur_level);
+			upgradeData findMaxSize(unsigned int concreteType);
+   std::vector<upgradeData> footprints;
 
 			///Find the best spot to put a prticular kind of building. This function does
 			///most of the calculation work.
-			point findBestPlace(unsigned int building_type);
+			point findBestPlace(unsigned int building_type,unsigned int concreteType);
 
 			///Constructs the various queued up buildings.
 			bool constructBuildings();
@@ -828,6 +840,7 @@ namespace Cabino
 			unsigned int original;
 			///True if the construction is repair, false if it is an upgrade.
 			bool is_repair;
+   unsigned requiredLevel = 0;
 		};
 
 			///Removes construction records that are no longer being constructed (either from cancel or finish)
@@ -1269,10 +1282,10 @@ namespace Cabino
 	const unsigned int MINIMUM_TO_REPAIR=2;
 	const unsigned int MAXIMUM_TO_REPAIR=8;
 	const unsigned int BUILDINGS_FOR_UPGRADE=5;
-	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[IntBuildingType::NB_BUILDING]=
-		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0};
-	const unsigned int BUILDING_UPGRADE_WEIGHTS[IntBuildingType::NB_BUILDING]=
-		{0, 6, 8, 10, 10, 20, 10, 8, 0, 0, 0, 0, 0};
+	const int MAX_BUILDING_SPECIFIC_CONSTRUCTION_LIMITS[DemandCount]=
+		{0, 4, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0};
+	const unsigned int BUILDING_UPGRADE_WEIGHTS[DemandCount]=
+		{0, 6, 8, 10, 10, 20, 10, 8, 0, 0, 0, 0};
 
 	//The following constants deal with the function iteration. All of these must be
 	//lower than TIMER_ITERATION.
@@ -1303,24 +1316,17 @@ namespace Cabino
 	const unsigned int BASE_DEFENSE_WARRIORS=10;
 
 	//These constants are for the attack system.
-	const IntBuildingType::Number ATTACK_PRIORITY[IntBuildingType::NB_BUILDING-3] =
+	const unsigned ATTACK_PRIORITY[DemandCount-3] =
 	{
-		IntBuildingType::HEAL_BUILDING,
-		IntBuildingType::FOOD_BUILDING,
-		IntBuildingType::ATTACK_BUILDING,
-		IntBuildingType::WALKSPEED_BUILDING,
-		IntBuildingType::SWIMSPEED_BUILDING,
-		IntBuildingType::SCIENCE_BUILDING,
-		IntBuildingType::SWARM_BUILDING,
-		IntBuildingType::DEFENSE_BUILDING,
-		IntBuildingType::MARKET_BUILDING,
-		IntBuildingType::STONE_WALL
-	};
-	const IntBuildingType::Number IGNORED_BUILDINGS[3] =
-	{
-		IntBuildingType::EXPLORATION_FLAG,
-		IntBuildingType::WAR_FLAG,
-		IntBuildingType::CLEARING_FLAG
+		HealUnits,
+		FeedUnits,
+		TrainAttack,
+		TrainWalking,
+		TrainSwimming,
+		TrainConstruction,
+		ProduceWorkers,
+		DefendWithProjectiles,
+		ExchangeResources
 	};
 
 	const unsigned int ATTACK_ZONE_BUILDING_PADDING=1;
@@ -1353,7 +1359,7 @@ namespace Cabino
 
 	const unsigned MAXIMUM_DISTANCE_TO_BUILDING=8;
 	typedef DistributedNewConstructionManager::GradientPoll GradientPoll;
-	const GradientPoll CONSTRUCTION_FACTORS[IntBuildingType::NB_BUILDING][CONSTRUCTOR_FACTORS_COUNT] = 
+	const GradientPoll CONSTRUCTION_FACTORS[DemandCount][CONSTRUCTOR_FACTORS_COUNT] =
 		{{	GradientPoll(Gradient::Wheat, Gradient::None, 4),
 			GradientPoll(Gradient::TeamBuildings, Gradient::Resource, 2), 
 			GradientPoll(Gradient::VillageCenter, Gradient::Resource, 1)}, //swarm
@@ -1394,21 +1400,21 @@ namespace Cabino
 
 	///This represents for every n buildings the team has, allow one to be upgraded
 	const unsigned int MAX_NEW_CONSTRUCTION_AT_ONCE=8;
-	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[IntBuildingType::NB_BUILDING] =
-		{2, 4, 3, 1, 1, 2, 2, 2, 0, 0, 0, 0, 0};
+	const unsigned int MAX_NEW_CONSTRUCTION_PER_BUILDING[DemandCount] =
+		{2, 4, 3, 1, 1, 2, 2, 2, 0, 0, 0, 0};
 	const unsigned int MINIMUM_TO_CONSTRUCT_NEW=4;
 	const unsigned int MAXIMUM_TO_CONSTRUCT_NEW=8;
 	///How many units it requires to constitute construction another building, per type
-	const unsigned int UNITS_FOR_BUILDING[IntBuildingType::NB_BUILDING] =
-		{30, 12, 16, 80, 80, 30, 50, 30, 0, 0, 0, 0, 0};
+	const unsigned int UNITS_FOR_BUILDING[DemandCount] =
+		{30, 12, 16, 80, 80, 30, 50, 30, 0, 0, 0, 0};
 	///This is non-strict prioritizing, meaning that the priorities are used as multipliers on the percentages used
 	///for comparison. In otherwords, the lowest priorites will *almost* always be constructed first, however,
 	///in more extreme situations, higher priorites may be constructed first, even when its are missing lower
 	///priority buildings.
-	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
+	const unsigned int WEAK_NEW_CONSTRUCTION_PRIORITIES[DemandCount] =
 		{4, 2, 4, 6, 5, 4, 5, 5, 0, 0, 0, 0};
 	///Buildings with a higher strict priority will *always* go first
-	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[IntBuildingType::NB_BUILDING] =
+	const unsigned int STRICT_NEW_CONSTRUCTION_PRIORITIES[DemandCount] =
 		{2, 2, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0};
 	///The number of turns before a cached no-build zone gets erased
 	const unsigned int NO_BUILD_CACHE_TIMEOUT=1;
@@ -1446,14 +1452,6 @@ namespace Cabino
 	}
 
 	
-	inline bool buildingAttackPredicate(Building* a, Building* b)
-	{
-		if(a->constructionResultState==Building::NO_CONSTRUCTION && b->constructionResultState!=Building::NO_CONSTRUCTION)
-			return true;
-		else if(a->constructionResultState!=Building::NO_CONSTRUCTION && b->constructionResultState==Building::NO_CONSTRUCTION)
-			return false;
-		return syncRand()%2;
-	}
 
 	///Shuffles the given list.
 	template<typename T> void list_shuffle(std::list<T>& l)
@@ -1518,18 +1516,6 @@ namespace Cabino
 		}
 	}
 
-	inline bool weighted_random_upgrade_comparison(Building* a, Building* b)
-	{
-		if(BUILDING_UPGRADE_WEIGHTS[a->type->shortTypeNum]==0)
-			return false;
-		if(BUILDING_UPGRADE_WEIGHTS[b->type->shortTypeNum]==0)
-			return true;
-		unsigned int num_a=syncRand()%BUILDING_UPGRADE_WEIGHTS[a->type->shortTypeNum];
-		unsigned int num_b=syncRand()%BUILDING_UPGRADE_WEIGHTS[b->type->shortTypeNum];
-		if(num_a>num_b)
-			return true;
-		return false;
-	}
 
 
 	inline int round_up(unsigned int a, unsigned int b)

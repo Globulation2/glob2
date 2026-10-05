@@ -1,3 +1,5 @@
+#include <nlohmann/json.hpp>
+#include "StartingLayout.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
@@ -656,6 +658,38 @@ struct DefaultsFixture
 // diagnostic log, and coverage profile. No generator contract is dropped.
 TEST_SUITE("MapGeneratorDefaults")
 {
+    TEST_CASE("starting layouts follow rectangular and overlay catalog footprints")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (const auto dimensions : {std::pair{1,2},std::pair{7,3},std::pair{2,9},std::pair{4,4}})
+        for (bool overlay : {false,true})
+        {
+            CAPTURE(dimensions.first); CAPTURE(dimensions.second); CAPTURE(overlay);
+            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.terrain=WATER,.teams=0,.loadDefaultRace=true});
+            auto& game=world.game;
+            auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            const int id=game.buildingsTypes.getStartingBuildingTypeNum();
+            auto& type=snapshot["variants"][id];
+            type["properties"]["width"]=dimensions.first;
+            type["properties"]["height"]=dimensions.second;
+            type["semantics"]["occupiesGround"]=!overlay;
+            game.buildingsTypes.loadSnapshotJson(snapshot.dump()); game.configureBuildingCatalog();
+            GenerationRequest request; request.nbTeams=1; request.nbWorkers=6;
+            GenerationContext context(request); context.bootX[0]=61; context.bootY[0]=2;
+            REQUIRE(MapGeneration::placeStarts(game,context));
+            CHECK(game.teams[0]->myBuildings[0]->typeNum==id);
+            const MapGeneration::StartingLayout layout(dimensions.first,dimensions.second,request.nbWorkers);
+            for (int i=0; i<request.nbWorkers; ++i)
+            {
+                const auto* worker=game.teams[0]->myUnits[i]; REQUIRE(worker);
+                CHECK(worker->posX==game.map.normalizeX(61+layout.workerX(i)));
+                CHECK(worker->posY==game.map.normalizeY(2+layout.workerY(i)));
+                CHECK(game.map.getGroundUnit(worker->posX,worker->posY)==worker->gid);
+                CHECK(game.map.getBuilding(worker->posX,worker->posY)==NOGBID);
+            }
+        }
+    }
+
 	TEST_CASE("search domains preserve legal values and constrain deterministic rolls")
 	{
 		for (int method : GeneratorRegistry::builtins().methods())

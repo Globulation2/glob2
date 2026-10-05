@@ -6,7 +6,7 @@
 #include "CortexPlacementGeo.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "Utilities.h"
 #include "building/Building.h"
 #include "BuildingType.h"
@@ -116,18 +116,12 @@ namespace Cortex
 		if (game == NULL || team == NULL)
 			return 0;
 
-		if (buildingType < 0 || buildingType >= IntBuildingType::NB_BUILDING)
-			return 0;
-
-		// Resolve the building footprint. We place the construction SITE (the
-		// same as the GUI/Runtime build path), so request isBuildingSite == true.
-		// Flags (virtual buildings) have no site type and are not placed by this
-		// helper — they occupy no ground, so isHardSpaceForBuilding is the wrong
-		// gate for them. Bail out if there is no real building footprint here.
-		const std::string& typeName = IntBuildingType::reverseConversionMap[buildingType];
-		BuildingType* bt = globalContainer->buildingsTypes.getByType(typeName, level, true);
-		if (bt == NULL || bt->isVirtual)
-			return 0;
+		(void)level; // The catalog chooses a placeable variant for this strategic role.
+        const auto choice = selectBuilding(*game, *team, buildingType);
+        if (choice.placementType < 0) return 0;
+        BuildingType* bt = game->buildingsTypes.get(choice.placementType);
+        const BuildingType* completed = game->buildingsTypes.get(choice.completedType);
+        if (!bt->semantics.occupiesGround) return 0;
 
 		const int w = bt->width;
 		const int h = bt->height;
@@ -143,14 +137,11 @@ namespace Cortex
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
-		// Determine up front whether this building type is wheat-fed (swarm or
-		// inn). SWARM_BUILDING == CORTEX_BUILD_SWARM == 0;
-		// FOOD_BUILDING == CORTEX_BUILD_FOOD == 1.
-		// C++: IntBuildingType enum (building/IntBuildingType.h:14-15).
-		const bool isWheatFed = (buildingType == IntBuildingType::SWARM_BUILDING ||
-		                         buildingType == IntBuildingType::FOOD_BUILDING);
-		const bool isSwarm    = (buildingType == IntBuildingType::SWARM_BUILDING);
-		const bool isInn      = (buildingType == IntBuildingType::FOOD_BUILDING);
+		const bool isSwarm = completed->semantics.production.enabledUnitMask != 0;
+        const bool isInn = completed->semantics.feeding.enabled;
+        bool isWheatFed = isInn && completed->semantics.feeding.cost[WHEAT] > 0;
+        for (const auto& recipe : completed->semantics.production.recipes)
+            isWheatFed |= recipe.enabled && recipe.cost[WHEAT] > 0;
 
 		// Effective footprint used for space reservation. Some buildings grow on
 		// upgrade and must reserve room for the final size at placement time, or the
@@ -163,11 +154,7 @@ namespace Cortex
 		//     it matches the old grownFootprint. Other types reserve what we place.
 		int gox = 0, goy = 0;
 		int ew = w, eh = h;
-		const bool reserveGrown = isInn
-			|| buildingType == IntBuildingType::WALKSPEED_BUILDING
-			|| buildingType == IntBuildingType::SWIMSPEED_BUILDING;
-		if (reserveGrown)
-			grownFootprintBox(bt, gox, goy, ew, eh);
+		grownFootprintBox(game->buildingsTypes, bt, gox, goy, ew, eh);
 
 		// Non-food buildings must stay close to an existing building edge;
 		// forward bases and empty colonies are exempt. Precompute that gate once
@@ -301,7 +288,7 @@ namespace Cortex
 				// reject in that case (first swarm goes wherever wheat exists).
 				if (isSwarm)
 				{
-					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::SWARM_BUILDING);
+					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, CORTEX_BUILD_SWARM);
 					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
 						continue;
 				}
@@ -312,7 +299,7 @@ namespace Cortex
 				// no inn exists yet; the first inn places freely.
 				if (isInn)
 				{
-					const int innDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::FOOD_BUILDING);
+					const int innDist = geometry.distanceToNearestBuildingType(x, y, CORTEX_BUILD_FOOD);
 					if (innDist >= 0 && innDist < CORTEX_INN_MIN_SPACING)
 						continue;
 				}

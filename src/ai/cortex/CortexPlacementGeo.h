@@ -7,6 +7,7 @@
 #include <vector>
 
 class Game;
+class BuildingsTypes;
 class Team;
 class Map;
 struct BuildingType;
@@ -29,7 +30,7 @@ namespace Cortex
 	{
 		struct Box { int x, y, w, h; };
 		struct Inn { Box box; unsigned sides; };
-		struct BuildingBox { Box box; int type; };
+		struct BuildingBox { Box box; unsigned roles; };
 		Map& map;
 		std::vector<Box> buildings;
 		std::vector<BuildingBox> typedBuildings;
@@ -123,7 +124,7 @@ namespace Cortex
 	/// grows it returns its own width/height. Growth is anchored at the top-left
 	/// corner (decLeft/decTop are constant across inn levels, so the footprint expands
 	/// toward +x/+y), so the grown footprint shares the placed building's (posX, posY).
-	void grownFootprint(const BuildingType* bt, int& w, int& h);
+	void grownFootprint(const BuildingsTypes& catalog, const BuildingType* bt, int& w, int& h);
 
 	/// Bounding box, RELATIVE to the placed level-0 top-left corner, that covers the
 	/// building's footprint at EVERY level of its upgrade chain. Unlike grownFootprint
@@ -136,7 +137,7 @@ namespace Cortex
 	/// corner (<= 0 when it grows up/left) and its size (w, h). For a type that never
 	/// grows, or grows from a fixed corner (the inn, constant decLeft), ox == oy == 0
 	/// and (w, h) equals grownFootprint — so callers can use this uniformly.
-	void grownFootprintBox(const BuildingType* bt, int& ox, int& oy, int& w, int& h);
+	void grownFootprintBox(const BuildingsTypes& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h);
 
 	/// True if placing a building of footprint (x, y, w x h) would push one of
 	/// `team`'s existing inns past CORTEX_INN_MAX_TOUCH_SIDES occupied sides. Only

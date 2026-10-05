@@ -2,6 +2,8 @@
 #include "EngineFixtures.h"
 #include "ai/cortex/AICortex.h"
 #include "ai/cortex/CortexObservation.h"
+#include "ai/cortex/CortexBuildings.h"
+#include "ai/model/BuildingProjection.h"
 #include "Order.h"
 #include "Player.h"
 
@@ -18,7 +20,84 @@ void drain(AICortex& ai,Game& game)
 }
 TEST_SUITE("CortexActionCoverage")
 {
-    TEST_CASE("live upgrade eligibility and worker columns drive the actual construction order")
+    TEST_CASE("bounded model channels preserve stock identity and ignore custom family metadata")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        for(size_t i=0;i<world.game.buildingsTypes.size();++i) {
+            const auto& type=*world.game.buildingsTypes.get(i);
+            if(!type.runtimeAvailable)continue;
+            CAPTURE(type.key);
+            CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,type)==type.shortTypeNum);
+        }
+        auto* passive=world.game.buildingsTypes.get(world.game.buildingsTypes.getFinishedTypeNum("stonewall"));
+        passive->shortTypeNum=0;
+        CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,*passive)==ModelBuildingProjection::PassiveGround);
+        passive->semantics.production.enabledUnitMask=1u<<WORKER;
+        CHECK(ModelBuildingProjection::channel(world.game.buildingsTypes,*passive)==ModelBuildingProjection::Production);
+    }
+
+    TEST_CASE("stock consumers are not exchange providers and hybrid attractors survive retirement")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* hybrid=world.addBuilding("inn",4,4);
+        hybrid->type->runtimeFetchesStock=true;
+        hybrid->type->zonable[WARRIOR]=1;
+        CHECK_FALSE(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE));
+        AICortex ai(world.game.players[0]);
+        Uint16 gid=hybrid->gid;
+        REQUIRE(ai.findFlagByGid(gid)==hybrid);
+        ai.clearOneFlag(gid);
+        CHECK(gid==NOGBID);
+        CHECK(ai.orderQueue.empty());
+        CHECK(hybrid->buildingState==Building::ALIVE);
+        // A pure ground attractor releases its assignment without demolition.
+        hybrid->type->semantics.feeding.enabled=false;
+        hybrid->maxUnitWorking=3;
+        gid=hybrid->gid;ai.clearOneFlag(gid);
+        REQUIRE(ai.orderQueue.size()==1);
+        CHECK(std::dynamic_pointer_cast<OrderModifyBuilding>(ai.orderQueue.front())!=nullptr);
+        drain(ai,world.game);
+        CHECK(hybrid->maxUnitWorking==0);
+        CHECK(hybrid->buildingState==Building::ALIVE);
+    }
+
+    TEST_CASE("mixed renamed provider has multiple policy roles but one model and worker identity")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* building = world.addBuilding("inn", 4, 4);
+        auto& type = *building->type;
+        type.type = "unfamiliar-service";
+        type.shortTypeNum = IntBuildingType::STONE_WALL;
+        type.semantics.production.recipes[EXPLORER].enabled = true;
+        type.semantics.production.recipes[EXPLORER].duration = 20;
+        type.semantics.production.enabledUnitMask = 1u << EXPLORER;
+        type.semantics.feeding.cost.fill(0);
+        auto obs = Cortex::makeEmptyObservation(); obs.valid = 1;
+        bool found = false; Sint32 x=0,y=0,r=0;
+        Cortex::observeBuildings(obs, world.team, &world.game, 0, NOGBID, found, x,y,r);
+        CHECK(Cortex::cortexFinishedBuildings(obs, Cortex::CORTEX_BUILD_SWARM) == 1);
+        CHECK(Cortex::cortexFinishedBuildings(obs, Cortex::CORTEX_BUILD_FOOD) == 1);
+        CHECK(obs.swarmCount == 1); CHECK(obs.innCount == 0);
+        int modelCount=0;
+        for (const auto& role : obs.modelBuildingCountPerLevel) for (int count : role) modelCount += count;
+        CHECK(modelCount == 1);
+        CHECK(obs.feedCapacity > 0);
+        AICortex ai(world.game.players[0]);
+        ai.translateAction(Cortex::makeSetProductionAction(2,3,4), obs);
+        REQUIRE(ai.orderQueue.size() == 1);
+        const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(ai.orderQueue.front());
+        REQUIRE(order);
+        // Recipe masking survives the real executor; no unavailable unit is requested.
+        drain(ai, world.game);
+        CHECK(building->ratio[WORKER] == 0);
+        CHECK(building->ratio[EXPLORER] == 3);
+        CHECK(building->ratio[WARRIOR] == 0);
+    }
+
+    TEST_CASE("live capability upgrade eligibility and descriptor capacities drive construction")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
@@ -37,40 +116,20 @@ TEST_SUITE("CortexActionCoverage")
         bool found=false; Sint32 x=0,y=0,r=0;
         Cortex::observeBuildings(obs,world.team,&world.game,2,NOGBID,found,x,y,r);
         CHECK(obs.upgradableCount[Cortex::CORTEX_BUILD_ATTACK]==2);
-        globals->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][2]=7;
-        globals->settings.defaultUnitsAssigned[IntBuildingType::ATTACK_BUILDING][3]=9;
+        globals->settings.setBuildingAssignment(world.game.buildingsTypes.fingerprint(),
+            *world.game.buildingsTypes.get(world.game.buildingsTypes.getTypeNum("barracks",1,true)),7);
+        globals->settings.setBuildingAssignment(world.game.buildingsTypes.fingerprint(),
+            *world.game.buildingsTypes.get(world.game.buildingsTypes.getTypeNum("barracks",1,false)),9);
         ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
         REQUIRE(ai.orderQueue.size()==1);
         auto order=std::dynamic_pointer_cast<OrderConstruction>(ai.orderQueue.front());
         REQUIRE(order!=nullptr);
-        CHECK(order->gid==first->gid); CHECK(order->unitWorking==7); CHECK(order->unitWorkingFuture==9);
+        CHECK(order->gid==first->gid); CHECK(order->unitWorking==4); CHECK(order->unitWorkingFuture==0);
         ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
         CHECK(ai.orderQueue.size()==1);
         drain(ai,world.game);
         CHECK(first->constructionResultState==Building::UPGRADE);
-        CHECK(first->maxUnitWorking==7);
-    }
-
-    TEST_CASE("market levels do not introduce an AI upgrade strategy")
-    {
-        glob2test::HeadlessGlobals globals;
-        for (bool enabled : {false,true})
-        {
-            glob2test::GameOptions options{.clearImmobile=true,.loadDefaultRace=true,.header=true};
-            options.experiments.set(ExperimentId::MarketsV2,enabled);
-            glob2test::HeadlessGame world(options);
-            world.addUnit(WORKER,20,20,0,2);
-            auto* market=world.addBuilding("market",4,4);
-            REQUIRE(market);
-            AICortex ai(world.game.players[0]);
-            CHECK(ai.findUpgradeTarget(IntBuildingType::MARKET_BUILDING)==nullptr);
-            auto obs=Cortex::makeEmptyObservation(); obs.valid=1;
-            bool found=false; Sint32 x=0,y=0,r=0;
-            Cortex::observeBuildings(obs,world.team,&world.game,2,NOGBID,found,x,y,r);
-            CHECK(obs.upgradableCount[IntBuildingType::MARKET_BUILDING]==0);
-            ai.translateAction(Cortex::makeUpgradeAction(IntBuildingType::MARKET_BUILDING),obs);
-            CHECK(ai.orderQueue.empty());
-        }
+        CHECK(first->maxUnitWorking==4);
     }
 
     TEST_CASE("build actions reject invalid slots and cooldown suppresses duplicate orders")

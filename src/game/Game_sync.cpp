@@ -49,7 +49,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int teamNumber=bpi->teamNumber;
 		assert(teamNumber <= teamsCount());
 		Sint32 typeNum=(bpi->typeNum);
-		BuildingType *bt=globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *bt=buildingsTypes.get(typeNum);
 		int w=bt->width;
 		int h=bt->height;
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))

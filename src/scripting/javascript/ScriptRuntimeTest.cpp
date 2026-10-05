@@ -545,6 +545,7 @@ TEST_CASE("JavaScript managed properties coalesce and reject persistent handles"
 				.set("team", 0)
 				.set("shortType", 8)
 				.set("virtual", true)
+				.set("relocatable", true)
 				.set("x", 1)
 				.set("y", 2)
 				.set("workers", 3);

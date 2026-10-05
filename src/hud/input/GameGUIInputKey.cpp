@@ -212,8 +212,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					if (selectionMode==BUILDING_SELECTION)
 					{
 						Building* selBuild = selectionBuilding();
-						int typeNum = selBuild->typeNum; //determines type of updated building
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
 						// Another team's building can be selected for viewing; its upgrade is not ours to cancel.
 						if (selBuild->owner->teamNumber != localTeamNo)
 							break;
@@ -337,8 +336,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					if (selectionMode==BUILDING_SELECTION)
 					{
 						Building* selBuild = selectionBuilding();
-						int typeNum = selBuild->typeNum; //determines type of updated building
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
 						// Another team's building can be selected for viewing; its repair is not ours to cancel.
 						if (selBuild->owner->teamNumber != localTeamNo)
 							break;
