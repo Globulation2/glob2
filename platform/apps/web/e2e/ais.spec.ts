@@ -60,6 +60,7 @@ test('AI discovery, version details, social actions and gated publishing', async
       },
     }),
   );
+  await page.route('**/api/v1/accounts/*/avatar', (r) => r.fulfill({ status: 404 }));
   await page.route('**/api/v1/accounts/me', (r) =>
     r.fulfill({
       json: {
@@ -107,7 +108,16 @@ test('AI discovery, version details, social actions and gated publishing', async
       await r.fulfill({
         json: {
           ai: { ...ai, favourited: active },
-          versions: [version],
+          versions: [
+            version,
+            {
+              ...version,
+              id: 'old-release',
+              label: '1.1.0',
+              downloadUrl: '/api/v1/ais/' + id + '/versions/old-release/file',
+              downloads: 45,
+            },
+          ],
           viewer: { owner: true, moderator: false },
         },
       });
@@ -141,6 +151,12 @@ test('AI discovery, version details, social actions and gated publishing', async
   }
   await page.getByRole('heading', { name: 'Patient Gardener' }).click();
   await expect(page.getByRole('link', { name: 'Download JavaScript (.js)' })).toBeVisible();
+  await page.getByLabel('Version', { exact: true }).selectOption('old-release');
+  await expect(page.getByRole('link', { name: 'Download JavaScript (.js)' })).toHaveAttribute(
+    'href',
+    '/api/v1/ais/' + id + '/versions/old-release/file',
+  );
+  await page.getByLabel('Version', { exact: true }).selectOption(vId);
   await page.getByRole('button', { name: '☆ Favourite' }).click();
   await expect(page.getByRole('button', { name: '★ Favourited' })).toBeVisible();
   await page.screenshot({
@@ -150,13 +166,11 @@ test('AI discovery, version details, social actions and gated publishing', async
   await page.goto('/ais/new');
   const publish = page.getByRole('button', { name: 'Publish', exact: true });
   await expect(publish).toBeDisabled();
-  await page
-    .getByLabel('Bundled JavaScript file')
-    .setInputFiles({
-      name: 'gardener.js',
-      mimeType: 'text/javascript',
-      buffer: Buffer.from('function step(){}'),
-    });
+  await page.getByLabel('Bundled JavaScript file').setInputFiles({
+    name: 'gardener.js',
+    mimeType: 'text/javascript',
+    buffer: Buffer.from('function step(){}'),
+  });
   await expect(page.getByText('Ready to publish')).toBeVisible();
   await expect(publish).toBeEnabled();
   await page.screenshot({

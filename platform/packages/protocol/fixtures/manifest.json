@@ -187,6 +187,44 @@
   },
   "fixtures": [
     {
+      "file": "valid/AiDetail/versioned-controller.json",
+      "schema": "AiDetail",
+      "valid": true,
+      "note": "Likes and favourites belong to the AI; downloads and compatibility evidence belong to each immutable release."
+    },
+    {
+      "file": "valid/AiList/catalogue.json",
+      "schema": "AiList",
+      "valid": true,
+      "note": "A catalogue card includes the latest release without rewriting source metadata."
+    },
+    {
+      "file": "valid/AiUpload/checked-private-upload.json",
+      "schema": "AiUpload",
+      "valid": true,
+      "note": "A private staging receipt binds compatibility checks to exact source bytes."
+    },
+    {
+      "file": "invalid/AiValidationReport/partial-checks.json",
+      "schema": "AiValidationReport",
+      "valid": false,
+      "stage": "schema",
+      "note": "Reports must explicitly include skipped dependent checks."
+    },
+    {
+      "file": "invalid/PublishAiRequest/unknown-tag.json",
+      "schema": "PublishAiRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only the fixed intent tags can be published."
+    },
+    {
+      "file": "valid/EngineJob/validate-ai.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Compatibility work binds source bytes and suite to an engine version."
+    },
+    {
       "file": "valid/PlayerDirectory/ai.json",
       "schema": "PlayerDirectory",
       "valid": true,

@@ -235,6 +235,15 @@ bool compatibleAI(const Json &version)
 	return Online::compatibleAiVersion(version, Online::SimVersion::local().key());
 }
 } // namespace
+void SettingsScreen::closeCustomAILibrary()
+{
+	if (customAIs)
+	{
+		customAIs->calls.reset();
+		++customAIs->generation;
+		customAIs->searchAt = 0;
+	}
+}
 void SettingsScreen::openCustomAILibrary()
 {
 	auto &s = *customAIs;
@@ -503,14 +512,19 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 		const bool sheet = (p.touch || p.compact()) && s.detail.is_object();
 		if (!sheet)
 		{
-			top.push_back(row({expanded(textField("ais/search", s.query,
-												  [this](const std::string &value)
-												  {
-													  customAIs->query = value;
-													  customAIs->searchAt = SDL_GetTicks() + 250;
-												  })),
-							   Glob2UI::button("ais/search-go", customAIText("Search"),
-											   [this] { fetchCustomAIs(); }, {.enabled = !busy})}));
+			top.push_back(row(
+				{expanded(textField("ais/search", s.query,
+									[this](const std::string &value)
+									{
+										customAIs->query = value;
+										customAIs->searchAt = SDL_GetTicks() + 250;
+									},
+									{.maxLength = 128,
+									 .placeholder = customAIText("Search"),
+									 .submit = [this](const std::string &) { fetchCustomAIs(); },
+									 .enabled = !busy})),
+				 Glob2UI::button("ais/search-go", customAIText("Search"),
+								 [this] { fetchCustomAIs(); }, {.enabled = !busy})}));
 			std::vector<std::string> sorts;
 			for (const auto &label :
 				 {"Most liked", "Newest", "Recently updated", "Most downloaded"})

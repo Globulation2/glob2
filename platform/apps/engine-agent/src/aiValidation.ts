@@ -189,7 +189,11 @@ export async function createAiValidator(
     ]);
     if (game.code !== 0) throw Error('Isolated gameplay probe failed: ' + game.stderr.slice(-1000));
     const result = JSON.parse((await bounded(join(scratch, 'probe/result.json'))).toString());
-    if (result.javascriptControllers?.length !== 1 || result.javascriptControllers[0].disabled)
+    if (
+      result.javascriptControllers?.length !== 1 ||
+      result.javascriptControllers[0].disabled ||
+      typeof result.javascriptControllers[0].rejectedDecision !== 'boolean'
+    )
       throw Error('Isolated engine lacks healthy controller diagnostics');
   });
   return async (bytes, signal, progress) =>
@@ -226,8 +230,8 @@ export async function createAiValidator(
         };
         if (!checkedJson.valid) {
           const failed = checkedJson.failedCheck;
-          if (failed && ['syntax', 'startup', 'state'].includes(failed)) {
-            for (const id of ['syntax', 'startup', 'state'] as const) {
+          if (failed && ['file', 'syntax', 'startup', 'state'].includes(failed)) {
+            for (const id of ['file', 'syntax', 'startup', 'state'] as const) {
               if (id === failed) break;
               pass(id);
             }
@@ -404,7 +408,7 @@ export async function createAiValidator(
           if (c.id === stage) {
             c.status = 'failed';
             c.message = (error instanceof Error ? error.message : String(error)).slice(0, 2000);
-          } else if (c.status === 'pending') c.status = 'skipped';
+          } else if (c.status === 'pending' || c.status === 'running') c.status = 'skipped';
         }
       }
       report.suite = AI_VALIDATION_SUITE;

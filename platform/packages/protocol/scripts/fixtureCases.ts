@@ -685,7 +685,115 @@ const VERIFIED_OUTCOME = {
   replayHash: HASH_C,
 };
 
+const AI_REPORT = {
+  sourceHash: HASH_A,
+  simVersion: `${SIM_VERSION.versionMinor}-${SIM_VERSION.netProtocol}-${SIM_VERSION.dataHash}`,
+  suite: 1,
+  valid: true,
+  checks: ['file', 'syntax', 'startup', 'state', 'gameplay', 'determinism', 'continuation'].map(
+    (id) => ({ id, status: 'passed' }),
+  ),
+  metadata: {
+    apiVersion: 2,
+    name: 'Patient Gardener',
+    description: 'An economy controller',
+    version: '1.2',
+    author: 'Alice',
+  },
+};
+const AI_VERSION = {
+  id: JOB_ID,
+  hash: HASH_A,
+  label: '1.2',
+  notes: 'More reliable food.',
+  profile: 2,
+  createdAt: NOW,
+  downloads: 8,
+  downloadUrl: `/api/v1/ais/${MAP_ID}/versions/${JOB_ID}/file`,
+  validations: [AI_REPORT],
+};
+const AI_INFO = {
+  id: MAP_ID,
+  name: 'Patient Gardener',
+  description: 'An economy controller',
+  tags: ['Economy', 'Defensive'],
+  visibility: 'public',
+  hidden: false,
+  owner: { id: ACCOUNT_1, displayName: 'Alice' },
+  createdAt: NOW,
+  updatedAt: NOW,
+  likes: 4,
+  downloads: 12,
+  latestVersion: AI_VERSION,
+  liked: false,
+  favourited: true,
+};
+
 export const fixtureCases: FixtureCase[] = [
+  {
+    schema: 'AiDetail',
+    name: 'versioned-controller',
+    valid: true,
+    note: 'Likes and favourites belong to the AI; downloads and compatibility evidence belong to each immutable release.',
+    value: {
+      ai: AI_INFO,
+      versions: [
+        AI_VERSION,
+        { ...AI_VERSION, id: ROOM_ID, hash: HASH_B, label: '1.1', downloads: 4, validations: [] },
+      ],
+      viewer: { owner: false, moderator: false },
+    },
+  },
+  {
+    schema: 'AiList',
+    name: 'catalogue',
+    valid: true,
+    note: 'A catalogue card includes the latest release without rewriting source metadata.',
+    value: { items: [AI_INFO] },
+  },
+  {
+    schema: 'AiUpload',
+    name: 'checked-private-upload',
+    valid: true,
+    note: 'A private staging receipt binds compatibility checks to exact source bytes.',
+    value: { id: JOB_ID, sourceHash: HASH_A, status: 'valid', report: AI_REPORT, expiresAt: NOW },
+  },
+  {
+    schema: 'AiValidationReport',
+    name: 'partial-checks',
+    valid: false,
+    stage: 'schema',
+    note: 'Reports must explicitly include skipped dependent checks.',
+    value: { ...AI_REPORT, checks: AI_REPORT.checks.slice(0, 3) },
+  },
+  {
+    schema: 'PublishAiRequest',
+    name: 'unknown-tag',
+    valid: false,
+    stage: 'schema',
+    note: 'Only the fixed intent tags can be published.',
+    value: {
+      uploadId: JOB_ID,
+      name: 'Patient',
+      description: '',
+      tags: ['Invincible'],
+      visibility: 'public',
+      version: '1',
+      notes: '',
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'validate-ai',
+    valid: true,
+    note: 'Compatibility work binds source bytes and suite to an engine version.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'validate-ai',
+      simVersion: SIM_VERSION,
+      payload: { blobHash: HASH_A, suite: 1 },
+    },
+  },
   {
     schema: 'PlayerDirectory',
     name: 'ai',

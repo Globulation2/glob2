@@ -289,6 +289,7 @@ TEST_SUITE("OnlineResources")
 #include "AiCatalog.h"
 TEST_CASE("AI catalogue rejects malformed metadata and requires exact compatible evidence" * doctest::test_suite("OnlineResources"))
 {
+ for(const auto &[name,value]:fixtures("AiDetail")){INFO(name);CHECK(validAiDetail(value));}
  Json checks=Json::array();
  for(const auto &id:{"file","syntax","startup","state","gameplay","determinism","continuation"}) checks.push_back({{"id",id},{"status","passed"}});
  Json report={{"sourceHash",std::string(64,'a')},{"simVersion","engine"},{"suite",1},{"valid",true},{"checks",checks}};

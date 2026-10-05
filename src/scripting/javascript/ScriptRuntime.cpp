@@ -924,7 +924,9 @@ class QuickRuntime : public Runtime
 			if (JS_IsException(value.get()))
 				e.fail();
 			const auto data = e.fromJS(value.get());
+			if (stage) *stage = "file";
 			metadata.apiVersion = data.integer("apiVersion", 1, 2);
+			if (stage) *stage = "startup";
 			metadata.name = data.string("name");
 			if (metadata.name.empty() || metadata.name.size() > 128)
 				throw std::runtime_error("AI name must contain 1..128 UTF-8 bytes");
