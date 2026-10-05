@@ -31,6 +31,9 @@ ref=${2:-}
 echo "revision: $(git rev-parse --short HEAD) $(git log -1 --format=%s)"
 echo "sim version: 128-51-abc"
 echo "args: $*" >> "$FAKE_LOG"
+if [ -n "${FAKE_FINISH_GATE:-}" ]; then
+  while [ ! -f "$FAKE_FINISH_GATE" ]; do sleep 0.01; done
+fi
 sleep "${FAKE_SLEEP:-0}"
 case "${FAKE_RESULT:-ok}" in
   ok)
@@ -147,6 +150,27 @@ class HostDriverTests(unittest.TestCase):
             run = f'gh-{result}'
             self.driver('start', str(self.env_file), self.new, run, FAKE_RESULT=result)
             self.assertEqual(self.wait(run)['rollback'], expected)
+
+    def test_completion_between_status_checks_is_reported_as_done(self):
+        run = 'gh-completion-race'
+        gate = self.dir / 'finish-deploy'
+        self.driver('start', str(self.env_file), self.new, run,
+                    FAKE_RESULT='rollback', FAKE_FINISH_GATE=str(gate))
+        # Model the process finishing just before the liveness check returns.
+        # Its exit marker is published before it dies, as in the real driver.
+        marker = self.host / 'deploys' / run / 'exit'
+        prefix = f'''kill() {{
+            touch "{gate}"
+            while [ ! -f "{marker}" ]; do sleep 0.01; done
+            return 1
+        }}
+'''
+        result = subprocess.run(['sh', '-s', '--', 'status', str(self.env_file), run],
+                                input=prefix + DRIVER.read_text(), capture_output=True,
+                                text=True, env=self.env, timeout=10, check=True)
+        status = dict(line.split('=', 1) for line in result.stdout.splitlines())
+        self.assertEqual((status['state'], status['exit'], status['rollback']),
+                         ('done', '1', 'rolled-back'))
 
     def test_refuses_while_another_deploy_runs(self):
         result = self.driver('start', str(self.env_file), self.new, 'gh-3-1', check=False, FAKE_BUSY='1')
