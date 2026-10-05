@@ -28,9 +28,18 @@
 #include <algorithm>
 #include <cstring>
 #include <cmath>
+#include <string_view>
 
 namespace
 {
+void importBeforeMatch(Game &game, std::string_view definitions)
+{
+	// Detached maps permit pre-match authoring; active games reject registry replacement.
+	game.map.game = nullptr;
+	game.map.importTerrainDefinitions(definitions);
+	game.map.setGame(&game);
+}
+
 // Preserve real portable rendering while making device limits strict and visible.
 // No test-only limit controls are needed in production rendering code.
 class LimitedTerrainBackend final : public GAGCore::RenderBackend
@@ -260,8 +269,8 @@ void layeredCache(bool gpu, bool hd = false)
 	compare();
 	// A scene retains its registry snapshot. Reimport changes material bindings
 	// only on extraction, and invalidates both software and GPU composed pages.
-	game.edit = true;
-	map.importTerrainDefinitions(
+	importBeforeMatch(
+		game,
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
 	const auto custom = *map.terrainRegistry().find("test:custom");
 	map.setCellTerrain(0, 0, custom);
@@ -270,7 +279,8 @@ void layeredCache(bool gpu, bool hd = false)
 	compare();
 	const auto previousRegistry = scene.frozenTerrainRegistry();
 	const auto previousRecipe = compositor.describe(scene, 0, 0);
-	map.importTerrainDefinitions(
+	importBeforeMatch(
+		game,
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom trail","base":"grass","properties":{},"appearance":"road"}]})");
 	CHECK(scene.frozenTerrainRegistry() == previousRegistry);
 	CHECK(compositor.describe(scene, 0, 0) == previousRecipe);
@@ -279,7 +289,6 @@ void layeredCache(bool gpu, bool hd = false)
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == previousRecipe);
 	compare();
 	compare();
-	game.edit = false;
 	// Content revisions invalidate prepared source pixels and composed pages.
 	auto *source = globals->terrain->nativeFrame(272);
 	source->drawFilledRect(0, 0, 32, 32, 201, 23, 189);
@@ -322,9 +331,8 @@ TEST_SUITE("TerrainPresentation")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
 		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4});
-		fixture.game.edit = true;
 		auto &map = fixture.game.map;
-		map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+		importBeforeMatch(fixture.game, R"({"schemaVersion":1,"terrains":[
 			{"key":"test:ice-a","name":"Ice A","base":"grass","properties":{},"appearance":"ice"},
 			{"key":"test:ice-b","name":"Ice B","base":"sand","properties":{},"appearance":"ice"},
 			{"key":"test:sand","name":"Custom sand","base":"grass","properties":{},"appearance":"sand"}
@@ -369,9 +377,9 @@ TEST_SUITE("TerrainPresentation")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .teams = 0});
-		fixture.game.edit = true;
 		auto &map = fixture.game.map;
-		map.importTerrainDefinitions(
+		importBeforeMatch(
+			fixture.game,
 			R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom","base":"grass","properties":{},"appearance":"sand"}]})");
 		const auto custom = *map.terrainRegistry().find("test:custom");
 		map.setCellTerrain(0, 0, custom);
