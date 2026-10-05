@@ -1,0 +1,14 @@
+12 alternating paired blocks per warm mode, 1024 frames/block; 8 cold samples per catalog.
+pattern mode | wall ms before -> after (% median paired change) | CPU ms before -> after (% median paired change)
+uniform | cold | 13.0334 -> 13.2586 (+1.30%) | 12.9254 -> 13.0899 (+1.02%)
+uniform | warm | 0.4551 -> 0.4486 (+4.30%) | 0.4472 -> 0.4408 (+4.20%)
+uniform | moving | 0.6671 -> 0.6380 (-3.61%) | 0.6544 -> 0.6260 (-3.60%)
+mixed | cold | 32.0320 -> 36.5572 (+13.99%) | 31.6416 -> 36.1368 (+13.98%)
+mixed | warm | 0.7218 -> 0.6971 (-1.11%) | 0.7086 -> 0.6841 (-1.15%)
+mixed | moving | 0.7921 -> 0.7970 (+5.07%) | 0.7772 -> 0.7815 (+5.03%)
+dense | cold | 81.9908 -> 86.4871 (+3.51%) | 81.2809 -> 85.6182 (+3.44%)
+dense | warm | 0.3143 -> 0.2829 (-8.19%) | 0.3095 -> 0.2786 (-8.16%)
+dense | moving | 0.3527 -> 0.3555 (+0.84%) | 0.3469 -> 0.3497 (+0.88%)
+Warm cache rebuild counts: ['0']
+Cache bytes: ['4771232']
+Prepared source bytes: ['262144']
