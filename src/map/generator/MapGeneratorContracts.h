@@ -8,6 +8,7 @@
 #include <array>
 #include <algorithm>
 #include <utility>
+#include <memory>
 #include <cstdlib>
 #include <cstdint>
 #include <climits>
@@ -1969,7 +1970,11 @@ inline void drownedForestContracts()
 		assert(!definition.validateRequest(r).empty());
 	}
 	GenerationService service;
-	Game first(nullptr), warm(nullptr);
+	// Keep the retained regression worlds off Windows' small main-thread stack.
+	auto firstStorage = std::make_unique<Game>(nullptr);
+	Game &first = *firstStorage;
+	auto warmStorage = std::make_unique<Game>(nullptr);
+	Game &warm = *warmStorage;
 	assert(service.generate(first, request));
 	assert(service.generate(warm, request, true));
 	assert(mapFingerprint(first) == mapFingerprint(warm));
@@ -1982,7 +1987,8 @@ inline void drownedForestContracts()
 		first.map.growResources();
 	assert(definition.validateWorld(first, check).empty());
 	// Damage to a designated neck must be detected.
-	Game observedWorld(nullptr);
+	auto observedWorldStorage = std::make_unique<Game>(nullptr);
+	Game &observedWorld = *observedWorldStorage;
 	const auto observed = service.generate(observedWorld, request, true);
 	int neck = -1;
 	for (const auto &record : observed.telemetry.records())
@@ -1998,7 +2004,8 @@ inline void drownedForestContracts()
 	compact.wDec = compact.hDec = 7;
 	compact.nbTeams = 2;
 	compact.nbWorkers = 8;
-	Game crowded(nullptr);
+	auto crowdedStorage = std::make_unique<Game>(nullptr);
+	Game &crowded = *crowdedStorage;
 	assert(service.generate(crowded, compact));
 	for (int amount : {0, 300})
 	{
@@ -2007,7 +2014,8 @@ inline void drownedForestContracts()
 		for (const auto &control : definition.controls)
 			if (control.group == ControlGroup::Resources)
 				extreme.options[control.id] = amount;
-		Game world(nullptr);
+		auto worldStorage = std::make_unique<Game>(nullptr);
+		Game &world = *worldStorage;
 		assert(service.generate(world, extreme));
 		GenerationContext verify(extreme);
 		assert(definition.validateWorld(world, verify).empty());
@@ -2032,14 +2040,16 @@ inline void drownedForestContracts()
 	futureRoom.options["stone-amount"] = 250;
 	futureRoom.options["algae-amount"] = 75;
 	futureRoom.options["fruit-amount"] = 275;
-	Game roomRegression(nullptr);
+	auto roomRegressionStorage = std::make_unique<Game>(nullptr);
+	Game &roomRegression = *roomRegressionStorage;
 	assert(service.generate(roomRegression, futureRoom));
 	// Sparse woods on the smallest map still need useful destinations for both homes.
 	auto sparse = compact;
 	sparse.seed = 2;
 	sparse.nbWorkers = 4;
 	sparse.options["wood-amount"] = 0;
-	Game sparseRegression(nullptr);
+	auto sparseRegressionStorage = std::make_unique<Game>(nullptr);
+	Game &sparseRegression = *sparseRegressionStorage;
 	assert(service.generate(sparseRegression, sparse));
 	sparse.seed = 100260;
 	sparse.nbWorkers = 3;
@@ -2049,7 +2059,8 @@ inline void drownedForestContracts()
 	sparse.options["stone-amount"] = 50;
 	sparse.options["algae-amount"] = 75;
 	sparse.options["fruit-amount"] = 75;
-	Game scarceRegression(nullptr);
+	auto scarceRegressionStorage = std::make_unique<Game>(nullptr);
+	Game &scarceRegression = *scarceRegressionStorage;
 	assert(service.generate(scarceRegression, sparse));
 	// At full colony density, many alternate bars and thick necks need a longer
 	// bounded search while retaining the same useful-shortcut requirement.
@@ -2064,7 +2075,8 @@ inline void drownedForestContracts()
 	dense.options["stone-amount"] = 75;
 	dense.options["algae-amount"] = 275;
 	dense.options["fruit-amount"] = 275;
-	Game denseRegression(nullptr);
+	auto denseRegressionStorage = std::make_unique<Game>(nullptr);
+	Game &denseRegression = *denseRegressionStorage;
 	assert(service.generate(denseRegression, dense));
 	// Fully occupied rectangular maps need the same bounded tail as dense squares.
 	auto rectangle = request;
@@ -2077,12 +2089,15 @@ inline void drownedForestContracts()
 	rectangle.options["wood-amount"] = 0;
 	rectangle.options["stone-amount"] = 50;
 	rectangle.options["algae-amount"] = 200;
-	Game rectangularRegression(nullptr);
+	auto rectangularRegressionStorage = std::make_unique<Game>(nullptr);
+	Game &rectangularRegression = *rectangularRegressionStorage;
 	assert(service.generate(rectangularRegression, rectangle));
-	Game cold(nullptr);
+	auto coldStorage = std::make_unique<Game>(nullptr);
+	Game &cold = *coldStorage;
 	assert(service.generate(cold, request));
 	// The worker-sensitive compact request evicted the cache; reconstruction is identical.
-	Game original(nullptr);
+	auto originalStorage = std::make_unique<Game>(nullptr);
+	Game &original = *originalStorage;
 	assert(service.generate(original, request));
 	assert(mapFingerprint(cold) == fingerprint && mapFingerprint(original) == fingerprint);
 	puts("PASS Drowned Forest: envelope, repeatability, cache, growth containment, neck damage, "
