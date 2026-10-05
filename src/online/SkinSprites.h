@@ -21,7 +21,8 @@ public:
     const Counters &counters() const { return metrics; }
 private:
     struct Team { AuthorizedSkin skin; SkinSpriteManifest manifest; std::unique_ptr<HttpFetch::Fetch> fetch; bool tried=false; };
-    struct Page { SkinSpritePage info; std::string version, bundle; std::unique_ptr<HttpFetch::Fetch> fetch; std::unique_ptr<GAGCore::DrawableSurface> surface; std::uint64_t touched=0; bool requested=false; unsigned failures=0; };
+    struct Frame { unsigned x=0,y=0,w=1,h=1; };
+    struct Page { SkinSpritePage info; std::string version, bundle; std::unique_ptr<HttpFetch::Fetch> fetch; std::unique_ptr<GAGCore::DrawableSurface> surface; std::array<Frame,64> frames; unsigned cellW=128,cellH=128; std::size_t cost=0; std::uint64_t touched=0; bool requested=false; unsigned failures=0; };
     OnlineStorage &storage;
     std::string origin;
     SkinDownloads::FetchStarter start;

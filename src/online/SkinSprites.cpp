@@ -33,7 +33,7 @@ void SkinSprites::remove(int team) {
     for (auto it=pages.begin();it!=pages.end();) {
         const bool retained=std::any_of(teams.begin(),teams.end(),[&](const auto &entry){return std::any_of(entry.manifest.pages.begin(),entry.manifest.pages.end(),[&](const auto &p){return p.hash==it->first;});});
         if (retained) {++it;continue;}
-        if (it->second.surface) decoded-=std::size_t(it->second.info.size)*it->second.info.size*4;
+        if (it->second.surface) decoded-=it->second.cost;
         if (it->second.fetch) it->second.fetch->cancel();
         it=pages.erase(it);
     }
@@ -100,18 +100,45 @@ void SkinSprites::poll() {
         decodedOne=true;
         auto *loaded=IMG_Load_IO(SDL_IOFromConstMem(bytes.data(),bytes.size()),true);
         if(!loaded || loaded->w!=int(p.info.size) || loaded->h!=int(p.info.size)) {if(loaded)SDL_DestroySurface(loaded);++p.failures;continue;}
-        const std::size_t cost=std::size_t(p.info.size)*p.info.size*4;
+        auto *rgba=SDL_ConvertSurface(loaded,SDL_PIXELFORMAT_ARGB8888);SDL_DestroySurface(loaded);
+        if(!rgba){++p.failures;continue;}
+        // Keep full-resolution pixels, but discard unused transparent tile
+        // margins. A one-pixel transparent guard preserves linear filtering.
+        p.cellW=p.cellH=1;
+        const unsigned columns=p.info.size==128?1:8,rows=p.info.size==128?1:8;
+        for(unsigned frame=0;frame<p.info.frames;++frame) {
+            unsigned left=128,top=128,right=0,bottom=0;
+            for(unsigned y=0;y<128;++y) {
+                const auto *pixels=reinterpret_cast<const uint32_t*>(static_cast<const char*>(rgba->pixels)+((frame/columns)*128+y)*rgba->pitch)+(frame%columns)*128;
+                for(unsigned x=0;x<128;++x)if(pixels[x]>>24) {
+                    left=std::min(left,x);top=std::min(top,y);right=std::max(right,x+1);bottom=std::max(bottom,y+1);
+                }
+            }
+            auto &bounds=p.frames[frame];bounds=Frame{};
+            if(left<right) {
+                bounds.x=left?left-1:0;bounds.y=top?top-1:0;
+                bounds.w=std::min(128u,right+1)-bounds.x;bounds.h=std::min(128u,bottom+1)-bounds.y;
+            }
+            p.cellW=std::max(p.cellW,bounds.w);p.cellH=std::max(p.cellH,bounds.h);
+        }
+        const std::size_t cost=std::size_t(p.cellW)*columns*p.cellH*rows*4;
         while(decoded+cost>MemoryLimit) {
             auto victim=pages.end();
             for(auto it=pages.begin();it!=pages.end();++it)if(it->second.surface && (victim==pages.end() || it->second.touched<victim->second.touched))victim=it;
             if(victim==pages.end())break;
-            decoded-=std::size_t(victim->second.info.size)*victim->second.info.size*4;victim->second.surface.reset();++metrics.evictions;
+            decoded-=victim->second.cost;victim->second.surface.reset();++metrics.evictions;
         }
-        auto *rgba=SDL_ConvertSurface(loaded,SDL_PIXELFORMAT_ARGB8888);SDL_DestroySurface(loaded);
-        if(!rgba){++p.failures;continue;}
-        p.surface=std::make_unique<GAGCore::DrawableSurface>(rgba->w,rgba->h);
-        SDL_SetSurfaceBlendMode(rgba,SDL_BLENDMODE_NONE);SDL_BlitSurface(rgba,nullptr,p.surface->getSDLSurface(),nullptr);SDL_DestroySurface(rgba);
-        p.surface->markPixelsChanged();decoded+=cost;++metrics.decodes;
+        p.surface=std::make_unique<GAGCore::DrawableSurface>(p.cellW*columns,p.cellH*rows);
+        SDL_FillSurfaceRect(p.surface->getSDLSurface(),nullptr,0);
+        SDL_SetSurfaceBlendMode(rgba,SDL_BLENDMODE_NONE);
+        for(unsigned frame=0;frame<p.info.frames;++frame) {
+            const auto &bounds=p.frames[frame];
+            SDL_Rect source{int((frame%columns)*128+bounds.x),int((frame/columns)*128+bounds.y),int(bounds.w),int(bounds.h)};
+            SDL_Rect destination{int((frame%columns)*p.cellW),int((frame/columns)*p.cellH),int(bounds.w),int(bounds.h)};
+            SDL_BlitSurface(rgba,&source,p.surface->getSDLSurface(),&destination);
+        }
+        SDL_DestroySurface(rgba);
+        p.surface->markPixelsChanged();p.cost=cost;decoded+=cost;++metrics.decodes;
     }
     for(auto &[hash,p]:pages)p.requested=false;
 }
@@ -127,8 +154,10 @@ bool SkinSprites::draw(GAGCore::GraphicContext &gfx,int team,unsigned clip,unsig
     if(shadow)gfx.drawSurface(x,y,w,h,shadow,alpha);
     x-=w*0.125f;y-=h*0.125f;w*=1.25f;h*=1.25f;
     const unsigned cell=frame-found->first;
+    const auto &bounds=p.frames[cell];
+    x+=w*bounds.x/128.f;y+=h*bounds.y/128.f;w*=bounds.w/128.f;h*=bounds.h/128.f;
     // SDL's linear scaler restores source modulation and clips after scaling.
-    gfx.drawSkinSprite(x,y,w,h,p.surface.get(),(cell%8)*128,(cell/8)*128,128,128,alpha);
+    gfx.drawSkinSprite(x,y,w,h,p.surface.get(),(cell%8)*p.cellW,(cell/8)*p.cellH,bounds.w,bounds.h,alpha);
     return true;
 }
 }

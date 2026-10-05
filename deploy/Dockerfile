@@ -26,7 +26,7 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates git g++ make nasm python3 scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+    ca-certificates git g++ make nasm python3 python3-venv scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
@@ -75,7 +75,10 @@ RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ && \
     cp -a build/sdl3/prefix/share/licenses /output/licenses && \
-    cp -r data maps campaigns scripts /output/share/ && \
+    if [ -d build/linux/client/release/runtime-assets/data ]; then \
+      cp -r build/linux/client/release/runtime-assets/data build/linux/client/release/runtime-assets/maps \
+        build/linux/client/release/runtime-assets/campaigns build/linux/client/release/runtime-assets/scripts /output/share/; \
+    else cp -r data maps campaigns scripts /output/share/; fi && \
     find /output/share -name SConscript -delete && \
     python3 /usr/local/bin/glob2-sim-version /source --expect "${GLOB2_SIM_VERSION}" > /output/sim-version && \
     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash && \

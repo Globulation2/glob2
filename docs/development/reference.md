@@ -553,6 +553,9 @@ Use `-G` for software or `-g` for OpenGL with the same assignment and save.
 can share or select different skins. `SKIN_BENCH_FRAME_PREFIX` captures 32
 animation frames for comparison videos. Software measurements also report
 decoded sprite memory.
+Decoded pages compact transparent pose margins with a one-pixel filtering guard,
+preserving their original resolution and placement while accounting their packed
+allocation against the shared cache limit.
 The harness adds a crowded diagnostic colony, advances its animation phases,
 and checks that every draw preserves simulation checksums and that classic and
 skinned states match. It reports first-frame cost separately from warmed mean,

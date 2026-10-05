@@ -8,9 +8,9 @@
 #include <Toolkit.h>
 #include <webp/encode.h>
 namespace {
-std::string image(unsigned size,bool lossless=false,unsigned red=210) {
+std::string image(unsigned size,bool lossless=false,unsigned red=210,bool full=false) {
     std::vector<uint8_t> pixels(size*size*4,0);
-    for(unsigned y=0;y<size;++y) for(unsigned x=0;x<size;++x) if(x%128<64) {
+    for(unsigned y=0;y<size;++y) for(unsigned x=0;x<size;++x) if(full || x%128<64) {
         auto *p=pixels.data()+(y*size+x)*4;p[0]=red;p[1]=40;p[2]=20;p[3]=255;
     }
     uint8_t *encoded=nullptr;const auto count=lossless?WebPEncodeLosslessRGBA(pixels.data(),size,size,size*4,&encoded):WebPEncodeRGBA(pixels.data(),size,size,size*4,90,&encoded);
@@ -60,7 +60,23 @@ TEST_CASE("software requests demand pages and removes appearance without an Open
     auto manifest=http.pending("/manifest");REQUIRE(manifest);manifest->replyRaw(200,f.doc.dump());sprites.poll();
     CHECK_FALSE(sprites.draw(*gfx,2,0,0,10,10,38,38));sprites.poll();
     auto page=http.pending("/pages/"+Online::Sha256::hex(f.unit));REQUIRE(page);CHECK(page->request.responseLimit==f.unit.size());page->replyRaw(200,f.unit);CHECK_FALSE(sprites.draw(*gfx,2,0,0,10,10,38,38));sprites.poll();
-    REQUIRE(sprites.draw(*gfx,2,0,0,10,10,38,38));CHECK(sprites.decodedBytes()==1024*1024*4);
+    REQUIRE(sprites.draw(*gfx,2,0,0,10,10,38,38));CHECK(sprites.decodedBytes()==65*8*1024*4);
+    // Compaction preserves placement, clipping, filtering and faded pixels at
+    // normal and enlarged scales, including transparent RGB from lossy WebP.
+    glob2test::TempDir files("skin-packed-page");files.write("page.webp",f.unit);
+    GAGCore::DrawableSurface original(files.path("page.webp"));
+    for(float size:{38.f,76.f,190.f})for(unsigned char alpha:{uint8_t(255),uint8_t(127)}) {
+        gfx->drawFilledRect(0,0,128,128,GAGCore::Color(15,25,35));
+        REQUIRE(sprites.draw(*gfx,2,0,0,10,10,size,size,nullptr,alpha));
+        auto *surface=gfx->getSDLSurface();
+        std::string actual(static_cast<const char*>(surface->pixels),surface->pitch*surface->h);
+        gfx->drawFilledRect(0,0,128,128,GAGCore::Color(15,25,35));
+        gfx->drawSkinSprite(10-size*.125f,10-size*.125f,size*1.25f,size*1.25f,&original,0,0,128,128,alpha);
+        unsigned maximum=0;
+        const auto *expected=static_cast<const unsigned char*>(surface->pixels);
+        for(std::size_t i=0;i<actual.size();++i)maximum=std::max(maximum,unsigned(std::abs(int(static_cast<unsigned char>(actual[i]))-int(expected[i]))));
+        CHECK(maximum<=1);
+    }
     CHECK(http.count("/pages/"+Online::Sha256::hex(f.unit))==1);
     // Other clips share the same content-addressed page.
     CHECK(sprites.draw(*gfx,2,3,0,10,10,40,40));
@@ -72,7 +88,7 @@ TEST_CASE("decoded pages evict at 64 MiB and reload verified disk content") {
     Fixture f;Online::MemoryStorage storage;OnlineFakes::Http http;
     std::vector<std::string> content;
     for(unsigned i=0;i<17;++i) {
-        content.push_back(image(1024,true,100+i));
+        content.push_back(image(1024,true,100+i,true));
         auto &page=f.doc["pages"][i];page["sha256"]=Online::Sha256::hex(content.back());page["bytes"]=content.back().size();
     }
     f.skin.spriteManifestHash=Online::Sha256::hex(f.doc.dump());

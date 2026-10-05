@@ -32,9 +32,11 @@ test(`online replay uses signed ${renderer} appearance without a preview overrid
   // the threaded runtime. Exercise the current production shell with serial.
   const shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
     .replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
-  await page.route(/\/play\/\?replay=/, route => route.fulfill({contentType:'text/html', body:shell}));
-  await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=${renderer}&gl-errors=1&threads=serial`);
+  await page.route(/\/play\/\?replay=/, route => route.fulfill({contentType:'text/html', body:shell,headers:{'Cross-Origin-Opener-Policy':'same-origin','Cross-Origin-Embedder-Policy':'require-corp'}}));
+  const threads=process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded'?'':'&threads=serial';
+  await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=${renderer}&gl-errors=1${threads}`);
   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().watchReplay), {timeout:120000}).toBe('ready');
+  if(process.env.GLOB2_SKIN_REPLAY_THREADS==='threaded')expect(await page.evaluate(()=>glob2Diagnostics.snapshot().workerCount)).toBeGreaterThan(0);
   if(renderer==='webgl2')await expect.poll(() => page.evaluate(() => globalThis.replaySkinDraws), {timeout:120000}).toBeGreaterThan(5);
   else {
     await expect.poll(()=>seen.filter(path=>/\/sprites\/[0-9a-f]{64}\/pages\/[0-9a-f]{64}$/.test(path)).length,{timeout:120000}).toBeGreaterThan(0);
