@@ -1,0 +1,27 @@
+test_ci_artifacts_publish_the_complete_music_runtime (package_test.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) ... 
+  test_ci_artifacts_publish_the_complete_music_runtime (package_test.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) (artifact='web-client') ... FAIL
+  test_ci_artifacts_publish_the_complete_music_runtime (package_test.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) (artifact='glob2-web-development') ... FAIL
+
+======================================================================
+FAIL: test_ci_artifacts_publish_the_complete_music_runtime (package_test.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) (artifact='web-client')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-browser-png16/glob2/test/build_system/test_browser_package.py", line 28, in test_ci_artifacts_publish_the_complete_music_runtime
+    self.assertIn("build/emscripten/client/release/" + name, paths)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'build/emscripten/client/release/music-worker.js' not found in {'build/emscripten/client/release/licenses/', 'uses: actions/upload-artifact@v4', 'build/emscripten/client/release/threaded/identity.json', 'build/emscripten/client/release/threaded/script-tests.wasm', 'build/emscripten/client/release/recording-video.js', 'if-no-files-found: error', 'build/emscripten/client/release/hive-runtime.js', 'build/emscripten/client/release/hive-runtime.wasm', 'build/emscripten/client/release/recording-runtime.wasm', 'id: upload_artifact_1', 'build/emscripten/client/release/recording-runtime.js', 'build/emscripten/client/release/index.wasm', 'retention-days: 3', 'build/emscripten/client/release/script-tests.js', 'build/emscripten/client/release/recording-storage.js', 'build/emscripten/client/release/studio.html', 'build/emscripten/client/release/loader.js', 'build/emscripten/client/release/threaded/index.data', 'build/emscripten/client/release/recording-worker.js', 'build/emscripten/client/release/assets/', 'build/emscripten/client/release/index.js', 'continue-on-error: true', 'with:', 'build/emscripten/client/release/identity.json', 'build/emscripten/client/release/index.data', 'build/emscripten/client/release/script-tests.wasm', 'build/emscripten/client/release/index.html', 'name: web-client', 'path: |', 'build/emscripten/client/release/threaded/index.wasm', 'build/emscripten/client/release/threaded/index.js', 'build/emscripten/client/release/threaded/script-tests.js', 'build/emscripten/client/release/script-tests.data', 'build/emscripten/client/release/hive-worker.js'}
+
+======================================================================
+FAIL: test_ci_artifacts_publish_the_complete_music_runtime (package_test.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) (artifact='glob2-web-development')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-browser-png16/glob2/test/build_system/test_browser_package.py", line 28, in test_ci_artifacts_publish_the_complete_music_runtime
+    self.assertIn("build/emscripten/client/release/" + name, paths)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'build/emscripten/client/release/music-worker.js' not found in {'id: upload_artifact_2', 'build/emscripten/client/release/licenses/', 'uses: actions/upload-artifact@v4', 'build/emscripten/client/release/recording-video.js', "if: github.event_name == 'workflow_dispatch'", 'build/emscripten/client/release/hive-runtime.js', 'build/emscripten/client/release/hive-runtime.wasm', 'build/emscripten/client/release/recording-runtime.wasm', 'name: glob2-web-development', 'retention-days: 7', 'build/emscripten/client/release/recording-runtime.js', 'build/emscripten/client/release/index.wasm', 'build/emscripten/client/release/recording-storage.js', 'build/emscripten/client/release/studio.html', 'build/emscripten/client/release/loader.js', 'build/emscripten/client/release/threaded/index.data', 'build/emscripten/client/release/recording-worker.js', 'build/emscripten/client/release/assets/', 'build/emscripten/client/release/index.js', 'continue-on-error: true', 'with:', 'build/emscripten/client/release/index.data', 'build/emscripten/client/release/index.html', 'path: |', 'build/emscripten/client/release/threaded/index.wasm', 'build/emscripten/client/release/threaded/index.js', 'build/emscripten/client/release/hive-worker.js'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (failures=2)
+PASS: regression test rejects both original incomplete upload inventories.
