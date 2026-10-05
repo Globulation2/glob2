@@ -1,0 +1,16 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > needs a signed-in account 35ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > returns everything stored about the account and nothing secret 337ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > exports newly canonical WebP drafts with their exact stored bytes and media type 195ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > exports owned Hive credits and sessions without live capabilities 257ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > exports owned Studio conversations, revisions and separate credits without leases 204ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > is rate limited per account 309ms
+ ✓ apps/api/test/accountExport.test.ts > downloading my data > covers every column that refers to an account 4ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  01:21:31
+   Duration  6.26s (tests 49%, import 30%, transform 21%)
+

@@ -1,0 +1,5 @@
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+apps/api/test/accountExport.test.ts(494,12): error TS18048: 'data.skins' is possibly 'undefined'.
