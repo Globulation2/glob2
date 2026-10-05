@@ -1012,7 +1012,10 @@ one custom case; repeat the option for a custom matrix. Optional keys are `width
 `height`, `registry`, `costs`, `seeds`, `travel` and `cap`. The runner owns both
 allocation layouts and the repetition count; cases cannot override them.
 
-Cases cover classic terrain, uniform road/ice, sparse/connected roads, mixed
+The benchmark retains the `road` pattern key for historical comparisons; it
+uses the current Trail terrain identity with the same movement cost.
+
+Cases cover classic terrain, uniform Trail/ice, sparse/connected trails, mixed
 terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
 seeds and capped propagation; thin and rectangular tori; and synthetic registries
 of 8, 32 and 64 identities with equivalent or distinct movement costs. The real

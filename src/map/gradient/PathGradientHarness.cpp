@@ -491,7 +491,7 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
     for (int swim = 0; swim < 7; ++swim)
     {
         PathMap map(5, 5, std::vector<Uint16>(1024, 0));
-        map.setCellTerrain(0, ROAD);
+        map.setCellTerrain(0, TRAIL);
         auto captured = map.frozenTerrainSnapshot();
         REQUIRE(captured == map.frozenTerrainSnapshot());
         std::weak_ptr<const std::vector<TerrainType>> old = captured;
@@ -507,7 +507,7 @@ TEST_CASE("terrain snapshots survive paused searches and release obsolete genera
         map.setCellTerrain(0, ICE);
         auto replacement = map.frozenTerrainSnapshot();
         REQUIRE(replacement != captured);
-        REQUIRE((*captured)[0] == ROAD);
+        REQUIRE((*captured)[0] == TRAIL);
         REQUIRE((*replacement)[0] == ICE);
         captured.reset();
         REQUIRE_FALSE(old.expired());
@@ -542,8 +542,8 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
         // Classic, connected roads, dense mixes, uniform road, and uniform ice.
         if (layout) for (std::size_t i = 0; i < count; ++i)
             map.setCellTerrain(i, layout == 1
-                ? ((i % width) % 16 == 0 || (i / width) % 16 == 0 ? ROAD : GRASS)
-                : layout == 3 ? ROAD : layout == 4 ? ICE
+                ? ((i % width) % 16 == 0 || (i / width) % 16 == 0 ? TRAIL : GRASS)
+                : layout == 3 ? TRAIL : layout == 4 ? ICE
                 : static_cast<TerrainType>((i * 37 + i / width * 19) % TERRAIN_COUNT));
         const auto captureStart = Clock::now();
         auto snapshot = map.frozenTerrainSnapshot();
@@ -588,14 +588,18 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
 TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [pathfinding]")
 {
     for (unsigned workers : {0u, 2u}) for (int swim = 0; swim < 7; ++swim)
+    for (unsigned seedCost : {0u, 50u})
     {
         constexpr unsigned width = 32, count = width * width;
         PathMap map(5, 5, std::vector<Uint16>(count, 0));
         for (unsigned i = 0; i < count; ++i)
             map.setCellTerrain(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
         auto snapshot = map.frozenTerrainSnapshot();
-        std::vector<Uint16> seeds(count, Unreached); seeds[0] = Goal;
+        std::vector<Uint16> seeds(count, Unreached); seeds[0] = Goal - seedCost;
         for (unsigned i = 7; i < count; i += 17) seeds[i] = Blocked;
+        // Market sources start at cost 50; round-trip sources can also be
+        // deferred beyond a complete bucket-ring revolution.
+        if (seedCost) seeds[count / 2] = Goal - (gradient_kernel::BUCKETS + seedCost);
         const auto expected = oracle(seeds, std::vector<Uint16>(count, 0), width,
             width, swim, CostLimit, snapshot.get());
         auto *published = new Uint16[count]{};
@@ -701,15 +705,15 @@ TEST_CASE("strategic terrain queue matches independent wide heap across boundari
 TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathfinding]")
 {
     for (int swim = 0; swim < 7; ++swim)
-        for (TerrainType material : {ROAD, ICE, GRASS})
+        for (TerrainType material : {TRAIL, ICE, GRASS})
             for (bool differentGoal : {false, true})
             {
                 constexpr int width = 32, count = width * width;
                 PathMap map(5, 5, std::vector<Uint16>(count, 0));
                 std::vector<TerrainType> terrain(count, material);
                 std::vector<Uint16> seeds(count, Unreached);
-                terrain[count - 1] = ROAD; seeds[count - 1] = Blocked;
-                if (differentGoal) terrain[0] = material == ICE ? ROAD : ICE;
+                terrain[count - 1] = TRAIL; seeds[count - 1] = Blocked;
+                if (differentGoal) terrain[0] = material == ICE ? TRAIL : ICE;
                 seeds[0] = Goal;
                 for (int i = 0; i < count; ++i) map.setCellTerrain(i, terrain[i]);
                 const auto expected = oracle(seeds, std::vector<Uint16>(count, 0),
@@ -724,7 +728,7 @@ TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathf
                 search.begin(map, actual.data(), swim);
                 search.resolve(1);
                 REQUIRE(actual[1] == expected[1]);
-                map.setCellTerrain(0, material == ICE ? ROAD : ICE);
+                map.setCellTerrain(0, material == ICE ? TRAIL : ICE);
                 search.finish();
                 REQUIRE(actual == expected);
             }
@@ -788,16 +792,16 @@ TEST_CASE("eager terrain specialization proves uniform costs across the whole fi
                     switch (variation)
                     {
                     case Variation::DifferentGoal:
-                        terrain[0] = ROAD;
+                        terrain[0] = TRAIL;
                         break;
                     case Variation::BlockedOutlier:
-                        terrain[distant] = ROAD;
+                        terrain[distant] = TRAIL;
                         seeds[distant] = Blocked;
                         break;
                     case Variation::DistantOutlier:
                         // A distant cheaper cell is still relevant: fields must
                         // not specialize from the goals or a local sample alone.
-                        terrain[distant] = ROAD;
+                        terrain[distant] = TRAIL;
                         break;
                     case Variation::DeferredSeed:
                         seeds[0] = Goal - (gradient_kernel::BUCKETS + 31);
@@ -806,7 +810,7 @@ TEST_CASE("eager terrain specialization proves uniform costs across the whole fi
                         seeds[0] = Unreached;
                         break;
                     case Variation::AllBlocked:
-                        terrain[distant] = ROAD;
+                        terrain[distant] = TRAIL;
                         std::fill(seeds.begin(), seeds.end(), Blocked);
                         break;
                     case Variation::Uniform:

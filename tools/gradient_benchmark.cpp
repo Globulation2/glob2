@@ -263,20 +263,20 @@ template <std::size_t N> void run(const Options &o)
 		if (o.pattern == "classic")
 			t = r % 5 == 0 ? WATER : GRASS;
 		else if (o.pattern == "road")
-			t = ROAD;
+			t = TRAIL;
 		else if (o.pattern == "ice")
 			t = ICE;
 		else if (o.pattern == "sparse")
-			t = r % 97 == 0 ? ROAD : GRASS;
+			t = r % 97 == 0 ? TRAIL : GRASS;
 		else if (o.pattern == "network")
-			t = (x % 16 == 0 || y % 16 == 0) ? ROAD : (r % 11 == 0 ? WATER : GRASS);
+			t = (x % 16 == 0 || y % 16 == 0) ? TRAIL : (r % 11 == 0 ? WATER : GRASS);
 		else if (o.pattern == "dense")
 			t = r % (o.costs == "equivalent" ? TERRAIN_COUNT : N);
 		else if (o.pattern == "isolated")
 		{
 			t = (x > unsigned(o.width / 3) && x < unsigned(2 * o.width / 3) &&
 				 y > unsigned(o.height / 3) && y < unsigned(2 * o.height / 3))
-					? ROAD
+					? TRAIL
 					: GRASS;
 			if (((x == unsigned(o.width / 3) || x == unsigned(2 * o.width / 3)) &&
 				 y >= unsigned(o.height / 3) && y <= unsigned(2 * o.height / 3)) ||
