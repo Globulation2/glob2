@@ -1,0 +1,9 @@
+PASS Settings/layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences] (7.1s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences] (7.8s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences] (8.2s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences] (9.6s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences] (4.8s)
+PASS Settings/layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences] (6.1s)
+
+6 passed, 0 failed, 0 skipped (43.6s of test time)
+[run_tests] JUnit report: artifacts/music/review-final-settings/junit.xml (6 cases)

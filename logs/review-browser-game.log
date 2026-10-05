@@ -1,0 +1,17 @@
+
+Running 6 tests using 3 workers
+
+(node:2655354) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2655356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2655362) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › browser/tests/music-import.spec.js:18:36 › music import persists across reload (22.3s)
+  ✓  3 [webkit] › browser/tests/music-import.spec.js:18:36 › music import persists across reload (23.9s)
+  ✓  1 [firefox] › browser/tests/music-import.spec.js:18:36 › music import persists across reload (25.2s)
+  ✓  4 [chromium] › browser/tests/music-import.spec.js:18:36 › music import persists across reload after quota failure, export and retry (23.0s)
+  ✓  5 [webkit] › browser/tests/music-import.spec.js:18:36 › music import persists across reload after quota failure, export and retry (24.9s)
+  ✓  6 [firefox] › browser/tests/music-import.spec.js:18:36 › music import persists across reload after quota failure, export and retry (25.3s)
+
+  6 passed (52.1s)

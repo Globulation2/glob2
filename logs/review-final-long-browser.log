@@ -1,0 +1,11 @@
+[WebServer] (node:2689942) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:2689971) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":900,"decoderHeapBytes":51380224}
+  ✓  1 [desktop] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (8.1s)
+
+  1 passed (12.0s)

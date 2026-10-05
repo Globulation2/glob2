@@ -1,0 +1,33 @@
+[WebServer] (node:2673707) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:2673884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓   1 [desktop] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (7.8s)
+  ✓   2 [desktop] › e2e/music.spec.ts:126:1 › upload → worker conversion → audition → publish → like → bulk ZIP (9.9s)
+(node:2677847) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓   3 [phone] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (8.2s)
+  -   4 [phone] › e2e/music.spec.ts:126:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+(node:2680068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓   5 [firefox] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (9.6s)
+  -   6 [firefox] › e2e/music.spec.ts:126:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+(node:2684251) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓   7 [webkit] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (9.6s)
+  -   8 [webkit] › e2e/music.spec.ts:126:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+(node:2686740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓   9 [iphone] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (10.6s)
+  -  10 [iphone] › e2e/music.spec.ts:126:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+
+  4 skipped
+  6 passed (1.1m)

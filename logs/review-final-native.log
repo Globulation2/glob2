@@ -1,0 +1,12 @@
+PASS CommunityMusic/computed fades preserve every entry of the original lookup table (0.0s)
+PASS CommunityMusic/archive offsets and sizes cannot wrap on 32-bit targets (0.0s)
+PASS CommunityMusic/archive parser rejects malformed and oversized archives (0.0s)
+PASS CommunityMusic/preview storage is bounded independently of track length (0.0s)
+PASS CommunityMusicUI/new catalogue filters replace pending results [display] (1.1s)
+PASS CommunityMusicUI/touch screens [display][artifacts] (1.1s)
+PASS CommunityMusicUI/desktop screens [display][artifacts] (1.2s)
+PASS CommunityMusicUI/web release imports and becomes selectable [display] (1.1s)
+PASS MusicSet/discovery atomic replacement queued moods and muted preferences [display][writes-preferences] (2.6s)
+
+9 passed, 0 failed, 0 skipped (7.1s of test time)
+[run_tests] JUnit report: artifacts/music/review-final-native/junit.xml (9 cases)

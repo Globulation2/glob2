@@ -1,0 +1,136 @@
+test_recovers_beat_count_and_phase (test_adapt.BeatGridTest.test_recovers_beat_count_and_phase) ... ok
+test_level_ride_lifts_a_quiet_section (test_adapt.ColourTest.test_level_ride_lifts_a_quiet_section) ... ok
+test_tilt_shelf_lifts_highs_only (test_adapt.ColourTest.test_tilt_shelf_lifts_highs_only) ... ok
+test_widen_keeps_mid_and_mono (test_adapt.ColourTest.test_widen_keeps_mid_and_mono) ... ok
+test_decode_round_trips_a_wav (test_adapt.DecodeTest.test_decode_round_trips_a_wav) ... ok
+test_join_split_archive (test_adapt.DecodeTest.test_join_split_archive) ... ok
+test_cut_needs_continuation (test_adapt.LoopCutTest.test_cut_needs_continuation) ... ok
+test_cut_of_a_periodic_signal_is_seamless (test_adapt.LoopCutTest.test_cut_of_a_periodic_signal_is_seamless) ... ok
+test_level_under (test_adapt.MixTest.test_level_under) ... ok
+test_remix_gain (test_adapt.MixTest.test_remix_gain) ... ok
+test_remix_removes_a_stem_but_keeps_the_residual (test_adapt.MixTest.test_remix_removes_a_stem_but_keeps_the_residual) ... ok
+test_remix_without_changes_is_the_mix (test_adapt.MixTest.test_remix_without_changes_is_the_mix) ... ok
+test_sum_stems_mutes_unlisted_and_none (test_adapt.MixTest.test_sum_stems_mutes_unlisted_and_none) ... ok
+test_humaniser_is_seeded (test_adapt.PercussionTest.test_humaniser_is_seeded) ... ok
+test_pan_is_constant_power (test_adapt.PercussionTest.test_pan_is_constant_power) ... ok
+test_track_wraps_hits (test_adapt.PercussionTest.test_track_wraps_hits) ... ok
+test_voices_are_finite_and_bounded (test_adapt.PercussionTest.test_voices_are_finite_and_bounded) ... ok
+test_preset_is_deterministic_and_unit_energy (test_adapt.RoomTest.test_preset_is_deterministic_and_unit_energy) ... ok
+test_reverb_tail_wraps_to_the_start (test_adapt.RoomTest.test_reverb_tail_wraps_to_the_start) ... ok
+test_run_model_shapes_and_names (test_adapt_demucs.DemucsTest.test_run_model_shapes_and_names) ... skipped 'separation extras not installed'
+test_seeded_shifts_are_deterministic (test_adapt_demucs.DemucsTest.test_seeded_shifts_are_deterministic) ... skipped 'separation extras not installed'
+test_separate_caches_results (test_adapt_demucs.DemucsTest.test_separate_caches_results) ... skipped 'separation extras not installed'
+test_unknown_model_is_refused (test_adapt_demucs.DemucsTest.test_unknown_model_is_refused) ... skipped 'separation extras not installed'
+test_cache_miss_does_not_regenerate_without_opt_in (test_cli.AceStepHashGateTest.test_cache_miss_does_not_regenerate_without_opt_in) ... ok
+test_mismatch_is_an_error_unless_regeneration_is_allowed (test_cli.AceStepHashGateTest.test_mismatch_is_an_error_unless_regeneration_is_allowed) ... ok
+test_calibrate_checks_sets_with_their_own_manifest (test_cli.CheckArgumentsTest.test_calibrate_checks_sets_with_their_own_manifest) ... ok
+test_only_rejects_unknown_check_names (test_cli.CheckArgumentsTest.test_only_rejects_unknown_check_names) ... ok
+test_waivers_of_checks_that_did_not_run_are_not_stale (test_cli.CheckArgumentsTest.test_waivers_of_checks_that_did_not_run_are_not_stale) ... ok
+test_ai_sets_ship_their_disclosure_and_pins (test_cli.LicenseTextTest.test_ai_sets_ship_their_disclosure_and_pins) ... ok
+test_cc_by_carries_credit_licence_link_and_changes (test_cli.LicenseTextTest.test_cc_by_carries_credit_licence_link_and_changes) ... ok
+test_shipped_ai_set_license_has_its_disclosure (test_cli.LicenseTextTest.test_shipped_ai_set_license_has_its_disclosure) ... ok
+test_single_chained_and_invalid_files (test_cli.OggStreamsTest.test_single_chained_and_invalid_files) ... ok
+test_install_copies_files_writes_license_and_registers (test_cli.RegisterAndInstallTest.test_install_copies_files_writes_license_and_registers) ... ok
+test_install_refuses_failed_unshipped_or_unregistrable_sets (test_cli.RegisterAndInstallTest.test_install_refuses_failed_unshipped_or_unregistrable_sets) ... ok
+test_recursive_discovery_needs_no_registration_edit (test_cli.RegisterAndInstallTest.test_recursive_discovery_needs_no_registration_edit) ... ok
+test_register_set_is_idempotent_and_keeps_original_first (test_cli.RegisterAndInstallTest.test_register_set_is_idempotent_and_keeps_original_first) ... ok
+test_register_set_refuses_an_unexpected_sconscript (test_cli.RegisterAndInstallTest.test_register_set_refuses_an_unexpected_sconscript) ... ok
+test_directory_set_id_and_installed_fallback (test_cli.ResolveTest.test_directory_set_id_and_installed_fallback) ... ok
+test_common_containers_and_multistream_rejection (test_community.CommunityTest.test_common_containers_and_multistream_rejection) ... ok
+test_corrupt_input (test_community.CommunityTest.test_corrupt_input) ... ok
+test_embedded_cover (test_community.CommunityTest.test_embedded_cover) ... ok
+test_explicit_repair_and_roundtrip (test_community.CommunityTest.test_explicit_repair_and_roundtrip) ... ok
+test_large_comment_packet_preserves_decode (test_community.CommunityTest.test_large_comment_packet_preserves_decode) ... ok
+test_optional_mastering (test_community.CommunityTest.test_optional_mastering) ... ok
+test_circular_convolve_wraps_tail (test_core.CircularFilterTest.test_circular_convolve_wraps_tail) ... ok
+test_filter_matches_steady_state_of_endless_loop (test_core.CircularFilterTest.test_filter_matches_steady_state_of_endless_loop) ... ok
+test_no_seam_discontinuity (test_core.CircularFilterTest.test_no_seam_discontinuity) ... ok
+test_bounded_peak_correction_enforces_the_actual_ceiling (test_core.EncodeCeilingTest.test_bounded_peak_correction_enforces_the_actual_ceiling) ... ok
+test_encoded_true_peak_stays_under_the_qa_ceiling (test_core.EncodeCeilingTest.test_encoded_true_peak_stays_under_the_qa_ceiling) ... ok
+test_attack_ramps_over_an_isolated_over (test_core.LimiterTest.test_attack_ramps_over_an_isolated_over) ... ok
+test_finish_hits_targets (test_core.LimiterTest.test_finish_hits_targets) ... ok
+test_limiter_respects_ceiling (test_core.LimiterTest.test_limiter_respects_ceiling) ... ok
+test_crossfade_loop_is_seamless (test_core.LoopTest.test_crossfade_loop_is_seamless) ... ok
+test_fold_tail_and_preroll (test_core.LoopTest.test_fold_tail_and_preroll) ... ok
+test_loudness_offsets_move_the_target_within_tolerance (test_core.ManifestTest.test_loudness_offsets_move_the_target_within_tolerance) ... ok
+test_rejects_thresholds_and_bad_ids (test_core.ManifestTest.test_rejects_thresholds_and_bad_ids) ... ok
+test_waiver_needs_reason (test_core.ManifestTest.test_waiver_needs_reason) ... ok
+test_configured_taper_keeps_frames_and_other_moods (test_core.SeamPreparationTest.test_configured_taper_keeps_frames_and_other_moods) ... ok
+test_fetch_verifies_and_caches (test_core.SourcesTest.test_fetch_verifies_and_caches) ... ok
+test_failed_trio_encode_preserves_all_previous_files (test_core.TrioIoTest.test_failed_trio_encode_preserves_all_previous_files) ... ok
+test_preview_follows_shared_position (test_core.TrioIoTest.test_preview_follows_shared_position) ... ok
+test_trio_contract_and_frame_exact_roundtrip (test_core.TrioIoTest.test_trio_contract_and_frame_exact_roundtrip) ... ok
+test_kit_maps_notes_to_drums (test_dsp.BackendTest.test_kit_maps_notes_to_drums) ... ok
+test_stems_have_preroll_and_tail_and_place_notes (test_dsp.BackendTest.test_stems_have_preroll_and_tail_and_place_notes) ... ok
+test_every_voice_is_finite_audible_decaying_and_seeded (test_dsp.VoiceTest.test_every_voice_is_finite_audible_decaying_and_seeded) ... ok
+test_kalimba_sounds_at_its_pitch (test_dsp.VoiceTest.test_kalimba_sounds_at_its_pitch) ... ok
+test_noise_percussion_is_band_limited (test_dsp.VoiceTest.test_noise_percussion_is_band_limited) ... ok
+test_velocity_makes_hits_louder (test_dsp.VoiceTest.test_velocity_makes_hits_louder) ... ok
+test_bar_offset_breaks_harmony (test_qa.AlignmentTest.test_bar_offset_breaks_harmony) ... ok
+test_shared_timeline_passes (test_qa.AlignmentTest.test_shared_timeline_passes) ... ok
+test_time_offset_copy_fails (test_qa.AlignmentTest.test_time_offset_copy_fails) ... ok
+test_distinct_moods_pass (test_qa.ContrastTest.test_distinct_moods_pass) ... ok
+test_identical_moods_fail (test_qa.ContrastTest.test_identical_moods_fail) ... ok
+test_chained_stream_fails (test_qa.FormatTest.test_chained_stream_fails) ... ok
+test_in_memory_rate_and_length (test_qa.FormatTest.test_in_memory_rate_and_length) ... ok
+test_written_trio_passes_and_mismatched_frames_fail (test_qa.FormatTest.test_written_trio_passes_and_mismatched_frames_fail) ... ok
+test_broadband_hiss_fails (test_qa.NoiseTest.test_broadband_hiss_fails) ... ok
+test_clean_passes (test_qa.NoiseTest.test_clean_passes) ... ok
+test_exact_four_times_repeat_fails (test_qa.RepetitionTest.test_exact_four_times_repeat_fails) ... ok
+test_through_composed_passes (test_qa.RepetitionTest.test_through_composed_passes) ... ok
+test_clean_loop_passes_step (test_qa.SeamTest.test_clean_loop_passes_step) ... ok
+test_click_at_seam_fails (test_qa.SeamTest.test_click_at_seam_fails) ... ok
+test_gap_at_seam_fails (test_qa.SeamTest.test_gap_at_seam_fails) ... ok
+test_waiver_turns_fail_into_waived (test_qa.WaiverTest.test_waiver_turns_fail_into_waived) ... ok
+test_native_roundtrip (test_runtime.RuntimeTest.test_native_roundtrip) ... {"seconds":10,"previewObjectBytes":12512,"removedFadeTableBytes":142664,"validationSlices":24,"elapsedSeconds":0.529965,"peakRssNativeUnits":1000684}
+/usr/lib/python3.14/zipfile/__init__.py:1721: UserWarning: Duplicate name: 'a1.opus'
+  return self._open_to_write(zinfo, force_zip64=force_zip64)
+ok
+test_dropout_scan (test_score.CheckTest.test_dropout_scan) ... ok
+test_parallel_octaves_and_repeated_bars (test_score.CheckTest.test_parallel_octaves_and_repeated_bars) ... ok
+test_range_errors (test_score.CheckTest.test_range_errors) ... ok
+test_counter_line_avoids_bass_parallels_and_stays_below (test_score.CounterTest.test_counter_line_avoids_bass_parallels_and_stays_below) ... ok
+test_override_replaces_whole_bars (test_score.CounterTest.test_override_replaces_whole_bars) ... ok
+test_bass_steps_accent_first (test_score.GeneratorTest.test_bass_steps_accent_first) ... ok
+test_chords_at_offsets_follow_the_harmony (test_score.GeneratorTest.test_chords_at_offsets_follow_the_harmony) ... ok
+test_pad_holds_unchanged_voicings (test_score.GeneratorTest.test_pad_holds_unchanged_voicings) ... ok
+test_run_up_wraps_to_bar_one (test_score.GeneratorTest.test_run_up_wraps_to_bar_one) ... ok
+test_walking_approaches_next_note (test_score.GeneratorTest.test_walking_approaches_next_note) ... ok
+test_performance_round_trip (test_score.MidiTest.test_performance_round_trip) ... ok
+test_ir_is_deterministic_unit_energy (test_score.MixTest.test_ir_is_deterministic_unit_energy) ... ok
+test_level_reference (test_score.MixTest.test_level_reference) ... ok
+test_pan_centre_is_unity_and_sides_keep_power (test_score.MixTest.test_pan_centre_is_unity_and_sides_keep_power) ... ok
+test_stem_highpass_rules (test_score.MixTest.test_stem_highpass_rules) ... ok
+test_fold_into_range (test_score.ModelTest.test_fold_into_range) ... ok
+test_no_rubato_at_the_seam (test_score.ModelTest.test_no_rubato_at_the_seam) ... ok
+test_tempo_map_rubato_and_inverse (test_score.ModelTest.test_tempo_map_rubato_and_inverse) ... ok
+test_compound_metre (test_score.NotationTest.test_compound_metre) ... ok
+test_harmony (test_score.NotationTest.test_harmony) ... ok
+test_pitches_and_durations (test_score.NotationTest.test_pitches_and_durations) ... ok
+test_voice_leading_moves_little (test_score.NotationTest.test_voice_leading_moves_little) ... ok
+test_wrong_bar_length_fails_loudly (test_score.NotationTest.test_wrong_bar_length_fails_loudly) ... ok
+test_deterministic_and_mood_dependent (test_score.PerformTest.test_deterministic_and_mood_dependent) ... ok
+test_repeated_key_is_released_before_it_restrikes (test_score.PerformTest.test_repeated_key_is_released_before_it_restrikes) ... ok
+test_short_and_ring_lengths (test_score.PerformTest.test_short_and_ring_lengths) ... ok
+test_patches_are_well_formed (test_score_sfizz.CatalogueTest.test_patches_are_well_formed) ... ok
+test_lock_seed_materialize_offline (test_score_sfizz.LockTest.test_lock_seed_materialize_offline) ... ok
+test_raw_url_is_pinned_and_quoted (test_score_sfizz.LockTest.test_raw_url_is_pinned_and_quoted) ... ok
+test_wrapper_and_dropout_rerender (test_score_sfizz.RenderTest.test_wrapper_and_dropout_rerender) ... ok
+test_sets_are_consistent (test_score_sfizz.ShippedSetsTest.test_sets_are_consistent) ... ok
+test_determinism_rules_are_enforced (test_surge.HelpersTest.test_determinism_rules_are_enforced) ... ok
+test_display_numbers_are_parsed_in_base_units (test_surge.HelpersTest.test_display_numbers_are_parsed_in_base_units) ... ok
+test_fxp_is_an_opaque_chunk_program_without_private_data (test_surge.HelpersTest.test_fxp_is_an_opaque_chunk_program_without_private_data) ... ok
+test_filter_enable_fix_activates_selected_stages_only (test_surge.PatchXmlTest.test_filter_enable_fix_activates_selected_stages_only) ... ok
+test_unknown_targets_raise (test_surge.PatchXmlTest.test_unknown_targets_raise) ... ok
+test_xml_values_mod_routings_and_name (test_surge.PatchXmlTest.test_xml_values_mod_routings_and_name) ... ok
+test_fractional_seconds_do_not_drop_a_frame (test_surge.RenderFrameContractTest.test_fractional_seconds_do_not_drop_a_frame) ... ok
+test_component_wraps_into_vst3_state_and_back (test_surge.StateBlobTest.test_component_wraps_into_vst3_state_and_back) ... ok
+test_join_component_rewrites_the_xml_size (test_surge.StateBlobTest.test_join_component_rewrites_the_xml_size) ... ok
+test_juce_base64_matches_known_vector_and_round_trips (test_surge.StateBlobTest.test_juce_base64_matches_known_vector_and_round_trips) ... ok
+test_filter_is_active (test_surge.SurgeRenderTest.test_filter_is_active) ... skipped 'needs pedalboard and a cached Surge XT (python3 -m glob2music build glass-garden)'
+test_fresh_instances_render_bit_identically (test_surge.SurgeRenderTest.test_fresh_instances_render_bit_identically) ... skipped 'needs pedalboard and a cached Surge XT (python3 -m glob2music build glass-garden)'
+
+----------------------------------------------------------------------
+Ran 128 tests in 150.332s
+
+OK (skipped=6)

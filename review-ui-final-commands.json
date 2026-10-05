@@ -1,0 +1,41 @@
+{
+  "revision": "1ae26bd3d8218108c854c1992267161dfd1fc92f",
+  "commands": [
+    {
+      "cwd": "platform",
+      "command": "PATH=/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npx vitest run apps/web/test/musicPlayback.test.ts apps/web/test/musicCatalogue.test.tsx apps/web/test/musicPlayer.test.tsx",
+      "log": "review-ui-final-unit.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "PATH=/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npm exec --workspace @glob2/web -- vite build",
+      "log": "review-ui-final-build.log"
+    },
+    {
+      "cwd": "platform/apps/web",
+      "command": "PATH=/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH PORT=4398 MUSIC_E2E_PROCESSING=1 MUSIC_PYTHON=/home/bradley/.codex/worktrees/6e34/glob2/tools/music/.venv/bin/python MUSIC_FIXTURE_DIR=/home/bradley/.codex/worktrees/6e34/glob2/artifacts/music/fixture npx playwright test -c e2e/music.config.ts --output=../../../../artifacts/music/review-ui-final-browser",
+      "log": "review-ui-final-browser.log"
+    }
+  ],
+  "coverage": [
+    "Stale catalogue continuation cancelled after filter changes",
+    "Audio look-ahead retained across pause/resume, seek flushes it",
+    "Consumption-clock output at 44.1kHz,48kHz,96kHz",
+    "Background loading does not restart playback; decoder retry resets tester controls",
+    "Actual WASM playback on Chromium,Firefox,WebKit and emulated Pixel7/iPhone13",
+    "Axe light/dark player checks and keyboard dialog focus restoration",
+    "Registered upload, real worker conversion, audition, publish, like, selected ZIP download"
+  ],
+  "omissions": [
+    "Physical Android/iOS devices",
+    "Human listening evaluation",
+    "Device changes and audio hardware failure",
+    "Native screen coverage belongs to parent evidence"
+  ],
+  "results": {
+    "unit": "6 passed",
+    "build": "passed",
+    "browser": "6 passed; 4 intentional duplicate-upload-profile skips",
+    "screenshots": "review-ui-final-browser/ (copied from Playwright output resolved relative to working directory)"
+  }
+}

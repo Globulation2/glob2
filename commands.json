@@ -1,0 +1,62 @@
+[
+  {
+    "cwd": "platform",
+    "command": "npm run typecheck; npm run lint",
+    "result": "passed"
+  },
+  {
+    "cwd": "platform",
+    "command": "npx vitest run apps/api/test/music.test.ts apps/api/test/accountExport.test.ts apps/api/test/deletion.test.ts apps/api/test/avatars.test.ts packages/db/test/schema.test.ts packages/db/test/roles.test.ts apps/worker/test/reliability.test.ts packages/protocol/test",
+    "result": "71 passed"
+  },
+  {
+    "cwd": ".",
+    "command": "uv pip install --python tools/music/.venv/bin/python -r tools/music/requirements.txt; PYTHONPATH=tools/music tools/music/.venv/bin/python -m unittest discover -s tools/music/tests -v",
+    "result": "122 passed;6 optional skipped"
+  },
+  {
+    "cwd": ".",
+    "command": "GLOB2_SDL3_PREFIX=$PWD/build/music-native/sdl scons release=1 -j10 engine-tests",
+    "result": "passed"
+  },
+  {
+    "cwd": ".",
+    "command": "GLOB2_MUSIC_TEST_ARCHIVE=$PWD/artifacts/music/review-import-input.zip python3 test/run_tests.py --binary engine --filter CommunityMusic/* --filter CommunityMusicUI/* --filter MusicSet/*; python3 test/run_tests.py --binary engine --filter Settings/*",
+    "result": "9+6 passed"
+  },
+  {
+    "cwd": ".",
+    "command": "scons target=web release=1 -j20",
+    "result": "serial/threaded passed"
+  },
+  {
+    "cwd": ".",
+    "command": "GLOB2_TEST_URL=http://127.0.0.1:36475 GLOB2_TEST_RENDERER=software GLOB2_MUSIC_TEST_ARCHIVE=$PWD/artifacts/music/review-final-import-input.zip npm --prefix browser exec -- playwright test -c browser/playwright.config.js browser/tests/music-import.spec.js --workers 3",
+    "result": "6 passed"
+  },
+  {
+    "cwd": ".",
+    "command": "python3 -m unittest discover -s test/deployment -v; python3 -m unittest discover -s test/build_system -p test_ci*.py",
+    "result": "34+87 passed"
+  },
+  {
+    "cwd": ".",
+    "command": "docker build --target music-worker -t glob2-music-worker:local-validation -f deploy/Dockerfile .",
+    "result": "passed"
+  },
+  {
+    "cwd": ".",
+    "command": "docker run --rm --read-only --network none --memory 12g --cpus 2 --pids-limit 64 --tmpfs /tmp:size=6g,uid=10001,gid=10001 -v $PWD/artifacts/music/container-input:/input:ro -e PYTHONPATH=/app/tools/music -e OPENBLAS_NUM_THREADS=1 -e OMP_NUM_THREADS=1 --entrypoint /opt/music/bin/python glob2-music-worker:local-validation -m glob2music.community /input/request.json /tmp/music-output",
+    "result": "480000 exact frames each;3 tracks;mastering enabled"
+  },
+  {
+    "cwd": ".",
+    "command": "g++ -std=c++20 -O2 -Isrc/audio artifacts/music/preview-memory.cpp src/audio/MusicStream.cpp $(pkg-config --cflags --libs opusfile) -o artifacts/music/preview-memory; artifacts/music/preview-memory artifacts/music/long-fixture",
+    "result": "900 seconds;5208KiB peakRSS"
+  },
+  {
+    "cwd": "platform/apps/web",
+    "command": "MUSIC_FIXTURE_DIR=$REPO/artifacts/music/long-fixture PORT=4399 npx playwright test -c e2e/music.config.ts --project desktop --grep \"catalogue, bounded\"",
+    "result": "900 seconds;51380224bytes decoder heap"
+  }
+]

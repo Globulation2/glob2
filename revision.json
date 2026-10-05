@@ -1,0 +1,6 @@
+{
+  "testedCommit": "1ae26bd3d8218108c854c1992267161dfd1fc92f",
+  "integratedBase": "0a3da6df8898850f29050ec240e919e8b4a5b1b3",
+  "fetchedBase": "b58be00a245f801442ab330bf0e4b9e14dfa431b",
+  "newerBaseAssessment": "Only openSUSE release opusfile package naming changed since integrated base; unrelated to this feature and local inputs."
+}
