@@ -1,0 +1,56 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep phones: --project phone
+
+[WebServer] (node:5792) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:5798) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [phone] › e2e/smoke.spec.ts:404:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets (4.6s)
+
+
+  1) [phone] › e2e/smoke.spec.ts:404:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets 
+
+    Error: /skins at 320 px has small touch targets
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "INPUT \"\" 240x27",
+    + ]
+
+      446 |           .map(({ el, r }) => el.tagName + ' "' + el.textContent.trim() + '" ' + r.width + 'x' + r.height)`,
+      447 |       );
+    > 448 |       expect(small, `${path} at ${width} px has small touch targets`).toEqual([]);
+          |                                                                       ^
+      449 |     }
+      450 |   }
+      451 | });
+        at /Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web/e2e/smoke.spec.ts:448:71
+
+    Error Context: ../../../artifacts/web-app/test-results/smoke-phones-no-sideways-s-f737f--430-px-44-px-touch-targets-phone/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/smoke-phones-no-sideways-s-f737f--430-px-44-px-touch-targets-phone/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/smoke-phones-no-sideways-s-f737f--430-px-44-px-touch-targets-phone/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [phone] › e2e/smoke.spec.ts:404:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets 
+npm error Lifecycle script `e2e` failed with error:
+npm error code 1
+npm error path /Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web
+npm error workspace @glob2/web@0.1.0
+npm error location /Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web
+npm error command failed
+npm error command sh -c playwright test -c e2e/playwright.config.ts --grep phones: --project phone
