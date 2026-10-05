@@ -39,6 +39,14 @@ test('studio retains usable canvas and reachable controls at every supported lay
     expect(tray.y).toBeGreaterThanOrEqual(0);
     expect(tray.x + tray.width).toBeLessThanOrEqual(size.width);
     expect(tray.y + tray.height).toBeLessThanOrEqual(size.height);
+    for (const button of await toolbox.locator('.skin-tools button').all()) {
+      const target = await boxFor(button);
+      const label = await boxFor(button.locator('span'));
+      expect(target.height).toBeGreaterThanOrEqual(44);
+      expect(label.x).toBeGreaterThanOrEqual(target.x);
+      expect(label.x + label.width).toBeLessThanOrEqual(target.x + target.width);
+      expect(label.y + label.height).toBeLessThanOrEqual(target.y + target.height);
+    }
     await page.screenshot({ path: info.outputPath(`studio-${size.width}x${size.height}.png`) });
     if (compact) await page.getByRole('button', { name: 'Expand toolbox' }).click();
     await page.getByLabel('Pen pressure').check();
@@ -51,6 +59,12 @@ test('studio retains usable canvas and reachable controls at every supported lay
     expect(help.y + help.height).toBeLessThanOrEqual(size.height);
     await page.getByRole('button', { name: 'Collapse toolbox' }).click();
     await expect(page.getByRole('button', { name: 'Patterns', exact: true })).toBeVisible();
+    const collapsedTray = await boxFor(toolbox);
+    for (const label of await toolbox.locator('.skin-tools button span').all()) {
+      const text = await boxFor(label);
+      expect(text.y + text.height).toBeLessThanOrEqual(collapsedTray.y + collapsedTray.height);
+    }
+    if (size.width <= 599) expect(collapsedTray.height).toBeLessThanOrEqual(100);
   }
 });
 
