@@ -44,7 +44,7 @@ paths. Higher levels are unavailable, and market-specific fields are neither
 allocated nor scheduled. Static building IDs 49–50 are preserved; levels 2 and 3
 append IDs 51–54. Script observations omit unavailable types.
 
-Format 134 persists market fields, refresh flags and pending publications without
+Format 135 persists market fields, refresh flags and pending publications without
 renumbering older pending-gradient destinations. Earlier saves keep their original
 behavior. Binary and text continuation tests cover the new state. Text saves also retain
 qualified statistics field names used by existing games. Saved upgraded
