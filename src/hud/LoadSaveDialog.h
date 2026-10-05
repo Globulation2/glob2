@@ -32,6 +32,7 @@ class LoadSaveDialog : public Glob2UI::InGameDialog
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
 	void showSaveFailure();
+	void showLoadFailure(const std::string &message);
 	void beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation);
 	// True once a pending save has completed; a failure reopens the retry state.
 	bool pollPersistence();

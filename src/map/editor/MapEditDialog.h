@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Team.h"
+#include "map/TerrainRegistry.h"
 #include "ui/FrontendUI.h"
 #include <string>
 
@@ -26,7 +27,9 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 		OPEN_TEAMS_EDITOR,
 		RETURN_EDITOR,
 		QUIT_EDITOR,
-		SHARE_MAP
+		SHARE_MAP,
+		IMPORT_TERRAIN,
+		TERRAIN_PALETTE
 	};
 
   protected:
@@ -104,4 +107,23 @@ class TeamsEditor : public Glob2UI::InGameDialog
 	Game *game;
 	Slot slots[Team::MAX_COUNT];
 	Glob2UI::Element slotRow(int index, const Glob2UI::Presentation &p, bool compact);
+};
+
+// Shared desktop/touch palette. Definitions are fixed for the dialog lifetime.
+class TerrainPaletteDialog : public Glob2UI::InGameDialog
+{
+	std::shared_ptr<const TerrainRegistry> registry;
+
+  public:
+	explicit TerrainPaletteDialog(std::shared_ptr<const TerrainRegistry> value)
+		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value))
+	{
+	}
+	const char *recordingId() const override { return "terrain_palette"; }
+	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
+
+  protected:
+	void onEscape() override { finish(-1); }
+	bool fillHeight() const override { return true; }
+	double maxWidth() const override { return 760; }
 };

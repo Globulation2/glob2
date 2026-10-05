@@ -4,6 +4,7 @@
 #include "BitArray.h"
 #include "TerrainPresentation.h"
 #include "TerrainProperties.h"
+#include "TerrainRegistry.h"
 #include "Ressource.h"
 
 #include <SDL3/SDL_stdinc.h>
@@ -20,7 +21,15 @@ class Map;
 //! the simulation advances. The query functions match Map's exactly.
 class SceneMap
 {
-public:
+	std::shared_ptr<const TerrainRegistry> registry = TerrainRegistry::builtins();
+
+  public:
+	const TerrainRegistry &terrainRegistry() const { return *registry; }
+	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const { return registry; }
+	const TerrainPresentation &terrainPresentation(TerrainType type) const
+	{
+		return registry->presentation(type);
+	}
 	//! Copy the layers from map. Runs where the map may be read (the simulation side).
 	//! displayW/H: the drawn map area in pixels (a client value, see ClientRequests).
 	void extract(const Map &map, int displayW, int displayH, bool includeScriptAreas = false);
@@ -44,8 +53,10 @@ public:
     TerrainType presentationTypeAt(int x, int y) const
     {
         const auto type = terrainTypeAt(x,y);
-        return terrainUsesLegacyCorners(type) ? static_cast<TerrainType>(getUMTerrain(x,y)) : type;
-    }
+		return terrainPresentation(type).legacyCorners
+				   ? static_cast<TerrainType>(getUMTerrain(x, y))
+				   : type;
+	}
     TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
     int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
@@ -80,7 +91,8 @@ public:
 			for (int xi = x; xi < x + w; xi++)
 			{
 				const size_t i = coordToIndex(xi, yi);
-				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || !terrainProperties(terrainTypes[i]).buildable)
+				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
+					!registry->properties(terrainTypes[i]).buildable)
 					return false;
 			}
 		return true;

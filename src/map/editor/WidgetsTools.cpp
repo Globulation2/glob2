@@ -80,8 +80,11 @@ void TerrainSelector::draw()
     if (TerrainSelector::isBaseTerrain(terrainType))
     {
         const auto type = TerrainSelector::baseTerrain(terrainType);
-        globalContainer->gfx->drawSprite(area.x,area.y,globalContainer->terrainLayerSprite(type),terrainPresentation(type).editorFrame);
-    }
+		globalContainer->gfx->drawSprite(
+			area.x, area.y,
+			globalContainer->terrainLayerSprite(me.game.map.terrainRegistry().appearance(type)),
+			me.game.map.terrainPresentation(type).editorFrame);
+	}
 	if(terrainType==Wheat)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
 	if(terrainType==Trees)
@@ -101,8 +104,10 @@ void TerrainSelector::draw()
 	if (TerrainSelector::isBaseTerrain(terrainType))
 		{
         const auto type = TerrainSelector::baseTerrain(terrainType);
-        globalContainer->gfx->finishDrawingSprite(globalContainer->terrainLayerSprite(type),255);
-    }
+		globalContainer->gfx->finishDrawingSprite(
+			globalContainer->terrainLayerSprite(me.game.map.terrainRegistry().appearance(type)),
+			255);
+	}
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 	if (me.terrainType == terrainType)

@@ -14,5 +14,6 @@ inline constexpr auto TERRAIN_EXPERIMENTS = [] {
 }();
 inline constexpr std::optional<ExperimentId> terrainExperiment(TerrainType type)
 {
-    return TERRAIN_EXPERIMENTS[static_cast<unsigned>(type)];
+	return unsigned(type) < TERRAIN_COUNT ? TERRAIN_EXPERIMENTS[static_cast<unsigned>(type)]
+										  : std::nullopt;
 }

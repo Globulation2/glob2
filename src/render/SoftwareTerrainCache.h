@@ -8,6 +8,7 @@
 #include <vector>
 
 class SceneMap;
+class TerrainRegistry;
 // Presentation-only state. It never participates in saves, orders or checksums.
 class SoftwareTerrainCache
 {
@@ -51,6 +52,7 @@ class SoftwareTerrainCache
 
   private:
 	std::vector<std::unique_ptr<Chunk>> chunks;
+	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};

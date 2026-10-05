@@ -8,6 +8,7 @@ void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
+	registry = map.frozenTerrainRegistry();
 	w = map.getW();
 	h = map.getH();
 	wMask = map.getMaskW();
@@ -99,8 +100,12 @@ TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
     const auto &base = terrainPresentation(own);
     auto result = terrainBaseLayers(own,getTerrain(x,y),base,animationTime);
     const int firstEdge = base.backdropSprite ? 2 : 1;
-    if (!layeredTerrain) return result;
-    // Blend only a narrow decorative border into neighboring cells. The material
+	if (!layeredTerrain)
+	{
+		result.materials[0] = registry->appearance(own);
+		return result;
+	}
+	// Blend only a narrow decorative border into neighboring cells. The material
     // and movement boundary remain exactly on the gameplay-cell boundary.
     constexpr int dx[4] = {0,1,0,-1}, dy[4] = {-1,0,1,0};
     std::array<TerrainType,4> types{};
@@ -125,5 +130,7 @@ TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
         result.frames[i+firstEdge] = terrainPresentation(types[i]).edgeFirstFrame + masks[i]-1;
         result.materials[i+firstEdge] = types[i];
     }
-    return result;
+	for (auto &material : result.materials)
+		material = registry->appearance(material);
+	return result;
 }

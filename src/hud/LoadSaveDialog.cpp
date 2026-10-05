@@ -132,6 +132,14 @@ void LoadSaveDialog::exportPresentedFile()
 	exportSave();
 }
 
+void LoadSaveDialog::showLoadFailure(const std::string &message)
+{
+	saveFailed = true;
+	status = message;
+	resume();
+	invalidate();
+}
+
 void LoadSaveDialog::showSaveFailure()
 {
 	saveFailed = true;

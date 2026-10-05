@@ -84,6 +84,12 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &, int l
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
 								   bool wholeMap, int animationTime)
 {
+	if (registry.get() != &map.terrainRegistry())
+	{
+		chunks.clear();
+		registry = map.frozenTerrainRegistry();
+	}
+
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
 	++frame;

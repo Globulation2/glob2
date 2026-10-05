@@ -39,8 +39,8 @@ void MapEdit::processEvent(SDL_Event& event)
 		doFullQuit=true;
 	}
 #	endif
-	
-	else if(showingMenuScreen || showingLoad || showingSave || showingScriptEditor || showingTeamsEditor || isShowingAreaName)
+
+	else if (hasDialog())
 	{
 		delegateMenu(event);
 		return;

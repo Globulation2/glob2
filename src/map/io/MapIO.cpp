@@ -39,7 +39,8 @@ try
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
 	clear();
-    co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
+	terrainRegistryValue = TerrainRegistry::builtins();
+	co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
 
 	stream->readEnterSection("Map");
 
@@ -61,6 +62,29 @@ try
 	wMask = w-1;
 	hMask = h-1;
 	size = w*h;
+
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
+	{
+		stream->readEnterSection("terrainRegistry");
+		const auto chunks = stream->readUint32("chunks");
+		if (!chunks || chunks > 512)
+			throw std::runtime_error("Invalid terrain registry size");
+		std::string definitions;
+		for (unsigned i = 0; i < chunks; ++i)
+		{
+			stream->readEnterSection(i);
+			const auto length = stream->readUint32("length");
+			if (length > 65536)
+				throw std::runtime_error("Invalid terrain registry chunk");
+			std::string chunk(length, '\0');
+			stream->read(chunk.data(), chunk.size(), "definitions");
+			definitions += chunk;
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		terrainRegistryValue = TerrainRegistry::deserialize(definitions);
+	}
+	terrainCounts.assign(terrainRegistry().size(), 0);
 
 	// We allocate memory:
 	mapDiscovered.resize(size);
@@ -262,6 +286,21 @@ void Map::save(GAGCore::OutputStream *stream)
 	// We save size:
 	stream->writeSint32(wDec, "wDec");
 	stream->writeSint32(hDec, "hDec");
+
+	{
+		const auto definitions = terrainRegistry().serialize();
+		stream->writeEnterSection("terrainRegistry");
+		stream->writeUint32((definitions.size() + 65535) / 65536, "chunks");
+		for (std::size_t i = 0; i < definitions.size(); i += 65536)
+		{
+			stream->writeEnterSection(i / 65536);
+			const auto length = std::min<std::size_t>(65536, definitions.size() - i);
+			stream->writeUint32(length, "length");
+			stream->write(definitions.data() + i, length, "definitions");
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+	}
 
 	// We write what's inside the map:
 	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});

@@ -39,10 +39,10 @@ namespace
 // Terrain fits its tile, so rectangular chunks preserve painter order. Split
 // at canonical 32-tile and torus boundaries; camera motion only changes the
 // translation, and visibility is included in the exact cached frame vector.
-template<class Describe>
-bool drawCachedTerrain(const void *mapIdentity, int left, int top,
-    int right, int bottom, int viewportX, int viewportY, int maskW, int maskH,
-    int layerCount, Describe describe)
+template <class Describe>
+bool drawCachedTerrain(const void *mapIdentity, const void *registryIdentity, int left, int top,
+					   int right, int bottom, int viewportX, int viewportY, int maskW, int maskH,
+					   int layerCount, Describe describe)
 {
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
@@ -51,7 +51,11 @@ bool drawCachedTerrain(const void *mapIdentity, int left, int top,
     // Asset identities are part of exact cache validation. Native/GPU image
     // content revisions additionally invalidate entries in MapGeometryCache.
     std::vector<int> assets;
-    for (unsigned type=0; type<TERRAIN_COUNT; ++type)
+	const auto registryBits =
+		static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(registryIdentity));
+	assets.push_back(int(registryBits));
+	assets.push_back(int(registryBits >> 32));
+	for (unsigned type=0; type<TERRAIN_COUNT; ++type)
         for (auto *asset : {globalContainer->terrainSprites[type],globalContainer->terrainBackdropSprites[type]}) {
             const auto bits = static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(asset));
             assets.push_back(static_cast<int>(bits)); assets.push_back(static_cast<int>(bits>>32));
@@ -206,13 +210,16 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    if (drawCachedTerrain(sceneMap.cacheKey(), left, top, right, bot,
-            viewportX, viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), sceneMap.terrainLayerCapacity(), [&](int x, int y)
-            {
+	if (drawCachedTerrain(
+			sceneMap.cacheKey(), &sceneMap.terrainRegistry(), left, top, right, bot, viewportX,
+			viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), sceneMap.terrainLayerCapacity(),
+			[&](int x, int y)
+			{
                 bool visible = (drawOptions & DRAW_WHOLE_MAP) ||
                     sceneMap.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, visibleTeams);
                 return visible ? sceneMap.terrainLayersAt(x,y,animationTime) : TerrainLayers{};
-            })) return;
+			}))
+		return;
 
 	// we draw the terrains, eventually with debug rects:
     Sprite *active=nullptr;
@@ -296,8 +303,10 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 
 	const auto colorOf = [&](int x, int y) -> Uint32
 	{
-		const auto color = terrainPresentation(sceneMap.presentationTypeAt(x+viewportX,y+viewportY)).overview;
-        int r=color.r, g=color.g, b=color.b;
+		const auto color =
+			sceneMap.terrainPresentation(sceneMap.presentationTypeAt(x + viewportX, y + viewportY))
+				.overview;
+		int r=color.r, g=color.g, b=color.b;
 		const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 		if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 			sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))

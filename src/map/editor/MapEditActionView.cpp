@@ -114,7 +114,23 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		menuScreen.reset();
 		showingMenuScreen=false;
 	}
-	else if(action=="open load screen")
+	else if (action == "import terrain definitions")
+	{
+		performAction("unselect");
+		loadSaveScreen =
+			std::make_unique<LoadSaveDialog>("terrain", "json", true, "Import Terrain Definitions",
+											 nullptr, nullptr, nullptr, Glob2UI::Surface::Editor);
+		attachDialog(*loadSaveScreen);
+		showingLoad = true;
+		importingTerrain = true;
+	}
+	else if (action == "open terrain palette")
+	{
+		performAction("unselect");
+		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry());
+		attachDialog(*terrainPalette);
+	}
+	else if (action == "open load screen")
 	{
 		performAction("unselect");
 		performAction("scroll horizontal stop");
@@ -127,6 +143,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 	{
 		loadSaveScreen.reset();
 		showingLoad=false;
+		importingTerrain = false;
 	}
 	else if(action=="open save screen")
 	{

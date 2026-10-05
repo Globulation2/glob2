@@ -29,8 +29,10 @@ void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPl
     if (mode == TerrainPlacementMode::BaseTerrain ? !isTerrain : !isResourceSelector) return;
     if (isTerrain) {
         const auto material = TerrainSelector::baseTerrain(type);
-        if (!terrainPresentation(material).editorSelectable) return;
-        if (const auto requirement=terrainExperiment(material);
+		if (!game.map.validTerrainType(material) ||
+			!game.map.terrainPresentation(material).editorSelectable)
+			return;
+		if (const auto requirement=terrainExperiment(material);
             requirement && !globalContainer->settings.experiments.has(*requirement)) return;
         type = TerrainSelector::selectorFor(material);
     }
@@ -53,11 +55,11 @@ void MapEdit::resetPlacementTracking()
 bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, float relMouseY)
 {
     if (action.starts_with("select "))
-        for (unsigned id=0; id<TERRAIN_COUNT; ++id)
-        {
+		for (unsigned id = 0; id < game.map.terrainRegistry().size(); ++id)
+		{
             const auto type = static_cast<::TerrainType>(id);
-            const auto& presentation = terrainPresentation(type);
-            if (presentation.editorSelectable && action == std::string("select ")+presentation.name)
+			const auto &presentation = game.map.terrainPresentation(type);
+			if (presentation.editorSelectable && action == std::string("select ")+presentation.name)
             {
                 beginTerrainPlacement(TerrainSelector::selectorFor(type), TerrainPlacementMode::BaseTerrain);
                 return true;
