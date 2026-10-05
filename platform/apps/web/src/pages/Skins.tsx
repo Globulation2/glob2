@@ -55,6 +55,15 @@ function SkinStudio() {
         : { items: [], equippedVersionId: null, equippedBuildingColor: null },
     [account?.id],
   );
+  const preparingSprites =
+    catalog.status === 'ready' &&
+    catalog.data.items.some((skin) => skin.softwareStatus === 'pending');
+  const reloadCatalog = catalog.reload;
+  useEffect(() => {
+    if (!account || !preparingSprites) return;
+    const timer = setInterval(reloadCatalog, 5000);
+    return () => clearInterval(timer);
+  }, [account, preparingSprites, reloadCatalog]);
   const disabled = doc.busy || !doc.hydrated;
   function showDialog(next: Dialog) {
     doc.finish();

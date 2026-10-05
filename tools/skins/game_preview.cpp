@@ -14,6 +14,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "online/SkinDownloads.h"
+#include "online/SkinSprites.h"
 #include "online/OnlineStorage.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -66,7 +67,7 @@ int main(int argc, char **argv)
                 const int y = (team->startPosY + 4) & (gui.game.map.getH()-1);
                 if (auto *unit = gui.game.addUnit(x,y,i<4 ? 0 : 1,WORKER,0,0,0,0))
                 { unit->direction = i; gui.game.map.setMapDiscovered(x,y,Team::teamNumberToMask(0)); }
-                else throw std::runtime_error("Diagnostic worker placement failed");
+                else if (!std::getenv("SKIN_PREVIEW_BENCHMARK")) throw std::runtime_error("Diagnostic worker placement failed");
             }
             const char *moderationCapture = std::getenv("SKIN_PREVIEW_MODERATION_CAPTURE");
             if (moderationCapture)
@@ -96,9 +97,10 @@ int main(int argc, char **argv)
             if (const char *benchmark = std::getenv("SKIN_PREVIEW_BENCHMARK"))
             {
                 const char *assets = std::getenv("GLOB2_SKIN_PREVIEW_DIR");
-                if (!assets || !*assets) throw std::runtime_error("Benchmark requires preview assets");
+                if ((!assets || !*assets) && !std::getenv("SKIN_PREVIEW_ASSIGNMENT")) throw std::runtime_error("Benchmark requires preview assets or an authorized assignment");
                 auto &appearance = gui.view.render.skinPreview();
-                if (!appearance.ready) throw std::runtime_error("Benchmark meshes unavailable");
+                if (!appearance.ready && !appearance.sprites) throw std::runtime_error("Benchmark appearance unavailable");
+                if(!std::getenv("SKIN_PREVIEW_ASSIGNMENT")) {
                 // Team 1 reuses the preview atlas with the left half of every
                 // model quadrant repainted, and the preview material map.
                 auto paint = std::make_unique<GAGCore::DrawableSurface>(std::string(assets)+"/paint.png");
@@ -107,9 +109,12 @@ int main(int argc, char **argv)
                 if (!material) material = std::make_unique<GAGCore::DrawableSurface>(512,512);
                 if (!appearance.install(1, std::move(paint), std::move(material)))
                     throw std::runtime_error("Benchmark needs a 512x512 paint.png (and material.png when present)");
+                }
                 globalContainer->settings.clouds = false;
                 globalContainer->settings.cloudShadows = false;
                 globalContainer->settings.unitInterpolation = false;
+                const unsigned skinTeams=std::getenv("SKIN_BENCH_TEAMS")?std::stoul(std::getenv("SKIN_BENCH_TEAMS")):2;
+                if(!skinTeams || skinTeams>unsigned(gui.game.mapHeader.getNumberOfTeams()))throw std::runtime_error("Invalid benchmark colony count");
                 std::vector<Unit *> crowd;
                 for (int y=-8; y<8; ++y)
                     for (int x=-8; x<8; ++x)
@@ -119,7 +124,7 @@ int main(int argc, char **argv)
                         gui.game.map.setMapDiscovered(mx,my,Team::teamNumberToMask(0));
                         const int index=(y+8)*16+x+8;
                         for (int type : {index%3 ? WORKER : WARRIOR, EXPLORER})
-                            if (auto *unit=gui.game.addUnit(mx,my,index%2,type,0,0,0,0))
+                            if (auto *unit=gui.game.addUnit(mx,my,index%skinTeams,type,0,0,0,0))
                             {
                                 unit->direction=index%8;
                                 crowd.push_back(unit);
@@ -180,11 +185,20 @@ int main(int argc, char **argv)
                         {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},
                         {"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
-                        {"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
+                        {"decodedSpriteBytes",appearance.sprites?appearance.sprites->decodedBytes():0},{"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
                         {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;
                     gui.drawAll(0);
                     globalContainer->gfx->printScreen(std::string(benchmark)+(skinned?"-skinned.bmp":"-classic.bmp"));
                     globalContainer->gfx->nextFrame();
+                    if(skinned)if(const char *framesPrefix=std::getenv("SKIN_BENCH_FRAME_PREFIX")) {
+                        for(unsigned frame=0;frame<32;++frame) {
+                            for(unsigned i=0;i<crowd.size();++i)crowd[i]->delta=(i*13+frame*8)%256;
+                            const auto checksum=gui.game.checkSum();gui.drawAll(0);
+                            if(gui.game.checkSum()!=checksum)throw std::runtime_error("Animation capture changed simulation state");
+                            globalContainer->gfx->printScreen(std::string(framesPrefix)+"-"+std::to_string(frame)+".bmp");
+                            globalContainer->gfx->nextFrame();
+                        }
+                    }
                 }
             }
             if (moderationCapture)

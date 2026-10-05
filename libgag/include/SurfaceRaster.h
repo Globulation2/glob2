@@ -23,6 +23,7 @@ enum class FillBlend
 // the raster operation afterwards, so clipping cannot stretch the remaining source pixels.
 void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 		  SDL_Rect destination, Uint8 alpha, bool opaque, BlitBlend blend);
+void skinBlit(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,SDL_Rect dst,Uint8 opacity);
 void fill(SDL_Surface *target, SDL_Rect rect, Uint32 packedColor, Uint8 alpha,
 		  FillBlend blend = FillBlend::Native);
 bool opaque(SDL_Surface *surface);

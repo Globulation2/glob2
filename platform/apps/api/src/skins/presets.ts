@@ -1,3 +1,4 @@
+import { enqueueSkinSprites } from '@glob2/core';
 import { readFile } from 'node:fs/promises';
 import { putContent } from '@glob2/core';
 import type { ApiServices } from '../services.ts';
@@ -70,6 +71,7 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
         })
         .onConflict((oc) => oc.column('id').doNothing())
         .execute();
+      await enqueueSkinSprites(trx, preset.versionId);
     });
   }
 }

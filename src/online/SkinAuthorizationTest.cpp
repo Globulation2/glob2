@@ -56,6 +56,16 @@ TEST_SUITE("SkinAuthorization")
             CHECK(auth.skin()->swarmViewAngle==entry.second);
         }
     }
+    TEST_CASE("signed optional sprite descriptors bind derivatives and ignore future formats")
+    {
+        const auto f=fixture();
+        for(const auto &name:{"ready","unknown"}) {
+            SkinAuthorization auth(f["software"][name],f["jwks"].dump(),"https://example.test",f["claims"]["matchId"],2,1700000000);
+            REQUIRE(auth.state()==SkinAuthorization::State::Verified);
+            CHECK(auth.skin()->spriteManifestHash==(std::string(name)=="ready"?std::string(64,'a'):std::string()));
+            CHECK(auth.skin()->spriteRenderRevision==(std::string(name)=="ready"?std::string(64,'b'):std::string()));
+        }
+    }
     TEST_CASE("untrusted key sets and bounded malformed inputs fail closed")
     {
         auto f=fixture();

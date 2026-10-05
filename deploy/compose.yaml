@@ -197,6 +197,33 @@ services:
     depends_on:
       init: {condition: service_completed_successfully}
 
+  skin-render-worker:
+    <<: *hardening
+    image: ${GLOB2_SKIN_RENDER_IMAGE:-glob2-skin-render-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: skin-render-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      RELAY_KEYS_FILE: ''
+      ENGINE_AGENT_KEYS_FILE: ''
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend]
+    tmpfs: ['/tmp:size=512m,mode=1777']
+    mem_limit: 3g
+    cpus: 2
+    pids_limit: 128
+    stop_grace_period: 6m
+    depends_on:
+      init: {condition: service_completed_successfully}
+
   ai-map-worker:
     <<: *hardening
     profiles: [ai-maps]

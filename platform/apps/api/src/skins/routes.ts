@@ -2,9 +2,9 @@ import { skinModerationRoutes } from './moderation.ts';
 import { skinDraftRoutes } from './drafts.ts';
 import { seedSkinPresets } from './presets.ts';
 import { matchColonySkins } from './matches.ts';
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { sql } from 'kysely';
-import { putContent } from '@glob2/core';
+import { enqueueSkinSprites, putContent } from '@glob2/core';
 import { EquipSkinRequest, PublishSkinRequest, type ColonySkinVersion } from '@glob2/protocol';
 import { requireAccount, type Identity } from '../identity.ts';
 import { body } from '../http/validate.ts';
@@ -73,7 +73,30 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       .limit(200)
       .execute();
     // Like match appearances, omit versions for a swarm mesh this release does not know.
-    const items = versions.filter((version) => knownSwarmMesh(version.swarmMesh));
+    const statuses = await db
+      .selectFrom('colony_skin_sprites')
+      .select(['version_id', 'status'])
+      .where(
+        'version_id',
+        'in',
+        versions.map((v) => v.id),
+      )
+      .where(
+        'render_revision',
+        '=',
+        db
+          .selectFrom('skin_render_revisions')
+          .select('revision')
+          .orderBy(sql<boolean>`last_seen_at > now() - interval '90 seconds'`, 'desc')
+          .orderBy('created_at', 'desc')
+          .orderBy('revision')
+          .limit(1),
+      )
+      .execute();
+    const status = new Map(statuses.map((row) => [row.version_id, row.status]));
+    const items = versions
+      .filter((version) => knownSwarmMesh(version.swarmMesh))
+      .map((version) => ({ ...version, softwareStatus: status.get(version.id) ?? 'pending' }));
     const equipment = await db
       .selectFrom('colony_skin_equipment')
       .select(['version_id', 'building_color'])
@@ -196,10 +219,90 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
             })
             .returning('id')
             .executeTakeFirstOrThrow();
-        return { id: version.id, ...content, manifestSha256: digest };
+        await enqueueSkinSprites(trx, version.id);
+        const derivative = await trx
+          .selectFrom('colony_skin_sprites')
+          .select('status')
+          .where('version_id', '=', version.id)
+          .where(
+            'render_revision',
+            '=',
+            trx
+              .selectFrom('skin_render_revisions')
+              .select('revision')
+              .orderBy(sql<boolean>`last_seen_at > now() - interval '90 seconds'`, 'desc')
+              .orderBy('created_at', 'desc')
+              .orderBy('revision')
+              .limit(1),
+          )
+          .executeTakeFirst();
+        return {
+          softwareStatus: derivative?.status ?? 'pending',
+          id: version.id,
+          ...content,
+          manifestSha256: digest,
+        };
       });
     },
   );
+  app.get<{ Params: { id: string; bundle: string; hash?: string } }>(
+    '/api/v1/skins/versions/:id/sprites/:bundle/manifest',
+    spriteAsset(false),
+  );
+  app.get<{ Params: { id: string; bundle: string; hash?: string } }>(
+    '/api/v1/skins/versions/:id/sprites/:bundle/pages/:hash',
+    spriteAsset(true),
+  );
+  function spriteAsset(page: boolean) {
+    return async (
+      request: FastifyRequest<{
+        Params: { id: string; bundle: string; hash?: string };
+      }>,
+      reply: FastifyReply,
+    ) => {
+      const { id, bundle, hash } = request.params;
+      if (
+        !/^[0-9a-f-]{36}$/.test(id) ||
+        !/^[0-9a-f]{64}$/.test(bundle) ||
+        (page && !/^[0-9a-f]{64}$/.test(hash ?? ''))
+      )
+        throw apiError('not_found', 'Skin not found.');
+      const derivative = await db
+        .selectFrom('colony_skin_sprites as d')
+        .innerJoin('colony_skin_versions as v', 'v.id', 'd.version_id')
+        .innerJoin('colony_skins as s', 's.id', 'v.skin_id')
+        .select('d.id')
+        .where('v.id', '=', id)
+        .where('d.manifest_sha256', '=', bundle)
+        .where('d.status', '=', 'ready')
+        .where('s.disabled_at', 'is', null)
+        .executeTakeFirst();
+      if (!derivative) throw apiError('not_found', 'Skin artwork not found.');
+      if (
+        page &&
+        !(await db
+          .selectFrom('colony_skin_sprite_pages')
+          .select('sha256')
+          .where('sprites_id', '=', derivative.id)
+          .where('sha256', '=', hash ?? '')
+          .executeTakeFirst())
+      )
+        throw apiError('not_found', 'Skin page not found.');
+      const blob = await db
+        .selectFrom('blobs')
+        .select('storage_key')
+        .where('sha256', '=', page ? (hash ?? '') : bundle)
+        .executeTakeFirst();
+      const stream = blob ? await blobs.get(blob.storage_key) : undefined;
+      if (!stream) throw apiError('not_found', 'Skin artwork not found.');
+      return reply
+        .type(page ? 'image/webp' : 'application/json')
+        .header('X-Content-Type-Options', 'nosniff')
+        .header('Cache-Control', 'public, max-age=300')
+        .header('ETag', `"${page ? hash : bundle}"`)
+        .send(stream);
+    };
+  }
   // Public, cacheable content of enabled skins: the colour atlas and the material map.
   for (const [route, column, missing] of [
     ['texture', 'v.texture_sha256', 'Texture not found.'],

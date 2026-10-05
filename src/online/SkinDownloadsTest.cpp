@@ -203,4 +203,22 @@ TEST_SUITE("SkinDownloads") {
         REQUIRE(loader.takeReady().size()==1);
     }
 
+TEST_CASE("software authorization does not request mesh paint inputs") {
+    DownloadFixture f;auto loader=f.loader();loader->setSoftware(true);
+    loader->poll(1700000000);f.keys();loader->poll(1700000000);
+    auto ready=loader->takeReady();REQUIRE(ready.size()==1);CHECK(ready[0].path.empty());CHECK(ready[0].materialPath.empty());
+    CHECK(f.http.count("/texture")==0);CHECK(f.http.count("/material")==0);
+}
+
+TEST_CASE("software appearance refresh delivers a late ready descriptor and observes expiry") {
+    DownloadFixture f;auto loader=f.loader();loader->setSoftware(true);f.keys();loader->poll(1700000000);
+    auto initial=loader->takeReady();REQUIRE(initial.size()==1);CHECK(initial[0].skin.spriteManifestHash.empty());
+    loader->poll(1700000060);auto snapshot=f.http.pending("/skins");REQUIRE(snapshot);
+    snapshot->reply(200,{{"colonySkins",nlohmann::json::array({{{"team",2},{"assertion",f.f["software"]["ready"]}}})}});
+    loader->poll(1700000060);f.keys();loader->poll(1700000061);
+    auto ready=loader->takeReady();REQUIRE(ready.size()==1);CHECK(ready[0].skin.spriteManifestHash==std::string(64,'a'));
+    loader->poll(1700086431);CHECK(loader->takeRemoved()==std::vector<int>{2});
+    CHECK(f.http.count("/texture")==0);CHECK(f.http.count("/material")==0);
+}
+
 }

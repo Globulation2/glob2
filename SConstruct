@@ -448,6 +448,9 @@ def main():
     if not server_only:
         env.ParseConfig("pkg-config opusfile --cflags")
     configure(env, server_only, relay)
+    if not server_only:
+        # Skin bundle verification/encoding calls libwebp directly, beyond SDL_image.
+        env.ParseConfig("pkg-config libwebp --cflags --libs --static")
 
     if not server_only:
         from recording_dependencies import build as build_recording, attach as attach_recording

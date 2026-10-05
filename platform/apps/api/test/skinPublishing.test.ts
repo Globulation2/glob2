@@ -356,3 +356,73 @@ it('publishes paint per swarm mesh, leaving swarmMesh out of classic manifests',
       .sort(),
   ).toEqual(['classic', 'crown']);
 });
+
+it('exposes pending status immediately and only serves ready enabled sprite bundle assets', async () => {
+  const db = harness.database.db,
+    revision = '9'.repeat(64);
+  await db.insertInto('skin_render_revisions').values({ revision }).execute();
+  const headers = { authorization: `Bearer ${player.accessToken}` };
+  const response = await instance.app.inject({
+    method: 'POST',
+    url: '/api/v1/skins/publish',
+    headers,
+    payload: {
+      name: 'Sprites',
+      imageBase64: (await colourAtlas()).toString('base64'),
+      materialBase64: (await materialMap()).toString('base64'),
+      buildingColor: 321,
+    },
+  });
+  expect(response.statusCode, response.body).toBe(200);
+  const version = response.json();
+  expect(version.softwareStatus).toBe('pending');
+  const derivative = await db
+    .selectFrom('colony_skin_sprites')
+    .selectAll()
+    .where('version_id', '=', version.id)
+    .where('render_revision', '=', revision)
+    .executeTakeFirstOrThrow();
+  const { putContent } = await import('@glob2/core');
+  const page = await putContent(harness.blobs, Buffer.from('page fixture')),
+    manifest = await putContent(harness.blobs, Buffer.from('manifest fixture'));
+  for (const blob of [page, manifest])
+    await db
+      .insertInto('blobs')
+      .values({
+        sha256: blob.sha256,
+        size: blob.size,
+        storage_key: blob.key,
+        content_type: blob === page ? 'image/webp' : 'application/json',
+      })
+      .execute();
+  const url = `/api/v1/skins/versions/${version.id}/sprites/${manifest.sha256}`;
+  expect((await instance.app.inject({ url: url + '/manifest' })).statusCode).toBe(404);
+  await db
+    .insertInto('colony_skin_sprite_pages')
+    .values({ sprites_id: derivative.id, sha256: page.sha256 })
+    .execute();
+  await db
+    .updateTable('colony_skin_sprites')
+    .set({ status: 'ready', manifest_sha256: manifest.sha256 })
+    .where('id', '=', derivative.id)
+    .execute();
+  const delivered = await instance.app.inject({ url: url + '/pages/' + page.sha256 });
+  expect(delivered.statusCode).toBe(200);
+  expect(delivered.headers['content-type']).toContain('image/webp');
+  expect(delivered.body).toBe('page fixture');
+  expect(
+    (await instance.app.inject({ url: url + '/pages/' + version.textureSha256 })).statusCode,
+  ).toBe(404);
+  expect((await instance.app.inject({ url: url + '/manifest' })).body).toBe('manifest fixture');
+  const catalog = (await instance.app.inject({ url: '/api/v1/skins', headers })).json();
+  expect(catalog.items.find((s: { id: string }) => s.id === version.id).softwareStatus).toBe(
+    'ready',
+  );
+  await db
+    .updateTable('colony_skins')
+    .set({ disabled_at: new Date() })
+    .where('id', '=', version.skinId)
+    .execute();
+  expect((await instance.app.inject({ url: url + '/manifest' })).statusCode).toBe(404);
+  expect((await instance.app.inject({ url: url + '/pages/' + page.sha256 })).statusCode).toBe(404);
+});

@@ -11,6 +11,7 @@ struct AuthorizedSkin
     // colony-v2: textureHash names the 512x512 colour atlas, materialHash its
     // 512x512 material-id map; both are bound by manifestHash.
     std::string versionId, skinId, textureHash, materialHash, manifestHash, accountId;
+    std::string spriteManifestHash, spriteRenderRevision;
     std::int64_t expiresAt = 0;
     int team = -1;
     std::uint32_t buildingColor = 0;

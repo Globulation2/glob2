@@ -152,7 +152,7 @@ def coverage_profile(paths, event, selected):
             continue
         if path.startswith(MUSIC_TOOL_PATHS):
             continue
-        if not is_test_source(path) and path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
+        if not is_test_source(path) and path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','tools/image_encoding.json','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True
         if path.startswith(('browser/',) + PRESENTATION) or path in RENDER_IMPLEMENTATIONS:
             browsers_all = True

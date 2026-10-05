@@ -352,6 +352,7 @@ namespace GAGCore
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 			PORTABLEGPU = 32,
+            NOAUDIO = 128, // Offline artwork export creates only the video context.
             //! Opt out of high-density backing pixels for fixed-pixel profiling.
             LOWPIXELDENSITY = 64,
 		};
@@ -653,6 +654,9 @@ namespace GAGCore
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
         // Render distinct visible poses before painting the map; composites retain painter order.
+        void drawSkinSprite(float x,float y,float w,float h,DrawableSurface *surface,int sx,int sy,int sw,int sh,Uint8 alpha);
+        // Production FBO tile, top-down straight RGBA; no shadows or window readback.
+        bool readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba);
         void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
         // Returns false without drawing when the backend or assets are unavailable.
         // texture is the team's colour atlas and material its material-id map;

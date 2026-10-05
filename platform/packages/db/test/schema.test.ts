@@ -58,6 +58,17 @@ const typedColumns: ColumnLists = {
     'created_at',
     'resolution_note',
   ],
+  skin_render_revisions: ['revision', 'created_at', 'last_seen_at'],
+  colony_skin_sprites: [
+    'id',
+    'version_id',
+    'render_revision',
+    'status',
+    'manifest_sha256',
+    'error',
+    'created_at',
+  ],
+  colony_skin_sprite_pages: ['sprites_id', 'sha256'],
   music_releases: [
     'id',
     'owner_id',
@@ -139,6 +150,7 @@ const typedColumns: ColumnLists = {
   ],
   colony_skin_equipment: ['account_id', 'version_id', 'updated_at', 'building_color'],
   match_colony_skins: [
+    'sprites_id',
     'building_color',
     'match_id',
     'team_index',
@@ -793,6 +805,7 @@ describe('migrations', () => {
         '0038_skin_view_angle',
         '0039_music',
         '0040_ai_library',
+        '0041_skin_sprites',
       ]);
       expect(
         (
@@ -862,7 +875,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(18);
+      expect(upgraded).toHaveLength(19);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -996,6 +1009,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_skin_sprites', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1126,6 +1140,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_skin_sprites', 'Success'],
       ]);
       expect(
         await db

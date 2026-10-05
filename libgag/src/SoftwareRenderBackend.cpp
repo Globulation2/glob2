@@ -150,6 +150,10 @@ class SoftwareRenderBackend final : public RenderBackend
 		SurfaceRaster::blit(target, source, sourceRect, mapped, alpha, opaque,
 							SurfaceRaster::BlitBlend::Triangle);
 	}
+    void blitLinear(const void *,SDL_Surface *source,std::uint64_t,const SDL_Rect &src,const SDL_FRect &dst,Uint8 alpha) override {
+        ++counts.blits;flush();TargetClip clip(target,outputClip());
+        SurfaceRaster::skinBlit(target,source,src,pixels(dst),alpha);
+    }
 	void fill(const SDL_FRect &rect, SDL_Color color) override
 	{
 		++counts.fills;

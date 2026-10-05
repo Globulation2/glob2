@@ -11,6 +11,30 @@
     "assertion"
   ],
   "properties": {
+    "softwareSprites": {
+      "type": "object",
+      "required": [
+        "format",
+        "manifestSha256",
+        "renderRevision"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "colony-sprites-v1"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "renderRevision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        }
+      }
+    },
     "team": {
       "type": "integer",
       "minimum": 0,
@@ -34,6 +58,22 @@
         "swarmMesh"
       ],
       "properties": {
+        "softwareStatus": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "pending"
+            },
+            {
+              "type": "string",
+              "const": "ready"
+            },
+            {
+              "type": "string",
+              "const": "failed"
+            }
+          ]
+        },
         "id": {
           "type": "string",
           "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",

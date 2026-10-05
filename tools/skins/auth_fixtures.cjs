@@ -55,5 +55,8 @@ const angleVersion={...crown,swarmViewAngle:127}; angleVersion.manifestSha256=ma
 swarm.angle=token({...claims,version:angleVersion});
 for(const value of [-1,360,12.5,'90']) invalid['angle'+String(value)]=token({...claims,version:{...angleVersion,swarmViewAngle:value}});
 invalid.angleOutsideManifest=token({...claims,version:{...crown,swarmViewAngle:127}});
+const descriptor={format:'colony-sprites-v1',manifestSha256:'a'.repeat(64),renderRevision:'b'.repeat(64)};
+const software={ready:token({...claims,softwareSprites:descriptor}),unknown:token({...claims,softwareSprites:{...descriptor,format:'future-v2'}})};
+for(const [name,change] of Object.entries({manifestSha256:'xyz',renderRevision:'xyz'}))invalid['sprite'+name]=token({...claims,softwareSprites:{...descriptor,...{[name]:change}}});
 const teams=Array.from({length:32},(_,team)=>token({...claims,team}));invalid.signature=valid.slice(0,-5)+'AAAAA';
-writeFileSync(process.env.SKIN_FIXTURE_OUTPUT||'test/fixtures/skins/authorization.json',JSON.stringify({textureHex:texture.toString('hex'),materialHex:material.toString('hex'),teams,jwks:{keys:[jwk]},claims,valid,swarm,invalid},null,2)+'\n');
+writeFileSync(process.env.SKIN_FIXTURE_OUTPUT||'test/fixtures/skins/authorization.json',JSON.stringify({textureHex:texture.toString('hex'),materialHex:material.toString('hex'),teams,jwks:{keys:[jwk]},claims,valid,swarm,software,invalid},null,2)+'\n');

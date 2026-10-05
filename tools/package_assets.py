@@ -16,7 +16,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
-WEBP_VERSION = "1.6.0"
+WEBP_VERSION = json.loads((ROOT / "tools/image_encoding.json").read_text())["webpVersion"]
 POLICY = "runtime-assets-v1"
 # Only this illustration may use lossy RGB. Wordmarks and game sprites stay exact.
 LOSSY_BACKGROUND = "data/gfx/menu-colony.png"
@@ -154,17 +154,19 @@ def encode_image(source, relative, cache, lossy):
     image = Image.open(io.BytesIO(raw))
     rgba = image.convert("RGBA")
     expected = rgba.tobytes()
+    encoding = json.loads((ROOT / "tools/image_encoding.json").read_text())
     recipe = dict(
+        image_recipe=encoding["recipe"],
         policy=POLICY,
         pillow=Image.__version__,
         webp=features.version("webp"),
         zlib=features.version("zlib"),
-        lossless_quality=75,
-        method=4,
+        lossless_quality=encoding["losslessQuality"],
+        method=encoding["losslessMethod"],
         lossy=lossy and relative == LOSSY_BACKGROUND,
     )
     if recipe["lossy"]:
-        recipe.update(lossy_quality=85, lossy_method=6)
+        recipe.update(lossy_quality=encoding["quality"], lossy_method=encoding["method"], image_recipe=encoding["recipe"])
     if raw[24] > 8:
         recipe["preserve_png_depth"] = raw[24]
     key = hashlib.sha256(raw + json.dumps(recipe, sort_keys=True).encode()).hexdigest()
@@ -211,8 +213,8 @@ def encode_image(source, relative, cache, lossy):
             stream,
             format="WEBP",
             lossless=True,
-            quality=75,
-            method=4,
+            quality=recipe["lossless_quality"],
+            method=recipe["method"],
             exact=True,
             **{k: v for k, v in profile.items() if k != "dpi"},
         )

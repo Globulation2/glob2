@@ -167,7 +167,7 @@ class AssetExportTests(unittest.TestCase):
         records = {item["source"]: item for item in self.export()["files"]}
         self.assertTrue(records["data/gfx/menu-colony.png"]["lossy"])
         self.assertEqual(
-            records["data/gfx/menu-colony.png"]["recipe"]["lossy_quality"], 85
+            records["data/gfx/menu-colony.png"]["recipe"]["lossy_quality"], 90
         )
         self.assertFalse(records["data/gfx/loading-wordmark.png"]["lossy"])
         self.assertEqual(

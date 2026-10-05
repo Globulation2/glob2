@@ -300,3 +300,112 @@ describe('colony skin equipment', () => {
     ).not.toBeNull();
   });
 });
+
+it('late sprite readiness is signed and pinned independently from frozen skin content', async () => {
+  const db = database.db,
+    hash = 'e'.repeat(64),
+    revision = 'f'.repeat(64);
+  await db
+    .insertInto('blobs')
+    .values({
+      sha256: hash,
+      size: 100,
+      content_type: 'application/json',
+      storage_key: `sha256/ee/${hash}`,
+    })
+    .onConflict((oc) => oc.column('sha256').doNothing())
+    .execute();
+  await db.insertInto('skin_render_revisions').values({ revision }).execute();
+  const skin = await db
+    .insertInto('colony_skins')
+    .values({ kind: 'preset', name: 'Late', entitlement: 'skins:late' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const version = await db
+    .insertInto('colony_skin_versions')
+    .values({
+      skin_id: skin.id,
+      texture_sha256: hash,
+      material_sha256: hash,
+      manifest_sha256: hash,
+      layout: 'colony-v2',
+      building_color: 123,
+    })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const account = await db
+    .insertInto('accounts')
+    .values({ kind: 'registered', display_name: 'Late' })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  await db
+    .insertInto('entitlements')
+    .values({ account_id: account.id, entitlement: 'skins:late', source: 'test' })
+    .execute();
+  await equipSkin(db, account.id, version.id);
+  const setup = JSON.parse(
+    readFileSync(
+      new URL(
+        '../../../packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json',
+        import.meta.url,
+      ),
+      'utf8',
+    ),
+  ) as MatchSetup;
+  setup.seats = [{ seat: 0, team: 0, kind: 'human', accountId: account.id, name: 'Late' }];
+  const match = await db
+    .insertInto('matches')
+    .values({
+      sim_version: simVersionKey(setup.simVersion),
+      origin: 'room',
+      setup: JSON.stringify(setup),
+      seed: setup.seed,
+      map_hash: setup.map.hash,
+    })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  const keys = SigningKeys.ephemeral();
+  expect(
+    (await matchColonySkins(db, keys, 'https://play.test', match.id))[0]?.softwareSprites,
+  ).toBeUndefined();
+  const derivative = await db
+    .insertInto('colony_skin_sprites')
+    .values({ version_id: version.id, render_revision: revision })
+    .returning('id')
+    .executeTakeFirstOrThrow();
+  await db
+    .updateTable('colony_skin_sprites')
+    .set({ status: 'ready', manifest_sha256: hash })
+    .where('id', '=', derivative.id)
+    .execute();
+  const ready = (await matchColonySkins(db, keys, 'https://play.test', match.id, false))[0];
+  expect(ready?.softwareSprites).toEqual({
+    format: 'colony-sprites-v1',
+    manifestSha256: hash,
+    renderRevision: revision,
+  });
+  expect(
+    keys.verify(ready!.assertion, { type: COLONY_SKIN_TYPE, audience: COLONY_SKIN_AUDIENCE })
+      .claims['softwareSprites'],
+  ).toEqual(ready?.softwareSprites);
+  const next = '1'.repeat(64);
+  await db.insertInto('skin_render_revisions').values({ revision: next }).execute();
+  await db
+    .insertInto('colony_skin_sprites')
+    .values({
+      version_id: version.id,
+      render_revision: next,
+      status: 'ready',
+      manifest_sha256: hash,
+    })
+    .execute();
+  expect(
+    (await matchColonySkins(db, keys, 'https://play.test', match.id, false))[0]?.softwareSprites,
+  ).toEqual(ready?.softwareSprites);
+  await db
+    .updateTable('colony_skins')
+    .set({ disabled_at: new Date() })
+    .where('id', '=', skin.id)
+    .execute();
+  expect(await matchColonySkins(db, keys, 'https://play.test', match.id, false)).toEqual([]);
+});

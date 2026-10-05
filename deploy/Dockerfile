@@ -4,6 +4,7 @@
 #
 #   target        image                         contents
 #   platform      glob2-platform                platform-api, platform-worker and the operator CLI
+#   skin-render-worker glob2-skin-render-worker   isolated OpenGL sprite generation
 #   music-worker  glob2-music-worker            isolated community audio conversion
 #   engine-agent  glob2-engine-agent:<simver>   engine-agent + headless glob2 + data (one per sim version)
 #   relay         glob2-relay                   glob2-relay
@@ -96,6 +97,7 @@ COPY platform/packages/billing/package.json packages/billing/
 COPY platform/packages/map-studio/package.json packages/map-studio/
 COPY platform/packages/music/package.json packages/music/
 COPY platform/apps/music-worker/package.json apps/music-worker/
+COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
 COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
 COPY platform/apps/api/package.json apps/api/
 COPY platform/apps/worker/package.json apps/worker/
@@ -125,6 +127,7 @@ COPY platform/packages packages
 COPY platform/apps/api apps/api
 COPY platform/apps/worker apps/worker
 COPY platform/apps/music-worker apps/music-worker
+COPY platform/apps/skin-render-worker apps/skin-render-worker
 COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
 # Node strips types at run time; tests and the web sources are not needed.
@@ -230,3 +233,13 @@ ENV MUSIC_PYTHON=/opt/music/bin/python
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-music-worker-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
 CMD ["node", "apps/music-worker/src/main.ts"]
+
+# Presentation baking uses the production client GL renderer under llvmpipe.
+FROM engine-agent AS skin-render-worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxfixes3 libxss1 libxtst6 xvfb xauth && rm -rf /var/lib/apt/lists/*
+ENV LD_LIBRARY_PATH=/opt/glob2/lib/glob2 SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=2
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-skin-render-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+ENTRYPOINT []
+CMD ["xvfb-run", "-a", "node", "apps/skin-render-worker/src/main.ts"]

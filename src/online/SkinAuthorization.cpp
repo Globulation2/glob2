@@ -98,6 +98,15 @@ SkinAuthorization::SkinAuthorization(const std::string &token,const std::string 
         if(skin.swarmMesh)manifest["swarmMesh"]=std::string(SWARM_MESHES[skin.swarmMesh].id);
         if(skin.swarmViewAngle)manifest["swarmViewAngle"]=skin.swarmViewAngle;
         if(Sha256::hex(manifest.dump())!=skin.manifestHash)return;
+        if (claims.contains("softwareSprites")) {
+            const auto &sprites=claims.at("softwareSprites");
+            // Unknown derivative formats do not invalidate the live appearance.
+            if (sprites.at("format")=="colony-sprites-v1") {
+                skin.spriteManifestHash=sprites.at("manifestSha256").get<std::string>();
+                skin.spriteRenderRevision=sprites.at("renderRevision").get<std::string>();
+                if (!Sha256::isHexDigest(skin.spriteManifestHash) || !Sha256::isHexDigest(skin.spriteRenderRevision)) return;
+            }
+        }
         const auto kid=header.at("kid").get<std::string>();
         if(kid.empty()||kid.size()>128||!keys.at("keys").is_array()||keys.at("keys").size()>32)return;
         std::string encodedKey;

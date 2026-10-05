@@ -1,0 +1,10 @@
+{
+  "recipe": "bundled-images-v2",
+  "webpVersion": "1.6.0",
+  "quality": 90,
+  "method": 6,
+  "exact": true,
+  "alphaQuality": 100,
+  "losslessQuality": 75,
+  "losslessMethod": 4
+}

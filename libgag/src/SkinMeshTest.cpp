@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <SkinMesh.h>
+#include "src/online/SwarmMeshCatalog.h"
+#include "src/online/SkinSpriteManifest.h"
+#include <SDL3_image/SDL_image.h>
+#include <cstdlib>
 #include "src/online/SkinViewTransforms.h"
 #include <cmath>
 #include <SkinAtlasCache.h>
@@ -262,3 +266,69 @@ TEST_SUITE("SkinMaterialMap")
         CHECK_FALSE(GAGCore::loadSkinMaterialMap((directory.path/"missing.png").string()));
     }
 }
+
+#ifdef HAVE_OPENGL
+TEST_SUITE("SkinReadback") {
+TEST_CASE("export readback matches live compositing for every pose and rotated swarm [display]") {
+    glob2test::ToolkitScope toolkit;
+    auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU|GAGCore::GraphicContext::NOAUDIO,"skin readback");
+    const auto source=nlohmann::json::parse(glob2test::readFile(glob2test::sourceRoot()/"test/fixtures/skins/authorization.json"));
+    glob2test::TempDir files("skin-readback");
+    for(const auto &name:{"texture","material"}) {
+        const auto hex=source[std::string(name)+"Hex"].get<std::string>();std::string bytes;
+        for(std::size_t i=0;i<hex.size();i+=2)bytes.push_back(char(std::stoul(hex.substr(i,2),nullptr,16)));
+        glob2test::writeFile(files.path/(std::string(name)+".png"),bytes);
+    }
+    GAGCore::DrawableSurface paint((files.path/"texture.png").string());
+    auto material=GAGCore::loadSkinMaterialMap((files.path/"material.png").string());REQUIRE(material);
+    nlohmann::json bundle;const char *exportPath=std::getenv("GLOB2_SKIN_EXPORT_DIR");
+    if(exportPath)bundle=nlohmann::json::parse(glob2test::readFile(std::filesystem::path(exportPath)/"manifest.json"));
+    std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> exported(nullptr,SDL_DestroySurface);
+    unsigned loadedPage=~0u;std::uint64_t poses=0;
+    const auto compare=[&](const GAGCore::SkinMesh &mesh,unsigned frame,unsigned region,unsigned clip) {
+        std::vector<uint8_t> rgba;REQUIRE(gfx->readSkinMesh({&mesh,frame,&paint,material.get(),uint8_t(region)},rgba));
+        REQUIRE(rgba.size()==128*128*4);
+        gfx->drawFilledRect(0,0,640,480,GAGCore::Color(20,40,60));
+        REQUIRE(gfx->drawSkinMesh(mesh,frame,paint,*material,region,12.8f,12.8f,102.4f,102.4f));
+        std::vector<uint8_t> live(128*128*4);glReadPixels(0,480-128,128,128,GL_RGBA,GL_UNSIGNED_BYTE,live.data());
+        unsigned error=0,alphaErrors=0;
+        for(unsigned y=0;y<128;++y)for(unsigned x=0;x<128;++x)for(unsigned c=0;c<3;++c) {
+            const unsigned at=(y*128+x)*4,gl=((127-y)*128+x)*4;
+            const auto expected=(unsigned(rgba[at+c])*rgba[at+3]+unsigned(c==0?20:c==1?40:60)*(255-rgba[at+3])+127)/255;
+            error=std::max(error,unsigned(std::abs(int(expected)-int(live[gl+c]))));
+        }
+        INFO("clip "<<clip<<" frame "<<frame);CHECK(error<=1);
+        if(exportPath && clip<8) {
+            const unsigned page=clip<7?clip*4+frame/64:28;
+            if(page!=loadedPage) {
+                const auto hash=bundle["pages"][page]["sha256"].get<std::string>();
+                std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> image(IMG_Load((std::filesystem::path(exportPath)/(hash+".webp")).string().c_str()),SDL_DestroySurface);
+                REQUIRE(image);exported.reset(SDL_ConvertSurface(image.get(),SDL_PIXELFORMAT_RGBA32));REQUIRE(exported);loadedPage=page;
+            }
+            const unsigned cell=clip<7?frame%64:0;
+            for(unsigned y=0;y<128;++y)for(unsigned x=0;x<128;++x) {
+                const auto *pixel=static_cast<const uint8_t *>(exported->pixels)+((cell/8)*128+y)*exported->pitch+((cell%8)*128+x)*4;
+                alphaErrors+=pixel[3]!=rgba[(y*128+x)*4+3];
+            }
+            CHECK(alphaErrors==0);
+        }
+        ++poses;
+    };
+    for(unsigned clip=0;clip<7;++clip) {
+        GAGCore::SkinMesh mesh;std::string error;
+        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(Online::SkinSpriteClips[clip])+".gsk")).string(),error));
+        for(unsigned frame=0;frame<256;++frame)compare(mesh,frame,clip<3?0:clip<6?1:2,clip);
+    }
+    for(unsigned choice=0;choice<Online::SWARM_MESHES.size();++choice) {
+        GAGCore::SkinMesh mesh;std::string error;
+        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/Online::SWARM_MESHES[choice].file).string(),error));
+        for(unsigned angle:{0u,127u,359u}) {
+            const auto &view=Online::SkinViews[choice];
+            auto oriented=angle?mesh.rotatedView(angle,view.inverse,view.projection,view.normals):mesh;
+            compare(oriented,0,3,choice==0 && angle==0?7:8);
+        }
+    }
+    CHECK(poses==1813);
+}
+}
+#endif

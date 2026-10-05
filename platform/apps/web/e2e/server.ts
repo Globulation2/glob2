@@ -120,6 +120,38 @@ const paint = await harness.database.db
   .selectFrom('colony_skin_versions')
   .select(['id', 'building_color'])
   .executeTakeFirstOrThrow();
+// Opt-in software-art fixture runs the real worker adapter against canonical preset paint.
+if (process.env['SKIN_E2E_RENDER_BINARY']) {
+  const { prepareJobQueue, enqueueSkinSprites, createLogger } = await import('@glob2/core');
+  const { runProcess } = await import('@glob2/engine/process');
+  const { renderSkin } = await import('../../skin-render-worker/src/process.ts');
+  const binary = process.env['SKIN_E2E_RENDER_BINARY'];
+  const probe = await runProcess({
+    binary,
+    cwd: repo,
+    args: ['--skin-render-info'],
+    limits: { timeoutMs: 10000 },
+  });
+  if (probe.code !== 0) throw new Error('Skin fixture renderer probe failed');
+  const revision = (JSON.parse(probe.stdout) as { renderRevision: string }).renderRevision;
+  const worker = harness.database.as('worker'),
+    logger = createLogger('skin-e2e', 'silent');
+  await prepareJobQueue(worker.pool, logger);
+  await worker.db.insertInto('skin_render_revisions').values({ revision }).execute();
+  await enqueueSkinSprites(worker.db, paint.id, revision);
+  const derivative = await worker.db
+    .selectFrom('colony_skin_sprites')
+    .select('id')
+    .where('version_id', '=', paint.id)
+    .executeTakeFirstOrThrow();
+  await renderSkin(
+    worker.db,
+    harness.blobs,
+    { binary, cwd: repo, revision },
+    derivative.id,
+    logger,
+  );
+}
 const seat = await harness.database.db
   .selectFrom('match_participants')
   .select(['account_id', 'team'])

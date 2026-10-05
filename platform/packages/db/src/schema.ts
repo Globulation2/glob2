@@ -700,7 +700,27 @@ export interface ColonySkinEquipmentTable {
   updated_at: Timestamp;
 }
 
+export interface SkinRenderRevisionsTable {
+  revision: string;
+  created_at: Timestamp;
+  last_seen_at: Timestamp;
+}
+export interface ColonySkinSpritesTable {
+  id: Generated<string>;
+  version_id: string;
+  render_revision: string;
+  status: Defaulted<'pending' | 'ready' | 'failed'>;
+  manifest_sha256: Nullable<string>;
+  error: Nullable<string>;
+  created_at: Timestamp;
+}
+export interface ColonySkinSpritePagesTable {
+  sprites_id: string;
+  sha256: string;
+}
+
 export interface MatchColonySkinsTable {
+  sprites_id: Nullable<string>;
   building_color: number;
   match_id: string;
   team_index: number;
@@ -1010,6 +1030,9 @@ export interface Database {
   skin_payment_events: SkinPaymentEventsTable;
   colony_skins: ColonySkinsTable;
   colony_skin_versions: ColonySkinVersionsTable;
+  skin_render_revisions: SkinRenderRevisionsTable;
+  colony_skin_sprites: ColonySkinSpritesTable;
+  colony_skin_sprite_pages: ColonySkinSpritePagesTable;
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
