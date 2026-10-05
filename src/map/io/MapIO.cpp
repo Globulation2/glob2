@@ -15,7 +15,6 @@
 #include "render/GameAnimations.h"
 
 #include <algorithm>
-#include <stdexcept>
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <PackedArray.h>
@@ -23,6 +22,15 @@
 #include <memory>
 #include <stdexcept>
 
+
+namespace
+{
+// Format 136 stores bounded raw chunks, avoiding the binary stream string limit
+// and text-stream quoting differences. Keep these wire sizes stable.
+constexpr std::size_t RegistryChunkBytes = 64 * 1024;
+constexpr std::size_t MaximumRegistryChunks =
+	TerrainRegistry::MaximumDefinitionBytes / RegistryChunkBytes;
+}
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 {
@@ -39,7 +47,8 @@ try
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
 	clear();
-    co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
+	terrainRegistryValue = TerrainRegistry::builtins();
+	co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
 
 	stream->readEnterSection("Map");
 
@@ -61,6 +70,36 @@ try
 	wMask = w-1;
 	hMask = h-1;
 	size = w*h;
+
+	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
+	{
+		stream->readEnterSection("terrainRegistry");
+		const auto chunks = stream->readUint32("chunks");
+		if (!chunks || chunks > MaximumRegistryChunks)
+			throw std::ios_base::failure("Invalid terrain registry size");
+		std::string definitions;
+		for (unsigned i = 0; i < chunks; ++i)
+		{
+			stream->readEnterSection(i);
+			const auto length = stream->readUint32("length");
+			if (length > RegistryChunkBytes)
+				throw std::ios_base::failure("Invalid terrain registry chunk");
+			const auto offset = definitions.size();
+			definitions.resize(offset + length);
+			stream->read(definitions.data() + offset, length, "definitions");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		try
+		{
+			terrainRegistryValue = TerrainRegistry::deserialize(definitions);
+		}
+		catch (const std::exception &error)
+		{
+			throw std::ios_base::failure(std::string("Invalid terrain registry: ") + error.what());
+		}
+	}
+	terrainCounts.assign(terrainRegistry().size(), 0);
 
 	// We allocate memory:
 	mapDiscovered.resize(size);
@@ -127,7 +166,7 @@ try
 				if (!validTerrainType(id)) co_return false;
 				terrainIds[i] = static_cast<TerrainType>(id);
 			}
-			const auto& visual = terrainCompatibility(terrainIds[i]);
+			const auto& visual = terrainRegistry().compatibility(terrainIds[i]);
 			if (tiles[i].terrain < visual.firstFrame || tiles[i].terrain >= visual.firstFrame + visual.variants) co_return false;
 		}
 		if (!packed) tiles[i].building = stream->readUint16("building");
@@ -262,6 +301,21 @@ void Map::save(GAGCore::OutputStream *stream)
 	// We save size:
 	stream->writeSint32(wDec, "wDec");
 	stream->writeSint32(hDec, "hDec");
+
+	{
+		const auto definitions = terrainRegistry().serialize();
+		stream->writeEnterSection("terrainRegistry");
+		stream->writeUint32((definitions.size() + RegistryChunkBytes - 1) / RegistryChunkBytes, "chunks");
+		for (std::size_t i = 0; i < definitions.size(); i += RegistryChunkBytes)
+		{
+			stream->writeEnterSection(i / RegistryChunkBytes);
+			const auto length = std::min(RegistryChunkBytes, definitions.size() - i);
+			stream->writeUint32(length, "length");
+			stream->write(definitions.data() + i, length, "definitions");
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+	}
 
 	// We write what's inside the map:
 	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});

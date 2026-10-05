@@ -216,9 +216,10 @@ public:
     };
     static bool isBaseTerrain(TerrainType type)
     {
-        return (type >= Grass && type <= Water) ||
-            (type >= RegisteredBegin && type < int(RegisteredBegin) + int(TERRAIN_COUNT));
-    }
+		return (type >= Grass && type <= Water) ||
+			   (type >= RegisteredBegin &&
+				type < int(RegisteredBegin) + int(TerrainRegistry::Capacity));
+	}
     static ::TerrainType baseTerrain(TerrainType type)
     {
         constexpr ::TerrainType legacy[] = {GRASS,SAND,WATER};
@@ -792,6 +793,9 @@ private:
 	///Tells whether the save-game menu screen is being drawn right now
 	bool showingSave;
 	std::unique_ptr<LoadSaveDialog> loadSaveScreen;
+	std::unique_ptr<TerrainPaletteDialog> terrainPalette;
+	bool importingTerrain = false;
+	void importTerrainFile(const std::string &filename);
 
 	///Tells whether the script editor is being drawn
 	bool showingScriptEditor;

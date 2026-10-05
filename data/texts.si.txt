@@ -5560,3 +5560,7 @@ V urejevalnik zemljevidov doda obrabljene steze. Kopenske enote se premikajo z d
 Tržnice V2
 [experiment markets-v2 help]
 Delavci lahko jemljejo zaloge iz skupnega skladišča tržnic. Tržnice je mogoče nadgraditi za shranjevanje pšenice in lesa, nato vseh surovin. Med ekipami se še vedno izmenjuje le sadje. Velja za nove igre; shranjene igre ohranijo prvotno nastavitev.
+[Import Terrain Definitions]
+Uvozi definicije terena
+[Terrain palette]
+Paleta terenov

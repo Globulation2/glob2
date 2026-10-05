@@ -4,7 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
-#include "field/TerrainGradient.h"
+#include "field/RuntimeTerrainGradient.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -222,12 +222,25 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
-        const auto *types = job.terrain ? job.terrain->data() : nullptr;
+		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {
+            gradient_kernel::propagateField(job.data.get(),job.swim,GRADIENT_COST_LIMIT,geometry,scratch,
+                [water=job.water->data()](size_t i){return water[i]!=0;});
+            return;
+        }
+        if (job.profiles)
+		{
+			gradient_kernel::propagateTerrainProfiles(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
+													  geometry, scratch, job.profiles->data(),
+													  job.profiles->movement, job.terrainBuckets);
+			return;
+		}
+		const auto *types = job.terrain ? job.terrain->data() : nullptr;
         // Uniform profiles perform no terrain reads. A weighted profile always
         // captures its semantic IDs before the job leaves the simulation thread.
-        gradient_kernel::propagateTerrainField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
-            geometry, scratch, [types](size_t i) { return types ? types[i] : GRASS; },
-            job.modifiedCosts);
+		gradient_kernel::propagateTerrainField(
+			job.data.get(), job.swim, GRADIENT_COST_LIMIT, geometry, scratch,
+			[types](size_t i) { return types ? types[i] : GRASS; }, job.modifiedCosts,
+			job.registry ? *job.registry : terrainRegistry(), job.terrainBuckets);
 	});
 }
 
@@ -298,7 +311,13 @@ void Map::syncStep(Uint32 stepCounter)
 		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
 			seed(job.data.get());
             job.modifiedCosts = hasTerrainMovementModifiers();
-            if (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN))
+			job.registry = frozenTerrainRegistry();
+			job.terrainBuckets = terrainQueueBuckets();
+            job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
+			job.profiles = job.modifiedCosts && terrainRegistry().size() > TERRAIN_COUNT
+							   ? frozenTerrainMovementSnapshot(swim)
+							   : nullptr;
+			if (!job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)))
                 job.terrain = frozenTerrainSnapshot();
             else job.terrain.reset();
 		});

@@ -8,6 +8,7 @@
 #include <vector>
 
 class SceneMap;
+class TerrainRegistry;
 // Shared presentation page cache. The historical name remains for existing view
 // controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
@@ -56,6 +57,7 @@ class SoftwareTerrainCache
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
 							 int animationTime, int preferredResolution);
 	std::vector<std::unique_ptr<Chunk>> chunks;
+	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};

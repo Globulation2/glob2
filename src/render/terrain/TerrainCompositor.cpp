@@ -225,8 +225,8 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 					  qy = (r.y * 2 + j - 1) & (r.height * 2 - 1);
 			const int cx = qx / 2, cy = qy / 2;
 			auto type = map.terrainTypeAt(cx, cy);
-			unsigned material = unsigned(type);
-			if (terrainUsesLegacyCorners(type))
+			unsigned material = unsigned(map.appearanceAt(cx, cy));
+			if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
 				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
 			r.samples[j * 4 + i] = terrainBindings[material];
 		}

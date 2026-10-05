@@ -72,6 +72,28 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
+    {
+        const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
+        globals->automaticEndingGame=false;
+        Engine engine;REQUIRE(engine.loadReplayTask(path).run());
+        auto& reader=*globals->replayReader;
+        const auto ticks=reader.getNumStepsTotal();REQUIRE(ticks>0);
+        engine.beginSession(0);
+        std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
+        for(unsigned tick=0;tick<ticks;++tick) {
+            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr);
+            trace<<engine.gui.game.stepCounter<<' '<<checksum<<'\n';
+            reader.setCheckSum(checksum);
+            REQUIRE(engine.stepSession(tick*40,{}));
+            REQUIRE(reader.isValid());
+            CHECK(engine.gui.game.stepCounter==tick+1);
+        }
+        engine.gui.isRunning=false;engine.finishSession();
+    }
     TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")
     {
         glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD", "0");

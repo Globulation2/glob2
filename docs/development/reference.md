@@ -831,8 +831,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unaffected.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
-- Terrain simulation properties live in `src/map/TerrainProperties.h`, indexed by
-  stable `TerrainType` IDs. Walking, swimming, flying, building eligibility,
+- Terrain simulation properties retain the fixed layout in `src/map/TerrainProperties.h`,
+  indexed by stable 16-bit `TerrainType` IDs in a map-owned immutable `TerrainRegistry`.
+  Use `map.terrainProperties(type)` or `map.terrainPropertiesAt(...)`; the global
+  constexpr table defines only the seven built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
@@ -845,14 +847,25 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
 - Saved sprite ranges, corner semantics and authoring frame selection are frozen in
-  `TerrainCompatibility.h`. Detailed terrain rendering resolves all five materials
-  through a presentation-only catalog, corner coverage resolver and CPU compositor.
-  `data/terrain/tileset.json` defines visual materials independently of gameplay IDs;
-  `TerrainPresentation.h` retains semantic editor and image-interchange metadata.
-  See [terrain material authoring](../assets/terrain-materials.md) for variants,
-  boundary profiles, asset validation and cache behavior. New gameplay terrain
-  still requires a stable enum, properties, compatibility descriptor and experiment
-  registration. Visual catalog changes must not change saved frames or RNG use.
+  `TerrainCompatibility.h`. Detailed terrain rendering resolves shipped appearances
+  through a presentation-only material catalog, corner coverage resolver and CPU
+  compositor. `data/terrain/tileset.json` defines those materials independently of
+  gameplay IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
+  metadata. See [terrain material authoring](../assets/terrain-materials.md) for
+  variants, boundary profiles, asset validation and cache behavior. Visual catalog
+  changes must not change saved frames or simulation RNG use.
+- Runtime types inherit a shipped appearance and use full tiles; legacy corner
+  adapters apply only to built-ins. Import definitions through
+  `Map::importTerrainDefinitions` before a match or in the editor. It validates and
+  compiles the complete replacement before publishing it, preserves existing IDs,
+  and appends new keys in sorted order. Scenes and gradient jobs retain the same
+  registry snapshot; inner loops borrow indexed data. Scenes cache the shipped
+  appearance in a two-byte cell plane; the compositor resolves equivalent aliases
+  to the same material without scanning custom definitions. Render caches bind the
+  registry snapshot and actual asset revisions. Saved custom colors remain
+  authoritative for previews and minimaps; built-ins use catalog palettes.
+  Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
+  experiments into matches, while saves retain them independently of user settings.
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
@@ -873,10 +886,55 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   classic terrain probabilities retain their exact integer numerators.
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
-- Save format 134 stores canonical terrain IDs and fractional terrain health effects.
-  Earlier supported saves derive IDs from their classic sprite ranges and adopt the
-  current simulation. Save floor 58 remains supported; replay floor 134 and network
-  protocol 55 separate clients using the new movement and ecology rules.
+- Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
+  before the tile data. Legacy numeric presentation fields are retained verbatim
+  for round trips and checksums; the material catalog controls detailed drawing.
+  Bounded JSON byte chunks support binary and text streams.
+  Serialization emits definitions in canonical ID order, with object fields in key
+  order, and import/load
+  releases the parsed JSON tree before compilation to bound temporary memory.
+  Loading rebuilds compiled tables before restoring dependent caches;
+  it never consults authoring JSON files. Earlier files use the built-in registry;
+  pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
+  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  Custom registry checksums hash canonical serialized fields, not struct padding.
+  Built-in-only maps keep their previous terrain checksum contribution. Existing
+  map-content hashes cover the embedded section for LAN, online and verification.
+- Registry compilation calculates movement and air costs once, deduplicates cost
+  profiles and caches distinct edge steps. Runtime gradient setup scales with
+  distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
+  kernels dispatch outside cell loops. The general kernel has scalar, SSE2 and NEON
+  implementations and compiled 64/128/256 bucket rings. Map counts select the smallest
+  safe ring from terrain present; unused slow definitions cannot enlarge it. Search
+  setup validates reachable edge costs against the selected ring before changing a
+  field, because a too-small ring can alias a future cost layer. Keep validation out
+  of cell/neighbor expansion; compact production snapshots bound it by distinct costs.
+  Capability counters keep health, air and projectile shortcuts independent of
+  registry size. A* retains the historical built-in lower bound and lowers it only
+  for faster custom terrain actually present, preserving old route choices.
+  Map property queries use a derived two-byte index plane into deduplicated
+  fixed-layout property structs, keeping equivalent custom IDs out of the hot
+  property working set. Canonical tile IDs and persistence remain unchanged.
+  Maps lazily cache a one-byte cost-profile plane and only the distinct costs
+  present in that plane per queried swimming class,
+  removing the ID-to-profile lookup from general-cost cell loops. These planes
+  share ownership with searches/jobs and invalidate together with terrain snapshots.
+  Eager fields, resumed building searches, worker snapshots and strategic travel
+  share compiled integer costs and reusable scratch storage.
+- Runtime-terrain performance qualification compares equivalent maps with 7, 259
+  and 1,024 definitions, plus distinct-cost and 16,384-type stress cases. Use release
+  builds on a quiet machine, warm up, randomize paired execution order and collect
+  at least ten repetitions. Report CPU and wall time separately, with rendering
+  and memory costs. Repeatable regressions over 2% full-match CPU or 5% terrain
+  kernel time block acceptance; noisy measurements do not establish a pass.
+- Keep the terrain index domains explicit when changing this code:
+  canonical `TerrainType` IDs identify saved definitions; property indices select
+  deduplicated simulation structs; per-swimming-class profile bytes select movement
+  costs; scene appearance IDs select shipped visual materials. None is a valid
+  substitute for a canonical ID in serialization or scripts. These derived planes
+  are rebuilt from the registry and cells, never serialized. Registry factories
+  publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
+  authoring presentation strings borrow its owned key/name storage.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.

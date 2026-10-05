@@ -237,6 +237,7 @@ CLIENT_SOURCES = (
     'game/screens/StartQualityScreen.cpp',
     'ui/screens/MainMenuScreen.cpp',
     'map/Map.cpp',
+    'map/TerrainRegistry.cpp',
     'map/MapTile.cpp',
     'map/generator/compatibility/LegacyGenerationDescriptor.cpp',
     'map/generator/MapHomogen.cpp',

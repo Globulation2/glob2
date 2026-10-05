@@ -479,8 +479,9 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
     // The old corner lattice remains a legacy editing adapter. Explicit
     // materials are restored as whole cells after legacy shore reconciliation.
     for (auto &type : repaired)
-        if (!terrainUsesLegacyCorners(type)) type = SAND;
-    const auto legacyOriginal = repaired;
+		if (!map.terrainUsesLegacyCorners(type))
+			type = SAND;
+	const auto legacyOriginal = repaired;
 	repairSeams(repaired, w, h, report.seamWidth, protectedResources, {GRASS, SAND, WATER});
 	for (int i = 0; i < w * h; ++i)
 	{
@@ -522,19 +523,22 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
     // Genuinely mixed classic corners retain the existing shore adapter.
     for (int y=0; y<h; ++y) for (int x=0; x<w; ++x) {
         const int i=y*w+x;
-        if (homes[i] || !terrainUsesLegacyCorners(original[i]) || repaired[i]!=legacyOriginal[i]) continue;
-        bool authored=false,uniform=true;
+		if (homes[i] || !map.terrainUsesLegacyCorners(original[i]) ||
+			repaired[i] != legacyOriginal[i])
+			continue;
+		bool authored=false,uniform=true;
         for (int dy=0; dy<=1; ++dy) for(int dx=0; dx<=1; ++dx) {
             const int j=((y+dy)%h)*w+(x+dx)%w;
             if (homes[j]) { uniform=false; continue; }
-            if (!terrainUsesLegacyCorners(original[j])) authored=true;
-            else if (original[j]!=original[i] || repaired[j]!=legacyOriginal[j]) uniform=false;
+			if (!map.terrainUsesLegacyCorners(original[j]))
+				authored = true;
+			else if (original[j]!=original[i] || repaired[j]!=legacyOriginal[j]) uniform=false;
         }
         if (authored && uniform) map.setCellTerrain(x,y,original[i]);
     }
     for (int i=0; i<w*h; ++i) {
-        if (!homes[i] && !terrainUsesLegacyCorners(original[i]))
-            map.setCellTerrain(i%w,i/w,original[i]);
+		if (!homes[i] && !map.terrainUsesLegacyCorners(original[i]))
+			map.setCellTerrain(i%w,i/w,original[i]);
     }
 	return original;
 }
@@ -552,7 +556,8 @@ std::vector<int> collectImportedResources(Map &map, const std::vector<int> &cell
 		const int y = i / w;
 		const int type = palette[cells[i]].resource;
 		const auto material = map.terrainTypeAt(x,y);
-        report.terrainChanges += (terrainUsesLegacyCorners(material) ? map.getUMTerrain(x,y) : material) != original[i];
+		report.terrainChanges += (map.terrainUsesLegacyCorners(material) ? map.getUMTerrain(x, y)
+																		 : material) != original[i];
 		if (type == NO_RES || homes[i])
 			continue;
 		if (!map.isResourceAllowed(x, y, type))
@@ -650,11 +655,14 @@ void exportMapImage(const Game &game, const std::string &path)
 		for (int x = 0; x < w; ++x)
 		{
 			const auto material = map.terrainTypeAt(x,y);
-            const auto terrain = terrainUsesLegacyCorners(material) ? map.getUMTerrain(x,y) : material;
-            int c = 0;
+			const auto terrain = map.terrainUsesLegacyCorners(material)
+									 ? map.getUMTerrain(x, y)
+									 : map.terrainRegistry().appearance(material);
+			int c = 0;
             for (int candidate=0; candidate<int(palette.size()); ++candidate)
                 if (candidate!=marker && palette[candidate].resource==NO_RES && palette[candidate].terrain==terrain)
                 { c=candidate; break; }
+			if (unsigned(material) >= TERRAIN_COUNT) c = -1-int(material);
 			const auto &resource = map.getResource(x, y);
 			for (int r = 3; r < marker; ++r)
 				if (resource.type == palette[r].resource)
@@ -672,7 +680,9 @@ void exportMapImage(const Game &game, const std::string &path)
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const auto &c = palette[cells[y * w + x]];
+			const int index = cells[y * w + x];
+			const auto c = index < 0 ? map.terrainPresentation(TerrainType(-1-index)).image
+				: TerrainColor{palette[index].r, palette[index].g, palette[index].b};
 			const Uint32 pixel = SDL_MapRGBA(SDL_GetPixelFormatDetails(out->format), SDL_GetSurfacePalette(out.get()), c.r, c.g, c.b, 255);
 			std::memcpy(static_cast<Uint8 *>(out->pixels) + y * out->pitch + x * 4, &pixel, 4);
 		}

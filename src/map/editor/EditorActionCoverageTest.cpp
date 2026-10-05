@@ -3,6 +3,12 @@
 #include "ExperimentalFeatures.h"
 #include "MapEdit.h"
 #include "Race.h"
+#include "MapEditDialog.h"
+#include "LoadSaveDialog.h"
+#include <FileManager.h>
+#include <Toolkit.h>
+#include <nlohmann/json.hpp>
+#include <algorithm>
 #include <filesystem>
 
 namespace
@@ -327,4 +333,122 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.terrainType==TerrainSelector::Wheat);
     }
 
+	TEST_CASE("custom terrain imports palettes and saved maps work on desktop and phone "
+			  "[display][artifacts]")
+	{
+		const char *previous = SDL_getenv_unsafe("GLOB2_MOBILE_UI");
+		const std::string saved = previous ? previous : "";
+		struct Restore
+		{
+			bool set;
+			std::string value;
+			~Restore()
+			{
+				if (set)
+					glob2test::setEnv("GLOB2_MOBILE_UI", value.c_str());
+				else
+					glob2test::unsetEnv("GLOB2_MOBILE_UI");
+			}
+		} restore{previous != nullptr, saved};
+		for (bool phone : {false, true})
+		{
+			glob2test::setEnv("GLOB2_MOBILE_UI", phone ? "1" : "0");
+			glob2test::HeadlessGlobals globals(
+				{.display = true,
+				 .width = phone ? 800 : 1024,
+				 .height = phone ? 480 : 768,
+				 .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+			MapEdit editor;
+			blank(editor);
+			CHECK(editor.usesPhone() == phone);
+			using Json = nlohmann::json;
+			Json definitions = Json::array();
+			for (unsigned i = 0; i < 40; ++i)
+				definitions.push_back({{"key", "example:t" + std::to_string(i)},
+									   {"name", "Terrain " + std::to_string(i)},
+									   {"base", "grass"},
+									   {"properties", {{"groundSpeedQ8", 192}}},
+									   {"appearance", "sand"}});
+			glob2test::TempDir scratch;
+			const auto directory = scratch.path / "terrain";
+			std::filesystem::create_directories(directory);
+			GAGCore::Toolkit::getFileManager()->addDir(scratch.path.string());
+			const auto file = directory / "runtime-review.json";
+			glob2test::writeFile(file, "invalid JSON");
+			// This picker must not advertise compressed files to the raw JSON loader.
+			glob2test::writeFile(directory / "compressed-only.json.gz", "not offered");
+			editor.performAction("import terrain definitions");
+			REQUIRE(editor.loadSaveScreen);
+			const auto files = editor.loadSaveScreen->filePresentation().files;
+			CHECK(std::find(files.begin(), files.end(), "compressed-only") == files.end());
+			const auto selected = std::find(files.begin(), files.end(), "runtime-review");
+			REQUIRE(selected != files.end());
+			editor.loadSaveScreen->selectPresentedFile(int(selected - files.begin()));
+			const auto original = editor.game.map.frozenTerrainRegistry();
+			editor.hasMapBeenModified = false;
+			editor.loadSaveScreen->confirmPresentedFile();
+			SDL_Event poll{};
+			poll.type = SDL_EVENT_USER;
+			editor.delegateMenu(poll);
+			REQUIRE(editor.loadSaveScreen);
+			CHECK(editor.loadSaveScreen->filePresentation().failed);
+			CHECK_FALSE(editor.loadSaveScreen->filePresentation().status.empty());
+			CHECK_FALSE(editor.loadSaveScreen->finished());
+			CHECK(editor.game.map.frozenTerrainRegistry() == original);
+			CHECK_FALSE(editor.hasMapBeenModified);
+
+			// Retry the selected file through the same dialog after correcting it.
+			glob2test::writeFile(file,
+								 Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+			editor.loadSaveScreen->confirmPresentedFile();
+			editor.delegateMenu(poll);
+			CHECK_FALSE(editor.loadSaveScreen);
+			CHECK(editor.game.map.terrainRegistry().size() == 47);
+			CHECK(editor.hasMapBeenModified);
+			REQUIRE(editor.terrainPalette);
+			editor.draw(SDL_GetTicks());
+			globals->gfx->printScreen(
+				glob2test::artifactDirFromWorkingDirectory() +
+				(phone ? "/terrain-palette-phone.bmp" : "/terrain-palette-desktop.bmp"));
+			globals->gfx->nextFrame();
+
+			// Select a type beyond the first viewport through the real scroll host.
+			const std::string key = "terrain/example:t9";
+			auto &host = editor.terrainPalette->host();
+			host.scrollIntoView(key);
+			host.layoutIfNeeded();
+			const auto bounds = host.bounds(key);
+			REQUIRE(bounds.w > 0);
+			REQUIRE(bounds.h > 0);
+			host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
+			CHECK(editor.terrainPalette->finished());
+			editor.delegateMenu(poll);
+			CHECK_FALSE(editor.terrainPalette);
+			const auto type = *editor.game.map.terrainRegistry().find("example:t9");
+			CHECK(editor.terrainType == TerrainSelector::selectorFor(type));
+			cursor(editor, 8, 8);
+			editor.performAction("terrain drag start");
+			editor.performAction("terrain drag end");
+			REQUIRE(editor.game.map.terrainTypeAt(8, 8) == type);
+
+			editor.performAction("open terrain palette");
+			SDL_Event escape{};
+			escape.type = SDL_EVENT_KEY_DOWN;
+			escape.key.key = SDLK_ESCAPE;
+			editor.processEvent(escape);
+			CHECK_FALSE(editor.terrainPalette);
+			const auto map = (scratch.path / "custom.map").string();
+			REQUIRE(editor.save(map, "Custom terrain"));
+			std::filesystem::remove(file);
+			MapEdit loaded;
+			REQUIRE(loaded.load(map));
+			CHECK(loaded.game.map.terrainTypeAt(8, 8) == type);
+			CHECK(loaded.game.map.terrainProperties(type).groundSpeedQ8 == 192);
+			loaded.draw(SDL_GetTicks());
+			globals->gfx->printScreen(
+				glob2test::artifactDirFromWorkingDirectory() +
+				(phone ? "/terrain-map-phone.bmp" : "/terrain-map-desktop.bmp"));
+			globals->gfx->nextFrame();
+		}
+	}
 }

@@ -12,6 +12,7 @@
 #include "MapHeader.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include "TerrainExperiments.h"
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -27,9 +28,14 @@ Element MapEditMenuScreen::build(const Presentation &p)
 		int code;
 		bool primary;
 	};
-	const Item items[] = {{"return", "[return to editor]", RETURN_EDITOR, true}, {"save", "[save map]", SAVE_MAP, false},
-						  {"load", "[load map]", LOAD_MAP, false},               {"script", "[open scenario editor]", OPEN_SCRIPT_EDITOR, false},
-						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false}, {"share", "[maps share online]", SHARE_MAP, false},
+	const Item items[] = {{"return", "[return to editor]", RETURN_EDITOR, true},
+						  {"save", "[save map]", SAVE_MAP, false},
+						  {"load", "[load map]", LOAD_MAP, false},
+						  {"script", "[open scenario editor]", OPEN_SCRIPT_EDITOR, false},
+						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false},
+						  {"share", "[maps share online]", SHARE_MAP, false},
+						  {"terrain/import", "[Import Terrain Definitions]", IMPORT_TERRAIN, false},
+						  {"terrain/palette", "[Terrain palette]", TERRAIN_PALETTE, false},
 						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
 	for (const auto &item : items)
@@ -40,7 +46,8 @@ Element MapEditMenuScreen::build(const Presentation &p)
 		if (item.primary)
 			options.shortcut = SDLK_ESCAPE;
 		const int code = item.code;
-		buttons.push_back(fe::button(item.key, fe::tr(item.label), [this, code] { finish(code); }, options));
+		buttons.push_back(
+			fe::button(item.key, fe::tr(item.label), [this, code] { finish(code); }, options));
 	}
 	fe::WrapOptions grid;
 	grid.minChildWidth = p.pt(260);
@@ -229,4 +236,33 @@ Element TeamsEditor::build(const Presentation &p)
 	return fe::column({fe::paragraph(fe::tr("[teams editor]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::expanded(fe::footer(fe::scroll("teams/scroll", fe::column(std::move(rows), {p.pt(compact ? 8 : 4)})), dialogActions(std::move(actions), p)))},
 					  {p.pt(10)});
+}
+
+Element TerrainPaletteDialog::build(const Presentation &p)
+{
+	std::vector<Element> entries;
+	for (unsigned id = 0; id < registry->size(); ++id)
+	{
+		const auto type = TerrainType(id);
+		const auto &visual = registry->presentation(type);
+		if (!visual.editorSelectable)
+			continue;
+		const auto experiment = terrainExperiment(type);
+		if (experiment && !globalContainer->settings.experiments.has(*experiment))
+			continue;
+		const std::string label = id < TERRAIN_COUNT ? fe::tr(visual.label) : visual.label;
+		fe::ButtonOptions options;
+		options.minHeight = p.pt(48);
+		entries.push_back(fe::button(
+			"terrain/" + registry->key(type), label, [this, id] { finish(int(id)); }, options));
+	}
+	fe::WrapOptions grid;
+	grid.minChildWidth = p.pt(160);
+	grid.maxColumns = 4;
+	return fe::footer(
+		fe::column({fe::paragraph(fe::tr("[Terrain palette]"), {fe::FontRole::Heading}),
+					fe::scroll("terrain/scroll", fe::wrap(std::move(entries), grid))},
+				   {p.pt(8)}),
+		dialogActions({{"cancel", fe::tr("[Cancel]"), [this] { finish(-1); }, false, SDLK_ESCAPE}},
+					  p));
 }

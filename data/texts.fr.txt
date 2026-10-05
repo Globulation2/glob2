@@ -5560,3 +5560,7 @@ Ajoute des sentiers usés à l’éditeur de cartes. Les unités terrestres se d
 Marchés V2
 [experiment markets-v2 help]
 Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés. Les marchés peuvent être améliorés pour stocker le blé et le bois, puis toutes les ressources. Les échanges entre équipes restent limités aux fruits. S’applique aux nouvelles parties ; les sauvegardes gardent leur réglage initial.
+[Import Terrain Definitions]
+Importer des définitions de terrain
+[Terrain palette]
+Palette de terrains

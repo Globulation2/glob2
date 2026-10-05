@@ -5560,3 +5560,7 @@ Lisää karttaeditoriin kuluneita polkuja. Maayksiköt liikkuvat kaksinkertaisel
 Markkinat V2
 [experiment markets-v2 help]
 Työläiset voivat hakea tarvikkeita markkinoiden yhteisestä varastosta. Markkinoita voi kehittää varastoimaan vehnää ja puuta, sitten kaikkia resursseja. Joukkueiden välillä vaihdetaan edelleen vain hedelmiä. Koskee uusia pelejä; tallennukset säilyttävät alkuperäisen asetuksensa.
+[Import Terrain Definitions]
+Tuo maastomäärittelyt
+[Terrain palette]
+Maastopaletti

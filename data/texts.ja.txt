@@ -5560,3 +5560,7 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 市場 V2
 [experiment markets-v2 help]
 労働者は市場の共有在庫から物資を受け取れます。市場を改良すると小麦と木材、さらにすべての資源を保管できます。チーム間の交換は果物のみです。新しいゲームに適用され、セーブは開始時の設定を保持します。
+[Import Terrain Definitions]
+地形定義をインポート
+[Terrain palette]
+地形パレット

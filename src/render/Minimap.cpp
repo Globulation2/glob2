@@ -309,6 +309,7 @@ void Minimap::computeColors(int row, int localTeam)
 	for (int dx=0; dx<szX; dx++)
 	{
 		memset(pcol, 0, sizeof(pcol));
+		int customR = 0, customG = 0, customB = 0;
 		int nCount = 0;
 		int UnitOrBuildingIndex = -1;
 		
@@ -364,6 +365,7 @@ void Minimap::computeColors(int row, int localTeam)
 				{
 					// get color to add
 					int pcolIndex;
+					TerrainColor customColor{};
 					const auto& r = scene->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
@@ -372,6 +374,12 @@ void Minimap::computeColors(int row, int localTeam)
 					else
 					{
 						pcolIndex=static_cast<int>(scene->map.presentationTypeAt(minidx,minidy));
+						if (pcolIndex >= TERRAIN_COUNT)
+						{
+							customColor =
+								scene->map.terrainPresentation(TerrainType(pcolIndex)).minimap;
+							pcolIndex = -1;
+						}
 					}
 					
 					// get weight to add
@@ -381,7 +389,14 @@ void Minimap::computeColors(int row, int localTeam)
 					else
 						pcolAddValue=3;
 
-					pcol[pcolIndex]+=pcolAddValue;
+					if (pcolIndex >= 0)
+						pcol[pcolIndex] += pcolAddValue;
+					else
+					{
+						customR += customColor.r * pcolAddValue;
+						customG += customColor.g * pcolAddValue;
+						customB += customColor.b * pcolAddValue;
+					}
 				}
 
 				nCount++;
@@ -404,7 +419,9 @@ void Minimap::computeColors(int row, int localTeam)
 			nCount*=5;
 
 			int lr, lg, lb;
-			lr = lg = lb = 0;
+			lr = customR;
+			lg = customG;
+			lb = customB;
 			for (int i=0; i<TERRAIN_COUNT; i++)
 			{
 				lr += pcol[i]*palette[i].r;

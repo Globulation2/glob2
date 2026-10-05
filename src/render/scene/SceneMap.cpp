@@ -2,12 +2,17 @@
 #include "SceneMap.h"
 
 #include "Map.h"
+#include "TerrainRegistry.h"
 #include <algorithm>
 
-void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.displayViewportH); }
+void SceneMap::extract(const Map &map)
+{
+	extract(map, map.displayViewportW, map.displayViewportH);
+}
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
+	registry = map.frozenTerrainRegistry();
 	w = map.getW();
 	h = map.getH();
 	wMask = map.getMaskW();
@@ -17,7 +22,8 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	sourceKey = &map;
 	const size_t size = size_t(w) * h;
 	terrain.resize(size);
-    terrainTypes = map.terrainTypes();
+	terrainTypes = map.terrainTypes();
+	terrainAppearances.resize(size);
 	resources.resize(size);
 	resourcesGrow.resize(size);
 	groundUnits.resize(size);
@@ -27,6 +33,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.tiles[i];
+		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
 		resourcesGrow[i] = tile.canResourcesGrow;
@@ -36,8 +43,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 		if (includeScriptAreas)
 		{
 			scriptAreas[i] = 0;
-			for (int n=0; n<9; ++n)
-				if (map.isPointSet(n, int(i)&wMask, int(i>>wDec))) scriptAreas[i] |= 1 << n;
+			for (int n = 0; n < 9; ++n)
+				if (map.isPointSet(n, int(i) & wMask, int(i >> wDec)))
+					scriptAreas[i] |= 1 << n;
 		}
 	}
 	undermap.resize(size);
@@ -67,7 +75,8 @@ bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 v
 }
 
 // Same conversions as Map's, reading the extracted viewport bounds.
-void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
+void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX,
+									int viewportY) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -79,7 +88,8 @@ void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewpo
 	*py = y << 5;
 }
 
-void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
+void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX,
+										  int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -89,4 +99,24 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 		y -= h;
 	*px = x << 5;
 	*py = y << 5;
+}
+
+SceneMap::SceneMap() : registry(TerrainRegistry::builtins()) {}
+
+const TerrainPresentation &SceneMap::terrainPresentation(TerrainType type) const
+{
+	return registry->presentation(type);
+}
+
+bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
+{
+	for (int yi = y; yi < y + h; yi++)
+		for (int xi = x; xi < x + w; xi++)
+		{
+			const size_t i = coordToIndex(xi, yi);
+			if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
+				!registry->properties(terrainTypes[i]).buildable)
+				return false;
+		}
+	return true;
 }

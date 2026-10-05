@@ -195,7 +195,9 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	const auto colorOf = [&](int x, int y) -> Uint32
 	{
 		const auto type = sceneMap.presentationTypeAt(x + viewportX, y + viewportY);
-		const auto color = palette[unsigned(type)];
+		const auto color = unsigned(type) < TERRAIN_COUNT
+							   ? palette[unsigned(type)]
+							   : sceneMap.terrainPresentation(type).overview;
 		int r = color.r, g = color.g, b = color.b;
 		const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 		if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||

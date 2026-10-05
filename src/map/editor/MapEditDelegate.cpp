@@ -14,11 +14,14 @@
 
 bool MapEdit::hasDialog() const
 {
-	return showingMenuScreen || showingLoad || showingSave || showingScriptEditor || showingTeamsEditor || isShowingAreaName;
+	return bool(terrainPalette) || showingMenuScreen || showingLoad || showingSave ||
+		   showingScriptEditor || showingTeamsEditor || isShowingAreaName;
 }
 
 Glob2UI::InGameDialog *MapEdit::activeDialog() const
 {
+	if (terrainPalette)
+		return terrainPalette.get();
 	if (showingMenuScreen)
 		return menuScreen.get();
 	if (showingLoad || showingSave)
@@ -94,6 +97,14 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				pendingShareFilename = game.mapHeader.getFileName();
 			}
 			break;
+			case MapEditMenuScreen::IMPORT_TERRAIN:
+				performAction("close menu screen");
+				performAction("import terrain definitions");
+				break;
+			case MapEditMenuScreen::TERRAIN_PALETTE:
+				performAction("close menu screen");
+				performAction("open terrain palette");
+				break;
 			case MapEditMenuScreen::QUIT_EDITOR:
 			{
 				performAction("close menu screen");
@@ -108,8 +119,25 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveDialog::OK:
 			{
-				requestLoad(loadSaveScreen->getFileName());
-				performAction("close load screen");
+				if (importingTerrain)
+				{
+					try
+					{
+						importTerrainFile(loadSaveScreen->getFileName());
+					}
+					catch (const std::exception &e)
+					{
+						loadSaveScreen->showLoadFailure(e.what());
+						break;
+					}
+					performAction("close load screen");
+					performAction("open terrain palette");
+				}
+				else
+				{
+					requestLoad(loadSaveScreen->getFileName());
+					performAction("close load screen");
+				}
 			}
 			break;
 			case LoadSaveDialog::CANCEL:
@@ -117,6 +145,17 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close load screen");
 			}
 			break;
+		}
+	}
+	if (terrainPalette && terrainPalette->finished())
+	{
+		const int selected = terrainPalette->result();
+		terrainPalette.reset();
+		if (selected >= 0)
+		{
+			performAction("switch to terrain view");
+			beginTerrainPlacement(TerrainSelector::selectorFor(TerrainType(selected)),
+								  TerrainPlacementMode::BaseTerrain);
 		}
 	}
 	if(showingSave && loadSaveScreen->finished())

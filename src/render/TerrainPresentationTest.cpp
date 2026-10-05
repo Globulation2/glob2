@@ -8,6 +8,7 @@
 #include <optional>
 #include <fstream>
 #include "TerrainPresentation.h"
+#include "TerrainRegistry.h"
 #include "terrain/TerrainCompositor.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
@@ -27,9 +28,18 @@
 #include <algorithm>
 #include <cstring>
 #include <cmath>
+#include <string_view>
 
 namespace
 {
+void importBeforeMatch(Game &game, std::string_view definitions)
+{
+	// Detached maps permit pre-match authoring; active games reject registry replacement.
+	game.map.game = nullptr;
+	game.map.importTerrainDefinitions(definitions);
+	game.map.setGame(&game);
+}
+
 // Preserve real portable rendering while making device limits strict and visible.
 // No test-only limit controls are needed in production rendering code.
 class LimitedTerrainBackend final : public GAGCore::RenderBackend
@@ -257,6 +267,28 @@ void layeredCache(bool gpu, bool hd = false)
 	CHECK(compositor.describe(scene, 0, 0) == before);
 	scene.extract(map);
 	compare();
+	// A scene retains its registry snapshot. Reimport changes material bindings
+	// only on extraction, and invalidates both software and GPU composed pages.
+	importBeforeMatch(
+		game,
+		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
+	const auto custom = *map.terrainRegistry().find("test:custom");
+	map.setCellTerrain(0, 0, custom);
+	scene.extract(map);
+	compare();
+	compare();
+	const auto previousRegistry = scene.frozenTerrainRegistry();
+	const auto previousRecipe = compositor.describe(scene, 0, 0);
+	importBeforeMatch(
+		game,
+		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom trail","base":"grass","properties":{},"appearance":"road"}]})");
+	CHECK(scene.frozenTerrainRegistry() == previousRegistry);
+	CHECK(compositor.describe(scene, 0, 0) == previousRecipe);
+	scene.extract(map);
+	CHECK(scene.appearanceAt(0, 0) == TRAIL);
+	CHECK_FALSE(compositor.describe(scene, 0, 0) == previousRecipe);
+	compare();
+	compare();
 	// Content revisions invalidate prepared source pixels and composed pages.
 	auto *source = globals->terrain->nativeFrame(272);
 	source->drawFilledRect(0, 0, 32, 32, 201, 23, 189);
@@ -293,6 +325,76 @@ TEST_SUITE("TerrainPresentation")
 		{
 			check(minimap[shore], terrainPresentation(shore).minimap);
 			check(overview[shore], terrainPresentation(shore).overview);
+		}
+	}
+	TEST_CASE("custom aliases share material recipes and keep whole-cell identity [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4});
+		auto &map = fixture.game.map;
+		importBeforeMatch(fixture.game, R"({"schemaVersion":1,"terrains":[
+			{"key":"test:ice-a","name":"Ice A","base":"grass","properties":{},"appearance":"ice"},
+			{"key":"test:ice-b","name":"Ice B","base":"sand","properties":{},"appearance":"ice"},
+			{"key":"test:sand","name":"Custom sand","base":"grass","properties":{},"appearance":"sand"}
+		]})");
+		const auto a = *map.terrainRegistry().find("test:ice-a");
+		const auto b = *map.terrainRegistry().find("test:ice-b");
+		const auto sand = *map.terrainRegistry().find("test:sand");
+		auto &compositor = globals->terrainCompositor();
+		constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
+		const TerrainType aliases[] = {ICE, a, b, a};
+		map.setCellTerrain(0, 0, TRAIL);
+		for (unsigned mask = 0; mask < 16; ++mask)
+		{
+			CAPTURE(mask);
+			for (int side = 0; side < 4; ++side)
+				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
+			SceneMap expected;
+			expected.extract(map);
+			for (int side = 0; side < 4; ++side)
+				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
+			SceneMap actual;
+			actual.extract(map);
+			for (int y = -1; y <= 1; ++y)
+				for (int x = -1; x <= 1; ++x)
+					CHECK(compositor.describe(actual, x, y) == compositor.describe(expected, x, y));
+			for (int side = 0; side < 4; ++side)
+				CHECK(actual.terrainTypeAt(dx[side], dy[side]) ==
+					  (mask & (1u << side) ? aliases[side] : TRAIL));
+		}
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				map.setCellTerrain(x, y, sand);
+		SceneMap scene;
+		scene.extract(map);
+		CHECK(scene.presentationTypeAt(0, 0) == sand);
+		CHECK(scene.appearanceAt(0, 0) == SAND);
+		const auto material = compositor.catalog().bindings.at("sand");
+		for (const auto sample : compositor.describe(scene, 0, 0).samples)
+			CHECK(sample == material);
+	}
+	TEST_CASE("custom thumbnail palettes retain embedded colors alongside catalog builtins")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .teams = 0});
+		auto &map = fixture.game.map;
+		importBeforeMatch(
+			fixture.game,
+			R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom","base":"grass","properties":{},"appearance":"sand"}]})");
+		const auto custom = *map.terrainRegistry().find("test:custom");
+		map.setCellTerrain(0, 0, custom);
+		map.setCellTerrain(1, 0, ICE);
+		MapThumbnail thumbnail;
+		thumbnail.loadFromMap(map);
+		REQUIRE(thumbnail.pixels());
+		REQUIRE(thumbnail.pixels()->width == 16);
+		const auto palette = TerrainVisual::minimapPalette(TerrainVisual::loadCatalog());
+		const TerrainColor expected[] = {map.terrainPresentation(custom).preview, palette[ICE]};
+		for (int x = 0; x < 2; ++x)
+		{
+			CHECK(thumbnail.pixels()->rgb[x * 3] == expected[x].r);
+			CHECK(thumbnail.pixels()->rgb[x * 3 + 1] == expected[x].g);
+			CHECK(thumbnail.pixels()->rgb[x * 3 + 2] == expected[x].b);
 		}
 	}
 	TEST_CASE("whole-cell layers preserve software terrain caching [display][artifacts]")

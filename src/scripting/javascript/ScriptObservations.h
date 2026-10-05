@@ -6,6 +6,7 @@
 #include <array>
 #include <memory>
 class Game;
+class TerrainRegistry;
 class Unit;
 class Building;
 namespace GAGCore
@@ -26,6 +27,8 @@ class Observations
 		bool known = false;
 	};
 	Game &game;
+	mutable std::shared_ptr<const TerrainRegistry> terrainDefinitionRegistry;
+	mutable Value terrainDefinitions;
 	int team;
 	unsigned profile = 1;
 	// Lazily allocated indexed chunks avoid tree lookups without allocating an

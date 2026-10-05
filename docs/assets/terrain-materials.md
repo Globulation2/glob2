@@ -10,9 +10,12 @@ checksums or the synchronized random stream.
 A version-1 catalog contains `profiles`, `materials`, `bindings` and optional
 `pair_treatments`. Material keys are unique strings. Bindings map semantic terrain
 names to material keys; the five shipped bindings are water, sand, grass, ice and
-road. Adding a visual material does not add gameplay rules. A new gameplay type
-still requires the stable enum, properties, compatibility descriptor and authoring
-experiment registration.
+road. Adding a visual material does not add gameplay rules. Runtime terrain definitions
+reuse a shipped appearance binding with independently resolved simulation properties;
+see [map authoring](../map-generators/GAME_RULES_FOR_MAP_DESIGN.md#authoring-additional-terrain-types) for the JSON import workflow. Runtime
+definitions cannot introduce artwork or modify this catalog. Their canonical IDs
+remain in maps and saves, while scene snapshots cache the shipped appearance IDs
+used by the compositor.
 
 Each material supplies:
 
@@ -206,8 +209,9 @@ to a reusable composed tile. This emergency path preserves coverage and determin
 artwork, but fractional resampling and HD mip filtering can differ from page rendering.
 It is a quality fallback, not a pixel-identical cache replacement.
 
-Minimaps and thumbnails read the catalog's compact palette without changing
-legacy thumbnail decoding. Map image interchange colors and editor experiment
-gates remain semantic metadata.
+Minimaps and thumbnails read the catalog's compact palette for built-ins and the
+embedded resolved colors for runtime types, without changing legacy thumbnail
+decoding. Map image interchange colors and editor experiment gates remain semantic
+metadata.
 Keep reference screenshots, benchmark output and temporary compiled tilesets under
 `artifacts/`; publish review evidence separately from durable documentation.

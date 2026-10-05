@@ -139,6 +139,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											   Uint32 visibleTeams, bool wholeMap, int time,
 											   int preferredResolution)
 {
+	if (registry.get() != &map.terrainRegistry())
+	{
+		chunks.clear();
+		registry = map.frozenTerrainRegistry();
+	}
+
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
 	++frame;

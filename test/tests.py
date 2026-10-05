@@ -167,6 +167,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/AssetLoaderTest.cpp',
     '#libgag/src/SpriteLoadTest.cpp',
@@ -309,6 +310,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/map/TerrainRegistry.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',

@@ -5560,3 +5560,7 @@ Fügt dem Karteneditor verwitterte Pfade hinzu. Bodeneinheiten bewegen sich mit 
 Märkte V2
 [experiment markets-v2 help]
 Arbeiter können Vorräte aus dem gemeinsamen Marktbestand holen. Märkte lassen sich zuerst für Weizen und Holz, dann für alle Rohstoffe ausbauen. Zwischen Teams wird weiterhin nur Obst ausgetauscht. Gilt für neue Spiele; Spielstände behalten ihre ursprüngliche Einstellung.
+[Import Terrain Definitions]
+Geländedefinitionen importieren
+[Terrain palette]
+Geländepalette

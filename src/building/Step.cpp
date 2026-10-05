@@ -460,7 +460,7 @@ bool Building::subscribeForFlagingStep()
 		const Map& map = *owner->map;
 		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
 			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
-			[&map](int x,int y) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,map.terrainPropertiesAt(x,y).airSpeedQ8); },
+			[&map](int x,int y) { return map.terrainRegistry().airCost(map.terrainTypeAt(x,y)); },
 			type->zonable[EXPLORER] && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
 			field::AirDistanceDirection::ToDestination);
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
