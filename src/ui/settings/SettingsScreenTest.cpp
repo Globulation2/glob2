@@ -345,42 +345,190 @@ TEST_SUITE("Settings")
 #include "SimVersion.h"
 #include "Sha256.h"
 #include "ScriptLibrary.h"
-namespace {
-void aiLibraryPresentation(int width,int height,const char *themeName)
+namespace
 {
- glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI",width<700?"1":"0");
- glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=width,.height=height,.screenFlags=0u};
- options.beforeLoad=[themeName](GlobalContainer &g){g.settings.language="en";g.settings.menuTheme=themeName;};
- glob2test::HeadlessGlobals globals(options);
- Online::ServicesOwner services;
- OnlineFakes::World world;
- auto &client=services.get().client;
- client.replaceEnvironment(world.environment());
- client.start("https://play.example.org");
- auto account=OnlineFakes::account();account["kind"]="registered";
- world.http.pending("/api/v1/auth/guest")->reply(200,{{"account",account},{"tokens",OnlineFakes::tokens("r1",1790000000,600)},{"deviceCredential",std::string(43,'c')}});
- client.update();
- Glob2UI::applyThemes(themeName,"dark");FrontendTheme theme;FrontendScope frontend;NativeSettings screen;
- auto draw=[&]{client.update();screen.onTimer(SDL_GetTicks());screen.paintFrame(SDL_GetTicks());};
- auto tap=[&](const std::string &key){draw();REQUIRE(screen.host().find(key));screen.host().scrollIntoView(key);draw();const auto b=screen.host().bounds(key);screen.host().tapAt({b.x+b.w/2,b.y+b.h/2});draw();};
- auto answer=[&](const std::string &path,const Online::Json &json){INFO(path);auto request=world.http.pending(path);if(!request){for(const auto &e:world.http.exchanges)std::cout<<e->request.url<<" state="<<int(e->state)<<"\n";screen.capture((glob2test::artifactDir()/"failure.bmp").string());}REQUIRE(request);request->reply(200,json);draw();};
- const std::string source="function step(){}", hash=Online::Sha256::hex(source), id="ai-one", release="release-one";
- Online::Json checks=Online::Json::array();for(const char *check:{"file","syntax","startup","state","gameplay","determinism","continuation"})checks.push_back({{"id",check},{"status","passed"}});
- Online::Json report={{"sourceHash",hash},{"simVersion",Online::SimVersion::local().key()},{"suite",1},{"valid",true},{"checks",checks}};
- Online::Json version={{"id",release},{"hash",hash},{"label","1.2"},{"notes","A patient colony builder."},{"downloads",25},{"validations",Online::Json::array({report})}};
- Online::Json ai={{"id",id},{"name","Patient Gardener"},{"description","A thoughtful economy opponent for local games."},{"likes",8},{"downloads",25},{"liked",false},{"favourited",false},{"latestVersion",version}};
- Online::Json detail={{"ai",ai},{"versions",Online::Json::array({version})}};
- screen.selectCategory(SettingsScreen::Category::CustomAIs);screen.activateSetting("ai.browse");draw();
- answer("/api/v1/ais?limit=24&sort=likes&q=&tags=",{{"items",Online::Json::array({ai})}});
- tap("ais/gotit");tap("ais/item/"+id);answer("/api/v1/ais/"+id,detail);
- screen.capture((glob2test::artifactDir()/(std::string("ai-library-")+themeName+"-"+std::to_string(width)+".bmp")).string());
- tap("ais/favourite");answer("/api/v1/ais/"+id+"/favourite",{{"active",true},{"likes",8}});detail["ai"]["favourited"]=true;answer("/api/v1/ais/"+id,detail);
- tap("ais/install");auto download=world.http.pending("/api/v1/ais/"+id+"/versions/"+release+"/file");REQUIRE(download);download->replyRaw(200,source);draw();draw();
- auto storage=Online::makeUserDirectoryStorage();Script::Library library(*storage);REQUIRE(library.entries().size()==1);CHECK(library.entries()[0].online->hash==hash);
- tap("ais/tab/2");answer("/api/v1/ais/"+id,detail);REQUIRE(screen.host().find("ai.remove."+library.entries()[0].id));
- tap("ais/tab/0");answer("/api/v1/ais?limit=24&sort=likes&q=&tags=",{{"items",Online::Json::array({{{"name",false}}})}});CHECK_FALSE(screen.host().find("ais/item/"+id));
- tap("ais/close");CHECK(screen.host().find("ai.browse"));
+void aiLibraryPresentation(int width, int height, const char *themeName)
+{
+	glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", width < 700 ? "1" : "0");
+	glob2test::GlobalsOptions options{
+		.display = true, .loadStrings = true, .width = width, .height = height, .screenFlags = 0u};
+	options.beforeLoad = [themeName](GlobalContainer &g)
+	{
+		g.settings.language = "en";
+		g.settings.menuTheme = themeName;
+	};
+	glob2test::HeadlessGlobals globals(options);
+	Online::ServicesOwner services;
+	OnlineFakes::World world;
+	auto &client = services.get().client;
+	client.replaceEnvironment(world.environment());
+	client.start("https://play.example.org");
+	auto account = OnlineFakes::account();
+	account["kind"] = "registered";
+	world.http.pending("/api/v1/auth/guest")
+		->reply(200, {{"account", account},
+					  {"tokens", OnlineFakes::tokens("r1", 1790000000, 600)},
+					  {"deviceCredential", std::string(43, 'c')}});
+	client.update();
+	Glob2UI::applyThemes(themeName, "dark");
+	FrontendTheme theme;
+	FrontendScope frontend;
+	NativeSettings screen;
+	auto draw = [&]
+	{
+		client.update();
+		screen.onTimer(SDL_GetTicks());
+		screen.paintFrame(SDL_GetTicks());
+	};
+	auto tap = [&](const std::string &key)
+	{
+		draw();
+		REQUIRE(screen.host().find(key));
+		screen.host().scrollIntoView(key);
+		draw();
+		const auto b = screen.host().bounds(key);
+		screen.host().tapAt({b.x + b.w / 2, b.y + b.h / 2});
+		draw();
+	};
+	auto answer = [&](const std::string &path, const Online::Json &json)
+	{
+		INFO(path);
+		auto request = world.http.pending(path);
+		REQUIRE(request);
+		request->reply(200, json);
+		draw();
+	};
+	auto selectedVersion = [&]
+	{
+		REQUIRE(screen.host().find("ais/version"));
+		return screen.host().find("ais/version")->accessibleText();
+	};
+	const std::string source = "function step(){}", hash = Online::Sha256::hex(source),
+					  id = "ai-one", release = "release-one";
+	Online::Json checks = Online::Json::array();
+	for (const char *check :
+		 {"file", "syntax", "startup", "state", "gameplay", "determinism", "continuation"})
+		checks.push_back({{"id", check}, {"status", "passed"}});
+	Online::Json report = {{"sourceHash", hash},
+						   {"simVersion", Online::SimVersion::local().key()},
+						   {"suite", 1},
+						   {"valid", true},
+						   {"checks", checks}};
+	Online::Json version = {{"id", release},   {"hash", hash},
+							{"label", "1.2"},  {"notes", "A patient colony builder."},
+							{"downloads", 25}, {"validations", Online::Json::array({report})}};
+	auto older = version;
+	older["id"] = "release-old";
+	older["label"] = "1.1";
+	auto newest = version;
+	newest["id"] = "release-new";
+	newest["label"] = "1.3";
+	newest["validations"] = Online::Json::array();
+	Online::Json ai = {{"id", id},
+					   {"name", "Patient Gardener"},
+					   {"description", "A thoughtful economy opponent for local games."},
+					   {"owner", {{"id", "author"}, {"displayName", "Colony Keeper"}}},
+					   {"tags", Online::Json::array({"Economy", "Defensive"})},
+					   {"likes", 8},
+					   {"downloads", 25},
+					   {"liked", false},
+					   {"favourited", false},
+					   {"latestVersion", newest}};
+	Online::Json detail = {{"ai", ai}, {"versions", Online::Json::array({newest, version, older})}};
+	Online::Json catalogue = Online::Json::array();
+	for (int i = 0; i < 23; ++i)
+	{
+		auto item = ai;
+		item["id"] = "ai-" + std::to_string(i);
+		item["name"] = "Colony controller " + std::to_string(i + 1);
+		catalogue.push_back(item);
+	}
+	catalogue.push_back(ai);
+	const std::string cataloguePath = "/api/v1/ais?limit=24&sort=likes&q=&tags=";
+	screen.selectCategory(SettingsScreen::Category::CustomAIs);
+	screen.activateSetting("ai.browse");
+	draw();
+	answer(cataloguePath, {{"items", catalogue}});
+	tap("ais/gotit");
+	tap("ais/item/" + id);
+	answer("/api/v1/ais/" + id, detail);
+	CHECK(selectedVersion().find("1.2") != std::string::npos); // newest compatible release
+	if (width >= 700)
+	{
+		// Selecting the last of a full page leaves the detail pane visible, even
+		// while the independently scrolling catalogue is far down the list.
+		REQUIRE(screen.host().find("ais/results-list"));
+		CHECK(screen.host().find("ais/results-list")->scrollOffset() > 0);
+		CHECK(screen.host()
+				  .bounds("ais/details/" + id)
+				  .contains(screen.host().bounds("ais/version").center()));
+	}
+	screen.capture((glob2test::artifactDir() /
+					(std::string("ai-library-") + themeName + "-" + std::to_string(width) + ".bmp"))
+					   .string());
+	screen.host().find("ais/version")->activate(screen.host(), 1);
+	draw();
+	CHECK(selectedVersion().find("1.1") != std::string::npos);
+	tap("ais/favourite");
+	CHECK_FALSE(screen.host().find("ais/like")->enabled());
+	answer("/api/v1/ais/" + id + "/favourite", {{"active", true}, {"likes", 8}});
+	CHECK(selectedVersion().find("1.1") != std::string::npos);
+	CHECK_FALSE(world.http.pending("/api/v1/ais/" + id));
+
+	// An outstanding action for A must not navigate back to A after choosing B.
+	tap("ais/like");
+	if (width < 700)
+		tap("ais/results");
+	tap("ais/item/ai-0");
+	auto otherDetail = detail;
+	otherDetail["ai"] = catalogue[0];
+	answer("/api/v1/ais/ai-0", otherDetail);
+	answer("/api/v1/ais/" + id + "/like", {{"active", true}, {"likes", 9}});
+	CHECK_FALSE(world.http.pending("/api/v1/ais/" + id));
+	CHECK(screen.host().find("ais/like")->accessibleText() == "Like");
+	if (width < 700)
+		tap("ais/results");
+	tap("ais/item/" + id);
+	detail["ai"]["favourited"] = true;
+	detail["ai"]["liked"] = true;
+	detail["ai"]["likes"] = 9;
+	answer("/api/v1/ais/" + id, detail);
+	screen.host().find("ais/version")->activate(screen.host(), 1);
+	draw();
+	tap("ais/install");
+	auto download = world.http.pending("/api/v1/ais/" + id + "/versions/release-old/file");
+	REQUIRE(download);
+	download->replyRaw(200, source);
+	draw();
+	draw();
+	auto storage = Online::makeUserDirectoryStorage();
+	Script::Library library(*storage);
+	REQUIRE(library.entries().size() == 1);
+	CHECK(library.entries()[0].online->hash == hash);
+	CHECK(library.entries()[0].online->versionId == "release-old");
+	tap("ais/tab/2");
+	answer("/api/v1/ais/" + id, detail);
+	REQUIRE(screen.host().find("ai.remove." + library.entries()[0].id));
+	tap("ai.online." + library.entries()[0].id);
+	answer("/api/v1/ais/" + id, detail);
+	CHECK(selectedVersion().find("1.1") != std::string::npos);
+	CHECK(selectedVersion().find("Installed") != std::string::npos);
+	tap("ais/tab/0");
+	answer(cataloguePath, {{"items", Online::Json::array({{{"name", false}}})}});
+	CHECK_FALSE(screen.host().find("ais/item/" + id));
+	tap("ais/close");
+	CHECK(screen.host().find("ai.browse"));
 }
+} // namespace
+TEST_CASE("AI library desktop discovery, favourite, installation and malformed responses "
+		  "[display:1280x900][artifacts]" *
+		  doctest::test_suite("SettingsAILibrary"))
+{
+	aiLibraryPresentation(1280, 900, "light");
 }
-TEST_CASE("AI library desktop discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" * doctest::test_suite("SettingsAILibrary")){aiLibraryPresentation(1280,900,"light");}
-TEST_CASE("AI library compact discovery, favourite, installation and malformed responses [display:1280x900][artifacts]" * doctest::test_suite("SettingsAILibrary")){aiLibraryPresentation(640,800,"dark");}
+TEST_CASE("AI library compact discovery, favourite, installation and malformed responses "
+		  "[display:1280x900][artifacts]" *
+		  doctest::test_suite("SettingsAILibrary"))
+{
+	aiLibraryPresentation(640, 800, "dark");
+}

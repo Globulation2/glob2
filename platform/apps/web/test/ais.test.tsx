@@ -136,3 +136,38 @@ it('shows a failed file check and skipped dependent checks for an empty file', a
   );
   expect(uploadNumber).toBe(0);
 });
+
+it('continues beyond the bounded restored page count using cursor navigation', async () => {
+  const original = vi.mocked(fetch).getMockImplementation();
+  let pageNumber = 0;
+  vi.mocked(fetch).mockImplementation(async (input, init) => {
+    const url = new URL(String(input), 'http://localhost');
+    if (url.pathname === '/api/v1/ais') {
+      pageNumber = Number((url.searchParams.get('cursor') ?? 'page-0').replace('page-', '')) + 1;
+      return Response.json({
+        items: [
+          {
+            id: 'ai-' + pageNumber,
+            name: 'Builder ' + pageNumber,
+            description: 'Economy player',
+            owner: { displayName: 'Author' },
+            tags: ['Economy'],
+            latestVersion: { label: '1.0' },
+            likes: 0,
+            downloads: 0,
+          },
+        ],
+        nextCursor: 'page-' + pageNumber,
+      });
+    }
+    if (!original) throw Error('Missing fetch fixture');
+    return original(input, init);
+  });
+  window.history.replaceState(null, '', '/ais?tags=Economy&pages=20');
+  render(<App />);
+  fireEvent.click(await screen.findByRole('button', { name: 'Next results' }));
+  await screen.findByRole('heading', { name: 'Builder 21' });
+  expect(window.location.search).toBe('?tags=Economy&cursor=page-20');
+  expect(screen.queryByRole('heading', { name: 'Builder 1' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Show more' })).toBeTruthy();
+});

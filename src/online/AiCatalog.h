@@ -44,7 +44,14 @@ inline bool validAiVersion(const nlohmann::json &v)
 }
 inline bool validAiSummary(const nlohmann::json &a)
 {
-	return a.is_object() && validAiText(a, "id", 64) && validAiText(a, "name", 512) &&
+	if (!a.is_object() || !a.contains("owner") || !a["owner"].is_object() ||
+		!validAiText(a["owner"], "displayName", 512) || !a.contains("tags") ||
+		!a["tags"].is_array() || a["tags"].size() > 5)
+		return false;
+	for (const auto &tag : a["tags"])
+		if (!tag.is_string() || tag.get_ref<const std::string &>().size() > 64)
+			return false;
+	return validAiText(a, "id", 64) && validAiText(a, "name", 512) &&
 		   validAiText(a, "description", 16000) && validAiCount(a, "likes") &&
 		   validAiCount(a, "downloads") && a.contains("liked") && a["liked"].is_boolean() &&
 		   a.contains("favourited") && a["favourited"].is_boolean() &&

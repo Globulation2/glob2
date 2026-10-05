@@ -9,6 +9,7 @@
 #include "Sha256.h"
 #include "AiCatalog.h"
 #include <nlohmann/json.hpp>
+#include <set>
 
 namespace
 {
@@ -31,6 +32,7 @@ struct SettingsScreen::CustomAIState
 	std::unique_ptr<Online::PlatformScope> calls;
 	nlohmann::json catalogue = nlohmann::json::array(), detail;
 	std::map<std::string, nlohmann::json> installedDetails;
+	std::set<std::string> socialPending;
 	std::string origin, query, cursor, selectedId;
 	std::vector<std::string> tags;
 	int tab = 0, sort = 0, version = 0;
@@ -242,6 +244,7 @@ void SettingsScreen::closeCustomAILibrary()
 		customAIs->calls.reset();
 		++customAIs->generation;
 		customAIs->searchAt = 0;
+		customAIs->socialPending.clear();
 	}
 }
 void SettingsScreen::openCustomAILibrary()
@@ -267,6 +270,7 @@ void SettingsScreen::fetchCustomAIs(bool more)
 	if (s.downloading)
 		return;
 	s.calls->cancelAll();
+	s.socialPending.clear();
 	const auto generation = ++s.generation;
 	if (s.tab == 2)
 	{
@@ -349,19 +353,32 @@ void SettingsScreen::selectOnlineAI(const std::string &id)
 	s.selectedId = id;
 	s.detail = Json();
 	s.version = 0;
-	s.calls->rest(HttpFetch::Method::Get, "/api/v1/ais/" + Online::urlEncode(id), Json(),
-				  [this, id](const auto &r)
-				  {
-					  auto &s = *customAIs;
-					  if (s.selectedId != id)
-						  return;
-					  if (r.ok && Online::validAiDetail(r.result))
-						  s.detail = r.result;
-					  else
-						  s.notice = r.ok ? customAIText("Invalid AI catalogue response")
-										  : r.error.message;
-					  invalidate();
-				  });
+	s.calls->rest(
+		HttpFetch::Method::Get, "/api/v1/ais/" + Online::urlEncode(id), Json(),
+		[this, id](const auto &r)
+		{
+			auto &s = *customAIs;
+			if (s.selectedId != id)
+				return;
+			if (r.ok && Online::validAiDetail(r.result))
+			{
+				s.detail = r.result;
+				const auto &versions = s.detail.at("versions");
+				std::string installedVersion;
+				for (const auto &entry : s.library.entries())
+					if (entry.online && entry.online->origin == s.origin &&
+						entry.online->aiId == id)
+						installedVersion = entry.online->versionId;
+				auto selected = std::find_if(versions.begin(), versions.end(), [&](const auto &v)
+											 { return v.at("id") == installedVersion; });
+				if (selected == versions.end())
+					selected = std::find_if(versions.begin(), versions.end(), compatibleAI);
+				s.version = selected == versions.end() ? 0 : int(selected - versions.begin());
+			}
+			else
+				s.notice = r.ok ? customAIText("Invalid AI catalogue response") : r.error.message;
+			invalidate();
+		});
 	invalidate();
 }
 void SettingsScreen::socialOnlineAI(bool favourite)
@@ -369,22 +386,50 @@ void SettingsScreen::socialOnlineAI(bool favourite)
 	auto &s = *customAIs;
 	if (!s.detail.is_object())
 		return;
-	const auto ai = s.detail.at("ai");
+	const auto &ai = s.detail.at("ai");
 	const std::string id = ai.at("id");
-	const bool active = ai.value(favourite ? "favourited" : "liked", false);
-	s.calls->rest(active ? HttpFetch::Method::Delete : HttpFetch::Method::Put,
-				  "/api/v1/ais/" + Online::urlEncode(id) + (favourite ? "/favourite" : "/like"),
-				  Json(),
-				  [this, id](const auto &r)
-				  {
-					  if (!r.ok)
-					  {
-						  customAIs->notice = r.error.message;
-						  invalidate();
-					  }
-					  else
-						  selectOnlineAI(id);
-				  });
+	const std::string field = favourite ? "favourited" : "liked";
+	const std::string pendingKey = id;
+	if (!s.socialPending.insert(pendingKey).second)
+		return;
+	const bool active = ai.at(field);
+	s.calls->rest(
+		active ? HttpFetch::Method::Delete : HttpFetch::Method::Put,
+		"/api/v1/ais/" + Online::urlEncode(id) + (favourite ? "/favourite" : "/like"), Json(),
+		[this, id, field, pendingKey](const auto &r)
+		{
+			auto &s = *customAIs;
+			s.socialPending.erase(pendingKey);
+			if (!r.ok)
+				s.notice = r.error.message;
+			else if (!r.result.is_object() || !r.result.contains("active") ||
+					 !r.result["active"].is_boolean() || !Online::validAiCount(r.result, "likes"))
+				s.notice = customAIText("Invalid AI catalogue response");
+			else
+			{
+				// Social actions belong to the AI, not its release. Update cached
+				// summaries without navigating or disturbing version selection.
+				auto update = [&](Json &summary)
+				{
+					if (summary.at("id") == id)
+					{
+						summary[field] = r.result.at("active");
+						summary["likes"] = r.result.at("likes");
+					}
+				};
+				for (auto &summary : s.catalogue)
+					update(summary);
+				for (auto &[_, detail] : s.installedDetails)
+					update(detail.at("ai"));
+				if (s.detail.is_object())
+					update(s.detail.at("ai"));
+				if (s.tab == 1 && field == "favourited" && r.result.at("active") == false)
+					std::erase_if(s.catalogue.get_ref<Json::array_t &>(),
+								  [&](const auto &summary) { return summary.at("id") == id; });
+			}
+			invalidate();
+		});
+	invalidate();
 }
 void SettingsScreen::installOnlineAI()
 {
@@ -426,6 +471,7 @@ void SettingsScreen::installOnlineAI()
 						break;
 					}
 				s.before = s.library.checkpoint();
+				s.replace = replace;
 				s.library.put(r.body, name + ".js", replace, "",
 							  Script::LibraryOrigin{origin, id, versionId, hash});
 				s.persistence = AH::persistStorage();
@@ -446,6 +492,7 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 	auto &s = *customAIs;
 	const bool busy = customAIBusy();
 	std::vector<Element> top;
+	Element desktopPanels;
 	std::vector<Element> tabs;
 	const std::vector<std::string> tabNames = {"Discover", "Favourites", "Installed"};
 	for (int i = 0; i < 3; ++i)
@@ -559,13 +606,17 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 		for (const auto &ai : s.catalogue)
 		{
 			const std::string id = ai.value("id", ""), name = ai.value("name", "");
-			cards.push_back(card(
-				column({Glob2UI::button("ais/item/" + id, name, [this, id] { selectOnlineAI(id); },
-										{.selected = s.selectedId == id, .enabled = !busy}),
-						paragraph(ai.value("description", ""), {FontRole::Support, true}),
-						caption("\xE2\x99\xA5 " + std::to_string(ai.value("likes", 0)) + " · " +
-								std::to_string(ai.value("downloads", 0)) + " " +
-								customAIText("downloads"))})));
+			std::string tagText;
+			for (const auto &tag : ai.at("tags"))
+				tagText += (tagText.empty() ? "" : " · ") + customAIText(tag.get<std::string>());
+			cards.push_back(card(column(
+				{Glob2UI::button("ais/item/" + id, name, [this, id] { selectOnlineAI(id); },
+								 {.selected = s.selectedId == id, .enabled = !busy}),
+				 caption(ai.at("owner").at("displayName").get<std::string>()), caption(tagText),
+				 paragraph(ai.value("description", ""), {FontRole::Support, true}),
+				 caption("\xE2\x99\xA5 " + std::to_string(ai.value("likes", 0)) + " · " +
+						 std::to_string(ai.value("downloads", 0)) + " " +
+						 customAIText("downloads"))})));
 		}
 		if (cards.empty() && !s.loading)
 			cards.push_back(paragraph(customAIText("No AIs match these filters.")));
@@ -579,10 +630,23 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 			const auto &ai = s.detail.at("ai");
 			const auto &versions = s.detail.at("versions");
 			details.push_back(heading(ai.value("name", "")));
+			details.push_back(caption(ai.at("owner").at("displayName").get<std::string>()));
+			std::string tagText;
+			for (const auto &tag : ai.at("tags"))
+				tagText += (tagText.empty() ? "" : " · ") + customAIText(tag.get<std::string>());
+			details.push_back(caption(tagText));
 			details.push_back(paragraph(ai.value("description", "")));
 			std::vector<std::string> labels;
 			for (const auto &v : versions)
-				labels.push_back(v.value("label", ""));
+			{
+				std::string label =
+					v.at("label").get<std::string>() + (compatibleAI(v) ? " · ✓" : " · ×");
+				for (const auto &entry : s.library.entries())
+					if (entry.online && entry.online->origin == s.origin &&
+						entry.online->aiId == s.selectedId && v.at("id") == entry.online->versionId)
+						label += " · " + customAIText("Installed");
+				labels.push_back(std::move(label));
+			}
 			if (!labels.empty())
 			{
 				s.version = std::clamp(s.version, 0, int(labels.size()) - 1);
@@ -618,15 +682,19 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 			const auto &account = s.calls->client().account();
 			const bool signedIn = account && account->kind == "registered";
 			details.push_back(wrap(
-				{Glob2UI::button(
-					 "ais/like", customAIText(ai.value("liked", false) ? "Liked" : "Like"),
-					 [this] { socialOnlineAI(false); },
-					 {.selected = ai.value("liked", false), .enabled = signedIn && !busy}),
+				{Glob2UI::button("ais/like",
+								 customAIText(ai.value("liked", false) ? "Liked" : "Like"),
+								 [this] { socialOnlineAI(false); },
+								 {.selected = ai.value("liked", false),
+								  .enabled = signedIn && !busy &&
+											 !s.socialPending.contains(s.selectedId)}),
 				 Glob2UI::button(
 					 "ais/favourite",
 					 customAIText(ai.value("favourited", false) ? "Favourited" : "Favourite"),
 					 [this] { socialOnlineAI(true); },
-					 {.selected = ai.value("favourited", false), .enabled = signedIn && !busy})}));
+					 {.selected = ai.value("favourited", false),
+					  .enabled = signedIn && !busy &&
+								 !s.socialPending.contains(s.selectedId)})}));
 			if (!signedIn)
 				details.push_back(paragraph(
 					customAIText("Sign in through Online settings to like and favourite AIs."),
@@ -646,6 +714,7 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 				top.push_back(Glob2UI::button("ais/results", customAIText("Back to results"),
 											  [this]
 											  {
+												  host().focus("ais/item/" + customAIs->selectedId, false);
 												  customAIs->detail = Json();
 												  customAIs->selectedId.clear();
 												  invalidate();
@@ -658,9 +727,11 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 					top.push_back(e);
 		}
 		else
-			top.push_back(row({expanded(column(std::move(cards), {p.pt(8)})),
-							   expanded(column(std::move(details), {p.pt(8)}))},
-							  {p.pt(16), CrossAlign::Start}));
+			desktopPanels =
+				row({expanded(scroll("ais/results-list", column(std::move(cards), {p.pt(8)}))),
+					 expanded(scroll("ais/details/" + s.selectedId,
+									 column(std::move(details), {p.pt(8)})))},
+					{p.pt(16)});
 	}
 	auto footer =
 		actions({{"ais/learn", customAIText("How AIs work"),
@@ -674,7 +745,17 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 				  [this] { AH::openUrl(customAIs->origin + "/ais/new"); }, false},
 				 {"ais/close", customAIText("Done"), [this] { dismiss(); }, true, SDLK_ESCAPE}},
 				p);
-	auto body = scroll("ais/body", column(std::move(top), {p.pt(10)}));
+	Element body;
+	if (desktopPanels)
+		body =
+			column({constrained({0, 0, Constraints::Unbounded, std::min(p.pt(300), p.safe.h / 3)},
+								scroll("ais/filters", column(std::move(top), {p.pt(10)}))),
+					expanded(std::move(desktopPanels))},
+				   {p.pt(10)});
+	else
+		body = scroll(s.tab != 2 && s.detail.is_object() ? "ais/sheet/" + s.selectedId
+														 : "ais/body/" + std::to_string(s.tab),
+					  column(std::move(top), {p.pt(10)}));
 	if (p.touch)
 		return page(customAIText("AI Library"), std::move(body), footer, p, 960);
 	const int width = std::min(p.safe.w - p.pt(32), p.pt(1024)),

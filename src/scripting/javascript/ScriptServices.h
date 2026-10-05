@@ -18,6 +18,8 @@ class Services
 	Value records = Value::array();
 	Value diagnostics = Value::object();
 	unsigned next = 1;
+	// Validation diagnostics are observational: never serialized or checksummed.
+	bool validationReporting = false, rejectedDecision = false;
 	std::unique_ptr<Spatial> spatial;
 	void reconcile();
 
@@ -26,6 +28,8 @@ class Services
 	~Services();
 	unsigned nextAction() const { return next; }
 	void begin();
+	void enableValidationReporting() { validationReporting = true; }
+	bool hasRejectedDecision() const { return rejectedDecision; }
 	Value query(const std::string &, const std::vector<Value> &, const QueryBudget &);
 	void commit(const Value &commands, const Value &telemetry);
 	std::shared_ptr<Order> dispatch();

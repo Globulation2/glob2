@@ -1,6 +1,6 @@
-import { sql, type Selectable } from 'kysely';
+import { sql } from 'kysely';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
-import type { Account, AisTable, AiVersionsTable } from '@glob2/db';
+import type { Account } from '@glob2/db';
 import { putContent, ensureAiValidation } from '@glob2/core';
 import { insertBlob } from '@glob2/play';
 import {
@@ -13,8 +13,6 @@ import {
   ResolveMapReportRequest,
   passedAiReport,
   parseSimVersionKey,
-  type AiInfo,
-  type AiVersion,
   type AiUpload,
   type AiDetail,
   type AiList,
@@ -25,7 +23,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { CATALOG_RULES, UUID, canModerate } from '../maps/catalog.ts';
 
-type AiRow = Selectable<AisTable>;
+import { aiCatalogViews } from './catalogViews.ts';
 export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
   const uploads = new SharedLimit(db, 'ai-upload', CATALOG_RULES.versionsPerHour, 3600000);
@@ -52,89 +50,11 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
       throw apiError('not_found', 'No such AI.');
     return row;
   }
-  async function versionView(v: Selectable<AiVersionsTable>): Promise<AiVersion> {
-    const validations = await db
-      .selectFrom('ai_validations')
-      .select('report')
-      .where('hash', '=', v.hash)
-      .where('status', 'in', ['valid', 'invalid'])
-      .orderBy('created_at', 'desc')
-      .execute();
-    const downloads = await db
-      .selectFrom('ai_downloads')
-      .select(sql<number>`count(*)::int`.as('n'))
-      .where('version_id', '=', v.id)
-      .executeTakeFirstOrThrow();
-    return {
-      id: v.id,
-      hash: v.hash,
-      label: v.label,
-      notes: v.notes,
-      profile: v.profile,
-      createdAt: v.created_at.toISOString(),
-      downloads: downloads.n,
-      downloadUrl: `${app.services.config.publicOrigin}/api/v1/ais/${v.ai_id}/versions/${v.id}/file`,
-      validations: validations.map((r) => r.report),
-    };
-  }
-  async function info(row: AiRow, a?: Account): Promise<AiInfo> {
-    const owner = await db
-      .selectFrom('accounts')
-      .select(['id', 'display_name'])
-      .where('id', '=', row.owner_account_id)
-      .executeTakeFirstOrThrow();
-    const latest = await db
-      .selectFrom('ai_versions')
-      .selectAll()
-      .where('ai_id', '=', row.id)
-      .orderBy('created_at', 'desc')
-      .orderBy('id', 'desc')
-      .executeTakeFirstOrThrow();
-    const likes = await db
-      .selectFrom('ai_likes')
-      .select(sql<number>`count(*)::int`.as('n'))
-      .where('ai_id', '=', row.id)
-      .executeTakeFirstOrThrow();
-    const downloads = await db
-      .selectFrom('ai_downloads as d')
-      .innerJoin('ai_versions as v', 'v.id', 'd.version_id')
-      .select(sql<number>`count(*)::int`.as('n'))
-      .where('v.ai_id', '=', row.id)
-      .executeTakeFirstOrThrow();
-    const liked =
-      !!a &&
-      !!(await db
-        .selectFrom('ai_likes')
-        .select('ai_id')
-        .where('ai_id', '=', row.id)
-        .where('account_id', '=', a.id)
-        .executeTakeFirst());
-    const favourited =
-      !!a &&
-      !!(await db
-        .selectFrom('ai_favourites')
-        .select('ai_id')
-        .where('ai_id', '=', row.id)
-        .where('account_id', '=', a.id)
-        .executeTakeFirst());
-    return {
-      id: row.id,
-      name: row.name,
-      description: row.description,
-      tags: row.tags as AiInfo['tags'],
-      visibility: row.visibility,
-      hidden: row.hidden,
-      ...(row.hidden_reason ? { hiddenReason: row.hidden_reason } : {}),
-      owner: { id: owner.id, displayName: owner.display_name },
-      createdAt: row.created_at.toISOString(),
-      updatedAt: row.updated_at.toISOString(),
-      likes: likes.n,
-      downloads: downloads.n,
-      latestVersion: await versionView(latest),
-      liked,
-      favourited,
-    };
-  }
+  const {
+    info,
+    infos,
+    versions: versionViews,
+  } = aiCatalogViews(db, app.services.config.publicOrigin);
   app.get<{
     Querystring: {
       q?: string;
@@ -213,7 +133,7 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
     const page = rows.slice(0, limit),
       last = page.at(-1);
     return {
-      items: await Promise.all(page.map((row) => info(row, a))),
+      items: await infos(page, a),
       ...(rows.length > limit && last
         ? {
             nextCursor: Buffer.from(
@@ -235,7 +155,7 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
       .execute();
     return {
       ai: await info(row, a),
-      versions: await Promise.all(versions.map(versionView)),
+      versions: await versionViews(versions),
       viewer: { owner: row.owner_account_id === a?.id, moderator: moderator(a) },
     };
   });

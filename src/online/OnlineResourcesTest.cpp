@@ -299,6 +299,9 @@ TEST_CASE("AI catalogue rejects malformed metadata and requires exact compatible
  bad=v;bad["validations"][0]["checks"][6]=checks[0];CHECK_FALSE(compatibleAiVersion(bad,"engine"));
  bad=v;bad["downloads"]="many";CHECK_FALSE(validAiVersion(bad));
  bad=v;bad["validations"]=false;CHECK_FALSE(compatibleAiVersion(bad,"engine"));
- Json ai={{"id","controller"},{"name","Patient"},{"description",""},{"likes",2},{"downloads",0},{"liked",false},{"favourited",true},{"latestVersion",v}};
- CHECK(validAiSummary(ai)); ai["name"]=Json::array();CHECK_FALSE(validAiSummary(ai));
+ Json ai={{"owner",{{"displayName","Author"}}},{"tags",Json::array({"Balanced"})},{"id","controller"},{"name","Patient"},{"description",""},{"likes",2},{"downloads",0},{"liked",false},{"favourited",true},{"latestVersion",v}};
+ CHECK(validAiSummary(ai));
+ auto malformed = ai; malformed["owner"]["displayName"] = false; CHECK_FALSE(validAiSummary(malformed));
+ malformed = ai; malformed["tags"] = {7}; CHECK_FALSE(validAiSummary(malformed));
+ ai["name"]=Json::array();CHECK_FALSE(validAiSummary(ai));
 }

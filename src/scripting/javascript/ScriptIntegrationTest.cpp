@@ -680,6 +680,7 @@ TEST_CASE("JavaScript upgrade dispatch survives tracking record growth" *
 	observations.setProfile(2);
 	observations.observe();
 	Services services(game, 0, observations);
+	services.enableValidationReporting();
 	services.begin();
 	Value commands = Value::array();
 	commands.items.push_back(Value::object()
@@ -702,6 +703,14 @@ TEST_CASE("JavaScript upgrade dispatch survives tracking record growth" *
 	observations.observe();
 	services.begin();
 	CHECK(services.actions().items[0].get("status").text == "constructing");
+	// A valid construction can lose its target during ordinary play. The action
+	// fails, but this is not a rejected decision or a compatibility failure.
+	++building->scriptIdentity;
+	++game.stepCounter;
+	observations.observe();
+	services.begin();
+	CHECK(services.actions().items[0].get("status").text == "failed");
+	CHECK_FALSE(services.hasRejectedDecision());
 }
 
 #include "render/scene/Scene.h"
@@ -1055,6 +1064,7 @@ TEST_CASE("JavaScript queued edits preserve fairness cancellation and stale targ
 	observations.setProfile(2);
 	observations.observe();
 	Services services(world.game, 0, observations);
+	services.enableValidationReporting();
 	services.begin();
 	auto ref = Value::object()
 				   .set("id", unsigned(building->gid))
@@ -1090,6 +1100,12 @@ TEST_CASE("JavaScript queued edits preserve fairness cancellation and stale targ
 	++building->scriptIdentity;
 	CHECK(services.dispatch()->getOrderType() == ORDER_NULL);
 	CHECK(services.query("actionStatus", {stale}, {}).get("status").text == "failed");
+	CHECK(services.hasRejectedDecision());
+	const auto saved = services.save();
+	Services restored(world.game, 0, observations);
+	restored.load(saved);
+	CHECK_FALSE(restored.hasRejectedDecision());
+	CHECK(restored.save().encode() == saved.encode());
 }
 
 TEST_CASE("JavaScript placement reserves footprints and explains impossible constraints" *
@@ -1273,26 +1289,29 @@ TEST_CASE("JavaScript farm areas: experiments query, farmArea order and tile fie
 	CHECK(off.state.get("hasField").number == 0);
 }
 
-TEST_CASE("Online AI installs verify bytes and preserve provenance on rollback" * doctest::test_suite("JavaScriptIntegration"))
+TEST_CASE("Online AI installs verify bytes and preserve provenance on rollback" *
+		  doctest::test_suite("JavaScriptIntegration"))
 {
- Online::MemoryStorage storage;
- Library library(storage);
- const std::string first = "function step() {}", second = "function step() { return null; }";
- Script::LibraryOrigin origin{"https://example.test", "ai-id", "version-1", Online::Sha256::hex(first)};
- CHECK_THROWS(library.put(second, "download.js", "", "", origin));
- CHECK(library.entries().empty());
- const auto id = library.put(first, "download.js", "", "", origin);
- const auto frozen = library.configuration(id), before = library.checkpoint();
- origin.versionId = "version-2"; origin.hash = Online::Sha256::hex(second);
- CHECK(library.put(second, "update.js", id, "", origin) == id);
- CHECK(library.get(id).online->versionId == "version-2");
- CHECK(sourceFromConfig(frozen) == first);
- library.rollback(before);
- Library reloaded(storage);
- CHECK(reloaded.get(id).online->versionId == "version-1");
- CHECK(reloaded.configuration(id) == frozen);
- // Ordinary imports retain the v1 registry format and drop online provenance
- // when users replace their source locally.
- reloaded.put(second, "local.js", id);
- CHECK_FALSE(reloaded.get(id).online.has_value());
+	Online::MemoryStorage storage;
+	Library library(storage);
+	const std::string first = "function step() {}", second = "function step() { return null; }";
+	Script::LibraryOrigin origin{"https://example.test", "ai-id", "version-1",
+								 Online::Sha256::hex(first)};
+	CHECK_THROWS(library.put(second, "download.js", "", "", origin));
+	CHECK(library.entries().empty());
+	const auto id = library.put(first, "download.js", "", "", origin);
+	const auto frozen = library.configuration(id), before = library.checkpoint();
+	origin.versionId = "version-2";
+	origin.hash = Online::Sha256::hex(second);
+	CHECK(library.put(second, "update.js", id, "", origin) == id);
+	CHECK(library.get(id).online->versionId == "version-2");
+	CHECK(sourceFromConfig(frozen) == first);
+	library.rollback(before);
+	Library reloaded(storage);
+	CHECK(reloaded.get(id).online->versionId == "version-1");
+	CHECK(reloaded.configuration(id) == frozen);
+	// Ordinary imports retain the v1 registry format and drop online provenance
+	// when users replace their source locally.
+	reloaded.put(second, "local.js", id);
+	CHECK_FALSE(reloaded.get(id).online.has_value());
 }

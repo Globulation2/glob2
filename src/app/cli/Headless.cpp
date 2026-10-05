@@ -438,12 +438,13 @@ struct HeadlessRunner
 			globals.replayWriter->init(replay, engine.gui);
 		}
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
-		for(int i=0;i<engine.gui.game.gameHeader.getNumberOfPlayers();++i) {
-   auto *player=engine.gui.game.players[i];
-   if(player && player->ai && player->ai->implementationID==AI::JAVASCRIPT)
-    static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
-  }
-  const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
+		for (int i = 0; i < engine.gui.game.gameHeader.getNumberOfPlayers(); ++i)
+		{
+			auto *player = engine.gui.game.players[i];
+			if (player && player->ai && player->ai->implementationID == AI::JAVASCRIPT)
+				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
+		}
+		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;

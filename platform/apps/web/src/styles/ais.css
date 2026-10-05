@@ -8,6 +8,18 @@
   border-radius: 16px;
   background: var(--surface);
 }
+.ai-learn-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.ai-learn-summary p {
+  flex: 1;
+  margin-bottom: 0;
+}
+.ai-learn-summary button {
+  flex-shrink: 0;
+}
 .ai-learn-body {
   display: grid;
   grid-template-columns: 2fr 1fr;

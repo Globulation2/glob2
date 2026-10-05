@@ -96,9 +96,6 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 					"Profile 2 step must return nothing; use properties or ctx.actions");
 			services->commit(result.commands, result.telemetry);
 			accepted = services->dispatch();
- if (validationReporting)
-  for (const auto &record : services->actions().items)
-   rejectedDecision |= record.get("status").text == "failed";
 		}
 		else
 			accepted = Script::order(*player->game, player->teamNumber, result.effects);

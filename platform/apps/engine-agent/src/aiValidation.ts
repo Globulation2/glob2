@@ -159,7 +159,9 @@ export async function createAiValidator(
       maxCaptureBytes: 65536,
       ...(signal ? { signal } : {}),
     });
-    if (result.stderr.includes('bwrap:'))
+    // Controller diagnostics can contain arbitrary script-authored text. A
+    // successful engine run mentioning bwrap is not an isolation failure.
+    if (result.code !== 0 && result.stderr.startsWith('bwrap:'))
       throw new InfrastructureError('AI isolation failed: ' + result.stderr.slice(-1000));
     return result;
   }
@@ -211,7 +213,13 @@ export async function createAiValidator(
       try {
         if (bytes.length === 0 || bytes.length > 128 * 1024 || bytes.includes(0))
           throw Error('Expected a bundled JavaScript file up to 128 KiB without NUL bytes.');
-        new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+        try {
+          new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+        } catch {
+          // TextDecoder adds a Node error code; normalize this known input
+          // failure before the outer catch classifies filesystem/OS errors.
+          throw Error('The JavaScript file must use UTF-8.');
+        }
         pass('file');
         await writeFile(join(scratch, 'source.js'), bytes);
         stage = 'syntax';

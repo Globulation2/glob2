@@ -12,8 +12,6 @@ class AIJavaScript : public AIImplementation
 	unsigned profile = 1;
 	Script::Value state = Script::Value::object();
 	bool initialized = false, disabled = false;
- // Observational headless validation diagnostics, never saved or checksummed.
- bool validationReporting = false, rejectedDecision = false;
 	std::string error;
 	Script::Observations observations;
 	std::unique_ptr<Script::Runtime> runtime;
@@ -25,8 +23,12 @@ class AIJavaScript : public AIImplementation
 	void save(GAGCore::OutputStream *) override;
 	std::shared_ptr<Order> getOrder() override;
 	bool isDisabled() const { return disabled; }
- void enableValidationReporting() { validationReporting = true; }
- bool hasRejectedDecision() const { return rejectedDecision; }
+	void enableValidationReporting()
+	{
+		if (services)
+			services->enableValidationReporting();
+	}
+	bool hasRejectedDecision() const { return services && services->hasRejectedDecision(); }
 	const std::string &diagnostic() const { return error; }
 	void observe();
 	void captureTelemetry() override;

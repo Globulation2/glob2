@@ -10,6 +10,7 @@ import {
   type PublishAiRequest,
 } from '@glob2/protocol';
 import { aiApi } from '../aiApi.ts';
+import { aiBrowseUrl, aiReturnUrl, readAiBrowse, type AiBrowseState } from '../aiBrowse.ts';
 import { ApiError } from '../api.ts';
 import { Loaded, ErrorNotice, Empty } from '../components/common.tsx';
 import { GameArt } from '../art.tsx';
@@ -21,18 +22,41 @@ const DOCS = 'https://github.com/Globulation2/glob2/blob/master/docs/development
 const STARTER = 'https://github.com/Globulation2/glob2-javascript-ai-starter-exampler';
 
 function Learn() {
-  const [open, setOpen] = useState(() => {
+  const toggle = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState(() => {
     try {
-      return localStorage.getItem('ai-introduction') !== 'dismissed';
+      return localStorage.getItem('ai-introduction') === 'dismissed';
     } catch {
-      return true;
+      return false;
     }
   });
+  const dismiss = () => {
+    setOpen(false);
+    setDismissed(true);
+    toggle.current?.focus();
+    try {
+      localStorage.setItem('ai-introduction', 'dismissed');
+    } catch {
+      /* Storage may be unavailable. */
+    }
+  };
   return (
     <section className="ai-learn">
-      <button className="small" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button ref={toggle} className="small" aria-expanded={open} onClick={() => setOpen(!open)}>
         How AIs work <span aria-hidden="true">{open ? '−' : '+'}</span>
       </button>
+      {!open && !dismissed && (
+        <div className="ai-learn-summary">
+          <p>
+            Install community AIs for local games. Versions work offline. Only run code from authors
+            you trust.
+          </p>
+          <button className="small" onClick={dismiss}>
+            Got it
+          </button>
+        </div>
+      )}
       {open && (
         <div className="ai-learn-body">
           <div>
@@ -51,17 +75,7 @@ function Learn() {
             <a href={DOCS + 'javascript.md'}>Authoring guide ↗</a>
             <a href={DOCS + 'javascript-api.md'}>JavaScript API reference ↗</a>
             <a href={STARTER}>Start building an AI ↗</a>
-            <button
-              className="small"
-              onClick={() => {
-                setOpen(false);
-                try {
-                  localStorage.setItem('ai-introduction', 'dismissed');
-                } catch {
-                  /* Storage may be unavailable. */
-                }
-              }}
-            >
+            <button className="small" onClick={dismiss}>
               Got it
             </button>
           </nav>
@@ -79,6 +93,7 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
           key={tag}
           className="small"
           aria-pressed={value.includes(tag)}
+          disabled={!value.includes(tag) && value.length >= 5}
           onClick={() =>
             onChange(
               value.includes(tag)
@@ -117,21 +132,28 @@ export function AiChecklist({ report }: { report: AiValidationReport }) {
 }
 export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favourites' }) {
   const { account } = useSession();
-  const [search, setSearch] = useState(''),
-    [query, setQuery] = useState(''),
-    [tags, setTags] = useState<string[]>([]),
-    [sort, setSort] = useState('likes'),
-    [pages, setPages] = useState(1);
+  const { location, navigate } = useRouter();
+  const browse = readAiBrowse(location.search);
+  const { query, tags, sort, pages } = browse;
+  const queryKey = location.path + '?' + query;
+  const [searchDraft, setSearchDraft] = useState({ key: queryKey, value: query });
+  const search = searchDraft.key === queryKey ? searchDraft.value : query;
+  const setSearch = (value: string) => setSearchDraft({ key: queryKey, value });
+  const restoredFocus = useRef('');
+  const updateBrowse = (update: Partial<AiBrowseState>) =>
+    navigate(aiBrowseUrl(location.path, { ...browse, focus: '', cursor: '', ...update }), {
+      replace: true,
+    });
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setQuery(search.trim());
-      setPages(1);
-    }, 250);
+    if (search.trim() === query) return;
+    const timer = setTimeout(() => updateBrowse({ query: search.trim(), pages: 1 }), 250);
     return () => clearTimeout(timer);
-  }, [search]);
+    // URL changes are authoritative; typing is debounced without adding history entries.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, query, location.path, location.search.toString()]);
   const load = useLoad(
     async (signal) => {
-      let cursor: string | undefined;
+      let cursor: string | undefined = browse.cursor || undefined;
       const items: Awaited<ReturnType<typeof aiApi.list>>['items'] = [];
       for (let i = 0; i < pages; i++) {
         const page = await aiApi.list(
@@ -152,8 +174,16 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
       }
       return { items, cursor };
     },
-    [query, tags.join(','), sort, pages, view, account?.id],
+    [query, tags.join(','), sort, pages, browse.cursor, view, account?.id],
   );
+  useEffect(() => {
+    if (load.status !== 'ready' || !browse.focus || restoredFocus.current === browse.focus) return;
+    const card = document.getElementById('ai-card-' + browse.focus);
+    if (card) {
+      card.focus();
+      restoredFocus.current = browse.focus;
+    }
+  }, [load.status, browse.focus]);
   return (
     <div className="ai-library">
       <header className="page-head">
@@ -197,12 +227,12 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
             role="search"
             onSubmit={(e) => {
               e.preventDefault();
-              setQuery(search.trim());
-              setPages(1);
+              updateBrowse({ query: search.trim(), pages: 1 });
             }}
           >
             <input
               type="search"
+              maxLength={128}
               placeholder="Search names, descriptions, authors…"
               aria-label="Search AIs"
               value={search}
@@ -212,8 +242,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
               aria-label="Sort AIs"
               value={sort}
               onChange={(e) => {
-                setSort(e.target.value);
-                setPages(1);
+                updateBrowse({ sort: e.target.value, pages: 1 });
               }}
             >
               <option value="likes">Most liked</option>
@@ -225,9 +254,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
               type="button"
               onClick={() => {
                 setSearch('');
-                setTags([]);
-                setSort('likes');
-                setPages(1);
+                updateBrowse({ query: '', tags: [], sort: 'likes', pages: 1 });
               }}
             >
               Reset filters
@@ -236,17 +263,29 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
           <Tags
             value={tags}
             onChange={(v) => {
-              setTags(v);
-              setPages(1);
+              updateBrowse({ tags: v, pages: 1 });
             }}
           />
+          {load.status === 'error' && <button onClick={load.reload}>Try again</button>}
           <Loaded load={load}>
             {(data) =>
               data.items.length ? (
                 <>
                   <div className="ai-grid">
                     {data.items.map((ai) => (
-                      <Link className="ai-card card" key={ai.id} to={'/ais/' + ai.id}>
+                      <Link
+                        className="ai-card card"
+                        id={'ai-card-' + ai.id}
+                        key={ai.id}
+                        to={
+                          '/ais/' +
+                          ai.id +
+                          '?return=' +
+                          encodeURIComponent(
+                            aiBrowseUrl(location.path, { ...browse, focus: ai.id }),
+                          )
+                        }
+                      >
                         <div className="ai-card-top">
                           <span className="ai-monogram" aria-hidden="true">
                             {ai.name.slice(0, 2).toUpperCase()}
@@ -276,7 +315,24 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                       </Link>
                     ))}
                   </div>
-                  {data.cursor && <button onClick={() => setPages((p) => p + 1)}>Show more</button>}
+                  {data.cursor && (
+                    <button
+                      onClick={() =>
+                        pages < 20
+                          ? updateBrowse({ pages: pages + 1, cursor: browse.cursor })
+                          : navigate(
+                              aiBrowseUrl(location.path, {
+                                ...browse,
+                                pages: 1,
+                                cursor: data.cursor ?? '',
+                                focus: '',
+                              }),
+                            )
+                      }
+                    >
+                      {pages < 20 ? 'Show more' : 'Next results'}
+                    </button>
+                  )}
                 </>
               ) : (
                 <Empty art="swarm">
@@ -298,7 +354,10 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
 }
 function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void }) {
   const { account } = useSession(),
-    { navigate } = useRouter();
+    { navigate, location } = useRouter();
+  const returnUrl = aiReturnUrl(location.search.get('return'));
+  const editButton = useRef<HTMLButtonElement>(null);
+  const reportButton = useRef<HTMLButtonElement>(null);
   const ai = detail.ai;
   const [selected, setSelected] = useState(detail.versions[0]?.id ?? ''),
     [error, setError] = useState<Error>(),
@@ -326,7 +385,14 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
   };
   return (
     <>
-      <Link to="/ais">← AI Library</Link>
+      <Link to={returnUrl}>
+        ←{' '}
+        {returnUrl.startsWith('/ais/favourites')
+          ? 'Favourites'
+          : returnUrl.startsWith('/ais/mine')
+            ? 'My AIs'
+            : 'AI Library'}
+      </Link>
       <header className="page-head">
         <span className="ai-monogram" aria-hidden="true">
           {ai.name.slice(0, 2).toUpperCase()}
@@ -387,9 +453,25 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 Sign in to like or favourite
               </a>
             )}
-            {account && <button onClick={() => setReporting(!reporting)}>Report</button>}
+            {account && (
+              <button
+                ref={reportButton}
+                aria-expanded={reporting}
+                aria-controls="ai-report"
+                onClick={() => setReporting(!reporting)}
+              >
+                Report
+              </button>
+            )}
             {detail.viewer.owner && (
-              <button onClick={() => setEditing(!editing)}>Edit details</button>
+              <button
+                ref={editButton}
+                aria-expanded={editing}
+                aria-controls="ai-edit"
+                onClick={() => setEditing(!editing)}
+              >
+                Edit details
+              </button>
             )}
             {detail.viewer.moderator && (
               <button
@@ -405,17 +487,20 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
           </div>
           {reporting && (
             <form
+              id="ai-report"
+              aria-label="Report AI"
               onSubmit={(e) => {
                 e.preventDefault();
                 void run(async () => {
                   await aiApi.report(ai.id, reason, reportText);
                   setReporting(false);
+                  reportButton.current?.focus();
                 });
               }}
             >
               <label className="field">
                 Reason
-                <select value={reason} onChange={(e) => setReason(e.target.value)}>
+                <select autoFocus value={reason} onChange={(e) => setReason(e.target.value)}>
                   {['broken', 'offensive', 'copyright', 'other'].map((r) => (
                     <option key={r}>{r}</option>
                   ))}
@@ -429,11 +514,25 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   onChange={(e) => setReportText(e.target.value)}
                 />
               </label>
-              <button disabled={busy}>Send report</button>
+              <div className="toolbar">
+                <button disabled={busy}>Send report</button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setReporting(false);
+                    reportButton.current?.focus();
+                  }}
+                >
+                  Cancel report
+                </button>
+              </div>
             </form>
           )}
           {editing && (
             <form
+              id="ai-edit"
+              aria-label="Edit AI details"
               onSubmit={(e) => {
                 e.preventDefault();
                 void run(async () => {
@@ -444,12 +543,14 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                     visibility,
                   });
                   setEditing(false);
+                  editButton.current?.focus();
                 });
               }}
             >
               <label className="field">
                 Name
                 <input
+                  autoFocus
                   required
                   maxLength={128}
                   value={name}
@@ -479,6 +580,20 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               <div className="toolbar">
                 <button className="primary" disabled={busy}>
                   Save details
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setEditing(false);
+                    setName(ai.name);
+                    setDescription(ai.description);
+                    setTags(ai.tags);
+                    setVisibility(ai.visibility);
+                    editButton.current?.focus();
+                  }}
+                >
+                  Cancel editing
                 </button>
                 <button
                   type="button"
@@ -546,9 +661,12 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
 export function AiPage({ id }: { id: string }) {
   const load = useLoad((signal) => aiApi.detail(id, signal), [id]);
   return (
-    <Loaded load={load}>
-      {(detail) => <AiDetails key={id} detail={detail} reload={load.reload} />}
-    </Loaded>
+    <>
+      <Loaded load={load} page="AI">
+        {(detail) => <AiDetails key={id} detail={detail} reload={load.reload} />}
+      </Loaded>
+      {load.status === 'error' && <button onClick={load.reload}>Try again</button>}
+    </>
   );
 }
 
@@ -670,6 +788,8 @@ export function AiPublish({ id }: { id?: string }) {
         : c,
     ),
   };
+  const runningCheck = report.checks.find((check) => check.status === 'running');
+  const passedChecks = report.checks.filter((check) => check.status === 'passed').length;
   return (
     <>
       <header className="page-head">
@@ -767,14 +887,16 @@ export function AiPublish({ id }: { id?: string }) {
             <h2>Compatibility checklist</h2>
             <p role="status">
               {checking
-                ? 'Checking your AI…'
+                ? `Checking your AI… ${passedChecks} of ${report.checks.length} checks passed.${runningCheck ? ' Running: ' + AI_CHECK_LABELS[runningCheck.id] + '.' : ''}`
                 : upload?.status === 'valid'
                   ? 'Ready to publish'
                   : upload?.status === 'invalid'
                     ? 'Fix the failed checks and choose your updated file.'
                     : upload?.status === 'error'
                       ? 'Validation was interrupted. Your AI has not been published.'
-                      : 'Choose a file to begin.'}
+                      : fileFailure
+                        ? 'Choose an updated file to try again.'
+                        : 'Choose a file to begin.'}
             </p>
             <AiChecklist report={report} />
             {upload?.error && <p className="notice error">{upload.error}</p>}

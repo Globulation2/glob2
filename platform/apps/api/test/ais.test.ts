@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, it, expect } from 'vitest';
+import { beforeAll, beforeEach, afterAll, describe, it, expect } from 'vitest';
 import { sql } from 'kysely';
 import {
   pendingAiReport,
@@ -31,6 +31,14 @@ beforeAll(async () => {
   owner = await registeredPlayer(app, 'AIAuthor');
   other = await registeredPlayer(app, 'AIFan');
   guest = await guestPlayer(app);
+});
+beforeEach(async () => {
+  // Each scenario gets its own publication budget; expanding this suite must
+  // not make otherwise independent scenarios exhaust a shared hourly quota.
+  await harness.database.db
+    .deleteFrom('rate_limits')
+    .where('bucket', 'in', ['ai-upload', 'ai-publish', 'ai-report'])
+    .execute();
 });
 afterAll(async () => {
   owner?.client.close();
@@ -185,6 +193,25 @@ describe('AI library', () => {
       ).status,
     ).toBe(404);
   });
+  it('keeps batched catalogue statistics and viewer state attached to their own AI', async () => {
+    const first = await publish({ name: 'Batch projection Alpha' });
+    const second = await publish({ name: 'Batch projection Beta' });
+    await call('PUT', '/api/v1/ais/' + first.ai.id + '/like', other);
+    await call('PUT', '/api/v1/ais/' + second.ai.id + '/favourite', other);
+    await call('GET', new URL(first.ai.latestVersion.downloadUrl).pathname, other);
+    const list = (await (
+      await call('GET', '/api/v1/ais?q=Batch%20projection', other)
+    ).json()) as AiList;
+    expect(list.items).toHaveLength(2);
+    const a = list.items.find((item) => item.id === first.ai.id)!;
+    const b = list.items.find((item) => item.id === second.ai.id)!;
+    expect([a.likes, a.downloads, a.liked, a.favourited]).toEqual([1, 1, true, false]);
+    expect([b.likes, b.downloads, b.liked, b.favourited]).toEqual([0, 0, false, true]);
+    expect(a.latestVersion.hash).toBe(first.ai.latestVersion.hash);
+    expect(b.latestVersion.hash).toBe(second.ai.latestVersion.hash);
+    expect(a.latestVersion.validations[0]?.sourceHash).toBe(a.latestVersion.hash);
+    expect(b.latestVersion.validations[0]?.sourceHash).toBe(b.latestVersion.hash);
+  });
   it('enforces visibility, owner edits, guest restrictions and moderation', async () => {
     const { ai } = await publish({ visibility: 'private' });
     expect((await call('GET', '/api/v1/ais/' + ai.id, other)).status).toBe(404);
@@ -304,4 +331,116 @@ it('keeps bookmarked unlisted releases visible only to their authorised viewer',
   expect(list.items.some((x) => x.id === ai.id)).toBe(true);
   const publicList = (await (await call('GET', '/api/v1/ais')).json()) as AiList;
   expect(publicList.items.some((x) => x.id === ai.id)).toBe(false);
+});
+
+it('collects abandoned pending validations without interrupting leases or retained evidence', async () => {
+  const db = harness.database.db;
+  async function pending(expireUpload: boolean, lease: 'none' | 'expired' | 'live') {
+    const response = await call(
+      'POST',
+      '/api/v1/ai-uploads',
+      owner,
+      Buffer.from(`let n=${next++}; function step(){n++;}`),
+    );
+    expect(response.status).toBe(201);
+    const staged = (await response.json()) as AiUpload;
+    const validation = await db
+      .updateTable('ai_validations')
+      .set({ created_at: sql<Date>`now() - interval '8 days'` })
+      .where('hash', '=', staged.sourceHash)
+      .returning(['id', 'job_id'])
+      .executeTakeFirstOrThrow();
+    if (expireUpload)
+      await db
+        .updateTable('ai_uploads')
+        .set({ expires_at: sql<Date>`now() - interval '1 day'` })
+        .where('id', '=', staged.id)
+        .execute();
+    if (lease !== 'none')
+      await db
+        .updateTable('engine_jobs')
+        .set({
+          attempts: 1,
+          lease_expires_at:
+            lease === 'live'
+              ? sql<Date>`now() + interval '1 hour'`
+              : sql<Date>`now() - interval '1 hour'`,
+        })
+        .where('id', '=', validation.job_id!)
+        .execute();
+    return validation;
+  }
+  const neverLeased = await pending(true, 'none');
+  const expiredLease = await pending(true, 'expired');
+  const liveLease = await pending(true, 'live');
+  const retainedUpload = await pending(false, 'none');
+  const published = await publish();
+  await db
+    .updateTable('ai_validations')
+    .set({ created_at: sql<Date>`now() - interval '8 days'` })
+    .where('hash', '=', published.ai.latestVersion.hash)
+    .execute();
+  await db
+    .updateTable('ai_uploads')
+    .set({ expires_at: sql<Date>`now() - interval '1 day'` })
+    .where('id', '=', published.u.id)
+    .execute();
+
+  await maintainAiLibrary(db);
+  for (const removed of [neverLeased, expiredLease]) {
+    expect(
+      await db
+        .selectFrom('ai_validations')
+        .select('id')
+        .where('id', '=', removed.id)
+        .executeTakeFirst(),
+    ).toBeUndefined();
+    expect(
+      await db
+        .selectFrom('engine_jobs')
+        .select('id')
+        .where('id', '=', removed.job_id!)
+        .executeTakeFirst(),
+    ).toBeUndefined();
+  }
+  for (const retained of [liveLease, retainedUpload])
+    expect(
+      await db
+        .selectFrom('ai_validations')
+        .select('id')
+        .where('id', '=', retained.id)
+        .executeTakeFirst(),
+    ).toBeDefined();
+  expect(
+    await db
+      .selectFrom('ai_validations')
+      .select('id')
+      .where('hash', '=', published.ai.latestVersion.hash)
+      .executeTakeFirst(),
+  ).toBeDefined();
+});
+
+it('retries published validation errors after their old engine jobs have been collected', async () => {
+  const { ai } = await publish();
+  const db = harness.database.db;
+  const validation = await db
+    .updateTable('ai_validations')
+    .set({ status: 'error', error: 'Validator interrupted' })
+    .where('hash', '=', ai.latestVersion.hash)
+    .returning(['id', 'job_id'])
+    .executeTakeFirstOrThrow();
+  // Completed-job retention clears this FK after 30 days. Revalidation must
+  // recover when the matching engine returns, while retaining the release.
+  await db.deleteFrom('engine_jobs').where('id', '=', validation.job_id!).execute();
+  await maintainAiLibrary(db);
+  const retried = await db
+    .selectFrom('ai_validations')
+    .selectAll()
+    .where('id', '=', validation.id)
+    .executeTakeFirstOrThrow();
+  expect(retried.status).toBe('pending');
+  expect(retried.job_id).toBeTruthy();
+  expect(retried.job_id).not.toBe(validation.job_id);
+  expect(retried.error).toBeNull();
+  expect((await call('GET', '/api/v1/ais/' + ai.id)).status).toBe(200);
 });

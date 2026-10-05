@@ -1028,7 +1028,11 @@ probe the real engine inside Linux namespace isolation before advertising it.
 The worker keeps historical reports and schedules validation for new supported
 engine versions. Errors never erase a previous passing report. Expired staging
 uploads and unreferenced validation blobs are reclaimed by maintenance and blob GC.
-A retry of the same source after infrastructure failure starts another job.
+After seven days, abandoned validations without uploads or published releases are
+collected, including queued jobs whose validator disappeared; active leases and
+reported results are allowed to finish. Published infrastructure failures can retry
+even after the original job has aged out of job history. A retry of the same source
+after infrastructure failure starts another job.
 
 Suite 1 pins two script-free fixtures (two and four players) under
 `apps/engine-agent/fixtures/ais`. Each controller runs against built-in opponents

@@ -149,6 +149,24 @@ test('AI discovery, version details, social actions and gated publishing', async
       .analyze();
     expect(result.violations).toEqual([]);
   }
+  if (
+    testInfo.project.name === 'desktop' &&
+    !(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches))
+  ) {
+    const firstCard = page.locator('.ai-card').first();
+    await firstCard.hover();
+    await expect(firstCard).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, -3)');
+    await page.screenshot({
+      path: resolve(output, 'desktop-normal-motion-hover.png'),
+      fullPage: true,
+    });
+  }
+  // Returning from a release preserves the browsing task and restores keyboard focus.
+  await page.getByRole('link', { name: 'Favourites', exact: true }).click();
+  await page.getByRole('searchbox', { name: 'Search AIs' }).fill('patient');
+  await expect(page).toHaveURL(/q=patient/);
+  await page.getByRole('button', { name: 'Economy', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Sort AIs' }).selectOption('downloads');
   await page.getByRole('heading', { name: 'Patient Gardener' }).click();
   await expect(page.getByRole('link', { name: 'Download JavaScript (.js)' })).toBeVisible();
   await page.getByRole('combobox', { name: 'Version', exact: true }).selectOption('old-release');
@@ -156,13 +174,48 @@ test('AI discovery, version details, social actions and gated publishing', async
     'href',
     '/api/v1/ais/' + id + '/versions/old-release/file',
   );
-  await page.getByRole('combobox', { name: 'Version', exact: true }).selectOption(vId);
+  await page.getByRole('button', { name: 'Edit details', exact: true }).click();
+  await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toBeFocused();
+  expect(
+    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
+      .violations,
+  ).toEqual([]);
+  await page.getByRole('button', { name: 'Cancel editing' }).click();
+  await expect(page.getByRole('button', { name: 'Edit details', exact: true })).toBeFocused();
+  await page.getByRole('button', { name: 'Report', exact: true }).click();
+  await expect(page.getByRole('combobox', { name: 'Reason', exact: true })).toBeFocused();
+  expect(
+    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
+      .violations,
+  ).toEqual([]);
+  await page.getByRole('button', { name: 'Cancel report' }).click();
+  await expect(page.getByRole('button', { name: 'Report', exact: true })).toBeFocused();
+  await page.getByRole('link', { name: '← Favourites', exact: true }).click();
+  await expect(page.getByRole('searchbox', { name: 'Search AIs' })).toHaveValue('patient');
+  await expect(page.getByRole('combobox', { name: 'Sort AIs' })).toHaveValue('downloads');
+  await expect(page.getByRole('button', { name: 'Economy', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(page.locator('#ai-card-' + id)).toBeFocused();
+  await page.getByRole('heading', { name: 'Patient Gardener' }).click();
+  await page.goBack();
+  await expect(page.getByRole('searchbox', { name: 'Search AIs' })).toHaveValue('patient');
+  await page.getByRole('heading', { name: 'Patient Gardener' }).click();
+  await page.getByRole('combobox', { name: 'Version', exact: true }).selectOption('old-release');
   await page.getByRole('button', { name: '☆ Favourite' }).click();
   await expect(page.getByRole('button', { name: '★ Favourited' })).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Version', exact: true })).toHaveValue(
+    'old-release',
+  );
   await page.screenshot({
     path: resolve(output, `${testInfo.project.name}-detail.png`),
     fullPage: true,
   });
+  expect(
+    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
+      .violations,
+  ).toEqual([]);
   await page.goto('/ais/new');
   const publish = page.getByRole('button', { name: 'Publish', exact: true });
   await expect(publish).toBeDisabled();
@@ -173,6 +226,10 @@ test('AI discovery, version details, social actions and gated publishing', async
   });
   await expect(page.getByText('Ready to publish')).toBeVisible();
   await expect(publish).toBeEnabled();
+  expect(
+    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
+      .violations,
+  ).toEqual([]);
   await page.screenshot({
     path: resolve(output, `${testInfo.project.name}-publish.png`),
     fullPage: true,
