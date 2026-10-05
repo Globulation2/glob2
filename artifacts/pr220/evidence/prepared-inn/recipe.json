@@ -1,0 +1,34 @@
+{
+  "frame": "inn0b0",
+  "stage": "prepared",
+  "model": "realesrgan-x4plus",
+  "scale": 4,
+  "padding": 16,
+  "detail_strength": 0.65,
+  "approved_recipe": "outline_repair",
+  "layers": [
+    {
+      "file": "inn0b0.png",
+      "role": "base",
+      "source_sha256": "b867bc6a5aa2bbd12e7d1d7fcbc5d7b83bacffe8d41fa34ec554ad09ea7bedd1",
+      "logical_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "inn0b0r.png",
+      "role": "team",
+      "source_sha256": "a8f701e70a3b5399487b51dc7c772600267dbdb2a04ed97c3e341184c71e3a8d",
+      "logical_size": [
+        64,
+        64
+      ]
+    }
+  ],
+  "tool_versions": {
+    "pillow": "12.2.0",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  }
+}

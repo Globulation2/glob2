@@ -1,0 +1,14 @@
+{
+  "release": {
+    "files": 3379,
+    "source_bytes": 60675369,
+    "output_bytes": 12674911,
+    "lossy_selections": 2290
+  },
+  "lossless": {
+    "files": 3379,
+    "source_bytes": 60675369,
+    "output_bytes": 40729987,
+    "lossy_selections": 0
+  }
+}

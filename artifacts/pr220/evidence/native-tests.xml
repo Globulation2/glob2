@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="37" failures="0" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="19.335" status="run" />
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="0.600828" status="run" />
+  </testsuite><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.233226" status="run" />
+  <testcase classname="SpriteLoad" name="source frames prepare in parallel without a graphic context" time="0.000925" status="run" />
+    <testcase classname="SpriteLoad" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.001505" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.186627" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.14244" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.004838" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.004505" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.003377" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.003501" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.026845" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="0.002701" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="0.001984" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="0.038422" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="0.573509" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="0.003348" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="0.002763" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="0.019057" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.048496" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="1.91707" status="run" />
+  </testsuite><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.002244" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.003394" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.001361" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.00256" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.000315" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.001327" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.001336" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.000607" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0.000175" status="run" />
+    <testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.006998" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.001084" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.005081" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.001108" status="run" />
+  </testsuite></testsuites>
