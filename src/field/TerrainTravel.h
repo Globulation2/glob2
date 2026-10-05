@@ -51,7 +51,8 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
     std::vector<unsigned> costs(values.size(),infinity);
     // These distance-only fields have bounded positive integer edge costs.
     // A circular bucket queue avoids heap comparisons without changing the
-    // wide distances or the final rounded public encoding.
+    // wide distances or the final rounded public encoding. All queues and
+    // scratch distances belong to this call; no mutable cache is shared.
     std::array<unsigned,TERRAIN_COUNT> terrainCosts{};
     for(unsigned t=0;t<TERRAIN_COUNT;++t)
     {
@@ -72,6 +73,8 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
         {
             const auto index=bucket.cells[at];
             if(cost!=costs[index]) { GLOB2_GRADIENT_BENCH_EVENT(stale, 1); continue; }
+            // This is a reverse field: index is the destination of the forward
+            // move from next. Charge entry to index, not entry to next.
             const unsigned candidate=cost+terrainCosts[terrainAt(index)];
             const int x=index%width,y=index/width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
@@ -84,6 +87,8 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
                 if(candidate<costs[next])
                 {
                     costs[next]=candidate;
+                    // The positive step is smaller than the ring, so appends
+                    // cannot target or reallocate the bucket being traversed.
                     buckets[candidate%TERRAIN_TRAVEL_BUCKETS].push(next);
                     ++pending;
                     GLOB2_GRADIENT_BENCH_EVENT(relaxations, 1);

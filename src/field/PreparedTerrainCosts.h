@@ -5,12 +5,19 @@
 
 namespace gradient_kernel
 {
-// Immutable movement metadata. Equal terrain costs share a vector and equal
-// edge costs share one append cursor, including cardinal/diagonal aliases.
-// Mutable queue storage remains owned by the individual search.
+// Immutable movement metadata shared by searches using the same swimming profile.
+// Terrain IDs map to classes of equal (cardinal, diagonal) costs. Classes then
+// map each direction to a slot for its unique edge cost: a cardinal cost may
+// share a slot with another class's diagonal cost. Mutable queues stay private
+// to each search; slots select their append cursors for the current cost layer.
+// Both input costs must be positive and below BUCKETS, so a future layer cannot
+// alias the bucket being expanded. Production tables enforce this bound in
+// TerrainMovementCosts.h; independently supplied tables must also satisfy it.
 template<std::size_t N>
 struct PreparedTerrainCosts
 {
+    // Every terrain ID has a class. Only [0, classCount) of the class arrays and
+    // [0, stepCount) of the edge-slot arrays below contain prepared entries.
     std::array<std::uint16_t, N> terrainClasses{};
     std::array<EntrySteps, N> classes{};
     std::array<std::uint16_t, N> cardinalSlots{}, diagonalSlots{};
@@ -24,12 +31,17 @@ struct PreparedTerrainCosts
         {
             const auto cost = costs[t];
             unsigned c = 0;
-            while (c < classCount && (classes[c].cardinal != cost.cardinal || classes[c].diagonal != cost.diagonal)) ++c;
+            while (c < classCount && (classes[c].cardinal != cost.cardinal || classes[c].diagonal != cost.diagonal))
+                ++c;
             terrainClasses[t] = c;
             if (c < classCount) continue;
             classes[classCount++] = cost;
             cardinalSlots[c] = slot(cost.cardinal);
             diagonalSlots[c] = slot(cost.diagonal);
+            // One expanded cell uses one class, so reserve the maximum per-cell
+            // attempts for this slot, not the sum across classes. Equal costs
+            // within a class share all eight attempts; otherwise each has four.
+            // Include rejected attempts: relaxation writes before advancing.
             const unsigned maximum = cost.cardinal == cost.diagonal ? 8 : 4;
             maxAppends[cardinalSlots[c]] = std::max<unsigned>(maxAppends[cardinalSlots[c]], maximum);
             maxAppends[diagonalSlots[c]] = std::max<unsigned>(maxAppends[diagonalSlots[c]], maximum);

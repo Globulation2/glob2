@@ -10,7 +10,7 @@
 
 namespace gradient_kernel
 {
-// General terrain-cost relaxation. Distinct edge costs share one queue cursor,
+// General terrain-cost relaxation. Equal edge costs share one queue cursor,
 // including cardinal/diagonal aliases, rather than assuming four distinct costs.
 // Reserve once per chunk, outside neighbor loops; retain vector relaxation on
 // SSE2/NEON and the same scalar wrapped-edge path as the legacy specialization.
@@ -26,6 +26,7 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
     GLOB2_GRADIENT_BENCH_EVENT(popped, count);
     const auto &steps = profile.steps;
     const unsigned stepCount = profile.stepCount;
+    // Class/slot membership is invariant; only candidate values depend on cur.
     std::array<std::uint16_t, 2 * N> values;
     for (unsigned s = 0; s < stepCount; ++s)
     {
@@ -59,6 +60,8 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
         limits[t] = vsubq_u16(vectors[t], vdupq_n_u16(1));
     }
 #endif
+    // Positive edge costs below BUCKETS keep every target distinct from this
+    // source bucket, so reserving target storage cannot invalidate cells.
     const auto *cells = bucket.cells.data();
     const unsigned width = grid.width(), height = grid.height(), shift = Masked ? grid.widthShift() : 0;
     for (std::size_t begin = 0; begin < count; begin += CHUNK)
@@ -182,6 +185,11 @@ void propagatePreparedTerrainField(std::uint16_t *gradient, int maxCost,
         if(cost<int(BUCKETS)) {buckets[cost].push(i);++pending;}
         else deferred.push_back({cost,int(i)});
     };
+    // Prove equivalence across every non-forbidden cell, including goals and
+    // currently unreachable cells. A distant cheaper tile may still provide
+    // the best route, and a goal's entry cost affects its incoming edges.
+    // Collect seeds during the same scan; after the first mismatch only seed
+    // collection is needed. N is outside the prepared class index range.
     unsigned uniformClass = N;
     std::size_t i = 0;
     for (; i < grid.cells(); ++i)
@@ -197,14 +205,14 @@ void propagatePreparedTerrainField(std::uint16_t *gradient, int maxCost,
     std::sort(deferred.begin(),deferred.end());
     const int limit=std::min(maxCost,COST_LIMIT);
     auto sweep = [&](const auto &selectedProfile, auto selectedClassAt) {
-    std::size_t next=0;
-    for(int cur=0;(pending || next<deferred.size()) && cur<=limit;++cur)
-    {
-        if(!pending) cur=deferred[next].first;
-        for(;next<deferred.size()&&deferred[next].first==cur;++next)
-        {buckets[unsigned(cur)%BUCKETS].push(deferred[next].second);++pending;}
-        expandPreparedTerrainBucket(gradient,buckets,pending,cur,limit,grid,selectedProfile,selectedClassAt);
-    }
+        std::size_t next=0;
+        for(int cur=0;(pending || next<deferred.size()) && cur<=limit;++cur)
+        {
+            if(!pending) cur=deferred[next].first;
+            for(;next<deferred.size()&&deferred[next].first==cur;++next)
+            {buckets[unsigned(cur)%BUCKETS].push(deferred[next].second);++pending;}
+            expandPreparedTerrainBucket(gradient,buckets,pending,cur,limit,grid,selectedProfile,selectedClassAt);
+        }
     };
     if (uniform && uniformClass < N)
     {

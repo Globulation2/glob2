@@ -74,19 +74,21 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		}
 	};
 	if (modifiedCosts)
-    {
-        const auto *types = terrain->data();
-        while (pending && (target == cells || !resolved(target)))
-        {
-            popped += buckets[currentCost % BUCKETS].size;
-            gradient_kernel::expandTerrainBucket(gradient, buckets.data(), pending,
-                currentCost, COST_LIMIT, {widthMask+1,heightMask+1},
-                gradient_kernel::PREPARED_TERRAIN_COSTS[swimClass],
-                [types](size_t i) { return types[i]; });
-            ++currentCost;
-        }
-    }
-    else if (!terrain)
+	{
+		// Both the terrain snapshot and swimClass were captured by begin().
+		// Resuming after map edits must keep that same immutable cost profile.
+		const auto *types = terrain->data();
+		while (pending && (target == cells || !resolved(target)))
+		{
+			popped += buckets[currentCost % BUCKETS].size;
+			gradient_kernel::expandTerrainBucket(gradient, buckets.data(), pending,
+				currentCost, COST_LIMIT, {widthMask+1,heightMask+1},
+				gradient_kernel::PREPARED_TERRAIN_COSTS[swimClass],
+				[types](size_t i) { return types[i]; });
+			++currentCost;
+		}
+	}
+	else if (!terrain)
 		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
 	{

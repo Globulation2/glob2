@@ -714,7 +714,12 @@ TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathf
                 for (int i = 0; i < count; ++i) map.setCellTerrain(i, terrain[i]);
                 const auto expected = oracle(seeds, std::vector<Uint16>(count, 0),
                     width, width, swim, CostLimit, &terrain);
+                // Map dispatch and resumable searches are separate entry points;
+                // both must charge the goal's terrain in the reverse field.
                 auto actual = seeds;
+                map.propagateGradient(actual.data(), swim);
+                REQUIRE(actual == expected);
+                actual = seeds;
                 BuildingGradientSearch search;
                 search.begin(map, actual.data(), swim);
                 search.resolve(1);
@@ -747,4 +752,80 @@ TEST_CASE("prepared terrain profiles deduplicate pairs and alias queue destinati
             REQUIRE(registered.steps[s] > 0);
             REQUIRE(registered.steps[s] < gradient_kernel::BUCKETS);
         }
+}
+
+TEST_CASE("eager terrain specialization proves uniform costs across the whole field [pathfinding]")
+{
+    enum class Variation
+    {
+        Uniform,
+        DifferentGoal,
+        BlockedOutlier,
+        DistantOutlier,
+        DeferredSeed,
+        NoGoals,
+        AllBlocked
+    };
+    // Reuse one workspace across uniform/general dispatch, deferred seeds and
+    // empty solves so retained queues cannot supply stale results.
+    GradientWorkspace workspace;
+    for (const auto [width, height] : {std::pair{32, 32}, {17, 5}, {1, 31}})
+        for (int swim = 0; swim < 7; ++swim)
+            for (const auto variation : {Variation::Uniform, Variation::DifferentGoal,
+                Variation::BlockedOutlier, Variation::DistantOutlier,
+                Variation::DeferredSeed, Variation::NoGoals, Variation::AllBlocked})
+                for (int cap : {0, 127, CostLimit})
+                {
+                    INFO("shape=" << width << "x" << height << " swim=" << swim
+                        << " cap=" << cap << " variation=" << static_cast<int>(variation));
+                    const auto count = std::size_t(width) * height;
+                    // Stay beyond the seed neighborhood but before the torus
+                    // midpoint, so a cheaper cell can improve routes beyond it.
+                    const auto distant = std::size_t(height / 3) * width + width / 3;
+                    std::vector<TerrainType> terrain(count, ICE);
+                    std::vector<Uint16> seeds(count, Unreached), legacy(count, 0);
+                    seeds[0] = Goal;
+                    switch (variation)
+                    {
+                    case Variation::DifferentGoal:
+                        terrain[0] = ROAD;
+                        break;
+                    case Variation::BlockedOutlier:
+                        terrain[distant] = ROAD;
+                        seeds[distant] = Blocked;
+                        break;
+                    case Variation::DistantOutlier:
+                        // A distant cheaper cell is still relevant: fields must
+                        // not specialize from the goals or a local sample alone.
+                        terrain[distant] = ROAD;
+                        break;
+                    case Variation::DeferredSeed:
+                        seeds[0] = Goal - (gradient_kernel::BUCKETS + 31);
+                        break;
+                    case Variation::NoGoals:
+                        seeds[0] = Unreached;
+                        break;
+                    case Variation::AllBlocked:
+                        terrain[distant] = ROAD;
+                        std::fill(seeds.begin(), seeds.end(), Blocked);
+                        break;
+                    case Variation::Uniform:
+                        break;
+                    }
+                    const auto expected = oracle(seeds, legacy, width, height,
+                        swim, cap, &terrain);
+                    auto actual = seeds;
+                    gradient_kernel::propagateTerrainField(actual.data(), swim, cap,
+                        {width, height}, workspace,
+                        [&](std::size_t i) { return terrain[i]; }, true);
+                    REQUIRE(actual == expected);
+                    if (variation == Variation::DistantOutlier && cap == CostLimit)
+                    {
+                        const std::vector<TerrainType> uniform(count, ICE);
+                        // Prove that this fixture actually exposes a missed road,
+                        // rather than merely including an irrelevant outlier.
+                        REQUIRE(expected != oracle(seeds, legacy, width, height,
+                            swim, cap, &uniform));
+                    }
+                }
 }
