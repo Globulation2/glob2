@@ -5547,15 +5547,15 @@ Limite le dessin dans toute l’application. Des valeurs plus faibles réduisent
 [ice]
 Glace
 [road]
-Route
+Sentier
 [experiment ice-terrain]
 Terrain de glace
 [experiment ice-terrain help]
 Ajoute de la glace à l’éditeur de cartes. Les unités terrestres avancent à mi-vitesse et perdent un point de vie tous les 32 pas de simulation passés sur la glace. La glace ne peut accueillir ni bâtiments ni ressources.
 [experiment road-terrain]
-Terrain routier
+Terrain de sentier
 [experiment road-terrain help]
-Ajoute des routes pavées à l’éditeur de cartes. Les unités terrestres avancent deux fois plus vite. Les routes peuvent accueillir des bâtiments, mais pas de ressources.
+Ajoute des sentiers usés à l’éditeur de cartes. Les unités terrestres se déplacent deux fois plus vite. Les sentiers permettent les bâtiments, mais pas les ressources. Les unités volantes ne sont pas affectées.
 [experiment markets-v2]
 Marchés V2
 [experiment markets-v2 help]

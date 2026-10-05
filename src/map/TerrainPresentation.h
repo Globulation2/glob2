@@ -39,6 +39,7 @@ inline constexpr auto TerrainPresentations = [] {
     {"sand", "[sand]", "data/gfx/terrain", 128, 16, 128, {170,170,0}, {182,168,48}, {240,220,140}, false, true, -1, 0},
     {"grass", "[grass]", "data/gfx/terrain", 0, 16, 0, {0,90,0}, {30,113,30}, {0,128,0}, false, true, -1, 0},
     {"ice", "[ice]", "data/gfx/terrain", 272, 16, 272, {190,225,240}, {190,225,240}, {190,225,240}, false, false, 304, 2},
+    // Legacy external name/key retained for scripts, reports and editor actions.
     {"road", "[road]", "data/gfx/terrain", 288, 16, 288, {176,138,98}, {176,138,98}, {176,138,98}, false, false, 319, 1},
     {"grass_sand_border", "[sand]", "data/gfx/terrain", 16, 112, 16, {85,130,0}, {106,140,39}, {240,220,140}, false, true, -1, 0},
     {"sand_water_border", "[sand]", "data/gfx/terrain", 144, 112, 144, {85,105,60}, {126,109,119}, {240,220,140}, false, true, -1, 0},

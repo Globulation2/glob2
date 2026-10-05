@@ -5547,15 +5547,15 @@ Giới hạn việc vẽ trong toàn bộ ứng dụng. Giá trị thấp hơn l
 [ice]
 Băng
 [road]
-Đường
+Đường mòn
 [experiment ice-terrain]
 Địa hình băng
 [experiment ice-terrain help]
 Thêm băng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với một nửa tốc độ và mất một điểm sức khỏe sau mỗi 32 bước mô phỏng trên băng. Không thể đặt công trình hoặc tài nguyên trên băng.
 [experiment road-terrain]
-Địa hình đường
+Địa hình đường mòn
 [experiment road-terrain help]
-Thêm đường lát đá vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường cho phép đặt công trình nhưng không cho phép tài nguyên.
+Thêm đường mòn phong hóa vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường mòn cho phép xây dựng công trình nhưng không có tài nguyên. Đơn vị bay không bị ảnh hưởng.
 [experiment markets-v2]
 Chợ V2
 [experiment markets-v2 help]

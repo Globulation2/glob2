@@ -5547,15 +5547,15 @@ Batasi penggambaran di seluruh aplikasi. Nilai yang lebih rendah mengurangi peke
 [ice]
 Es
 [road]
-Jalan
+Jalur setapak
 [experiment ice-terrain]
 Medan es
 [experiment ice-terrain help]
 Menambahkan es ke editor peta. Unit darat bergerak dengan setengah kecepatan dan kehilangan satu poin kesehatan setiap 32 langkah simulasi di atas es. Es tidak dapat memuat bangunan atau sumber daya.
 [experiment road-terrain]
-Medan jalan
+Medan jalur setapak
 [experiment road-terrain help]
-Menambahkan jalan berbatu ke editor peta. Unit darat bergerak dengan dua kali kecepatan. Jalan dapat memuat bangunan, tetapi bukan sumber daya.
+Menambahkan jalur setapak yang aus ke editor peta. Unit darat bergerak dengan kecepatan dua kali lipat. Jalur setapak mendukung bangunan, tetapi tidak sumber daya. Unit terbang tidak terpengaruh.
 [experiment markets-v2]
 Pasar V2
 [experiment markets-v2 help]

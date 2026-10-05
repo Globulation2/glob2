@@ -12,7 +12,7 @@ enum TerrainType : std::uint16_t
 	SAND=1,
 	GRASS=2,
 	ICE=3,
-	ROAD=4,
+	TRAIL=4,
 	// Compatibility profiles for old corner-based shores, not paintable types.
 	GRASS_SAND_SHORE=5,
 	SAND_WATER_SHORE=6,
