@@ -1,0 +1,15 @@
+$ git rev-parse HEAD origin/master
+ec9f3aa7028c5e0eed373c98539662906ea044e3
+dd0eb26b753e2ce3fbba8eb71927655950226af7
+
+$ uname -a
+Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+
+$ python3 --version
+Python 3.14.4
+
+$ /home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python -c from PIL import Image,features; import sys; print(sys.version); print("Pillow",Image.__version__,"WebP",features.version("webp"))
+3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+Pillow 12.2.0 WebP 1.6.0
+
+Compilation: repository scons/web_build.py::_build_variant, pinned Emscripten 4.0.15; target=web release=1 web_profile=1; serial and threaded SoundMixer.cpp objects only. Cached SDL3/Opus built by that pipeline. Complete flags appear in music-boundary-build.log.

@@ -1,0 +1,17 @@
+test_no_delay_macro_redefines_sdl_behavior (test_platform_boundary.PlatformBoundaryTests.test_no_delay_macro_redefines_sdl_behavior) ... ok
+test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls) ... FAIL
+test_shared_code_uses_target_owned_configuration (test_platform_boundary.PlatformBoundaryTests.test_shared_code_uses_target_owned_configuration) ... ok
+
+======================================================================
+FAIL: test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-browser-png16/glob2/test/build_system/test_platform_boundary.py", line 14, in test_shared_code_does_not_embed_browser_api_calls
+    self.assertIsNone(forbidden.search(path.read_text()), str(path.relative_to(root)))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <re.Match object; span=(647, 667), match='#include <emscripten'> is not None : src/audio/SoundMixer.cpp
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.119s
+
+FAILED (failures=1)
