@@ -60,7 +60,7 @@ std::string marketTrace(bool enabled, bool report=false)
 		glob2test::HeadlessGame world({.wDec=6, .hDec=6, .teams=2, .discovered=true,
 			.clearImmobile=true, .loadDefaultRace=true, .header=true, .seed=271});
 		auto &g = world.game;
-#if VERSION_MINOR >= 134
+#if VERSION_MINOR >= 135
 		g.gameHeader.getExperiments().set(ExperimentId::MarketsV2, enabled);
 #else
 		(void)enabled;
@@ -113,7 +113,7 @@ std::string marketTrace(bool enabled, bool report=false)
 		}
 		if (!enabled) CHECK(exchangeTicks > 0);
 		CHECK(market->resources[CHERRY] < 100);
-#if VERSION_MINOR >= 134
+#if VERSION_MINOR >= 135
 		std::size_t fields=0;
 		for (int t=0;t<Team::MAX_COUNT;++t) for (int r=0;r<MAX_NB_RESOURCES;++r) for (int sw=0;sw<SWIM_CLASS_COUNT;++sw)
 			fields += g.map.marketResourcesGradient[t][r][sw]!=nullptr;
@@ -132,14 +132,15 @@ TEST_CASE("disabled fruit deliveries match master per tick [golden][save-format]
 	glob2test::expectGolden("markets-v2/disabled-checksums.txt", marketTrace(false));
 }
 
-#if VERSION_MINOR >= 134
 TEST_CASE("legacy workers already travelling to markets continue after migration [golden][save-format]")
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.header=true});
 	REQUIRE(load(world.game,glob2test::readFile(glob2test::fixture("markets-v2/legacy-133-market.bin")),false));
 	world.team=world.game.teams[0];
+	#if VERSION_MINOR >= 135
 	CHECK_FALSE(world.game.gameHeader.hasExperiment(ExperimentId::MarketsV2));
+	#endif
 	CHECK(world.team->myUnits[0]->ownExchangeBuilding!=nullptr);
 	std::ostringstream trace;
 	for (int tick=750;tick<1000;++tick)
@@ -150,11 +151,9 @@ TEST_CASE("legacy workers already travelling to markets continue after migration
 		for (Uint32 value : simulation(world.game)) hash=(hash^value)*16777619u;
 		trace << "0 " << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
 	}
-	std::istringstream full(glob2test::readFile(glob2test::fixture("markets-v2/disabled-checksums.txt")));
-	std::ostringstream expected; std::string line;
-	for (int tick=0;tick<1000;++tick) { std::getline(full,line); if (tick>=750) expected << line << '\n'; }
-	CHECK(trace.str()==expected.str());
+	glob2test::expectGolden("markets-v2/legacy-133-checksums.txt",trace.str());
 }
+#if VERSION_MINOR >= 135
 TEST_CASE("enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]")
 {
 	const auto trace=marketTrace(true);
@@ -270,6 +269,29 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 		CHECK(world.game.map.resourceAvailable(0,CHERRY,sw,5,5,true)==(sw>0));
 	}
 }
+TEST_CASE("a frequently refreshed market field publishes depletion and restocking")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::GameOptions options{.discovered=true, .clearImmobile=true, .header=true};
+	options.experiments.set(ExperimentId::MarketsV2);
+	glob2test::HeadlessGame world(options);
+	auto &map=world.game.map;
+	world.game.gameHeader.setResourceGrowthDisabled(true);
+	auto *market=world.addBuilding("market",8,8);
+	REQUIRE(market);
+	market->resources[CHERRY]=20;
+	map.configureGradientPipeline(2,3);
+	map.getResourceGradient(0,CHERRY,0,true);
+	for (int tick=0;tick<8;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	CHECK(map.gradientPipelineStatus().published>0);
+	market->resources[CHERRY]=0;
+	map.dirtyMarketGradients(0,CHERRY);
+	for (int tick=8;tick<16;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	CHECK_FALSE(map.resourceAvailable(0,CHERRY,0,5,5,true));
+	market->addResourceIntoBuilding(CHERRY);
+	for (int tick=16;tick<24;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	CHECK(map.resourceAvailable(0,CHERRY,0,5,5,true));
+}
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 {
 	glob2test::HeadlessGlobals globals;
@@ -285,6 +307,7 @@ TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 		market->launchConstruction(1,1);
 		REQUIRE(market->tryToBuildingSiteRoom());
 		CHECK(market->type->isBuildingSite);
+		CHECK_FALSE(market->fetchesFromMarkets());
 		CHECK(market->type->level==1);
 		CHECK(world.team->teamResources[CHERRY]==100);
 		GameGUI resumed;

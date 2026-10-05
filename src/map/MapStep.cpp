@@ -326,7 +326,8 @@ void Map::syncStep(Uint32 stepCounter)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 					if (marketsV2Enabled() && marketResourcesGradient[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
-						gradientRuntime->pipeline.invalidate(&marketResourcesGradient[t][r][s]);
+						// Stock transitions already invalidate stale snapshots. Regular refreshes
+						// must let earlier jobs publish, even when this is the only field.
 						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field, true); });
 						else updateResourcesGradient(t, r, s, true);
 						marketGradientDirty[t][r][s]=false;
@@ -358,7 +359,7 @@ void Map::syncStep(Uint32 stepCounter)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 				{
 					gradientUpdated[t][r][s]=false;
-					marketGradientUpdated[t][r][s]=false;
+					if (marketsV2Enabled()) marketGradientUpdated[t][r][s]=false;
 				}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)

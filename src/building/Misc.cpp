@@ -140,7 +140,8 @@ void Building::kill(int diagnosticRemoval)
 
 bool Building::fetchesFromMarkets() const
 {
-	return owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2) && !type->canExchange;
+	return owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2)
+		&& type->shortTypeNum != IntBuildingType::MARKET_BUILDING;
 }
 
 bool Building::isUpgradeAvailable() const

@@ -1668,7 +1668,7 @@ fields and pending gradient publications. Non-market buildings use these fields;
 markets themselves fetch from natural resources. The market fields participate
 in the existing one-field-per-tick round robin and optional fixed-delay gradient
 pipeline. Stock transitions invalidate pending market snapshots and request a
-refresh. Format 134 saves these fields and their scheduling flags; older saves
+refresh. Format 135 saves these fields and their scheduling flags; older saves
 load without them and allocate them on first use. Run
 `python3 test/run_tests.py --filter 'MarketFetch/*'`.
 
