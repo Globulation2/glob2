@@ -76,10 +76,11 @@ template <class T> void property(const Json &j, const char *key, T &value)
 }
 #define TERRAIN_FIELDS(X)                                                                          \
 	X(walkable)                                                                                    \
-	X(swimmable) X(flyable) X(resourcesGrow) X(fertilitySource) X(nonGrowingResources)             \
-		X(buildable) X(projectileBlocks) X(shoreline) X(groundSpeedQ8) X(airSpeedQ8)               \
-			X(groundHealthQ8) X(airHealthQ8) X(growthQ8) X(fertilityQ8) X(inhibitionQ8)            \
-				X(shoreSupportQ8) X(allowedResources) X(farmCrop)
+	X(swimmable)                                                                                   \
+	X(flyable) X(resourcesGrow) X(fertilitySource) X(nonGrowingResources) X(buildable)             \
+		X(projectileBlocks) X(shoreline) X(groundSpeedQ8) X(airSpeedQ8) X(groundHealthQ8)          \
+			X(airHealthQ8) X(growthQ8) X(fertilityQ8) X(inhibitionQ8) X(shoreSupportQ8)            \
+				X(allowedResources) X(farmCrop)
 TerrainProperties readProperties(const Json &j, TerrainProperties p, bool complete = false)
 {
 #define NAME(f) #f,
@@ -270,10 +271,11 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 		throw std::invalid_argument("Incomplete saved terrain presentation");                      \
 	property(visual, #f, p.f);
 		READ_VISUAL(firstFrame)
-		READ_VISUAL(variants) READ_VISUAL(editorFrame) READ_VISUAL(animatedBackdrop)
-			READ_VISUAL(edgeFirstFrame) READ_VISUAL(layerPriority) READ_VISUAL(animationFrames)
-				READ_VISUAL(animationTicks) READ_VISUAL(backdropFirstFrame)
-					READ_VISUAL(backdropFrames) READ_VISUAL(backdropTicks)
+		READ_VISUAL(variants)
+		READ_VISUAL(editorFrame) READ_VISUAL(animatedBackdrop) READ_VISUAL(edgeFirstFrame)
+			READ_VISUAL(layerPriority) READ_VISUAL(animationFrames) READ_VISUAL(animationTicks)
+				READ_VISUAL(backdropFirstFrame) READ_VISUAL(backdropFrames)
+					READ_VISUAL(backdropTicks)
 #undef READ_VISUAL
 						auto color = [&](const char *key)
 		{
@@ -307,6 +309,24 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 	result->compile();
 	return result;
 }
+
+void TerrainRegistry::Movement::prepare()
+{
+	if (profiles.empty() || profiles.size() > 128)
+		throw std::logic_error("Invalid terrain movement profiles");
+	auto make = [&]<std::size_t N>()
+	{
+		std::array<gradient_kernel::EntrySteps, N> costs;
+		costs.fill(profiles.front());
+		std::copy(profiles.begin(), profiles.end(), costs.begin());
+		prepared = gradient_kernel::PreparedTerrainCosts<N>(costs);
+	};
+	if (profiles.size() <= 8)
+		make.template operator()<8>();
+	else
+		make.template operator()<128>();
+}
+
 void TerrainRegistry::compile()
 {
 	// Field-wise keys exclude struct padding and preserve deterministic IDs.
@@ -380,6 +400,7 @@ void TerrainRegistry::compile()
 			if (p.walkable || (sw && p.swimmable))
 				m.minimum = std::min(m.minimum, cost.cardinal);
 		}
+		m.prepare();
 	}
 	checksum_ = 0;
 	digest_.clear();

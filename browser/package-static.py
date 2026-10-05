@@ -16,6 +16,7 @@ import tempfile
 POLICY = b"browser-static-gzip-v1\0"
 MARKER = "package.json"
 ROOT = Path(__file__).resolve().parents[1]
+MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
 
 
 def package(source, destination):
@@ -46,30 +47,53 @@ def package(source, destination):
                  ('recording-worker.js', 'recording-storage.js', 'recording-video.js', 'recording-runtime.js', 'recording-runtime.wasm') if (source / name).exists()}
     if recording and len(recording) != 5:
         raise ValueError("Incomplete recording runtime")
+    music = {name: (source / name).read_bytes() for name in MUSIC_FILES if (source / name).exists()}
+    needs_music = any(
+        b"music-worker.js" in data for name, data in files.items() if name.endswith("js")
+    )
+    if (music or needs_music) and len(music) != len(MUSIC_FILES):
+        raise ValueError("Incomplete music runtime")
     version = hashlib.sha256(
-        POLICY + b"".join(hive.values()) + b"".join(recording.values()) + b"".join(files.values()) + b"".join(name.encode() for name in packages)
+        POLICY
+        + b"".join(hive.values())
+        + b"".join(recording.values())
+        + b"".join(music.values())
+        + b"".join(files.values())
+        + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
-    recording_names = {name: name.replace("recording-", f"recording-{version}-", 1) for name in recording}
-    def recording_references(text):
-        for old, new in recording_names.items():
+    # Worker entry points, imports, and Wasm URLs must share the release identity.
+    # Rewriting both game runtimes prevents cached code from loading an old backend.
+    worker_assets = {**recording, **music}
+    worker_names = {name: name.replace("-", f"-{version}-", 1) for name in worker_assets}
+
+    def runtime_references(text):
+        for old, new in worker_names.items():
             text = text.replace(old, new)
         return text
-    recording = {recording_names[name]: recording_references(data.decode()).encode() if name.endswith(".js") else data for name, data in recording.items()}
-    script = recording_references(files["js"].decode())
+
+    worker_assets = {
+        worker_names[name]: runtime_references(data.decode()).encode() if name.endswith(".js") else data
+        for name, data in worker_assets.items()
+    }
+    script = runtime_references(files["js"].decode())
     script = script.replace('"index.wasm"', f'"{names["wasm"]}"')
     html = files["html"].decode().replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
     if not threaded and names["js"] not in html:
         raise ValueError("Expected Emscripten script tag")
-    notices = {p.relative_to(source).as_posix(): p.read_bytes() for p in sorted((source / "licenses/recording").glob("*")) if p.is_file()}
+    notices = {
+        p.relative_to(source).as_posix(): p.read_bytes()
+        for family in ("recording", "opus")
+        for p in sorted((source / "licenses" / family).glob("*")) if p.is_file()
+    }
     contents = {
         "index.html": html.encode(),
         names["js"]: script.encode(),
         names["wasm"]: files["wasm"],
         **packages,
         **hive,
-        **recording,
+        **worker_assets,
         **notices,
     }
     if threaded:
@@ -82,7 +106,7 @@ def package(source, destination):
             tag + f'<script src="{loader}"></script>',
         ).encode()
         contents[loader] = files["loader"]
-        thread_script = recording_references(files["threaded/js"].decode())
+        thread_script = runtime_references(files["threaded/js"].decode())
         thread_script = thread_script.replace('"index.wasm"', f'"{names["wasm"]}"')
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
@@ -111,6 +135,7 @@ def package(source, destination):
                     "policy": POLICY.decode().rstrip("\0"),
                     "version": version,
                     "threaded": threaded,
+                    "music": bool(music),
                 }
             )
             + "\n",
@@ -210,7 +235,12 @@ def verify(directory):
                  ("worker.js", "storage.js", "video.js", "runtime.js", "runtime.wasm")]
     if any(name.startswith("recording-") for name in expected):
         names += recording
-    names += [name for name in expected if name.startswith("licenses/recording/") and not name.endswith(".gz")]
+    if marker.get("music") or any(name.startswith("music-") for name in expected):
+        names += [name.replace("music-", f"music-{marker['version']}-", 1) for name in MUSIC_FILES]
+    names += [
+        name for name in expected
+        if name.startswith(("licenses/recording/", "licenses/opus/")) and not name.endswith(".gz")
+    ]
     if marker.get("threaded"):
         names += [f"loader-{marker['version']}.js"] + [
             f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")

@@ -4,6 +4,8 @@
 #include "TerrainProperties.h"
 #include "TerrainPresentation.h"
 #include "field/TerrainMovementCosts.h"
+#include "field/PreparedTerrainCosts.h"
+#include <variant>
 #include <memory>
 #include <optional>
 #include <string>
@@ -22,6 +24,10 @@ class TerrainRegistry
 		std::vector<gradient_kernel::EntrySteps> profiles;
 		std::vector<std::uint8_t> profileIds;
 		std::vector<unsigned> steps;
+		using Prepared = std::variant<gradient_kernel::PreparedTerrainCosts<8>,
+									  gradient_kernel::PreparedTerrainCosts<128>>;
+		std::optional<Prepared> prepared;
+		void prepare();
 		unsigned minimum = GRADIENT_STEP;
 	};
 	static std::shared_ptr<const TerrainRegistry> builtins();

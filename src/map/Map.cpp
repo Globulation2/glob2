@@ -159,6 +159,7 @@ Map::frozenTerrainMovementSnapshot(unsigned swim) const
 			}
 			snapshot->cells[i] = static_cast<Uint8>(profile);
 		}
+		movement.prepare();
 		cached = std::move(snapshot);
 	}
 	return cached;
@@ -330,10 +331,16 @@ void Map::rebuildTerrainCounts()
 			adjustTerrainFeatures(TerrainType(t), true);
 	updateTerrainSummary();
 	++terrainGenerationValue;
-	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-	waterSnapshot.reset();
-	terrainSnapshot.reset();
-	terrainMovementSnapshots = {};
+	{
+		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+		waterSnapshot.reset();
+		terrainSnapshot.reset();
+		terrainMovementSnapshots = {};
+	}
+	{
+		std::lock_guard<std::mutex> lock(growthCacheMutex);
+		growthCache.invalidate();
+	}
 }
 
 void Map::importLegacyTerrain()
@@ -375,7 +382,7 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	}
 	{
 		std::lock_guard<std::mutex> lock(growthCacheMutex);
-		growthCache.invalidate();
+		growthCache.terrainChanged(index, terrainProperties(old), terrainProperties(type));
 	}
 	const auto &before = terrainProperties(old), &after = terrainProperties(type);
 	if (before.walkable != after.walkable || before.swimmable != after.swimmable ||
@@ -502,6 +509,10 @@ void Map::clear()
 	updateTerrainSummary();
 	terrainEditChanged = terrainRoutesChanged = false;
 	++terrainGenerationValue;
+	{
+		std::lock_guard<std::mutex> lock(growthCacheMutex);
+		growthCache.invalidate();
+	}
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();

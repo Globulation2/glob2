@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "MusicTypes.h"
 #include <opusfile.h>
 #include <array>
 #include <cstdint>
@@ -8,9 +9,6 @@
 
 namespace Music
 {
-constexpr int Rate = 48000;
-constexpr unsigned Chunk = 1024;
-constexpr unsigned GameFadeFrames = (16384 * Rate + 22050) / 44100;
 // Shared by gameplay and previews. These never allocate PCM proportional to duration.
 bool seek(OggOpusFile *track, ogg_int64_t frame);
 bool read(OggOpusFile *track, std::int16_t *output, unsigned frames);

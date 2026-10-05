@@ -51,11 +51,17 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
-		assert(gradient[i] <= GRADIENT_UNREACHABLE || gradient[i] == GRADIENT_AT_GOAL);
-		if (gradient[i] == GRADIENT_AT_GOAL)
+		const auto value = seeded[i];
+		// Ordinary cells need one comparison; validate only potential seeds.
+		if (value > GRADIENT_UNREACHABLE)
 		{
-			queues[0].push(static_cast<Uint32>(i));
-			++pending;
+			assert(value == GRADIENT_AT_GOAL);
+			// Preserve release-build handling of an invalid non-goal seed too.
+			if (value == GRADIENT_AT_GOAL)
+			{
+				queues[0].push(static_cast<Uint32>(i));
+				++pending;
+			}
 		}
 	}
 }
@@ -115,7 +121,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			popped += buckets[currentCost % BUCKETS].size;
 			gradient_kernel::expandTerrainBucket(gradient, buckets.data(), pending, currentCost,
 												 COST_LIMIT, {widthMask + 1, heightMask + 1},
-												 gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass],
+												 gradient_kernel::PREPARED_TERRAIN_COSTS[swimClass],
 												 [types](size_t i) { return types[i]; });
 			++currentCost;
 		}

@@ -12,27 +12,22 @@ MusicSetScreen::MusicSetScreen(Music::Metadata value, const std::array<std::stri
 {
 	if (!info.cover.empty())
 		images.insert("cover", std::string(info.cover.begin(), info.cover.end()));
-	if (!preview.open(paths))
-		notice = musicText("Could not open this music set.");
 	if (globalContainer && globalContainer->mix)
-		globalContainer->mix->setPreview(&preview);
+		previewSession = globalContainer->mix->openPreview(paths);
+	if (!previewSession)
+		notice = musicText("Could not open this music set.");
 }
 MusicSetScreen::~MusicSetScreen()
 {
 	if (waveformDecoder)
 		op_free(waveformDecoder);
 	if (globalContainer && globalContainer->mix)
-		globalContainer->mix->setPreview(nullptr);
+		globalContainer->mix->closePreview(previewSession);
 }
-void MusicSetScreen::control(const std::function<void()> &fn)
+void MusicSetScreen::control(Music::Control command, double value)
 {
-	auto *stream =
-		globalContainer && globalContainer->mix ? globalContainer->mix->audioStream : nullptr;
-	if (stream)
-		SDL_LockAudioStream(stream);
-	fn();
-	if (stream)
-		SDL_UnlockAudioStream(stream);
+	if (globalContainer && globalContainer->mix)
+		globalContainer->mix->previewControl(previewSession, command, value);
 	invalidate();
 }
 void MusicSetScreen::onTimer(Uint32)
@@ -76,30 +71,19 @@ void MusicSetScreen::onTimer(Uint32)
 bool MusicSetScreen::interceptEvent(const SDL_Event &event)
 {
 	if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST || event.type == SDL_EVENT_DID_ENTER_BACKGROUND)
-		control([this] { preview.playing = false; });
+		control(Music::Control::Play, 0);
 	return false;
 }
 Element MusicSetScreen::build(const Presentation &p)
 {
-	bool playing = false, automatic = false;
-	double position = 0, duration = 0;
-	std::array<double, 3> weights{};
-	auto *snapshotStream =
-		globalContainer && globalContainer->mix ? globalContainer->mix->audioStream : nullptr;
-	if (snapshotStream)
-		SDL_LockAudioStream(snapshotStream);
-	[&]
-	{
-		playing = preview.playing;
-		automatic = preview.audition;
-		position = preview.position();
-		duration = preview.duration();
-		weights = preview.weights();
-		if (preview.failed())
-			notice = musicText("Music decoding failed.");
-	}();
-	if (snapshotStream)
-		SDL_UnlockAudioStream(snapshotStream);
+	const auto state = globalContainer && globalContainer->mix
+						   ? globalContainer->mix->playbackSnapshot()
+						   : Music::Snapshot{};
+	const bool playing = state.playing, automatic = state.audition;
+	const double position = state.position, duration = state.duration;
+	const auto weights = state.weights;
+	if (state.failed)
+		notice = musicText("Music decoding failed.");
 	std::vector<Element> body{paragraph(info.artist), paragraph(info.description),
 							  caption(info.license + " · " + info.credits, false)};
 	Element art = musicPlaceholder(p.pt(96));
@@ -121,7 +105,7 @@ Element MusicSetScreen::build(const Presentation &p)
 	for (unsigned i = 0; i < 3; ++i)
 		moods.push_back(expanded(column(
 			{button("music.mood." + std::to_string(i), musicText(names[i]),
-					[this, i] { control([&] { preview.setMood(i); }); }),
+					[this, i] { control(Music::Control::Mood, i); }),
 			 label(std::to_string(int(weights[i] * 100)) + "%", {.align = TextAlign::Center})},
 			{p.pt(3)})));
 
@@ -153,36 +137,36 @@ Element MusicSetScreen::build(const Presentation &p)
 		}));
 	body.push_back(slider(
 		"music.position", int(position * 10), 0, std::max(1, int(duration * 10)),
-		[this](int v) { control([&] { preview.seekTo(v / 10.0); }); },
+		[this](int v) { control(Music::Control::Seek, v / 10.0); },
 		{.valueText = std::to_string(int(position)) + " / " + std::to_string(int(duration)) + " s",
 		 .caption = musicText("Playback position")}));
 	body.push_back(button("music.play", musicText(playing ? "Pause" : "Play"),
-						  [this] { control([&] { preview.playing = !preview.playing; }); }));
+						  [this, playing] { control(Music::Control::Play, !playing); }));
 	body.push_back(heading(musicText("Test crossfades")));
 	body.push_back(slider(
 		"music.fade", fadeMs, 0, 10000,
 		[this](int v)
 		{
 			fadeMs = v;
-			control([&] { preview.setFade(v / 1000.0); });
+			control(Music::Control::Fade, v / 1000.0);
 		},
 		{.valueText = std::to_string(fadeMs) + " ms", .caption = musicText("Fade duration")}));
 	body.push_back(slider("music.blend", blend, 0, 200,
 						  [this](int v)
 						  {
 							  blend = v;
-							  control([&] { preview.setBlend(v / 100.0); });
+							  control(Music::Control::Blend, v / 100.0);
 						  },
 						  {.caption = musicText("Calm → Building → Combat")}));
 	body.push_back(toggle("music.auto", musicText("Audition each mood for eight seconds"),
 						  automatic,
-						  [this](bool value) { control([&] { preview.audition = value; }); }));
+						  [this](bool value) { control(Music::Control::Audition, value); }));
 	body.push_back(button("music.reset", musicText("Reset to game behavior"),
 						  [this]
 						  {
 							  fadeMs = 371;
 							  blend = 0;
-							  control([&] { preview.reset(); });
+							  control(Music::Control::Reset);
 						  }));
 	OnlinePanel panel;
 	panel.title = info.title;
