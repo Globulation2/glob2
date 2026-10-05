@@ -2,7 +2,13 @@
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
-import type { MusicMetadata, MusicRelease, MusicTrack, MusicConvert } from '@glob2/protocol';
+import type {
+  MusicMetadata,
+  MusicRelease,
+  MusicTrack,
+  MusicConvert,
+  AiValidationReport,
+} from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
 type Defaulted<T> = ColumnType<T, T | undefined, T>;
@@ -920,7 +926,7 @@ export interface AiValidationsTable {
   suite: number;
   job_id: Nullable<string>;
   status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>;
-  report: Json<import('@glob2/protocol').AiValidationReport>;
+  report: Json<AiValidationReport>;
   error: Nullable<string>;
   created_at: Timestamp;
 }
