@@ -153,7 +153,7 @@ class SettingsScreen : public Glob2UI::Screen
 	bool customAIBusy() const;
 	Glob2UI::Element buildCustomAILibrary(const Glob2UI::Presentation &p);
 	void openCustomAILibrary();
- void closeCustomAILibrary();
+	void closeCustomAILibrary();
 	void fetchCustomAIs(bool more = false);
 	void selectOnlineAI(const std::string &id);
 	void installOnlineAI();

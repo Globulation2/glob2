@@ -319,8 +319,9 @@ void SettingsScreen::dismiss()
 	}
 	else if (modal == Modal::AILibrary)
 	{
-		if (customAIBusy()) return;
-        closeCustomAILibrary();
+		if (customAIBusy())
+			return;
+		closeCustomAILibrary();
 		modal = Modal::None;
 		host().focus("ai.browse", false);
 		invalidate();

@@ -159,6 +159,10 @@
   border: 1px dashed var(--accent);
   border-radius: 16px;
 }
+.ai-drop input[type='file'] {
+  min-width: 0;
+  max-width: 100%;
+}
 .ai-spin {
   animation: ai-turn 1.4s linear infinite;
 }

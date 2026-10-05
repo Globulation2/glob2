@@ -226,6 +226,14 @@ test('AI discovery, version details, social actions and gated publishing', async
   });
   await expect(page.getByText('Ready to publish')).toBeVisible();
   await expect(publish).toBeEnabled();
+  const pickerFits = await page.getByLabel('Bundled JavaScript file').evaluate((input) => {
+    const field = input.closest('label');
+    if (!field) return false;
+    const bounds = input.getBoundingClientRect();
+    const container = field.getBoundingClientRect();
+    return bounds.left >= container.left && bounds.right <= container.right;
+  });
+  expect(pickerFits).toBe(true);
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,
