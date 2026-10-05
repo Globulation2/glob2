@@ -11,6 +11,11 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
     }
   },
   "additionalProperties": false

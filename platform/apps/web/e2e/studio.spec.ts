@@ -57,6 +57,26 @@ test('design conversation, private versions and explicit generation fit desktop 
       await route.fulfill({ json: { id: 'next' } });
       return;
     }
+    if (path.endsWith('/events')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'text/event-stream',
+        body: ': connected\n\n',
+      });
+      return;
+    }
+    if (path.endsWith('/progress')) {
+      await route.fulfill({
+        json: {
+          requestId: path.split('/').at(-2),
+          stages: [],
+          artifacts: [],
+          checks: [],
+          historical: true,
+        },
+      });
+      return;
+    }
     if (path.endsWith('/account'))
       await route.fulfill({
         json: { enabled: true, available: 3, reserved: 0, packs: [], usage: [] },
@@ -69,20 +89,17 @@ test('design conversation, private versions and explicit generation fit desktop 
       });
   });
   await page.goto(`/map-studio/${id}`);
-  if ((page.viewportSize()?.width ?? 1280) < 900)
-    await page.getByRole('button', { name: 'Open navigation' }).click();
+  await page.getByRole('button', { name: 'Open navigation' }).click();
   await expect(
     page
       .getByRole('navigation', { name: 'Main', exact: true })
       .getByRole('link', { name: 'AI Map Studio' }),
   ).toHaveAttribute('aria-current', 'page');
-  if ((page.viewportSize()?.width ?? 1280) < 900) await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', { name: 'Generate — 1 credit' })).toBeVisible();
-  const versionsTab = page.getByRole('button', { name: 'Versions (2)' });
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: /Generate map/ })).toBeVisible();
+  const versionsTab = page.getByRole('button', { name: 'Map', exact: true });
   if (await versionsTab.isVisible()) await versionsTab.click();
-  await expect(page.getByRole('button', { name: 'Publish this version' })).toHaveCount(2);
-  await page.getByLabel('Compare', { exact: true }).first().check();
-  await page.getByLabel('Compare', { exact: true }).last().check();
+  await page.getByLabel('Compare with version').selectOption(versions[0]?.id ?? '');
   await expect(page.getByRole('region', { name: 'Map comparison' })).toBeVisible();
   const violations = (await new AxeBuilder({ page }).analyze()).violations.map((v) => ({
     id: v.id,
@@ -112,12 +129,12 @@ test('design conversation, private versions and explicit generation fit desktop 
       fullPage: true,
     });
   }
-  const conversationTab = page.getByRole('button', { name: 'Conversation', exact: true });
+  const conversationTab = page.getByRole('button', { name: 'Chat', exact: true });
   if (await conversationTab.isVisible()) await conversationTab.click();
   await page
     .getByRole('textbox', { name: 'Describe your map or discuss changes' })
     .fill('Add a second walking bridge.');
-  await expect(page.getByRole('button', { name: 'Generate — 1 credit' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: /Generate map/ })).toBeDisabled();
   await page.getByRole('button', { name: 'Send message' }).click();
   await expect.poll(() => writes.length).toBe(1);
   expect(writes[0]).toMatchObject({ text: 'Add a second walking bridge.' });

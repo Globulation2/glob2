@@ -1,603 +1,372 @@
-import { useEffect, useState } from 'react';
-import type { StudioThread, StudioSettings, StudioRequest } from '@glob2/protocol';
-import { api, ApiError, request } from '../api.ts';
+import { useCallback, useEffect, useState } from 'react';
+import { ApiError, api, request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useSession } from '../state.tsx';
-interface Wallet {
-  enabled: boolean;
-  available: number;
-  reserved: number;
-  packs: { id: string; credits: number; amount: number; currency: string }[];
-  usage: { id: string; kind: string; amount: string; created_at: string }[];
-}
-const ROOT = '/api/v1/map-studio';
+import { MapStudioLanding } from './MapStudioLanding.tsx';
+import { StudioWorkspace } from './studio/StudioWorkspace.tsx';
+import { useStudioStream } from './studio/useStudioStream.ts';
+import { useStudioDraft, type Pending } from './studio/useStudioDraft.ts';
+import { CreditControls } from './studio/CreditControls.tsx';
+import { ROOT, mergeThread, type Delivered, type Thread, type Wallet } from './studio/types.ts';
+import '../styles/studio.css';
+
 export function MapStudio({ id }: { id?: string }) {
   const { account } = useSession();
-  if (account === undefined) return <p>Loading your account…</p>;
+  if (account === undefined)
+    return (
+      <div className="ms-gate" role="status">
+        Opening your studio…
+      </div>
+    );
   if (account?.kind !== 'registered')
     return (
-      <section>
-        <h1>AI Map Studio</h1>
-        <p>Sign in with a registered account to buy map credits and design maps.</p>
+      <div className="ms-gate">
+        <span className="ms-eyebrow">AI MAP STUDIO</span>
+        <h1>Your next world starts with an idea.</h1>
+        <p>Sign in with a registered account to design, refine, and play your own maps.</p>
         <a className="btn primary" href="/signin">
-          Sign in
+          Sign in to create
         </a>
-      </section>
+      </div>
     );
-  return <RegisteredStudio key={`${account.id}:${id ?? ''}`} id={id} />;
+  return <RegisteredStudio key={`${account.id}:${id ?? 'new'}`} id={id} accountId={account.id} />;
 }
-type Delivered = StudioRequest & {
-  map_id: string;
-  map_hash: string;
-  input: StudioRequest['input'] & { settings: StudioSettings };
-};
-function RegisteredStudio({ id }: { id?: string }) {
-  const { account } = useSession(),
-    { navigate } = useRouter();
-  const [wallet, setWallet] = useState<Wallet>(),
-    [threads, setThreads] = useState<{ id: string; title: string }[]>([]),
-    [thread, setThread] = useState<StudioThread>();
-  const [title, setTitle] = useState(''),
-    [draft, setDraft] = useState(() =>
-      account && id ? (sessionStorage.getItem(`studio-draft:${account.id}:${id}`) ?? '') : '',
-    ),
-    [error, setError] = useState(''),
-    [connectionError, setConnectionError] = useState(''),
-    [busy, setBusy] = useState(false);
-  const [settings, setSettings] = useState<StudioSettings>({ width: 256, height: 256, players: 4 }),
-    [parent, setParent] = useState<string>(),
-    [comparison, setComparison] = useState<string[]>([]),
-    [view, setView] = useState<'conversation' | 'versions'>('conversation');
-  const [retry, setRetry] = useState<{ path: string; body: unknown }>();
-  const draftKey = account && id ? `studio-draft:${account.id}:${id}` : undefined;
+function RegisteredStudio({ id, accountId }: { id?: string; accountId: string }) {
+  const { navigate } = useRouter();
+  const [wallet, setWallet] = useState<Wallet>();
+  const [threads, setThreads] = useState<{ id: string; title: string }[]>([]);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [credits, setCredits] = useState(false);
+  const [hidden, setHidden] = useState(document.hidden);
   useEffect(() => {
-    if (draftKey) sessionStorage.setItem(draftKey, draft);
-  }, [draft, draftKey]);
+    const change = () => setHidden(document.hidden);
+    document.addEventListener('visibilitychange', change);
+    return () => document.removeEventListener('visibilitychange', change);
+  }, []);
+  const {
+    draft,
+    setDraft,
+    pending,
+    setPending,
+    settings,
+    setSettings,
+    parent,
+    setParent,
+    draftKey: key,
+  } = useStudioDraft(accountId, id);
+  const payment = new URLSearchParams(window.location.search).get('payment');
+  const checkoutBalance = Number(
+    sessionStorage.getItem(`studio-checkout-balance:${accountId}`) ?? 0,
+  );
+  const refreshWallet = useCallback(() => {
+    void request<Wallet>('GET', `${ROOT}/account`)
+      .then(setWallet)
+      .catch((e) => setError(errorMessage(e)));
+  }, []);
+  const { thread, setThread, connection, revision, celebrate } = useStudioStream(id, refreshWallet);
   useEffect(() => {
-    if (account?.kind !== 'registered') return;
     const abort = new AbortController();
-    const refresh = () => {
-      void Promise.all([
-        request<Wallet>('GET', ROOT + '/account', { signal: abort.signal }),
-        request<{ items: { id: string; title: string }[] }>('GET', ROOT + '/threads', {
-          signal: abort.signal,
-        }),
-      ])
-        .then(([w, t]) => {
-          setWallet(w);
-          setThreads(t.items);
-        })
-        .catch((e: unknown) => {
-          if (!abort.signal.aborted) setError(message(e));
-        });
-    };
-    refresh();
-    const timer = setInterval(refresh, 5000);
+    void Promise.all([
+      request<Wallet>('GET', `${ROOT}/account`, { signal: abort.signal }),
+      request<{ items: { id: string; title: string }[] }>('GET', `${ROOT}/threads`, {
+        signal: abort.signal,
+      }),
+    ])
+      .then(([w, t]) => {
+        setWallet(w);
+        setThreads(t.items);
+      })
+      .catch((e) => {
+        if (!abort.signal.aborted) setError(errorMessage(e));
+      });
+    const focus = () => refreshWallet();
+    window.addEventListener('focus', focus);
+    const timer = setInterval(refreshWallet, 15000);
     return () => {
       abort.abort();
       clearInterval(timer);
+      window.removeEventListener('focus', focus);
     };
-  }, [account]);
+  }, [refreshWallet]);
   useEffect(() => {
-    if (!id || account?.kind !== 'registered') return;
-    const abort = new AbortController();
-    async function update() {
-      let first = true;
-      while (!abort.signal.aborted) {
-        try {
-          const value = await request<StudioThread>(
-            'GET',
-            `${ROOT}/threads/${id}${first ? '' : '/updates'}`,
-            { signal: abort.signal },
-          );
-          if (abort.signal.aborted) return;
-          setThread((current) => mergeThread(current, value));
-          setConnectionError('');
-          first = false;
-        } catch {
-          if (abort.signal.aborted) return;
-          setConnectionError('Connection interrupted. Reconnecting to your saved thread…');
-          first = true;
-          await new Promise<void>((resolve) => {
-            const done = () => {
-              clearTimeout(timer);
-              abort.signal.removeEventListener('abort', done);
-              resolve();
-            };
-            const timer = setTimeout(done, 5000);
-            abort.signal.addEventListener('abort', done, { once: true });
-          });
-        }
-      }
-    }
-    void update();
-    return () => abort.abort();
-  }, [id, account]);
-  const active = thread?.requests.find((r) => !['ready', 'failed'].includes(r.status));
-  const versions =
-    thread?.requests.filter(
-      (r): r is Delivered =>
-        r.kind === 'generate' &&
-        r.status === 'ready' &&
-        !!r.map_id &&
-        !!r.map_hash &&
-        !!r.input.settings,
-    ) ?? [];
-  const selected = versions.find((v) => v.id === parent);
+    if (id) return;
+    const returnProject = sessionStorage.getItem(`studio-checkout:${accountId}`);
+    if (new URLSearchParams(window.location.search).has('payment') && returnProject) {
+      sessionStorage.removeItem(`studio-checkout:${accountId}`);
+      navigate(
+        `/map-studio/${returnProject}?payment=${payment === 'cancelled' ? 'cancelled' : 'returned'}`,
+        { replace: true },
+      );
+    } else if (wallet?.activeRequest)
+      navigate(`/map-studio/${wallet.activeRequest.threadId}`, { replace: true });
+  }, [id, wallet?.activeRequest, accountId, navigate, payment]);
   async function action(work: () => Promise<void>) {
     setBusy(true);
     setError('');
     try {
       await work();
     } catch (e) {
-      setError(message(e));
+      setError(errorMessage(e));
     } finally {
       setBusy(false);
     }
   }
-  async function send(path: string, body: unknown) {
-    setRetry({ path, body });
-    await request('POST', path, { body });
-    setRetry(undefined);
+  async function submitPending(value: Pending) {
+    setPending(value);
+    try {
+      await request('POST', value.path, { body: value.body });
+    } catch (error) {
+      // Only a definitive rejection releases the retry identity. Lost responses
+      // and server failures may have committed and must reuse the same request.
+      if (isRejectedSubmission(error)) setPending(undefined);
+      throw error;
+    }
+    setPending(undefined);
+    if (value.body.text)
+      setDraft((current) => (current.trim() === value.body.text?.trim() ? '' : current));
+    refreshWallet();
     if (id) {
-      const value = await request<StudioThread>('GET', `${ROOT}/threads/${id}`);
+      const value = await request<Thread>('GET', `${ROOT}/threads/${id}`);
       setThread((current) => mergeThread(current, value));
     }
   }
-  function revise(v: Delivered) {
-    setParent(v.id);
-    setSettings(v.input.settings);
+  function sendMessage() {
+    void action(async () => {
+      if (id) {
+        await submitPending({
+          path: `${ROOT}/threads/${id}/messages`,
+          body: { id: crypto.randomUUID(), text: draft.trim() },
+        });
+        return;
+      }
+      // Persist both identities before the first network call, including unknown outcomes.
+      const createdKey = `studio-created:${accountId}`;
+      type Creation = {
+        id: string;
+        title: string;
+        messageId: string;
+        text: string;
+        settings: typeof settings;
+      };
+      const stored = sessionStorage.getItem(createdKey);
+      const creation: Creation = stored
+        ? (JSON.parse(stored) as Creation)
+        : {
+            id: crypto.randomUUID(),
+            title: draft.trim().slice(0, 128),
+            messageId: crypto.randomUUID(),
+            text: draft.trim(),
+            settings,
+          };
+      sessionStorage.setItem(createdKey, JSON.stringify(creation));
+      try {
+        await request<{ id: string }>('POST', `${ROOT}/threads`, {
+          body: { id: creation.id, title: creation.title },
+        });
+      } catch (error) {
+        if (isRejectedSubmission(error)) sessionStorage.removeItem(createdKey);
+        throw error;
+      }
+      const created = creation.id;
+      const pending: Pending = {
+        path: `${ROOT}/threads/${created}/messages`,
+        body: { id: creation.messageId, text: creation.text },
+      };
+      sessionStorage.setItem(`studio-draft:${accountId}:${created}`, creation.text);
+      sessionStorage.setItem(`studio-pending:${accountId}:${created}`, JSON.stringify(pending));
+      sessionStorage.setItem(`studio-autosend:${accountId}:${created}`, '1');
+      sessionStorage.setItem(
+        `studio-settings:${accountId}:${created}`,
+        JSON.stringify({ settings: creation.settings }),
+      );
+      if (sessionStorage.getItem(key)?.trim() === creation.text) sessionStorage.removeItem(key);
+      sessionStorage.removeItem(createdKey);
+      navigate(`/map-studio/${created}`);
+    });
   }
-  function changeSettings(next: StudioSettings) {
-    setSettings(next);
-    setParent(undefined);
+  // Only the prompt-first navigation marks a request for automatic submission. Reloaded failures remain explicit retries.
+  useEffect(() => {
+    if (!id || !pending || !sessionStorage.getItem(`studio-autosend:${accountId}:${id}`)) return;
+    sessionStorage.removeItem(`studio-autosend:${accountId}:${id}`);
+    queueMicrotask(() => {
+      void action(() => submitPending(pending));
+    });
+    // Submission belongs to this mounted project, not subsequent state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  function generate() {
+    if (id)
+      void action(() =>
+        submitPending({
+          path: `${ROOT}/threads/${id}/generate`,
+          body: { id: crypto.randomUUID(), settings, ...(parent ? { parent } : {}) },
+        }),
+      );
   }
-  function preview(v: StudioRequest) {
-    return `/api/v1/maps/${v.map_id}/versions/${v.map_hash}/preview.png`;
+  function buy(pack: string) {
+    void action(async () => {
+      if (id) sessionStorage.setItem(`studio-checkout:${accountId}`, id);
+      else sessionStorage.removeItem(`studio-checkout:${accountId}`);
+      sessionStorage.setItem(
+        `studio-checkout-balance:${accountId}`,
+        String(wallet?.available ?? 0),
+      );
+      const result = await request<{ url: string }>('POST', `${ROOT}/checkout`, { body: { pack } });
+      const url = new URL(result.url);
+      if (url.protocol !== 'https:' || url.hostname !== 'checkout.stripe.com')
+        throw new Error('Invalid checkout destination.');
+      window.location.assign(url.href);
+    });
   }
-  async function publish(v: Delivered) {
-    await api.updateMap(v.map_id, { visibility: 'public' });
-    navigate(`/maps/${v.map_id}`);
+  async function loadEarlier() {
+    if (!thread || !id) return;
+    const query = new URLSearchParams();
+    if (thread.history?.messagesBefore) query.set('messagesBefore', thread.history.messagesBefore);
+    if (thread.history?.requestsBefore) query.set('requestsBefore', thread.history.requestsBefore);
+    const older = await request<Thread>('GET', `${ROOT}/threads/${id}?${query}`);
+    setThread((current) => ({ ...mergeThread(current, older), history: older.history }));
   }
-  async function host(v: Delivered) {
-    const result = await request<{ code: string }>(
-      'POST',
-      `${ROOT}/threads/${id}/versions/${v.id}/room`,
-      { body: {} },
-    );
-    window.location.assign(`/play/?join=${encodeURIComponent(result.code)}`);
-  }
-  if (account === undefined) return <p>Loading your account…</p>;
-  if (account?.kind !== 'registered')
-    return (
-      <section>
-        <h1>AI Map Studio</h1>
-        <p>Sign in with a registered account to buy map credits and design maps.</p>
-        <a className="btn primary" href="/signin">
-          Sign in
-        </a>
-      </section>
-    );
+  const onVersionAction = (kind: 'host' | 'publish', v: Delivered) =>
+    void action(async () => {
+      if (kind === 'publish') {
+        await api.updateMap(v.map_id, { visibility: 'public' });
+        navigate(`/maps/${v.map_id}`);
+      } else {
+        const result = await request<{ code: string }>(
+          'POST',
+          `${ROOT}/threads/${id}/versions/${v.id}/room`,
+          { body: {} },
+        );
+        window.location.assign(`/play/?join=${encodeURIComponent(result.code)}`);
+      }
+    });
+  const landing = !id && wallet && !wallet.available && !wallet.activeRequest;
   return (
-    <section className="map-studio">
-      <header className="page-head">
-        <div className="grow">
-          <h1>AI Map Studio</h1>
-          <p>Describe a landscape. Refine it together. Play your creation.</p>
+    <div
+      className={`map-studio ms-root ${landing ? 'ms-landing-root' : 'ms-workspace-root'}`}
+      data-hidden={hidden}
+    >
+      <header className="ms-header">
+        <div className="ms-brand">
+          <span className="ms-emblem" aria-hidden="true">
+            ✧
+          </span>
+          <div>
+            <span className="ms-eyebrow">GLOBULATION 2</span>
+            <h1>AI Map Studio</h1>
+          </div>
         </div>
+        <details className="ms-projects">
+          <summary>
+            {thread?.title ?? 'Your projects'} <span aria-hidden="true">⌄</span>
+          </summary>
+          <nav aria-label="Map projects">
+            <Link to="/map-studio">＋ New map</Link>
+            {threads.map((t) => (
+              <Link
+                key={t.id}
+                to={`/map-studio/${t.id}`}
+                aria-current={id === t.id ? 'page' : undefined}
+              >
+                {t.title}
+              </Link>
+            ))}
+            {!threads.length && <p>Your projects will be saved here.</p>}
+          </nav>
+        </details>
+        <button
+          className="ms-credit-button"
+          onClick={() => setCredits(!credits)}
+          aria-expanded={credits}
+        >
+          <span aria-hidden="true">✦</span> {wallet?.available ?? '…'} <span>credits</span>
+        </button>
       </header>
-      {connectionError && <p role="status">{connectionError}</p>}
-      {error && (
-        <div role="alert" className="notice">
-          {error}
-          {retry && (
-            <button
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const pending = retry;
-                  if (!pending) return;
-                  await send(pending.path, pending.body);
-                })
-              }
-            >
-              Retry the same request
-            </button>
-          )}
+      {payment === 'returned' && (
+        <div className="ms-banner" role="status">
+          {wallet && wallet.available > checkoutBalance
+            ? 'Your credits are ready. Let’s create.'
+            : 'Confirming your payment. Your credits appear once payment is confirmed.'}
         </div>
       )}
-      {wallet && (
-        <details className="studio-wallet">
-          <summary>
-            <strong>{wallet.available} map credits available</strong>
-            <span>{wallet.reserved} reserved</span>
-            <span>Manage credits</span>
-          </summary>
-          <p>
-            Discussion is included. Each delivered map or revision costs 1 credit. Failed
-            generations return the credit.
-          </p>
-          {!wallet.enabled && <p>AI Map Studio is not enabled on this instance.</p>}
-          {wallet.packs.map((pack) => (
-            <button
-              key={pack.id}
-              disabled={busy}
-              onClick={() =>
-                void action(async () => {
-                  const result = await request<{ url: string }>('POST', ROOT + '/checkout', {
-                    body: { pack: pack.id },
-                  });
-                  const url = new URL(result.url);
-                  if (url.protocol !== 'https:' || url.hostname !== 'checkout.stripe.com')
-                    throw new Error('Invalid checkout destination.');
-                  window.location.assign(url.href);
-                })
-              }
-            >
-              Buy {pack.credits} credits ·{' '}
-              {new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency: pack.currency,
-              }).format(pack.amount / 100)}
-            </button>
-          ))}
-          {!wallet.packs.length && <p>Credit purchases are currently unavailable.</p>}
-          <details>
-            <summary>Credit activity</summary>
-            <ul>
-              {wallet.usage.map((entry) => (
-                <li key={entry.id}>
-                  {new Date(entry.created_at).toLocaleString()} · {entry.kind} · {entry.amount}{' '}
-                  credits
-                </li>
-              ))}
-            </ul>
-          </details>
-        </details>
+      {payment === 'cancelled' && (
+        <div className="ms-banner" role="status">
+          Checkout was cancelled. Your project and draft are saved.
+        </div>
+      )}
+      {connection && (
+        <div className="ms-banner" role="status">
+          {connection}
+        </div>
+      )}
+      {error && (
+        <div className="ms-banner ms-error" role="alert">
+          {error}
+        </div>
+      )}
+      {pending && (
+        <div className="ms-banner">
+          A saved request is ready to send again safely.{' '}
+          <button disabled={busy} onClick={() => void action(() => submitPending(pending))}>
+            Retry the same request
+          </button>
+        </div>
+      )}
+      {credits && (
+        <CreditControls wallet={wallet} busy={busy} buy={buy} close={() => setCredits(false)} />
       )}
       {wallet && !wallet.enabled && (
-        <p className="notice">AI Map Studio is not enabled on this instance.</p>
-      )}
-      {wallet?.enabled && wallet.available === 0 && (
-        <p className="notice">
-          No map credits available. Open Manage credits to view purchase options. Discussion is
-          included; generating a map requires a credit.
-        </p>
-      )}
-      <details className="studio-threads" open={!id}>
-        <summary>
-          {thread?.title ?? 'Your map threads'} <span>Switch thread or create a map</span>
-        </summary>
-        <aside aria-label="Map threads">
-          <h2>Your map threads</h2>
-          <ul>
-            {threads.map((t) => (
-              <li key={t.id}>
-                <Link to={`/map-studio/${t.id}`} aria-current={t.id === id ? 'page' : undefined}>
-                  {t.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void action(async () => {
-                const t = await request<{ id: string }>('POST', ROOT + '/threads', {
-                  body: { title: title.trim() || 'New map' },
-                });
-                setTitle('');
-                navigate(`/map-studio/${t.id}`);
-              });
-            }}
-          >
-            <label className="field">
-              New thread title
-              <input value={title} maxLength={128} onChange={(e) => setTitle(e.target.value)} />
-            </label>
-            <button disabled={busy || !wallet?.enabled}>New map thread</button>
-          </form>
-        </aside>
-      </details>
-      <div className="studio-layout">
-        <div>
-          {!id ? (
-            <div className="studio-empty">
-              <h2>Design your next battlefield</h2>
-              <p>
-                Create a map thread above, describe your landscape, and refine it with the map
-                designer. Delivered maps stay private until you publish them.
-              </p>
-            </div>
-          ) : !thread ? (
-            <p>Loading your map thread…</p>
-          ) : (
-            <>
-              <div className="studio-mobile-switch" role="group" aria-label="Studio view">
-                <button
-                  aria-pressed={view === 'conversation'}
-                  onClick={() => setView('conversation')}
-                >
-                  Conversation
-                </button>
-                <button aria-pressed={view === 'versions'} onClick={() => setView('versions')}>
-                  Versions ({versions.length})
-                </button>
-              </div>
-              {active && (
-                <p role="status" className="studio-progress">
-                  {active.status === 'uncertain'
-                    ? 'Provider outcome needs reconciliation. Your credit remains reserved.'
-                    : (active.error ??
-                      (active.kind === 'chat'
-                        ? 'The map designer is replying…'
-                        : `Generating your map: ${active.status}…`))}
-                </p>
-              )}
-              <div className="studio-workspace" data-view={view}>
-                <section className="studio-conversation" aria-label="Conversation">
-                  <h2>{thread.title}</h2>
-                  {(thread.history?.messagesBefore || thread.history?.requestsBefore) && (
-                    <button
-                      disabled={busy}
-                      onClick={() =>
-                        void action(async () => {
-                          const query = new URLSearchParams();
-                          if (thread.history?.messagesBefore)
-                            query.set('messagesBefore', thread.history.messagesBefore);
-                          if (thread.history?.requestsBefore)
-                            query.set('requestsBefore', thread.history.requestsBefore);
-                          const older = await request<StudioThread>(
-                            'GET',
-                            `${ROOT}/threads/${id}?${query}`,
-                          );
-                          setThread((current) => ({
-                            ...mergeThread(current, older),
-                            history: older.history,
-                          }));
-                        })
-                      }
-                    >
-                      Load earlier conversation and versions
-                    </button>
-                  )}
-                  <div
-                    className="studio-chat"
-                    role="log"
-                    aria-label="Map design conversation"
-                    aria-live="polite"
-                  >
-                    {thread.messages.map((m) => (
-                      <article key={m.id} className={`studio-message ${m.role}`}>
-                        <strong>{m.role === 'user' ? 'You' : 'Map designer'}</strong>
-                        <p>{m.text}</p>
-                      </article>
-                    ))}
-                  </div>
-                  {thread.requests
-                    .filter((r) => r.status === 'failed')
-                    .map((r) => (
-                      <p className="notice" key={r.id}>
-                        {r.error ?? 'The request failed.'}
-                      </p>
-                    ))}
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (!draft.trim()) return;
-                      void action(async () => {
-                        const text = draft;
-                        await send(`${ROOT}/threads/${id}/messages`, {
-                          id: crypto.randomUUID(),
-                          text,
-                        });
-                        setDraft('');
-                      });
-                    }}
-                  >
-                    <label className="field">
-                      Describe your map or discuss changes
-                      <textarea
-                        rows={4}
-                        value={draft}
-                        maxLength={8000}
-                        onChange={(e) => {
-                          setDraft(e.target.value);
-                          setRetry(undefined);
-                        }}
-                      />
-                    </label>
-                    <button
-                      disabled={
-                        busy || !!active || !wallet?.enabled || !wallet.available || !draft.trim()
-                      }
-                    >
-                      Send message
-                    </button>
-                  </form>
-                  <fieldset disabled={busy || !!active}>
-                    <legend>Next map</legend>
-                    <div className="studio-controls">
-                      {(['width', 'height'] as const).map((axis) => (
-                        <label key={axis}>
-                          {axis === 'width' ? 'Width' : 'Height'}
-                          <select
-                            value={settings[axis]}
-                            onChange={(e) =>
-                              changeSettings({
-                                ...settings,
-                                [axis]: Number(e.target.value) as StudioSettings['width'],
-                              })
-                            }
-                          >
-                            {[128, 256, 512].map((n) => (
-                              <option key={n} value={n}>
-                                {n} cells
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      ))}
-                      <label>
-                        Players
-                        <select
-                          value={settings.players}
-                          onChange={(e) =>
-                            changeSettings({ ...settings, players: Number(e.target.value) })
-                          }
-                        >
-                          {[2, 3, 4, 5, 6, 7, 8].map((n) => (
-                            <option key={n}>{n}</option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
-                    <p>
-                      {selected
-                        ? `Revising version ${versions.indexOf(selected) + 1}.`
-                        : 'Creating a fresh map from this discussion.'}{' '}
-                      {selected && (
-                        <button type="button" onClick={() => setParent(undefined)}>
-                          Start fresh
-                        </button>
-                      )}
-                    </p>
-                    <button
-                      className="primary"
-                      disabled={
-                        !wallet?.enabled ||
-                        !wallet.available ||
-                        !thread.messages.length ||
-                        !!draft.trim()
-                      }
-                      onClick={() =>
-                        void action(() =>
-                          send(`${ROOT}/threads/${id}/generate`, {
-                            id: crypto.randomUUID(),
-                            settings,
-                            ...(parent ? { parent } : {}),
-                          }),
-                        )
-                      }
-                    >
-                      Generate — 1 credit
-                    </button>
-                    {draft.trim() && <p>Send your draft message before generating.</p>}
-                  </fieldset>
-                </section>
-                <section className="studio-versions" aria-label="Map versions">
-                  <h2>Map versions</h2>
-                  {!versions.length && (
-                    <p className="studio-empty">
-                      Your generated maps will appear here. Discuss your landscape, then generate
-                      your first version.
-                    </p>
-                  )}
-                  <p>
-                    Drafts are private. Publishing shares only that version. Hosting a room shares
-                    its map with players in the room.
-                  </p>
-                  <div className="studio-gallery">
-                    {versions.map((v, i) => (
-                      <article className="studio-version" key={v.id}>
-                        <h3>
-                          Version {i + 1}
-                          {v.input.parent
-                            ? ` · revised from version ${versions.findIndex((p) => p.id === v.input.parent) + 1}`
-                            : ''}
-                        </h3>
-                        <img
-                          src={preview(v)}
-                          alt={`Imported map version ${i + 1}, ${v.input.settings.players} players`}
-                          loading="lazy"
-                        />
-                        <p>
-                          {v.input.settings.width}×{v.input.settings.height} ·{' '}
-                          {v.input.settings.players} players
-                        </p>
-                        <div className="studio-actions">
-                          <button disabled={busy || !!active} onClick={() => revise(v)}>
-                            Revise this version
-                          </button>
-                          <a
-                            className="btn"
-                            href={`/api/v1/maps/${v.map_id}/versions/${v.map_hash}/file`}
-                          >
-                            Download
-                          </a>
-                          <button disabled={busy} onClick={() => void action(() => host(v))}>
-                            Host room
-                          </button>
-                          <button disabled={busy} onClick={() => void action(() => publish(v))}>
-                            Publish this version
-                          </button>
-                          <Link to={`/maps/${v.map_id}`}>Map details</Link>
-                        </div>
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={comparison.includes(v.id)}
-                            onChange={(e) =>
-                              setComparison(
-                                e.target.checked
-                                  ? [...comparison.slice(-1), v.id]
-                                  : comparison.filter((p) => p !== v.id),
-                              )
-                            }
-                          />{' '}
-                          Compare
-                        </label>
-                      </article>
-                    ))}
-                  </div>
-                  {comparison.length === 2 && (
-                    <section aria-label="Map comparison">
-                      <h2>Compare versions</h2>
-                      <div className="studio-gallery">
-                        {comparison.map((version) => {
-                          const v = versions.find((r) => r.id === version);
-                          if (!v) return null;
-                          return (
-                            <figure key={version}>
-                              <img
-                                src={preview(v)}
-                                alt={`Map version ${versions.indexOf(v) + 1}`}
-                              />
-                              <figcaption>Version {versions.indexOf(v) + 1}</figcaption>
-                            </figure>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  )}
-                </section>
-              </div>
-            </>
-          )}
+        <div className="ms-banner">
+          AI Map Studio is not enabled on this instance. Your saved projects remain available.
         </div>
-      </div>
-    </section>
+      )}
+      {!id && !wallet ? (
+        <div className="ms-gate" role="status">
+          <p>Opening your studio…</p>
+          {error && <button onClick={refreshWallet}>Retry loading studio</button>}
+        </div>
+      ) : landing ? (
+        <MapStudioLanding
+          wallet={wallet}
+          busy={busy}
+          buy={buy}
+          threads={threads}
+          draft={draft}
+          setDraft={setDraft}
+        />
+      ) : (
+        <StudioWorkspace
+          id={id}
+          thread={thread}
+          wallet={wallet}
+          busy={busy || !!pending}
+          draft={draft}
+          setDraft={setDraft}
+          send={sendMessage}
+          generate={generate}
+          settings={settings}
+          changeSettings={(next) => {
+            setSettings(next);
+            setParent(undefined);
+          }}
+          parent={parent}
+          revise={(v) => {
+            setParent(v?.id);
+            if (v) setSettings(v.input.settings);
+          }}
+          revision={revision}
+          celebrate={celebrate}
+          loadEarlier={() => void action(loadEarlier)}
+          versionAction={onVersionAction}
+        />
+      )}
+    </div>
   );
 }
-function message(error: unknown) {
-  return error instanceof ApiError
-    ? error.message
-    : error instanceof Error
-      ? error.message
-      : 'The request could not be completed.';
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : 'The request could not be completed.';
 }
-
-function mergeThread(current: StudioThread | undefined, next: StudioThread): StudioThread {
-  if (!current || current.id !== next.id) return next;
-  function merge<T extends { id: string; created_at: string }>(previous: T[], latest: T[]) {
-    return [...new Map([...previous, ...latest].map((value) => [value.id, value])).values()].sort(
-      (a, b) => a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id),
-    );
-  }
-  return {
-    ...next,
-    messages: merge(current.messages, next.messages),
-    requests: merge(current.requests, next.requests),
-    history: current.history ?? next.history,
-  };
+function isRejectedSubmission(error: unknown) {
+  return error instanceof ApiError && [400, 401, 403, 404, 409, 422, 429].includes(error.status);
 }

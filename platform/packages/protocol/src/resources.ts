@@ -223,6 +223,8 @@ export const AccountExport = Open(
         messages: ExportRows,
         requests: ExportRows,
         attempts: ExportRows,
+        events: Type.Optional(ExportRows),
+        artifacts: Type.Optional(ExportRows),
       }),
     ),
     maps: Open({

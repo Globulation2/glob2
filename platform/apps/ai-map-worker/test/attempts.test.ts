@@ -81,3 +81,28 @@ it('keeps a late provider result uncertain after atomic lease recovery', async (
     .executeTakeFirstOrThrow();
   expect(journal).toMatchObject({ status: 'uncertain', output: null });
 });
+
+it('streams provider state once and clears a capacity pause when work resumes', async () => {
+  const row = await request(),
+    attempts = new Attempts(studio, 100);
+  await sql`UPDATE studio_requests SET error='Waiting for capacity',checkpoints=checkpoints || '{"serviceLimit":true}'::jsonb WHERE id=${row.id}`.execute(
+    database.db,
+  );
+  await attempts.run(row, 'resume', 'model', {}, async () => ({ text: 'Resumed' }));
+  const current = (await studio.request(row.id))!;
+  expect(current.error).toBeNull();
+  expect(current.checkpoints['serviceLimit']).toBeUndefined();
+  const readEvents = async () =>
+    (
+      await sql<{
+        payload: { status: string };
+      }>`SELECT payload FROM studio_events WHERE request_id=${row.id} AND type='state' ORDER BY cursor`.execute(
+        database.db,
+      )
+    ).rows.map((event) => event.payload.status);
+  expect(await readEvents()).toEqual(['queued', 'dispatched', 'processing']);
+  const repeated = vi.fn(async () => ({ text: 'Never called' }));
+  await attempts.run(row, 'resume', 'model', {}, repeated);
+  expect(repeated).not.toHaveBeenCalled();
+  expect(await readEvents()).toEqual(['queued', 'dispatched', 'processing']);
+});

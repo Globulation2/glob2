@@ -552,6 +552,16 @@ describe('downloading my data', () => {
       await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,status,input,checkpoints,lease,charged) VALUES(${request},${thread},${player.accountId},'generate','ready','{"players":2}','{"version":1}',${lease},true)`.execute(
         harness.database.db,
       );
+      const imageHash = randomUUID().replaceAll('-', '').repeat(2);
+      await sql`INSERT INTO blobs(sha256,size,storage_key,content_type,visibility) VALUES(${imageHash},12,${imageHash},'image/png','private')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_artifacts(thread_id,request_id,stage,kind,label,hash) VALUES(${thread},${request},'terrain','generated',${player.displayName},${imageHash})`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_events(thread_id,cursor,request_id,dedup,type,payload) VALUES(${thread},1,${request},'fixture','state','{"status":"ready"}')`.execute(
+        harness.database.db,
+      );
       await sql`INSERT INTO studio_attempts(id,request_id,stage,model,status,input,output) VALUES(${randomUUID()},${request},'design','fixture','completed','{"feedback":"More rivers"}','{"layout":"rivers"}')`.execute(
         harness.database.db,
       );

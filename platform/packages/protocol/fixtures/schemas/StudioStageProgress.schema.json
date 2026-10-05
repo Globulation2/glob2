@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:StudioStageProgress",
+  "title": "StudioStageProgress",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "prepare"
+        },
+        {
+          "type": "string",
+          "const": "terrain"
+        },
+        {
+          "type": "string",
+          "const": "build"
+        },
+        {
+          "type": "string",
+          "const": "checks"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        }
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "running"
+        },
+        {
+          "type": "string",
+          "const": "complete"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    },
+    "completedAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

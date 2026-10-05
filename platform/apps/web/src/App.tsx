@@ -182,6 +182,7 @@ function Layout() {
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
+  const studio = section === 'studio';
   const main = useRef<HTMLElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const drawer = useRef<HTMLDialogElement>(null);
@@ -316,7 +317,9 @@ function Layout() {
     </>
   );
   return (
-    <div className={`site app-shell${home ? ' home' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}>
+    <div
+      className={`site app-shell${home ? ' home' : ''}${studio ? ' studio-shell' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}
+    >
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -324,7 +327,7 @@ function Layout() {
       <button
         className="rail-expand"
         onClick={() => {
-          if (window.matchMedia('(min-width: 1100px)').matches) setCollapsed(false);
+          if (!studio && window.matchMedia('(min-width: 1100px)').matches) setCollapsed(false);
           else openNavigation();
         }}
         aria-label="Open navigation"

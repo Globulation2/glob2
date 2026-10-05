@@ -823,7 +823,33 @@ export interface HivePurchasesTable {
   created_at: Timestamp;
 }
 
+export interface StudioEventsTable {
+  thread_id: string;
+  cursor: number;
+  request_id: Nullable<string>;
+  dedup: string;
+  type: string;
+  payload: Json<JsonValue>;
+  created_at: Timestamp;
+}
+export interface StudioProviderUsageTable {
+  day: string;
+  calls: number;
+}
+export interface StudioArtifactsTable {
+  id: Generated<string>;
+  thread_id: string;
+  request_id: string;
+  stage: string;
+  kind: string;
+  label: string;
+  hash: string;
+  width: Nullable<number>;
+  height: Nullable<number>;
+  created_at: Timestamp;
+}
 export interface StudioThreadsTable {
+  event_cursor: Defaulted<number>;
   id: Generated<string>;
   account_id: string;
   title: string;
@@ -876,6 +902,9 @@ export interface Database {
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
+  studio_events: StudioEventsTable;
+  studio_provider_usage: StudioProviderUsageTable;
+  studio_artifacts: StudioArtifactsTable;
   studio_threads: StudioThreadsTable;
   studio_messages: StudioMessagesTable;
   studio_requests: StudioRequestsTable;

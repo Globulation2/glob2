@@ -32,6 +32,8 @@ function quoteChannel(channel: string): string {
 export class PgPubSub {
   private readonly options: PubSubOptions;
   private readonly handlers = new Map<string, Set<NotificationHandler>>();
+  /** Every subscriber waits for its channel's LISTEN, including concurrent callers. */
+  private readonly listening = new Map<string, Promise<void>>();
   private client: pg.Client | undefined;
   private connecting: Promise<void> | undefined;
   private closed = false;
@@ -72,23 +74,39 @@ export class PgPubSub {
   async subscribe(channel: string, handler: NotificationHandler): Promise<() => Promise<void>> {
     const quoted = quoteChannel(channel);
     let set = this.handlers.get(channel);
-    const first = !set;
     if (!set) {
       set = new Set();
       this.handlers.set(channel, set);
     }
     set.add(handler);
-    await this.ensureConnected();
-    if (first && this.client) await this.client.query(`LISTEN ${quoted}`);
-    return async () => {
+    const unsubscribe = async () => {
       const current = this.handlers.get(channel);
       if (!current) return;
       current.delete(handler);
       if (current.size === 0) {
         this.handlers.delete(channel);
+        this.listening.delete(channel);
         if (this.client) await this.client.query(`UNLISTEN ${quoted}`).catch(() => undefined);
       }
     };
+    try {
+      await this.ensureConnected();
+      if (this.closed || !this.client) throw new Error('pub/sub is disconnected');
+      const client = this.client;
+      let ready = this.listening.get(channel);
+      if (!ready) {
+        ready = client.query(`LISTEN ${quoted}`).then(() => undefined);
+        this.listening.set(channel, ready);
+      }
+      await ready;
+      if (this.closed || this.client !== client) throw new Error('pub/sub is disconnected');
+      return unsubscribe;
+    } catch (error) {
+      // Failed subscriptions have no caller-owned cleanup handle. Do not retain
+      // their request closures or deliver to them when a later connection works.
+      await unsubscribe();
+      throw error;
+    }
   }
 
   /**
@@ -109,6 +127,7 @@ export class PgPubSub {
     const client = this.client;
     this.client = undefined;
     this.handlers.clear();
+    this.listening.clear();
     if (client) await client.end().catch(() => undefined);
   }
 
@@ -129,11 +148,18 @@ export class PgPubSub {
     client.on('notification', (message) => this.dispatch(message.channel, message.payload));
     client.on('error', (error) => this.lost(client, error));
     client.on('end', () => this.lost(client, new Error('connection ended')));
-    await client.connect();
-    for (const channel of this.handlers.keys())
-      await client.query(`LISTEN ${quoteChannel(channel)}`);
-    this.client = client;
-    this.delay = this.options.reconnectDelayMs ?? 250;
+    try {
+      await client.connect();
+      for (const channel of this.handlers.keys())
+        await client.query(`LISTEN ${quoteChannel(channel)}`);
+      if (this.closed) throw new Error('pub/sub is closed');
+      this.client = client;
+      this.delay = this.options.reconnectDelayMs ?? 250;
+    } catch (error) {
+      client.removeAllListeners();
+      await client.end().catch(() => undefined);
+      throw error;
+    }
   }
 
   private dispatch(channel: string, raw: string | undefined): void {
@@ -191,6 +217,7 @@ export class PgPubSub {
   private lost(client: pg.Client, error: Error): void {
     if (this.client !== client) return;
     this.client = undefined;
+    this.listening.clear();
     client.removeAllListeners();
     client.end().catch(() => undefined);
     if (this.closed) return;
@@ -200,9 +227,11 @@ export class PgPubSub {
 
   private scheduleReconnect(): void {
     clearTimeout(this.reconnectTimer);
+    if (this.closed) return;
     this.reconnectTimer = setTimeout(() => {
       this.ensureConnected().then(
         () => {
+          if (this.closed) return;
           this.reconnects++;
           for (const listener of this.reconnectListeners) {
             try {
@@ -213,6 +242,7 @@ export class PgPubSub {
           }
         },
         (error: unknown) => {
+          if (this.closed) return;
           this.options.logger?.warn({ err: error }, 'pub/sub reconnect failed');
           this.delay = Math.min(this.delay * 2, 30_000);
           this.scheduleReconnect();
