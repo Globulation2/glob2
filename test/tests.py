@@ -93,6 +93,7 @@ ENGINE_TESTS = [
     '#src/ai/cortex/CortexGeometryHarness.cpp',
     '#src/unit/EnteringUnitSaveHarness.cpp',
     '#src/map/gradient/MapGradientInvalidationTest.cpp',
+    ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/nicowar/NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
     '#src/game/SharedWorkerLifecycleTest.cpp',

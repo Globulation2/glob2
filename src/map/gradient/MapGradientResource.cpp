@@ -11,7 +11,9 @@
 #include "Team.h"
 #include "MapInternal.h"
 
+#include <array>
 #include <mutex>
+#include <type_traits>
 
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
@@ -46,39 +48,67 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 {
 	withMarkets = withMarkets && marketsV2Enabled();
 	assert(gradient);
-	bool canSwim = swimClass > 0;
+	const bool canSwim = swimClass > 0;
 
 	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
 	// Only fogged resources of a type that must be seen to be collected are hidden.
 	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
+	// Resolve per-field policy before walking the grid. Positive swim classes
+	// share passability here; propagation still uses their distinct costs.
+	std::array<Uint16, TERRAIN_COUNT> terrainSeed;
+	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
+	{
+		const auto &p = terrainProperties(static_cast<TerrainType>(t));
+		terrainSeed[t] = p.walkable || (canSwim && p.swimmable)
+			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+	}
 	const Tile *tile = tiles.data();
 	const Uint8 *immobile = immobileUnits;
 	const Uint32 *fog = fogOfWar;
-	initializeGradientCells([&](size_t begin, size_t end) {
-	for (size_t i=begin; i<end; i++)
+	// Compile-time tags select four kernels, removing market and visibility
+	// policy branches from the cell loop. Initialization joins before returning.
+	auto seed = [&](auto marketsTag, auto hideFoggedTag) {
+		initializeGradientCells([&](size_t begin, size_t end) {
+			for (size_t i = begin; i < end; ++i)
+			{
+				const Tile &c = tile[i];
+				Uint16 value = GRADIENT_FORBIDDEN;
+				if (!(c.forbidden & teamMask) && immobile[i] == IMMOBILE_UNIT_NONE)
+				{
+					if (c.resource.type == NO_RES_TYPE)
+					{
+						if (c.building == NOGBID)
+							value = terrainSeed[terrainTypeAt(i)];
+						else if constexpr (decltype(marketsTag)::value)
+						{
+							if (isStockedMarketTile(c.building, teamNumber, resourceType))
+								value = GRADIENT_MARKET_SEED;
+						}
+					}
+					else if (c.resource.type == resourceType)
+					{
+						// Resource goals override terrain/buildings, but not
+						// the forbidden/immobile blockers checked above.
+						value = GRADIENT_AT_GOAL;
+						if constexpr (decltype(hideFoggedTag)::value)
+							if (!(fog[i] & teamMask)) value = GRADIENT_FORBIDDEN;
+					}
+				}
+				gradient[i] = value;
+			}
+		});
+	};
+	if (withMarkets)
 	{
-		const Tile& c=tile[i];
-		Uint16 value;
-		if ((c.forbidden & teamMask) || immobile[i] != IMMOBILE_UNIT_NONE)
-			value=GRADIENT_FORBIDDEN;
-		else if (c.resource.type==NO_RES_TYPE)
-		{
-			if (c.building!=NOGBID)
-				value=withMarkets && isStockedMarketTile(c.building, teamNumber, resourceType) ? GRADIENT_MARKET_SEED : GRADIENT_FORBIDDEN;
-			else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
-				value=GRADIENT_FORBIDDEN;
-			else
-				value=GRADIENT_UNREACHABLE;
-		}
-		else if (c.resource.type==resourceType)
-			value=(hideFogged && !(fog[i]&teamMask)) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL;
-		else
-			value=GRADIENT_FORBIDDEN;
-		gradient[i]=value;
+		if (hideFogged) seed(std::true_type{}, std::true_type{});
+		else seed(std::true_type{}, std::false_type{});
 	}
-	});
-
+	else
+	{
+		if (hideFogged) seed(std::false_type{}, std::true_type{});
+		else seed(std::false_type{}, std::false_type{});
+	}
 }
 
 void Map::dirtyMarketGradients(int teamNumber, int resourceType)

@@ -11,6 +11,7 @@
 #include "MapInternal.h"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 
 
@@ -312,31 +313,45 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
 {
 	assert(gradient);
-	bool canSwim = swimClass > 0;
+	const bool canSwim = swimClass > 0;
 
-	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	const bool farmAreas = farmAreasEnabled();
-	initializeGradientCells([&](size_t begin, size_t end) {
-	for (size_t i=begin; i<end; i++)
+	// Mirror isClearingTarget using per-call lookup tables. Clearing goals
+	// override occupancy and terrain blockers; forbidden cells still win.
+	std::array<bool, MAX_RESOURCES> clearable;
+	for (unsigned r = 0; r < clearable.size(); ++r)
+		clearable[r] = globalContainer->resourcesTypes.get(r)->clearable;
+	std::array<Uint16, TERRAIN_COUNT> terrainSeed;
+	std::array<Uint8, TERRAIN_COUNT> farmCrop;
+	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
 	{
-		const Tile& c=tiles[i];
-		if (c.forbidden & teamMask)
-			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(isClearingTarget(i, teamMask, farmAreas))
-			gradient[i] = GRADIENT_AT_GOAL;
-		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
-			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.resource.type != NO_RES_TYPE)
-			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.building != NOGBID)
-			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
-			gradient[i] = GRADIENT_FORBIDDEN;
-		else
-			gradient[i] = GRADIENT_UNREACHABLE;
+		const auto &p = terrainProperties(static_cast<TerrainType>(t));
+		terrainSeed[t] = p.walkable || (canSwim && p.swimmable)
+			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+		farmCrop[t] = p.farmCrop;
 	}
+	initializeGradientCells([&](size_t begin, size_t end) {
+		for (size_t i = begin; i < end; ++i)
+		{
+			const Tile &c = tiles[i];
+			Uint16 value = GRADIENT_FORBIDDEN;
+			if (!(c.forbidden & teamMask))
+			{
+				if (c.resource.type != NO_RES_TYPE)
+				{
+					if (clearable[c.resource.type] &&
+						((c.clearArea & teamMask) ||
+						 (farmAreas && (c.farmArea & teamMask) &&
+						  c.resource.type != farmCrop[terrainTypeAt(i)])))
+						value = GRADIENT_AT_GOAL;
+				}
+				else if (immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
+					value = terrainSeed[terrainTypeAt(i)];
+			}
+			gradient[i] = value;
+		}
 	});
-
 }
 
 void Map::updateClearAreasGradient(int teamNumber)

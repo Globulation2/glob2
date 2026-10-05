@@ -286,3 +286,45 @@ worker count with its zero-worker control before comparing against legacy
 scheduling. A shorter game caused by changed decisions is not evidence of faster
 ticks. Retain fixed-tick windows as well as full-game measurements, and record
 machine contention when interpreting results.
+
+### Synchronous field preparation
+
+Field preparation runs synchronously at submission; only propagation runs on
+these background workers. Preparation includes reading current resources, terrain,
+occupancy, team areas, fog and market availability into the job-owned seed buffer.
+Do not attribute the entire resource/area-gradient scope to background CPU, or
+add its inclusive time to propagation time. The `initialize` compute experiment
+can split the seeding loop into blocking chunks; compare it against one-thread
+`initialize` with identical AI settings. Comparing it directly against default
+`ai` mode also changes where AI work runs.
+
+Resource preparation resolves terrain passability once per call and specializes
+market/visibility policy outside the cell loop. Clearing preparation similarly
+resolves clearability and terrain crop policy once, without per-cell coordinate
+conversion. These are local lookup tables, not persistent seed caches: every
+preparation still reads the current map, and clearing/resource goal precedence
+is preserved. Positive swim classes share initial passability but retain their
+existing movement costs during propagation.
+
+`GradientPreparation` in the engine test registry compares seed buffers against
+the original scalar predicates for every resource and swim class, terrain types,
+team masks, fog buffers, market stock and clearing/farming precedence. It also
+checks mutations, map resizing, integration with guard crowding, and concurrent
+lazy resource-field requests. Run it with:
+
+```sh
+python3 test/run_tests.py --binary engine --filter 'GradientPreparation/*'
+```
+
+Field equality complements, but does not replace, per-tick continuation and
+save/resume verification at every pending-job deadline phase.
+
+For preparation experiments, measure submitting-thread CPU, all-thread process
+CPU, complete-tick elapsed time, worker waits and peak memory separately. Include
+cache construction, mutation bookkeeping, patches and buffer copies. Repeated
+copies of one unchanged field are only a microbenchmark; use rotating owned
+buffers, retained game states and dense/high-mutation controls as well. Keep
+correctness exports out of timing runs, alternate baseline/candidate order, and
+retain commands, source and executable hashes, fixture hashes and raw samples
+under `artifacts/`. Saturated-host latency results cannot establish a production
+speedup even when the seed kernel uses less thread CPU time.
