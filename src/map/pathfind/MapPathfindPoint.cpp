@@ -134,15 +134,9 @@ bool Map::pathfindAirPointToPoint(int x, int y, int targetX, int targetY, int *d
     PERF_SCOPE_TIME(PathPoint);
     *dx = *dy = 0;
     x &= wMask; y &= hMask; targetX &= wMask; targetY &= hMask;
-    unsigned minimum = GRADIENT_STEP;
-    std::array<unsigned,TERRAIN_COUNT> costs{};
-    for (unsigned t=0;t<TERRAIN_COUNT;++t)
-    {
-        const auto &p=terrainProperties(static_cast<TerrainType>(t));
-        costs[t]=gradient_kernel::scaledTerrainStep(GRADIENT_STEP,p.airSpeedQ8);
-        if(p.flyable) minimum=std::min(minimum,costs[t]);
-    }
-    return field::airRoute(w,h,x,y,targetX,targetY,minimum,aStarPoints,aStarExaminedPoints,
-        [&](int px,int py) { return isFreeForAirUnit(px,py); },
-        [&](int px,int py) { return costs[terrainTypeAt(px,py)]; },dx,dy);
+	const unsigned minimum = terrainMinimumAir;
+	return field::airRoute(
+		w, h, x, y, targetX, targetY, minimum, aStarPoints, aStarExaminedPoints,
+		[&](int px, int py) { return isFreeForAirUnit(px, py); },
+		[&](int px, int py) { return terrainRegistry().airCost(terrainTypeAt(px, py)); }, dx, dy);
 }

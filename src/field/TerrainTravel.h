@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainMovementCosts.h"
+#include "map/TerrainRegistry.h"
 #include <limits>
 #include <queue>
 #include <vector>
@@ -28,8 +29,10 @@ constexpr unsigned terrainTravelCost(const TerrainProperties& p,TerrainTravel mo
 // neighbor steps cost the same before terrain scaling. A distant road must not
 // change diagonal distances on routes that never touch modified terrain.
 // Saturate only the public short distance; never the queue's ordering key.
-template<class Values,class TerrainAt>
-void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt)
+template <class Values, class TerrainAt>
+void expandTerrainTravel(Values &values, int width, int height, TerrainTravel mode,
+						 TerrainAt terrainAt,
+						 const TerrainRegistry &registry = *TerrainRegistry::builtins())
 {
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> costs(values.size(),infinity);
@@ -41,8 +44,10 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
     {
         const auto [cost,index]=queue.top();queue.pop();
         if(cost!=costs[index]) continue;
-        const unsigned cardinal=terrainTravelCost(terrainProperties(terrainAt(index)),mode);
-        for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+		const unsigned cardinal =
+			(mode == TerrainTravel::Fly ? registry.airCost(terrainAt(index))
+										: registry.movement(3).entries[terrainAt(index)].cardinal);
+		for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
         {
             if(!dx&&!dy) continue;
             const int ux=index%width+dx,uy=index/width+dy;
@@ -59,8 +64,9 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
 // Forward, byte-valued reach/influence fields retain 0 obstacles and 1 floor.
 // Keep sub-tile costs in the queue so two half-cost road steps consume one
 // strength unit. Only publish rounded strength after the full expansion.
-template<class Value,class TerrainAt>
-void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt)
+template <class Value, class TerrainAt>
+void expandTerrainInfluence(Value *values, int width, int height, TerrainAt terrainAt,
+							const TerrainRegistry &registry = *TerrainRegistry::builtins())
 {
     const int size=width*height;
     std::vector<unsigned> strength(size);
@@ -80,8 +86,8 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
             const int nx=ux<0?width-1:ux==width?0:ux,ny=uy<0?height-1:uy==height?0:uy;
             const int next=ny*width+nx;
             if(!values[next])continue;
-            const unsigned step=terrainTravelCost(terrainProperties(terrainAt(next)),TerrainTravel::Walk);
-            if(remaining<=step+GRADIENT_STEP)continue;
+			const unsigned step = registry.movement(3).entries[terrainAt(next)].cardinal;
+			if(remaining<=step+GRADIENT_STEP)continue;
             const unsigned candidate=remaining-step;
             if(candidate>strength[next]){strength[next]=candidate;queue.emplace(candidate,next);}
         }

@@ -22,6 +22,7 @@
 #include "TerrainType.h"
 #include "FertilityField.h"
 #include "TerrainProperties.h"
+#include "TerrainRegistry.h"
 #include "TerrainExperiments.h"
 #include "BitArray.h"
 
@@ -93,8 +94,17 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
+	mutable std::array<std::shared_ptr<const std::vector<Uint8>>, 7> terrainMovementSnapshots;
 	std::vector<TerrainType> terrainIds;
-	std::array<std::size_t, TERRAIN_COUNT> terrainCounts{};
+	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
+	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
+	std::array<unsigned, 6> terrainFeatures{};
+	unsigned terrainBucketCount = 64;
+	std::array<std::array<unsigned, 121>, 7> terrainGroundCostCounts{};
+	std::array<unsigned, 41> terrainAirCostCounts{};
+	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	unsigned terrainMinimumAir = GRADIENT_STEP;
+	void adjustTerrainFeatures(TerrainType type, bool add);
 	std::uint64_t terrainGenerationValue = 1;
 	void changeTerrainIdentity(size_t index, TerrainType type);
 	void rebuildTerrainCounts();
@@ -409,15 +419,39 @@ public:
 	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
+	const TerrainRegistry &terrainRegistry() const { return *terrainRegistryValue; }
+	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const
+	{
+		return terrainRegistryValue;
+	}
+	unsigned terrainQueueBuckets() const { return terrainBucketCount; }
+	const TerrainProperties &terrainProperties(TerrainType type) const
+	{
+		return terrainRegistryValue->properties(type);
+	}
+	const TerrainPresentation &terrainPresentation(TerrainType type) const
+	{
+		return terrainRegistryValue->presentation(type);
+	}
+	bool validTerrainType(unsigned type) const { return terrainRegistryValue->valid(type); }
+	bool terrainUsesLegacyCorners(TerrainType type) const
+	{
+		return terrainPresentation(type).legacyCorners;
+	}
+	void importTerrainDefinitions(std::string_view json);
 	TerrainType terrainTypeAt(size_t index) const { return terrainIds[index]; }
 	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(coordToIndex(x,y)); }
-	const TerrainProperties& terrainPropertiesAt(size_t index) const { return ::terrainProperties(terrainTypeAt(index)); }
+	const TerrainProperties &terrainPropertiesAt(size_t index) const
+	{
+		return terrainRegistryValue->properties(terrainTypeAt(index));
+	}
 	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
 	// Terrain habitat only: ignores deposits, buildings and units already here.
 	bool terrainSupportsResourceAt(int x, int y, int resourceType) const;
 	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
 	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
+	std::shared_ptr<const std::vector<Uint8>> frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
 	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
 	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }
@@ -791,7 +825,7 @@ public:
 	//! Swim class used where no unit is at hand: water costs the same as land.
 	static constexpr int SWIM_CLASS_EVEN = 3;
 	//! Cheapest possible step for a class, the A* heuristic unit.
-	static int minStepCost(int swimClass);
+	int minStepCost(int swimClass) const;
 	//! Highest cost a pathfinding gradient can hold (see GradientConstants.h).
 	static constexpr int GRADIENT_COST_LIMIT = 0xFFFF - 1 - 1 - 42;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
