@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:UpdateAiRequest",
+  "title": "UpdateAiRequest",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "\\S"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "const": "Balanced"
+          },
+          {
+            "type": "string",
+            "const": "Rush"
+          },
+          {
+            "type": "string",
+            "const": "Defensive"
+          },
+          {
+            "type": "string",
+            "const": "Economy"
+          },
+          {
+            "type": "string",
+            "const": "Expansion"
+          },
+          {
+            "type": "string",
+            "const": "Experimental"
+          },
+          {
+            "type": "string",
+            "const": "Beginner-friendly"
+          }
+        ]
+      },
+      "maxItems": 5,
+      "uniqueItems": true
+    },
+    "visibility": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "public"
+        },
+        {
+          "type": "string",
+          "const": "unlisted"
+        },
+        {
+          "type": "string",
+          "const": "private"
+        }
+      ]
+    }
+  }
+}

@@ -9,6 +9,7 @@
 #include <BinaryStream.h>
 #include <GzipUtil.h>
 #include <StreamBackend.h>
+#include <nlohmann/json.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -39,6 +40,23 @@ int runScriptCommand(int argc, char **argv)
 	if (argc < 2)
 		return -1;
 	std::string command = argv[1];
+	if (command == "--check-ai-json")
+	{
+		nlohmann::json report{{"valid", false}};
+		std::string stage = "syntax";
+		try
+		{
+			if (argc != 3) throw std::invalid_argument("--check-ai-json source.js");
+			const auto source = Script::readSource(argv[2]);
+			auto metadata = Script::inspectAI(source, &stage);
+			report["valid"] = true;
+			report["metadata"] = {{"apiVersion", metadata.apiVersion}, {"name", metadata.name},
+				{"description", metadata.description}, {"version", metadata.version}, {"author", metadata.author}};
+		}
+		catch (const std::exception &e) { report["failedCheck"] = stage; report["message"] = std::string(e.what()).substr(0, 2000); }
+		std::cout << report.dump() << '\n';
+		return report["valid"] == true ? 0 : 2;
+	}
 	if (command != "--check-script" && command != "--check-ai" && command != "--attach-map-script")
 		return -1;
 	try

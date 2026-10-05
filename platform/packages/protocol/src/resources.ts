@@ -227,6 +227,16 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    ais: Type.Optional(
+      Open({
+        published: ExportRows,
+        likes: ExportRows,
+        favourites: ExportRows,
+        reports: ExportRows,
+        uploads: ExportRows,
+        downloads: ExportRows,
+      }),
+    ),
     music: Type.Optional(Open({ releases: ExportRows, likes: ExportRows, reports: ExportRows })),
     maps: Open({
       published: ExportRows,

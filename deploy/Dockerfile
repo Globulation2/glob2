@@ -176,7 +176,7 @@ CMD ["glob2-relay"]
 FROM ${NODE_IMAGE} AS node-binary
 FROM ${UBUNTU_IMAGE} AS engine-agent
 ARG GLOB2_SIM_VERSION=
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates bubblewrap \
     libfreetype6 libopusfile0 libopus0 libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0 \
     libgl1 libglu1-mesa libssl3t64 zlib1g \
     && rm -rf /var/lib/apt/lists/* \

@@ -9,6 +9,7 @@
     "ComputeExecutor/*",
     "*Script*/*",
     "AITelemetryUI/*",
+    "SettingsAILibrary/*",
     "*Stream*/*",
     "*Net*/*",
     "*LAN*/*",

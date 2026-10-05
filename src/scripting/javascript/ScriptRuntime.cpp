@@ -896,8 +896,9 @@ class QuickRuntime : public Runtime
 		}
 	}
 	void discard() noexcept override { live.reset(); }
-	Metadata inspect(const std::string &source)
+	Metadata inspect(const std::string &source, std::string *stage)
 	{
+		if (stage) *stage = "startup";
 		Live temporary(source);
 		auto &e = temporary.environment;
 		JSValueOwner bindings(e.ctx, JS_Glob2ModuleBindings(e.ctx, temporary.module));
@@ -923,7 +924,9 @@ class QuickRuntime : public Runtime
 			if (JS_IsException(value.get()))
 				e.fail();
 			const auto data = e.fromJS(value.get());
+			if (stage) *stage = "file";
 			metadata.apiVersion = data.integer("apiVersion", 1, 2);
+			if (stage) *stage = "startup";
 			metadata.name = data.string("name");
 			if (metadata.name.empty() || metadata.name.size() > 128)
 				throw std::runtime_error("AI name must contain 1..128 UTF-8 bytes");
@@ -941,6 +944,7 @@ class QuickRuntime : public Runtime
 			throw std::runtime_error("Renamed callback exports require API profile 2 metadata");
 		// metadata is deliberately separate from the gameplay runtime. Validate
 		// fresh source globals as well, rather than metadata's mutated bindings.
+		if (stage) *stage = "state";
 		Live startup(source);
 		GlobalsCodec codec(startup.environment, startup.definitions->get());
 		JSValueOwner initial(startup.environment.ctx,
@@ -1095,8 +1099,8 @@ std::unique_ptr<Runtime> makeRuntime()
 {
 	return std::make_unique<QuickRuntime>();
 }
-Metadata inspectAI(const std::string &source)
+Metadata inspectAI(const std::string &source, std::string *stage)
 {
-	return QuickRuntime().inspect(source);
+	return QuickRuntime().inspect(source, stage);
 }
 } // namespace Script

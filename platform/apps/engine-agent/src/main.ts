@@ -1,3 +1,4 @@
+import { createAiValidator } from './aiValidation.ts';
 // engine-agent: one image per sim version (the glob2 headless binary of that
 // version plus this wrapper). It has no database or blob-store access: jobs,
 // results and blobs go through platform-api's internal engine API.
@@ -119,7 +120,17 @@ try {
     }
     simVersion = resolved.simVersion;
     logger.info({ simVersion: describeSimVersion(resolved), binary }, 'engine binary identified');
+    let aiValidator;
+    try {
+      aiValidator = await createAiValidator(engine.options, simVersion);
+    } catch (error) {
+      logger.warn(
+        { err: error },
+        'AI publishing unavailable: isolated validator failed its startup probe',
+      );
+    }
     runner = new HeadlessEngineRunner({
+      ...(aiValidator ? { aiValidator } : {}),
       engine,
       catalog,
       simVersion,

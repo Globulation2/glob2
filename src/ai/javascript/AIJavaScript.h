@@ -22,6 +22,14 @@ class AIJavaScript : public AIImplementation
 	bool load(GAGCore::InputStream *, Player *, Sint32) override;
 	void save(GAGCore::OutputStream *) override;
 	std::shared_ptr<Order> getOrder() override;
+	bool isDisabled() const { return disabled; }
+	void enableValidationReporting()
+	{
+		if (services)
+			services->enableValidationReporting();
+	}
+	bool hasRejectedDecision() const { return services && services->hasRejectedDecision(); }
+	const std::string &diagnostic() const { return error; }
 	void observe();
 	void captureTelemetry() override;
 };

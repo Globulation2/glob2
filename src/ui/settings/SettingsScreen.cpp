@@ -317,6 +317,15 @@ void SettingsScreen::dismiss()
 		modal = Modal::Binding;
 		invalidate();
 	}
+	else if (modal == Modal::AILibrary)
+	{
+		if (customAIBusy())
+			return;
+		closeCustomAILibrary();
+		modal = Modal::None;
+		host().focus("ai.browse", false);
+		invalidate();
+	}
 	else if (modal != Modal::None)
 		closeModal();
 	else
@@ -643,6 +652,7 @@ Element SettingsScreen::build(const Presentation &p)
 	touchLayout = p.touch;
 	phoneLayout = p.phone();
 	wideTable = !p.compact() && p.safe.w >= p.pt(900);
+	if (modal == Modal::AILibrary) return buildCustomAILibrary(p);
 	buildRows();
 	// Rows sharing a column count form a grid row; everything else stacks.
 	std::vector<Element> content;

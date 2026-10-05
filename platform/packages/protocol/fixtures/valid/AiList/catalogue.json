@@ -1,0 +1,80 @@
+{
+  "items": [
+    {
+      "id": "2a1b0c9d-8e7f-4a6b-9c5d-3e2f1a0b9c8d",
+      "name": "Patient Gardener",
+      "description": "An economy controller",
+      "tags": [
+        "Economy",
+        "Defensive"
+      ],
+      "visibility": "public",
+      "hidden": false,
+      "owner": {
+        "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
+        "displayName": "Alice"
+      },
+      "createdAt": "2026-10-01T12:00:00Z",
+      "updatedAt": "2026-10-01T12:00:00Z",
+      "likes": 4,
+      "downloads": 12,
+      "latestVersion": {
+        "id": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+        "hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+        "label": "1.2",
+        "notes": "More reliable food.",
+        "profile": 2,
+        "createdAt": "2026-10-01T12:00:00Z",
+        "downloads": 8,
+        "downloadUrl": "/api/v1/ais/2a1b0c9d-8e7f-4a6b-9c5d-3e2f1a0b9c8d/versions/9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a/file",
+        "validations": [
+          {
+            "sourceHash": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+            "simVersion": "125-49-3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f",
+            "suite": 1,
+            "valid": true,
+            "checks": [
+              {
+                "id": "file",
+                "status": "passed"
+              },
+              {
+                "id": "syntax",
+                "status": "passed"
+              },
+              {
+                "id": "startup",
+                "status": "passed"
+              },
+              {
+                "id": "state",
+                "status": "passed"
+              },
+              {
+                "id": "gameplay",
+                "status": "passed"
+              },
+              {
+                "id": "determinism",
+                "status": "passed"
+              },
+              {
+                "id": "continuation",
+                "status": "passed"
+              }
+            ],
+            "metadata": {
+              "apiVersion": 2,
+              "name": "Patient Gardener",
+              "description": "An economy controller",
+              "version": "1.2",
+              "author": "Alice"
+            }
+          }
+        ]
+      },
+      "liked": false,
+      "favourited": true
+    }
+  ]
+}

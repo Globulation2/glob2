@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptLibrary.h"
+#include "Sha256.h"
 #include "scripting/javascript/ScriptCommand.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -23,6 +24,7 @@ std::string Library::encode() const
 {
 	Json root{{"version", 1}, {"next", next}, {"revision", revision}, {"entries", Json::array()}};
 	for (const auto &e : entries_)
+	{
 		root["entries"].push_back({{"id", e.id},
 								   {"path", e.path},
 								   {"linked", e.linked},
@@ -31,6 +33,12 @@ std::string Library::encode() const
 								   {"description", e.metadata.description},
 								   {"version", e.metadata.version},
 								   {"author", e.metadata.author}});
+		if (e.online)
+			root["entries"].back()["online"] = {{"origin", e.online->origin},
+												{"aiId", e.online->aiId},
+												{"versionId", e.online->versionId},
+												{"hash", e.online->hash}};
+	}
 	return root.dump(2);
 }
 void Library::decode(const std::string &bytes)
@@ -53,6 +61,15 @@ void Library::decode(const std::string &bytes)
 		if (!e.linked && (e.path.rfind("ais/", 0) != 0 || e.path.find("..") != std::string::npos ||
 						  e.path.find('\\') != std::string::npos))
 			throw std::runtime_error("Invalid managed AI path");
+		if (v.contains("online"))
+		{
+			const auto &o = v.at("online");
+			e.online = LibraryOrigin{o.at("origin"), o.at("aiId"), o.at("versionId"), o.at("hash")};
+			if (e.linked || !Online::Sha256::isHexDigest(e.online->hash) ||
+				e.online->origin.size() > 2048 || e.online->aiId.size() > 64 ||
+				e.online->versionId.size() > 64)
+				throw std::runtime_error("Invalid online AI provenance");
+		}
 		entries.push_back(std::move(e));
 	}
 	next = root.at("next").get<unsigned>();
@@ -69,8 +86,12 @@ const LibraryEntry &Library::get(const std::string &id) const
 	throw std::runtime_error("Custom AI is no longer installed; choose another AI in game setup");
 }
 std::string Library::put(const std::string &text, const std::string &filename,
-						 const std::string &replace, const std::string &externalPath)
+						 const std::string &replace, const std::string &externalPath,
+						 std::optional<LibraryOrigin> online)
 {
+	if (online && (!externalPath.empty() || !Online::Sha256::isHexDigest(online->hash) ||
+				   Online::Sha256::hex(text) != online->hash))
+		throw std::runtime_error("Downloaded AI hash does not match its published version");
 	auto metadata = inspectAI(text);
 	if (metadata.name.empty())
 	{
@@ -93,7 +114,7 @@ std::string Library::put(const std::string &text, const std::string &filename,
 	LibraryEntry entry{id,
 					   externalPath.empty() ? "ais/" + id + "-" + std::to_string(revision++) + ".js"
 											: externalPath,
-					   !externalPath.empty(), std::move(metadata)};
+					   !externalPath.empty(), std::move(metadata), std::move(online)};
 	if (!entry.linked && !storage.write(entry.path, text))
 	{
 		decode(before);

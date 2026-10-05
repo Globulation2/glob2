@@ -6,7 +6,7 @@
 // under a row lock), so a re-delivered verdict or a sweep never applies a
 // rating change twice.
 import { sql, type Kysely, type Transaction } from 'kysely';
-import { applyEngineJobResult, type Logger } from '@glob2/core';
+import { applyAiValidation, applyEngineJobResult, type Logger } from '@glob2/core';
 import { notify, type Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
 import type { VerifyVerdict } from '@glob2/protocol';
@@ -73,6 +73,7 @@ export async function handleEngineJobResult(
       // Generated maps (rooms, on-demand starts and the warm pool) and
       // uploads; a no-op for verify-match jobs.
       await applyMapJobResult(trx, jobId);
+      await applyAiValidation(trx, jobId);
     }
     return applied;
   });

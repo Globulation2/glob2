@@ -114,6 +114,8 @@ void Services::commit(const Value &commands, const Value &telemetry)
 					r.set("status", "cancelled");
 					cancelled = true;
 				}
+			if (validationReporting && !cancelled)
+				rejectedDecision = true;
 			candidate.items.push_back(Value::object()
 										  .set("id", c.get("actionId"))
 										  .set("command", c)
@@ -295,6 +297,8 @@ std::shared_ptr<Order> Services::dispatch()
 						{
 							r.set("status", "failed")
 								.set("reason", "Repair needed before upgrading");
+							if (validationReporting)
+								rejectedDecision = true;
 							continue;
 						}
 						r.set("beforeLevel", b.get("level"));
@@ -320,6 +324,8 @@ std::shared_ptr<Order> Services::dispatch()
 			catch (const std::exception &)
 			{
 				r.set("status", "failed").set("reason", "Target no longer accepts this order");
+				if (validationReporting)
+					rejectedDecision = true;
 			}
 		}
 	return std::make_shared<NullOrder>();

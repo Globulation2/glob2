@@ -2,7 +2,13 @@
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
-import type { MusicMetadata, MusicRelease, MusicTrack, MusicConvert } from '@glob2/protocol';
+import type {
+  MusicMetadata,
+  MusicRelease,
+  MusicTrack,
+  MusicConvert,
+  AiValidationReport,
+} from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
 type Defaulted<T> = ColumnType<T, T | undefined, T>;
@@ -179,7 +185,13 @@ export interface EngineAgentsTable {
 
 export interface EngineJobsTable {
   id: Generated<string>;
-  kind: 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match' | 'import-ai-map';
+  kind:
+    | 'validate-ai'
+    | 'generate-map'
+    | 'validate-map'
+    | 'render-preview'
+    | 'verify-match'
+    | 'import-ai-map';
   sim_version: string;
   payload: Json<JsonValue>;
   status: Defaulted<'queued' | 'succeeded' | 'failed'>;
@@ -895,6 +907,66 @@ export interface StudioAttemptsTable {
   created_at: Timestamp;
 }
 
+export interface AisTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  name: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface AiValidationsTable {
+  id: Generated<string>;
+  hash: string;
+  sim_version: string;
+  suite: number;
+  job_id: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>;
+  report: Json<AiValidationReport>;
+  error: Nullable<string>;
+  created_at: Timestamp;
+}
+export interface AiUploadsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  validation_id: string;
+  expires_at: Timestamp;
+  published_ai_id: Nullable<string>;
+  published_version_id: Nullable<string>;
+}
+export interface AiVersionsTable {
+  id: Generated<string>;
+  ai_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  profile: number;
+  created_at: Timestamp;
+}
+export interface AiSocialTable {
+  ai_id: string;
+  account_id: string;
+}
+export interface AiDownloadsTable {
+  version_id: string;
+  downloader: string;
+  day: Defaulted<string>;
+}
+export interface AiReportsTable {
+  id: Generated<string>;
+  ai_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  status: Defaulted<'open' | 'resolved' | 'dismissed'>;
+  created_at: Timestamp;
+  resolution_note: Nullable<string>;
+}
+
 export interface MusicReleasesTable {
   id: string;
   owner_id: string;
@@ -911,6 +983,15 @@ export interface MusicReleasesTable {
   updated_at: Timestamp;
 }
 export interface Database {
+  ais: AisTable;
+  ai_versions: AiVersionsTable;
+  ai_validations: AiValidationsTable;
+  ai_uploads: AiUploadsTable;
+  ai_likes: AiSocialTable;
+  ai_favourites: AiSocialTable;
+  ai_downloads: AiDownloadsTable;
+  ai_reports: AiReportsTable;
+
   music_releases: MusicReleasesTable;
   music_assets: { release_id: string; kind: string; sha256: string };
   music_likes: { release_id: string; account_id: string };

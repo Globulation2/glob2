@@ -1,3 +1,4 @@
+import type { AiValidationReport } from '@glob2/protocol';
 // Blob I/O for engine jobs. Blobs are content-addressed by the SHA-256 of
 // their bytes; maps and saves are stored decompressed, so their hash is the
 // hash every client computes over the bytes it loads. The agent reaches blobs
@@ -31,6 +32,7 @@ export function decompressIfGzip(bytes: Uint8Array, maxBytes: number): Uint8Arra
 
 /** What a running job may do with blobs. */
 export interface JobBlobs {
+  progress?(report: AiValidationReport): Promise<void>;
   /**
    * Reads a blob by hash, refusing anything over maxBytes and anything whose
    * bytes do not hash to the name (a corrupted store must not reach the engine).
@@ -60,6 +62,10 @@ export class HttpJobBlobs implements JobBlobs {
   constructor(client: PlatformClient, leaseToken: string) {
     this.client = client;
     this.leaseToken = leaseToken;
+  }
+
+  progress(report: AiValidationReport): Promise<void> {
+    return this.client.aiProgress(this.leaseToken, report);
   }
 
   async read(sha256: string, maxBytes: number): Promise<Uint8Array> {

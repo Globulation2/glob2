@@ -285,3 +285,23 @@ TEST_SUITE("OnlineResources")
 		CHECK(summary.bestMap.empty());
 	}
 }
+
+#include "AiCatalog.h"
+TEST_CASE("AI catalogue rejects malformed metadata and requires exact compatible evidence" * doctest::test_suite("OnlineResources"))
+{
+ for(const auto &[name,value]:fixtures("AiDetail")){INFO(name);CHECK(validAiDetail(value));}
+ Json checks=Json::array();
+ for(const auto &id:{"file","syntax","startup","state","gameplay","determinism","continuation"}) checks.push_back({{"id",id},{"status","passed"}});
+ Json report={{"sourceHash",std::string(64,'a')},{"simVersion","engine"},{"suite",1},{"valid",true},{"checks",checks}};
+ Json v={{"id","release"},{"hash",std::string(64,'a')},{"label","1.0"},{"notes",""},{"downloads",0},{"validations",Json::array({report})}};
+ REQUIRE(validAiVersion(v)); CHECK(compatibleAiVersion(v,"engine")); CHECK_FALSE(compatibleAiVersion(v,"other"));
+ auto bad=v;bad["validations"][0]["sourceHash"]=std::string(64,'b');CHECK_FALSE(compatibleAiVersion(bad,"engine"));
+ bad=v;bad["validations"][0]["checks"][6]=checks[0];CHECK_FALSE(compatibleAiVersion(bad,"engine"));
+ bad=v;bad["downloads"]="many";CHECK_FALSE(validAiVersion(bad));
+ bad=v;bad["validations"]=false;CHECK_FALSE(compatibleAiVersion(bad,"engine"));
+ Json ai={{"owner",{{"displayName","Author"}}},{"tags",Json::array({"Balanced"})},{"id","controller"},{"name","Patient"},{"description",""},{"likes",2},{"downloads",0},{"liked",false},{"favourited",true},{"latestVersion",v}};
+ CHECK(validAiSummary(ai));
+ auto malformed = ai; malformed["owner"]["displayName"] = false; CHECK_FALSE(validAiSummary(malformed));
+ malformed = ai; malformed["tags"] = {7}; CHECK_FALSE(validAiSummary(malformed));
+ ai["name"]=Json::array();CHECK_FALSE(validAiSummary(ai));
+}

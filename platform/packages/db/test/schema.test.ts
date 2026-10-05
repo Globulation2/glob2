@@ -13,6 +13,51 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  ais: [
+    'id',
+    'owner_account_id',
+    'name',
+    'description',
+    'tags',
+    'visibility',
+    'hidden',
+    'hidden_reason',
+    'created_at',
+    'updated_at',
+  ],
+  ai_versions: ['id', 'ai_id', 'hash', 'label', 'notes', 'profile', 'created_at'],
+  ai_validations: [
+    'id',
+    'hash',
+    'sim_version',
+    'suite',
+    'job_id',
+    'status',
+    'report',
+    'error',
+    'created_at',
+  ],
+  ai_uploads: [
+    'id',
+    'owner_account_id',
+    'validation_id',
+    'expires_at',
+    'published_ai_id',
+    'published_version_id',
+  ],
+  ai_likes: ['ai_id', 'account_id'],
+  ai_favourites: ['ai_id', 'account_id'],
+  ai_downloads: ['version_id', 'downloader', 'day'],
+  ai_reports: [
+    'id',
+    'ai_id',
+    'reporter_account_id',
+    'reason',
+    'details',
+    'status',
+    'created_at',
+    'resolution_note',
+  ],
   music_releases: [
     'id',
     'owner_id',
@@ -747,6 +792,7 @@ describe('migrations', () => {
         '0037_studio_events',
         '0038_skin_view_angle',
         '0039_music',
+        '0040_ai_library',
       ]);
       expect(
         (
@@ -816,7 +862,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(17);
+      expect(upgraded).toHaveLength(18);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -949,6 +995,7 @@ describe('migrations', () => {
         ['0037_studio_events', 'Success'],
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
+        ['0040_ai_library', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1078,6 +1125,7 @@ describe('migrations', () => {
       expect((await migrateToLatest(db)).map((m) => [m.migrationName, m.status])).toEqual([
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
+        ['0040_ai_library', 'Success'],
       ]);
       expect(
         await db

@@ -61,5 +61,5 @@ class Runtime
 std::unique_ptr<Runtime> makeRuntime();
 // Evaluates in a disposable runtime, with neither world access nor randomness.
 // Also checks callback resolution and the initial automatic globals snapshot.
-Metadata inspectAI(const std::string &source);
+Metadata inspectAI(const std::string &source, std::string *stage = nullptr);
 } // namespace Script

@@ -5308,6 +5308,92 @@ By place
 Music set
 [settings Random each match]
 Choose Random to select a soundtrack at each match start.
+[AI Library]
+AI Library
+[Authoring guide]
+Authoring guide
+[Beginner-friendly]
+Beginner-friendly
+[Defensive]
+Defensive
+[Discover]
+Discover
+[Download & install]
+Download & install
+[Downloading AI…]
+Downloading AI…
+[Expansion]
+Expansion
+[Experimental]
+Experimental
+[Favourite]
+Favourite
+[Favourited]
+Favourited
+[Favourites]
+Favourites
+[Got it]
+Got it
+[How AIs work]
+How AIs work
+[Install selected version]
+Install selected version
+[Installed]
+Installed
+[Invalid AI catalogue response]
+Invalid AI catalogue response
+[JavaScript API reference]
+JavaScript API reference
+[Like]
+Like
+[Liked]
+Liked
+[Loading AI library…]
+Loading AI library…
+[Most downloaded]
+Most downloaded
+[Most liked]
+Most liked
+[Newest]
+Newest
+[No AIs match these filters.]
+No AIs match these filters.
+[Not validated for this game version]
+Not validated for this game version
+[Open AI Library]
+Open AI Library
+[Open AI page]
+Open AI page
+[Passed compatibility checks]
+Passed compatibility checks
+[Recently updated]
+Recently updated
+[Rush]
+Rush
+[Search]
+Search
+[Share your AI]
+Share your AI
+[Show more]
+Show more
+[Sign in through Online settings to like and favourite AIs.]
+Sign in through Online settings to like and favourite AIs.
+[Starter project]
+Starter project
+[downloads of this version]
+downloads of this version
+[downloads]
+downloads
+[Update available]
+Update available
+[Browse versions]
+Browse versions
+[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
+Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.
+[Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
+Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.
+[Back to results]
+Back to results
 [music 2–5 minutes]
 2–5 minutes
 [music 5–15 minutes]

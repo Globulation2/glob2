@@ -1,3 +1,4 @@
+import type { AiValidator } from './aiValidation.ts';
 // The real EngineRunner: each job kind as glob2 headless commands plus blob
 // store I/O. Inputs arrive already checked against the job schema (the agent
 // parses every EngineJob); every result is checked against its kind's result
@@ -44,6 +45,7 @@ export const DEFAULT_RUNNER_LIMITS: RunnerLimits = {
 
 export interface HeadlessRunnerOptions {
   engine: GlobEngine;
+  aiValidator?: AiValidator;
   catalog: EngineCatalog;
   simVersion: SimVersion;
   /** Blob access for run() calls that pass none (tests); the agent passes each lease's own. */
@@ -68,7 +70,7 @@ export function pngSize(bytes: Uint8Array): { width: number; height: number } {
 }
 
 export class HeadlessEngineRunner implements EngineRunner {
-  readonly kinds: readonly EngineJobKind[] = [
+  readonly kinds: EngineJobKind[] = [
     'import-ai-map',
     'generate-map',
     'validate-map',
@@ -80,6 +82,7 @@ export class HeadlessEngineRunner implements EngineRunner {
 
   constructor(options: HeadlessRunnerOptions) {
     this.options = options;
+    if (options.aiValidator) this.kinds.push('validate-ai');
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
 
@@ -89,6 +92,15 @@ export class HeadlessEngineRunner implements EngineRunner {
     let result: unknown;
     try {
       switch (job.kind) {
+        case 'validate-ai':
+          if (!this.options.aiValidator)
+            throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
+          result = await this.options.aiValidator(
+            await blobs.read(job.payload.blobHash, 128 * 1024),
+            signal,
+            blobs.progress?.bind(blobs),
+          );
+          break;
         case 'import-ai-map':
           result = await this.importImage(job.payload, signal, blobs);
           break;

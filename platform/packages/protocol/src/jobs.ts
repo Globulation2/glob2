@@ -1,3 +1,4 @@
+import { ValidateAiPayload, AiValidationReport } from './ais.ts';
 // Engine-agent job contracts. Anything that needs the engine runs as a job for
 // one simulation version: an engine-agent built from that version's glob2
 // binary runs only the task identifiers of its own sim version.
@@ -15,6 +16,7 @@ import { GeneratorDescriptor, MatchSetup } from './matchSetup.ts';
 import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
+  'validate-ai',
   'import-ai-map',
   'generate-map',
   'validate-map',
@@ -205,6 +207,7 @@ interface JobContract {
 }
 
 export const engineJobs = {
+  'validate-ai': { payload: ValidateAiPayload, result: AiValidationReport },
   'import-ai-map': { payload: ImportAiMapPayload, result: ImportAiMapResult },
   'generate-map': { payload: GenerateMapPayload, result: GenerateMapResult },
   'validate-map': { payload: ValidateMapPayload, result: ValidateMapResult },
@@ -216,6 +219,7 @@ export type EngineJobPayload<K extends EngineJobKind> = Static<(typeof engineJob
 export type EngineJobOutput<K extends EngineJobKind> = Static<(typeof engineJobs)[K]['result']>;
 
 const JobKind = Type.Union([
+  Type.Literal('validate-ai'),
   Type.Literal('import-ai-map'),
   Type.Literal('generate-map'),
   Type.Literal('validate-map'),

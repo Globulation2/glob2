@@ -6,6 +6,7 @@ import {
   EngineBlobReceipt,
   EngineLease,
   parse,
+  type AiValidationReport,
   type EngineAgentHeartbeat,
   type EngineBlobReceipt as EngineBlobReceiptType,
   type EngineJobReport,
@@ -90,6 +91,10 @@ export class PlatformClient {
       throw new Error(message);
     }
     throw new PlatformRejection(response.status, message);
+  }
+
+  async aiProgress(lease: string, report: AiValidationReport): Promise<void> {
+    await this.call('POST', '/internal/v1/engine/ai-validation-progress', { lease, json: report });
   }
 
   async heartbeat(beat: EngineAgentHeartbeat): Promise<void> {

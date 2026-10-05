@@ -11,8 +11,17 @@
     "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
     "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
+    "AiCheck": "schemas/AiCheck.schema.json",
+    "AiDetail": "schemas/AiDetail.schema.json",
+    "AiInfo": "schemas/AiInfo.schema.json",
     "AiLeaderboard": "schemas/AiLeaderboard.schema.json",
+    "AiList": "schemas/AiList.schema.json",
+    "AiMetadata": "schemas/AiMetadata.schema.json",
     "AiProfile": "schemas/AiProfile.schema.json",
+    "AiSocialResult": "schemas/AiSocialResult.schema.json",
+    "AiUpload": "schemas/AiUpload.schema.json",
+    "AiValidationReport": "schemas/AiValidationReport.schema.json",
+    "AiVersion": "schemas/AiVersion.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
@@ -77,6 +86,7 @@
     "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
+    "PublishAiRequest": "schemas/PublishAiRequest.schema.json",
     "PublishSkinRequest": "schemas/PublishSkinRequest.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -174,13 +184,53 @@
     "StudioSettings": "schemas/StudioSettings.schema.json",
     "StudioStageProgress": "schemas/StudioStageProgress.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
+    "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
+    "ValidateAiPayload": "schemas/ValidateAiPayload.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
     "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
+    {
+      "file": "valid/AiDetail/versioned-controller.json",
+      "schema": "AiDetail",
+      "valid": true,
+      "note": "Likes and favourites belong to the AI; downloads and compatibility evidence belong to each immutable release."
+    },
+    {
+      "file": "valid/AiList/catalogue.json",
+      "schema": "AiList",
+      "valid": true,
+      "note": "A catalogue card includes the latest release without rewriting source metadata."
+    },
+    {
+      "file": "valid/AiUpload/checked-private-upload.json",
+      "schema": "AiUpload",
+      "valid": true,
+      "note": "A private staging receipt binds compatibility checks to exact source bytes."
+    },
+    {
+      "file": "invalid/AiValidationReport/partial-checks.json",
+      "schema": "AiValidationReport",
+      "valid": false,
+      "stage": "schema",
+      "note": "Reports must explicitly include skipped dependent checks."
+    },
+    {
+      "file": "invalid/PublishAiRequest/unknown-tag.json",
+      "schema": "PublishAiRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only the fixed intent tags can be published."
+    },
+    {
+      "file": "valid/EngineJob/validate-ai.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Compatibility work binds source bytes and suite to an engine version."
+    },
     {
       "file": "valid/PlayerDirectory/ai.json",
       "schema": "PlayerDirectory",
