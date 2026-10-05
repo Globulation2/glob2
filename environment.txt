@@ -1,0 +1,10 @@
+Linux-7.0.0-31-generic-x86_64-with-glibc2.43
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+d62882a8da9dfad7075b50aa51d8c17cba5473c9
+934c3c588bea51ec7421152e15f5168b2aaf5502
+
+Build uses pinned SDL SDK SDL 3.4.16, SDL_image 3.4.6, SDL_ttf 3.2.2; C++20 release -O3 -s -fPIC; pinned Pillow12.2.0/libwebp1.6.0 encoder.

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/test/glob2-unit-tests" errors="0" failures="0" tests="368" time="0.008397" timestamp="2026-10-05T05:52:51Z" doctest_version="2.4.11">
+    <testcase classname="src/online/MapCacheTest.cpp" name="maps are stored by the hash of their decompressed bytes" time="0.001668" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="least recently used maps are evicted beyond the cap" time="0.002125" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="the index survives restarts; orphans and vanished files are cleaned up" time="0.000494" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="downloads fetch the blob, verify it and serve it from the cache" time="0.000698" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="list queries encode the filters the browser offers" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="sharing creates the map, uploads the raw bytes and waits for validation and the preview" time="0.000213" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="a map the server cannot load is rejected with its reason; a new version skips creation" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="upload errors end the flow with the server's message" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="hand-offs wait for their handler" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="first start creates a guest, keeps its credential and says hello with the token" time="0.000124" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="an unsupported sim version says which side is out of date" time="0.000579" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a returning player signs in with the device credential or refresh token" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="without consent to sign in, the socket connects anonymously" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="responses reach their own requests; timeouts and events are delivered" time="0.000193" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="requests made before the socket is online wait for it" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="lost connections retry with growing, jittered backoff" time="0.000169" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a connection that never opens times out and retries" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.000167" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refused refresh token falls back to the device credential" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refresh that fails on the network is retried while the token lasts" time="0.000109" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refused token at hello continues anonymously and signs in again" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="update_required stops retrying" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="an idle socket is checked with session.ping and replaced when silent" time="0.000113" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.000229" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="browser sign-in failures, cancellation and expiry" time="0.00069" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="session.revoked signs out and stops automatic sign-in" time="0.000111" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.000195" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="stop cancels everything and credentials stay per instance" time="0.000101" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="rename patches the account" time="0.000115" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.000143" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="the instance description is fetched once per start and shared" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.000161" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a handler that destroys another owner in the same update does not reach it" time="0" status="run"/>
+  </testsuite>
+</testsuites>
