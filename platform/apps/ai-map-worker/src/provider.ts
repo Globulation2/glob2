@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
 import type { Studio } from '@glob2/map-studio';
-import { type RequestRow } from '@glob2/map-studio';
+import { emitState, type RequestRow } from '@glob2/map-studio';
 export class ProviderUncertain extends Error {}
 export class ProviderBudget extends Error {}
+export class ProviderRejected extends Error {}
 export interface ImageInput {
   hash: string;
   bytes: Uint8Array;
@@ -23,7 +24,7 @@ export interface MapProvider {
 export class OpenAIMaps implements MapProvider {
   readonly key: string;
   constructor(key: string) {
-    if (!key) throw new Error('MAP_OPENAI_API_KEY is required');
+    if (!key) throw new ProviderRejected('MAP_OPENAI_API_KEY is required');
     this.key = key;
   }
   private async call(path: string, body: string | FormData) {
@@ -45,7 +46,7 @@ export class OpenAIMaps implements MapProvider {
       await response.body?.cancel();
       if (response.status >= 500 || response.status === 408)
         throw new ProviderUncertain('Provider outcome is unknown.');
-      throw new Error('The image provider refused the request.');
+      throw new ProviderRejected('The image provider refused the request.');
     }
     const reader = response.body?.getReader();
     if (!reader) throw new ProviderUncertain('Provider response missing.');
@@ -87,7 +88,8 @@ export class OpenAIMaps implements MapProvider {
           : {}),
       }),
     );
-    if (output['status'] !== 'completed') throw new Error('AI discussion did not complete.');
+    if (output['status'] !== 'completed')
+      throw new ProviderRejected('AI discussion did not complete.');
     const messages = output['output'] as { content?: { type: string; text?: string }[] }[];
     const text = messages
       .flatMap((m) => m.content ?? [])
@@ -95,7 +97,7 @@ export class OpenAIMaps implements MapProvider {
       .map((c) => c.text ?? '')
       .join('');
     if (!text.trim() || text.length > 16000)
-      throw new Error('AI discussion returned no usable reply.');
+      throw new ProviderRejected('AI discussion returned no usable reply.');
     return { text, usage: output['usage'] ?? null, responseId: String(output['id'] ?? '') };
   }
   async image(model: string, prompt: string, images: ImageInput[]) {
@@ -114,10 +116,10 @@ export class OpenAIMaps implements MapProvider {
       );
     const output = await this.call('images/edits', form);
     const data = output['data'] as { b64_json?: string }[];
-    if (!data?.[0]?.b64_json) throw new Error('Provider returned no map image.');
+    if (!data?.[0]?.b64_json) throw new ProviderRejected('Provider returned no map image.');
     const bytes = Buffer.from(data[0].b64_json, 'base64');
     if (!bytes.length || bytes.length > 32 * 1024 * 1024)
-      throw new Error('Provider image is invalid.');
+      throw new ProviderRejected('Provider image is invalid.');
     return { bytes, usage: output['usage'] ?? null };
   }
 }
@@ -155,7 +157,7 @@ export class Attempts {
         (
           await sql<{
             n: number;
-          }>`SELECT count(*)::int AS n FROM studio_attempts WHERE created_at>=date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'`.execute(
+          }>`SELECT calls::int AS n FROM studio_provider_usage WHERE day=(now() AT TIME ZONE 'UTC')::date`.execute(
             db,
           )
         ).rows[0]?.n ?? 0;
@@ -170,7 +172,10 @@ export class Attempts {
       await sql`INSERT INTO studio_attempts(id,request_id,stage,model,status,input) VALUES(${randomUUID()},${row.id},${stage},${model},'dispatched',${JSON.stringify(input)}::jsonb)`.execute(
         db,
       );
-      await sql`UPDATE studio_requests SET status='dispatched' WHERE id=${row.id}`.execute(db);
+      await sql`UPDATE studio_requests SET status='dispatched',error=NULL,checkpoints=checkpoints-'serviceLimit' WHERE id=${row.id}`.execute(
+        db,
+      );
+      await emitState(db, row, 'dispatched');
     });
     let returned = false;
     try {
@@ -193,6 +198,7 @@ export class Attempts {
         await sql`UPDATE studio_requests SET status='processing' WHERE id=${row.id} AND lease=${row.lease} AND status='dispatched'`.execute(
           db,
         );
+        await emitState(db, row, 'processing');
       });
       row.status = 'processing';
       return output;

@@ -224,7 +224,7 @@ plus an optional RGB building color. The chosen color is independent of the
 immutable preset paint and is frozen/signed alongside the version for a match.
 `POST /api/v1/skins/publish` requires the designer entitlement. It accepts a name,
 optional owned skin ID for another version, RGB building color, optional swarm
-mesh, and two base64 PNG or WebP images in layout `colony-v2`. Both are still
+mesh and integer `swarmViewAngle` (0–359, default 0), and two base64 PNG or WebP images in layout `colony-v2`. Both are still
 512×512 pixels made of four 256×256 quadrants: worker top-left, warrior
 top-right, explorer bottom-left, swarm bottom-right.
 
@@ -246,13 +246,32 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
+The `/skins` route opens Colony Studio, a full-window mesh painting workspace.
+Brush, eraser and eyedropper operate directly on visible geometry. Right-drag,
+Alt-drag or the Orbit tool navigates; touch uses explicit Paint/Orbit tools and
+two-finger navigation. The view menu and +/− keys also adjust inspection zoom.
+Animation starts paused and painting freezes its displayed
+pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
+material swatches, model and pose strips float over the viewport; shop, saved
+skins, settings and patterns are dialogs that preserve the document.
+
 Glob meshes share paint coordinates across matching front/back and top/bottom
-surfaces, including limb pairs exchanged by their flipping gait. Canvas and model
-painting, erasing and patterns therefore preserve symmetry automatically; no
-symmetry toggle or server-side pixel normalization is needed. The designer
-previews worker walk/swim/harvest, warrior walk/swim/fight and explorer flight,
-with direction and paused-frame controls using the same mesh bytes as the game.
-Swarm paint and the separate building color retain their own behavior.
+surfaces, including limb pairs exchanged by their flipping gait. A depth-tested
+projection excludes hidden geometry, but changing a shared texel still changes
+all matching surfaces. The closest visible contributor wins deterministically.
+Pattern previews always render the baked atlas, including this repetition.
+Camera-projected stripes, spots, checker, chevrons, waves and speckles use the
+paused pose and chosen inspection angle. Curated solid, mirrored bands/spots and
+mottled fills use per-mesh rest-space compatibility charts, with limited sizes and
+densities. Both keep the existing atlas layouts. No UV painting UI or layers are
+exposed. Copying raw paint between models is a separate action with a result preview.
+
+Paint cameras freely orbit, including above and below the model. The swarm's
+separate **Choose final view** mode changes only azimuth around its standardized
+camera ring; accepting it restores the inspection camera. Unit game rendering
+continues to select animation directions normally. Building color is separate
+from painted color and also colors the rendered material swatches. Without
+WebGL2, saved skins and the shop remain accessible while the viewport offers a retry.
 
 Each version also names the swarm mesh its paint is laid out for (`swarmMesh`):
 `classic`, the original swarm and the default, or one of the generated shapes
@@ -262,7 +281,10 @@ the same order. Because paint is laid out per mesh, the mesh belongs to the
 immutable version, and the same paint on two meshes is two versions. The manifest
 digest is SHA-256 over the compact JSON object `skinId`, `textureSha256`,
 `materialSha256`, `layout`, `buildingColor`, in exactly that key order, followed
-by `swarmMesh` only when it is not `classic`; game clients recompute it before
+by `swarmMesh` only when it is not `classic`, then `swarmViewAngle` only when it is
+nonzero. Zero therefore retains all existing manifest hashes. Older clients reject
+nonzero angles through their manifest check and use classic cosmetic fallback;
+current game clients recompute the complete manifest before
 showing a skin. The swarm's paint and materials always come from the swarm
 quadrant, whichever mesh is chosen. Clients without mesh choice reject skins for
 other meshes and show classic art for that team, rather than painting them onto
@@ -276,9 +298,13 @@ buying the designer unlock. Drafts carry `imageBase64` and `materialBase64` with
 the same validation as publishing; one bounded atlas and material map are stored
 per account and are never served by public image routes. A save supplies the last observed revision (null for the first save).
 Drafts may also retain an owned skin ID so edits resume as new versions of that
-design, and they keep the chosen swarm mesh. Concurrent or stale saves return
+design, and they keep the chosen swarm mesh and final view angle. Concurrent or stale saves return
 409 rather than overwrite another device's work. The designer also offers a separate account-scoped device draft for offline
-backup before resolving conflicts. Publishing and equipping remain explicit.
+backup before resolving conflicts. A debounced recovery record is stored separately
+from the explicit device checkpoint, scoped by account, including the last known
+account revision. Async restore/open operations preserve any newer local edits
+instead of overwriting them. Checkout saves recovery
+before navigation and returns to the Shop dialog. Publishing and equipping remain explicit.
 
 Match pages show their frozen colony looks and let signed-in players submit a
 reason to `POST /api/v1/skins/versions/:id/reports`. Each account reports a version
@@ -848,6 +874,20 @@ original art, for `classic`, or `swarm-<id>.gsk` for a shape generated by
 [unit animation tooling](../../tools/unit-animation/README.md)). A skin naming a
 mesh this client does not know is rejected like any other invalid assertion, and
 a mesh file that fails to load leaves that colony's swarm on the classic sprite.
+A nonzero final angle reconstructs model-space positions, rotates around the
+world vertical axis, then applies the same game projection. Normals rotate with
+the model. Each transformed mesh receives a fresh render-cache identity. Height,
+target, radius, scale and ground alignment stay fixed around the ring. These are
+appearance-only changes; simulation state and version gates are unchanged.
+
+`tools/skins/export_views.py` (pinned Blender 3.6.23) emits versioned `.view.json`
+sidecars bound to each GSK SHA-256 and the corresponding native constants in
+`src/online/SkinViewTransforms.h`. It recovers the original unit/source camera and
+separate depth scaling without changing GSK payloads, UVs, topology or poses.
+Regenerate sidecars/constants whenever source mesh exports change. The web
+viewport, brush and pattern engine share these transforms; the native rendering
+path uses the generated swarm constants. `studio_thumbnails.py` regenerates the
+model and action thumbnails from the shipped meshes.
 
 Online replay recordings and native profile downloads have an optional
 `<recording>.appearance.json` companion containing format version 1, instance
@@ -897,9 +937,32 @@ job routed by simulation version. Its map, preview, categorical export and repor
 are private blobs. Provider keys never reach Python or engine subprocesses.
 
 REST under `/api/v1/map-studio` provides account state, thread creation/listing,
-messages, explicit generation, and checkout. Per-thread long polling uses the
-existing Postgres pub/sub with timeout refresh for lost notifications. Messages
-cost no map credits. A Generate action reserves one credit; a successful validated
+messages, explicit generation, checkout, per-request progress and authorized stage
+images. Thread creation accepts an optional client UUID; retrying the same owner,
+UUID and title returns the original project. Clients persist this UUID and the
+first message request ID before sending so an unknown HTTP outcome does not
+create a duplicate project. The browser reads a repeatable-read thread snapshot
+with an event cursor, then opens `/threads/:id/events` as a persistent SSE stream. Events and their
+state changes commit together; a locked per-thread counter preserves commit
+order. Postgres notifications wake readers, while reconnect listeners and
+15-second heartbeat catch-up recover missed notifications. `Last-Event-ID`
+resumes delivery; clients deduplicate cursors. Session authorization is checked
+on every catch-up, and slow connections close instead of buffering indefinitely.
+The old long-poll route remains available for older clients.
+
+Stage, artifact and check events retain the creation journey with the owning
+thread. Image descriptors reference owner-authorized routes, never arbitrary
+blob hashes. Older requests recover only recorded images and delivery summaries
+from a safe checkpoint allowlist; missing historical checks are not invented.
+Events and descriptors participate in account export and cascade on deletion.
+The full-screen workspace separates chat from the inspected map, supports
+following live stages or inspecting history, and displays playability checks.
+The separate no-credit landing page preserves draft writing and access to saved
+projects; active last-credit generations open their workspace. Drafts, pending
+submission identities and revision settings survive same-tab refresh and checkout.
+Payment-return URLs trigger wallet refresh without granting credits themselves.
+Messages cost no map credits but require an available
+map credit. A Generate action reserves one credit; a successful validated
 delivery consumes it and failures return it. Each request snapshots the rolling
 conversation and accumulated design brief, settings, parent version and pipeline
 version. A parent revision retains its dimensions/player count; changing these
@@ -917,6 +980,12 @@ The account’s **Download my data** export includes its Studio threads, message
 revision inputs and checkpoints, provider attempts, and separate map-credit wallet,
 ledger, purchases and usage. It includes only the owner’s data and omits internal
 worker lease credentials. Catalog exports also include map authoring metadata.
+Account deletion removes private Studio history and import jobs and releases
+unfinished generation reservations. `studio_provider_usage` retains only daily
+UTC call totals, maintained by a journal-insert trigger, so deleting projects
+cannot replenish the service's provider-call budget. These totals contain no
+account identity or conversation data; financial ledger and purchase records
+remain separate from the deleted authoring history.
 
 The supported envelope is independent 128/256/512-cell sides and 2–8 colonies.
 The post-import native report gates valid starts, walking connectivity, nearby

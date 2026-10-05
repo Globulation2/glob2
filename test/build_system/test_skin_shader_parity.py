@@ -18,7 +18,7 @@ def material_block(path):
 class SkinShaderParityTest(unittest.TestCase):
     def test_web_preview_matches_native_shader(self):
         self.assertEqual(material_block('libgag/src/GraphicContextSkinMesh.cpp'),
-                         material_block('platform/apps/web/src/skins/MeshPreview.tsx'))
+                         material_block('platform/apps/web/src/skins/materialShader.ts'))
 
 
 if __name__ == '__main__':

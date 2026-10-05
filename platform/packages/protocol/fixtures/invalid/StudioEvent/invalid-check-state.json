@@ -1,0 +1,11 @@
+{
+  "id": "43",
+  "requestId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "createdAt": "2026-10-01T12:00:00Z",
+  "type": "check",
+  "payload": {
+    "id": "routes",
+    "label": "Connected routes",
+    "status": "perfect"
+  }
+}

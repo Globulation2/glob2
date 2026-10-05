@@ -14,6 +14,7 @@ struct AuthorizedSkin
     std::int64_t expiresAt = 0;
     int team = -1;
     std::uint32_t buildingColor = 0;
+    unsigned swarmViewAngle = 0;
     int swarmMesh = 0; // index into SWARM_MESHES
 };
 // Native OpenSSL and browser WebCrypto verify the same Ed25519 message. Polling

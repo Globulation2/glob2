@@ -183,6 +183,26 @@ describe.runIf(binary)('native AI map delivery', () => {
       expect(ready.status, ready.error ?? '').toBe('ready');
       expect(ready.charged).toBe(true);
       expect(ready.checkpoints['validation']).toMatchObject({ passed: true });
+      const progress = await studio.progress(account, thread, id);
+      expect(progress.stages.map((stage) => [stage.id, stage.status])).toEqual([
+        ['prepare', 'complete'],
+        ['terrain', 'complete'],
+        ['build', 'complete'],
+        ['checks', 'complete'],
+        ['ready', 'complete'],
+      ]);
+      expect(progress.artifacts.filter((artifact) => artifact.kind === 'reference')).toHaveLength(
+        6,
+      );
+      expect(new Set(progress.artifacts.map((artifact) => artifact.kind))).toEqual(
+        new Set(['reference', 'generated', 'crop', 'categorical', 'preview']),
+      );
+      expect(progress.checks).toHaveLength(21);
+      expect(progress.checks.every((check) => check.status === 'passed')).toBe(true);
+      for (const artifact of progress.artifacts)
+        expect(await studio.artifactBlob(account, thread, artifact.id)).toBeDefined();
+      expect(await pipeline.tick()).toBe(false);
+      expect(await studio.progress(account, thread, id)).toEqual(progress);
       const catalog = await database.db
         .selectFrom('maps')
         .selectAll()
@@ -195,7 +215,7 @@ describe.runIf(binary)('native AI map delivery', () => {
         .where('sha256', '=', ready.map_hash!)
         .executeTakeFirstOrThrow();
       expect(blobs.visibility).toBe('private');
-      const evidence = process.env['GLOB2_EVIDENCE_DIR'];
+      const evidence = process.env['STUDIO_EVIDENCE_DIR'] ?? process.env['GLOB2_EVIDENCE_DIR'];
       if (evidence) {
         await mkdir(evidence, { recursive: true });
         const prefix = join(evidence, parent ? 'revision' : 'initial');
@@ -213,6 +233,18 @@ describe.runIf(binary)('native AI map delivery', () => {
           await pipeline.options.blobs.read(delivered.preview_hash!, 16 * 1024 * 1024),
         );
         await writeFile(prefix + '.json', JSON.stringify(ready, null, 2));
+        await writeFile(prefix + '-progress.json', JSON.stringify(progress, null, 2));
+        for (const [index, artifact] of progress.artifacts.entries()) {
+          const blob = await studio.artifactBlob(account, thread, artifact.id);
+          const stream = await harness.blobs.get(blob.storage_key);
+          if (!stream) throw new Error('Stage image is missing from the evidence store.');
+          const chunks: Buffer[] = [];
+          for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+          await writeFile(
+            `${prefix}-${artifact.stage}-${artifact.kind}-${index}.png`,
+            Buffer.concat(chunks),
+          );
+        }
       }
       return id;
     }

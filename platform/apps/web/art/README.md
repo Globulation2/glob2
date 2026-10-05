@@ -28,6 +28,25 @@ The game's artwork is part of Globulation 2 and licensed with it under the GPL 3
 map previews used by the browser smoke test (`e2e/fixtures/maps/`) were made with
 `glob2 --generate-map <generator> --preview <file> --preview-size 384 --teams N --seed 7`.
 
+## Map Studio imagery
+
+The studio inspiration gallery uses the following engine-rendered repository maps,
+compressed with Pillow to WebP (quality 88, at most 640 px on each axis). These are
+labeled as terrain inspiration, not promised AI results.
+
+| Output                | Source                                                       |
+| --------------------- | ------------------------------------------------------------ |
+| `studio-islands.webp` | `docs/map-generators/images/lava-shield/default-256.png`     |
+| `studio-hills.webp`   | `docs/map-generators/drumlin-field/256-4-colonies-seed1.png` |
+| `studio-river.webp`   | `docs/map-generators/images/hilbert-river.png`               |
+
+`studio-demo-reference.png`, `studio-demo-layout.png`, `studio-demo-crop.png`, and
+`studio-demo-ready.png` are recorded artifacts from the deterministic native map
+studio integration fixture in `apps/ai-map-worker/test/pipeline.test.ts`. Its provider
+returns a native reference without making a paid AI call. The workflow demo labels that provenance; they contain no private user
+material. Regenerate with the native integration test with `STUDIO_EVIDENCE_DIR` and copy the initial reference, generated image, crop overlay, and delivered
+preview outputs. Preserve these labels when changing the marketing presentation.
+
 ## Contrast
 
 Text and control colours of both themes (`src/styles/tokens.css`) meet WCAG 2.2

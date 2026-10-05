@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <SkinMesh.h>
+#include "src/online/SkinViewTransforms.h"
+#include <cmath>
 #include <SkinAtlasCache.h>
 #include <StreamBackend.h>
 #include <SDLGraphicContext.h>
@@ -9,6 +11,13 @@
 #include <bit>
 #include <cstdint>
 #include <limits>
+#ifdef HAVE_OPENGL
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
 
 namespace
 {
@@ -62,6 +71,88 @@ TEST_SUITE("SkinMesh")
         CHECK(mesh.frames == 1);
         CHECK(mesh.poses.size() == 18);
     }
+    TEST_CASE("static camera ring preserves UVs, scale and independent cache identities")
+    {
+        const std::array<const char *,7> shapes{"swarm", "swarm-crown", "swarm-clutch", "swarm-toadstool", "swarm-coral", "swarm-skep", "swarm-bloom"};
+        for (unsigned shape=0; shape<shapes.size(); ++shape)
+        {
+            GAGCore::SkinMesh mesh; std::string error;
+            REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(shapes[shape])+".gsk")).string(), error));
+            const auto &t=Online::SkinViews[shape];
+            auto zero=mesh.rotatedView(0,t.inverse,t.projection,t.normals);
+            REQUIRE(zero.poses.size()==mesh.poses.size());
+            for (unsigned i=0;i<mesh.poses.size();++i) CHECK(std::abs(zero.poses[i]-mesh.poses[i])<0.00001f);
+            auto previous=mesh.identity;
+            for (unsigned angle=0;angle<360;angle+=5)
+            {
+                auto rotated=mesh.rotatedView(angle,t.inverse,t.projection,t.normals);
+                CHECK(rotated.identity!=previous);
+                CHECK(rotated.identity!=mesh.identity);
+                CHECK(rotated.uv==mesh.uv);
+                CHECK(rotated.indices==mesh.indices);
+                for (unsigned v=0;v<mesh.vertices;++v)
+                {
+                    const auto i=v*6;
+                    CHECK(std::abs(rotated.poses[i])<1.25f);
+                    CHECK(std::abs(rotated.poses[i+1])<1.25f);
+                    // Recovered world height is invariant around the ring.
+                    const auto height=[&](const auto &p){ return t.inverse[8]*p[i]+t.inverse[9]*p[i+1]+t.inverse[10]*p[i+2]+t.inverse[11]; };
+                    CHECK(std::abs(height(rotated.poses)-height(mesh.poses))<0.00001f);
+                    const auto length=[&](const auto &p){return p[i+3]*p[i+3]+p[i+4]*p[i+4]+p[i+5]*p[i+5];};
+                    CHECK(std::abs(length(rotated.poses)-length(mesh.poses))<0.00001f);
+                }
+                previous=rotated.identity;
+            }
+            CHECK(mesh.rotatedView(360,t.inverse,t.projection,t.normals).identity==0);
+        }
+    }
+#ifdef HAVE_OPENGL
+    TEST_CASE("rotated swarms render independently with every material [display][artifacts]")
+    {
+        glob2test::ToolkitScope toolkit;
+        auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU,"Swarm camera and material contract");
+        GAGCore::SkinMesh mesh; std::string error;
+        REQUIRE(mesh.load((glob2test::sourceRoot()/"data/skins/colony-v1/swarm-crown.gsk").string(),error));
+        const auto &t=Online::SkinViews[1];
+        std::array<GAGCore::SkinMesh,4> variants;
+        for (unsigned i=0;i<4;++i) variants[i]=mesh.rotatedView(i*90,t.inverse,t.projection,t.normals);
+        GAGCore::DrawableSurface paint(512,512), material(512,512);
+        paint.drawFilledRect(0,0,512,512,GAGCore::Color(237,146,82));
+        auto pixels=[&]() {
+            glFinish(); std::vector<unsigned char> result(640*480*4);
+            glReadPixels(0,0,640,480,GL_RGBA,GL_UNSIGNED_BYTE,result.data());
+            CHECK(glGetError()==GL_NO_ERROR); return result;
+        };
+        auto draw=[&](unsigned id,bool reverse) {
+            material.drawFilledRect(0,0,512,512,GAGCore::Color(id,id,id));
+            std::vector<GAGCore::SkinMeshRequest> requests;
+            for (auto &variant:variants) requests.push_back({&variant,0,&paint,&material,GAGCore::SkinRegionSwarm});
+            gfx->prepareSkinMeshes(requests);
+            gfx->drawFilledRect(0,0,640,480,GAGCore::Color(38,33,45));
+            for (unsigned k=0;k<4;++k) {
+                unsigned i=reverse?3-k:k;
+                REQUIRE(gfx->drawSkinMesh(variants[i],0,paint,material,GAGCore::SkinRegionSwarm,12+i*156,148,144,144));
+            }
+            return pixels();
+        };
+        for (unsigned id=0;id<4;++id) {
+            const auto forward=draw(id,false);
+            const auto reverse=draw(id,true);
+            unsigned differences=0, maximum=0;
+            for (unsigned i=0;i<forward.size();++i) if (forward[i]!=reverse[i]) { ++differences; maximum=std::max(maximum,unsigned(std::abs(int(forward[i])-int(reverse[i])))); }
+            INFO("material " << id << " differences " << differences << " maximum " << maximum);
+            // Reallocation in different atlas slots can shift sparse bilinear
+            // rounding by one channel level; angle/cache mixups are far larger.
+            CHECK(maximum<=1);
+            CHECK(differences<=100);
+            gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/swarm-material-"+std::to_string(id)+".bmp");
+            // Substantial non-background coverage proves this is not an empty fallback.
+            unsigned changed=0;
+            for (unsigned p=0;p<forward.size();p+=4) changed+=forward[p]!=38 || forward[p+1]!=33 || forward[p+2]!=45;
+            CHECK(changed>1000);
+        }
+    }
+#endif
     TEST_CASE("bounded transactional decoding")
     {
         glob2test::TempDir directory("skin-mesh");

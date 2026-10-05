@@ -1,4 +1,5 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import pg from 'pg';
 import { LeaderElection, PgPubSub } from '../src/index.ts';
 import { createTestDatabase, type TestDatabase } from './support.ts';
 
@@ -66,6 +67,140 @@ describe('PgPubSub', () => {
       await bus.close();
     }
   });
+
+  it.each(['connect', 'listen'] as const)(
+    'discards failed subscriptions after a %s failure and recovers cleanly',
+    async (failure) => {
+      const bus = new PgPubSub({ connectionString: database.url });
+      const stale = vi.fn(),
+        live = vi.fn();
+      const end = vi.spyOn(pg.Client.prototype, 'end');
+      const fail =
+        failure === 'connect'
+          ? vi
+              .spyOn(pg.Client.prototype, 'connect')
+              .mockRejectedValueOnce(new Error('connect failed'))
+          : vi
+              .spyOn(pg.Client.prototype, 'query')
+              .mockRejectedValueOnce(new Error('listen failed'));
+      try {
+        await expect(bus.subscribe('failed-listen', stale)).rejects.toThrow(`${failure} failed`);
+        expect(bus.connected).toBe(false);
+        expect(end).toHaveBeenCalledOnce();
+        fail.mockRestore();
+        const unsubscribe = await bus.subscribe('failed-listen', live);
+        await bus.publish(database.pool, 'failed-listen', 'recovered');
+        await until(() => live.mock.calls.length === 1);
+        expect(stale).not.toHaveBeenCalled();
+        await unsubscribe();
+        await bus.publish(database.pool, 'failed-listen', 'after-unsubscribe');
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        expect(live).toHaveBeenCalledOnce();
+        expect(stale).not.toHaveBeenCalled();
+      } finally {
+        fail.mockRestore();
+        end.mockRestore();
+        await bus.close();
+      }
+    },
+  );
+
+  it.each(['resolve', 'reject'] as const)(
+    'shares pending LISTEN readiness with concurrent subscribers: %s',
+    async (outcome) => {
+      const bus = new PgPubSub({ connectionString: database.url });
+      const firstHandler = vi.fn(),
+        secondHandler = vi.fn();
+      let resolve!: () => void, reject!: (error: Error) => void;
+      const pending = new Promise<void>((yes, no) => {
+        resolve = yes;
+        reject = no;
+      });
+      await bus.subscribe('warmup', () => undefined);
+      const query = vi.spyOn(pg.Client.prototype, 'query').mockImplementationOnce(() => pending);
+      try {
+        const first = bus.subscribe('concurrent-listen', firstHandler);
+        const second = bus.subscribe('concurrent-listen', secondHandler);
+        const firstSettled = vi.fn(),
+          secondSettled = vi.fn();
+        void first.then(firstSettled, firstSettled);
+        void second.then(secondSettled, secondSettled);
+        await vi.waitFor(() => expect(query).toHaveBeenCalledOnce());
+        expect(firstSettled).not.toHaveBeenCalled();
+        expect(secondSettled).not.toHaveBeenCalled();
+        if (outcome === 'resolve') resolve();
+        else reject(new Error('LISTEN unavailable'));
+        const results = await Promise.allSettled([first, second]);
+        expect(results.map((result) => result.status)).toEqual(
+          outcome === 'resolve' ? ['fulfilled', 'fulfilled'] : ['rejected', 'rejected'],
+        );
+        query.mockRestore();
+        if (outcome === 'resolve') {
+          for (const result of results) if (result.status === 'fulfilled') await result.value();
+        }
+        const recovered = vi.fn();
+        const remove = await bus.subscribe('concurrent-listen', recovered);
+        await bus.publish(database.pool, 'concurrent-listen', 'recovered');
+        await until(() => recovered.mock.calls.length === 1);
+        expect(firstHandler).not.toHaveBeenCalled();
+        expect(secondHandler).not.toHaveBeenCalled();
+        await remove();
+      } finally {
+        query.mockRestore();
+        await bus.close();
+      }
+    },
+  );
+
+  it.each(['resolve', 'reject'] as const)(
+    'stops reconnecting when an in-flight connection settles after close: %s',
+    async (outcome) => {
+      vi.useFakeTimers();
+      const clients: pg.Client[] = [];
+      let resolve!: () => void, reject!: (error: Error) => void;
+      const pending = new Promise<void>((yes, no) => {
+        resolve = yes;
+        reject = no;
+      });
+      const connect = vi.spyOn(pg.Client.prototype, 'connect').mockImplementation(function (
+        this: pg.Client,
+      ) {
+        clients.push(this);
+        return clients.length === 1 ? Promise.resolve() : pending;
+      });
+      const query = vi.spyOn(pg.Client.prototype, 'query').mockResolvedValue(undefined);
+      const end = vi.spyOn(pg.Client.prototype, 'end').mockResolvedValue(undefined);
+      const onReconnect = vi.fn();
+      const bus = new PgPubSub({
+        connectionString: database.url,
+        reconnectDelayMs: 20,
+        onReconnect,
+      });
+      try {
+        await bus.subscribe('shutdown-race', () => undefined);
+        clients[0]!.emit('error', new Error('connection lost'));
+        await vi.advanceTimersByTimeAsync(20);
+        expect(connect).toHaveBeenCalledTimes(2);
+        await bus.close();
+        if (outcome === 'resolve') resolve();
+        else reject(new Error('reconnect failed'));
+        await vi.advanceTimersByTimeAsync(0);
+        expect(bus.connected).toBe(false);
+        expect(bus.reconnectCount).toBe(0);
+        expect(onReconnect).not.toHaveBeenCalled();
+        expect(end).toHaveBeenCalledTimes(2);
+        expect(vi.getTimerCount()).toBe(0);
+        await vi.advanceTimersByTimeAsync(60000);
+        expect(connect).toHaveBeenCalledTimes(2);
+      } finally {
+        await bus.close();
+        connect.mockRestore();
+        query.mockRestore();
+        end.mockRestore();
+        vi.useRealTimers();
+      }
+    },
+  );
 
   it('reconnects and listens again after losing its connection', async () => {
     let reconnects = 0;

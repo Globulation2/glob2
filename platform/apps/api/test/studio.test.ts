@@ -81,7 +81,29 @@ it('keeps studio history and previews private while supporting owner download, r
     const studio = new Studio(harness.database.db),
       blobs = new AgentBlobs(harness.blobs, harness.database.db);
     await studio.credits.adjust(owner.accountId, randomUUID(), 3, 'grant');
-    const thread = (await studio.create(owner.accountId, 'Private pond country')).id;
+    const thread = randomUUID();
+    const creation = { id: thread, title: 'Private pond country' };
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await call(
+        'POST',
+        '/api/v1/map-studio/threads',
+        owner.accessToken,
+        creation,
+      );
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ id: thread });
+    }
+    expect(
+      (await call('POST', '/api/v1/map-studio/threads', other.accessToken, creation)).status,
+    ).toBe(409);
+    expect(
+      (
+        await call('POST', '/api/v1/map-studio/threads', owner.accessToken, {
+          ...creation,
+          title: 'Different title',
+        })
+      ).status,
+    ).toBe(409);
     await harness.database.db
       .insertInto('studio_messages')
       .values({
@@ -180,5 +202,140 @@ it('retains the signed payment webhook after disabling generation and removing s
     });
   } finally {
     vi.unstubAllEnvs();
+  }
+});
+
+it('streams durable progress, resumes by event id and closes after authorization is revoked', async () => {
+  const { Studio } = await import('@glob2/map-studio');
+  const { AgentBlobs } = await import('@glob2/engine/blobs');
+  const { registeredPlayer } = await import('./playSupport.ts');
+  const { sql } = await import('kysely');
+  const { notify } = await import('@glob2/map-studio');
+  const { sessionCookieName } = await import('../src/identity.ts');
+  const instance = await harness.start({
+    instance: { auth: { providers: [], local: { enabled: true } } },
+  });
+  const owner = await registeredPlayer(instance, 'StreamOwner');
+  const other = await registeredPlayer(instance, 'StreamOther');
+  const controller = new AbortController();
+  const resumedController = new AbortController();
+  try {
+    const studio = new Studio(harness.database.db);
+    await studio.credits.adjust(owner.accountId, randomUUID(), 1, 'grant');
+    const thread = (await studio.create(owner.accountId, 'Streamed terrain')).id;
+    await studio.submit(
+      owner.accountId,
+      thread,
+      'chat',
+      { id: randomUUID(), text: 'A river valley' },
+      'v1',
+    );
+    const row = (await studio.request(
+      (await studio.get(owner.accountId, thread)).requests[0]!.id,
+    ))!;
+    const path = `/api/v1/map-studio/threads/${thread}`;
+    const headers = { authorization: `Bearer ${owner.accessToken}` };
+    expect(
+      await (await fetch(instance.url + '/api/v1/map-studio/account', { headers })).json(),
+    ).toMatchObject({ activeRequest: { id: row.id, threadId: thread, status: 'queued' } });
+    expect(
+      (
+        await fetch(instance.url + path + '/events', {
+          headers: { authorization: `Bearer ${other.accessToken}` },
+        })
+      ).status,
+    ).toBe(404);
+    const initial = await studio.get(owner.accountId, thread);
+    const response = await fetch(instance.url + path + `/events?cursor=${initial.cursor}`, {
+      headers,
+      signal: controller.signal,
+    });
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let text = '';
+    const until = async (needle: string) => {
+      while (!text.includes(needle)) {
+        const chunk = await reader.read();
+        if (chunk.done) throw new Error('Stream closed before ' + needle);
+        text += decoder.decode(chunk.value);
+      }
+    };
+    await until(': connected');
+    await studio.stage(row, 'prepare', 'running');
+    await until('Prepare the design');
+    const event = (await studio.events(owner.accountId, thread, initial.cursor!)).at(-1)!;
+    expect(text).toContain(`id: ${event.id}`);
+    controller.abort();
+    await studio.stage(row, 'prepare', 'complete');
+    const secret = await instance.app.identity.webSessions.create(owner.accountId);
+    const resumed = await fetch(instance.url + path + '/events', {
+      headers: {
+        cookie: `${sessionCookieName(instance.app.identity)}=${secret}`,
+        'last-event-id': event.id,
+      },
+      signal: resumedController.signal,
+    });
+    const nextReader = resumed.body!.getReader();
+    let next = '';
+    while (!next.includes('"status":"complete"')) {
+      const chunk = await nextReader.read();
+      next += decoder.decode(chunk.value);
+    }
+    expect(next).not.toContain(`id: ${event.id}\n`);
+    // Simulate a lost Postgres notification: commit an event without NOTIFY.
+    // The heartbeat catch-up must still deliver it on this open connection.
+    await harness.database.db.transaction().execute(async (db) => {
+      const cursor = (
+        await sql<{
+          cursor: number;
+        }>`UPDATE studio_threads SET event_cursor=event_cursor+1 WHERE id=${thread} RETURNING event_cursor AS cursor`.execute(
+          db,
+        )
+      ).rows[0]!.cursor;
+      await sql`INSERT INTO studio_events(thread_id,cursor,request_id,dedup,type,payload) VALUES(${thread},${cursor},${row.id},'lost-notify','stage','{"id":"terrain","label":"Recovered stage","status":"running"}')`.execute(
+        db,
+      );
+    });
+    while (!next.includes('Recovered stage')) {
+      const chunk = await nextReader.read();
+      if (chunk.done) throw new Error('Lost event');
+      next += decoder.decode(chunk.value);
+    }
+    expect(next).toContain(': heartbeat');
+    const blobs = new AgentBlobs(harness.blobs, harness.database.db);
+    const hash = await blobs.write(Buffer.from('private-stage-image'), 'image/png');
+    const artifact = await studio.artifact(row, {
+      stage: 'prepare',
+      kind: 'reference',
+      label: 'Reference sheet',
+      hash,
+    });
+    expect((await fetch(instance.url + artifact.url, { headers })).status).toBe(200);
+    expect(
+      (
+        await fetch(instance.url + artifact.url, {
+          headers: { authorization: `Bearer ${other.accessToken}` },
+        })
+      ).status,
+    ).toBe(404);
+    const progress = await fetch(instance.url + path + `/requests/${row.id}/progress`, { headers });
+    expect(await progress.json()).toMatchObject({
+      requestId: row.id,
+      artifacts: [{ id: artifact.id }],
+      historical: false,
+    });
+    await sql`UPDATE web_sessions SET expires_at=now()-interval '1 second' WHERE account_id=${owner.accountId}`.execute(
+      harness.database.db,
+    );
+    await notify(harness.database.db, owner.accountId, thread);
+    let ended = false;
+    for (let n = 0; n < 10 && !ended; n++) ended = (await nextReader.read()).done;
+    expect(ended).toBe(true);
+  } finally {
+    controller.abort();
+    resumedController.abort();
+    owner.client.close();
+    other.client.close();
   }
 });

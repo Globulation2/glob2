@@ -60,6 +60,24 @@ it('publishes canonical paint, retains old versions, equips and serves verified 
   });
   expect(revised.json().id).not.toBe(version.id);
   expect(revised.json().skinId).toBe(version.skinId);
+  const rotated = await app.inject({
+    method: 'POST',
+    url: '/api/v1/skins/publish',
+    headers,
+    payload: { ...payload, skinId: version.skinId, swarmViewAngle: 127 },
+  });
+  expect(rotated.statusCode, rotated.body).toBe(200);
+  expect(rotated.json().id).not.toBe(version.id);
+  expect(rotated.json().swarmViewAngle).toBe(127);
+  expect(rotated.json().textureSha256).toBe(version.textureSha256);
+  expect(rotated.json().manifestSha256).not.toBe(version.manifestSha256);
+  const zeroAngle = await app.inject({
+    method: 'POST',
+    url: '/api/v1/skins/publish',
+    headers,
+    payload: { ...payload, name: 'Renamed design', skinId: version.skinId, swarmViewAngle: 0 },
+  });
+  expect(zeroAngle.json().id).toBe(version.id);
   const original = await harness.database.db
     .selectFrom('colony_skin_versions')
     .selectAll()

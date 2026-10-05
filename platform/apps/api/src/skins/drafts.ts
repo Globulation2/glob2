@@ -29,6 +29,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
             name: row.name,
             buildingColor: row.building_color,
             swarmMesh: knownSwarmMesh(row.swarm_mesh) ?? 'classic',
+            swarmViewAngle: row.swarm_view_angle,
             imageBase64: row.image.toString('base64'),
             materialBase64: row.material.toString('base64'),
           }
@@ -82,6 +83,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
         name: input.name.trim(),
         building_color: input.buildingColor,
         swarm_mesh: input.swarmMesh ?? 'classic',
+        swarm_view_angle: input.swarmViewAngle ?? 0,
         image,
         material,
         updated_at: new Date(),

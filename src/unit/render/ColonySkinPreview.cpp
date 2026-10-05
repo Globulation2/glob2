@@ -17,6 +17,7 @@
 #include <FileManager.h>
 #include <StreamBackend.h>
 #include "online/SkinDownloads.h"
+#include "online/SkinViewTransforms.h"
 #include <SDL3/SDL.h>
 #include <ctime>
 
@@ -81,6 +82,8 @@ void ColonySkinPreview::uninstall(int team)
     hairy[team] = {};
     colors[team].reset();
     swarmChoice[team] = 0;
+    swarmAngles[team] = 0;
+    orientedSwarms[team] = {};
 }
 bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 {
@@ -134,6 +137,8 @@ void ColonySkinPreview::poll()
             {
                 colors[entry.skin.team]=entry.skin.buildingColor;
                 swarmChoice[entry.skin.team]=entry.skin.swarmMesh;
+                swarmAngles[entry.skin.team]=entry.skin.swarmViewAngle;
+                orientedSwarms[entry.skin.team]={};
             }
     }
     if (visible && !ready && !attemptedMeshes && globalContainer && globalContainer->gfx &&
@@ -181,7 +186,14 @@ bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
 const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const
 {
     const auto &mesh = swarms[swarmChoice[team]];
-    return mesh.identity ? &mesh : nullptr;
+    if (!mesh.identity) return nullptr;
+    if (!swarmAngles[team]) return &mesh;
+    auto &oriented = orientedSwarms[team];
+    if (!oriented.identity) {
+        const auto &view = Online::SkinViews[swarmChoice[team]];
+        oriented = mesh.rotatedView(swarmAngles[team], view.inverse, view.projection, view.normals);
+    }
+    return oriented.identity ? &oriented : nullptr;
 }
 
 std::uint8_t ColonySkinPreview::unitRegion(int type)

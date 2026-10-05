@@ -84,6 +84,10 @@ describe('service roles on a fresh database', () => {
       expect(await attempt(url, 'DELETE FROM platform_migrations')).toBe(DENIED);
       expect(await attempt(url, 'SELECT count(*) FROM platform_migrations')).toBe('ok');
       expect(await attempt(url, 'SELECT count(*) FROM matches')).toBe('ok');
+      for (const table of ['studio_events', 'studio_artifacts', 'studio_provider_usage']) {
+        expect(await attempt(url, `SELECT count(*) FROM ${table}`)).toBe('ok');
+        expect(await attempt(url, `DELETE FROM ${table} WHERE false`)).toBe('ok');
+      }
       // Both enqueue and run graphile-worker jobs (its tables use row security).
       expect(await attempt(url, "SELECT graphile_worker.add_job('test:task', '{}'::json)")).toBe(
         'ok',
@@ -201,6 +205,10 @@ describe('upgrading a database the superuser migrated', () => {
     for (const role of ['api', 'worker'] as const) {
       const url = database.urlAs(role);
       expect(await attempt(url, 'SELECT count(*) FROM matches')).toBe('ok');
+      for (const table of ['studio_events', 'studio_artifacts', 'studio_provider_usage']) {
+        expect(await attempt(url, `SELECT count(*) FROM ${table}`)).toBe('ok');
+        expect(await attempt(url, `DELETE FROM ${table} WHERE false`)).toBe('ok');
+      }
       expect(
         await attempt(url, "INSERT INTO accounts (kind, display_name) VALUES ('guest', $1)", [
           `Guest ${role}`,

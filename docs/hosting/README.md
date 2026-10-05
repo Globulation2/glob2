@@ -541,7 +541,7 @@ sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 
 ## JavaScript AI validation rollout
 
-Apply database migrations through `0037_ai_library.sql`, then deploy the engine
+Apply database migrations through `0039_ai_library.sql`, then deploy the engine
 agent and platform worker before enabling publishing on the website. A working
 `validate-ai` agent heartbeat is required for upload acceptance. The agent performs
 an isolated startup probe; failure disables this capability and logs the reason.
@@ -1255,6 +1255,29 @@ block further requests for that account until reconciled. Administrators can
 mark a confirmed unrecoverable request failed using
 `POST /api/v1/admin/map-studio/requests/<id>/fail`; this releases the credit and
 records an audit entry. Never re-dispatch an uncertain paid provider request.
+
+Deploy the additive studio-event migration first, then replace and drain all old
+authoring workers before updating the API and web client. The migration backfills
+anonymous daily provider-call totals and counts subsequent journal inserts
+transactionally, including calls from old workers. Updated workers enforce their
+budget against these totals; old workers still count private journal rows, which
+the updated API removes on account deletion. Do not enable the updated deletion
+path while old workers remain. Keep the previous long-poll route during client rollout.
+The stage event journal and authorized artifact records are retained with each
+thread; do not prune their cursor history independently of the thread.
+
+Studio progress uses persistent SSE at
+`/api/v1/map-studio/threads/<id>/events`. Preserve `text/event-stream`,
+`Cache-Control: no-cache, no-transform`, and `Last-Event-ID` through the edge.
+Caddy's reverse proxy flushes SSE responses as they arrive; any additional load
+balancer must disable buffering for this content type and permit connections
+with 15-second heartbeat intervals. Verify that an authenticated `curl -N` through
+the public edge receives the initial comment immediately, then stage events
+before generation finishes. Reconnect with the last event ID to check replay.
+Streams do not own worker lifetimes; disconnecting never cancels generation.
+Stream logs include delivered-event counts, cursors, connection duration and
+closure errors, without message text or provider diagnostics. Event timestamps
+provide stage duration and delivery latency evidence.
 
 Monitor `studio_requests` status/age, `studio_attempts` usage/model, map-wallet
 reservations, delivery failure rates and queue age. Pause sales or generation via

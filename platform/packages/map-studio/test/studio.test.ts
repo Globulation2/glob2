@@ -3,7 +3,7 @@ import { sql } from 'kysely';
 import { beforeAll, afterAll, it, expect } from 'vitest';
 import { createTestDatabase, type TestDatabase } from '../../db/test/support.ts';
 import { Credits } from '@glob2/billing';
-import { Studio } from '../src/studio.ts';
+import { Studio, emitEvent, emitState } from '../src/studio.ts';
 let database: TestDatabase, studio: Studio;
 beforeAll(async () => {
   database = await createTestDatabase();
@@ -206,4 +206,197 @@ it('bounds history, omits conversation snapshots and retrieves older pages priva
   const older = await studio.get(account, thread, page.history);
   expect(older.messages).toHaveLength(6);
   expect(new Set([...older.messages, ...page.messages].map((m) => m.id)).size).toBe(206);
+});
+
+it('commits ordered events with snapshots, rolls back cursors and resumes without gaps', async () => {
+  const { account, thread } = await fixture();
+  const { id } = await studio.submit(
+    account,
+    thread,
+    'generate',
+    { id: randomUUID(), settings },
+    'v1',
+  );
+  const row = (await studio.request(id))!;
+  const before = await studio.get(account, thread);
+  expect((await studio.progress(account, thread, id)).historical).toBe(false);
+  let release!: () => void, locked!: () => void;
+  const hold = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const acquired = new Promise<void>((resolve) => {
+    locked = resolve;
+  });
+  const first = database.db.transaction().execute(async (db) => {
+    await emitEvent(
+      db,
+      row,
+      { type: 'check', payload: { id: 'one', label: 'First check', status: 'passed' } },
+      'first',
+    );
+    locked();
+    await hold;
+  });
+  await acquired;
+  const second = database.db
+    .transaction()
+    .execute((db) =>
+      emitEvent(
+        db,
+        row,
+        { type: 'check', payload: { id: 'two', label: 'Second check', status: 'passed' } },
+        'second',
+      ),
+    );
+  expect((await studio.get(account, thread)).cursor).toBe(before.cursor);
+  release();
+  await Promise.all([first, second]);
+  const events = await studio.events(account, thread, before.cursor!);
+  expect(events.map((e) => (e.type === 'check' ? e.payload.id : ''))).toEqual(['one', 'two']);
+  expect(Number(events[1]!.id)).toBe(Number(events[0]!.id) + 1);
+  const committed = (await studio.get(account, thread)).cursor;
+  await expect(
+    database.db.transaction().execute(async (db) => {
+      await emitEvent(db, row, { type: 'state', payload: { status: 'failed' } }, 'rollback');
+      throw new Error('Rollback');
+    }),
+  ).rejects.toThrow('Rollback');
+  expect((await studio.get(account, thread)).cursor).toBe(committed);
+  expect(await studio.events(account, thread, committed!)).toEqual([]);
+});
+
+it('keeps worker progress idempotent, fences stale leases and never regresses completed checks', async () => {
+  const { account, thread } = await fixture();
+  const { id } = await studio.submit(
+    account,
+    thread,
+    'generate',
+    { id: randomUUID(), settings },
+    'v1',
+  );
+  const row = (await studio.request(id))!;
+  await Promise.all([
+    studio.stage(row, 'terrain', 'complete'),
+    studio.stage(row, 'terrain', 'complete'),
+  ]);
+  await studio.stage(row, 'terrain', 'running');
+  await studio.check(row, { id: 'routes', label: 'Walking routes', status: 'passed' });
+  await studio.check(row, { id: 'routes', label: 'Walking routes', status: 'running' });
+  const progress = await studio.progress(account, thread, id);
+  expect(progress.stages.find((s) => s.id === 'terrain')?.status).toBe('complete');
+  expect(progress.checks).toEqual([{ id: 'routes', label: 'Walking routes', status: 'passed' }]);
+  expect(
+    (await studio.events(account, thread, '0')).filter((e) => e.type === 'stage'),
+  ).toHaveLength(1);
+  await sql`UPDATE studio_requests SET lease=${randomUUID()} WHERE id=${id}`.execute(database.db);
+  await expect(studio.stage(row, 'build', 'running')).rejects.toThrow('lease expired');
+});
+
+it('authorizes stage images through their thread, supports safe legacy images, and cascades account deletion', async () => {
+  const { account, thread } = await fixture(),
+    other = await fixture();
+  const { id } = await studio.submit(
+    account,
+    thread,
+    'generate',
+    { id: randomUUID(), settings },
+    'v1',
+  );
+  const row = (await studio.request(id))!;
+  const hash = randomUUID().replaceAll('-', '').repeat(2);
+  await database.db
+    .insertInto('blobs')
+    .values({
+      sha256: hash,
+      size: 12,
+      storage_key: 'stage-image',
+      content_type: 'image/png',
+      visibility: 'private',
+    })
+    .execute();
+  const image = { stage: 'build', kind: 'crop', label: 'Selected terrain', hash } as const;
+  const [a, b] = await Promise.all([studio.artifact(row, image), studio.artifact(row, image)]);
+  expect(a.id).toBe(b.id);
+  expect(await studio.artifactBlob(account, thread, a.id)).toMatchObject({
+    storage_key: 'stage-image',
+  });
+  await expect(studio.artifactBlob(other.account, thread, a.id)).rejects.toThrow('No such');
+  await expect(studio.artifactBlob(other.account, other.thread, a.id)).rejects.toThrow('No such');
+  await expect(studio.artifactBlob(account, thread, hash)).rejects.toThrow('No such');
+  await studio.checkpoint(row, 'processing', { candidateHash: hash, reportHash: hash });
+  expect(await studio.artifactBlob(account, thread, `legacy-${id}-candidateHash`)).toMatchObject({
+    storage_key: 'stage-image',
+  });
+  await expect(studio.artifactBlob(account, thread, `legacy-${id}-reportHash`)).rejects.toThrow(
+    'No such',
+  );
+  await database.db.deleteFrom('accounts').where('id', '=', account).execute();
+  expect(
+    await database.db
+      .selectFrom('studio_events')
+      .selectAll()
+      .where('thread_id', '=', thread)
+      .execute(),
+  ).toEqual([]);
+  expect(
+    await database.db
+      .selectFrom('studio_artifacts')
+      .selectAll()
+      .where('thread_id', '=', thread)
+      .execute(),
+  ).toEqual([]);
+});
+
+it('emits recurring state transitions while deduplicating identical retries and capacity errors', async () => {
+  const { account, thread } = await fixture();
+  const { id } = await studio.submit(
+    account,
+    thread,
+    'generate',
+    { id: randomUUID(), settings },
+    'v1',
+  );
+  const row = (await studio.request(id))!;
+  const cursor = (await studio.get(account, thread)).cursor!;
+  for (const status of [
+    'processing',
+    'processing',
+    'dispatched',
+    'processing',
+    'processing',
+  ] as const)
+    await database.db.transaction().execute(async (db) => {
+      await sql`UPDATE studio_requests SET status=${status} WHERE id=${id}`.execute(db);
+      await emitState(db, row, status);
+    });
+  expect(
+    (await studio.events(account, thread, cursor)).map((e) =>
+      e.type === 'state' ? e.payload.status : '',
+    ),
+  ).toEqual(['processing', 'dispatched', 'processing']);
+  await database.db.transaction().execute(async (db) => {
+    await sql`UPDATE studio_requests SET error='Waiting for service capacity' WHERE id=${id}`.execute(
+      db,
+    );
+    await emitState(db, row, 'processing');
+    await emitState(db, row, 'processing');
+  });
+  expect(await studio.events(account, thread, cursor)).toHaveLength(4);
+});
+
+it('recovers thread creation with a supplied UUID without changing another project', async () => {
+  const owner = await fixture(),
+    other = await fixture();
+  const id = randomUUID();
+  const result = await Promise.all(
+    Array.from({ length: 5 }, () => studio.create(owner.account, 'A new river', id)),
+  );
+  expect(result).toEqual(Array.from({ length: 5 }, () => ({ id })));
+  expect((await studio.list(owner.account)).filter((t) => t.id === id)).toHaveLength(1);
+  expect(await studio.create(owner.account, ' A new river ', id)).toEqual({ id });
+  await expect(studio.create(other.account, 'A new river', id)).rejects.toThrow('retry identifier');
+  await expect(studio.create(owner.account, 'Changed title', id)).rejects.toThrow(
+    'retry identifier',
+  );
+  expect((await studio.get(owner.account, id)).title).toBe('A new river');
 });

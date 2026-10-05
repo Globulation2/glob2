@@ -9,6 +9,7 @@ export interface SkinContent {
   layout: 'colony-v2';
   buildingColor: number;
   swarmMesh: SwarmMeshId;
+  swarmViewAngle?: number;
 }
 
 /**
@@ -26,6 +27,7 @@ export function skinManifestSha256(content: SkinContent): string {
     buildingColor: content.buildingColor,
   };
   if (content.swarmMesh !== 'classic') manifest['swarmMesh'] = content.swarmMesh;
+  if (content.swarmViewAngle) manifest['swarmViewAngle'] = content.swarmViewAngle;
   return sha256Hex(Buffer.from(JSON.stringify(manifest)));
 }
 

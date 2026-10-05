@@ -16,6 +16,7 @@ import { body } from '../http/validate.ts';
 import type { RoomService } from '../play/rooms.ts';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
+import { streamStudioEvents } from './studioEvents.ts';
 export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
   const studio = new Studio(app.services.db),
     config = app.services.config.instance.mapStudio;
@@ -73,6 +74,7 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
     const account = await accountOf(request);
     return {
       enabled,
+      activeRequest: (await studio.active(account.id)) ?? null,
       ...(await studio.credits.balance(account.id)),
       packs:
         enabled && config?.salesEnabled && checkout
@@ -95,10 +97,13 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
   app.get('/api/v1/map-studio/threads', async (request) => ({
     items: await studio.list((await accountOf(request)).id),
   }));
-  app.post('/api/v1/map-studio/threads', async (request) => {
-    requireEnabled();
-    return studio.create((await accountOf(request)).id, body(StudioCreate, request.body).title);
-  });
+  app.post('/api/v1/map-studio/threads', async (request) =>
+    guarded(async () => {
+      requireEnabled();
+      const input = body(StudioCreate, request.body);
+      return studio.create((await accountOf(request)).id, input.title, input.id);
+    }),
+  );
   app.get('/api/v1/map-studio/threads/:id', async (request, reply) =>
     guarded(async () => {
       reply.header('cache-control', 'no-store');
@@ -107,6 +112,58 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
         request.query,
       );
       return studio.get((await accountOf(request)).id, threadOf(request), before);
+    }),
+  );
+  app.get('/api/v1/map-studio/threads/:id/requests/:requestId/progress', async (request, reply) =>
+    guarded(async () => {
+      const params = body(Strict({ id: Uuid, requestId: Uuid }), request.params);
+      reply.header('cache-control', 'no-store');
+      return studio.progress((await accountOf(request)).id, params.id, params.requestId);
+    }),
+  );
+  app.get('/api/v1/map-studio/threads/:id/artifacts/:artifactId', async (request, reply) =>
+    guarded(async () => {
+      const params = body(
+        Strict({ id: Uuid, artifactId: Type.String({ minLength: 1, maxLength: 120 }) }),
+        request.params,
+      );
+      const blob = await studio.artifactBlob(
+        (await accountOf(request)).id,
+        params.id,
+        params.artifactId,
+      );
+      const stream = await app.services.blobs.get(blob.storage_key);
+      if (!stream) throw apiError('not_found', 'The stage image is not available.');
+      return reply
+        .header('content-type', blob.content_type)
+        .header('cache-control', 'private, no-store')
+        .header('x-content-type-options', 'nosniff')
+        .send(stream);
+    }),
+  );
+  app.get('/api/v1/map-studio/threads/:id/events', async (request, reply) =>
+    guarded(async () => {
+      const account = await accountOf(request),
+        thread = threadOf(request);
+      await studio.own(account.id, thread);
+      const query = body(
+        Strict({ cursor: Type.Optional(Type.String({ pattern: '^[0-9]{1,16}$' })) }),
+        request.query,
+      );
+      const header = request.headers['last-event-id'];
+      if (header !== undefined && (typeof header !== 'string' || !/^[0-9]{1,16}$/.test(header)))
+        throw apiError('bad_request', 'Invalid studio event cursor.');
+      const cursor = typeof header === 'string' ? header : (query.cursor ?? '0');
+      return streamStudioEvents({
+        studio,
+        pubsub: app.services.pubsub,
+        request,
+        reply,
+        accountId: account.id,
+        thread,
+        cursor,
+        authenticate: async () => (await accountOf(request)).id,
+      });
     }),
   );
   app.post('/api/v1/map-studio/threads/:id/messages', async (request) =>

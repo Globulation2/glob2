@@ -48,6 +48,7 @@ export async function collectBlobs(
         AND NOT EXISTS (SELECT 1 FROM map_uploads u WHERE u.blob_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM generated_maps g WHERE g.map_hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM matches m WHERE m.map_hash = c.sha256)
+        AND NOT EXISTS (SELECT 1 FROM studio_artifacts a WHERE a.hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM studio_requests r WHERE r.map_hash = c.sha256 OR strpos(r.checkpoints::text, c.sha256) > 0)
         AND NOT EXISTS (SELECT 1 FROM studio_attempts a WHERE strpos(a.input::text, c.sha256) > 0 OR strpos(a.output::text, c.sha256) > 0)
       ORDER BY c.created_at
