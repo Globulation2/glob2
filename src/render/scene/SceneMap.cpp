@@ -2,6 +2,7 @@
 #include "SceneMap.h"
 
 #include "Map.h"
+#include "TerrainRegistry.h"
 #include <algorithm>
 
 void SceneMap::extract(const Map &map)
@@ -146,4 +147,24 @@ TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
 		result.materials[i + firstEdge] = visual.appearance;
 	}
 	return result;
+}
+
+SceneMap::SceneMap() : registry(TerrainRegistry::builtins()) {}
+
+const TerrainPresentation &SceneMap::terrainPresentation(TerrainType type) const
+{
+	return registry->presentation(type);
+}
+
+bool SceneMap::isHardSpaceForBuilding(int x, int y, int w, int h) const
+{
+	for (int yi = y; yi < y + h; yi++)
+		for (int xi = x; xi < x + w; xi++)
+		{
+			const size_t i = coordToIndex(xi, yi);
+			if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
+				!registry->properties(terrainTypes[i]).buildable)
+				return false;
+		}
+	return true;
 }
