@@ -1,0 +1,17 @@
+test_scene_types_do_not_include_simulation_headers (boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) ... 
+  test_scene_types_do_not_include_simulation_headers (boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) (header='TerrainCompatibility.h', include='Game.h') ... FAIL
+
+======================================================================
+FAIL: test_scene_types_do_not_include_simulation_headers (boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) (header='TerrainCompatibility.h', include='Game.h')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-browser-png16/glob2/test/build_system/test_scene_boundary.py", line 45, in test_scene_types_do_not_include_simulation_headers
+    self.assertIn(name, SCENE_INCLUDES | {'SceneBuffer.h'})
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Game.h' not found in {'SceneEntities.h', 'SDL_stdinc.h', 'TerrainCompatibility.h', 'sim/ClientRequests.h', 'SceneBuffer.h', 'TerrainProperties.h', 'SceneMap.h', 'Ressource.h', 'TerrainPresentation.h', 'BitArray.h', 'AITelemetryValue.h', 'SDL3/SDL_stdinc.h', 'sim/EntityRef.h', 'SDLGraphicContext.h', 'UnitConsts.h', 'ScenePanels.h', 'Scene.h', 'TerrainType.h'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+PASS: forbidden simulation include through TerrainCompatibility.h is detected.
