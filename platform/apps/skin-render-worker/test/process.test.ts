@@ -13,7 +13,8 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { collectBlobs } from '../../worker/src/blobGc.ts';
-import { renderSkin, validateBundle } from '../src/process.ts';
+import { renderSkin } from '../src/process.ts';
+import { validateBundle } from '../src/bundle.ts';
 let database: TestDatabase, work: string, blobs: FsBlobStore;
 const logger = createLogger('skin-test', 'silent'),
   revision = 'd'.repeat(64);

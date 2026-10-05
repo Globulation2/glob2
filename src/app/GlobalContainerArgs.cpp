@@ -440,6 +440,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("--local-map / --room-map <mapId> <hash> <title> [--instance <origin>]\tplay a catalog map\n");
 			printf("--join <invite link or code>\tjoin an online room (also: a glob2:// or https://<instance>/j/<code> link)\n");
 			printf("--instance <origin>\tthe instance of an invite code given to --join\n");
+			printf("--skin-render-info\tcheck native OpenGL skin exporter capabilities and pinned codec\n");
+			printf("--render-skin --manifest <json> --texture <image> --material <image> --output-dir <directory>\tbake transparent colony sprites\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them\n");

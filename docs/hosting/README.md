@@ -886,7 +886,8 @@ limit and a six-minute shutdown grace period. The display entrypoint starts Xvfb
 and executes Node as the primary process, so termination reaches the worker's
 graceful shutdown handlers directly. The current engine and its meshes ship
 together; this service is independent of match simulation-version agents.
-Its capability probe registers a content-derived render revision, and startup
+Its capability probe verifies the pinned runtime WebP encoder before registering
+a content-derived render revision, and startup
 queues existing enabled skin versions and presets for that revision. Publication
 continues while artwork is pending or failed. Watch `Skin sprites ready` and
 `Skin sprite generation failed` logs for duration, compressed size, retries and

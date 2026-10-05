@@ -27,7 +27,17 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
       limits: { timeoutMs: 10000 },
     });
     expect(probe.code).toBe(0);
-    const revision = (JSON.parse(probe.stdout) as { renderRevision: string }).renderRevision;
+    const recipe = JSON.parse(await readFile(join(cwd, 'tools/image_encoding.json'), 'utf8')) as {
+      recipe: string;
+      webpVersion: string;
+    };
+    const capability = JSON.parse(probe.stdout) as { renderRevision: string };
+    expect(capability).toMatchObject({
+      format: 'colony-sprites-v1',
+      encoding: recipe.recipe,
+      webpVersion: recipe.webpVersion,
+    });
+    const revision = capability.renderRevision;
     const fixture = JSON.parse(
       await readFile(join(cwd, 'test/fixtures/skins/authorization.json'), 'utf8'),
     ) as {

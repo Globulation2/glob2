@@ -894,7 +894,11 @@ header before decoding. Manifests are limited to 64 KiB, pages to 2 MiB compress
 and their fixed 1024×1024 (unit) or 128×128 (swarm) dimensions. Up to four fetches
 run concurrently and at most one page decodes per view poll. Content-addressed
 pages are shared between teams, with a 64 MiB decoded LRU cache and 256 MiB disk
-cache whose bytes are revalidated on reuse. Unused decoded pages are evicted;
+cache whose bytes are revalidated on reuse. Completed offscreen requests release
+their slots without decoding; camera movement cannot block subsequent downloads.
+If disk writes fail, verified compressed buffers share the four-slot budget until
+decoding, so artwork remains available without an unbounded memory queue.
+Unused decoded pages are evicted;
 expiry or moderation removes installed appearance. Existing animation mapping,
 shadows, fog, zoom, clipping and the Show colony skins preference apply to both
 rendering paths. This is presentation state and does not alter saves, simulation
