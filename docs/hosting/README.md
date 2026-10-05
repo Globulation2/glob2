@@ -882,8 +882,10 @@ live agent. Remove the service when the version is retired.
 
 The dedicated `skin-render-worker` service uses the worker database role and
 shared blob store, with one render process, two CPU threads, a 3 GiB container
-limit and a six-minute shutdown grace period. The current engine and its meshes
-ship together; this service is independent of match simulation-version agents.
+limit and a six-minute shutdown grace period. The display entrypoint starts Xvfb
+and executes Node as the primary process, so termination reaches the worker's
+graceful shutdown handlers directly. The current engine and its meshes ship
+together; this service is independent of match simulation-version agents.
 Its capability probe registers a content-derived render revision, and startup
 queues existing enabled skin versions and presets for that revision. Publication
 continues while artwork is pending or failed. Watch `Skin sprites ready` and

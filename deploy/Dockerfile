@@ -244,5 +244,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglu1-
 ENV LD_LIBRARY_PATH=/opt/glob2/lib/glob2 SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 LP_NUM_THREADS=2
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-skin-render-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
-ENTRYPOINT []
-CMD ["xvfb-run", "-a", "node", "apps/skin-render-worker/src/main.ts"]
+COPY deploy/skin-render-entrypoint.sh /usr/local/bin/glob2-skin-render-entrypoint
+ENTRYPOINT ["/usr/local/bin/glob2-skin-render-entrypoint"]
+CMD ["node", "apps/skin-render-worker/src/main.ts"]
