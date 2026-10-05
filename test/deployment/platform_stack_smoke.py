@@ -199,6 +199,7 @@ class Smoke:
             'GLOB2_RELAY_IMAGE': f'glob2-relay:{tag}',
             'GLOB2_CADDY_IMAGE': f'glob2-caddy:{tag}',
             'GLOB2_MUSIC_IMAGE': f'glob2-music-worker:{tag}',
+            'GLOB2_SKIN_RENDER_IMAGE': f'glob2-skin-render-worker:{tag}',
             'LOG_LEVEL': 'info',
         }
         self.env_file = self.directory / '.env'
@@ -302,9 +303,9 @@ class Smoke:
             self.tls = ssl.create_default_context()
             return {'attached': self.project, 'origin': self.origin}
         if not self.arguments.no_build:
-            log('building images (platform, music-worker, engine-agent, relay, caddy)')
+            log('building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)')
             started = time.monotonic()
-            self.compose('build', 'init', 'music-worker', 'engine-agent', 'relay', 'caddy', timeout=7200)
+            self.compose('build', 'init', 'music-worker', 'skin-render-worker', 'engine-agent', 'relay', 'caddy', timeout=7200)
             self.results['build_seconds'] = round(time.monotonic() - started)
         log(f'starting project {self.project} on {self.origin}')
         started = time.monotonic()
