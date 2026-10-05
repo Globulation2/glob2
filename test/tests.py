@@ -314,6 +314,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/building/BuildingUtils.cpp',
     '#src/hud/input/GameGUIKeyActions.cpp',
     '#src/audio/GameMusicController.cpp',
+    '#src/audio/MusicStream.cpp',
     '#src/map/FertilityField.cpp',
     '#src/map/Map.cpp',
     '#src/map/MapQuery.cpp',
