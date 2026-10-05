@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build-software-terrain/test/glob2-engine-tests" errors="0" failures="0" tests="1349" time="1.81096" timestamp="2026-10-05T08:57:54Z" doctest_version="2.4.11">
+    <testcase classname="src/engine/EngineSessionHarness.cpp" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="1.81096" status="run"/>
+  </testsuite>
+</testsuites>

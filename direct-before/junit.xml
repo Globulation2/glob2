@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build-software-terrain/test/glob2-engine-tests" errors="0" failures="1" tests="4869" time="1.4278" timestamp="2026-10-05T08:54:48Z" doctest_version="2.4.11">
+    <testcase classname="src/engine/EngineSessionHarness.cpp" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="1.4278" status="run">
+      <failure message="false" type="REQUIRE">
+src/engine/EngineSessionHarness.cpp:65:
+REQUIRE( static_cast&lt;bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Threaded stack-driven session failed to finish
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
