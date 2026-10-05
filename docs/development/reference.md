@@ -337,6 +337,8 @@ Fetch sources before entering an offline build with
 Distro installs can request `optimized_assets=1` independently of `release=0`,
 preserving distro compiler flags and debug information. `optimized_assets=0`
 selects lossless WebP for comparison/rollback; `auto` follows `release`.
+The pinned SDL PNG fallback rounds normalized 16-bit channels to renderer
+bytes, matching the native libpng decoder and exporter reference.
 Windows CI uses standard CPython for encoding and MinGW Python for building;
 `GLOB2_ASSET_ENCODER_PYTHON` selects a validated, already prepared interpreter.
 Python tests can use the same environment:
