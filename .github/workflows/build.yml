@@ -865,6 +865,7 @@ jobs:
           path: |
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
+            build/emscripten/client/release/studio.html
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
@@ -897,6 +898,7 @@ jobs:
           retention-days: 7
           path: |
             build/emscripten/client/release/index.html
+            build/emscripten/client/release/studio.html
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
