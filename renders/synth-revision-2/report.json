@@ -196,14 +196,14 @@
       "status": "pass",
       "value": 1,
       "threshold": "one Opus stream",
-      "detail": "format.calm.container: a1.opus: opus#7636588c",
+      "detail": "format.calm.container: a1.opus: opus#384c0db8",
       "measures": [
         {
           "name": "format.calm.container",
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a1.opus: opus#7636588c",
+          "detail": "a1.opus: opus#384c0db8",
           "unit": ""
         },
         {
@@ -227,7 +227,7 @@
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a2.opus: opus#e131fa6b",
+          "detail": "a2.opus: opus#e71e8c36",
           "unit": ""
         },
         {
@@ -251,7 +251,7 @@
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a3.opus: opus#12b26ea8",
+          "detail": "a3.opus: opus#54eb9d6f",
           "unit": ""
         },
         {
@@ -314,7 +314,7 @@
         {
           "name": "loudness.building.target",
           "status": "pass",
-          "value": -16.99255975113288,
+          "value": -16.99261552373476,
           "threshold": "-17 +- 1 LUFS",
           "detail": "+0.0 LU from target",
           "unit": "LUFS"
@@ -330,7 +330,7 @@
         {
           "name": "loudness.combat.target",
           "status": "pass",
-          "value": -15.994672931354723,
+          "value": -15.994804727638835,
           "threshold": "-16 +- 1 LUFS",
           "detail": "+0.0 LU from target",
           "unit": "LUFS"
@@ -346,7 +346,7 @@
         {
           "name": "loudness.ladder",
           "status": "pass",
-          "value": 0.9900946559194921,
+          "value": 0.990038883317613,
           "threshold": "each step >= -0.3 LU",
           "detail": "calm -18.0 / building -17.0 / combat -16.0 LUFS",
           "unit": "LU"
@@ -356,9 +356,9 @@
     {
       "name": "seam",
       "status": "warn",
-      "value": 99.87998399786639,
+      "value": 99.89331910921456,
       "threshold": "rank <= 99.6 (fail > 99.95)",
-      "detail": "seam.combat.flux: wrap flux 2.211, in-file median 0.880",
+      "detail": "seam.combat.flux: wrap flux 2.221, in-file median 0.880",
       "measures": [
         {
           "name": "seam.calm.step",
@@ -387,7 +387,7 @@
         {
           "name": "seam.building.step",
           "status": "pass",
-          "value": 26.656178816713233,
+          "value": 26.65498089973461,
           "threshold": "rank <= 99 (fail > 99.9)",
           "detail": "wrap step 0.0031",
           "unit": "pct"
@@ -411,17 +411,17 @@
         {
           "name": "seam.combat.step",
           "status": "pass",
-          "value": 88.70471060018505,
+          "value": 66.27855892670806,
           "threshold": "rank <= 99 (fail > 99.9)",
-          "detail": "wrap step 0.0171",
+          "detail": "wrap step 0.0082",
           "unit": "pct"
         },
         {
           "name": "seam.combat.flux",
           "status": "warn",
-          "value": 99.87998399786639,
+          "value": 99.89331910921456,
           "threshold": "rank <= 99.6 (fail > 99.95)",
-          "detail": "wrap flux 2.211, in-file median 0.880",
+          "detail": "wrap flux 2.221, in-file median 0.880",
           "unit": "pct"
         },
         {
@@ -460,7 +460,7 @@
         {
           "name": "repetition.building.envelope",
           "status": "pass",
-          "value": 0.4793338296656099,
+          "value": 0.4793298985986945,
           "threshold": "r < 0.8 (fail >= 0.9)",
           "detail": "best lag 10.00 s",
           "unit": ""
@@ -476,7 +476,7 @@
         {
           "name": "repetition.combat.envelope",
           "status": "pass",
-          "value": 0.49662987675871134,
+          "value": 0.4965612699402765,
           "threshold": "r < 0.9 (fail >= 0.95)",
           "detail": "best lag 10.00 s",
           "unit": ""
@@ -494,14 +494,14 @@
     {
       "name": "alignment",
       "status": "pass",
-      "value": -3.965696649329958,
+      "value": -3.965708850742913,
       "threshold": "|lag| <= 8 ms (fail > 10)",
       "detail": "alignment.calm_building.lag: onset peak r 0.57",
       "measures": [
         {
           "name": "alignment.calm_building.lag",
           "status": "pass",
-          "value": -3.965696649329958,
+          "value": -3.965708850742913,
           "threshold": "|lag| <= 8 ms (fail > 10)",
           "detail": "onset peak r 0.57",
           "unit": "ms"
@@ -509,7 +509,7 @@
         {
           "name": "alignment.calm_building.drift",
           "status": "pass",
-          "value": 2.156349689589214,
+          "value": 2.1552733171287786,
           "threshold": "spread <= 12 ms (fail > 20)",
           "detail": "window lags -4.3 (r 0.52), -4.9 (r 0.57), -3.6 (r 0.65), -2.7 (r 0.51) ms",
           "unit": "ms"
@@ -517,7 +517,7 @@
         {
           "name": "alignment.calm_building.harmony",
           "status": "pass",
-          "value": 0.9032529592514038,
+          "value": 0.9032237529754639,
           "threshold": ">= 0.5 (fail < 0.25)",
           "detail": "mean 0.5 s chroma correlation",
           "unit": ""
@@ -525,7 +525,7 @@
         {
           "name": "alignment.building_combat.lag",
           "status": "pass",
-          "value": 1.2297003813222345,
+          "value": 1.2288620375491879,
           "threshold": "|lag| <= 8 ms (fail > 10)",
           "detail": "onset peak r 0.74",
           "unit": "ms"
@@ -533,15 +533,15 @@
         {
           "name": "alignment.building_combat.drift",
           "status": "pass",
-          "value": 2.6370512719996753,
+          "value": 2.6345555836430763,
           "threshold": "spread <= 12 ms (fail > 20)",
-          "detail": "window lags +1.0 (r 0.73), +1.5 (r 0.76), +0.2 (r 0.79), +2.9 (r 0.69) ms",
+          "detail": "window lags +1.0 (r 0.73), +1.5 (r 0.76), +0.2 (r 0.79), +2.8 (r 0.69) ms",
           "unit": "ms"
         },
         {
           "name": "alignment.building_combat.harmony",
           "status": "pass",
-          "value": 0.9450731873512268,
+          "value": 0.9450854659080505,
           "threshold": ">= 0.5 (fail < 0.25)",
           "detail": "mean 0.5 s chroma correlation",
           "unit": ""
@@ -549,7 +549,7 @@
         {
           "name": "alignment.calm_combat.lag",
           "status": "pass",
-          "value": -4.901111796168704,
+          "value": -4.901598309500319,
           "threshold": "|lag| <= 8 ms (fail > 10)",
           "detail": "onset peak r 0.54",
           "unit": "ms"
@@ -557,7 +557,7 @@
         {
           "name": "alignment.calm_combat.drift",
           "status": "info",
-          "value": 2.370191402479097,
+          "value": 2.3670855950063827,
           "threshold": "",
           "detail": "window lags -4.2 (r 0.49), -4.5 (r 0.53), -5.9 (r 0.65), -3.5 (r 0.50) ms; window peaks too weak to judge",
           "unit": "ms"
@@ -565,7 +565,7 @@
         {
           "name": "alignment.calm_combat.harmony",
           "status": "pass",
-          "value": 0.8546631932258606,
+          "value": 0.8547816276550293,
           "threshold": ">= 0.5 (fail < 0.25)",
           "detail": "mean 0.5 s chroma correlation",
           "unit": ""
@@ -575,14 +575,14 @@
     {
       "name": "contrast",
       "status": "pass",
-      "value": 5.805576801300049,
+      "value": 5.805612564086914,
       "threshold": ">= 2 dB (fail < 0.75)",
       "detail": "contrast.calm_building.distance: level-matched log-mel difference",
       "measures": [
         {
           "name": "contrast.calm_building.distance",
           "status": "pass",
-          "value": 5.805576801300049,
+          "value": 5.805612564086914,
           "threshold": ">= 2 dB (fail < 0.75)",
           "detail": "level-matched log-mel difference",
           "unit": "dB"
@@ -590,7 +590,7 @@
         {
           "name": "contrast.building_combat.distance",
           "status": "pass",
-          "value": 4.539834976196289,
+          "value": 4.540041446685791,
           "threshold": ">= 2 dB (fail < 0.75)",
           "detail": "level-matched log-mel difference",
           "unit": "dB"
@@ -598,7 +598,7 @@
         {
           "name": "contrast.calm_combat.distance",
           "status": "pass",
-          "value": 6.382716178894043,
+          "value": 6.382431983947754,
           "threshold": ">= 2 dB (fail < 0.75)",
           "detail": "level-matched log-mel difference",
           "unit": "dB"
@@ -614,7 +614,7 @@
         {
           "name": "contrast.percussive_ladder",
           "status": "pass",
-          "value": 0.0005559575046189709,
+          "value": 0.0005537430018666967,
           "threshold": "combat - calm >= -0.02",
           "detail": "percussive share 0.02 / 0.02 / 0.02",
           "unit": ""
@@ -663,7 +663,7 @@
         {
           "name": "noise.building.hf_floor",
           "status": "pass",
-          "value": -65.95737641375742,
+          "value": -65.95757855622328,
           "threshold": "<= -35 dB (fail > -32)",
           "detail": "10th-pct >6 kHz energy vs median frame",
           "unit": "dB"
@@ -679,7 +679,7 @@
         {
           "name": "noise.building.hf10k",
           "status": "info",
-          "value": -54.28126673685169,
+          "value": -54.281124386810724,
           "threshold": "",
           "detail": "energy share above 10 kHz",
           "unit": "dB"
@@ -687,7 +687,7 @@
         {
           "name": "noise.combat.hf_floor",
           "status": "pass",
-          "value": -61.63317949748865,
+          "value": -61.632561778081524,
           "threshold": "<= -35 dB (fail > -32)",
           "detail": "10th-pct >6 kHz energy vs median frame",
           "unit": "dB"
@@ -695,7 +695,7 @@
         {
           "name": "noise.combat.hf_flatness",
           "status": "info",
-          "value": 0.08566701084939196,
+          "value": 0.08572121062127616,
           "threshold": "",
           "detail": "6-16 kHz flatness, louder frames",
           "unit": ""
@@ -703,7 +703,7 @@
         {
           "name": "noise.combat.hf10k",
           "status": "info",
-          "value": -57.22693023522872,
+          "value": -57.22681287288077,
           "threshold": "",
           "detail": "energy share above 10 kHz",
           "unit": "dB"
@@ -736,7 +736,7 @@
         {
           "name": "balance.building.lowmid",
           "status": "pass",
-          "value": 0.28385093824832497,
+          "value": 0.2838555810294146,
           "threshold": "<= 0.42",
           "detail": "energy share 150-500 Hz",
           "unit": ""
@@ -744,7 +744,7 @@
         {
           "name": "balance.building.centroid",
           "status": "pass",
-          "value": 784.3311399446834,
+          "value": 784.3317954566354,
           "threshold": "<= 2900 Hz",
           "detail": "mean frame spectral centroid",
           "unit": "Hz"
@@ -752,7 +752,7 @@
         {
           "name": "balance.combat.lowmid",
           "status": "pass",
-          "value": 0.2356656221584677,
+          "value": 0.23567375869021562,
           "threshold": "<= 0.42",
           "detail": "energy share 150-500 Hz",
           "unit": ""
@@ -760,7 +760,7 @@
         {
           "name": "balance.combat.centroid",
           "status": "pass",
-          "value": 746.2309534159727,
+          "value": 746.2412987898565,
           "threshold": "<= 2900 Hz",
           "detail": "mean frame spectral centroid",
           "unit": "Hz"
@@ -785,7 +785,7 @@
         {
           "name": "audibility.building.quietest_3s",
           "status": "pass",
-          "value": -3.5854464980480145,
+          "value": -3.585490549537924,
           "threshold": ">= -10 dB",
           "detail": "at 79.0 s",
           "unit": "dB"
@@ -793,7 +793,7 @@
         {
           "name": "audibility.combat.quietest_3s",
           "status": "pass",
-          "value": -3.554940113801877,
+          "value": -3.5542261765225858,
           "threshold": ">= -10 dB",
           "detail": "at 79.0 s",
           "unit": "dB"
@@ -834,14 +834,24 @@
       ]
     }
   ],
+  "metadata": {
+    "title": "Glass Garden",
+    "artist": "Local pipeline test",
+    "description": "Targeted mix repair, unchanged melody and seed",
+    "license": "CC-BY-4.0",
+    "credits": "Surge XT CC0 Init-derived patches; Globulation 2 DSP",
+    "tags": [],
+    "sources": [],
+    "aiGenerated": true
+  },
   "result": {
     "timelineId": "c126e1238ea7f5f8a3eb75b0a392d5468cae24629331ea41077153116f01e006",
     "frames": 3840000,
     "tracks": [
       {
         "mood": "calm",
-        "sha256": "660f951f17098803c65a94840f4d7feb1369f2f2f2ec89d25fc959695bb32ef1",
-        "bytes": 665048,
+        "sha256": "6176ae0a24c8cdfa78fe48be56bd4b9b1fc9d9d10d790f0b93d811773f090f72",
+        "bytes": 665022,
         "url": "",
         "waveform": [
           0.1196,
@@ -1360,13 +1370,13 @@
       },
       {
         "mood": "building",
-        "sha256": "c7f0a915ec407a83d1e1c5478cfd87c46c89138e609397724a4a916bea4f407a",
-        "bytes": 617923,
+        "sha256": "1b5e443e62827ccf979a7158a6b8d9873c0916c80e54452d9d5e524ed16c578b",
+        "bytes": 617897,
         "url": "",
         "waveform": [
           0.1911,
           0.1318,
-          0.1892,
+          0.189,
           0.1396,
           0.2297,
           0.2015,
@@ -1465,11 +1475,11 @@
           0.2525,
           0.2967,
           0.3141,
-          0.3125,
+          0.318,
           0.4647,
-          0.3272,
+          0.3265,
           0.3164,
-          0.3012,
+          0.3013,
           0.3498,
           0.3029,
           0.3958,
@@ -1501,7 +1511,7 @@
           0.3228,
           0.3439,
           0.2915,
-          0.239,
+          0.2372,
           0.3914,
           0.3767,
           0.4171,
@@ -1543,7 +1553,7 @@
           0.4415,
           0.4539,
           0.4265,
-          0.3402,
+          0.3384,
           0.385,
           0.3417,
           0.3404,
@@ -1601,7 +1611,7 @@
           0.3425,
           0.3367,
           0.3947,
-          0.3696,
+          0.369,
           0.3884,
           0.2571,
           0.3583,
@@ -1648,7 +1658,7 @@
           0.332,
           0.3583,
           0.2908,
-          0.3714,
+          0.3713,
           0.3171,
           0.371,
           0.3533,
@@ -1745,7 +1755,7 @@
           0.4368,
           0.4096,
           0.4246,
-          0.406,
+          0.4063,
           0.5361,
           0.3821,
           0.3097,
@@ -1761,7 +1771,7 @@
           0.4129,
           0.3883,
           0.4568,
-          0.3897,
+          0.39,
           0.4091,
           0.3546,
           0.442,
@@ -1817,11 +1827,11 @@
           0.309,
           0.233,
           0.362,
-          0.2398,
+          0.2399,
           0.3113,
           0.2584,
           0.3528,
-          0.2929,
+          0.2931,
           0.3344,
           0.3321,
           0.3754,
@@ -1880,14 +1890,14 @@
       },
       {
         "mood": "combat",
-        "sha256": "62d2c38d9db66c63e8656e2c76d6d75b8f339d61441bff298aa63d3a30d09074",
-        "bytes": 640714,
+        "sha256": "d7dfd93209c17e3796654929583a6ae00d1349238346c02dd719d53e33f58af0",
+        "bytes": 640764,
         "url": "",
         "waveform": [
-          0.1942,
+          0.1972,
           0.1653,
           0.2281,
-          0.1578,
+          0.1573,
           0.3031,
           0.2513,
           0.2517,
@@ -1905,7 +1915,7 @@
           0.2782,
           0.2701,
           0.2847,
-          0.2374,
+          0.2377,
           0.3069,
           0.2623,
           0.3309,
@@ -1981,7 +1991,7 @@
           0.3178,
           0.2211,
           0.4308,
-          0.288,
+          0.2885,
           0.3236,
           0.3359,
           0.3296,
@@ -1995,7 +2005,7 @@
           0.4579,
           0.3637,
           0.3702,
-          0.2541,
+          0.2553,
           0.4368,
           0.3046,
           0.2999,
@@ -2079,7 +2089,7 @@
           0.3043,
           0.2844,
           0.2574,
-          0.2656,
+          0.2646,
           0.2923,
           0.2424,
           0.386,
@@ -2129,7 +2139,7 @@
           0.3702,
           0.2682,
           0.3318,
-          0.2837,
+          0.2838,
           0.331,
           0.2949,
           0.3112,
@@ -2246,7 +2256,7 @@
           0.5095,
           0.625,
           0.5099,
-          0.5211,
+          0.521,
           0.4165,
           0.5255,
           0.4695,
@@ -2316,7 +2326,7 @@
           0.4562,
           0.3878,
           0.3446,
-          0.4366,
+          0.4307,
           0.3525,
           0.3352,
           0.3416,
@@ -2357,8 +2367,8 @@
           0.3859,
           0.294,
           0.3086,
-          0.3055,
-          0.3305,
+          0.3058,
+          0.3304,
           0.3281,
           0.3446,
           0.3494,
@@ -2417,12 +2427,12 @@
       "counter bar 21 repeats bar 10",
       "counter bar 27 repeats bar 10",
       "counter bar 32 repeats bar 8",
-      "wrap flux 2.211, in-file median 0.880"
+      "wrap flux 2.221, in-file median 0.880"
     ]
   },
   "resources": {
-    "elapsedSeconds": 735.6638267380185,
-    "cpuSeconds": 467.89617899999996,
-    "peakProcessRssKiB": 3785032
+    "elapsedSeconds": 274.3883266886696,
+    "cpuSeconds": 263.47927200000004,
+    "peakProcessRssKiB": 3778684
   }
 }

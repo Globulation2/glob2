@@ -1,0 +1,8 @@
+acoustic-final calm: ZIP bytes match final QA hash and length (672486 bytes)
+acoustic-final building: ZIP bytes match final QA hash and length (687703 bytes)
+acoustic-final combat: ZIP bytes match final QA hash and length (602913 bytes)
+acoustic-final: all 11 mandatory checks present; passed; resources {"elapsedSeconds": 159.98988822707906, "cpuSeconds": 158.35443099999998, "peakProcessRssKiB": 7966772}
+synth-revision-2 calm: ZIP bytes match final QA hash and length (665022 bytes)
+synth-revision-2 building: ZIP bytes match final QA hash and length (617897 bytes)
+synth-revision-2 combat: ZIP bytes match final QA hash and length (640764 bytes)
+synth-revision-2: all 11 mandatory checks present; passed; resources {"elapsedSeconds": 274.3883266886696, "cpuSeconds": 263.47927200000004, "peakProcessRssKiB": 3778684}

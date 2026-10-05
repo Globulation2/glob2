@@ -1,0 +1,13 @@
+
+> test
+> vitest run packages/music-studio packages/map-studio packages/billing packages/music packages/db/test/schema.test.ts packages/protocol/test/fixtures.test.ts apps/ai-music-worker/test/pipeline.test.ts apps/ai-music-worker/test/runner.test.ts apps/api/test/musicStudio.test.ts apps/api/test/music.test.ts apps/api/test/accountExport.test.ts apps/api/test/studioEvents.test.ts apps/api/test/studio.test.ts apps/worker/test/reliability.test.ts apps/web/test/musicStudio.test.tsx apps/web/test/musicStudioDraft.test.tsx apps/web/test/musicStudioDraft.test.ts apps/web/test/musicStudioStream.test.tsx apps/web/test/musicPlayer.test.tsx apps/web/test/musicPlayback.test.ts apps/web/test/musicCatalogue.test.tsx
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/02f3/glob2/platform
+
+
+ Test Files  20 passed (20)
+      Tests  122 passed | 2 skipped (124)
+   Start at  01:16:38
+   Duration  32.57s (tests 54%, import 21%, transform 16%, environment 8%)
+

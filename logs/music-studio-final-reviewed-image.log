@@ -1,0 +1,178 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 14.46kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 0.2s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#4 ...
+
+#5 [internal] load metadata for docker.io/library/ubuntu:24.04
+#5 DONE 0.2s
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#4 DONE 0.2s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 290B done
+#6 DONE 0.0s
+
+#7 [node-deps  1/21] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#7 resolve docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c 0.0s done
+#7 DONE 0.0s
+
+#8 [ai-music-runtime  1/10] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+#8 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 121.27kB 0.1s done
+#9 DONE 0.1s
+
+#10 [node-deps  3/21] COPY platform/package.json platform/package-lock.json ./
+#10 CACHED
+
+#11 [node-deps 15/21] COPY platform/apps/music-worker/package.json apps/music-worker/
+#11 CACHED
+
+#12 [node-deps  7/21] COPY platform/packages/play/package.json packages/play/
+#12 CACHED
+
+#13 [node-deps 21/21] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
+#13 CACHED
+
+#14 [node-deps 19/21] COPY platform/apps/engine-agent/package.json apps/engine-agent/
+#14 CACHED
+
+#15 [node-deps 12/21] COPY platform/packages/music/package.json packages/music/
+#15 CACHED
+
+#16 [platform-runtime-deps  1/10] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
+#16 CACHED
+
+#17 [node-deps 11/21] COPY platform/packages/map-studio/package.json packages/map-studio/
+#17 CACHED
+
+#18 [node-deps  5/21] COPY platform/packages/db/package.json packages/db/
+#18 CACHED
+
+#19 [node-deps  8/21] COPY platform/packages/engine/package.json packages/engine/
+#19 CACHED
+
+#20 [platform-runtime-deps  6/10] COPY platform/apps/music-worker apps/music-worker
+#20 CACHED
+
+#21 [node-deps 20/21] COPY platform/apps/web/package.json apps/web/
+#21 CACHED
+
+#22 [platform-runtime-deps  2/10] COPY platform/tsconfig.base.json platform/tsconfig.json ./
+#22 CACHED
+
+#23 [node-deps  4/21] COPY platform/packages/protocol/package.json packages/protocol/
+#23 CACHED
+
+#24 [node-deps  9/21] COPY platform/packages/hive/package.json packages/hive/
+#24 CACHED
+
+#25 [node-deps 13/21] COPY platform/packages/music-studio/package.json packages/music-studio/
+#25 CACHED
+
+#26 [node-deps 17/21] COPY platform/apps/api/package.json apps/api/
+#26 CACHED
+
+#27 [node-deps  6/21] COPY platform/packages/core/package.json packages/core/
+#27 CACHED
+
+#28 [node-deps 14/21] COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
+#28 CACHED
+
+#29 [platform-runtime-deps  3/10] COPY platform/packages packages
+#29 CACHED
+
+#30 [node-deps 18/21] COPY platform/apps/worker/package.json apps/worker/
+#30 CACHED
+
+#31 [platform-runtime-deps  7/10] COPY platform/apps/engine-agent apps/engine-agent
+#31 CACHED
+
+#32 [platform-runtime-deps  4/10] COPY platform/apps/api apps/api
+#32 CACHED
+
+#33 [node-deps  2/21] WORKDIR /app/platform
+#33 CACHED
+
+#34 [node-deps 10/21] COPY platform/packages/billing/package.json packages/billing/
+#34 CACHED
+
+#35 [node-deps 16/21] COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
+#35 CACHED
+
+#36 [platform-runtime-deps  5/10] COPY platform/apps/worker apps/worker
+#36 CACHED
+
+#37 [platform-runtime-deps  8/10] COPY platform/apps/ai-map-worker apps/ai-map-worker
+#37 CACHED
+
+#38 [platform-runtime-deps  9/10] COPY platform/apps/ai-music-worker apps/ai-music-worker
+#38 DONE 0.0s
+
+#39 [platform-runtime-deps 10/10] RUN rm -rf packages/*/test apps/*/test &&     find packages apps -name '*.test.ts' -delete
+#39 DONE 0.3s
+
+#40 [ai-music-runtime  2/10] RUN test "amd64" = amd64 && apt-get update && apt-get install -y --no-install-recommends     ffmpeg python3 python3-pip python3-venv bubblewrap util-linux cmake g++ make pkg-config     libsndfile1-dev libx11-6 libxext6 libfreetype6 libfontconfig1 libglib2.0-0 ca-certificates     && rm -rf /var/lib/apt/lists/*
+#40 CACHED
+
+#41 [ai-music-runtime  6/10] COPY tools/music/sets /app/tools/music/sets
+#41 CACHED
+
+#42 [ai-music-runtime  5/10] COPY tools/music/glob2music /app/tools/music/glob2music
+#42 CACHED
+
+#43 [ai-music-worker 1/4] COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
+#43 CACHED
+
+#44 [ai-music-runtime  8/10] COPY tools/encode_music.py /app/tools/encode_music.py
+#44 CACHED
+
+#45 [ai-music-runtime  7/10] COPY tools/music/requirements.txt tools/music/requirements-synth.txt /app/tools/music/
+#45 CACHED
+
+#46 [ai-music-runtime  9/10] COPY docs/assets/music-style-guide.md /app/docs/assets/music-style-guide.md
+#46 CACHED
+
+#47 [ai-music-runtime  3/10] COPY tools/music/requirements.txt tools/music/requirements-synth.txt /tmp/music-requirements/
+#47 CACHED
+
+#48 [ai-music-runtime  4/10] RUN python3 -m venv /opt/music && /opt/music/bin/pip install --no-cache-dir -r /tmp/music-requirements/requirements-synth.txt
+#48 CACHED
+
+#49 [ai-music-runtime 10/10] RUN --mount=type=cache,id=glob2-music-assets,target=/var/cache/glob2music     /opt/music/bin/python -m glob2music.studio.install_assets /var/cache/glob2music &&     cp -a /var/cache/glob2music /opt/music-assets
+#49 CACHED
+
+#50 [ai-music-worker 2/4] RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 &&     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
+#50 CACHED
+
+#51 [ai-music-worker 3/4] COPY --from=platform-runtime-deps /app/platform /app/platform
+#51 DONE 4.6s
+
+#52 [ai-music-worker 4/4] WORKDIR /app/platform
+#52 DONE 0.3s
+
+#53 exporting to image
+#53 exporting layers
+#53 exporting layers 13.1s done
+#53 exporting manifest sha256:56ea7f04f90dab9f200ac6c5bfb32bbc639af50e14020b9610e82d95ea33a4e8 done
+#53 exporting config sha256:6df7d71a8c1dafcec029703ef734a8db809aed18de602a6ec2b2893205921278 done
+#53 exporting attestation manifest sha256:75a0dc083def3a977ee1c6a3e679fc038e8cf399e30b8be109bc8dd6006b489b 0.0s done
+#53 exporting manifest list sha256:39b8c9b86105851e98feed934b8c75ab902f7b0beb01e4b7f57f65edde28b14b done
+#53 naming to docker.io/library/glob2-ai-music-worker:reviewed done
+#53 unpacking to docker.io/library/glob2-ai-music-worker:reviewed
+#53 unpacking to docker.io/library/glob2-ai-music-worker:reviewed 4.1s done
+#53 DONE 17.3s

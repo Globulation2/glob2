@@ -1,6 +1,6 @@
 vite v8.3.2 building client environment for production...
 transforming...
-✓ 830 modules transformed.
+✓ 831 modules transformed.
 rendering chunks...
 computing gzip size...
 dist/index.html                                          1.32 kB │ gzip:   0.61 kB
@@ -32,28 +32,28 @@ dist/assets/colony-1600-yR11DKDO.webp                  385.40 kB
 dist/assets/colony-loop-DySpPHVm.mp4                 6,831.27 kB
 dist/assets/Account-BY2xzm8t.css                         1.05 kB │ gzip:   0.43 kB
 dist/assets/Ais-Cl7SnRIn.css                             3.00 kB │ gzip:   1.10 kB
-dist/assets/MusicStudio-Dq-M3YIX.css                     6.06 kB │ gzip:   1.98 kB
+dist/assets/MusicStudio-bJdYdQKt.css                     5.29 kB │ gzip:   1.80 kB
 dist/assets/studio-eGnNSmWg.css                         31.80 kB │ gzip:   6.80 kB
-dist/assets/index-3q-_u-BH.css                          73.58 kB │ gzip:  18.62 kB
-dist/assets/studio-Dh_TTs3K.js                           0.51 kB │ gzip:   0.31 kB │ map:     2.47 kB
-dist/assets/LineChart-C5O1ZlTw.js                        4.36 kB │ gzip:   1.91 kB │ map:    16.65 kB
-dist/assets/Player-DX4-yWvG.js                           4.79 kB │ gzip:   1.93 kB │ map:    16.23 kB
-dist/assets/art-3-c9uYum.js                              6.06 kB │ gzip:   4.46 kB │ map:    10.17 kB
-dist/assets/Player-DpXJ_lCm.js                           8.91 kB │ gzip:   3.01 kB │ map:    26.65 kB
-dist/assets/Admin-BTQeO2u1.js                           12.13 kB │ gzip:   3.79 kB │ map:    35.67 kB
-dist/assets/Library-DP3zAFOp.js                         15.61 kB │ gzip:   4.98 kB │ map:    46.15 kB
-dist/assets/Match-DkEcI5mU.js                           16.01 kB │ gzip:   5.14 kB │ map:    46.54 kB
-dist/assets/state-P_E7eJAb.js                           16.40 kB │ gzip:   6.10 kB │ map:    55.25 kB
-dist/assets/Ais-aT3gb3yu.js                             20.70 kB │ gzip:   6.70 kB │ map:    63.68 kB
-dist/assets/Maps-BRrBWgu9.js                            21.59 kB │ gzip:   6.67 kB │ map:    65.73 kB
-dist/assets/MusicStudio-BUePmhC1.js                     25.81 kB │ gzip:   8.56 kB │ map:    80.46 kB
-dist/assets/Account-gq4QU-LS.js                         33.60 kB │ gzip:  10.18 kB │ map:   110.30 kB
-dist/assets/MapStudio-BfG1MgIy.js                       41.25 kB │ gzip:  12.72 kB │ map:   126.87 kB
-dist/assets/index-CmVbQC6h.js                          509.09 kB │ gzip: 156.31 kB │ map: 2,544.82 kB
+dist/assets/index-DJYb7Hz7.css                          74.45 kB │ gzip:  18.82 kB
+dist/assets/studio-CBRTYPun.js                           0.51 kB │ gzip:   0.31 kB │ map:     2.47 kB
+dist/assets/LineChart-DCZRogb0.js                        4.36 kB │ gzip:   1.91 kB │ map:    16.65 kB
+dist/assets/Player-DNYJGFiH.js                           5.92 kB │ gzip:   2.32 kB │ map:    19.56 kB
+dist/assets/art-J0ngFWE2.js                              6.06 kB │ gzip:   4.46 kB │ map:    10.17 kB
+dist/assets/Player-BVU8_Ez5.js                           8.91 kB │ gzip:   3.01 kB │ map:    26.65 kB
+dist/assets/Admin-DI1oUB2W.js                           12.13 kB │ gzip:   3.79 kB │ map:    35.67 kB
+dist/assets/Library-BGK68XWH.js                         14.87 kB │ gzip:   4.76 kB │ map:    43.89 kB
+dist/assets/Match-BeaH_2RS.js                           16.01 kB │ gzip:   5.14 kB │ map:    46.54 kB
+dist/assets/state-NDhTjCKJ.js                           16.40 kB │ gzip:   6.10 kB │ map:    55.25 kB
+dist/assets/Ais-__r6AWsb.js                             20.70 kB │ gzip:   6.70 kB │ map:    63.68 kB
+dist/assets/Maps-DEbIQD8D.js                            21.59 kB │ gzip:   6.67 kB │ map:    65.73 kB
+dist/assets/MusicStudio-xUPFJtw0.js                     25.64 kB │ gzip:   8.57 kB │ map:    80.65 kB
+dist/assets/Account-D7VIh5qN.js                         33.60 kB │ gzip:  10.18 kB │ map:   110.30 kB
+dist/assets/MapStudio-CvyZZeXd.js                       41.25 kB │ gzip:  12.72 kB │ map:   126.87 kB
+dist/assets/index-46xOnTft.js                          509.10 kB │ gzip: 156.33 kB │ map: 2,545.27 kB
 
+✓ built in 1.03s
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 4.05s

@@ -116,14 +116,14 @@
       "status": "pass",
       "value": 1,
       "threshold": "one Opus stream",
-      "detail": "format.calm.container: a1.opus: opus#93ae8149",
+      "detail": "format.calm.container: a1.opus: opus#66865778",
       "measures": [
         {
           "name": "format.calm.container",
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a1.opus: opus#93ae8149",
+          "detail": "a1.opus: opus#66865778",
           "unit": ""
         },
         {
@@ -147,7 +147,7 @@
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a2.opus: opus#9aef61b1",
+          "detail": "a2.opus: opus#29904d65",
           "unit": ""
         },
         {
@@ -171,7 +171,7 @@
           "status": "pass",
           "value": 1,
           "threshold": "one Opus stream",
-          "detail": "a3.opus: opus#25ea9835",
+          "detail": "a3.opus: opus#1381f657",
           "unit": ""
         },
         {
@@ -757,9 +757,9 @@
   "metadata": {
     "title": "Moss Lanterns",
     "artist": "Local pipeline test",
-    "description": "Targeted mix repair, unchanged melody and seed",
+    "description": "Acoustic CPU validation",
     "license": "CC-BY-4.0",
-    "credits": "Surge XT CC0 Init-derived patches; Globulation 2 DSP",
+    "credits": "VSCO 2 Community Edition / Versilian Community Sample Library (CC0); sfizz",
     "tags": [],
     "sources": [],
     "aiGenerated": true
@@ -770,8 +770,8 @@
     "tracks": [
       {
         "mood": "calm",
-        "sha256": "db4d00027a2fdb559f27303e801d8b3ca16b80275b6296ab5e84e2dffedfb21d",
-        "bytes": 672487,
+        "sha256": "96c1c3d3807cc1f151ccc9140e86921267a4983619e1ef9954f28fba877dd390",
+        "bytes": 672486,
         "url": "",
         "waveform": [
           0.0679,
@@ -1290,8 +1290,8 @@
       },
       {
         "mood": "building",
-        "sha256": "48ca9d45ed0f5ca63a85b51611dc0033dc27de31dc3addf4719154fe28ea8f0f",
-        "bytes": 687704,
+        "sha256": "12ab828cb4b3c9b6e2bf00dc7cdab3a743abee6451f986bdd9f9e28181ec62b0",
+        "bytes": 687703,
         "url": "",
         "waveform": [
           0.1257,
@@ -1810,8 +1810,8 @@
       },
       {
         "mood": "combat",
-        "sha256": "b0f3bd3d57a4fd84e47f9e9293477463548977558237c4576f5cd2b27bd8cbdb",
-        "bytes": 602914,
+        "sha256": "f959fdd110b664a9f0e76269e3bb96b0f40732e5c5070e54f20633f11c5ab731",
+        "bytes": 602913,
         "url": "",
         "waveform": [
           0.1371,
@@ -2342,8 +2342,8 @@
     ]
   },
   "resources": {
-    "elapsedSeconds": 588.3544530998915,
-    "cpuSeconds": 327.752997,
-    "peakProcessRssKiB": 7966260
+    "elapsedSeconds": 159.98988822707906,
+    "cpuSeconds": 158.35443099999998,
+    "peakProcessRssKiB": 7966772
   }
 }

@@ -1,8 +1,0 @@
-...................ssss.............................................................{"seconds":10,"previewObjectBytes":12512,"removedFadeTableBytes":142664,"validationSlices":57,"elapsedSeconds":1.16559,"peakRssNativeUnits":823804}
-/home/bradley/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/zipfile/__init__.py:1625: UserWarning: Duplicate name: 'a1.opus'
-  return self._open_to_write(zinfo, force_zip64=force_zip64)
-..................................................
-----------------------------------------------------------------------
-Ran 134 tests in 406.667s
-
-OK (skipped=4)

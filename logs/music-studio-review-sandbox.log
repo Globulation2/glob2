@@ -1,0 +1,14 @@
+Running as unit: run-p3640594-i16226209.scope; invocation ID: 15db80ad50514a4291cc8447e503ec0d
+
+> test
+> vitest run apps/ai-music-worker/test/runner.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/02f3/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 1 skipped (3)
+   Start at  01:08:59
+   Duration  18.14s (tests 99%)
+

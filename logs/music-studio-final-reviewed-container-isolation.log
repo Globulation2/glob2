@@ -1,0 +1,1 @@
+PASS: bounded container passes memory checks and default host policy rejects namespace creation; no jobs accepted.
