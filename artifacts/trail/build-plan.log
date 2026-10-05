@@ -1,0 +1,4 @@
+scons: Reading SConscript files ...
+
+scons: *** Cannot create configure directory "build/linux/client/release/configure" within a dry-run.
+File "/home/bradley/.codex/worktrees/6eeb/glob2/SConstruct", line 78, in configure

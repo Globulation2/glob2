@@ -1,0 +1,8 @@
+PASS RuntimeContinuation/terrain weighted influence retains obstacles and sub-tile trail costs (0.0s)
+PASS RuntimeContinuation/irrigation heuristics require a positive enabled fertility contribution (0.0s)
+PASS Maxima.Implementation/Maxima food catchments and carrier discounts follow trail and ice travel costs (0.0s)
+PASS RuntimeContinuation/position entities retain historical binary and text payloads (0.0s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.1s)
+
+5 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: artifacts/trail/review-ai-tests/junit.xml (5 cases)

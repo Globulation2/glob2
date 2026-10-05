@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="Maxima food catchments and carrier discounts follow trail and ice travel costs" time="0.003944" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="0.029973" status="run" />
+  <testcase classname="RuntimeContinuation" name="irrigation heuristics require a positive enabled fertility contribution" time="0" status="run" />
+  <testcase classname="RuntimeContinuation" name="position entities retain historical binary and text payloads" time="0.000118" status="run" />
+  <testcase classname="RuntimeContinuation" name="terrain weighted influence retains obstacles and sub-tile trail costs" time="0" status="run" />
+  </testsuite></testsuites>

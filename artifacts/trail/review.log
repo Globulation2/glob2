@@ -1,0 +1,8 @@
+PASS TrailReview/Trail review editor and moving colony [display][artifacts] (4.8s)
+
+1 passed, 0 failed, 0 skipped (4.8s of test time)
+[run_tests] JUnit report: artifacts/trail/before/junit.xml (1 cases)
+PASS TrailReview/Trail review editor and moving colony [display][artifacts] (4.6s)
+
+1 passed, 0 failed, 0 skipped (4.6s of test time)
+[run_tests] JUnit report: artifacts/trail/after/junit.xml (1 cases)

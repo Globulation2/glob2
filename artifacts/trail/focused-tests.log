@@ -1,0 +1,85 @@
+PASS glob2-unit-tests ExperimentalFeatures (5 cases) (0.1s)
+PASS glob2-unit-tests MapQuery (41 cases) (0.1s)
+PASS TerrainEcology/four growth opportunities preserve stack updates and measured conservation (0.1s)
+PASS TerrainEcology/empty and prohibited resource cells do not acquire bonus growth (0.1s)
+PASS TerrainProperties/canonical terrain survives presentation regeneration and batches snapshot invalidation (0.1s)
+PASS TerrainProperties/required terrain experiments survive tiling and distinguish map headers (0.1s)
+PASS TerrainProperties/terrain edits refresh escape costs and supersede queued route snapshots (0.1s)
+PASS TerrainProperties/exclusive movement modes and bounded compile-time definitions (0.1s)
+PASS TerrainProperties/ice exposure includes stationary units and preserves fractional health in saves (0.1s)
+PASS TerrainProperties/explorers ignore ice damage and no-permadeath applies to ground hazards (0.0s)
+PASS TerrainProperties/health modifiers clip healing and expose units that have found an exit (0.1s)
+PASS TerrainProperties/projectile supercover tests intermediate cells corners and wrapped coordinates (0.1s)
+PASS TerrainProperties/terrain health profiles choose independent air and ground rates (0.1s)
+PASS TerrainProperties/explorer flag eligibility applies route accessibility and hunger distance (0.1s)
+PASS glob2-unit-tests FertilityField (20 cases) (0.3s)
+PASS EditorActionCoverage/editor selects and saves the sixteenth team [display][artifacts] (5.6s)
+PASS EditorActionCoverage/registered terrain stamps batch invalidation and reject invalid selector IDs [display] (4.9s)
+PASS MatchSetup/SHA-256 matches the FIPS 180-4 test vectors (0.1s)
+PASS MatchSetup/every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage (0.1s)
+PASS MatchSetup/the vendored fixtures match the protocol package when it is present (0.0s)
+PASS MatchSetup/valid setups become the GameHeader every client and the verifier run (0.1s)
+PASS MatchSetup/map-required terrain experiments propagate to setup and cannot be omitted (0.0s)
+PASS MatchSetup/closed seats close their team and follow every player seat (0.1s)
+PASS MatchSetup/unknown experiments, JavaScript AIs and unexpressible headers are refused (0.1s)
+PASS MatchSetup/a map file is found and checked by the hash of its decompressed bytes (0.1s)
+PASS MatchSetup/the simulation data hash covers every data file the simulation loads (0.1s)
+PASS EditorActionCoverage/building selection exposes matching editor controls and save retains edits [display] (5.6s)
+PASS TerrainPresentation/whole-cell layers preserve OpenGL terrain caching [display] (4.5s)
+PASS TerrainPresentation/tile animation and optional backgrounds use presentation metadata (0.1s)
+PASS TerrainPresentation/every side mask is decorative and preserves material identity (0.0s)
+PASS TerrainPresentation/image import keeps whole-cell material edges out of legacy gameplay [artifacts] (0.1s)
+PASS TerrainPresentation/export uses registered whole-cell material colors [artifacts] (0.0s)
+PASS JavaScriptIntegration/JavaScript observations visibility memory pagination and stale references (0.3s)
+PASS JavaScriptIntegration/JavaScript orders execute and survive save load (0.3s)
+PASS JavaScriptIntegration/JavaScript scenario effects commit atomically and resume (0.5s)
+PASS JavaScriptIntegration/JavaScript AI state RNG and disabled state survive continuation (0.7s)
+PASS JavaScriptIntegration/JavaScript large world observations respect work limits (0.4s)
+PASS JavaScriptIntegration/JavaScript custom library atomic updates and frozen source (0.1s)
+PASS JavaScriptIntegration/JavaScript profile two spatial cache and queued save continuity (0.1s)
+PASS JavaScriptIntegration/JavaScript upgrade dispatch survives tracking record growth (0.1s)
+PASS JavaScriptIntegration/JavaScript telemetry scene permissions and replay diagnostic roundtrip (0.1s)
+PASS EditorActionCoverage/farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts] (6.3s)
+PASS JavaScriptIntegration/JavaScript native spatial answers exclude hidden terrain resources and enemies (0.1s)
+PASS JavaScriptIntegration/JavaScript linked sources freeze once and removal retains external files (0.1s)
+PASS JavaScriptIntegration/JavaScript queued edits preserve fairness cancellation and stale targets (0.1s)
+PASS JavaScriptIntegration/JavaScript placement reserves footprints and explains impossible constraints (0.1s)
+PASS JavaScriptIntegration/JavaScript services reject unsavable transactions without changing state (0.1s)
+PASS JavaScriptIntegration/JavaScript farm areas: experiments query, farmArea order and tile field (0.1s)
+PASS JavaScriptIntegration/Online AI installs verify bytes and preserve provenance on rollback (0.1s)
+PASS JavaScriptIntegration/JavaScript path fields use terrain travel costs and invalidate speed-only changes (0.1s)
+PASS JavaScriptIntegration/JavaScript path diagonals retain the neutral strategic metric (0.1s)
+PASS JavaScriptIntegration/JavaScript terrain registry exposes immutable property capabilities in both profiles (0.1s)
+PASS SettingsExperiments/every experiment's label and help are in the string tables (0.3s)
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/6eeb/glob2/test/run_tests.py", line 698, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/bradley/.codex/worktrees/6eeb/glob2/test/run_tests.py", line 681, in main
+    result = future.result()
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 443, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 395, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.14/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/usr/lib/python3.14/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/home/bradley/.codex/worktrees/6eeb/glob2/test/run_tests.py", line 675, in run
+    return run_job(job, args, build_dir)
+  File "/home/bradley/.codex/worktrees/6eeb/glob2/test/run_tests.py", line 376, in run_job
+    process = subprocess.Popen(command, **popen_kwargs)
+  File "/usr/lib/python3.14/subprocess.py", line 1039, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        pass_fds, cwd, env,
+                        ^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+                        gid, gids, uid, umask,
+                        ^^^^^^^^^^^^^^^^^^^^^^
+                        start_new_session, process_group)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 1990, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/bradley/.codex/worktrees/6eeb/glob2/build/linux/client/release/test/glob2-engine-tests'

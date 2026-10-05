@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+BuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13
+nox::game started
+nox::gui.game.isGameEnded
+automaticEndingGame ended: 2 ticks, 0 minutes, 0 seconds
+GLOB2_GAME_END ticks=2 winner_team=-1 seed=719 map="Trail review" orders=0 players=team0:Castor

@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="125" failures="0" errors="0" skipped="0"><testsuite name="EditorActionCoverage"><testcase classname="EditorActionCoverage" name="base terrain brush changes water sand and grass and saves the final terrain [display]" time="0.99253" status="run" />
+  <testcase classname="EditorActionCoverage" name="building selection exposes matching editor controls and save retains edits [display]" time="1.13808" status="run" />
+  <testcase classname="EditorActionCoverage" name="editor selects and saves the sixteenth team [display][artifacts]" time="1.31803" status="run" />
+  <testcase classname="EditorActionCoverage" name="farm brush is offered only with the farm-areas experiment and refuses ground that cannot grow [display][artifacts]" time="1.40709" status="run" />
+  <testcase classname="EditorActionCoverage" name="registered terrain stamps batch invalidation and reject invalid selector IDs [display]" time="1.15337" status="run" />
+  <testcase classname="EditorActionCoverage" name="resource brushes add erase and retain painted wheat through editor save-load [display]" time="1.06639" status="run" />
+  <testcase classname="EditorActionCoverage" name="terrain experiments independently gate whole-cell brushes [display]" time="1.13436" status="run" />
+  <testcase classname="EditorActionCoverage" name="unit placement selection and stat edits use the action dispatcher [display]" time="1.31514" status="run" />
+  <testcase classname="EditorActionCoverage" name="zone brush addition removal and seam wrapping preserve other team paint and saved masks [display][artifacts]" time="1.42519" status="run" />
+  </testsuite><testsuite name="JavaScriptIntegration"><testcase classname="JavaScriptIntegration" name="JavaScript AI state RNG and disabled state survive continuation" time="0.155337" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" time="1.6238" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library atomic updates and frozen source" time="0.012819" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript farm areas: experiments query, farmArea order and tile field" time="0.00529" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript large world observations respect work limits" time="0.176374" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript linked sources freeze once and removal retains external files" time="0.007546" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript native spatial answers exclude hidden terrain resources and enemies" time="0.002868" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript observations visibility memory pagination and stale references" time="0.145721" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript orders execute and survive save load" time="0.152723" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path diagonals retain the neutral strategic metric" time="0.002281" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path fields use terrain travel costs and invalidate speed-only changes" time="0.002639" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript placement reserves footprints and explains impossible constraints" time="0.002885" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript profile two spatial cache and queued save continuity" time="0.002844" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript queued edits preserve fairness cancellation and stale targets" time="0.002699" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript scenario effects commit atomically and resume" time="0.140926" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript services reject unsavable transactions without changing state" time="0.011795" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript telemetry scene permissions and replay diagnostic roundtrip" time="0.004018" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript terrain registry exposes immutable property capabilities in both profiles" time="0.006034" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript upgrade dispatch survives tracking record growth" time="0.002598" status="run" />
+  <testcase classname="JavaScriptIntegration" name="Online AI installs verify bytes and preserve provenance on rollback" time="0.00713" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.004413" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.009028" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.002542" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.008645" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.003101" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.002806" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.002858" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.002579" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.003786" status="run" />
+  </testsuite><testsuite name="SettingsExperiments"><testcase classname="SettingsExperiments" name="every experiment's label and help are in the string tables" time="0.13821" status="run" />
+  <testcase classname="SettingsExperiments" name="preferences keep the enabled experiments and drop unknown keys" time="0.002277" status="run" />
+  </testsuite><testsuite name="TerrainEcology"><testcase classname="TerrainEcology" name="empty and prohibited resource cells do not acquire bonus growth" time="0.002515" status="run" />
+  <testcase classname="TerrainEcology" name="four growth opportunities preserve stack updates and measured conservation" time="0.005263" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="every side mask is decorative and preserves material identity" time="0.002428" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.002995" status="run" />
+  <testcase classname="TerrainPresentation" name="image import keeps whole-cell material edges out of legacy gameplay [artifacts]" time="0.006541" status="run" />
+  <testcase classname="TerrainPresentation" name="tile animation and optional backgrounds use presentation metadata" time="0" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve OpenGL terrain caching [display]" time="1.22317" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="0.906418" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="canonical terrain survives presentation regeneration and batches snapshot invalidation" time="0.002099" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorer flag eligibility applies route accessibility and hunger distance" time="0.00251" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="0.002291" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="0.002425" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="0.012015" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="required terrain experiments survive tiling and distinguish map headers" time="0.002691" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs and supersede queued route snapshots" time="0.00267" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="0.002393" status="run" />
+  </testsuite><testsuite name="ExperimentalFeatures"><testcase classname="ExperimentalFeatures" name="registry keys are unique kebab-case and parse back to their id" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="text form round trips and ignores keys this build does not know" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="stream round trip; a pre-124 stream reads nothing; corrupt input is refused" time="0.000115" status="run" />
+    <testcase classname="ExperimentalFeatures" name="text streams keep the set" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="GameHeader carries the set in its full and player-less forms and a version 123 header reads none" time="0" status="run" />
+  </testsuite><testsuite name="FertilityField"><testcase classname="FertilityField" name="TriangularWeightsMatchGrowResourcesRng" time="0" status="run" />
+    <testcase classname="FertilityField" name="ConvolutionMatchesDirectKernelWithoutSand" time="0.007763" status="run" />
+    <testcase classname="FertilityField" name="SandCorrectionPathMatchesDirectKernel" time="0.011213" status="run" />
+    <testcase classname="FertilityField" name="WaterSplatPathMatchesDirectKernel" time="0.011169" status="run" />
+    <testcase classname="FertilityField" name="AdaptivePathMatchesExplicitPaths" time="0.00248" status="run" />
+    <testcase classname="FertilityField" name="OpenWaterReachesFullScale" time="0" status="run" />
+    <testcase classname="FertilityField" name="SandOppositeWaterRemovesCredit" time="0" status="run" />
+    <testcase classname="FertilityField" name="NonPowerOfTwoDimensionsWrap" time="0.004597" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesNonGrass" time="0.000186" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesGrassNoDepositReaches" time="0" status="run" />
+    <testcase classname="FertilityField" name="ForMapUngatedKeepsUnreachableGrass" time="0" status="run" />
+    <testcase classname="FertilityField" name="UsefulExpansionCapacityFolds" time="0" status="run" />
+    <testcase classname="FertilityField" name="WithinPercentBand" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted ecology handles signed donors, inhibition and local growth" time="0.000105" status="run" />
+    <testcase classname="FertilityField" name="cached ecology changes after canonical terrain mutation" time="0.000147" status="run" />
+    <testcase classname="FertilityField" name="growth throughput includes multiple opportunities before occupancy" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted coupled land and shoreline kernels match independent probes" time="0.03848" status="run" />
+    <testcase classname="FertilityField" name="one-point wheat fertility retains exact positive growth potential" time="0" status="run" />
+    <testcase classname="FertilityField" name="fractional growth rejects incomplete RNG bucket and preserves whole bonuses" time="0" status="run" />
+    <testcase classname="FertilityField" name="rational growth rates preserve exact mass across complete random buckets" time="0.000745" status="run" />
+  </testsuite><testsuite name="MapQuery"><testcase classname="MapQuery" name="FreeForGroundUnit_CleanGrassPasses" time="0.000101" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_UnitFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterPassesWhenSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenFailsWhenMaskMatches" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_IgnoresForbidden" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_StillBlocksBuilding" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_GrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_UnitFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_WaterFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_SandFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectAllGrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectOneBadTileFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantSameGidPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_IgnoresUnit" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ResourceStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_BuildingStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ForbiddenStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_IgnoresUnit" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_NonGrassFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectAllGrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantSameGidPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_DefaultsToSentinel" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SetAndGet" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SentinelValueIsMinusOne" time="0" status="run" />
+    <testcase classname="MapQuery" name="trail and ice placement use properties independent of sprite variants" time="0" status="run" />
+    <testcase classname="MapQuery" name="point routes prefer trails and reject impassable destination terrain" time="0" status="run" />
+    <testcase classname="MapQuery" name="air routes detour around blocked cells and reset reusable search state" time="0" status="run" />
+    <testcase classname="MapQuery" name="air property profiles honor no-fly barriers and weighted travel without registration" time="0" status="run" />
+    <testcase classname="MapQuery" name="air building distance field resumes one source frontier for many candidates" time="0" status="run" />
+    <testcase classname="MapQuery" name="reverse air field ranks many sources with forward entry costs" time="0.003198" status="run" />
+  </testsuite></testsuites>
