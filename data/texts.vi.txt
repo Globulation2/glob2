@@ -5560,3 +5560,7 @@ Thêm đường mòn phong hóa vào trình chỉnh sửa bản đồ. Đơn v�
 Chợ V2
 [experiment markets-v2 help]
 Công nhân có thể lấy vật tư từ kho chung của các chợ. Chợ có thể nâng cấp để chứa lúa mì và gỗ, rồi mọi tài nguyên. Trao đổi giữa các đội vẫn chỉ gồm trái cây. Áp dụng cho trò chơi mới; bản lưu giữ thiết lập ban đầu.
+[Import Terrain Definitions]
+Nhập định nghĩa địa hình
+[Terrain palette]
+Bảng chọn địa hình

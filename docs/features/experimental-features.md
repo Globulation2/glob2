@@ -44,8 +44,8 @@ save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replay
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
 format and introduced network protocol 47. Terrain format 134 adds required
-experiments to `MapHeader`. Building format 136 embeds the building catalog and
-its experiment definitions; network protocol 56 and replay floor 136 separate the
+experiments to `MapHeader`. Building format 137 embeds the building catalog and
+its experiment definitions; network protocol 57 and replay floor 137 separate the
 current simulation from earlier clients. The supported save floor remains 58.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable

@@ -1002,8 +1002,11 @@ void PhoneEditor::draw()
 	if (editor.selectionMode == MapEdit::PlaceTerrain &&
 		TerrainSelector::isBaseTerrain(editor.terrainType))
 	{
-        labels[2] = GAGCore::Toolkit::getStringTable()->getString(
-            terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType)).label);
+		const auto type = TerrainSelector::baseTerrain(editor.terrainType);
+		const auto *label = editor.game.map.terrainPresentation(type).label;
+		labels[2] = unsigned(type) < TERRAIN_COUNT
+						? GAGCore::Toolkit::getStringTable()->getString(label)
+						: label;
 	}
 	else if (editor.selectionMode == MapEdit::RemoveObject)
 		labels[2] = GAGCore::Toolkit::getStringTable()->getString("[delete]");

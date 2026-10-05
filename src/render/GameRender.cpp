@@ -328,9 +328,8 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
         view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
 	// Prepare coverage before water, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
-	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
-	// transformed CPU passes, where batching and per-pixel opaque copies help.
-	const bool cacheEligible = frame.software && frame.target.hasPortableRenderer();
+	// Software keeps opaque runs; GPU views draw the same composed pages.
+	const bool cacheEligible = true;
 	SoftwareTerrainCache *softwareTerrainCache = nullptr;
 	if (cacheEligible)
 	{
@@ -353,7 +352,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	bool coveredWater = false;
 	try
 	{
-		if (cached)
+		if (cached && frame.software)
 			coveredWater = drawPreparedWater(frame, *softwareTerrainCache, time);
 	}
 	catch (const std::bad_alloc &)

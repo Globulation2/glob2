@@ -269,38 +269,58 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 	}
     if (name == "terrainTypes")
     {
-        // Static definitions reveal no map state. Build the native value once;
-        // callers receive detached, read-only JS snapshots in both profiles.
-        static const Value definitions=[] {
-            Value result=Value::array();
-            for(unsigned id=0;id<TERRAIN_COUNT;++id)
-            {
-                const auto type=static_cast<TerrainType>(id);
-                const auto& p=terrainProperties(type);
-                const auto& presentation=terrainPresentation(type);
-                const auto experiment=terrainExperiment(type);
-                Value resources=Value::array();
-                for(unsigned resource=0;resource<MAX_NB_RESOURCES;++resource)
-                    if(p.allowedResources & (1u<<resource))resources.items.emplace_back(resource);
-                result.items.push_back(Value::object()
-                    .set("id",id).set("name",presentation.name)
-                    .set("experiment",experiment?Value(experimentDefinition(*experiment).key):Value())
-                    .set("editorSelectable",presentation.editorSelectable)
-                    .set("walkable",p.walkable).set("swimmable",p.swimmable).set("flyable",p.flyable)
-                    .set("resourcesGrow",p.resourcesGrow).set("fertilitySource",p.fertilitySource)
-                    .set("nonGrowingResources",p.nonGrowingResources).set("buildable",p.buildable)
-                    .set("projectileBlocks",p.projectileBlocks).set("shoreline",p.shoreline)
-                    .set("groundSpeedQ8",int(p.groundSpeedQ8)).set("airSpeedQ8",int(p.airSpeedQ8))
-                    .set("groundHealthQ8",int(p.groundHealthQ8)).set("airHealthQ8",int(p.airHealthQ8))
-                    .set("growthQ8",int(p.growthQ8)).set("fertilityQ8",int(p.fertilityQ8))
-                    .set("inhibitionQ8",int(p.inhibitionQ8)).set("shoreSupportQ8",int(p.shoreSupportQ8))
-                    .set("allowedResources",resources).set("farmCrop",int(p.farmCrop)));
-            }
-            return result;
-        }();
-        charge(TERRAIN_COUNT*48);
-        return definitions;
-    }
+		// Registry definitions reveal no tile state. Cache per immutable registry;
+		// callers receive detached, read-only JS snapshots in both profiles.
+		charge(game.map.terrainRegistry().size() * 48);
+		if (terrainDefinitionRegistry != game.map.frozenTerrainRegistry())
+		{
+			terrainDefinitions = [&]
+			{
+				Value result = Value::array();
+				for (unsigned id = 0; id < game.map.terrainRegistry().size(); ++id)
+				{
+					const auto type = static_cast<TerrainType>(id);
+					const auto &p = game.map.terrainProperties(type);
+					const auto &presentation = game.map.terrainPresentation(type);
+					const auto experiment = terrainExperiment(type);
+					Value resources = Value::array();
+					for (unsigned resource = 0; resource < MAX_NB_RESOURCES; ++resource)
+						if (p.allowedResources & (1u << resource))
+							resources.items.emplace_back(resource);
+					result.items.push_back(
+						Value::object()
+							.set("id", id)
+							.set("name", presentation.name)
+							.set("experiment", experiment
+												   ? Value(experimentDefinition(*experiment).key)
+												   : Value())
+							.set("editorSelectable", presentation.editorSelectable)
+							.set("walkable", p.walkable)
+							.set("swimmable", p.swimmable)
+							.set("flyable", p.flyable)
+							.set("resourcesGrow", p.resourcesGrow)
+							.set("fertilitySource", p.fertilitySource)
+							.set("nonGrowingResources", p.nonGrowingResources)
+							.set("buildable", p.buildable)
+							.set("projectileBlocks", p.projectileBlocks)
+							.set("shoreline", p.shoreline)
+							.set("groundSpeedQ8", int(p.groundSpeedQ8))
+							.set("airSpeedQ8", int(p.airSpeedQ8))
+							.set("groundHealthQ8", int(p.groundHealthQ8))
+							.set("airHealthQ8", int(p.airHealthQ8))
+							.set("growthQ8", int(p.growthQ8))
+							.set("fertilityQ8", int(p.fertilityQ8))
+							.set("inhibitionQ8", int(p.inhibitionQ8))
+							.set("shoreSupportQ8", int(p.shoreSupportQ8))
+							.set("allowedResources", resources)
+							.set("farmCrop", int(p.farmCrop)));
+				}
+				return result;
+			}();
+			terrainDefinitionRegistry = game.map.frozenTerrainRegistry();
+		}
+		return terrainDefinitions;
+	}
 	if (name == "buildingTypes")
 	{
 		Value a = Value::array();
@@ -341,6 +361,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
                     .set("projectileRange", b.shootingRange).set("projectileSpeed", b.shootSpeed).set("projectileRhythm", b.shootRhythm)
                     .set("ammunitionResource", b.semantics.ammunitionResource).set("ammunitionCost", b.semantics.ammunitionCost)
                     .set("suppliesStock", b.runtimeSuppliesStock).set("fetchesStock", b.runtimeFetchesStock)
+                    .set("suppliesDirectStock", b.semantics.market.suppliesDirectStock)
                     .set("exchangesFruit", b.semantics.market.interTeamFruitExchange)
                     .set("name", b.type)
 					.set("shortType", b.shortTypeNum)
@@ -558,7 +579,8 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		t.amount = s->readUint8("amount");
 		const unsigned terrainType = version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
 			? s->readUint16("terrainType") : unsigned(legacyTerrainType(t.terrain));
-		if (!validTerrainType(terrainType)) throw std::runtime_error("Invalid remembered terrain type");
+		if (!game.map.validTerrainType(terrainType))
+			throw std::runtime_error("Invalid remembered terrain type");
 		t.terrainType = static_cast<TerrainType>(terrainType);
 		if (index >= size || lookup(index))
 			throw std::runtime_error("Invalid terrain memory");

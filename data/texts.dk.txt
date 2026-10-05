@@ -5560,3 +5560,7 @@ Tilføjer slidte stier til korteditoren. Landenheder bevæger sig med dobbelt ha
 Markeder V2
 [experiment markets-v2 help]
 Arbejdere kan hente forsyninger fra markedernes fælles lager. Markeder kan opgraderes til at lagre hvede og træ og derefter alle ressourcer. Handel mellem hold omfatter stadig kun frugt. Gælder nye spil; gemte spil beholder deres oprindelige indstilling.
+[Import Terrain Definitions]
+Importér terrændefinitioner
+[Terrain palette]
+Terrænpalet

@@ -52,8 +52,16 @@ TEST_SUITE("CortexActionCoverage")
         CHECK(gid==NOGBID);
         CHECK(ai.orderQueue.empty());
         CHECK(hybrid->buildingState==Building::ALIVE);
-        // A pure ground attractor releases its assignment without demolition.
+        // Direct inventory supply is an independent economic service even
+        // without a market-stock channel or inter-team fruit exchange.
         hybrid->type->semantics.feeding.enabled=false;
+        hybrid->type->semantics.market.suppliesDirectStock=true;
+        CHECK(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE));
+        gid=hybrid->gid;ai.clearOneFlag(gid);
+        CHECK(ai.orderQueue.empty());
+        CHECK(hybrid->buildingState==Building::ALIVE);
+        // A pure ground attractor releases its assignment without demolition.
+        hybrid->type->semantics.market.suppliesDirectStock=false;
         hybrid->maxUnitWorking=3;
         gid=hybrid->gid;ai.clearOneFlag(gid);
         REQUIRE(ai.orderQueue.size()==1);

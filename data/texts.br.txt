@@ -5560,3 +5560,7 @@ Adiciona trilhas desgastadas ao editor de mapas. As unidades terrestres se movem
 Marc’hadoù V2
 [experiment markets-v2 help]
 Gallout a ra al labourerien kemer pourvezioù e stok boutin ar marc’hadoù. Gwellaat ar marc’hadoù a c’haller evit mirout gwinizh ha koad, ha goude-se pep danvez. Frouezh hepken a vez eskemmet etre skipailhoù. Evit ar c’hoarioù nevez; ar c’hoarioù enrollet a vir o arventenn orin.
+[Import Terrain Definitions]
+Enporzhiañ despizadurioù an tachennoù
+[Terrain palette]
+Paletenn an tachennoù

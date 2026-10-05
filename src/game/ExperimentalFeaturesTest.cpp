@@ -289,7 +289,7 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(loaded.getExperiments() == original.getExperiments());
 			CHECK(current->getPosition() == bytes.size());
 
-			// Version 136 appends an empty catalog chunk count after the
+			// Building-catalog format appends an empty catalog chunk count after the
 			// experiment set. Remove both additions to form a version 123 header.
 			const std::string sectionBytes = bytesOf(original.getExperiments());
 			REQUIRE(bytes.size() > sectionBytes.size());

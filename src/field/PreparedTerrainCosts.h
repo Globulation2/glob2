@@ -10,9 +10,11 @@ namespace gradient_kernel
 // map each direction to a slot for its unique edge cost: a cardinal cost may
 // share a slot with another class's diagonal cost. Mutable queues stay private
 // to each search; slots select their append cursors for the current cost layer.
-// Both input costs must be positive and below BUCKETS, so a future layer cannot
-// alias the bucket being expanded. Production tables enforce this bound in
-// TerrainMovementCosts.h; independently supplied tables must also satisfy it.
+// Every reachable class must have positive costs below the selected queue size,
+// so a future layer cannot alias the bucket being expanded. Built-in tables use
+// BUCKETS; runtime searches validate their reachable profiles against a 64-, 128-
+// or 256-bucket ring before expansion. Unused registry profiles may exceed that
+// ring and are skipped when reserving append cursors.
 template<std::size_t N>
 struct PreparedTerrainCosts
 {

@@ -2,14 +2,19 @@
 #include "EngineFixtures.h"
 #include "TerrainLine.h"
 #include "TerrainPresentation.h"
-#include "TerrainExperiments.h"
 #include "BinaryStream.h"
+#include "TextStream.h"
+#include "FileManager.h"
+#include "Utilities.h"
 #include "StreamBackend.h"
 #include "Version.h"
 #include "gradient/GradientRuntime.h"
 #include "MapInternal.h"
+#include "gradient/BuildingGradientSearch.h"
+#include "field/RuntimeTerrainGradient.h"
 #include <memory>
 #include <climits>
+#include <nlohmann/json.hpp>
 
 TEST_SUITE("TerrainProperties")
 {
@@ -308,4 +313,418 @@ TEST_CASE("projectile supercover tests intermediate cells corners and wrapped co
     CHECK_FALSE(terrainSegmentClear(32,16,32,112,[](auto x,auto y){return x==0&&y==2;}));
     CHECK_FALSE(terrainSegmentClear(16,32,112,32,[](auto x,auto y){return x==2&&y==0;}));
 }
+}
+
+TEST_SUITE("TerrainRuntime")
+{
+	namespace
+	{
+	const char *runtimeDefinitions = R"({"schemaVersion":1,"terrains":[
+ {"key":"test:bog","name":"Bog","base":"water","properties":{"groundSpeedQ8":64},"appearance":"sand"},
+ {"key":"test:hazard","name":"Hazard","base":"grass","properties":{"groundSpeedQ8":192,"buildable":false,"flyable":false,"projectileBlocks":true,"groundHealthQ8":-16,"growthQ8":512,"fertilitySource":true,"fertilityQ8":512},"appearance":"ice"},
+ {"key":"test:unused","name":"Unused","base":"grass","properties":{"groundSpeedQ8":1024,"airSpeedQ8":1024},"appearance":"grass"}
+]})";
+	void importBeforeMatch(Game &game, std::string_view definitions = runtimeDefinitions)
+	{
+		// A detached map is the pre-match authoring API; active games cannot replace definitions.
+		game.map.game = nullptr;
+		game.map.importTerrainDefinitions(definitions);
+		game.map.setGame(&game);
+	}
+	} // namespace
+	TEST_CASE("maps isolate registries and reject failed imports atomically")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map first, second;
+		first.setSize(5, 5, GRASS);
+		second.setSize(5, 5, GRASS);
+		first.importTerrainDefinitions(runtimeDefinitions);
+		CHECK(second.terrainRegistry().size() == 7);
+		const auto previous = first.frozenTerrainRegistry();
+		const auto generation = first.terrainGeneration();
+		CHECK_THROWS(
+			first.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"bad"}]})"));
+		CHECK(first.frozenTerrainRegistry() == previous);
+		CHECK(first.terrainGeneration() == generation);
+		CHECK(first.terrainQueueBuckets() == 64);
+		CHECK(first.minStepCost(6) == second.minStepCost(6));
+		CHECK_FALSE(first.hasTerrainHealthEffects());
+		CHECK_FALSE(first.hasAirTerrainConstraints());
+		const auto bog = *first.terrainRegistry().find("test:bog");
+		first.setCellTerrain(3, 3, bog);
+		CHECK(first.terrainQueueBuckets() == 256);
+		CHECK(first.hasTerrainMovementModifiers());
+		CHECK_FALSE(first.isFreeForGroundUnit(3, 3, false, 1));
+		CHECK(first.isFreeForGroundUnit(3, 3, true, 1));
+		first.setCellTerrain(3, 3, GRASS);
+		CHECK(first.terrainQueueBuckets() == 64);
+		CHECK_FALSE(first.hasTerrainMovementModifiers());
+		first.importTerrainDefinitions(
+			R"({"schemaVersion":1,"terrains":[{"key":"test:bog","name":"Water equivalent","base":"water","properties":{},"appearance":"sand"}]})");
+		first.setCellTerrain(3, 3, bog);
+		second.setCellTerrain(3, 3, WATER);
+		CHECK_FALSE(first.hasTerrainMovementModifiers());
+		CHECK((*first.frozenWaterSnapshot())[first.coordToIndex(3, 3)] == 1);
+		std::vector<Uint16> expected(1024, 1), actual;
+		expected[first.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+		actual = expected;
+		first.propagateGradient(actual.data(), 6);
+		second.propagateGradient(expected.data(), 6);
+		CHECK(actual == expected);
+		CHECK(first.resourceGrowthField().landField().values() ==
+			  second.resourceGrowthField().landField().values());
+		CHECK(first.resourceGrowthField().aquaticField() ==
+			  second.resourceGrowthField().aquaticField());
+	}
+	TEST_CASE(
+		"custom capabilities drive map queries health ecology and immutable match definitions")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+		importBeforeMatch(world.game);
+		auto &map = world.game.map;
+		CHECK_THROWS(map.importTerrainDefinitions(runtimeDefinitions));
+		const auto hazard = *map.terrainRegistry().find("test:hazard");
+		map.setCellTerrain(8, 8, hazard);
+		CHECK_FALSE(map.isFreeForBuilding(8, 8));
+		CHECK(map.hasTerrainHealthEffects());
+		CHECK(map.hasAirTerrainConstraints());
+		CHECK(map.hasProjectileBlockingTerrain());
+		CHECK_FALSE(map.projectilePathClear(7 * 32 + 16, 8 * 32 + 16, 9 * 32 + 16, 8 * 32 + 16));
+		CHECK(map.terrainPropertiesAt(8, 8).resourcesGrow);
+		CHECK(map.terrainPropertiesAt(8, 8).growthQ8 == 512);
+		CHECK(map.terrainPropertiesAt(8, 8).fertilityQ8 == 512);
+		map.resourceGrowthField();
+		CHECK(map.growthCache.validFor(map));
+		CHECK(map.growthCache.landField().at(8, 8) > 0);
+		CHECK(map.growthCache.rate(map.coordToIndex(8, 8), WHEAT) > 0);
+		CHECK(map.stepCost(1, 0, map.coordToIndex(8, 8), 0) == 13);
+		CHECK(map.stepCost(1, 1, map.coordToIndex(8, 8), 0) == 18);
+		auto *worker = world.addUnit(WORKER, 8, 8);
+		REQUIRE(worker);
+		const int hp = worker->hp;
+		for (int i = 0; i < 16; ++i)
+			worker->applyTerrainHealth();
+		CHECK(worker->hp == hp - 1);
+		{
+			auto batch = map.editTerrain();
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+					map.setCellTerrain(x, y, hazard);
+		}
+		map.setCellTerrain(2, 2, GRASS);
+		map.setCellTerrain(12, 12, GRASS);
+		int dx = 0, dy = 0;
+		CHECK_FALSE(map.pathfindAirPointToPoint(2, 2, 12, 12, &dx, &dy));
+	}
+	TEST_CASE("eager resumed and worker gradients agree on custom slow swimming")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(5, 5, GRASS);
+		map.importTerrainDefinitions(runtimeDefinitions);
+		const auto bog = *map.terrainRegistry().find("test:bog");
+		{
+			auto batch = map.editTerrain();
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+					if ((x * 3 + y * 7) % 5 == 0)
+						map.setCellTerrain(x, y, bog);
+		}
+		for (int swim = 0; swim < 7; ++swim)
+		{
+			std::vector<Uint16> eager(1024, 1), lazy, pipelined;
+			eager[0] = GRADIENT_AT_GOAL;
+			lazy = eager;
+			pipelined = eager;
+			map.propagateGradient(eager.data(), swim);
+			BuildingGradientSearch search;
+			search.begin(map, lazy.data(), swim);
+			for (unsigned cell : {97, 501, 1023})
+			{
+				search.resolve(cell);
+				CHECK(lazy[cell] == eager[cell]);
+			}
+			search.finish();
+			CHECK(lazy == eager);
+			GradientPipeline pipeline;
+			pipeline.configure(1, 2, 1024,
+							   [](auto &job, auto &scratch)
+							   {
+								   gradient_kernel::propagateTerrainField(
+									   job.data.get(), job.swim, gradient_kernel::COST_LIMIT,
+									   {32, 32}, scratch,
+									   [&](size_t i) { return (*job.terrain)[i]; },
+									   job.modifiedCosts, *job.registry, job.terrainBuckets);
+							   });
+			auto owned = std::make_unique<Uint16[]>(1024);
+			std::copy(pipelined.begin(), pipelined.end(), owned.get());
+			auto *field = owned.release();
+			pipeline.advance();
+			pipeline.submit(&field, swim,
+							[&](auto &job)
+							{
+								std::copy(pipelined.begin(), pipelined.end(), job.data.get());
+								job.registry = map.frozenTerrainRegistry();
+								job.terrain = map.frozenTerrainSnapshot();
+								job.terrainBuckets = map.terrainQueueBuckets();
+								job.modifiedCosts = true;
+							});
+			pipeline.advance();
+			pipeline.advance();
+			CHECK(std::equal(eager.begin(), eager.end(), field));
+			delete[] field;
+		}
+	}
+	TEST_CASE("production pipeline captures custom movement and discards fields after reimport")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned workers : {0, 1})
+			for (unsigned speed : {256, 64})
+			{
+				CAPTURE(workers);
+				CAPTURE(speed);
+				glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+				auto &map = world.game.map;
+				world.game.gameHeader.setResourceGrowthDisabled(true);
+				auto definitions = [](unsigned factor)
+				{
+					return nlohmann::json{
+						{"schemaVersion", 1},
+						{"terrains",
+						 nlohmann::json::array({{{"key", "test:water"},
+												 {"name", "Custom water"},
+												 {"base", "water"},
+												 {"appearance", "sand"},
+												 {"properties", {{"groundSpeedQ8", factor}}}}})}}
+						.dump();
+				};
+				importBeforeMatch(world.game, definitions(speed));
+				const auto water = *map.terrainRegistry().find("test:water");
+				{
+					auto batch = map.editTerrain();
+					for (int y = 0; y < 32; ++y)
+						for (int x = 8; x < 13; ++x)
+							map.setCellTerrain(x, y, water);
+				}
+				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
+				map.setResource(20, 20, WHEAT, 1);
+				map.getResourceGradient(0, WHEAT, 6);
+				std::vector<Uint16> expected(1024);
+				map.seedResourcesGradient(0, WHEAT, 6, expected.data());
+				map.propagateGradient(expected.data(), 6);
+
+				// Exercise Map's actual dispatch and worker callback: neutral-speed
+				// custom water captures a binary plane, while slow water captures
+				// compact movement profiles and selects the larger queue.
+				map.configureGradientPipeline(workers, 2);
+				map.advanceGradientPipeline();
+				map.syncStep(0);
+				REQUIRE(map.gradientRuntime->pipeline.pendingCount() == 1);
+				map.gradientRuntime->pipeline.visitPendingSnapshots(
+					[&](const auto &pending)
+					{
+						CHECK_FALSE(pending.superseded);
+						CHECK(std::equal(expected.begin(), expected.end(), pending.data));
+					});
+
+				importBeforeMatch(world.game, definitions(speed == 256 ? 64 : 256));
+				CHECK(map.terrainRegistry().find("test:water") == water);
+				map.gradientRuntime->pipeline.visitPendingSnapshots([&](const auto &pending)
+																	{ CHECK(pending.superseded); });
+				std::vector<Uint16> replacement(1024);
+				map.seedResourcesGradient(0, WHEAT, 6, replacement.data());
+				map.propagateGradient(replacement.data(), 6);
+				REQUIRE(replacement != expected);
+				map.updateResourcesGradient(0, WHEAT, 6);
+				map.advanceGradientPipeline();
+				map.advanceGradientPipeline();
+				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
+				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
+				CHECK(std::equal(replacement.begin(), replacement.end(),
+								 map.resourcesGradient[0][WHEAT][6]));
+			}
+	}
+	TEST_CASE("unused distinct costs do not expand map movement setup")
+	{
+		glob2test::HeadlessGlobals globals;
+		Map map;
+		map.setSize(5, 5, GRASS);
+		map.setCellTerrain(8, 8, ICE);
+		std::vector<Uint16> expected(1024, 1);
+		expected[0] = GRADIENT_AT_GOAL;
+		map.propagateGradient(expected.data(), 6);
+		nlohmann::json definitions = nlohmann::json::array();
+		for (unsigned speed = 64; speed <= 1024; ++speed)
+			definitions.push_back({{"key", "unused:s" + std::to_string(speed)},
+								   {"name", "Unused"},
+								   {"base", "water"},
+								   {"appearance", "water"},
+								   {"properties", {{"groundSpeedQ8", speed}}}});
+		map.importTerrainDefinitions(
+			nlohmann::json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+		REQUIRE(map.terrainRegistry().movement(6).profiles.size() > 50);
+		const auto snapshot = map.frozenTerrainMovementSnapshot(6);
+		CHECK(snapshot->movement.profiles.size() == 2);
+		CHECK(snapshot->movement.steps.size() == 4);
+		CHECK(map.terrainQueueBuckets() == 64);
+		std::vector<Uint16> actual(1024, 1);
+		actual[0] = GRADIENT_AT_GOAL;
+		map.propagateGradient(actual.data(), 6);
+		CHECK(actual == expected);
+		BuildingGradientSearch search;
+		actual.assign(1024, 1);
+		actual[0] = GRADIENT_AT_GOAL;
+		search.begin(map, actual.data(), 6);
+		search.finish();
+		CHECK(actual == expected);
+	}
+	TEST_CASE("large embedded registry crosses the stream string limit")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+		using Json = nlohmann::json;
+		Json definitions = Json::array();
+		for (unsigned i = 0; i < 2048; ++i)
+			definitions.push_back({{"key", "large:t" + std::to_string(i)},
+								   {"name", "Large registry"},
+								   {"base", "grass"},
+								   {"appearance", "sand"},
+								   {"properties", Json::object()}});
+		world.game.map.game = nullptr;
+		world.game.map.importTerrainDefinitions(
+			Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+		world.game.map.setGame(&world.game);
+		REQUIRE(world.game.map.terrainRegistry().serialize().size() > 1024 * 1024);
+		world.game.map.setCellTerrain(8, 8, TerrainType(2000));
+		auto *bytes = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(bytes);
+		world.game.save(&output, false, "large-registry");
+		output.flush();
+		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+			std::string(bytes->getBuffer(), bytes->getPosition())));
+		GameGUI restored;
+		REQUIRE(restored.game.load(&input));
+		CHECK(restored.game.map.terrainRegistry().digest() ==
+			  world.game.map.terrainRegistry().digest());
+		CHECK(restored.game.map.terrainTypeAt(8, 8) == TerrainType(2000));
+		auto *textBytes = new GAGCore::MemoryStreamBackend;
+		GAGCore::TextOutputStream textOutput(textBytes);
+		world.game.save(&textOutput, false, "large-registry-text");
+		textOutput.flush();
+		GAGCore::TextInputStream textInput(new GAGCore::MemoryStreamBackend(
+			std::string(textBytes->getBuffer(), textBytes->getPosition())));
+		GameGUI restoredText;
+		REQUIRE(restoredText.game.load(&textInput));
+		CHECK(restoredText.game.map.terrainRegistry().digest() ==
+			  world.game.map.terrainRegistry().digest());
+	}
+	TEST_CASE("embedded registry restores custom state and pending gradients without source files")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+		importBeforeMatch(world.game);
+		auto &map = world.game.map;
+		map.setCellTerrain(8, 8, *map.terrainRegistry().find("test:hazard"));
+		map.setCellTerrain(9, 8, *map.terrainRegistry().find("test:bog"));
+		auto *worker = world.addUnit(WORKER, 8, 8);
+		REQUIRE(worker);
+		for (int i = 0; i < 7; ++i)
+			worker->applyTerrainHealth();
+		map.setResource(15, 15, WHEAT, 1);
+		map.getResourceGradient(0, WHEAT, 6);
+		map.configureGradientPipeline(1, 2);
+		map.advanceGradientPipeline();
+		map.gradientRuntime->pipeline.submit(&map.resourcesGradient[0][WHEAT][6], 6,
+											 [&](auto &job)
+											 {
+												 map.seedResourcesGradient(0, WHEAT, 6,
+																		   job.data.get());
+												 job.modifiedCosts = true;
+												 job.registry = map.frozenTerrainRegistry();
+												 job.terrain = map.frozenTerrainSnapshot();
+												 job.terrainBuckets = map.terrainQueueBuckets();
+											 });
+		auto *bytes = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(bytes);
+		world.game.save(&output, false, "custom-continuation");
+		output.flush();
+		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+			std::string(bytes->getBuffer(), bytes->getPosition())));
+		GameGUI resumed;
+		REQUIRE(resumed.game.load(&input));
+		CHECK(resumed.game.map.terrainRegistry().digest() == map.terrainRegistry().digest());
+		CHECK(resumed.game.map.terrainQueueBuckets() == 256);
+		CHECK(resumed.game.map.gradientRuntime->pipeline.pendingCount() == 1);
+		CHECK(resumed.game.map.terrainTypeAt(8, 8) == map.terrainTypeAt(8, 8));
+		auto *loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(worker->gid)];
+		REQUIRE(loaded);
+		CHECK(loaded->terrainHealthRemainder == worker->terrainHealthRemainder);
+		for (int i = 0; i < 2; ++i)
+		{
+			map.advanceGradientPipeline();
+			resumed.game.map.advanceGradientPipeline();
+		}
+		CHECK(std::equal(map.resourcesGradient[0][WHEAT][6],
+						 map.resourcesGradient[0][WHEAT][6] + 1024,
+						 resumed.game.map.resourcesGradient[0][WHEAT][6]));
+		for (int i = 0; i < 100; ++i)
+		{
+			world.game.syncStep(0);
+			resumed.game.syncStep(0);
+			CHECK(world.game.checkSum() == resumed.game.checkSum());
+		}
+	}
+	TEST_CASE("write equivalent custom maps for paired performance runs [benchmark][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals;
+		using Json = nlohmann::json;
+		for (unsigned count : {7, 259, 1024, 16384})
+		{
+			GameGUI world;
+			GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+				*globalContainer->fileManager, "maps/FourSquares1.map"));
+			REQUIRE(world.game.load(&input));
+			auto &map = world.game.map;
+			map.game = nullptr;
+			if (count > 7)
+			{
+				Json definitions = Json::array();
+				for (unsigned i = 7; i < count; ++i)
+				{
+					const auto *preset = TerrainPresentations[(i - 7) % 5].name;
+					definitions.push_back({{"key", "bench:t" + std::to_string(i)},
+										   {"name", "Equivalent terrain"},
+										   {"base", preset},
+										   {"appearance", preset},
+										   {"properties", Json::object()}});
+				}
+				map.importTerrainDefinitions(
+					Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
+				std::array<std::vector<TerrainType>, 5> equivalents;
+				for (unsigned i = 7; i < map.terrainRegistry().size(); ++i)
+					equivalents[map.terrainRegistry().appearance(TerrainType(i))].push_back(
+						TerrainType(i));
+				auto batch = map.editTerrain();
+				for (int y = 0; y < map.getH(); ++y)
+					for (int x = 0; x < map.getW(); ++x)
+					{
+						auto original = map.terrainTypeAt(x, y);
+						if (original < GRASS_SAND_SHORE)
+						{
+							const auto &choices = equivalents[original];
+							map.setCellTerrain(x, y,
+											   choices[terrainVisualHash(x, y) % choices.size()]);
+						}
+					}
+			}
+			map.setGame(&world.game);
+			const auto path =
+				glob2test::artifactDir() / ("equivalent-" + std::to_string(count) + ".map");
+			REQUIRE(globalContainer->fileManager->writeAtomically(
+				path.string(),
+				[&](GAGCore::OutputStream &out) { world.game.save(&out, true, "FourSquares1"); }));
+			MESSAGE(path.string());
+		}
+	}
 }

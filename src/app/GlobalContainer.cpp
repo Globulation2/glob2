@@ -1,7 +1,3 @@
-#include "TerrainPresentation.h"
-#ifndef __EMSCRIPTEN__
-#include <SDL3_net/SDL_net.h>
-#endif
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -17,6 +13,9 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include "TerrainPresentation.h"
+#include "render/terrain/TerrainCatalogIO.h"
+#include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
 #include "IntBuildingType.h"
 #include "KeyboardManager.h"
@@ -74,7 +73,7 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 
 	applyScrollTuning(settings, reducedMotion);
 	runNoX = false;
-	
+
 	runTestGames=false;
 	runTestGamesCount=0;
 	testGamesAIPool.clear();
@@ -125,6 +124,7 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
+	terrainCompositor_.reset();
 
 	// SDL_net owns resolver threads and conditions. Join them before the
 	// graphics backend calls SDL_Quit and destroys SDL thread resources.
@@ -205,7 +205,7 @@ void GlobalContainer::loadClient(void)
 		gfx->setCompactWindowAllowed(true);
         gfx->refreshPresentation();
 		gfx->setMinRes(640, 480);
-		
+
 		// load data required for drawing progress screen
 		title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.webp");
 		if (gameData)
@@ -224,14 +224,14 @@ void GlobalContainer::loadClient(void)
         loadMenuMusic();
 		mix->setNextTrack(MusicTrack::Intro);
 		mix->setNextTrack(MusicTrack::Menu);
-		
+
 		// create voice recorder
 		voiceRecorder = std::make_unique<VoiceRecorder>();
-		
+
 		updateLoadProgressScreen(15);
 	}
-	
-	
+
+
 	if (!runNoX)
 	{
 		updateLoadProgressScreen(35);
@@ -255,7 +255,7 @@ void GlobalContainer::loadClient(void)
 	if (!runNoX)
 	{
 		updateLoadProgressScreen(40);
-		
+
 		// load fonts
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
@@ -284,7 +284,7 @@ void GlobalContainer::loadClient(void)
 #endif
             }
         }
-		
+
 		// use custom style
 		Style::style = new Glob2Style;
 
@@ -302,28 +302,9 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	// load terrain data
 	if (!terrain)
 		terrain = sprite("data/gfx/terrain");
-	for (unsigned type=0; type<TERRAIN_COUNT; ++type)
-    {
-        const auto &p = TerrainPresentations[type];
-        terrainSprites[type] = sprite(p.sprite);
-        const auto checkFrames = [](Sprite *asset, int first, int count, bool tile) {
-            if (first < 0 || count <= 0 || first + count > asset->getFrameCount())
-                throw std::runtime_error("Terrain presentation references missing sprite frames");
-            for (int frame=first; frame<first+count; ++frame)
-                if ((tile && (asset->getW(frame)!=32 || asset->getH(frame)!=32)) ||
-                    asset->getW(frame)<=0 || asset->getH(frame)<=0)
-                    throw std::runtime_error("Terrain presentation has invalid frame dimensions");
-        };
-        checkFrames(terrainSprites[type],p.firstFrame,p.variants*p.animationFrames,true);
-        checkFrames(terrainSprites[type],p.editorFrame,1,true);
-        if(p.edgeFirstFrame>=0) checkFrames(terrainSprites[type],p.edgeFirstFrame,15,true);
-        if(p.backdropSprite) {
-            terrainBackdropSprites[type]=sprite(p.backdropSprite);
-            checkFrames(terrainBackdropSprites[type],p.backdropFirstFrame,p.backdropFrames,true);
-        }
-    }
-    terrainWater = sprite(TerrainOceanBackdrop.sprite);
-    if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
+	terrainCompositor(); // Validate all registered material sources before drawing.
+	terrainWater = sprite(TerrainOceanBackdrop.sprite);
+	if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
         throw std::runtime_error("Terrain ocean backdrop has missing frames");
     }
     for(int f=TerrainOceanBackdrop.firstFrame;f<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames;++f) {
@@ -331,13 +312,13 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
             throw std::runtime_error("Terrain ocean backdrop has invalid frame dimensions");
     }
 	terrainCloud = sprite("data/gfx/cloud");
-	
+
 	// black for unexplored terrain
 	terrainBlack = sprite("data/gfx/black");
 
 	// load shader for invisible terrain
 	terrainShader = sprite("data/gfx/shade");
-	
+
 	if (showProgress)
 		updateLoadProgressScreen(60);
 	// load resources
@@ -380,12 +361,14 @@ void GlobalContainer::requestGameGraphics()
         "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
-    for (const auto &p : TerrainPresentations) {
-        Toolkit::requestSprite(p.sprite);
-        if (p.backdropSprite) Toolkit::requestSprite(p.backdropSprite);
-    }
-    Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
-    for (size_t i = 0; i < buildingsTypes.size(); ++i) {
+	for (const auto &material : TerrainVisual::loadCatalog().materials)
+	{
+		Toolkit::requestSprite(material.sprite);
+		if (!material.backdrop.sprite.empty())
+			Toolkit::requestSprite(material.backdrop.sprite);
+	}
+	Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
+	for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);
         if (type->type == "null") continue;
         Toolkit::requestSprite(type->gameSprite);
@@ -455,7 +438,7 @@ void GlobalContainer::load(void)
 		assert(false);
 		exit(-1);
 	}
-	
+
 	// A profile without a language (or with one this build no longer ships) follows
 	// the operating system's or browser's preferred languages.
 	StringTable *strings = Toolkit::getStringTable();
@@ -483,4 +466,12 @@ void GlobalContainer::loadOffscreenGraphics()
 	if (!gfx) gfx = Toolkit::initGraphic(640, 480, 0, "Glob2 export", "glob2");
 	if (!standardFont || !littleFont) loadGameFonts();
 	if (!gameGraphics) loadGameGraphics(false);
+}
+
+TerrainVisual::Compositor &GlobalContainer::terrainCompositor()
+{
+	if (!terrainCompositor_)
+		terrainCompositor_ =
+			std::make_unique<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
+	return *terrainCompositor_;
 }

@@ -25,10 +25,14 @@ encoder_python="$(python3 tools/package_assets.py --encoder-python)"
 The exporter area-averages the material into a 128×128 sheet and divides it into
 sixteen opaque 32×32 tiles. A shared textured perimeter and one-pixel inward
 blend allow arbitrary variants to meet without abrupt material seams. Output
-slots remain `terrain288.png` through `terrain303.png`. The border recipe uses
+slots remain `terrain288.png` through `terrain303.png`. The legacy border recipe, retained for provenance, uses
 the first variant to create fifteen transparent four-side masks in slots
 319–333, with coordinate-dependent fraying inside each receiving cell. It also
 reproduces the existing ice masks unchanged.
+
+Detailed terrain now uses the material catalog and shared compositor described
+in [terrain authoring](../../../docs/assets/terrain-materials.md); the retained
+four-side sprites are not used by that renderer.
 
 These sprite slots, terrain ID 4, legacy external name `road`, experiment key
 `road-terrain`, and import/export colors remain stable. Gameplay properties are

@@ -184,6 +184,12 @@ def copy_sources(args):
         shutil.copyfile(header, snapshot / 'field' / header.name)
     for name in ('TerrainProperties.h', 'TerrainType.h'):
         shutil.copyfile(args.candidate_dir / 'map' / name, snapshot / 'map' / name)
+    if (args.candidate_dir / 'map/TerrainRegistry.h').exists():
+        for name in ('TerrainRegistry.h', 'TerrainRegistry.cpp', 'TerrainPresentation.h'):
+            shutil.copyfile(args.candidate_dir / 'map' / name, snapshot / 'map' / name)
+        (snapshot / 'online').mkdir(exist_ok=True)
+        for name in ('Sha256.h', 'Sha256.cpp'):
+            shutil.copyfile(args.candidate_dir / 'online' / name, snapshot / 'online' / name)
     shutil.copyfile(ROOT / 'tools/gradient_benchmark.cpp', snapshot / 'gradient_benchmark.cpp')
     shutil.copyfile(__file__, snapshot / 'gradient_benchmark.py')
     if args.bucket_count:
@@ -203,6 +209,9 @@ def build_benchmark(args, snapshot):
         '-I' + str(snapshot), '-I' + str(args.output),
         str(snapshot / 'gradient_benchmark.cpp'), '-o', str(binary),
     ]
+    if (snapshot / 'map/TerrainRegistry.cpp').exists():
+        command.extend([str(snapshot / 'map/TerrainRegistry.cpp'), str(snapshot / 'online/Sha256.cpp'),
+                        '-I' + str(ROOT / 'third_party/nlohmann-json/include')])
     if args.scalar:
         command.insert(1, '-DGLOB2_GRADIENT_SCALAR')
     if args.instrumented:

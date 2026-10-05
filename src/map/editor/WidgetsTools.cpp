@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "TerrainPresentation.h"
+#include "render/terrain/TerrainCompositor.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -80,7 +81,9 @@ void TerrainSelector::draw()
     if (TerrainSelector::isBaseTerrain(terrainType))
     {
         const auto type = TerrainSelector::baseTerrain(terrainType);
-        globalContainer->gfx->drawSprite(area.x,area.y,globalContainer->terrainLayerSprite(type),terrainPresentation(type).editorFrame);
+		const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
+			me.game.map.terrainRegistry().appearance(type));
+		globalContainer->gfx->drawSprite(area.x,area.y,sprite,frame);
     }
 	if(terrainType==Wheat)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
@@ -101,8 +104,12 @@ void TerrainSelector::draw()
 	if (TerrainSelector::isBaseTerrain(terrainType))
 		{
         const auto type = TerrainSelector::baseTerrain(terrainType);
-        globalContainer->gfx->finishDrawingSprite(globalContainer->terrainLayerSprite(type),255);
-    }
+		globalContainer->gfx->finishDrawingSprite(
+			globalContainer->terrainCompositor()
+				.editorIcon(me.game.map.terrainRegistry().appearance(type))
+				.first,
+			255);
+	}
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 	if (me.terrainType == terrainType)

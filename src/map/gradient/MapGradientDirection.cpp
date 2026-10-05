@@ -28,22 +28,15 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 	return best;
 }
 
-int Map::minStepCost(int swimClass)
+int Map::minStepCost(int swimClass) const
 {
-    unsigned minimum = GRADIENT_STEP;
-    for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-    {
-        const auto &p = terrainProperties(static_cast<TerrainType>(t));
-        if (p.walkable || (swimClass > 0 && p.swimmable))
-            minimum = std::min(minimum, gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass][t].cardinal);
-    }
-    return minimum;
+	return terrainMinimumGround[swimClass];
 }
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
-    const auto cost = gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass][terrainTypeAt(targetIndex)];
-    return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
+	const auto cost = terrainRegistry().movement(swimClass).entries[terrainTypeAt(targetIndex)];
+	return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
 bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const

@@ -248,9 +248,10 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
     if(gradient_info.terrainTravel!=field::TerrainTravel::Geometric &&
         (gradient_info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
     {
-        field::expandTerrainTravel(gradient,width,map->getH(),gradient_info.terrainTravel,
-            [&](std::size_t i){return map->terrainTypeAt(i);});
-        frontier.clear();
+		field::expandTerrainTravel(
+			gradient, width, map->getH(), gradient_info.terrainTravel,
+			[&](std::size_t i) { return map->terrainTypeAt(i); }, map->terrainRegistry());
+		frontier.clear();
     }
     else expand_bfs(frontier);
 }

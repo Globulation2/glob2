@@ -37,7 +37,7 @@ inline unsigned buildingRoles(const Game& game, const BuildingType& type)
  add(CORTEX_BUILD_EXPLORATION, b->zonable[EXPLORER] != 0);
  add(CORTEX_BUILD_WAR, b->zonable[WARRIOR] != 0);
  add(CORTEX_BUILD_CLEARING, b->zonable[WORKER] != 0);
- add(CORTEX_BUILD_EXCHANGE, s.market.interTeamFruitExchange || b->runtimeSuppliesStock);
+ add(CORTEX_BUILD_EXCHANGE, (s.market.interTeamFruitExchange || s.market.suppliesDirectStock) || b->runtimeSuppliesStock);
  return roles;
 }
 inline bool servesRole(const Game& game, const BuildingType& type, int role)

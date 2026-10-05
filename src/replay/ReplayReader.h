@@ -19,10 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 136 introduces configurable building services
+//! the reader still accepts. Version 137 introduces configurable building services
 //! and capability-driven AI; older orders reproduce different simulation results.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 136;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 137;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

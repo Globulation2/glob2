@@ -215,7 +215,7 @@ Unavailable experimental variants are omitted; `offset` still refers to raw IDs.
 | `production` | Unit-indexed recipe records: `enabled`, `duration`, and `cost` |
 | `repairable`, `regeneration` | Repair support and health regeneration per tick |
 | `projectileDamage`, `projectileRange`, `projectileSpeed`, `projectileRhythm`, `ammunitionResource`, `ammunitionCost` | Damage by target unit type, firing parameters, and ammunition input |
-| `suppliesStock`, `fetchesStock`, `exchangesFruit` | Effective resource-routing and exchange capabilities |
+| `suppliesStock`, `suppliesDirectStock`, `fetchesStock`, `exchangesFruit` | Effective resource-routing and exchange capabilities |
 | `level`, `site`, `virtual` | Variant level, construction-site boolean, flag boolean |
 | `width`, `height` | Footprint in tiles |
 | `maxHp`, `maxWorkers`, `usesWorkers` | Configured health, assignment limit, and whether the building requests hauling/construction labor |

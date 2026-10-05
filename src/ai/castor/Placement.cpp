@@ -179,9 +179,10 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
     if(map->hasTerrainMovementModifiers())
     {
-        field::expandTerrainInfluence(gradient,map->w,map->h,
-            [&](std::size_t i){return map->terrainTypeAt(i);});
-        return;
+		field::expandTerrainInfluence(
+			gradient, map->w, map->h, [&](std::size_t i) { return map->terrainTypeAt(i); },
+			map->terrainRegistry());
+		return;
     }
 	field::directionalInfluence(gradient,{map->w,map->h},
 		field::BlockedUnitFloor<AI_CASTOR_GRADIENT_WALL>{});

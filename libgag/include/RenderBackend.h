@@ -26,6 +26,8 @@ class RenderBackend
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t) {}
 	virtual RenderOperations operations() const { return {}; }
+	// Zero means the backend does not impose or report a texture limit.
+	virtual int maximumTextureSize() const { return 0; }
 	// Only software backends borrow a target; binding flushes old queued work.
 	virtual void bindTarget(SDL_Surface *) {}
 	virtual ~RenderBackend() = default;

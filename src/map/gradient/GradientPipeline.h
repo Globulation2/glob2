@@ -2,6 +2,7 @@
 #pragma once
 #include "field/GradientWorkspace.h"
 #include "map/TerrainType.h"
+#include "map/TerrainRegistry.h"
 #include <atomic>
 #include <algorithm>
 #include <chrono>
@@ -28,6 +29,9 @@ public:
 		std::unique_ptr<std::uint16_t[]> data;
 		std::shared_ptr<const std::vector<std::uint8_t>> water; // Test callback compatibility.
 		std::shared_ptr<const std::vector<TerrainType>> terrain;
+		std::shared_ptr<const TerrainRegistry> registry;
+		std::shared_ptr<const TerrainMovementSnapshot> profiles;
+		unsigned terrainBuckets = 64;
 		bool modifiedCosts = false;
 		int swim = 0;
 		std::uint64_t due = 0;
@@ -72,7 +76,18 @@ private:
 	}
 	void execute(Job &job, GradientWorkspace &scratch) noexcept {
 		const auto start = Clock::now();
-		try { work(job, scratch); job.water.reset(); job.terrain.reset(); } catch (...) { job.error = std::current_exception(); }
+		try
+		{
+			work(job, scratch);
+			job.water.reset();
+			job.terrain.reset();
+			job.registry.reset();
+			job.profiles.reset();
+		}
+		catch (...)
+		{
+			job.error = std::current_exception();
+		}
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
 		completed.notify_one();

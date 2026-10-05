@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "TerrainMovementCosts.h"
+#include "map/TerrainRegistry.h"
 #include <limits>
 #include <queue>
 #include <vector>
@@ -28,15 +29,8 @@ constexpr unsigned terrainTravelCost(const TerrainProperties& p,TerrainTravel mo
 
 // Air movement has its own speed table, so its queue bound cannot be inferred
 // from the ground-gradient ring. Keep every positive edge below one full turn.
-inline constexpr unsigned TERRAIN_TRAVEL_BUCKETS = [] {
-    unsigned largest = 0;
-    for (const auto &p : TERRAIN_PROPERTIES)
-        largest = std::max({largest, terrainTravelCost(p,TerrainTravel::Walk),
-                           terrainTravelCost(p,TerrainTravel::Fly)});
-    unsigned count = 1;
-    while (count <= largest) count *= 2;
-    return count;
-}();
+inline constexpr unsigned TERRAIN_TRAVEL_BUCKETS = 64;
+static_assert(gradient_kernel::scaledTerrainStep(GRADIENT_STEP,64)<TERRAIN_TRAVEL_BUCKETS);
 
 // AI distance encoding: 0 unreached, 1 obstacle, 2 source. Expand in wide
 // gradient units, then publish rounded-up neutral-terrain tile equivalents.
@@ -45,7 +39,7 @@ inline constexpr unsigned TERRAIN_TRAVEL_BUCKETS = [] {
 // change diagonal distances on routes that never touch modified terrain.
 // Saturate only the public short distance; never the queue's ordering key.
 template<class Values,class TerrainAt>
-void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt)
+void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
 {
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> costs(values.size(),infinity);
@@ -53,12 +47,6 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
     // A circular bucket queue avoids heap comparisons without changing the
     // wide distances or the final rounded public encoding. All queues and
     // scratch distances belong to this call; no mutable cache is shared.
-    std::array<unsigned,TERRAIN_COUNT> terrainCosts{};
-    for(unsigned t=0;t<TERRAIN_COUNT;++t)
-    {
-        terrainCosts[t]=terrainTravelCost(terrainProperties(static_cast<TerrainType>(t)),mode);
-        assert(terrainCosts[t]>0 && terrainCosts[t]<TERRAIN_TRAVEL_BUCKETS);
-    }
     std::array<GradientBucket,TERRAIN_TRAVEL_BUCKETS> buckets;
     std::size_t pending=0;
     for(std::size_t i=0;i<values.size();++i) if(values[i]==2)
@@ -75,7 +63,7 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
             if(cost!=costs[index]) { GLOB2_GRADIENT_BENCH_EVENT(stale, 1); continue; }
             // This is a reverse field: index is the destination of the forward
             // move from next. Charge entry to index, not entry to next.
-            const unsigned candidate=cost+terrainCosts[terrainAt(index)];
+            const unsigned candidate=cost+(mode==TerrainTravel::Fly?registry.airCost(terrainAt(index)):registry.movement(3).entries[terrainAt(index)].cardinal);
             const int x=index%width,y=index/width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
@@ -105,7 +93,7 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
 // Keep sub-tile costs in the queue so two half-cost road steps consume one
 // strength unit. Only publish rounded strength after the full expansion.
 template<class Value,class TerrainAt>
-void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt)
+void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
 {
     const int size=width*height;
     std::vector<unsigned> strength(size);
@@ -125,7 +113,7 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
             const int nx=ux<0?width-1:ux==width?0:ux,ny=uy<0?height-1:uy==height?0:uy;
             const int next=ny*width+nx;
             if(!values[next])continue;
-            const unsigned step=terrainTravelCost(terrainProperties(terrainAt(next)),TerrainTravel::Walk);
+            const unsigned step=registry.movement(3).entries[terrainAt(next)].cardinal;
             if(remaining<=step+GRADIENT_STEP)continue;
             const unsigned candidate=remaining-step;
             if(candidate>strength[next]){strength[next]=candidate;queue.emplace(candidate,next);}

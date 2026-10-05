@@ -5560,3 +5560,7 @@ Adaugă poteci bătătorite în editorul de hărți. Unitățile terestre se dep
 Piețe V2
 [experiment markets-v2 help]
 Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbunătățite pentru a depozita grâu și lemn, apoi toate resursele. Între echipe se schimbă în continuare doar fructe. Se aplică jocurilor noi; salvările păstrează setarea inițială.
+[Import Terrain Definitions]
+Importă definiții de teren
+[Terrain palette]
+Paletă de terenuri

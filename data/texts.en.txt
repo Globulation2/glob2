@@ -5560,3 +5560,7 @@ Adds weathered trails to the map editor. Ground units move at double speed. Trai
 Markets V2
 [experiment markets-v2 help]
 Workers can fetch supplies from shared market stock. Markets can upgrade to store wheat and wood, then every resource. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.
+[Import Terrain Definitions]
+Import Terrain Definitions
+[Terrain palette]
+Terrain palette

@@ -9,6 +9,8 @@
 
 #include "field/GradientBucket.h"
 #include "map/TerrainType.h"
+#include "map/TerrainRegistry.h"
+#include "field/TerrainGradientWorkspace.h"
 
 class Map;
 
@@ -21,6 +23,11 @@ class BuildingGradientSearch
 {
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
 	std::shared_ptr<const std::vector<TerrainType>> terrain;
+	std::shared_ptr<const TerrainRegistry> registry;
+	std::shared_ptr<const TerrainMovementSnapshot> profiles;
+	std::shared_ptr<const std::vector<std::uint8_t>> water;
+	std::unique_ptr<TerrainGradientWorkspace> custom;
+	unsigned terrainBuckets = 64;
 	bool modifiedCosts = false;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
@@ -28,7 +35,7 @@ class BuildingGradientSearch
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
 
-public:
+  public:
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.

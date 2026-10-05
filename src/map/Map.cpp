@@ -3,7 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
-#include "TerrainPresentation.h"
+#include "TerrainCompatibility.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
@@ -111,7 +111,8 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
 		// Called by independent executor jobs too; do not dispatch while holding
 		// this lock. All readers share this one initialization pass.
-		for (size_t i = 0; i < size; ++i) (*snapshot)[i] = isWater(static_cast<unsigned>(i));
+		for (size_t i = 0; i < size; ++i)
+			(*snapshot)[i] = terrainPropertiesAt(i).swimmable;
 		waterSnapshot = std::move(snapshot);
 	}
 	return waterSnapshot;
@@ -122,6 +123,46 @@ std::shared_ptr<const std::vector<TerrainType>> Map::frozenTerrainSnapshot() con
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!terrainSnapshot) terrainSnapshot = std::make_shared<const std::vector<TerrainType>>(terrainIds);
 	return terrainSnapshot;
+}
+
+std::shared_ptr<const TerrainMovementSnapshot>
+Map::frozenTerrainMovementSnapshot(unsigned swim) const
+{
+	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+	auto &cached = terrainMovementSnapshots[swim];
+	if (!cached)
+	{
+		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
+		snapshot->cells.resize(size);
+		const auto &source = terrainRegistry().movement(swim);
+		auto &movement = snapshot->movement;
+		movement.profiles.reserve(source.profiles.size());
+		movement.steps.reserve(256);
+		std::array<unsigned, 256> remap;
+		remap.fill(256);
+		std::array<bool, 256> usedSteps{};
+		for (std::size_t i = 0; i < size; ++i)
+		{
+			const auto original = source.profileIds[terrainIds[i]];
+			auto &profile = remap[original];
+			if (profile == 256)
+			{
+				profile = movement.profiles.size();
+				const auto costs = source.profiles[original];
+				movement.profiles.push_back(costs);
+				for (auto step : {costs.cardinal, costs.diagonal})
+					if (!usedSteps[step])
+					{
+						usedSteps[step] = true;
+						movement.steps.push_back(step);
+					}
+			}
+			snapshot->cells[i] = static_cast<Uint8>(profile);
+		}
+		movement.prepare();
+		cached = std::move(snapshot);
+	}
+	return cached;
 }
 
 bool Map::projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const
@@ -145,30 +186,156 @@ ExperimentSet Map::requiredTerrainExperiments() const
 	return required;
 }
 
+void Map::adjustTerrainFeatures(TerrainType type, bool add)
+{
+	const auto &p = terrainProperties(type);
+	const unsigned edge =
+		gradient_kernel::entrySteps(
+			gradient_kernel::scaledTerrainStep(
+				p.swimmable ? GRADIENT_SLOWEST_SWIM_STEP : GRADIENT_STEP, p.groundSpeedQ8))
+			.diagonal;
+	for (unsigned sw = 0; sw < 7; ++sw)
+		if (p.walkable || (sw && p.swimmable))
+		{
+			auto &count =
+				terrainGroundCostCounts[sw][terrainRegistry().movement(sw).entries[type].cardinal];
+			if (add)
+				++count;
+			else
+			{
+				assert(count);
+				--count;
+			}
+		}
+	if (p.flyable)
+	{
+		auto &count = terrainAirCostCounts[terrainRegistry().airCost(type)];
+		if (add)
+			++count;
+		else
+		{
+			assert(count);
+			--count;
+		}
+	}
+	const bool flags[] = {bool(p.groundHealthQ8 || p.airHealthQ8),
+						  p.groundSpeedQ8 != 256,
+						  !p.flyable || p.airSpeedQ8 != 256,
+						  p.projectileBlocks,
+						  edge >= 64,
+						  edge >= 128};
+	for (unsigned i = 0; i < terrainFeatures.size(); ++i)
+		if (flags[i])
+		{
+			if (add)
+				++terrainFeatures[i];
+			else
+			{
+				assert(terrainFeatures[i]);
+				--terrainFeatures[i];
+			}
+		}
+}
 void Map::updateTerrainSummary()
 {
-	terrainHealthEffects = terrainMovementModifiers = airTerrainConstraints = projectileBlockingTerrain = false;
-	for (unsigned t=0;t<TERRAIN_COUNT;++t)
-		if (terrainCounts[t])
+	terrainHealthEffects = terrainFeatures[0];
+	terrainMovementModifiers = terrainFeatures[1];
+	airTerrainConstraints = terrainFeatures[2];
+	projectileBlockingTerrain = terrainFeatures[3];
+	terrainBucketCount = terrainFeatures[5] ? 256 : terrainFeatures[4] ? 128 : 64;
+	terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	terrainMinimumAir = GRADIENT_STEP;
+	for (unsigned sw = 0; sw < 7; ++sw)
+		for (unsigned cost = 1; cost < terrainMinimumGround[sw]; ++cost)
+			if (terrainGroundCostCounts[sw][cost])
+			{
+				terrainMinimumGround[sw] = cost;
+				break;
+			}
+	for (unsigned cost = 1; cost < GRADIENT_STEP; ++cost)
+		if (terrainAirCostCounts[cost])
 		{
-			const auto& p = TERRAIN_PROPERTIES[t];
-			terrainHealthEffects |= p.groundHealthQ8 || p.airHealthQ8;
-			terrainMovementModifiers |= p.groundSpeedQ8 != 256;
-			airTerrainConstraints |= !p.flyable || p.airSpeedQ8 != 256;
-			projectileBlockingTerrain |= p.projectileBlocks;
+			terrainMinimumAir = cost;
+			break;
 		}
+}
+
+void Map::importTerrainDefinitions(std::string_view json)
+{
+	if (game && !game->edit)
+		throw std::logic_error("Terrain definitions can only change in the map editor");
+	auto next = terrainRegistry().importJson(json);
+	// Compilation/validation and allocation happen before publishing a replacement.
+	std::vector<std::size_t> counts(next->size());
+	std::vector<Uint16> propertyIndices(terrainIds.size());
+	for (std::size_t i = 0; i < terrainIds.size(); ++i)
+	{
+		++counts[terrainIds[i]];
+		propertyIndices[i] = next->propertyIndex(terrainIds[i]);
+	}
+	gradientRuntime->pipeline.finish();
+	terrainRegistryValue = std::move(next);
+	terrainPropertyIndices = std::move(propertyIndices);
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+	terrainCounts = std::move(counts);
+	terrainFeatures.fill(0);
+	terrainGroundCostCounts = {};
+	terrainAirCostCounts = {};
+	for (unsigned t = 0; t < terrainCounts.size(); ++t)
+		if (terrainCounts[t])
+			adjustTerrainFeatures(TerrainType(t), true);
+	for (std::size_t i = 0; i < terrainIds.size(); ++i)
+	{
+		const auto &p = terrainRegistry().compatibility(terrainIds[i]);
+		if (!p.legacyCorners)
+			tiles[i].terrain =
+				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
+	}
+	{
+		std::lock_guard<std::mutex> lock(growthCacheMutex);
+		growthCache.invalidate();
+	}
+	{
+		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+		terrainSnapshot.reset();
+		terrainMovementSnapshots = {};
+		waterSnapshot.reset();
+	}
+	if (arraysBuilt && marketsV2Enabled())
+		for (int team = 0; team < Team::MAX_COUNT; ++team)
+			for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+				{
+					gradientRuntime->pipeline.invalidate(
+						&marketResourcesGradient[team][resource][swim]);
+					marketGradientUpdated[team][resource][swim] = false;
+					marketGradientDirty[team][resource][swim] = true;
+				}
+	terrainEditChanged = terrainRoutesChanged = true;
+	finishTerrainEdit();
 }
 
 void Map::rebuildTerrainCounts()
 {
-	terrainCounts.fill(0);
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
+	terrainPropertyIndices.resize(terrainIds.size());
+	for (std::size_t i = 0; i < terrainIds.size(); ++i)
+		terrainPropertyIndices[i] = terrainRegistry().propertyIndex(terrainIds[i]);
+	terrainCounts.assign(terrainRegistry().size(), 0);
+	terrainFeatures.fill(0);
+	terrainGroundCostCounts = {};
+	terrainAirCostCounts = {};
 	for (const auto type : terrainIds) ++terrainCounts[type];
+	for (unsigned t = 0; t < terrainCounts.size(); ++t)
+		if (terrainCounts[t])
+			adjustTerrainFeatures(TerrainType(t), true);
 	updateTerrainSummary();
 	++terrainGenerationValue;
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
 		terrainSnapshot.reset();
+		terrainMovementSnapshots = {};
 	}
 	{
 		std::lock_guard<std::mutex> lock(growthCacheMutex);
@@ -197,9 +364,12 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
 	const TerrainType old = terrainIds[index];
 	if (old == type) return;
-	--terrainCounts[old];
-	++terrainCounts[type];
+	if (--terrainCounts[old] == 0)
+		adjustTerrainFeatures(old, false);
+	if (terrainCounts[type]++ == 0)
+		adjustTerrainFeatures(type, true);
 	terrainIds[index] = type;
+	terrainPropertyIndices[index] = terrainRegistry().propertyIndex(type);
 	terrainEditChanged = true;
 	// Queries inside a batch may have materialized a partial snapshot. Every
 	// subsequent mutation invalidates it; generation is published at commit so
@@ -207,6 +377,7 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		terrainSnapshot.reset();
+		terrainMovementSnapshots = {};
 		waterSnapshot.reset();
 	}
 	{
@@ -270,7 +441,9 @@ void Map::setCellTerrain(size_t index, TerrainType type)
 {
 	if (index >= size) throw std::out_of_range("Terrain cell index");
 	changeTerrainIdentity(index, type);
-	tiles[index].terrain = terrainVisualFrame(type, int(index & wMask), int(index >> wDec));
+	const auto &p = terrainRegistry().compatibility(type);
+	tiles[index].terrain =
+		p.firstFrame + terrainVisualHash(int(index & wMask), int(index >> wDec)) % p.variants;
 }
 
 Uint16 *Map::acquireBuildingGradientBuffer()
@@ -327,10 +500,15 @@ void Map::clear()
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
 		terrainSnapshot.reset();
+		terrainMovementSnapshots = {};
 	}
 	terrainIds.clear();
-	terrainCounts.fill(0);
-	terrainHealthEffects = terrainMovementModifiers = airTerrainConstraints = projectileBlockingTerrain = false;
+	terrainPropertyIndices.clear();
+	terrainCounts.assign(terrainRegistry().size(), 0);
+	terrainFeatures.fill(0);
+	terrainGroundCostCounts = {};
+	terrainAirCostCounts = {};
+	updateTerrainSummary();
 	terrainEditChanged = terrainRoutesChanged = false;
 	++terrainGenerationValue;
 	{
@@ -426,7 +604,10 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	tiles.assign(size, Tile());
 	terrainIds.assign(size, GRASS);
+	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
+	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
 	terrainCounts[GRASS] = size;
+	adjustTerrainFeatures(GRASS, true);
 
 	mapDiscovered.assign(size, 0);
 	

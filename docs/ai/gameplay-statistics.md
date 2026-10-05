@@ -105,13 +105,13 @@ their history samples unavailable for them, and coverage starting at the loaded
 tick. Their defence snapshot is unavailable (`defenceTick` before
 `labour_coverage_start`) until the next sample.
 
-Save format **136** records per-variant building counters alongside the embedded
+Save format **137** records per-variant building counters alongside the embedded
 catalog. Earlier saves retain their sampled history through the frozen stock
 catalog mapping. Old blockage counts lacked a level: import preserves each family
 aggregate once, for the total blockage metric. New metrics and their labels use
 the game's concrete catalog, including in saved histories.
 
-The current replay floor is **136** and network protocol **56**. The save loader
+The current replay floor is **137** and network protocol **57**. The save loader
 still supports the durable format-58 floor.
 
 ## Existing timeline output

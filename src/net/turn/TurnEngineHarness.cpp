@@ -44,6 +44,7 @@
 #include "MatchSetup.h"
 #include "MersenneTwister.h"
 #include "BinaryStream.h"
+#include "FileManager.h"
 #include "Brush.h"
 #include "Building.h"
 #include "MapHeader.h"
@@ -840,6 +841,64 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 
 TEST_SUITE("TurnEngineHarness")
 {
+	GLOB2_TEST_CASE("embedded terrain definitions travel with shared matches and verifier replays",
+					"[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		const auto directory = glob2test::artifactDir();
+		const auto customMap = (directory / "custom.map").string();
+		std::string digest;
+		{
+			GameGUI author;
+			GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+				*globalContainer->fileManager, mapPath("FourSquares1")));
+			REQUIRE(author.game.load(&input));
+			auto &map = author.game.map;
+			map.game = nullptr;
+			map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+				{"key":"distribution:mud","name":"Mud","base":"grass","appearance":"sand",
+				 "properties":{"groundSpeedQ8":192}},
+				{"key":"distribution:water","name":"Deep water","base":"water","appearance":"water",
+				 "properties":{"groundSpeedQ8":64}}]})");
+			map.setGame(&author.game);
+			digest = map.terrainRegistry().digest();
+			{
+				auto batch = map.editTerrain();
+				for (int y = 0; y < map.getH(); ++y)
+					for (int x = 0; x < map.getW(); ++x)
+					{
+						const auto original = map.terrainTypeAt(x, y);
+						if (original == GRASS && (x + y) % 3 == 0)
+							map.setCellTerrain(x, y,
+											   *map.terrainRegistry().find("distribution:mud"));
+						else if (original == WATER)
+							map.setCellTerrain(x, y,
+											   *map.terrainRegistry().find("distribution:water"));
+					}
+			}
+			REQUIRE(globalContainer->fileManager->writeAtomically(
+				customMap, [&](GAGCore::OutputStream &out)
+				{ author.game.save(&out, true, "Shared custom terrain"); }));
+		}
+		// No local definitions or authoring registry remain. Each recipient loads
+		// the content-addressed map through normal match initialization.
+		auto setup = makeSetup(customMap, 2, {"nicowar", "warrush"}, 2026);
+		setup.map.kind = Online::MapSource::Kind::Upload;
+		EngineMatch match(setup, customMap, {{20 * MS}, {60 * MS, 30 * MS, 0.02}});
+		for (const auto &client : match.clients)
+		{
+			CHECK(client->engine->gui.game.map.terrainRegistry().digest() == digest);
+			CHECK(client->engine->gui.game.map.terrainQueueBuckets() == 256);
+		}
+		match.run(25 * SECOND);
+		const auto end = match.finish();
+		CHECK(match.requireIdenticalChecksums() == end + 1);
+		const auto verified = verifyRecord(match.record("custom-terrain"), match, directory);
+		CHECK(verified.verdict.verdict == "verified");
+		for (const auto &client : match.clients)
+			requireSameOutcomes(verified.result, liveTeams(*client));
+	}
+
 	GLOB2_TEST_CASE("input delay and stalls of real engines per link profile",
 	                "[network-sim][benchmark][artifacts]")
 	{

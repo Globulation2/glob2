@@ -716,7 +716,7 @@ int runMapStudy(int argc, char **argv)
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
 	int umGrass = 0, umSand = 0, umWater = 0;
-    std::array<int,TERRAIN_COUNT> materialCounts{};
+	std::vector<int> materialCounts(map.terrainRegistry().size());
 	std::uint64_t hash = 14695981039346656037ULL;
 	std::vector<int> footprint(map.getW() * map.getH(), 0);
 	int resources[8] = {};
@@ -731,7 +731,7 @@ int runMapStudy(int argc, char **argv)
 				++sand;
 			else if (material == WATER)
 				++water;
-			else if (terrainUsesLegacyCorners(material))
+			else if (map.terrainUsesLegacyCorners(material))
 				++shore;
 			if (map.isFreeForBuilding(x, y))
 				++free;
@@ -762,9 +762,10 @@ int runMapStudy(int argc, char **argv)
 	std::printf("STUDY,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.6f,%llu\n", method, seed, success,
 				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, umGrass, umSand,
 				umWater, seconds, (unsigned long long)hash);
-    for (int type=0; type<TERRAIN_COUNT; ++type)
-        if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)) && materialCounts[type])
-            std::printf("STUDY_TERRAIN,%s,%d\n",TerrainPresentations[type].name,materialCounts[type]);
+	for (int type = 0; type < int(materialCounts.size()); ++type)
+		if (!map.terrainUsesLegacyCorners(static_cast<TerrainType>(type)) && materialCounts[type])
+			std::printf("STUDY_TERRAIN,%s,%d\n", map.terrainPresentation(TerrainType(type)).name,
+						materialCounts[type]);
 	if (tuning)
 	{
 		int minLocal = map.getW() * map.getH(), minWheat = 100000, minWood = 100000,
@@ -1027,8 +1028,11 @@ int runMapStudy(int argc, char **argv)
 			for (int x = 0; x < map.getW(); ++x)
 			{
 				const auto type = map.terrainTypeAt(x,y);
-                int c = type==GRASS ? 0 : type==SAND ? 1 : type==WATER ? 2 :
-                    terrainUsesLegacyCorners(type) ? 3 : 10+int(type);
+				int c = type == GRASS                        ? 0
+						: type == SAND                       ? 1
+						: type == WATER                      ? 2
+						: map.terrainUsesLegacyCorners(type) ? 3
+															 : 10 + int(type);
 				if (map.getResource(x, y).type == WHEAT)
 					c = 4;
 				if (map.getResource(x, y).type == WOOD)

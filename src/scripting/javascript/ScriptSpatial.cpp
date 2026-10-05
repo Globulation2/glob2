@@ -16,9 +16,10 @@ namespace Script
 {
 namespace
 {
-bool passable(const Observations::Cell& cell, const std::string& mode)
+bool passable(const Observations::Cell &cell, const std::string &mode,
+			  const TerrainRegistry &registry)
 {
-	const auto& terrain = terrainProperties(cell.terrainType);
+	const auto &terrain = registry.properties(cell.terrainType);
 	if (mode == "fly") return terrain.flyable;
 	return !cell.building && !cell.forbidden && cell.resource == 255 &&
 		(terrain.walkable || (mode == "swim" && terrain.swimmable));
@@ -208,13 +209,14 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 	{
 		seeds[i] = source[i] > 0;
 		const auto &c = cells[i];
-        passable[i] = metric != "path" || (c.known && ::Script::passable(c, mode));
-        if(metric=="path")
+		passable[i] = metric != "path" ||
+					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry()));
+		if(metric=="path")
         {
-            const auto& properties=terrainProperties(c.terrainType);
-            entryCosts[i]=gradient_kernel::scaledTerrainStep(GRADIENT_STEP,
-                mode=="fly"?properties.airSpeedQ8:properties.groundSpeedQ8);
-        }
+			const auto &registry = game.map.terrainRegistry();
+			entryCosts[i] = mode == "fly" ? registry.airCost(c.terrainType)
+										  : registry.movement(3).entries[c.terrainType].cardinal;
+		}
 	}
 	const auto key = spec.encode();
 	auto it = cache.find(key);
@@ -392,7 +394,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		const auto mode = text(a, "movement", "walk");
 		if (mode != "walk" && mode != "swim" && mode != "fly")
 			throw std::runtime_error("Unknown movement mode");
-        return c.known ? Value(passable(c, mode)) : Value();
+		return c.known ? Value(passable(c, mode, game.map.terrainRegistry())) : Value();
 	}
 	if (name == "summary")
 	{
@@ -478,7 +480,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		auto open = [&](int i)
 		{
 			const auto &c = cells[i];
-            return c.known && passable(c, mode);
+			return c.known && passable(c, mode, game.map.terrainRegistry());
 		};
 		for (unsigned i = 0; i < cells.size(); ++i)
 			if (labels[i] < 0 && open(i))
@@ -720,7 +722,9 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						const auto &c = cells[at];
 						bool inside = xx >= 0 && xx < bw && yy >= 0 && yy < bh;
 						if (!c.known || c.building || reserved[at] ||
-							(inside && (!c.visible || !terrainProperties(c.terrainType).buildable || c.resource != 255)))
+							(inside &&
+							 (!c.visible || !game.map.terrainProperties(c.terrainType).buildable ||
+							  c.resource != 255)))
 						{
 							valid = false;
 							break;

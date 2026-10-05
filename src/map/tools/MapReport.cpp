@@ -635,7 +635,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	};
 	const Map &map = game.map;
 	const Torus t(map);
-	std::array<int, TERRAIN_COUNT> terrain{};
+	std::vector<int> terrain(map.terrainRegistry().size());
 	std::array<int, 4> underlying{};
 	std::array<int, MAX_RESOURCES> resourceTiles{}, harvestable{};
 	std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{};
@@ -682,9 +682,10 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	lap(&MapReportTimings::tileScan);
 	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources;
     const char *underlyingNames[] = {"water", "sand", "grass", "unknown"};
-    for (int i=0; i<TERRAIN_COUNT; ++i)
-        terrainJson.push_back({TerrainPresentations[i].name,coverage(terrain[i],t.size())});
-    terrainJson.push_back({"unknown",coverage(0,t.size())});
+	for (int i = 0; i < int(terrain.size()); ++i)
+		terrainJson.push_back(
+			{map.terrainPresentation(TerrainType(i)).name, coverage(terrain[i], t.size())});
+	terrainJson.push_back({"unknown",coverage(0,t.size())});
 	for (int i = 0; i < 4; ++i)
 		underlyingJson.push_back({underlyingNames[i], coverage(underlying[i], t.size())});
 	const ResourcesTypes resourceTypes;

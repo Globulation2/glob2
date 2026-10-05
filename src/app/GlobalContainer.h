@@ -29,6 +29,8 @@ class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
 
+namespace TerrainVisual { class Compositor; }
+
 class GlobalContainer
 {
 public:
@@ -81,11 +83,10 @@ public:
 
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
+	TerrainVisual::Compositor &terrainCompositor();
+    std::unique_ptr<TerrainVisual::Compositor> terrainCompositor_;
 	Sprite *terrain = nullptr;
-    // Borrowed from Toolkit. Fixed arrays keep terrain rendering free of lookups.
-    std::array<Sprite *, TERRAIN_COUNT> terrainSprites{}, terrainBackdropSprites{};
-    Sprite *terrainLayerSprite(TerrainType type, bool backdrop = false) const
-    { return backdrop ? terrainBackdropSprites[type] : terrainSprites[type]; }
+
 	Sprite *terrainWater = nullptr;
 	Sprite *terrainCloud = nullptr;
 	Sprite *terrainBlack = nullptr;

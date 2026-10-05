@@ -323,6 +323,9 @@ struct HeadlessRunner
 		{
 			MapHeader map=Engine::loadMapHeader(mapFile);
 			GameHeader header;
+			// Catalog-declared experiment keys belong to the received map even
+			// when this installation has no matching authoring definitions.
+			header.setBuildingCatalogSnapshot(Engine::loadGameHeader(mapFile).getBuildingCatalogSnapshot());
 			const auto players=many(options,"--player");
 			if(players.empty() || players.size()!=size_t(map.getNumberOfTeams()) || players.size()>Team::MAX_COUNT)
 				throw std::invalid_argument("one --player AI is required per map team");

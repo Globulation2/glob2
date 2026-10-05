@@ -5560,3 +5560,7 @@ Pridáva do editora máp vyšliapané chodníky. Pozemné jednotky sa pohybujú 
 Trhy V2
 [experiment markets-v2 help]
 Robotníci môžu brať zásoby zo spoločného skladu trhov. Trhy možno vylepšiť na skladovanie pšenice a dreva, potom všetkých surovín. Medzi tímami sa naďalej vymieňa iba ovocie. Platí pre nové hry; uložené hry si zachovajú pôvodné nastavenie.
+[Import Terrain Definitions]
+Importovať definície terénu
+[Terrain palette]
+Paleta terénov
