@@ -344,7 +344,14 @@ transaction it:
   and web sessions (open sockets get `session.revoked` and close);
 - deletes its catalog maps, like a map deletion (versions, likes, reports and
   download counts go; the bytes stay for matches played on them), its likes of
-  other maps, its uploads, and its queue tickets.
+  other maps, its uploads, and its queue tickets;
+- removes its AI Map Studio projects, prompts, worker checkpoints, stage events
+  and artifact records, and cancels their native import jobs. Pending generation
+  reservations are released without charging; credit purchases and ledger entries
+  remain as financial records. Anonymous daily provider-call totals retain service
+  budget usage without retaining the private journal. Unreferenced stage image bytes are collected under
+  the normal blob retention policy. Concurrent project creation and late worker
+  completions cannot restore the deleted projects.
 
 There is no undo. What stays, and why:
 

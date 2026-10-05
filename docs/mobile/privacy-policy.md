@@ -134,11 +134,15 @@ by typing your display name. Deletion takes effect at once and cannot be undone.
   moderation records;
 - deletes your room chat messages, your catalog maps, likes and uploads, and your
   matchmaking requests;
+- deletes your AI Map Studio projects, conversations and generation history, and
+  cancels unfinished generation without charging its reserved credit;
 - removes you from leaderboards and player pages.
 
 We keep, under "Deleted player": the account number and its deletion date; the match
 history and rating rows that other players' history and ratings depend on; and the
-moderation records about the account. Match records and replays are kept unchanged
+moderation records about the account. Credit purchases and ledger entries remain
+as financial records; anonymous daily AI call counts remain for service capacity
+accounting. Match records and replays are kept unchanged
 because they are the verified record of games other people played too, so they still
 contain the name you had in that game and your in-game text chat. Files you uploaded
 stay stored only while matches played on them refer to them.

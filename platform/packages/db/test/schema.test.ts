@@ -84,7 +84,29 @@ const typedColumns: ColumnLists = {
     'assertion',
     'created_at',
   ],
-  studio_threads: ['id', 'account_id', 'title', 'brief', 'created_at', 'updated_at'],
+  studio_threads: [
+    'id',
+    'account_id',
+    'title',
+    'brief',
+    'created_at',
+    'updated_at',
+    'event_cursor',
+  ],
+  studio_events: ['thread_id', 'cursor', 'request_id', 'dedup', 'type', 'payload', 'created_at'],
+  studio_provider_usage: ['day', 'calls'],
+  studio_artifacts: [
+    'id',
+    'thread_id',
+    'request_id',
+    'stage',
+    'kind',
+    'label',
+    'hash',
+    'width',
+    'height',
+    'created_at',
+  ],
   studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
   studio_requests: [
     'id',
@@ -704,7 +726,8 @@ describe('migrations', () => {
         '0034_skin_swarm_mesh',
         '0035_colony_skins_v2',
         '0036_players_avatars',
-        '0037_skin_view_angle',
+        '0037_studio_events',
+        '0038_skin_view_angle',
       ]);
       expect(
         (
@@ -756,8 +779,25 @@ describe('migrations', () => {
         .values({ kind: 'registered', display_name: 'Existing colony' })
         .returning('id')
         .executeTakeFirstOrThrow();
+      const thread = (
+        await sql<{
+          id: string;
+        }>`INSERT INTO studio_threads(account_id,title) VALUES(${account.id},'Legacy project') RETURNING id`.execute(
+          existing.db,
+        )
+      ).rows[0]!;
+      const request = (
+        await sql<{
+          id: string;
+        }>`INSERT INTO studio_requests(id,thread_id,account_id,kind,status,input) VALUES(gen_random_uuid(),${thread.id},${account.id},'chat','ready','{}') RETURNING id`.execute(
+          existing.db,
+        )
+      ).rows[0]!;
+      await sql`INSERT INTO studio_attempts(id,request_id,stage,model,status,input,created_at) VALUES(gen_random_uuid(),${request.id},'failed','fixture','failed','{}','2020-01-01T23:30:00-05:00'),(gen_random_uuid(),${request.id},'uncertain','fixture','uncertain','{}','2020-01-02T23:59:00Z')`.execute(
+        existing.db,
+      );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(15);
+      expect(upgraded).toHaveLength(16);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -766,6 +806,14 @@ describe('migrations', () => {
           .where('id', '=', account.id)
           .executeTakeFirstOrThrow(),
       ).toEqual({ display_name: 'Existing colony' });
+      expect(
+        (
+          await sql<{
+            day: string;
+            calls: string;
+          }>`SELECT day::text,calls::text FROM studio_provider_usage`.execute(existing.db)
+        ).rows,
+      ).toEqual([{ day: '2020-01-02', calls: '2' }]);
       expect(await migrateToLatest(existing.db)).toEqual([]);
     } finally {
       await existing.drop();
@@ -879,7 +927,8 @@ describe('migrations', () => {
       expect(upgraded.map((m) => [m.migrationName, m.status])).toEqual([
         ['0035_colony_skins_v2', 'Success'],
         ['0036_players_avatars', 'Success'],
-        ['0037_skin_view_angle', 'Success'],
+        ['0037_studio_events', 'Success'],
+        ['0038_skin_view_angle', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -962,7 +1011,7 @@ describe('migrations', () => {
     const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
     try {
       const db = existing.db;
-      expect((await createMigrator(db).migrateTo('0036_players_avatars')).error).toBeUndefined();
+      expect((await createMigrator(db).migrateTo('0037_studio_events')).error).toBeUndefined();
       const owner = await db
         .insertInto('accounts')
         .values({ kind: 'registered', display_name: 'Camera painter' })
@@ -1007,7 +1056,7 @@ describe('migrations', () => {
       };
       await db.insertInto('colony_skin_drafts').values(draft).execute();
       expect((await migrateToLatest(db)).map((m) => [m.migrationName, m.status])).toEqual([
-        ['0037_skin_view_angle', 'Success'],
+        ['0038_skin_view_angle', 'Success'],
       ]);
       expect(
         await db

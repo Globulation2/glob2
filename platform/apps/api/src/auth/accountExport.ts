@@ -600,6 +600,31 @@ export async function exportAccount(
         .orderBy('m.created_at')
         .orderBy('m.id')
         .execute();
+      const studioEvents = await tx
+        .selectFrom('studio_events as e')
+        .innerJoin('studio_threads as t', 't.id', 'e.thread_id')
+        .select(['e.thread_id', 'e.cursor', 'e.request_id', 'e.type', 'e.payload', 'e.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('e.cursor')
+        .execute();
+      const studioArtifacts = await tx
+        .selectFrom('studio_artifacts as a')
+        .innerJoin('studio_threads as t', 't.id', 'a.thread_id')
+        .select([
+          'a.id',
+          'a.thread_id',
+          'a.request_id',
+          'a.stage',
+          'a.kind',
+          'a.label',
+          'a.hash',
+          'a.width',
+          'a.height',
+          'a.created_at',
+        ])
+        .where('t.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
       const studioAttempts = await tx
         .selectFrom('studio_attempts as a')
         .innerJoin('studio_requests as r', 'r.id', 'a.request_id')
@@ -697,6 +722,8 @@ export async function exportAccount(
           messages: rows(studioMessages),
           requests: rows(studioRequests),
           attempts: rows(studioAttempts),
+          events: rows(studioEvents),
+          artifacts: rows(studioArtifacts),
         },
         maps: {
           published: maps.map((m) => ({

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:StudioCheck",
+  "title": "StudioCheck",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "running"
+        },
+        {
+          "type": "string",
+          "const": "passed"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        },
+        {
+          "type": "string",
+          "const": "not-evaluated"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    },
+    "colony": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

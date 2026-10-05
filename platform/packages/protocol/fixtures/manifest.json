@@ -157,10 +157,15 @@
     "SkinReportInfo": "schemas/SkinReportInfo.schema.json",
     "SkinReportList": "schemas/SkinReportList.schema.json",
     "SkinReportRequest": "schemas/SkinReportRequest.schema.json",
+    "StudioArtifact": "schemas/StudioArtifact.schema.json",
+    "StudioCheck": "schemas/StudioCheck.schema.json",
     "StudioCreate": "schemas/StudioCreate.schema.json",
+    "StudioEvent": "schemas/StudioEvent.schema.json",
     "StudioGenerate": "schemas/StudioGenerate.schema.json",
     "StudioMessage": "schemas/StudioMessage.schema.json",
+    "StudioProgress": "schemas/StudioProgress.schema.json",
     "StudioSettings": "schemas/StudioSettings.schema.json",
+    "StudioStageProgress": "schemas/StudioStageProgress.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
@@ -1043,6 +1048,32 @@
       "valid": false,
       "stage": "schema",
       "note": "A diverged verdict names at least one seat."
+    },
+    {
+      "file": "valid/StudioEvent/check-result.json",
+      "schema": "StudioEvent",
+      "valid": true,
+      "note": "A durable check result identifies its request and zero-based colony."
+    },
+    {
+      "file": "invalid/StudioEvent/invalid-cursor.json",
+      "schema": "StudioEvent",
+      "valid": false,
+      "stage": "schema",
+      "note": "A resume cursor is an unsigned decimal string, never a timestamp or floating-point number."
+    },
+    {
+      "file": "invalid/StudioEvent/invalid-check-state.json",
+      "schema": "StudioEvent",
+      "valid": false,
+      "stage": "schema",
+      "note": "Unrecognized check states cannot masquerade as verified results."
+    },
+    {
+      "file": "valid/StudioProgress/historical.json",
+      "schema": "StudioProgress",
+      "valid": true,
+      "note": "Historical requests explicitly expose missing detail without inventing checks."
     }
   ],
   "tickets": {

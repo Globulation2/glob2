@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:StudioProgress",
+  "title": "StudioProgress",
+  "type": "object",
+  "required": [
+    "requestId",
+    "stages",
+    "artifacts",
+    "checks",
+    "historical"
+  ],
+  "properties": {
+    "requestId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "prepare"
+              },
+              {
+                "type": "string",
+                "const": "terrain"
+              },
+              {
+                "type": "string",
+                "const": "build"
+              },
+              {
+                "type": "string",
+                "const": "checks"
+              },
+              {
+                "type": "string",
+                "const": "ready"
+              }
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "pending"
+              },
+              {
+                "type": "string",
+                "const": "running"
+              },
+              {
+                "type": "string",
+                "const": "complete"
+              },
+              {
+                "type": "string",
+                "const": "failed"
+              }
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "completedAt": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "requestId",
+          "stage",
+          "kind",
+          "label",
+          "url"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "prepare"
+              },
+              {
+                "type": "string",
+                "const": "terrain"
+              },
+              {
+                "type": "string",
+                "const": "build"
+              },
+              {
+                "type": "string",
+                "const": "checks"
+              },
+              {
+                "type": "string",
+                "const": "ready"
+              }
+            ]
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "reference"
+              },
+              {
+                "type": "string",
+                "const": "generated"
+              },
+              {
+                "type": "string",
+                "const": "crop"
+              },
+              {
+                "type": "string",
+                "const": "categorical"
+              },
+              {
+                "type": "string",
+                "const": "preview"
+              }
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "pending"
+              },
+              {
+                "type": "string",
+                "const": "running"
+              },
+              {
+                "type": "string",
+                "const": "passed"
+              },
+              {
+                "type": "string",
+                "const": "failed"
+              },
+              {
+                "type": "string",
+                "const": "not-evaluated"
+              }
+            ]
+          },
+          "detail": {
+            "type": "string"
+          },
+          "colony": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "historical": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
