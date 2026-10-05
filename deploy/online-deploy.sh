@@ -138,15 +138,18 @@ start)
 status)
 	dir=$(run_dir "${3:-}")
 	[ -d "$dir" ] || { echo "state=missing"; exit 0; }
-	if [ -f "$dir/exit" ]; then
-		state='done'
-		status=$(cat "$dir/exit")
-	elif [ -f "$dir/pid" ] && kill -0 "$(cat "$dir/pid")" 2>/dev/null; then
+	if [ -f "$dir/pid" ] && kill -0 "$(cat "$dir/pid")" 2>/dev/null; then
 		state=running
 		status=
 	else
 		state=lost
 		status=
+	fi
+	# Completion is published before the process exits. Read it after checking
+	# liveness so a deploy finishing during this query is not reported as lost.
+	if [ -f "$dir/exit" ]; then
+		state='done'
+		status=$(cat "$dir/exit")
 	fi
 	rollback=
 	if [ "$state" = "done" ]; then
