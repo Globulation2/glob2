@@ -1,3 +1,4 @@
+import { ProfilePhoto } from '../components/ProfilePhoto.tsx';
 import { useState, type FormEvent } from 'react';
 import type { SelfAccount } from '@glob2/protocol';
 import { ACCOUNT_EXPORT_PATH, api } from '../api.ts';
@@ -54,6 +55,7 @@ export function Account() {
         </Link>
       </div>
       <div className="account-settings">
+        {account.kind === 'registered' && <ProfilePhoto account={account} onSaved={refresh} />}
         <div className="card">
           <h2 className="card-title">Sign-in methods</h2>
           {account.identities.length === 0 ? (

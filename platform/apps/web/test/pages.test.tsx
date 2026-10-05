@@ -5,6 +5,8 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
+import { api } from '../src/api.ts';
+import type { MatchSummary } from '@glob2/protocol';
 import { LineChart } from '../src/components/LineChart.tsx';
 import { matchPath } from '../src/router.tsx';
 import { watchUrl } from '../src/pages/Match.tsx';
@@ -103,6 +105,16 @@ const routes: Record<string, unknown> = {
         games: 3,
         wins: 1,
         provisional: true,
+      },
+      {
+        rank: 3,
+        entity: { kind: 'ai', ai: 'nicowar', simVersion: SIM },
+        rating: 1600,
+        mu: 28,
+        sigma: 3,
+        games: 9,
+        wins: 4,
+        provisional: false,
       },
     ],
   },
@@ -458,4 +470,27 @@ describe('LineChart', () => {
     render(<LineChart title="Empty" series={[]} />);
     expect(screen.getByText('No data yet.')).toBeTruthy();
   });
+});
+
+it('preserves earlier matches and retries only the failed history page', async () => {
+  const page = vi
+    .spyOn(api, 'playerMatches')
+    .mockResolvedValueOnce({ items: [summary as MatchSummary], nextCursor: 'older' })
+    .mockRejectedValueOnce(new Error('History unavailable'))
+    .mockResolvedValueOnce({
+      items: [{ ...summary, id: '8e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b' } as MatchSummary],
+    });
+  try {
+    open(`/players/${ALICE}`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Show more' }));
+    await screen.findByText('History unavailable');
+    expect(screen.getAllByTestId('match-row')).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    await screen.findAllByTestId('match-row');
+    await vi.waitFor(() => expect(screen.getAllByTestId('match-row')).toHaveLength(2));
+    expect(page).toHaveBeenCalledTimes(3);
+    expect(page.mock.calls.map((call) => call[1]?.cursor)).toEqual([undefined, 'older', 'older']);
+  } finally {
+    page.mockRestore();
+  }
 });

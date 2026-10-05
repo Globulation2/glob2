@@ -1,3 +1,4 @@
+import { avatarUrl } from '../avatars/urls.ts';
 // Accounts: guests, registered accounts, display names and linked identities.
 import { randomInt } from 'node:crypto';
 import { sql, type Kysely, type Transaction } from 'kysely';
@@ -108,6 +109,7 @@ export class AccountService {
 
   publicView(account: Account): PublicAccount {
     return {
+      avatarUrl: avatarUrl(account.id, account.avatar_revision),
       id: account.id,
       displayName: account.display_name,
       kind: account.kind,
@@ -145,6 +147,7 @@ export class AccountService {
     const renameAt = this.renameAvailableAt(account);
     return {
       ...this.publicView(account),
+      avatarSource: account.avatar_source,
       role: account.role,
       status: account.status,
       ...(muted ? { mutedUntil: muted.toISOString() } : {}),
@@ -174,7 +177,7 @@ export class AccountService {
         .execute();
       const linked = await tx
         .selectFrom('identities')
-        .select(['id', 'provider'])
+        .select(['id', 'provider', 'email'])
         .where('account_id', '=', account.id)
         .execute();
       const removing = linked.filter((identity) => identity.provider === provider);
@@ -193,7 +196,24 @@ export class AccountService {
         .where('account_id', '=', account.id)
         .where('provider', '=', provider)
         .execute();
+      if (removing.some((identity) => identity.email))
+        await this.invalidateGravatar(account.id, tx);
     });
+  }
+
+  /** Changing linked emails also changes the public URL, including cached misses. */
+  private async invalidateGravatar(id: string, tx: Transaction<Database>): Promise<void> {
+    await tx
+      .updateTable('accounts')
+      .set({
+        avatar_revision: sql<number>`avatar_revision + 1`,
+        gravatar_key: null,
+        gravatar_fingerprint: null,
+        gravatar_checked_at: null,
+      })
+      .where('id', '=', id)
+      .where('avatar_source', '=', 'automatic')
+      .execute();
   }
 
   /** Creates a guest with a generated name and a new device credential (returned once). */
@@ -315,7 +335,18 @@ export class AccountService {
       throw apiError('conflict', 'That username is taken.', { reason: 'username_taken' });
     }
     if (existing) {
-      const owner = await this.requireUsable(existing.account_id, tx);
+      await tx
+        .selectFrom('accounts')
+        .select('id')
+        .where('id', '=', existing.account_id)
+        .forUpdate()
+        .execute();
+      let owner = await this.requireUsable(existing.account_id, tx);
+      const previous = await tx
+        .selectFrom('identities')
+        .select('email')
+        .where('id', '=', existing.id)
+        .executeTakeFirstOrThrow();
       if (current && owner.id !== current.id) {
         return {
           kind: 'conflict',
@@ -334,6 +365,10 @@ export class AccountService {
         })
         .where('id', '=', existing.id)
         .execute();
+      if (identity.email && identity.email !== previous.email) {
+        await this.invalidateGravatar(owner.id, tx);
+        owner = await this.requireUsable(owner.id, tx);
+      }
       return {
         kind: 'signed-in',
         account: owner,
@@ -345,6 +380,12 @@ export class AccountService {
     let account: Account;
     let created = false;
     if (current) {
+      await tx
+        .selectFrom('accounts')
+        .select('id')
+        .where('id', '=', current.id)
+        .forUpdate()
+        .execute();
       const fresh = await this.requireUsable(current.id, tx);
       if (fresh.kind === 'guest') {
         // Upgrade in place: same id, so history and ratings carry over.
@@ -378,6 +419,10 @@ export class AccountService {
         last_used_at: sql<Date>`now()`,
       })
       .execute();
+    if (identity.email) {
+      await this.invalidateGravatar(account.id, tx);
+      account = await this.requireUsable(account.id, tx);
+    }
     return { kind: 'signed-in', account, linked: current !== undefined, created };
   }
 

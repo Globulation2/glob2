@@ -1,3 +1,4 @@
+import { aiHref, versionLabel } from '../playerLinks.ts';
 import { useState } from 'react';
 import type { LeaderboardEntry } from '@glob2/protocol';
 import { api } from '../api.ts';
@@ -48,7 +49,11 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
                 ) : (
                   <>
                     <GameArt name="school" size={30} className="ai-mark" />
-                    {aiName(e.entity.ai)}
+                    <Link to={aiHref(e.entity.ai, versionKey(e.entity.simVersion))}>
+                      {aiName(e.entity.ai)}
+                    </Link>{' '}
+                    <span className="badge">AI</span>
+                    <span className="caption">{versionLabel(e.entity.simVersion)}</span>
                   </>
                 )}
                 {e.provisional && <span className="badge warn">provisional</span>}
@@ -64,47 +69,11 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
   );
 }
 
-function AiLadder({ ladder }: { ladder: string }) {
-  const load = useLoad((signal) => api.aiLeaderboard(ladder, signal), [ladder]);
-  return (
-    <Loaded load={load}>
-      {(board) =>
-        board.groups.length === 0 ? (
-          <p className="muted">No AI has a rating on this ladder.</p>
-        ) : (
-          <>
-            {board.groups.map((group) => (
-              <div key={versionKey(group.simVersion)} style={{ marginBottom: 'var(--sp-4)' }}>
-                <div className="caption" style={{ marginBottom: 'var(--sp-2)' }}>
-                  Game version {group.simVersion.versionMinor} · data{' '}
-                  {group.simVersion.dataHash.slice(0, 8)}{' '}
-                  {group.current ? (
-                    <span className="badge ok">current</span>
-                  ) : (
-                    <span className="badge">older version</span>
-                  )}
-                </div>
-                <Rows
-                  entries={group.entries}
-                  caption={`AI opponents, game version ${group.simVersion.versionMinor} (data ${group.simVersion.dataHash.slice(0, 8)}${group.current ? ', current' : ''})`}
-                />
-              </div>
-            ))}
-            <p className="caption">
-              Each AI revision keeps its own rating: AIs of different game versions are never
-              combined.
-            </p>
-          </>
-        )
-      }
-    </Loaded>
-  );
-}
-
 export function Leaderboard({ queueId }: { queueId: string | undefined }) {
   const { instance } = useSession();
   const rated = instance?.queues.filter((q) => q.rated) ?? [];
   const ladder = queueId ?? rated[0]?.id;
+  const [participants, setParticipants] = useState('all');
   const [hideProvisional, setHideProvisional] = useState(false);
   const [cursor, setCursor] = useState<string[]>([]);
   const load = useLoad(
@@ -113,6 +82,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
         ? api.leaderboard(
             ladder,
             {
+              participants,
               provisional: hideProvisional ? 'exclude' : 'include',
               cursor: cursor.at(-1),
               limit: 50,
@@ -120,7 +90,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
             signal,
           )
         : Promise.resolve(undefined),
-    [ladder, hideProvisional, cursor.join(',')],
+    [ladder, participants, hideProvisional, cursor.join(',')],
   );
   const name = instance?.queues.find((q) => q.id === ladder)?.name ?? ladder;
   return (
@@ -130,8 +100,8 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
         <div className="grow">
           <h1>Leaderboard</h1>
           <p className="sub">
-            Registered players, ranked by their conservative rating: it rises as the game becomes
-            sure of your skill. Guests are not ranked.
+            Players and AI opponents, ranked by their conservative rating: it rises as the game
+            becomes sure of your skill. Guests are not ranked.
           </p>
         </div>
       </div>
@@ -155,6 +125,25 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
       ) : (
         <>
           <div className="toolbar">
+            <div className="seg" role="group" aria-label="Leaderboard participants">
+              {[
+                ['all', 'All'],
+                ['humans', 'Humans'],
+                ['ai', 'AI'],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  className={participants === value ? 'on' : ''}
+                  aria-pressed={participants === value}
+                  onClick={() => {
+                    setParticipants(value ?? 'all');
+                    setCursor([]);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <h2 className="grow" style={{ margin: 0 }}>
               {name}
             </h2>
@@ -175,7 +164,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
               !page || page.entries.length === 0 ? (
                 <div className="ladder-empty">
                   <GameArt name="warFlag" size={40} />
-                  <p>No rated players yet. Play a ranked match to start climbing.</p>
+                  <p>No rated players in this view yet. Play a ranked match to start climbing.</p>
                   <a className="btn small" href="/play/">
                     Play in browser
                   </a>
@@ -202,8 +191,10 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
               )
             }
           </Loaded>
-          <h2>AI opponents</h2>
-          <AiLadder ladder={ladder} />
+          <p className="caption">
+            AI ratings belong to a game version.{' '}
+            <Link to="/players">Explore player and AI profiles</Link> to see older versions.
+          </p>
         </>
       )}
     </>

@@ -1,3 +1,4 @@
+import { avatarRoutes } from '../avatars/routes.ts';
 // Account REST: the caller's own account, renames, unlinking sign-in methods,
 // downloading its data, self-service deletion, and public profiles.
 import type { FastifyInstance } from 'fastify';
@@ -23,6 +24,7 @@ export async function accountRoutes(
   identity: Identity,
   db: Kysely<Database>,
 ): Promise<void> {
+  await avatarRoutes(app, identity);
   const exports = new SharedLimit(db, 'account:export', EXPORTS_PER_HOUR, 3_600_000);
 
   app.get('/api/v1/accounts/me', async (request): Promise<SelfAccount> => {

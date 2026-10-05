@@ -102,7 +102,14 @@ import {
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
 import { ClientNetworkSummary, RelayNetworkSummary } from './network.ts';
-import { AiLeaderboard, InstanceStats, MatchDetail, PlayerProfile } from './history.ts';
+import {
+  AiProfile,
+  PlayerDirectory,
+  AiLeaderboard,
+  InstanceStats,
+  MatchDetail,
+  PlayerProfile,
+} from './history.ts';
 import {
   AccessTokenClaims,
   AccessTokenHeader,
@@ -253,6 +260,8 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   LeaderboardPage: { schema: LeaderboardPage },
   AiLeaderboard: { schema: AiLeaderboard },
   PlayerProfile: { schema: PlayerProfile },
+  AiProfile: { schema: AiProfile },
+  PlayerDirectory: { schema: PlayerDirectory },
   InstanceStats: { schema: InstanceStats },
   // Engine-agent jobs
   ImportAiMapPayload: { schema: ImportAiMapPayload },
