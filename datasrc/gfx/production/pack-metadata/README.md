@@ -11,3 +11,11 @@ Approved inputs live in `datasrc/gfx/production`; package them with
 `frames.txt` is the runtime lookup. Terrain/resource atlases contain padded mip
 levels matching these frames. See `docs/assets/high-resolution/README.md`,
 `tools/artwork/ai/README.md`, and `tools/unit-animation/README.md` for maintenance.
+
+This directory is an approved PNG source pack, not a playable runtime asset tree.
+Client builds export WebP through tools/package_assets.py and rewrite frames.txt
+with WebP filenames. Lossless exports retain every RGBA pixel; release exports
+select the smaller permitted lossless or Q90 WebP image with exact alpha and
+geometry. The PNG manifest hashes describe sources, not encoded WebP bytes.
+The HD terrain atlas covers 272 legacy connected tiles; additional experimental
+terrain uses the shared terrain compiler and native fallback.

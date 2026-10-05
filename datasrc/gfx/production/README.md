@@ -5,11 +5,15 @@ artist exports and Blender unit renders; `authored/` contains rendered SVG
 markers; `ai-upscaled/` contains reviewed enhanced sprites; `ai-materials/`
 contains generated terrain and water; `resampled-masks/` contains deterministic
 mask resizes. `atlases/` holds the padded mip levels, and `pack-metadata/` the
-runtime index, provenance and hashes. Classic fallback assets remain unchanged.
+PNG source index, provenance and hashes. Classic fallback assets remain unchanged.
 
 Run `python3 tools/artwork/package_runtime.py --check` before packaging, then
 `python3 tools/artwork/package_runtime.py`. No model inference runs during either
-operation. Future candidates use the staging-only workflow in
+operation. This assembles lossless PNG sources; the shared client exporter
+`tools/package_assets.py` builds WebP runtime artwork and rewrites its index.
+Use `package_runtime.py --runtime-output artifacts/ai-runtime` to perform both
+steps and `validate_runtime.py --export artifacts/ai-runtime` to check decoded
+runtime alpha, geometry, hashes and encoding policy. Future candidates use the staging-only workflow in
 [`tools/artwork/ai/README.md`](../../../tools/artwork/ai/README.md); promote a
 complete reviewed selection explicitly, with base/team pairs and hashes intact.
 The [unit pipeline](../../../tools/unit-animation/README.md) preserves the

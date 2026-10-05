@@ -4,11 +4,33 @@ Part 3 adds the approved AI-derived finals. It does not change the 60 recovered
 original frames. Historical trial galleries, model weights and intermediate
 inference images are excluded from Git.
 
-## Production build
+## Approved sources and runtime build
 
 `python3 tools/artwork/package_runtime.py` assembles the committed approved
-original/AI/material/mask folders into the runtime pack, without model tooling.
-This reproduces the reviewed finals byte-for-byte.
+original/AI/material/mask folders into the PNG **source pack** in
+`data/highres/v1`, without model tooling. It reproduces reviewed source pixels
+byte-for-byte. These PNGs are retained for provenance and editing; the client
+loads WebP artwork.
+
+SCons and release packagers use `tools/package_assets.py` for runtime encoding,
+including HD layers, all atlas mips and the rewritten `frames.txt` index. Release
+exports select the smaller of lossless WebP Q75/method 4 and lossy WebP Q90/method
+6. Alpha and geometry stay exact; lossy RGB can differ. Lossless exports preserve
+all RGBA pixels. The shared encoder pins Pillow/libwebp; do not add a separate
+artwork encoder or run model inference during client builds.
+
+To assemble the approved sources and export a complete playable client asset tree:
+
+```sh
+python3 tools/artwork/package_runtime.py --runtime-output artifacts/ai-runtime
+python3 tools/artwork/validate_runtime.py --export artifacts/ai-runtime
+```
+
+Add `--lossless-images` for pixel-exact runtime comparison. `--output` alone
+selects a source-pack destination and does not produce a playable client tree.
+Source manifests and provenance README files are excluded from runtime bundles.
+Experimental terrain beyond the 272 legacy connected tiles uses the shared
+terrain compiler and native fallback rather than this HD pack.
 
 ## Generate a future sprite candidate
 
@@ -24,14 +46,20 @@ python3 tools/artwork/ai/upscale.py --frame inn0b0 \
 ```
 
 This fills invisible RGB, pads the input, performs 4× inference, restores broad
-source color and keeps separate native base/team alpha. It writes staging only.
+source color and keeps separate native base/team alpha. It writes staging only, to a fresh directory outside the repository or below
+`artifacts/`. Existing directories are rejected. Every source layer is validated
+before processing, and a complete result is published only after every layer
+succeeds; failed inference leaves no partial candidate selection.
 Missing layers or unsupported/original-source frames are rejected. This is a
 maintainable constrained candidate pipeline, **not a claim of bit-exact recovery
 of every historical finishing pass**. The committed finals remain authoritative.
 The old selected recipes included per-frame contour repair, alternate-model
 mixing and translucent crystal handling. Candidate changes must be reviewed
-against the final before/after gallery before promotion, especially shadows,
+against the committed approved finals before promotion, especially shadows,
 team recoloring and construction fragments. Do not automatically promote them.
+Each recipe records classic source hashes, Python image-tool versions and, for
+inference, the executable and selected model-file hashes. Retain this record with
+the reviewed candidate selection.
 
 ## Terrain and water
 
@@ -44,7 +72,22 @@ reproducible production input; discarded prompts/trials are not restored.
 
 ## Validate a reviewed selection
 
-Run package_runtime.py --check, validate_runtime.py, runtime_provenance.py --check,
-the registered gameplay/editor integration suite, and the `HighResolution` and `HighResolutionIntegration` registered test suites across
-all 16 hues. Final comparisons use pr_comparisons.py. Recoloring, logical sizes,
+Run package_runtime.py --check, validate_runtime.py (also with --export for the
+built WebP tree), runtime_provenance.py --check,
+the registered `HighResolutionIntegration`, `UnitHighResolutionCache`,
+`ImageAssets`, `SpriteLoad` and `SpriteSheets` suites. Integration exercises
+gameplay/editor rendering across all 16 hues. Source comparisons use
+pr_comparisons.py. Recoloring, logical sizes,
 software fallback and simulation remain controlled by the foundation PR.
+
+Pipeline regression checks:
+
+```sh
+python3 -m unittest discover -s test/build_system -p test_artwork_package.py -v
+python3 -m unittest tools.artwork.ai.test_upscale tools.artwork.test_validate_runtime -v
+```
+
+The candidate tests require the optional Pillow/NumPy/SciPy environment. They
+exercise preparation, constrained alpha, model-dimension failures, failed paired
+inference, protected paths and stale-output rejection with a fake model adapter;
+they do not establish external model output quality.
