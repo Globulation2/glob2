@@ -1,0 +1,23 @@
+[03:02:04] CHECK stack up
+[03:02:04] building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)
+[03:05:29] starting project glob2-smoke-170d66b0 on https://localhost:50995
+[03:05:56] PASS  stack up: {"seconds": 27}
+[03:05:56] CHECK services healthy
+[03:05:57] PASS  services healthy: {"services": {"glob2-smoke-170d66b0-caddy-1": "healthy", "glob2-smoke-170d66b0-engine-agent-1": "running", "glob2-smoke-170d66b0-init-1": "exited", "glob2-smoke-170d66b0-music-worker-1": "healthy", "glob2-smoke-170d66b0-platform-api-1": "healthy", "glob2-smoke-170d66b0-platform-api-2": "healthy", "g
+[03:05:57] CHECK edge routing
+[03:05:58] PASS  edge routing: {"web": 200, "invite": 404, "play": 200, "studio": {"/ai-studio": 200, "/ai-studio/11111111-1111-4111-8111-111111111111": 200, "/play/studio.html": 200, "/play/index.html": 200, "/assets/editor.worker-studio-header-probe.js": 200, "/assets/ts.worker-studio-header-probe.js": 200}, "wellKnown": {"/.we
+[03:05:58] CHECK instance and engine agent
+[03:05:58] PASS  instance and engine agent: {"name": "Smoke Test Instance", "supportedSimVersions": ["133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e"], "realtimeUrl": "wss://localhost:50995/realtime"}
+[03:05:58] CHECK guest sign-in and realtime
+[03:05:58] PASS  guest sign-in and realtime: {"account": "Guest-1852", "kind": "guest", "hello": {"simSupported": true, "sessionId": "74775bdc-0a3f-467d-8973-136d419ce1d5"}, "foreignOrigin": 403}
+[03:05:58] CHECK jwks
+[03:05:58] PASS  jwks: {"kids": ["k20261005"], "alg": "EdDSA", "typ": "at+jwt"}
+[03:05:58] CHECK relays
+[03:05:59] PASS  relays: {"relayIds": ["d103dcdd46bb", "325e22cbeb8c"], "routed": {"d103dcdd46bb": 101, "325e22cbeb8c": 101}, "unknownRelay": 502, "dottedRelay": 200, "publicUrls": ["wss://localhost:50995/relay/d103dcdd46bb", "wss://localhost:50995/relay/325e22cbeb8c"], "registered": ["relay-1 wss://localhost:50995/relay/32
+[03:05:59] CHECK generate-map job
+[03:06:02] PASS  generate-map job: {"generator": "even-ground", "seconds": 2.043, "agent": "ca2a345730a5-7", "mapHash": "d40f02f887fc01ec4f01728d3adcd1706dd7a8a75c1c6e5c4ca9d9d650b05d9b", "size": 495154, "map": {"width": 128, "height": 128, "teamCount": 2}, "chosenSeed": 1661027976}
+[03:06:02] CHECK rated quick match end to end
+[03:07:17] PASS  rated quick match end to end: {"matchId": "cef9e024-6604-4884-ba66-84b97d168771", "seconds": {"sim version served": 0.3, "accounts and realtime": 0.2, "rated quick match": 1.2, "match through the relay": 72.0, "record, verification and history": 1.3}, "verification": "verified", "endReason": "completed", "ratings": [{"ladder": "
+[03:07:17] tearing down
+[03:07:20] passed: ['stack up', 'services healthy', 'edge routing', 'instance and engine agent', 'guest sign-in and realtime', 'jwks', 'relays', 'generate-map job', 'rated quick match end to end']
+[03:07:20] all checks passed

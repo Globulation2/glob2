@@ -1,0 +1,39 @@
+test_first_backup_goes_to_every_tier (test_backup_scripts.BackupScriptTests.test_first_backup_goes_to_every_tier) ... ok
+test_lifecycle_matches_the_documented_retention (test_backup_scripts.BackupScriptTests.test_lifecycle_matches_the_documented_retention) ... ok
+test_needs_a_bucket (test_backup_scripts.BackupScriptTests.test_needs_a_bucket) ... ok
+test_restore_refuses_the_live_database (test_backup_scripts.BackupScriptTests.test_restore_refuses_the_live_database) ... ok
+test_timer_units_install_with_paths (test_backup_scripts.BackupScriptTests.test_timer_units_install_with_paths) ... ok
+test_unreadable_dump_is_not_uploaded (test_backup_scripts.BackupScriptTests.test_unreadable_dump_is_not_uploaded) ... ok
+test_weekly_after_seven_days_monthly_once_a_month (test_backup_scripts.BackupScriptTests.test_weekly_after_seven_days_monthly_once_a_month) ... ok
+test_adds_google_and_keeps_the_rest (test_configure_signin.ConfigureSigninTests.test_adds_google_and_keeps_the_rest) ... ok
+test_rejects_bad_input (test_configure_signin.ConfigureSigninTests.test_rejects_bad_input) ... ok
+test_replacing_and_removing (test_configure_signin.ConfigureSigninTests.test_replacing_and_removing) ... ok
+test_current_says_whether_the_deployed_revision_contains_a_commit (test_online_deploy.HostDriverTests.test_current_says_whether_the_deployed_revision_contains_a_commit) ... ok
+test_deploys_detached_and_reports (test_online_deploy.HostDriverTests.test_deploys_detached_and_reports) ... ok
+test_records_the_running_revision_before_moving_the_checkout (test_online_deploy.HostDriverTests.test_records_the_running_revision_before_moving_the_checkout) ... ok
+test_refuses_while_another_deploy_runs (test_online_deploy.HostDriverTests.test_refuses_while_another_deploy_runs) ... ok
+test_refuses_while_the_deploy_lock_is_held (test_online_deploy.HostDriverTests.test_refuses_while_the_deploy_lock_is_held) ... ok
+test_rejects_bad_input (test_online_deploy.HostDriverTests.test_rejects_bad_input) ... ok
+test_reports_rollbacks (test_online_deploy.HostDriverTests.test_reports_rollbacks) ... ok
+test_smoke_runs_against_the_deployed_checkout (test_online_deploy.HostDriverTests.test_smoke_runs_against_the_deployed_checkout) ... ok
+test_adds_and_removes_only_its_own_keys (test_online_deploy.InstanceKeyTests.test_adds_and_removes_only_its_own_keys) ... ok
+test_creates_and_drops_the_ssh_keys_item (test_online_deploy.InstanceKeyTests.test_creates_and_drops_the_ssh_keys_item) ... ok
+test_host_arguments_follow_the_separator_as_the_workflow_passes_them (test_online_deploy.InstanceKeyTests.test_host_arguments_follow_the_separator_as_the_workflow_passes_them) ... ok
+test_key_line_is_a_guest_agent_expiring_key (test_online_deploy.InstanceKeyTests.test_key_line_is_a_guest_agent_expiring_key) ... ok
+test_ssh_goes_through_iap (test_online_deploy.InstanceKeyTests.test_ssh_goes_through_iap) ... ok
+test_an_explicit_id_wins (test_relay_entrypoint.RelayEntrypointTests.test_an_explicit_id_wins) ... ok
+test_ids_are_stable_slots_and_free_again_when_a_relay_exits (test_relay_entrypoint.RelayEntrypointTests.test_ids_are_stable_slots_and_free_again_when_a_relay_exits) ... ok
+test_spools_no_running_relay_holds_are_adopted (test_relay_entrypoint.RelayEntrypointTests.test_spools_no_running_relay_holds_are_adopted) ... ok
+test_a_failed_build_changes_nothing_that_runs (test_update_host.UpdateHostTests.test_a_failed_build_changes_nothing_that_runs) ... ok
+test_a_failed_build_restores_the_deployed_checkout (test_update_host.UpdateHostTests.test_a_failed_build_restores_the_deployed_checkout) ... ok
+test_an_unhealthy_new_stack_is_rolled_back (test_update_host.UpdateHostTests.test_an_unhealthy_new_stack_is_rolled_back) ... ok
+test_backs_up_builds_swaps_then_installs_the_web_client (test_update_host.UpdateHostTests.test_backs_up_builds_swaps_then_installs_the_web_client) ... ok
+test_keeps_only_the_newest_backups (test_update_host.UpdateHostTests.test_keeps_only_the_newest_backups) ... ok
+test_records_the_deployed_revision (test_update_host.UpdateHostTests.test_records_the_deployed_revision) ... ok
+test_rolls_back_to_the_deployed_revision_not_the_checked_out_one (test_update_host.UpdateHostTests.test_rolls_back_to_the_deployed_revision_not_the_checked_out_one) ... ok
+test_without_a_record_the_checkout_is_assumed_to_run (test_update_host.UpdateHostTests.test_without_a_record_the_checkout_is_assumed_to_run) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 9.516s
+
+OK

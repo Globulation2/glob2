@@ -1,0 +1,9 @@
+{
+  "Id": "sha256:ef401dd5a265c4b2090ff30818d76039b7b496f16236e71ebf905068eccf8c4c",
+  "Created": "2026-10-05T03:04:29.976435258-04:00",
+  "Architecture": "amd64",
+  "Os": "linux",
+  "RepoTags": [
+    "glob2-skin-render-worker:ci-smoke-skin-worker-51b295809"
+  ]
+}
