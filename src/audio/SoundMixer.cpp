@@ -25,7 +25,6 @@
 #include <speex/speex.h>
 #endif
 #else
-#include <emscripten.h>
 #include "BrowserMusic.h"
 #endif
 using namespace GAGCore;
