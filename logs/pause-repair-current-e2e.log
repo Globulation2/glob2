@@ -1,0 +1,23 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep home shows|home: navigation|colony moves|pending play
+
+[WebServer] (node:23412) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:23429) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (2.2s)
+  ✓  2 [desktop] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (439ms)
+  ✓  3 [desktop] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (563ms)
+  ✓  4 [desktop] › e2e/smoke.spec.ts:414:1 › pause keeps the resume control when a pending play is cancelled (487ms)
+(node:23464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (1.7s)
+  ✓  6 [phone] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (456ms)
+  ✓  7 [phone] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (522ms)
+  ✓  8 [phone] › e2e/smoke.spec.ts:414:1 › pause keeps the resume control when a pending play is cancelled (449ms)
+
+  8 passed (13.4s)

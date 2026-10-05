@@ -41,3 +41,18 @@ save/load,replay and network compatibility boundaries are unchanged.
 Original hosted failures and traces are retained in linux-webkit-failure/.
 Initial broader app phone reflow failure is documented in APP-INTEGRATION.md;
 it reproduced on the unmodified original base and is outside these changes.
+
+App final checks passed on the refreshed base:
+
+```sh
+npm ci
+npm run typecheck
+npm run build -w @glob2/web
+npm run lint
+npm run e2e -w @glob2/web -- --grep 'home shows|home: navigation|colony moves|pending play'
+```
+
+All exit0. Eight desktop/phone browser checks passed (13.4s). Logs are
+logs/pause-repair-current-*.log. Hosted game cheap contracts are separate from
+local behavioral evidence; an expensive hosted engine matrix is not requested
+for this TS-only repair.
