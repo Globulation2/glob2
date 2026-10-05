@@ -40,13 +40,20 @@ def mark(cells,w,h,x,y):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    env = dict(os.environ, GLOB2_USER_DIR=str(OUT/'profile'), SDL_VIDEODRIVER='invalid')
+    env = dict(os.environ, GLOB2_USER_DATA_DIR=str(OUT/'profile'), SDL_VIDEODRIVER='invalid')
     logs=[]
     def run(*args, ok=True, default_seams=False):
         if not default_seams and args and args[0]=='--import-map-image' and '--image-seam-width' not in args:
             args=(*args,'--image-seam-width',0)
         command=[str(BINARY), *map(str,args), '-d', str(ROOT)]
-        result=subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, timeout=90)
+        try:
+            result=subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, timeout=90)
+        except subprocess.TimeoutExpired as error:
+            logs.append(dict(args=command,exit=None,timeout_seconds=error.timeout,
+                             stdout=(error.stdout or b'').decode('utf-8', errors='replace'),
+                             stderr=(error.stderr or b'').decode('utf-8', errors='replace')))
+            (OUT/'commands.json').write_text(json.dumps(logs,indent=2)+'\n')
+            raise
         logs.append(dict(args=command,exit=result.returncode,stdout=result.stdout,stderr=result.stderr))
         (OUT/'commands.json').write_text(json.dumps(logs,indent=2))
         assert result.returncode==(0 if ok else 1), logs[-1]
