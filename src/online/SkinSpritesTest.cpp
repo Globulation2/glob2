@@ -63,8 +63,8 @@ TEST_CASE("software requests demand pages and removes appearance without an Open
     REQUIRE(sprites.draw(*gfx,2,0,0,10,10,38,38));CHECK(sprites.decodedBytes()==65*8*1024*4);
     // Compaction preserves placement, clipping, filtering and faded pixels at
     // normal and enlarged scales, including transparent RGB from lossy WebP.
-    glob2test::TempDir files("skin-packed-page");files.write("page.webp",f.unit);
-    GAGCore::DrawableSurface original(files.path("page.webp"));
+    glob2test::TempDir files("skin-packed-page");glob2test::writeFile(files.path/"page.webp",f.unit);
+    GAGCore::DrawableSurface original((files.path/"page.webp").string());
     for(float size:{38.f,76.f,190.f})for(unsigned char alpha:{uint8_t(255),uint8_t(127)}) {
         gfx->drawFilledRect(0,0,128,128,GAGCore::Color(15,25,35));
         REQUIRE(sprites.draw(*gfx,2,0,0,10,10,size,size,nullptr,alpha));

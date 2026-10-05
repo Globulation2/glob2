@@ -124,7 +124,7 @@ int main(int argc, char **argv)
                         gui.game.map.setMapDiscovered(mx,my,Team::teamNumberToMask(0));
                         const int index=(y+8)*16+x+8;
                         for (int type : {index%3 ? WORKER : WARRIOR, EXPLORER})
-                            if (auto *unit=gui.game.addUnit(mx,my,index%skinTeams,type,0,0,0,0))
+                            if (auto *unit=gui.game.addUnit(mx,my,(index/3)%skinTeams,type,0,0,0,0))
                             {
                                 unit->direction=index%8;
                                 crowd.push_back(unit);
@@ -144,6 +144,7 @@ int main(int argc, char **argv)
                     std::vector<double> times;
                     unsigned long draws=0;
                     double coldMs=0;
+                    Online::SkinSprites::Counters cacheStart;
                     auto &profile = PerformanceTelemetry::collector();
                     for (unsigned frame=0; frame<frames; ++frame)
                     {
@@ -152,7 +153,10 @@ int main(int argc, char **argv)
                         if (!skinned) classicChecksums.push_back(checksum);
                         else if (classicChecksums.at(frame)!=checksum)
                             throw std::runtime_error("Classic and skinned frame states diverged");
-                        if (frame == warmup) profile.reset();
+                        if (frame == warmup) {
+                            profile.reset();
+                            if(appearance.sprites)cacheStart=appearance.sprites->counters();
+                        }
                         globalContainer->gfx->resetDrawCallCount();
                         const auto start=SDL_GetPerformanceCounter();
                         gui.drawAll(0);
@@ -172,7 +176,9 @@ int main(int argc, char **argv)
                     nlohmann::json cacheMetrics=nullptr;
                     if(appearance.sprites) {
                         const auto &counts=appearance.sprites->counters();
-                        cacheMetrics={{"decodes",counts.decodes},{"evictions",counts.evictions},{"hits",counts.hits},{"misses",counts.misses}};
+                        cacheMetrics={{"decodes",counts.decodes},{"evictions",counts.evictions},{"hits",counts.hits},{"misses",counts.misses},
+                            {"measuredDecodes",counts.decodes-cacheStart.decodes},{"measuredEvictions",counts.evictions-cacheStart.evictions},
+                            {"measuredHits",counts.hits-cacheStart.hits},{"measuredMisses",counts.misses-cacheStart.misses}};
                     }
                     std::sort(times.begin(),times.end());
                     nlohmann::json scopes=nlohmann::json::object();

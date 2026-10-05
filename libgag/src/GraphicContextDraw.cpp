@@ -786,7 +786,7 @@ void GraphicContext::drawSkinSprite(float x,float y,float w,float h,DrawableSurf
     prepareDraw();Sprite::flushBatches(this);
     auto *source=surface->getSDLSurface();if(!source)return;
     if(renderer) renderer->blitLinear(surface,source,surface->contentRevision(),SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
-    else SurfaceRaster::skinBlit(getSDLSurface(),source,SDL_Rect{sx,sy,sw,sh},SDL_Rect{int(x),int(y),int(w),int(h)},alpha);
+    else SurfaceRaster::skinBlitFloat(getSDLSurface(),source,SDL_Rect{sx,sy,sw,sh},SDL_FRect{x,y,w,h},alpha);
     ++drawCalls;markPixelsChanged();
 }
 }

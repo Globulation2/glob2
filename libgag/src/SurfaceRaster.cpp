@@ -372,11 +372,17 @@ void blit(SDL_Surface *target, SDL_Surface *source, const SDL_Rect &sourceRect,
 // from the original rectangle even when clipped; never sample adjacent frames.
 void skinBlit(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,SDL_Rect dst,Uint8 opacity)
 {
+    skinBlitFloat(target,source,src,SDL_FRect{float(dst.x),float(dst.y),float(dst.w),float(dst.h)},opacity);
+}
+void skinBlitFloat(SDL_Surface *target,SDL_Surface *source,const SDL_Rect &src,SDL_FRect dst,Uint8 opacity)
+{
     if(!target || !source || !opacity || dst.w<=0 || dst.h<=0 || src.w<=0 || src.h<=0)return;
     if(source->format!=SDL_PIXELFORMAT_ARGB8888 || target->format!=SDL_PIXELFORMAT_ARGB8888)
         throw std::invalid_argument("Skin sprites require ARGB8888 surfaces");
+    const int left=int(std::ceil(dst.x-.5f)),top=int(std::ceil(dst.y-.5f));
+    const SDL_Rect bounds{left,top,int(std::ceil(dst.x+dst.w-.5f))-left,int(std::ceil(dst.y+dst.h-.5f))-top};
     SDL_Rect clip,visible;SDL_GetSurfaceClipRect(target,&clip);
-    if(!SDL_GetRectIntersection(&dst,&clip,&visible))return;
+    if(!SDL_GetRectIntersection(&bounds,&clip,&visible))return;
     if(src.x<0 || src.y<0 || src.x+src.w>source->w || src.y+src.h>source->h)return;
     check(SDL_LockSurface(source));
     if(!SDL_LockSurface(target)){SDL_UnlockSurface(source);throw std::runtime_error(SDL_GetError());}
