@@ -940,6 +940,12 @@ The account’s **Download my data** export includes its Studio threads, message
 revision inputs and checkpoints, provider attempts, and separate map-credit wallet,
 ledger, purchases and usage. It includes only the owner’s data and omits internal
 worker lease credentials. Catalog exports also include map authoring metadata.
+Account deletion removes private Studio history and import jobs and releases
+unfinished generation reservations. `studio_provider_usage` retains only daily
+UTC call totals, maintained by a journal-insert trigger, so deleting projects
+cannot replenish the service's provider-call budget. These totals contain no
+account identity or conversation data; financial ledger and purchase records
+remain separate from the deleted authoring history.
 
 The supported envelope is independent 128/256/512-cell sides and 2–8 colonies.
 The post-import native report gates valid starts, walking connectivity, nearby
