@@ -5545,14 +5545,14 @@ Sense límit
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Limita el dibuix a tota l’aplicació. Els valors més baixos redueixen el treball de renderització. La velocitat del joc no canvia.
 [ice]
-Ice
+Gel
 [road]
-Road
+Camí
 [experiment ice-terrain]
-Ice terrain
+Terreny de gel
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Afegeix gel a l’editor de mapes. Les unitats terrestres es mouen a la meitat de velocitat i perden un punt de vida cada 32 passos de simulació exposades al gel. El gel no pot contenir edificis ni recursos.
 [experiment road-terrain]
-Road terrain
+Terreny de camins
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Afegeix camins empedrats a l’editor de mapes. Les unitats terrestres es mouen al doble de velocitat. Els camins admeten edificis, però no recursos.

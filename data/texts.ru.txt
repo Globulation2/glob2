@@ -5545,14 +5545,14 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Ограничивает отрисовку во всём приложении. Меньшие значения снижают нагрузку на отрисовку. Скорость игры не меняется.
 [ice]
-Ice
+Лёд
 [road]
-Road
+Дорога
 [experiment ice-terrain]
-Ice terrain
+Ледяная местность
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Добавляет лёд в редактор карт. Наземные юниты движутся с половинной скоростью и теряют одну единицу здоровья каждые 32 такта симуляции на льду. На льду нельзя размещать здания или ресурсы.
 [experiment road-terrain]
-Road terrain
+Дорожная местность
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Добавляет мощёные дороги в редактор карт. Наземные юниты движутся с удвоенной скоростью. На дорогах можно размещать здания, но не ресурсы.

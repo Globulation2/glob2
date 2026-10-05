@@ -5545,14 +5545,14 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 ترسیم را در سراسر برنامه محدود می‌کند. مقدارهای کمتر، کار ترسیم را کاهش می‌دهند. سرعت بازی تغییر نمی‌کند.
 [ice]
-Ice
+یخ
 [road]
-Road
+جاده
 [experiment ice-terrain]
-Ice terrain
+زمین یخی
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+یخ را به ویرایشگر نقشه اضافه می‌کند. واحدهای زمینی با نصف سرعت حرکت می‌کنند و به ازای هر 32 گام شبیه‌سازی روی یخ، یک امتیاز سلامتی از دست می‌دهند. روی یخ نمی‌توان ساختمان یا منابع قرار داد.
 [experiment road-terrain]
-Road terrain
+زمین جاده‌ای
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+جاده‌های سنگ‌فرش را به ویرایشگر نقشه اضافه می‌کند. واحدهای زمینی با دو برابر سرعت حرکت می‌کنند. جاده‌ها اجازهٔ ساخت ساختمان را می‌دهند، اما منابع را نمی‌پذیرند.

@@ -5545,14 +5545,14 @@ Không giới hạn
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Giới hạn việc vẽ trong toàn bộ ứng dụng. Giá trị thấp hơn làm giảm công việc kết xuất. Tốc độ trò chơi không thay đổi.
 [ice]
-Ice
+Băng
 [road]
-Road
+Đường
 [experiment ice-terrain]
-Ice terrain
+Địa hình băng
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Thêm băng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với một nửa tốc độ và mất một điểm sức khỏe sau mỗi 32 bước mô phỏng trên băng. Không thể đặt công trình hoặc tài nguyên trên băng.
 [experiment road-terrain]
-Road terrain
+Địa hình đường
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Thêm đường lát đá vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường cho phép đặt công trình nhưng không cho phép tài nguyên.

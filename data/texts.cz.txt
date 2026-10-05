@@ -5545,14 +5545,14 @@ Bez omezení
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Omezí vykreslování v celé aplikaci. Nižší hodnoty snižují nároky na vykreslování. Rychlost hry se nemění.
 [ice]
-Ice
+Led
 [road]
-Road
+Cesta
 [experiment ice-terrain]
-Ice terrain
+Ledový terén
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Přidá led do editoru map. Pozemní jednotky se pohybují poloviční rychlostí a každých 32 kroků simulace na ledu ztratí jeden bod zdraví. Na ledu nemohou být budovy ani suroviny.
 [experiment road-terrain]
-Road terrain
+Terén cest
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Přidá dlážděné cesty do editoru map. Pozemní jednotky se pohybují dvojnásobnou rychlostí. Na cestách mohou být budovy, ale ne suroviny.

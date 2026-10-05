@@ -5545,14 +5545,14 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 Обмежує малювання в усьому застосунку. Нижчі значення зменшують роботу з малювання. Швидкість гри не змінюється.
 [ice]
-Ice
+Лід
 [road]
-Road
+Дорога
 [experiment ice-terrain]
-Ice terrain
+Крижана місцевість
 [experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+Додає лід до редактора карт. Наземні юніти рухаються з половинною швидкістю та втрачають одну одиницю здоров’я кожні 32 такти симуляції на льоду. На льоду не можна розміщувати будівлі або ресурси.
 [experiment road-terrain]
-Road terrain
+Дорожня місцевість
 [experiment road-terrain help]
-Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+Додає бруковані дороги до редактора карт. Наземні юніти рухаються з подвійною швидкістю. На дорогах можна розміщувати будівлі, але не ресурси.
