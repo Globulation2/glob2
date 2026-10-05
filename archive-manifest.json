@@ -1,0 +1,12 @@
+{
+  "candidate": "37d609766374e7efc1679d643c7d18cde84364ab",
+  "baseline": "3266c8e518a0d40b2100e2e36596822ad74a6f0b",
+  "archive_sha256": "cc49528443086d56763f777dd93913e73ea86ae1e697d2d6c131ee477c56bd56",
+  "archive_bytes": 36796312,
+  "parts": {
+    "evidence.tar.gz.part00": {
+      "sha256": "cc49528443086d56763f777dd93913e73ea86ae1e697d2d6c131ee477c56bd56",
+      "bytes": 36796312
+    }
+  }
+}
