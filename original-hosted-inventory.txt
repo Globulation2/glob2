@@ -1,0 +1,4 @@
+WebP decoder preserves exact RGBA including transparent RGB
+Q90 lossy WebP preserves dimensions and exact alpha
+16-bit RGBA rounds normalized channels to the exporter reference
+WebP artwork lookup preserves directories without PNG alternatives

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/image-inventory/reporter-check" errors="0" failures="0" tests="2" time="0" timestamp="2026-10-05T04:00:27Z" doctest_version="2.4.11">
+    <testcase classname="artifacts/image-inventory/reporter-check.cpp" name="decoder subcases/SDL_image" time="0" status="run"/>
+    <testcase classname="artifacts/image-inventory/reporter-check.cpp" name="decoder subcases/SDL fallback" time="0" status="run"/>
+  </testsuite>
+</testsuites>
