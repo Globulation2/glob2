@@ -24,6 +24,7 @@
 #include <atomic>
 #include "Version.h"
 #include "FileImport.h"
+#include "ReplayWriter.h"
 #include "Campaign.h"
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
@@ -869,6 +870,35 @@ static void checkMapHeaders()
 	std::cout << "PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds" << std::endl;
 }
 
+static void checkReplayImports(GameGUI& gui, const fs::path& directory)
+{
+    for (bool finished : {false, true}) {
+        const auto recording = directory / (finished ? "finished.replay" : "live.replay");
+        ReplayWriter writer;
+        writer.init(recording.string(), gui);
+        REQUIRE(writer.isValid());
+        writer.advanceStep();
+        if (finished) writer.finish();
+        REQUIRE(writer.write(recording.string()));
+        const auto bytes = contents(recording);
+        const auto validate = [&](const std::string& name, const std::string& payload) {
+            FileImport operation(ApplicationHost::SelectedFile{name,
+                std::vector<unsigned char>(payload.begin(), payload.end())}, "replay");
+            for (unsigned i = 0; i < 100000 && (operation.state() == FileImport::State::Validating ||
+                operation.state() == FileImport::State::Persisting); ++i)
+                operation.advance();
+            return operation.state();
+        };
+        REQUIRE(validate(finished ? "ImportedFinished.replay" : "ImportedLive.replay", bytes) == FileImport::State::Succeeded);
+        REQUIRE(validate("Truncated.replay", bytes.substr(0, bytes.size() - 1)) == FileImport::State::Failed);
+        REQUIRE(validate("Trailing.replay", bytes + "x") == FileImport::State::Failed);
+        auto badTelemetry = bytes;
+        REQUIRE(badTelemetry.size() >= 17);
+        badTelemetry[badTelemetry.size() - 17] ^= 1; // Empty telemetry footer magic.
+        REQUIRE(validate("BadTelemetry.replay", badTelemetry) == FileImport::State::Failed);
+    }
+}
+
 static void checkImports(const std::string& bytes, const fs::path& directory)
 {
     using namespace ApplicationHost;
@@ -1201,6 +1231,7 @@ TEST_SUITE("SavegameSafety")
 			gui.syncStep();
 			gui.waitForAutosave();
 			REQUIRE(contents(save) == compressedBytes);
+	        checkReplayImports(gui, directory);
 	        checkImports(bytes, directory);
 	#ifndef WIN32
 			const pid_t child = fork();
