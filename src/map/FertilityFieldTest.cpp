@@ -435,7 +435,8 @@ TEST_CASE("growth throughput includes multiple opportunities before occupancy")
 
 TEST_CASE("weighted coupled land and shoreline kernels match independent probes")
 {
-    for(const auto dimensions:{std::pair{1,1},std::pair{7,5},std::pair{32,16}})
+    for(const auto dimensions:{std::pair{1,1},std::pair{1,7},std::pair{7,1},
+        std::pair{7,5},std::pair{23,17},std::pair{32,16}})
         for(int sparse: {0,1,2})
         {
             const auto [w,h]=dimensions;
