@@ -115,6 +115,28 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		std::puts("market fetch: the resource is taken at the market's door");
 	}
 	{
+		// Another market shares the same pool and can exhaust it after hiring.
+		Bed bed(39, 39);
+		auto *other=bed.game.addBuilding(50,50,bed.market->typeNum,0);
+		REQUIRE(other);
+		bed.market->resources[CHERRY]=20;
+		CHECK(other->resources[CHERRY]==20);
+		other->removeResourceFromBuilding(CHERRY);
+		CHECK(bed.market->resources[CHERRY]==10);
+		bed.hire();
+		REQUIRE(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
+		other->removeResourceFromBuilding(CHERRY);
+		bed.unit->arrive();
+		CHECK(bed.market->resources[CHERRY]==0);
+		CHECK(bed.unit->carriedResource==-1);
+		CHECK(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
+		other->addResourceIntoBuilding(CHERRY);
+		bed.unit->arrive();
+		CHECK(bed.unit->carriedResource==CHERRY);
+		CHECK(other->resources[CHERRY]==0);
+		CHECK(bed.unit->targetBuilding==bed.inn);
+	}
+	{
 		// Cherries two tiles from the worker beat the market.
 		Bed bed(36, 36);
 		bed.market->resources[CHERRY] = 10;
