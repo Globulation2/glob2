@@ -1,0 +1,539 @@
+{
+  "version": 1,
+  "compiled_pack": "data/terrain/compiled/atlas.json",
+  "profiles": [
+    {
+      "key": "sand",
+      "roughness_q8": 256,
+      "contours_q12": [
+        [
+          0,
+          180,
+          -120,
+          100,
+          0
+        ],
+        [
+          0,
+          -130,
+          200,
+          -80,
+          0
+        ],
+        [
+          0,
+          90,
+          160,
+          -170,
+          0
+        ],
+        [
+          0,
+          -180,
+          -60,
+          140,
+          0
+        ]
+      ]
+    },
+    {
+      "key": "fractured",
+      "roughness_q8": 320,
+      "contours_q12": [
+        [
+          0,
+          180,
+          -120,
+          100,
+          0
+        ],
+        [
+          0,
+          -130,
+          200,
+          -80,
+          0
+        ],
+        [
+          0,
+          90,
+          160,
+          -170,
+          0
+        ],
+        [
+          0,
+          -180,
+          -60,
+          140,
+          0
+        ]
+      ]
+    },
+    {
+      "key": "cobblestone",
+      "roughness_q8": 192,
+      "contours_q12": [
+        [
+          0,
+          180,
+          -120,
+          100,
+          0
+        ],
+        [
+          0,
+          -130,
+          200,
+          -80,
+          0
+        ],
+        [
+          0,
+          90,
+          160,
+          -170,
+          0
+        ],
+        [
+          0,
+          -180,
+          -60,
+          140,
+          0
+        ]
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "key": "water",
+      "sprite": "data/gfx/terrain",
+      "profile": "sand",
+      "ocean": true,
+      "preview": [
+        70,
+        50,
+        191
+      ],
+      "variants": [
+        {
+          "frame": 256,
+          "weight": 1
+        },
+        {
+          "frame": 257,
+          "weight": 1
+        },
+        {
+          "frame": 258,
+          "weight": 1
+        },
+        {
+          "frame": 259,
+          "weight": 1
+        },
+        {
+          "frame": 260,
+          "weight": 1
+        },
+        {
+          "frame": 261,
+          "weight": 1
+        },
+        {
+          "frame": 262,
+          "weight": 1
+        },
+        {
+          "frame": 263,
+          "weight": 1
+        },
+        {
+          "frame": 264,
+          "weight": 1
+        },
+        {
+          "frame": 265,
+          "weight": 1
+        },
+        {
+          "frame": 266,
+          "weight": 1
+        },
+        {
+          "frame": 267,
+          "weight": 1
+        },
+        {
+          "frame": 268,
+          "weight": 1
+        },
+        {
+          "frame": 269,
+          "weight": 1
+        },
+        {
+          "frame": 270,
+          "weight": 1
+        },
+        {
+          "frame": 271,
+          "weight": 1
+        }
+      ],
+      "minimap": [
+        0,
+        40,
+        120
+      ]
+    },
+    {
+      "key": "sand",
+      "sprite": "data/gfx/terrain",
+      "profile": "sand",
+      "ocean": false,
+      "preview": [
+        182,
+        168,
+        48
+      ],
+      "variants": [
+        {
+          "frame": 128,
+          "weight": 1
+        },
+        {
+          "frame": 129,
+          "weight": 1
+        },
+        {
+          "frame": 130,
+          "weight": 1
+        },
+        {
+          "frame": 131,
+          "weight": 1
+        },
+        {
+          "frame": 132,
+          "weight": 1
+        },
+        {
+          "frame": 133,
+          "weight": 1
+        },
+        {
+          "frame": 134,
+          "weight": 1
+        },
+        {
+          "frame": 135,
+          "weight": 1
+        },
+        {
+          "frame": 136,
+          "weight": 1
+        },
+        {
+          "frame": 137,
+          "weight": 1
+        },
+        {
+          "frame": 138,
+          "weight": 1
+        },
+        {
+          "frame": 139,
+          "weight": 1
+        },
+        {
+          "frame": 140,
+          "weight": 1
+        },
+        {
+          "frame": 141,
+          "weight": 1
+        },
+        {
+          "frame": 142,
+          "weight": 1
+        },
+        {
+          "frame": 143,
+          "weight": 1
+        }
+      ],
+      "minimap": [
+        170,
+        170,
+        0
+      ]
+    },
+    {
+      "key": "grass",
+      "sprite": "data/gfx/terrain",
+      "profile": "sand",
+      "ocean": false,
+      "preview": [
+        30,
+        113,
+        30
+      ],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [
+        0,
+        90,
+        0
+      ]
+    },
+    {
+      "key": "ice",
+      "sprite": "data/gfx/terrain",
+      "profile": "fractured",
+      "ocean": false,
+      "preview": [
+        190,
+        225,
+        240
+      ],
+      "variants": [
+        {
+          "frame": 272,
+          "weight": 1
+        },
+        {
+          "frame": 273,
+          "weight": 1
+        },
+        {
+          "frame": 274,
+          "weight": 1
+        },
+        {
+          "frame": 275,
+          "weight": 1
+        },
+        {
+          "frame": 276,
+          "weight": 1
+        },
+        {
+          "frame": 277,
+          "weight": 1
+        },
+        {
+          "frame": 278,
+          "weight": 1
+        },
+        {
+          "frame": 279,
+          "weight": 1
+        },
+        {
+          "frame": 280,
+          "weight": 1
+        },
+        {
+          "frame": 281,
+          "weight": 1
+        },
+        {
+          "frame": 282,
+          "weight": 1
+        },
+        {
+          "frame": 283,
+          "weight": 1
+        },
+        {
+          "frame": 284,
+          "weight": 1
+        },
+        {
+          "frame": 285,
+          "weight": 1
+        },
+        {
+          "frame": 286,
+          "weight": 1
+        },
+        {
+          "frame": 287,
+          "weight": 1
+        }
+      ],
+      "minimap": [
+        190,
+        225,
+        240
+      ]
+    },
+    {
+      "key": "road",
+      "sprite": "data/gfx/terrain-cobblestone",
+      "profile": "cobblestone",
+      "ocean": false,
+      "preview": [
+        133,
+        120,
+        101
+      ],
+      "variants": [
+        {
+          "frame": 0,
+          "weight": 1
+        },
+        {
+          "frame": 1,
+          "weight": 1
+        },
+        {
+          "frame": 2,
+          "weight": 1
+        },
+        {
+          "frame": 3,
+          "weight": 1
+        },
+        {
+          "frame": 4,
+          "weight": 1
+        },
+        {
+          "frame": 5,
+          "weight": 1
+        },
+        {
+          "frame": 6,
+          "weight": 1
+        },
+        {
+          "frame": 7,
+          "weight": 1
+        },
+        {
+          "frame": 8,
+          "weight": 1
+        },
+        {
+          "frame": 9,
+          "weight": 1
+        },
+        {
+          "frame": 10,
+          "weight": 1
+        },
+        {
+          "frame": 11,
+          "weight": 1
+        },
+        {
+          "frame": 12,
+          "weight": 1
+        },
+        {
+          "frame": 13,
+          "weight": 1
+        },
+        {
+          "frame": 14,
+          "weight": 1
+        },
+        {
+          "frame": 15,
+          "weight": 1
+        }
+      ],
+      "minimap": [
+        176,
+        138,
+        98
+      ]
+    }
+  ],
+  "bindings": {
+    "water": "water",
+    "sand": "sand",
+    "grass": "grass",
+    "ice": "ice",
+    "road": "road"
+  },
+  "pair_treatments": [
+    {
+      "a": "road",
+      "b": "grass",
+      "profile": "cobblestone"
+    },
+    {
+      "a": "road",
+      "b": "sand",
+      "profile": "cobblestone"
+    }
+  ]
+}

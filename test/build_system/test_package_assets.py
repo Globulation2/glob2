@@ -9,6 +9,38 @@ from tools import package_assets
 from tools.package_assets import export_assets, include_asset
 
 
+class TerrainRuntimeFingerprintTests(unittest.TestCase):
+    def test_fingerprints_use_decoded_lossy_exports_and_sheet_regions(self):
+        from tools import terrain_tileset
+        import random
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root, stage = Path(tmp) / "source", Path(tmp) / "stage"
+            (root / "data/gfx").mkdir(parents=True)
+            (stage / "data/gfx").mkdir(parents=True)
+            names = [f"data/gfx/fixture{i}.png" for i in range(2)]
+            images = [Image.frombytes("RGB", (32, 32), random.Random(i).randbytes(32 * 32 * 3))
+                      for i in range(2)]
+            for name, image in zip(names, images):
+                image.save(root / name)
+            images[0].save(stage / "data/gfx/fixture0.webp", quality=25)
+            sheet = Image.new("RGB", (32 * package_assets.SHEET_COLUMNS, 32))
+            sheet.paste(images[1], (32, 0))
+            sheet.save(stage / "data/gfx/test-sheet-0.webp", quality=25)
+            plan = {"data/gfx/test": [{"name": "test-sheet-0.png", "size": (32, 32),
+                                      "frames": [root / "unused.png", root / names[1]]}]}
+            fingerprints = package_assets.terrain_runtime_fingerprints(
+                terrain_tileset, names, root, stage, plan
+            )
+            with Image.open(stage / "data/gfx/fixture0.webp") as decoded:
+                self.assertEqual(fingerprints[names[0]], terrain_tileset.pixel_fingerprint(decoded))
+            with Image.open(stage / "data/gfx/test-sheet-0.webp") as decoded:
+                self.assertEqual(fingerprints[names[1]], terrain_tileset.pixel_fingerprint(
+                    decoded.crop((32, 0, 64, 32))))
+            for name, original in zip(names, images):
+                self.assertNotEqual(fingerprints[name], terrain_tileset.pixel_fingerprint(original))
+
+
 class AssetExportTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

@@ -21,14 +21,6 @@ class TerrainRegistry
 	static constexpr std::size_t MaximumDefinitionBytes = 32 * 1024 * 1024;
 	static constexpr std::size_t MaximumTextBytes = 128;
 
-	// Equal resolved appearances share drawing metadata, independently of names
-	// and simulation properties. name/label are intentionally absent from profiles;
-	// authoring callers must use presentation(canonicalId).
-	struct Visual
-	{
-		TerrainPresentation presentation;
-		TerrainType appearance;
-	};
 	struct Movement
 	{
 		std::vector<gradient_kernel::EntrySteps> entries;
@@ -66,9 +58,12 @@ class TerrainRegistry
 		assert(valid(id));
 		return presentations_[id];
 	}
-	std::uint16_t visualIndex(TerrainType id) const { return visualIndices_[id]; }
-	const Visual &visual(std::uint16_t index) const { return visuals_[index]; }
-	std::size_t visualCount() const { return visuals_.size(); }
+	// Saved-frame identity is independent of the current drawing catalog.
+	const TerrainCompatibility &compatibility(TerrainType id) const
+	{
+		assert(valid(id));
+		return savedPresentations_[id];
+	}
 	const std::string &key(TerrainType id) const { return keys_[id]; }
 	TerrainType appearance(TerrainType id) const { return appearances_[id]; }
 	const Movement &movement(unsigned swim) const { return movement_[swim]; }
@@ -88,8 +83,18 @@ class TerrainRegistry
 	std::vector<TerrainProperties> properties_, propertyProfiles_;
 	std::vector<std::uint16_t> propertyIndices_;
 	std::vector<TerrainPresentation> presentations_;
-	std::vector<Visual> visuals_;
-	std::vector<std::uint16_t> visualIndices_;
+	// Format 136 predates material catalogs. Retain these resolved fields verbatim
+	// for saved definitions and their canonical digest; rendering uses appearance().
+	struct SavedPresentation : TerrainCompatibility
+	{
+		int editorFrame;
+		bool animatedBackdrop;
+		int edgeFirstFrame = -1, layerPriority = 0;
+		int animationFrames = 1, animationTicks = 1;
+		int backdropFirstFrame = 0, backdropFrames = 1, backdropTicks = 1;
+	};
+	static SavedPresentation savedPreset(TerrainType appearance);
+	std::vector<SavedPresentation> savedPresentations_;
 	std::vector<std::string> keys_, names_;
 	std::vector<TerrainType> appearances_;
 	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;

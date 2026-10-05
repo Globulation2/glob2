@@ -34,6 +34,11 @@ class SDLRenderBackend final : public RenderBackend
 		reset();
 		SDL_DestroyRenderer(renderer);
 	}
+	int maximumTextureSize() const override
+	{
+		return int(SDL_GetNumberProperty(SDL_GetRendererProperties(renderer),
+										 SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+	}
 	void transform(float factor, float x, float y, const SDL_Rect *output) override
 	{
 		if (!std::isfinite(factor) || factor <= 0 || !std::isfinite(x) || !std::isfinite(y))

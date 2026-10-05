@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
-#include "TerrainPresentation.h"
+#include "TerrainCompatibility.h"
 #include "Utilities.h"
 
 // Terrain editing & rendering: setUMatPos, regenerateMap, lookup

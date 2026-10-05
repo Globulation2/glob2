@@ -35,7 +35,10 @@ template <class T, unsigned Capacity> class Ring
 	}
 	void pop() { read.fetch_add(1, std::memory_order_release); }
 };
-constexpr unsigned TargetBlocks = 36, LowBlocks = 24, CapacityBlocks = 48;
+// Round the half-second target up to whole blocks (512 ms at 48 kHz).
+// Refill at 427 ms to retain a cushion for a 400 ms producer stall.
+// Keep browser/music-worker.js and browser/music-output.js aligned.
+constexpr unsigned TargetBlocks = 24, LowBlocks = 20, CapacityBlocks = 48;
 struct Block
 {
 	std::array<std::int16_t, Chunk * 2> pcm{};

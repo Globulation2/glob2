@@ -438,7 +438,7 @@ public:
 	bool validTerrainType(unsigned type) const { return terrainRegistryValue->valid(type); }
 	bool terrainUsesLegacyCorners(TerrainType type) const
 	{
-		return terrainPresentation(type).legacyCorners;
+		return terrainRegistry().compatibility(type).legacyCorners;
 	}
 	void importTerrainDefinitions(std::string_view json);
 	TerrainType terrainTypeAt(size_t index) const { return terrainIds[index]; }

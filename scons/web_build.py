@@ -109,7 +109,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             return 0
         asset_inputs = list(source_files(root, 'web'))
         exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+            ['tools/package_assets.py', 'tools/terrain_tileset.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
@@ -118,7 +118,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         # The plan also reads the browser copies (browser/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
         plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py',
-                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h']
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,

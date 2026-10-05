@@ -23,8 +23,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	const size_t size = size_t(w) * h;
 	terrain.resize(size);
 	terrainTypes = map.terrainTypes();
-	terrainVisuals.resize(size);
-	layeredTerrain = false;
+	terrainAppearances.resize(size);
 	resources.resize(size);
 	resourcesGrow.resize(size);
 	groundUnits.resize(size);
@@ -34,9 +33,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.tiles[i];
-		terrainVisuals[i] = registry->visualIndex(terrainTypes[i]);
-		const auto &presentation = registry->visual(terrainVisuals[i]).presentation;
-		layeredTerrain |= presentation.edgeFirstFrame >= 0 || presentation.backdropSprite;
+		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
 		resourcesGrow[i] = tile.canResourcesGrow;
@@ -102,51 +99,6 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 		y -= h;
 	*px = x << 5;
 	*py = y << 5;
-}
-
-TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
-{
-	const auto &own = registry->visual(terrainVisuals[coordToIndex(x, y)]);
-	const auto &base = own.presentation;
-	auto result = terrainBaseLayers(own.appearance, getTerrain(x, y), base, animationTime);
-	if (!layeredTerrain)
-		return result;
-
-	// Edges describe appearances, not terrain identities. Coalesce aliases into
-	// one side mask; separate overlays would double-blend shared corner pixels.
-	constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
-	std::array<std::uint16_t, 4> profiles{};
-	std::array<unsigned, 4> masks{};
-	int count = 0;
-	for (int side = 0; side < 4; ++side)
-	{
-		const auto profile = terrainVisuals[coordToIndex(x + dx[side], y + dy[side])];
-		const auto &p = registry->visual(profile).presentation;
-		if (p.edgeFirstFrame < 0 || p.layerPriority <= base.layerPriority)
-			continue;
-		int slot = 0;
-		while (slot < count && profiles[slot] != profile)
-			++slot;
-		if (slot == count)
-			profiles[count++] = profile;
-		masks[slot] |= 1u << side;
-	}
-	for (int i = 0; i < count; ++i)
-		for (int j = i + 1; j < count; ++j)
-			if (registry->visual(profiles[j]).presentation.layerPriority <
-				registry->visual(profiles[i]).presentation.layerPriority)
-			{
-				std::swap(profiles[i], profiles[j]);
-				std::swap(masks[i], masks[j]);
-			}
-	const int firstEdge = base.backdropSprite ? 2 : 1;
-	for (int i = 0; i < count; ++i)
-	{
-		const auto &visual = registry->visual(profiles[i]);
-		result.frames[i + firstEdge] = visual.presentation.edgeFirstFrame + masks[i] - 1;
-		result.materials[i + firstEdge] = visual.appearance;
-	}
-	return result;
 }
 
 SceneMap::SceneMap() : registry(TerrainRegistry::builtins()) {}

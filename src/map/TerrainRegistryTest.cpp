@@ -70,7 +70,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(registry->find("test:a") == TerrainType(7));
 		CHECK(registry->find("test:z") == TerrainType(8));
 		CHECK(registry->properties(TerrainType(7)).groundSpeedQ8 == 192);
-		CHECK_FALSE(registry->presentation(TerrainType(7)).legacyCorners);
+		CHECK_FALSE(registry->compatibility(TerrainType(7)).legacyCorners);
 		CHECK(registry->appearance(TerrainType(7)) == SAND);
 		auto updated = registry->importJson(source(Json::array(
 			{definition("test:a", "grass", {{"groundSpeedQ8", 64}}), definition("test:0")})));
@@ -88,7 +88,7 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(std::string(loaded->presentation(TerrainType(7)).label) == "Custom terrain");
 		CHECK(loaded->movement(0).minimum == 5); // Built-in road remains an admissible lower bound.
 	}
-	TEST_CASE("visual profiles share artwork while snapshots retain authoring names")
+	TEST_CASE("appearance presets preserve snapshot names and resolved saved metadata")
 	{
 		auto first = definition("test:first");
 		auto second = definition("test:second", "grass", {{"groundSpeedQ8", 192}});
@@ -98,18 +98,11 @@ TEST_SUITE("TerrainRegistry")
 			TerrainRegistry::builtins()->importJson(source(Json::array({first, second})));
 		const auto firstId = *snapshot->find("test:first");
 		const auto secondId = *snapshot->find("test:second");
-		CHECK(snapshot->visualIndex(firstId) == snapshot->visualIndex(secondId));
+		CHECK(snapshot->appearance(firstId) == snapshot->appearance(secondId));
+		CHECK(snapshot->appearance(firstId) == SAND);
 		CHECK(snapshot->propertyIndex(firstId) != snapshot->propertyIndex(secondId));
-		const auto &visual = snapshot->visual(snapshot->visualIndex(firstId));
-		CHECK(visual.presentation.name == nullptr);
-		CHECK(visual.presentation.label == nullptr);
-		CHECK(visual.appearance == SAND);
-		CHECK(snapshot->visualIndex(firstId) != snapshot->visualIndex(SAND));
-		auto iceDefinition = definition("test:ice");
-		iceDefinition["appearance"] = "ice";
-		const auto iceRegistry = snapshot->importJson(source(Json::array({iceDefinition})));
-		CHECK(iceRegistry->visualIndex(*iceRegistry->find("test:ice")) ==
-			  iceRegistry->visualIndex(ICE));
+		CHECK_FALSE(snapshot->compatibility(firstId).legacyCorners);
+		CHECK(snapshot->compatibility(firstId).firstFrame == terrainCompatibility(SAND).firstFrame);
 
 		first["name"] = "Replacement name";
 		const auto replacement = snapshot->importJson(source(Json::array({first})));
@@ -118,8 +111,9 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(std::string(replacement->presentation(firstId).label) == "Replacement name");
 		CHECK(std::string(replacement->presentation(secondId).label) == "Second terrain");
 
-		// Saved presentation is authoritative. Sharing an appearance preset is
-		// insufficient when resolved colors or animation timing differ.
+		// Format 136 retains every resolved field, including legacy timing that
+		// no longer drives drawing. Appearance material catalogs cannot rewrite
+		// authoritative saved bytes or their simulation digest.
 		for (const auto *field : {"minimap", "animationTicks"})
 		{
 			CAPTURE(field);
@@ -130,8 +124,10 @@ TEST_SUITE("TerrainRegistry")
 			else
 				value = value.get<unsigned>() + 1;
 			const auto distinct = TerrainRegistry::deserialize(saved.dump());
-			CHECK(distinct->visualIndex(firstId) != distinct->visualIndex(secondId));
-			CHECK(distinct->visualCount() == snapshot->visualCount() + 1);
+			CHECK(distinct->serialize() == saved.dump());
+			CHECK(distinct->digest() != snapshot->digest());
+			if (std::string_view(field) == "minimap")
+				CHECK(distinct->presentation(secondId).minimap.r == value[0].get<unsigned>());
 		}
 	}
 	TEST_CASE("invalid imports and saved registries are rejected without changing their owner")

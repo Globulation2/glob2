@@ -298,8 +298,8 @@ New multiplayer features, including reconnect recovery, are outside this change.
 
 Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. Music uses a dedicated decoder worker and AudioWorklet in both serial and threaded
-builds, with a 768 ms prepared-audio target. Isolated browsers use shared memory
-when supported; other browsers retain bounded MessagePort transport. Hidden tabs
+builds, with a half-second prepared-audio target (512 ms in whole blocks). Isolated
+browsers use shared memory when supported; other browsers retain bounded MessagePort transport. Hidden tabs
 pause music. See [audio ownership](../docs/browser/implementation.md) for buffering,
 recording, and the MessagePort limitation in some WebKit builds.
 
