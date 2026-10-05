@@ -40,6 +40,11 @@ int main(int argc, char **argv)
         {
             std::unique_ptr<Online::OnlineStorage> skinStorage;
             GameGUI gui;
+            const auto drawScene = [&] {
+                // Match Application's frame pump so shared asset finalizers run.
+                GAGCore::Toolkit::pollAssets();
+                gui.drawAll(0);
+            };
             GAGCore::BinaryInputStream stream(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), save));
             if (!gui.load(&stream,true)) throw std::runtime_error("Cannot load preview save");
             gui.localPlayer = gui.localTeamNo = 0;
@@ -100,7 +105,7 @@ int main(int argc, char **argv)
                 for(const auto &skin:assignment.at("colonySkins"))tickets.push_back({skin.at("team"),skin.at("assertion")});
                 skinStorage=Online::makeDirectoryStorage(cache);
                 gui.setColonySkins(std::make_unique<Online::SkinDownloads>(*skinStorage,assignment.at("origin"),assignment.at("matchId"),std::move(tickets)));
-                for(int frame=0;frame<180;++frame){gui.drawAll(0);globalContainer->gfx->nextFrame();SDL_Delay(16);}
+                for(int frame=0;frame<180;++frame){drawScene();globalContainer->gfx->nextFrame();SDL_Delay(16);}
             }
             if (const char *benchmark = std::getenv("SKIN_PREVIEW_BENCHMARK"))
             {
@@ -167,7 +172,7 @@ int main(int argc, char **argv)
                         }
                         globalContainer->gfx->resetDrawCallCount();
                         const auto start=SDL_GetPerformanceCounter();
-                        gui.drawAll(0);
+                        drawScene();
                         const auto count=globalContainer->gfx->getDrawCallCount();
                         globalContainer->gfx->nextFrame();
                         const double elapsedMs=1000.0*(SDL_GetPerformanceCounter()-start)/SDL_GetPerformanceFrequency();
@@ -209,13 +214,13 @@ int main(int argc, char **argv)
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
                         {"decodedSpriteBytes",appearance.sprites?appearance.sprites->decodedBytes():0},{"spriteCache",cacheMetrics},{"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
                         {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;
-                    gui.drawAll(0);
+                    drawScene();
                     globalContainer->gfx->printScreen(std::string(benchmark)+(skinned?"-skinned.bmp":"-classic.bmp"));
                     globalContainer->gfx->nextFrame();
                     if(skinned)if(const char *framesPrefix=std::getenv("SKIN_BENCH_FRAME_PREFIX")) {
                         for(unsigned frame=0;frame<32;++frame) {
                             for(unsigned i=0;i<crowd.size();++i)crowd[i]->delta=(i*13+frame*8)%256;
-                            const auto checksum=gui.game.checkSum();gui.drawAll(0);
+                            const auto checksum=gui.game.checkSum();drawScene();
                             if(gui.game.checkSum()!=checksum)throw std::runtime_error("Animation capture changed simulation state");
                             globalContainer->gfx->printScreen(std::string(framesPrefix)+"-"+std::to_string(frame)+".bmp");
                             globalContainer->gfx->nextFrame();
@@ -232,7 +237,7 @@ int main(int argc, char **argv)
                 std::optional<std::uint32_t> originalColor;
                 while (stage < 3 && SDL_GetTicks()-start < 180000)
                 {
-                    gui.drawAll(0);
+                    drawScene();
                     const auto color = gui.view.render.skinPreview().buildingColor(0);
                     if ((stage==0 && color) || (stage==1 && !color) || (stage==2 && color))
                     {
@@ -251,17 +256,17 @@ int main(int argc, char **argv)
                 }
                 if(stage!=3)throw std::runtime_error("Timed out waiting for moderation removal and restoration");
             }
-            gui.drawAll(0);
+            drawScene();
             globalContainer->gfx->printScreen(output);
             globalContainer->gfx->nextFrame();
             if (const char *hidden = std::getenv("SKIN_PREVIEW_HIDDEN_CAPTURE"))
             {
                 globalContainer->settings.showColonySkins = false;
-                gui.drawAll(0);
+                drawScene();
                 globalContainer->gfx->printScreen(hidden);
                 globalContainer->gfx->nextFrame();
                 globalContainer->settings.showColonySkins = true;
-                gui.drawAll(0);
+                drawScene();
                 globalContainer->gfx->printScreen(std::string(hidden) + ".restored.bmp");
                 globalContainer->gfx->nextFrame();
             }
