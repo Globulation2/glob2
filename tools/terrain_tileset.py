@@ -66,6 +66,11 @@ def validate(document, root=ROOT):
             type(n) is not int or not 0 <= n <= 255 for n in m["preview"]
         ):
             raise ValueError("Invalid preview color")
+        minimap = m.get("minimap", m["preview"])
+        if len(minimap) != 3 or any(
+            type(n) is not int or not 0 <= n <= 255 for n in minimap
+        ):
+            raise ValueError("Invalid minimap color")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),

@@ -145,6 +145,10 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			require(n >= 0 && n <= 255, "invalid preview channel");
 			v.preview[i] = n;
 		}
+		const auto mini = m.value("minimap", rgb);
+		require(mini.is_array() && mini.size() == 3, "invalid minimap color");
+		for (int i = 0; i < 3; ++i)
+			v.minimap[i] = integer(mini[i], 0, 255);
 		require(m.at("variants").is_array() && !m.at("variants").empty(),
 				"material needs variants");
 		for (const auto &a : m.at("variants"))

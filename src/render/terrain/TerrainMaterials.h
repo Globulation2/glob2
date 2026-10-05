@@ -36,7 +36,7 @@ struct Material
 	bool ocean = false;
 	Backdrop backdrop;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
-	std::array<unsigned char, 3> preview{};
+	std::array<unsigned char, 3> preview{}, minimap{};
 };
 struct PairTreatment
 {

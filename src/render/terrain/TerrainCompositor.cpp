@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
 #include "TerrainCompiledPack.h"
+#include "TerrainCatalogIO.h"
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -14,11 +15,7 @@ namespace TerrainVisual
 {
 Catalog Compositor::loadCatalog()
 {
-	std::unique_ptr<std::ifstream> input(
-		GAGCore::Toolkit::getFileManager()->openIFStream("data/terrain/tileset.json"));
-	if (!input || !*input)
-		throw std::runtime_error("Cannot read data/terrain/tileset.json");
-	return Catalog::parse(nlohmann::json::parse(*input));
+	return TerrainVisual::loadCatalog();
 }
 Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 {

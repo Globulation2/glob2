@@ -18,7 +18,8 @@ Each material supplies:
 
 - `key`, a stable authoring name, and `sprite`, a `data/`-relative sprite prefix;
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
-- `profile`, the key of its boundary family, and `preview`, three RGB channels;
+- `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
+- optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
 - optional `backdrop` with `sprite`, `first_frame`, `frames`, and `ticks`;
 - `ocean: true` only for materials that reveal the shared scrolling ocean.
@@ -118,6 +119,8 @@ GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× 
 separately by `sourceBytes()`. Cache admission failure uses the same compositor
 through the uncached path.
 
-Map image interchange colors and editor experiment gates remain semantic metadata.
+Minimaps and thumbnails read the catalog's compact palette without changing
+legacy thumbnail decoding. Map image interchange colors and editor experiment
+gates remain semantic metadata.
 Keep reference screenshots, benchmark output and temporary compiled tilesets under
 `artifacts/`; publish review evidence separately from durable documentation.
