@@ -17,6 +17,7 @@ import type { MusicRunner, CandidateReport, Rendered } from './runner.ts';
 const hash = (s: string) => createHash('sha256').update(s).digest('hex');
 const SYSTEM = `You compose original instrumental music for Globulation 2. Write a developed 50–120 second score on one shared timeline, arranged for calm, building and combat. Warm, cozy, downtempo, spacious, with humanised performance. Develop and vary phrases; never repeat a short loop to fill time. Combat changes orchestration, not just volume. Never copy example melodies. Never claim to have listened to audio.
 You can write Python composition code, executed without network in a disposable sandbox. Define SCORE (glob2music.score.Score), arrange(mood) -> list[Part], and optionally MIX_ADJUST. Standard trusted humanisation/mixing is used; custom performance hooks are not supported. The selected instrument palette is fixed; arbitrary dependencies and downloads are unavailable. Do not change QA or add waivers.
+The API and example are already supplied below. Read each additional reference at most once and use the tool history results; never repeatedly read instruments or an empty source. After inspecting the palette, write the composition, check it, and render it. Passing score checks may include warnings: render to obtain the audio checks instead of repeatedly inspecting references.
 Respond ONLY with one JSON object: {"action":"read"|"write"|"check"|"render"|"done", "text":"brief user-facing progress", "value":"..."}. read value is one of guide, example, api, instruments, source, report. write value replaces the complete composition.py (at most 128 KiB). Use an empty value for check, render and done. check runs cheap score validation. render runs trusted rendering, mastering and all ten audio checks. done only after a passing render. Use the tools to investigate and repair failures. You have at most three render attempts. When revising, edit the supplied source to implement the user's requested change and preserve other musical choices.`;
 interface AgentState {
   source: string;
@@ -425,7 +426,8 @@ export class Pipeline {
         }
       }
       delete state.candidate;
-      state.history.push(`${action.action}: ${feedback}`);
+      const tool = action.action === 'read' ? `read ${action.value}` : action.action;
+      state.history.push(`${tool}: ${feedback}`);
       state.history = state.history.slice(-8);
       state.step++;
       await this.studio.checkpoint(row, 'processing', { agent: state });
