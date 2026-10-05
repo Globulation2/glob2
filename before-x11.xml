@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="51.1898" status="run">
+      <failure message="false" type="REQUIRE">
+src/game/screens/CustomGameSetupHarness.cpp:1694:
+REQUIRE( pickerHost.popupOpen() ) is NOT correct!
+  values: REQUIRE( false )
+  logged: action=reset run=false return=44 focus=landscape/44
+          after click: run=false return=44 focus=landscape/44
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

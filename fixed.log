@@ -1,0 +1,4 @@
+PASS CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (65.5s)
+
+1 passed, 0 failed, 0 skipped (65.5s of test time)
+[run_tests] JUnit report: artifacts/picker-lifecycle/fixed.xml (1 cases)
