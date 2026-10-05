@@ -1,0 +1,14 @@
+[03:55:42] CHECK sim version served
+Settings::load("preferences.txt") : error, can't open file.
+[03:55:42] PASS  sim version served: {"simVersion": "133-54-c5780304b3462b409982230dfc341cf17326db8aea0f6f8d1ce09a46b705633e"}
+[03:55:42] CHECK accounts and realtime
+[03:55:42] PASS  accounts and realtime: {"A": {"id": "d830c651-267b-4ca8-8c3d-9fa5171a5b17", "kind": "registered"}, "B": {"id": "3e155203-0e6c-4317-b279-a1276df71701", "kind": "registered"}}
+[03:55:42] CHECK rated quick match
+[03:55:44] PASS  rated quick match: {"queue": "e2e-ranked", "proposalId": "f57d5ed2-54cc-4e3c-bd48-2d70d96273aa", "requiresAccept": true, "matchId": "592a6b59-61a8-46a6-9cc0-90d0ca72c07b", "relayUrl": "wss://localhost:59679/relay/b2c4b9a8a5f8", "seats": [0, 1]}
+[03:55:44] CHECK match through the relay
+[03:56:26] client B exited with 0
+[03:56:55] client A exited with 0
+[03:56:56] PASS  match through the relay: {"clients": {"A": {"status": "completed", "ended_by": "max-seconds", "executed_ticks": 998, "game_ended": false, "desync_flagged": false, "reloads": 0, "orders_queued": 16, "rtt_ms": 20, "jitter_ms": 32, "wall_seconds": 70.0006, "diagnostic": null, "exit": 0, "teams": [{"team": 0, "outcome": "unresolved"}, {"team": 1, "outcome": "unresolved"}]}, "B": {"status": "completed", "ended_by": "engine", "
+[03:56:56] CHECK record, verification and history
+[03:56:57] PASS  record, verification and history: {"match": {"status": "ended", "end_reason": "completed", "final_tick": 1026, "verification": "verified", "desync_flagged": false, "relay_id": "relay-1", "ended_at": "2026-10-05T07:56:25+00:00"}, "artifacts": ["record", "replay", "result"], "participants": [{"seat": 0, "team": 0, "kind": "human", "ai_id": null, "display_name": "e2e-a-9702a973", "outcome": "lost", "quit_tick": 998, "disconnects": 0}
+[03:56:57] all checks passed
