@@ -45,7 +45,9 @@ TEST_CASE("canonical terrain survives presentation regeneration and batches snap
         map.resourceGrowthField();
     }
     CHECK_EQ(map.terrainGeneration(),generation+1);
-    CHECK_FALSE(map.growthCache.validFor(map));
+    // The field already includes the final mutation; publishing the batch's
+    // general terrain generation must not discard it again.
+    CHECK(map.growthCache.validFor(map));
     CHECK_EQ((*old)[map.coordToIndex(8,8)],WATER);
     CHECK_EQ(map.terrainTypeAt(8,8),ROAD);
     CHECK_EQ(map.terrainTypeAt(9,8),ICE);
@@ -58,6 +60,25 @@ TEST_CASE("canonical terrain survives presentation regeneration and batches snap
     map.tile(2,1);
     CHECK_EQ(map.terrainTypeAt(40,8),ROAD);
     CHECK_EQ(map.terrainTypeAt(41,8),ICE);
+}
+
+TEST_CASE("same-size map replacement and legacy import refresh ecology")
+{
+    glob2test::HeadlessGlobals globals;
+    Map map;
+    map.setSize(5,5,WATER);
+    CHECK(map.resourceGrowthField().landField().at(8,8)==Fertility::kScale);
+    map.setSize(5,5,GRASS);
+    CHECK_FALSE(map.growthCache.validFor(map));
+    CHECK(map.resourceGrowthField().landField().at(8,8)==0);
+    map.tiles[map.coordToIndex(9,8)].terrain=256;
+    map.importLegacyTerrain();
+    CHECK_FALSE(map.growthCache.validFor(map));
+    CHECK(map.resourceGrowthField().landField().at(8,8)>0);
+    map.tile(2,1);
+    CHECK_FALSE(map.growthCache.validFor(map));
+    const auto& field=map.resourceGrowthField().landField();
+    CHECK(field.at(8,8)==field.at(40,8));
 }
 
 TEST_CASE("terrain edits refresh escape costs and supersede queued route snapshots")
@@ -144,7 +165,15 @@ TEST_CASE("ice exposure includes stationary units and preserves fractional healt
     copy->seekFromStart(0);
     GAGCore::BinaryInputStream input(copy);
     GameGUI resumed;
+    // Loading into a previously queried same-size map must discard its ready
+    // ecology cache, even though dimensions alone would still match.
+    resumed.game.map.setSize(map.getShiftW(),map.getShiftH(),WATER);
+    CHECK(resumed.game.map.resourceGrowthField().landField().at(8,8)==Fertility::kScale);
     REQUIRE(resumed.game.load(&input));
+    Fertility::GrowthCache freshEcology;
+    freshEcology.rebuild(resumed.game.map);
+    CHECK(resumed.game.map.resourceGrowthField().landField().values()==freshEcology.landField().values());
+    CHECK(resumed.game.map.resourceGrowthField().aquaticField()==freshEcology.aquaticField());
     Unit* loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
     REQUIRE(loaded);
     CHECK_EQ(loaded->terrainHealthRemainder,unit->terrainHealthRemainder);

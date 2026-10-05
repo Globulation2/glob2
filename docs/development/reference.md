@@ -839,8 +839,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   an editor brush or a generator's material selection).
 - `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
   state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
-  batch edits with `editTerrain()` so snapshots, topology and ecology caches are
-  invalidated together. The compatibility `getTerrainType` query returns an
+  batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
+  consistent with the canonical IDs. The compatibility `getTerrainType` query returns an
   unknown category for legacy shores; never use it to index the property table.
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
@@ -849,7 +849,13 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Add a stable enum entry and complete both tables for a new material. Experimental
   authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
   into matches, while saves retain them independently of the user's current settings.
-- Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
+- Ecology caches terrain-only land and aquatic fields for the map's lifetime.
+  Normal growth, harvesting, unit movement and building placement do not rebuild
+  them. Map replacement invalidates them; terrain edits invalidate them only when
+  effective fertility contributions, inhibition, shore support or local growth
+  factors change. Habitat-only edits update one cell's resource mask, and other
+  capability changes retain the fields. A query inside an edit batch observes all
+  preceding changes; closing the batch does not discard an already-current field.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,
   while opportunity rates use `Fertility::kRateScale` (three times Q16) so wheat
