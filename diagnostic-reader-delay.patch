@@ -1,0 +1,13 @@
+diff --git a/libgag/src/AssetLoader.cpp b/libgag/src/AssetLoader.cpp
+index 66ebc41b0..47a4c74cc 100644
+--- a/libgag/src/AssetLoader.cpp
++++ b/libgag/src/AssetLoader.cpp
+@@ -310,6 +310,8 @@ struct AssetLoader::Impl {
+             job->result->state.store(succeeded ? State::Ready : State::Failed, std::memory_order_release);
+         }
+         ready->notify_all();
++        // Diagnostic: hold the completed reader job while its decoder runs.
++        if (job->read) std::this_thread::sleep_for(std::chrono::milliseconds(50));
+         cpuWake->notify_one();
+         return true;
+     }

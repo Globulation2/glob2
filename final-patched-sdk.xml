@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build-software-terrain/test/glob2-unit-tests" errors="0" failures="0" tests="13706047" time="14.2018" timestamp="2026-10-05T11:04:21Z" doctest_version="2.4.11">
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.001952" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.002669" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="dependency continuations do not block workers and preparation overlaps" time="0.001303" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="retained continuation inputs survive cancellation of the caller subscription" time="0.002315" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="unique completed requests do not accumulate expired cache metadata" time="0.000553" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="reader workers overlap independently of CPU preparation" time="0.00126" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.00122" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run"/>
+    <testcase classname="libgag/src/AssetLoaderTest.cpp" name="failures cancellation invalidation and shutdown leave usable handles" time="0.000384" status="run"/>
+    <testcase classname="libgag/src/BidiTextTest.cpp" name="left-to-right text is unchanged" time="0" status="run"/>
+    <testcase classname="libgag/src/BidiTextTest.cpp" name="Arabic letters join and read right to left" time="0" status="run"/>
+    <testcase classname="libgag/src/BidiTextTest.cpp" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run"/>
+    <testcase classname="libgag/src/BidiTextTest.cpp" name="matches fribidi on every Arabic and Persian catalog value" time="0.060952" status="run"/>
+    <testcase classname="libgag/src/BufferedFileStreamHarness.cpp" name="bytes; SHA1; boundaries; seeks; reads; flush and destruction; memory stream writes" time="0.013129" status="run"/>
+    <testcase classname="libgag/src/EventQueueTest.cpp" name="deferred UTF-8 and composition survive source reuse and queue growth" time="0.000201" status="run"/>
+    <testcase classname="libgag/src/EventQueueTest.cpp" name="queued SDL text survives the next OS event pump" time="0.002448" status="run"/>
+    <testcase classname="libgag/src/FontMetricsTest.cpp" name="font metrics do not rasterize or evict rendered text" time="0.140047" status="run"/>
+    <testcase classname="libgag/src/GameplayRecordingTest.cpp" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="1.14097" status="run"/>
+    <testcase classname="libgag/src/GameplayRecordingTest.cpp" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="0" status="run"/>
+    <testcase classname="libgag/src/GameplayRecordingTest.cpp" name="recording rejects invalid options and never overwrites output" time="0.000338" status="run"/>
+    <testcase classname="libgag/src/GameplayRecordingTest.cpp" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.46968" status="run"/>
+    <testcase classname="libgag/src/GameplayRecordingTest.cpp" name="stopping a recording before its first frame completes without hanging" time="0.00087" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="native deltas accumulate fractions and release never adds a fling" time="0" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="native momentum is swallowed after reaching either edge" time="0" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="release from stretch springs and ignores native tail; new contact catches spring" time="0" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="horizontal tray chooses and retains its initial dominant axis" time="0" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="settings; zero content; timeout only after release; cancelled tails stay owned" time="0" status="run"/>
+    <testcase classname="libgag/src/GestureScrollTest.cpp" name="gesture payload survives SDL queue; source reuse; deferred queue copies and clearing" time="0" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000154" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0.000102" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000228" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="Native PNG and JPEG loading and saving remain available" time="0.000296" status="run"/>
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.000329" status="run"/>
+    <testcase classname="libgag/src/MobileInputHarness.cpp" name="zoom anchoring; seams; rotation; safe layouts; gestures and cancellation" time="0" status="run"/>
+    <testcase classname="libgag/src/MobileInputHarness.cpp" name="opaque SDL3 touch identifiers retain their high bits" time="0" status="run"/>
+    <testcase classname="libgag/src/MobileInputHarness.cpp" name="OS scaling composes with preferences without doubling pixel density" time="0" status="run"/>
+    <testcase classname="libgag/src/MobileInputHarness.cpp" name="Process overrides update SDL's cached environment" time="0" status="run"/>
+    <testcase classname="libgag/src/OpaqueRectangleBatchTest.cpp" name="recovers from submission errors" time="0.000761" status="run"/>
+    <testcase classname="libgag/src/OpaqueRectangleBatchTest.cpp" name="retains portable renderer pixels [display]" time="0.046291" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned char>" time="0.001242" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="all widths, wraparound, random values and block boundaries [save-format]&lt;short unsigned int>" time="0.001125" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned int>" time="0.001386" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="all widths, wraparound, random values and block boundaries [save-format]&lt;long unsigned int>" time="0.001961" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="format 128 golden blocks [save-format][golden]" time="0" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned char>" time="0.001155" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;short unsigned int>" time="0.001504" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned int>" time="0.002221" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;long unsigned int>" time="0.002459" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="reject truncated, overflowing and invalid blocks before out of bounds writes [save-format]" time="0.000213" status="run"/>
+    <testcase classname="libgag/src/PackedArrayTest.cpp" name="deferred arrays own contents and relocate offsets [save-format]" time="0" status="run"/>
+    <testcase classname="libgag/src/PerformanceTelemetryHarness.cpp" name="moments; nesting; work/sleep/present separation; budgets; jitter; sampling; identity; capture and disabled control" time="0.000166" status="run"/>
+    <testcase classname="libgag/src/PerformanceTelemetryHarness.cpp" name="a bound simulation collector is absorbed with thread attribution, actors and budget" time="0.00035" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="session index creation preserves an existing recording" time="0.000196" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="resize coalescing preserves full resolution and numbers completed segments" time="0.012474" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="worker normalizes capture color layout and bottom-up orientation" time="0.004366" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="asynchronous encoder flush is polled before publishing the output" time="0.004488" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="long scheduling gaps preserve time without an encoding catch-up burst" time="0.005474" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="device failure closes its stream and starts a software segment" time="0.010951" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="hardware flush failure during resize continues with a software segment" time="0.012199" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="capture pressure rejects input within the three-frame budget" time="0.004623" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="interrupted fragmented media recovers without a finalized trailer" time="0.038458" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]" time="0" status="run"/>
+    <testcase classname="libgag/src/RecordingSessionTest.cpp" name="publication failure retains media that can be recovered without overwriting" time="0.005308" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="caps starts precisely without catching up missed frames" time="0.009408" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="display callbacks above and below the target retain the available rate" time="0" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="minor scheduling jitter preserves the target phase" time="0" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="waits account for frame cost; live changes reset; unlimited never waits" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="velocity tracker fits constant and decelerating motion" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="stopped finger stale samples and degenerate input yield zero" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="a fling coasts to its projected end inside the bounds" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="stepping cadence does not change the path" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="rubber band is monotonic and bounded by the extent" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="the spring settles without oscillation" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="a fling into an edge hands its velocity to the spring" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="wrap mode is unbounded and bounce off stops at the edge" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="interrupt keeps the offset and a new drag continues from it" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="fling velocity limits and momentum off" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="bounds changes clamp idle offsets but not a drag in progress" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="two axes step together and report deltas" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="widenTicks follows the reference across a 32-bit wrap" time="0" status="run"/>
+    <testcase classname="libgag/src/ScrollPhysicsTest.cpp" name="presets follow the tuning sliders" time="0" status="run"/>
+    <testcase classname="libgag/src/Sha1Test.cpp" name="FIPS 180-1 vectors" time="0.001458" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="virtual asset streams use the same bounded decoder" time="0.000115" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="static swarm pose" time="0.000112" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="static camera ring preserves UVs, scale and independent cache identities" time="0.155614" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="bounded transactional decoding" time="0.000645" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="visible hits survive a full atlas eviction batch" time="0.000528" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="paint and material revisions, lifetimes, region, mesh and pose are independent cache keys" time="0" status="run"/>
+    <testcase classname="libgag/src/SkinMeshTest.cpp" name="greyscale material maps decode to exact ids" time="0.008076" status="run"/>
+    <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered portable resource sprite batch retains pixels [display]" time="1.2938" status="run"/>
+    <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="resource sprite batch recovers from submission errors" time="0.016098" status="run"/>
+    <testcase classname="libgag/src/SpriteLoadTest.cpp" name="source frames prepare in parallel without a graphic context" time="0.001657" status="run"/>
+    <testcase classname="libgag/src/SpriteLoadTest.cpp" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.002179" status="run"/>
+    <testcase classname="libgag/src/SpriteSheetTest.cpp" name="sheet tiles load as the frames they were packed from" time="0.005271" status="run"/>
+    <testcase classname="libgag/src/SpriteSheetTest.cpp" name="PNG artwork cannot enter the WebP sprite path" time="0.00635" status="run"/>
+    <testcase classname="libgag/src/SpriteSheetTest.cpp" name="Q90 sheet tiles preserve exact frame alpha" time="0.005568" status="run"/>
+    <testcase classname="libgag/src/SpriteSheetTest.cpp" name="sprites without an index still load one file per frame" time="0.005162" status="run"/>
+    <testcase classname="libgag/src/SpriteSheetTest.cpp" name="an index the sheets cannot satisfy falls back to the frames" time="0.024893" status="run"/>
+    <testcase classname="libgag/src/SurfaceCoverageTest.cpp" name="float and byte alpha grids agree and respect clip rectangles" time="0.002049" status="run"/>
+    <testcase classname="libgag/src/SurfaceCoverageTest.cpp" name="scaled partial blits preserve crop coordinates and untouched pixels" time="0.001872" status="run"/>
+    <testcase classname="libgag/src/SurfaceCoverageTest.cpp" name="legacy progress style paints exact empty half and full interiors" time="0.001864" status="run"/>
+    <testcase classname="libgag/src/SurfaceCoverageTest.cpp" name="skin linear filtering preserves coverage and clipped sampling" time="0.001966" status="run"/>
+    <testcase classname="libgag/src/SurfaceCoverageTest.cpp" name="skin filtering through SDL and CPU backends preserves premultiplied edges" time="0.002003" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="icons and tooltips" time="0.000169" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="geometry" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="text" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="column and flex" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="row cross align" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="paragraph wraps with width" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="text fields retain the touch target with compact control metrics" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="wrap columns" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="footer folds" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="scroll clamp and wheel" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="tap versus pan" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="native gestures retain fractions ownership and survive rebuilds" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="native gesture bounds settle and external jumps cancel the tail" time="0.000172" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="native nested capture does not transfer to parent and missing owners consume tails" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="native popup scrolling owns its tail after dismissal" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="fling continues after release" time="0.00105" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="overscroll springs back" time="0.000247" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="touch wheel and programmatic scroll stop a fling" time="0.000185" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="scrollbar press stops a fling" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="mouse drag does not fling" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="list and text overscroll" time="0.000402" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="press survives resize" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="focus and keyboard" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="choice popup" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="icon segments and choices" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="text field" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="list view" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="copy field" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="adaptive and field" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="invariants" time="0" status="run"/>
+    <testcase classname="libgag/src/ui/UILayoutHarness.cpp" name="text stays inside its control at every size" time="0.00161" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="hostile calls arithmetic and nesting fail without process termination" time="0.00445" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="native argument type mismatch raises a script error" time="0" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="released expression and recursion fixtures yield exact values" time="0.001494" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="native arithmetic closures selection and strings survive garbage collection" time="0.000238" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="yielding threads respect execution budgets and resume independently" time="0.000105" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="malformed syntax and missing members produce source-located errors" time="0.000253" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="root replacement and collection after compiler errors preserve live object methods" time="0.000908" status="run"/>
+    <testcase classname="libusl/test/USLCoverageTest.cpp" name="replacing included constants updates expression access and keeps live closures" time="0.000105" status="run"/>
+    <testcase classname="mobile/MobileCertificateHarness.cpp" name="certificate trust and identity checks" time="0.084318" status="run"/>
+    <testcase classname="mobile/MobileDocumentsHarness.cpp" name="selection requests; terminal callbacks; validation and export" time="0.066775" status="run"/>
+    <testcase classname="mobile/MobileTemporaryFilesHarness.cpp" name="cleanup removes only abandoned temporaries and exports" time="0.008178" status="run"/>
+    <testcase classname="natsort/NatSortTest.cpp" name="Strnatcmp" time="0" status="run"/>
+    <testcase classname="natsort/NatSortTest.cpp" name="Strnatcasecmp" time="0" status="run"/>
+    <testcase classname="natsort/NatSortTest.cpp" name="BothStrnatcmp" time="0" status="run"/>
+    <testcase classname="src/ai/cortex/CortexUpgradeTest.cpp" name="LongLevelFinishedVsSite" time="0" status="run"/>
+    <testcase classname="src/ai/cortex/CortexUpgradeTest.cpp" name="MaxFinishedLevel" time="0" status="run"/>
+    <testcase classname="src/ai/cortex/CortexUpgradeTest.cpp" name="BuildingsUpgradingExcludesFreshSite" time="0" status="run"/>
+    <testcase classname="src/ai/cortex/CortexUpgradeTest.cpp" name="MakeUpgradeAction" time="0" status="run"/>
+    <testcase classname="src/ai/cortex/CortexUpgradeTest.cpp" name="VersionBump" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaContinuationTest.cpp" name="compact arrays preserve nested state and signed limits [save-format]" time="0.000616" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaContinuationTest.cpp" name="binary bytes; SHA1; text fallback; nested records; signed limits; 64-bit order; strings; container boundaries and interleaved writes are identical [save-format]" time="0.503922" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaContinuationTest.cpp" name="compact fields retain legacy binary and text encodings [save-format]" time="0.000116" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaContinuationTest.cpp" name="Maxima terrain snapshots retain independent properties and migrate legacy water [save-format]" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaDefenseStandaloneTest.cpp" name="choke-point modes; distance fields and footprints" time="0.008256" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFarmingStandaloneTest.cpp" name="corridor protection and fertility caches" time="0.095187" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="capped queries preserve order and scratch reuse" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="supply is claimed nearest first" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="quality outranks building age" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="inns and swarms interleave" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="removing a consumer releases its claim" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="upgrade demand uses available supply" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="upper bound never understates reach" time="0.00076" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="untraversable ground blocks supply" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="supply beyond the radius is not counted" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="demand and yield match engine rates" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="residual quality follows unclaimed supply" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="prepared bounds match wrapped oracle" time="0.020241" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="equal total changes refresh the snapshot" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp" name="timing benchmark [benchmark][slow]" time="0.009101" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaForceModelStandaloneTest.cpp" name="quantile forecasts and observation cadence" time="0.000179" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="no training building means no reserve" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="reserve matches open seats" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="opening is left alone" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="swarms are the residual" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="trimming is fair and bounded" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaLabourStandaloneTest.cpp" name="military is pulled by capacity" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaPlacementStandaloneTest.cpp" name="templates; parcels; appraisal and continuation" time="0.743822" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaPlacementStandaloneTest.cpp" name="Explicit noncanonical neighborhood tables survive compact saves" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaReconStandaloneTest.cpp" name="observation decay; estimates and building memory" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="empty building gains workers" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="full building sheds workers to the minimum" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="stock inside the band holds" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="understaffed building does not wind up" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="slack allows growth when nearly staffed" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="minimum is always honoured" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="request is capped at the engine limit" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="fill is relative to capacity" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="warmup delays the first adjustment" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="cooldown limits the adjustment rate" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaStaffingControlStandaloneTest.cpp" name="defaults are paced for delivery latency" time="0" status="run"/>
+    <testcase classname="src/ai/maxima/MaximaTacticsStandaloneTest.cpp" name="raid footprints; desired army and wave readiness" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="EmptyQueueIsNoop" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="SingleSourceMatchesChebyshev" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="WrapAroundSmallGrid" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="ObstacleNotOverwritten" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="MultipleSourcesUseMinimum" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="IsolatedCellRemainsUnreachable" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/GradientBFSTest.cpp" name="QueueIsDrained" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp" name="RoundTripCurrentVersion" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp" name="UnregisteredOrderRoundTrips" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/RuntimeBuildingOrderSaveLoadTest.cpp" name="Pre96StreamLeavesSentinel" time="0" status="run"/>
+    <testcase classname="src/ai/shared_runtime/TriboolTest.cpp" name="follows boost::logic::tribool's three-valued logic" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="WarEventSetsWarTrackAndTimer" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="GoodEventSetsBuildingTrackAndTimer" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="TimerDecaysToDefaultTrack" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="SimultaneousEventsLastWriterWins" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="ResetClearsTimers" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="NoEventNoTrack" time="0" status="run"/>
+    <testcase classname="src/audio/GameMusicControllerTest.cpp" name="WarEventOverridesExpiringBuildingTimer" time="0" status="run"/>
+    <testcase classname="src/audio/PlayerVoiceDrainTest.cpp" name="DrainReportsExhaustionExactlyOnce" time="0" status="run"/>
+    <testcase classname="src/audio/PlayerVoiceDrainTest.cpp" name="SingleSampleQueueDrainsOnFirstRollover" time="0" status="run"/>
+    <testcase classname="src/audio/PlayerVoiceDrainTest.cpp" name="NoRolloverKeepsQueueIntact" time="0" status="run"/>
+    <testcase classname="src/audio/PlayerVoiceDrainTest.cpp" name="ContributionUsesPreAdvanceState" time="0" status="run"/>
+    <testcase classname="src/audio/PlayerVoiceDrainTest.cpp" name="one second of Speex PCM lasts one second at the mixer rate" time="0.000445" status="run"/>
+    <testcase classname="src/audio/SoundMixerTrackSelectionHarness.cpp" name="track selection while closed and queued mid-fade changes" time="0.080224" status="run"/>
+    <testcase classname="src/audio/SoundMixerTrackSelectionHarness.cpp" name="Opus trimmed timeline looping seeking and unavailable decoder" time="0.010864" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="EqualTargetsInterleave" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="UnequalTargetsFollowTheRatio" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="EverySlotIsFilledExactlyToTarget" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="SatisfiedResourcesAreDropped" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="DeliveriesAlreadyLandedCount" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="TiesKeepTheLowerResourceIndex" time="0" status="run"/>
+    <testcase classname="src/building/FetchApportionmentTest.cpp" name="NothingWantedRanksNothing" time="0" status="run"/>
+    <testcase classname="src/building/TurretScanTileTest.cpp" name="AllOctantsAtRing" time="0" status="run"/>
+    <testcase classname="src/building/TurretScanTileTest.cpp" name="RingZeroOffsetZero" time="0" status="run"/>
+    <testcase classname="src/building/TurretScanTileTest.cpp" name="RingCoversFullSquare" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="NoFailuresHidden" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="OnlyUnavailableHidden" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="RealObstructionShown" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="UnavailablePlusRealShown" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="LastReasonShown" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="MarkersFollowTheRows" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="MarkersHiddenWhenNotAsking" time="0" status="run"/>
+    <testcase classname="src/building/hud/BuildingFailureDisplayTest.cpp" name="MarkersHiddenWhenOverstaffed" time="0" status="run"/>
+    <testcase classname="src/campaign/CampaignBoundsHarness.cpp" name="removeMap ignores and getMap rejects out-of-range indices" time="0" status="run"/>
+    <testcase classname="src/campaign/CampaignDescriptionCacheHarness.cpp" name="descriptions are parsed once per cache instance" time="0.000243" status="run"/>
+    <testcase classname="src/campaign/CampaignLoadHarness.cpp" name="load distinguishes valid campaigns from missing or broken files" time="0.000296" status="run"/>
+    <testcase classname="src/campaign/CampaignSelectionHarness.cpp" name="selection resolves the displayed name rather than the list index" time="0" status="run"/>
+    <testcase classname="src/common/BitArrayTest.cpp" name="RoundTripOddBitLength" time="0" status="run"/>
+    <testcase classname="src/common/BitArrayTest.cpp" name="ByteLengthIsCeilOfBits" time="0" status="run"/>
+    <testcase classname="src/common/ComputeExecutorHarness.cpp" name="supported platforms execute jobs concurrently on distinct threads" time="0" status="run"/>
+    <testcase classname="src/common/ComputeExecutorHarness.cpp" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.014693" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripPrefixMatches" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripPrefixKeepsSubdirectory" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripPrefixNoMatch" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripPrefixShorterThanPrefix" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripPrefixEmptyInputs" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripSuffixMatches" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripSuffixNoMatch" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripSuffixShorterThanSuffix" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripSuffixWholeString" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="StripSuffixEmptyInputs" time="0" status="run"/>
+    <testcase classname="src/common/FilenameStripTest.cpp" name="WellFormedReplayNameRoundTrip" time="0" status="run"/>
+    <testcase classname="src/common/MersenneTwisterTest.cpp" name="matches boost::mt19937 outputs and text state" time="0.003399" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Distance FIFO preserves order through wrap growth and scratch reuse" time="0.000541" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Uniform fields preserve metrics obstacles and wrapping" time="0.001304" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Ordered payload traversal stops on the threshold crossing cell" time="0" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Bounded traversal preserves unwrapped domain coordinates" time="0" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Directional sweep digests preserve original byte arithmetic and scan order" time="0.000107" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Convergent influence agrees with an independent strongest first frontier" time="0.001186" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Map independent weighted kernel agrees with a heap oracle" time="0.002379" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="FIFO discovery can stop without admitting later neighbours" time="0" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="FIFO visitor stop retains vector history and ring pending entries" time="0" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Priority traversal preserves zero costs stale entries and heap tie order" time="0" status="run"/>
+    <testcase classname="src/field/FieldTraversalTest.cpp" name="Depth first traversal preserves stack discovery order" time="0" status="run"/>
+    <testcase classname="src/game/BulletSaveLoadTest.cpp" name="RoundTripCurrentVersion" time="0" status="run"/>
+    <testcase classname="src/game/BulletSaveLoadTest.cpp" name="Pre85StreamDefaultsToTicksLeft" time="0" status="run"/>
+    <testcase classname="src/game/ExperimentalFeaturesTest.cpp" name="registry keys are unique kebab-case and parse back to their id" time="0" status="run"/>
+    <testcase classname="src/game/ExperimentalFeaturesTest.cpp" name="text form round trips and ignores keys this build does not know" time="0" status="run"/>
+    <testcase classname="src/game/ExperimentalFeaturesTest.cpp" name="stream round trip; a pre-124 stream reads nothing; corrupt input is refused" time="0" status="run"/>
+    <testcase classname="src/game/ExperimentalFeaturesTest.cpp" name="text streams keep the set" time="0" status="run"/>
+    <testcase classname="src/game/ExperimentalFeaturesTest.cpp" name="GameHeader carries the set in its full and player-less forms and a version 123 header reads none" time="0" status="run"/>
+    <testcase classname="src/game/GameHeaderDefaultAlliancesTest.cpp" name="HumanOnColorZero" time="0" status="run"/>
+    <testcase classname="src/game/GameHeaderDefaultAlliancesTest.cpp" name="AiSharingHumanColor" time="0" status="run"/>
+    <testcase classname="src/game/GameHeaderDefaultAlliancesTest.cpp" name="NoHuman" time="0" status="run"/>
+    <testcase classname="src/game/GameHeaderDefaultAlliancesTest.cpp" name="StaleLayoutReset" time="0" status="run"/>
+    <testcase classname="src/game/GameHeaderTextSaveLoadTest.cpp" name="FullRoundTrip" time="0.000495" status="run"/>
+    <testcase classname="src/game/GameHeaderTextSaveLoadTest.cpp" name="PlayerInfoRoundTrip" time="0.000354" status="run"/>
+    <testcase classname="src/game/GameHeaderTextSaveLoadTest.cpp" name="BinaryHeaderFormsAndLegacy" time="0" status="run"/>
+    <testcase classname="src/game/GameHintsTest.cpp" name="ScriptNumberClampedToWireDomain" time="0" status="run"/>
+    <testcase classname="src/game/GameHintsTest.cpp" name="EncodeDecodeRoundTripMatchesMemory" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="RemoveObjectiveOutOfRangeIsNoOp" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="RemoveObjectiveInRangeRemovesAcrossAllFields" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="RemoveObjectiveOnEmptyListIsNoOp" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="SettersIgnoreOutOfRangeIndices" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="GettersReturnDefaultsForOutOfRangeIndices" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="ScriptNumberClampedToWireDomain" time="0" status="run"/>
+    <testcase classname="src/game/GameObjectivesTest.cpp" name="EncodeDecodeRoundTripMatchesMemory" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionDecodeTest.cpp" name="RoundTrip" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionDecodeTest.cpp" name="SuddenDeathRoundTrip" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionDecodeTest.cpp" name="UnknownTypeTag" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionDecodeTest.cpp" name="TruncatedStream" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionPrestigeToggleTest.cpp" name="prestige toggle edits only the prestige entry at its default rank" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionSuddenDeathToggleTest.cpp" name="sudden death toggle appends last and retunes in place" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="every predicate matches the golden record stream [golden]" time="0.004125" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: before the buzzer nobody is decided" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: a single winner wins and the rest lose" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: a tie at the top across alliances is a draw and teams below still lose" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: allied teams tied at the top share a win" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: an ally of the sole leader shares its win" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: an alliance tied with an outsider is a draw for everyone at the top" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: a one-way alliance does not turn a tie into a shared win" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: a prestige finish tied at the top across alliances is a draw" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: empty seats count for nobody" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: two players tied next to empty seats still draw" time="0" status="run"/>
+    <testcase classname="src/game/WinningConditionsHarness.cpp" name="draw outcome: a real AI tied at the top is a draw; replays count every team" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="well-formed brush accepted" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="undersized header rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="negative side rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="side over cap rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="overflow attack rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="payload too short rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="payload too long rejected" time="0" status="run"/>
+    <testcase classname="src/game/orders/OrderAlterateAreaTest.cpp" name="explicit-mask order round-trips" time="0" status="run"/>
+    <testcase classname="src/game/player/BasePlayerSaveLoadTest.cpp" name="RoundTripCurrentVersion" time="0" status="run"/>
+    <testcase classname="src/game/player/BasePlayerSaveLoadTest.cpp" name="Pre86StreamReadsUint16PlayerID" time="0" status="run"/>
+    <testcase classname="src/game/player/BasePlayerSaveLoadTest.cpp" name="TypeValidation" time="0" status="run"/>
+    <testcase classname="src/game/player/BasePlayerSaveLoadTest.cpp" name="NumberAndTeamNumberValidation" time="0" status="run"/>
+    <testcase classname="src/game/player/BasePlayerSaveLoadTest.cpp" name="ExhaustedStreamFails" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="classify names the shape, not the slot order" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="one against all records the lone colony" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="irregular teams are custom" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="people against AIs is HumansVsAI only when the sides split that way" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="offered layouts for each colony count" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="every offered layout builds alliances that read back as itself" time="0.002133" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="the smaller side is built around the focus colony" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="one against all is selected only around the focus colony" time="0" status="run"/>
+    <testcase classname="src/game/rules/TeamLayoutTest.cpp" name="the preferences keep their four format names" time="0" status="run"/>
+    <testcase classname="src/hive/HiveWorkerTest.cpp" name="Hive Mind exposes only copied player observations" time="0.001166" status="run"/>
+    <testcase classname="src/hive/HiveWorkerTest.cpp" name="Hive Mind commits globals only through successful results" time="0.003402" status="run"/>
+    <testcase classname="src/hive/HiveWorkerTest.cpp" name="Hive Mind bounds work output batches and wake storms" time="0.008688" status="run"/>
+    <testcase classname="src/hive/HiveWorkerTest.cpp" name="Hive Mind examples execute against the contract" time="0.003587" status="run"/>
+    <testcase classname="src/hive/HiveWorkerTest.cpp" name="Hive Mind replacement migration is preflighted and cannot emit effects" time="0.002543" status="run"/>
+    <testcase classname="src/hud/AllyTeamWidgetIndexTest.cpp" name="WellFormedValuesMapToValueMinusOne" time="0" status="run"/>
+    <testcase classname="src/hud/AllyTeamWidgetIndexTest.cpp" name="SingleTeam" time="0" status="run"/>
+    <testcase classname="src/hud/AllyTeamWidgetIndexTest.cpp" name="ZeroClampsToFirstRow" time="0" status="run"/>
+    <testcase classname="src/hud/AllyTeamWidgetIndexTest.cpp" name="AboveTeamCountClampsToFirstRow" time="0" status="run"/>
+    <testcase classname="src/hud/AllyTeamWidgetIndexTest.cpp" name="MaxUint8ClampsToFirstRow" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="reports of one situation share a row that keeps its place" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="different subjects, areas and teams are different situations" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="attack areas are measured across the map edge" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="at most kMaxRows rows; a new situation evicts the least recently updated" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="expiry, normal speed: game time decides" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="expiry, maximum speed: the wall-clock floor keeps the row readable" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="expiry, paused: wall-clock time alone never expires a row" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="expiry, an ongoing situation stays up" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="expiry, a fresh report revives a fading row" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="linger times per event kind" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="GoToEvent visits the most recent row, then steps through the rest" time="0" status="run"/>
+    <testcase classname="src/hud/GameEventFeedTest.cpp" name="clear forgets rows and records the team they belong to" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="chevrons light and step through 1x, 2x, 4x, 8x and maximum" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="the rate has one decimal below 25" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="a steady simulation reads its exact rate once a second has passed" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="the readout changes at most once per second and averages three" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="a stalled simulation decays to zero and recovers" time="0" status="run"/>
+    <testcase classname="src/hud/GameSpeedControlTest.cpp" name="the millisecond clock may wrap" time="0" status="run"/>
+    <testcase classname="src/hud/GhostBuildingOverlapTest.cpp" name="MatchesReferenceExhaustively" time="0.046917" status="run"/>
+    <testcase classname="src/hud/GhostBuildingOverlapTest.cpp" name="EmptyRangeOverlapsNothing" time="0" status="run"/>
+    <testcase classname="src/hud/GhostBuildingOverlapTest.cpp" name="WrapAroundSeam" time="0" status="run"/>
+    <testcase classname="src/hud/GhostBuildingOverlapTest.cpp" name="FullAxisRangeOverlapsEverything" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="AlphaSplitIsConstantOpacity" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="FrameBIsAlwaysNextFrame" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="StartsAtStartImg" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="FrameBSuppressedAtLastFrame" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="FrameProgressionIsMonotonic" time="0" status="run"/>
+    <testcase classname="src/hud/draw/ParticleCrossfadeTest.cpp" name="SmokeParticleRange" time="0" status="run"/>
+    <testcase classname="src/hud/draw/SpriteCenteringTest.cpp" name="SquareSpriteInSquareBox" time="0" status="run"/>
+    <testcase classname="src/hud/draw/SpriteCenteringTest.cpp" name="AxesAreIndependent" time="0" status="run"/>
+    <testcase classname="src/hud/draw/SpriteCenteringTest.cpp" name="OddDifferenceFloors" time="0" status="run"/>
+    <testcase classname="src/hud/draw/SpriteCenteringTest.cpp" name="ExactFit" time="0" status="run"/>
+    <testcase classname="src/hud/draw/SpriteCenteringTest.cpp" name="SpriteLargerThanBox" time="0" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="MatchesOldExpressionWhereDefined" time="0" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="IndexNeverNegative" time="0.000896" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="LeftMarginSelectsFirstButton" time="0" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="InRangeButtons" time="0" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="BeyondLastButtonIsDead" time="0" status="run"/>
+    <testcase classname="src/hud/input/PanelButtonHitTest.cpp" name="ReplayStripLayout" time="0" status="run"/>
+    <testcase classname="src/map/BrushAccumulatorTest.cpp" name="SingleApplication" time="0" status="run"/>
+    <testcase classname="src/map/BrushAccumulatorTest.cpp" name="NonWrappingStroke" time="0" status="run"/>
+    <testcase classname="src/map/BrushAccumulatorTest.cpp" name="OppositeSeamWrapsOneRow" time="0" status="run"/>
+    <testcase classname="src/map/BrushAccumulatorTest.cpp" name="WrapNegativeDelta" time="0" status="run"/>
+    <testcase classname="src/map/BrushAccumulatorTest.cpp" name="LargeBrushAcrossSeamBothAxes" time="0" status="run"/>
+    <testcase classname="src/map/BrushCoverageTest.cpp" name="a single-cell brush covers its centre" time="0" status="run"/>
+    <testcase classname="src/map/BrushCoverageTest.cpp" name="the plus brush covers a plus" time="0" status="run"/>
+    <testcase classname="src/map/BrushCoverageTest.cpp" name="a stroke covers the union of its centres" time="0" status="run"/>
+    <testcase classname="src/map/BrushCoverageTest.cpp" name="every figure matches its mask, including checkerboard parity" time="0" status="run"/>
+    <testcase classname="src/map/BrushCoverageTest.cpp" name="world pixels map to the cell under them" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="TriangularWeightsMatchGrowResourcesRng" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="ConvolutionMatchesDirectKernelWithoutSand" time="0.006996" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="SandCorrectionPathMatchesDirectKernel" time="0.011514" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="WaterSplatPathMatchesDirectKernel" time="0.011642" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="AdaptivePathMatchesExplicitPaths" time="0.002542" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="OpenWaterReachesFullScale" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="SandOppositeWaterRemovesCredit" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="NonPowerOfTwoDimensionsWrap" time="0.004662" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="ForMapZeroesNonGrass" time="0.000106" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="ForMapZeroesGrassNoDepositReaches" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="ForMapUngatedKeepsUnreachableGrass" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="UsefulExpansionCapacityFolds" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="WithinPercentBand" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="weighted ecology handles signed donors, inhibition and local growth" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="cached ecology changes after canonical terrain mutation" time="0.000148" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="growth throughput includes multiple opportunities before occupancy" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="weighted coupled land and shoreline kernels match independent probes" time="0.039405" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="one-point wheat fertility retains exact positive growth potential" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="fractional growth rejects incomplete RNG bucket and preserves whole bonuses" time="0" status="run"/>
+    <testcase classname="src/map/FertilityFieldTest.cpp" name="rational growth rates preserve exact mass across complete random buckets" time="0.000754" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_CleanGrassPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_ResourceFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_BuildingFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_UnitFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_WaterPassesWhenSwim" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_ForbiddenFailsWhenMaskMatches" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnitNoForbidden_IgnoresForbidden" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForGroundUnitNoForbidden_StillBlocksBuilding" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_GrassPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_ResourceFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_BuildingFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_UnitFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_WaterFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_SandFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_RectAllGrassPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_RectOneBadTileFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_RectGidTolerantSameGidPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="FreeForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForGroundUnit_IgnoresUnit" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForGroundUnit_ResourceStillFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForGroundUnit_BuildingStillFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForGroundUnit_ForbiddenStillFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_IgnoresUnit" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_ResourceFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_BuildingFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_NonGrassFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_RectAllGrassPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_RectGidTolerantSameGidPasses" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="HardSpaceForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="LocalTeam_DefaultsToSentinel" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="LocalTeam_SetAndGet" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="LocalTeam_SentinelValueIsMinusOne" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="road and ice placement use properties independent of sprite variants" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="point routes prefer roads and reject impassable destination terrain" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="air routes detour around blocked cells and reset reusable search state" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="air property profiles honor no-fly barriers and weighted travel without registration" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="air building distance field resumes one source frontier for many candidates" time="0" status="run"/>
+    <testcase classname="src/map/MapQueryTest.cpp" name="reverse air field ranks many sources with forward entry costs" time="0.001646" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="OffByOneIsTheOnlyChange" time="0.007145" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="OffByOneCellsNowHit" time="0" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="ZoneStripClicksMissThePanel" time="0.000399" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="ModeRow" time="0.001" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="FigureGrid" time="0.001715" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="Edges" time="0" status="run"/>
+    <testcase classname="src/map/editor/BrushToolHitTest.cpp" name="LayoutConstants" time="0" status="run"/>
+    <testcase classname="src/map/editor/EditorWidgetLayoutTest.cpp" name="ResizeKeepsClickCoordinatesAndEdges" time="0" status="run"/>
+    <testcase classname="src/map/editor/EditorWidgetLayoutTest.cpp" name="RepeatedResizeDoesNotDrift" time="0" status="run"/>
+    <testcase classname="src/map/editor/EditorWidgetLayoutTest.cpp" name="OrdinaryRectanglesStayAbsolute" time="0" status="run"/>
+    <testcase classname="src/map/generator/MapGeneratorGoldenCoverageTest.cpp" name="generator golden coverage cannot borrow a foreign revision" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="Constructor" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="NotZeroOne" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="Reseed" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="ReseedIntDifferent" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="ReseedIntSame" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="noise1d" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="noise2d" time="0" status="run"/>
+    <testcase classname="src/map/generator/shared/PerlinNoiseTest.cpp" name="noise3d" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GlobalGradientHarness.cpp" name="check boundaries and obstacles" time="0.000181" status="run"/>
+    <testcase classname="src/map/gradient/GlobalGradientHarness.cpp" name="check inert fields" time="0.00079" status="run"/>
+    <testcase classname="src/map/gradient/GlobalGradientHarness.cpp" name="check random fields" time="1.55088" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.798553" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="OpenGridIsOctileOnTorus" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="ObstaclesForcePathAround" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="WaterCostsBySwimClass" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="UnreachableCellsStayUnreachable" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="SeedBelowGoalPropagates" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="SeedsBeyondBucketWindow" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="MaxCostStopsPropagation" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="DirectionPrefersCheapestTotal" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="DirectionBlockedNeighbour" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="SwimClassFromSpeeds" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="RandomFieldsAgainstReference" time="0.016752" status="run"/>
+    <testcase classname="src/map/gradient/GradientTest.cpp" name="MatchesLegacyKernelOnLargeMaps" time="0.295893" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="analytic oracle" time="0" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="parallel searches" time="0.102196" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="lazy building fields" time="0.046686" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="boundary; random and exhaustive seeds against the heap oracle" time="0.291767" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="mixed terrain costs match heap oracle and immutable lazy searches [pathfinding]" time="0.025864" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="general terrain queue supports colliding costs and wrapped thin grids [pathfinding]" time="0.001275" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="legacy terrain import rejects unregistered sprite IDs [pathfinding]" time="0" status="run"/>
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="strategic terrain distances retain wide costs until publishing tile estimates [pathfinding]" time="0.003707" status="run"/>
+    <testcase classname="src/map/io/MapExploredAreaSaveLoadTest.cpp" name="RoundTripRestoresEveryTeam" time="0" status="run"/>
+    <testcase classname="src/map/io/MapExploredAreaSaveLoadTest.cpp" name="DiscardConsumesSectionWithoutAllocating" time="0" status="run"/>
+    <testcase classname="src/map/preview/MapRenderGeometryTest.cpp" name="whole-world buildings; seam overhang and repeated viewport copies" time="0.007159" status="run"/>
+    <testcase classname="src/map/preview/MapRenderGeometryTest.cpp" name="cloud detail follows camera zoom without changing normal detail" time="0" status="run"/>
+    <testcase classname="src/net/ConnectionQualityTest.cpp" name="the table matches the platform's" time="0.000111" status="run"/>
+    <testcase classname="src/net/ConnectionQualityTest.cpp" name="every shared case rates and formats the same" time="0" status="run"/>
+    <testcase classname="src/net/ConnectionQualityTest.cpp" name="the review's contradiction is gone: 171 ms delay is good, 760 ms behind is good, 1332 ms ping is poor" time="0" status="run"/>
+    <testcase classname="src/net/ConnectionQualityTest.cpp" name="the vendored copy matches the protocol package when it is present" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="SingleRecipient" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="MultipleRecipientsAreAllReturned" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="BitsBeyondPlayerCountAreDropped" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="EmptyMaskYieldsNothing" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="NonPositivePlayerCountYieldsNothing" time="0" status="run"/>
+    <testcase classname="src/net/message/MessageRecipientsTest.cpp" name="HighestBitIsReachable" time="0" status="run"/>
+    <testcase classname="src/net/message/NetSendOrderDecodeTest.cpp" name="rejects oversized size before allocating" time="0" status="run"/>
+    <testcase classname="src/net/message/NetSendOrderDecodeTest.cpp" name="accepts a valid NullOrder envelope" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="two clients on clean links execute identical turns [network-sim]" time="0.01288" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="four clients with latency, jitter, loss and AI seats [network-sim]" time="0.08791" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="a stalled client stalls only itself and resumes from its horizon [network-sim]" time="0.01699" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="a restarted client reloads, replays the full log and rejoins [network-sim]" time="0.023384" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="a diverged client in a three-player match is repaired by rejoin [network-sim]" time="0.027549" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="two diverged clients are flagged and keep playing [network-sim]" time="0.003647" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="the input delay rises with jitter and returns when it subsides [network-sim][artifacts]" time="0.035213" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="input delay stays within bounds on loopback and at 50 ms [network-sim]" time="0.029501" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="input delay and stalls per link profile [network-sim][benchmark][artifacts]" time="2.47154" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="players who quit or never return are sequenced out [network-sim]" time="0.003365" status="run"/>
+    <testcase classname="src/net/turn/TurnHarnessTest.cpp" name="network telemetry follows injected latency, jitter, loss, an outage and a rejoin [network-sim][artifacts]" time="0.057169" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="every message round-trips" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="every truncation and any trailing byte is rejected" time="0.002402" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="malformed fields and non-turn types are rejected" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="bundles split at tick boundaries under the frame limit" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the quit order matches PlayerQuitsGameOrder's encoding" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="bundles every tick by default, empty or not" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="bundles every two ticks from match start, empty or not" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the load barrier holds the clock until every human seat has connected" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the load barrier gives up after its timeout; the late seat gets grace from the start" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="without a barrier the clock starts when the sequencer is created" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="an order takes the earliest tick not yet broadcast, whatever the relay clock" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="orders execute the tick after arrival, one per seat per tick" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a full tick spills orders to the next one" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat" time="0.000296" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="admission: tickets, versions, first message and seat takeover" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="resume serves the log from the client's horizon, or from zero" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="grace expiry and explicit quits sequence PlayerQuitsGameOrder" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="an explicit Quit message leaves at once" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="one client's GameFinished decides nothing: the others keep their grace" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a game is decided when every seat still playing reports it finished" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the next wake: a bundle while connected, grace while empty, now for presence" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="arbitration stays incremental over a long match and the record keeps every report" time="0.138305" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="three clients: the majority wins and the minority rejoins" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="two clients that disagree are flagged, not dropped" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="no strict majority is flagged; a silent seat times out of arbitration" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="presence reports lag, reconnecting and grace remaining" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="versions 1 and 2 are both served; only version 2 receives seat round trips" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="jitter is the p95 delay above the fastest delivery" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the target rises at once and falls one tick per hold period" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="with bundles every few ticks the controller holds the sawtooth's mean" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the delay controller nudges by at most five percent and catches up" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="executes bundled human orders and local AI orders tick by tick" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="local orders are submitted, and resubmitted after a reconnect" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a gap asks for a resync, and a rejoin notice asks for a reload" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="seat round trips from the relay reach the connection panel" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a silent link shows as lost within the stall threshold and reconnects after five seconds" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a horizon that stops moving shows as lost even while pongs arrive" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="after a stall the delay estimate starts over instead of keeping the gap" time="0.000141" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="an older relay that refuses version 2 is offered version 1 once" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="orders that must all execute are paced but never merged" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="voice waits for gameplay orders and keeps its own gap" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="the local queue is bounded and says so" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="quitting sends the orders still waiting, then Quit" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a flooding reject reconnects instead of ending the match" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="a reject ends the session" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="round-trips through bytes and files" time="0.000165" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="rejects corruption, truncation, newer versions and disorder" time="0.000312" status="run"/>
+    <testcase classname="src/net/turn/TurnProtocolTest.cpp" name="CRC-32 matches the IEEE check value" time="0" status="run"/>
+    <testcase classname="src/net/turn/TurnTelemetryTest.cpp" name="histogram quantiles are within a bin of the data [network]" time="0.000101" status="run"/>
+    <testcase classname="src/net/turn/TurnTelemetryTest.cpp" name="session telemetry measures stalls, catch-up, reconnects and input delay [network]" time="0.000109" status="run"/>
+    <testcase classname="src/net/turn/TurnTelemetryTest.cpp" name="the client network summary is one stable versioned object [network]" time="0.000171" status="run"/>
+    <testcase classname="src/net/turn/TurnTelemetryTest.cpp" name="relay telemetry counts per-seat orders, deferrals, bundles, lateness and arbitration [network]" time="0.000207" status="run"/>
+    <testcase classname="src/net/turn/TurnTelemetryTest.cpp" name="a seat that never returns uses its whole grace period [network]" time="0.000151" status="run"/>
+    <testcase classname="src/online/HttpFetchUrlTest.cpp" name="URLs split into host, port and target" time="0" status="run"/>
+    <testcase classname="src/online/HttpFetchUrlTest.cpp" name="unsafe or malformed URLs are rejected" time="0" status="run"/>
+    <testcase classname="src/online/HttpFetchUrlTest.cpp" name="response headers are matched case-insensitively" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="origins normalize to scheme, host and non-default port" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="defaults to the official instance with nothing remembered" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="selection, credentials and trust persist per instance" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="malformed files keep the configuration; unknown fields and bad origins are skipped" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="a stored former official origin moves to the official one; credentials stay" time="0" status="run"/>
+    <testcase classname="src/online/InstanceConfigTest.cpp" name="a failed write is reported and not persisted" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="catalog launches preserve mode origin and exact version across URL forms" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="catalog CLI arguments open the selected destination" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="the latest invite or map launch replaces the older destination" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="glob2:// links name the instance and code" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="https links are &lt;instance>/j/&lt;code>" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="former official origins mean the official instance" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="bare codes use the given instance; links format back" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="the newest link becomes the pending join until taken" time="0" status="run"/>
+    <testcase classname="src/online/InviteLinkTest.cpp" name="launch arguments: bare links, --join and --instance" time="0" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="maps are stored by the hash of their decompressed bytes" time="0.000456" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="least recently used maps are evicted beyond the cap" time="0.000621" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="the index survives restarts; orphans and vanished files are cleaned up" time="0.000209" status="run"/>
+    <testcase classname="src/online/MapCacheTest.cpp" name="downloads fetch the blob, verify it and serve it from the cache" time="0.000471" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="list queries encode the filters the browser offers" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="sharing creates the map, uploads the raw bytes and waits for validation and the preview" time="0.000156" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="a map the server cannot load is rejected with its reason; a new version skips creation" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="upload errors end the flow with the server's message" time="0" status="run"/>
+    <testcase classname="src/online/MapCatalogTest.cpp" name="hand-offs wait for their handler" time="0" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="every valid queue, match and catalog fixture parses" time="0.006375" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="queue status and proposals carry what the search panel and prompt show" time="0.003857" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="match details and catalog maps" time="0.001954" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="player profiles give ratings with rank, the trend and the aggregates" time="0.001263" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="the profile summary follows the ladders and recent results" time="0" status="run"/>
+    <testcase classname="src/online/OnlineResourcesTest.cpp" name="AI catalogue rejects malformed metadata and requires exact compatible evidence" time="0.000756" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="first start creates a guest, keeps its credential and says hello with the token" time="0.000117" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="an unsupported sim version says which side is out of date" time="0.000517" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a returning player signs in with the device credential or refresh token" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="without consent to sign in, the socket connects anonymously" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="responses reach their own requests; timeouts and events are delivered" time="0.000183" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="requests made before the socket is online wait for it" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="lost connections retry with growing, jittered backoff" time="0.000135" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a connection that never opens times out and retries" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.000155" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refused refresh token falls back to the device credential" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refresh that fails on the network is retried while the token lasts" time="0.0001" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a refused token at hello continues anonymously and signs in again" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="update_required stops retrying" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="an idle socket is checked with session.ping and replaced when silent" time="0.000104" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.000217" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="browser sign-in failures, cancellation and expiry" time="0.000545" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="session.revoked signs out and stops automatic sign-in" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.000181" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="stop cancels everything and credentials stay per instance" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="rename patches the account" time="0.000103" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.000127" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="the instance description is fetched once per start and shared" time="0" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.000134" status="run"/>
+    <testcase classname="src/online/PlatformClientTest.cpp" name="a handler that destroys another owner in the same update does not reach it" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="requests encode as the realtime envelope" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="responses and events decode; malformed frames are rejected" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="RFC 3339 timestamps convert to epoch milliseconds" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="token lifetime comes from the JWT claims" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="refreshes are scheduled well before expiry" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="backoff grows exponentially to a cap, with bounded jitter" time="0" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="SHA-256 matches the FIPS 180-4 vectors" time="0.003788" status="run"/>
+    <testcase classname="src/online/PlatformProtocolTest.cpp" name="the local sim version carries this build's versions" time="0" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="relay regions are probed before queue.join and their round trips sent" time="0.000155" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="an unreachable region list still joins, without round trips" time="0.000102" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="searching follows queue.status and toggles AI backfill with queue.update" time="0.000159" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="a ranked prompt is answered, shows who accepted and hands off at once" time="0.000379" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="an AI-backfilled match starts after the countdown without a prompt" time="0.000402" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="cancelling during the countdown stops the hand-off" time="0.00029" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="an opponent who does not accept puts the player back in the search" time="0.000175" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="declining or not answering ends the search with the cooldown" time="0.000184" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="one search in several queues follows every ticket and names the queue that matched" time="0.000197" status="run"/>
+    <testcase classname="src/online/QuickMatchTest.cpp" name="cancelling before the queue answers leaves the ticket it gets" time="0.000116" status="run"/>
+    <testcase classname="src/online/ReplayAppearanceTest.cpp" name="only matching recordings and trusted origins restore appearance context" time="0" status="run"/>
+    <testcase classname="src/online/ReplayAppearanceTest.cpp" name="companions survive copies but stale and oversized files are ignored" time="0.000403" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="server-format signatures authorize only their bound appearance" time="0.002455" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="the chosen swarm mesh is part of the signed manifest" time="0.001214" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="the final camera angle is signed and legacy angles default to zero" time="0.001019" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="signed optional sprite descriptors bind derivatives and ignore future formats" time="0.001085" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="signed immutable source identity survives live WebP renditions" time="0.001078" status="run"/>
+    <testcase classname="src/online/SkinAuthorizationTest.cpp" name="untrusted key sets and bounded malformed inputs fail closed" time="0.000798" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="verified texture downloads are cached and reused after fresh authorization" time="0.0011" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="corrupt cache and network bytes cannot reach the renderer" time="0.000876" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="a skin installs only when both its colour atlas and material map are valid" time="0.004378" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="invalid authorization does not download a texture" time="0.000937" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="failed key fetch falls back without waiting for a texture" time="0.000791" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="download concurrency is bounded and ambiguous teams fail closed" time="0.00198" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="cache eviction bounds retained assets while preserving current appearances" time="0.001003" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="moderation removes cached appearances and restoration verifies them again" time="0.001117" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="failed or malformed refresh keeps valid paint but expiry removes it" time="0.000891" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="texture completing after authorization expiry is never installed" time="0.000961" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="initial downloads finish before a newer moderation snapshot starts" time="0.000876" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="initial key outages recover through the match refresh" time="0.000906" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="refreshed additions still require signatures and reject duplicate teams atomically" time="0.001119" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="replay context fetches a fresh snapshot immediately without old tickets" time="0.000899" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="software authorization does not request mesh paint inputs" time="0.000908" status="run"/>
+    <testcase classname="src/online/SkinDownloadsTest.cpp" name="software appearance refresh delivers a late ready descriptor and observes expiry" time="0.001065" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="bundle binds complete frame layout and source identity before decoding" time="0.057861" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="bundles bind immutable source hashes when live claims name renditions" time="0.047611" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="software requests demand pages and removes appearance without an OpenGL context" time="0.070002" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="decoded pages evict at 64 MiB and reload verified disk content" time="0.288355" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="corrupt disk pages are rejected and replacement downloads are bounded" time="0.049912" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="offscreen completions release slots before new visible pages are requested" time="0.096332" status="run"/>
+    <testcase classname="src/online/SkinSpritesTest.cpp" name="verified pages remain drawable when persistent storage rejects writes" time="0.058185" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="The first update settles every tile without fading" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="Darkening and revealing fade monotonically over their durations" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="Changing back mid-fade continues from the level reached" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="A short gap between ticks keeps fading from the new tick" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="A repeated tick changes nothing" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="A new map, other teams, a jump in time or a reset settle every tile" time="0" status="run"/>
+    <testcase classname="src/render/FogFadeTest.cpp" name="Shade alphas stack to the plain fog shade" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Disabled reproduces uniform scaling at every zoom" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Normal zoom draws the detailed map with every bar" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Curves are monotonic and replacements cross-fade" time="0.000234" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Overlays hold their size zoomed out and grow slowly zoomed in" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Thresholds are measured in points, not logical units" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Far zoom is the strategic view" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Fully zoomed out is the strategic view on a map of any size" time="0.000198" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="The two looks cross-fade inside one narrow window" time="0.000618" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="Every bar fades together, leaving a pip on what needs attention" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="A map that zooms out far enough is unaffected by its minimum zoom" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="A map legible when fully zoomed out stays detailed" time="0" status="run"/>
+    <testcase classname="src/render/ZoomDetailTest.cpp" name="A small map keeps its normal look at its closer zooms" time="0" status="run"/>
+    <testcase classname="src/render/clouds/CloudFieldTest.cpp" name="world coordinates; wrapped seams; magnification and draw-independent animation" time="0.003441" status="run"/>
+    <testcase classname="src/render/overlay/OverlayFillTest.cpp" name="SpreadWeightsByValue" time="0" status="run"/>
+    <testcase classname="src/render/overlay/OverlayFillTest.cpp" name="SpreadValueOneMatchesUnitBumpShape" time="0" status="run"/>
+    <testcase classname="src/render/overlay/OverlayFillTest.cpp" name="SpreadNoUint16Overflow" time="0" status="run"/>
+    <testcase classname="src/render/scene/SceneBufferTest.cpp" name="the consumer sees the newest published value and nothing before the first publish" time="0" status="run"/>
+    <testcase classname="src/render/scene/SceneBufferTest.cpp" name="concurrent producer and consumer never observe torn or out-of-order values" time="0.073545" status="run"/>
+    <testcase classname="src/render/torus/TorusGeometryTest.cpp" name="planar endpoints; seams; ring geometry; navigation and hovering camera" time="0.101066" status="run"/>
+    <testcase classname="src/render/torus/TorusPickingTest.cpp" name="perspective picking; nearest surface; empty sky; seams and unfolding round trips" time="0.216398" status="run"/>
+    <testcase classname="src/render/torus/TorusTextureTilesTest.cpp" name="native layout covers each cell once with wrapped padding and respects limits" time="0.405572" status="run"/>
+    <testcase classname="src/render/torus/TorusTextureTilesTest.cpp" name="partition preserves coverage and perspective picking across texture and wrap seams" time="0.002837" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="truncated replay bodies never become zero-filled orders" time="0.000756" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="step totals cannot wrap" time="0" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="checksum mismatch closes playback safely" time="0" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="legacy create decoder respects both historical payload lengths" time="0" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="WideRoundTrip" time="0.000348" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="VersionBounds" time="0" status="run"/>
+    <testcase classname="src/replay/ReplayStepCounterTest.cpp" name="DecodeVersionPlumbing" time="0" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript shared numeric corpus" time="0.059044" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript shared saved global number corpus" time="0.004393" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript caught host resource failures remain fatal" time="0.001297" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript initialization rejects unsupported rounding mode" time="0" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript persistent value encoding and Unicode" time="0.001233" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript legacy draft callback argument" time="0.001246" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript pinned Math bits and numeric edges" time="0.001368" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript restricted capabilities and invalid values" time="0.01606" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript generated native work is bounded" time="0.102102" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript native tree bounds and parser depth" time="0.021587" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript fatal native allocation is sticky" time="0.000189" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript unavailable capabilities" time="0.000683" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript hypot ARM64 and x86-64 regression" time="0.000625" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript globals persist and restore without an explicit state object" time="0.001376" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript main restores aliases cycles undefined and numeric globals" time="0.002754" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript rejected callbacks roll back global mutations" time="0.001923" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript global object descriptors survive save and restore" time="0.002052" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript saved NaNs have canonical bits across architectures" time="0.002721" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript unsaveable global values fail explicitly" time="0.005604" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript persistent contexts can migrate between serial workers" time="0.001635" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript malformed automatic global snapshots are rejected" time="0.002439" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript profile two metadata and bundled export aliases" time="0.006158" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript managed properties coalesce and reject persistent handles" time="0.001352" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript metadata cannot mutate game globals" time="0.001847" status="run"/>
+    <testcase classname="src/team/BaseTeamSaveLoadTest.cpp" name="RoundTripPinsAlphaOpaque" time="0" status="run"/>
+    <testcase classname="src/team/BaseTeamSaveLoadTest.cpp" name="SaveLoadSaveIsByteStable" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="A counter's rate per minute follows its slope and shortens its window at the start" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Nested thresholds become disjoint bands that add up to the whole" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Percentages stay within 0-100 when the part outruns its whole" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Bands of unequal length and negative values normalise without reading past the end" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Axes use round steps and include zero" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Texts switch form at their boundaries" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Averaged levels, ratios with nothing to measure, and whole-number axes" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Metrics open in the view that reads best for them" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="A chart knows when it has nothing to show, and leaves gaps out of its range" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Worker time reads as workers on average, and as shares of their time" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Distances are means of what was summed and counted, with gaps where nothing was" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="The defence snapshot charts warriors by place, their state and the balance at home" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Hungry workers with no inn free are waiting, not eating" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Samples from before a save gained worker time are left out" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Every metric has a unique id, a group and a source for its value" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="The averaging windows offered are whole minutes and include the default" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="A view keeps only the choices its metric offers, and those that go together" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Counters chart as smoothed rates and as totals" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Net metrics run below zero" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Hunger is drawn as bands of the population that add up to 100%" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Samples from before a save gained coverage are left out" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Shares compare teams sample by sample" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Tower accuracy is hits per shot over the window" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Text panels read the latest value: a rate once there are two samples" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Counters relative to the population are per 100 units and may exceed 100" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Shares are taken by tick when teams do not have the same samples" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="A map-wide metric is one series however many teams recorded it" time="0" status="run"/>
+    <testcase classname="src/team/stats/MetricSeriesTest.cpp" name="Markers name the first combat death, the first building destroyed and each wipe-out" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiKnownNameResolves" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiDoNothingNameResolves" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiUnknownNameIsNullopt" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiUnknownNameStaysUnknown" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiRoundTripAllActions" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="GuiGetNameOutOfRangeIsEmpty" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="MapEditKnownNameResolves" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="MapEditUnknownNameIsNullopt" time="0" status="run"/>
+    <testcase classname="src/ui/KeyActionLookupTest.cpp" name="MapEditUnknownNameStaysUnknown" time="0" status="run"/>
+    <testcase classname="src/unit/UnitTimingTest.cpp" name="TravelTiming" time="0" status="run"/>
+    <testcase classname="src/unit/UnitTimingTest.cpp" name="NonTravelActions" time="0" status="run"/>
+    <testcase classname="src/unit/UnitTimingTest.cpp" name="IntegerQuantization" time="0" status="run"/>
+    <testcase classname="src/unit/UnitTimingTest.cpp" name="terrain travel speed uses deterministic bounded Q8 factors" time="0" status="run"/>
+    <testcase classname="src/unit/render/UnitAnimationTest.cpp" name="DirectionsAndProgress" time="0.002584" status="run"/>
+    <testcase classname="src/unit/render/UnitAnimationTest.cpp" name="TurningKeepsItsCadence" time="0.000192" status="run"/>
+    <testcase classname="src/unit/render/UnitDrawGeometryTest.cpp" name="SlotOnUnitPosition" time="0" status="run"/>
+    <testcase classname="src/unit/render/UnitDrawGeometryTest.cpp" name="SlotLagsWhileEnteringBuilding" time="0.0002" status="run"/>
+    <testcase classname="src/unit/render/UnitDrawGeometryTest.cpp" name="SeamOccurrencesStayDistinct" time="0" status="run"/>
+    <testcase classname="src/unit/render/UnitDrawGeometryTest.cpp" name="SeamOccurrencesWhileEnteringBuilding" time="0" status="run"/>
+    <testcase classname="test/HelloWorldTest.cpp" name="HelloWorld" time="0" status="run"/>
+    <testcase classname="test/VendoredJsonTest.cpp" name="nlohmann/json round-trips the shapes platform messages use" time="0" status="run"/>
+  </testsuite>
+</testsuites>
