@@ -1,0 +1,69 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/65ba/glob2/platform
+
+ ❯ apps/api/test/studio.test.ts (4 tests | 1 failed) 9915ms
+   × streams durable progress, resumes by event id and closes after authorization is revoked 132ms
+ ❯ apps/api/test/deletion.test.ts (5 tests | 1 failed) 17552ms
+   ❯ deleting my account (5)
+     × cannot recreate a project while account deletion races an authenticated request 581ms
+ ❯ apps/api/test/abuse.test.ts (7 tests | 1 failed) 20916ms
+   ❯ local passwords (3)
+     × lock a username after repeated failures on any replica, even for the right password 2698ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/api/test/abuse.test.ts > local passwords > lock a username after repeated failures on any replica, even for the right password
+error: remaining connection slots are reserved for roles with the SUPERUSER attribute
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ PostgresDriver.acquireConnection node_modules/kysely/dist/dialect/postgres/postgres-driver.js:21:24
+ ❯ RuntimeDriver.acquireConnection node_modules/kysely/dist/driver/runtime-driver.js:54:28
+ ❯ DefaultConnectionProvider.provideConnection node_modules/kysely/dist/driver/default-connection-provider.js:8:28
+ ❯ DefaultQueryExecutor.executeQuery node_modules/kysely/dist/query-executor/query-executor-base.js:38:28
+ ❯ apps/api/test/abuse.test.ts:103:5
+    101|     expect(locked.body.code).toBe('rate_limited');
+    102|     // Once the window has passed, the right password works and clears…
+    103|     await sql`UPDATE rate_limits SET window_start = window_start - int…
+       |     ^
+    104|               WHERE bucket = 'password-fail-account'`.execute(harness.…
+    105|     expect((await signIn(a, 'victim_1', 'correct horse battery')).stat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  apps/api/test/deletion.test.ts > deleting my account > cannot recreate a project while account deletion races an authenticated request
+AssertionError: expected 500 to be 204 // Object.is equality
+
+- Expected
++ Received
+
+- 204
++ 500
+
+ ❯ apps/api/test/deletion.test.ts:278:37
+    276|     const deletion = deleteMe(player, player.displayName);
+    277|     const outcomes = await Promise.allSettled(creates);
+    278|     expect((await deletion).status).toBe(204);
+       |                                     ^
+    279|     for (const outcome of outcomes)
+    280|       if (outcome.status === 'rejected')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  apps/api/test/studio.test.ts > streams durable progress, resumes by event id and closes after authorization is revoked
+error: remaining connection slots are reserved for roles with the SUPERUSER attribute
+ ❯ parseErrorMessage node_modules/pg-protocol/src/parser.ts:395:9
+ ❯ Parser.handlePacket node_modules/pg-protocol/src/parser.ts:212:19
+ ❯ Parser.parse node_modules/pg-protocol/src/parser.ts:105:30
+ ❯ Socket.<anonymous> node_modules/pg-protocol/src/index.ts:7:48
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 73 passed | 2 skipped (78)
+      Tests  3 failed | 569 passed | 6 skipped (578)
+   Start at  20:25:25
+   Duration  32.45s (tests 69%, import 18%, transform 11%, environment 2%)
+

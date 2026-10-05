@@ -1,0 +1,451 @@
+{
+  "title": "Colony Skin Studio review and merge evidence",
+  "recordedAt": "2026-10-05T00:29:35.391204+00:00",
+  "revision": {
+    "head": "561dd28271d367915b8fbe99721b45573b7558ef",
+    "base": "d5bad36f784d115ffbe5461240953e26def53c06",
+    "workingTree": "clean"
+  },
+  "environment": {
+    "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "architecture": "x86_64",
+    "cpu": "AMD Ryzen Threadripper 2950X, 16 cores / 32 threads",
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "node": "v24.19.0",
+    "nativeDependencies": "SDL3 SDK at /tmp/glob2-sdl3/prefix; release=1 tests",
+    "browser": "Playwright Chromium 153, ANGLE SwiftShader; desktop and Pixel 7 emulation, plus 320/768/1024/1440 responsive widths",
+    "emscripten": "4.0.15, pinned cached SDK, WebAssembly exceptions; serial and pthread builds"
+  },
+  "checks": [
+    {
+      "cwd": "repository",
+      "command": "GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix scons -j6 release=1 tests",
+      "result": "PASS",
+      "log": "logs/merge-native-build.log"
+    },
+    {
+      "cwd": "repository",
+      "command": "python3 test/run_tests.py --binary unit --filter '*Skin*/*' --verbose --junit artifacts/skin-studio/merge-native-skins.xml",
+      "result": "26 cases passed",
+      "log": "logs/merge-native-skins.log"
+    },
+    {
+      "cwd": "repository",
+      "command": "python3 test/build_system/test_skin_assets.py",
+      "result": "2 passed",
+      "log": "logs/merge-assets.log"
+    },
+    {
+      "cwd": "repository",
+      "command": "python3 test/build_system/test_skin_shader_parity.py",
+      "result": "1 passed",
+      "log": "logs/merge-shaders.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "npm run lint",
+      "result": "PASS",
+      "log": "logs/merged-lint.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "npm run typecheck",
+      "result": "PASS",
+      "log": "logs/merged-types.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "npm run --workspace @glob2/web build",
+      "result": "PASS; existing bundle-size/dynamic-import warnings",
+      "log": "logs/integration-web-build.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "npx vitest run --maxWorkers=2",
+      "result": "572 passed, 6 skipped; no failures",
+      "log": "logs/merged-platform-bounded.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "npx vitest run apps/web/test/forms.test.tsx apps/api/test/realtime.test.ts",
+      "result": "30 passed on earlier c14c56782 timeout retry",
+      "log": "logs/verified-platform-retry.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "PORT=4284 PATH=/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npx playwright test -c apps/web/e2e/playwright.config.ts skins.spec.ts skins-studio-ux.spec.ts --output=../artifacts/skin-studio/merged-browser-interactions",
+      "result": "24 passed",
+      "log": "logs/merged-browser-interactions.log"
+    },
+    {
+      "cwd": "platform",
+      "command": "PORT=4283 PATH=/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH npx playwright test -c apps/web/e2e/playwright.config.ts skins.spec.ts --grep 'idle viewport' --output=../artifacts/skin-studio/verified-performance",
+      "result": "2 passed at c14c56782; desktop 27.2ms and phone 23ms p95 after our builds and game tests finished",
+      "log": "logs/verified-performance.log"
+    },
+    {
+      "cwd": "repository",
+      "command": "scons target=web release=1 -j6",
+      "result": "PASS, serial and pthread production runtimes",
+      "log": "final-browser-build.log.gz"
+    },
+    {
+      "cwd": "browser",
+      "command": "GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/colony-skins.spec.js --project=chromium --output=../artifacts/skin-studio/game-browser-serial",
+      "result": "1 passed",
+      "log": "logs/game-browser-serial.log"
+    },
+    {
+      "cwd": "browser",
+      "command": "GLOB2_SKIN_TEST_THREADS=threaded GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/colony-skins.spec.js --project=chromium --output=../artifacts/skin-studio/game-browser-threaded",
+      "result": "1 passed",
+      "log": "logs/game-browser-threaded.log"
+    },
+    {
+      "cwd": "browser",
+      "command": "GLOB2_SKIN_REPLAY_API=1 GLOB2_TEST_URL=http://127.0.0.1:4283 GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/replay-skins.spec.js --project=chromium --output=../artifacts/skin-studio/game-browser-replay",
+      "result": "1 passed; signed match appearance fetched through API and rendered",
+      "log": "logs/game-browser-replay.log"
+    },
+    {
+      "cwd": "repository",
+      "command": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++ -std=c++20 -O2 -fwasm-exceptions -sALLOW_MEMORY_GROWTH -Isrc/online -Ithird_party/nlohmann-json/include tools/skins/web_authorization_test.cpp src/online/SkinAuthorization.cpp src/online/Sha256.cpp --preload-file test/fixtures/skins/authorization.json@/fixture.json -o artifacts/skin-studio/wasm-authorization/index.html; node artifacts/skin-studio/wasm-authorization/check.cjs",
+      "result": "35 cases each in Chromium, Firefox and WebKit; zero failures",
+      "log": "logs/wasm-auth-test.log"
+    }
+  ],
+  "reuse": "Native build/26 cases and asset/shader checks ran at ab354e3812fdb0443cd0af3a8ecbe12f67a5a1ab. Native source and native build inputs are unchanged at the final revision; later upstream build changes affect WebAssembly post-JS only. Browser production builds/game tests/WebCrypto/isolated performance ran at c14c56782; their native/browser sources and build inputs are unchanged by final Map Studio integration. Final web build, platform suite and editor interactions ran on 561dd2827.",
+  "coverageRationale": "Appearance-only change. Tests cover exact projection/occlusion/shared surfaces, interpolation/history, async recovery and revision conflicts, patterns, responsive tools, pointer ownership/context loss, full-ring geometry/material/cache behavior, nonzero angle API/signature/hash compatibility, migration continuity, actual serial/pthread game rendering. No simulation/state/version edits.",
+  "performance": [
+    {
+      "project": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+      "medianMs": 7.699999809265137,
+      "p95Ms": 25.90000009536743,
+      "samples": [
+        5.699999809265137,
+        6.300000190734863,
+        6.400000095367432,
+        6.400000095367432,
+        6.599999904632568,
+        6.700000286102295,
+        6.799999713897705,
+        7,
+        7.099999904632568,
+        7.099999904632568,
+        7.699999809265137,
+        7.800000190734863,
+        9.199999809265137,
+        11.400000095367432,
+        11.599999904632568,
+        11.700000286102295,
+        12.400000095367432,
+        12.699999809265137,
+        14.900000095367432,
+        25.90000009536743
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 1280,
+            "height": 860
+          },
+          "frames": 61,
+          "elapsedMs": 3662,
+          "inputDrivenFramesPerSecond": 16.65756417258329
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 60,
+          "elapsedMs": 2180,
+          "inputDrivenFramesPerSecond": 27.522935779816514
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    },
+    {
+      "project": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+      "medianMs": 25.399999618530273,
+      "p95Ms": 100.09999990463257,
+      "samples": [
+        15.099999904632568,
+        15.800000190734863,
+        16.199999809265137,
+        17.299999713897705,
+        18.300000190734863,
+        21.799999713897705,
+        22,
+        22.299999713897705,
+        22.699999809265137,
+        23,
+        25.399999618530273,
+        27.399999618530273,
+        29,
+        34.59999990463257,
+        40.10000038146973,
+        40.799999713897705,
+        49.799999713897705,
+        61.299999713897705,
+        61.69999980926514,
+        100.09999990463257
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 1280,
+            "height": 860
+          },
+          "frames": 60,
+          "elapsedMs": 15678,
+          "inputDrivenFramesPerSecond": 3.827018752391887
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 59,
+          "elapsedMs": 14022,
+          "inputDrivenFramesPerSecond": 4.207673655683926
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    },
+    {
+      "project": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+      "medianMs": 6.400000095367432,
+      "p95Ms": 27.199999809265137,
+      "samples": [
+        5.900000095367432,
+        5.900000095367432,
+        6,
+        6,
+        6.099999904632568,
+        6.099999904632568,
+        6.099999904632568,
+        6.200000286102295,
+        6.299999713897705,
+        6.400000095367432,
+        6.400000095367432,
+        10.400000095367432,
+        11.800000190734863,
+        12.300000190734863,
+        12.699999809265137,
+        13.599999904632568,
+        13.699999809265137,
+        13.900000095367432,
+        15.300000190734863,
+        27.199999809265137
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 1280,
+            "height": 860
+          },
+          "frames": 61,
+          "elapsedMs": 3977,
+          "inputDrivenFramesPerSecond": 15.338194619059593
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 59,
+          "elapsedMs": 2624,
+          "inputDrivenFramesPerSecond": 22.484756097560975
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    },
+    {
+      "project": "phone",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Mobile Safari/537.36",
+      "medianMs": 6.700000286102295,
+      "p95Ms": 22.09999990463257,
+      "samples": [
+        5.899999618530273,
+        6,
+        6,
+        6,
+        6.199999809265137,
+        6.300000190734863,
+        6.300000190734863,
+        6.400000095367432,
+        6.599999904632568,
+        6.700000286102295,
+        6.800000190734863,
+        7,
+        7.099999904632568,
+        7.5,
+        7.599999904632568,
+        7.699999809265137,
+        8.099999904632568,
+        8.600000381469727,
+        22.09999990463257
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "frames": 60,
+          "elapsedMs": 2136,
+          "inputDrivenFramesPerSecond": 28.089887640449437
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 60,
+          "elapsedMs": 6311,
+          "inputDrivenFramesPerSecond": 9.50720963397243
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    },
+    {
+      "project": "phone",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Mobile Safari/537.36",
+      "medianMs": 8.699999809265137,
+      "p95Ms": 25,
+      "samples": [
+        5.599999904632568,
+        6.099999904632568,
+        6.100000381469727,
+        6.700000286102295,
+        6.800000190734863,
+        7,
+        7.5,
+        7.599999904632568,
+        7.699999809265137,
+        7.800000190734863,
+        8.699999809265137,
+        8.900000095367432,
+        8.900000095367432,
+        8.900000095367432,
+        9.099999904632568,
+        11.299999713897705,
+        12,
+        12.5,
+        16.799999713897705,
+        25
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "frames": 59,
+          "elapsedMs": 2285,
+          "inputDrivenFramesPerSecond": 25.820568927789935
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 60,
+          "elapsedMs": 6879,
+          "inputDrivenFramesPerSecond": 8.722197993894461
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    },
+    {
+      "project": "phone",
+      "viewport": {
+        "width": 412,
+        "height": 839
+      },
+      "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Mobile Safari/537.36",
+      "medianMs": 8.800000190734863,
+      "p95Ms": 23,
+      "samples": [
+        5.800000190734863,
+        5.800000190734863,
+        6,
+        6,
+        6,
+        6.099999904632568,
+        6.099999904632568,
+        6.199999809265137,
+        6.300000190734863,
+        6.599999904632568,
+        8.800000190734863,
+        9.100000381469727,
+        9.5,
+        11.199999809265137,
+        12,
+        12.200000286102295,
+        12.799999713897705,
+        13.400000095367432,
+        20.59999990463257,
+        23
+      ],
+      "navigation": [
+        {
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "frames": 59,
+          "elapsedMs": 2242,
+          "inputDrivenFramesPerSecond": 26.31578947368421
+        },
+        {
+          "viewport": {
+            "width": 768,
+            "height": 1024
+          },
+          "frames": 61,
+          "elapsedMs": 6614,
+          "inputDrivenFramesPerSecond": 9.222860598729966
+        }
+      ],
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+    }
+  ],
+  "limitations": [
+    "An initial final-integration full run exhausted shared PostgreSQL connection slots (569 passed, 3 failed). Stopped our completed e2e servers and reran the complete suite with maxWorkers=2. The earlier c14c56782 platform run had timeouts in map-play UI and sign-in handoff while concurrent builds were active. Both suites passed unchanged on isolated retry. Original failure log is retained; no deterministic cause established.",
+    "Physical tablet/touch/pen hardware and Windows/macOS/Android native builds were not tested.",
+    "Loaded editor-suite measurements and post-build measurements are both retained; this shared host also had unrelated workloads. Software-rendered headless Chromium timings do not establish the hardware 60fps target. Input-driven FPS includes automation event pacing.",
+    "Browser-game WebGL rendering exercised Chromium serial and pthread paths; browser authorization exercised all three engines. No pixel-equivalence claim across native/editor/browser.",
+    "Requires deployment migration 0038_skin_view_angle.sql. No production deployment or external database migration performed."
+  ]
+}

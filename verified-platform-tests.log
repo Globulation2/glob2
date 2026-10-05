@@ -1,0 +1,827 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/65ba/glob2/platform
+
+ ❯ apps/web/test/forms.test.tsx (11 tests | 1 failed) 5717ms
+   ❯ map play choices (2)
+     × opens a modal with browser and installed-app links for both choices 2025ms
+ ❯ apps/api/test/realtime.test.ts (19 tests | 1 failed) 29229ms
+   ❯ browser sign-in handoff (13)
+     × reports an identity owned by another account as a conflict, then switches on request 6240ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/api/test/realtime.test.ts > browser sign-in handoff > reports an identity owned by another account as a conflict, then switches on request
+Error: timed out waiting for a frame
+ ❯ RealtimeClient.waitFor apps/api/test/support.ts:205:28
+    203|       if (this.closed) throw new Error(`socket closed (${this.closed.c…
+    204|       const left = deadline - Date.now();
+    205|       if (left <= 0) throw new Error('timed out waiting for a frame');
+       |                            ^
+    206|       await new Promise<void>((resolve) => {
+    207|         const timer = setTimeout(resolve, left);
+ ❯ apps/api/test/realtime.test.ts:384:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  apps/web/test/forms.test.tsx > map play choices > opens a modal with browser and installed-app links for both choices
+TestingLibraryElementError: Unable to find role="button" and name "Play this map"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site app-shell"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"app-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-brand"[39m
+        [36m>[39m
+          [36m<a[39m
+            [33maria-label[39m=[32m"Test Instance, home"[39m
+            [33mclass[39m=[32m"brand"[39m
+            [33mhref[39m=[32m"/"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m""[39m
+              [33mheight[39m=[32m"34"[39m
+              [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+              [33mwidth[39m=[32m"34"[39m
+            [36m/>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+          [36m</a>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"Collapse sidebar"[39m
+            [33mclass[39m=[32m"sidebar-toggle"[39m
+          [36m>[39m
+            [0m☰[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Play in browser"[39m
+          [33mclass[39m=[32m"btn primary sidebar-play"[39m
+          [33mhref[39m=[32m"/play/"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+          [36m>[39m
+            [0m▶[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"nav-label"[39m
+          [36m>[39m
+            [0mPlay in browser[0m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Main"[39m
+          [33mclass[39m=[32m"nav"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mPlay[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Home"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Leaderboard"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/leaderboard"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/war-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mLeaderboard[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mLeaderboard[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Players"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/players"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/school.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mPlayers[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mPlayers[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Matches"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/matches"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mMatches[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mMatches[0m
+              [36m</span>[39m
+            [36m</a>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mCreate[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-current[39m=[32m"page"[39m
+              [33maria-label[39m=[32m"Maps"[39m
+              [33mclass[39m=[32m"on"[39m
+              [33mhref[39m=[32m"/maps"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mMaps[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mMaps[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Skins"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/skins"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mSkins[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mSkins[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"AI Map Studio"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/map-studio"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mAI Map Studio[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mAI Map Studio[0m
+              [36m</span>[39m
+            [36m</a>[39m
+          [36m</div>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-end"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-utilities"[39m
+          [36m>[39m
+            [36m<details[39m
+              [33mclass[39m=[32m"app-about"[39m
+            [36m>[39m
+              [36m<summary>[39m
+                [0mAbout & help[0m
+              [36m</summary>[39m
+              [36m<nav[39m
+                [33maria-label[39m=[32m"About"[39m
+              [36m>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/releases"[39m
+                [36m>[39m
+                  [0mDownload the game[0m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2"[39m
+                [36m>[39m
+                  [0mSource code[0m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/blob/master/docs/assets/source-attribution.md"[39m
+                [36m>[39m
+                  [0mArtwork and font credits[0m
+                [36m</a>[39m
+              [36m</nav>[39m
+            [36m</details>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Theme: same as this device. Change theme"[39m
+              [33mclass[39m=[32m"theme-toggle"[39m
+              [33mdata-testid[39m=[32m"theme-toggle"[39m
+              [33mtitle[39m=[32m"Theme: same as this device"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"8.5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 3.5a8.5 8.5 0 0 1 0 17z"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mstroke[39m=[32m"none"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-account"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m"chip"[39m
+              [33mdata-testid[39m=[32m"account-chip"[39m
+              [33mhref[39m=[32m"/account"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"avatar small"[39m
+                [33mstyle[39m=[32m"--av: #707722;"[39m
+              [36m>[39m
+                [0mM[0m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mloading[39m=[32m"lazy"[39m
+                  [33msrc[39m=[32m"/api/v1/accounts/0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b/avatar"[39m
+                [36m/>[39m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0mMapper[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"small"[39m
+            [36m>[39m
+              [0mSign out[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</aside>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Open navigation"[39m
+        [33mclass[39m=[32m"rail-expand"[39m
+      [36m>[39m
+        [0m☰[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"mobile-bar"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Open navigation"[39m
+        [36m>[39m
+          [0m☰[0m
+        [36m</button>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Test Instance, home"[39m
+          [33mhref[39m=[32m"/"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"wordmark "[39m
+          [36m/>[39m
+        [36m</a>[39m
+      [36m</header>[39m
+      [36m<dialog[39m
+        [33maria-label[39m=[32m"Navigation"[39m
+        [33mclass[39m=[32m"navigation-drawer"[39m
+      [36m/>[39m
+      [36m<main[39m
+        [33mid[39m=[32m"main"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"page"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"loading"[39m
+              [33mrole[39m=[32m"status"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"glob-spin"[39m
+              [36m/>[39m
+              [0m Loading…[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site app-shell"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"app-sidebar"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-brand"[39m
+        [36m>[39m
+          [36m<a[39m
+            [33maria-label[39m=[32m"Test Instance, home"[39m
+            [33mclass[39m=[32m"brand"[39m
+            [33mhref[39m=[32m"/"[39m
+          [36m>[39m
+            [36m<img[39m
+              [33malt[39m=[32m""[39m
+              [33mheight[39m=[32m"34"[39m
+              [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+              [33mwidth[39m=[32m"34"[39m
+            [36m/>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+          [36m</a>[39m
+          [36m<button[39m
+            [33maria-expanded[39m=[32m"true"[39m
+            [33maria-label[39m=[32m"Collapse sidebar"[39m
+            [33mclass[39m=[32m"sidebar-toggle"[39m
+          [36m>[39m
+            [0m☰[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Play in browser"[39m
+          [33mclass[39m=[32m"btn primary sidebar-play"[39m
+          [33mhref[39m=[32m"/play/"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+          [36m>[39m
+            [0m▶[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"nav-label"[39m
+          [36m>[39m
+            [0mPlay in browser[0m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Main"[39m
+          [33mclass[39m=[32m"nav"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mPlay[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Home"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Leaderboard"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/leaderboard"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/war-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mLeaderboard[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mLeaderboard[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Players"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/players"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/school.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mPlayers[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mPlayers[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Matches"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/matches"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mMatches[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mMatches[0m
+              [36m</span>[39m
+            [36m</a>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"nav-group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"nav-group-label"[39m
+            [36m>[39m
+              [0mCreate[0m
+            [36m</div>[39m
+            [36m<a[39m
+              [33maria-current[39m=[32m"page"[39m
+              [33maria-label[39m=[32m"Maps"[39m
+              [33mclass[39m=[32m"on"[39m
+              [33mhref[39m=[32m"/maps"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mMaps[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mMaps[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Skins"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/skins"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mSkins[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mSkins[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"AI Map Studio"[39m
+              [33mclass[39m=[32m""[39m
+              [33mhref[39m=[32m"/map-studio"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"26"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                [33mwidth[39m=[32m"26"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"nav-label"[39m
+              [36m>[39m
+                [0mAI Map Studio[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"rail-tooltip"[39m
+              [36m>[39m
+                [0mAI Map Studio[0m
+              [36m</span>[39m
+            [36m</a>[39m
+          [36m</div>[39m
+        [36m</nav>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"sidebar-end"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-utilities"[39m
+          [36m>[39m
+            [36m<details[39m
+              [33mclass[39m=[32m"app-about"[39m
+            [36m>[39m
+              [36m<summary>[39m
+                [0mAbout & help[0m
+              [36m</summary>[39m
+              [36m<nav[39m
+                [33maria-label[39m=[32m"About"[39m
+              [36m>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/releases"[39m
+                [36m>[39m
+                  [0mDownload the game[0m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2"[39m
+                [36m>[39m
+                  [0mSource code[0m
+                [36m</a>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/blob/master/docs/assets/source-attribution.md"[39m
+                [36m>[39m
+                  [0mArtwork and font credits[0m
+                [36m</a>[39m
+              [36m</nav>[39m
+            [36m</details>[39m
+            [36m<button[39m
+              [33maria-label[39m=[32m"Theme: same as this device. Change theme"[39m
+              [33mclass[39m=[32m"theme-toggle"[39m
+              [33mdata-testid[39m=[32m"theme-toggle"[39m
+              [33mtitle[39m=[32m"Theme: same as this device"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [36m>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"8.5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 3.5a8.5 8.5 0 0 1 0 17z"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mstroke[39m=[32m"none"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</button>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"sidebar-account"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33mclass[39m=[32m"chip"[39m
+              [33mdata-testid[39m=[32m"account-chip"[39m
+              [33mhref[39m=[32m"/account"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"avatar small"[39m
+                [33mstyle[39m=[32m"--av: #707722;"[39m
+              [36m>[39m
+                [0mM[0m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mloading[39m=[32m"lazy"[39m
+                  [33msrc[39m=[32m"/api/v1/accounts/0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b/avatar"[39m
+                [36m/>[39m
+              [36m</span>[39m
+              [36m<span>[39m
+                [0mMapper[0m
+              [36m</span>[39m
+            [36m</a>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"small"[39m
+            [36m>[39m
+              [0mSign out[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</aside>[39m
+      [36m<button[39m
+        [33maria-label[39m=[32m"Open navigation"[39m
+        [33mclass[39m=[32m"rail-expand"[39m
+      [36m>[39m
+        [0m☰[0m
+      [36m</button>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"mobile-bar"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33maria-label[39m=[32m"Open navigation"[39m
+        [36m>[39m
+          [0m☰[0m
+        [36m</button>[39m
+        [36m<a[39m
+          [33maria-label[39m=[32m"Test Instance, home"[39m
+          [33mhref[39m=[32m"/"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"wordmark "[39m
+          [36m/>[39m
+        [36m</a>[39m
+      [36m</header>[39m
+      [36m<dialog[39m
+        [33maria-label[39m=[32m"Navigation"[39m
+        [33mclass[39m=[32m"navigation-drawer"[39m
+      [36m/>[39m
+      [36m<main[39m
+        [33mid[39m=[32m"main"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"page"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"loading"[39m
+              [33mrole[39m=[32m"status"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"glob-spin"[39m
+              [36m/>[39m
+              [0m Loading…[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ apps/web/test/forms.test.tsx:169:33
+    167|       });
+    168|     open(`/maps/${MAP_ID}`);
+    169|     const button = await screen.findByRole('button', { name: 'Play thi…
+       |                                 ^
+    170|     fireEvent.click(button);
+    171|     const modal = screen.getByRole('dialog', { name: 'How would you li…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 69 passed | 2 skipped (73)
+      Tests  2 failed | 498 passed | 6 skipped (506)
+   Start at  20:13:00
+   Duration  63.74s (tests 71%, import 18%, transform 8%, environment 2%)
+

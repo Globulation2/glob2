@@ -1,0 +1,17 @@
+
+Running 8 tests using 1 worker
+
+(node:2378399) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › apps/web/e2e/skins.spec.ts:169:1 › direct strokes, orbit, animation, pattern cancel and undo preserve transactions (12.1s)
+  ✓  2 [desktop] › apps/web/e2e/skins.spec.ts:432:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (1.5s)
+  ✓  3 [desktop] › apps/web/e2e/skins.spec.ts:478:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (3.3s)
+  ✓  4 [desktop] › apps/web/e2e/skins.spec.ts:543:1 › trackpad pinch zooms only the inspection view and preserves final framing (1.6s)
+(node:2379390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › apps/web/e2e/skins.spec.ts:169:1 › direct strokes, orbit, animation, pattern cancel and undo preserve transactions (9.2s)
+  ✓  6 [phone] › apps/web/e2e/skins.spec.ts:432:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (1.4s)
+  ✓  7 [phone] › apps/web/e2e/skins.spec.ts:478:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (2.6s)
+  ✓  8 [phone] › apps/web/e2e/skins.spec.ts:543:1 › trackpad pinch zooms only the inspection view and preserves final framing (1.5s)
+
+  8 passed (36.4s)

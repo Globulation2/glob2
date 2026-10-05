@@ -1,0 +1,59 @@
+{
+  "reviewers": [
+    "correctness/compatibility",
+    "UI/UX",
+    "HID/input/accessibility"
+  ],
+  "round1": {
+    "correctness": [
+      "Replace slope depth tolerance with exact occlusion tests",
+      "Guard async document replacements and publication association",
+      "Preserve account revision during recovery",
+      "Keep recovery failures visible",
+      "Own paint mutations inside document hook"
+    ],
+    "UI/UX": [
+      "Keep pressure/shared-surface help reachable on phone",
+      "Fix short-screen pattern footer and fill-tile overflow",
+      "Remove no-op pattern settings and improve labels",
+      "Consolidate CSS and extract pure painting operation"
+    ],
+    "HID": [
+      "Respect pointer ownership during palm/pen capture changes",
+      "Ignore auxiliary mouse buttons",
+      "Cancel provisional palm strokes before pen input",
+      "Add keyboard and menu zoom; preserve modified browser shortcuts"
+    ]
+  },
+  "round2": {
+    "correctness": "Approved after integrated review; no remaining blocking findings.",
+    "UI/UX": [
+      "Approved after responsive screenshot inspection and four new browser cases",
+      "Fixed tablet pose-strip content overlap",
+      "Moved phone canvas below navigation",
+      "Default collapsed toolbox on short phones",
+      "Final screenshot pass fixed compact tool icon/label overlap and collapsed tray clipping at 320px phone and tablet widths"
+    ],
+    "HID": [
+      "Approved after eight targeted desktop/phone cases",
+      "Prevent browser zoom during viewport trackpad pinch",
+      "Cancel invisible strokes and defer readiness through WebGL loss/recovery",
+      "Reconnect toolbox resize observer after final-view mode and retain drag pointer ownership"
+    ],
+    "databaseIntegration": "Final Map Studio integration: 30 database tests across five files passed, preserving upstream studio-events migration and our skin-angle migration 0038. Skin upgrade cutoff now 0037; angle identity/range/default/backward-data assertions preserved."
+  },
+  "refactoring": [
+    "SkinLibrary and CopyPaintDialog extracted from page",
+    "Pure applyCoverage moved from PatternDialog to paint.ts",
+    "Toolbox positioning/capture/persistence in useToolboxLayout",
+    "Document-owned paint API; removed exposed begin/refresh internals",
+    "Native model-space rotation renamed and formatted for clarity",
+    "WebCrypto harness uses production-style event-loop polling with WebAssembly exceptions",
+    "Removed unused legacy UV-circle brush helper"
+  ],
+  "limitations": [
+    "Physical tablet/pen hardware remains untested",
+    "Native OS validation is Linux x86_64",
+    "Headless software rendering does not establish 60fps on hardware"
+  ]
+}

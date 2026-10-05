@@ -1,0 +1,9 @@
+PASS glob2-unit-tests SkinAtlasCache (2 cases) (0.0s)
+PASS glob2-unit-tests SkinAuthorization (4 cases) (0.0s)
+PASS glob2-unit-tests SkinMaterialMap (1 cases) (0.0s)
+PASS glob2-unit-tests SkinDownloads (14 cases) (0.1s)
+PASS SkinMesh/rotated swarms render independently with every material [display][artifacts] (0.9s)
+PASS glob2-unit-tests SkinMesh (4 cases) (2.5s)
+
+6 passed, 0 failed, 0 skipped (3.5s of test time)
+[run_tests] JUnit report: artifacts/skin-studio/merge-native-skins.xml (26 cases)

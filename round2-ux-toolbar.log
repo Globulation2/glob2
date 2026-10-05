@@ -1,0 +1,11 @@
+
+Running 2 tests using 1 worker
+
+(node:2521582) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › apps/web/e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (7.8s)
+(node:2523236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [phone] › apps/web/e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (12.6s)
+
+  2 passed (23.2s)

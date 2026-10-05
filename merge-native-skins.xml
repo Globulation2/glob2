@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="26" failures="0" errors="0" skipped="0"><testsuite name="SkinMesh"><testcase classname="SkinMesh" name="rotated swarms render independently with every material [display][artifacts]" time="0.790749" status="run" />
+  <testcase classname="SkinMesh" name="virtual asset streams use the same bounded decoder" time="0.000344" status="run" />
+    <testcase classname="SkinMesh" name="static swarm pose" time="0.000253" status="run" />
+    <testcase classname="SkinMesh" name="static camera ring preserves UVs, scale and independent cache identities" time="2.49081" status="run" />
+    <testcase classname="SkinMesh" name="bounded transactional decoding" time="0.000787" status="run" />
+  </testsuite><testsuite name="SkinAtlasCache"><testcase classname="SkinAtlasCache" name="visible hits survive a full atlas eviction batch" time="0.00154" status="run" />
+    <testcase classname="SkinAtlasCache" name="paint and material revisions, lifetimes, region, mesh and pose are independent cache keys" time="0" status="run" />
+  </testsuite><testsuite name="SkinAuthorization"><testcase classname="SkinAuthorization" name="server-format signatures authorize only their bound appearance" time="0.004504" status="run" />
+    <testcase classname="SkinAuthorization" name="the chosen swarm mesh is part of the signed manifest" time="0.001622" status="run" />
+    <testcase classname="SkinAuthorization" name="the final camera angle is signed and legacy angles default to zero" time="0.001469" status="run" />
+    <testcase classname="SkinAuthorization" name="untrusted key sets and bounded malformed inputs fail closed" time="0.000944" status="run" />
+  </testsuite><testsuite name="SkinDownloads"><testcase classname="SkinDownloads" name="verified texture downloads are cached and reused after fresh authorization" time="0.003756" status="run" />
+    <testcase classname="SkinDownloads" name="corrupt cache and network bytes cannot reach the renderer" time="0.001089" status="run" />
+    <testcase classname="SkinDownloads" name="a skin installs only when both its colour atlas and material map are valid" time="0.004793" status="run" />
+    <testcase classname="SkinDownloads" name="invalid authorization does not download a texture" time="0.000936" status="run" />
+    <testcase classname="SkinDownloads" name="failed key fetch falls back without waiting for a texture" time="0.000735" status="run" />
+    <testcase classname="SkinDownloads" name="download concurrency is bounded and ambiguous teams fail closed" time="0.002371" status="run" />
+    <testcase classname="SkinDownloads" name="cache eviction bounds retained assets while preserving current appearances" time="0.001076" status="run" />
+    <testcase classname="SkinDownloads" name="moderation removes cached appearances and restoration verifies them again" time="0.00112" status="run" />
+    <testcase classname="SkinDownloads" name="failed or malformed refresh keeps valid paint but expiry removes it" time="0.001064" status="run" />
+    <testcase classname="SkinDownloads" name="texture completing after authorization expiry is never installed" time="0.000929" status="run" />
+    <testcase classname="SkinDownloads" name="initial downloads finish before a newer moderation snapshot starts" time="0.001007" status="run" />
+    <testcase classname="SkinDownloads" name="initial key outages recover through the match refresh" time="0.000981" status="run" />
+    <testcase classname="SkinDownloads" name="refreshed additions still require signatures and reject duplicate teams atomically" time="0.001183" status="run" />
+    <testcase classname="SkinDownloads" name="replay context fetches a fresh snapshot immediately without old tickets" time="0.000959" status="run" />
+  </testsuite><testsuite name="SkinMaterialMap"><testcase classname="SkinMaterialMap" name="greyscale material maps decode to exact ids" time="0.00785" status="run" />
+  </testsuite></testsuites>

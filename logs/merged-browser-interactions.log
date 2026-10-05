@@ -1,0 +1,39 @@
+[WebServer] (node:2608954) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 24 tests using 1 worker
+
+(node:2609064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › apps/web/e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (7.7s)
+  ✓   2 [desktop] › apps/web/e2e/skins-studio-ux.spec.ts:71:1 › pattern modal keeps Apply visible on short phones and exposes effective controls only (2.2s)
+(node:2609505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 [desktop] › apps/web/e2e/skins.spec.ts:56:1 › account drafts restore across devices and refuse stale saves (8.6s)
+  ✓   4 [desktop] › apps/web/e2e/skins.spec.ts:111:3 › paint-to-publish demonstration › publishes immutable angled skins, reopens and equips them independently (8.9s)
+  ✓   5 [desktop] › apps/web/e2e/skins.spec.ts:171:1 › direct strokes, orbit, animation, pattern cancel and undo preserve transactions (12.0s)
+  ✓   6 [desktop] › apps/web/e2e/skins.spec.ts:230:1 › responsive studio keeps dialogs, tools and the document in the viewport (6.0s)
+  ✓   7 [desktop] › apps/web/e2e/skins.spec.ts:258:1 › reports match paint and moderates it without rewriting the original (1.9s)
+  ✓   8 [desktop] › apps/web/e2e/skins.spec.ts:318:1 › painting degrades safely without WebGL2 (971ms)
+  ✓   9 [desktop] › apps/web/e2e/skins.spec.ts:339:1 › idle viewport stops drawing and records stroke feedback latency (9.9s)
+  ✓  10 [desktop] › apps/web/e2e/skins.spec.ts:434:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (1.7s)
+  ✓  11 [desktop] › apps/web/e2e/skins.spec.ts:480:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (3.1s)
+  ✓  12 [desktop] › apps/web/e2e/skins.spec.ts:545:1 › trackpad pinch zooms only the inspection view and preserves final framing (1.8s)
+(node:2613190) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [phone] › apps/web/e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (25.8s)
+  ✓  14 [phone] › apps/web/e2e/skins-studio-ux.spec.ts:71:1 › pattern modal keeps Apply visible on short phones and exposes effective controls only (4.5s)
+(node:2615769) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  15 [phone] › apps/web/e2e/skins.spec.ts:56:1 › account drafts restore across devices and refuse stale saves (6.3s)
+  ✓  16 [phone] › apps/web/e2e/skins.spec.ts:111:3 › paint-to-publish demonstration › publishes immutable angled skins, reopens and equips them independently (7.4s)
+  ✓  17 [phone] › apps/web/e2e/skins.spec.ts:171:1 › direct strokes, orbit, animation, pattern cancel and undo preserve transactions (8.0s)
+  ✓  18 [phone] › apps/web/e2e/skins.spec.ts:230:1 › responsive studio keeps dialogs, tools and the document in the viewport (13.3s)
+  ✓  19 [phone] › apps/web/e2e/skins.spec.ts:258:1 › reports match paint and moderates it without rewriting the original (1.9s)
+  ✓  20 [phone] › apps/web/e2e/skins.spec.ts:318:1 › painting degrades safely without WebGL2 (670ms)
+  ✓  21 [phone] › apps/web/e2e/skins.spec.ts:339:1 › idle viewport stops drawing and records stroke feedback latency (13.1s)
+  ✓  22 [phone] › apps/web/e2e/skins.spec.ts:434:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (1.6s)
+  ✓  23 [phone] › apps/web/e2e/skins.spec.ts:480:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (3.1s)
+  ✓  24 [phone] › apps/web/e2e/skins.spec.ts:545:1 › trackpad pinch zooms only the inspection view and preserves final framing (1.7s)
+
+  24 passed (2.7m)

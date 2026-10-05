@@ -1,0 +1,54 @@
+{
+  "project": "desktop",
+  "viewport": {
+    "width": 1280,
+    "height": 860
+  },
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+  "medianMs": 6.400000095367432,
+  "p95Ms": 27.199999809265137,
+  "samples": [
+    5.900000095367432,
+    5.900000095367432,
+    6,
+    6,
+    6.099999904632568,
+    6.099999904632568,
+    6.099999904632568,
+    6.200000286102295,
+    6.299999713897705,
+    6.400000095367432,
+    6.400000095367432,
+    10.400000095367432,
+    11.800000190734863,
+    12.300000190734863,
+    12.699999809265137,
+    13.599999904632568,
+    13.699999809265137,
+    13.900000095367432,
+    15.300000190734863,
+    27.199999809265137
+  ],
+  "navigation": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 860
+      },
+      "frames": 61,
+      "elapsedMs": 3977,
+      "inputDrivenFramesPerSecond": 15.338194619059593
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "frames": 59,
+      "elapsedMs": 2624,
+      "inputDrivenFramesPerSecond": 22.484756097560975
+    }
+  ],
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "note": "Headless Chromium with emulated viewports; physical tablet/pen testing is separate."
+}

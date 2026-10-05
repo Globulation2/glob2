@@ -1,0 +1,23 @@
+[
+  {
+    "name": "chromium",
+    "checked": 35,
+    "failed": 0,
+    "outstanding": 0,
+    "errors": []
+  },
+  {
+    "name": "firefox",
+    "checked": 35,
+    "failed": 0,
+    "outstanding": 0,
+    "errors": []
+  },
+  {
+    "name": "webkit",
+    "checked": 35,
+    "failed": 0,
+    "outstanding": 0,
+    "errors": []
+  }
+]
