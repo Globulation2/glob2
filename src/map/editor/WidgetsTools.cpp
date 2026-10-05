@@ -10,6 +10,8 @@
 #include "render/terrain/TerrainCompositor.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
+#include "render/UnitAnimation.h"
+#include "render/UnitSkin.h"
 #include "Utilities.h"
 #include <SDL3/SDL.h>
 
@@ -46,20 +48,19 @@ void UnitSelector::draw()
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Worker)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 64);
 	}
 	else if(unitType==EXPLORER)
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Explorer)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 0);
 	}
 	else if(unitType==WARRIOR)
 	{
 		if(me.selectionMode==MapEdit::PlaceUnit && me.placingUnit==MapEdit::Warrior)
 			drawSelection=true;
-		globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, 256);
 	}
+	const int imgid=unitAnimationFrame(g_unitSkins[unitType].startImage[STOP_WALK], 0, 0);
+	globalContainer->gfx->drawSprite(area.x, area.y, unitSprite, imgid);
 	if(drawSelection)
 	{
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 23);
