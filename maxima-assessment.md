@@ -1,0 +1,19 @@
+# Canals seed19 Maxima feeding investigation
+
+No production code changed. Reran the original baseline and candidate commands through tick32768, adding only existing Maxima telemetry and saves every8192ticks. Both teams' sampled population histories exactly reproduce the corresponding original run prefixes. Commands, logs, result files and checkpoint saves are retained in each variant directory. The runs used the isolated PNG-corrected SDL prefix and CPUs0–11. They are diagnostic reproductions, not performance measurements.
+
+## Concrete failing state at tick24576
+
+An independent reader decodes team0 units/buildings/cross references and packed map planes directly from the save. It validates every1024-slot occupancy tag and every saved gid against its slot, plus map signature/dimensions, packed-array block lengths, positions and capacity/list-state bounds. Its decoded unit totals match CLI results: baseline159, candidate239. See `core-review/inspect_maxima_save.py`, `core-review/analyze_maxima_access.py`, per-variant `snapshot-24576.json`, and `access-analysis.json`.
+
+- Candidate:99 medically hungry outside units have no target building (91workers,8warriors). None can swim or fly. All99 occupy the same water-separated land component. That component contains three completed swarms, gids9/13/17 at(90,3),(84,3),(96,2), and no completed inn. A toroidal eight-neighbor flood over **all land, ignoring all resources and buildings**, finds no connection to any inn, even unavailable inns. Including resource/building/forbidden obstacles reaches the same conclusion. Thus no legal terrain route to food exists for these units; their lack of a target is correct.
+- Elsewhere candidate has12 completed inns with104wheat,51inside places, and10reserved/inside units. Spare food and places are geographically inaccessible to the99stranded units.
+- Baseline:4hungry targetless workers. Two occupy the analogous land component, which has two completed inns at(82,2),(84,4), each with4/4places reserved. Two others occupy another component with a swarm and no inn. Its5completed inns hold40wheat with14/20places reserved.
+
+The connectivity oracle uses saved terrain sprite ranges identical to the independently verified classic property mapping. Candidate checkpoints contain classic terrain. Its terrain-only result is deliberately permissive: transient blockers and stale gradients cannot explain why the99units lack a route, because even removing all those blockers leaves water separating them from every inn. This does not claim to reproduce all engine gradient scheduling or food-selection tie breaks.
+
+## Existing policy observations
+
+Maxima telemetry near24195 reports237population,234global estimated feeding capacity,13inns (including construction), desired17inns, and recover posture. At24232 every existing inn consumer receives100%estimated food-ledger coverage and the ledger estimates support for77inns. The model measures carrier catchment/supply and global meal capacity; those do not establish service access for units on a different non-swimming land component. Global feeding-capacity arithmetic, meal capacity constants, and basic food-list eligibility were not changed by this refactor. The source review separately confirms classic passability and inn gradient costs remain equivalent.
+
+This supports an existing colony feeding/placement limitation exposed earlier and more severely by the candidate trajectory, not a new terrain pathfinding defect. It does not establish why the stochastic candidate trajectory selected those three swarms without a local inn, nor prove all new-terrain AI behavior balanced. Preserve the observed midgame starvation warning and require gameplay review of isolated colonies. No coefficient changes, AI policy tuning or speculative fixes were made.
