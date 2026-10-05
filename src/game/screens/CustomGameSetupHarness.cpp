@@ -1844,6 +1844,8 @@ struct CustomGameSetupHarness
       pickAction("randomize", 1);
       settle();
       seedsShown();
+      // Exercise the already-selected tile: its click confirms and ends execution.
+      picker.select(other);
       // Using a randomized landscape hands the lobby the parameters it was shown with.
       {
         pick("landscape/" + std::to_string(other));
@@ -1853,6 +1855,10 @@ struct CustomGameSetupHarness
         REQUIRE((screen.setup.generator.method == entries[other].first &&
                screen.setup.generator.options == rolled.options &&
                screen.setup.generator.nbTeams == 4));
+        REQUIRE(!picker.run);
+        REQUIRE(picker.returnCode == other);
+        picker.finishExecution();
+        picker.beginExecution(globalContainer->gfx);
         // Back to the landscapes' own parameters for the checks below. Reset, not Regenerate:
         // regenerating keeps the random draw, and a random ridge layout can fail validation
         // once the map is resized below.
@@ -1860,13 +1866,20 @@ struct CustomGameSetupHarness
         settle();
         seedsShown();
       }
-      // Return confirms the selection, as does clicking the selected tile.
-      pick("landscape/" + std::to_string(other));
+      // Each confirmation needs a live execution, so a stale return code cannot pass.
+      REQUIRE(picker.selection() == other);
       pickerKey(SDLK_RETURN);
+      REQUIRE(!picker.run);
       REQUIRE(picker.returnCode == other);
+      picker.finishExecution();
+      picker.beginExecution(globalContainer->gfx);
       pick("landscape/" + std::to_string(other));
+      REQUIRE(!picker.run);
       REQUIRE(picker.returnCode == other);
+      picker.finishExecution();
+      picker.beginExecution(globalContainer->gfx);
       pick("landscape/use");
+      REQUIRE(!picker.run);
       REQUIRE(picker.returnCode == other);
       globalContainer->gfx->printScreen(output + "/landscape-picker-selected.bmp");
       // The lobby then rolls the very seed the picker showed: same starts, same map header.
