@@ -131,6 +131,9 @@ int main(int argc, char **argv)
                             }
                     }
                 if (crowd.size()<400) throw std::runtime_error("Crowded scene did not fit the fixture");
+                // The crowd changes visibility without advancing the simulation.
+                // Refresh the presentation fade after the authorization warmup.
+                gui.view.render.fogFade.reset();
                 const unsigned frames = std::getenv("SKIN_BENCH_FRAMES") ? std::stoul(std::getenv("SKIN_BENCH_FRAMES")) : 45;
                 const unsigned warmup = std::getenv("SKIN_BENCH_WARMUP") ? std::stoul(std::getenv("SKIN_BENCH_WARMUP")) : 5;
                 if (frames > 10000 || warmup >= frames) throw std::runtime_error("Invalid benchmark frame counts");
@@ -166,6 +169,11 @@ int main(int argc, char **argv)
                             throw std::runtime_error("Drawing changed simulation state");
                     }
                     double sum=0;for(double elapsed:times)sum+=elapsed;
+                    nlohmann::json cacheMetrics=nullptr;
+                    if(appearance.sprites) {
+                        const auto &counts=appearance.sprites->counters();
+                        cacheMetrics={{"decodes",counts.decodes},{"evictions",counts.evictions},{"hits",counts.hits},{"misses",counts.misses}};
+                    }
                     std::sort(times.begin(),times.end());
                     nlohmann::json scopes=nlohmann::json::object();
                     using PerformanceTelemetry::Id;
@@ -185,7 +193,7 @@ int main(int argc, char **argv)
                         {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},
                         {"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
-                        {"decodedSpriteBytes",appearance.sprites?appearance.sprites->decodedBytes():0},{"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
+                        {"decodedSpriteBytes",appearance.sprites?appearance.sprites->decodedBytes():0},{"spriteCache",cacheMetrics},{"frames",times.size()},{"checksumFrames",classicChecksums.size()},{"meanMs",sum/times.size()},{"p95Ms",times[std::min(times.size()-1,std::size_t(times.size()*0.95))]},
                         {"drawsPerFrame",double(draws)/times.size()}}.dump() << std::endl;
                     gui.drawAll(0);
                     globalContainer->gfx->printScreen(std::string(benchmark)+(skinned?"-skinned.bmp":"-classic.bmp"));

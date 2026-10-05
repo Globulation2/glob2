@@ -105,13 +105,13 @@ void SkinSprites::poll() {
             auto victim=pages.end();
             for(auto it=pages.begin();it!=pages.end();++it)if(it->second.surface && (victim==pages.end() || it->second.touched<victim->second.touched))victim=it;
             if(victim==pages.end())break;
-            decoded-=std::size_t(victim->second.info.size)*victim->second.info.size*4;victim->second.surface.reset();
+            decoded-=std::size_t(victim->second.info.size)*victim->second.info.size*4;victim->second.surface.reset();++metrics.evictions;
         }
         auto *rgba=SDL_ConvertSurface(loaded,SDL_PIXELFORMAT_ARGB8888);SDL_DestroySurface(loaded);
         if(!rgba){++p.failures;continue;}
         p.surface=std::make_unique<GAGCore::DrawableSurface>(rgba->w,rgba->h);
         SDL_SetSurfaceBlendMode(rgba,SDL_BLENDMODE_NONE);SDL_BlitSurface(rgba,nullptr,p.surface->getSDLSurface(),nullptr);SDL_DestroySurface(rgba);
-        p.surface->markPixelsChanged();decoded+=cost;
+        p.surface->markPixelsChanged();decoded+=cost;++metrics.decodes;
     }
     for(auto &[hash,p]:pages)p.requested=false;
 }
@@ -121,7 +121,8 @@ bool SkinSprites::draw(GAGCore::GraphicContext &gfx,int team,unsigned clip,unsig
     const auto found=std::find_if(t.manifest.pages.begin(),t.manifest.pages.end(),[&](const auto &p){return p.clip==clip && frame>=p.first && frame<p.first+p.frames;});
     if(found==t.manifest.pages.end())return false;
     auto &p=pages[found->hash];p.info=*found;p.version=t.skin.versionId;p.bundle=t.skin.spriteManifestHash;p.touched=clock;p.requested=true;
-    if(!p.surface)return false;
+    if(!p.surface){++metrics.misses;return false;}
+    ++metrics.hits;
     if(!alpha)return true;
     if(shadow)gfx.drawSurface(x,y,w,h,shadow,alpha);
     x-=w*0.125f;y-=h*0.125f;w*=1.25f;h*=1.25f;

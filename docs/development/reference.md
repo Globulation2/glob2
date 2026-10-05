@@ -545,6 +545,14 @@ as `crown`) to draw team 0's swarm with that mesh; the directory then needs its
 `swarm-<id>.gsk`, and the swarm quadrant paints it. Run with `-g -m
 -s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
 `SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
+For signed software artwork, replace the preview directory with
+`SKIN_PREVIEW_ASSIGNMENT` (a JSON file containing `origin`, `matchId` and signed
+`colonySkins` tickets) and `SKIN_PREVIEW_CACHE` (an isolated cache directory).
+Use `-G` for software or `-g` for OpenGL with the same assignment and save.
+`SKIN_BENCH_TEAMS` controls the number of colonies in the crowd; their tickets
+can share or select different skins. `SKIN_BENCH_FRAME_PREFIX` captures 32
+animation frames for comparison videos. Software measurements also report
+decoded sprite memory.
 The harness adds a crowded diagnostic colony, advances its animation phases,
 and checks that every draw preserves simulation checksums and that classic and
 skinned states match. It reports first-frame cost separately from warmed mean,
