@@ -111,7 +111,12 @@ export class Pipeline {
     if (row.checkpoints['sourceVersion'] && row.checkpoints['sourceVersion'] !== version)
       throw Error('The pipeline source changed during recovery. Retry with the installed version.');
     await this.studio.checkpoint(row, 'processing', { sourceVersion: version });
-    const attempts = new Attempts(this.studio, cfg.providerCallsPerDay ?? 1);
+    // Daily capacity is an operator-wide ceiling, not a purchased request
+    // allowance. A restart with a lower limit must also constrain queued work.
+    const attempts = new Attempts(
+      this.studio,
+      Math.min(cfg.providerCallsPerDay ?? 1, this.config.providerCallsPerDay ?? 1),
+    );
     const model = cfg.textModel;
     if (!model) throw Error('Configure a music text model.');
     const guide = await readFile(

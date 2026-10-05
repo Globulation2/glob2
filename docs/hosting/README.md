@@ -1335,6 +1335,9 @@ music-v1`, `providerCallsPerDay`, `maxCalls`, `maxOutputTokens`, `maxTotalTokens
 and `timeoutSeconds`. The example configuration caps each generation at 12 model
 calls, 250,000 total tokens, 16,000 output tokens per call and 30 minutes. Token
 allowance includes a conservative UTF-8-byte input reservation before dispatch.
+Per-request model, call and token budgets remain snapshotted; the daily provider
+ceiling uses the lower of that snapshot and the current worker configuration, so
+lowering the operator limit on restart also constrains queued and recovered work.
 Each request can render at most three candidates. `maxSourceBytes` (at most 128 KiB)
 and `maxOutputBytes` (at most 128 MiB total artifacts) can lower the hard output
 ceilings. Chat requires available music

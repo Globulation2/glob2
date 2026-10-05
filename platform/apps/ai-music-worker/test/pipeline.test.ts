@@ -127,13 +127,13 @@ function candidate(pass: boolean): Rendered {
     },
   };
 }
-function worker(provider: MusicProvider, runner: MusicRunner) {
+function worker(provider: MusicProvider, runner: MusicRunner, config = cfg) {
   return new Pipeline(
     studio,
     blobs,
     provider,
     runner,
-    cfg,
+    config,
     resolve('../tools/music'),
     'https://music.invalid',
   );
@@ -471,4 +471,17 @@ it('does not dispatch an already-aborted provider call', async () => {
   } finally {
     fetch.mockRestore();
   }
+});
+
+it('applies a lowered operator daily limit to requests with an older budget snapshot', async () => {
+  const { id } = await fixture();
+  await sql`INSERT INTO music_studio_provider_usage(day,calls) VALUES((now() AT TIME ZONE 'UTC')::date,1) ON CONFLICT(day) DO NOTHING`.execute(
+    database.db,
+  );
+  const text = vi.fn(async () => ({ text: '{"action":"read","value":"guide"}', usage: {} }));
+  await worker({ text }, { run: vi.fn() }, { ...cfg, providerCallsPerDay: 1 }).tick();
+  expect(text).not.toHaveBeenCalled();
+  expect((await studio.request(id))?.status).toBe('failed');
+  expect((await studio.request(id))?.error).toContain('daily service limit');
+  expect((await studio.request(id))?.charged).toBe(false);
 });
