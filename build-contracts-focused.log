@@ -1,0 +1,18 @@
+test_drawing_does_not_read_live_entities (test_scene_boundary.SceneBoundaryTests.test_drawing_does_not_read_live_entities) ... ok
+test_scene_types_do_not_include_simulation_headers (test_scene_boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) ... ok
+test_build_files_and_documentation_are_not_shipped (test_web_assets.WebAssetPlanTests.test_build_files_and_documentation_are_not_shipped) ... ok
+test_core_has_english_and_every_language_name (test_web_assets.WebAssetPlanTests.test_core_has_english_and_every_language_name) ... ok
+test_core_ships_the_browser_copies_and_font_cjk_the_full_font (test_web_assets.WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font) ... ok
+test_every_installed_music_set_is_owned_and_opus_only (test_web_assets.WebAssetPlanTests.test_every_installed_music_set_is_owned_and_opus_only) ... ok
+test_in_game_sprites_follow_the_main_menu (test_web_assets.WebAssetPlanTests.test_in_game_sprites_follow_the_main_menu) ... ok
+test_music_and_artwork_the_game_reloads_per_match_are_optional (test_web_assets.WebAssetPlanTests.test_music_and_artwork_the_game_reloads_per_match_are_optional) ... ok
+test_parts_respect_the_size_limit (test_web_assets.WebAssetPlanTests.test_parts_respect_the_size_limit) ... ok
+test_runtime_files_the_menus_need_are_core (test_web_assets.WebAssetPlanTests.test_runtime_files_the_menus_need_are_core) ... ok
+test_simulation_data_starts_with_the_game (test_web_assets.WebAssetPlanTests.test_simulation_data_starts_with_the_game) ... ok
+test_skin_meshes_are_only_in_the_on_demand_package (test_web_assets.WebAssetPlanTests.test_skin_meshes_are_only_in_the_on_demand_package) ... ok
+test_terrain_registry_atlases_and_backdrops_are_game_sprites (test_web_assets.WebAssetPlanTests.test_terrain_registry_atlases_and_backdrops_are_game_sprites) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.442s
+
+OK
