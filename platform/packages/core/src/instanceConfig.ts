@@ -7,6 +7,7 @@ import {
   HiveConfig,
   MapStudioConfig,
   MusicStudioConfig,
+  AiStudioConfig,
   Strict,
 } from '@glob2/protocol';
 
@@ -111,6 +112,7 @@ export const InstanceConfig = Strict({
   hiveMind: Type.Optional(HiveConfig),
   mapStudio: Type.Optional(MapStudioConfig),
   musicStudio: Type.Optional(MusicStudioConfig),
+  aiStudio: Type.Optional(AiStudioConfig),
   name: Type.String({ minLength: 1, maxLength: 128 }),
   guests: Strict({ enabled: Type.Boolean() }),
   auth: Strict({

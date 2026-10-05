@@ -30,6 +30,7 @@
 #include "OnlineServices.h"
 #include "RelayTransport.h"
 #include <algorithm>
+#include <cstdlib>
 #include <optional>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -163,6 +164,8 @@ Application::Application()
 						 std::vector<std::string>{strings.getString("[continue]")}),
 					 [this](GAGGUI::Screen &, int) { mainMenu(); });
 	}
+	else if (std::getenv("GLOB2_STUDIO_PLAYTEST"))
+		singlePlayer.studio();
 	else if (globalContainer->replaying)
 		singlePlayer.replay(globalContainer->replayFileName);
 	else

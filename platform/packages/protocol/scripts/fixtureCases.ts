@@ -731,6 +731,43 @@ const AI_INFO = {
 
 export const fixtureCases: FixtureCase[] = [
   {
+    schema: 'AiStudioCreate',
+    name: 'starter',
+    valid: true,
+    note: 'A private project can begin from the bundled starter.',
+    value: { title: 'My Colony' },
+  },
+  {
+    schema: 'AiStudioCommand',
+    name: 'bounded-edit',
+    valid: true,
+    note: 'Edits bind to an expected source revision and explicit credit cap.',
+    value: { id: JOB_ID, expectedRevision: 1, text: 'Improve food staffing', budget: 100 },
+  },
+  {
+    schema: 'AiStudioRun',
+    name: 'seeded-live-test',
+    valid: true,
+    note: 'Live browser tests pin the code revision, seed and built-in opponent.',
+    value: { id: JOB_ID, expectedRevision: 2, seed: 19, opponent: 'numbi' },
+  },
+  {
+    schema: 'AiStudioRun',
+    name: 'custom-opponent',
+    valid: false,
+    stage: 'schema',
+    note: 'V1 opponents are curated built-in AIs.',
+    value: { id: JOB_ID, expectedRevision: 2, seed: 19, opponent: 'javascript' },
+  },
+  {
+    schema: 'AiStudioSave',
+    name: 'restore',
+    valid: true,
+    note: 'Restoring a checkpoint creates a new revision from an expected head.',
+    value: { expectedRevision: 4, restoreRevision: 2 },
+  },
+
+  {
     schema: 'AiDetail',
     name: 'versioned-controller',
     valid: true,

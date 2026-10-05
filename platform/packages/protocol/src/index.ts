@@ -19,3 +19,4 @@ export * from './mapStudio.ts';
 export * from './ais.ts';
 export * from './music.ts';
 export * from './musicStudio.ts';
+export * from './aiStudio.ts';

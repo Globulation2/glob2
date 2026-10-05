@@ -14,6 +14,47 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
   image_webp_renditions: ['source_sha256', 'webp_sha256'],
+  ai_studio_projects: ['id', 'account_id', 'title', 'revision', 'created_at', 'updated_at'],
+  ai_studio_revisions: ['project_id', 'revision', 'source', 'hash', 'reason', 'created_at'],
+  ai_studio_requests: [
+    'id',
+    'project_id',
+    'base_revision',
+    'prompt',
+    'diagnostics',
+    'budget',
+    'status',
+    'response',
+    'error',
+    'cancelled',
+    'lease_until',
+    'created_at',
+    'provider_result',
+  ],
+  ai_studio_events: ['id', 'project_id', 'request_id', 'kind', 'body', 'created_at'],
+  ai_studio_runs: ['id', 'project_id', 'revision', 'seed', 'opponent', 'summary', 'created_at'],
+  ai_studio_wallets: ['account_id', 'balance', 'reserved'],
+  ai_studio_calls: [
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
+  ai_studio_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  ai_studio_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
   ais: [
     'id',
     'owner_account_id',
@@ -879,6 +920,7 @@ describe('migrations', () => {
         '0041_image_webp_renditions',
         '0042_music_studio',
         '0043_skin_sprites',
+        '0044_ai_studio',
       ]);
       expect(
         (
@@ -948,7 +990,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(21);
+      expect(upgraded).toHaveLength(22);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1085,6 +1127,7 @@ describe('migrations', () => {
         ['0041_image_webp_renditions', 'Success'],
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
+        ['0044_ai_studio', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1218,6 +1261,7 @@ describe('migrations', () => {
         ['0041_image_webp_renditions', 'Success'],
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
+        ['0044_ai_studio', 'Success'],
       ]);
       expect(
         await db

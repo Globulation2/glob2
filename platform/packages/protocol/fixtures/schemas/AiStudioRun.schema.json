@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiStudioRun",
+  "title": "AiStudioRun",
+  "type": "object",
+  "required": [
+    "id",
+    "expectedRevision",
+    "seed",
+    "opponent"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "opponent": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "numbi"
+        },
+        {
+          "type": "string",
+          "const": "nicowar"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

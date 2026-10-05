@@ -19,6 +19,10 @@
     "AiMetadata": "schemas/AiMetadata.schema.json",
     "AiProfile": "schemas/AiProfile.schema.json",
     "AiSocialResult": "schemas/AiSocialResult.schema.json",
+    "AiStudioCommand": "schemas/AiStudioCommand.schema.json",
+    "AiStudioCreate": "schemas/AiStudioCreate.schema.json",
+    "AiStudioRun": "schemas/AiStudioRun.schema.json",
+    "AiStudioSave": "schemas/AiStudioSave.schema.json",
     "AiUpload": "schemas/AiUpload.schema.json",
     "AiValidationReport": "schemas/AiValidationReport.schema.json",
     "AiVersion": "schemas/AiVersion.schema.json",
@@ -203,6 +207,37 @@
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
+    {
+      "file": "valid/AiStudioCreate/starter.json",
+      "schema": "AiStudioCreate",
+      "valid": true,
+      "note": "A private project can begin from the bundled starter."
+    },
+    {
+      "file": "valid/AiStudioCommand/bounded-edit.json",
+      "schema": "AiStudioCommand",
+      "valid": true,
+      "note": "Edits bind to an expected source revision and explicit credit cap."
+    },
+    {
+      "file": "valid/AiStudioRun/seeded-live-test.json",
+      "schema": "AiStudioRun",
+      "valid": true,
+      "note": "Live browser tests pin the code revision, seed and built-in opponent."
+    },
+    {
+      "file": "invalid/AiStudioRun/custom-opponent.json",
+      "schema": "AiStudioRun",
+      "valid": false,
+      "stage": "schema",
+      "note": "V1 opponents are curated built-in AIs."
+    },
+    {
+      "file": "valid/AiStudioSave/restore.json",
+      "schema": "AiStudioSave",
+      "valid": true,
+      "note": "Restoring a checkpoint creates a new revision from an expected head."
+    },
     {
       "file": "valid/AiDetail/versioned-controller.json",
       "schema": "AiDetail",

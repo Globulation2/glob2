@@ -364,3 +364,20 @@ The [profile 2 API](javascript-api.md#custom-ai-profile-2) adds metadata, editab
 properties, queued actions, synchronous native spatial queries, placement, and
 telemetry while preserving profile 1 saves and execution. Save format 129 stores
 profile 2 queues and replay diagnostics; the minimum supported save format remains 58.
+
+## Browser AI Studio
+
+Instances with AI Studio enabled offer a chat and single-file editor at
+`/ai-studio`. Start with the working profile-2 example, import a `.js` file, or
+open an owned AI Library version. Assistant edits create restorable revisions.
+Manual editing, downloads and local live playtests require no credits; model
+requests use a separate Studio balance and a visible request spending cap.
+
+Use **Run checks** for server compatibility checks and **Playtest** to watch the
+selected revision in the browser. Tests and repairs never start automatically.
+The live game keeps its original code when you edit, and **Restart same setup**
+reuses its original revision, seed and opponent. **Run current revision** starts
+with the latest saved code. **Fix this** attaches diagnostics to a message you
+can review before sending. Publish is a separate action requiring a passing
+server validation for the exact source. The studio does not make custom AIs
+available in online multiplayer games.

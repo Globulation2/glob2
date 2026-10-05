@@ -405,3 +405,38 @@ Run `recording.spec.js` in Chromium, Firefox and WebKit for both runtime transpo
 resize segmentation, exports, missing WebCodecs and unavailable storage. Independent
 media decoding requires an external validator; recording itself does not. See
 [gameplay footage](../docs/features/gameplay-recording.md) for defaults and limits.
+
+## Embedded AI Studio tests
+
+`studio.html` shares the game runtime but uses an ephemeral in-memory profile.
+The same-origin parent launches one source revision using the versioned bridge in
+`studio.js`. The bridge bounds source/map bytes and verifies the pinned map hash;
+no JavaScript source is evaluated by the web page. The engine starts the two-AI
+local spectator path and returns bounded diagnostics and progress to the parent.
+Studio playtests do not import code into the user's persistent AI library. Readiness
+can repeat when the loader falls back to the serial runtime: the parent resends
+the same pinned launch data to the new document. Startup failures return bounded
+error messages as well as the game's runtime diagnostics.
+
+The parent document must also have COOP/COEP isolation headers for pthreads.
+`deploy/Caddyfile` permits same-origin framing only for `studio.html`, and the
+platform router reloads the document when crossing the Studio route boundary.
+During web-app development, run the browser host on port 8765; Vite proxies `/play`.
+The studio bridge unit tests run with `node --test browser/unit/studio.test.js`.
+
+Bridge messages carry `channel: "glob2-ai-studio"`, `version: 1`, the UUID `runId`,
+and the positive integer `revision`. Parent-to-child `launch` includes the UTF-8
+source (up to 128 KiB), seed, curated opponent ID, and transferred map ArrayBuffer;
+`stop` unloads the child. Child-to-parent messages are `ready`, `diagnostic`
+(bounded `text`), `progress`/`complete` (`tick`, `disabled`, `diagnostic`, `result`),
+`error` (`text`), and `stopped`. Parents must verify both `event.origin` and
+`event.source` before accepting the envelope; a readiness repeat resends the same
+run, never newer source. Each document accepts at most one launch.
+
+`browser/tests/studio.spec.js` covers live startup, cleanup, controller diagnostics,
+and both runtimes' exact native checksum reference. Regeneration instructions are
+in [the fixture guide](tests/fixtures/README.md#studio-nativebrowser-checksums).
+The deployment stack smoke test also checks isolation and framing policies for
+both Studio routes, the embedded game, the ordinary game entry, and the Monaco
+worker path policy. Firefox and WebKit explicitly include the Studio suite in
+the browser CI matrix; Chromium discovers it through the full-suite shards.

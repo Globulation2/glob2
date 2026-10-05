@@ -117,6 +117,7 @@ FROM node-deps AS web-build
 ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
+COPY examples/javascript /app/examples/javascript
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
@@ -148,6 +149,8 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chown -R 10001:10001 /var/lib/glob2 && \
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
+COPY examples/javascript /app/examples/javascript
+COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
@@ -191,6 +194,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && chmod 700 /var/lib/glob2/engine-agent
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
+COPY examples/javascript /app/examples/javascript
+COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
 COPY --from=engine-build /output/licenses /usr/local/share/licenses

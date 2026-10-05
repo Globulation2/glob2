@@ -210,6 +210,8 @@ void matchFrame(bool) {}
 void overviewDrawn(bool, bool) {}
 void roomReady(bool) {}
 void customGameReady(bool) {}
+void studioProgress(std::uint32_t, bool, bool, const std::string &, bool, bool) {}
+void studioError(const std::string &) {}
 void controlsChanged(const void *, const char *) {}
 bool controlsObserved() { return false; }
 void exited(int) {}

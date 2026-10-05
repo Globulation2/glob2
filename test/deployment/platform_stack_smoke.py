@@ -207,7 +207,8 @@ class Smoke:
         (self.directory / '.env').write_text(''.join(f'{k}={v}\n' for k, v in settings.items()))
         (self.directory / 'instance.yaml').write_text(INSTANCE_YAML_E2E if arguments.match_e2e else INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
-        (self.directory / 'web-client/index.html').write_text('<!doctype html><title>glob2 web client</title>')
+        for entry in ('index.html', 'studio.html'):
+            (self.directory / 'web-client' / entry).write_text('<!doctype html><title>glob2 web client</title>')
         # A content-addressed data package with a precompressed copy, as
         # browser/precompress.py and deploy/install-web-client.py lay them out.
         (self.directory / 'web-client/assets').mkdir()
@@ -330,6 +331,43 @@ class Smoke:
         init_log = self.compose('logs', '--no-color', 'init')
         return {'services': summary, 'init': [l.split('|', 1)[-1].strip() for l in init_log.splitlines()][-6:]}
 
+    def studio_edge(self):
+        # Threaded embedded games require both documents to be isolated. Framing
+        # is allowed only for the dedicated child, never the parent/account UI.
+        pages = {}
+        for path, frame_policy, ancestors in (
+            ('/ai-studio', 'DENY', "'none'"),
+            ('/ai-studio/11111111-1111-4111-8111-111111111111', 'DENY', "'none'"),
+            ('/play/studio.html', 'SAMEORIGIN', "'self'"),
+            ('/play/index.html', 'DENY', "'none'"),
+        ):
+            status, headers, body = self.https('GET', path)
+            if status != 200 or not body:
+                raise Failure(f'{path}: {status} {body[:100]!r}')
+            for name, expected in (
+                ('Cross-Origin-Opener-Policy', 'same-origin'),
+                ('Cross-Origin-Embedder-Policy', 'require-corp'),
+                ('X-Frame-Options', frame_policy),
+            ):
+                if headers.get(name) != expected:
+                    raise Failure(f'{path}: {name} expected {expected!r}, got {headers.get(name)!r}')
+            directives = {part.strip() for part in headers.get('Content-Security-Policy', '').split(';')}
+            if f'frame-ancestors {ancestors}' not in directives:
+                raise Failure(f'{path}: incorrect frame-ancestors policy')
+            if path.startswith('/ai-studio') and "frame-src 'self'" not in directives:
+                raise Failure(f'{path}: Studio cannot embed its game')
+            pages[path] = status
+        # These policy probes deliberately use stable synthetic worker names: the
+        # deployed Vite hashes change on every editor release. The SPA may answer
+        # the missing file, but the worker-path COEP rule must still be selected.
+        for worker in ('editor', 'ts'):
+            path = f'/assets/{worker}.worker-studio-header-probe.js'
+            status, headers, _ = self.https('GET', path)
+            if status != 200 or headers.get('Cross-Origin-Embedder-Policy') != 'require-corp':
+                raise Failure(f'{path}: Monaco worker isolation policy is missing')
+            pages[path] = status
+        return pages
+
     def edge(self):
         status, headers, body = self.https('GET', '/')
         if status != 200 or b'<div id="root">' not in body:
@@ -377,7 +415,7 @@ class Smoke:
         redirect = connection.getresponse()
         if redirect.status not in (301, 308) or not redirect.getheader('Location', '').startswith('https://'):
             raise Failure(f'HTTP is not redirected to HTTPS: {redirect.status}')
-        detail = {'web': status, 'invite': status_j, 'play': status_play, 'wellKnown': well_known,
+        detail = {'web': status, 'invite': status_j, 'play': status_play, 'studio': self.studio_edge(), 'wellKnown': well_known,
                   'private': denied,
                   'http': redirect.status, 'hsts_or_server': headers.get('Server')}
         if self.arguments.attach:

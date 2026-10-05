@@ -153,6 +153,7 @@ window.fetch = function(input) {
   }
   return result;
 };
+/* AI_STUDIO_BRIDGE */
 // Watch in browser: ?replay=<url> downloads a replay (for example a verified
 // match replay linked from the platform's match page) while the game loads and
 // opens it in the replay viewer instead of the main menu. Only http(s) URLs are
@@ -252,6 +253,7 @@ var Module = {
     showDownload();
   },
   glob2AssetError(error) {
+    globalThis.glob2Studio?.send('error', {text:String(error?.message || error).slice(0,2000)});
     download.failed = true;
     loadingStatus.textContent = 'The game could not be downloaded.';
     loadingDetail.textContent = 'Check the connection, then try again. (' + String(error?.message || error) + ')';
@@ -268,12 +270,27 @@ var Module = {
     loading.appendChild(retry);
   },
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
-  printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
+  printErr(text) { Module.browserLog.push(String(text)); console.error(text); globalThis.glob2Studio?.diagnostic(text); },
   preRun: [function() {
     ENV.HOME = '/home/web_user';
     if (new URLSearchParams(location.search).get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
     FS.mkdirTree('/home/web_user');
+    if (globalThis.glob2Studio) {
+      // Never mount the user's persistent profile in an embedded test.
+      Module.storage = new Glob2Storage(callback => callback(null));
+      Module.storageRestore = 'ready';
+      Module.storage.restored(null);
+      addRunDependency('studio-launch');
+      globalThis.glob2Studio.launch.then(run => {
+        FS.writeFile('/tmp/studio.map.gz', new Uint8Array(run.map));
+        FS.writeFile('/tmp/studio.js', run.source);
+        ENV.GLOB2_STUDIO_PLAYTEST = '1';
+        ENV.GLOB2_STUDIO_SEED = String(run.seed);
+        ENV.GLOB2_STUDIO_OPPONENT = run.opponent;
+        removeRunDependency('studio-launch');
+      }).catch(error => Module.glob2AssetError(error));
+    } else {
     Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
     glob2SnapshotPersistence(IDBFS);
     IDBFS.queuePersist = () => Module.storage.changed();
@@ -291,6 +308,7 @@ var Module = {
       if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
     });
+    }
     if (watchReplay && watchReplay.bytes) {
       addRunDependency('watch-replay');
       Module.setStatus('Downloading replay…');
@@ -351,7 +369,7 @@ var Module = {
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
-  onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
+  onAbort(reason) { Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
 };
 const preferencesPath = '/home/web_user/.glob2/preferences.txt';
 function savedPreference(name) {

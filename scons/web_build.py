@@ -232,7 +232,7 @@ def build_web(directory, identity, arguments):
     env, serial, database, packaged = _build_variant(directory, identity, arguments)
     _, threaded, _, _ = _build_variant(Path(directory) / 'threaded', identity, arguments, True, packaged)
     def shell(target, source, env):
-        page = Path('browser/shell.html').read_text().replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
+        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
         # The page shows WebAssembly download progress against these sizes.
         sizes = {'index.wasm': Path(directory) / 'index.wasm', 'threaded/index.wasm': Path(directory) / 'threaded/index.wasm'}
         sizes = json.dumps({name: path.stat().st_size for name, path in sizes.items()}, separators=(',', ':'), sort_keys=True)
@@ -240,9 +240,10 @@ def build_web(directory, identity, arguments):
         if count != 1:
             raise ValueError('browser/shell.html lacks the data-wasm-bytes placeholder')
         write_if_changed(str(target[0]), page)
+        write_if_changed(str(target[1]), page)
         return 0
-    page = env.Command(str(Path(directory) / 'index.html'),
-        ['browser/shell.html', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html')],
+        ['browser/shell.html', 'browser/studio.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
     # One recording module serves both game runtimes, and is fetched only on use.
     from recording_dependencies import build as build_recording, attach as attach_recording
     recording_prefix = Path(directory) / 'recording/prefix'

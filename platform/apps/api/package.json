@@ -38,7 +38,9 @@
     "@glob2/map-studio": "0.1.0",
     "@glob2/billing": "0.1.0",
     "@glob2/music": "0.1.0",
-    "@glob2/music-studio": "0.1.0"
+    "@glob2/music-studio": "0.1.0",
+    "ai": "7.0.127",
+    "@ai-sdk/openai": "4.0.83"
   },
   "devDependencies": {
     "@types/ws": "^8.18.2"

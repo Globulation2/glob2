@@ -33,6 +33,7 @@ const MusicStudio = lazy(() =>
 const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
 );
+const AiStudio = lazy(() => import('./pages/AiStudio.tsx').then((m) => ({ default: m.AiStudio })));
 const Ais = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.Ais })));
 const AiPage = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPage })));
 const AiPublish = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPublish })));
@@ -56,6 +57,13 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  { pattern: '/ai-studio', section: 'ais', title: 'AI Studio', render: () => <AiStudio /> },
+  {
+    pattern: '/ai-studio/:id',
+    section: 'ais',
+    title: 'AI Studio',
+    render: (p) => <AiStudio key={p['id']} id={p['id']} />,
+  },
   { pattern: '/ais', section: 'ais', title: 'AI Library', render: () => <Ais /> },
   { pattern: '/ais/mine', section: 'ais', title: 'My AIs', render: () => <Ais view="mine" /> },
   {

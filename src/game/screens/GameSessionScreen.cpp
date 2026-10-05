@@ -41,6 +41,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	}
 	catch (const Script::SessionFailure &failure)
 	{
+        GAGCore::ApplicationHost::studioError(failure.what());
 		engine->abortSession();
 		engine->restoreCursor();
 		started = false;
