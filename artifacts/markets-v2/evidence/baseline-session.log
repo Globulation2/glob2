@@ -1,0 +1,5 @@
+PASS EngineSession/serial sessions retain chat text across skipped GUI frames (0.5s)
+PASS EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (1.4s)
+
+2 passed, 0 failed, 2 skipped (1.9s of test time)
+[run_tests] JUnit report: artifacts/markets-v2/baseline-session.xml (4 cases)

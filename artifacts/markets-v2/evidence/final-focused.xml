@@ -1,27 +1,71 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="26" failures="0" errors="0" skipped="1"><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/deliverer stays attached and fetches the next market delivery" time="0.001512" status="run" />
-  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="0.872002" status="run" />
-  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/stocked markets are resource goals, depleted markets are not" time="0.006934" status="run" />
-  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="0.696805" status="run" />
-  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="a frequently refreshed market field publishes depletion and restocking" time="0.003614" status="run" />
-  <testcase classname="MarketsV2" name="disabled fruit deliveries match master per tick [golden][save-format][artifacts]" time="0.755669" status="run" />
-  <testcase classname="MarketsV2" name="disabled gate blocks explicit fetch APIs and upgrade execution" time="0.001735" status="run" />
-  <testcase classname="MarketsV2" name="each market level accepts only its resources across all swim classes" time="0.003366" status="run" />
-  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="1.31795" status="run" />
-  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.051091" status="run" />
-  <testcase classname="MarketsV2" name="market repair materials do not overwrite shared stock" time="0.002417" status="run" />
-  <testcase classname="MarketsV2" name="market routes respect forbidden ground and water across swim classes" time="0.00241" status="run" />
-  <testcase classname="MarketsV2" name="upgrading cancelling and completing preserve shared stock and gate" time="0.237693" status="run" />
-  <testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="OrderValidation"><testcase classname="OrderValidation" name="every order type survives random payloads through decode, check and execution [orders]" time="0.18317" status="run" />
-  <testcase classname="OrderValidation" name="fields outside what the user interface produces are rejected [orders]" time="0.173304" status="run" />
-  <testcase classname="OrderValidation" name="hostile orders do not stop a game that executes them unchecked [orders]" time="0.179609" status="run" />
-  <testcase classname="OrderValidation" name="orders a client builds for its own team and buildings pass [orders]" time="0.172115" status="run" />
-  <testcase classname="OrderValidation" name="orders acting for another team, player or building are rejected [orders]" time="0.14241" status="run" />
-  <testcase classname="OrderValidation" name="orders whose building is no longer in a state they apply to are stale [orders]" time="0.17003" status="run" />
-  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.352484" status="run" />
-  </testsuite><testsuite name="ExperimentalFeatures"><testcase classname="ExperimentalFeatures" name="registry keys are unique kebab-case and parse back to their id" time="0" status="run" />
+<testsuites tests="72" failures="0" errors="0" skipped="3"><testsuite name="CortexActionCoverage"><testcase classname="CortexActionCoverage" name="build actions reject invalid slots and cooldown suppresses duplicate orders" time="0.003788" status="run" />
+  <testcase classname="CortexActionCoverage" name="flag rediscovery excludes claimed flags and stale defense teardown is idempotent" time="0.004768" status="run" />
+  <testcase classname="CortexActionCoverage" name="live upgrade eligibility and worker columns drive the actual construction order" time="0.002041" status="run" />
+  <testcase classname="CortexActionCoverage" name="market levels do not introduce an AI upgrade strategy" time="0.002049" status="run" />
+  <testcase classname="CortexActionCoverage" name="production clamps ratios applies orders and deduplicates finished swarms" time="0.001863" status="run" />
+  <testcase classname="CortexActionCoverage" name="rally selection and bound warrior arrivals respect colony preference and toroidal range" time="0.002158" status="run" />
+  <testcase classname="CortexActionCoverage" name="war flags create once reconcile force limits and retarget through real orders" time="0.001899" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="4.11528" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.659264" status="run" />
+  <testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="0.431726" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.668054" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="4.71747" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.343938" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.272487" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Terrain simulation change rejects released replays and enforces acceptance boundaries" time="0.540924" status="run" />
+  </testsuite><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/deliverer stays attached and fetches the next market delivery" time="0.00345" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="2.32946" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/stocked markets are resource goals, depleted markets are not" time="0.003654" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="1.96603" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="a frequently refreshed market field publishes depletion and restocking" time="0.002317" status="run" />
+  <testcase classname="MarketsV2" name="disabled fruit deliveries match master per tick [golden][save-format][artifacts]" time="1.73002" status="run" />
+  <testcase classname="MarketsV2" name="disabled gate blocks explicit fetch APIs and upgrade execution" time="0.002874" status="run" />
+  <testcase classname="MarketsV2" name="each market level accepts only its resources across all swim classes" time="0.004456" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="3.25506" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.062977" status="run" />
+  <testcase classname="MarketsV2" name="market repair materials do not overwrite shared stock" time="0.001931" status="run" />
+  <testcase classname="MarketsV2" name="market routes respect forbidden ground and water across swim classes" time="0.003139" status="run" />
+  <testcase classname="MarketsV2" name="upgrading cancelling and completing preserve shared stock and gate" time="0.561488" status="run" />
+  <testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="Maxima food catchments and carrier discounts follow road and ice travel costs" time="0.00193" status="run" />
+  <testcase classname="Maxima.Implementation" name="category maintenance capacity regressions" time="0.474126" status="run" />
+  <testcase classname="Maxima.Implementation" name="completed swarm budget regressions" time="0.00655" status="run" />
+  <testcase classname="Maxima.Implementation" name="director execution regressions" time="0.00522" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade priority regressions" time="0.005073" status="run" />
+  <testcase classname="Maxima.Implementation" name="director upgrade regressions" time="0.005434" status="run" />
+  <testcase classname="Maxima.Implementation" name="economic resource access regressions" time="0.008553" status="run" />
+  <testcase classname="Maxima.Implementation" name="economy staffing regressions" time="0.003711" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution regressions" time="0.004068" status="run" />
+  <testcase classname="Maxima.Implementation" name="execution state save regression" time="0.00537" status="run" />
+  <testcase classname="Maxima.Implementation" name="explorer swarm staffing regressions" time="0.003663" status="run" />
+  <testcase classname="Maxima.Implementation" name="food relocation executor regression" time="0.004408" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit strategy regressions" time="0.016839" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit supply routes" time="0.002275" status="run" />
+  <testcase classname="Maxima.Implementation" name="gradient dependencies; payload round trips and cache expiry" time="0.055725" status="run" />
+  <testcase classname="Maxima.Implementation" name="inn completion staffing regressions" time="0.004942" status="run" />
+  <testcase classname="Maxima.Implementation" name="integration regressions" time="0.004421" status="run" />
+  <testcase classname="Maxima.Implementation" name="maxima bootstrap regression" time="0.014293" status="run" />
+  <testcase classname="Maxima.Implementation" name="mission force regressions" time="0.004506" status="run" />
+  <testcase classname="Maxima.Implementation" name="placement maintenance regressions" time="0.113441" status="run" />
+  <testcase classname="Maxima.Implementation" name="preemptive scheduling regression" time="0.003458" status="run" />
+  <testcase classname="Maxima.Implementation" name="rejected placement upgrade regressions" time="0.004577" status="run" />
+  <testcase classname="Maxima.Implementation" name="repair labor contract regressions" time="0.01064" status="run" />
+  <testcase classname="Maxima.Implementation" name="review bug regressions" time="0.004765" status="run" />
+  <testcase classname="Maxima.Implementation" name="school population scaling regressions" time="0.003768" status="run" />
+  <testcase classname="Maxima.Implementation" name="terrain travel fields serialize mode and retain stale snapshots" time="0.001685" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade clearing regressions" time="0.015988" status="run" />
+  <testcase classname="Maxima.Implementation" name="upgrade worker priority regressions" time="0.004492" status="run" />
+  </testsuite><testsuite name="OrderValidation"><testcase classname="OrderValidation" name="every order type survives random payloads through decode, check and execution [orders]" time="0.476474" status="run" />
+  <testcase classname="OrderValidation" name="fields outside what the user interface produces are rejected [orders]" time="0.406038" status="run" />
+  <testcase classname="OrderValidation" name="hostile orders do not stop a game that executes them unchecked [orders]" time="0.457295" status="run" />
+  <testcase classname="OrderValidation" name="orders a client builds for its own team and buildings pass [orders]" time="0.452623" status="run" />
+  <testcase classname="OrderValidation" name="orders acting for another team, player or building are rejected [orders]" time="0.44336" status="run" />
+  <testcase classname="OrderValidation" name="orders whose building is no longer in a state they apply to are stale [orders]" time="0.333702" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.913258" status="run" />
+  </testsuite><testsuite name="ExperimentalFeatures"><testcase classname="ExperimentalFeatures" name="registry keys are unique kebab-case and parse back to their id" time="0.00011" status="run" />
     <testcase classname="ExperimentalFeatures" name="text form round trips and ignores keys this build does not know" time="0" status="run" />
-    <testcase classname="ExperimentalFeatures" name="stream round trip; a pre-124 stream reads nothing; corrupt input is refused" time="0.000412" status="run" />
+    <testcase classname="ExperimentalFeatures" name="stream round trip; a pre-124 stream reads nothing; corrupt input is refused" time="0.000485" status="run" />
     <testcase classname="ExperimentalFeatures" name="text streams keep the set" time="0" status="run" />
-    <testcase classname="ExperimentalFeatures" name="GameHeader carries the set in its full and player-less forms and a version 123 header reads none" time="0.000157" status="run" />
+    <testcase classname="ExperimentalFeatures" name="GameHeader carries the set in its full and player-less forms and a version 123 header reads none" time="0.000151" status="run" />
   </testsuite></testsuites>

@@ -1,3 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries match master per tick [golden][save-format][artifacts]" time="0.503759" status="run" />
-  </testsuite></testsuites>

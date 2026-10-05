@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="2" errors="0" skipped="0"><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.005449" status="run">
+<testsuites tests="1" failures="2" errors="0" skipped="0"><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.012432" status="run">
       <failure message="-1 == 0" type="CHECK">
 libgag/src/ImageAssetTest.cpp:75:
 CHECK( std::memcmp(static_cast&lt;char*&gt;(rgba-&gt;pixels) + y * rgba-&gt;pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!

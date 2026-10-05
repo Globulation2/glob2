@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="2"><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="1.3334" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="0.341106" status="run" />
+  <testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

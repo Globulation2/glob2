@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries match master per tick [golden][save-format][artifacts]" time="1.08524" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.069156" status="run" />
+  </testsuite></testsuites>

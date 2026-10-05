@@ -1,0 +1,5 @@
+PASS MarketsV2/legacy workers already travelling to markets continue after migration [golden][save-format] (0.1s)
+PASS MarketsV2/disabled fruit deliveries match master per tick [golden][save-format][artifacts] (1.1s)
+
+2 passed, 0 failed, 0 skipped (1.3s of test time)
+[run_tests] JUnit report: artifacts/markets-v2/final-baseline.xml (2 cases)

@@ -1,12 +1,12 @@
 {
-  "revision": "f5fa88e9175fa0014e46f6a36b153ad4cf5b9205",
-  "base": "79c8d65f52cfea0a91efa3c104f97d79fd5de54d",
+  "revision": "0fe0de15be5b8fd1b9364413c3ee57ea06e60e6a",
+  "base": "a88ff621c3959ce74bfe6761bf562d668c5d0b38",
   "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
   "architecture": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
   "python": "Python 3.14.7\n",
   "sdl_prefix": "/Users/bradley/.cache/glob2-sdl3/prefix",
   "sdl_version": "3.4.16",
-  "memory_benchmark": "10 runs of 896 synchronous resource-field refreshes on 64x64 grass; CPU medians off 0.0121655s on 0.014124s; allocated market fields off 0 bytes on 458752 bytes. Full serial/threaded supply network uses 4 market fields / 32768 bytes when enabled.",
-  "final_revision": "bbb793b97c7eb7e0139b5fd95ecbaafa2bce1cda"
+  "memory_benchmark": "10 runs of 896 synchronous resource-field refreshes on 64x64 grass; CPU medians off 0.012427s on 0.0142655s; allocated market fields off 0 bytes on 458752 bytes. Full serial/threaded supply network uses 4 market fields / 32768 bytes when enabled.",
+  "final_revision": "0fe0de15be5b8fd1b9364413c3ee57ea06e60e6a"
 }

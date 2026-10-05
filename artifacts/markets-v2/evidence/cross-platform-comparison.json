@@ -1,0 +1,20 @@
+{
+  "disabled_fruit_deliveries_match_master_per_tick_golden_save-format_artifacts": {
+    "sha256": "8cd5432696cadb138040eac6ac60937eaf74ec76a3edb8e058deeb4bedc84b4e",
+    "ticks": 3000,
+    "identical": true
+  },
+  "enabled_supply_networks_repeat_deterministically_with_save_continuation_golden_save-format_artifacts": {
+    "sha256": "b6e96a33cac7986a4216632abbe81cfe508d70b42e4096f29c0f166111304a93",
+    "ticks": 3000,
+    "identical": true
+  },
+  "native.replay.checksums": {
+    "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+    "identical": true
+  },
+  "verify-match.checksums.txt": {
+    "sha256": "62bddf77eef60e383c03f10c798b1c95abb1e1febb25e6a6830d7c2d0dada947",
+    "identical": true
+  }
+}

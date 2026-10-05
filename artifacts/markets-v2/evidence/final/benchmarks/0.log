@@ -1,12 +1,12 @@
 GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
-GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "f5fa88e9175fa0014e46f6a36b153ad4cf5b9205", "sourceStatus": [], "sourceTreeSha256": "c96b73894c25cb8f8c9d33481beaa811598892b1555e73bdd8d5405032c80ced"}
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "0fe0de15be5b8fd1b9364413c3ee57ea06e60e6a", "sourceStatus": [], "sourceTreeSha256": "a6c142ec5da270e3a42514fe4597d17f0fe8ec10266f830f9df9de0278bca386"}
 [doctest] doctest version is "2.4.11"
 [doctest] run with "--help" for options
 Settings::load("preferences.txt") : error, can't open file.
 BuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13
-markets-v2=0: 896 64x64 resource refreshes, CPU=0.012090s wall=0.012091s market-field-bytes=0
-markets-v2=1: 896 64x64 resource refreshes, CPU=0.013883s wall=0.013884s market-field-bytes=458752
+markets-v2=0: 896 64x64 resource refreshes, CPU=0.012432s wall=0.012436s market-field-bytes=0
+markets-v2=1: 896 64x64 resource refreshes, CPU=0.014370s wall=0.014374s market-field-bytes=458752
 ===============================================================================
-[doctest] test cases: 1 | 1 passed | 0 failed | 770 skipped
+[doctest] test cases: 1 | 1 passed | 0 failed | 771 skipped
 [doctest] assertions: 7 | 7 passed | 0 failed |
 [doctest] Status: SUCCESS!

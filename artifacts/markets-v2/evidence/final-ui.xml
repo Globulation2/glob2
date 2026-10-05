@@ -1,3 +1,3 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="0.549476" status="run" />
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="1.00415" status="run" />
   </testsuite></testsuites>
