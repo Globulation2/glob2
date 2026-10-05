@@ -1,0 +1,166 @@
+[  0%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_stb.c.o
+[  1%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_lsx.c.o
+[  1%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_yuv.c.o
+[  2%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_sse.c.o
+[  2%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_std.c.o
+[  2%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_fmod.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_atan2.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_exp.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_log.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_log10.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_sqrt.c.o
+[  5%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_rem_pio2.c.o
+[  5%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_pow.c.o
+[  6%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_cos.c.o
+[  6%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_rem_pio2.c.o
+[  7%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_sin.c.o
+[  7%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_tan.c.o
+[  8%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_atan.c.o
+[  8%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_copysign.c.o
+[  9%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_cos.c.o
+[  9%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_fabs.c.o
+[ 10%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_floor.c.o
+[ 10%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isinf.c.o
+[ 11%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isinff.c.o
+[ 11%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isnan.c.o
+[ 12%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isnanf.c.o
+[ 12%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_modf.c.o
+[ 13%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_scalbn.c.o
+[ 13%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_sin.c.o
+[ 13%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_tan.c.o
+[ 14%] Building C object CMakeFiles/SDL3-static.dir/src/audio/dummy/SDL_dummyaudio.c.o
+[ 14%] Building C object CMakeFiles/SDL3-static.dir/src/audio/disk/SDL_diskaudio.c.o
+[ 15%] Building C object CMakeFiles/SDL3-static.dir/src/camera/dummy/SDL_camera_dummy.c.o
+[ 15%] Building C object CMakeFiles/SDL3-static.dir/src/loadso/dlopen/SDL_sysloadso.c.o
+[ 16%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/virtual/SDL_virtualjoystick.c.o
+[ 16%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullevents.c.o
+[ 17%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullframebuffer.c.o
+[ 17%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullvideo.c.o
+[ 18%] Building C object CMakeFiles/SDL3-static.dir/src/main/emscripten/SDL_sysmain_callbacks.c.o
+[ 18%] Building C object CMakeFiles/SDL3-static.dir/src/main/emscripten/SDL_sysmain_runapp.c.o
+[ 19%] Building C object CMakeFiles/SDL3-static.dir/src/misc/emscripten/SDL_sysurl.c.o
+[ 19%] Building C object CMakeFiles/SDL3-static.dir/src/audio/emscripten/SDL_emscriptenaudio.c.o
+[ 20%] Building C object CMakeFiles/SDL3-static.dir/src/filesystem/emscripten/SDL_sysfilesystem.c.o
+[ 20%] Building C object CMakeFiles/SDL3-static.dir/src/filesystem/posix/SDL_sysfsops.c.o
+[ 21%] Building C object CMakeFiles/SDL3-static.dir/src/camera/emscripten/SDL_camera_emscripten.c.o
+[ 21%] Building C object CMakeFiles/SDL3-static.dir/src/power/emscripten/SDL_syspower.c.o
+[ 21%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/emscripten/SDL_sysjoystick.c.o
+[ 22%] Building C object CMakeFiles/SDL3-static.dir/src/locale/emscripten/SDL_syslocale.c.o
+[ 22%] Building C object CMakeFiles/SDL3-static.dir/src/time/unix/SDL_systime.c.o
+[ 23%] Building C object CMakeFiles/SDL3-static.dir/src/timer/unix/SDL_systimer.c.o
+[ 23%] Building C object CMakeFiles/SDL3-static.dir/src/sensor/emscripten/SDL_emscriptensensor.c.o
+[ 24%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenevents.c.o
+[ 24%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenframebuffer.c.o
+[ 25%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenmouse.c.o
+[ 25%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenopengles.c.o
+[ 26%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenvideo.c.o
+[ 26%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/SDL_dialog.c.o
+[ 27%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/SDL_dialog_utils.c.o
+[ 27%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_unixdialog.c.o
+[ 28%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_portaldialog.c.o
+[ 28%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_zenitydialog.c.o
+[ 29%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_zenitymessagebox.c.o
+[ 29%] Building C object CMakeFiles/SDL3-static.dir/src/process/SDL_process.c.o
+[ 29%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenevents.c.o
+[ 30%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenframebuffer.c.o
+[ 30%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenopengles.c.o
+[ 31%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenvideo.c.o
+[ 31%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenvulkan.c.o
+[ 32%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenwindow.c.o
+[ 32%] Building C object CMakeFiles/SDL3-static.dir/src/tray/SDL_tray_utils.c.o
+[ 32%] Building C object CMakeFiles/SDL3-static.dir/src/storage/generic/SDL_genericstorage.c.o
+[ 33%] Building C object CMakeFiles/SDL3-static.dir/src/haptic/dummy/SDL_syshaptic.c.o
+[ 34%] Building C object CMakeFiles/SDL3-static.dir/src/process/dummy/SDL_dummyprocess.c.o
+[ 34%] Building C object CMakeFiles/SDL3-static.dir/src/tray/dummy/SDL_tray.c.o
+[ 35%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_syscond.c.o
+[ 35%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_sysmutex.c.o
+[ 36%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_sysrwlock.c.o
+[ 36%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_syssem.c.o
+[ 37%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_systhread.c.o
+[ 37%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_systls.c.o
+[ 38%] Linking C static library libSDL3.a
+[100%] Built target SDL3-static
+-- Install configuration: "Release"
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/pkgconfig/sdl3.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/libSDL3.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/cmake/SDL3/SDL3headersTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/cmake/SDL3/SDL3staticTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/cmake/SDL3/SDL3staticTargets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/cmake/SDL3/SDL3Config.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/lib/cmake/SDL3/SDL3ConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_assert.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_asyncio.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_atomic.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_audio.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_begin_code.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_bits.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_blendmode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_camera.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_clipboard.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_close_code.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_copying.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_cpuinfo.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_dialog.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_dlopennote.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_egl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_endian.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_error.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_events.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_filesystem.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_gamepad.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_gpu.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_guid.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_haptic.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_hidapi.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_hints.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_init.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_intrin.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_iostream.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_joystick.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_keyboard.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_keycode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_loadso.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_locale.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_log.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_main.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_main_impl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_messagebox.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_metal.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_misc.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_mouse.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_mutex.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_oldnames.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengl_glext.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles2.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles2_gl2.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles2_gl2ext.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles2_gl2platform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_opengles2_khrplatform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_pen.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_pixels.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_platform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_platform_defines.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_power.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_process.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_properties.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_rect.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_render.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_scancode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_sensor.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_stdinc.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_storage.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_surface.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_system.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_thread.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_time.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_timer.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_touch.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_tray.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_version.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_video.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_vulkan.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/include/SDL3/SDL_revision.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/png16/wasm-prefix/share/licenses/SDL3/LICENSE.txt

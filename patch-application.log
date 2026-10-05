@@ -1,0 +1,2 @@
+Patch applies cleanly and idempotently to pinned SDL 3.4.16; built source is byte-identical: e0b5341d4364934d24bef7b985b3a6e778b3a7928ee39cb025b8a776a2c5afb3
+Direct SDL fallback before repair mismatches fixture; native and WebAssembly after repair match all 16 fixture bytes exactly.
