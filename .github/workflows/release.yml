@@ -310,7 +310,7 @@ jobs:
               libpng16-devel libjpeg8-devel
               libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel
               wayland-devel libxkbcommon-devel alsa-devel libpulse-devel
-              libopusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel
+              opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel
               zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
               libepoxy-devel
     steps:
