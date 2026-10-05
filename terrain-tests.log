@@ -1,0 +1,8 @@
+PASS TerrainPresentation/tile animation and optional backgrounds use presentation metadata (0.0s)
+PASS TerrainPresentation/export uses registered whole-cell material colors [artifacts] (0.0s)
+PASS TerrainPresentation/image import keeps whole-cell material edges out of legacy gameplay [artifacts] (0.0s)
+PASS TerrainPresentation/every side mask is decorative and preserves material identity (0.0s)
+PASS TerrainPresentation/whole-cell layers preserve software terrain caching [display][artifacts] (1.8s)
+
+5 passed, 0 failed, 0 skipped (1.9s of test time)
+[run_tests] JUnit report: artifacts/terrain-software-tests/junit.xml (5 cases)

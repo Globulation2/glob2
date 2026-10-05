@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="every side mask is decorative and preserves material identity" time="0.003821" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.004227" status="run" />
+  <testcase classname="TerrainPresentation" name="image import keeps whole-cell material edges out of legacy gameplay [artifacts]" time="0.005706" status="run" />
+  <testcase classname="TerrainPresentation" name="tile animation and optional backgrounds use presentation metadata" time="0" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="1.69349" status="run" />
+  </testsuite></testsuites>
