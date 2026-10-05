@@ -46,6 +46,12 @@ application pthread instead of proxying them to the UI, where the transferred
 canvas cannot create a context. This adapter is included only in the threaded
 runtime and must be checked when upgrading the SDK or SDL port.
 
+Both runtimes include `browser/canvas-size.js`. It preserves software canvas
+pixels when SDL repeats an unchanged size request, while retaining SDK viewport,
+context-loss and offscreen ownership handling. Threaded startup and gameplay
+share one application worker: completing the asset startup loop transfers its
+lifetime to the replacement gameplay loop, and terminal completion releases it.
+
 `browser/Audio.cpp` bridges the pinned SDL WebAudio driver: device creation and
 output stay on the UI thread, while mixer callbacks run on the application
 thread with engine mutations. The UI consumes the previous PCM block without

@@ -44,7 +44,18 @@ test(`online replay uses signed ${renderer} appearance without a preview overrid
   }
   else {
     await expect.poll(()=>seen.filter(path=>/\/sprites\/[0-9a-f]{64}\/pages\/[0-9a-f]{64}$/.test(path)).length,{timeout:120000}).toBeGreaterThan(0);
-    await page.waitForTimeout(1500);
+    // Read the canvas bitmap itself: screenshots include the shell's CSS
+    // background and can look nonempty after a repeated resize clears it.
+    await expect.poll(() => page.evaluate(() => {
+      const canvas = document.querySelector('#canvas');
+      const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+      let opaque = 0, colored = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] === 255) ++opaque;
+        if (pixels[i] || pixels[i + 1] || pixels[i + 2]) ++colored;
+      }
+      return opaque > canvas.width * canvas.height * 0.9 && colored > 10000;
+    }), {timeout: 30000}).toBe(true);
     expect(await page.evaluate(()=>globalThis.replaySkinDraws)).toBe(0);
     expect(await page.evaluate(()=>glob2Diagnostics.snapshot().assets.skins)).not.toBe('ready');
   }
