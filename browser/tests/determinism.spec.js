@@ -202,3 +202,67 @@ test(`WebAssembly executes the shared scripting corpus (${variant})`, async ({pa
 });
 
 }
+
+// Markets V2 uses the native cases and frozen simulation traces on both Wasm builds.
+for (const variant of ['serial', 'threaded']) {
+  test(`WebAssembly preserves Markets V2 off/on traces (${variant})`, async ({page}, info) => {
+    test.setTimeout(300000);
+    const root = path.resolve(__dirname, '../..');
+    const output = path.join(root, 'artifacts/browser-determinism/markets-v2', variant, info.project.name);
+    fs.rmSync(output, {recursive:true, force:true});
+    fs.mkdirSync(output, {recursive:true});
+    const progress = [];
+    page.on('console', message => { progress.push(message.text());
+      fs.appendFileSync(path.join(output, 'progress.log'), message.text() + '\n'); });
+    await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
+      window.marketExit=null;
+      var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
+        print:m=>console.log(String(m)),printErr:m=>console.error(String(m)),
+        preRun:[()=>{FS.mkdirTree('/evidence/profile');
+          ENV.GLOB2_TEST_SOURCE_ROOT='/';ENV.GLOB2_USER_DATA_DIR='/evidence/profile';
+          ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
+        async onRuntimeInitialized(){
+          try {window.marketExit=(await Module.start(['--test-suite=MarketsV2',
+            '--test-case-exclude=*display*,*benchmark*','--reporters=junit','--out=/evidence/tests.xml']))??0;}
+          catch(error){window.marketError=String(error);}
+          const files={};
+          function collect(directory){for(const name of FS.readdir(directory)){
+            if(name==='.'||name==='..'||name==='profile')continue;
+            const file=directory+'/'+name;
+            if(FS.isDir(FS.stat(file).mode)){collect(file);continue;}
+            // Native evidence retains full saves; export complete traces and executed-build proof here.
+            if(!name.endsWith('.xml')&&!name.endsWith('.json')&&name!=='checksums.txt')continue;
+            files[file.substring('/evidence/'.length)]=FS.readFile(file,{encoding:'utf8'});
+          }}
+          collect('/evidence');window.marketFiles=files;window.marketDone=true;
+        }};
+    </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);
+    let waitError;
+    try {await page.waitForFunction(()=>window.marketDone===true, null, {timeout:280000});}
+    catch(error){waitError=error;}
+    fs.writeFileSync(path.join(output, 'run.log'), progress.join('\n'));
+    if(waitError)throw waitError;
+    const result=await page.evaluate(()=>({exit:window.marketExit,error:window.marketError,files:window.marketFiles}));
+    for(const [relative, contents] of Object.entries(result.files)){
+      const destination=path.join(output,relative);
+      fs.mkdirSync(path.dirname(destination),{recursive:true});fs.writeFileSync(destination,contents);
+    }
+    const source=JSON.parse(require('node:child_process').execFileSync('python3',
+      [path.join(root,'test/build_provenance.py')],{cwd:root,encoding:'utf8'}));
+    const producer=JSON.parse(result.files['cases/build-provenance.json']);
+    for(const key of ['revision','dirty','sourceTreeSha256'])expect(producer[key]).toEqual(source[key]);
+    fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({source,producer,
+      variant,browser:info.project.name,browserVersion:page.context().browser().version(),
+      exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
+    expect(result.error).toBeUndefined();expect(result.exit).toBe(0);
+    expect(result.files['tests.xml']).toMatch(/failures="0"/);
+    expect(result.files['tests.xml']).toMatch(/errors="0"/);
+    expect(result.files['tests.xml']).toContain('disabled fruit deliveries match master per tick');
+    expect(result.files['tests.xml']).toContain('enabled supply networks repeat deterministically');
+    const traces=Object.entries(result.files).filter(([file])=>file.endsWith('/checksums.txt'));
+    expect(traces.length).toBe(2);
+    for(const [,trace] of traces)expect(trace.trim().split('\n').length).toBe(3000);
+    fs.writeFileSync(info.outputPath('markets-v2-tests.xml'),result.files['tests.xml']);
+  });
+}

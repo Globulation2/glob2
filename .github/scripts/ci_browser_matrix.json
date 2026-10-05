@@ -92,12 +92,12 @@
   {
     "name": "firefox WSS and simulation",
     "browsers": "firefox",
-    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies'"
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2'"
   },
   {
     "name": "webkit WSS and simulation",
     "browsers": "webkit",
-    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies'"
+    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2'"
   },
   {
     "name": "firefox scripting",

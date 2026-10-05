@@ -32,7 +32,9 @@ Each accepted resource has a capacity of 200 in the shared stock, rather than
 200 per market. The existing fruit-only inter-team exchange code is preserved. Its controls are
 currently disabled in the market panel; Markets V2 does not repair or enable them. Normal upgrade
 requirements and custom-game restrictions still apply. Costs, HP and armor are
-provisional; all levels reuse the original artwork. Existing AIs can use the
+provisional; all levels reuse the original artwork. Level 2 currently finishes
+with 560 of its 600 HP and needs repair before another upgrade, preserving the
+proposal's HP-per-resource balance. Existing AIs can use the
 routing behavior but have no new strategy for building market upgrades.
 
 ## Compatibility and testing
@@ -44,7 +46,8 @@ append IDs 51–54. Script observations omit unavailable types.
 
 Format 134 persists market fields, refresh flags and pending publications without
 renumbering older pending-gradient destinations. Earlier saves keep their original
-behavior. Binary and text continuation tests cover the new state. Saved upgraded
+behavior. Binary and text continuation tests cover the new state. Text saves also retain
+qualified statistics field names used by existing games. Saved upgraded
 markets or market routing state require the experiment in the game header; a file
 with inconsistent state is refused rather than silently changing its rules.
 

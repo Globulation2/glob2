@@ -310,6 +310,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 			Sint32 fTotErr=0;
+			// Experimental markets keep shared stock separate from repair materials.
+			Sint32 *repairResources = owner->map->marketsV2Enabled() && type->canExchange
+				? localResource : resources;
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{
 				int fVal=fDestructionRatio*targetBt->maxResource[i];
@@ -320,7 +323,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					fTotErr-=(int)FIXED_POINT_ONE;
 					iVal++;
 				}
-				resources[i]=iVal;
+				repairResources[i]=iVal;
 			}
 		}
 

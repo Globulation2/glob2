@@ -305,7 +305,9 @@ namespace
 				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR);
 				b->getResourceCountToRepair(bp.repairCost);
 			}
-			bp.showLevel = b->type->prevLevel >= 0 || b->isUpgradeAvailable();
+			bp.showLevel = (b->type->shortTypeNum != IntBuildingType::MARKET_BUILDING ||
+				game.gameHeader.hasExperiment(ExperimentId::MarketsV2)) &&
+				(b->type->prevLevel >= 0 || b->isUpgradeAvailable());
 			if (constructible && b->isUpgradeAvailable())
 				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE);
 			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();

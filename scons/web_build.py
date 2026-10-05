@@ -190,7 +190,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp', '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
-                '#src/map/gradient/PathGradientHarness.cpp']:
+                '#src/map/gradient/PathGradientHarness.cpp',
+                ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:
             source, options = (entry, {}) if isinstance(entry, str) else entry
             local = tests.Clone()
             local.Append(CXXFLAGS=options.get('cxxflags', []))

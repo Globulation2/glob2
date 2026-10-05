@@ -167,7 +167,7 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 			&& b->hp >= b->getEffectiveMaxHp()) return rejected(Reason::BadState);
 		if (b && !b->type->isBuildingSite && b->hp >= b->getEffectiveMaxHp()
 			&& b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING
-			&& !c.game.gameHeader.hasExperiment(ExperimentId::MarketsV2)) return rejected(Reason::BadState);
+			&& !b->isUpgradeAvailable()) return rejected(Reason::BadState);
 		return accepted();
 	}
 
