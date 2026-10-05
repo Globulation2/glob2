@@ -40,6 +40,15 @@ using std::make_unique;
 
 namespace GAGCore
 {
+    namespace {
+    SDL_Surface *loadArtwork(SDL_IOStream *stream, bool close)
+    {
+        SDL_Surface *surface = IMG_LoadWEBP_IO(stream);
+        if (close) SDL_CloseIO(stream);
+        return surface;
+    }
+    }
+
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
     static std::string packDirectory, packText;
@@ -112,6 +121,7 @@ namespace GAGCore
 				std::istringstream fields(line);
 				fields >> entry.file >> layer >> entry.first >> entry.count >> entry.tileW >> entry.tileH;
 				if (!fields || (layer != "image" && layer != "rotated")
+					|| !entry.file.ends_with(".webp")
 					|| entry.file.find_first_of("/\\:") != std::string::npos
 					|| !entry.count || entry.count > 65536 || entry.first > 65536
 					|| entry.tileW <= 0 || entry.tileH <= 0 || entry.tileW > 4096 || entry.tileH > 4096)
@@ -149,9 +159,9 @@ namespace GAGCore
 		const std::string directory = filename.substr(0, filename.rfind('/') + 1);
 		for (const SheetEntry &entry : entries)
 		{
-			// openImage also finds the runtime export's WebP re-encoding of a PNG name.
+			// Sheet indices name the exact WebP artwork.
 			SDL_IOStream *stream = Toolkit::getFileManager()->openImage(directory + entry.file);
-			SDL_Surface *sheet = stream ? IMG_Load_IO(stream, true) : nullptr;
+			SDL_Surface *sheet = stream ? loadArtwork(stream, true) : nullptr;
 			if (sheet && sheet->format != SDL_PIXELFORMAT_RGBA32)
 			{
 				SDL_Surface *converted = SDL_ConvertSurface(sheet, SDL_PIXELFORMAT_RGBA32);
@@ -214,7 +224,7 @@ namespace GAGCore
 		if (loadSheets(filename))
 		{
 			for (size_t i = 0; i < images.size(); ++i)
-				loadExperimentFrame(filename + std::to_string(i) + ".png", filename + std::to_string(i) + "r.png");
+				loadExperimentFrame(filename + std::to_string(i) + ".webp", filename + std::to_string(i) + "r.webp");
 		}
 		else
 		{
@@ -225,23 +235,24 @@ namespace GAGCore
 			while (true)
 			{
 				std::ostringstream frameName;
-				frameName << filename << i << ".png";
+				frameName << filename << i << ".webp";
 				frameStream = Toolkit::getFileManager()->openImage(frameName.str());
 
 				std::ostringstream frameNameRot;
-				frameNameRot << filename << i << "r.png";
+				frameNameRot << filename << i << "r.webp";
 				rotatedStream = Toolkit::getFileManager()->openImage(frameNameRot.str());
 
 				if (!((frameStream) || (rotatedStream)))
 					break;
 
-				loadFrame(frameStream, rotatedStream);
-				loadExperimentFrame(frameName.str(), frameNameRot.str());
+				const bool loaded = loadFrame(frameStream, rotatedStream);
 
 				if (frameStream)
 					SDL_CloseIO(frameStream);
 				if (rotatedStream)
 					SDL_CloseIO(rotatedStream);
+				if (!loaded) return false;
+				loadExperimentFrame(frameName.str(), frameNameRot.str());
 				i++;
 			}
 		}
@@ -526,7 +537,7 @@ namespace GAGCore
 		for (auto p : experimentRotated) delete p;
 		experimentImages.clear(); experimentRotated.clear();
 		for (size_t i=0;i<images.size();++i)
-			loadExperimentFrame(fileName+std::to_string(i)+".png",fileName+std::to_string(i)+"r.png");
+			loadExperimentFrame(fileName+std::to_string(i)+".webp",fileName+std::to_string(i)+"r.webp");
 		recomputeBlockCompleteHD();
 		createHighResolutionAtlas();
 	}
@@ -561,18 +572,20 @@ namespace GAGCore
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
-            auto rw=Toolkit::getFileManager()->openImage(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png");
+            auto rw=Toolkit::getFileManager()->openImage(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp");
             if(!rw){reject();return;}
-            auto s=IMG_Load_IO(rw,1);if(!s){reject();return;}
+            auto s=loadArtwork(rw,1);if(!s){reject();return;}
             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_DestroySurface(s);reject();return;}
             levels.emplace_back(new DrawableSurface(s));SDL_DestroySurface(s);
         }
-        // The atlas must correspond to this pack's validated frame layers.
+        // The exporter verifies exact source atlas placement. Independently encoded
+        // lossy WebP frames and atlases may differ in RGB, but alpha stays exact.
         for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
         {
             auto source=static_cast<unsigned char*>(experimentImages[i]->sdlsurface->pixels)+y*experimentImages[i]->sdlsurface->pitch;
             auto packed=static_cast<unsigned char*>(levels[0]->sdlsurface->pixels)+((i/columns)*256+border+y)*levels[0]->sdlsurface->pitch+((i%columns)*256+border)*4;
-            if(std::memcmp(source,packed,experimentImages[i]->getW()*4)!=0){reject();return;}
+            for(int x=0;x<experimentImages[i]->getW();++x)
+                if(source[x*4+3]!=packed[x*4+3]){reject();return;}
         }
         auto batch=std::make_unique<Sprite>();
         auto atlas=std::move(levels[0]);atlas->uploadToTexture();
@@ -632,7 +645,7 @@ namespace GAGCore
         if(!readPack(directory))return;
         std::istringstream stream(packText);std::string magic,id,base,team;int version,w,h,scale;
         stream>>magic>>version;
-		std::string wanted=frameName.substr(frameName.find_last_of('/')+1);wanted.resize(wanted.size()-4);
+		std::string wanted=frameName.substr(frameName.find_last_of('/')+1);wanted.resize(wanted.find_last_of('.'));
 		while(stream>>id>>w>>h>>scale>>base>>team)
 		{
 			if(id!=wanted)continue;
@@ -644,11 +657,11 @@ namespace GAGCore
 			if(w!=getW(index)||h!=getH(index)||scale!=(dynamicTeamColor?0:4)){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
 			auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
 			{
-				if(name=="-")return nullptr;
+				if(name=="-" || !name.ends_with(".webp"))return nullptr;
 				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
 				SDL_IOStream *rw=Toolkit::getFileManager()->openImage(directory+"/"+name);
 				if(!rw)return nullptr;
-				SDL_Surface *surface=IMG_Load_IO(rw,1);if(!surface)return nullptr;
+				SDL_Surface *surface=loadArtwork(rw,1);if(!surface)return nullptr;
 				int lw=original?original->getW():w,lh=original?original->getH():h;
 				int expectedW=dynamicTeamColor?highResolutionTextureSize:lw*scale;
 				int expectedH=dynamicTeamColor?highResolutionTextureSize:lh*scale;
@@ -716,29 +729,23 @@ namespace GAGCore
 		}
 	}
 	
-	void Sprite::loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream)
+	bool Sprite::loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream)
 	{
-		if (frameStream)
-		{
-			SDL_Surface *sprite = IMG_Load_IO(frameStream, 0);
-			assert(sprite);
-			images.push_back(new DrawableSurface(sprite));
-			SDL_DestroySurface(sprite);
-		}
-		else
-			images.push_back(NULL);
-	
-		if (rotatedStream)
-		{
-			SDL_Surface *sprite = IMG_Load_IO(rotatedStream, 0);
-			assert(sprite);
-			rotated.push_back(new RotatedImage(new DrawableSurface(sprite)));
-			SDL_DestroySurface(sprite);
-		}
-		else
-			rotated.push_back(NULL);
+        SDL_Surface *plain = frameStream ? loadArtwork(frameStream, false) : nullptr;
+        SDL_Surface *team = rotatedStream ? loadArtwork(rotatedStream, false) : nullptr;
+        if ((frameStream && !plain) || (rotatedStream && !team))
+        {
+            SDL_DestroySurface(plain);
+            SDL_DestroySurface(team);
+            return false;
+        }
+        images.push_back(plain ? new DrawableSurface(plain) : nullptr);
+        rotated.push_back(team ? new RotatedImage(new DrawableSurface(team)) : nullptr);
+        SDL_DestroySurface(plain);
+        SDL_DestroySurface(team);
+        return true;
 	}
-	
+
 	int Sprite::getW(int index)
 	{
 		if (!checkBound(index))

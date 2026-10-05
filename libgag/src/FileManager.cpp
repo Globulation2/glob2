@@ -109,6 +109,10 @@ namespace GAGCore
 #endif
 		const char* assets = SDL_getenv_unsafe("GLOB2_ASSET_DIR");
 		if (assets && *assets) addDir(assets);
+#ifdef PACKAGE_RUNTIME_ASSET_DIR
+        // Generated source-build indices must precede the source PNG indices.
+        addDir(PACKAGE_RUNTIME_ASSET_DIR);
+#endif
 		#ifdef WIN32
 		// Store launches do not promise that the current directory is the
 		// installed game's directory.
@@ -320,12 +324,9 @@ namespace GAGCore
 	
 	SDL_IOStream *FileManager::openImage(const std::string &filename)
 	{
-		const bool png = filename.size() >= 4 && filename.compare(filename.size()-4, 4, ".png") == 0;
-		auto read = [&](const std::string &path) -> SDL_IOStream * {
-			if (auto stream = SDL_IOFromFile(path.c_str(), "rb")) return stream;
-			if (png) return SDL_IOFromFile((path.substr(0, path.size()-4)+".webp").c_str(), "rb");
-			return nullptr;
-		};
+        auto read = [](const std::string &path) -> SDL_IOStream * {
+            return SDL_IOFromFile(path.c_str(), "rb");
+        };
 		if (isAbsolutePath(filename)) return read(filename);
 		for (const auto &directory : dirList)
 			if (auto stream = read(directory + DIR_SEPARATOR + filename)) return stream;

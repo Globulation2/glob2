@@ -141,7 +141,7 @@ def main():
     sys.path.insert(0, str(ROOT))
     from tools.package_assets import export_assets
     asset_root = output/'runtime-assets'
-    export_assets(ROOT, asset_root, platform='ios', optimized=args.release)
+    export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release)
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
     resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses')]
     if args.script_tests:

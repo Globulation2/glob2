@@ -51,7 +51,7 @@ DrawableSurface *FrontendTheme::backdropImage()
 	// The colony's still image, or the theme's own picture.
 	const auto &backdrop = Glob2UI::frontendTheme().backdrop;
 	const std::string path = backdrop.kind == GAGGUI::ui::Backdrop::Kind::Image ? backdrop.image
-																				 : "data/gfx/menu-colony.png";
+																				 : "data/gfx/menu-colony.webp";
 	if (path != fallbackPath)
 	{
 		fallbackPath = path;

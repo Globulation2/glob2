@@ -105,8 +105,8 @@ namespace GAGCore
 
 		//! Open a file in the SDL_IOStream format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_IOStream *open(const std::string filename, const std::string mode="rb");
-		//! Read a logical image name, preserving directory and PNG override precedence.
-		//! Packaged PNG images may be stored as WebP; ordinary file reads are unchanged.
+		//! Open an exact image filename, preserving user-directory precedence.
+		//! Runtime artwork uses WebP; imports/previews may use other formats.
 		SDL_IOStream *openImage(const std::string &filename);
 		//! Open a file in the FILE* format
 		FILE *openFP(const std::string filename, const std::string mode="rb");

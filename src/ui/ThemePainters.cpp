@@ -32,7 +32,7 @@ decltype(Theme::buttonPainter) spriteButtonPainter(const std::string &sprite)
 			{
 				// Blended RGBA copies draw alike in the software and OpenGL renderers.
 				GAGCore::DrawableSurface source(1, 1);
-				SDL_Surface *pixels = source.loadImage(sprite + std::to_string(i) + ".png")
+				SDL_Surface *pixels = source.loadImage(sprite + std::to_string(i) + ".webp")
 										  ? SDL_ConvertSurface(source.getSDLSurface(), SDL_PIXELFORMAT_RGBA32)
 										  : nullptr;
 				s.ready = pixels && s.ready;

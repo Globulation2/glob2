@@ -50,7 +50,21 @@ GAGCore::Color over(const GAGCore::Color &top, const GAGCore::Color &under)
 
 TEST_SUITE("ThemeCatalog")
 {
-	TEST_CASE("colours parse and print as #rrggbb[aa]")
+	TEST_CASE("artwork overrides require WebP paths") {
+    std::vector<std::string> errors;
+    auto catalog = ThemeCatalog::parse({
+        {"themes/webp.json", R"({"schema":1,"id":"webp","backdrop":{"kind":"image","image":"data/custom.webp","wordmark":"data/title.webp"}})", false},
+        {"themes/png.json", R"({"schema":1,"id":"png","backdrop":{"kind":"image","image":"data/custom.png","wordmark":"data/title.png"}})", false}}, errors);
+    REQUIRE(catalog.find("webp"));
+    CHECK(catalog.find("webp")->backdrop.image == "data/custom.webp");
+    CHECK(catalog.find("webp")->backdrop.wordmark == "data/title.webp");
+    REQUIRE(catalog.find("png"));
+    CHECK(catalog.find("png")->backdrop.image.empty());
+    CHECK(catalog.find("png")->backdrop.wordmark.empty());
+    CHECK_FALSE(errors.empty());
+}
+
+TEST_CASE("colours parse and print as #rrggbb[aa]")
 	{
 		CHECK(same(*Glob2UI::parseThemeColor("#244531"), GAGCore::Color(36, 69, 49)));
 		CHECK(same(*Glob2UI::parseThemeColor("#0F2719aB"), GAGCore::Color(15, 39, 25, 171)));
