@@ -1,0 +1,40 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index d4325b916..6db89dca8 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -1323,6 +1323,11 @@ jobs:
+           node-version: '22'
+           cache: npm
+           cache-dependency-path: platform/package-lock.json
++      - name: Install music upload processing tools
++        id: install_music_upload_processing_tools
++        run: |
++          sudo apt-get update -qq
++          sudo apt-get install -y --no-install-recommends ffmpeg
+       - name: Install platform dependencies
+         id: install_platform_dependencies
+         run: npm ci
+diff --git a/test/ci-compatibility.json b/test/ci-compatibility.json
+index e02aa03ee..75e520d09 100644
+--- a/test/ci-compatibility.json
++++ b/test/ci-compatibility.json
+@@ -9,6 +9,7 @@
+     "ComputeExecutor/*",
+     "*Script*/*",
+     "AITelemetryUI/*",
++    "SettingsAILibrary/*",
+     "*Stream*/*",
+     "*Net*/*",
+     "*LAN*/*",
+diff --git a/test/tests.py b/test/tests.py
+index 9646935aa..9a3973dd1 100644
+--- a/test/tests.py
++++ b/test/tests.py
+@@ -314,6 +314,7 @@ UNIT_PRODUCTION_SOURCES = [
+     '#src/building/BuildingUtils.cpp',
+     '#src/hud/input/GameGUIKeyActions.cpp',
+     '#src/audio/GameMusicController.cpp',
++    '#src/audio/MusicStream.cpp',
+     '#src/map/FertilityField.cpp',
+     '#src/map/Map.cpp',
+     '#src/map/MapQuery.cpp',

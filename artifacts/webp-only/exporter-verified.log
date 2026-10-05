@@ -1,0 +1,32 @@
+test_cache_blob_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_blob_corruption_is_repaired) ... ok
+test_cache_metadata_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_metadata_corruption_is_repaired) ... ok
+test_cached_export_is_repeatable_and_stale_files_disappear (test_package_assets.AssetExportTests.test_cached_export_is_repeatable_and_stale_files_disappear) ... ok
+test_corrupt_source_keeps_previous_export (test_package_assets.AssetExportTests.test_corrupt_source_keeps_previous_export) ... ok
+test_exact_pixels_including_invisible_rgb_and_sources_unchanged (test_package_assets.AssetExportTests.test_exact_pixels_including_invisible_rgb_and_sources_unchanged) ... ok
+test_failed_audit_replacement_rolls_back_export (test_package_assets.AssetExportTests.test_failed_audit_replacement_rolls_back_export) ... ok
+test_filters_metadata_but_preserves_linux_store_screenshot (test_package_assets.AssetExportTests.test_filters_metadata_but_preserves_linux_store_screenshot) ... ok
+test_global_q90_policy_preserves_alpha_and_sources (test_package_assets.AssetExportTests.test_global_q90_policy_preserves_alpha_and_sources) ... ok
+test_high_depth_png_is_not_quantized_to_webp (test_package_assets.AssetExportTests.test_high_depth_png_is_not_quantized_to_webp) ... ok
+test_high_depth_rgba_uses_renderer_reference (test_package_assets.AssetExportTests.test_high_depth_rgba_uses_renderer_reference) ... ok
+test_linux_screenshots_keep_their_png_representation (test_package_assets.AssetExportTests.test_linux_screenshots_keep_their_png_representation) ... ok
+test_old_export_upgrade_format_changes_and_unrelated_content (test_package_assets.AssetExportTests.test_old_export_upgrade_format_changes_and_unrelated_content) ... ok
+test_original_profile_needs_no_conversion (test_package_assets.AssetExportTests.test_original_profile_needs_no_conversion) ... ok
+test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp (test_package_assets.AssetExportTests.test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp) ... ok
+test_q90_encoder_parameters (test_package_assets.AssetExportTests.test_q90_encoder_parameters) ... ok
+test_recipe_change_invalidates_cache (test_package_assets.AssetExportTests.test_recipe_change_invalidates_cache) ... ok
+test_refuses_source_and_unowned_output (test_package_assets.AssetExportTests.test_refuses_source_and_unowned_output) ... ok
+test_rgba16_png_filters_and_adam7_reference (test_package_assets.AssetExportTests.test_rgba16_png_filters_and_adam7_reference) ... ok
+test_smaller_lossless_candidate_wins (test_package_assets.AssetExportTests.test_smaller_lossless_candidate_wins) ... ok
+test_source_change_invalidates_cache (test_package_assets.AssetExportTests.test_source_change_invalidates_cache) ... ok
+test_source_hd_atlas_placement_is_verified_before_encoding (test_package_assets.AssetExportTests.test_source_hd_atlas_placement_is_verified_before_encoding) ... ok
+test_cached_export_is_repeatable (test_package_assets.SpriteSheetExportTests.test_cached_export_is_repeatable) ... ok
+test_default_sheet_alpha_and_corrupt_packed_cache (test_package_assets.SpriteSheetExportTests.test_default_sheet_alpha_and_corrupt_packed_cache) ... ok
+test_frames_behind_a_gap_are_rejected (test_package_assets.SpriteSheetExportTests.test_frames_behind_a_gap_are_rejected) ... ok
+test_original_profile_keeps_the_frames (test_package_assets.SpriteSheetExportTests.test_original_profile_keeps_the_frames) ... ok
+test_runs_split_by_layer_size_and_sheet_capacity (test_package_assets.SpriteSheetExportTests.test_runs_split_by_layer_size_and_sheet_capacity) ... ok
+test_sheets_hold_every_frame_exactly_and_replace_the_frames (test_package_assets.SpriteSheetExportTests.test_sheets_hold_every_frame_exactly_and_replace_the_frames) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.944s
+
+OK

@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="SkinMaterialMap"><testcase classname="SkinMaterialMap" name="greyscale material maps decode to exact ids" time="0.010917" status="run" />
+  </testsuite></testsuites>

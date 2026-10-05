@@ -1,0 +1,5 @@
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (1.2s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (25.3s)
+
+2 passed, 0 failed, 0 skipped (26.5s of test time)
+[run_tests] JUnit report: artifacts/webp-only/native-hd-final.xml (2 cases)

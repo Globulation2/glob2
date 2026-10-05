@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="15" failures="0" errors="0" skipped="0"><testsuite name="SkinMesh"><testcase classname="SkinMesh" name="rotated swarms render independently with every material [display][artifacts]" time="1.08135" status="run" />
+  <testcase classname="SkinMesh" name="virtual asset streams use the same bounded decoder" time="0.000307" status="run" />
+    <testcase classname="SkinMesh" name="static swarm pose" time="0.000284" status="run" />
+    <testcase classname="SkinMesh" name="static camera ring preserves UVs, scale and independent cache identities" time="0.246717" status="run" />
+    <testcase classname="SkinMesh" name="bounded transactional decoding" time="0.001023" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000442" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0.000171" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000197" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.000862" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.000762" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.012683" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.007892" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.008147" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.007141" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.008882" status="run" />
+  </testsuite></testsuites>

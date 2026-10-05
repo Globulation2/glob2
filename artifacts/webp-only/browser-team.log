@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:2950389) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/team-colors.spec.js:27:3 › software preserves the red tutorial team before and after resize (22.1s)
+  ✓  2 [chromium] › tests/team-colors.spec.js:27:3 › webgl2 preserves the red tutorial team before and after resize (46.4s)
+
+  2 passed (1.2m)

@@ -1,0 +1,34 @@
+{
+  "native": {
+    "total_bytes": 150923071,
+    "image_source_bytes": 33762241,
+    "image_bytes": 9950941,
+    "lossy_images": 2638,
+    "lossless_images": 1716,
+    "files": 4535
+  },
+  "web": {
+    "total_bytes": 149959932,
+    "image_source_bytes": 32799102,
+    "image_bytes": 8987802,
+    "lossy_images": 2638,
+    "lossless_images": 1715,
+    "files": 4534
+  },
+  "browser_packages": {
+    "core": 4154443,
+    "game": 1984765,
+    "skins": 106632183,
+    "font-cjk": 8137448,
+    "menu-music": 264097,
+    "translations": 5115401,
+    "music": 1252275,
+    "music-sets": 16616046,
+    "hd": 6297500
+  },
+  "browser_substitutes": {
+    "data/fonts/sans.ttf": "browser/assets/sans-core.ttf",
+    "data/gfx/menu-wordmark.webp": "browser/assets/menu-wordmark.webp"
+  },
+  "browser_images_bytes": 8887278
+}

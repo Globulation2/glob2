@@ -1,0 +1,30 @@
+PASS ThemeCatalog/artwork overrides require WebP paths (0.0s)
+PASS ThemeCatalog/every shipped theme keeps text readable (0.0s)
+PASS ThemeCatalog/shipped themes load, and light and dark match the compiled defaults (0.0s)
+PASS ThemeCatalog/colours parse and print as #rrggbb[aa] (0.0s)
+PASS ThemeCatalog/inheritance, player themes and broken files (0.0s)
+PASS ThemeCatalog/shipped themes win over player files with the same id (0.0s)
+PASS ThemeCatalog/theme choices persist in preferences (0.0s)
+PASS ThemeCatalog/menu and in-game slots switch independently and keep their addresses (0.0s)
+PASS RuntimePack/HD runtime pack: logical sizes in software rendering (0.3s)
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (0.3s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (1.7s)
+FAIL HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (4.8s)
+PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (7.4s)
+PASS RuntimePack/HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow] (105.5s)
+
+===== FAIL HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/9f74/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "b58be00a245f801442ab330bf0e4b9e14dfa431b", "sourceStatus": [" M .github/workflows/release.yml", " M SConstruct", " M browser/README.md", " D browser/assets/menu-colony.jpg", " D browser/assets/menu-wordmark.png", " M browser/assets/sources.json", " M browser/derive_assets.py", " M data/themes/classic.json", " M docs/development/reference.md", " M docs/development/ui-framework.md", " M libgag/include/FileManager.h", " M libgag/include/SDLGraphicContext.h", " M libgag/src/DrawableSurface.cpp", " M libgag/src/FileManager.cpp", " M libgag/src/ImageAssetTest.cpp", " M libgag/src/SConscript", " M libgag/src/Sprite.cpp", " M libgag/src/SpriteSheetTest.cpp", " M mobile/android.py", " M mobile/ios.py", " M scons/runtime_assets.py", " M scons/web_assets.py", " M scons/web_build.py", " M src/SConscript", " M src/app/GlobalContainer.cpp", " M src/render/HighResolutionIntegrationHarness.cpp", " M src/ui/FrontendTheme.cpp", " M src/ui/FrontendUI.cpp", " M src/ui/ThemeCatalog.cpp", " M src/ui/ThemeCatalogTest.cpp", " M src/ui/ThemePainters.cpp", " M src/ui/screens/MainMenuScreen.cpp", " M test/SConscript", " M test/build_system/test_package_assets.py", " M test/build_system/test_scons_asset_install.py", " M test/build_system/test_web_assets.py", " M test/tests.py", " M tools/package_assets.py", " M tools/release/package_windows.py", "?? browser/assets/menu-colony.webp", "?? browser/assets/menu-wordmark.webp", "?? test/support/LossyAlphaFixture.h", "?? test/support/SpritePatternFixture.h"], "sourceTreeSha256": "867641483e1caee65523c66a4edd4e71943cc82a29a8e382c676499780f7744d"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+
+[failure] HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]: 0 != nullptr
+src/render/HighResolutionIntegrationHarness.cpp:86:
+REQUIRE( sprite->highResolutionAtlas != nullptr ) is NOT correct!
+  values: REQUIRE( 0 != nullptr )
+
+
+13 passed, 1 failed, 0 skipped (120.4s of test time)
+[run_tests] JUnit report: artifacts/webp-only/native-render.xml (14 cases)

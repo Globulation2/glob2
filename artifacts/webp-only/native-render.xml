@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="14" failures="1" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="4.62865" status="run">
+      <failure message="0 != nullptr" type="REQUIRE">
+src/render/HighResolutionIntegrationHarness.cpp:86:
+REQUIRE( sprite-&gt;highResolutionAtlas != nullptr ) is NOT correct!
+  values: REQUIRE( 0 != nullptr )
+
+      </failure>
+    </testcase>
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="1.6248" status="run" />
+  </testsuite><testsuite name="RuntimePack"><testcase classname="RuntimePack" name="HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow]" time="105.313" status="run" />
+  <testcase classname="RuntimePack" name="HD runtime pack: logical sizes in software rendering" time="0.241461" status="run" />
+  </testsuite><testsuite name="ThemeCatalog"><testcase classname="ThemeCatalog" name="artwork overrides require WebP paths" time="0.000194" status="run" />
+  <testcase classname="ThemeCatalog" name="colours parse and print as #rrggbb[aa]" time="0" status="run" />
+  <testcase classname="ThemeCatalog" name="every shipped theme keeps text readable" time="0.002515" status="run" />
+  <testcase classname="ThemeCatalog" name="inheritance, player themes and broken files" time="0.00028" status="run" />
+  <testcase classname="ThemeCatalog" name="menu and in-game slots switch independently and keep their addresses" time="0.002219" status="run" />
+  <testcase classname="ThemeCatalog" name="shipped themes load, and light and dark match the compiled defaults" time="0.002512" status="run" />
+  <testcase classname="ThemeCatalog" name="shipped themes win over player files with the same id" time="0.000161" status="run" />
+  <testcase classname="ThemeCatalog" name="theme choices persist in preferences" time="0.004207" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.270531" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="7.1978" status="run" />
+  </testsuite></testsuites>

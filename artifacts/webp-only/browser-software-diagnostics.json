@@ -1,0 +1,237 @@
+{
+  "snapshot": {
+    "version": 1,
+    "executionMode": "serial",
+    "threadFallback": "serial requested",
+    "workerCount": 0,
+    "renderer": "software",
+    "renderContext": null,
+    "contextLost": false,
+    "contextRestores": 0,
+    "screen": "match",
+    "screenClass": "17GameSessionScreen",
+    "roomCanStart": false,
+    "customGameReady": false,
+    "tick": 117,
+    "frames": 110,
+    "loop": 211,
+    "paused": false,
+    "torus": false,
+    "torusSettled": false,
+    "width": 1200,
+    "height": 900,
+    "restore": "ready",
+    "watchReplay": "none",
+    "import": "idle",
+    "persisting": true,
+    "persistence": "writing",
+    "audio": "inactive",
+    "assets": {
+      "core": "ready",
+      "game": "ready",
+      "skins": "idle",
+      "font-cjk": "ready",
+      "menu-music": "ready",
+      "translations": "ready",
+      "music": "ready",
+      "music-sets": "ready",
+      "hd": "skipped"
+    },
+    "opened": [],
+    "controls": {
+      "missions": {
+        "x": 120,
+        "y": 254,
+        "w": 692,
+        "h": 220,
+        "visible": {
+          "x": 120,
+          "y": 254,
+          "w": 692,
+          "h": 220
+        },
+        "enabled": true,
+        "label": "Introduction and Basics",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "missions/0": {
+        "x": 120,
+        "y": 254,
+        "w": 692,
+        "h": 34,
+        "visible": {
+          "x": 120,
+          "y": 254,
+          "w": 692,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Introduction and Basics",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "preview": {
+        "x": 820,
+        "y": 254,
+        "w": 260,
+        "h": 160,
+        "visible": {
+          "x": 820,
+          "y": 254,
+          "w": 260,
+          "h": 160
+        },
+        "enabled": true,
+        "label": "map preview",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "player": {
+        "x": 820,
+        "y": 446,
+        "w": 260,
+        "h": 28,
+        "visible": {
+          "x": 820,
+          "y": 446,
+          "w": 260,
+          "h": 28
+        },
+        "enabled": true,
+        "label": "web_user",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "import": {
+        "x": 120,
+        "y": 610,
+        "w": 476,
+        "h": 34,
+        "visible": {
+          "x": 120,
+          "y": 610,
+          "w": 476,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Import progress",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "export": {
+        "x": 604,
+        "y": 610,
+        "w": 476,
+        "h": 34,
+        "visible": {
+          "x": 604,
+          "y": 610,
+          "w": 476,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Export progress",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "start": {
+        "x": 744,
+        "y": 656,
+        "w": 116,
+        "h": 34,
+        "visible": {
+          "x": 744,
+          "y": 656,
+          "w": 116,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Start Mission",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      },
+      "exit": {
+        "x": 890,
+        "y": 656,
+        "w": 180,
+        "h": 34,
+        "visible": {
+          "x": 890,
+          "y": 656,
+          "w": 180,
+          "h": 34
+        },
+        "enabled": true,
+        "label": "Go back to main menu",
+        "surface": {
+          "w": 1200,
+          "h": 900
+        },
+        "root": {
+          "x": 0,
+          "y": 0,
+          "w": 1200,
+          "h": 900
+        }
+      }
+    }
+  },
+  "errors": []
+}

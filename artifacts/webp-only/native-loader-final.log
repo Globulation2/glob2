@@ -1,0 +1,7 @@
+PASS glob2-unit-tests ImageAssets (5 cases) (0.0s)
+PASS glob2-unit-tests SkinMaterialMap (1 cases) (0.0s)
+PASS glob2-unit-tests SpriteSheets (5 cases) (0.1s)
+PASS SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (0.3s)
+
+4 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/webp-only/native-loader-final.xml (12 cases)

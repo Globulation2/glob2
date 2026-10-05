@@ -1,0 +1,4 @@
+PASS glob2-unit-tests SkinMaterialMap (1 cases) (0.0s)
+
+1 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: artifacts/webp-only/png-feature-tests.xml (1 cases)

@@ -1,0 +1,8 @@
+docs/multiplayer/history-and-web.md
+platform/apps/engine-agent/fixtures/ais/README.md
+platform/apps/web/e2e/map-preview.spec.ts
+platform/apps/web/src/components/MapPreview.tsx
+platform/apps/web/src/pages/Maps.tsx
+platform/apps/web/src/styles/components.css
+platform/apps/web/src/styles/pages.css
+platform/apps/web/test/mapPreview.test.tsx

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="3.14298" status="run">
+      <failure message="0 != nullptr" type="REQUIRE">
+src/render/HighResolutionIntegrationHarness.cpp:86:
+REQUIRE( sprite-&gt;highResolutionAtlas != nullptr ) is NOT correct!
+  values: REQUIRE( 0 != nullptr )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

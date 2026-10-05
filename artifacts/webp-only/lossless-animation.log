@@ -1,0 +1,14 @@
+Settings::load("preferences.txt") : error, can't open file.
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+libEGL warning: pci id for fd 17: 10de:1e84, driver (null)
+
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+global_assets_ms=681.761
+theme_setup_ms=0.02539

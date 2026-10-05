@@ -1,0 +1,7 @@
+PASS glob2-unit-tests ImageAssets (5 cases) (0.0s)
+PASS glob2-unit-tests SpriteSheets (5 cases) (0.1s)
+PASS glob2-unit-tests SkinMesh (4 cases) (0.3s)
+PASS SkinMesh/rotated swarms render independently with every material [display][artifacts] (1.2s)
+
+4 passed, 0 failed, 0 skipped (1.6s of test time)
+[run_tests] JUnit report: artifacts/webp-only/native-loader.xml (15 cases)

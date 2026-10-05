@@ -1,0 +1,88 @@
+{
+  "original_png": {
+    "packages": {
+      "core": {
+        "raw": 6977156,
+        "gzip": 5599856
+      },
+      "game": {
+        "raw": 6296264,
+        "gzip": 6067108
+      },
+      "skins": {
+        "raw": 106632183,
+        "gzip": 96633271
+      },
+      "font-cjk": {
+        "raw": 8137448,
+        "gzip": 3103919
+      },
+      "menu-music": {
+        "raw": 264097,
+        "gzip": 263988
+      },
+      "translations": {
+        "raw": 5115401,
+        "gzip": 1662600
+      },
+      "music": {
+        "raw": 1252275,
+        "gzip": 1251364
+      },
+      "music-sets": {
+        "raw": 16616046,
+        "gzip": 16608567
+      },
+      "hd": {
+        "raw": 22591500,
+        "gzip": 21854377
+      }
+    },
+    "raw": 173882370,
+    "gzip": 153045050
+  },
+  "webp": {
+    "packages": {
+      "core": {
+        "raw": 4154443,
+        "gzip": 2808196
+      },
+      "game": {
+        "raw": 1984765,
+        "gzip": 1919083
+      },
+      "skins": {
+        "raw": 106632183,
+        "gzip": 96633271
+      },
+      "font-cjk": {
+        "raw": 8137448,
+        "gzip": 3103919
+      },
+      "menu-music": {
+        "raw": 264097,
+        "gzip": 263988
+      },
+      "translations": {
+        "raw": 5115401,
+        "gzip": 1662600
+      },
+      "music": {
+        "raw": 1252275,
+        "gzip": 1251364
+      },
+      "music-sets": {
+        "raw": 16616046,
+        "gzip": 16608567
+      },
+      "hd": {
+        "raw": 6297500,
+        "gzip": 6087843
+      }
+    },
+    "raw": 150454158,
+    "gzip": 130338831
+  },
+  "previous_q90_gzip": 130345410,
+  "current_serial_runtime_gzip": 5562425
+}
