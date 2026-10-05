@@ -96,3 +96,67 @@ test('pattern modal keeps Apply visible on short phones and exposes effective co
   await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Undo', exact: true })).toBeDisabled();
 });
+
+test('studio follows the shared system and saved themes, including open dialogs', async ({
+  page,
+}, info) => {
+  const palettes = {
+    light: { bg: 'rgb(241, 241, 225)', surface: 'rgb(251, 251, 243)', ink: 'rgb(29, 69, 48)' },
+    dark: { bg: 'rgb(27, 18, 41)', surface: 'rgb(43, 28, 66)', ink: 'rgb(249, 232, 187)' },
+  };
+  async function expectTheme(theme: 'light' | 'dark') {
+    const palette = palettes[theme];
+    await expect(page.locator('.skin-studio')).toHaveCSS('background-color', palette.bg);
+    await expect(page.locator('.skin-studio')).toHaveCSS('color', palette.ink);
+    await expect(page.locator('.skin-studio')).toHaveCSS('color-scheme', theme);
+    await expect(page.locator('.skin-topbar')).toHaveCSS('background-color', palette.surface);
+    await expect(page.locator('.skin-stage')).toHaveCSS(
+      'background-image',
+      new RegExp(palette.bg.replace(/[()]/g, '\\$&')),
+    );
+    await expect(page.getByLabel('Paint color')).toHaveValue('#ed9252');
+    await expect(page.getByLabel('Skin name')).toHaveValue('Shared theme design');
+    const dialog = page.getByRole('dialog');
+    if (await dialog.count()) {
+      await expect(dialog).toHaveCSS('background-color', palette.surface);
+      await expect(dialog).toHaveCSS('color', palette.ink);
+      await expect(dialog).toHaveCSS('color-scheme', theme);
+    }
+  }
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/skins');
+  await expect(page.getByLabel('Skin name')).toBeEnabled();
+  await page.getByLabel('Skin name').fill('Shared theme design');
+  await expectTheme('light');
+  await page.getByRole('button', { name: 'Skin settings' }).click();
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expectTheme('dark');
+  const toggle = page.getByRole('dialog').getByTestId('theme-toggle');
+  await toggle.click(); // System → light, overriding the dark device setting.
+  await expectTheme('light');
+  await page.screenshot({
+    path: info.outputPath('studio-light-settings.png'),
+    animations: 'disabled',
+  });
+  await toggle.click(); // Light → dark.
+  await expectTheme('dark');
+  await page.screenshot({
+    path: info.outputPath('studio-dark-settings.png'),
+    animations: 'disabled',
+  });
+  await page.reload();
+  await expectTheme('dark');
+  await page.getByRole('button', { name: 'Skin settings' }).click();
+  await toggle.click(); // Dark → system.
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expectTheme('light');
+  await page.getByRole('button', { name: 'Close Skin settings' }).click();
+  await page.getByRole('button', { name: 'Patterns', exact: true }).click();
+  await expectTheme('light');
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expectTheme('dark');
+  await page.screenshot({
+    path: info.outputPath('studio-dark-patterns.png'),
+    animations: 'disabled',
+  });
+});
