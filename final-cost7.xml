@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="22" time="13.7369" timestamp="2026-10-05T06:08:07Z" doctest_version="2.4.11">
+    <testcase classname="src/game/GameSpeedTest.cpp" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="13.7369" status="run"/>
+  </testsuite>
+</testsuites>

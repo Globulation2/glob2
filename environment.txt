@@ -1,0 +1,8 @@
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+e39c387828ff654b1165f0c5101e66003b138e0e
+5ea6b1bc55bdd18889eecce0505112f34c4a8e48
+Linux x86_64 Ubuntu26.04.1; SDL3.4.16 SDL_image3.4.6 SDL_ttf3.2.2 pinned SDK; release C++20 -O3 -s -fPIC; Pillow12.2.0/libwebp1.6.0 pinned encoder. Flags/provenance retained in build and test logs.

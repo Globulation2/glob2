@@ -1,0 +1,43 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "e39c387828ff654b1165f0c5101e66003b138e0e", "sourceStatus": [], "sourceTreeSha256": "61c8545eb4205610351960d966a3b3cffdcf0d2b1fcff5b9171e2f869ac83b4f"}
+Settings::load("preferences.txt") : error, can't open file.
+selecting music dir woodland
+selecting music dir thistle-waltz
+selecting music dir orchestral-dawn
+Replay length: 50
+selecting music dir glass-garden
+Replay length: 50
+selecting music dir woodland
+Replay length: 50
+selecting music dir fennel-mist
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Engine speed=0 elapsed=2049ms
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Engine speed=10 elapsed=1880ms
+PASS: live engine runs faster at Maximum
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Pause key=112 elapsed=2132ms
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Pause key=1073741893 elapsed=2117ms
+PASS: pause and hard pause accept resume input at Maximum
+nox::gui.game.checkSum() = 51591274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+Replay mode=0 elapsed=1039ms
+nox::gui.game.checkSum() = 51591274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+Replay mode=1 elapsed=959ms
+nox::gui.game.checkSum() = 51591274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+Replay mode=2 elapsed=950ms
+PASS: replay playback at 1x, Maximum and fast-forward

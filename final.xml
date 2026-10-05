@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="229" time="6.38783" timestamp="2026-10-05T06:06:06Z" doctest_version="2.4.11">
+    <testcase classname="src/game/GameSpeedTest.cpp" name="presets; bounds; legacy settings and persistence" time="0.007694" status="run"/>
+    <testcase classname="src/game/GameSpeedTest.cpp" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="0.708382" status="run"/>
+    <testcase classname="src/game/GameSpeedTest.cpp" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="5.67176" status="run"/>
+  </testsuite>
+</testsuites>

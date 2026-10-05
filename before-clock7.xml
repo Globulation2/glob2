@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/replay-speed/before-engine-tests" errors="0" failures="1" tests="17" time="12.1439" timestamp="2026-10-05T06:08:06Z" doctest_version="2.4.11">
+    <testcase classname="src/game/GameSpeedTest.cpp" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="12.1439" status="run">
+      <failure message="974 &lt;  800" type="REQUIRE">
+src/game/GameSpeedTest.cpp:331:
+REQUIRE( elapsed&lt;800 ) is NOT correct!
+  values: REQUIRE( 974 &lt;  800 )
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
