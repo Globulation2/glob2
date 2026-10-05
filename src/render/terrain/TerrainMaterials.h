@@ -18,8 +18,10 @@ struct Variant
 struct Profile
 {
 	std::string key;
-	int roughness = 192;                          // Q8 multiplier; 256 represents 1.
-	std::array<std::array<int, 5>, 4> contours{}; // Q12 normalized patch displacements.
+	int roughness = 192; // Q8 multiplier; 256 represents 1.
+	int feather = 256;   // Q8 native-pixel edge softness.
+	bool legacyEdges = false;
+	std::array<std::vector<int>, 4> contours{}; // Q12 normalized patch displacements.
 };
 struct Backdrop
 {
@@ -47,6 +49,8 @@ class Catalog
 {
   public:
 	std::string compiledPack, serialized;
+	// Q8 pixel amplitudes at 64px, 32px and 8px scales. Omitted in older packs.
+	std::array<int, 3> boundaryWarp{};
 	std::vector<Profile> profiles;
 	std::vector<Material> materials;
 	std::vector<PairTreatment> treatments;
@@ -83,10 +87,20 @@ class PreparedCoverage
 	Coverage at(int px, int py) const;
 
   private:
+	struct WarpLayer
+	{
+		int shift = 0, offsetX = 0, offsetY = 0;
+		// At most five noise-grid vertices span a 32px tile at the finest scale.
+		std::array<std::array<int, 2>, 25> vertices{};
+		std::array<int, 2> at(int px, int py) const;
+	};
+	std::array<WarpLayer, 3> warp{};
+	int localDisplacementLimit = 512;
 	struct Curve
 	{
 		const Profile *profile = nullptr;
 		unsigned motif = 0;
+		int anchor = 0; // Prepared displacement of the shared edge's single crossing.
 	};
 	struct Patch
 	{
@@ -95,6 +109,7 @@ class PreparedCoverage
 		std::array<MaterialId, 4> materials{};
 		std::array<unsigned, 4> slots{};
 		unsigned count = 0;
+		std::array<unsigned, 4> feather{};
 	};
 	std::array<Patch, 9> patches{};
 };

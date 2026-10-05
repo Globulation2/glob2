@@ -53,8 +53,16 @@ def validate(document, root=ROOT):
 
 
 def _validate(document, root):
-    if type(document.get("version")) is not int or document["version"] != 1:
+    if type(document.get("version")) is not int or document["version"] not in (1, 2):
         raise ValueError("Unsupported terrain catalog version")
+    version = document["version"]
+    if version == 1 and "boundary_warp_q8" in document:
+        raise ValueError("Boundary warp requires catalog version 2")
+    warp = document.get("boundary_warp_q8", [0, 0, 0])
+    if not isinstance(warp, list) or len(warp) != 3:
+        raise ValueError("Boundary warp requires three amplitudes")
+    for amplitude, maximum in zip(warp, (1024, 384, 128)):
+        integer(amplitude, 0, maximum, "Boundary warp amplitude")
     compiled = document.get("compiled_pack", "")
     if not isinstance(compiled, str):
         raise ValueError("Compiled pack path must be a string")
@@ -81,16 +89,19 @@ def _validate(document, root):
             or not 0 <= p["roughness_q8"] <= 512
         ):
             raise ValueError("Invalid or duplicate profile")
+        if version == 1 and "feather_q8" in p:
+            raise ValueError("Boundary feather requires catalog version 2")
+        integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
         curves = p["contours_q12"]
         if not isinstance(curves, list) or len(curves) != 4 or any(
-            not isinstance(c, list) or len(c) != 5
+            not isinstance(c, list) or len(c) not in ((5,) if version == 1 else (5, 9, 17, 33))
             or c[0] != 0
             or c[-1] != 0
-            or any(type(n) is not int or abs(n) > 256 for n in c)
+            or any(type(n) is not int or abs(n) > (256 if version == 1 else 512) for n in c)
             for c in curves
         ):
             raise ValueError(
-                "Profiles require four five-point curves with shared zero endpoints"
+                "Profiles require four curves of 5, 9, 17 or 33 points with shared zero endpoints"
             )
         profiles[p["key"]] = p
     materials = {}
@@ -305,11 +316,13 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
                 values = []
                 for i in range(size + 1):
                     t = i * 4096 // size
-                    segment = min(t // 1024, 3)
-                    f = t - segment * 1024
-                    numerator = curve[segment] * (1024 - f) + curve[segment + 1] * f
+                    count = len(curve) - 1
+                    scaled = t * count
+                    segment = min(scaled // 4096, count - 1)
+                    f = scaled - segment * 4096
+                    numerator = curve[segment] * (4096 - f) + curve[segment + 1] * f
                     values.append(
-                        numerator // 1024 if numerator >= 0 else -((-numerator) // 1024)
+                        numerator // 4096 if numerator >= 0 else -((-numerator) // 4096)
                     )
                 assert values[0] == values[-1] == 0
                 curves.append(values)

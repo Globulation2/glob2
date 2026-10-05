@@ -270,36 +270,58 @@ TEST_SUITE("TerrainMaterials")
 	TEST_CASE("prepared coverage preserves native and HD contour geometry")
 	{
 		glob2test::HeadlessGlobals globals;
-		const auto definitions = catalog();
-		std::uint64_t digest = 14695981039346656037ull;
-		for (unsigned configuration = 0; configuration < 256; ++configuration)
+		for (bool legacy : {false, true})
 		{
-			TerrainVisual::Recipe recipe;
-			recipe.width = recipe.height = 16;
-			recipe.x = 15;
-			recipe.y = 9;
-			for (int y = 0; y < 4; ++y)
-				for (int x = 0; x < 4; ++x)
-					recipe.samples[y * 4 + x] =
-						(configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3;
-			const TerrainVisual::PreparedCoverage prepared(definitions, recipe);
-			for (int scale : {1, 4})
-				for (int y = 0; y < 32 * scale; ++y)
-					for (int x = 0; x < 32 * scale; ++x)
-					{
-						const auto pixel =
-							prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
-						for (int k = 0; k < 4; ++k)
+			auto definitions = catalog();
+			if (legacy)
+			{
+				std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
+				auto j = nlohmann::json::parse(input);
+				j["version"] = 1;
+				j.erase("boundary_warp_q8");
+				const int roughness[] = {256, 320, 192};
+				for (unsigned i = 0; i < j["profiles"].size(); ++i)
+				{
+					auto &p = j["profiles"][i];
+					p.erase("feather_q8");
+					p["roughness_q8"] = roughness[i];
+					p["contours_q12"] = {{0, 180, -120, 100, 0},
+										 {0, -130, 200, -80, 0},
+										 {0, 90, 160, -170, 0},
+										 {0, -180, -60, 140, 0}};
+				}
+				definitions = TerrainVisual::Catalog::parse(j);
+			}
+			std::uint64_t digest = 14695981039346656037ull;
+			for (unsigned configuration = 0; configuration < 256; ++configuration)
+			{
+				TerrainVisual::Recipe recipe;
+				recipe.width = recipe.height = 16;
+				recipe.x = 15;
+				recipe.y = 9;
+				for (int y = 0; y < 4; ++y)
+					for (int x = 0; x < 4; ++x)
+						recipe.samples[y * 4 + x] =
+							(configuration >> (2 * ((x & 1) + 2 * (y & 1)))) & 3;
+				const TerrainVisual::PreparedCoverage prepared(definitions, recipe);
+				for (int scale : {1, 4})
+					for (int y = 0; y < 32 * scale; ++y)
+						for (int x = 0; x < 32 * scale; ++x)
 						{
-							digest = (digest ^ pixel.material[k]) * 1099511628211ull;
-							digest = (digest ^ pixel.weight[k]) * 1099511628211ull;
+							const auto pixel =
+								prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+							for (int k = 0; k < 4; ++k)
+							{
+								digest = (digest ^ pixel.material[k]) * 1099511628211ull;
+								digest = (digest ^ pixel.weight[k]) * 1099511628211ull;
+							}
 						}
-					}
+			}
+			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
+			// require a rendered comparison and an updated digest, not just a
+			// matching partition sum.
+			CHECK(digest == (legacy ? 18185691832014944171ull : 7043546505774538929ull));
 		}
-		// Captured from the original per-pixel resolver before hoisting patch
-		// invariants. Intentional catalog contour changes require visual review
-		// and an updated digest, not just a matching partition sum.
-		CHECK(digest == 18185691832014944171ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -362,6 +384,7 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		auto c = catalog();
+		c.boundaryWarp = {}; // Isolate the unperturbed diagonal connectivity rule.
 		for (auto &profile : c.profiles)
 			profile.roughness = 0;
 		TerrainVisual::Recipe r;
@@ -397,6 +420,131 @@ TEST_SUITE("TerrainMaterials")
 			CHECK(pp == qq);
 		}
 	}
+	TEST_CASE("organic contours agree across ordinary tile edges and both torus axes")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog();
+		c.boundaryWarp = {1024, 384, 128}; // Exercise every optional scale at its maximum.
+		for (int size : {1, 2, 16})
+			for (int axis = 0; axis < 2; ++axis)
+				for (int position = 0; position < size; ++position)
+				{
+					const auto recipe = [&](int x, int y)
+					{
+						TerrainVisual::Recipe r;
+						r.width = r.height = size;
+						r.x = x % size;
+						r.y = y % size;
+						for (int j = 0; j < 4; ++j)
+							for (int i = 0; i < 4; ++i)
+								r.samples[j * 4 + i] =
+									TerrainVisual::hash((r.x * 2 + i - 1 + size * 2) % (size * 2),
+														(r.y * 2 + j - 1 + size * 2) % (size * 2)) %
+									5;
+						return r;
+					};
+					const TerrainVisual::PreparedCoverage a(c, recipe(position, position));
+					const TerrainVisual::PreparedCoverage b(
+						c, recipe(position + (axis == 0), position + (axis == 1)));
+					// Quarter-pixel sampling covers HD and native positions, including
+					// noise-grid endpoints and the shared corner of four render tiles.
+					for (int t = 0; t <= 8192; t += 64)
+					{
+						const auto p = axis ? a.at(t, 8192) : a.at(8192, t);
+						const auto q = axis ? b.at(t, 0) : b.at(0, t);
+						std::array<unsigned, 5> pp{}, qq{};
+						for (int k = 0; k < 4; ++k)
+						{
+							pp[p.material[k]] += p.weight[k];
+							qq[q.material[k]] += q.weight[k];
+						}
+						CHECK(pp == qq);
+					}
+				}
+	}
+	TEST_CASE("straight boundaries bend over multiple cells without moving their solid cores")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog();
+		for (auto &profile : c.profiles)
+			profile.roughness = 0; // Measure the world field independently of local motifs.
+		const auto grass = c.find("grass"), ice = c.find("ice");
+		int minimum = 8192, maximum = 0;
+		std::set<std::array<int, 32>> segments;
+		for (int cy = 0; cy < 16; ++cy)
+		{
+			TerrainVisual::Recipe r;
+			r.width = r.height = 16;
+			r.x = 4;
+			r.y = cy;
+			for (int i = 0; i < 16; ++i)
+				r.samples[i] = i % 4 < 2 ? grass : ice;
+			const TerrainVisual::PreparedCoverage prepared(c, r);
+			std::array<int, 32> segment{};
+			for (int y = 0; y < 32; ++y)
+			{
+				for (int x = 8 * 256; x <= 24 * 256; x += 64)
+				{
+					const auto sample = prepared.at(x, y * 256);
+					unsigned iceWeight = 0;
+					for (int k = 0; k < 4; ++k)
+						if (sample.material[k] == ice)
+							iceWeight += sample.weight[k];
+					if (x == 8 * 256)
+						CHECK(iceWeight == 0);
+					if (x == 24 * 256)
+						CHECK(iceWeight == 65536);
+					if (iceWeight >= 32768 && !segment[y])
+						segment[y] = x;
+				}
+				minimum = std::min(minimum, segment[y]);
+				maximum = std::max(maximum, segment[y]);
+			}
+			segments.insert(segment);
+		}
+		CHECK(maximum - minimum >= 3 * 256);
+		CHECK(segments.size() == 16);
+	}
+	TEST_CASE("steep detailed contours retain one crossing on shared patch edges")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog();
+		c.boundaryWarp = {};
+		for (auto &profile : c.profiles)
+		{
+			profile.roughness = 512;
+			for (auto &curve : profile.contours)
+			{
+				curve.assign(33, 0);
+				for (int i = 1; i < 32; ++i)
+					curve[i] = i % 2 ? 512 : -512;
+			}
+		}
+		for (int position = 0; position < 16; ++position)
+		{
+			TerrainVisual::Recipe r;
+			r.width = r.height = 16;
+			r.x = r.y = position;
+			for (int i = 0; i < 16; ++i)
+				r.samples[i] = c.find(i % 4 < 2 ? "grass" : "ice");
+			const TerrainVisual::PreparedCoverage prepared(c, r);
+			for (int y : {8, 24})
+			{
+				unsigned previous = 0;
+				for (int x = 0; x <= 8192; x += 32)
+				{
+					const auto sample = prepared.at(x, y * 256);
+					unsigned weight = 0;
+					for (int k = 0; k < 4; ++k)
+						if (sample.material[k] == c.find("ice"))
+							weight += sample.weight[k];
+					CHECK(weight >= previous);
+					previous = weight;
+				}
+				CHECK(previous == 65536);
+			}
+		}
+	}
 
 	TEST_CASE("weighted choices are stable and all existing variants are reachable")
 	{
@@ -428,6 +576,17 @@ TEST_SUITE("TerrainMaterials")
 			j["materials"].push_back(m);
 		}
 		CHECK(TerrainVisual::Catalog::parse(j).materials.size() == 64);
+		auto legacy = j;
+		legacy.erase("boundary_warp_q8");
+		CHECK(TerrainVisual::Catalog::parse(legacy).boundaryWarp == std::array<int, 3>{});
+		for (int count : {5, 9, 17, 33})
+		{
+			auto detailed = j;
+			auto points = std::vector<int>(count, 512);
+			points.front() = points.back() = 0;
+			detailed["profiles"][0]["contours_q12"][0] = points;
+			CHECK(TerrainVisual::Catalog::parse(detailed).profiles[0].contours[0].size() == count);
+		}
 		auto invalid = j;
 		invalid["materials"][0]["variants"][0]["weight"] = 0;
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
@@ -438,6 +597,18 @@ TEST_SUITE("TerrainMaterials")
 		invalid["bindings"]["ice"] = "absent";
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		const std::vector<std::pair<nlohmann::json::json_pointer, nlohmann::json>> malformed = {
+			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), true},
+			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 127},
+			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 513},
+			{nlohmann::json::json_pointer("/profiles/0/contours_q12/0"), {0, 0, 0, 0, 0, 0}},
+			{nlohmann::json::json_pointer("/profiles/0/contours_q12/0/1"), 513},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {true, 0, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 1.5, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {-1, 0, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {1025, 0, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 385, 0}},
+			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0, 129}},
 			{nlohmann::json::json_pointer("/version"), true},
 			{nlohmann::json::json_pointer("/version"), 1.0},
 			{nlohmann::json::json_pointer("/compiled_pack"), 0},
@@ -488,17 +659,28 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		auto c = catalog();
-		for (auto key : {"ice", "road"})
+		for (auto key : {"water", "sand", "grass", "ice", "road"})
 		{
 			TerrainVisual::Recipe r;
 			r.width = r.height = 16;
-			r.x = r.y = 4;
-			r.samples.fill(c.find("grass"));
+			r.samples.fill(c.find(key) == c.find("grass") ? c.find("ice") : c.find("grass"));
 			for (auto index : {5, 6, 9, 10})
 				r.samples[index] = c.find(key);
-			const auto result = coverage(c, r, 16 * 256, 16 * 256);
-			CHECK(result.material[0] == c.find(key));
-			CHECK(result.weight[0] == 65536);
+			for (r.y = 0; r.y < r.height; ++r.y)
+				for (r.x = 0; r.x < r.width; ++r.x)
+				{
+					const TerrainVisual::PreparedCoverage prepared(c, r);
+					for (int y : {14, 16, 18})
+						for (int x : {14, 16, 18})
+						{
+							const auto result = prepared.at(x * 256, y * 256);
+							unsigned weight = 0;
+							for (int k = 0; k < 4; ++k)
+								if (result.material[k] == c.find(key))
+									weight += result.weight[k];
+							CHECK(weight == 65536);
+						}
+				}
 		}
 		auto &m = c.materials[c.find("ice")];
 		m.animationFrames = 3;
