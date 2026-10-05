@@ -116,9 +116,20 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
     const job = await heldJob(request, agentKey(request));
     const report = body(AiValidationReport, request.body);
     const payload = job.payload as { blobHash?: string; suite?: number };
-    if (job.kind !== 'validate-ai' || report.valid || report.sourceHash !== payload.blobHash || report.suite !== payload.suite || report.simVersion !== job.sim_version)
+    if (
+      job.kind !== 'validate-ai' ||
+      report.valid ||
+      report.sourceHash !== payload.blobHash ||
+      report.suite !== payload.suite ||
+      report.simVersion !== job.sim_version
+    )
       throw apiError('bad_request', 'Progress does not match the leased AI validation.');
-    await db.updateTable('ai_validations').set({ report: JSON.stringify(report) }).where('job_id', '=', job.id).where('status', '=', 'pending').execute();
+    await db
+      .updateTable('ai_validations')
+      .set({ report: JSON.stringify(report) })
+      .where('job_id', '=', job.id)
+      .where('status', '=', 'pending')
+      .execute();
     return reply.status(204).send();
   });
 

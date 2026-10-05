@@ -311,13 +311,22 @@ network acceptance gates remain independent of this draft profile.
 
 Online natural-language commands use a separate [Hive Mind host](../multiplayer/hive-mind.md). Its isolated interpreter receives copied player observations and returns batches through the normal player-order queue. It does not change the existing AI or map-script callback contracts, save format, or replay execution.
 
-## Installing custom AI controllers (profile 2)
+## Installing custom AI controllers (profiles 1 and 2)
 
 Start with the public [JavaScript AI template](https://github.com/Globulation2/glob2-javascript-ai-starter-exampler).
 It contains modular source, pinned build/watch tools, editor declarations, installation
 screenshots, and a compatible engine revision in `engine.json`.
 
-Open **Settings → Custom AIs** and import a bundled `.js` file. Imports are copied
+Open **Settings → Custom AIs → Open AI Library**. **Discover** searches the online
+catalogue by name, description and author, with intent tags and sorting by likes,
+newest, updates or downloads. **Favourites** keeps a private shortlist. Select a
+release and use **Download & install** to verify its source hash and import it for
+local play. Installation requires passing compatibility evidence for the running
+engine version. Likes and favourites follow the AI across releases; download
+counts belong to each release. **Installed** works offline and shows available
+updates when connected. Updates are explicit and keep the local entry identity.
+
+The **Installed** view also lets you import a bundled `.js` file. Imports are copied
 under `ais/` in the existing user-data directory. Entries have stable identities;
 duplicate display names are allowed. **Update** replaces an entry after validation.
 Failed validation or durable-storage failure retains its prior version. **Validate**
@@ -332,8 +341,24 @@ Select the library entry for each computer-controlled seat in a local game. Glob
 reads each selected source once at launch and embeds those bytes. A missing or
 invalid linked file blocks launch with a diagnostic. Rebuilding or updating the
 library affects future games only. Saves and replays carry their original code;
-no source path or installed library is required to resume them. Online distribution
-of custom controllers is outside this feature.
+no source path or installed library is required to resume them. Online provenance
+is optional local registry metadata, never a simulation or save dependency.
+
+**Share your AI** opens the website publishing flow. Upload one bundled UTF-8
+`.js` file (up to 128 KiB), then choose a catalogue name, description, visibility,
+version label, release notes and up to five intent tags. Embedded metadata prefills
+the form; editing the catalogue never rewrites the downloaded source. Published
+versions are immutable. Uploading a new release requires the same compatibility
+checks and cannot replace or remove an existing release on failure.
+
+The persistent checklist covers file/profile restrictions, compilation, startup
+and callbacks, initial persistent state, two seeded gameplay fixtures, repeated
+per-tick checksums, and save/resume continuation. Checks do not require winning or
+a minimum order count. “Passed compatibility checks” is not a safety certification
+or a measure of playing strength: local execution retains the runtime trust limits
+described above. The website alone publishes; multiplayer custom controllers and
+tournaments are not supported. **How AIs work** remains available after dismissing
+the introduction.
 
 The [profile 2 API](javascript-api.md#custom-ai-profile-2) adds metadata, editable
 properties, queued actions, synchronous native spatial queries, placement, and

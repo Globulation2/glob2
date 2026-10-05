@@ -225,6 +225,16 @@ export const AccountExport = Open(
         attempts: ExportRows,
       }),
     ),
+    ais: Type.Optional(
+      Open({
+        published: ExportRows,
+        likes: ExportRows,
+        favourites: ExportRows,
+        reports: ExportRows,
+        uploads: ExportRows,
+        downloads: ExportRows,
+      }),
+    ),
     maps: Open({
       published: ExportRows,
       likes: ExportRows,

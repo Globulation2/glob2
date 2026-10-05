@@ -25,7 +25,7 @@ export const aiApi = {
   publish: (body: PublishAiRequest, id?: string) =>
     request<AiInfo>('POST', id ? path(id) + '/versions' : '/api/v1/ais', { body }),
   update: (id: string, body: UpdateAiRequest) => request<AiInfo>('PATCH', path(id), { body }),
-  remove: (id: string) => request<void>('DELETE', path(id)),
+  remove: (id: string) => request<undefined>('DELETE', path(id)),
   social: (id: string, kind: 'like' | 'favourite', active: boolean) =>
     request<AiSocialResult>(active ? 'PUT' : 'DELETE', path(id) + '/' + kind),
   report: (id: string, reason: string, details: string) =>

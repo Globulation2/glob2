@@ -170,16 +170,16 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
       .innerJoin('accounts as o', 'o.id', 'a.owner_account_id')
       .selectAll('a')
       .select(ranking.as('rank'));
-    if (q.owner === 'me') query = query.where('a.owner_account_id', '=', a!.id);
+    if (q.owner === 'me' && a) query = query.where('a.owner_account_id', '=', a.id);
     else query = query.where('a.visibility', '=', 'public').where('a.hidden', '=', false);
-    if (q.favourites === 'true')
+    if (q.favourites === 'true' && a)
       query = query.where((eb) =>
         eb.exists(
           eb
             .selectFrom('ai_favourites as f')
             .select('f.ai_id')
             .whereRef('f.ai_id', '=', 'a.id')
-            .where('f.account_id', '=', a!.id),
+            .where('f.account_id', '=', a.id),
         ),
       );
     if (q.q)

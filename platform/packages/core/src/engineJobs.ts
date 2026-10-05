@@ -166,10 +166,19 @@ export async function leasedJob(
   db: Kysely<Database>,
   token: string,
   jobId?: string,
-): Promise<{ id: string; kind: EngineJobKind; leased_by: string | null } | undefined> {
+): Promise<
+  | {
+      id: string;
+      kind: EngineJobKind;
+      leased_by: string | null;
+      payload: unknown;
+      sim_version: string;
+    }
+  | undefined
+> {
   let query = db
     .selectFrom('engine_jobs')
-    .select(['id', 'kind', 'leased_by'])
+    .select(['id', 'kind', 'leased_by', 'payload', 'sim_version'])
     .where('lease_token_hash', '=', hashToken(token))
     .where('status', '=', 'queued')
     .where('reported_at', 'is', null)

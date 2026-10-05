@@ -178,7 +178,13 @@ export interface EngineAgentsTable {
 
 export interface EngineJobsTable {
   id: Generated<string>;
-  kind: 'validate-ai' | 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match' | 'import-ai-map';
+  kind:
+    | 'validate-ai'
+    | 'generate-map'
+    | 'validate-map'
+    | 'render-preview'
+    | 'verify-match'
+    | 'import-ai-map';
   sim_version: string;
   payload: Json<JsonValue>;
   status: Defaulted<'queued' | 'succeeded' | 'failed'>;
@@ -867,31 +873,74 @@ export interface StudioAttemptsTable {
 }
 
 export interface AisTable {
- id: Generated<string>; owner_account_id: string; name: string; description: Defaulted<string>; tags: Defaulted<string[]>;
- visibility: Defaulted<'public' | 'unlisted' | 'private'>; hidden: Defaulted<boolean>; hidden_reason: Nullable<string>;
- created_at: Timestamp; updated_at: Timestamp;
+  id: Generated<string>;
+  owner_account_id: string;
+  name: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
 export interface AiValidationsTable {
- id: Generated<string>; hash: string; sim_version: string; suite: number; job_id: Nullable<string>;
- status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>; report: Json<import('@glob2/protocol').AiValidationReport>; error: Nullable<string>; created_at: Timestamp;
+  id: Generated<string>;
+  hash: string;
+  sim_version: string;
+  suite: number;
+  job_id: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>;
+  report: Json<import('@glob2/protocol').AiValidationReport>;
+  error: Nullable<string>;
+  created_at: Timestamp;
 }
 export interface AiUploadsTable {
- id: Generated<string>; owner_account_id: string; validation_id: string; expires_at: Timestamp;
- published_ai_id: Nullable<string>; published_version_id: Nullable<string>;
+  id: Generated<string>;
+  owner_account_id: string;
+  validation_id: string;
+  expires_at: Timestamp;
+  published_ai_id: Nullable<string>;
+  published_version_id: Nullable<string>;
 }
 export interface AiVersionsTable {
- id: Generated<string>; ai_id: string; hash: string; label: string; notes: Defaulted<string>; profile: number; created_at: Timestamp;
+  id: Generated<string>;
+  ai_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  profile: number;
+  created_at: Timestamp;
 }
-export interface AiSocialTable { ai_id: string; account_id: string; }
-export interface AiDownloadsTable { version_id: string; downloader: string; day: Defaulted<string>; }
+export interface AiSocialTable {
+  ai_id: string;
+  account_id: string;
+}
+export interface AiDownloadsTable {
+  version_id: string;
+  downloader: string;
+  day: Defaulted<string>;
+}
 export interface AiReportsTable {
- id: Generated<string>; ai_id: string; reporter_account_id: string; reason: string; details: string;
- status: Defaulted<'open' | 'resolved' | 'dismissed'>; created_at: Timestamp; resolution_note: Nullable<string>;
+  id: Generated<string>;
+  ai_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  status: Defaulted<'open' | 'resolved' | 'dismissed'>;
+  created_at: Timestamp;
+  resolution_note: Nullable<string>;
 }
 
 export interface Database {
- ais: AisTable; ai_versions: AiVersionsTable; ai_validations: AiValidationsTable; ai_uploads: AiUploadsTable;
- ai_likes: AiSocialTable; ai_favourites: AiSocialTable; ai_downloads: AiDownloadsTable; ai_reports: AiReportsTable;
+  ais: AisTable;
+  ai_versions: AiVersionsTable;
+  ai_validations: AiValidationsTable;
+  ai_uploads: AiUploadsTable;
+  ai_likes: AiSocialTable;
+  ai_favourites: AiSocialTable;
+  ai_downloads: AiDownloadsTable;
+  ai_reports: AiReportsTable;
   colony_skin_reports: ColonySkinReportsTable;
   colony_skin_drafts: ColonySkinDraftsTable;
   skin_purchases: SkinPurchasesTable;

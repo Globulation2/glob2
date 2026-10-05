@@ -7,6 +7,7 @@
 #include "PlatformApi.h"
 #include "SimVersion.h"
 #include "Sha256.h"
+#include "AiCatalog.h"
 #include <nlohmann/json.hpp>
 
 namespace
@@ -29,6 +30,7 @@ struct SettingsScreen::CustomAIState
 	bool linked = false;
 	std::unique_ptr<Online::PlatformScope> calls;
 	nlohmann::json catalogue = nlohmann::json::array(), detail;
+	std::map<std::string, nlohmann::json> installedDetails;
 	std::string origin, query, cursor, selectedId;
 	std::vector<std::string> tags;
 	int tab = 0, sort = 0, version = 0;
@@ -153,6 +155,23 @@ void SettingsScreen::buildCustomAIs()
 			info(entry.metadata.description);
 		if (entry.linked)
 			info(entry.path);
+		if (entry.online && s.calls && entry.online->origin == s.origin)
+		{
+			const auto found = s.installedDetails.find(entry.online->aiId);
+			if (found != s.installedDetails.end())
+			{
+				const auto &latest = found->second.at("ai").at("latestVersion");
+				if (latest.at("id") != entry.online->versionId)
+					info(customAIText("Update available") + " · " +
+						 latest.at("label").get<std::string>());
+			}
+			button("ai.online." + id, customAIText("Browse versions"),
+				   [this, aiId = entry.online->aiId]
+				   {
+					   customAIs->tab = 0;
+					   selectOnlineAI(aiId);
+				   });
+		}
 		const auto actionsStart = form.size();
 		button("ai.update." + id, entry.linked ? customAIText("Relink") : customAIText("Update"),
 			   [this, id, linked = entry.linked] { selectCustomAIFile(linked, id); });
@@ -213,26 +232,7 @@ const std::vector<std::string> aiTags = {"Balanced",  "Rush",         "Defensive
 const std::vector<std::string> aiSorts = {"likes", "newest", "updated", "downloads"};
 bool compatibleAI(const Json &version)
 {
-	if (!version.is_object() || !Online::Sha256::isHexDigest(version.value("hash", "")))
-		return false;
-	for (const auto &report : version.value("validations", Json::array()))
-	{
-		if (report.value("simVersion", "") != Online::SimVersion::local().key() ||
-			!report.value("valid", false) || report.value("suite", 0) != 1 ||
-			report.value("sourceHash", "") != version.value("hash", ""))
-			continue;
-		const auto checks = report.value("checks", Json::array());
-		bool passed = checks.size() == 7;
-		for (const auto &id :
-			 {"file", "syntax", "startup", "state", "gameplay", "determinism", "continuation"})
-			passed &=
-				std::count_if(
-					checks.begin(), checks.end(), [&](const auto &c)
-					{ return c.value("id", "") == id && c.value("status", "") == "passed"; }) == 1;
-		if (passed)
-			return true;
-	}
-	return false;
+	return Online::compatibleAiVersion(version, Online::SimVersion::local().key());
 }
 } // namespace
 void SettingsScreen::openCustomAILibrary()
@@ -259,6 +259,28 @@ void SettingsScreen::fetchCustomAIs(bool more)
 		return;
 	s.calls->cancelAll();
 	const auto generation = ++s.generation;
+	if (s.tab == 2)
+	{
+		s.loading = false;
+		for (const auto &entry : s.library.entries())
+			if (entry.online && entry.online->origin == s.origin)
+			{
+				const auto id = entry.online->aiId;
+				s.calls->rest(HttpFetch::Method::Get, "/api/v1/ais/" + Online::urlEncode(id),
+							  Json(),
+							  [this, id, generation](const auto &r)
+							  {
+								  auto &s = *customAIs;
+								  if (generation != s.generation)
+									  return;
+								  if (r.ok && Online::validAiDetail(r.result))
+									  s.installedDetails[id] = r.result;
+								  invalidate();
+							  });
+			}
+		invalidate();
+		return;
+	}
 	s.loading = true;
 	s.notice.clear();
 	if (!more)
@@ -295,11 +317,10 @@ void SettingsScreen::fetchCustomAIs(bool more)
 							  if (!items.is_array() || items.size() > 100)
 								  throw std::runtime_error("Invalid AI catalogue response");
 							  for (const auto &item : items)
-							  {
-								  if (!item.is_object())
+								  if (!Online::validAiSummary(item))
 									  throw std::runtime_error("Invalid AI catalogue entry");
+							  for (const auto &item : items)
 								  s.catalogue.push_back(item);
-							  }
 							  s.cursor = r.result.value("nextCursor", "");
 						  }
 					  }
@@ -325,9 +346,7 @@ void SettingsScreen::selectOnlineAI(const std::string &id)
 					  auto &s = *customAIs;
 					  if (s.selectedId != id)
 						  return;
-					  if (r.ok && r.result.contains("versions") &&
-						  r.result["versions"].is_array() && r.result["versions"].size() <= 50 &&
-						  r.result.contains("ai") && r.result["ai"].is_object())
+					  if (r.ok && Online::validAiDetail(r.result))
 						  s.detail = r.result;
 					  else
 						  s.notice = r.ok ? customAIText("Invalid AI catalogue response")
@@ -425,8 +444,8 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 									   [this, i]
 									   {
 										   customAIs->tab = i;
-										   if (i < 2)
-											   fetchCustomAIs();
+										   customAIs->searchAt = 0;
+										   fetchCustomAIs();
 										   invalidate();
 									   },
 									   {.selected = s.tab == i, .enabled = !busy}));
@@ -481,42 +500,47 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 	}
 	else
 	{
-		top.push_back(row({expanded(textField("ais/search", s.query,
-											  [this](const std::string &value)
-											  {
-												  customAIs->query = value;
-												  customAIs->searchAt = SDL_GetTicks() + 250;
-											  })),
-						   Glob2UI::button("ais/search-go", customAIText("Search"),
-										   [this] { fetchCustomAIs(); }, {.enabled = !busy})}));
-		std::vector<std::string> sorts;
-		for (const auto &label : {"Most liked", "Newest", "Recently updated", "Most downloaded"})
-			sorts.push_back(customAIText(label));
-		top.push_back(choice("ais/sort", sorts, s.sort,
-							 [this](int i)
-							 {
-								 customAIs->sort = i;
-								 fetchCustomAIs();
-							 }));
-		std::vector<Element> tags;
-		for (const auto &tag : aiTags)
+		const bool sheet = (p.touch || p.compact()) && s.detail.is_object();
+		if (!sheet)
 		{
-			const bool selected = std::find(s.tags.begin(), s.tags.end(), tag) != s.tags.end();
-			tags.push_back(Glob2UI::button("ais/tag/" + tag, customAIText(tag),
-										   [this, tag, selected]
-										   {
-											   auto &tags = customAIs->tags;
-											   if (selected)
-												   std::erase(tags, tag);
-											   else if (tags.size() < 5)
-												   tags.push_back(tag);
-											   fetchCustomAIs();
-										   },
-										   {.selected = selected, .enabled = !busy}));
+			top.push_back(row({expanded(textField("ais/search", s.query,
+												  [this](const std::string &value)
+												  {
+													  customAIs->query = value;
+													  customAIs->searchAt = SDL_GetTicks() + 250;
+												  })),
+							   Glob2UI::button("ais/search-go", customAIText("Search"),
+											   [this] { fetchCustomAIs(); }, {.enabled = !busy})}));
+			std::vector<std::string> sorts;
+			for (const auto &label :
+				 {"Most liked", "Newest", "Recently updated", "Most downloaded"})
+				sorts.push_back(customAIText(label));
+			top.push_back(Glob2UI::choice("ais/sort", sorts, s.sort,
+										  [this](int i)
+										  {
+											  customAIs->sort = i;
+											  fetchCustomAIs();
+										  }));
+			std::vector<Element> tags;
+			for (const auto &tag : aiTags)
+			{
+				const bool selected = std::find(s.tags.begin(), s.tags.end(), tag) != s.tags.end();
+				tags.push_back(Glob2UI::button("ais/tag/" + tag, customAIText(tag),
+											   [this, tag, selected]
+											   {
+												   auto &tags = customAIs->tags;
+												   if (selected)
+													   std::erase(tags, tag);
+												   else if (tags.size() < 5)
+													   tags.push_back(tag);
+												   fetchCustomAIs();
+											   },
+											   {.selected = selected, .enabled = !busy}));
+			}
+			top.push_back(wrap(std::move(tags)));
+			if (s.loading)
+				top.push_back(paragraph(customAIText("Loading AI library…")));
 		}
-		top.push_back(wrap(std::move(tags)));
-		if (s.loading)
-			top.push_back(paragraph(customAIText("Loading AI library…")));
 		std::vector<Element> cards;
 		for (const auto &ai : s.catalogue)
 		{
@@ -548,15 +572,15 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 			if (!labels.empty())
 			{
 				s.version = std::clamp(s.version, 0, int(labels.size()) - 1);
-				details.push_back(choice("ais/version", labels, s.version,
-										 [this](int i)
-										 {
-											 if (!customAIBusy())
-											 {
-												 customAIs->version = i;
-												 invalidate();
-											 }
-										 }));
+				details.push_back(Glob2UI::choice("ais/version", labels, s.version,
+												  [this](int i)
+												  {
+													  if (!customAIBusy())
+													  {
+														  customAIs->version = i;
+														  invalidate();
+													  }
+												  }));
 				const auto &v = versions[s.version];
 				const bool compatible = compatibleAI(v);
 				std::string installLabel = "Download & install";
@@ -601,12 +625,23 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 													  Online::urlEncode(customAIs->selectedId));
 											  }));
 		}
-		if (p.compact())
+		if (p.touch || p.compact())
 		{
-			for (auto &e : details)
-				top.push_back(e);
-			for (auto &e : cards)
-				top.push_back(e);
+			if (sheet)
+			{
+				top.push_back(Glob2UI::button("ais/results", customAIText("Back to results"),
+											  [this]
+											  {
+												  customAIs->detail = Json();
+												  customAIs->selectedId.clear();
+												  invalidate();
+											  }));
+				for (auto &e : details)
+					top.push_back(e);
+			}
+			else
+				for (auto &e : cards)
+					top.push_back(e);
 		}
 		else
 			top.push_back(row({expanded(column(std::move(cards), {p.pt(8)})),
@@ -625,6 +660,12 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 				  [this] { AH::openUrl(customAIs->origin + "/ais/new"); }, false},
 				 {"ais/close", customAIText("Done"), [this] { dismiss(); }, true, SDLK_ESCAPE}},
 				p);
-	return page(customAIText("AI Library"), scroll("ais/body", column(std::move(top), {p.pt(10)})),
-				footer, p, 960);
+	auto body = scroll("ais/body", column(std::move(top), {p.pt(10)}));
+	if (p.touch)
+		return page(customAIText("AI Library"), std::move(body), footer, p, 960);
+	const int width = std::min(p.safe.w - p.pt(32), p.pt(1024)),
+			  height = std::min(p.safe.h - p.pt(32), p.pt(760));
+	return center(sized({width, height}, card(column({pageTitle(customAIText("AI Library")),
+													  expanded(std::move(body)), footer},
+													 {p.pt(16)}))));
 }

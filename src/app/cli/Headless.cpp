@@ -438,6 +438,12 @@ struct HeadlessRunner
 			globals.replayWriter->init(replay, engine.gui);
 		}
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
+		for(int i=0;i<engine.gui.game.gameHeader.getNumberOfPlayers();++i) {
+   auto *player=engine.gui.game.players[i];
+   if(player && player->ai && player->ai->implementationID==AI::JAVASCRIPT)
+    static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
+  }
+  const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
@@ -485,6 +491,8 @@ struct HeadlessRunner
 					termination="win_probability";
 		}
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
+			<< ",\"initialChecksum\":" << initialChecksum
+			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
@@ -537,6 +545,7 @@ struct HeadlessRunner
 			if (scriptComma) result << ',';
 			scriptComma = true;
 			result << "{\"player\":" << i << ",\"disabled\":" << (ai->isDisabled() ? "true" : "false")
+				<< ",\"rejectedDecision\":" << (ai->hasRejectedDecision() ? "true" : "false")
 				<< ",\"diagnostic\":" << quote(ai->diagnostic()) << '}';
 		}
 		result << ']';

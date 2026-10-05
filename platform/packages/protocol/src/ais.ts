@@ -29,21 +29,44 @@ export const AI_CHECK_LABELS: Record<(typeof AI_CHECKS)[number], string> = {
   continuation: 'Save and resume',
 };
 export const AI_VALIDATION_SUITE = 1;
-const Tags = Type.Array(Type.Union(AI_TAGS.map((value) => Type.Literal(value))), {
-  maxItems: 5,
-  uniqueItems: true,
-});
-const Name = Type.String({ minLength: 1, maxLength: 128, pattern: '\\S' });
-const Visibility = Type.Union(
-  (['public', 'unlisted', 'private'] as const).map((value) => Type.Literal(value)),
+const Tags = Type.Array(
+  Type.Union([
+    Type.Literal('Balanced'),
+    Type.Literal('Rush'),
+    Type.Literal('Defensive'),
+    Type.Literal('Economy'),
+    Type.Literal('Expansion'),
+    Type.Literal('Experimental'),
+    Type.Literal('Beginner-friendly'),
+  ]),
+  {
+    maxItems: 5,
+    uniqueItems: true,
+  },
 );
+const Name = Type.String({ minLength: 1, maxLength: 128, pattern: '\\S' });
+const Visibility = Type.Union([
+  Type.Literal('public'),
+  Type.Literal('unlisted'),
+  Type.Literal('private'),
+]);
 export const AiCheck = Open({
-  id: Type.Union(AI_CHECKS.map((value) => Type.Literal(value))),
-  status: Type.Union(
-    (['pending', 'running', 'passed', 'failed', 'skipped'] as const).map((value) =>
-      Type.Literal(value),
-    ),
-  ),
+  id: Type.Union([
+    Type.Literal('file'),
+    Type.Literal('syntax'),
+    Type.Literal('startup'),
+    Type.Literal('state'),
+    Type.Literal('gameplay'),
+    Type.Literal('determinism'),
+    Type.Literal('continuation'),
+  ]),
+  status: Type.Union([
+    Type.Literal('pending'),
+    Type.Literal('running'),
+    Type.Literal('passed'),
+    Type.Literal('failed'),
+    Type.Literal('skipped'),
+  ]),
   message: Type.Optional(Type.String({ maxLength: 2000 })),
 });
 export const AiMetadata = Open({
@@ -68,9 +91,12 @@ export const ValidateAiPayload = Strict({
 export const AiUpload = Open({
   id: Uuid,
   sourceHash: Sha256Hex,
-  status: Type.Union(
-    (['pending', 'valid', 'invalid', 'error'] as const).map((value) => Type.Literal(value)),
-  ),
+  status: Type.Union([
+    Type.Literal('pending'),
+    Type.Literal('valid'),
+    Type.Literal('invalid'),
+    Type.Literal('error'),
+  ]),
   report: AiValidationReport,
   error: Type.Optional(Type.String()),
   expiresAt: Timestamp,

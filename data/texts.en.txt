@@ -5384,3 +5384,13 @@ Starter project
 downloads of this version
 [downloads]
 downloads
+[Update available]
+Update available
+[Browse versions]
+Browse versions
+[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
+Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.
+[Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
+Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.
+[Back to results]
+Back to results

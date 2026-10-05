@@ -49,7 +49,12 @@ export async function ensureAiValidation(
     });
     await db
       .updateTable('ai_validations')
-      .set({ job_id: jobId, status: 'pending', error: null })
+      .set({
+        job_id: jobId,
+        status: 'pending',
+        error: null,
+        report: JSON.stringify(pendingAiReport(hash, simKey)),
+      })
       .where('id', '=', row.id)
       .execute();
   }
@@ -106,11 +111,11 @@ export async function maintainAiLibrary(db: Kysely<Database>) {
     sim_version: string;
   }>`SELECT DISTINCT v.hash, a.sim_version FROM ai_versions v CROSS JOIN engine_agents a
     WHERE a.last_seen_at > now() - interval '2 minutes' AND 'validate-ai' = ANY(a.kinds)
-    AND NOT EXISTS (SELECT 1 FROM ai_validations c WHERE c.hash=v.hash AND c.sim_version=a.sim_version AND c.suite=${AI_VALIDATION_SUITE}) LIMIT 20`.execute(
+    AND (NOT EXISTS (SELECT 1 FROM ai_validations c WHERE c.hash=v.hash AND c.sim_version=a.sim_version AND c.suite=${AI_VALIDATION_SUITE}) OR EXISTS (SELECT 1 FROM ai_validations c JOIN engine_jobs j ON j.id=c.job_id WHERE c.hash=v.hash AND c.sim_version=a.sim_version AND c.suite=${AI_VALIDATION_SUITE} AND c.status='error' AND j.created_at < now() - interval '1 hour')) LIMIT 20`.execute(
     db,
   );
   for (const row of rows.rows) {
     const sim = parseSimVersionKey(row.sim_version);
-    if (sim) await db.transaction().execute((trx) => ensureAiValidation(trx, row.hash, sim));
+    if (sim) await db.transaction().execute((trx) => ensureAiValidation(trx, row.hash, sim, true));
   }
 }

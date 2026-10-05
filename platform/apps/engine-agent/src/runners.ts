@@ -93,8 +93,13 @@ export class HeadlessEngineRunner implements EngineRunner {
     try {
       switch (job.kind) {
         case 'validate-ai':
-          if (!this.options.aiValidator) throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
-          result = await this.options.aiValidator(await blobs.read(job.payload.blobHash, 128 * 1024), signal, blobs.progress?.bind(blobs));
+          if (!this.options.aiValidator)
+            throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
+          result = await this.options.aiValidator(
+            await blobs.read(job.payload.blobHash, 128 * 1024),
+            signal,
+            blobs.progress?.bind(blobs),
+          );
           break;
         case 'import-ai-map':
           result = await this.importImage(job.payload, signal, blobs);

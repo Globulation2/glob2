@@ -64,7 +64,9 @@ export class HttpJobBlobs implements JobBlobs {
     this.leaseToken = leaseToken;
   }
 
-  progress(report: AiValidationReport): Promise<void> { return this.client.aiProgress(this.leaseToken, report); }
+  progress(report: AiValidationReport): Promise<void> {
+    return this.client.aiProgress(this.leaseToken, report);
+  }
 
   async read(sha256: string, maxBytes: number): Promise<Uint8Array> {
     try {

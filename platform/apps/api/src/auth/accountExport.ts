@@ -37,6 +37,12 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   match_colony_skins: ['account_id'],
   skin_purchases: ['account_id'],
   colony_skin_reports: ['reporter_account_id'],
+  ais: ['owner_account_id'],
+  ai_uploads: ['owner_account_id'],
+  ai_likes: ['account_id'],
+  ai_favourites: ['account_id'],
+  ai_reports: ['reporter_account_id'],
+  ai_downloads: ['downloader'],
   maps: ['owner_account_id'],
   map_likes: ['account_id'],
   map_reports: ['reporter_account_id'],
@@ -400,6 +406,58 @@ export async function exportAccount(
         .orderBy('day')
         .execute();
 
+      const ais = await tx
+        .selectFrom('ais')
+        .select([
+          'id',
+          'name',
+          'description',
+          'tags',
+          'visibility',
+          'hidden',
+          'hidden_reason',
+          'created_at',
+          'updated_at',
+        ])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const aiVersions = ais.length
+        ? await tx
+            .selectFrom('ai_versions')
+            .selectAll()
+            .where(
+              'ai_id',
+              'in',
+              ais.map((a) => a.id),
+            )
+            .execute()
+        : [];
+      const aiLikes = await tx
+        .selectFrom('ai_likes')
+        .select('ai_id')
+        .where('account_id', '=', id)
+        .execute();
+      const aiFavourites = await tx
+        .selectFrom('ai_favourites')
+        .select('ai_id')
+        .where('account_id', '=', id)
+        .execute();
+      const aiReports = await tx
+        .selectFrom('ai_reports')
+        .select(['id', 'ai_id', 'reason', 'details', 'status', 'created_at', 'resolution_note'])
+        .where('reporter_account_id', '=', id)
+        .execute();
+      const aiUploads = await tx
+        .selectFrom('ai_uploads')
+        .select(['id', 'validation_id', 'expires_at', 'published_ai_id', 'published_version_id'])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const aiDownloads = await tx
+        .selectFrom('ai_downloads')
+        .select(['version_id', sql<string>`day::text`.as('day')])
+        .where('downloader', '=', `a:${id}`)
+        .execute();
+
       const skins = await tx
         .selectFrom('colony_skins')
         .select(['id', 'kind', 'name', 'entitlement', 'disabled_at', 'created_at'])
@@ -697,6 +755,19 @@ export async function exportAccount(
           messages: rows(studioMessages),
           requests: rows(studioRequests),
           attempts: rows(studioAttempts),
+        },
+        ais: {
+          published: ais.map((a) => ({
+            ...clean(a),
+            versions: rows(aiVersions.filter((v) => v.ai_id === a.id)).map(
+              ({ aiId: _aiId, ...v }) => v,
+            ),
+          })),
+          likes: rows(aiLikes),
+          favourites: rows(aiFavourites),
+          reports: rows(aiReports),
+          uploads: rows(aiUploads),
+          downloads: rows(aiDownloads),
         },
         maps: {
           published: maps.map((m) => ({

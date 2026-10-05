@@ -20,9 +20,9 @@ const Admin = lazy(() => import('./admin/Admin.tsx').then((m) => ({ default: m.A
 const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
 );
-const Ais = lazy(() => import('./pages/Ais.tsx').then(m => ({ default: m.Ais })));
-const AiPage = lazy(() => import('./pages/Ais.tsx').then(m => ({ default: m.AiPage })));
-const AiPublish = lazy(() => import('./pages/Ais.tsx').then(m => ({ default: m.AiPublish })));
+const Ais = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.Ais })));
+const AiPage = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPage })));
+const AiPublish = lazy(() => import('./pages/Ais.tsx').then((m) => ({ default: m.AiPublish })));
 const Maps = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.Maps })));
 const MapPage = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapPage })));
 const MapUpload = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapUpload })));
@@ -45,10 +45,25 @@ interface Route {
 export const ROUTES: Route[] = [
   { pattern: '/ais', section: 'ais', title: 'AI Library', render: () => <Ais /> },
   { pattern: '/ais/mine', section: 'ais', title: 'My AIs', render: () => <Ais view="mine" /> },
-  { pattern: '/ais/favourites', section: 'ais', title: 'Favourite AIs', render: () => <Ais view="favourites" /> },
+  {
+    pattern: '/ais/favourites',
+    section: 'ais',
+    title: 'Favourite AIs',
+    render: () => <Ais view="favourites" />,
+  },
   { pattern: '/ais/new', section: 'ais', title: 'Share your AI', render: () => <AiPublish /> },
-  { pattern: '/ais/:id/new', section: 'ais', title: 'New AI version', render: p => <AiPublish key={p['id']} id={p['id']!} /> },
-  { pattern: '/ais/:id', section: 'ais', title: 'AI Library', render: p => <AiPage key={p['id']} id={p['id']!} /> },
+  {
+    pattern: '/ais/:id/new',
+    section: 'ais',
+    title: 'New AI version',
+    render: (p) => <AiPublish key={p['id']} id={p['id'] ?? ''} />,
+  },
+  {
+    pattern: '/ais/:id',
+    section: 'ais',
+    title: 'AI Library',
+    render: (p) => <AiPage key={p['id']} id={p['id'] ?? ''} />,
+  },
   { pattern: '/players', section: 'players', title: 'Players', render: () => <Players /> },
   {
     pattern: '/players/ai/:aiId',
@@ -287,7 +302,7 @@ function Layout() {
             group === 'Play'
               ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
-                ? ['maps', 'skins', 'studio'].includes(item.id)
+                ? ['maps', 'ais', 'skins', 'studio'].includes(item.id)
                 : item.id === 'admin',
           );
           return items.length ? (

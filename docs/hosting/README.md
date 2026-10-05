@@ -539,6 +539,33 @@ docker compose up -d --force-recreate init platform-api   # init writes a new re
 sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 ```
 
+## JavaScript AI validation rollout
+
+Apply database migrations through `0037_ai_library.sql`, then deploy the engine
+agent and platform worker before enabling publishing on the website. A working
+`validate-ai` agent heartbeat is required for upload acceptance. The agent performs
+an isolated startup probe; failure disables this capability and logs the reason.
+Other engine capabilities remain available.
+
+The engine-agent image includes Bubblewrap. AI jobs require Linux user, PID, mount
+and network namespaces, no inherited credentials, read-only engine/data/fixtures,
+and a dedicated scratch tmpfs of at most 4 GiB (Compose defaults to 1 GiB). Each
+engine invocation has a 120-second wall/CPU bound, 2 GiB address-space bound, 64 MiB
+file bound and bounded captured output. Temporary internal storage is also bounded.
+Keep container memory/PID limits and the network namespace boundary in place. An
+installation whose container security policy disallows nested user namespaces
+must configure an appropriate isolated worker host; there is no unsandboxed fallback.
+Do not disable host protections or run the engine agent privileged to bypass a
+failed probe. `ENGINE_AI_LIBRARY_PATH`, if needed for a custom build, mounts only a
+trusted read-only shared-library directory inside validation jobs.
+
+Validation progress uses the held engine-job lease and is checked against the job's
+source hash, simulation version and suite. Interrupted jobs retain their source and
+retry through the existing engine queue. Published validation history remains bound
+to its original engine; the scheduler requests new evidence as agents for new
+versions appear. A newly deployed engine must pass checks before native clients can
+install a release. These checks establish compatibility, not a security certificate.
+
 ## Scaling
 
 Change the replica counts in `.env` and run `docker compose up -d`.

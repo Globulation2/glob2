@@ -121,8 +121,14 @@ try {
     simVersion = resolved.simVersion;
     logger.info({ simVersion: describeSimVersion(resolved), binary }, 'engine binary identified');
     let aiValidator;
-    try { aiValidator = await createAiValidator(engine.options, simVersion); }
-    catch (error) { logger.warn({ err: error }, 'AI publishing unavailable: isolated validator failed its startup probe'); }
+    try {
+      aiValidator = await createAiValidator(engine.options, simVersion);
+    } catch (error) {
+      logger.warn(
+        { err: error },
+        'AI publishing unavailable: isolated validator failed its startup probe',
+      );
+    }
     runner = new HeadlessEngineRunner({
       ...(aiValidator ? { aiValidator } : {}),
       engine,

@@ -487,6 +487,73 @@
         }
       }
     },
+    "ais": {
+      "type": "object",
+      "required": [
+        "published",
+        "likes",
+        "favourites",
+        "reports",
+        "uploads",
+        "downloads"
+      ],
+      "properties": {
+        "published": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "favourites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "uploads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "downloads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
     "maps": {
       "type": "object",
       "required": [
