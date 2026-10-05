@@ -1,0 +1,47 @@
+Skin studio shared theme verification
+Tested source: 5740d5efeea8cb867faccd208ae23e483c8438ab
+Base: 99958b81c2541fde7789c67451dae441ec24e93a
+Source was tested in the working tree before the identical source was committed.
+This record transcribes the completed command results reported in the Codex session;
+it is a concise result record, not a complete raw stdout/stderr capture.
+
+Environment: Linux 7.0.0-31-generic, x86_64
+Node v22.22.1 for Vite, TypeScript, ESLint and Vitest; npm 9.2.0.
+Playwright server/browser tests: Node v24.19.0 (native TypeScript support).
+Dependencies: npm ci --no-audit --no-fund in platform; 569 packages installed.
+package-lock.json SHA256: ddfba60d611fb20f98874c3af5fd7ef131e1bd82324978c7578cfe8d5d69637f
+Chromium through Playwright 1.63.0, desktop Chrome and Pixel 7 emulation.
+
+From platform/:
+npx prettier --write apps/web/src/styles/skin-studio.css apps/web/src/pages/Skins.tsx apps/web/e2e/skins-studio-ux.spec.ts
+  exit 0
+npx eslint apps/web/src/pages/Skins.tsx apps/web/e2e/skins-studio-ux.spec.ts
+  exit 0
+npm run typecheck
+  tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json; exit 0
+npx vitest run apps/web/test/skins-workspace.test.tsx apps/web/test/skin-document.test.tsx
+  Test Files 2 passed (2); Tests 10 passed (10); exit 0
+
+From platform/apps/web/:
+npx vite build
+  819 modules transformed; built in 6.23s; exit 0.
+  Existing bundle size warning: index chunk exceeds 500 kB.
+PATH=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin:$PATH npx playwright test -c e2e/playwright.config.ts skins-studio-ux.spec.ts
+  6 passed (2.3m); exit 0.
+  Desktop and phone: five viewport sizes, canvas/control reachability,
+  short-phone pattern dialog, device theme changes, explicit shared preference,
+  reload persistence, settings/pattern dialog theming, paint/name preservation.
+PATH=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin:$PATH npx playwright test -c e2e/playwright.config.ts skins-studio-ux.spec.ts --grep 'shared system'
+  2 passed (55.5s); exit 0.
+  Final screenshots captured with CSS animations disabled for stable colors.
+
+git diff --check
+  exit 0.
+
+Omissions: Firefox, WebKit, physical mobile devices, native engine and full
+platform suites. Change affects web presentation and reuses the existing theme
+provider; no simulation, save formats, replay/network or sim-version code changed.
+Full npm run build -w @glob2/web was interrupted while rebuilding unrelated Opus
+WASM music tooling; the relevant Vite production build completed successfully.
+No expensive hosted CI requested. Local visual/layout and state coverage is the
+merge verification path, per AGENTS.md.
