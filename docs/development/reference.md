@@ -2005,8 +2005,8 @@ happen outside the device callback. Preview screens send typed controls and read
 consumed playback snapshots instead of locking SDL or owning live decoders. Preview
 session tokens prevent an old screen from controlling or closing a newer preview.
 
-The producer maintains 36 blocks of 1,024 stereo frames (768 ms at 48 kHz), refills
-at 24 blocks, and cannot exceed 48 blocks. Native output consumes a single-producer,
+The producer maintains 24 blocks of 1,024 stereo frames (512 ms at 48 kHz), refills
+at 20 blocks (427 ms), and cannot exceed 48 blocks. Native output consumes a single-producer,
 single-consumer ring without waiting for gameplay or decoder locks. Volume and
 mute are applied at consumption. Native voice decoding stays on the application
 thread and publishes bounded PCM to separate per-player rings; the music look-ahead

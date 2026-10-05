@@ -19,8 +19,10 @@ let pool = [],
   shared = null,
   commandTime = 0,
   commandTrack = -1;
-const target = 36,
-  low = 24,
+// Half-second target rounded up to 512 ms; refill at 427 ms for stall headroom.
+// Keep MusicBuffer.h and music-output.js aligned.
+const target = 24,
+  low = 20,
   capacity = 48;
 let chain = Promise.resolve();
 // Preview pause belongs to the consumer: retaining prepared PCM also retains

@@ -877,6 +877,10 @@ jobs:
             build/emscripten/client/release/recording-video.js
             build/emscripten/client/release/recording-runtime.js
             build/emscripten/client/release/recording-runtime.wasm
+            build/emscripten/client/release/music-worker.js
+            build/emscripten/client/release/music-output.js
+            build/emscripten/client/release/music-runtime.js
+            build/emscripten/client/release/music-runtime.wasm
             build/emscripten/client/release/licenses/
             build/emscripten/client/release/threaded/identity.json
             build/emscripten/client/release/threaded/index.js
@@ -910,6 +914,10 @@ jobs:
             build/emscripten/client/release/recording-video.js
             build/emscripten/client/release/recording-runtime.js
             build/emscripten/client/release/recording-runtime.wasm
+            build/emscripten/client/release/music-worker.js
+            build/emscripten/client/release/music-output.js
+            build/emscripten/client/release/music-runtime.js
+            build/emscripten/client/release/music-runtime.wasm
             build/emscripten/client/release/licenses/
             build/emscripten/client/release/threaded/index.js
             build/emscripten/client/release/threaded/index.wasm
