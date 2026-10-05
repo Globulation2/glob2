@@ -10,6 +10,7 @@ import { ACCOUNT_EXPORT_FORMAT, AccountExport, schemaIssues } from '@glob2/proto
 import { EXPORTED_ACCOUNT_COLUMNS, UNEXPORTED_ACCOUNT_COLUMNS } from '../src/auth/accountExport.ts';
 import { registeredPlayer, type Player } from './playSupport.ts';
 import { SIM, createHarness, type Harness, type Instance } from './support.ts';
+import { skinImages } from './skinImages.ts';
 
 let harness: Harness;
 let api: Instance;
@@ -464,6 +465,40 @@ describe('downloading my data', () => {
 
     owner.client.close();
     other.client.close();
+  });
+
+  it('exports newly canonical WebP drafts with their exact stored bytes and media type', async () => {
+    const owner = await registeredPlayer(api, 'WebPExporter');
+    const headers = { authorization: `Bearer ${owner.accessToken}` };
+    const saved = await api.app.inject({
+      method: 'PUT',
+      url: '/api/v1/skins/draft',
+      headers,
+      payload: {
+        revision: null,
+        name: 'WebP draft',
+        buildingColor: 0x123456,
+        ...(await skinImages()),
+      },
+    });
+    expect(saved.statusCode, saved.body).toBe(200);
+    const stored = await harness.database.db
+      .selectFrom('colony_skin_drafts')
+      .select(['image', 'material'])
+      .where('account_id', '=', owner.accountId)
+      .executeTakeFirstOrThrow();
+    expect(stored.image.toString('ascii', 8, 12)).toBe('WEBP');
+    const response = await exportOf(owner);
+    expect(response.status).toBe(200);
+    const data = (await response.json()) as AccountExport;
+    expect(data.skins.drafts).toEqual([
+      expect.objectContaining({
+        contentType: 'image/webp',
+        imageBase64: stored.image.toString('base64'),
+        materialBase64: stored.material.toString('base64'),
+      }),
+    ]);
+    owner.client.close();
   });
 
   it('exports owned Hive credits and sessions without live capabilities', async () => {

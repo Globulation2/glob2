@@ -225,6 +225,7 @@ export async function buildApp(
   });
   const assignments = new Assignments(
     services.db,
+    services.blobs,
     identity.keys,
     services.config.publicOrigin,
     new Map(services.config.instance.queues.map((q) => [q.id, q.name])),

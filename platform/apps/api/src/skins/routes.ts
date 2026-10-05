@@ -1,3 +1,4 @@
+import { webpRendition } from '../http/webpRendition.ts';
 import { skinModerationRoutes } from './moderation.ts';
 import { skinDraftRoutes } from './drafts.ts';
 import { seedSkinPresets } from './presets.ts';
@@ -12,7 +13,12 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { equipSkin } from './equipment.ts';
 import { canonicalMaterialMap, canonicalSkinImage } from './images.ts';
-import { knownSwarmMesh, skinManifestSha256, type SkinContent } from './manifest.ts';
+import {
+  knownSwarmMesh,
+  webpSkinVersion,
+  skinManifestSha256,
+  type SkinContent,
+} from './manifest.ts';
 
 export async function skinRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -32,6 +38,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
     return {
       colonySkins: await matchColonySkins(
         db,
+        blobs,
         identity.keys,
         app.services.config.publicOrigin,
         match.id,
@@ -94,9 +101,14 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       )
       .execute();
     const status = new Map(statuses.map((row) => [row.version_id, row.status]));
-    const items = versions
-      .filter((version) => knownSwarmMesh(version.swarmMesh))
-      .map((version) => ({ ...version, softwareStatus: status.get(version.id) ?? 'pending' }));
+    const items = await Promise.all(
+      versions
+        .filter((version) => knownSwarmMesh(version.swarmMesh))
+        .map(async (version) => ({
+          ...(await webpSkinVersion(app.services, version as ColonySkinVersion)),
+          softwareStatus: status.get(version.id) ?? 'pending',
+        })),
+    );
     const equipment = await db
       .selectFrom('colony_skin_equipment')
       .select(['version_id', 'building_color'])
@@ -183,7 +195,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
               sha256: blob.sha256,
               size: blob.size,
               storage_key: blob.key,
-              content_type: 'image/png',
+              content_type: 'image/webp',
               visibility: 'private',
               owner_account_id: account.id,
             })
@@ -324,13 +336,19 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
           .where('s.disabled_at', 'is', null)
           .executeTakeFirst();
         if (!row) throw apiError('not_found', 'Skin not found.');
-        const stream = await blobs.get(row.storage_key);
+        const hash = await webpRendition(db, blobs, row.sha256);
+        const rendition = await db
+          .selectFrom('blobs')
+          .select('storage_key')
+          .where('sha256', '=', hash)
+          .executeTakeFirstOrThrow();
+        const stream = await blobs.get(rendition.storage_key);
         if (!stream) throw apiError('not_found', missing);
         return reply
-          .type('image/png')
+          .type('image/webp')
           .header('X-Content-Type-Options', 'nosniff')
           .header('Cache-Control', 'public, max-age=300')
-          .header('ETag', `"${row.sha256}"`)
+          .header('ETag', `"${hash}"`)
           .send(stream);
       },
     );

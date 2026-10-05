@@ -16,8 +16,8 @@ struct DownloadFixture {
         return std::make_unique<SkinDownloads>(storage,"https://example.test",f["claims"]["matchId"],std::vector<SkinDownloads::Ticket>{{2,token.empty()?f["valid"].get<std::string>():token}},[this](auto r){return http.start(std::move(r));});
     }
     void keys(){auto request=http.pending("jwks.json");REQUIRE(request);CHECK(request->request.responseLimit==65536);request->reply(200,f["jwks"]);}
-    std::string path(){return "online/skins/"+f["claims"]["version"]["textureSha256"].get<std::string>()+".png";}
-    std::string materialPath(){return "online/skins/"+f["claims"]["version"]["materialSha256"].get<std::string>()+".png";}
+    std::string path(){return "online/skins/"+f["claims"]["version"]["textureSha256"].get<std::string>()+".webp";}
+    std::string materialPath(){return "online/skins/"+f["claims"]["version"]["materialSha256"].get<std::string>()+".webp";}
     void cache(){storage.files[path()]=texture;storage.files[materialPath()]=material;}
     // Answer the pending colour and material downloads with valid bytes.
     void serve(){auto t=http.pending("/texture");REQUIRE(t);t->replyRaw(200,texture);auto m=http.pending("/material");REQUIRE(m);m->replyRaw(200,material);}
@@ -29,9 +29,9 @@ TEST_SUITE("SkinDownloads") {
         loader->poll(1700000000);CHECK(loader->takeReady().empty());CHECK_FALSE(loader->done());
         f.keys();loader->poll(1700000000);
         auto request=f.http.pending("/texture");REQUIRE(request);CHECK(request->request.responseLimit==1024*1024);
-        CHECK(request->request.url=="https://example.test/api/v1/skins/versions/"+f.f["claims"]["version"]["id"].get<std::string>()+"/texture");
+        CHECK(request->request.url=="https://example.test/api/v1/skins/versions/"+f.f["claims"]["version"]["id"].get<std::string>()+"/texture?sha256="+f.f["claims"]["version"]["textureSha256"].get<std::string>());
         auto material=f.http.pending("/material");REQUIRE(material);CHECK(material->request.responseLimit==256*1024);
-        CHECK(material->request.url=="https://example.test/api/v1/skins/versions/"+f.f["claims"]["version"]["id"].get<std::string>()+"/material");
+        CHECK(material->request.url=="https://example.test/api/v1/skins/versions/"+f.f["claims"]["version"]["id"].get<std::string>()+"/material?sha256="+f.f["claims"]["version"]["materialSha256"].get<std::string>());
         request->replyRaw(200,f.texture);loader->poll(1700000000);
         CHECK(loader->takeReady().empty());CHECK_FALSE(loader->done()); // the material map is still pending
         material->replyRaw(200,f.material);loader->poll(1700000000);
@@ -42,7 +42,7 @@ TEST_SUITE("SkinDownloads") {
         CHECK(f.http.count("/texture")==1);CHECK(f.http.count("/material")==1);
     }
     TEST_CASE("corrupt cache and network bytes cannot reach the renderer"){
-        DownloadFixture f;f.storage.files[f.path()]="corrupt";f.storage.files[f.materialPath()]=f.texture; // valid PNG, wrong hash
+        DownloadFixture f;f.storage.files[f.path()]="corrupt";f.storage.files[f.materialPath()]=f.texture; // valid WebP, wrong hash
         auto loader=f.loader();f.keys();loader->poll(1700000000);
         CHECK(f.storage.files.count(f.path())==0);CHECK(f.storage.files.count(f.materialPath())==0);
         auto request=f.http.pending("/texture");REQUIRE(request);
@@ -68,7 +68,7 @@ TEST_SUITE("SkinDownloads") {
         {
             // A 256x256 (v1-sized) image is rejected before hashing or decoding.
             DownloadFixture f;auto loader=f.loader();f.keys();loader->poll(1700000000);
-            auto bytes=f.material;bytes[18]=1;bytes[22]=1; // IHDR 256x256
+            auto bytes=f.material;bytes[21]^=1; // corrupt the lossless WebP dimensions
             f.http.pending("/material")->replyRaw(200,bytes);f.http.pending("/texture")->replyRaw(200,f.texture);
             loader->poll(1700000000);CHECK(loader->takeReady().empty());CHECK(loader->done());
         }
@@ -109,7 +109,7 @@ TEST_SUITE("SkinDownloads") {
 
     TEST_CASE("cache eviction bounds retained assets while preserving current appearances"){
         DownloadFixture f;
-        for(int i=0;i<80;++i)f.storage.files["online/skins/"+Sha256::hex(std::to_string(i))+".png"]="old";
+        for(int i=0;i<80;++i)f.storage.files["online/skins/"+Sha256::hex(std::to_string(i))+".webp"]="old";
         auto loader=f.loader();f.keys();loader->poll(1700000000);
         f.serve();loader->poll(1700000000);
         CHECK(loader->takeReady().size()==1);CHECK(f.storage.files.size()==64);

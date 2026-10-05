@@ -371,9 +371,9 @@ numeric choices remain readable. The gameplay action strip retains its
 game-specific sprites and labels, which distinguish construction, flags and team tools.
 
 Original SVGs and a source manifest live in `datasrc/icons/tabler/`, pinned to
-Tabler v3.48.0. Generated PNGs live in `data/gui/`; the distributed MIT notice is
-`data/tabler-icons-license.txt`. Ordinary builds use the committed PNGs and need
-no SVG renderer or network access. To regenerate with the pinned development tool:
+Tabler v3.48.0. Generated PNG sources live in `data/gui/`; the distributed MIT notice is
+`data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
+WebP in the runtime tree and need no SVG renderer or network access. To regenerate with the pinned development tool:
 
 ```sh
 npm install --prefix artifacts/tabler/tooling --no-audit --no-fund @resvg/resvg-js@2.6.2

@@ -1,3 +1,4 @@
+import { skinAssetUrl } from './assetUrls.ts';
 import { useState } from 'react';
 import type { MatchColonySkin } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -63,7 +64,7 @@ export function MatchSkinLooks({ matchId }: { matchId: string }) {
             <img
               width={128}
               height={128}
-              src={`/api/v1/skins/versions/${skin.version.id}/texture`}
+              src={skinAssetUrl(skin.version, 'texture')}
               alt={`Colony ${skin.team + 1} paint`}
             />
             <ReportSkin

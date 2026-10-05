@@ -485,7 +485,7 @@ def main():
     if not relay:
         env.Append(LIBS=['SDL3_net'])
     if not server_only:
-        env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'speex'])
+        env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'webp', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])

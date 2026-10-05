@@ -592,7 +592,7 @@ describe('room REST and the invite page', () => {
     const listed = (list['items'] as { id: string }[]).find((i) => i.id === catalogRoom.id);
     expect(listed).toMatchObject({
       mapTitle: 'Canal Duel',
-      mapPreviewUrl: `${ORIGIN}/api/v1/maps/${map.id}/versions/${hash}/preview.png`,
+      mapPreviewUrl: `${ORIGIN}/api/v1/maps/${map.id}/versions/${hash}/preview.webp`,
     });
     // Rooms on generated maps carry no preview link.
     const generated = (list['items'] as Record<string, unknown>[]).find((i) => i['id'] === room.id);

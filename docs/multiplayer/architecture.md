@@ -229,11 +229,11 @@ mesh and integer `swarmViewAngle` (0–359, default 0), and two base64 PNG or We
 top-right, explorer bottom-left, swarm bottom-right.
 
 - `imageBase64`, the colour atlas, is at most 1 MiB. The server re-encodes it as
-  an opaque sRGB PNG without metadata.
+  an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
   (R = G = B), opaque, and a material id: 0 glossy, 1 matte, 2 metallic,
   3 hairy. Anything else is a 400. The server re-encodes it as an 8-bit
-  greyscale PNG.
+  lossless WebP.
 
 The version's `manifestSha256` is described below; native clients recompute it.
 Publishing identical content again returns the existing version. Publication and
@@ -249,7 +249,10 @@ available. Ready derivatives are immutable. Renderer upgrades create new records
 without rewriting published paint.
 
 A signed optional `softwareSprites` descriptor carries `format`,
-`manifestSha256` and `renderRevision`. Appearance refresh pins the first ready
+`manifestSha256` and `renderRevision`. Its optional `source` identifies the immutable
+paint, material and canonical source manifest separately from WebP wire renditions.
+Clients verify this signed identity before accepting a bundle; older descriptors
+use the signed version identity. Appearance refresh pins the first ready
 bundle to the match; later renderer revisions cannot replace it. Its addresses
 come from the trusted instance origin:
 `GET /api/v1/skins/versions/:id/sprites/:manifestHash/manifest` and
@@ -257,8 +260,20 @@ come from the trusted instance origin:
 the source version's moderation checks. Blob garbage collection includes both
 bundle manifests and pages.
 `GET /api/v1/skins/versions/:id/texture` serves the colour atlas and
-`GET /api/v1/skins/versions/:id/material` the material map, both as `image/png`
-with the blob SHA-256 as ETag; disabled skins return 404. Raw uploads and arbitrary blob keys are never served
+`GET /api/v1/skins/versions/:id/material` the material map, both as `image/webp`
+with the blob SHA-256 as ETag; disabled skins return 404. Older published sources remain immutable. The API caches lossless WebP wire
+renditions in `image_webp_renditions`, signs their exact texture/material hashes
+and recomputes the wire manifest hash while retaining version IDs. Apply migration
+0041 and 0042 before deploying the API and worker together with the WebP-only client.
+Old clients that require PNG skins need upgrading; existing signed PNG tickets
+must be refreshed before a new client can install their appearances. Skin image
+requests include `?sha256=<wire hash>` so cached PNG responses from earlier
+releases cannot satisfy requests for the new renditions. Map catalog
+preview URLs end in `preview.webp`; existing engine-produced PNG preview sources
+are converted through the same persistent rendition cache. End-user PNG/WebP
+uploads remain accepted as imports on the server.
+
+Raw uploads and arbitrary blob keys are never served
 by these endpoints. The designer can open any owned version or copy a preset
 into a new design. Publishing an edit updates the design's display name and
 creates an immutable content version; previously equipped versions and frozen
@@ -719,7 +734,7 @@ takes these filters:
 `GET /api/v1/maps/{id}` returns `MapDetail`: the map, its versions (newest first)
 and what the caller may do (`viewer.owner`, `moderator`, `liked`, `reported`).
 `GET /api/v1/maps/{id}/versions/{hash}` returns one version. `…/file` serves the
-bytes as an attachment, and `…/preview.png` serves the preview.
+bytes as an attachment, and `…/preview.webp` serves the preview.
 
 **Stats.**
 
@@ -868,7 +883,7 @@ or key-server URL.
 
 `SkinDownloads` fetches JWKS with a 64 KiB limit, then each version's colour
 atlas (1 MiB limit) and material map (256 KiB limit), four at a time. It verifies
-the signed SHA-256 values and 512×512 PNG dimensions before image decoding. The loader stays attached to the view and refreshes the
+the signed SHA-256 values and 512×512 still WebP dimensions before image decoding. The loader stays attached to the view and refreshes the
 trusted match appearance endpoint every minute, with a 512 KiB response limit.
 A complete valid snapshot removes omitted teams immediately; additions require
 fresh signature and texture verification. Failed or malformed refreshes retain

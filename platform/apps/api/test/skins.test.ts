@@ -1,3 +1,4 @@
+import { FsBlobStore, putContent } from '@glob2/core';
 import { readFileSync } from 'node:fs';
 import {
   COLONY_SKIN_TYPE,
@@ -6,11 +7,13 @@ import {
   type MatchSetup,
 } from '@glob2/protocol';
 import { SigningKeys } from '../src/auth/keys.ts';
+import { skinManifestSha256 } from '../src/skins/manifest.ts';
 import { matchColonySkins } from '../src/skins/matches.ts';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createTestDatabase, type TestDatabase } from '../../../packages/db/test/support.ts';
 import { authorizedSkin, equipSkin } from '../src/skins/equipment.ts';
 
+const blobs = new FsBlobStore('/tmp/glob2-unused-skin-fixtures');
 let database: TestDatabase;
 beforeAll(async () => {
   database = await createTestDatabase();
@@ -40,7 +43,7 @@ describe('colony skin equipment', () => {
         .values({
           sha256,
           size: 100,
-          content_type: 'image/png',
+          content_type: 'image/webp',
           storage_key: `sha256/${sha256.slice(0, 2)}/${sha256}`,
         })
         .execute();
@@ -126,7 +129,9 @@ describe('colony skin equipment', () => {
         .executeTakeFirstOrThrow();
     const match = await makeMatch();
     const keys = SigningKeys.ephemeral();
-    expect(await matchColonySkins(db, keys, 'https://play.test', match.id, false)).toEqual([]);
+    expect(await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false)).toEqual(
+      [],
+    );
     expect(
       (
         await db
@@ -137,8 +142,8 @@ describe('colony skin equipment', () => {
       ).skins_frozen_at,
     ).toBeNull();
     const [first, concurrent] = await Promise.all([
-      matchColonySkins(db, keys, 'https://play.test', match.id),
-      matchColonySkins(db, keys, 'https://play.test', match.id),
+      matchColonySkins(db, blobs, keys, 'https://play.test', match.id),
+      matchColonySkins(db, blobs, keys, 'https://play.test', match.id),
     ]);
     expect(first).toHaveLength(1);
     expect(concurrent[0]?.version.id).toBe(version.id);
@@ -169,13 +174,13 @@ describe('colony skin equipment', () => {
       keys.verify(appearance.assertion, { type: 'glob2-match+jwt', audience: 'glob2-relay' }),
     ).toThrow();
     await equipSkin(db, account.id, null);
-    expect((await matchColonySkins(db, keys, 'https://play.test', match.id))[0]?.version.id).toBe(
-      version.id,
-    );
+    expect(
+      (await matchColonySkins(db, blobs, keys, 'https://play.test', match.id))[0]?.version.id,
+    ).toBe(version.id);
     const defaults = await makeMatch();
-    expect(await matchColonySkins(db, keys, 'https://play.test', defaults.id)).toEqual([]);
+    expect(await matchColonySkins(db, blobs, keys, 'https://play.test', defaults.id)).toEqual([]);
     await equipSkin(db, account.id, version.id);
-    expect(await matchColonySkins(db, keys, 'https://play.test', defaults.id)).toEqual([]);
+    expect(await matchColonySkins(db, blobs, keys, 'https://play.test', defaults.id)).toEqual([]);
     await db
       .updateTable('entitlements')
       .set({ revoked_at: new Date() })
@@ -199,14 +204,17 @@ describe('colony skin equipment', () => {
       .where('id', '=', skin.id)
       .execute();
     await expect(authorizedSkin(db, account.id, version.id)).rejects.toThrow('unavailable');
-    expect(await matchColonySkins(db, keys, 'https://play.test', match.id, false)).toEqual([]);
+    expect(await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false)).toEqual(
+      [],
+    );
     await db
       .updateTable('colony_skins')
       .set({ disabled_at: null })
       .where('id', '=', skin.id)
       .execute();
     expect(
-      (await matchColonySkins(db, keys, 'https://play.test', match.id, false))[0]?.version.id,
+      (await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false))[0]?.version
+        .id,
     ).toBe(version.id);
     await db
       .updateTable('accounts')
@@ -234,7 +242,7 @@ describe('colony skin equipment', () => {
     const hash = 'e'.repeat(64);
     await db
       .insertInto('blobs')
-      .values({ sha256: hash, size: 100, content_type: 'image/png', storage_key: `k/${hash}` })
+      .values({ sha256: hash, size: 100, content_type: 'image/webp', storage_key: `k/${hash}` })
       .execute();
     const skin = await db
       .insertInto('colony_skins')
@@ -288,7 +296,7 @@ describe('colony skin equipment', () => {
       .executeTakeFirstOrThrow();
     const keys = SigningKeys.ephemeral();
     // A cosmetic the API cannot sign must not block the match's appearances.
-    expect(await matchColonySkins(db, keys, 'https://play.test', match.id)).toEqual([]);
+    expect(await matchColonySkins(db, blobs, keys, 'https://play.test', match.id)).toEqual([]);
     expect(
       (
         await db
@@ -321,13 +329,37 @@ it('late sprite readiness is signed and pinned independently from frozen skin co
     .values({ kind: 'preset', name: 'Late', entitlement: 'skins:late' })
     .returning('id')
     .executeTakeFirstOrThrow();
+  // Existing published PNGs keep their source identity when delivery uses WebP.
+  const fixture = JSON.parse(readFileSync('../test/fixtures/skins/authorization.json', 'utf8'));
+  const sourceTexture = await putContent(blobs, Buffer.from(fixture.sourceTextureHex, 'hex'));
+  const sourceMaterial = await putContent(blobs, Buffer.from(fixture.sourceMaterialHex, 'hex'));
+  for (const blob of [sourceTexture, sourceMaterial])
+    await db
+      .insertInto('blobs')
+      .values({
+        sha256: blob.sha256,
+        size: blob.size,
+        storage_key: blob.key,
+        content_type: 'image/png',
+      })
+      .onConflict((oc) => oc.column('sha256').doNothing())
+      .execute();
+  const sourceContent = {
+    skinId: skin.id,
+    textureSha256: sourceTexture.sha256,
+    materialSha256: sourceMaterial.sha256,
+    layout: 'colony-v2' as const,
+    buildingColor: 123,
+    swarmMesh: 'classic' as const,
+  };
+  const sourceManifest = skinManifestSha256(sourceContent);
   const version = await db
     .insertInto('colony_skin_versions')
     .values({
       skin_id: skin.id,
-      texture_sha256: hash,
-      material_sha256: hash,
-      manifest_sha256: hash,
+      texture_sha256: sourceTexture.sha256,
+      material_sha256: sourceMaterial.sha256,
+      manifest_sha256: sourceManifest,
       layout: 'colony-v2',
       building_color: 123,
     })
@@ -366,7 +398,7 @@ it('late sprite readiness is signed and pinned independently from frozen skin co
     .executeTakeFirstOrThrow();
   const keys = SigningKeys.ephemeral();
   expect(
-    (await matchColonySkins(db, keys, 'https://play.test', match.id))[0]?.softwareSprites,
+    (await matchColonySkins(db, blobs, keys, 'https://play.test', match.id))[0]?.softwareSprites,
   ).toBeUndefined();
   const derivative = await db
     .insertInto('colony_skin_sprites')
@@ -378,12 +410,19 @@ it('late sprite readiness is signed and pinned independently from frozen skin co
     .set({ status: 'ready', manifest_sha256: hash })
     .where('id', '=', derivative.id)
     .execute();
-  const ready = (await matchColonySkins(db, keys, 'https://play.test', match.id, false))[0];
+  const ready = (await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false))[0];
   expect(ready?.softwareSprites).toEqual({
     format: 'colony-sprites-v1',
+    source: {
+      manifestSha256: sourceManifest,
+      textureSha256: sourceTexture.sha256,
+      materialSha256: sourceMaterial.sha256,
+    },
     manifestSha256: hash,
     renderRevision: revision,
   });
+  expect(ready!.version.textureSha256).not.toBe(sourceTexture.sha256);
+  expect(ready!.version.manifestSha256).not.toBe(sourceManifest);
   expect(
     keys.verify(ready!.assertion, { type: COLONY_SKIN_TYPE, audience: COLONY_SKIN_AUDIENCE })
       .claims['softwareSprites'],
@@ -400,12 +439,13 @@ it('late sprite readiness is signed and pinned independently from frozen skin co
     })
     .execute();
   expect(
-    (await matchColonySkins(db, keys, 'https://play.test', match.id, false))[0]?.softwareSprites,
+    (await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false))[0]
+      ?.softwareSprites,
   ).toEqual(ready?.softwareSprites);
   await db
     .updateTable('colony_skins')
     .set({ disabled_at: new Date() })
     .where('id', '=', skin.id)
     .execute();
-  expect(await matchColonySkins(db, keys, 'https://play.test', match.id, false)).toEqual([]);
+  expect(await matchColonySkins(db, blobs, keys, 'https://play.test', match.id, false)).toEqual([]);
 });

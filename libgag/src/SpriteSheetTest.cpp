@@ -140,6 +140,25 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
                 CHECK(a == lossyAlphaFixture::alpha[y * lossyAlphaFixture::width + x]);
             }
     }
+    const auto previousLayers = sprite.experimentImages;
+    const auto *previousAtlas = sprite.highResolutionAtlas.get();
+    auto *previous = sprite.experimentImages[0];
+    GAGCore::Sprite::requestHighResolution(true);
+    CHECK_FALSE(GAGCore::Sprite::pollHighResolution(0));
+    CHECK(sprite.experimentImages[0] == previous);
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    bool complete = false;
+    while (std::chrono::steady_clock::now() < deadline) {
+        GAGCore::Toolkit::assets().poll();
+        complete = GAGCore::Sprite::pollHighResolution(1);
+        if (complete) break;
+        CHECK(sprite.experimentImages == previousLayers);
+        CHECK(sprite.highResolutionAtlas.get() == previousAtlas);
+        SDL_Delay(1);
+    }
+    REQUIRE(complete);
+    CHECK(sprite.experimentImages[0] != previous);
+    CHECK(sprite.highResolutionAtlas != nullptr);
 }
 #endif
 

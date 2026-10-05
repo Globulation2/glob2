@@ -301,7 +301,7 @@ snapshot (`apps/api/src/auth/accountExport.ts`):
 | `matches` | every match played: the match's origin, status, result, times, map hash, and the account's seat, team, name, outcome, disconnects, rating change and connection-quality summary, with the match page URL |
 | `rooms` | rooms hosted (with their settings), memberships (with server-region round trips), seats, own chat messages, kicks |
 | `matchmaking` | queue tickets (with region round trips), cooldowns, quick-match proposals and responses |
-| `skins` | published paints and immutable version metadata (including the swarm mesh), equipped version and building color, private draft (name, building color, swarm mesh) with its colour atlas and material map PNGs as base64 (`imageBase64`, `materialBase64`), match appearances, purchases and payment-event references, reports filed |
+| `skins` | published paints and immutable version metadata (including the swarm mesh), equipped version and building color, private draft (name, building color, swarm mesh) with its colour atlas and material map bytes as base64 (`imageBase64`, `materialBase64`), match appearances, purchases and payment-event references, reports filed |
 | `maps` | catalog maps with their versions, likes, reports filed, uploads, and download days |
 
 Rows keep the database's columns in camelCase and leave out nulls. Left out on
@@ -309,7 +309,8 @@ purpose: password, credential and token hashes, token families, sign-in
 confirmation codes, other players' ids (who moderated, kicked or resolved), other
 players' chat, signed appearance assertions, checkout recovery bookkeeping, and
 published file bytes (replays, maps and skin images have their own downloads).
-Private skin drafts include both PNGs' bytes because they are not published.
+Private skin drafts include both images' stored bytes because they are not
+published. New drafts store lossless WebP; older drafts may still contain PNG.
 Rate-limit counters (keyed by address or account, kept a day) are not exported, and
 server logs are outside the database. Each account may export 10 times an hour
 (`429` beyond). `apps/api/test/accountExport.test.ts` fails if a column referring to

@@ -1,3 +1,4 @@
+import { skinAssetUrl } from './assetUrls.ts';
 /* WebGL previews use the same texture and material renderer as the workspace. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useState } from 'react';
@@ -83,6 +84,8 @@ export function SkinLibrary({
   );
 }
 function SkinThumbnail({ skin }: { skin: Skin }) {
+  const textureUrl = skinAssetUrl(skin, 'texture');
+  const materialUrl = skinAssetUrl(skin, 'material');
   const [loaded, setLoaded] = useState<{ canvas: HTMLCanvasElement; materials: Uint8Array } | null>(
       null,
     ),
@@ -92,13 +95,13 @@ function SkinThumbnail({ skin }: { skin: Skin }) {
     void Promise.all([
       (async () => {
         const image = new Image();
-        image.src = `/api/v1/skins/versions/${skin.id}/texture`;
+        image.src = textureUrl;
         await image.decode();
         const canvas = paintCanvas();
         canvas.getContext('2d')!.drawImage(image, 0, 0);
         return canvas;
       })(),
-      decodeMaterials(`/api/v1/skins/versions/${skin.id}/material`),
+      decodeMaterials(materialUrl),
     ])
       .then(([canvas, materials]) => {
         if (!cancelled) setLoaded({ canvas, materials });
@@ -109,7 +112,7 @@ function SkinThumbnail({ skin }: { skin: Skin }) {
     return () => {
       cancelled = true;
     };
-  }, [skin.id]);
+  }, [textureUrl, materialUrl]);
   return (
     <div className="skin-thumbnail">
       {loaded ? (

@@ -54,6 +54,14 @@ export const SoftwareSprites = Open({
   format: Type.Literal('colony-sprites-v1'),
   manifestSha256: Sha256Hex,
   renderRevision: Sha256Hex,
+  /** Immutable input identity, when live artwork uses separate WebP renditions. */
+  source: Type.Optional(
+    Open({
+      manifestSha256: Sha256Hex,
+      textureSha256: Sha256Hex,
+      materialSha256: Sha256Hex,
+    }),
+  ),
 });
 export type SoftwareSprites = Static<typeof SoftwareSprites>;
 export const ColonySkinVersion = Open({

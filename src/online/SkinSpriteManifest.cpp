@@ -18,9 +18,15 @@ bool SkinSpriteManifest::parse(const std::string &bytes, const AuthorizedSkin &s
 		const auto doc = nlohmann::json::parse(bytes);
 		if (doc.at("format") != "colony-sprites-v1" ||
 			doc.at("renderRevision") != skin.spriteRenderRevision ||
-			doc.at("sourceManifestSha256") != skin.manifestHash ||
-			doc.at("textureSha256") != skin.textureHash ||
-			doc.at("materialSha256") != skin.materialHash ||
+			doc.at("sourceManifestSha256") != (skin.spriteSourceManifestHash.empty()
+												   ? skin.manifestHash
+												   : skin.spriteSourceManifestHash) ||
+			doc.at("textureSha256") != (skin.spriteSourceTextureHash.empty()
+											? skin.textureHash
+											: skin.spriteSourceTextureHash) ||
+			doc.at("materialSha256") != (skin.spriteSourceMaterialHash.empty()
+											 ? skin.materialHash
+											 : skin.spriteSourceMaterialHash) ||
 			doc.at("swarmMesh") != SWARM_MESHES[skin.swarmMesh].id ||
 			doc.at("swarmViewAngle") != skin.swarmViewAngle || doc.at("tileSize") != 128 ||
 			doc.at("padding") != 1.25 ||

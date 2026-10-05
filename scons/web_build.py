@@ -62,7 +62,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
             '-sPTHREAD_POOL_SIZE_STRICT=0',
-            "'-sPTHREAD_POOL_SIZE=Math.min(navigator.hardwareConcurrency||1,4)'",
+            "'-sPTHREAD_POOL_SIZE=Math.max(navigator.hardwareConcurrency||1,1)'",
             '-sALLOW_BLOCKING_ON_MAIN_THREAD=0',
             '--js-library', 'browser/threaded-egl.js'])
     if threaded:

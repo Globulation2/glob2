@@ -24,6 +24,9 @@
     "AIRules/*",
     "MusicSet/*",
     "CommunityMusic/*",
+    "ColonySkinPreview/*",
+    "HighResolutionIntegration/*",
+    "UnitHighResolutionCache/*",
     "ScreenExecution/*",
     "SettingsGraphics/*"
   ],

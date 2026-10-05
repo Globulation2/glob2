@@ -1065,6 +1065,7 @@ export interface Database {
   entitlements: EntitlementsTable;
   admin_audit_log: AdminAuditLogTable;
   blobs: BlobsTable;
+  image_webp_renditions: { source_sha256: string; webp_sha256: string };
   relays: RelaysTable;
   engine_agents: EngineAgentsTable;
   engine_jobs: EngineJobsTable;

@@ -12,6 +12,7 @@ namespace GAGCore
 	class Font;
 	class FileManager;
 	class StringTable;
+	class AssetLoader;
 	class GraphicContext;
 	
 	//! Toolkit is a resource server
@@ -32,6 +33,12 @@ namespace GAGCore
 		
 		
 		static Sprite *getSprite(const std::string name);
+        static void requestSprite(const std::string& name, bool variableAtlas = false);
+        static Sprite *findSprite(const std::string& name);
+        //! Share a presentation budget across cooperative jobs, sprites and HD reloads.
+        //! One indivisible decode/upload may exceed it; zero only queries readiness.
+        static bool pollAssets(unsigned budgetMs = 2);
+        static unsigned assetProgress();
 		static void releaseSprite(const std::string name);
 		
 		static void loadFont(const std::string filename, unsigned size, const std::string name);
@@ -42,6 +49,8 @@ namespace GAGCore
 		static void reloadFonts(void);
 		
 		static FileManager *getFileManager(void) { return fileManager; }
+		//! Shared CPU asset service, owned and stopped before the graphics backend.
+		static AssetLoader &assets();
 		static StringTable *const getStringTable(void) { return strings; }
 		
 	protected:

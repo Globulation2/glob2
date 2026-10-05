@@ -102,23 +102,50 @@ SkinAuthorization::SkinAuthorization(const std::string &token,const std::string 
             const auto &sprites=claims.at("softwareSprites");
             // Unknown derivative formats do not invalidate the live appearance.
             if (sprites.at("format")=="colony-sprites-v1") {
-                skin.spriteManifestHash=sprites.at("manifestSha256").get<std::string>();
-                skin.spriteRenderRevision=sprites.at("renderRevision").get<std::string>();
-                if (!Sha256::isHexDigest(skin.spriteManifestHash) || !Sha256::isHexDigest(skin.spriteRenderRevision)) return;
-            }
-        }
-        const auto kid=header.at("kid").get<std::string>();
-        if(kid.empty()||kid.size()>128||!keys.at("keys").is_array()||keys.at("keys").size()>32)return;
-        std::string encodedKey;
-        bool foundKey=false;
-        for(const auto &key:keys.at("keys"))if(key.value("kid",std::string())==kid)
-        {
-            if(foundKey||key.at("kty")!="OKP"||key.at("crv")!="Ed25519"||key.value("alg",std::string("EdDSA"))!="EdDSA"||key.value("use",std::string("sig"))!="sig")return;
-            foundKey=true;
-            if(key.contains("key_ops") && (key["key_ops"]!=Json::array({"verify"})))return;
-            encodedKey=key.at("x").get<std::string>();
-        }
-        const auto key=decode(encodedKey),signature=decode(token.substr(b+1));
+				skin.spriteManifestHash = sprites.at("manifestSha256").get<std::string>();
+				skin.spriteRenderRevision = sprites.at("renderRevision").get<std::string>();
+				if (!Sha256::isHexDigest(skin.spriteManifestHash) ||
+					!Sha256::isHexDigest(skin.spriteRenderRevision))
+					return;
+				if (sprites.contains("source"))
+				{
+					const auto &source = sprites.at("source");
+					skin.spriteSourceManifestHash = source.at("manifestSha256").get<std::string>();
+					skin.spriteSourceTextureHash = source.at("textureSha256").get<std::string>();
+					skin.spriteSourceMaterialHash = source.at("materialSha256").get<std::string>();
+					if (!Sha256::isHexDigest(skin.spriteSourceManifestHash) ||
+						!Sha256::isHexDigest(skin.spriteSourceTextureHash) ||
+						!Sha256::isHexDigest(skin.spriteSourceMaterialHash))
+						return;
+					// Reuse the canonical version fields so a signed source cannot
+					// silently bind sheets for another mesh, angle or design.
+					auto sourceManifest = manifest;
+					sourceManifest["textureSha256"] = skin.spriteSourceTextureHash;
+					sourceManifest["materialSha256"] = skin.spriteSourceMaterialHash;
+					if (Sha256::hex(sourceManifest.dump()) != skin.spriteSourceManifestHash)
+						return;
+				}
+			}
+		}
+		const auto kid = header.at("kid").get<std::string>();
+		if (kid.empty() || kid.size() > 128 || !keys.at("keys").is_array() ||
+			keys.at("keys").size() > 32)
+			return;
+		std::string encodedKey;
+		bool foundKey = false;
+		for (const auto &key : keys.at("keys"))
+			if (key.value("kid", std::string()) == kid)
+			{
+				if (foundKey || key.at("kty") != "OKP" || key.at("crv") != "Ed25519" ||
+					key.value("alg", std::string("EdDSA")) != "EdDSA" ||
+					key.value("use", std::string("sig")) != "sig")
+					return;
+				foundKey = true;
+				if (key.contains("key_ops") && (key["key_ops"] != Json::array({"verify"})))
+					return;
+				encodedKey = key.at("x").get<std::string>();
+			}
+		const auto key=decode(encodedKey),signature=decode(token.substr(b+1));
         if(key.size()!=32||signature.size()!=64)return;
         const auto message=token.substr(0,b);
 #ifdef __EMSCRIPTEN__

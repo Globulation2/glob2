@@ -581,6 +581,8 @@ RELAY_GAG_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'AssetLoader.cpp',
+    'SpriteLoad.cpp',
     'GameplayRecording.cpp',
     'RecordingMetadata.cpp',
     'RecordingEncoder.cpp',

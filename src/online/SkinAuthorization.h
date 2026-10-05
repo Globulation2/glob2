@@ -12,6 +12,9 @@ struct AuthorizedSkin
     // 512x512 material-id map; both are bound by manifestHash.
     std::string versionId, skinId, textureHash, materialHash, manifestHash, accountId;
     std::string spriteManifestHash, spriteRenderRevision;
+    // Baked sheets identify immutable inputs; live wire images may be renditions.
+    // Empty source fields retain the original claim contract.
+    std::string spriteSourceManifestHash, spriteSourceTextureHash, spriteSourceMaterialHash;
     std::int64_t expiresAt = 0;
     int team = -1;
     std::uint32_t buildingColor = 0;

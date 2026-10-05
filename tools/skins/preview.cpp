@@ -34,9 +34,9 @@ int main(int argc, char **argv)
     {
         // colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
         // map (absent means all glossy), one 256x256 quadrant per model.
-        DrawableSurface paint(std::string(argv[1])+"/paint.png");
+        DrawableSurface paint(std::string(argv[1])+"/paint.webp");
         if (paint.getW() != 512 || paint.getH() != 512) return 3;
-        auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1])+"/material.png");
+        auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1])+"/material.webp");
         DrawableSurface glossy(512,512);
         if (loadedMaterial && (loadedMaterial->getW() != 512 || loadedMaterial->getH() != 512)) return 3;
         DrawableSurface &material = loadedMaterial ? *loadedMaterial : glossy;
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
             std::array<std::unique_ptr<DrawableSurface>,4> paints;
             for (unsigned i=0; i<paints.size(); ++i)
             {
-                paints[i] = std::make_unique<DrawableSurface>(std::string(argv[1])+"/paint.png");
+                paints[i] = std::make_unique<DrawableSurface>(std::string(argv[1])+"/paint.webp");
                 paints[i]->drawFilledRect(0,0,512,512,Color(50+i*50,180-i*30,70+i*35));
             }
             for (bool atlas : {false,true})

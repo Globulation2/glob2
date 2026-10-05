@@ -8,6 +8,7 @@
 #include "CursorManager.h"
 #include "RenderFramePacer.h"
 #include "SkinAtlasCache.h"
+#include <AssetLoader.h>
 #include <map>
 #include <vector>
 #include <string>
@@ -28,6 +29,7 @@
 namespace GAGCore
 {
     class RenderBatch;
+    class SpriteLoad;
     struct SkinMesh;
     struct SkinMeshRequest;
 
@@ -173,6 +175,7 @@ namespace GAGCore
 		friend struct Color;
 		friend class GraphicContext;
 		friend class Sprite;
+        friend class SpriteLoad;
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
 		// Texture dimensions
@@ -181,6 +184,9 @@ namespace GAGCore
 		SDL_Rect clipRect;
 		// Content revisions are never consumed by drawing. Each backend remembers
 		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
+		std::vector<unsigned char> preparedUploadPixels;
+        std::vector<AssetImage::Mip> preparedMips;
+        std::uint64_t preparedUploadRevision = 0;
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;
         static std::uint64_t nextSurfaceIdentity();
@@ -220,6 +226,15 @@ namespace GAGCore
 		DrawableSurface(const std::string &imageFileName);
 		DrawableSurface(int w, int h);
 		DrawableSurface(const SDL_Surface *sourceSurface);
+        //! Adopt CPU-prepared ARGB8888 pixels on the renderer thread.
+        struct AdoptPixels {};
+        DrawableSurface(SDL_Surface *prepared, AdoptPixels, bool allocateGPU = true);
+        //! Create an owned renderer surface from prepared CPU data. Exclusive
+        //! callers must own the image payload; other callers receive a pixel copy.
+        static std::unique_ptr<DrawableSurface> fromAssetImage(const AssetImage& image,
+            bool exclusive = false, bool allocateGPU = true);
+        void adoptUploadPreparation(const AssetImage& image, bool exclusive = false);
+        void prepareTexture();
 		DrawableSurface *clone(void);
         DrawableSurface(const DrawableSurface&) = delete;
         DrawableSurface& operator=(const DrawableSurface&) = delete;
@@ -704,6 +719,10 @@ namespace GAGCore
 	//! A sprite is a collection of images (frames) that can be displayed one after another to make an animation
 	class Sprite
 	{
+        friend class SpriteLoad;
+        void registerLoaded();
+        static std::vector<AssetLoader::Handle<AssetImage>> prefetchHighResolution(const std::string&, size_t frames);
+        void adoptLoaded(Sprite& prepared);
 	protected:
 		struct RotatedImage
 		{
@@ -781,10 +800,7 @@ namespace GAGCore
 
 		friend class DrawableSurface;
 		// Support functions
-		//! Load every frame from the sheets listed in <filename>.sheet, return false and load nothing if there is no usable index
-		bool loadSheets(const std::string &filename);
-		//! Load a frame from two file pointers
-		bool loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
+
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
@@ -806,15 +822,14 @@ namespace GAGCore
 
     protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
-		void reloadHighResolution();
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays
-		//! change (load(), reloadHighResolution()); backs blockHasCompleteHD.
+		//! change (load and atomic HD publication); backs blockHasCompleteHD.
 		std::vector<bool> blockCompleteHD;
 		void recomputeBlockCompleteHD();
 		void applyTeamHueShift(DrawableSurface &surface);
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
-		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
+        void appendHighResolutionFrame(size_t index, Sprite& target);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
@@ -822,6 +837,9 @@ namespace GAGCore
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);
+        static void requestHighResolution(bool enabled);
+        static bool pollHighResolution(unsigned budgetMs = 2);
+        static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
 		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

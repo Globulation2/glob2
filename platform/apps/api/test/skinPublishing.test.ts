@@ -181,24 +181,24 @@ it('publishes canonical paint, retains old versions, equips and serves verified 
 
   const texture = await app.inject({
     method: 'GET',
-    url: `/api/v1/skins/versions/${version.id}/texture`,
+    url: `/api/v1/skins/versions/${version.id}/texture?sha256=${version.textureSha256}`,
   });
   expect(texture.statusCode).toBe(200);
   const metadata = await sharp(texture.rawPayload).metadata();
   expect(metadata.hasAlpha).toBe(false);
   expect(metadata.width).toBe(512);
   expect(texture.headers['etag']).toBe(`"${version.textureSha256}"`);
-  const materialUrl = `/api/v1/skins/versions/${version.id}/material`;
+  const materialUrl = `/api/v1/skins/versions/${version.id}/material?sha256=${version.materialSha256}`;
   const served = await app.inject({ method: 'GET', url: materialUrl });
   expect(served.statusCode).toBe(200);
-  expect(served.headers['content-type']).toBe('image/png');
+  expect(served.headers['content-type']).toBe('image/webp');
   expect(served.headers['etag']).toBe(`"${version.materialSha256}"`);
   expect(served.headers['cache-control']).toBe('public, max-age=300');
   expect(createHash('sha256').update(served.rawPayload).digest('hex')).toBe(version.materialSha256);
   expect(await sharp(served.rawPayload).metadata()).toMatchObject({
     width: 512,
     height: 512,
-    channels: 1,
+    channels: 3,
   });
   const decoded = await sharp(served.rawPayload)
     .extractChannel(0)
@@ -294,15 +294,14 @@ it('validates and canonicalizes material maps', async () => {
   expect(blob).toMatchObject({
     visibility: 'private',
     owner_account_id: painter.accountId,
-    content_type: 'image/png',
+    content_type: 'image/webp',
   });
   const stored = (await harness.blobs.get(blob.storage_key))!;
   const chunks: Buffer[] = [];
   for await (const chunk of stored) chunks.push(Buffer.from(chunk as Uint8Array));
   const png = Buffer.concat(chunks);
-  // IHDR: bit depth 8, colour type 0 (greyscale).
-  expect([png[24], png[25]]).toEqual([8, 0]);
-  expect((await sharp(png).metadata()).channels).toBe(1);
+  expect((await sharp(png).metadata()).format).toBe('webp');
+  expect((await sharp(png).metadata()).channels).toBe(3);
   const decoded = await sharp(png).extractChannel(0).raw().toBuffer({ resolveWithObject: true });
   expect([0, 1, 2, 3, 512].map((i) => decoded.data[i])).toEqual([0, 1, 2, 3, 1]);
   painter.client.close();

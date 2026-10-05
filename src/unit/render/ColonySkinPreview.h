@@ -7,7 +7,7 @@
 #include <optional>
 struct Scene;
 class FogFade;
-namespace Online { class SkinDownloads; class SkinSprites; }
+namespace Online { class SkinDownloads; class SkinSprites; struct AuthorizedSkin; }
 namespace GAGCore { class GraphicContext; class DrawableSurface; }
 
 // Live colony geometry and authorized per-team appearance (layout colony-v2:
@@ -40,8 +40,12 @@ private:
     bool install(int team, std::unique_ptr<GAGCore::DrawableSurface> texture,
                  std::unique_ptr<GAGCore::DrawableSurface> material);
     void uninstall(int team);
+    void prepareSkin(Online::AuthorizedSkin appearance, const std::string &paintPath, const std::string &materialPath);
     bool loadMeshes(const std::string &root, bool installed = false);
     bool loadInstalledMeshes();
+    struct PreparedSkin;
+    std::shared_ptr<void> assetLifetime = std::make_shared<int>(0);
+    std::array<GAGCore::AssetLoader::Handle<PreparedSkin>, 32> preparingSkins;
     std::unique_ptr<Online::SkinDownloads> downloads;
     std::unique_ptr<Online::SkinSprites> sprites;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> textures;

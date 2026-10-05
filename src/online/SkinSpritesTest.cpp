@@ -108,6 +108,31 @@ TEST_SUITE("SkinSprites")
 		f.skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
 		CHECK_FALSE(manifest.parse(doc.dump(), f.skin));
 	}
+	TEST_CASE("bundles bind immutable source hashes when live claims name renditions")
+	{
+		Fixture f;
+		Online::SkinSpriteManifest manifest;
+		f.skin.spriteSourceManifestHash = f.skin.manifestHash;
+		f.skin.spriteSourceTextureHash = f.skin.textureHash;
+		f.skin.spriteSourceMaterialHash = f.skin.materialHash;
+		f.skin.manifestHash = std::string(64, 'e');
+		f.skin.textureHash = std::string(64, 'f');
+		f.skin.materialHash = std::string(64, '0');
+		REQUIRE(manifest.parse(f.doc.dump(), f.skin));
+		for (const char *key : {"sourceManifestSha256", "textureSha256", "materialSha256"})
+		{
+			auto doc = f.doc;
+			doc[key] = std::string(64, '1');
+			auto skin = f.skin;
+			skin.spriteManifestHash = Online::Sha256::hex(doc.dump());
+			CHECK_FALSE(manifest.parse(doc.dump(), skin));
+			CHECK(manifest.pages.empty());
+		}
+		f.skin.spriteSourceManifestHash.clear();
+		f.skin.spriteSourceTextureHash.clear();
+		f.skin.spriteSourceMaterialHash.clear();
+		CHECK_FALSE(manifest.parse(f.doc.dump(), f.skin));
+	}
 	TEST_CASE("software requests demand pages and removes appearance without an OpenGL context")
 	{
 		glob2test::ToolkitScope toolkit;

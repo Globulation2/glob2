@@ -1,3 +1,4 @@
+import type { BlobStore } from '@glob2/core';
 import { sql, type Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@glob2/protocol';
 import type { SigningKeys } from '../auth/keys.ts';
 import { HttpError } from '../errors.ts';
-import { knownSwarmMesh } from './manifest.ts';
+import { knownSwarmMesh, webpSkinVersion } from './manifest.ts';
 import { authorizedSkin } from './equipment.ts';
 
 /** Serialize the first assignment across API replicas, freezing defaults too.
@@ -19,6 +20,7 @@ import { authorizedSkin } from './equipment.ts';
  * Later equipment/purchase changes affect future matches only. */
 export async function matchColonySkins(
   db: Kysely<Database>,
+  blobs: BlobStore,
   keys: SigningKeys,
   origin: string,
   matchId: string,
@@ -168,38 +170,53 @@ export async function matchColonySkins(
     .where('m.match_id', '=', matchId)
     .orderBy('m.team_index')
     .execute();
-  return rows.flatMap((row) => {
-    const swarmMesh = knownSwarmMesh(row.swarm_mesh);
-    if (!swarmMesh) return [];
-    const version: ColonySkinVersion = {
-      id: row.id,
-      skinId: row.skin_id,
-      textureSha256: row.texture_sha256,
-      materialSha256: row.material_sha256,
-      manifestSha256: row.manifest_sha256,
-      layout: row.layout,
-      buildingColor: row.building_color,
-      swarmMesh,
-      swarmViewAngle: row.swarm_view_angle,
-    };
-    const softwareSprites: SoftwareSprites | undefined =
-      row.spriteManifest && row.spriteRevision
-        ? {
-            format: 'colony-sprites-v1',
-            manifestSha256: row.spriteManifest,
-            renderRevision: row.spriteRevision,
-          }
-        : undefined;
-    // Refresh only authorization lifetime; the frozen content never changes.
-    return [
-      {
-        team: row.team_index,
-        accountId: row.account_id,
-        version,
-        buildingColor: row.chosen_color,
-        ...(softwareSprites ? { softwareSprites } : {}),
-        assertion: sign(row.team_index, row.account_id, version, row.chosen_color, softwareSprites),
-      },
-    ];
-  });
+  const appearances = await Promise.all(
+    rows.map(async (row) => {
+      const swarmMesh = knownSwarmMesh(row.swarm_mesh);
+      if (!swarmMesh) return [];
+      const sourceVersion: ColonySkinVersion = {
+        id: row.id,
+        skinId: row.skin_id,
+        textureSha256: row.texture_sha256,
+        materialSha256: row.material_sha256,
+        manifestSha256: row.manifest_sha256,
+        layout: row.layout,
+        buildingColor: row.building_color,
+        swarmMesh,
+        swarmViewAngle: row.swarm_view_angle,
+      };
+      const version = await webpSkinVersion({ db, blobs }, sourceVersion);
+      const softwareSprites: SoftwareSprites | undefined =
+        row.spriteManifest && row.spriteRevision
+          ? {
+              format: 'colony-sprites-v1',
+              source: {
+                manifestSha256: row.manifest_sha256,
+                textureSha256: row.texture_sha256,
+                materialSha256: row.material_sha256,
+              },
+              manifestSha256: row.spriteManifest,
+              renderRevision: row.spriteRevision,
+            }
+          : undefined;
+      // Refresh only authorization lifetime; the frozen content never changes.
+      return [
+        {
+          team: row.team_index,
+          accountId: row.account_id,
+          version,
+          buildingColor: row.chosen_color,
+          ...(softwareSprites ? { softwareSprites } : {}),
+          assertion: sign(
+            row.team_index,
+            row.account_id,
+            version,
+            row.chosen_color,
+            softwareSprites,
+          ),
+        },
+      ];
+    }),
+  );
+  return appearances.flat();
 }

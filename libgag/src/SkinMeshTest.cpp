@@ -245,14 +245,14 @@ TEST_SUITE("SkinMaterialMap")
     {
         glob2test::ToolkitScope toolkit; GAGCore::Toolkit::initGraphic(64,64,0,"skin material");
         // The authorization fixture's 8-bit greyscale map cycles ids 0..3 in
-        // 32-row bands; SDL_image may decode it with an inexact grey palette.
+        // 32-row bands; WebP must retain the exact material IDs.
         const auto fixture=nlohmann::json::parse(glob2test::readFile(glob2test::sourceRoot()/"test/fixtures/skins/authorization.json"));
         const auto hex=fixture["materialHex"].get<std::string>();
         std::string bytes;
         for (std::size_t i=0; i<hex.size(); i+=2) bytes.push_back(static_cast<char>(std::stoul(hex.substr(i,2),nullptr,16)));
         glob2test::TempDir directory("skin-material");
-        glob2test::writeFile(directory.path/"material.png",bytes);
-        auto material=GAGCore::loadSkinMaterialMap((directory.path/"material.png").string());
+        glob2test::writeFile(directory.path/"material.webp",bytes);
+        auto material=GAGCore::loadSkinMaterialMap((directory.path/"material.webp").string());
         REQUIRE(material);
         CHECK(material->getW()==512);
         CHECK(material->getH()==512);
@@ -263,7 +263,7 @@ TEST_SUITE("SkinMaterialMap")
             REQUIRE(SDL_ReadSurfacePixel(raw,7,band*32+5,&r,&g,&b,&a));
             CHECK(r==band%4); CHECK(g==band%4); CHECK(b==band%4); CHECK(a==255);
         }
-        CHECK_FALSE(GAGCore::loadSkinMaterialMap((directory.path/"missing.png").string()));
+        CHECK_FALSE(GAGCore::loadSkinMaterialMap((directory.path/"missing.webp").string()));
     }
 }
 

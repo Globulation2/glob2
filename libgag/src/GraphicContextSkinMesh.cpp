@@ -4,51 +4,38 @@
 #include <PerformanceTelemetry.h>
 #include <Toolkit.h>
 #include <FileManager.h>
-#include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <stdexcept>
 
 namespace GAGCore
 {
 std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path)
 {
-    SDL_IOStream *stream = Toolkit::getFileManager() ? Toolkit::getFileManager()->openImage(path) : nullptr;
-    if (!stream) return nullptr;
-    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> loaded(IMG_Load_IO(stream, true), SDL_DestroySurface);
-    if (!loaded || loaded->w <= 0 || loaded->h <= 0) return nullptr;
-    bool useIndex = false;
-    if (loaded->format == SDL_PIXELFORMAT_INDEX8)
-        if (const SDL_Palette *palette = SDL_GetSurfacePalette(loaded.get()))
-        {
-            useIndex = true;
-            for (int i = 0; i < palette->ncolors && useIndex; ++i)
-            {
-                const auto &c = palette->colors[i];
-                useIndex = c.r == c.g && c.g == c.b && std::abs(int(c.r) - i) <= 1;
+    auto &loader = Toolkit::assets();
+    auto image = loader.requestImage(path);
+    auto normalized = loader.requestEstimated<AssetImage>("material:" + path, {image.dependency()}, [image] {
+        const auto *input = image.get()->surface;
+        auto *output = SDL_CreateSurface(input->w, input->h, SDL_PIXELFORMAT_ARGB8888);
+        if (!output) throw std::runtime_error(SDL_GetError());
+        auto result = std::make_shared<AssetImage>(output);
+        for (int y = 0; y < input->h; ++y) {
+            const auto *source = reinterpret_cast<const Uint32*>(static_cast<const Uint8*>(input->pixels) + y * input->pitch);
+            auto *dest = reinterpret_cast<Uint32*>(static_cast<Uint8*>(output->pixels) + y * output->pitch);
+            for (int x = 0; x < input->w; ++x) {
+                const Uint32 id = (source[x] >> 16) & 255;
+                dest[x] = 0xff000000u | (id << 16) | (id << 8) | id;
             }
         }
-    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> source(
-        useIndex ? nullptr : SDL_ConvertSurface(loaded.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-    if (!useIndex && !source) return nullptr;
-    const SDL_Surface &input = useIndex ? *loaded : *source;
-    auto result = std::make_unique<DrawableSurface>(input.w, input.h);
-    SDL_Surface *output = result->getSDLSurface();
-    if (!output || !SDL_LockSurface(const_cast<SDL_Surface *>(&input))) return nullptr;
-    for (int y = 0; y < input.h; ++y)
-    {
-        const auto *row = static_cast<const Uint8 *>(input.pixels) + y * input.pitch;
-        auto *out = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(output->pixels) + y * output->pitch);
-        for (int x = 0; x < input.w; ++x)
-        {
-            const Uint32 id = useIndex ? row[x] : row[x * 4];
-            out[x] = 0xff000000u | (id << 16) | (id << 8) | id; // ARGB8888
-        }
-    }
-    SDL_UnlockSurface(const_cast<SDL_Surface *>(&input));
-    result->markPixelsChanged();
-    return result;
+        return result;
+    }, [image] { const auto *surface = image.get()->surface; return size_t(surface->pitch) * surface->h; });
+    if (!loader.wait(normalized)) return nullptr;
+    SDL_Surface *surface = nullptr;
+    if (auto value = normalized.take()) surface = value->releaseSurface();
+    else surface = SDL_DuplicateSurface(normalized.get()->surface);
+    return surface ? std::make_unique<DrawableSurface>(surface, DrawableSurface::AdoptPixels{}) : nullptr;
 }
 }
 

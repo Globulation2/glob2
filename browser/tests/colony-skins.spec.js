@@ -99,8 +99,8 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   shell = shell.replace('preRun: [function() {', `preRun: [function() {
     ENV.GLOB2_SKIN_PREVIEW_DIR='/data/skins/colony-v1';
     FS.mkdirTree('/data/skins/colony-v1');
-    FS.writeFile('/data/skins/colony-v1/paint.png',new Uint8Array(${JSON.stringify(paint)}));
-    FS.writeFile('/data/skins/colony-v1/material.png',new Uint8Array(${JSON.stringify(material)}));`);
+    FS.writeFile('/data/skins/colony-v1/paint.webp',new Uint8Array(${JSON.stringify(paint)}));
+    FS.writeFile('/data/skins/colony-v1/material.webp',new Uint8Array(${JSON.stringify(material)}));`);
   await openRuntimeHost(page, shell);
   const state = async () => {
     if (errors.length) throw new Error(errors.join('\n'));

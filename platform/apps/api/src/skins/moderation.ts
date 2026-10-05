@@ -1,3 +1,4 @@
+import { webpRendition } from '../http/webpRendition.ts';
 import type { FastifyInstance } from 'fastify';
 import type { Transaction } from 'kysely';
 import { sql } from 'kysely';
@@ -197,14 +198,20 @@ export async function skinModerationRoutes(app: FastifyInstance, identity: Ident
         const row = await db
           .selectFrom('colony_skin_versions as v')
           .innerJoin('blobs as b', 'b.sha256', column)
-          .select('b.storage_key')
+          .select('b.sha256')
           .where('v.id', '=', uuid(request.params.id))
           .executeTakeFirst();
         if (!row) throw apiError('not_found', 'Skin version not found.');
-        const stream = await app.services.blobs.get(row.storage_key);
+        const hash = await webpRendition(db, app.services.blobs, row.sha256);
+        const rendition = await db
+          .selectFrom('blobs')
+          .select('storage_key')
+          .where('sha256', '=', hash)
+          .executeTakeFirstOrThrow();
+        const stream = await app.services.blobs.get(rendition.storage_key);
         if (!stream) throw apiError('not_found', missing);
         return reply
-          .type('image/png')
+          .type('image/webp')
           .header('Cache-Control', 'private, no-store')
           .header('X-Content-Type-Options', 'nosniff')
           .send(stream);

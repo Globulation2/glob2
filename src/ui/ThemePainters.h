@@ -6,7 +6,7 @@
 namespace Glob2UI
 {
 // Paints bordered buttons with the original game's three-slice sprites
-// (<sprite>0..5.png: left, middle and right caps, each followed by its
+// (<sprite>0..5.webp: left, middle and right caps, each followed by its
 // highlight), scaled to the button height. Images load on first paint; while
 // they are missing the palette look is used.
 decltype(GAGGUI::ui::Theme::buttonPainter) spriteButtonPainter(const std::string &sprite);

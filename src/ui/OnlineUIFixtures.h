@@ -5,7 +5,7 @@
 // (src/ui/UIPresentationHarness.cpp) and the mobile gallery
 // (tools/MobileGalleryHarness.cpp): the play screens (hub, room, starting match)
 // and the quick match, profile and maps screens. Everything is canned data and
-// nothing touches the network; map previews are PNGs of real generator output
+// nothing touches the network; map previews are WebP copies of real generator output
 // from docs/map-generators.
 #include "MatchStartScreen.h"
 #include "OnlineHubScreen.h"
@@ -536,13 +536,13 @@ inline OnlineMapsScreen::Data mapsData(const std::string &root)
 	data.instance = "https://app.glob2online.com";
 	data.now = now;
 	data.previewFiles = {
-		{"fixture://drumlin-128", root + "docs/map-generators/drumlin-field/128-4-colonies.png"},
-		{"fixture://sierpinski", root + "docs/map-generators/images/sierpinski-gardens.png"},
-		{"fixture://hilbert", root + "docs/map-generators/images/hilbert-river.png"},
-		{"fixture://drumlin-256", root + "docs/map-generators/drumlin-field/256-4-colonies-seed1.png"},
-		{"fixture://lava", root + "docs/map-generators/images/lava-shield/default-256.png"},
-		{"fixture://islets", root + "docs/map-generators/images/lava-shield/islets-256-4-seed101.png"},
-		{"fixture://drumlin-256b", root + "docs/map-generators/drumlin-field/256-4-colonies-seed2.png"},
+		{"fixture://drumlin-128", root + "test/fixtures/map-previews/128-4-colonies.webp"},
+		{"fixture://sierpinski", root + "test/fixtures/map-previews/sierpinski-gardens.webp"},
+		{"fixture://hilbert", root + "test/fixtures/map-previews/hilbert-river.webp"},
+		{"fixture://drumlin-256", root + "test/fixtures/map-previews/256-4-colonies-seed1.webp"},
+		{"fixture://lava", root + "test/fixtures/map-previews/default-256.webp"},
+		{"fixture://islets", root + "test/fixtures/map-previews/islets-256-4-seed101.webp"},
+		{"fixture://drumlin-256b", root + "test/fixtures/map-previews/256-4-colonies-seed2.webp"},
 	};
 	data.browse = {
 		map("m1", "Canal Duel", "mirelle", 128, 2, 1204, 214, "drumlin-128", now - 4 * day),

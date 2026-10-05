@@ -446,6 +446,40 @@ static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, i
 }
 
 int runRenderSkin(int argc, char **argv);
+namespace {
+class AssetStartupLoop : public GAGCore::ApplicationHost::Loop {
+    std::shared_ptr<bool> cancelled;
+    bool hidden = false;
+public:
+    explicit AssetStartupLoop(std::shared_ptr<bool> value) : cancelled(std::move(value)) {}
+    bool frame(std::uint32_t, const std::vector<SDL_Event>& events) override {
+        for (const auto &event : events) if (event.type == SDL_EVENT_QUIT) *cancelled = true;
+        if (*cancelled) return false;
+        auto *gfx = globalContainer->gfx;
+        if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) gfx->resetRenderPacing();
+        // The browser reports context loss as hidden. Leave prepared CPU data
+        // queued until the host restores graphics and publishes visibility.
+        if (hidden) return true;
+        int width, height;
+        if (GAGCore::ApplicationHost::takeViewportSize(width, height)) gfx->resizeViewport(width, height);
+        if (globalContainer->finishAssetLoading()) return false;
+#ifndef __EMSCRIPTEN__
+        draw();
+#endif
+        return true;
+    }
+    void draw() override {
+        if (!hidden && !*cancelled) globalContainer->drawAssetLoading();
+    }
+    std::uint32_t delay(std::uint32_t) override {
+#ifdef __EMSCRIPTEN__
+        return GAGCore::ApplicationHost::AnimationFrameDelay;
+#else
+        return 1;
+#endif
+    }
+};
+}
 
 int Glob2::run(int argc, char *argv[])
 {
@@ -466,6 +500,7 @@ int Glob2::run(int argc, char *argv[])
 
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
+    globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();
 	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
 	{
@@ -547,11 +582,16 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 
-    GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
-        GAGCore::DrawableSurface::printFinishingText();
-        closeGameResources();
-        GAGCore::ApplicationHost::exited(0);
-    });
+    auto cancelled = std::make_shared<bool>(false);
+    auto launch = [cancelled] {
+        if (*cancelled) { closeGameResources(); GAGCore::ApplicationHost::exited(0); return; }
+        GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
+            GAGCore::DrawableSurface::printFinishingText();
+            closeGameResources();
+            GAGCore::ApplicationHost::exited(0);
+        });
+    };
+    GAGCore::ApplicationHost::run(std::make_unique<AssetStartupLoop>(cancelled), launch);
     return HOSTED_RUN;
 
 

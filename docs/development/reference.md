@@ -303,7 +303,70 @@ Image lookup searches existing directories in order using the exact WebP name;
 custom artwork overrides must therefore use `.webp`. Theme backdrop and wordmark
 paths also use WebP. Sprite frames, sheets, and HD atlas loaders decode only WebP;
 there is no PNG fallback for bundled artwork. PNG/JPEG decoding remains available
-for end-user imports, map/save previews, screenshots and downloaded skin textures.
+for end-user imports and screenshot tools. Online previews and skin textures use
+WebP wire renditions (see the platform architecture guide).
+
+`Toolkit::assets()` owns the shared asset pipeline. Requests deduplicate by source
+generation, type and preparation mode. Independent reader workers overlap native
+filesystem reads; CPU workers decode WebP directly to ARGB8888, cut sheets, build
+native atlases and prepare upload pixels and alpha-weighted mip chains. Fonts
+share immutable source bytes but open their SDL_ttf objects on the owner thread.
+Mesh parsing and stereo Opus stream preparation use the same scheduler. Mutable
+music cursors are independent requests. GPU creation/upload, SDL renderer textures
+and live object publication run on the owner thread. Workers never wait on child
+jobs or call renderer APIs.
+
+Use `requestSprite`/`findSprite` and `pollAssets` for asynchronous families;
+`SpriteLoad` publishes only complete prepared sprites. Existing synchronous APIs
+are adapters over the same service. `AssetLoader::onReady` associates an owner
+lifetime with a completion; destroyed screens suppress publication. Independent
+subscriptions support cancellation without cancelling other consumers. Handle
+copies share cancellation; use `handle.retain()` for an independent subscription
+when a continuation captures inputs owned by its caller. Cancelling the caller
+then leaves those inputs valid until preparation finishes. New source
+mounts and pack changes invalidate future requests while existing consumers retain
+valid data. HD reloads prepare on workers and publish during frame polling.
+Polling shares one deadline across cooperative work, sprite adoption and HD reloads;
+a single decode or upload remains indivisible and can exceed that deadline.
+Startup update turns advance preparation separately from progress painting; the
+progress view follows the render FPS setting and browser animation-frame callbacks.
+Browser visibility or context loss pauses publication until graphics are usable.
+Required startup families finish preparation and texture upload before menu entry;
+optional browser packages still become visible only after atomic installation.
+
+CPU concurrency defaults to available logical CPUs minus one, clamped to one
+through eight workers. Small-image workloads lose throughput to queue contention
+and memory traffic at higher counts; the worker override supports hardware tuning.
+There are two reader workers on desktop and one on mobile. Browser MEMFS reads
+stay on its application host while pthread builds prepare on workers. Serial
+browser builds and thread-creation failures use the same dependency queue
+cooperatively. Browser package transfers have a shared four-part limit, deduplicate
+in-flight package requests and install packages in request order.
+
+`GLOB2_ASSET_THREADS=0` selects cooperative execution; positive values override
+CPU workers. `GLOB2_ASSET_IO_THREADS` overrides native reader count.
+`GLOB2_ASSET_MEMORY_MB` overrides the scratch admission budget. Automatic admission
+uses one eighth of reported RAM, clamped to 64–512 MiB on desktop and 64–128 MiB on
+mobile/browser. Compressed image inputs have a separate queue limit within that
+budget. Cooperative reads yield when credits are unavailable. One oversized job
+may run alone to avoid starvation. The budget estimates transient working memory;
+it is not a cap on required decoded asset residency, font source residency, GPU
+storage, codec internals or process RSS. `AssetLoader::metrics()` exposes worker
+occupancy, admitted scratch, buffered inputs, jobs and cumulative stage times.
+
+For new asset types, submit immutable inputs and dependency continuations through
+this service, estimate preparation scratch, and finalize on the owner thread.
+Estimation runs under the scheduler lock: keep it quick and do not call service
+APIs from it. Sprite estimates include padded atlas cells at the maximum frame
+dimensions and any upload copies. Expired weak cache keys are periodically removed
+so unique preview and music requests do not accumulate session metadata.
+Never wait inside a worker or capture a mutable screen, FileManager or renderer.
+Build `scons asset-loading-benchmark` and run the resulting tool against the same
+runtime tree with different worker overrides. It reports wall time to final
+readiness, worker occupancy, estimated peak scratch and a native base-layer pixel fingerprint.
+`GLOB2_ASSET_BENCHMARK_GPU=1` includes OpenGL uploads;
+`GLOB2_ASSET_BENCHMARK_HD=1` includes installed HD artwork. Use an external RSS
+measurement and distinguish warm filesystem cache from cold reads.
 
 Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
 (currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
@@ -538,9 +601,9 @@ worker adapter, run its opt-in `native.test.ts` under Xvfb with
 The `skin-game-preview` diagnostic measures the colony-skin path through the real
 Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
 `SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
-mesh directory containing the colony-v2 `paint.png` (a 512x512 colour atlas with
+mesh directory containing the colony-v2 `paint.webp` (a 512x512 colour atlas with
 one 256x256 quadrant per model: worker, warrior, explorer, swarm) and optionally
-`material.png` (the matching 512x512 material-id map; absent means all glossy),
+`material.webp` (the matching 512x512 material-id map; absent means all glossy),
 `SKIN_PREVIEW_CAPTURE` to a capture name, and `SKIN_PREVIEW_BENCHMARK` to a
 relative capture prefix. Set `GLOB2_SKIN_PREVIEW_SWARM` to a swarm mesh id (such
 as `crown`) to draw team 0's swarm with that mesh; the directory then needs its
@@ -571,7 +634,7 @@ work, not isolated GPU duration. Preserve the fixture, binaries, build inputs,
 resolution, driver, counters and captures for matched comparisons; run repeated
 alternating pairs without concurrent builds. Software GL results do not establish
 hardware performance. The smaller `skin-preview ASSET_DIRECTORY OUTPUT_PREFIX`
-renders every clip from the same 512x512 `paint.png` and optional `material.png`
+renders every clip from the same 512x512 `paint.webp` and optional `material.webp`
 (create both with `python3 tools/skins/make_paint.py DIR --material mixed`), each
 clip sampling its own model quadrant. Its `--validate-opacity` diagnostic captures opaque, half-opacity and invisible mesh/shadow
 composites and verifies that opacity changes reuse cached poses. The
@@ -1177,7 +1240,8 @@ it is saved, checksummed or read by the simulation.
   constant size; walls become plain team-coloured tiles. Chips are 15 to 26 points
   and placed in priority order (damaged, flags, towers, hives, the rest); one that a
   placed chip would cover by more than 15% is left out. The icons are
-  `data/gfx/mapicon*.png`, rasterised at seven pixel sizes from the SVGs in
+  generated from `data/gfx/mapicon*.png` sources and loaded as WebP in the runtime
+  tree. The sources are rasterised at seven pixel sizes from the SVGs in
   `datasrc/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs
   `rsvg-convert`); the renderer draws the largest frame that fits, pixel for pixel.
   Frame order is shared between that script and `MapOverlayQueue.cpp`.

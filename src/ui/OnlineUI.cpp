@@ -11,6 +11,8 @@
 
 #include <ApplicationHost.h>
 #include <GraphicContext.h>
+#include <Toolkit.h>
+#include <AssetLoader.h>
 #include <SDL3_image/SDL_image.h>
 
 #include <algorithm>
@@ -186,26 +188,29 @@ PreviewImages::PreviewImages() = default;
 // scope (a member) cancels the downloads still in flight.
 PreviewImages::~PreviewImages() = default;
 
-bool PreviewImages::insert(const std::string &url, const std::string &png)
+bool PreviewImages::insert(const std::string &url, const std::string &webp)
 {
 	auto &entry = entries[url];
 	entry.pending = false;
-	SDL_IOStream *stream = SDL_IOFromConstMem(png.data(), png.size());
-	SDL_Surface *decoded = stream ? IMG_Load_IO(stream, true) : nullptr;
+    auto bytes = std::make_shared<GAGCore::AssetLoader::Bytes>(webp.begin(), webp.end());
+    static size_t sequence = 0;
+    auto request = GAGCore::Toolkit::assets().requestImageBytes(url + ':' + std::to_string(++sequence), bytes);
+    auto image = GAGCore::Toolkit::assets().wait(request);
+    SDL_Surface *decoded = image ? SDL_DuplicateSurface(image->surface) : nullptr;
 	if (!decoded)
 	{
 		entry.failed = true;
 		return false;
 	}
-	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded);
-	SDL_DestroySurface(decoded);
+	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded, GAGCore::DrawableSurface::AdoptPixels{});
+    entry.surface->prepareTexture();
 	entry.failed = false;
 	return true;
 }
 
 bool PreviewImages::insertFile(const std::string &url, const std::string &path)
 {
-	SDL_Surface *decoded = IMG_Load(path.c_str());
+	SDL_Surface *decoded = GAGCore::Toolkit::assets().loadImageSurface(path);
 	auto &entry = entries[url];
 	entry.pending = false;
 	if (!decoded)
@@ -213,8 +218,8 @@ bool PreviewImages::insertFile(const std::string &url, const std::string &path)
 		entry.failed = true;
 		return false;
 	}
-	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded);
-	SDL_DestroySurface(decoded);
+	entry.surface = std::make_unique<GAGCore::DrawableSurface>(decoded, GAGCore::DrawableSurface::AdoptPixels{});
+    entry.surface->prepareTexture();
 	return true;
 }
 
@@ -244,8 +249,22 @@ GAGCore::DrawableSurface *PreviewImages::get(Online::PlatformClient *client, con
 		HttpFetch::Method::Get, url, {}, {},
 		[this, url, changed](const Online::PlatformClient::Response &response)
 		{
-			if (response.ok)
-				insert(url, response.body);
+            if (response.ok) {
+                auto bytes = std::make_shared<GAGCore::AssetLoader::Bytes>(response.body.begin(), response.body.end());
+                static size_t sequence = 0;
+                auto handle = GAGCore::Toolkit::assets().requestImageBytes(url + ':' + std::to_string(++sequence), bytes);
+                GAGCore::Toolkit::assets().onReady<GAGCore::AssetImage>(handle, assetLifetime,
+                    [this, url, changed](std::shared_ptr<const GAGCore::AssetImage> image) {
+                        auto &entry = entries[url]; entry.pending = false; entry.failed = !image;
+                        if (image) {
+                            entry.surface = std::make_unique<GAGCore::DrawableSurface>(SDL_DuplicateSurface(image->surface), GAGCore::DrawableSurface::AdoptPixels{});
+                            entry.surface->adoptUploadPreparation(*image);
+                            entry.surface->prepareTexture();
+                        }
+                        if (changed) changed();
+                    });
+                return;
+            }
 			else
 			{
 				entries[url].pending = false;
