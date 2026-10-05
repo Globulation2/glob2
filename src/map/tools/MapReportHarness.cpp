@@ -38,8 +38,8 @@ void emit(Game &game, const std::filesystem::path &path)
 {
 	game.mapHeader.setMapName("A \"quoted\" map\n\xc3\xa9");
 	// Deliberately non-derived cache values must survive analysis unchanged.
-	for (size_t p = 0; p < game.map.tiles.size(); ++p)
-		game.map.tiles[p].fertility = p % 50000;
+	for (size_t p = 0; p < game.map.getTiles().size(); ++p)
+		game.map.setFertility(p % game.map.getW(), p / game.map.getW(), p % 50000);
 	game.map.fertilityMaximum = 54321;
 	// First save establishes the map offset used by the serializer's content hash.
 	serialize(game);
@@ -48,8 +48,8 @@ void emit(Game &game, const std::filesystem::path &path)
 	const auto json = describeMap(game);
 	require(syncRandEngine() == rng, "Report consumed simulation RNG");
 	require(game.map.fertilityMaximum == 54321, "Report changed fertility maximum");
-	for (size_t p = 0; p < game.map.tiles.size(); ++p)
-		require(game.map.tiles[p].fertility == p % 50000, "Report changed stored fertility");
+	for (size_t p = 0; p < game.map.getTiles().size(); ++p)
+		require(game.map.getTile(p).fertility == p % 50000, "Report changed stored fertility");
 	require(serialize(game) == before, "Report changed serialized game state");
 	std::ofstream out(path);
 	out << json;
@@ -85,8 +85,8 @@ int main(int argc, char **argv)
 			game.map.setSize(6, 6, GRASS);
 			game.map.setGame(&game);
 			teams(game, 0, 63);
-			game.map.getResource(5, 5) = {WOOD, 0, 3, 0};
-			game.map.getResource(7, 5) = {WHEAT, 0, 7, 0};
+			game.map.replaceResource(5, 5, {WOOD, 0, 3, 0});
+			game.map.replaceResource(7, 5, {WHEAT, 0, 7, 0});
 			emit(game, std::filesystem::path(argv[1]) / "grass.json");
 			game.map.setCellTerrain(20, 20, ICE);
 			game.map.setCellTerrain(21, 20, TRAIL);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 			for (int y = 0; y < 3; ++y)
 				for (int x = 0; x < 3; ++x)
 					if (x != 1 || y != 1)
-						game.map.getResource(x, y) = {ALGA, 0, 1, 0};
+						game.map.replaceResource(x, y, {ALGA, 0, 1, 0});
 			emit(game, std::filesystem::path(argv[1]) / "algae-ring.json");
 		}
 		{

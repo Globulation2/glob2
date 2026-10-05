@@ -29,9 +29,10 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 				for (int y = 0; y < 16; ++y)
 					for (int x = 0; x < 16; ++x)
 					{
-						auto& resource = map.getResource(x, y);
+						auto resource = map.getResource(x, y);
 						resource.type = type;
 						resource.amount = 3;
+						map.replaceResource(x, y, resource);
 					}
 
 				// An adjacent second stroke also checks overlapping brush footprints.
@@ -49,7 +50,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 					if (paint == GRASS)
 						for (int y = py - 1; y <= py; ++y)
 							for (int x = px - 1; x <= px; ++x)
-								map.getResource(x, y).clear();
+								map.replaceResource(x, y, Resource{});
 
 					// Independent whole-map oracle: retain every compatible resource,
 					// except the four tiles explicitly cleared by the grass brush.

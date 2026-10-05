@@ -324,14 +324,14 @@ bool equaliseDeposits(Map &map, const Symmetry &s, std::string &detail)
 			if (first == i)
 				continue;
 			const Resource source = map.getResource(size_t(first));
-			Resource &target = map.getResource(size_t(i));
+			const Resource &target = map.getResource(size_t(i));
 			if (source.type != target.type)
 			{
 				detail = "deposits differ across the orbit of (" + std::to_string(x) + ", " +
 						 std::to_string(y) + ")";
 				return false;
 			}
-			target = source;
+			map.replaceResource(size_t(i), source);
 		}
 	return true;
 }

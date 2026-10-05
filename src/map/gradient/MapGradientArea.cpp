@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <array>
+#include "SeedTerrain.h"
 #include <atomic>
 
 
@@ -322,35 +323,28 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 	std::array<bool, MAX_RESOURCES> clearable;
 	for (unsigned r = 0; r < clearable.size(); ++r)
 		clearable[r] = globalContainer->resourcesTypes.get(r)->clearable;
-	std::array<Uint16, TERRAIN_COUNT> terrainSeed;
-	std::array<Uint8, TERRAIN_COUNT> farmCrop;
-	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-	{
-		const auto &p = terrainProperties(static_cast<TerrainType>(t));
-		terrainSeed[t] = p.walkable || (canSwim && p.swimmable)
-			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
-		farmCrop[t] = p.farmCrop;
-	}
-	initializeGradientCells([&](size_t begin, size_t end) {
-		for (size_t i = begin; i < end; ++i)
-		{
-			const Tile &c = tiles[i];
-			Uint16 value = GRADIENT_FORBIDDEN;
-			if (!(c.forbidden & teamMask))
+	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
+		initializeGradientCells([&](size_t begin, size_t end) {
+			for (size_t i = begin; i < end; ++i)
 			{
-				if (c.resource.type != NO_RES_TYPE)
+				const Tile &c = tiles[i];
+				Uint16 value = GRADIENT_FORBIDDEN;
+				if (!(c.forbidden & teamMask))
 				{
-					if (clearable[c.resource.type] &&
-						((c.clearArea & teamMask) ||
-						 (farmAreas && (c.farmArea & teamMask) &&
-						  c.resource.type != farmCrop[terrainTypeAt(i)])))
-						value = GRADIENT_AT_GOAL;
+					if (c.resource.type != NO_RES_TYPE)
+					{
+						if (clearable[c.resource.type] &&
+							((c.clearArea & teamMask) ||
+							 (farmAreas && (c.farmArea & teamMask) &&
+							  c.resource.type != terrainAt(i).farmCrop)))
+							value = GRADIENT_AT_GOAL;
+					}
+					else if (immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
+						value = terrainAt(i).open;
 				}
-				else if (immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
-					value = terrainSeed[terrainTypeAt(i)];
+				gradient[i] = value;
 			}
-			gradient[i] = value;
-		}
+		});
 	});
 }
 

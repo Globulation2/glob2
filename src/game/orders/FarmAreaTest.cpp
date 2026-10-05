@@ -46,11 +46,12 @@ namespace
 
 	void put(Map& map, int x, int y, int type, int amount)
 	{
-		Resource& resource = map.getResource(x, y);
+		Resource resource;
 		resource.type = type;
 		resource.variety = 0;
 		resource.amount = amount;
 		resource.animation = 0;
+		map.replaceResource(x, y, resource);
 	}
 
 	void setWheat(Map& map, int x, int y, int amount) { put(map, x, y, WHEAT, amount); }
@@ -222,7 +223,7 @@ TEST_SUITE("FarmAreas")
 				for (int x = 12; x < 18; x++)
 				{
 					setWheat(map, x, y, 1);
-					map.getTile(x, y).canResourcesGrow = 0;
+					map.setResourcesGrow(x, y, 0);
 				}
 			world.addBuilding("swarm", 13, 21);
 			for (int i = 0; i < 8; i++)
@@ -494,8 +495,8 @@ TEST_SUITE("FarmAreas")
 			CHECK_FALSE(map.canPaintFarmArea(grass, 10));
 			put(map, grass, 10, WOOD, 3);
 			CHECK(map.canPaintFarmArea(grass, 10));
-			map.getResource(grass, 10).clear();
-			map.getTile(grass, 10).canResourcesGrow = 0;
+			map.replaceResource(grass, 10, Resource{});
+			map.setResourcesGrow(grass, 10, 0);
 			CHECK_FALSE(map.canPaintFarmArea(grass, 10));
 		}
 		{
@@ -507,7 +508,7 @@ TEST_SUITE("FarmAreas")
 			Map& map = world.game.map;
 			addWater(map, 8);
 			const int gap = 20;
-			map.getTile(gap, 10).canResourcesGrow = 0;
+			map.setResourcesGrow(gap, 10, 0);
 			paintOrder(world, 0, 0, 31, 31);
 			REQUIRE(map.isFarmArea(gap - 1, 10, TEAM_MASK));
 			CHECK_FALSE(map.isFarmArea(gap, 10, TEAM_MASK));

@@ -92,7 +92,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		{
 			const Uint16 value =
 				static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
-			map.getTile(x, y).fertility = value;
+			map.setFertility(x, y, value);
 			fertilityMax = std::max(fertilityMax, value);
 		}
 	map.fertilityMaximum = fertilityMax;

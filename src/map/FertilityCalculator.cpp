@@ -31,7 +31,7 @@ void Job::commit() {
         for (int y = 0; y < map.getH(); ++y) {
             const auto value = static_cast<Uint16>(std::min(state->field->at(x,y),
                 std::uint32_t(std::numeric_limits<Uint16>::max())));
-            map.getTile(x,y).fertility = value;
+            map.setFertility(x,y, value);
             maximum = std::max(maximum, value);
         }
     map.fertilityMaximum = maximum;

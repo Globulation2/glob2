@@ -312,13 +312,13 @@ void nearbyCornDeterminesStaffing()
     long long previous=0;
     for(int amount=0;amount<=8;++amount)
     {
-        f.game.map.getTile(16,11).resource.amount=amount;
+        f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), amount);
         const long long capacity=ai.nearby_farm_capacity(c,0);
         if(amount==0) REQUIRE(capacity==0);
         else REQUIRE((capacity>0 && capacity>=previous));
         previous=capacity;
     }
-    f.game.map.getTile(16,11).resource.amount=originalAmount;
+    f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), originalAmount);
     auto world=ai.collect_development_world(c);
     REQUIRE(world.tile(16,11).foodOpportunity>0);
     REQUIRE(world.tile(15,11).fertility>0);

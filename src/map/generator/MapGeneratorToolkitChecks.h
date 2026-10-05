@@ -2443,10 +2443,10 @@ inline void wallRouteAndStencilChecks()
 		assert(validateGeneratedWorld(game, request, definition).empty());
 		// A generated map may not disable resource growth anywhere, even one tile: no-growth
 		// zones belong to hand-made scenarios such as the tutorial.
-		game.map.getTile(5, 7).canResourcesGrow = false;
+		game.map.setResourcesGrow(5, 7, false);
 		assert(validateGeneratedWorld(game, request, definition).rfind(
 				   "Generated maps may not disable resource growth", 0) == 0);
-		game.map.getTile(5, 7).canResourcesGrow = true;
+		game.map.setResourcesGrow(5, 7, true);
 		assert(validateGeneratedWorld(game, request, definition).empty());
 	}
 	{

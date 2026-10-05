@@ -32,7 +32,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	scriptAreas.resize(includeScriptAreas ? size : 0);
 	for (size_t i = 0; i < size; ++i)
 	{
-		const Tile &tile = map.tiles[i];
+		const Tile &tile = map.getTile(i);
 		terrainAppearances[i] = registry->appearance(terrainTypes[i]);
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;

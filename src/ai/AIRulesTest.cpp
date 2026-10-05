@@ -42,10 +42,10 @@ void populate(glob2test::HeadlessGame& w)
         w.game.teams[team]->startPosX=x+3; w.game.teams[team]->startPosY=3;
         w.game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
         for(int y=20;y<28;++y) for(int xx=x+3;xx<x+29;++xx)
-            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.getResource(xx,y).amount=globalContainer->resourcesTypes.get(WHEAT)->sizesCount;}
+            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,y), globalContainer->resourcesTypes.get(WHEAT)->sizesCount);}
         for(int xx=x+3;xx<x+29;++xx) {
-            w.game.map.setResource(xx,30,WOOD,0);w.game.map.getResource(xx,30).amount=globalContainer->resourcesTypes.get(WOOD)->sizesCount;
-            w.game.map.setResource(xx,31,STONE,0);w.game.map.getResource(xx,31).amount=globalContainer->resourcesTypes.get(STONE)->sizesCount;
+            w.game.map.setResource(xx,30,WOOD,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,30), globalContainer->resourcesTypes.get(WOOD)->sizesCount);
+            w.game.map.setResource(xx,31,STONE,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,31), globalContainer->resourcesTypes.get(STONE)->sizesCount);
         }
         w.game.teams[team]->stats.step(w.game.teams[team]);
     }
@@ -310,7 +310,7 @@ TEST_CASE("no growth farms harvest their finite seed rather than waiting forever
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
     w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
-    w.game.map.setResource(5,5,WHEAT,0);w.game.map.getResource(5,5).amount=1;w.game.map.addFarmArea(5,5,0);
+    w.game.map.setResource(5,5,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(5,5), 1);w.game.map.addFarmArea(5,5,0);
     CHECK(!w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
     w.game.gameHeader.setResourceGrowthDisabled(true);
     CHECK(w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
