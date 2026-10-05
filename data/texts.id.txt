@@ -5560,3 +5560,7 @@ Menambahkan jalur setapak yang aus ke editor peta. Unit darat bergerak dengan ke
 Pasar V2
 [experiment markets-v2 help]
 Pekerja dapat mengambil persediaan dari stok bersama pasar. Pasar dapat ditingkatkan untuk menyimpan gandum dan kayu, lalu semua sumber daya. Pertukaran antartim tetap hanya buah. Berlaku untuk permainan baru; simpanan mempertahankan pengaturan awal.
+[Import Terrain Definitions]
+Impor definisi medan
+[Terrain palette]
+Palet medan

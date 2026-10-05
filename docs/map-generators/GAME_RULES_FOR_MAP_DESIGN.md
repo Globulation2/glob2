@@ -63,9 +63,12 @@ comments can say "because grass may not touch water" and a reader can check it h
 ## Authoring additional terrain types
 
 The map editor's menu offers **Import Terrain Definitions** and **Terrain palette**
-on desktop and phone layouts. Place a UTF-8 `.json` file in the `terrain/` directory
-of your game profile, select it in the import dialog, then choose a type from the
-scrollable palette and paint it. For example:
+on desktop and phone layouts. Place an **uncompressed UTF-8 `.json` file** in the `terrain/` directory
+of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set).
+Select the file in the import dialog, choose a type from the scrollable palette,
+and paint it like built-in terrain. The picker lists `.json` files only. A failed
+import displays an error and keeps the dialog open so you can correct the file
+and retry. For example:
 
 ```json
 {
@@ -83,8 +86,10 @@ scrollable palette and paint it. For example:
 ```
 
 Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
-or `road` (the compatibility key for Trail). The base supplies all simulation defaults; appearance supplies artwork
-and preview colors independently. Custom tiles have full-tile presentation and do
+or `road` (the compatibility key for Trail). The base supplies all simulation
+defaults; appearance supplies artwork and preview colors independently. Every
+entry requires `key`, `name`, `base`, `properties` and `appearance`; use an empty
+`properties` object to inherit all base values. Bases cannot refer to custom keys. Custom tiles have full-tile presentation and do
 not participate in the legacy corner adapter. Existing corner rules above describe
 classic terrain. Eligibility is controlled by properties: for example custom
 walkable terrain can allow buildings, exclude flight or obstruct projectiles.
@@ -93,7 +98,10 @@ Keys use lowercase ASCII letters, digits, `.`, `_` and `-`, separated by exactly
 colon into nonempty namespace and name. `glob2:` is reserved. Names are display
 text; keys and names are limited to 128 UTF-8 bytes. Each import must contain unique
 keys. Existing custom keys retain their IDs when reimported; new keys append in
-sorted order. The seven built-ins cannot be overridden. Import validation is atomic:
+sorted order. Reimport updates all cells painted with an existing key, including
+its name and appearance. Keys omitted from the new file remain installed; imports
+do not remove definitions, renumber tiles or reset the registry. The seven built-ins
+cannot be overridden. Import validation is atomic:
 invalid fields, values, duplicate JSON members or keys leave the map unchanged.
 The total limit is 16,384 types, including built-ins; input is limited to 32 MiB.
 
@@ -110,10 +118,12 @@ Property overrides use the existing fixed schema:
 | `farmCrop` | Resource ID 0–7 included in the allowed mask, or 255 for none |
 
 Resource bits are wood 0, wheat 1, stone 2, papyrus 3, algae 4, cherry 5, orange 6
-and prune 7. Changing an allowed mask may require changing an inherited `farmCrop`.
+and prune 7. A mask is the sum of `1 << resourceId` for each allowed resource;
+for example, wood plus wheat is `3`, and algae alone is `16`. Changing an allowed mask may require changing an inherited `farmCrop`.
 Unknown fields and non-integer numbers for integer properties are rejected.
 
 Importing replacement definitions refreshes terrain, ecology, routes and rendering.
+Save the map after importing or reimporting to persist those changes.
 Definitions remain immutable during play. Maps, saves and replay initial states
 embed the fully resolved definitions; recipients need only that file and the
 shipped assets. Editing or deleting the original JSON has no effect on a saved map.

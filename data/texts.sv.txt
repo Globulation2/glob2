@@ -5560,3 +5560,7 @@ Lägger till slitna stigar i kartredigeraren. Markenheter rör sig med dubbel ha
 Marknader V2
 [experiment markets-v2 help]
 Arbetare kan hämta förnödenheter från marknadernas gemensamma lager. Marknader kan uppgraderas för att lagra vete och trä och sedan alla resurser. Handel mellan lag omfattar fortfarande bara frukt. Gäller nya spel; sparade spel behåller sin ursprungliga inställning.
+[Import Terrain Definitions]
+Importera terrängdefinitioner
+[Terrain palette]
+Terrängpalett

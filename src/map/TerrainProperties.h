@@ -8,7 +8,8 @@
 
 // Q8 factors use 256 for one. Health is signed HP per tick in the same scale.
 // Keep presentation out of this table: hot simulation queries only need these
-// immutable, compiler-visible values. Resource masks use the resource wire IDs.
+// immutable fixed-layout values. The table below supplies compile-time built-ins;
+// runtime registries preserve this layout. Resource masks use the resource wire IDs.
 struct TerrainProperties
 {
 	bool walkable = false, swimmable = false, flyable = true;

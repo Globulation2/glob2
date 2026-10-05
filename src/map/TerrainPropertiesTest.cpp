@@ -324,11 +324,11 @@ TEST_SUITE("TerrainRuntime")
  {"key":"test:hazard","name":"Hazard","base":"grass","properties":{"groundSpeedQ8":192,"buildable":false,"flyable":false,"projectileBlocks":true,"groundHealthQ8":-16,"growthQ8":512,"fertilitySource":true,"fertilityQ8":512},"appearance":"ice"},
  {"key":"test:unused","name":"Unused","base":"grass","properties":{"groundSpeedQ8":1024,"airSpeedQ8":1024},"appearance":"grass"}
 ]})";
-	void importBeforeMatch(Game &game)
+	void importBeforeMatch(Game &game, std::string_view definitions = runtimeDefinitions)
 	{
 		// A detached map is the pre-match authoring API; active games cannot replace definitions.
 		game.map.game = nullptr;
-		game.map.importTerrainDefinitions(runtimeDefinitions);
+		game.map.importTerrainDefinitions(definitions);
 		game.map.setGame(&game);
 	}
 	} // namespace
@@ -475,6 +475,75 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(std::equal(eager.begin(), eager.end(), field));
 			delete[] field;
 		}
+	}
+	TEST_CASE("production pipeline captures custom movement and discards fields after reimport")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned workers : {0, 1})
+			for (unsigned speed : {256, 64})
+			{
+				CAPTURE(workers);
+				CAPTURE(speed);
+				glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+				auto &map = world.game.map;
+				world.game.gameHeader.setResourceGrowthDisabled(true);
+				auto definitions = [](unsigned factor)
+				{
+					return nlohmann::json{
+						{"schemaVersion", 1},
+						{"terrains",
+						 nlohmann::json::array({{{"key", "test:water"},
+												 {"name", "Custom water"},
+												 {"base", "water"},
+												 {"appearance", "sand"},
+												 {"properties", {{"groundSpeedQ8", factor}}}}})}}
+						.dump();
+				};
+				importBeforeMatch(world.game, definitions(speed));
+				const auto water = *map.terrainRegistry().find("test:water");
+				{
+					auto batch = map.editTerrain();
+					for (int y = 0; y < 32; ++y)
+						for (int x = 8; x < 13; ++x)
+							map.setCellTerrain(x, y, water);
+				}
+				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
+				map.setResource(20, 20, WHEAT, 1);
+				map.getResourceGradient(0, WHEAT, 6);
+				std::vector<Uint16> expected(1024);
+				map.seedResourcesGradient(0, WHEAT, 6, expected.data());
+				map.propagateGradient(expected.data(), 6);
+
+				// Exercise Map's actual dispatch and worker callback: neutral-speed
+				// custom water captures a binary plane, while slow water captures
+				// compact movement profiles and selects the larger queue.
+				map.configureGradientPipeline(workers, 2);
+				map.advanceGradientPipeline();
+				map.syncStep(0);
+				REQUIRE(map.gradientRuntime->pipeline.pendingCount() == 1);
+				map.gradientRuntime->pipeline.visitPendingSnapshots(
+					[&](const auto &pending)
+					{
+						CHECK_FALSE(pending.superseded);
+						CHECK(std::equal(expected.begin(), expected.end(), pending.data));
+					});
+
+				importBeforeMatch(world.game, definitions(speed == 256 ? 64 : 256));
+				CHECK(map.terrainRegistry().find("test:water") == water);
+				map.gradientRuntime->pipeline.visitPendingSnapshots([&](const auto &pending)
+																	{ CHECK(pending.superseded); });
+				std::vector<Uint16> replacement(1024);
+				map.seedResourcesGradient(0, WHEAT, 6, replacement.data());
+				map.propagateGradient(replacement.data(), 6);
+				REQUIRE(replacement != expected);
+				map.updateResourcesGradient(0, WHEAT, 6);
+				map.advanceGradientPipeline();
+				map.advanceGradientPipeline();
+				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
+				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
+				CHECK(std::equal(replacement.begin(), replacement.end(),
+								 map.resourcesGradient[0][WHEAT][6]));
+			}
 	}
 	TEST_CASE("unused distinct costs do not expand map movement setup")
 	{

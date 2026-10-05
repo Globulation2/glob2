@@ -5560,3 +5560,7 @@ Adiciona trilhos desgastados ao editor de mapas. As unidades terrestres movem-se
 Mercados V2
 [experiment markets-v2 help]
 Os trabalhadores podem buscar provisões no estoque compartilhado dos mercados. Os mercados podem ser melhorados para armazenar trigo e madeira, depois todos os recursos. As trocas entre equipes continuam limitadas a frutas. Aplica-se a jogos novos; os jogos salvos mantêm a configuração original.
+[Import Terrain Definitions]
+Importar definições de terreno
+[Terrain palette]
+Paleta de terrenos

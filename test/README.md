@@ -1755,17 +1755,25 @@ and frozen traces in serial and threaded Wasm builds.
 ## Runtime terrain
 
 `TerrainRegistry/*` validates JSON, immutable imports, deterministic IDs, bounded
-cost profiles, maximum registry size, serialization and scalar/SIMD queue results
-against a heap oracle. `TerrainRuntime/*` covers map isolation, match immutability,
+cost profiles, maximum registry size, canonical serialization, snapshot string
+lifetimes and visual-profile deduplication. Scalar/SIMD queue results are compared
+against a heap oracle; invalid or undersized queue requests must fail before
+changing the field, while unused slow definitions must remain harmless. `TerrainRuntime/*` covers map isolation, match immutability,
 capability summaries, custom movement, resumed/worker gradients and embedded save
-continuation. Run these with `python3 test/run_tests.py --filter 'TerrainRegistry/*'`
+continuation. The production pipeline case dispatches through `Map::syncStep` with
+serial and worker execution, checks both binary water and weighted profile capture,
+and reimports before publication to reject a pending field from the old registry. Run these with `python3 test/run_tests.py --filter 'TerrainRegistry/*'`
 and `python3 test/run_tests.py --filter 'TerrainRuntime/*'`. Also run existing
 terrain, gradient, save, replay, scene and editor suites when changing this boundary.
 The scalar kernel can be compiled explicitly with `GLOB2_GRADIENT_SCALAR`; NEON
 requires an ARM build. Native success alone does not establish cross-platform
 checksum equivalence or performance qualification.
 
-The custom-map cases in `TurnEngineHarness` and `LanMatch` exercise shared-map
+The custom-map cases in `TurnEngineHarness` and `LanMatchHarness` exercise shared-map
 loading, content-hash transfer, per-tick agreement and match verification without
-local authoring files. `EditorActionCoverage` captures the import palette on both
-layouts; `TerrainPresentation` covers software and GPU registry/asset invalidation.
+local authoring files. `EditorActionCoverage` exercises file selection, failed import and retry, palette
+scrolling/selection, cancellation and save/load without author JSON on both layouts,
+and captures screenshots. `TerrainPresentation` covers software and GPU
+registry/asset invalidation, plus explicit edge-mask expectations for custom aliases
+at wrapped map boundaries. Cache-versus-direct pixel equality alone is insufficient:
+both paths can share the same wrong layer description.

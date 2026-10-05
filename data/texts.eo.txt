@@ -5560,3 +5560,7 @@ Aldonas eluzitajn padojn al la mapredaktilo. Teraj unuoj moviĝas je duobla rapi
 Merkatoj V2
 [experiment markets-v2 help]
 Laboristoj povas preni provizojn el la komuna merkata stoko. Merkatoj povas plialtniveliĝi por stoki tritikon kaj lignon, poste ĉiujn rimedojn. Inter teamoj oni ankoraŭ interŝanĝas nur fruktojn. Validas por novaj ludoj; konservitaj ludoj retenas sian originan agordon.
+[Import Terrain Definitions]
+Importi terendifinojn
+[Terrain palette]
+Terenpaletro

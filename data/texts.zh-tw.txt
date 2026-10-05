@@ -5560,3 +5560,7 @@ AI 遙測
 市場 V2
 [experiment markets-v2 help]
 工人可以從市場的共用庫存取得物資。市場可升級以儲存小麥和木材，之後可儲存所有資源。隊伍之間仍只交換水果。適用於新遊戲；存檔保留原始設定。
+[Import Terrain Definitions]
+匯入地形定義
+[Terrain palette]
+地形選擇面板

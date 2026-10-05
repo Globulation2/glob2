@@ -264,7 +264,7 @@ void MapEdit::importTerrainFile(const std::string &filename)
 	input->seekFromEnd(0);
 	const auto bytes = input->getPosition();
 	input->seekFromStart(0);
-	if (bytes > 32 * 1024 * 1024)
+	if (bytes > TerrainRegistry::MaximumDefinitionBytes)
 		throw std::runtime_error("Terrain definitions exceed 32 MiB");
 	std::string json(bytes, '\0');
 	if (bytes && !input->readExact(json.data(), bytes))

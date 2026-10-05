@@ -4,7 +4,11 @@
 #include "MapEdit.h"
 #include "Race.h"
 #include "MapEditDialog.h"
+#include "LoadSaveDialog.h"
+#include <FileManager.h>
+#include <Toolkit.h>
 #include <nlohmann/json.hpp>
+#include <algorithm>
 #include <filesystem>
 
 namespace
@@ -366,26 +370,73 @@ TEST_SUITE("EditorActionCoverage")
 									   {"properties", {{"groundSpeedQ8", 192}}},
 									   {"appearance", "sand"}});
 			glob2test::TempDir scratch;
-			const auto file = scratch.path / "terrain.json";
+			const auto directory = scratch.path / "terrain";
+			std::filesystem::create_directories(directory);
+			GAGCore::Toolkit::getFileManager()->addDir(scratch.path.string());
+			const auto file = directory / "runtime-review.json";
+			glob2test::writeFile(file, "invalid JSON");
+			// This picker must not advertise compressed files to the raw JSON loader.
+			glob2test::writeFile(directory / "compressed-only.json.gz", "not offered");
+			editor.performAction("import terrain definitions");
+			REQUIRE(editor.loadSaveScreen);
+			const auto files = editor.loadSaveScreen->filePresentation().files;
+			CHECK(std::find(files.begin(), files.end(), "compressed-only") == files.end());
+			const auto selected = std::find(files.begin(), files.end(), "runtime-review");
+			REQUIRE(selected != files.end());
+			editor.loadSaveScreen->selectPresentedFile(int(selected - files.begin()));
+			const auto original = editor.game.map.frozenTerrainRegistry();
+			editor.hasMapBeenModified = false;
+			editor.loadSaveScreen->confirmPresentedFile();
+			SDL_Event poll{};
+			poll.type = SDL_EVENT_USER;
+			editor.delegateMenu(poll);
+			REQUIRE(editor.loadSaveScreen);
+			CHECK(editor.loadSaveScreen->filePresentation().failed);
+			CHECK_FALSE(editor.loadSaveScreen->filePresentation().status.empty());
+			CHECK_FALSE(editor.loadSaveScreen->finished());
+			CHECK(editor.game.map.frozenTerrainRegistry() == original);
+			CHECK_FALSE(editor.hasMapBeenModified);
+
+			// Retry the selected file through the same dialog after correcting it.
 			glob2test::writeFile(file,
 								 Json{{"schemaVersion", 1}, {"terrains", definitions}}.dump());
-			editor.importTerrainFile(file.string());
+			editor.loadSaveScreen->confirmPresentedFile();
+			editor.delegateMenu(poll);
+			CHECK_FALSE(editor.loadSaveScreen);
 			CHECK(editor.game.map.terrainRegistry().size() == 47);
-			const auto type = *editor.game.map.terrainRegistry().find("example:t0");
-			editor.beginTerrainPlacement(TerrainSelector::selectorFor(type),
-										 MapEdit::TerrainPlacementMode::BaseTerrain);
-			cursor(editor, 8, 8);
-			editor.performAction("terrain drag start");
-			editor.performAction("terrain drag end");
-			REQUIRE(editor.game.map.terrainTypeAt(8, 8) == type);
-			editor.performAction("open terrain palette");
+			CHECK(editor.hasMapBeenModified);
 			REQUIRE(editor.terrainPalette);
 			editor.draw(SDL_GetTicks());
 			globals->gfx->printScreen(
 				glob2test::artifactDirFromWorkingDirectory() +
 				(phone ? "/terrain-palette-phone.bmp" : "/terrain-palette-desktop.bmp"));
 			globals->gfx->nextFrame();
-			editor.terrainPalette.reset();
+
+			// Select a type beyond the first viewport through the real scroll host.
+			const std::string key = "terrain/example:t9";
+			auto &host = editor.terrainPalette->host();
+			host.scrollIntoView(key);
+			host.layoutIfNeeded();
+			const auto bounds = host.bounds(key);
+			REQUIRE(bounds.w > 0);
+			REQUIRE(bounds.h > 0);
+			host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
+			CHECK(editor.terrainPalette->finished());
+			editor.delegateMenu(poll);
+			CHECK_FALSE(editor.terrainPalette);
+			const auto type = *editor.game.map.terrainRegistry().find("example:t9");
+			CHECK(editor.terrainType == TerrainSelector::selectorFor(type));
+			cursor(editor, 8, 8);
+			editor.performAction("terrain drag start");
+			editor.performAction("terrain drag end");
+			REQUIRE(editor.game.map.terrainTypeAt(8, 8) == type);
+
+			editor.performAction("open terrain palette");
+			SDL_Event escape{};
+			escape.type = SDL_EVENT_KEY_DOWN;
+			escape.key.key = SDLK_ESCAPE;
+			editor.processEvent(escape);
+			CHECK_FALSE(editor.terrainPalette);
 			const auto map = (scratch.path / "custom.map").string();
 			REQUIRE(editor.save(map, "Custom terrain"));
 			std::filesystem::remove(file);

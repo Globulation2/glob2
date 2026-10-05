@@ -5,6 +5,10 @@
 #include <nlohmann/json.hpp>
 #include <queue>
 #include <random>
+#include <type_traits>
+
+static_assert(!std::is_copy_constructible_v<TerrainRegistry>);
+static_assert(!std::is_copy_assignable_v<TerrainRegistry>);
 using Json = nlohmann::json;
 namespace
 {
@@ -75,12 +79,60 @@ TEST_SUITE("TerrainRegistry")
 		CHECK(registry->properties(TerrainType(7)).groundSpeedQ8 == 192);
 		CHECK(builtin->size() == 7);
 		CHECK(builtin->checksum() == 0);
-		auto loaded = TerrainRegistry::deserialize(updated->serialize());
+		const auto serialized = updated->serialize();
+		CHECK(serialized == Json::parse(serialized).dump());
+		auto loaded = TerrainRegistry::deserialize(serialized);
 		CHECK(loaded->serialize() == updated->serialize());
 		CHECK(loaded->digest() == updated->digest());
 		CHECK(std::string(loaded->presentation(TerrainType(7)).name) == "test:a");
 		CHECK(std::string(loaded->presentation(TerrainType(7)).label) == "Custom terrain");
 		CHECK(loaded->movement(0).minimum == 5); // Built-in road remains an admissible lower bound.
+	}
+	TEST_CASE("visual profiles share artwork while snapshots retain authoring names")
+	{
+		auto first = definition("test:first");
+		auto second = definition("test:second", "grass", {{"groundSpeedQ8", 192}});
+		first["name"] = "First terrain";
+		second["name"] = "Second terrain";
+		const auto snapshot =
+			TerrainRegistry::builtins()->importJson(source(Json::array({first, second})));
+		const auto firstId = *snapshot->find("test:first");
+		const auto secondId = *snapshot->find("test:second");
+		CHECK(snapshot->visualIndex(firstId) == snapshot->visualIndex(secondId));
+		CHECK(snapshot->propertyIndex(firstId) != snapshot->propertyIndex(secondId));
+		const auto &visual = snapshot->visual(snapshot->visualIndex(firstId));
+		CHECK(visual.presentation.name == nullptr);
+		CHECK(visual.presentation.label == nullptr);
+		CHECK(visual.appearance == SAND);
+		CHECK(snapshot->visualIndex(firstId) != snapshot->visualIndex(SAND));
+		auto iceDefinition = definition("test:ice");
+		iceDefinition["appearance"] = "ice";
+		const auto iceRegistry = snapshot->importJson(source(Json::array({iceDefinition})));
+		CHECK(iceRegistry->visualIndex(*iceRegistry->find("test:ice")) ==
+			  iceRegistry->visualIndex(ICE));
+
+		first["name"] = "Replacement name";
+		const auto replacement = snapshot->importJson(source(Json::array({first})));
+		CHECK(std::string(snapshot->presentation(firstId).name) == "test:first");
+		CHECK(std::string(snapshot->presentation(firstId).label) == "First terrain");
+		CHECK(std::string(replacement->presentation(firstId).label) == "Replacement name");
+		CHECK(std::string(replacement->presentation(secondId).label) == "Second terrain");
+
+		// Saved presentation is authoritative. Sharing an appearance preset is
+		// insufficient when resolved colors or animation timing differ.
+		for (const auto *field : {"minimap", "animationTicks"})
+		{
+			CAPTURE(field);
+			auto saved = Json::parse(snapshot->serialize());
+			auto &value = saved["terrains"][1]["presentation"][field];
+			if (value.is_array())
+				value[0] = (value[0].get<unsigned>() + 1) % 256;
+			else
+				value = value.get<unsigned>() + 1;
+			const auto distinct = TerrainRegistry::deserialize(saved.dump());
+			CHECK(distinct->visualIndex(firstId) != distinct->visualIndex(secondId));
+			CHECK(distinct->visualCount() == snapshot->visualCount() + 1);
+		}
 	}
 	TEST_CASE("invalid imports and saved registries are rejected without changing their owner")
 	{
@@ -97,6 +149,8 @@ TEST_SUITE("TerrainRegistry")
 				source(Json::array({definition("test:x", "grass", properties)}))));
 		CHECK_THROWS(
 			registry->importJson(R"({"schemaVersion":1,"schemaVersion":1,"terrains":[]})"));
+		CHECK_THROWS_AS(registry->importJson(std::string(32, '[') + "0" + std::string(32, ']')),
+						std::invalid_argument);
 		auto imported = registry->importJson(source(Json::array({definition()})));
 		auto saved = Json::parse(imported->serialize());
 		saved["terrains"][0]["id"] = 10;
@@ -168,6 +222,32 @@ TEST_SUITE("TerrainRegistry")
 					CHECK(actual == expected);
 				}
 	}
+	TEST_CASE("runtime searches reject undersized queues before changing the field")
+	{
+		auto registry = TerrainRegistry::builtins()->importJson(
+			source(Json::array({definition("test:slow", "water", {{"groundSpeedQ8", 64}})})));
+		const auto slow = *registry->find("test:slow");
+		std::vector<TerrainType> ids(1024, slow);
+		std::vector<std::uint16_t> seeds(1024, GRADIENT_UNREACHABLE);
+		seeds[0] = GRADIENT_AT_GOAL;
+		GradientWorkspace workspace;
+		for (unsigned buckets : {32, 64, 128, 512})
+		{
+			CAPTURE(buckets);
+			auto actual = seeds;
+			CHECK_THROWS_AS(gradient_kernel::propagateTerrainField(
+								actual.data(), 6, 500, {32, 32}, workspace,
+								[&](std::size_t i) { return ids[i]; }, true, *registry, buckets),
+							std::invalid_argument);
+			CHECK(actual == seeds);
+			std::vector<std::uint8_t> profiles(1024, registry->movement(6).profileIds[slow]);
+			CHECK_THROWS_AS(gradient_kernel::propagateTerrainProfiles(
+								actual.data(), 6, 500, {32, 32}, workspace, profiles.data(),
+								*registry, buckets),
+							std::invalid_argument);
+			CHECK(actual == seeds);
+		}
+	}
 	TEST_CASE("unused large edge definitions preserve the 64 bucket path")
 	{
 		auto registry = TerrainRegistry::builtins()->importJson(
@@ -180,6 +260,12 @@ TEST_SUITE("TerrainRegistry")
 		gradient_kernel::propagateTerrainField(
 			seeds.data(), 6, 500, {32, 32}, workspace, [&](size_t i) { return ids[i]; }, true,
 			*registry, 64);
+		CHECK(seeds == expected);
+		seeds.assign(1024, GRADIENT_UNREACHABLE);
+		seeds[0] = GRADIENT_AT_GOAL;
+		std::vector<std::uint8_t> profiles(1024, registry->movement(6).profileIds[TRAIL]);
+		gradient_kernel::propagateTerrainProfiles(seeds.data(), 6, 500, {32, 32}, workspace,
+												  profiles.data(), *registry, 64);
 		CHECK(seeds == expected);
 	}
 }

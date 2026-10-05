@@ -36,6 +36,7 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	profiles = dynamic ? map.frozenTerrainMovementSnapshot(swim) : nullptr;
 	if (dynamic)
 	{
+		gradient_kernel::runtime_terrain::validateQueue(profiles->movement, terrainBuckets);
 		if (!custom)
 			custom = std::make_unique<TerrainGradientWorkspace>();
 		custom->prepare(terrainBuckets);
@@ -99,9 +100,9 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			while (pending && (target == cells || !resolved(target)))
 			{
 				popped += custom->buckets[unsigned(currentCost) % N].size;
-				gradient_kernel::runtime_terrain::expandTerrainBucket<N, true>(
+				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
-					{widthMask + 1, heightMask + 1}, profiles->movement, *custom,
+					{widthMask + 1, heightMask + 1}, profiles->movement,
 					[&](size_t i) { return profiles->cells[i]; });
 				++currentCost;
 			}
@@ -134,19 +135,11 @@ void BuildingGradientSearch::resolve(std::size_t target)
 	else
 	{
 		const auto *const terrainCells = terrain->data();
-		if (registry->size() == TERRAIN_COUNT)
-			sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [terrainCells](size_t i)
-				  { return gradient_kernel::terrainUsesSwimming(terrainCells[i]); });
-		else
-		{
-			const int sole = registry->soleSwimmingType();
-			if (sole >= 0)
-				sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]),
-					  [&](size_t i) { return terrainCells[i] == sole; });
-			else
-				sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]),
-					  [&](size_t i) { return registry->swimming(terrainCells[i]); });
-		}
+		// Custom weighted searches captured the water plane in begin(). Only
+		// built-in terrain IDs can reach this legacy binary specialization.
+		assert(registry->size() == TERRAIN_COUNT);
+		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [terrainCells](size_t i)
+			  { return gradient_kernel::terrainUsesSwimming(terrainCells[i]); });
 	}
 	if (complete())
 	{

@@ -4,7 +4,10 @@
 #include "Map.h"
 #include <algorithm>
 
-void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.displayViewportH); }
+void SceneMap::extract(const Map &map)
+{
+	extract(map, map.displayViewportW, map.displayViewportH);
+}
 
 void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
@@ -18,8 +21,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	sourceKey = &map;
 	const size_t size = size_t(w) * h;
 	terrain.resize(size);
-    terrainTypes = map.terrainTypes();
-    layeredTerrain = false;
+	terrainTypes = map.terrainTypes();
+	terrainVisuals.resize(size);
+	layeredTerrain = false;
 	resources.resize(size);
 	resourcesGrow.resize(size);
 	groundUnits.resize(size);
@@ -29,7 +33,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.tiles[i];
-        layeredTerrain |= terrainPresentation(terrainTypes[i]).edgeFirstFrame >= 0 || terrainPresentation(terrainTypes[i]).backdropSprite;
+		terrainVisuals[i] = registry->visualIndex(terrainTypes[i]);
+		const auto &presentation = registry->visual(terrainVisuals[i]).presentation;
+		layeredTerrain |= presentation.edgeFirstFrame >= 0 || presentation.backdropSprite;
 		terrain[i] = tile.terrain;
 		resources[i] = tile.resource;
 		resourcesGrow[i] = tile.canResourcesGrow;
@@ -39,8 +45,9 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 		if (includeScriptAreas)
 		{
 			scriptAreas[i] = 0;
-			for (int n=0; n<9; ++n)
-				if (map.isPointSet(n, int(i)&wMask, int(i>>wDec))) scriptAreas[i] |= 1 << n;
+			for (int n = 0; n < 9; ++n)
+				if (map.isPointSet(n, int(i) & wMask, int(i >> wDec)))
+					scriptAreas[i] |= 1 << n;
 		}
 	}
 	undermap.resize(size);
@@ -70,7 +77,8 @@ bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 v
 }
 
 // Same conversions as Map's, reading the extracted viewport bounds.
-void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const
+void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX,
+									int viewportY) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -82,7 +90,8 @@ void SceneMap::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewpo
 	*py = y << 5;
 }
 
-void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const
+void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX,
+										  int viewportY, int screenW, int screenH) const
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
@@ -96,41 +105,45 @@ void SceneMap::mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int 
 
 TerrainLayers SceneMap::terrainLayersAt(int x, int y, int animationTime) const
 {
-    const auto own = terrainTypeAt(x,y);
-    const auto &base = terrainPresentation(own);
-    auto result = terrainBaseLayers(own,getTerrain(x,y),base,animationTime);
-    const int firstEdge = base.backdropSprite ? 2 : 1;
+	const auto &own = visualAt(x, y);
+	const auto &base = own.presentation;
+	auto result = terrainBaseLayers(own.appearance, getTerrain(x, y), base, animationTime);
 	if (!layeredTerrain)
-	{
-		result.materials[0] = registry->appearance(own);
 		return result;
+
+	// Edges describe appearances, not terrain identities. Coalesce aliases into
+	// one side mask; separate overlays would double-blend shared corner pixels.
+	constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
+	std::array<std::uint16_t, 4> profiles{};
+	std::array<unsigned, 4> masks{};
+	int count = 0;
+	for (int side = 0; side < 4; ++side)
+	{
+		const auto profile = terrainVisuals[coordToIndex(x + dx[side], y + dy[side])];
+		const auto &p = registry->visual(profile).presentation;
+		if (p.edgeFirstFrame < 0 || p.layerPriority <= base.layerPriority)
+			continue;
+		int slot = 0;
+		while (slot < count && profiles[slot] != profile)
+			++slot;
+		if (slot == count)
+			profiles[count++] = profile;
+		masks[slot] |= 1u << side;
 	}
-	// Blend only a narrow decorative border into neighboring cells. The material
-    // and movement boundary remain exactly on the gameplay-cell boundary.
-    constexpr int dx[4] = {0,1,0,-1}, dy[4] = {-1,0,1,0};
-    std::array<TerrainType,4> types{};
-    std::array<unsigned,4> masks{};
-    int count = 0;
-    for (int side=0; side<4; ++side)
-    {
-        const auto other = terrainTypeAt(x+dx[side],y+dy[side]);
-        const auto &p = terrainPresentation(other);
-        if (p.edgeFirstFrame < 0 || p.layerPriority <= base.layerPriority) continue;
-        int slot=0;
-        while (slot<count && types[slot]!=other) ++slot;
-        if (slot==count) types[count++]=other;
-        masks[slot] |= 1u << side;
-    }
-    for (int i=0; i<count; ++i)
-        for (int j=i+1; j<count; ++j)
-            if (terrainPresentation(types[j]).layerPriority < terrainPresentation(types[i]).layerPriority)
-            { std::swap(types[i],types[j]); std::swap(masks[i],masks[j]); }
-    for (int i=0; i<count; ++i)
-        {
-        result.frames[i+firstEdge] = terrainPresentation(types[i]).edgeFirstFrame + masks[i]-1;
-        result.materials[i+firstEdge] = types[i];
-    }
-	for (auto &material : result.materials)
-		material = registry->appearance(material);
+	for (int i = 0; i < count; ++i)
+		for (int j = i + 1; j < count; ++j)
+			if (registry->visual(profiles[j]).presentation.layerPriority <
+				registry->visual(profiles[i]).presentation.layerPriority)
+			{
+				std::swap(profiles[i], profiles[j]);
+				std::swap(masks[i], masks[j]);
+			}
+	const int firstEdge = base.backdropSprite ? 2 : 1;
+	for (int i = 0; i < count; ++i)
+	{
+		const auto &visual = registry->visual(profiles[i]);
+		result.frames[i + firstEdge] = visual.presentation.edgeFirstFrame + masks[i] - 1;
+		result.materials[i + firstEdge] = visual.appearance;
+	}
 	return result;
 }

@@ -5560,3 +5560,7 @@ Aggiunge sentieri consumati all’editor di mappe. Le unità terrestri si muovon
 Mercati V2
 [experiment markets-v2 help]
 I lavoratori possono prelevare scorte dal magazzino condiviso dei mercati. I mercati possono essere migliorati per conservare grano e legno, poi tutte le risorse. Gli scambi tra squadre restano limitati alla frutta. Si applica alle nuove partite; i salvataggi mantengono l’impostazione originale.
+[Import Terrain Definitions]
+Importa definizioni del terreno
+[Terrain palette]
+Tavolozza dei terreni

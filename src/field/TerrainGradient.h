@@ -62,7 +62,7 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
         limits[t] = vsubq_u16(vectors[t], vdupq_n_u16(1));
     }
 #endif
-    // Positive edge costs below BUCKETS keep every target distinct from this
+    // Positive edge costs below QueueBuckets keep every target distinct from this
     // source bucket, so reserving target storage cannot invalidate cells.
     const auto *cells = bucket.cells.data();
     const unsigned width = grid.width(), height = grid.height(), shift = Masked ? grid.widthShift() : 0;

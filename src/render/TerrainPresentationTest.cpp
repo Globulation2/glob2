@@ -156,6 +156,42 @@ TEST_CASE("every side mask is decorative and preserves material identity") {
         CHECK(layers.frames[1]==(mask?terrainPresentation(ICE).edgeFirstFrame+int(mask)-1:-1));
     }
 }
+TEST_CASE("equivalent custom appearances share one decorative edge mask")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4});
+	auto &map = fixture.game.map;
+	map.game = nullptr;
+	map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+        {"key":"test:ice-a","name":"Ice A","base":"grass","properties":{},"appearance":"ice"},
+        {"key":"test:ice-b","name":"Ice B","base":"sand","properties":{},"appearance":"ice"}
+    ]})");
+	map.setGame(&fixture.game);
+	const auto a = *map.terrainRegistry().find("test:ice-a");
+	const auto b = *map.terrainRegistry().find("test:ice-b");
+	const TerrainType neighbors[] = {ICE, a, b, a};
+	constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
+	map.setCellTerrain(0, 0, TRAIL);
+	for (unsigned mask = 0; mask < 16; ++mask)
+	{
+		INFO(mask);
+		for (int side = 0; side < 4; ++side)
+			map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? neighbors[side] : TRAIL);
+		SceneMap scene;
+		scene.extract(map);
+		const auto layers = scene.terrainLayersAt(0, 0);
+		CHECK(layers.frames[1] ==
+			  (mask ? terrainPresentation(ICE).edgeFirstFrame + int(mask) - 1 : -1));
+		if (mask)
+			CHECK(layers.materials[1] == ICE);
+		for (int layer = 2; layer < TerrainLayers::Capacity; ++layer)
+			CHECK(layers.frames[layer] == -1);
+		// Sharing artwork must never replace the canonical gameplay identity.
+		for (int side = 0; side < 4; ++side)
+			CHECK(scene.terrainTypeAt(dx[side], dy[side]) ==
+				  (mask & (1u << side) ? neighbors[side] : TRAIL));
+	}
+}
 TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]") {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=0});

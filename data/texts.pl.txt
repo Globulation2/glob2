@@ -5560,3 +5560,7 @@ Dodaje wydeptane ścieżki do edytora map. Jednostki lądowe poruszają się z p
 Rynki V2
 [experiment markets-v2 help]
 Robotnicy mogą pobierać zapasy ze wspólnego magazynu rynków. Rynki można ulepszać, aby przechowywały pszenicę i drewno, a następnie wszystkie zasoby. Między drużynami nadal wymienia się tylko owoce. Dotyczy nowych gier; zapisy zachowują pierwotne ustawienie.
+[Import Terrain Definitions]
+Importuj definicje terenu
+[Terrain palette]
+Paleta terenów

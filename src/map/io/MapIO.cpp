@@ -15,7 +15,6 @@
 #include "render/GameAnimations.h"
 
 #include <algorithm>
-#include <stdexcept>
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <PackedArray.h>
@@ -23,6 +22,15 @@
 #include <memory>
 #include <stdexcept>
 
+
+namespace
+{
+// Format 136 stores bounded raw chunks, avoiding the binary stream string limit
+// and text-stream quoting differences. Keep these wire sizes stable.
+constexpr std::size_t RegistryChunkBytes = 64 * 1024;
+constexpr std::size_t MaximumRegistryChunks =
+	TerrainRegistry::MaximumDefinitionBytes / RegistryChunkBytes;
+}
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 {
@@ -67,18 +75,18 @@ try
 	{
 		stream->readEnterSection("terrainRegistry");
 		const auto chunks = stream->readUint32("chunks");
-		if (!chunks || chunks > 512)
+		if (!chunks || chunks > MaximumRegistryChunks)
 			throw std::ios_base::failure("Invalid terrain registry size");
 		std::string definitions;
 		for (unsigned i = 0; i < chunks; ++i)
 		{
 			stream->readEnterSection(i);
 			const auto length = stream->readUint32("length");
-			if (length > 65536)
+			if (length > RegistryChunkBytes)
 				throw std::ios_base::failure("Invalid terrain registry chunk");
-			std::string chunk(length, '\0');
-			stream->read(chunk.data(), chunk.size(), "definitions");
-			definitions += chunk;
+			const auto offset = definitions.size();
+			definitions.resize(offset + length);
+			stream->read(definitions.data() + offset, length, "definitions");
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
@@ -297,11 +305,11 @@ void Map::save(GAGCore::OutputStream *stream)
 	{
 		const auto definitions = terrainRegistry().serialize();
 		stream->writeEnterSection("terrainRegistry");
-		stream->writeUint32((definitions.size() + 65535) / 65536, "chunks");
-		for (std::size_t i = 0; i < definitions.size(); i += 65536)
+		stream->writeUint32((definitions.size() + RegistryChunkBytes - 1) / RegistryChunkBytes, "chunks");
+		for (std::size_t i = 0; i < definitions.size(); i += RegistryChunkBytes)
 		{
-			stream->writeEnterSection(i / 65536);
-			const auto length = std::min<std::size_t>(65536, definitions.size() - i);
+			stream->writeEnterSection(i / RegistryChunkBytes);
+			const auto length = std::min(RegistryChunkBytes, definitions.size() - i);
 			stream->writeUint32(length, "length");
 			stream->write(definitions.data() + i, length, "definitions");
 			stream->writeLeaveSection();

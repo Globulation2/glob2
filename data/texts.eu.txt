@@ -5560,3 +5560,7 @@ Bidezidor higatuak gehitzen ditu mapa-editorean. Lurreko unitateak abiadura biko
 Merkatuak V2
 [experiment markets-v2 help]
 Langileek hornigaiak har ditzakete merkatuen biltegi partekatutik. Merkatuak hobetu daitezke garia eta egurra gordetzeko, eta gero baliabide guztiak. Taldeen arteko trukea frutara mugatzen da. Partida berriei aplikatzen zaie; gordetako partidek jatorrizko ezarpena mantentzen dute.
+[Import Terrain Definitions]
+Inportatu lur-eremuaren definizioak
+[Terrain palette]
+Lur-eremuen paleta

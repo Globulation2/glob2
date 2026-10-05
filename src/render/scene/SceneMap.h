@@ -36,7 +36,10 @@ class SceneMap
 	//! Single-threaded callers (tests, tools): take the drawn area from the map.
 	void extract(const Map &map);
 
-	bool isPointSet(int n, int x, int y) const { return !scriptAreas.empty() && (scriptAreas[coordToIndex(x,y)] & (1 << n)); }
+	bool isPointSet(int n, int x, int y) const
+	{
+		return !scriptAreas.empty() && (scriptAreas[coordToIndex(x, y)] & (1 << n));
+	}
 	int getW() const { return w; }
 	int getH() const { return h; }
 	int getMaskW() const { return wMask; }
@@ -48,17 +51,17 @@ class SceneMap
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
-    TerrainType terrainTypeAt(int x, int y) const { return terrainTypes[coordToIndex(x,y)]; }
-    // Legacy preview hues are corner based; authored terrain has whole-cell identity.
-    TerrainType presentationTypeAt(int x, int y) const
-    {
-        const auto type = terrainTypeAt(x,y);
+	TerrainType terrainTypeAt(int x, int y) const { return terrainTypes[coordToIndex(x, y)]; }
+	// Legacy preview hues are corner based; authored terrain has whole-cell identity.
+	TerrainType presentationTypeAt(int x, int y) const
+	{
+		const auto type = terrainTypeAt(x, y);
 		return terrainPresentation(type).legacyCorners
 				   ? static_cast<TerrainType>(getUMTerrain(x, y))
 				   : type;
 	}
-    TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
-    int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
+	TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
+	int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
 	const Resource &getResource(size_t pos) const { return resources[pos]; }
 	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
@@ -73,10 +76,22 @@ class SceneMap
 	//! The fog of war of every tile, indexed like coordToIndex: y * getW() + x, as
 	//! the width is a power of two (coordToIndex shifts y by its log2).
 	const Uint32 *fogOfWarData() const { return fogOfWar.data(); }
-	bool isForbiddenInDisplayedView(int x, int y) const { return forbiddenView.get(coordToIndex(x, y)); }
-	bool isGuardAreaInDisplayedView(int x, int y) const { return guardAreaView.get(coordToIndex(x, y)); }
-	bool isClearAreaInDisplayedView(int x, int y) const { return clearAreaView.get(coordToIndex(x, y)); }
-	bool isFarmAreaInDisplayedView(int x, int y) const { return farmAreaView.get(coordToIndex(x, y)); }
+	bool isForbiddenInDisplayedView(int x, int y) const
+	{
+		return forbiddenView.get(coordToIndex(x, y));
+	}
+	bool isGuardAreaInDisplayedView(int x, int y) const
+	{
+		return guardAreaView.get(coordToIndex(x, y));
+	}
+	bool isClearAreaInDisplayedView(int x, int y) const
+	{
+		return clearAreaView.get(coordToIndex(x, y));
+	}
+	bool isFarmAreaInDisplayedView(int x, int y) const
+	{
+		return farmAreaView.get(coordToIndex(x, y));
+	}
 	bool canResourcesGrow(int x, int y) const { return resourcesGrow[coordToIndex(x, y)]; }
 	Uint16 getGroundUnit(int x, int y) const { return groundUnits[coordToIndex(x, y)]; }
 	Uint16 getAirUnit(int x, int y) const { return airUnits[coordToIndex(x, y)]; }
@@ -98,9 +113,10 @@ class SceneMap
 		return true;
 	}
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
-	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
+	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY,
+									int screenW, int screenH) const;
 
-private:
+  private:
 	int w = 0, h = 0, wMask = 0, hMask = 0, wDec = 0;
 	Uint64 sourceIdentity = 0;
 	const void *sourceKey = nullptr;
@@ -108,8 +124,15 @@ private:
 	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
-    std::vector<TerrainType> terrainTypes;
-    bool layeredTerrain = false;
+	std::vector<TerrainType> terrainTypes;
+	// Canonical IDs remain available to UI/script consumers. Drawing indexes the
+	// compact immutable visual profiles so aliases share cache lines and edges.
+	std::vector<std::uint16_t> terrainVisuals;
+	const TerrainRegistry::Visual &visualAt(int x, int y) const
+	{
+		return registry->visual(terrainVisuals[coordToIndex(x, y)]);
+	}
+	bool layeredTerrain = false;
 	std::vector<Uint32> discovered, fogOfWar;
 	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

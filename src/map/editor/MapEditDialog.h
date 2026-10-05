@@ -11,7 +11,7 @@
 
 class Game;
 
-///This is the map editor menu screen. It has 7 buttons. Its very similar to the in-game main menu
+// Editor actions presented through the shared responsive dialog framework.
 class MapEditMenuScreen : public Glob2UI::InGameDialog
 {
   public:

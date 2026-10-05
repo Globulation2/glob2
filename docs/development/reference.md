@@ -855,6 +855,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
   registry snapshot; inner loops borrow indexed data. Render caches bind registry
   identity and shipped asset revisions without scanning custom definitions per chunk.
+  Drawing profiles deduplicate resolved appearance fields independently of simulation
+  properties and authoring names. Scene cells retain a two-byte visual-profile index;
+  adjacent aliases of the same appearance contribute one combined edge mask. Saved
+  color, animation timing or priority differences keep profiles distinct. Use registry
+  `presentation(id)` for authoring labels; drawing profiles intentionally omit labels.
   Experimental authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
   into matches, while saves retain them independently of the user's current settings.
 - Trail uses the stable terrain ID `4` (`TRAIL`) and experiment position `3`
@@ -879,7 +884,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
 - Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
-  before the tile data. Bounded JSON byte chunks support binary and text streams. Loading rebuilds compiled tables before restoring dependent caches;
+  before the tile data. Bounded JSON byte chunks support binary and text streams.
+  Serialization emits definitions in canonical ID order, with object fields in key
+  order, and import/load
+  releases the parsed JSON tree before compilation to bound temporary memory.
+  Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   and replay floor 134 remain unchanged; network protocol 56 gates registry support.
@@ -891,7 +900,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
   kernels dispatch outside cell loops. The general kernel has scalar, SSE2 and NEON
   implementations and compiled 64/128/256 bucket rings. Map counts select the smallest
-  safe ring from terrain present; unused slow definitions cannot enlarge it.
+  safe ring from terrain present; unused slow definitions cannot enlarge it. Search
+  setup validates reachable edge costs against the selected ring before changing a
+  field, because a too-small ring can alias a future cost layer. Keep validation out
+  of cell/neighbor expansion; compact production snapshots bound it by distinct costs.
   Capability counters keep health, air and projectile shortcuts independent of
   registry size. A* retains the historical built-in lower bound and lowers it only
   for faster custom terrain actually present, preserving old route choices.
@@ -910,6 +922,14 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   at least ten repetitions. Report CPU and wall time separately, with rendering
   and memory costs. Repeatable regressions over 2% full-match CPU or 5% terrain
   kernel time block acceptance; noisy measurements do not establish a pass.
+- Keep the terrain index domains explicit when changing this code:
+  canonical `TerrainType` IDs identify saved definitions; property indices select
+  deduplicated simulation structs; per-swimming-class profile bytes select movement
+  costs; scene visual indices select deduplicated drawing metadata. None is a valid
+  substitute for a canonical ID in serialization or scripts. These derived planes
+  are rebuilt from the registry and cells, never serialized. Registry factories
+  publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
+  authoring presentation strings borrow its owned key/name storage.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.

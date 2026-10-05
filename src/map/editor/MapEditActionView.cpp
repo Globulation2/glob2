@@ -117,9 +117,9 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 	else if (action == "import terrain definitions")
 	{
 		performAction("unselect");
-		loadSaveScreen =
-			std::make_unique<LoadSaveDialog>("terrain", "json", true, "Import Terrain Definitions",
-											 nullptr, nullptr, nullptr, Glob2UI::Surface::Editor);
+		loadSaveScreen = std::make_unique<LoadSaveDialog>(
+			"terrain", "json", true, Glob2UI::tr("[Import Terrain Definitions]"), nullptr, nullptr,
+			nullptr, Glob2UI::Surface::Editor, false);
 		attachDialog(*loadSaveScreen);
 		showingLoad = true;
 		importingTerrain = true;

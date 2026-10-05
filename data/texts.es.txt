@@ -5560,3 +5560,7 @@ Añade senderos desgastados al editor de mapas. Las unidades terrestres se mueve
 Mercados V2
 [experiment markets-v2 help]
 Los trabajadores pueden recoger suministros del almacén compartido de los mercados. Los mercados pueden mejorarse para almacenar trigo y madera, y después todos los recursos. Entre equipos solo se intercambia fruta. Se aplica a partidas nuevas; las guardadas conservan su configuración original.
+[Import Terrain Definitions]
+Importar definiciones de terreno
+[Terrain palette]
+Paleta de terrenos
