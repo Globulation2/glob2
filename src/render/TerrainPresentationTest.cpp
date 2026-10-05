@@ -176,6 +176,47 @@ TEST_SUITE("TerrainPresentation")
 		layeredCache(true, true);
 	}
 #endif
+	TEST_CASE("tile fallback matches cached pages when a map cannot admit a page [display]")
+	{
+		for (bool gpu : {false, true})
+		{
+#ifndef HAVE_OPENGL
+			if (gpu) continue;
+#endif
+			glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+				.screenFlags = gpu ? Uint32(GAGCore::GraphicContext::USEGPU) : 0u});
+			glob2test::HeadlessGame fixture({.wDec = 3, .hDec = 3, .discovered = true});
+			auto &map = fixture.game.map;
+			const auto populate = [&] {
+				for (int y = 0; y < 8; ++y)
+					for (int x = 0; x < 8; ++x)
+						map.setCellTerrain(x, y, x < 3 ? WATER :
+							(y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
+			};
+			populate();
+			SceneMap scene;
+			scene.extract(map);
+			SoftwareTerrainCache cache;
+			CHECK_FALSE(cache.prepare(scene, *globals->terrain, 1, 1, 6, 6, 0, 0,
+				fixture.team->me, true));
+			const auto clear = [&] {
+				globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+			};
+			clear();
+			fixture.game.drawMapTerrain(1, 1, 6, 6, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+			const auto fallback = terrainPixels(gpu);
+			// Expand only the unseen map. The visible labels, canonical positions and
+			// their neighbors are identical, but now normal page admission succeeds.
+			map.setSize(5, 5, GRASS);
+			populate();
+			scene.extract(map);
+			clear();
+			REQUIRE(cache.prepare(scene, *globals->terrain, 1, 1, 6, 6, 0, 0,
+				fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			CHECK(terrainPixels(gpu) == fallback);
+		}
+	}
 	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
