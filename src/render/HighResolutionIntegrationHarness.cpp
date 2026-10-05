@@ -335,7 +335,7 @@ public:
                 editor.resetPlacementTracking();editor.performAction("no ressource growth area drag start");
                 REQUIRE(!editor.game.map.canResourcesGrow(x,y));
                 editor.performAction("no ressource growth area drag end");
-                editor.game.map.getTile(x,y).canResourcesGrow=old;
+                editor.game.map.setResourcesGrow(x,y, old);
 
             }
             editor.camera.setZoom(1,300,300);

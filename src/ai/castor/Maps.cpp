@@ -22,7 +22,7 @@ void AICastor::computeObstacleUnitMap()
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
-	const auto& tiles=map->tiles;
+	const auto& tiles=map->getTiles();
 	Uint32 teamMask=team->me;
 	for (size_t i=0; i<size; i++)
 	{
@@ -47,7 +47,7 @@ void AICastor::computeObstacleBuildingMap()
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
-	const auto& tiles=map->tiles;
+	const auto& tiles=map->getTiles();
 	for (size_t i=0; i<size; i++)
 	{
 		const Tile& c=tiles[i];
@@ -108,7 +108,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	int wDec=map->wDec;
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	const auto& tiles=map->tiles;
+	const auto& tiles=map->getTiles();
 	
 	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
 	
@@ -428,7 +428,7 @@ void AICastor::computeHydratationMap()
 	
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
-	const auto& tiles=map->tiles;
+	const auto& tiles=map->getTiles();
 	static const int range=AI_CASTOR_HYDRATATION_RANGE;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -478,7 +478,7 @@ void AICastor::computeNotGrassMap()
 	
 	memset(notGrassMap, 0, size);
 	
-	const auto& tiles=map->tiles;
+	const auto& tiles=map->getTiles();
 	for (size_t i=0; i<size; i++)
 	{
 		// Habitat replaces the historical >16 sprite test, including its
@@ -703,7 +703,7 @@ void AICastor::computeEnemyWarriorsMap()
 	{
 		if ((map->fogOfWar[i]&team->me)==0)
 			continue;
-		Uint16 guid=map->tiles[i].groundUnit;
+		Uint16 guid=map->getTiles()[i].groundUnit;
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));

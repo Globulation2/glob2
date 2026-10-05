@@ -21,18 +21,20 @@ namespace
 // must not silently alter the baseline for unusual legacy resource placements.
 void baselineIncrement(Map& map,int x,int y,int resource,int variety)
 {
-    auto& r=map.getTile(x,y).resource;
+    auto r=map.getResource(x,y);
     if(r.type==NO_RES_TYPE)
     {
         if(map.getBuilding(x,y)!=NOGBID || map.getGroundUnit(x,y)!=NOGUID) return;
         if(map.getTerrainType(x,y)!=(resource==ALGA?WATER:GRASS)) return;
         r.type=resource;r.variety=variety;r.amount=1;r.animation=0;
+        map.replaceResource(x,y,r);
         return;
     }
     if(r.type!=resource) return;
     const auto* type=globalContainer->resourcesTypes.get(r.type);
     if(!type->shrinkable) return;
     if(r.amount<type->sizesCount)++r.amount;else --r.amount;
+    map.replaceResource(x,y,r);
 }
 
 void baselineGrowth(Map& map)
@@ -144,9 +146,9 @@ TEST_CASE("saved-map growth calibration [benchmark][slow]")
                         if(replenish && tick%64==0)
                             for(int i=0;i<map.getW()*map.getH();++i)
                             {
-                                auto& r=map.getResource(i);
+                                const auto& r=map.getResource(i);
                                 if(r.type<MAX_RESOURCES && r.type!=STONE && r.amount>1)
-                                {--r.amount;++harvested[r.type];}
+                                {map.setResourceAmount(i,r.amount-1);++harvested[r.type];}
                             }
                         if(tick!=1024 && tick!=4096 && tick!=16384 && tick!=65536 && tick!=ticks)continue;
                         std::array<std::uint64_t,MAX_RESOURCES> stock{},occupied{},added{},removed{},newTiles{};
@@ -184,9 +186,10 @@ TEST_CASE("four growth opportunities preserve stack updates and measured conserv
         glob2test::HeadlessGame world(glob2test::GameOptions{.header=true,.seed=719});
         auto& game=world.game;
         auto& map=game.map;
-        auto& resource=map.getResource(12,12);
+        auto resource=map.getResource(12,12);
         resource.type=type;resource.amount=globalContainer->resourcesTypes.get(type)->sizesCount;
         resource.variety=0;
+        map.replaceResource(12,12,resource);
         const int initial=resource.amount;
         glob2test::BoundGameRandom random(game);
         setSyncRandSeed(719);
@@ -217,10 +220,11 @@ TEST_CASE("empty and prohibited resource cells do not acquire bonus growth")
     Fertility::applyGrowthOpportunities(map,12,12,4*Fertility::kRateScale,1);
     CHECK(map.getResource(12,12).type==NO_RES_TYPE);
     map.setCellTerrain(12,12,TRAIL);
-    auto& resource=map.getResource(12,12);
+    auto resource=map.getResource(12,12);
     resource.type=WHEAT;resource.amount=1;resource.variety=0;
+    map.replaceResource(12,12,resource);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(12,12),WHEAT)==0);
     CHECK_FALSE(map.incResource(12,12,WHEAT,0));
-    CHECK(resource.amount==1);
+    CHECK(map.getResource(12,12).amount==1);
 }
 }

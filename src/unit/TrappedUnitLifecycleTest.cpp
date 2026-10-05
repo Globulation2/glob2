@@ -64,9 +64,10 @@ struct Fixture {
         for (int y = 19; y <= 20 + building->type->height; ++y)
             for (int x = 19; x <= 20 + building->type->width; ++x) {
                 if (x >= 20 && x < 20 + building->type->width && y >= 20 && y < 20 + building->type->height) continue;
-                auto& r = game.map.getResource(x, y);
+                auto r = game.map.getResource(x, y);
                 r.type = resource;
                 r.amount = 1;
+                game.map.replaceResource(x, y, r);
             }
         // Keep the existing feeding-availability rule satisfied.
         // Training fixtures have a separate stocked inn.
@@ -149,7 +150,7 @@ void rescue() {
     f.game.teams[0]->allies |= f.game.teams[1]->me;
     f.game.syncStep(0);
     REQUIRE((f.unit->hungry == 10 && f.game.teams[0]->isAlive));
-    f.game.map.getResource(20, 19).clear();
+    f.game.map.replaceResource(20, 19, Resource{});
     for (int i = 0; i < 16 && f.unit->attachedBuilding; ++i) f.game.syncStep(0);
     REQUIRE((f.game.teams[0]->myUnits[f.id] == f.unit && !f.unit->isDead));
     REQUIRE((f.unit->attachedBuilding == nullptr && f.building->unitsInside.empty()));
@@ -175,7 +176,7 @@ void freeUnitProtection() {
 }
 void openExitProtection() {
     Fixture f;
-    f.game.map.getResource(20, 19).clear();
+    f.game.map.replaceResource(20, 19, Resource{});
     // Even before its movement update, an available exit must protect the unit.
     f.unit->delta = 0;
     f.game.syncStep(0);
@@ -197,9 +198,10 @@ void productionRecovery(bool stocked, bool blocked) {
                 if (x >= 5 && x < 5 + swarm->type->width && y >= 5 && y < 5 + swarm->type->height) {
                     f.game.map.setAirUnit(x, y, 0);
                 } else {
-                    auto& r = f.game.map.getResource(x, y);
+                    auto r = f.game.map.getResource(x, y);
                     r.type = WOOD;
                     r.amount = 1;
+                    f.game.map.replaceResource(x, y, r);
                 }
             }
     }

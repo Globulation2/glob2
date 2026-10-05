@@ -88,6 +88,10 @@ enum AreaType
 */
 class Map
 {
+	friend class ResourceSeedCache;
+	void resourceSeedChanged(size_t index, unsigned flags);
+	void invalidateResourceSeeds();
+	void seedResourcesGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, bool markets);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
@@ -396,12 +400,6 @@ public:
 	void setDisplayedTeam(Sint32 teamNo) { displayedTeam = teamNo; }
 	Sint32 getDisplayedTeam() const { return displayedTeam; }
 	
-	//! Return the tile at a given position
-	inline Tile &getTile(int x, int y)
-	{
-		return tiles[coordToIndex(x, y)];
-	}
-
 	//! Return the const tile at a given position
 	inline const Tile &getTile(int x, int y) const
 	{
@@ -491,17 +489,23 @@ public:
 		return tiles[pos].resource;
 	}
 
-	Resource& getResource(int x, int y)
-	{
-		return tiles[coordToIndex(x, y)].resource;
-	}
-	
-	Resource& getResource(size_t pos)
-	{
-		return tiles[pos].resource;
-	}
-	
-	//Returns the combined forbidden and hidden forbidden masks
+	// Explicit cell writes preserve existing topology/refresh timing while keeping
+	// derived seed data coherent. Reads never invalidate preparation caches.
+	const std::vector<Tile> &getTiles() const { return tiles; }
+	const Tile &getTile(size_t index) const { return tiles[index]; }
+	// Restores stored cell data (including its sprite), not canonical terrain
+	// identity. Terrain changes still use setCellTerrain/importLegacyTerrain.
+	void replaceTile(size_t index, const Tile &tile);
+	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
+	void replaceResource(size_t index, const Resource &resource);
+	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
+	void setResourceAmount(size_t index, Uint8 amount) { tiles[index].resource.amount = amount; }
+	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; }
+	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; }
+	// Raw mask replacement for order application/import; callers retain their
+	// existing topology-generation and displayed-overlay updates.
+	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
+
 	Uint32 getForbidden(int x, int y) const
 	{
 		return tiles[coordToIndex(x, y)].forbidden;
@@ -517,26 +521,9 @@ public:
 
 	//! A bump throws away every cached route field in the game, so only paint
 	//! a tile that is not already in the state being asked for.
-	void addForbidden(int x, int y, Uint32 teamNum)
-	{
-		Tile& c=tiles[coordToIndex(x, y)];
-		const Uint32 mask=Team::teamNumberToMask(teamNum);
-		if ((c.forbidden & mask)==mask)
-			return;
-		c.forbidden |= mask;
-		bumpTopologyGeneration();
-	}
+	void addForbidden(int x, int y, Uint32 teamNum);
+	void removeForbidden(int x, int y, Uint32 teamNum);
 
-	void removeForbidden(int x, int y, Uint32 teamNum)
-	{
-		Tile& c=tiles[coordToIndex(x, y)];
-		const Uint32 mask=Team::teamNumberToMask(teamNum);
-		if ((c.forbidden & mask)==0)
-			return;
-		c.forbidden ^= c.forbidden & mask;
-		bumpTopologyGeneration();
-	}
-	
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
 		tiles[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
@@ -740,14 +727,8 @@ public:
 	
 	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; }
 	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; }
-	void setBuilding(int x, int y, int w, int h, Uint16 gbid)
-	{
-		for (int yi=y; yi<y+h; yi++)
-			for (int xi=x; xi<x+w; xi++)
-				tiles[coordToIndex(xi, yi)].building = gbid;
-		bumpTopologyGeneration();
-	}
-	
+	void setBuilding(int x, int y, int w, int h, Uint16 gbid);
+
 	//! Return the sector index of the sector containing tile (x,y). The
 	//! formula is: y is wrapped to the map height, divided by SECTOR_TILES
 	//! to get the sector row, then multiplied by sector-grid width and
@@ -968,8 +949,9 @@ public:
 	std::vector<TeamStats::CoverageBuilding> growthCoverageBuildings[Team::MAX_COUNT];
 	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
 	bool growthCoverageValid = false;
-public:
+private:
 	std::vector<Tile> tiles;
+public:
 	Uint64 identityValue = 0;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
@@ -1061,7 +1043,9 @@ public:
 	/// These are integers that tell whether an immobile unit is standing on the
 	/// square, and if so, what team number it is. In terms of the engine, these
 	/// are treated like forbidden areas
+private:
 	Uint8 *immobileUnits;
+public:
 	
 protected:
 	//Used for scheduling computation time.

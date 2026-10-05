@@ -171,7 +171,7 @@ TEST_SUITE("EditorActionCoverage")
         {
             INFO(entry.first);
             editor.performAction(entry.first); editor.brush.setFigure(1); editor.brush.mode=BrushTool::MODE_ADD;
-            editor.game.map.getTile(0,31).*entry.second=2;
+            editor.game.map.setAreaMask(editor.game.map.coordToIndex(0,31),entry.second,2);
             cursor(editor,31,31); editor.performAction("zone drag start"); editor.performAction("zone drag end");
             CHECK((editor.game.map.getTile(31,31).*entry.second & 1)!=0);
             CHECK(editor.game.map.getTile(0,31).*entry.second==3);
@@ -206,7 +206,7 @@ TEST_SUITE("EditorActionCoverage")
         REQUIRE(editor.farmingZone!=nullptr);
         // Water down the left edge, so the grass beside it can grow wheat.
         for (int y=0; y<32; ++y) for (int x=0; x<8; ++x) editor.game.map.setUMatPos(x,y,WATER,1);
-        editor.game.map.getTile(20,12).canResourcesGrow=0;
+        editor.game.map.setResourcesGrow(20,12, 0);
         editor.performAction("select farm zone"); editor.brush.setFigure(1); editor.brush.mode=BrushTool::MODE_ADD;
         REQUIRE(editor.brushType==MapEdit::FarmAreaBrush);
         cursor(editor,12,12); editor.performAction("zone drag start"); editor.performAction("zone drag end");

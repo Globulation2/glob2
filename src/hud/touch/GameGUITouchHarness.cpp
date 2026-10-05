@@ -1171,13 +1171,14 @@ class GameGUITouchHarness
 				const auto spot = emptyGround();
 				const int tx = (gui.mapMouseX(int(spot.x)) / 32 + gui.viewportX) & gui.game.map.getMaskW();
 				const int ty = (gui.mapMouseY(int(spot.y)) / 32 + gui.viewportY) & gui.game.map.getMaskH();
-				auto &resource = gui.game.map.getResource(tx, ty);
+				auto resource = gui.game.map.getResource(tx, ty);
 				const auto saved = resource;
 				for (int type : {WOOD, WHEAT})
 				{
 					resource.type = type;
 					resource.variety = 0;
 					resource.amount = 3;
+					gui.game.map.replaceResource(tx, ty, resource);
 					tap(spot.x, spot.y);
 					require(gui.touch->inspectingResource(), "Tapping a resource opens its inspector");
 					gui.drawAll(0);
@@ -1207,7 +1208,7 @@ class GameGUITouchHarness
 				require(gui.touch->lensVisible() && !gui.touch->inspectingResource(), "Tools consistently opens the lens strip after resource inspection");
 				tap(bar.x + bar.w * 2.5 / 6, bar.y + bar.h / 2);
 				tap(spot.x, spot.y);
-				resource = saved;
+				gui.game.map.replaceResource(tx, ty, saved);
 				gui.drawAll(0);
 				require(!gui.touch->inspectingResource(), "A depleted resource stops being inspected");
 				gui.clearSelection();

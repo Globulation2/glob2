@@ -286,3 +286,70 @@ worker count with its zero-worker control before comparing against legacy
 scheduling. A shorter game caused by changed decisions is not evidence of faster
 ticks. Retain fixed-tick windows as well as full-game measurements, and record
 machine contention when interpreting results.
+
+### Synchronous field preparation
+
+Field preparation runs synchronously at submission; only propagation runs on
+these background workers. Preparation includes reading current resources, terrain,
+occupancy, team areas, fog and market availability into the job-owned seed buffer.
+Do not attribute the entire resource/area-gradient scope to background CPU, or
+add its inclusive time to propagation time. The `initialize` compute experiment
+can split the seeding loop into blocking chunks; compare it against one-thread
+`initialize` with identical AI settings. Comparing it directly against default
+`ai` mode also changes where AI work runs.
+
+Resource preparation shares two derived base fields for walking and swimming.
+Each request copies a base into its owned buffer and patches resource goals,
+current fog and market availability, and the requesting team's forbidden cells.
+Positive swim classes share initial passability but retain their existing movement
+costs during propagation. Clearing and guard fields keep their separate kernels;
+their goal/blocker precedence differs from resource fields.
+
+`GradientRuntime` owns the resource seed cache. Resource types, terrain,
+buildings, immobile units and forbidden masks notify it through explicit map
+mutation methods. Public tile/resource views are const; reads and amount-only
+changes do not invalidate seeds. A deduplicated dirty queue and membership
+bitsets avoid rescanning unchanged cells. Load/reset, bulk terrain reconstruction
+and registry replacement discard derived seeds without changing pending jobs or
+their publication deadlines. Mutation and invalidation follow the existing
+simulation write/read phase barriers; concurrent preparation requests serialize
+cache maintenance and copying. Background propagation workers receive owned
+buffers and never modify these shared templates.
+
+The cache bypasses maps of at most 4,096 cells. More than one sixty-fourth of a
+map in the dirty queue selects direct preparation until 16 consecutive low-change
+preparation requests justify rebuilding. These thresholds bound bookkeeping and
+avoid repeated rebuilds during short mutation bursts; they affect execution cost
+only. Optional storage is capped at 16 bytes per cell and 32 MiB per map, including
+vector capacities and fixed cache state. Over-budget maps and allocation failures
+use the direct kernel. The cache is neither serialized nor checksummed.
+
+The direct resource kernel specializes market/visibility policy outside the cell
+loop. It and the clearing kernel share a per-call terrain-policy lookup for the
+built-in registry; custom terrain reads its compiled cell properties. Clearing
+preparation also resolves resource clearability once per call and avoids repeated
+coordinate conversion. Both paths preserve the original scalar predicates.
+
+`GradientPreparation` in the engine test registry compares seed buffers against
+the original scalar predicates for every resource and swim class, terrain types,
+team masks, fog buffers, market stock and clearing/farming precedence. It also
+checks tracked mutations, cache fallback/rebuild, map resizing, custom terrain
+and registry replacement, guard crowding, and concurrent lazy resource-field
+requests. Run it with:
+
+```sh
+python3 test/run_tests.py --binary engine --filter 'GradientPreparation/*'
+```
+
+Field equality complements, but does not replace, per-tick continuation and
+save/resume verification at every pending-job deadline phase.
+
+For preparation experiments, measure submitting-thread CPU, all-thread process
+CPU, complete-tick elapsed time, worker waits and peak memory separately. Include
+cache construction, mutation bookkeeping, patches and buffer copies. Repeated
+copies of one unchanged field are only a microbenchmark; use rotating owned
+buffers, retained game states and dense/high-mutation controls as well. Keep
+correctness exports out of timing runs, alternate baseline/candidate order, and
+retain commands, source and executable hashes, fixture hashes and raw samples
+under `artifacts/`. Saturated-host latency results cannot establish a production
+speedup even when the seed kernel uses less thread CPU time.

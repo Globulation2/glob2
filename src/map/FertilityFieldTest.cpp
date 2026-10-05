@@ -337,8 +337,8 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
         CHECK(cache.rate(index,WHEAT)==(type==GRASS ? wheat : 0));
     }
     map.putResource(8,8,WHEAT);
-    map.tiles[index].resource.amount=8;
-    map.tiles[index].canResourcesGrow=false;
+    map.setResourceAmount(index,8);
+    map.setResourcesGrow(index % map.getW(),index / map.getW(),false);
     CHECK(cache.validFor(map));
     // Occupancy and the scenario override are checked by growth's caller, not
     // dependencies of the cached terrain-only opportunity rate.

@@ -47,8 +47,9 @@ void fruitIsNeverAClearingTarget() {
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
             for(int resource:{WOOD,WHEAT,PAPYRUS,STONE,ALGA,CHERRY,ORANGE,PRUNE,NO_RES_TYPE}) {
-                auto& tile=f.game.map.getResource(21,20);
+                auto tile=f.game.map.getResource(21,20);
                 tile.type=resource;tile.amount=resource==NO_RES_TYPE?0:1;
+                f.game.map.replaceResource(21,20,tile);
                 for(bool enabled:{false,true}) {
                     if(resource<BASIC_COUNT)flag->clearingResources[resource]=enabled;
                     f.game.map.updateGlobalGradient(flag,swim);

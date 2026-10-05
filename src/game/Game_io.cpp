@@ -464,7 +464,9 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 							<< " building " << bi
 							<< " (" << building->type->type << "), healing!"
 							<< std::endl;
-						map.getTile(xi, yi).building = gid;
+						auto cell = map.getTile(xi, yi);
+						cell.building = gid;
+						map.replaceTile(xi, yi, cell);
 					}
 				}
 		}
@@ -485,7 +487,7 @@ bool Game::integrity(void)
 	for (int y=0; y<map.getH(); y++)
 		for (int x=0; x<map.getW(); x++)
 		{
-			Tile& c = map.getTile(x, y);
+			const Tile& c = map.getTile(x, y);
 			if (c.building != NOGBID)
 			{
 				int tid = Building::GIDtoTeam(c.building);
@@ -508,7 +510,9 @@ bool Game::integrity(void)
 							<< " with " << coordName
 							<< " span [" << posValue << ":" << endValue << "[, healing!"
 							<< std::endl;
-						map.getTile(x, y).building = NOGBID;
+						auto cell = map.getTile(x, y);
+						cell.building = NOGBID;
+						map.replaceTile(x, y, cell);
 					}
 				};
 

@@ -928,7 +928,7 @@ TEST_SUITE("EngineSession")
 		            for (int y = 0; y < editor.game.map.getH(); ++y) {
 		                const auto value = static_cast<Uint16>(std::min(field.at(x,y),
 		                    std::uint32_t(std::numeric_limits<Uint16>::max())));
-		                editor.game.map.getTile(x,y).fertility = value;
+		                editor.game.map.setFertility(x,y, value);
 		                maximum = std::max(maximum, value);
 		            }
 		        editor.game.map.fertilityMaximum = maximum;
@@ -937,7 +937,7 @@ TEST_SUITE("EngineSession")
 		        for (const std::size_t budget : {1u, 7919u, 65536u}) {
 		            for (int x = 0; x < editor.game.map.getW(); ++x)
 		                for (int y = 0; y < editor.game.map.getH(); ++y)
-		                    editor.game.map.getTile(x, y).fertility = 42;
+		                    editor.game.map.setFertility(x, y, 42);
 		            editor.game.map.fertilityMaximum = 42;
 		            const auto untouched = snapshot();
 		            FertilityCalculator::Job job(editor.game.map);
