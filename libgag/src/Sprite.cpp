@@ -55,6 +55,13 @@ namespace GAGCore
         size_t frame = 0;
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
+    // Source decoding and standalone frame preparation work with either texture
+    // backend. Only packing those frames into the legacy atlas requires GL.
+    static bool highResolutionFramesSupported()
+    {
+        return _gc && (_gc->getOptionFlags() &
+            (GraphicContext::USEGPU | GraphicContext::PORTABLEGPU));
+    }
     static bool readPack(const std::string &directory)
     {
         const auto generation = Toolkit::assets().sourceGeneration();
@@ -426,6 +433,9 @@ namespace GAGCore
     void Sprite::createHighResolutionAtlas()
     {
 #ifdef HAVE_OPENGL
+        // Portable renderers retain standalone HD sources. Never query GL or
+        // allocate its atlas without a current OpenGL rendering context.
+        if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return;
         const bool resources=fileName=="data/gfx/ressource";
         if(!resources && fileName!="data/gfx/terrain")return;
         int count=0;
@@ -526,7 +536,7 @@ namespace GAGCore
     {
         std::vector<AssetLoader::Handle<AssetImage>> handles;
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
-        if ((!highResolutionEnabled && !overrideDir) || !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return handles;
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return handles;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return handles;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
@@ -538,7 +548,8 @@ namespace GAGCore
                 handles.push_back(Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
             }
         }
-        if (prefix == "terrain" || prefix == "ressource")
+        if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+            (prefix == "terrain" || prefix == "ressource"))
             for (int mip = 0; mip < 4; ++mip)
                 handles.push_back(Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp"));
         return handles;
@@ -548,7 +559,7 @@ namespace GAGCore
         assert(target.experimentImages.size() == index && target.experimentRotated.size() == index);
         target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
-        if ((!highResolutionEnabled && !overrideDir) || !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return;
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         if (!readPack(directory)) return;
         const auto wanted = fileName.substr(fileName.find_last_of('/') + 1) + std::to_string(index);

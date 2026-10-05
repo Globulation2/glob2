@@ -161,7 +161,9 @@ This includes user artwork overrides already loaded when the renderer starts.
 Present but malformed metadata or missing referenced page images are errors;
 regenerate the pack rather than relying on a silent partial load. Optional HD
 sources continue through normal HD frame registration and preparation; the native
-pack does not replace them.
+pack does not replace them. The portable backend loads standalone HD frame sources
+and uses the same CPU terrain composition. The optional legacy packed-HD sprite
+atlas optimization remains OpenGL-specific.
 
 The standalone command writes a pack for unencoded authoring sources. Normal
 release/browser packaging generates fingerprints for that export automatically;
