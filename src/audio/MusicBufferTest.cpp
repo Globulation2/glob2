@@ -56,7 +56,7 @@ TEST_SUITE("MusicBuffer")
 			fill(b, CapacityBlocks);
 			CHECK_FALSE(b.queue.writable());
 			std::array<std::int16_t, Chunk * 2> pcm;
-			// Start, then leave at least 512ms queued and stop producing entirely.
+			// Start, drain to the refill threshold (427 ms), then stop producing.
 			b.consume(pcm.data(), Chunk);
 			while (b.queue.size() > LowBlocks)
 				b.consume(pcm.data(), Chunk);
