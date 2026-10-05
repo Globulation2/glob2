@@ -56,3 +56,5 @@ which are not claimed as engine verification.
 
 Author accepts focused evidence for this final revision under AGENTS.md, with the
 existing master skin-editor failure explicitly retained. User authorized merging.
+
+Final-head clean capture smoke: `SDL_VIDEODRIVER=dummy build/native-tests/test/MenuColonyHarness record-colony artifacts/menu-colony/integration-preview 2 1600 900` exited0. A lossless first-frame PNG is attached as `integration-capture.png`. Final branch restored and production app build repeated successfully after the master-only reproduction.
