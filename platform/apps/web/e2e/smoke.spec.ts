@@ -22,7 +22,7 @@ test.beforeAll(async ({ request }) => {
   seed = (await (await request.get('/__seed')).json()) as SeededHistory;
 });
 
-// Screenshots and axe runs see the globs parked (reduced motion), so the
+// Screenshots and axe runs see the colony poster (reduced motion), so the
 // pictures are stable; a separate test covers the animation itself.
 test.use({ reducedMotion: 'reduce' });
 
@@ -387,18 +387,28 @@ test('keyboard: skip link first, visible focus, focus moves to new pages', async
 test('the colony moves, can be paused, and keeps still for reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
-  const walker = "getComputedStyle(document.querySelector('.walker'))";
-  const animation = () => inPage<string>(page, `${walker}.animationName`);
-  const state = () => inPage<string>(page, `${walker}.animationPlayState`);
-  expect(await animation()).toBe('cross');
-  expect(await state()).toBe('running');
+  const video = page.locator('.colony-video');
+  await expect
+    .poll(() =>
+      inPage<boolean>(
+        page,
+        "!document.querySelector('.colony-video').paused && document.querySelector('.colony-video').currentTime > 0",
+      ),
+    )
+    .toBe(true);
+  await expect(page.locator('.walker, .flyer')).toHaveCount(0);
   await page.getByRole('button', { name: /Pause the globs/ }).click();
-  expect(await state()).toBe('paused');
+  expect(await inPage<boolean>(page, "document.querySelector('.colony-video').paused")).toBe(true);
   await page.getByRole('button', { name: /Let the globs roam/ }).click();
-  expect(await state()).toBe('running');
+  await expect
+    .poll(() => inPage<boolean>(page, "document.querySelector('.colony-video').paused"))
+    .toBe(false);
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  expect(await animation()).toBe('none');
-  await expect(page.getByRole('button', { name: /Pause the globs/ })).toBeHidden();
+  await expect
+    .poll(() => inPage<boolean>(page, "document.querySelector('.colony-video').paused"))
+    .toBe(true);
+  await expect(video).toBeHidden();
+  await expect(page.getByRole('button', { name: /Pause the globs/ })).toHaveCount(0);
 });
 
 test('phones: no sideways scrolling at 320 and 430 px, 44 px touch targets', async ({

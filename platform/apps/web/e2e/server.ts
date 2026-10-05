@@ -34,6 +34,7 @@ const TYPES: Record<string, string> = {
   '.woff2': 'font/woff2',
   '.png': 'image/png',
   '.webp': 'image/webp',
+  '.mp4': 'video/mp4',
   '.svg': 'image/svg+xml',
   '.data': 'application/octet-stream',
   '.txt': 'text/plain',

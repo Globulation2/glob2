@@ -473,7 +473,7 @@ Uint32 SDLCALL exitSession(void *data, SDL_TimerID, Uint32)
 int main(int argc, char **argv)
 {
 	require(argc >= 3, "usage: MenuColonyHarness generate PATH | check PATH | capture SCREEN "
-					   "OUTPUT [W H] | soak SECONDS");
+					   "OUTPUT [W H] | record-colony DIR FRAMES [W H] | soak SECONDS");
 	const std::string mode = argv[1];
 	// These contracts exercise the complete desktop keyboard routes.
 	if (mode == "check" || mode == "navigation")
@@ -844,23 +844,31 @@ int main(int argc, char **argv)
 		std::cout << "PASS: actual screen loops, keyboard exits, theme restoration\n";
 		return 0;
 	}
-	if (mode == "record")
+	if (mode == "record" || mode == "record-colony")
 	{
 		require(argc >= 4, "record needs directory and frame count");
 		require(theme.colony->load(), "load colony");
 		std::filesystem::create_directories(argv[2]);
 		FrontendScope scope;
 		Preview<MainMenuScreen> menu;
+		require(globals.ensureGameGraphics(), "load colony artwork");
 		for (int i = 0; i < std::atoi(argv[3]); ++i)
 		{
 			theme.colony->update(1000 + i * 40);
-			menu.render();
+			if (mode == "record-colony")
+				theme.colony->draw(globals.gfx->getW(), globals.gfx->getH(), false);
+			else
+				menu.render();
 			DrawableSurface shot(globals.gfx->getW(), globals.gfx->getH());
 			shot.drawSurface(0, 0, globals.gfx);
 			char name[32];
-			std::snprintf(name, sizeof(name), "/%04d.png", i);
-			require(IMG_SavePNG(shot.getSDLSurface(), (std::string(argv[2]) + name).c_str()),
-					"record PNG");
+			const bool clean = mode == "record-colony";
+			std::snprintf(name, sizeof(name), clean ? "/%04d.bmp" : "/%04d.png", i);
+			const auto path = std::string(argv[2]) + name;
+			// Lossless BMP avoids spending most of capture time compressing PNGs
+			// that FFmpeg will immediately decode again.
+			require(clean ? SDL_SaveBMP(shot.getSDLSurface(), path.c_str())
+						  : IMG_SavePNG(shot.getSDLSurface(), path.c_str()), "record frame");
 			globals.gfx->nextFrame();
 		}
 		return 0;

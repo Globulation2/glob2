@@ -97,8 +97,9 @@ replaces the website header and floating page panel: desktop shows labels, mediu
 widths use a compact rail, and phones open a navigation drawer. Page controls stay
 inside their workspace; ordinary pages scroll with the document. Download, public
 website and attribution links remain available through About. The Home dashboard
-keeps a compact living colony (`data/gfx/menu-colony.png`) with the game's walk
-and flight cycles beside its play and invite actions.
+plays a looping recording of the game's live menu colony beside its play and
+invite actions. Workers and buildings are captured by the real game renderer,
+without menu controls or status bars; no separate sprite animations are overlaid.
 
 - **Tokens** live in `src/styles/tokens.css`: colours, type, spacing, radii and
   shadows for two themes. *Meadow* (light) is the menu paper theme
@@ -117,7 +118,8 @@ and flight cycles beside its play and invite actions.
   images and fonts to `apps/api/src/web/static/`. See `apps/web/art/README.md`
   for sources, licences and contrast ratios.
 - **Motion** is decoration only: the colony can be paused, pauses off screen,
-  and stands still under `prefers-reduced-motion`.
+  and while the tab is hidden, and shows a still poster under
+  `prefers-reduced-motion` or when video playback fails.
 
 The sign-in and invite pages (`apps/api/src/web/pages.ts`) share the tokens and
 the colony backdrop; their assets are served from `/signin/assets/`. Invite
