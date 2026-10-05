@@ -192,7 +192,13 @@ export class OpenAIMusic implements MusicProvider {
       response = await fetch('https://api.openai.com/v1/responses', {
         method: 'POST',
         headers: { Authorization: `Bearer ${this.key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, store: false, input: prompt, max_output_tokens: maxOutput }),
+        body: JSON.stringify({
+          model,
+          store: false,
+          input: prompt,
+          text: { format: { type: 'json_object' } },
+          max_output_tokens: maxOutput,
+        }),
         signal: AbortSignal.any([signal, AbortSignal.timeout(240000)]),
       });
     } catch {

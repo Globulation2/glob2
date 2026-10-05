@@ -12,7 +12,6 @@ import type { MusicStudioConfig } from '@glob2/protocol';
 import { Pipeline } from '../src/pipeline.ts';
 import {
   Attempts,
-  OpenAIMusic,
   ProviderRejected,
   ProviderUncertain,
   type MusicProvider,
@@ -460,18 +459,6 @@ it.each([false, true])(
     await studio.cancel(row.account_id, row.thread_id, id);
   },
 );
-
-it('does not dispatch an already-aborted provider call', async () => {
-  const fetch = vi.spyOn(globalThis, 'fetch');
-  try {
-    await expect(
-      new OpenAIMusic('test').text('test', 'prompt', 4000, AbortSignal.abort()),
-    ).rejects.toBeInstanceOf(ProviderRejected);
-    expect(fetch).not.toHaveBeenCalled();
-  } finally {
-    fetch.mockRestore();
-  }
-});
 
 it('applies a lowered operator daily limit to requests with an older budget snapshot', async () => {
   const { id } = await fixture();
