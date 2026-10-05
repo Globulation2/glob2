@@ -310,7 +310,10 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 					  return false;
 				  });
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
-		screens.suspendExecution();
+	{
+        globalContainer->gfx->resetRenderPacing();
+        screens.suspendExecution();
+    }
 	if (hidden)
 		return true;
 	int width, height;
@@ -331,11 +334,19 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		// explicit failure decision. Closing a browser tab remains abrupt.
 		auto input = filtered;
 		std::erase_if(input, [](const SDL_Event &event) { return event.type == SDL_EVENT_QUIT; });
-		shutdownScreens.frame(tick, input);
+#ifdef __EMSCRIPTEN__
+        shutdownScreens.frame(tick, input, false);
+#else
+        shutdownScreens.frame(tick, input);
+#endif
 		return shutdownScreens.running();
 	}
 	installStagedAssets();
-	screens.frame(tick, filtered);
+#ifdef __EMSCRIPTEN__
+    screens.frame(tick, filtered, false);
+#else
+    screens.frame(tick, filtered);
+#endif
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	// An invite link (at launch or while running) opens the online hub from the
 	// main menu; the hub consumes it.
@@ -377,6 +388,11 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		mainMenu();
 	}
 	return true;
+}
+
+void Application::draw()
+{
+    if (!hidden) (quitting ? shutdownScreens : screens).draw();
 }
 
 std::uint32_t Application::delay(std::uint32_t now)

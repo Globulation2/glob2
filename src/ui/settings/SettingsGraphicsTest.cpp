@@ -16,6 +16,34 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("render ceiling defaults migrates validates and round trips")
+    {
+        glob2test::HeadlessGlobals globals;
+        const std::string file = "render-fps-test.txt";
+        const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+        Settings settings;
+        CHECK(settings.targetRenderFps == 60);
+        for (int fps : Settings::RENDER_FPS_PRESETS) {
+            settings.targetRenderFps = fps;
+            settings.setGraphicsDetail(false);
+            CHECK(settings.targetRenderFps == fps);
+            REQUIRE(settings.save(file));
+            Settings loaded; loaded.load(file);
+            CHECK(loaded.targetRenderFps == fps);
+        }
+        for (const char *value : {"", "garbage", "60oops", "-1", "26", "9999999999999999999"}) {
+            { std::ofstream out(path); out << "targetRenderFps=" << value << '\n'; }
+            settings.targetRenderFps = 0;
+            settings.load(file);
+            CHECK(settings.targetRenderFps == 60);
+        }
+        { std::ofstream out(path); out << "optionFlags=129\n"; }
+        settings.targetRenderFps = 0;
+        settings.load(file);
+        CHECK(settings.targetRenderFps == 60);
+        std::filesystem::remove(path);
+    }
+
     TEST_CASE("edge scrolling defaults migrate and independent modes round trip")
     {
         glob2test::HeadlessGlobals globals;

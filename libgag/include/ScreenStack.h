@@ -16,7 +16,10 @@ class ScreenStack
 	explicit ScreenStack(GAGCore::DrawableSurface &surface) : surface(surface) {}
 	~ScreenStack();
 	void push(std::unique_ptr<Screen> screen, Completion completed = {});
-	void frame(Uint32 tick, const std::vector<SDL_Event> &events);
+	// Input, transitions and updates run even when painting is deferred.
+	void frame(Uint32 tick, const std::vector<SDL_Event> &events, bool paint = true);
+	// Paint only: browser hosts call this independently on animation frames.
+	void draw();
 	bool running() const { return !stopped && (!screens.empty() || !pending.empty()); }
 	Uint32 delay(Uint32 now, Uint32 fallback);
 	int result() const { return lastResult; }

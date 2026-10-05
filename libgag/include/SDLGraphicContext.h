@@ -6,6 +6,7 @@
 
 #include "GAGSys.h"
 #include "CursorManager.h"
+#include "RenderFramePacer.h"
 #include "SkinAtlasCache.h"
 #include <AssetLoader.h>
 #include <map>
@@ -352,8 +353,16 @@ namespace GAGCore
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
+		RenderFramePacer renderPacer;
 		static const bool verbose = false;
 	public:
+		// Interactive hosts reserve drawing before painting; exports and benchmarks
+		// leave the context's default uncapped. Zero means Unlimited.
+		void setTargetRenderFps(int fps) { renderPacer.configure(fps); }
+		void resetRenderPacing() { renderPacer.reset(); }
+		bool beginRenderFrame() { return renderPacer.begin(SDL_GetTicksNS()); }
+		Uint32 renderFrameWait() const { return renderPacer.waitMilliseconds(SDL_GetTicksNS()); }
+
 		//! The cursor manager, public to be able to set custom cursors
 		CursorManager cursorManager;
 		

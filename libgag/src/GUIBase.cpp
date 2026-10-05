@@ -141,7 +141,8 @@ namespace GAGGUI
 	int Screen::execute(DrawableSurface *surface, int stepLength)
 	{
 		beginExecution(surface);
-		drawExecution();
+        auto *context = dynamic_cast<GraphicContext *>(surface);
+        if (!context || context->beginRenderFrame()) drawExecution();
 		while (isExecutionRunning())
 		{
 			const Uint64 frameStart = SDL_GetTicks();
@@ -165,7 +166,7 @@ namespace GAGGUI
 			}
 			if (hadLastMouseMotion) handleExecutionEvent(lastMouseMotion);
 			if (hadWindowEvent) handleExecutionEvent(windowEvent);
-			drawExecution();
+			if (!context || context->beginRenderFrame()) drawExecution();
 			if (isExecutionRunning())
 			{
 				const Sint64 elapsed = static_cast<Sint64>(SDL_GetTicks() - frameStart);

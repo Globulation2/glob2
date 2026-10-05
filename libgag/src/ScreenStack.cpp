@@ -31,6 +31,7 @@ void ScreenStack::push(std::unique_ptr<Screen> screen, Completion completed)
 
 void ScreenStack::suspendExecution()
 {
+    if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface)) context->resetRenderPacing();
 	for (auto &entry : screens)
 		entry.screen->suspendExecution();
 	for (auto &entry : pending)
@@ -39,6 +40,7 @@ void ScreenStack::suspendExecution()
 
 void ScreenStack::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
+    if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface)) context->resetRenderPacing();
 	for (auto &entry : screens)
 		entry.screen->viewportResized(oldWidth, oldHeight, width, height);
 	for (auto &entry : pending)
@@ -109,7 +111,7 @@ void ScreenStack::boundary()
 	}
 }
 
-void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
+void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool paint)
 {
 	if (dispatching)
 		throw std::logic_error("Screen stack frames cannot recurse");
@@ -130,7 +132,9 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
         if (event.type==SDL_EVENT_TERMINATING || event.type==SDL_EVENT_QUIT) stop();
     }
     if (backgrounded) { if(stopped) boundary(); return; }
-    if (resetGraphics) { SDL_Event reset{};reset.type=SDL_EVENT_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
+    if (resetGraphics) {
+        if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface)) context->resetRenderPacing();
+        SDL_Event reset{};reset.type=SDL_EVENT_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
 	if (std::any_of(events.begin(), events.end(),
 					[](const SDL_Event &e) { return e.type == SDL_EVENT_QUIT; }))
 		stop();
@@ -175,19 +179,35 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 		screen.updateExecution(tick);
 	// Constructing a child can change presentation immediately. Keep the last
 	// completed frame until the child is admitted at the next boundary.
-	if (!stopped && pending.empty() && screen.isExecutionRunning())
-	{
-		GAGCore::Recording::recorder().screen(screen.recordingId());
-		screen.drawExecution();
-	}
+    if (paint) draw();
 	if (stopped)
 		boundary();
+}
+
+void ScreenStack::draw()
+{
+    if (backgrounded || stopped || !pending.empty() || screens.empty()) return;
+    auto &screen = *screens.back().screen;
+    if (!screen.isExecutionRunning()) return;
+    auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface);
+    if (context && !context->beginRenderFrame()) return;
+    GAGCore::Recording::recorder().screen(screen.recordingId());
+    screen.drawExecution();
 }
 
 Uint32 ScreenStack::delay(Uint32 now, Uint32 fallback)
 {
 	if (backgrounded) return 100;
-    return screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+    const auto delay = screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+    // Native hosts draw on update turns, so wake for whichever deadline comes
+    // first. Browser painting has its own animation-frame chain and does not
+    // change timer-driven update deadlines. Zero wait must not spin idle screens.
+#ifndef __EMSCRIPTEN__
+    if (delay != GAGCore::ApplicationHost::AnimationFrameDelay)
+        if (auto *context = dynamic_cast<GAGCore::GraphicContext *>(&surface))
+            if (const auto renderWait = context->renderFrameWait()) return std::min(delay, renderWait);
+#endif
+    return delay;
 }
 
 int ScreenStack::execute(unsigned stepLength)

@@ -161,6 +161,7 @@ ENGINE_TESTS = [
 UNIT_TESTS = [
     '#libgag/src/AssetLoaderTest.cpp',
     '#libgag/src/SpriteLoadTest.cpp',
+    '#libgag/src/RenderFramePacerTest.cpp',
     '#libgag/src/FontMetricsTest.cpp',
     '#libgag/src/PackedArrayTest.cpp',
     '#libgag/src/EventQueueTest.cpp',
