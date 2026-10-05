@@ -328,6 +328,9 @@ mounts and pack changes invalidate future requests while existing consumers reta
 valid data. HD reloads prepare on workers and publish during frame polling.
 Polling shares one deadline across cooperative work, sprite adoption and HD reloads;
 a single decode or upload remains indivisible and can exceed that deadline.
+Startup update turns advance preparation separately from progress painting; the
+progress view follows the render FPS setting and browser animation-frame callbacks.
+Browser visibility or context loss pauses publication until graphics are usable.
 Required startup families finish preparation and texture upload before menu entry;
 optional browser packages still become visible only after atomic installation.
 

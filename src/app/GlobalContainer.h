@@ -50,7 +50,9 @@ public:
 	void parseArgs(int argc, char *argv[]);
 	void loadClient(void);
     bool deferAssetLoading = false;
+    //! Advance required preparation without painting; the host schedules drawing.
     bool finishAssetLoading();
+    void drawAssetLoading();
 	//! Load the in-game sprites (terrain, units, buildings, game interface) if
 	//! they are not loaded yet. Native and browser builds load them in loadClient;
 	//! hosts staging sprites later return false until

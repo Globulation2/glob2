@@ -448,11 +448,27 @@ static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, i
 namespace {
 class AssetStartupLoop : public GAGCore::ApplicationHost::Loop {
     std::shared_ptr<bool> cancelled;
+    bool hidden = false;
 public:
     explicit AssetStartupLoop(std::shared_ptr<bool> value) : cancelled(std::move(value)) {}
     bool frame(std::uint32_t, const std::vector<SDL_Event>& events) override {
         for (const auto &event : events) if (event.type == SDL_EVENT_QUIT) *cancelled = true;
-        return !*cancelled && !globalContainer->finishAssetLoading();
+        if (*cancelled) return false;
+        auto *gfx = globalContainer->gfx;
+        if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) gfx->resetRenderPacing();
+        // The browser reports context loss as hidden. Leave prepared CPU data
+        // queued until the host restores graphics and publishes visibility.
+        if (hidden) return true;
+        int width, height;
+        if (GAGCore::ApplicationHost::takeViewportSize(width, height)) gfx->resizeViewport(width, height);
+        if (globalContainer->finishAssetLoading()) return false;
+#ifndef __EMSCRIPTEN__
+        draw();
+#endif
+        return true;
+    }
+    void draw() override {
+        if (!hidden && !*cancelled) globalContainer->drawAssetLoading();
     }
     std::uint32_t delay(std::uint32_t) override {
 #ifdef __EMSCRIPTEN__

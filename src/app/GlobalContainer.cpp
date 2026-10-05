@@ -355,11 +355,12 @@ void GlobalContainer::requestGameGraphics()
 }
 bool GlobalContainer::finishAssetLoading()
 {
-    if (!ensureGameGraphics()) {
+    return ensureGameGraphics();
+}
+void GlobalContainer::drawAssetLoading()
+{
+    if (gfx->beginRenderFrame())
         updateLoadProgressScreen(50 + Toolkit::assetProgress() / 2);
-        return false;
-    }
-    return true;
 }
 
 bool GlobalContainer::ensureGameGraphics(void)
