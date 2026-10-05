@@ -11,8 +11,13 @@ Version 121 gives each AI controller an independent saved random stream. Version
 orders and game trajectories can differ from earlier versions for the same
 seed. Older saved games still load, with shared gradient cache state copied into
 each controller. Terrain format 134 adds property-driven movement and ecology;
-replays recorded before version 134 are refused and network protocol 55 separates
+replays recorded before version 134 are refused and network protocol 56 separates
 clients using those rules. Saved games adopt the current simulation.
+Runtime terrain definitions (save format 136) are embedded before tile identities.
+Replays and headless loads rebuild their compiled movement metadata from those
+bytes, with no dependency on local authoring JSON. The existing map-content hash
+binds distributed matches to the definitions. The save floor remains 58 and the
+replay floor remains 134; registry support advances the network protocol to 56.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or

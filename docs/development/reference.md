@@ -831,8 +831,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unaffected.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
-- Terrain simulation properties live in `src/map/TerrainProperties.h`, indexed by
-  stable `TerrainType` IDs. Walking, swimming, flying, building eligibility,
+- Terrain simulation properties retain the fixed layout in `src/map/TerrainProperties.h`,
+  indexed by stable 16-bit `TerrainType` IDs in a map-owned immutable `TerrainRegistry`.
+  Use `map.terrainProperties(type)` or `map.terrainPropertiesAt(...)`; the global
+  constexpr table defines only the seven built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
@@ -846,8 +848,14 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   adapters; legacy shores have their own walkable, unbuildable profiles.
 - Presentation metadata is separate in `TerrainPresentation.h`: atlas, frame range,
   animation, backdrop, decorative edges and independent map/preview/export colors.
-  Add a stable enum entry and complete both tables for a new material. Experimental
-  authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
+  Runtime types inherit a shipped appearance and use full tiles; the original
+  corner adapters apply only to built-ins. Import definitions through
+  `Map::importTerrainDefinitions` before a match or in the editor. It validates and
+  compiles the complete replacement before publishing it, preserves existing IDs,
+  and appends new keys in sorted order. Scenes and gradient jobs retain the same
+  registry snapshot; inner loops borrow indexed data. Render caches bind registry
+  identity and shipped asset revisions without scanning custom definitions per chunk.
+  Experimental authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
   into matches, while saves retain them independently of the user's current settings.
 - Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
   The weighted kernels preserve the classic paired water/inhibition and rotated
@@ -858,10 +866,35 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   classic terrain probabilities retain their exact integer numerators.
   `Tile::canResourcesGrow` is the saved scenario override;
   `Map::canResourcesGrow` also checks the terrain capability.
-- Save format 134 stores canonical terrain IDs and fractional terrain health effects.
-  Earlier supported saves derive IDs from their classic sprite ranges and adopt the
-  current simulation. Save floor 58 remains supported; replay floor 134 and network
-  protocol 55 separate clients using the new movement and ecology rules.
+- Save format 136 embeds custom IDs, keys and fully resolved properties and presentation
+  before the tile data. Bounded text chunks support the same layout in binary and
+  text streams. Loading rebuilds compiled tables before restoring dependent caches;
+  it never consults authoring JSON files. Earlier files use the built-in registry;
+  pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
+  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  Custom registry checksums hash canonical serialized fields, not struct padding.
+  Built-in-only maps keep their previous terrain checksum contribution. Existing
+  map-content hashes cover the embedded section for LAN, online and verification.
+- Registry compilation calculates movement and air costs once, deduplicates cost
+  profiles and caches distinct edge steps. Runtime gradient setup scales with
+  distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
+  kernels dispatch outside cell loops. The general kernel has scalar, SSE2 and NEON
+  implementations and compiled 64/128/256 bucket rings. Map counts select the smallest
+  safe ring from terrain present; unused slow definitions cannot enlarge it.
+  Capability counters keep health, air and projectile shortcuts independent of
+  registry size. A* retains the historical built-in lower bound and lowers it only
+  for faster custom terrain actually present, preserving old route choices.
+  Maps lazily cache a one-byte cost-profile plane per queried swimming class,
+  removing the ID-to-profile lookup from general-cost cell loops. These planes
+  share ownership with searches/jobs and invalidate together with terrain snapshots.
+  Eager fields, resumed building searches, worker snapshots and strategic travel
+  share compiled integer costs and reusable scratch storage.
+- Runtime-terrain performance qualification compares equivalent maps with 7, 259
+  and 1,024 definitions, plus distinct-cost and 16,384-type stress cases. Use release
+  builds on a quiet machine, warm up, randomize paired execution order and collect
+  at least ten repetitions. Report CPU and wall time separately, with rendering
+  and memory costs. Repeatable regressions over 2% full-match CPU or 5% terrain
+  kernel time block acceptance; noisy measurements do not establish a pass.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.

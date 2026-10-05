@@ -91,6 +91,18 @@ void layeredCache(bool gpu)
     map.setCellTerrain(0,0,ROAD);
     CHECK(scene.terrainLayersAt(0,0)==before);
     scene.extract(map);compare();
+    map.game = nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
+    const auto custom=*map.terrainRegistry().find("test:custom");
+    map.setCellTerrain(0,0,custom);
+    scene.extract(map);compare();compare();
+    const auto previousRegistry=scene.frozenTerrainRegistry();
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom road","base":"grass","properties":{},"appearance":"road"}]})");
+    CHECK(scene.frozenTerrainRegistry()==previousRegistry);
+    CHECK(previousRegistry->appearance(custom)==ICE);
+    scene.extract(map);compare();compare();
+    CHECK(scene.terrainRegistry().appearance(custom)==ROAD);
+    map.setGame(&game);
     // Swap the loaded asset binding after warming the cache. Frame numbers
     // stay identical: both renderer paths must observe material-owned sprites,
     // including overlays, and reject geometry cached with the previous asset.

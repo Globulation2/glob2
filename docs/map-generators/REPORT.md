@@ -110,7 +110,9 @@ classification. Legacy borders remain whole mixed tiles. Ice and road each
 occupy a whole gameplay cell; decorative edge blending does not change its type.
 The additive `ice` and `road` coverage keys are optional in the version-2 schema
 so reports produced before those materials remain readable; current writers
-always emit both, including zero coverage.
+always emit both, including zero coverage. Embedded custom types add coverage
+entries keyed by their namespaced registry keys, including unused definitions.
+The schema permits these namespaced keys; IDs and display names are not keys.
 
 `underlying_terrain` separately partitions the engine's underlying terrain grid
 into `grass`, `sand`, `water`, and `unknown`, using coverage objects. It need not

@@ -28,6 +28,7 @@
     "HighResolutionIntegration/*",
     "TerrainPresentation/*",
     "TerrainProperties/*",
+    "TerrainRuntime/*",
     "TerrainEcology/*",
     "RuntimeContinuation/*",
     "UnitHighResolutionCache/*",

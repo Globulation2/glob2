@@ -60,6 +60,68 @@ comments can say "because grass may not touch water" and a reader can check it h
 - **Players can plug gaps.** Players build stone walls, so a narrow gate, ramp or trail can be sealed
   by whoever holds it. How wide a map's doors are decides whether a colony can shut itself in.
 
+## Authoring additional terrain types
+
+The map editor's menu offers **Import Terrain Definitions** and **Terrain palette**
+on desktop and phone layouts. Place a UTF-8 `.json` file in the `terrain/` directory
+of your game profile, select it in the import dialog, then choose a type from the
+scrollable palette and paint it. For example:
+
+```json
+{
+  "schemaVersion": 1,
+  "terrains": [
+    {
+      "key": "example:mud",
+      "name": "Mud",
+      "base": "grass",
+      "properties": { "groundSpeedQ8": 192, "buildable": false },
+      "appearance": "sand"
+    }
+  ]
+}
+```
+
+Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
+or `road`. The base supplies all simulation defaults; appearance supplies artwork
+and preview colors independently. Custom tiles have full-tile presentation and do
+not participate in the legacy corner adapter. Existing corner rules above describe
+classic terrain. Eligibility is controlled by properties: for example custom
+walkable terrain can allow buildings, exclude flight or obstruct projectiles.
+
+Keys use lowercase ASCII letters, digits, `.`, `_` and `-`, separated by exactly one
+colon into nonempty namespace and name. `glob2:` is reserved. Names are display
+text; keys and names are limited to 128 UTF-8 bytes. Each import must contain unique
+keys. Existing custom keys retain their IDs when reimported; new keys append in
+sorted order. The seven built-ins cannot be overridden. Import validation is atomic:
+invalid fields, values, duplicate JSON members or keys leave the map unchanged.
+The total limit is 16,384 types, including built-ins; input is limited to 32 MiB.
+
+Property overrides use the existing fixed schema:
+
+| Fields | Values |
+| --- | --- |
+| `walkable`, `swimmable`, `flyable`, `resourcesGrow`, `fertilitySource`, `nonGrowingResources`, `buildable`, `projectileBlocks`, `shoreline` | Booleans; walking and swimming cannot both be enabled |
+| `groundSpeedQ8`, `airSpeedQ8` | Integers 64–1024; 256 is normal speed |
+| `groundHealthQ8`, `airHealthQ8` | Signed 16-bit HP per tick divided by 256; negative damages, positive heals |
+| `growthQ8`, `inhibitionQ8`, `shoreSupportQ8` | Integers 0–1024; 256 is one |
+| `fertilityQ8` | Integer −1024–1024; 256 is one |
+| `allowedResources` | Bit mask 0–255 using existing resource IDs |
+| `farmCrop` | Resource ID 0–7 included in the allowed mask, or 255 for none |
+
+Resource bits are wood 0, wheat 1, stone 2, papyrus 3, algae 4, cherry 5, orange 6
+and prune 7. Changing an allowed mask may require changing an inherited `farmCrop`.
+Unknown fields and non-integer numbers for integer properties are rejected.
+
+Importing replacement definitions refreshes terrain, ecology, routes and rendering.
+Definitions remain immutable during play. Maps, saves and replay initial states
+embed the fully resolved definitions; recipients need only that file and the
+shipped assets. Editing or deleting the original JSON has no effect on a saved map.
+Image imports retain their existing color mapping; exporting an image cannot
+preserve custom identity when several types share one appearance. Mid-match edits,
+new property kinds, custom resources, custom artwork and scripted registration are
+outside this format.
+
 ## The rules of resources
 
 | Resource | Used for | Where it can be | How it grows |

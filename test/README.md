@@ -1688,3 +1688,16 @@ version. The benchmark cases report identical market delivery workloads (includi
 heavy checksums and save/load) and isolated resource-gradient refresh CPU/time and
 field memory. `browser/tests/determinism.spec.js` runs the same Markets V2 cases
 and frozen traces in serial and threaded Wasm builds.
+
+## Runtime terrain
+
+`TerrainRegistry/*` validates JSON, immutable imports, deterministic IDs, bounded
+cost profiles, maximum registry size, serialization and scalar/SIMD queue results
+against a heap oracle. `TerrainRuntime/*` covers map isolation, match immutability,
+capability summaries, custom movement, resumed/worker gradients and embedded save
+continuation. Run these with `python3 test/run_tests.py --filter 'TerrainRegistry/*'
+and `python3 test/run_tests.py --filter 'TerrainRuntime/*'`. Also run existing
+terrain, gradient, save, replay, scene and editor suites when changing this boundary.
+The scalar kernel can be compiled explicitly with `GLOB2_GRADIENT_SCALAR`; NEON
+requires an ARM build. Native success alone does not establish cross-platform
+checksum equivalence or performance qualification.
