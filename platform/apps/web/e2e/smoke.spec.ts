@@ -411,6 +411,37 @@ test('the colony moves, can be paused, and keeps still for reduced motion', asyn
   await expect(page.getByRole('button', { name: /Pause the globs/ })).toHaveCount(0);
 });
 
+test('pause keeps the resume control when a pending play is cancelled', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.addInitScript(`
+    const originalPlay = HTMLMediaElement.prototype.play;
+    let firstPlay = true;
+    HTMLMediaElement.prototype.play = function () {
+      const started = originalPlay.call(this);
+      if (!firstPlay) return started;
+      firstPlay = false;
+      // Model WebKit starting playback before its play promise settles.
+      return new Promise((resolve, reject) => {
+        this.addEventListener('pause', () => {
+          this.setAttribute('data-play-aborted', 'true');
+          reject(new DOMException('Playback cancelled by pause', 'AbortError'));
+        }, { once: true });
+        started.catch(reject);
+      });
+    };
+`);
+  await page.goto('/');
+  const video = page.locator('.colony-video');
+  await page.getByRole('button', { name: /Pause the globs/ }).click();
+  await expect(video).toHaveAttribute('data-play-aborted', 'true');
+  const resume = page.getByRole('button', { name: /Let the globs roam/ });
+  await expect(resume).toBeVisible({ timeout: 2000 });
+  await resume.click();
+  await expect
+    .poll(() => inPage<boolean>(page, "document.querySelector('.colony-video').paused"))
+    .toBe(false);
+});
+
 test('phones: no sideways scrolling at 320 and 430 px, 44 px touch targets', async ({
   page,
 }, info) => {
