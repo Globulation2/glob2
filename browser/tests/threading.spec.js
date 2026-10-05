@@ -94,7 +94,7 @@ test('a real pthread worker error after the probe reloads the serial runtime', a
 
 
 for (const variant of ['serial', 'threaded']) {
-test(`${variant} audio produces PCM, keeps settings responsive and shuts down cleanly`, async ({page}) => {
+test(`${variant} audio produces PCM, keeps settings responsive and shuts down cleanly`, async ({page}, info) => {
   await page.goto(`/?renderer=software&threads=${variant}`);
   await screen(page, 'MainMenuScreen');
   expect(await page.evaluate(() => Module.executionMode)).toBe(variant);
@@ -103,19 +103,39 @@ test(`${variant} audio produces PCM, keeps settings responsive and shuts down cl
   expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.ogg').exists)).toBe(false);
   await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
   await clickControl(page, 'nav.1'); await clickControl(page, 'audio.mute');
-  await page.waitForFunction(() => Module.SDL3?.audio_playback?.scriptProcessorNode);
+  await page.waitForFunction(() => Module.glob2Music?.ready && Module.glob2Music.node);
   await page.evaluate(() => {
-    window.audioBlocks = 0;
-    const node = Module.SDL3.audio_playback.scriptProcessorNode;
-    const render = node.onaudioprocess;
-    node.onaudioprocess = event => {
-      render(event);
-      if (event.outputBuffer.getChannelData(0).some(sample => Math.abs(sample) > 0.00001))
-        ++window.audioBlocks;
-    };
+    const {context, node} = Module.glob2Music;
+    window.audioContext = context;
+    window.audioAnalyser = context.createAnalyser();
+    window.audioSamples = new Float32Array(window.audioAnalyser.fftSize);
+    // Inspect the PCM that reaches the output, including the worklet's gain.
+    node.disconnect(context.destination);
+    node.connect(window.audioAnalyser);
+    window.audioAnalyser.connect(context.destination);
   });
-  await expect.poll(() => page.evaluate(() => window.audioBlocks)).toBeGreaterThan(0);
+  const peak = () => page.evaluate(() => {
+    window.audioAnalyser.getFloatTimeDomainData(window.audioSamples);
+    return window.audioSamples.reduce((maximum, sample) => Math.max(maximum, Math.abs(sample)), 0);
+  });
+  await expect.poll(peak).toBeGreaterThan(0.00001);
+  await clickControl(page, 'audio.mute');
+  await expect.poll(() => page.evaluate(() => Module.glob2Music.gain)).toBe(0);
+  await expect.poll(peak).toBe(0);
+  await clickControl(page, 'audio.mute');
+  await expect.poll(peak).toBeGreaterThan(0.00001);
+  await info.attach('audio-output-diagnostics', {
+    body: JSON.stringify(await page.evaluate(() => ({
+      executionMode: Module.executionMode,
+      contextState: Module.glob2Music.context.state,
+      status: Module.glob2Music.status,
+      peak: window.audioSamples.reduce((maximum, sample) => Math.max(maximum, Math.abs(sample)), 0),
+    }))),
+    contentType: 'application/json',
+  });
   await clickControl(page, 'done'); await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'quit'); await screen(page, 'exited');
+  await expect.poll(() => page.evaluate(() => window.audioContext.state)).toBe('closed');
+  expect(await page.evaluate(() => Module.glob2Music.closed)).toBe(true);
 });
 }
