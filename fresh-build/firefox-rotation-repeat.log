@@ -1,0 +1,102 @@
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:05] "GET / HTTP/1.1" 200 -
+
+Running 3 tests using 1 worker
+
+(node:2475384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:07] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:07] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:08] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:13] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:18] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:18] "GET /loader.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:19] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓  1 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (18.8s)
+(node:2489524) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:28] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:33] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:34] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:34] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:34] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /loader.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:39] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓  2 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (17.2s)
+(node:2503989) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:47] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:52] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /loader.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 20:00:57] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓  3 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (17.6s)
+
+  3 passed (59.8s)
