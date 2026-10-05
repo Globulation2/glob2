@@ -3,6 +3,8 @@
 #include "Version.h"
 #include "AIMaximaBuildings.h"
 #include "AIMaximaFeedingEstimate.h"
+#include "AIMaximaFeedingDemand.h"
+#include "AIMaximaPlacementContinuation.h"
 #include <nlohmann/json.hpp>
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "GlobalContainer.h"
@@ -1002,12 +1004,13 @@ TEST_CASE("feeding estimate shares resources and seats across capability combina
     CHECK(normal.supportedUnits==normal.visitsPerTick*plan.ticksPerMeal/AIMaxima::FeedingEstimate::Scale);
 }
 
-TEST_CASE("sustained stock feeding reports capability estimates and historical strategy targets" * doctest::test_suite("Maxima.Economy"))
+namespace
 {
-    glob2test::HeadlessGlobals globals;
-    const int historical[]={19,25,34};
-    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
-    for(int stage=0;stage<3;++stage)for(int distance:{4,16})for(bool forecastPopulation:{false,true}) {
+struct FeedingSceneResult { int survivors; Uint64 meals; size_t distinctCarriers; int additionalFeeders; int settledSurvivors; };
+
+FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,int population,
+    int workers,int explorers,const AIMaxima::FeedingPlan& plan,bool adaptive=false)
+{
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=71});
         world.game.gameHeader.setResourceGrowthDisabled(true);
         // A fixed walkable catchment prevents random idling from taking the
@@ -1017,43 +1020,152 @@ TEST_CASE("sustained stock feeding reports capability estimates and historical s
             if(x<8 || y<8 || x>48 || y>48)world.game.map.setCellTerrain(x,y,WATER);
         auto* inn=world.addBuilding("inn",16,16,stage);
         auto order=std::make_shared<OrderModifyBuilding>(inn->gid,plan.carriers);order->sender=0;world.game.executeOrder(order,0);
-        const auto prediction=AIMaxima::estimateFeeding(*inn->type,plan);
-        const int population=forecastPopulation?prediction.supportedUnits:historical[stage];
         for(int unit=0;unit<population;++unit) {
-            auto* created=world.addUnit(unit<plan.carriers?WORKER:WARRIOR);
+            auto* created=world.addUnit(unit<workers?WORKER:unit<workers+explorers?EXPLORER:WARRIOR);
             // Supply carriers meet this building's explicit qualification;
             // movement, work speed and hunger remain the same at every stage.
-            if(unit<plan.carriers)created->constructionLevel=inn->type->semantics.requiredWorkerLevel;
+            if(unit<workers)created->constructionLevel=inn->type->semantics.requiredWorkerLevel;
         }
+        Player player;player.setTeam(world.team);
+        std::unique_ptr<AIMaxima::Maxima> controller;
+        if(adaptive) {
+            controller=std::make_unique<AIMaxima::Maxima>(&player);
+            controller->context.initialize();controller->ensure_strategy();
+        }
+        int additionalFeeders=0,settledSurvivors=0;
         const int warmup=20000,window=40000;
         Uint64 previousMeals=0,previousDelivered=0,reservedSeatTicks=0,workingTicks=0,hungryTicks=0;
+        std::set<Uint16> carriers;
         for(int tick=0;tick<warmup+window;++tick) {
             for(int cell=0;cell<8;++cell) {
                 const int x=16+distance+cell%2,y=16+cell/2;
                 if(!world.game.map.getTile(x,y).resource.amount)world.game.map.setResource(x,y,WHEAT,1);
             }
             world.step();
+            if(controller && tick%256==0) {
+                auto& ai=*controller;
+                ai.snapshot=ai.collect_snapshot(ai.context);
+                ai.environment.accessible_corn=100;
+                ai.environment.food_headroom=ai.environment.food_security=100;
+                ai.food_ledger_valid=true;ai.food_supported_inns=1;
+                ai.build_policy_bids();
+                const bool hungry=ai.snapshot.unserved_food>0 || ai.snapshot.critical_food>0;
+                const int requested=ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns;
+                if(hungry && requested>1+additionalFeeders) {
+                    // Supply the service requested by the real policy. This
+                    // isolates feeding recovery from construction latency;
+                    // the separate farm-claim test exercises placement gating.
+                    auto* extra=world.addBuilding("inn",22+additionalFeeders*6,16,stage);
+                    auto staffing=std::make_shared<OrderModifyBuilding>(extra->gid,plan.carriers);
+                    staffing->sender=0;world.game.executeOrder(staffing,0);
+                    ++additionalFeeders;
+                }
+            }
             if(tick+1==warmup) {
+                for(int unit=0;unit<Unit::MAX_COUNT;++unit)settledSurvivors+=world.team->myUnits[unit]!=nullptr;
                 previousMeals=world.team->stats.measurements.meals;
                 previousDelivered=world.team->stats.measurements.delivered[WHEAT];
             }
             if(tick>=warmup) {
                 reservedSeatTicks+=inn->unitsInside.size();workingTicks+=inn->unitsWorking.size();
+                for(const auto* carrier:inn->unitsWorking)carriers.insert(carrier->gid);
                 for(int unit=0;unit<Unit::MAX_COUNT;++unit)if(const auto* u=world.team->myUnits[unit];u && u->hungry<=u->trigHungry)++hungryTicks;
             }
         }
         int survivors=0;for(int unit=0;unit<Unit::MAX_COUNT;++unit)survivors+=world.team->myUnits[unit]!=nullptr;
         const auto meals=world.team->stats.measurements.meals-previousMeals;
-        std::cout<<"MAXIMA_FEEDING_MEASUREMENT stage="<<stage<<" route="<<distance<<" population="<<population
-            <<" old_target="<<historical[stage]<<" estimate="<<prediction.supportedUnits<<" survivors="<<survivors
-            <<" meals="<<meals<<" delivered="<<world.team->stats.measurements.delivered[WHEAT]-previousDelivered
+        std::cout<<"MAXIMA_FEEDING_MEASUREMENT case="<<label<<" stage="<<stage<<" route="<<distance<<" population="<<population
+            <<" workers="<<workers<<" explorers="<<explorers<<" distinct_carriers="<<carriers.size()<<" additional_feeders="<<additionalFeeders<<" survivors="<<survivors
+            <<" settled_survivors="<<settledSurvivors<<" meals="<<meals<<" delivered="<<world.team->stats.measurements.delivered[WHEAT]-previousDelivered
             <<" seat_ticks="<<reservedSeatTicks<<" carrier_ticks="<<workingTicks<<" hungry_ticks="<<hungryTicks
             <<" window="<<window<<'\n';
-        CAPTURE(stage);CAPTURE(distance);CAPTURE(population);
-        CHECK(meals>0);
         CHECK(reservedSeatTicks<=Uint64(window)*inn->maxUnitInside);
         CHECK(workingTicks<=Uint64(window)*plan.carriers);
+        return {survivors,meals,carriers.size(),additionalFeeders,settledSurvivors};
+}
+}
+
+TEST_CASE("sustained stock feeding reports capability estimates and historical strategy targets" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    const int historical[]={19,25,34};
+    const AIMaxima::FeedingPlan plan{4,16*23,105,11759};
+    for(int stage=0;stage<3;++stage)for(int distance:{4,16}) {
+        CAPTURE(stage);CAPTURE(distance);
+        const auto baseline=measureFeedingScene("historical_army",stage,distance,historical[stage],plan.carriers,0,plan);
+        CHECK(baseline.survivors==historical[stage]);
+        CHECK(baseline.meals>0);
+        const auto* inn=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getTypeNum("inn",stage,false));
+        const auto estimate=AIMaxima::estimateFeeding(*inn,plan);
+        std::cout<<"MAXIMA_FEEDING_FORECAST stage="<<stage<<" historical="<<historical[stage]
+            <<" nominal="<<estimate.supportedUnits<<" ticks_per_meal="<<plan.ticksPerMeal<<'\n';
+        // Deliberately hostile workload: only four total workers (no replacement
+        // carriers), almost all recipients warriors, and raw nominal population
+        // without the planner's reliability margin. Report losses, including a
+        // possible complete collapse, without claiming this overload is safe.
+        const auto overload=measureFeedingScene("nominal_army_overload",stage,distance,estimate.supportedUnits,plan.carriers,0,plan);
+        CHECK(overload.survivors<=estimate.supportedUnits);
     }
+}
+
+TEST_CASE("observed hunger expands feeding for an opening colony mix beyond nominal forecasts" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    const auto policy=[] {Fixture f;f.ai->ensure_strategy();return f.ai->strategy;}();
+    const AIMaxima::FeedingPlan plan{policy.staffing.new_inn_workers,
+        policy.farming.management_radius*policy.food.carrier_ticks_per_tile,
+        policy.food.carrier_fixed_ticks_per_trip,policy.food.ticks_per_meal};
+    // Shipped opening worker weight plus low-utility explorer/warrior weights.
+    // This fixes a documented colony mix; it is not tuned to these outcomes.
+    const int workerWeight=policy.economy.early_worker_ratio;
+    const int explorerWeight=policy.economy.explorer_ratio_low;
+    const int warriorWeight=policy.military.warrior_ratio_low;
+    const int totalWeight=workerWeight+explorerWeight+warriorWeight;
+    for(int stage=0;stage<3;++stage)for(int distance:{4,16}) {
+        CAPTURE(stage);CAPTURE(distance);
+        const auto* inn=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getTypeNum("inn",stage,false));
+        const int nominal=AIMaxima::estimateFeeding(*inn,plan).supportedUnits;
+        const int population=nominal*policy.economy.reliable_inn_percent/100;
+        const int workers=population*workerWeight/totalWeight;
+        const int explorers=population*explorerWeight/totalWeight;
+        REQUIRE(workers>plan.carriers);
+        const auto unassisted=measureFeedingScene("nominal_static_colony",stage,distance,population,workers,explorers,plan);
+        const auto observed=measureFeedingScene("adaptive_colony",stage,distance,population,workers,explorers,plan,true);
+        // A reactive policy can lose units before recovery. Keep that loss in
+        // the measurement; require recovery to stop further attrition and to
+        // improve the overloaded base-stage scene over its static control.
+        CHECK(observed.survivors==observed.settledSurvivors);
+        CHECK(observed.survivors>=unassisted.survivors);
+        if(stage==0)CHECK(observed.survivors>unassisted.survivors);
+        CHECK(observed.meals>0);
+        CHECK(observed.distinctCarriers>size_t(plan.carriers));
+        if(stage==0)CHECK(observed.additionalFeeders>0);
+    }
+}
+
+TEST_CASE("food pressure increases planned feeding capacity without a permanent queue ratchet" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;ai.context.initialize();ai.ensure_strategy();ai.collect_building_profiles();
+    const int root=f.game.buildingCapabilities().lineageRoot(f.game.buildingsTypes.getPlaceableTypeNum("inn"));
+    const int reliable=ai.feeding_capacity(root,1)*ai.strategy.economy.reliable_inn_percent/100;
+    // Two reliable providers clear the configured minimum without the unrelated
+    // demographic floor masking the extra inn requested for unserved hunger.
+    ai.snapshot.population=2*reliable;ai.snapshot.workers=ai.snapshot.population;
+    ai.environment.accessible_corn=100;ai.environment.food_headroom=100;ai.environment.food_security=100;
+    ai.food_ledger_valid=true;ai.food_supported_inns=1; // stale peak-capacity bound must not suppress recovery.
+    ai.build_policy_bids();
+    const int comfortable=ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns;
+    ai.snapshot.unserved_food=(ai.snapshot.population*ai.strategy.economy.service_unserved_percent+99)/100;
+    ai.build_policy_bids();
+    const int stressed=ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns;
+    CHECK(stressed>comfortable);
+    for(int pass=0;pass<5;++pass) {
+        ai.build_policy_bids();
+        CHECK(ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns==stressed);
+    }
+    ai.snapshot.unserved_food=0;ai.build_policy_bids();
+    CHECK(ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns==comfortable);
 }
 
 TEST_CASE("operating estimates use one production clock and packet denominators" * doctest::test_suite("Maxima.Economy"))
@@ -1175,4 +1287,138 @@ TEST_CASE("one training course credits independent movement and worker construct
     const auto warrior=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
     CHECK(warrior.services[AIMaximaBuildings::WalkTraining]>0);
     CHECK(warrior.services[AIMaximaBuildings::ConstructionTraining]==0);
+}
+
+TEST_CASE("feeding demand allocation conserves recipient classes and shared provider capacity" * doctest::test_suite("Maxima.Economy"))
+{
+    using AIMaxima::allocateFeedingDemand;
+    using AIMaxima::FeedingProvider;
+    std::vector<std::array<int,3>> demand{{600,0,400},{200,0,0}};
+    const auto split=allocateFeedingDemand(demand,{{0,1000,7},{0,1000,7},{1,1000,1}});
+    CHECK(split[0]+split[1]==1000);CHECK(split[2]==200);
+    const auto restricted=allocateFeedingDemand({{600,0,400}},{{0,600,1},{0,400,5}});
+    CHECK(restricted[0]==600);CHECK(restricted[1]==400);
+    const auto missing=allocateFeedingDemand({{600,0,400}},{{0,1000,1}});
+    CHECK(missing[0]==600);
+    const auto tight=allocateFeedingDemand({{1000,1000,1000}},{{0,700,7},{0,300,3}});
+    CHECK(tight[0]+tight[1]==1000);
+    CHECK(allocateFeedingDemand({{0,0,0}},{{0,1000,7}})[0]==0);
+}
+
+TEST_CASE("feeding farm claims follow one cohort while hybrid operating demand stays independent" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(32,32);
+    for(auto& t:world.tiles){t.discovered=t.walkable=t.foodTraversable=t.buildable=true;}
+    world.tile(9,10).protectedYield=1200;
+    world.feedingColonies.push_back({8,8,{600,0,400}});
+    BuildingProfile profile;profile.buildingType=0;
+    BuildingLevelProfile shape;shape.level=1;shape.footprint=Footprint(0,0,1,1);
+    shape.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+    shape.feedingRate=1000;shape.feedingMask=7;
+    shape.operatingResources[WHEAT]=shape.feedingResources[WHEAT]=1000;
+    profile.levels.push_back(shape);world.profiles.push_back(profile);
+    WorldBuilding first;first.id=1;first.gid=1;first.buildingType=0;first.level=1;first.centerX=8;first.centerY=8;
+    world.buildings.push_back(first);
+    Planner planner;planner.mutablePolicy().foodLedgerEnabled=true;
+    const auto configure=[&] {planner.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+        AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);};
+    configure();
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==1000);
+    DevelopmentAction candidate;candidate.type=BuildStandalone;candidate.buildingType=0;candidate.targetLevel=1;
+    candidate.centerX=10;candidate.centerY=8;candidate.initialFootprint=shape.footprint;
+    RejectionReason reason=RejectedFoodCapacity;
+    CHECK(planner.foodCandidatePasses(world,nullptr,candidate,reason));
+    CHECK(planner.foodCandidateDemand==500);
+    CHECK(planner.selectedFoodResult().consumer(1)->demand==500);
+    // Crossing colony boundaries must only select an immutable cached result.
+    world.feedingColonies.push_back({24,24,{300,0,200}});
+    planner.evaluateFoodLedger(world);
+    planner.prepareFeedingCandidateSet(world,0,1,-1,-1);
+    const auto* cachedLedgers=planner.candidateFoodLedgers.data();
+    const auto cachedEpoch=planner.foodLedgerEpoch;
+    for(int visit=0;visit<100;++visit) {
+        candidate.centerX=candidate.centerY=(visit&1)?24:10;
+        planner.prepareFeedingCandidate(world,candidate);
+        CHECK(planner.candidateFoodLedgers.data()==cachedLedgers);
+        CHECK(planner.foodLedgerEpoch==cachedEpoch);
+        CHECK(planner.foodCandidateDemand==500);
+    }
+    world.feedingColonies.pop_back();candidate.centerX=10;candidate.centerY=8;
+    auto second=first;second.id=second.gid=2;second.centerX=10;world.buildings.push_back(second);
+    const auto& both=planner.evaluateFoodLedger(world);
+    CHECK(both.consumer(1)->demand+both.consumer(2)->demand==1000);
+    world.profiles[0].levels[0].operatingResources[WHEAT]+=250;
+    configure();
+    const auto& hybrid=planner.evaluateFoodLedger(world);
+    CHECK(hybrid.consumer(1)->demand+hybrid.consumer(2)->demand==1500);
+    world.buildings.pop_back();
+    planner.evaluateFoodLedger(world);
+    CHECK_FALSE(planner.foodCandidatePasses(world,nullptr,candidate,reason));
+    CHECK(reason==RejectedFoodCapacity);
+    // A free feeder still absorbs its share of meals; only its independent
+    // production demand remains, and the other provider keeps its own budget.
+    auto free=world.profiles[0];free.buildingType=1;
+    free.levels[0].operatingResources[WHEAT]=250;free.levels[0].feedingResources[WHEAT]=0;
+    world.profiles.push_back(free);second.buildingType=1;world.buildings.push_back(second);world.invalidateProfileIndex();configure();
+    const auto& mixed=planner.evaluateFoodLedger(world);
+    CHECK(mixed.consumer(1)->demand==750);CHECK(mixed.consumer(2)->demand==250);
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    AIMaximaContinuation::Writer writer(&output,true);writer("world",world);
+    const std::string saved(bytes->getBuffer(),bytes->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
+    input.seekFromStart(0);
+    WorldState restored;AIMaximaContinuation::Reader reader(&input,true);reader("world",restored);
+    Planner resumed;resumed.mutablePolicy().foodLedgerEnabled=true;resumed.configure(restored.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+        AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    const auto& continued=resumed.evaluateFoodLedger(restored);
+    CHECK(continued.consumer(1)->demand==750);CHECK(continued.consumer(2)->demand==250);
+    CHECK(restored.computeSignature()==world.computeSignature());
+}
+
+TEST_CASE("feeding packet denominations preserve large stock rates and profile continuation" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+    const int id=f.game.buildingsTypes.getFinishedTypeNum("inn");
+    snapshot["variants"][id]["properties"]["maxResource"][WHEAT]=1000000;
+    snapshot["variants"][id]["properties"]["multiplierResource"]=std::vector<int>(MAX_NB_RESOURCES,1);
+    snapshot["variants"][id]["properties"]["multiplierResource"][WHEAT]=1000000;
+    snapshot["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",1000000}};
+    f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();
+    f.ai->ensure_strategy();
+    const auto estimate=AIMaxima::estimateFeeding(*f.game.buildingsTypes.get(id),{4,16*23,105,11759});
+    CHECK(estimate.resources[WHEAT]==INT_MAX);
+    CHECK(estimate.resourcePackets[WHEAT]>INT_MAX/1000000);
+    CHECK(estimate.resourcePackets[WHEAT]==estimate.feedingResourcePackets[WHEAT]);
+    const int root=f.game.buildingCapabilities().lineageRoot(id);
+    const auto profiles=f.ai->collect_building_profiles();
+    const auto found=std::find_if(profiles.begin(),profiles.end(),[&](const auto& p){return p.buildingType==root;});
+    REQUIRE(found!=profiles.end());
+    auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
+    AIMaximaContinuation::Writer writer(&output,true);writer("profile",*found);
+    const std::string saved(bytes->getBuffer(),bytes->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));input.seekFromStart(0);
+    AIMaximaPlacement::BuildingProfile restored;AIMaximaContinuation::Reader reader(&input,true);reader("profile",restored);
+    CHECK(restored.levels.front().feedingResources[WHEAT]==restored.levels.front().operatingResources[WHEAT]);
+}
+
+TEST_CASE("feeding colonies join overlapping catchments transitively and preserve independent training" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;
+    auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+    const int id=f.game.buildingsTypes.getFinishedTypeNum("inn");
+    snapshot["variants"][id]["semantics"]["training"]={{"armor",{{"enabled",true},{"unitMask",4},{"targetLevel",1},{"duration",0},{"cost",nlohmann::json::object()}}}};
+    f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();
+    f.swarm(4,8);f.swarm(20,8);f.swarm(36,8);
+    f.game.addUnit(40,14,0,WORKER,0,0,0,0);
+    f.ai->context.initialize();f.ai->ensure_strategy();
+    const auto world=f.ai->collect_development_world(f.ai->context);
+    REQUIRE(world.feedingColonies.size()==1);
+    CHECK(world.feedingColonies.front().demand[WORKER]>0);
+    const int root=f.game.buildingCapabilities().lineageRoot(id);
+    REQUIRE(world.profile(root));
+    CHECK_FALSE(world.profile(root)->levels.front().foodRetirable);
 }

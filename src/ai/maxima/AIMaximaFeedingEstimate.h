@@ -29,6 +29,7 @@ struct FeedingEstimate
     long long projectileRate=0; // fixed point Scale shots/tick
     int supportedUnits=0;
     std::array<int,8> resources{}; // stock units, not carried packets
+    std::array<int,8> feedingResourcePackets{}; // feeding component of recurring packets
     std::array<int,8> resourcePackets{}; // natural-source/hauling denominations
     std::array<int,NB_UNIT_TYPE> productionRates{}; // per 1000 ticks
     std::array<int,AIMaximaBuildings::RoleCount> services{}; // per 1000 ticks
@@ -150,6 +151,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         return quotient;
     };
     FeedingEstimate result;
+    std::array<long long,8> feedingStock{},totalStock{};
     for(int i=0;i<flowCount;++i) {
         auto f=flows[i];
         const bool usesCarrier=std::any_of(f.cost.begin(),f.cost.end(),[](int n){return n>0;});
@@ -162,12 +164,17 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             result.services[role]+=int(std::min<long long>(1000000,output*1000/FeedingEstimate::Scale));
         for(int resource=0;resource<8;++resource) {
             const auto demand=f.rate*f.cost[resource];
+            totalStock[resource]+=demand;
+            if(f.roles&roleBit(Feeding))feedingStock[resource]+=demand;
             result.resources[resource]=int(std::min<long long>(INT_MAX,static_cast<long long>(result.resources[resource])+demand));
             result.haulingWorkerTicks=sum(result.haulingWorkerTicks,hauling(demand,resource));
         }
     }
     for(int resource=0;resource<8;++resource)
-        result.resourcePackets[resource]=result.resources[resource]/std::max(1,type.multiplierResource[resource]);
+        {
+        result.resourcePackets[resource]=int(std::min<long long>(INT_MAX,totalStock[resource]/std::max(1,type.multiplierResource[resource])));
+        result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.multiplierResource[resource])));
+    }
     result.supportedUnits=int(std::min<long long>(1000000,result.visitsPerTick*std::max(1,plan.ticksPerMeal)/FeedingEstimate::Scale));
     return result;
 }

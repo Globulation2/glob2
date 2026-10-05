@@ -1,6 +1,7 @@
 # Food capacity
 
-The food ledger assigns protected farm supply to inns and swarms, then exposes
+The food ledger assigns protected farm supply to buildings with recurring wheat
+costs, then exposes
 unclaimed capacity to the placement planner. Only protected cells currently
 holding wheat supply recurring capacity. A cell's rate is proportional to exact
 fertility and the fraction of neighbouring cells that can absorb growth:
@@ -29,7 +30,22 @@ that a colony can sustain the theoretical maximum.
 
 ## Claims and placement
 
-The ledger is rebuilt from current buildings, levels, planned actions and wheat.
+The ledger is rebuilt from current buildings, explicit upgrade stages, planned
+orders, population and wheat. Feeding throughput is a ceiling, not a new source
+of demand for every building. Each colony counts its workers, explorers and
+warriors once. Overlapping worker-production catchments form connected colonies;
+units join the nearest representative. The nominal meal interval converts each
+class count into a meal budget. Available providers divide that budget according
+to admission and capacity, giving scarce classes and less flexible providers
+priority. A free feeder can take meals without claiming wheat. Production,
+healing, training and ammunition costs retain their independent shares on mixed
+buildings.
+
+Adding or replacing a feeder redistributes the same colony budget before farm
+coverage is checked. Candidate ledgers are prepared once per colony and candidate
+profile before scanning positions; spatial queries select immutable cached
+results. Profile and colony demand state is included in planner continuation.
+
 Claimants rank by supply-weighted route-distance quality band, then level,
 completion status and building ID. Quality is evaluated independently of other
 claimants to avoid circular ranking. Inns and swarms alternate claims; each
@@ -43,16 +59,30 @@ own settlement rule. Upgrades release and retake their building's claim at the
 new level. A summed-area upper bound rejects impossible candidates before the
 exact route search.
 
-Targets are capped by supplied buildings plus the capacity reachable from the
-best available site. Scattered residual supply that no single building can
-reach does not fund another building.
+Production targets are capped by supplied buildings plus capacity reachable from
+the best available site. Feeding demand also responds to observed hungry and
+unserved units: an optimistic nominal throughput forecast must not impose a
+second coarse limit on additional feeders. Each proposed location still needs
+its allocated meal claim covered by reachable farm supply. Scattered residual
+supply that no single building can reach does not fund another building.
+
+The nominal meal interval was measured in ordinary mixed games. Idle or
+warrior-heavy stress scenes can eat substantially more often, and a planned
+carrier allowance counts concurrent hauling work rather than a fixed set of
+workers who never need food themselves. Validation therefore separates historical
+stock-population survival, deliberate overload measurements, and adaptive hunger
+recovery against matched static controls. Reactive recovery can still lose units
+before sufficient service becomes available; the recovery check also measures
+whether attrition continues after that response. The forecast is not a
+guaranteed static population limit.
 
 ## Retirement and relocation
 
 A building persistently below its coverage threshold can be retired after a
 confirmation period. Recovery clears the timer. Retirement requires a safe
 colony, elapsed cooldown, another building of the same kind, and enough reliable
-inn seats for the population. Establishing colony swarms are protected.
+inn seats for the population. Establishing colony swarms are protected. Independent training or combat services
+also prevent food-only retirement of mixed buildings.
 
 Persistent poor route quality can instead nominate one inn or swarm for
 relocation. The planner evaluates a replacement with the old building's claim

@@ -420,16 +420,23 @@ public:
 		case 1:
 		{
 			static const char* sites[] = {"inn", "swarm", "hospital", "racetrack", "swimmingpool", "school", "defencetower"};
-			const int type = globalContainer->buildingsTypes.getTypeNum(sites[bot() % 7], 0, true);
-			order = std::make_shared<OrderCreate>(team->teamNumber, x, y, type, 1 + bot() % 5, 1 + bot() % 5);
+			const int type = game.buildingsTypes.getTypeNum(sites[bot() % 7], 0, true);
+			const BuildingType* site = game.buildingsTypes.get(type);
+			const BuildingType* completed = game.buildingsTypes.get(site->nextLevel);
+			const int currentWorkers = std::min<int>(1 + bot() % 5, site->semantics.assignmentLimit);
+			const int futureWorkers = std::min<int>(1 + bot() % 5, completed->semantics.assignmentLimit);
+			order = std::make_shared<OrderCreate>(team->teamNumber, x, y, type, currentWorkers, futureWorkers);
 			break;
 		}
 		case 2:
 		{
 			static const char* flags[] = {"explorationflag", "warflag", "clearingflag"};
-			const int type = globalContainer->buildingsTypes.getTypeNum(flags[bot() % 3], 0, false);
-			order = std::make_shared<OrderCreate>(team->teamNumber, x + offset(bot), y + offset(bot), type, 1 + bot() % 6,
-			                                      1 + bot() % 6);
+			const int type = game.buildingsTypes.getTypeNum(flags[bot() % 3], 0, false);
+			const int limit = game.buildingsTypes.get(type)->semantics.assignmentLimit;
+			const int currentWorkers = std::min<int>(1 + bot() % 6, limit);
+			const int futureWorkers = std::min<int>(1 + bot() % 6, limit);
+			order = std::make_shared<OrderCreate>(team->teamNumber, x + offset(bot), y + offset(bot), type,
+			                                      currentWorkers, futureWorkers);
 			break;
 		}
 		case 3:
@@ -437,10 +444,15 @@ public:
 			std::vector<Uint16> gids;
 			for (int i = 0; i < Building::MAX_COUNT; ++i)
 				if (const Building* b = team->myBuildings[i])
-					if (!b->type->isVirtual && b->type->maxUnitWorking > 0)
+					if (!b->type->isVirtual && b->type->semantics.assignmentLimit > 0)
 						gids.push_back(b->gid);
 			if (!gids.empty())
-				order = std::make_shared<OrderModifyBuilding>(gids[bot() % gids.size()], 1 + bot() % 8);
+			{
+				const Uint16 gid = gids[bot() % gids.size()];
+				const Building* building = team->myBuildings[Building::GIDtoID(gid)];
+				const int workers = std::min<int>(1 + bot() % 8, building->type->semantics.assignmentLimit);
+				order = std::make_shared<OrderModifyBuilding>(gid, workers);
+			}
 			break;
 		}
 		default:
@@ -1778,6 +1790,8 @@ TEST_SUITE("TurnEngineHarness")
 		INFO(v.reason);
 		CHECK(v.verdict == "verified");
 		CHECK(v.compared == rec.reports.size());
+		for (int seat = 0; seat < Turn::MAX_SEATS; ++seat)
+			CHECK(v.orders.seats[seat].rejected == 0);
 		glob2test::expectGolden("multiplayer/FourSquares1.verify-trace.txt", glob2test::readFile(out.path / "checksums.txt"));
 	}
 

@@ -25,8 +25,12 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
 	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
 	 a("completedType",value.completedType);a("roles",value.roles);a("serviceRates",value.serviceRates);
 	 a("productionUnitMask",value.productionUnitMask);a("productionRates",value.productionRates);
-	 a("operatingResources",value.operatingResources);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+	 a("operatingResources",value.operatingResources);
+     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);a("feedingResources",value.feedingResources);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
 	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
+     if(value.feedingRate<0 || value.feedingMask>7)throw std::runtime_error("Invalid saved feeding profile");
+     for(int r=0;r<8;++r)if(value.feedingResources[r]<0 || value.feedingResources[r]>value.operatingResources[r])
+         throw std::runtime_error("Invalid saved feeding resource component");
 	}
 }
 
@@ -88,6 +92,12 @@ template<class A> void fields(A& a, WorldBuilding& value)
 	a("upgrading",value.upgrading);
 }
 
+template<class A> void fields(A& a, FeedingColony& value)
+{
+    a("x",value.x);a("y",value.y);a("demand",value.demand);
+    for(int unit=0;unit<3;++unit)if(value.demand[unit]<0)throw std::runtime_error("Invalid saved meal demand");
+}
+
 template<class A> void fields(A& a, WorldState& value)
 {
 	a("width",value.width);
@@ -99,6 +109,11 @@ template<class A> void fields(A& a, WorldState& value)
 	a("tiles",value.tiles);
 	a("buildings",value.buildings);
 	a("profiles",value.profiles);
+    if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+        a("feedingColonies",value.feedingColonies);
+        for(const auto& colony:value.feedingColonies)if(colony.x<0 || colony.x>=value.width || colony.y<0 || colony.y>=value.height)
+            throw std::runtime_error("Invalid saved feeding colony");
+    }
 	value.invalidateProfileIndex();
 }
 

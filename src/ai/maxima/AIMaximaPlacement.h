@@ -184,9 +184,13 @@ struct BuildingLevelProfile
 	unsigned productionUnitMask=0;
 	int productionRates[3]{};
 	int operatingResources[8]{}; // recurring carried packets, FoodLedger::RateScale per tick
+	int feedingRate=0; // visits per tick, FoodLedger::RateScale
+    unsigned feedingMask=0;
+    int feedingResources[8]{}; // component already included in operatingResources
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;
+	bool foodRetirable=true; // false for independent services outside bounded policy roles
 	bool repairable=true;
 	bool available=true;
 	int serviceThroughput;
@@ -255,6 +259,12 @@ struct WorldBuilding
 	bool upgrading;
 };
 
+struct FeedingColony
+{
+    int x=0,y=0;
+    int demand[3]{}; // recipient-class meals/tick, FoodLedger::RateScale
+};
+
 struct WorldState
 {
 	WorldState();
@@ -275,6 +285,8 @@ struct WorldState
 	int tick;
 	int swimmingBuilders;
 	int accessibleSupplies[8];
+    std::vector<FeedingColony> feedingColonies;
+    int feedingColonyAt(int x,int y) const;
 	std::vector<WorldTile> tiles;
 	std::vector<WorldBuilding> buildings;
 	std::vector<BuildingProfile> profiles;
@@ -660,7 +672,15 @@ private:
 	/// retained between passes, so destruction, upgrades and farm changes need
 	/// no incremental bookkeeping.
 	void prepareFoodLedger(const WorldState& world, int excludeAction=-1,
-		int excludeBuilding=-1) const;
+		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
+    int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
+    void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
+    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0; };
+    mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
+    mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
+    mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
+    mutable const CandidateFoodLedger* activeFoodCandidate=nullptr;
+    const AIMaximaFoodLedger::Result& selectedFoodResult() const { return activeFoodCandidate?activeFoodCandidate->result:foodResult; }
 	bool relocationCandidatePasses(const WorldState& world,
 		const DevelopmentIntent& intent, const DevelopmentAction& action,
 		RejectionReason& reason) const;
@@ -683,6 +703,7 @@ private:
 	mutable int foodLedgerExcludedAction;
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
+    mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
 	/// Consumer results of the last ledger that excluded nothing, so an
 	/// appraisal can read the old building's standing while the prepared
 	/// ledger already excludes it.
@@ -759,6 +780,7 @@ private:
 	PlacementPolicy placementPolicy;
 	PlacementDiagnostics lastDiagnostics;
 	std::vector<BuildingProfile> configuredProfiles;
+    std::vector<uint8_t> foodManagedTypes;
 	std::vector<int> profileIndexes;
 	std::vector<DevelopmentTemplate> templateList;
 	std::vector<Campus> campusList;

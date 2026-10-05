@@ -6,6 +6,7 @@
 /* Maxima deterministic development and placement planner. */
 
 #include "AIMaximaPlacement.h"
+#include "AIMaximaFeedingDemand.h"
 #include "Stream.h"
 
 #include <algorithm>
@@ -208,6 +209,7 @@ void WorldState::reset(int w, int h)
 {
 	width=w; height=h; tick=0; swimmingBuilders=0;
 	std::fill(accessibleSupplies, accessibleSupplies+8, 0);
+	feedingColonies.clear();
 	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear(); invalidateProfileIndex();
 }
 namespace
@@ -259,6 +261,16 @@ const WorldBuilding* WorldState::building(int id) const
 	for(size_t i=0; i<buildings.size(); ++i) if(buildings[i].id==id) return &buildings[i];
 	return NULL;
 }
+int WorldState::feedingColonyAt(int x,int y) const
+{
+    int closest=-1,distance=INT_MAX;
+    for(size_t i=0;i<feedingColonies.size();++i) {
+        const int d=wrappedManhattan(x,y,feedingColonies[i].x,feedingColonies[i].y);
+        if(d<distance){closest=int(i);distance=d;}
+    }
+    return closest;
+}
+
 uint32_t WorldState::computeSignature() const
 {
 	uint32_t result=2166136261u;
@@ -277,6 +289,10 @@ uint32_t WorldState::computeSignature() const
 		hashValue(result, uint32_t(b.id)); hashValue(result, uint32_t(b.buildingType));
 		hashValue(result, uint32_t(index(b.centerX,b.centerY)));
 	}
+    for(const auto& colony:feedingColonies) {
+        hashValue(result,colony.x);hashValue(result,colony.y);
+        for(int unit=0;unit<3;++unit)hashValue(result,colony.demand[unit]);
+    }
 	return result;
 }
 
@@ -427,6 +443,8 @@ void Planner::reset()
 	foodInput=AIMaximaFoodLedger::Input();
 	foodResult=AIMaximaFoodLedger::Result();
 	foodLedgerExcludedAction=-1;foodLedgerExcludedBuilding=-1;foodLedgerPrepared=false;
+    foodCandidateType=-1;foodCandidateLevel=1;foodCandidateColony=-1;foodCandidateDemand=0;
+    activeFoodCandidate=nullptr;candidateFoodLedgers.clear();foodLedgerEpoch=candidateSetEpoch=0;candidateSetType=-1;
 	foodBaselineConsumers.clear();foodBaselineValid=false;
 	foodOpportunitySourceCache.clear();foodHaloMaximumCache.clear();
 	foodHaloRadiusCache=-1;
@@ -452,7 +470,13 @@ void Planner::configure(const std::vector<BuildingProfile>& profiles,
 {
 	configuredProfiles=profiles;
 	int maxType=-1;for(const auto& p:profiles)maxType=std::max(maxType,p.buildingType);
-	profileIndexes.assign(maxType+1,-1);for(size_t i=0;i<profiles.size();++i)if(profiles[i].buildingType>=0)profileIndexes[profiles[i].buildingType]=int(i);
+	profileIndexes.assign(maxType+1,-1);foodManagedTypes.assign(maxType+1,0);
+    for(size_t i=0;i<profiles.size();++i)if(profiles[i].buildingType>=0) {
+        profileIndexes[profiles[i].buildingType]=int(i);
+        for(const auto& v:profiles[i].levels)if(v.feedingRate>0 || v.operatingResources[CornResourceType]>0)
+            foodManagedTypes[profiles[i].buildingType]=1;
+    }
+    foodLedgerPrepared=false;activeFoodCandidate=nullptr;candidateFoodLedgers.clear();
 	configuredInnType=innType;
 	configuredHospitalType=hospitalType; configuredSchoolType=schoolType;
 	configuredBarracksType=barracksType; configuredTowerType=towerType;
@@ -1104,8 +1128,8 @@ bool Planner::colonyCandidatePasses(const WorldState& world,
 
 bool Planner::foodManagedType(int buildingType) const
 {
-	return placementPolicy.foodLedgerEnabled
-		&& (serves(buildingType,configuredInnType)||serves(buildingType,configuredSwarmType));
+    return placementPolicy.foodLedgerEnabled && buildingType>=0
+        && size_t(buildingType)<foodManagedTypes.size() && foodManagedTypes[buildingType];
 }
 
 int Planner::foodDemandFor(int buildingType, int level) const
@@ -1115,7 +1139,7 @@ int Planner::foodDemandFor(int buildingType, int level) const
 }
 
 void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
-	int excludeBuilding) const
+	int excludeBuilding,int candidateType,int candidateLevel,int candidateColony) const
 {
 	using namespace AIMaximaFoodLedger;
 	// An appraisal reads the replaced building's standing from the full ledger
@@ -1123,7 +1147,11 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 	if(excludeBuilding>=0)prepareFoodLedger(world,excludeAction,-1);
 	foodResult.clear();foodInput.consumers.clear();
 	foodLedgerExcludedAction=excludeAction;foodLedgerExcludedBuilding=excludeBuilding;
-	foodLedgerPrepared=true;
+	foodLedgerPrepared=true;activeFoodCandidate=nullptr;
+    if(candidateType<0)++foodLedgerEpoch;
+    foodCandidateType=candidateType;foodCandidateLevel=candidateLevel;foodCandidateColony=candidateColony;foodCandidateDemand=0;
+    std::vector<const BuildingLevelProfile*> profiles;
+    std::vector<int> colonies;
 	if(!placementPolicy.foodLedgerEnabled)return;
 	const int size=world.width*world.height;
 	if(size<=0)return;
@@ -1184,8 +1212,9 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		consumer.left=shape->footprint.left;consumer.top=shape->footprint.top;
 		consumer.width=shape->footprint.width;consumer.height=shape->footprint.height;
 		consumer.colony=colonyBuilding.count(building.id)>0;
-		consumer.retirable=!building.site && (shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding) || shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Production));
+		consumer.retirable=!building.site && shape->foodRetirable && (shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding) || shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Production));
 		foodInput.consumers.push_back(consumer);
+        profiles.push_back(shape);colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));
 	}
 	// Planned inns and swarms claim as soon as their parcel is reserved, so a
 	// second one cannot be placed against wheat the first already needs.
@@ -1213,9 +1242,34 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		consumer.colony=action.purpose==ColonySeed;
 		consumer.retirable=false;
 		foodInput.consumers.push_back(consumer);
+        const auto* profile=world.profile(action.buildingType);
+        profiles.push_back(profile?profile->atLevel(1):nullptr);
+        colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));
 	}
+    const auto* candidateProfile=world.profile(candidateType);
+    const auto* candidate=candidateProfile?candidateProfile->atLevel(candidateLevel):nullptr;
+    if(candidate) {profiles.push_back(candidate);colonies.push_back(candidateColony);}
+    if(!world.feedingColonies.empty()) {
+        std::vector<std::array<int,3>> demand;
+        for(const auto& colony:world.feedingColonies)demand.push_back({colony.demand[0],colony.demand[1],colony.demand[2]});
+        std::vector<AIMaxima::FeedingProvider> providers;
+        for(size_t i=0;i<profiles.size();++i) {
+            const auto* p=profiles[i];
+            providers.push_back({colonies[i],p?p->feedingRate:0,p?p->feedingMask:0});
+        }
+        const auto meals=AIMaxima::allocateFeedingDemand(demand,providers);
+        for(size_t i=0;i<profiles.size();++i) {
+            const auto* p=profiles[i];if(!p)continue;
+            const long long independent=std::max(0,p->operatingResources[CornResourceType]-p->feedingResources[CornResourceType]);
+            const long long feeding=p->feedingRate>0
+                ? (static_cast<long long>(p->feedingResources[CornResourceType])*meals[i]+p->feedingRate-1)/p->feedingRate : 0;
+            const int amount=int(std::min<long long>(INT_MAX,independent+feeding));
+            if(i<foodInput.consumers.size())foodInput.consumers[i].demand=amount;
+            else foodCandidateDemand=amount;
+        }
+    } else if(candidate)foodCandidateDemand=candidate->operatingResources[CornResourceType];
 	foodLedger.evaluate(foodInput,foodResult);
-	if(excludeBuilding<0)
+	if(excludeBuilding<0 && candidateType<0)
 	{
 		foodBaselineConsumers=foodResult.consumers;
 		foodBaselineValid=true;
@@ -1243,9 +1297,11 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 	   ||!foodManagedType(action.buildingType))return appraisal;
 	// The old building's standing comes from a ledger that still contains it;
 	// preparing the excluded ledger below refreshes that baseline first.
-	if(!foodLedgerPrepared||foodLedgerExcludedBuilding!=replacesBuildingId
+	if(!foodLedgerPrepared||foodCandidateType>=0||foodLedgerExcludedBuilding!=replacesBuildingId
 	   ||!foodBaselineValid)
 		prepareFoodLedger(world,action.id,replacesBuildingId);
+    const int replacementDemand=prepareFeedingCandidate(world,action);
+    if(replacementDemand<=0)return appraisal;
 	const AIMaximaFoodLedger::ConsumerResult* current=NULL;
 	for(size_t i=0;i<foodBaselineConsumers.size();++i)
 		if(foodBaselineConsumers[i].key==replacesBuildingId)
@@ -1253,15 +1309,15 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 	if(!current||current->demand<=0)return appraisal;
 	appraisal.oldQuality=current->quality;
 	appraisal.oldCoverage=current->coveragePercent;
-	const long long demand=current->demand;
+	const long long demand=replacementDemand;
 	const long long claimed=current->claimed;
 	// The candidate's standing among everyone else once the old one is gone.
 	const Footprint& shape=action.initialFootprint;
-	appraisal.newQuality=foodLedger.residualQuality(foodInput,foodResult,
+	appraisal.newQuality=foodLedger.residualQuality(foodInput,selectedFoodResult(),
 		action.centerX,action.centerY,shape.left,shape.top,shape.width,
 		shape.height,demand);
 	const long long newClaimed=std::min(demand,foodLedger.reachableResidual(
-		foodInput,foodResult,action.centerX,action.centerY,shape.left,shape.top,
+		foodInput,selectedFoodResult(),action.centerX,action.centerY,shape.left,shape.top,
 		shape.width,shape.height,demand));
 	appraisal.newCoverage=int(newClaimed*100/demand);
 	// Savings per tick, in worker-ticks scaled by the ledger's RateScale.
@@ -1316,6 +1372,48 @@ const AIMaximaFoodLedger::Result& Planner::evaluateFoodLedger(
 	return foodResult;
 }
 
+void Planner::prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const
+{
+    if(world.feedingColonies.empty())return;
+    if(candidateSetEpoch==foodLedgerEpoch && candidateSetType==type && candidateSetLevel==level
+        && candidateSetExcludedAction==excludedAction && candidateSetExcludedBuilding==excludedBuilding
+        && candidateFoodLedgers.size()==world.feedingColonies.size())return;
+    if(!foodLedgerPrepared || foodLedgerExcludedAction!=excludedAction || foodLedgerExcludedBuilding!=excludedBuilding)
+        prepareFoodLedger(world,excludedAction,excludedBuilding);
+    // Build every colony's immutable residual once before its spatial scan.
+    // Querying another colony selects a result; it never copies a map grid.
+    auto baseline=std::move(foodResult);
+    auto baselineConsumers=std::move(foodInput.consumers);
+    activeFoodCandidate=nullptr;
+    candidateFoodLedgers.clear();candidateFoodLedgers.resize(world.feedingColonies.size());
+    for(size_t colony=0;colony<world.feedingColonies.size();++colony) {
+        prepareFoodLedger(world,excludedAction,excludedBuilding,type,level,int(colony));
+        candidateFoodLedgers[colony].result=std::move(foodResult);
+        candidateFoodLedgers[colony].demand=foodCandidateDemand;
+    }
+    foodResult=std::move(baseline);foodInput.consumers=std::move(baselineConsumers);
+    foodLedgerExcludedAction=excludedAction;foodLedgerExcludedBuilding=excludedBuilding;
+    foodCandidateType=-1;foodCandidateColony=-1;
+    candidateSetType=type;candidateSetLevel=level;candidateSetExcludedAction=excludedAction;
+    candidateSetExcludedBuilding=excludedBuilding;candidateSetEpoch=foodLedgerEpoch;
+}
+
+int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const
+{
+    if(world.feedingColonies.empty()) {
+        if(!foodLedgerPrepared)prepareFoodLedger(world);
+        activeFoodCandidate=nullptr;
+        return foodDemandFor(action.buildingType,std::max(1,action.targetLevel));
+    }
+    const int colony=world.feedingColonyAt(action.centerX,action.centerY);
+    const int level=std::max(1,action.targetLevel);
+    const int replaced=action.replacesBuildingId>=0?action.replacesBuildingId:action.type==UpgradeBuilding?action.buildingId:-1;
+    const int excludeAction=actionMap.count(action.id)?action.id:-1;
+    prepareFeedingCandidateSet(world,action.buildingType,level,excludeAction,replaced);
+    activeFoodCandidate=&candidateFoodLedgers[colony];foodCandidateDemand=activeFoodCandidate->demand;
+    return foodCandidateDemand;
+}
+
 bool Planner::foodCandidatePasses(const WorldState& world,
 	const DevelopmentIntent* intent, const DevelopmentAction& action,
 	RejectionReason& reason) const
@@ -1326,27 +1424,26 @@ bool Planner::foodCandidatePasses(const WorldState& world,
 	// own new-food rule. They still claim in the ledger like any other building.
 	const DevelopmentPurpose purpose=intent?intent->purpose:action.purpose;
 	if(purpose==ColonySeed)return true;
-	const int demand=foodDemandFor(action.buildingType,1);
+	const int demand=prepareFeedingCandidate(world,action);
 	if(demand<=0)return true;
-	if(!foodLedgerPrepared)prepareFoodLedger(world);
 	// The first inn and the first swarm have nothing to be measured against and
 	// would otherwise deadlock a settlement that has not started farming.
 	const AIMaximaFoodLedger::ConsumerKind kind=
 		serves(action.buildingType,configuredInnType,action.targetLevel)
 			?AIMaximaFoodLedger::InnConsumer:AIMaximaFoodLedger::SwarmConsumer;
 	size_t existing=0;
-	for(size_t i=0;i<foodResult.consumers.size();++i)
-		if(foodResult.consumers[i].kind==kind)++existing;
+	for(size_t i=0;i<selectedFoodResult().consumers.size();++i)
+		if(selectedFoodResult().consumers[i].kind==kind)++existing;
 	if(existing==0)return true;
 	const long long required=static_cast<long long>(demand)
 		*placementPolicy.foodMarginPercent/100;
 	const Footprint& shape=action.initialFootprint;
 	// The square bound is cheap and can only overstate reach, so a candidate it
 	// rejects would also fail the exact walk.
-	if(foodLedger.residualUpperBound(foodInput,foodResult,action.centerX,
+	if(foodLedger.residualUpperBound(foodInput,selectedFoodResult(),action.centerX,
 		action.centerY,shape.left,shape.top,shape.width,shape.height)<required)
 	{reason=RejectedFoodCapacity;return false;}
-	if(foodLedger.reachableResidual(foodInput,foodResult,action.centerX,
+	if(foodLedger.reachableResidual(foodInput,selectedFoodResult(),action.centerX,
 		action.centerY,shape.left,shape.top,shape.width,shape.height,
 		required)<required)
 	{reason=RejectedFoodCapacity;return false;}
@@ -1358,28 +1455,31 @@ bool Planner::foodUpgradePasses(const WorldState& world,
 {
 	if(!foodManagedType(action.buildingType))return true;
 	if(action.type!=UpgradeBuilding)return true;
-	const int demand=foodDemandFor(action.buildingType,action.targetLevel);
-	if(demand<=0)return true;
-	if(!foodLedgerPrepared)prepareFoodLedger(world);
-	const AIMaximaFoodLedger::ConsumerResult* value=
-		foodResult.consumer(action.buildingId);
-	if(!value)return true;
-	const long long required=static_cast<long long>(demand)
-		*placementPolicy.foodMarginPercent/100;
-	if(value->available<required){reason=RejectedFoodCapacity;return false;}
+    const int demand=prepareFeedingCandidate(world,action);
+    if(demand<=0)return true;
+    const long long required=static_cast<long long>(demand)*placementPolicy.foodMarginPercent/100;
+    if(!world.feedingColonies.empty()) {
+        const auto& shape=action.initialFootprint;
+        if(foodLedger.reachableResidual(foodInput,selectedFoodResult(),action.centerX,action.centerY,
+            shape.left,shape.top,shape.width,shape.height,required)<required) {
+            reason=RejectedFoodCapacity;return false;
+        }
+    } else if(const auto* value=selectedFoodResult().consumer(action.buildingId);value && value->available<required) {
+        reason=RejectedFoodCapacity;return false;
+    }
 	return true;
 }
 
 int Planner::foodLocationQuality(const WorldState& world,
 	const DevelopmentAction& action) const
 {
-	const int demand=foodDemandFor(action.buildingType,1);
+    if(!foodManagedType(action.buildingType))return 0;
+	const int demand=prepareFeedingCandidate(world,action);
 	if(demand<=0)return 0;
-	if(!foodLedgerPrepared)prepareFoodLedger(world);
 	const Footprint& shape=action.initialFootprint;
 	// Unclaimed capacity, not distance to the nearest wheat: one wheat tile
 	// beside five inns is not a good site for a sixth.
-	const long long reach=foodLedger.reachableResidual(foodInput,foodResult,
+	const long long reach=foodLedger.reachableResidual(foodInput,selectedFoodResult(),
 		action.centerX,action.centerY,shape.left,shape.top,shape.width,
 		shape.height,static_cast<long long>(demand)*2);
 	const int capacity=clamp100(int(reach*100/demand));
@@ -1391,7 +1491,7 @@ int Planner::foodLocationQuality(const WorldState& world,
 	// carrier constants that is twice the worker-ticks for the same wheat.
 	// Price the round trip against a reference site, so this is throughput per
 	// worker-tick rather than an arbitrary distance penalty.
-	const int tiles=std::max(0,foodLedger.residualQuality(foodInput,foodResult,
+	const int tiles=std::max(0,foodLedger.residualQuality(foodInput,selectedFoodResult(),
 		action.centerX,action.centerY,shape.left,shape.top,shape.width,
 		shape.height,demand)/100);
 	const int trip=placementPolicy.carrierFixedTicksPerTrip
@@ -1560,9 +1660,10 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	// A relocation is judged, scored and capacity-checked with the building it
 	// replaces removed from the ledger; every other intent sees the full one.
 	const int excludeBuilding=intent.purpose==Relocation?intent.replacesBuildingId:-1;
-	if(!foodLedgerPrepared||foodLedgerExcludedBuilding!=excludeBuilding
+	if(!foodLedgerPrepared||foodCandidateType>=0||foodLedgerExcludedBuilding!=excludeBuilding
 	   ||foodLedgerExcludedAction!=-1)
 		prepareFoodLedger(world,-1,excludeBuilding);
+    if(foodManagedType(intent.buildingType))prepareFeedingCandidateSet(world,intent.buildingType,1,-1,excludeBuilding);
 	const std::pair<int,int> key(intent.buildingType,int(intent.purpose));
 	std::map<std::pair<int,int>,uint32_t>::const_iterator blocked=
 		blockedIntentSignatures.find(key);
@@ -2426,6 +2527,10 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	uint32_t signature=2166136261u;
 	hashValue(signature,world.swimmingBuilders);
 	for(int r=0;r<8;++r)hashValue(signature,world.accessibleSupplies[r]);
+    for(const auto& colony:world.feedingColonies) {
+        hashValue(signature,colony.x);hashValue(signature,colony.y);
+        for(int unit=0;unit<3;++unit)hashValue(signature,colony.demand[unit]);
+    }
 	for(const WorldTile& tile:world.tiles)
 	{
 		hashValue(signature,tile.fertility);hashValue(signature,tile.farmCapacity);
@@ -2448,7 +2553,11 @@ void Planner::prepareRetrySignature(const WorldState& world)
 		{
 			hashValue(signature,level.level);hashValue(signature,level.serviceThroughput);
 			hashValue(signature,level.capability);
-			for(int r=0;r<8;++r)hashValue(signature,level.constructionResources[r]);
+			hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
+            for(int r=0;r<8;++r) {
+                hashValue(signature,level.constructionResources[r]);
+                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);
+            }
 		}
 	}
 	hashValue(signature,placementPolicy.arteryRoutingEnabled);

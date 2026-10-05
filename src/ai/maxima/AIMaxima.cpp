@@ -2501,8 +2501,10 @@ void Maxima::build_policy_bids()
 	if(strategy.food.enabled && strategy.food.target_capping_enabled
 	   && food_ledger_valid)
 	{
-		survival.desired_inns=std::min(survival.desired_inns,
-			std::max(1,food_supported_inns));
+        // Feeding serves the same colony population across multiple providers.
+        // A count derived from each provider's peak demand cannot bound this
+        // target. The placement ledger checks redistributed local meal claims,
+        // including independent costs of a hybrid, before any order is issued.
 		growth.desired_swarms=std::min(growth.desired_swarms,
 			std::max(1,food_supported_swarms));
 	}
@@ -4037,8 +4039,14 @@ Maxima::collect_building_profiles() const
    v.footprint=Footprint(left,top,std::max(complete->decLeft+complete->width,placement->decLeft+placement->width)-left,std::max(complete->decTop+complete->height,placement->decTop+placement->height)-top);
    if(placement->isBuildingSite)for(int r=0;r<8;++r)v.constructionResources[r]=placement->semantics.constructionCost[r];
    const auto& semantic=complete->semantics;
+   v.foodRetirable=std::none_of(semantic.training.begin(),semantic.training.end(),[](const auto& t){return t.enabled;})
+       && !(complete->shootingRange>0 && complete->shootRhythm>0
+           && (semantic.projectileBuildingDamage>0 || std::any_of(semantic.projectileDamage.begin(),semantic.projectileDamage.end(),[](int n){return n>0;})));
    const auto& operation=operations[completeID];
    std::copy(operation.resourcePackets.begin(),operation.resourcePackets.end(),v.operatingResources);
+   v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
+   v.feedingMask=semantic.feeding.unitMask&semantic.admittedUnitMask;
+   std::copy(operation.feedingResourcePackets.begin(),operation.feedingResourcePackets.end(),v.feedingResources);
    std::copy(operation.services.begin(),operation.services.end(),v.serviceRates);
    for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled) {
     v.productionUnitMask|=1u<<unit;
@@ -4357,6 +4365,40 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		add_preemptive_hash(worldSignature,Uint32(world.index(
 			building.centerX,building.centerY)));
 	}
+    // Worker-production centers with overlapping supply catchments form one
+    // strategic colony. Recipients
+    // belong to one nearest colony, independent of how many feeders it owns.
+    std::vector<std::pair<int,int>> anchors;
+    for(const auto& b:world.buildings) {
+        const auto* p=world.profile(b.buildingType);const auto* v=p?p->atLevel(b.level):nullptr;
+        if(!b.site && v && (v->productionUnitMask&(1u<<WORKER)))anchors.emplace_back(b.centerX,b.centerY);
+    }
+    std::vector<int> parents(anchors.size());
+    for(size_t i=0;i<parents.size();++i)parents[i]=int(i);
+    const auto root=[&](int i) {while(parents[i]!=i){parents[i]=parents[parents[i]];i=parents[i];}return i;};
+    for(size_t i=0;i<anchors.size();++i)for(size_t j=0;j<i;++j)
+        if(world.wrappedManhattan(anchors[i].first,anchors[i].second,anchors[j].first,anchors[j].second)<=2*strategy.staffing.swarm_supply_radius) {
+            const int a=root(int(i)),b=root(int(j));parents[std::max(a,b)]=std::min(a,b);
+        }
+    for(size_t i=0;i<anchors.size();++i)if(root(int(i))==int(i))
+        world.feedingColonies.push_back({anchors[i].first,anchors[i].second,{}});
+    if(world.feedingColonies.empty()) {
+        const int x=world.buildings.empty()?0:world.buildings.front().centerX;
+        const int y=world.buildings.empty()?0:world.buildings.front().centerY;
+        world.feedingColonies.push_back({x,y,{}});
+    }
+    std::vector<std::array<int,3>> colonyPopulations(world.feedingColonies.size());
+    if(!runtime.player->game->gameHeader.isHungerDisabled())
+        for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.player->team->myUnits[id]) {
+            ++colonyPopulations[world.feedingColonyAt(u->posX,u->posY)][u->typeNum];
+        }
+    for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(int unit=0;unit<3;++unit)
+        world.feedingColonies[colony].demand[unit]=int(static_cast<long long>(colonyPopulations[colony][unit])
+            *AIMaximaFoodLedger::RateScale/std::max(1,strategy.food.ticks_per_meal));
+    for(const auto& colony:world.feedingColonies) {
+        add_preemptive_hash(worldSignature,Uint32(colony.x));add_preemptive_hash(worldSignature,Uint32(colony.y));
+        for(int unit=0;unit<3;++unit)add_preemptive_hash(worldSignature,Uint32(colony.demand[unit]));
+    }
 	if(signature)*signature=worldSignature;
 	return world;
 }

@@ -899,6 +899,8 @@ static void foodRelocationExecutorRegression()
     Player player; player.setTeam(game.teams[0]);
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     REQUIRE(game.addBuilding(10,10,innType,0)); REQUIRE(game.addBuilding(30,30,innType,0));
+    // Meal claims require real recipients; empty colonies have no food burden.
+    REQUIRE(game.addUnit(12,12,0,WORKER,0,0,0,0));
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
     ai.initialize_farming_cache(c); ai.configure_development_planner();

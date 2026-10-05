@@ -3,6 +3,9 @@
 // compiles unchanged against the pre-catalog engine for paired measurements.
 #include "EngineFixtures.h"
 #include "BuildingType.h"
+#include "BuildingGradientSearch.h"
+#include "Version.h"
+#include "MapInternal.h"
 #include "GlobalContainer.h"
 #include <chrono>
 #include <cstdio>
@@ -131,6 +134,76 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
         }
         std::printf("building_sim,%d,4096,%lld,%d,%d,%lld,%lld\n",repeat,
             static_cast<long long>(ns),units,buildings,static_cast<long long>(health),static_cast<long long>(stored));
+    }
+}
+
+TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
+{
+    glob2test::HeadlessGlobals globals;
+    using Clock=std::chrono::steady_clock;
+    std::printf("footprint_phase,width,phase,swim,repeat,iterations,ns,digest\n");
+    for (int shift : {5,7,9})
+    {
+        ExperimentSet experiments; experiments.set(ExperimentId::MarketsV2);
+        glob2test::HeadlessGame world({.wDec=shift,.hDec=shift,.discovered=true,
+            .loadDefaultRace=true,.header=true,.experiments=experiments});
+        auto& map=world.game.map;
+        const int width=map.getW(), size=width*width;
+        auto* inn=world.addBuilding("inn",4,4);
+        REQUIRE(world.game.addBuilding(16,16,globalContainer->buildingsTypes.getTypeNum("clearingflag",0,false),0));
+        REQUIRE(world.game.addBuilding(20,20,globalContainer->buildingsTypes.getTypeNum("warflag",0,false),0));
+        auto* supplier=world.addBuilding("market",24,24,1);
+        supplier->resources[WHEAT]=supplier->type->maxResource[WHEAT];
+        for(int y=2;y<width;y+=13) for(int x=2;x<width;x+=11)
+            if(map.getBuilding(x,y)==NOGBID) map.setResource(x,y,WHEAT,5);
+        const int iterations=std::max(8,1048576/size);
+        for(int swim : {0,3})
+        {
+            REQUIRE(map.buildingGradient(inn,swim));
+            Uint16* gradient=inn->globalGradient[swim];
+            const Uint16 gid=inn->gid;
+            const Uint32 teamMask=inn->owner->me;
+            BuildingGradientSearch search;
+            const auto seed=[&] {
+                map.initializeGradientCells([&](size_t begin,size_t end) {
+                    for(size_t i=begin;i<end;++i) {
+                        const auto& tile=map.tiles[i];
+                        if(tile.building!=NOGBID)
+                            gradient[i]=tile.building==gid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
+                        else if((tile.forbidden&teamMask) || tile.resource.type!=NO_RES_TYPE ||
+                            map.immobileUnits[i]!=IMMOBILE_UNIT_NONE ||
+                            (!map.terrainPropertiesAt(i).walkable && !(swim>0 && map.terrainPropertiesAt(i).swimmable)))
+                            gradient[i]=GRADIENT_FORBIDDEN;
+                        else gradient[i]=GRADIENT_UNREACHABLE;
+                    }
+                });
+            };
+            for(int phase=0;phase<4;++phase) {
+                seed();
+                const auto prepare=[&] {
+                    if(phase==0) map.updateGlobalGradient(inn,swim);
+                    else if(phase==1) {
+#if VERSION_MINOR >= 137
+                        map.updateGlobalGradient(inn,swim,BuildingRoute::Footprint);
+#else
+                        map.updateGlobalGradient(inn,swim);
+#endif
+                    }
+                    else if(phase==2) seed();
+                    else search.begin(map,gradient,swim);
+                };
+                prepare();
+                for(int repeat=0;repeat<11;++repeat) {
+                    const auto started=Clock::now();
+                    for(int i=0;i<iterations;++i) prepare();
+                    const auto ns=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-started).count();
+                    std::uint64_t digest=1469598103934665603ULL;
+                    for(int i=0;i<size;++i) digest=(digest^gradient[i])*1099511628211ULL;
+                    std::printf("footprint_phase,%d,%d,%d,%d,%d,%lld,%llu\n",width,phase,swim,repeat,
+                        iterations,static_cast<long long>(ns),static_cast<unsigned long long>(digest));
+                }
+            }
+        }
     }
 }
 
