@@ -1,0 +1,5 @@
+Independent subagent review identified one P2: ScreenStack::draw dispatched DOM text changes/actions after testing whether a screen was running and whether a child transition was pending. Fixed by retaining DOM synchronization solely in frame(), before transitions and SDL events. Added browser regression spying on animation-frame text dispatch.
+
+Subagent cleanup suggestions were applied: keep browser update timers independent of the render deadline, remove obsolete GameSessionScreen frameStarted state, remove duplicate include. Self-review also cached the pacer period, documented the monotonic timestamp and average-ceiling contract, consolidated queued callback scheduling and clarified shared callback lifetime.
+
+The second independent review found no remaining actionable issue and confirmed the cleanup did not introduce a correctness issue. Documentation describes timing, default/preset behavior, changed visual smoothness/work, exclusions, and the update-versus-paint DOM input contract.

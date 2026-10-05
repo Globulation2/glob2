@@ -1,0 +1,11 @@
+{
+  "tested_commit": "800c1dd4a47f07cfa09576ba4cab1df73d1c1fb0",
+  "integrated_base": "42df42802f0a7ed8729fb221d5de419657aed2b3",
+  "binary_sha256": {
+    "build/linux/client/release/src/glob2": "062a58edaabeb1e178a79288b3955546e31f798ce5a175e8747a438a97961f51",
+    "build/linux/client/release/test/glob2-engine-tests": "5a621ddadcc16af3a009ebaaae1640afdbf10a1b929758904d68aefdcc798863",
+    "build/linux/client/release/test/glob2-unit-tests": "2b441b1ffcbbb85078ba173c564d4add1264a4dd0643c06439d01393410d4450",
+    "build/emscripten/client/release/index.wasm": "b8e6de59f360835499acb522bb52050c97f4e8bd9c6e61ee8afe9efc38bb0215",
+    "build/emscripten/client/release/threaded/index.wasm": "6f60005685994ab977071c5a9ca269f4b5d333763eea65eeea6eb2b60c0c0ff8"
+  }
+}
