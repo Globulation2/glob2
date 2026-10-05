@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="../test/glob2-engine-tests" errors="0" failures="0" tests="155" time="2.79344" timestamp="2026-10-05T04:49:37Z" doctest_version="2.4.11">
+    <testcase classname="src/ui/UIPresentationHarness.cpp" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="2.79344" status="run"/>
+  </testsuite>
+</testsuites>

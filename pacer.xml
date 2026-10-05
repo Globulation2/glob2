@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/ui-capture/pacer-tests" errors="0" failures="0" tests="160109" time="0.006977" timestamp="2026-10-05T05:01:40Z" doctest_version="2.4.11">
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="caps starts precisely without catching up missed frames" time="0.006977" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="display callbacks above and below the target retain the available rate" time="0" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="minor scheduling jitter preserves the target phase" time="0" status="run"/>
+    <testcase classname="libgag/src/RenderFramePacerTest.cpp" name="waits account for frame cost; live changes reset; unlimited never waits" time="0" status="run"/>
+  </testsuite>
+</testsuites>

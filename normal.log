@@ -1,0 +1,2576 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "5c10463b59da95f060da9e1d856cd664c7f190c5", "sourceStatus": [], "sourceTreeSha256": "d548858f33038d8c8f65d8145c3b29f0e7f748377498366935e7286796a3d4c7"}
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 1032463889 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 3299422896 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 1922724459 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 3621436341 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: braided-river revision 2 seed 3954123690 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: honeycomb-isle revision 2 seed 1111512908 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 3480235168 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: caravanserai revision 3 seed 978166634 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-growth revision 4 seed 1252124142 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 3973752610 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 4 seed 1302209058 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 4039608873 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: central-quarry revision 1 seed 3306598965 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: rain-shadow revision 4 seed 841342065 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: bajada revision 1 seed 2244927309 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: continents revision 3 seed 2745206679 [validation]: This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.
+Landscape preview: carousel revision 2 seed 4153220010 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 3239728907 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: hilbert-river revision 8 seed 1474198622 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: orchard-commons revision 3 seed 3641107224 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 810541658 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: glacis revision 3 seed 1200291959 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: karst-towers revision 2 seed 3314596994 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 923808194 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: hidden-oasis revision 1 seed 1766518966 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 2507096133 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: lava-shield revision 4 seed 345796725 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+Landscape preview: savannah revision 2 seed 1092671114 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: hills revision 7 seed 2673077951 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: forts revision 7 seed 4135222034 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 2491092238 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: switchbacks revision 4 seed 667469684 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: drowned-forest revision 1 seed 1456613368 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: encircled-kingdom revision 2 seed 818013477 [validation]: Invalid colony count.
+Landscape preview: emoji revision 11 seed 52919690 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: breachable-highlands revision 5 seed 3609283333 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: braided-delta revision 3 seed 3580032515 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: coral revision 1 seed 1217045083 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: gauntlet revision 2 seed 3203558402 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: last-treeline revision 3 seed 210062007 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: hungry-marches revision 2 seed 914712171 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 3985252692 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: old-town revision 7 seed 364821596 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: locust revision 4 seed 1841826380 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 827929187 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: marchland revision 2 seed 1367042679 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 1700252808 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 360 screen/viewport combinations verified
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 1503117224 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 4157024467 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 1821423085 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 183059471 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: braided-river revision 2 seed 205861665 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: honeycomb-isle revision 2 seed 1496823074 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 4151753472 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 3553655436 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: old-growth revision 4 seed 152769809 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 989031745 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 4 seed 3170594248 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: central-quarry revision 1 seed 3443383609 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: who-ate-the-map revision 1 seed 2677255690 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: rain-shadow revision 4 seed 3156821949 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: bajada revision 1 seed 1655375390 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: carousel revision 2 seed 1681464139 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: city-states revision 10 seed 2761659570 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 2181794398 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 2171342714 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: lava-shield revision 4 seed 4060725022 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+Landscape preview: hidden-oasis revision 1 seed 1087702540 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: hills revision 7 seed 2668131559 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 3002816489 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: sierpinski-gardens revision 8 seed 2339281986 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: switchbacks revision 4 seed 4142268637 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: forts revision 7 seed 1456385178 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: drowned-forest revision 1 seed 3999490921 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: encircled-kingdom revision 2 seed 1269951545 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 727297066 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: braided-delta revision 3 seed 875608591 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: emoji revision 11 seed 3488263988 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: gauntlet revision 2 seed 3995949316 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: last-treeline revision 3 seed 2932786010 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: coral revision 1 seed 3489834389 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: hungry-marches revision 2 seed 26210146 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 1195702593 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: locust revision 4 seed 2854183480 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 3055024344 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: old-town revision 7 seed 3154105801 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 3007330217 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 2388073693 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: allotments revision 2 seed 1823892033 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: orchard-commons revision 3 seed 3111159282 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: glacis revision 3 seed 954065725 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 2862014048 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: tidal-flats revision 6 seed 2320020716 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 360 screen/viewport combinations verified
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 3881999268 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 2448407664 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 3649891363 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 383900227 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+UI presentation fixture: landscape touch=0
+Landscape preview: braided-river revision 2 seed 49131488 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: old-growth revision 4 seed 652603677 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 1040296624 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 2076929821 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: honeycomb-isle revision 2 seed 775711925 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 3608460986 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bajada revision 1 seed 1367457183 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: fingerprint revision 4 seed 803497067 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 103298683 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: rain-shadow revision 4 seed 3379105214 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: carousel revision 2 seed 356000987 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: central-quarry revision 1 seed 2142297606 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: tidal-flats revision 6 seed 3063570824 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: orchard-commons revision 3 seed 280402975 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 815830873 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 2093130177 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: glacis revision 3 seed 2966192693 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 1998781021 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 385946998 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 2217462758 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 370307173 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 4029997189 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: hungry-marches revision 2 seed 587012765 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-town revision 7 seed 3480115772 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: city-states revision 10 seed 4020544042 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 316395986 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 531422075 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 2434026604 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: hills revision 7 seed 3779864977 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 4221060426 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: lava-shield revision 4 seed 2919517956 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+Landscape preview: switchbacks revision 4 seed 4159216754 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 2859347145 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: forts revision 7 seed 868576750 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: emoji revision 11 seed 3352731553 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: encircled-kingdom revision 2 seed 3302267534 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 1326311125 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: drowned-forest revision 1 seed 2130818895 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: gauntlet revision 2 seed 3057197430 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: coral revision 1 seed 3199191398 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: last-treeline revision 3 seed 334540216 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 476558254 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+UI presentation fixture: start-quality touch=0
+UI presentation fixture: ai-profile touch=0
+UI presentation fixture: campaign-select touch=0
+UI presentation fixture: campaign-saves touch=0
+UI presentation fixture: tutorial-missions touch=0
+UI presentation fixture: campaign-editor touch=0
+UI presentation fixture: map-repeat touch=0
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=0
+UI presentation fixture: load-game touch=0
+UI presentation fixture: lan-find touch=0
+UI presentation fixture: lan-room touch=0
+UI presentation fixture: online-hub touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=0
+UI presentation fixture: online-hub-rooms touch=0
+UI presentation fixture: online-hub-leaderboard touch=0
+UI presentation fixture: online-hub-signin touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=0
+UI presentation fixture: online-hub-update touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=0
+UI presentation fixture: room-guest-map touch=0
+UI presentation fixture: room-rules touch=0
+UI presentation fixture: room-lan touch=0
+UI presentation fixture: room-unseated touch=0
+UI presentation fixture: room-premade-map touch=0
+UI presentation fixture: match-starting touch=0
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=0
+UI presentation fixture: settings-hive-mind touch=0
+UI presentation fixture: settings-recording touch=0
+UI presentation fixture: quick-match touch=0
+UI presentation fixture: quick-match-searching touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=0
+UI presentation fixture: online-maps touch=0
+UI presentation fixture: online-maps-empty touch=0
+UI presentation fixture: online-my-maps touch=0
+UI presentation fixture: map-share touch=0
+UI presentation fixture: map-share-checking touch=0
+UI presentation fixture: map-share-rejected touch=0
+UI presentation fixture: setup-options touch=0
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 2905355120 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 2367953404 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 53557318 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 1231842334 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: old-growth revision 4 seed 1589138058 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 3088560821 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: braided-river revision 2 seed 1735017467 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: bastion-keys revision 1 seed 623830837 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: honeycomb-isle revision 2 seed 1197738026 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 662318281 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 826654893 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 3314881934 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 2343033115 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: bajada revision 1 seed 2388512112 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: rain-shadow revision 4 seed 701318002 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: fingerprint revision 4 seed 919752524 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 2881500497 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: carousel revision 2 seed 3238452567 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: central-quarry revision 1 seed 2248382691 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: tidal-flats revision 6 seed 2059016476 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: orchard-commons revision 3 seed 2298739466 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 2130861295 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 2078248515 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: glacis revision 3 seed 4179390071 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 3432167994 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 1754727057 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 3926032675 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 317127737 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 995205702 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: hungry-marches revision 2 seed 3198785418 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-town revision 7 seed 524435483 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: gauntlet revision 2 seed 3701312191 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: coral revision 1 seed 2286633171 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: last-treeline revision 3 seed 2670378909 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 2786306853 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: emoji revision 11 seed 2754450407 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: encircled-kingdom revision 2 seed 2274582185 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 3057248283 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: drowned-forest revision 1 seed 2067102217 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 250168183 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 3607395741 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: forts revision 7 seed 122938267 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hills revision 7 seed 907087440 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 3148717677 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: rice-terraces revision 3 seed 2487678385 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: lava-shield revision 4 seed 592154639 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 720 screen/viewport combinations verified
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 4164470869 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 948403595 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 1128895936 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 1314230034 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+UI presentation fixture: landscape touch=0
+Landscape preview: old-growth revision 4 seed 565391885 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 53576603 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: braided-river revision 2 seed 1380575531 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: faulted-city revision 3 seed 3627920593 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 791830473 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: honeycomb-isle revision 2 seed 394784156 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 3317898162 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 1178730803 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 4101109831 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: bajada revision 1 seed 1445113791 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: fingerprint revision 4 seed 449021314 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 3084344361 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: carousel revision 2 seed 2081783691 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: rain-shadow revision 4 seed 1464892044 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: central-quarry revision 1 seed 2998438823 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: tidal-flats revision 6 seed 3115316730 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: orchard-commons revision 3 seed 3268069946 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 3746346101 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 1410841887 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: glacis revision 3 seed 2409219749 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 354058765 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 2287608951 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 3605378595 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 2722709279 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 1626640576 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: hungry-marches revision 2 seed 3104069881 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-town revision 7 seed 2744094763 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: gauntlet revision 2 seed 2906605004 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: coral revision 1 seed 2222553813 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: last-treeline revision 3 seed 4059694354 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 539265577 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: emoji revision 11 seed 38829509 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: encircled-kingdom revision 2 seed 2373637041 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 580506159 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: drowned-forest revision 1 seed 2832511882 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 3491154911 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 505121841 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: forts revision 7 seed 924238228 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hills revision 7 seed 3343164402 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 3444166173 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: lava-shield revision 4 seed 4154449156 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+Landscape preview: rice-terraces revision 3 seed 431586990 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+UI presentation fixture: start-quality touch=0
+UI presentation fixture: ai-profile touch=0
+UI presentation fixture: campaign-select touch=0
+UI presentation fixture: campaign-saves touch=0
+UI presentation fixture: tutorial-missions touch=0
+UI presentation fixture: campaign-editor touch=0
+UI presentation fixture: map-repeat touch=0
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=0
+UI presentation fixture: load-game touch=0
+UI presentation fixture: lan-find touch=0
+UI presentation fixture: lan-room touch=0
+UI presentation fixture: online-hub touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=0
+UI presentation fixture: online-hub-rooms touch=0
+UI presentation fixture: online-hub-leaderboard touch=0
+UI presentation fixture: online-hub-signin touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=0
+UI presentation fixture: online-hub-update touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=0
+UI presentation fixture: room-guest-map touch=0
+UI presentation fixture: room-rules touch=0
+UI presentation fixture: room-lan touch=0
+UI presentation fixture: room-unseated touch=0
+UI presentation fixture: room-premade-map touch=0
+UI presentation fixture: match-starting touch=0
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=0
+UI presentation fixture: settings-hive-mind touch=0
+UI presentation fixture: settings-recording touch=0
+UI presentation fixture: quick-match touch=0
+UI presentation fixture: quick-match-searching touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=0
+UI presentation fixture: online-maps touch=0
+UI presentation fixture: online-maps-empty touch=0
+UI presentation fixture: online-my-maps touch=0
+UI presentation fixture: map-share touch=0
+UI presentation fixture: map-share-checking touch=0
+UI presentation fixture: map-share-rejected touch=0
+UI presentation fixture: setup-options touch=0
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 96024612 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 368874915 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 3476419394 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 3853710429 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: braided-river revision 2 seed 785685565 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: old-growth revision 4 seed 714642017 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 421485618 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 4115325514 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: honeycomb-isle revision 2 seed 3714266903 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 3317076531 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 4 seed 1223236037 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 1270420450 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: bajada revision 1 seed 2682219801 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: central-quarry revision 1 seed 1788493037 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: rain-shadow revision 4 seed 2231807340 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: carousel revision 2 seed 3265105839 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 2585841163 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: orchard-commons revision 3 seed 2425297111 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 330786931 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 811723245 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: glacis revision 3 seed 1376794078 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 1488799832 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 4227725329 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 2351256198 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 3066279841 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 3682129331 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: hungry-marches revision 2 seed 3600061330 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-town revision 7 seed 177302187 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: gauntlet revision 2 seed 1988004093 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: coral revision 1 seed 1220251951 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: last-treeline revision 3 seed 532451892 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 2843378177 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: emoji revision 11 seed 1831771606 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: encircled-kingdom revision 2 seed 2635880 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 327749440 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: drowned-forest revision 1 seed 4124899245 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 3175962761 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 2432514259 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: forts revision 7 seed 3459865876 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hills revision 7 seed 415962062 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 1002453785 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: lava-shield revision 4 seed 2904037095 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+Landscape preview: hidden-oasis revision 1 seed 3056185970 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 2128081931 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: city-states revision 10 seed 350584709 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 215654426 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 720 screen/viewport combinations verified
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 1230699310 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 1883924740 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 3748456597 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 3834848520 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+UI presentation fixture: landscape touch=0
+Landscape preview: old-growth revision 4 seed 2281481485 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 1935641792 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: braided-river revision 2 seed 6731561 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: faulted-city revision 3 seed 3531686524 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 602573768 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: honeycomb-isle revision 2 seed 2623795539 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 1625616602 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: karst-towers revision 2 seed 1196504609 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 72735984 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 3958572972 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: bajada revision 1 seed 883512541 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: fingerprint revision 4 seed 1861549024 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: who-ate-the-map revision 1 seed 1645903637 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: carousel revision 2 seed 458291280 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: rain-shadow revision 4 seed 696086130 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: central-quarry revision 1 seed 2966095258 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: continents revision 3 seed 2290056548 [validation]: This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 1004604441 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: orchard-commons revision 3 seed 3886890176 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: allotments revision 2 seed 909053891 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hilbert-river revision 8 seed 2724846163 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: glacis revision 3 seed 219562245 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 2379758423 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: marchland revision 2 seed 2368300207 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 2438036449 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 1074028111 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 1651454154 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: hungry-marches revision 2 seed 3866763948 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: old-town revision 7 seed 2089389097 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: gauntlet revision 2 seed 1458614893 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: coral revision 1 seed 599094231 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: last-treeline revision 3 seed 3848009391 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 2663178161 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: emoji revision 11 seed 3405719319 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: encircled-kingdom revision 2 seed 2544567332 [validation]: Invalid colony count.
+Landscape preview: breachable-highlands revision 5 seed 1943861414 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: drowned-forest revision 1 seed 909457244 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 1391354486 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: sierpinski-gardens revision 8 seed 2651663810 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: forts revision 7 seed 298996839 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hills revision 7 seed 1061421714 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 2213575847 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: lava-shield revision 4 seed 1472170010 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+UI presentation fixture: start-quality touch=0
+UI presentation fixture: ai-profile touch=0
+UI presentation fixture: campaign-select touch=0
+UI presentation fixture: campaign-saves touch=0
+UI presentation fixture: tutorial-missions touch=0
+UI presentation fixture: campaign-editor touch=0
+UI presentation fixture: map-repeat touch=0
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=0
+UI presentation fixture: load-game touch=0
+UI presentation fixture: lan-find touch=0
+UI presentation fixture: lan-room touch=0
+UI presentation fixture: online-hub touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=0
+UI presentation fixture: online-hub-rooms touch=0
+UI presentation fixture: online-hub-leaderboard touch=0
+UI presentation fixture: online-hub-signin touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=0
+UI presentation fixture: online-hub-update touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=0
+UI presentation fixture: room-guest-map touch=0
+UI presentation fixture: room-rules touch=0
+UI presentation fixture: room-lan touch=0
+UI presentation fixture: room-unseated touch=0
+UI presentation fixture: room-premade-map touch=0
+UI presentation fixture: match-starting touch=0
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=0
+UI presentation fixture: settings-hive-mind touch=0
+UI presentation fixture: settings-recording touch=0
+UI presentation fixture: quick-match touch=0
+UI presentation fixture: quick-match-searching touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=0
+UI presentation fixture: online-maps touch=0
+UI presentation fixture: online-maps-empty touch=0
+UI presentation fixture: online-my-maps touch=0
+UI presentation fixture: map-share touch=0
+UI presentation fixture: map-share-checking touch=0
+UI presentation fixture: map-share-rejected touch=0
+UI presentation fixture: setup-options touch=0
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 3926283983 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 1398812314 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 3891875846 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 1258152187 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: bastion-keys revision 1 seed 3671011619 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: braided-river revision 2 seed 340599068 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: old-growth revision 4 seed 3254286020 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: karst-towers revision 2 seed 2137611131 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: honeycomb-isle revision 2 seed 361379953 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: caravanserai revision 3 seed 572874350 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 3600226687 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: faulted-city revision 3 seed 3334027060 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 2107930548 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 1585157396 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: fingerprint revision 4 seed 2726207119 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: rain-shadow revision 4 seed 3730896536 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: bajada revision 1 seed 3422185321 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: who-ate-the-map revision 1 seed 1941467068 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: central-quarry revision 1 seed 3551514411 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: carousel revision 2 seed 3917113254 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 17739421 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: hilbert-river revision 8 seed 1469854366 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: orchard-commons revision 3 seed 1366223306 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: glacis revision 3 seed 3318239545 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 2149994018 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: allotments revision 2 seed 3669791846 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: marchland revision 2 seed 3720792363 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 455700838 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 3105709174 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hungry-marches revision 2 seed 1466212911 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 1906460913 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: old-town revision 7 seed 1534297600 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: last-treeline revision 3 seed 2626382453 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 1804109102 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: coral revision 1 seed 3035237206 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: breachable-highlands revision 5 seed 1798966526 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: gauntlet revision 2 seed 765724716 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: emoji revision 11 seed 2992198596 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: drowned-forest revision 1 seed 3790229600 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 4229629313 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: encircled-kingdom revision 2 seed 3171657715 [validation]: Invalid colony count.
+Landscape preview: sierpinski-gardens revision 8 seed 2115007793 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: hills revision 7 seed 3120435369 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 3515764458 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: forts revision 7 seed 3029682832 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: lava-shield revision 4 seed 3426688836 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 720 screen/viewport combinations verified
+Settings::load("preferences.txt") : error, can't open file.
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 1347562009 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 459849165 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 1252579803 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 962066573 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+UI presentation fixture: landscape touch=0
+Landscape preview: old-growth revision 4 seed 3587472880 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 1892572519 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: braided-river revision 2 seed 1588128458 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: karst-towers revision 2 seed 3370715799 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: city-states revision 10 seed 1840117744 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: caravanserai revision 3 seed 3333436007 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: honeycomb-isle revision 2 seed 3009090663 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 2690611537 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 1694123844 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 1124338382 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: rain-shadow revision 4 seed 3786225741 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: bajada revision 1 seed 1896073580 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: fingerprint revision 4 seed 2782049642 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: central-quarry revision 1 seed 3758463555 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: who-ate-the-map revision 1 seed 100549532 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: carousel revision 2 seed 2900721954 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 324104473 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: hilbert-river revision 8 seed 3569589365 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: orchard-commons revision 3 seed 1181317358 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: glacis revision 3 seed 448249289 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 2355980632 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: allotments revision 2 seed 4051840752 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: marchland revision 2 seed 1574007413 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 4230340160 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 699780343 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hungry-marches revision 2 seed 2734558002 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 604195490 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: old-town revision 7 seed 2033962884 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: last-treeline revision 3 seed 1696440996 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 1422754593 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: coral revision 1 seed 2209046270 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: breachable-highlands revision 5 seed 220371378 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: gauntlet revision 2 seed 3737577902 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: emoji revision 11 seed 3491114531 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: drowned-forest revision 1 seed 1057880799 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 1985898792 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: encircled-kingdom revision 2 seed 4183778374 [validation]: Invalid colony count.
+Landscape preview: sierpinski-gardens revision 8 seed 3395918245 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: hills revision 7 seed 1621280247 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 3579190620 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: forts revision 7 seed 2469231110 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: lava-shield revision 4 seed 2819846306 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+UI presentation fixture: start-quality touch=0
+UI presentation fixture: ai-profile touch=0
+UI presentation fixture: campaign-select touch=0
+UI presentation fixture: campaign-saves touch=0
+UI presentation fixture: tutorial-missions touch=0
+UI presentation fixture: campaign-editor touch=0
+UI presentation fixture: map-repeat touch=0
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=0
+UI presentation fixture: load-game touch=0
+UI presentation fixture: lan-find touch=0
+UI presentation fixture: lan-room touch=0
+UI presentation fixture: online-hub touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=0
+UI presentation fixture: online-hub-rooms touch=0
+UI presentation fixture: online-hub-leaderboard touch=0
+UI presentation fixture: online-hub-signin touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=0
+UI presentation fixture: online-hub-update touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=0
+UI presentation fixture: room-guest-map touch=0
+UI presentation fixture: room-rules touch=0
+UI presentation fixture: room-lan touch=0
+UI presentation fixture: room-unseated touch=0
+UI presentation fixture: room-premade-map touch=0
+UI presentation fixture: match-starting touch=0
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=0
+UI presentation fixture: settings-hive-mind touch=0
+UI presentation fixture: settings-recording touch=0
+UI presentation fixture: quick-match touch=0
+UI presentation fixture: quick-match-searching touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=0
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=0
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=0
+UI presentation fixture: online-maps touch=0
+UI presentation fixture: online-maps-empty touch=0
+UI presentation fixture: online-my-maps touch=0
+UI presentation fixture: map-share touch=0
+UI presentation fixture: map-share-checking touch=0
+UI presentation fixture: map-share-rejected touch=0
+UI presentation fixture: setup-options touch=0
+UI presentation fixture: main-menu touch=1
+UI presentation fixture: main-menu-more touch=1
+UI presentation fixture: campaign-menu touch=1
+UI presentation fixture: editor-menu touch=1
+UI presentation fixture: lan-menu touch=1
+UI presentation fixture: credits touch=1
+UI presentation fixture: message touch=1
+UI presentation fixture: settings touch=1
+UI presentation fixture: custom-game touch=1
+Map generation: fingerprint revision 4 seed 3474632176 [complete]: 
+UI presentation fixture: custom-game-players touch=1
+Map generation: fingerprint revision 4 seed 2821544959 [complete]: 
+UI presentation fixture: custom-game-rules touch=1
+Map generation: fingerprint revision 4 seed 1208657387 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=1
+Map generation: fingerprint revision 4 seed 736405576 [complete]: 
+UI presentation fixture: ruleset-choice touch=1
+UI presentation fixture: new-map touch=1
+UI presentation fixture: landscape-navigation touch=1
+UI presentation fixture: landscape touch=1
+Landscape preview: old-growth revision 4 seed 3786186314 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: karst-towers revision 2 seed 4218222585 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: bastion-keys revision 1 seed 242181981 [validation]: Bastion Keys need at least 128 tiles on each side.
+Landscape preview: braided-river revision 2 seed 3658381664 [validation]: The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.
+Landscape preview: city-states revision 10 seed 3713416067 [validation]: The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.
+Landscape preview: caravanserai revision 3 seed 1668129895 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: honeycomb-isle revision 2 seed 1929512392 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: faulted-city revision 3 seed 4123958877 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hidden-oasis revision 1 seed 2271903071 [validation]: The massif does not fit this map; use a bigger map or fewer colonies.
+Landscape preview: rice-terraces revision 3 seed 2204291289 [validation]: A hillside has no room for a terrace; use a bigger map, fewer hillsides, smaller towns or narrower terraces.
+Landscape preview: rain-shadow revision 4 seed 647860671 [validation]: The valleys are too narrow for the homes; use fewer ridges, thinner ridges or a bigger map.
+Landscape preview: bajada revision 1 seed 540110746 [validation]: The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.
+Landscape preview: fingerprint revision 4 seed 2859426675 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: carousel revision 2 seed 3341253707 [validation]: The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.
+Landscape preview: tidal-flats revision 6 seed 1757866779 [validation]: The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.
+Landscape preview: central-quarry revision 1 seed 359721673 [validation]: The lake does not fit this map; use a smaller lake or a bigger map.
+Landscape preview: who-ate-the-map revision 1 seed 2695909748 [validation]: Who Ate the Map? needs 128–512 tile sides, an aspect ratio at most 2:1, and at most 4 colonies on a 128-tile side or 8 on larger maps.
+Landscape preview: hilbert-river revision 8 seed 2261872701 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: orchard-commons revision 3 seed 2899809742 [validation]: Orchard Commons needs 128 to 512 tile sides and an aspect ratio at most 2:1.
+Landscape preview: glacis revision 3 seed 2815459444 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: amphitheatre revision 3 seed 2290164442 [validation]: The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.
+Landscape preview: allotments revision 2 seed 1995218282 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: marchland revision 2 seed 411265849 [validation]: Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.
+Landscape preview: hedgerow-country revision 7 seed 1161069647 [validation]: Use at least two fields along each axis and at most one colony per field; increase map size or reduce field size or colonies.
+Landscape preview: locust revision 4 seed 133757281 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: hungry-marches revision 2 seed 785587802 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: comb revision 4 seed 3860816076 [validation]: The Comb needs sides of 256 or 512 tiles.
+Landscape preview: old-town revision 7 seed 1563276437 [validation]: The city has too few blocks for this many colonies; use a bigger city, smaller blocks or fewer colonies.
+Landscape preview: last-treeline revision 3 seed 3100807867 [validation]: The Last Treeline needs 256 or 512 tile sides.
+Landscape preview: braided-delta revision 3 seed 2902035838 [validation]: The braid channels leave too little island ground; enlarge the map or reduce braid count or island size.
+Landscape preview: coral revision 1 seed 3319555260 [validation]: Coral needs a map at least 128 tiles across.
+Landscape preview: breachable-highlands revision 5 seed 351543113 [validation]: Breachable highlands needs both sides at least 128 tiles long.
+Landscape preview: gauntlet revision 2 seed 1202152968 [validation]: The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.
+Landscape preview: emoji revision 11 seed 2596423386 [validation]: Emoji needs a square map of at least 256 tiles and at most 8 colonies.
+Landscape preview: drowned-forest revision 1 seed 3561349821 [validation]: Drowned Forest needs 128–512 tile sides, square or 2:1.
+Landscape preview: switchbacks revision 4 seed 3235501291 [validation]: The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.
+Landscape preview: encircled-kingdom revision 2 seed 505677024 [validation]: Invalid colony count.
+Landscape preview: sierpinski-gardens revision 8 seed 3081044417 [validation]: Fractal maps support 128–512 tiles per axis and 2–8 colonies.
+Landscape preview: hills revision 7 seed 1137166432 [validation]: Hills need room for a summit, a full crop/water band and valleys; use a larger map, fewer hills, narrower bands or a larger hill radius.
+Landscape preview: savannah revision 2 seed 62205519 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+Landscape preview: forts revision 7 seed 1072786290 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: lava-shield revision 4 seed 1424557747 [validation]: Lava shield needs 128–512 tile sides and an aspect ratio no greater than 2:1.
+UI presentation fixture: start-quality touch=1
+UI presentation fixture: ai-profile touch=1
+UI presentation fixture: campaign-select touch=1
+UI presentation fixture: campaign-saves touch=1
+UI presentation fixture: tutorial-missions touch=1
+UI presentation fixture: campaign-editor touch=1
+UI presentation fixture: map-repeat touch=1
+StringTable::getString("Size and parameters, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+StringTable::getString("Reset, -1") : error, no such key.
+UI presentation fixture: load-map touch=1
+UI presentation fixture: load-game touch=1
+UI presentation fixture: lan-find touch=1
+UI presentation fixture: lan-room touch=1
+UI presentation fixture: online-hub touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-searching touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-registered touch=1
+UI presentation fixture: online-hub-rooms touch=1
+UI presentation fixture: online-hub-leaderboard touch=1
+UI presentation fixture: online-hub-signin touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-signin-blocked touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-offline touch=1
+UI presentation fixture: online-hub-update touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-server-behind touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-hub-trust touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: room-host touch=1
+UI presentation fixture: room-guest-map touch=1
+UI presentation fixture: room-rules touch=1
+UI presentation fixture: room-lan touch=1
+UI presentation fixture: room-unseated touch=1
+UI presentation fixture: room-premade-map touch=1
+UI presentation fixture: match-starting touch=1
+Online match 9d0c4b1a-0000-4c2e-9a10-000000000001: the match assignment is invalid: /schemaVersion: is required
+UI presentation fixture: settings-online touch=1
+UI presentation fixture: settings-hive-mind touch=1
+UI presentation fixture: settings-recording touch=1
+UI presentation fixture: quick-match touch=1
+UI presentation fixture: quick-match-searching touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Marchland, -1") : error, no such key.
+UI presentation fixture: match-found touch=1
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+StringTable::getString("Even Ground, -1") : error, no such key.
+UI presentation fixture: match-found-ai touch=1
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+StringTable::getString("Symmetric arena, -1") : error, no such key.
+UI presentation fixture: online-profile touch=1
+UI presentation fixture: online-maps touch=1
+UI presentation fixture: online-maps-empty touch=1
+UI presentation fixture: online-my-maps touch=1
+UI presentation fixture: map-share touch=1
+UI presentation fixture: map-share-checking touch=1
+UI presentation fixture: map-share-rejected touch=1
+UI presentation fixture: setup-options touch=1
+PASS ui presentation: 720 screen/viewport combinations verified

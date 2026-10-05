@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="643" time="3.80589" timestamp="2026-10-05T05:15:47Z" doctest_version="2.4.11">
+    <testcase classname="src/ui/UIPresentationHarness.cpp" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="0.722095" status="run"/>
+    <testcase classname="src/ui/UIPresentationHarness.cpp" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="0.712672" status="run"/>
+    <testcase classname="src/ui/UIPresentationHarness.cpp" name="every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="2.37112" status="run"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="../test/glob2-engine-tests" errors="0" failures="1" tests="36" time="1.89182" timestamp="2026-10-05T04:50:44Z" doctest_version="2.4.11">
+    <testcase classname="src/ui/UIPresentationHarness.cpp" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="1.89182" status="run">
+      <failure message="false" type="REQUIRE">
+src/ui/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast&lt;bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: main-menu small-landscape touch=1 text=100 bottom=0: screenshot was not retained
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
