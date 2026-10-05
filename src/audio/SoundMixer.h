@@ -16,6 +16,7 @@
 #include "MusicTrack.h"
 #include "PlayerVoice.h"
 
+namespace Music { class Preview; }
 class OrderVoiceData;
 
 class SoundMixer
@@ -92,6 +93,10 @@ public:
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	
 	void stopMusic(void);
+    // A screen-owned preview temporarily replaces music while retaining gameplay
+    // cursor/mood state. Guard lifetime and control changes with the stream lock.
+    Music::Preview* preview = nullptr;
+    void setPreview(Music::Preview* value);
 	
 	//! Tells whether the given player is being heard in voip
 	bool isPlayerTransmittingVoice(int player);

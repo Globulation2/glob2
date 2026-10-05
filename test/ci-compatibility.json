@@ -21,7 +21,8 @@
     "GameDiagnostics/*",
     "WinProbability/*",
     "AIRules/*",
-    "MusicSet/*"
+    "MusicSet/*",
+    "CommunityMusic/*"
   ],
   "unit_filters": [
     "*"

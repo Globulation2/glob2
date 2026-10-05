@@ -7,7 +7,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "python3 ../../../tools/music/build_web.py && vite build",
     "preview": "vite preview",
     "e2e": "playwright test -c e2e/playwright.config.ts",
     "e2e:server": "node e2e/server.ts"

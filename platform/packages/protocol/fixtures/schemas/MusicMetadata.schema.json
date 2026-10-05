@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicMetadata",
+  "title": "MusicMetadata",
+  "type": "object",
+  "required": [
+    "title",
+    "artist",
+    "description",
+    "license",
+    "credits",
+    "sources",
+    "tags",
+    "aiGenerated"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "artist": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 4000,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "license": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "CC0-1.0"
+        },
+        {
+          "type": "string",
+          "const": "CC-BY-4.0"
+        },
+        {
+          "type": "string",
+          "const": "CC-BY-SA-4.0"
+        }
+      ]
+    },
+    "credits": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 4000,
+      "pattern": "^[^\\u0000]*$"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https?://[^\\s]+$",
+        "maxLength": 2048
+      },
+      "maxItems": 20
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32,
+        "pattern": "^[^\\u0000]*$"
+      },
+      "maxItems": 12,
+      "uniqueItems": true
+    },
+    "aiGenerated": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

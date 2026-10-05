@@ -171,6 +171,32 @@ services:
   # One service per sim version served. To keep serving an older version (its
   # verify-match jobs, its rooms), add a second service with that version's
   # image; see docs/hosting/README.md, "Sim versions".
+  music-worker:
+    <<: *hardening
+    image: ${GLOB2_MUSIC_IMAGE:-glob2-music-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: music-worker
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      RELAY_KEYS_FILE: ''
+      ENGINE_AGENT_KEYS_FILE: ''
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend]
+    tmpfs: ['/tmp:size=6g,mode=1777']
+    mem_limit: 12g
+    cpus: 2
+    pids_limit: 64
+    stop_grace_period: 32m
+    depends_on:
+      init: {condition: service_completed_successfully}
+
   ai-map-worker:
     <<: *hardening
     profiles: [ai-maps]

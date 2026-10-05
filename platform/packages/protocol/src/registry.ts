@@ -1,3 +1,4 @@
+import { musicSchemas } from './music.ts';
 import { studioSchemas } from './mapStudio.ts';
 import { hiveSchemas } from './hive.ts';
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
@@ -163,6 +164,7 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
+  ...Object.fromEntries(Object.entries(musicSchemas).map(([name, schema]) => [name, { schema }])),
   SkinReportInfo: { schema: SkinReportInfo },
   SkinReportList: { schema: SkinReportList },
   SkinReportRequest: { schema: SkinReportRequest },

@@ -1,3 +1,4 @@
+import { musicRoutes } from './music/routes.ts';
 import { skinBillingRoutes } from './skins/billing/routes.ts';
 import { studioRoutes } from './maps/studio.ts';
 import { hiveRoutes } from './hive/routes.ts';
@@ -249,6 +250,7 @@ export async function buildApp(
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
+  await musicRoutes(app, identity);
   await skinRoutes(app, identity);
   await skinBillingRoutes(app, identity);
   await historyRoutes(app, identity);

@@ -892,7 +892,34 @@ export interface StudioAttemptsTable {
   created_at: Timestamp;
 }
 
+export interface MusicReleasesTable {
+  id: string;
+  owner_id: string;
+  metadata: Json<import('@glob2/protocol').MusicMetadata>;
+  status: Defaulted<import('@glob2/protocol').MusicRelease['status']>;
+  sources: DefaultedJson<Record<string, string>>;
+  inspection: NullableJson<NonNullable<import('@glob2/protocol').MusicRelease['inspection']>>;
+  result: NullableJson<import('@glob2/protocol').MusicTrack[] | Record<string, JsonValue>>;
+  options: NullableJson<import('@glob2/protocol').MusicConvert>;
+  error: Nullable<string>;
+  hidden: Defaulted<boolean>;
+  downloads: Defaulted<number>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
 export interface Database {
+  music_releases: MusicReleasesTable;
+  music_assets: { release_id: string; kind: string; sha256: string };
+  music_likes: { release_id: string; account_id: string };
+  music_reports: {
+    id: Generated<string>;
+    release_id: string;
+    account_id: string;
+    reason: string;
+    resolved: Defaulted<boolean>;
+    created_at: Timestamp;
+  };
+
   colony_skin_reports: ColonySkinReportsTable;
   colony_skin_drafts: ColonySkinDraftsTable;
   skin_purchases: SkinPurchasesTable;

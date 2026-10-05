@@ -23,7 +23,14 @@ add method-specific tools on top of it):
 The recipe contract: ``sets/<id>/recipe.py`` defines ``build(ctx) -> Trio`` returning
 un-mastered float audio; the shared stages master, encode, preview and check it.
 """
-from .audio import Trio, read_trio, write_trio
+# Community conversion without mastering only needs the standard library and
+# FFmpeg. Load scientific libraries only for callers requesting array helpers.
+def __getattr__(name):
+    if name in ('Trio', 'read_trio', 'write_trio'):
+        from . import audio
+        return getattr(audio, name)
+    raise AttributeError(name)
+
 from .spec import DEFAULT_SPEC, MOODS, SAMPLE_RATE, TrioSpec
 
 __all__ = ['DEFAULT_SPEC', 'MOODS', 'SAMPLE_RATE', 'Trio', 'TrioSpec', 'read_trio', 'write_trio']

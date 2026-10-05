@@ -227,6 +227,7 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    music: Type.Optional(Open({ releases: ExportRows, likes: ExportRows, reports: ExportRows })),
     maps: Open({
       published: ExportRows,
       likes: ExportRows,

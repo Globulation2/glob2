@@ -953,3 +953,41 @@ wheat/timber, buildable ground and fertile grass. These are minimum opening chec
 not proof of competitive balance, long-term economy or human enjoyment. Qualify
 model outputs with modern-AI games, sustained growth checks and human play review
 before enabling sales. See the hosting guide for flags, credentials and recovery.
+
+## Community music
+
+`@glob2/music` owns release views, source retention and streaming ZIP export;
+`protocol/src/music.ts` defines portable JSON schemas and generated fixtures.
+`apps/api/src/music/routes.ts` exposes `/api/v1/music` for catalogue search,
+creator drafts, uploads, inspection/conversion/publication, likes, reports and
+individual/set/bulk downloads. Browsing, playback and downloads are anonymous;
+publishing and reversible likes require registered accounts. Likes are the
+rating, with one row per account/release. Search covers title, artist, description
+and tags, with tag, licence, AI and duration filters. Pagination orders by score,
+creation time and UUID; clients retain selected UUIDs across result pages.
+
+`apps/music-worker` independently consumes `music-inspect` and `music-convert`
+Graphile jobs. It never leases simulation-version engine jobs. It stages sources
+from the private `music-uploads/` namespace, invokes `glob2music.community`, then
+stores final audio, cover, waveform summaries and ZIPs in the content-addressed
+blob store. PostgreSQL holds release metadata, processing state, likes, reports
+and `music_assets` references. Response envelopes also include waveform peaks.
+Original uploads and PCM are deleted after conversion, cancellation or terminal
+failure; the scheduler expires abandoned uploads after 24 hours and sweeps orphan
+source blobs. A release advisory lock and conditional state transitions make
+repeated job delivery safe, including cancellation during conversion.
+
+Published content and embedded tags are immutable. Creators withdraw releases;
+moderators hide/unhide them through the Music administration tab and resolve
+reports with an audit entry. Unavailable releases are removed from public lists
+and every media/download route. Their previously installed copies remain local.
+Private previews and public files pass through release visibility checks instead
+of the generic public blob endpoint. Music asset references protect retained
+files from blob garbage collection.
+
+The React catalogue and dedicated game screens share Calm/Building/Combat labels,
+waveform colors, preview controls and primary action placement. The website's
+AudioWorklet receives bounded mixed PCM from a WASM build of the native preview
+code. See [music pipeline](../assets/music-pipeline.md#community-releases) for the
+self-contained file format and [hosting](../hosting/README.md#music-worker) for
+operational limits.

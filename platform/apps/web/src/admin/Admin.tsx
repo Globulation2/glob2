@@ -1,3 +1,4 @@
+import { MusicReports } from '../music/Moderation.tsx';
 import { SkinReports } from '../skins/Moderation.tsx';
 // Minimal moderation (plan M8): accounts (search, rename, mute, ban), match
 // lookup and map/skin report queues. Moderators may rename and mute;
@@ -19,6 +20,7 @@ import { Link, useRouter } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
 
 const TABS = [
+  { id: 'music', name: 'Music reports' },
   { id: 'accounts', name: 'Accounts' },
   { id: 'matches', name: 'Matches' },
   { id: 'reports', name: 'Map reports' },
@@ -384,6 +386,7 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'matches' && <Matches />}
       {current === 'reports' && <Reports />}
       {current === 'skins' && <SkinReports />}
+      {current === 'music' && <MusicReports />}
     </>
   );
 }

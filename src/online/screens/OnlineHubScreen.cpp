@@ -753,7 +753,7 @@ void OnlineHubScreen::openAccountMenu(bool open)
 void OnlineHubScreen::openSettings()
 {
 	accountMenu = false;
-	auto settings = std::make_unique<SettingsScreen>();
+	auto settings = std::make_unique<SettingsScreen>(&screens);
 	settings->selectCategory(SettingsScreen::Category::Online);
 	screens.push(std::move(settings), [this](GAGGUI::Screen &, int) {
 		syncFromClient();
