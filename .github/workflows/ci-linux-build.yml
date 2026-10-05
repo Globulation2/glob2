@@ -172,8 +172,14 @@ jobs:
           mkdir -p artifacts/ci-native
           python3 .github/scripts/ci_build_provenance.py write --compiler '${{ inputs.compiler }}'
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --output artifacts/ci-native/runtime-packages.txt
-          find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0 |
-            tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
+          # Consumers run without rebuilding; ship the generated WebP tree
+          # together with the executables that name it in their build config.
+          test -d build/linux/client/release/runtime-assets/data
+          {
+            find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0
+            find build/linux/client/release/runtime-assets -type f -print0
+            printf '%s\0' build/linux/client/release/runtime-assets.json
+          } | tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
         id: upload_linux_test_programs
         if: steps.package_linux_test_programs.outcome == 'success'
