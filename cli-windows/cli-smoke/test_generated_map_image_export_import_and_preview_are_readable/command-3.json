@@ -1,0 +1,19 @@
+{
+  "args": [
+    "--import-map-image",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/map.png",
+    "--output",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/imported.map",
+    "--teams",
+    "2",
+    "--width",
+    "128",
+    "--height",
+    "128",
+    "--preview",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/preview.png"
+  ],
+  "status": 0,
+  "stdout": "Image import: {\"seam_width\":4,\"seam_terrain_changes\":18,\"seam_shore_changes\":5,\"seam_resource_changes\":0,\"resource_seam_fallback\":true,\"markers\":2,\"ignored_markers\":0,\"terrain_changes\":20,\"cleared_resources\":0,\"dropped_resources\":7}\nPreview: D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/preview.png (128x128 tiles)\nMap: D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/imported.map.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n"
+}

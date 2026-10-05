@@ -1,0 +1,32 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability",
+    "--ticks",
+    "64",
+    "--compute-threads",
+    "1",
+    "--telemetry",
+    "checksums",
+    "--replay",
+    "true",
+    "--save",
+    "final",
+    "--map-file",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--win-probability",
+    "970",
+    "--save",
+    "every:32"
+  ],
+  "status": 0,
+  "stdout": "nox::game started\ncheckpoint: wrote D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-32.game.gz\nnox::gui.game.checkSum() = e1a95ca5\ncheckpoint: wrote D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability/checkpoint-64.game.gz\nautomaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds\nGLOB2_GAME_END ticks=64 winner_team=-1 seed=713 map=\"source\" orders=8 players=team0:Castor,team1:Cortex\nfinal: wrote D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability\\final.game.gz\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n"
+}

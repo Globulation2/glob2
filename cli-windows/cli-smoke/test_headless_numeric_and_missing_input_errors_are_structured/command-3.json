@@ -1,0 +1,16 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-2",
+    "--map-file",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/missing.map",
+    "--game-seed",
+    "713",
+    "--player",
+    "castor"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\ninput file does not exist\n"
+}

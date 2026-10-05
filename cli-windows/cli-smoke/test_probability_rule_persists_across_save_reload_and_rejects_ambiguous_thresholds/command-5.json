@@ -1,0 +1,20 @@
+{
+  "args": [
+    "--run-game",
+    "--map-file",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/source.map.gz",
+    "--player",
+    "castor",
+    "--player",
+    "cortex",
+    "--ticks",
+    "64",
+    "--win-probability",
+    "0",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds/probability-invalid-0"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\ninvalid integer: \n"
+}

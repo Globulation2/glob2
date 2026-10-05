@@ -1,0 +1,12 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-1",
+    "--compute-threads",
+    "-1"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nchoose exactly one of --map-file and --load-game\n"
+}

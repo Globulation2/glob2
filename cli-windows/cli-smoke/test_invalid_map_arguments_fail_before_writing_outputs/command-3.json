@@ -1,0 +1,11 @@
+{
+  "args": [
+    "--generate-map",
+    "river",
+    "--width",
+    "not-a-number"
+  ],
+  "status": 1,
+  "stdout": "",
+  "stderr": "Map command: Specify an output path; use --generate-map --help\n"
+}

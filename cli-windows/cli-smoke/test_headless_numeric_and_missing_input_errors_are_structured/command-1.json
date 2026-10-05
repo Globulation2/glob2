@@ -1,0 +1,12 @@
+{
+  "args": [
+    "--run-game",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_headless_numeric_and_missing_input_errors_are_structured/invalid-0",
+    "--ticks",
+    "0"
+  ],
+  "status": 2,
+  "stdout": "",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\ninteger out of range: 0\n"
+}

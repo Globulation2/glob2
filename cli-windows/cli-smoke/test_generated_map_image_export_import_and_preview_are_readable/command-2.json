@@ -1,0 +1,11 @@
+{
+  "args": [
+    "--export-map-image",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/source.map.gz",
+    "--output",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/map.png"
+  ],
+  "status": 0,
+  "stdout": "Map image: D:/a/glob2/glob2/artifacts/cli-smoke/test_generated_map_image_export_import_and_preview_are_readable/map.png\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n"
+}

@@ -1,0 +1,24 @@
+{
+  "args": [
+    "--generate-map",
+    "--output-dir",
+    "D:/a/glob2/glob2/artifacts/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study",
+    "--generator",
+    "2",
+    "--map-seed",
+    "713",
+    "--param",
+    "width=7",
+    "--param",
+    "height=7",
+    "--param",
+    "teams=2",
+    "--write-map",
+    "true",
+    "--report",
+    "terrain"
+  ],
+  "status": 0,
+  "stdout": "STUDY,2,713,1,16384,9299,515,5616,954,7081,5531,9591,989,5804,0.030713,9185948279297977380\nTUNE,417,2,2,2,687,913,552,961,1,2\nQUALITY,1,0.760881,0.760881,0.919405,1.407085,1.163245,2,0.001874\nCOLONY,0,1,2,1230,857,163,54,0,1075.5,1.407085,0.619560\nCOLONY,1,2,2,1090,417,180,54,0,2081.3,0.919405,0.380440\nREQUEST,river,3,713,7,7,2,4\nOPTION,algae-amount,100\nOPTION,desert,0\nOPTION,fruit,4\nOPTION,grass,75\nOPTION,hilltop-stone,0\nOPTION,repeat,0\nOPTION,river-width,35\nOPTION,sand,3\nOPTION,smoothing,4\nOPTION,stone-amount,100\nOPTION,water,45\nOPTION,wheat-amount,100\nOPTION,winding-river,1\nOPTION,wood-amount,100\nSTART,0,72,45\nSTART,1,15,60\nMAPFILE,0,D:/a/glob2/glob2/artifacts/cli-smoke/test_structured_map_study_writes_report_map_and_manifest/study\\map-r0.map.gz,486224,13900754814043109236\nROTATIONS,2,1,0,1,1,1,1\n",
+  "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n* Failed to load data/usl/Language/Runtime/\n* Failed to load data/usl/Glob2/Runtime/\n"
+}
