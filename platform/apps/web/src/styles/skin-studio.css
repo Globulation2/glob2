@@ -1,23 +1,17 @@
 .skin-studio,
 .skin-dialog {
-  --studio-bg: #211f29;
-  --studio-panel: #302c38;
-  --studio-line: #514955;
-  --studio-text: #f4eee2;
-  --studio-muted: #beb3c4;
-  --studio-gold: #e7bf79;
-  color: var(--studio-text);
+  /* Inherit the application palette and native control scheme in every theme. */
+  color: var(--ink);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.45;
-  color-scheme: dark;
 }
 .skin-studio {
   position: fixed;
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: var(--studio-bg);
+  background: var(--bg);
   isolation: isolate;
 }
 .skin-studio *,
@@ -28,7 +22,7 @@
 .skin-dialog button,
 .skin-studio select,
 .skin-dialog select {
-  color: var(--studio-text);
+  color: var(--ink);
   border: 1px solid transparent;
   background: transparent;
   border-radius: 10px;
@@ -46,8 +40,8 @@
 }
 .skin-studio button:hover,
 .skin-dialog button:hover {
-  background: #ffffff0c;
-  border-color: var(--studio-line);
+  background: var(--surface-3);
+  border-color: var(--line);
 }
 .skin-studio button:disabled,
 .skin-dialog button:disabled {
@@ -56,15 +50,15 @@
 }
 .skin-studio :focus-visible,
 .skin-dialog :focus-visible {
-  outline: 2px solid var(--studio-gold);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
 .skin-studio button[aria-pressed='true'],
 .skin-studio button[aria-selected='true'],
 .skin-dialog button[aria-pressed='true'] {
-  background: #e7bf7916;
-  border-color: #e7bf7980;
-  color: var(--studio-gold);
+  background: var(--surface-2);
+  border-color: var(--accent-edge);
+  color: var(--gold-ink);
 }
 .skin-studio svg,
 .skin-dialog button svg {
@@ -74,22 +68,22 @@
 }
 .skin-studio .skin-primary,
 .skin-dialog .skin-primary {
-  background: var(--studio-gold);
-  color: #30251d;
-  border-color: var(--studio-gold);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent-edge);
   font-weight: 800;
   padding-inline: 20px;
 }
 .skin-studio .skin-primary:hover,
 .skin-dialog .skin-primary:hover {
-  background: #f4d399;
+  background: var(--accent-hover);
 }
 .skin-studio input,
 .skin-dialog input,
 .skin-dialog select {
   font: inherit;
   color: inherit;
-  accent-color: var(--studio-gold);
+  accent-color: var(--gold-ink);
 }
 .skin-studio input[type='range'],
 .skin-dialog input[type='range'] {
@@ -114,7 +108,7 @@
   height: 48px;
   width: 48px;
   padding: 3px;
-  border: 1px solid var(--studio-line);
+  border: 1px solid var(--line);
   border-radius: 13px;
   background: transparent;
   cursor: pointer;
@@ -126,8 +120,8 @@
   gap: 16px;
   align-items: center;
   padding: 10px 22px;
-  border-bottom: 1px solid #ffffff0a;
-  background: #27232df2;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
   z-index: 4;
 }
 .skin-document-title {
@@ -140,7 +134,7 @@
   font-size: 10px;
   letter-spacing: 0.17em;
   font-weight: 800;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   line-height: 1.8;
 }
 .skin-document-title input {
@@ -159,13 +153,13 @@
 }
 .skin-save-status {
   font-size: 12px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   margin-right: auto;
   white-space: nowrap;
 }
 .skin-history {
   display: flex;
-  border-right: 1px solid var(--studio-line);
+  border-right: 1px solid var(--line);
   padding-right: 12px;
   gap: 2px;
 }
@@ -191,7 +185,12 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  background: radial-gradient(ellipse at 57% 43%, #48414d 0%, #302c38 42%, #211f29 85%);
+  background: radial-gradient(
+    ellipse at 57% 43%,
+    var(--surface-3) 0%,
+    var(--surface-2) 42%,
+    var(--bg) 85%
+  );
 }
 .skin-viewport {
   width: 100%;
@@ -211,12 +210,10 @@
   inset: 0;
 }
 .skin-panel {
-  background: #2d2935ed;
-  border: 1px solid #675b6b60;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  box-shadow:
-    0 12px 36px #0c081333,
-    0 1px 0 #ffffff08 inset;
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(18px);
 }
 .skin-models {
@@ -251,7 +248,7 @@
 }
 .skin-shape-button span {
   font-size: 11px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
 }
 .skin-toolbox {
   position: absolute;
@@ -261,7 +258,7 @@
   z-index: 2;
   max-height: calc(100% - 145px);
   overflow: auto;
-  scrollbar-color: var(--studio-line) transparent;
+  scrollbar-color: var(--line) transparent;
 }
 .skin-toolbox-handle {
   min-height: 44px;
@@ -271,10 +268,10 @@
   padding: 0 10px 0 15px;
   cursor: grab;
   touch-action: none;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   font-size: 11px;
   letter-spacing: 0.12em;
-  border-bottom: 1px solid #ffffff09;
+  border-bottom: 1px solid var(--line);
 }
 .skin-toolbox-handle button {
   min-height: 44px;
@@ -317,14 +314,14 @@
 .skin-pattern-controls .skin-value,
 .skin-final-view .skin-value {
   float: right;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   font-variant-numeric: tabular-nums;
   font-size: 11px;
 }
 .skin-segment {
   display: flex;
   gap: 3px;
-  background: #18151e66;
+  background: var(--bg);
   border-radius: 10px;
   padding: 3px;
 }
@@ -347,7 +344,7 @@
 .skin-color-field small {
   font-size: 11px;
   letter-spacing: 0.03em;
-  color: var(--studio-muted);
+  color: var(--ink-2);
 }
 .skin-check {
   display: flex !important;
@@ -357,8 +354,8 @@
 }
 .skin-tool-options details {
   font-size: 11px;
-  color: var(--studio-muted);
-  border-top: 1px solid #ffffff0d;
+  color: var(--ink-2);
+  border-top: 1px solid var(--line);
   padding-top: 12px;
 }
 .skin-tool-options summary {
@@ -390,8 +387,8 @@
   border-radius: 8px;
 }
 .skin-materials button[aria-checked='true'] {
-  border-color: var(--studio-gold);
-  color: var(--studio-gold);
+  border-color: var(--gold-ink);
+  color: var(--gold-ink);
 }
 .skin-navigation {
   position: absolute;
@@ -417,13 +414,13 @@
 .skin-view-compass > span {
   display: block;
   font-size: 24px;
-  color: var(--studio-gold);
+  color: var(--gold-ink);
   line-height: 1;
 }
 .skin-view-compass small {
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: var(--studio-muted);
+  color: var(--ink-2);
 }
 .skin-reference {
   position: absolute;
@@ -443,7 +440,7 @@
 }
 .skin-reference small {
   font-size: 10px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
 }
 .skin-pose-strip {
   width: max-content;
@@ -460,7 +457,7 @@
 .skin-actions {
   display: flex;
   gap: 4px;
-  border-right: 1px solid var(--studio-line);
+  border-right: 1px solid var(--line);
   padding-right: 12px;
 }
 .skin-actions button {
@@ -477,7 +474,7 @@
   align-items: center;
   gap: 12px;
   font-size: 11px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
 }
 .skin-frame input {
   min-width: 90px;
@@ -493,10 +490,11 @@
   left: 50%;
   transform: translateX(-50%);
   font-size: 11px;
-  color: #b5aaba;
+  color: var(--ink-2);
   white-space: nowrap;
   pointer-events: none;
 }
+/* A two-tone cursor stays visible over arbitrary painted skin colors. */
 .skin-brush-cursor {
   position: absolute;
   border: 1px solid #fff9;
@@ -514,8 +512,8 @@
   transform: translate(-50%, -50%);
   max-width: 380px;
   text-align: center;
-  color: var(--studio-muted);
-  background: #29242feb;
+  color: var(--ink-2);
+  background: var(--surface);
   padding: 22px;
   border-radius: 16px;
 }
@@ -525,10 +523,10 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 12px 10px 18px;
-  border: 1px solid var(--studio-line);
+  border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--studio-panel);
-  box-shadow: 0 8px 30px #0004;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -556,7 +554,7 @@
 }
 .skin-final-view p {
   font-size: 12px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   margin: 0 0 8px;
 }
 .skin-final-view label {
@@ -574,7 +572,7 @@
   margin: 8px auto 12px;
   width: 104px;
   height: 26px;
-  border: 1px solid var(--studio-line);
+  border: 1px solid var(--line);
   border-radius: 50%;
   position: relative;
 }
@@ -583,28 +581,28 @@
   inset: -6px;
   display: block;
   border-radius: 50%;
-  color: var(--studio-gold);
+  color: var(--gold-ink);
   text-align: right;
   line-height: 38px;
 }
 .skin-muted {
-  color: var(--studio-muted);
+  color: var(--ink-2);
   font-size: 12px;
   line-height: 1.7;
 }
 .skin-dialog {
-  border: 1px solid var(--studio-line);
+  border: 1px solid var(--line);
   border-radius: 22px;
   padding: 24px;
-  background: #2c2733;
-  box-shadow: 0 35px 110px #0008;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
   width: min(660px, calc(100vw - 32px));
   max-width: 1100px;
   max-height: calc(100dvh - 40px);
   overflow: auto;
 }
 .skin-dialog::backdrop {
-  background: #100b19a8;
+  background: var(--scrim);
   backdrop-filter: blur(7px);
 }
 .skin-dialog-wide {
@@ -620,11 +618,11 @@
   font-size: 23px;
   letter-spacing: -0.025em;
   margin: 2px 0;
-  color: var(--studio-text);
+  color: var(--ink);
 }
 .skin-dialog h3 {
   font-size: 16px;
-  color: var(--studio-text);
+  color: var(--ink);
 }
 .skin-dialog > footer {
   display: flex;
@@ -632,10 +630,10 @@
   gap: 10px;
   padding-top: 20px;
   margin-top: 16px;
-  border-top: 1px solid var(--studio-line);
+  border-top: 1px solid var(--line);
 }
 .skin-dialog a {
-  color: var(--studio-gold);
+  color: var(--gold-ink);
 }
 .skin-pattern-layout {
   flex: 1;
@@ -649,7 +647,7 @@
   min-height: 0;
   border-radius: 18px;
   overflow: hidden;
-  background: radial-gradient(ellipse, #49414f, #211d28);
+  background: radial-gradient(ellipse, var(--surface-3), var(--bg));
 }
 .skin-pattern-stage .skin-viewport {
   position: absolute;
@@ -662,7 +660,7 @@
   right: 0;
   text-align: center;
   font-size: 11px;
-  color: var(--studio-muted);
+  color: var(--ink-2);
   pointer-events: none;
 }
 .skin-pattern-controls {
@@ -670,7 +668,7 @@
   flex-direction: column;
   gap: 12px;
   min-height: 0;
-  scrollbar-color: var(--studio-line) transparent;
+  scrollbar-color: var(--line) transparent;
   overflow: auto;
   padding-right: 6px;
 }
@@ -693,30 +691,41 @@
   width: 46px;
   height: 42px;
   border-radius: 8px;
-  background: #e7bf79;
+  background: var(--gold-ink);
 }
 .pattern-stripes {
-  background: repeating-linear-gradient(125deg, #e7bf79 0 6px, #544453 6px 13px);
+  background: repeating-linear-gradient(125deg, var(--gold-ink) 0 6px, var(--surface-3) 6px 13px);
 }
 .pattern-spots {
   background:
-    radial-gradient(circle, #e7bf79 3px, transparent 4px) 0 0/13px 13px,
-    #544453;
+    radial-gradient(circle, var(--gold-ink) 3px, transparent 4px) 0 0/13px 13px,
+    var(--surface-3);
 }
 .pattern-checker {
-  background: conic-gradient(#e7bf79 25%, #544453 0 50%, #e7bf79 0 75%, #544453 0) 0 0/18px 18px;
+  background: conic-gradient(
+      var(--gold-ink) 25%,
+      var(--surface-3) 0 50%,
+      var(--gold-ink) 0 75%,
+      var(--surface-3) 0
+    )
+    0 0/18px 18px;
 }
 .pattern-chevrons {
-  background: repeating-conic-gradient(from 45deg, #e7bf79 0 25%, #544453 0 50%) 0 0/22px 18px;
+  background: repeating-conic-gradient(from 45deg, var(--gold-ink) 0 25%, var(--surface-3) 0 50%) 0
+    0/22px 18px;
 }
 .pattern-waves {
-  background: repeating-radial-gradient(ellipse at 0 0, #e7bf79 0 4px, #544453 5px 10px);
+  background: repeating-radial-gradient(
+    ellipse at 0 0,
+    var(--gold-ink) 0 4px,
+    var(--surface-3) 5px 10px
+  );
 }
 .pattern-speckles {
   background:
-    radial-gradient(circle at 20% 30%, #e7bf79 3px, transparent 4px),
-    radial-gradient(circle at 70% 70%, #e7bf79 4px, transparent 5px),
-    radial-gradient(circle at 80% 20%, #e7bf79 2px, transparent 3px), #544453;
+    radial-gradient(circle at 20% 30%, var(--gold-ink) 3px, transparent 4px),
+    radial-gradient(circle at 70% 70%, var(--gold-ink) 4px, transparent 5px),
+    radial-gradient(circle at 80% 20%, var(--gold-ink) 2px, transparent 3px), var(--surface-3);
 }
 .skin-settings,
 .skin-save-options {
@@ -726,12 +735,12 @@
 }
 .skin-save-options > button,
 .skin-settings > button {
-  border-color: var(--studio-line);
+  border-color: var(--line);
   justify-content: flex-start;
 }
 .skin-building-sample {
   height: 100px;
-  background: #211d28;
+  background: var(--bg);
   border-radius: 14px;
   display: flex;
   justify-content: center;
@@ -749,7 +758,7 @@
 .skin-shape-grid button {
   flex-direction: column;
   padding: 12px;
-  border-color: var(--studio-line);
+  border-color: var(--line);
 }
 .skin-shape-grid img {
   width: 90px;
@@ -757,7 +766,7 @@
   object-fit: contain;
 }
 .skin-shape-grid small {
-  color: var(--studio-muted);
+  color: var(--ink-2);
   font-size: 11px;
 }
 .skin-library-grid {
@@ -767,7 +776,7 @@
   margin-top: 20px;
 }
 .skin-library-grid article {
-  border: 1px solid var(--studio-line);
+  border: 1px solid var(--line);
   padding: 14px;
   border-radius: 16px;
 }
@@ -779,7 +788,7 @@
 }
 .skin-thumbnail {
   height: 180px;
-  background: radial-gradient(ellipse, #49414f, #211d28);
+  background: radial-gradient(ellipse, var(--surface-3), var(--bg));
   border-radius: 12px;
   overflow: hidden;
 }
@@ -799,7 +808,7 @@
   display: flex;
   flex-direction: column;
   text-align: center;
-  background: #211d28;
+  background: var(--bg);
   border-radius: 14px;
 }
 .skin-copy-grid .skin-viewport {
@@ -834,7 +843,7 @@
   .skin-mobile-status {
     display: block;
     font-size: 9px;
-    color: var(--studio-muted);
+    color: var(--ink-2);
   }
   .skin-save-status {
     display: none;
@@ -959,9 +968,9 @@
     left: 12px;
     top: 184px;
     padding: 3px;
-    border: 1px solid #ffffff18;
+    border: 1px solid var(--line);
     border-radius: 12px;
-    background: #26212de8;
+    background: var(--surface);
     z-index: 5;
   }
   .skin-topbar nav {
