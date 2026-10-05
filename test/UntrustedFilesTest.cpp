@@ -20,6 +20,10 @@ struct ReadCondition : AISharedRuntime::Conditions::Condition {
 struct Fields : GAGCore::BinaryOutputStream {
     std::map<std::string, std::pair<size_t, size_t>> fields;
     explicit Fields(GAGCore::MemoryStreamBackend* backend) : BinaryOutputStream(backend) {}
+    void write(const void* value, size_t size, const std::string name) override {
+        fields.try_emplace(name,getPosition(),size);
+        BinaryOutputStream::write(value,size,name);
+    }
     void writeEndianIndependent(const void* value, size_t size, const std::string name) override {
         fields.try_emplace(name, getPosition(), size);
         BinaryOutputStream::writeEndianIndependent(value, size, name);

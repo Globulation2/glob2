@@ -85,7 +85,7 @@ TEST_SUITE("EngineSession")
         engine.beginSession(0);
         std::ofstream trace(glob2test::artifactDir()/"external-replay.checksums.txt");
         for(unsigned tick=0;tick<ticks;++tick) {
-            const auto checksum=engine.gui.game.checkSum();
+            const auto checksum=engine.gui.game.checkSum(nullptr,nullptr,nullptr,SDL_getenv_unsafe("GLOB2_REFERENCE_HEAVY")!=nullptr);
             trace<<engine.gui.game.stepCounter<<' '<<checksum<<'\n';
             reader.setCheckSum(checksum);
             REQUIRE(engine.stepSession(tick*40,{}));
