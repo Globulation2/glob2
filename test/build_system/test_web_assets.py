@@ -1,4 +1,5 @@
 """Browser data packages: what ships, where it goes, and how it is installed."""
+import ast
 import json
 from pathlib import Path
 import subprocess
@@ -50,7 +51,7 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_in_game_sprites_follow_the_main_menu(self):
         # GlobalContainer::loadGameGraphics, including every building's artwork.
-        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/water0.png', 'data/gfx/gamegui0.png',
+        for path in ('data/gfx/unit0r.png', 'data/gfx/unit1000.png', 'data/gfx/terrain0.png', 'data/gfx/terrain333.png', 'data/gfx/water0.png', 'data/gfx/gamegui0.png',
                      'data/gfx/ressource0.png', 'data/gfx/particle0.png', 'data/gfx/swarm0b0.png',
                      'data/gfx/inn0b0r.png', 'data/gfx/racetrack2b0.png', 'data/gfx/minibuildingsite5.png',
                      'data/gfx/explorationflag0r.png', 'data/gfx/wallc0.png'):
@@ -65,6 +66,33 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(web_assets.game_files(['data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp',
                                                 'data/gfx/unitmini.sheet', 'data/gfx/unitmini-sheet-0.png'], {'unit'}),
                          {'data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp'})
+
+    def test_terrain_registry_atlases_and_backdrops_are_game_sprites(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'src/app').mkdir(parents=True)
+            (root / 'src/map').mkdir(parents=True)
+            (root / 'src/app/GlobalContainer.cpp').write_text(
+                'void GlobalContainer::loadGameGraphics() {\n'
+                'sprite("data/gfx/unit"); sprite("data/gfx/terrain");\n'
+                'sprite("data/gfx/gamegui"); sprite("data/gfx/swarm0b");\n}\n')
+            (root / 'src/map/TerrainPresentation.h').write_text(
+                'constexpr auto atlas = "data/gfx/future-terrain";\n'
+                'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
+            names = web_assets.game_sprites(root)
+            self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
+                                     'future-terrain', 'future-backdrop'})
+            self.assertEqual(web_assets.game_files(
+                ['data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'], names),
+                {'data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'})
+
+    def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
+        tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
+        inputs = [node.value for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
+                          for target in node.targets)]
+        self.assertEqual(len(inputs), 1)
+        self.assertIn('src/map/TerrainPresentation.h', ast.literal_eval(inputs[0]))
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',

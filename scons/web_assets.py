@@ -165,11 +165,14 @@ def exported_substitutes(root, source, files, derived):
 
 
 def game_sprites(root):
-    """Names of the sprites GlobalContainer::loadGameGraphics loads, buildings included."""
+    """Sprites loaded by the game, including terrain metadata and building artwork."""
     root = Path(root)
     text = (root / 'src/app/GlobalContainer.cpp').read_text()
     body = text[text.index('void GlobalContainer::loadGameGraphics'):]
     names = set(SPRITE.findall(body[:body.index('\n}\n')]))
+    # Terrain atlases and backdrops are declared in the immutable registry;
+    # loadGameGraphics reads those paths instead of repeating string literals.
+    names.update(SPRITE.findall((root / 'src/map/TerrainPresentation.h').read_text()))
     for path in sorted((root / 'src/building/types').glob('BuildingTypes*.cpp')):
         names.update(SPRITE.findall(path.read_text()))
     if not {'unit', 'terrain', 'gamegui', 'swarm0b'} <= names:

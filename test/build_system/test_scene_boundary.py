@@ -16,6 +16,7 @@ SCENE_INCLUDES = {
     'Scene.h', 'SceneEntities.h', 'SceneMap.h', 'ScenePanels.h',
     'sim/ClientRequests.h', 'sim/EntityRef.h', 'BitArray.h', 'Ressource.h', 'UnitConsts.h',
     'SDLGraphicContext.h', 'SDL_stdinc.h', 'SDL3/SDL_stdinc.h', 'AITelemetryValue.h',
+    'TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h',
 }
 
 DRAWING = ('src/render/GameRender*.cpp', 'src/render/Minimap.cpp', 'src/hud/draw/GameGUIDraw*.cpp')
@@ -32,6 +33,10 @@ class SceneBoundaryTests(unittest.TestCase):
     def test_scene_types_do_not_include_simulation_headers(self):
         include = re.compile(r'#\s*include\s*[<"]([^>"]+)[>"]')
         headers = sorted((ROOT / 'src/render/scene').glob('*.h')) + [ROOT / 'src/ai/telemetry/AITelemetryValue.h']
+        # Terrain tables are immutable value definitions, not live simulation
+        # objects. Audit their dependencies too so this exemption stays narrow.
+        headers += [ROOT / 'src/map' / name for name in
+                    ('TerrainType.h', 'TerrainPresentation.h', 'TerrainProperties.h')]
         for path in headers:
             for name in include.findall(path.read_text()):
                 if '/' not in name and name.islower():

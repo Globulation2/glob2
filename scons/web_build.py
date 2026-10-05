@@ -119,8 +119,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             env.AlwaysBuild(exported)
         asset_manifest = output / 'asset-manifest.js'
         # The plan also reads the browser copies (browser/derive_assets.py) and the game
-        # sprite names in GlobalContainer::loadGameGraphics and the building tables.
-        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py', 'src/app/GlobalContainer.cpp']
+        # sprite names in GlobalContainer::loadGameGraphics, terrain and building tables.
+        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py',
+                       'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
