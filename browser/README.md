@@ -182,6 +182,10 @@ and export controls for backups. See [storage](../docs/browser/storage.md) for
 format validation, campaign backups and remaining legacy-writer limitations.
 Settings also waits for durable preferences/keyboard storage and offers Retry or
 Continue on failure; Continue does not confirm a saved copy.
+Quit Game waits for the final save, with Retry or Quit without saving on failure.
+When hosted under `/play/`, quitting then returns the current browser tab to the
+Glob2 Online home page on the same origin. Standalone browser hosts retain the
+exit message and can be restarted by reloading.
 
 ## Scope
 

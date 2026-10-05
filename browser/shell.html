@@ -367,6 +367,12 @@ var Module = {
     loadStagedAssets(Module.renderer === 'webgl2');
   },
   onGameExit(code) {
+    // The hosted client lives under /play/ on the online application's origin.
+    // Completion follows the shutdown screen's final save (or explicit discard).
+    if (code === 0 && /^\/play(?:\/|$)/.test(location.pathname)) {
+      location.assign('/');
+      return;
+    }
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
