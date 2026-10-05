@@ -5538,3 +5538,9 @@ Paikoittain
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Piirron tavoitekuvataajuus
+[settings Unlimited]
+Rajoittamaton
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Rajoita piirtämistä koko sovelluksessa. Pienemmät arvot vähentävät piirron työtä. Pelin nopeus ei muutu.

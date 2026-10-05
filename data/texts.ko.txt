@@ -5538,3 +5538,9 @@ AI 원격 측정
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+목표 렌더링 FPS
+[settings Unlimited]
+무제한
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+앱 전체의 그리기 빈도를 제한합니다. 값이 낮을수록 렌더링 작업이 줄어듭니다. 게임 속도는 바뀌지 않습니다.

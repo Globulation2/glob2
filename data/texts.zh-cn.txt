@@ -5538,3 +5538,9 @@ AI 遥测
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+目标绘制帧率
+[settings Unlimited]
+无限制
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+限制整个应用程序的绘制频率。较低的数值可减少绘制工作量。游戏速度不变。

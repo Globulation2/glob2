@@ -5538,3 +5538,9 @@ Efter plats
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Önskad bildfrekvens
+[settings Unlimited]
+Obegränsad
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Begränsa ritningen i hela programmet. Lägre värden minskar renderingsarbetet. Spelets hastighet är oförändrad.

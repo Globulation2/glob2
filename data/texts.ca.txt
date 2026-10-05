@@ -5538,3 +5538,9 @@ Per lloc
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+FPS de renderització objectiu
+[settings Unlimited]
+Sense límit
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Limita el dibuix a tota l’aplicació. Els valors més baixos redueixen el treball de renderització. La velocitat del joc no canvia.
