@@ -214,14 +214,19 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 }
 
 void Map::advanceGradientPipeline() { gradientRuntime->pipeline.advance(); }
-void Map::finishGradientPipeline() { gradientRuntime->pipeline.finish(); }
+void Map::finishGradientPipeline()
+{
+	gradientRuntime->pipeline.finish();
+	gradientRuntime->buildings.finish();
+}
 void Map::setGradientWorkerCount(unsigned workers) { gradientRuntime->pipeline.setWorkerCount(workers); }
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
-	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-		const field::Grid geometry{getW(), getH()};
+	const field::Grid capturedGeometry{getW(), getH()};
+	gradientRuntime->pipeline.configure(workers, delay, size, [capturedGeometry](GradientPipeline::Job &job, GradientWorkspace &scratch) {
+		const field::Grid geometry = capturedGeometry;
         const auto *types = job.terrain ? job.terrain->data() : nullptr;
         // Uniform profiles perform no terrain reads. A weighted profile always
         // captures its semantic IDs before the job leaves the simulation thread.

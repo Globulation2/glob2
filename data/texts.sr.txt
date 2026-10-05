@@ -5306,6 +5306,10 @@ FFmpeg није доступан, па је снимање искључено. �
 непријатељски ратници
 [stat unit strength count]
 снага
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 По месту
 [AI Library]

@@ -5306,6 +5306,10 @@ válečníci
 nepřátelští válečníci
 [stat unit strength count]
 síla
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Podle místa
 [AI Library]

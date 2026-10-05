@@ -5306,6 +5306,10 @@ támadási szint
 ellenséges harcosok
 [stat unit strength count]
 erő
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Hely szerint
 [AI Library]

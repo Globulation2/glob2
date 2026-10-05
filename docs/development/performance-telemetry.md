@@ -175,7 +175,8 @@ refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
 16384 cells. Goal painting and forbidden-border detection retain their serial
 ordering. Hiring jobs advance existing frozen building searches in separate swim
 classes before candidate evaluation; they neither refresh caches nor change use
-timestamps. This can perform unnecessary work and must be measured separately.
+timestamps. Already-settled targets are excluded before dispatch. This can still
+perform unnecessary work and must be measured separately.
 Periodic one-field-per-tick refresh remains unchanged. The `areas`,
 `initialize`, and `hiring` modes leave AI polling unchanged.
 
@@ -286,3 +287,193 @@ worker count with its zero-worker control before comparing against legacy
 scheduling. A shorter game caused by changed decisions is not evidence of faster
 ticks. Retain fixed-tick windows as well as full-game measurements, and record
 machine contention when interpreting results.
+
+### Building-gradient work within a tick
+
+Structured `--run-game --telemetry building-gradients` writes
+`building-gradients-ticks.csv` and `building-gradients-events.csv` in its output
+directory. This diagnostic is opt-in and does not enter simulation state, saves,
+orders or checksums. It captures executed simulation ticks only; setup, AI polling,
+saving and teardown are excluded. Tick durations exclude the diagnostic census
+and CSV output, but include event-recording overhead. Use separate runs with the
+diagnostic disabled for performance comparisons.
+
+The tick census records buildings (including virtual flags), flags separately,
+units, retained building fields and unfinished searches. Events identify building
+gid, swim class, requesting phase, current topology generation, search snapshot
+generation, start offset, elapsed and thread CPU nanoseconds, queue entries
+processed and completion. CPU time excludes descheduling and is zero when the
+platform cannot provide a thread CPU clock. Tick CPU time covers the simulation
+thread only; rebuild CPU time excludes initialization workers, so use elapsed
+time and executor metrics when comparing parallel initialization. Rebuild reasons distinguish missing fields, topology/dirty changes,
+clearing refresh timers and stuck-unit refreshes. Propagation records only calls
+that advance a search; cached reads do not appear. Full-completion callers distinguish
+round-trip construction, forbidden escape and the full-field API. Buffer allocation
+and reuse cover both building and round-trip fields; idle eviction and explicit
+cache invalidation identify the field kind. Hiring-batch events distinguish
+batches that advance queues from batches that only revisit settled cells. Round-trip timings include any parent completion, so do not add them
+to building propagation as exclusive time.
+
+Events are retained per tick, capped at 65536 with dropped-event counts, then
+written at the tick boundary. Worker records use a mutex; all workers finish their
+existing batch before publication. The diagnostic introduces clock reads and
+storage overhead and is intended for finding workloads, not proving speedups.
+
+```sh
+python3 test/analyze_building_gradients.py artifacts/run-a artifacts/run-b \
+  --output artifacts/building-gradient-summary.json
+```
+
+The analyzer reports tick-cost percentiles, distinct fields, rebuild causes,
+repeated extensions, cache activity and the worst ticks. Its independent-field
+cost bounds assume no dependencies, speculative work, dispatch cost or memory
+bandwidth limits. They are optimistic opportunities, not measured speedups;
+whole-tick elapsed ceilings are omitted when measured building work already overlaps.
+CPU ceilings are reported only for serial building computation (`none`/`ai` modes),
+using per-field CPU work and the simulation thread CPU budget. They do not describe
+whole-engine throughput, which also includes AI polling and other work outside the tick.
+Sharing a topology generation and phase does not prove fields can be scheduled
+together: immobile blockers and caller-visible state can change within a phase.
+
+
+### Scheduled building-gradient experiment
+
+`building-gradient-pipeline` is off by default. Eligible cached walking or
+round-trip refreshes request a coherent building/swim bundle. At the end of tick
+T, the Map captures passability, destination metadata and the currently published
+resource parents. A shared asynchronous executor builds the walking field and
+already allocated round-trip children without accessing live simulation state.
+At the beginning of T+D, the simulation waits for due work and publishes in stable
+destination order. D is the saved `buildingGradientDelay` rule (2/4/8; default 4).
+`--gradient-workers` controls the shared resource/building execution budget locally;
+zero workers executes privately on the submitting thread with the same deadlines.
+
+First construction stays synchronous and demand-driven. Repeated requests do not
+move a pending deadline. Invalidation after capture stays dirty for the next
+refresh; invalid lifetime or eviction tokens discard results. Cold children
+allocated after capture retain their synchronous results until a later bundle.
+The experiment retains independent access metadata for each swim-cost class;
+later invalidation does not clear published metadata before its replacement arrives.
+
+Build buffers and shared snapshots have a 64 MiB queued RAM budget, excluding
+published caches, worker scratch and small scheduling metadata. Destinations are
+admitted in stable order. A job that would exceed the budget builds synchronously
+at submission and retains its completed fields in an anonymous temporary spool.
+It still publishes at the original T+D deadline. Spools are shared within each
+submission wave, so file handles do not grow with the number of overflow jobs.
+Private files disappear when their results retire; saves contain the actual
+fields and deadlines rather than machine-local paths. Restored overflow results
+remain spooled, and resident jobs retain their original reservations. Saving
+finishes private jobs without publishing early.
+
+`result.json` includes snapshot time, background elapsed and thread CPU time,
+coalescing, publications/discards, synchronous fallback,
+deadline waits and peak queue reservations. Full-field background work can exceed
+the old lazy search work; evaluate CPU and memory alongside engine elapsed time.
+
+`--telemetry building-gradient-timing` retains lightweight per-tick durations,
+deadline waits and queue occupancy in memory and writes
+`building-gradient-timing.csv` after the run. It performs no fresh-field auditing
+or per-tick file writes. Use this mode for tick-tail distributions in timing runs.
+
+`--telemetry building-gradient-impact` writes decisions, outcomes and tick census
+CSVs prefixed `building-gradient-impact`. Movement, fetch ranking and hiring use
+shared scoring/tie-breaking evaluators. Each audited decision compares published
+fields with a fresh private build from current state, holding published resource
+parents constant. Audit work does not consume RNG, update ages, tallies or call
+lists, or publish fields. Equal-cost legal directions are reported separately from worse steps, stale
+failures and stopping at an obsolete goal. Resource comparisons include type, market
+identity and predicted tile. Actual map harvests and market acquisitions have
+separate outcome kinds, emitted at the real acquisition. Market outcomes include
+the source building's identity; carrying-state transitions are not treated as map
+harvests. Weighted movement-cost distributions include only decisions with both
+costs available, with missing-cost denominators reported separately. Forbidden
+escape and resource-parent goal stops use the same rules as live movement.
+
+Hiring episodes track both stale rejection of fresh-eligible candidates and decisions
+where the fresh evaluator would hire but live execution hires nobody. Episodes end
+when hired, unavailable or demand disappears; unfinished or unavailable episodes
+are censored, with separate reasons for disappearing demand, unavailable
+candidates and the observation horizon. Decision and outcome records include unit and building lifetime
+identities so recycled numeric IDs cannot join unrelated episodes. Outcome event
+indices distinguish events before and after an intervention within the same tick. Trips report elapsed ticks, distance, reversals,
+deliveries and abandonment. Tick census records unfilled staffing, construction
+completions, hunger and deaths. CSV scores/rejection reasons and denominators must
+accompany discrepancy counts. Fresh-field discrepancies also exist with the
+experiment off: compare baseline audit rates, rather than attributing all stale
+cache decisions to the additional publication delay.
+
+The report separates complete-trip duration from elapsed observations of trips
+already underway in the starting checkpoint. Those initial trips have unknown
+start times and contribute lower bounds, while their deliveries still count
+toward throughput. Read completed durations alongside abandonment, unfinished
+trips and missed-hiring censor reasons.
+
+Delivery events count trips, not accepted resource quantities. For economy
+throughput, also use the existing `team-timeline` measurements: subtract the
+starting checkpoint's cumulative `delivered_*` counters from the final counters.
+These include capacity clamping and building delivery multipliers. Keep per-resource
+totals and starvation deaths alongside trip counts; companion runs must use the
+same checkpoint, rules and AI settings and finish with matching simulation state.
+The existing `harvested_*` counters include market pickups and are gathered-resource
+totals. Use impact outcome kinds when separating map harvesting from markets.
+
+`test/analyze_building_gradient_impact.py` summarizes distributions and retains
+the first 20 changed decisions per category. `test/benchmark_building_pipeline.py`
+runs worker/audit determinism checks, balanced quiet timing rounds, audits and
+paired 512-tick counterfactual continuations. The latter replay the same checkpoint
+to a recorded decision and substitute fresh fields in only one continuation;
+unfinished outcomes remain censored. Audit runs are separate from speed tests.
+Normal continuation outcomes can be reused from the uninterrupted audit, bounded
+to the intervention's 512-tick horizon, alongside an independently replayed normal
+checksum trace. This avoids repeating observational oracle work for that side.
+Cases at one delay share an uninterrupted normal reference covering the latest
+intervention plus 512 ticks. If that exceeds the original audit horizon, the
+reference also collects outcomes, so both branches have the same observation
+window. Reusing a shorter audit must never shorten only the normal branch.
+For late decisions, `--counterfactual-checkpoints` first creates a checkpoint at
+the preceding tick boundary. It verifies the checkpoint prefix and all resumed
+normal team/unit/building records against the uninterrupted continuation, then
+forks the normal and fresh runs from identical saved bytes. The recorded decision
+must match every field except the collector's restarted event counter; ambiguous
+matches or a divergent resumed state fall back to the original workload
+checkpoint and replay the full prefix. Malformed traces still abort the run.
+Decision rows before the intervention must also match. An optional
+`--counterfactual-checkpoint-binary` can use a corrected save writer while
+retaining the measured binary as the uninterrupted reference. Record both
+binary hashes; accept the optimization only after the complete resumed state
+and pre-decision observations match that reference. Save-header metadata is excluded from continuation comparisons,
+as in the save-continuation verifier. Observed trip duration, distance and heading
+can be left censored at this common checkpoint; retain that scope with the case.
+Paired cases join unit and building lifetimes and the decision's event boundary;
+a delivery preceding the intervention, or a replacement trip after abandonment,
+cannot complete the affected trip. A later hire after the original demand or
+candidate disappears does not turn a censored opportunity into an exact delay.
+`--workload-jobs` can run independent audits
+or workload continuations concurrently; timing rounds always run one process at a time.
+For separate diagnostic processes, `--counterfactual-delay 2|4|8` restricts each
+process to one delay. Distinct delays in a workload merge progress under a file
+lock with atomic replacement; never run two writers for the same workload/delay.
+`--counterfactual-event T:E` selects one decision group, including its affected
+categories. Use separate output roots to run these groups concurrently. The full
+inventory still determines the normal reference horizon; merge completed groups
+by delay, category and case identity, checking coverage against the original
+inventory before reporting results.
+Diagnostic summaries retain case rows and distinct intervention counts separately,
+both-side completion and censor denominators, and observed duration/distance/
+reversal differences. These selected cases do not establish population averages.
+Generated evidence belongs under ignored `artifacts/`.
+The driver checkpoints completed execution metadata before analysis; independent
+audit summaries run in separate processes so Python CSV parsing does not serialize
+workloads. Analysis and compression can resume without repeating the game run.
+
+Use `test/report_building_pipeline.py --heavy-workload NAME` repeatedly to declare
+a comparable seeded-match cohort alongside `--resource-volumes`. The report gives
+equal-weight paired seed means, pooled resource totals, ranges and exploratory
+95% Student-t intervals; timing intervals use paired benchmark rounds. Seeds must
+be distinct, and mixed AI or differently sized workloads should stay separate.
+Decision events and trips within a match are correlated and do not increase the
+independent sample count. Small cohorts can leave wide intervals: an inconclusive
+average neither establishes a regression nor demonstrates the desired safety margin.
+Retained first-discrepancy cases explain mechanisms, rather than estimate average
+population effects.

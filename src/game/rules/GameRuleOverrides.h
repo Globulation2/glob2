@@ -22,27 +22,31 @@ inline void applyGameRule(GameHeader& header, const std::string& item)
 		std::function<void(GameHeader&, int)> apply;
 	};
 	std::vector<Rule> rules = {
-		{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
-		{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
-		{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
-		{"stockpile", 3, [](GameHeader& h, int v) { h.setStockpileStartLevel(v); }},
-		{"noHunger", 1, [](GameHeader& h, int v) { h.setHungerDisabled(v); }},
-		{"noUpgrades", 1, [](GameHeader& h, int v) { h.setUnitUpgradesDisabled(v); }},
-		{"glassCannon", 2, [](GameHeader& h, int v) { h.setGlassCannonLevel(v); }},
-		{"fearless", 1, [](GameHeader& h, int v) { h.setUnitsFearless(v); }},
-		{"noPermadeath", 1, [](GameHeader& h, int v) { h.setPermadeathDisabled(v); }},
-		{"peaceful", 1, [](GameHeader& h, int v) { h.setPeacefulModeEnabled(v); }},
-		{"fortress", 2, [](GameHeader& h, int v) { h.setBuildingHpLevel(v); }},
-		{"suddenDeathTick", 100000000, [](GameHeader& h, int v)
-		{
-			WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
-			v ? std::optional<Uint32>(v) : std::nullopt);
-		}},
-		{"winProbabilityPermille", 1000, [](GameHeader& h, int v)
-		{
-			WinningCondition::setWinProbabilityWinCondition(h.getWinningConditions(),
-			v ? std::optional<Uint32>(v) : std::nullopt);
-		}},
+		{"buildingGradientDelay", 8, [](GameHeader &h, int v) { h.setBuildingGradientDelay(v); }},
+		{"noGrowth", 1, [](GameHeader &h, int v) { h.setResourceGrowthDisabled(v); }},
+		{"scarcity", 3, [](GameHeader &h, int v) { h.setResourceScarcityLevel(v); }},
+		{"instantConstruction", 1,
+		 [](GameHeader &h, int v) { h.setInstantConstructionEnabled(v); }},
+		{"stockpile", 3, [](GameHeader &h, int v) { h.setStockpileStartLevel(v); }},
+		{"noHunger", 1, [](GameHeader &h, int v) { h.setHungerDisabled(v); }},
+		{"noUpgrades", 1, [](GameHeader &h, int v) { h.setUnitUpgradesDisabled(v); }},
+		{"glassCannon", 2, [](GameHeader &h, int v) { h.setGlassCannonLevel(v); }},
+		{"fearless", 1, [](GameHeader &h, int v) { h.setUnitsFearless(v); }},
+		{"noPermadeath", 1, [](GameHeader &h, int v) { h.setPermadeathDisabled(v); }},
+		{"peaceful", 1, [](GameHeader &h, int v) { h.setPeacefulModeEnabled(v); }},
+		{"fortress", 2, [](GameHeader &h, int v) { h.setBuildingHpLevel(v); }},
+		{"suddenDeathTick", 100000000,
+		 [](GameHeader &h, int v)
+		 {
+			 WinningCondition::setSuddenDeathWinCondition(
+				 h.getWinningConditions(), v ? std::optional<Uint32>(v) : std::nullopt);
+		 }},
+		{"winProbabilityPermille", 1000,
+		 [](GameHeader &h, int v)
+		 {
+			 WinningCondition::setWinProbabilityWinCondition(
+				 h.getWinningConditions(), v ? std::optional<Uint32>(v) : std::nullopt);
+		 }},
 	};
 	// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
 	for (const auto& definition : experimentDefinitions())
@@ -73,10 +77,18 @@ inline std::vector<std::pair<std::string, int>> gameRuleValues(const GameHeader&
 		if(c->getType()==WCSuddenDeath) timer=int(static_cast<const WinningConditionSuddenDeath&>(*c).endStepTick);
 		if(c->getType()==WCWinProbability) probability=int(static_cast<const WinningConditionWinProbability&>(*c).thresholdPermille);
 	}
-	return {{"noGrowth", h.isResourceGrowthDisabled()}, {"scarcity", h.getResourceScarcityLevel()},
-		{"instantConstruction", h.isInstantConstructionEnabled()}, {"stockpile", h.getStockpileStartLevel()},
-		{"noHunger", h.isHungerDisabled()}, {"noUpgrades", h.isUnitUpgradesDisabled()},
-		{"glassCannon", h.getGlassCannonLevel()}, {"fearless", h.isUnitsFearless()},
-		{"noPermadeath", h.isPermadeathDisabled()}, {"peaceful", h.isPeacefulModeEnabled()},
-		{"fortress", h.getBuildingHpLevel()}, {"suddenDeathTick", timer}, {"winProbabilityPermille", probability}};
+	return {{"buildingGradientDelay", h.getBuildingGradientDelay()},
+			{"noGrowth", h.isResourceGrowthDisabled()},
+			{"scarcity", h.getResourceScarcityLevel()},
+			{"instantConstruction", h.isInstantConstructionEnabled()},
+			{"stockpile", h.getStockpileStartLevel()},
+			{"noHunger", h.isHungerDisabled()},
+			{"noUpgrades", h.isUnitUpgradesDisabled()},
+			{"glassCannon", h.getGlassCannonLevel()},
+			{"fearless", h.isUnitsFearless()},
+			{"noPermadeath", h.isPermadeathDisabled()},
+			{"peaceful", h.isPeacefulModeEnabled()},
+			{"fortress", h.getBuildingHpLevel()},
+			{"suddenDeathTick", timer},
+			{"winProbabilityPermille", probability}};
 }

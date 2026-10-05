@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientDiagnostics.h"
 #include <mutex>
 #include "Map.h"
 #include "MapInternal.h"
@@ -17,8 +18,11 @@ using gradient_kernel::entrySteps;
 using gradient_kernel::expandBucket;
 using gradient_kernel::weightedClass;
 
-void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
+void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim, int gid)
 {
+	sourceMap = &map;
+	buildingId = gid;
+	snapshotGeneration = map.topologyGeneration;
 	gradient = seeded;
 	cells = std::size_t(map.getW()) * map.getH();
 	widthMask = map.getMaskW();
@@ -51,11 +55,22 @@ bool BuildingGradientSearch::resolved(std::size_t target) const
 		|| (value > GRADIENT_UNREACHABLE && GRADIENT_AT_GOAL - value < currentCost);
 }
 
-void BuildingGradientSearch::resolve(std::size_t target)
+void BuildingGradientSearch::resolve(std::size_t target, const char *caller)
 {
 	assert(target <= cells);
 	if (complete() || (target < cells && resolved(target))) return;
 	PERF_SCOPE_TIME(BuildingGradientResume);
+	BuildingGradientDiagnostics::Scope evidence(sourceMap->buildingGradientDiagnostics(),
+												buildingId, swimClass,
+												target == cells ? "finish" : "resume", caller,
+												sourceMap->topologyGeneration, snapshotGeneration);
+	const auto before = popped;
+	advance(target);
+	evidence.result(popped - before, complete());
+}
+
+void BuildingGradientSearch::advance(std::size_t target)
+{
 	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
 		while (pending && (target == cells || !resolved(target)))
@@ -88,6 +103,17 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [terrainCells](size_t i) { return gradient_kernel::terrainUsesSwimming(terrainCells[i]); });
 	}
 	if (complete()) terrain.reset();
+}
+
+std::vector<std::uint16_t> BuildingGradientSearch::completePrivateSnapshot() const
+{
+	if (!cells)
+		return {};
+	std::vector<std::uint16_t> result(gradient, gradient + cells);
+	auto privateSearch = *this;
+	privateSearch.gradient = result.data();
+	privateSearch.advance(cells);
+	return result;
 }
 
 std::size_t BuildingGradientSearch::retainedBytes() const

@@ -285,6 +285,13 @@ struct HeadlessRunner
 		{
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
+			else if (telemetry == "building-gradient-impact" ||
+					 telemetry == "building-gradient-timing")
+			{
+			}
+			else if (telemetry == "building-gradients")
+			{
+			} // Enabled after the input game is loaded.
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
@@ -407,6 +414,23 @@ struct HeadlessRunner
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
 		}
+		if (options.count("--fork-rule"))
+		{
+			if (saved.empty())
+				throw std::invalid_argument("--fork-rule requires --load-game");
+			const auto pending = engine.gui.game.map.buildingRefreshStatus();
+			if (pending.pending || pending.queuedRequests)
+				throw std::invalid_argument(
+					"cannot fork building publication rules with pending refreshes");
+			for (const auto &rule : many(options, "--fork-rule"))
+			{
+				const auto name = rule.substr(0, rule.find('='));
+				if (name != "buildingGradientDelay" && name != "building-gradient-pipeline")
+					throw std::invalid_argument(
+						"--fork-rule supports only building gradient publication rules");
+				applyGameRule(engine.gui.game.gameHeader, rule);
+			}
+		}
 		if(options.count("--map-script"))
 		{
 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
@@ -445,6 +469,29 @@ struct HeadlessRunner
 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
 		}
 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
+		const auto telemetryModes = many(options, "--telemetry");
+		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradients") !=
+			telemetryModes.end())
+			engine.gui.game.map.configureBuildingGradientDiagnostics(
+				(output / "building-gradients").string());
+		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradient-timing") !=
+			telemetryModes.end())
+			engine.gui.game.map.configureBuildingGradientTiming(
+				(output / "building-gradient-timing.csv").string());
+		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradient-impact") !=
+			telemetryModes.end())
+			engine.gui.game.map.configureBuildingGradientImpact(
+				(output / "building-gradient-impact").string());
+		if (options.count("--gradient-counterfactual"))
+		{
+			const auto spec = one(options, "--gradient-counterfactual");
+			const auto colon = spec.find(':');
+			if (colon == std::string::npos)
+				throw std::invalid_argument("counterfactual expects tick:event");
+			engine.gui.game.map.configureGradientCounterfactual(
+				integer(spec.substr(0, colon), 0, UINT32_MAX),
+				integer(spec.substr(colon + 1), 1, UINT32_MAX));
+		}
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
@@ -468,6 +515,7 @@ struct HeadlessRunner
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); }
+		engine.gui.game.map.flushBuildingGradientDiagnostics();
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -477,6 +525,8 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
+		game.map.finishBuildingGradientTiming();
+		game.map.finishGradientImpact();
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
@@ -491,6 +541,7 @@ struct HeadlessRunner
 				if(game.teams[t] && game.teams[t]->winCondition==WCWinProbability)
 					termination="win_probability";
 		}
+		const auto buildingRefresh = game.map.buildingRefreshStatus();
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
@@ -509,6 +560,25 @@ struct HeadlessRunner
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
+			<< ",\"building_gradient_pipeline\":"
+			<< (game.map.buildingPipelineEnabled() ? "true" : "false")
+			<< ",\"building_gradient_delay\":" << int(game.gameHeader.getBuildingGradientDelay())
+			<< ",\"building_gradient_jobs\":" << buildingRefresh.jobs
+			<< ",\"building_gradient_published\":" << buildingRefresh.published
+			<< ",\"building_gradient_discarded\":" << buildingRefresh.discarded
+			<< ",\"building_gradient_coalesced\":" << buildingRefresh.coalesced
+			<< ",\"building_gradient_synchronous_fallback\":" << buildingRefresh.synchronousFallback
+			<< ",\"building_gradient_snapshot_ns\":" << buildingRefresh.snapshotNs
+			<< ",\"building_gradient_snapshot_cpu_ns\":" << buildingRefresh.snapshotCpuNs
+			<< ",\"building_gradient_fallback_ns\":" << buildingRefresh.fallbackNs
+			<< ",\"building_gradient_fallback_cpu_ns\":" << buildingRefresh.fallbackCpuNs
+			<< ",\"building_gradient_walking_fields\":" << buildingRefresh.walkingFields
+			<< ",\"building_gradient_trip_fields\":" << buildingRefresh.tripFields
+			<< ",\"building_gradient_build_ns\":" << buildingRefresh.buildNs
+			<< ",\"building_gradient_build_cpu_ns\":" << buildingRefresh.buildCpuNs
+			<< ",\"building_gradient_wait_ns\":" << buildingRefresh.waitNs
+			<< ",\"building_gradient_max_bytes\":" << buildingRefresh.maxBytes
+			<< ",\"building_gradient_max_pending\":" << buildingRefresh.maxPending
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
 			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries
@@ -516,12 +586,14 @@ struct HeadlessRunner
 			<< ",\"compute_experiments\":" << quote(computeExperiments)
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
 			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
-			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
+			<< ",\"compute_parallel_batches\":"
+			<< game.map.computeExecutor().metrics().parallelBatches
 			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
 			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
-			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
-			<< quote(termination)
-			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())
+			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed()
+			<< ",\"termination\":" << quote(termination)
+			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps
+			<< ",\"map\":" << quote(game.mapHeader.getMapName())
 			<< ",\"save_version\":" << VERSION_MINOR << ",\"winning_conditions\":[";
 		bool comma=false;
 		for(const auto &c:game.gameHeader.getWinningConditions()) { if(comma)result<<',';comma=true;result<<int(c->getType()); }
@@ -586,8 +658,16 @@ int runHeadlessCommand(int argc,char **argv)
 			if(argc!=2) throw std::invalid_argument("catalog takes no arguments");
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
-			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR
+					  << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
+					  << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_"
+						 "telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_"
+						 "version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\","
+						 "\"sim_version\"],\"sim_version\":"
+					  << Online::currentSimVersion().toJson().dump()
+					  << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-"
+						 "timeline\",\"maxima\",\"building-gradients\",\"building-gradient-"
+						 "impact\",\"building-gradient-timing\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{
@@ -604,7 +684,36 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys = {"--diagnostic-fields",
+												"--diagnostic-interval",
+												"--diagnostic-png",
+												"--benchmark-warmup",
+												"--ai-script",
+												"--map-script",
+												"--map-file",
+												"--load-game",
+												"--game-seed",
+												"--player",
+												"--ai-param",
+												"--alliance",
+												"--win-condition",
+												"--win-probability",
+												"--experiment",
+												"--rule",
+												"--fork-rule",
+												"--ticks",
+												"--compute-threads",
+												"--compute-experiments",
+												"--gradient-workers",
+												"--gradient-delay",
+												"--gradient-counterfactual",
+												"--save",
+												"--telemetry",
+												"--replay",
+												"--generator",
+												"--map-seed",
+												"--param",
+												"--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

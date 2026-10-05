@@ -18,11 +18,11 @@ class Order;
 
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
-//! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 134 introduces property-driven terrain,
-//! weighted travel and revised ecology; older orders reproduce different results.
-//! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 134;
+//! Oldest accepted replay format. Format 138 introduces the saved building
+//! scheduling rule and its script observation, which can affect simulation even
+//! when the experiment is disabled. Replay orders from earlier simulations are
+//! incompatible. Save loading retains its separate floor in Version.h.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 138;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

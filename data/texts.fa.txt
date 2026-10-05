@@ -5306,6 +5306,10 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 جنگجوی دشمن
 [stat unit strength count]
 قدرت
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 بر اساس مکان
 [AI Library]

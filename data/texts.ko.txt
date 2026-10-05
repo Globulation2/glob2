@@ -5306,6 +5306,10 @@ AI 원격 측정
 적 전사
 [stat unit strength count]
 전력
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 장소별
 [AI Library]

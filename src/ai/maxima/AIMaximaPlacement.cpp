@@ -3495,6 +3495,12 @@ void Planner::saveExecutionState(GAGCore::OutputStream* stream) const
     stream->writeEnterSection("PlacementExecution95");
     AIMaximaContinuation::Writer archive(stream,true);
     const_cast<Planner*>(this)->executionState(archive);
+    // The frozen world can outlive changes to the live farm reservation mask.
+    // Preserve its original flags rather than reconstructing them after load.
+    std::vector<uint8_t> woodReserves;
+    woodReserves.reserve(incrementalWorld.tiles.size());
+    for(const auto& tile:incrementalWorld.tiles) woodReserves.push_back(tile.woodReserve);
+    archive("woodReserves",woodReserves);
     stream->writeLeaveSection();
 }
 void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
@@ -3502,6 +3508,20 @@ void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
     stream->readEnterSection("PlacementExecution95");
     AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE,versionMinor);
     executionState(archive);
+    if(versionMinor>=FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES)
+    {
+        std::vector<uint8_t> woodReserves;
+        archive("woodReserves",woodReserves);
+        if(woodReserves.size()!=incrementalWorld.tiles.size())
+            throw std::runtime_error("Incomplete placement wood reservations");
+        for(size_t i=0;i<woodReserves.size();++i)
+        {
+            if(woodReserves[i]>1) throw std::runtime_error("Invalid placement wood reservation");
+            incrementalWorld.tiles[i].woodReserve=woodReserves[i];
+        }
+    }
+    else
+        for(auto& tile:incrementalWorld.tiles) tile.woodReserve=false;
     if(scoringNeighborhoodCache && !scoringNeighborhoodCache->empty()
        && scoringNeighborhoodWidth>0 && scoringNeighborhoodHeight>0
        && uint64_t(scoringNeighborhoodWidth)*scoringNeighborhoodHeight*9==scoringNeighborhoodCache->size())

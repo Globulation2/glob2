@@ -6,6 +6,7 @@
 #include <cmath>
 #include "../../src/ai/maxima/AIMaximaPlacement.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 
@@ -431,6 +432,8 @@ static void placementContinuationRegression()
     for(int boundary:{1,7,83})
     {
         WorldState world=makeWorld();
+        world.tiles[world.index(7,7)].woodReserve=true;
+        world.tiles[world.index(8,7)].woodReserve=true;
         Planner uninterrupted,restored;
         uninterrupted.configure(makeProfiles(),1,2,6,5,7);
         restored.configure(makeProfiles(),1,2,6,5,7);
@@ -453,6 +456,8 @@ static void placementContinuationRegression()
         // The execution state was just written by the current writer, so it is
         // read back at the current format rather than the older planner one.
         restored.loadExecutionState(&input,VERSION_MINOR);
+        REQUIRE(restored.selectionWorld().tiles[world.index(7,7)].woodReserve);
+        REQUIRE(restored.selectionWorld().tiles[world.index(8,7)].woodReserve);
         SelectionProgress progress=SelectionPending;
         for(int step=0;step<10000&&progress==SelectionPending;++step)
         {
@@ -469,6 +474,44 @@ static void placementContinuationRegression()
         REQUIRE(actual.accessTiles==expected.accessTiles);
         REQUIRE(actual.arteryTiles==expected.arteryTiles);
     }
+}
+
+TEST_CASE("Frozen wood reservations survive saves while older planner layouts remain readable" *
+          doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=makeWorld();
+    world.tiles[world.index(7,7)].woodReserve=true;
+    Planner original,restored,legacy;
+    for(Planner* planner:{&original,&restored,&legacy})
+        planner->configure(makeProfiles(),1,2,6,5,7);
+    DevelopmentIntent intent;intent.buildingType=3;intent.unmetCount=2;
+    DevelopmentLimits limits;limits.newConstruction=2;
+    DevelopmentAction selected;
+    REQUIRE(original.selectActionIncremental(world,{intent},limits,selected,
+        world.computeSignature(),1)==SelectionPending);
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(memory);
+    original.save(&output);
+    original.saveExecutionState(&output);
+    const auto bytes=memory->takeContents();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(bytes)));
+    REQUIRE(restored.load(&input,VERSION_MINOR));
+    restored.loadExecutionState(&input,VERSION_MINOR);
+    REQUIRE(restored.selectionWorld().tiles[world.index(7,7)].woodReserve);
+    CHECK(input.isEndOfStream());
+
+    // The pre-137 body is unchanged. Determine its end using the old reader,
+    // then prove it also loads when the new extension is absent entirely.
+    GAGCore::BinaryInputStream oldBody(new GAGCore::MemoryStreamBackend(std::string(bytes)));
+    REQUIRE(legacy.load(&oldBody,FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES-1));
+    legacy.loadExecutionState(&oldBody,FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES-1);
+    const auto oldSize=oldBody.getPosition();
+    REQUIRE(oldSize<bytes.size());
+    GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(bytes.substr(0,oldSize)));
+    REQUIRE(restored.load(&oldInput,FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES-1));
+    restored.loadExecutionState(&oldInput,FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES-1);
+    CHECK_FALSE(restored.selectionWorld().tiles[world.index(7,7)].woodReserve);
+    CHECK(oldInput.isEndOfStream());
 }
 
 static void adjoiningBarracksRegression()

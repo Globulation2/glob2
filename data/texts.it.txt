@@ -5306,6 +5306,10 @@ livello d'attacco
 guerrieri nemici
 [stat unit strength count]
 forza
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Per luogo
 [AI Library]

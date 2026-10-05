@@ -5556,3 +5556,7 @@ Adds ice to the map editor. Ground units move at half speed and lose one health 
 Road terrain
 [experiment road-terrain help]
 Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+[experiment building-gradient-pipeline]
+Scheduled building gradients
+[experiment building-gradient-pipeline help]
+Refresh building routes in the background and publish them on a fixed later tick. Units use the previous routes while a refresh is pending.

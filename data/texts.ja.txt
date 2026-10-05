@@ -5306,6 +5306,10 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 敵の戦士
 [stat unit strength count]
 戦力
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 場所別
 [AI Library]

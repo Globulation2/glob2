@@ -5306,6 +5306,10 @@ aanvalsniveau
 vijandelijke soldaten
 [stat unit strength count]
 kracht
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Per plaats
 [AI Library]

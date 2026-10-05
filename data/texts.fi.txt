@@ -5306,6 +5306,10 @@ hyökkäystaso
 vihollissoturit
 [stat unit strength count]
 voima
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Paikoittain
 [AI Library]

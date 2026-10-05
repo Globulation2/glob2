@@ -358,6 +358,8 @@ CLIENT_SOURCES = (
     'map/gradient/BuildingGradientSearch.cpp',
     'map/gradient/MapGradientArea.cpp',
     'map/gradient/MapGradientBuilding.cpp',
+    'map/gradient/MapGradientScheduling.cpp',
+    'map/gradient/MapGradientImpact.cpp',
     'map/gradient/MapGradientChamfer.cpp',
     'map/gradient/MapGradientDirection.cpp',
     'map/gradient/MapGradientPropagation.cpp',

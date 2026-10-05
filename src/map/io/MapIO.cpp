@@ -510,7 +510,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(sw);
 				// Materialize the old full-field representation from its frozen inputs.
 				// This changes no routing answers, timestamps, RNG or save bytes.
-				finishBuildingGradient(building, sw);
+				finishBuildingGradient(building, sw, "save");
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -534,7 +534,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			}
 			stream->writeLeaveSection();
 			stream->writeEnterSection("access");
-			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+			for (int sw = 0; sw < SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint8(building->locked[sw], "locked");
@@ -570,6 +570,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	});
 	stream->writeLeaveSection();
+	saveBuildingRefreshes(stream);
 	stream->writeLeaveSection();
 }
 
@@ -676,7 +677,10 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readLeaveSection();
 			}
 			stream->readEnterSection("access");
-			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+			for (int sw = 0; sw < (versionMinor >= FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES
+									   ? SWIM_CLASS_COUNT
+									   : SWIM_VARIANT_COUNT);
+				 ++sw)
 			{
 				stream->readEnterSection(sw);
 				building->locked[sw]=loadFlag(stream,"locked");
@@ -684,6 +688,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
 				stream->readLeaveSection();
 			}
+			if (versionMinor < FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES)
+				for (int sw = SWIM_VARIANT_COUNT; sw < SWIM_CLASS_COUNT; ++sw)
+				{
+					building->locked[sw] = building->locked[SWIM_VARIANT_CAN_SWIM];
+					building->anyResourceToClear[sw] =
+						building->anyResourceToClear[SWIM_VARIANT_CAN_SWIM];
+				}
+
 			stream->readLeaveSection();
 			stream->readLeaveSection();
 		}
@@ -715,5 +727,154 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 	}
+	gradientRuntime->buildingAccessByClass =
+		versionMinor >= FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES && buildingPipelineEnabled();
+	loadBuildingRefreshes(stream, versionMinor);
+	stream->readLeaveSection();
+}
+
+void Map::saveBuildingRefreshes(GAGCore::OutputStream *stream) const
+{
+	auto &scheduler = gradientRuntime->buildings;
+	scheduler.finish();
+	stream->writeEnterSection("buildingGradientPipeline");
+	stream->writeUint32(scheduler.requests.size(), "requests");
+	unsigned index = 0;
+	for (const auto &[key, identity] : scheduler.requests)
+	{
+		stream->writeEnterSection(index++);
+		stream->writeUint16(key.first, "gid");
+		stream->writeUint8(key.second, "swim");
+		stream->writeUint32(identity, "identity");
+		stream->writeLeaveSection();
+	}
+	stream->writeUint32(scheduler.pending.size(), "pending");
+	index = 0;
+	for (const auto &[key, ptr] : scheduler.pending)
+	{
+		const auto &job = *ptr;
+		stream->writeEnterSection(index++);
+		stream->writeUint16(key.first, "gid");
+		stream->writeUint8(key.second, "swim");
+		stream->writeUint32(job.destination.identity, "identity");
+		stream->writeUint32(job.destination.epoch, "epoch");
+		stream->writeUint32(scheduler.epochs[key], "liveEpoch");
+		stream->writeUint32(job.captured, "captured");
+		stream->writeUint8(job.due - game->stepCounter, "remaining");
+		stream->writeUint32(job.generation, "generation");
+		stream->writeUint32(job.reservedBytes, "reservedBytes");
+		stream->writeUint32(job.snapshotBytes, "snapshotBytes");
+		stream->writeUint8(job.destination.clearing, "clearing");
+		job.visitResult(
+			[&](const auto &result)
+			{
+				stream->writeUint8(result.locked, "locked");
+				stream->writeUint8(result.resourceState, "resourceState");
+				saveGradient(stream, result.walking.data(), size);
+				for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+				{
+					stream->writeEnterSection(r);
+					stream->writeUint32(job.parentVersions[r], "parentVersion");
+					saveGradient(stream, result.trips[r].empty() ? nullptr : result.trips[r].data(),
+								 size);
+					stream->writeLeaveSection();
+				}
+			});
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+}
+
+void Map::loadBuildingRefreshes(GAGCore::InputStream *stream, Sint32 versionMinor)
+{
+	auto &scheduler = gradientRuntime->buildings;
+	scheduler.reset();
+	if (versionMinor < FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
+		return;
+	stream->readEnterSection("buildingGradientPipeline");
+	const auto maximum = Building::MAX_COUNT * Team::MAX_COUNT * SWIM_CLASS_COUNT;
+	const auto requests = stream->readUint32("requests");
+	if (requests > maximum)
+		throw std::runtime_error("Invalid building refresh request count");
+	for (unsigned i = 0; i < requests; ++i)
+	{
+		stream->readEnterSection(i);
+		int gid = stream->readUint16("gid"), sw = stream->readUint8("swim");
+		auto identity = stream->readUint32("identity");
+		if (gid >= Building::MAX_COUNT * Team::MAX_COUNT || sw >= SWIM_CLASS_COUNT ||
+			scheduler.requests.count({gid, sw}))
+			throw std::runtime_error("Invalid building refresh destination");
+		scheduler.requests[{gid, sw}] = identity;
+		stream->readLeaveSection();
+	}
+	const auto pending = stream->readUint32("pending");
+	if (pending > maximum)
+		throw std::runtime_error("Invalid building refresh queue count");
+	std::shared_ptr<BuildingGradientSpool> spool;
+	for (unsigned i = 0; i < pending; ++i)
+	{
+		stream->readEnterSection(i);
+		int gid = stream->readUint16("gid"), sw = stream->readUint8("swim");
+		if (gid >= Building::MAX_COUNT * Team::MAX_COUNT || sw >= SWIM_CLASS_COUNT ||
+			scheduler.pending.count({gid, sw}))
+			throw std::runtime_error("Invalid building refresh destination");
+		auto job = std::make_shared<BuildingGradientScheduler::Job>();
+		job->destination.gid = gid;
+		job->destination.swim = sw;
+		job->destination.identity = stream->readUint32("identity");
+		job->destination.epoch = stream->readUint32("epoch");
+		scheduler.epochs[{gid, sw}] = stream->readUint32("liveEpoch");
+		job->captured = stream->readUint32("captured");
+		const auto remaining = stream->readUint8("remaining");
+		if (remaining > game->gameHeader.getBuildingGradientDelay())
+			throw std::runtime_error("Invalid building refresh deadline");
+		job->due = game->stepCounter + remaining;
+		job->generation = stream->readUint32("generation");
+		job->reservedBytes = stream->readUint32("reservedBytes");
+		job->snapshotBytes = stream->readUint32("snapshotBytes");
+		job->destination.clearing = loadFlag(stream, "clearing");
+		job->result.locked = loadFlag(stream, "locked");
+		job->result.resourceState = stream->readUint8("resourceState");
+		if (job->result.resourceState > 2)
+			throw std::runtime_error("Invalid building refresh resource state");
+		auto readField = [&](std::vector<Uint16> &values)
+		{
+			Uint16 *raw = nullptr;
+			loadGradient(stream, raw, size, GAGCore::PackedArray::binary(stream));
+			std::unique_ptr<Uint16[]> field(raw);
+			if (raw)
+				values.assign(raw, raw + size);
+		};
+		readField(job->result.walking);
+		if (job->result.walking.empty())
+			throw std::runtime_error("Missing building refresh walking field");
+		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+		{
+			stream->readEnterSection(r);
+			job->parentVersions[r] = stream->readUint32("parentVersion");
+			readField(job->result.trips[r]);
+			stream->readLeaveSection();
+		}
+		unsigned children = 0;
+		for (const auto &trip : job->result.trips)
+			if (!trip.empty())
+				++children;
+		const bool spilled = !job->reservedBytes && !job->snapshotBytes;
+		if (!spilled && (job->reservedBytes != size * sizeof(Uint16) * (1 + 2 * children) ||
+						 job->snapshotBytes != size * sizeof(building_gradient::Cell)))
+			throw std::runtime_error("Invalid building refresh memory reservation");
+		if (spilled)
+		{
+			if (!spool)
+				spool = std::make_shared<BuildingGradientSpool>();
+			job->spillResult(spool);
+		}
+		scheduler.pending[{gid, sw}] = job;
+		if (scheduler.bytes() > scheduler.BYTE_LIMIT)
+			throw std::runtime_error("Saved building refresh queue exceeds memory limit");
+		stream->readLeaveSection();
+	}
+	if (!buildingPipelineEnabled() && (requests || pending))
+		throw std::runtime_error("Building refresh queue without experiment");
 	stream->readLeaveSection();
 }

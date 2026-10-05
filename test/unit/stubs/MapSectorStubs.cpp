@@ -31,3 +31,6 @@ void GameAnimations::resize(int) {}
 #include "Map.h"
 #include <cstdlib>
 void Map::updateForbiddenGradient(int, int) { std::abort(); }
+// Unit fixtures do not run simulation ticks or enable gameplay impact auditing.
+#include "Map.h"
+void Map::observeGradientImpact() {}

@@ -15,13 +15,18 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 {
 	static const std::vector<ExperimentDefinition> definitions = {
 		{ExperimentId::GuardAreaBalancing, "guard-area-balancing", "Guard-area balancing",
-		 "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."},
+		 "Free warriors spread between painted guard areas instead of all taking the nearest one: "
+		 "a bigger area gets more of them, and an over-full area thins out into the others."},
 		{ExperimentId::FarmAreas, "farm-areas", "Farm areas",
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
 		{ExperimentId::IceTerrain, "ice-terrain", "Ice terrain",
 		 "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources."},
 		{ExperimentId::RoadTerrain, "road-terrain", "Road terrain",
 		 "Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources."},
+		{ExperimentId::BuildingGradientPipeline, "building-gradient-pipeline",
+		 "Scheduled building gradients",
+		 "Refresh building routes in the background and publish them on a fixed later tick. Units "
+		 "use the previous routes while a refresh is pending."},
 	};
 	return definitions;
 }

@@ -5306,6 +5306,10 @@ cấp tấn công
 chiến binh địch
 [stat unit strength count]
 sức mạnh
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Theo vị trí
 [AI Library]

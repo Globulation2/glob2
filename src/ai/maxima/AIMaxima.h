@@ -523,6 +523,7 @@ private:
 	void saveExecutionState(GAGCore::OutputStream*);
 	void loadExecutionState(GAGCore::InputStream*, Sint32 versionMinor);
 	template<class Archive> void executionState(Archive&);
+	template<class Archive> void directorBudgetContinuation(Archive&);
 	bool loadDirector(GAGCore::InputStream*, Sint32 versionMinor);
 
 	StrategicSnapshot snapshot;

@@ -41,8 +41,11 @@ save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replay
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
 format and introduced network protocol 47. Terrain format 134 adds required
-experiments to `MapHeader`; network protocol 55 and replay floor 134 separate the
-new terrain simulation from earlier clients. The supported save floor remains 58.
+experiments to `MapHeader`; protocol 55 and replay floor 134 separate that terrain
+simulation from earlier clients. Scheduled building gradients add saved scheduling
+state in format 135 and require protocol 56. Current replay acceptance starts at
+138 because scripts can observe the new saved rule even when the experiment is
+disabled. The supported save floor remains 58.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable
 kebab-case string such as `guard-area-balancing`), never a bit position. Retiring
@@ -70,8 +73,8 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | Key | Setting | What it changes |
 | --- | --- | --- |
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
+| `building-gradient-pipeline` | Scheduled building gradients | Refreshes cached building routes on private immutable snapshots, then publishes them after a fixed delay. First construction remains synchronous. Scheduling and measurement details: [performance telemetry](../development/performance-telemetry.md#scheduled-building-gradient-experiment). |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
-
 | `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
 | `road-terrain` | Road terrain | Enables the road editor brush. Roads double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
 
@@ -103,5 +106,8 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 5. Update the relevant guide and the table above. Stable experiment keys do not
    themselves require a new header format. Simulation changes still require a
    `SIM_REVISION` bump and refreshed golden match, including experimental rules.
+5. Update the relevant maintained design and measurement guide and link it from
+   the table above. Simulation changes require a `SIM_REVISION` bump and an updated
+   golden match record. Add version gates when the header or saved state changes.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.

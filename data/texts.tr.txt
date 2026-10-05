@@ -5306,6 +5306,10 @@ saldırı seviyesi
 düşman savaşçı
 [stat unit strength count]
 güç
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Yere göre
 [AI Library]

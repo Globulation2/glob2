@@ -196,11 +196,11 @@ TEST_SUITE("ExperimentalFeatures")
 			CHECK(loaded.getExperiments() == original.getExperiments());
 			CHECK(current->getPosition() == bytes.size());
 
-			// The set is the last thing written, so a version 123 header is this
-			// one without those bytes: it loads exactly, with no experiment.
+			// Format 135 appends the delay after the set. A version 123 header
+			// omits both extensions and loads exactly with no experiment.
 			const std::string sectionBytes = bytesOf(original.getExperiments());
 			REQUIRE(bytes.size() > sectionBytes.size());
-			const size_t legacySize = bytes.size() - sectionBytes.size();
+			const size_t legacySize = bytes.size() - sectionBytes.size() - 1;
 			auto* legacy = new MemoryStreamBackend(bytes.data(), legacySize);
 			legacy->seekFromStart(0);
 			BinaryInputStream old(legacy);

@@ -10,8 +10,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
-
-
+#include "BuildingGradientDiagnostics.h"
 
 // Building pathfinding (buildingGradient, buildingAvailable, roundTripGradient,
 // roundTripDistance, pathfindBuilding)
@@ -49,6 +48,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass)
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[swimClass]=now;
 	bool rebuild=false;
+	const char *reason = "allocated";
 	if (gradient==NULL)
 	{
 		gradient=acquireBuildingGradientBuffer();
@@ -56,13 +56,21 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass)
 	}
 	else if ((building->dirtyGradient[swimClass] || building->gradientGeneration[swimClass]!=topologyGeneration)
 		&& lastUpdate+GRADIENT_DIRTY_REBUILD_TICKS<=now)
+	{
 		rebuild=true;
+		reason =
+			building->gradientGeneration[swimClass] != topologyGeneration ? "topology" : "dirty";
+	}
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
+	{
 		rebuild=true;
-	if (rebuild)
-		updateGlobalGradient(building, swimClass);
-	return !building->locked[swimClass>0];
+		reason = "clearing_timer";
+	}
+	if (rebuild &&
+		!(std::string(reason) != "allocated" && requestBuildingRefresh(building, swimClass)))
+		updateGlobalGradient(building, swimClass, reason);
+	return !building->locked[buildingAccessIndex(swimClass)];
 }
 
 const Uint16 *Map::buildingGradient(Building *building, int swimClass)
@@ -117,6 +125,8 @@ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int s
 	building->roundTripGradientUsedStep[resourceType][swimClass]=now;
 	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
 		return gradient;
+	if (gradient != NULL && requestBuildingRefresh(building, swimClass))
+		return gradient;
 	if (gradient==NULL)
 		gradient=acquireBuildingGradientBuffer();
 	updateRoundTripGradient(building, resourceType, swimClass);
@@ -154,7 +164,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).
-		finishBuildingGradient(building, swimClass);
+		finishBuildingGradient(building, swimClass, "forbidden_escape");
 		return pathfindForbidden(building->globalGradient[swimClass], building->owner->teamNumber, swimClass, x, y, dx, dy);
 	}
 
@@ -173,8 +183,9 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
 
 	// Stuck for a while: the gradient may be stale, rebuild it now.
-	updateGlobalGradient(building, swimClass);
-	if (building->locked[swimClass>0])
+	if (!requestBuildingRefresh(building, swimClass))
+		updateGlobalGradient(building, swimClass, "stuck");
+	if (building->locked[buildingAccessIndex(swimClass)])
 		return false;
 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true))
 		return true;
@@ -199,7 +210,9 @@ void Map::advanceHiringGradients(Building *building)
 			|| unit->medical != Unit::MED_FREE) continue;
 		const int swim = unit->swimClass();
 		const auto &search = building->globalGradientSearch[swim];
-		if (search && !search->complete()) targets[swim].push_back(coordToIndex(unit->posX, unit->posY));
+		const auto cell = coordToIndex(unit->posX, unit->posY);
+		if (search && !search->resolved(cell))
+			targets[swim].push_back(cell);
 	}
 	std::vector<int> jobs;
 	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
@@ -210,8 +223,16 @@ void Map::advanceHiringGradients(Building *building)
 	computeExecutor().run(jobs.size(), [&](size_t i) {
 		const int swim = jobs[i];
 		const auto before = building->globalGradientSearch[swim]->poppedEntries();
-		for (size_t cell : targets[swim]) building->globalGradientSearch[swim]->resolve(cell);
+		for (size_t cell : targets[swim])
+			building->globalGradientSearch[swim]->resolve(cell, "hiring_prepass");
 		popped[i] = building->globalGradientSearch[swim]->poppedEntries() - before;
 	});
-	for (auto count : popped) hiringPoppedEntries += count;
+	std::uint64_t totalPopped = 0;
+	for (auto count : popped)
+	{
+		hiringPoppedEntries += count;
+		totalPopped += count;
+	}
+	if (auto *d = buildingGradientDiagnostics())
+		d->count("hiring_batch", totalPopped ? "advanced" : "no_pops", building->gid);
 }

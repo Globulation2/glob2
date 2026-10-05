@@ -5306,6 +5306,10 @@ Angriffsstufe
 feindliche Krieger
 [stat unit strength count]
 Stärke
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Nach Ort
 [AI Library]

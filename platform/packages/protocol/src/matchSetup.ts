@@ -181,6 +181,9 @@ export const MatchRules = Strict(
     permadeathDisabled: Type.Boolean(),
     peacefulMode: Type.Boolean(),
     buildingHpLevel: Type.Integer({ minimum: 0, maximum: 2 }),
+    buildingGradientDelay: Type.Optional(
+      Type.Union([Type.Literal(2), Type.Literal(4), Type.Literal(8)], { default: 4 }),
+    ),
   },
   { description: 'Custom-game rules, named after the GameHeader accessors they set.' },
 );
@@ -261,6 +264,7 @@ export const STANDARD_RULES: MatchRules = {
   permadeathDisabled: false,
   peacefulMode: false,
   buildingHpLevel: 0,
+  buildingGradientDelay: 4,
 };
 
 export interface SetupProblem {

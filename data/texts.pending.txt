@@ -132,3 +132,5 @@
 [music Filters]
 [music Leave without saving]
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
+[experiment building-gradient-pipeline]
+[experiment building-gradient-pipeline help]

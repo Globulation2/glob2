@@ -5306,6 +5306,10 @@ anfallsnivå
 fiendekrigare
 [stat unit strength count]
 styrka
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Efter plats
 [AI Library]

@@ -13,6 +13,58 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
+Unit::FetchDecision Unit::evaluateFetchDecision(const int *needs, int timeLeft, bool fresh)
+{
+	FetchDecision decision;
+	auto *map = owner->map;
+	decision.score = map->getW() + map->getW();
+	for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+		if (needs[r] > 0)
+		{
+			int distance = 0;
+			bool available = map->buildingDecisionDistance(attachedBuilding, swimClass(), r, posX,
+														   posY, &distance, fresh);
+			if (available)
+				distance = (distance + 1) / 2;
+			else
+				available = map->resourceDecisionDistance(owner->teamNumber, r, swimClass(), posX,
+														  posY, &distance, fresh);
+			if (available)
+			{
+				if ((distance << 1) >= timeLeft)
+					continue;
+				const int score = distance / needs[r];
+				if (score < decision.score)
+				{
+					decision.resource = r;
+					decision.score = score;
+					decision.exchange = false;
+					decision.market = nullptr;
+				}
+			}
+			if (attachedBuilding->type->canFeedUnit)
+				for (auto *market : owner->canExchange)
+					if (market->resources[r] > 0)
+					{
+						int buildingDistance = 0;
+						if (map->buildingDecisionDistance(market, swimClass(), -1, posX, posY,
+														  &buildingDistance, fresh))
+						{
+							const int score = (buildingDistance + 5) / needs[r];
+							if (score < decision.score)
+							{
+								decision.resource = r;
+								decision.score = score;
+								decision.exchange = true;
+								decision.market = market;
+								decision.marketUpdates.push_back(market);
+							}
+						}
+					}
+		}
+	return decision;
+}
+
 void Unit::handleDisplacement(void)
 {
 	switch (activity)
@@ -76,6 +128,7 @@ void Unit::handleDisplacement(void)
 					// we got the resource.
 					carriedResource=destinationPurpose;
 					++owner->stats.measurements.harvested[carriedResource];
+					owner->map->gradientOutcome("harvested", this, attachedBuilding, carriedResource);
 
 					setTargetBuilding(attachedBuilding);
 					if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
@@ -130,6 +183,7 @@ void Unit::handleDisplacement(void)
 						targetBuilding->removeResourceFromBuilding(destinationPurpose);
 						carriedResource=destinationPurpose;
 						++owner->stats.measurements.harvested[carriedResource];
+						owner->map->gradientOutcome("market_acquired", this, attachedBuilding, carriedResource);
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -145,6 +199,7 @@ void Unit::handleDisplacement(void)
 				{
 					if (verbose)
 						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
+					owner->map->gradientOutcome("delivered", this, targetBuilding, carriedResource);
 					targetBuilding->addResourceIntoBuilding(carriedResource);
 					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 				}
@@ -172,58 +227,30 @@ void Unit::handleDisplacement(void)
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
-							int bestResource=-1;
-							int minValue=owner->map->getW()+owner->map->getW();
-							bool takeInExchangeBuilding=false;
 							Map* map=owner->map;
-							for (int r=0; r<MAX_NB_RESOURCES; r++)
+							if (map->buildingGradientImpactEnabled())
+								map->beginGradientDecision("resource", attachedBuilding->gid, gid);
+							const auto decision = evaluateFetchDecision(needs, timeLeft, false);
+							if (map->buildingGradientImpactEnabled())
 							{
-								int need=needs[r];
-								if (need>0)
-								{
-									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-									{
-										if ((distToResource<<1)>=timeLeft)
-											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
-										int value=distToResource/need;
-										if (value<minValue)
-										{
-											bestResource=r;
-											minValue=value;
-											takeInExchangeBuilding=false;
-										}
-									}
-
-									if (attachedBuilding->type->canFeedUnit)
-										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
-											if ((*bi)->resources[r]>0)
-											{
-												int buildingDist;
-												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
-												{
-													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
-													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
-													int value=(buildingDist+5)/need;
-													if (value<minValue)
-													{
-														bestResource=r;
-														minValue=value;
-
-														ownExchangeBuilding=*bi;
-														setTargetBuilding(*bi);
-														takeInExchangeBuilding=true;
-													}
-												}
-											}
-								}
+								const auto fresh = evaluateFetchDecision(needs, timeLeft, true);
+								map->recordGradientDecision(
+									attachedBuilding, swimClass(),
+									decision.exchange ? decision.market->gid : -1,
+									fresh.exchange ? fresh.market->gid : -1, decision.resource,
+									fresh.resource, decision.score, fresh.score);
+								map->auditResourceDestination(
+									this, decision.resource,
+									decision.exchange ? decision.market : nullptr, fresh.resource,
+									fresh.exchange ? fresh.market : nullptr);
 							}
-
+							for (auto *market : decision.marketUpdates)
+							{
+								ownExchangeBuilding = market;
+								setTargetBuilding(market);
+							}
+							const int bestResource = decision.resource, minValue = decision.score;
+							const bool takeInExchangeBuilding = decision.exchange;
 							if (verbose)
 								printf("guid=(%d) bestResource=%d, minValue=%d\n", gid, bestResource, minValue);
 

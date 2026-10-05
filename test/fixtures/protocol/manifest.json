@@ -95,189 +95,6 @@
   },
   "fixtures": [
     {
-      "file": "valid/SimVersion/current.json",
-      "schema": "SimVersion",
-      "valid": true,
-      "note": "A sim version."
-    },
-    {
-      "file": "invalid/SimVersion/short-data-hash.json",
-      "schema": "SimVersion",
-      "valid": false,
-      "stage": "schema",
-      "note": "dataHash must be 64 lowercase hex digits."
-    },
-    {
-      "file": "valid/MatchSetup/catalog-1v1.json",
-      "schema": "MatchSetup",
-      "valid": true,
-      "note": "Two humans on a catalog map, standard rules."
-    },
-    {
-      "file": "valid/MatchSetup/generated-human-vs-ais.json",
-      "schema": "MatchSetup",
-      "valid": true,
-      "note": "One human against three allied AIs on a generated map; revealed map; AI runtime config."
-    },
-    {
-      "file": "valid/MatchSetup/save-shared-control-all-rules.json",
-      "schema": "MatchSetup",
-      "valid": true,
-      "note": "Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name."
-    },
-    {
-      "file": "valid/MatchSetup/room-closed-seats.json",
-      "schema": "MatchSetup",
-      "valid": true,
-      "note": "A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed."
-    },
-    {
-      "file": "valid/MatchSetup/queue-pause-limit.json",
-      "schema": "MatchSetup",
-      "valid": true,
-      "note": "A queue match: each human may pause 3 times for 60 s in total."
-    },
-    {
-      "file": "invalid/MatchSetup/pause-limit-out-of-range.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "A pause limit allows at most 100 pauses and 3600 s."
-    },
-    {
-      "file": "invalid/MatchSetup/closed-seat-with-name.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "A closed seat is not a player: it has no name or AI."
-    },
-    {
-      "file": "invalid/MatchSetup/closed-seat-before-player.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "Closed seats follow every human and AI seat, so players keep the numbers 0..p-1."
-    },
-    {
-      "file": "invalid/MatchSetup/closed-team-played.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "A closed seat cannot close a team that a player seat controls."
-    },
-    {
-      "file": "invalid/MatchSetup/only-closed-seats.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "A match needs at least one human or AI seat."
-    },
-    {
-      "file": "invalid/MatchSetup/missing-rules.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "Every field is required; there are no defaults."
-    },
-    {
-      "file": "invalid/MatchSetup/unknown-ai.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "AI ids are the closed CLI-name set."
-    },
-    {
-      "file": "invalid/MatchSetup/javascript-ai-unsupported.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "JavaScript controllers are not accepted online yet."
-    },
-    {
-      "file": "invalid/MatchSetup/unknown-property.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "MatchSetup rejects unknown properties: an unknown rule must not be silently ignored."
-    },
-    {
-      "file": "invalid/MatchSetup/seed-out-of-range.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "seed is a Uint32."
-    },
-    {
-      "file": "invalid/MatchSetup/uppercase-map-hash.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "Hashes are lowercase hex."
-    },
-    {
-      "file": "invalid/MatchSetup/future-schema-version.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "An unknown schemaVersion must be rejected, not guessed at."
-    },
-    {
-      "file": "invalid/MatchSetup/rule-level-out-of-range.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "glassCannonLevel is 0..2."
-    },
-    {
-      "file": "invalid/MatchSetup/generated-without-hash.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "schema",
-      "note": "A match needs the generated map hash; generation happens before start."
-    },
-    {
-      "file": "invalid/MatchSetup/seats-not-contiguous.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "Seats are numbered 0..k-1 in order."
-    },
-    {
-      "file": "invalid/MatchSetup/seat-on-missing-team.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "A seat must reference one of the listed teams."
-    },
-    {
-      "file": "invalid/MatchSetup/teams-out-of-order.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "Teams are listed 0..n-1 in order."
-    },
-    {
-      "file": "invalid/MatchSetup/name-too-long-in-bytes.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "20 characters but 40 UTF-8 bytes; BasePlayer names are limited to 32 bytes."
-    },
-    {
-      "file": "invalid/MatchSetup/account-in-two-seats.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "An account holds at most one seat."
-    },
-    {
-      "file": "invalid/MatchSetup/generator-team-count-mismatch.json",
-      "schema": "MatchSetup",
-      "valid": false,
-      "stage": "semantic",
-      "note": "The generator \"teams\" control must equal the number of setup teams."
-    },
-    {
       "file": "valid/MatchTicketClaims/player-ticket.json",
       "schema": "MatchTicketClaims",
       "valid": true,
@@ -560,6 +377,202 @@
       "valid": false,
       "stage": "schema",
       "note": "A diverged verdict names at least one seat."
+    },
+    {
+      "file": "valid/SimVersion/current.json",
+      "schema": "SimVersion",
+      "valid": true,
+      "note": "A sim version."
+    },
+    {
+      "file": "invalid/SimVersion/short-data-hash.json",
+      "schema": "SimVersion",
+      "valid": false,
+      "stage": "schema",
+      "note": "dataHash must be 64 lowercase hex digits."
+    },
+    {
+      "file": "valid/MatchSetup/building-gradient-pipeline-delay-two.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Scheduled building gradients carry their non-default publication delay."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-three.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only two, four and eight tick delays are supported."
+    },
+    {
+      "file": "valid/MatchSetup/catalog-1v1.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Two humans on a catalog map, standard rules."
+    },
+    {
+      "file": "valid/MatchSetup/generated-human-vs-ais.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "One human against three allied AIs on a generated map; revealed map; AI runtime config."
+    },
+    {
+      "file": "valid/MatchSetup/save-shared-control-all-rules.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name."
+    },
+    {
+      "file": "valid/MatchSetup/room-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A room with seats 1 and 3 empty: the players keep their map teams (0 and 2) and come first; the empty teams are closed."
+    },
+    {
+      "file": "valid/MatchSetup/queue-pause-limit.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A queue match: each human may pause 3 times for 60 s in total."
+    },
+    {
+      "file": "invalid/MatchSetup/pause-limit-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A pause limit allows at most 100 pauses and 3600 s."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-with-name.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A closed seat is not a player: it has no name or AI."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-seat-before-player.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Closed seats follow every human and AI seat, so players keep the numbers 0..p-1."
+    },
+    {
+      "file": "invalid/MatchSetup/closed-team-played.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A closed seat cannot close a team that a player seat controls."
+    },
+    {
+      "file": "invalid/MatchSetup/only-closed-seats.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A match needs at least one human or AI seat."
+    },
+    {
+      "file": "invalid/MatchSetup/missing-rules.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Every field is required; there are no defaults."
+    },
+    {
+      "file": "invalid/MatchSetup/unknown-ai.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "AI ids are the closed CLI-name set."
+    },
+    {
+      "file": "invalid/MatchSetup/javascript-ai-unsupported.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "JavaScript controllers are not accepted online yet."
+    },
+    {
+      "file": "invalid/MatchSetup/unknown-property.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "MatchSetup rejects unknown properties: an unknown rule must not be silently ignored."
+    },
+    {
+      "file": "invalid/MatchSetup/seed-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "seed is a Uint32."
+    },
+    {
+      "file": "invalid/MatchSetup/uppercase-map-hash.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Hashes are lowercase hex."
+    },
+    {
+      "file": "invalid/MatchSetup/future-schema-version.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "An unknown schemaVersion must be rejected, not guessed at."
+    },
+    {
+      "file": "invalid/MatchSetup/rule-level-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "glassCannonLevel is 0..2."
+    },
+    {
+      "file": "invalid/MatchSetup/generated-without-hash.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A match needs the generated map hash; generation happens before start."
+    },
+    {
+      "file": "invalid/MatchSetup/seats-not-contiguous.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Seats are numbered 0..k-1 in order."
+    },
+    {
+      "file": "invalid/MatchSetup/seat-on-missing-team.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A seat must reference one of the listed teams."
+    },
+    {
+      "file": "invalid/MatchSetup/teams-out-of-order.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Teams are listed 0..n-1 in order."
+    },
+    {
+      "file": "invalid/MatchSetup/name-too-long-in-bytes.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "20 characters but 40 UTF-8 bytes; BasePlayer names are limited to 32 bytes."
+    },
+    {
+      "file": "invalid/MatchSetup/account-in-two-seats.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "An account holds at most one seat."
+    },
+    {
+      "file": "invalid/MatchSetup/generator-team-count-mismatch.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "The generator \"teams\" control must equal the number of setup teams."
     }
   ],
   "tickets": {

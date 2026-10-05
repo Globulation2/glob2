@@ -5306,6 +5306,10 @@ nível de ataque
 guerreiros inimigos
 [stat unit strength count]
 força
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Por local
 [AI Library]

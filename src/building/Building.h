@@ -39,11 +39,8 @@ static constexpr int BUILDING_LEVEL_NONE = -1;
 /// on the `Resource` value-type field.
 static constexpr int RESOURCE_TYPE_NONE = -1;
 
-/// Length of the per-building "no-swim variant" / "can-swim variant"
-/// pair. Every per-building gradient/lock/resource array is indexed
-/// `[canSwim]` where `canSwim == 0` means the no-swim variant and
-/// `canSwim == 1` means the can-swim variant. Used both as the array
-/// dimension and as the loop bound in `for (canSwim=0; canSwim<...; …)`.
+/// Legacy no-swim/can-swim metadata variants. Experiment-off execution keeps
+/// this indexing; scheduled fields retain metadata for every swim-cost class.
 static constexpr int SWIM_VARIANT_COUNT = 2;
 
 /// Index into a `[SWIM_VARIANT_COUNT]` array selecting the variant
@@ -300,8 +297,6 @@ class Building : public BuildingUtils
 	/// Returns if this Building (Inn) can convert a hostile Unit. To avoid conversion
 	/// once the capacities of the own inns are hit, conversion is limited.
 	bool canConvertUnit(void);
-
-	// Uses the same pixel trajectory and terrain obstruction test as turret fire.
 	bool hasClearShotTo(int targetX, int targetY) const;
 
 	bool integrity();
@@ -417,45 +412,23 @@ private:
 	/// the units type and level, and whether this building is a flag, because flags get a couple of special
 	/// rules.
 
-	/// Per-zonable candidate-selection helpers for subscribeForFlagingStep.
-	/// Each tests one unit against the per-flag-type requirements (activity,
-	/// level, distance reachability) and either populates *dist with the
-	/// distance metric used for scoring, or increments
-	/// unitsFailingRequirements with the rejection reason.
-	/// Returns true iff the unit is accepted as a candidate.
-	///
-	/// Distance metrics differ by flag type and are NOT interchangeable:
-	///   - Explorer flag: squared Euclidean distance from Map::warpDistSquare,
-	///     compared against timeLeft^2. On constrained air terrain, the same
-	///     squared score uses route travel distance supplied by a shared field.
-	///   - Worker / Warrior flag: linear gradient distance from
-	///     Map::buildingAvailable (range 0..~254), compared against timeLeft.
-	bool considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance = -1);
-	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
-	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
-
-	/// One worker that could be hired to carry resources to this building,
-	/// with the metrics the selection passes of
-	/// subscribeToBringResourcesStep score on. A null `unit` means the slot
-	/// holds no candidate. `distance` is the linear gradient distance to the
-	/// building when the unit already carries the resource being staffed, or
-	/// the round distance by way of the resource when it must fetch one.
-	struct BringResourcesCandidate
+	struct CandidateEvaluation
 	{
-		Unit* unit;
-		int distance;
+		int reason = -1, distance = 0;
+		bool eligible() const { return reason < 0; }
 	};
-
-	/// Running best-candidate state shared, in order, across the three
-	/// selection passes. Later passes run only while `choosen` is still null.
-	/// Candidates are ranked by `maxLevel` first, then by smallest `minValue`.
-	struct BringResourcesSelection
+	CandidateEvaluation evaluateHiringCandidate(Unit *unit, int resource, bool fresh,
+												bool publishedOnly = false);
+	struct HiringDecision
 	{
-		int maxLevel;
-		int minValue;
-		Unit* choosen;
+		Unit *chosen = nullptr;
+		int resource = -1, level = -1, score = INT_MAX;
+		std::vector<std::pair<Unit *, int>> assignments;
+		std::vector<std::pair<Unit *, int>> failures;
 	};
-
+	HiringDecision evaluateHiring(bool fresh);
+	CandidateEvaluation evaluateFlagCandidate(Unit *unit, bool fresh, bool publishedOnly = false, int terrainDistance = -1);
+	HiringDecision evaluateFlagHiring(bool fresh);
 	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForResource
 	/// without exposing it to game callers, as GameGUI does for its own harness.
 	friend class RoundTripHungerGateHarness;
@@ -473,13 +446,6 @@ private:
 	/// the HARVEST ability or already filling this building.
 	bool considerUnitForResource(Unit* unit, int wantedResource, int* dist);
 
-	/// Packs workers hireable to fetch `wantedResource` into candidates in unit
-	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
-	/// slots. Rejection reasons are tallied via considerUnitForResource. The
-	/// tallies are reset per scan, so they describe one resource, never a unit
-	/// counted once per resource the building tried.
-	int gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
-
 	/// Per-resource delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
 	/// deliveries, not resource units: one delivery adds
@@ -490,21 +456,6 @@ private:
 	/// room for one more delivery and the deliveries already subscribed do not
 	/// cover the target.
 	bool wantsAnotherDelivery(int r, const int* targets, const int* served);
-
-	/// Hire a unit that already carries a resource this building still wants. It
-	/// delivers without a fetch trip at all, so it is preferred whatever the
-	/// apportionment says; the apportionment only directs units we must send
-	/// out. Assigns destinationPurpose to every carrying candidate it inspects,
-	/// not only the one chosen, and scores on a hunger-discounted distance.
-	/// Both are deliberate and must be preserved.
-	void selectUnitCarryingWantedResource(const int* targets, const int* served, BringResourcesSelection& sel);
-
-	/// The fetch-out selection pass for one resource. Scans all candidates and
-	/// updates `sel` with the best match, assigning destinationPurpose only to
-	/// the unit it chooses. A candidate holding something else is charged
-	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
-	/// hired when it is enough closer to be worth the loss.
-	void selectFetcher(const BringResourcesCandidate* candidates, int count, int wantedResource, BringResourcesSelection& sel);
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
@@ -558,7 +509,7 @@ public:
 	// identity
 	Uint32 scriptIdentity = 0; // Stable scripting identity; excluded from legacy simulation checksums.
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
-	Team *owner;
+	Team *owner = nullptr;
 
 	// position
 	Sint32 posX, posY; // (Uint16)
@@ -629,12 +580,14 @@ public:
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
 	//! buildings with fetchers need one, and each is a full map of Uint16.
 	void freeIdleGradients();
-	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
+	//! Observational eligibility using the same evaluator as live hiring.
+	bool freshHiringEligibility(Unit *unit, int requestedResource);
+	bool locked[SWIM_CLASS_COUNT]{}; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
 	// resource in range (set when its gradient is built). Stored value at each
 	// slot: 0 = unknown (not yet computed), 1 = true (has at least one), 2 = false (none).
-	int anyResourceToClear[SWIM_VARIANT_COUNT];
+	int anyResourceToClear[SWIM_CLASS_COUNT]{};
 
 	// shooting eye-candy data, not net synchronised
 	Uint32 lastShootStep;

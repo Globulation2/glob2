@@ -6,7 +6,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 134
+#define VERSION_MINOR 138
+// version 138 preserves the resolved Maxima food, staffing and tactical budget.
+// version 137 preserves wood reservations in frozen Maxima placement snapshots.
+// version 136 saves independent building-gradient access metadata per swim class.
 // version 134 adds canonical terrain properties and calibrated ecology.
 // version 133 adds worker time use, combat-death places and the defence snapshot to team statistics.
 // version 132 preserves legacy AI clocks, specialist caches and learned policy state.
@@ -168,7 +171,9 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 55
+#define NET_PROTOCOL_VERSION 56
+// Protocol 56 carries the saved building-gradient publication delay.
+// Protocol 55 introduces canonical terrain properties.
 // protocol 54 transfers the format-132 AI continuation fields.
 // version 53 supports the optional win-probability winning condition.
 // version 52 adds ORDER_ALTER_FARM_AREA and requires readers of version-130 map snapshots.

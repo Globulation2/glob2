@@ -5306,6 +5306,10 @@ napadalna stopnja
 sovražni vojaki
 [stat unit strength count]
 moč
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Po kraju
 [AI Library]

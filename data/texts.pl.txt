@@ -5306,6 +5306,10 @@ poziom ataku
 wrodzy wojownicy
 [stat unit strength count]
 siła
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Według miejsca
 [AI Library]

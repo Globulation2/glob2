@@ -5306,6 +5306,10 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 ворожі воїни
 [stat unit strength count]
 сила
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 За місцем
 [AI Library]

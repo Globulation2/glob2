@@ -5306,6 +5306,10 @@ bojovníci
 nepriateľskí bojovníci
 [stat unit strength count]
 sila
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Podľa miesta
 [AI Library]

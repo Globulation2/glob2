@@ -45,6 +45,7 @@ void GameHeader::reset()
 	peacefulMode=false;
 	buildingHpLevel=0;
 	experiments.clear();
+	buildingGradientDelay = 4;
 }
 
 
@@ -160,6 +161,11 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
 	}
 	if (!experiments.load(stream, versionMinor)) return false;
+	buildingGradientDelay = 4;
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
+		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+	else
+		experiments.set(ExperimentId::BuildingGradientPipeline, false);
 	stream->readLeaveSection();
 	return true;
 }
@@ -219,6 +225,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	experiments.save(stream);
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeLeaveSection();
 }
 
@@ -279,6 +286,11 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		buildingHpLevel = std::min<Uint8>(stream->readUint8("buildingHpLevel"), 2);
 	}
 	if (!experiments.load(stream, versionMinor)) return false;
+	buildingGradientDelay = 4;
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
+		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+	else
+		experiments.set(ExperimentId::BuildingGradientPipeline, false);
 	stream->readLeaveSection();
 	return true;
 }
@@ -326,6 +338,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(peacefulMode, "peacefulMode");
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	experiments.save(stream);
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeLeaveSection();
 }
 

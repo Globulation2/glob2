@@ -5306,6 +5306,10 @@ CPU %0%
 εχθρικοί πολεμιστές
 [stat unit strength count]
 ισχύς
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Ανά τοποθεσία
 [AI Library]

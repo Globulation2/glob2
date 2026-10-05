@@ -214,6 +214,33 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("swarm_allowance",swarm_allowance);
 	a("force_beliefs",force_beliefs);
 }
+// Resolved budget values remain authoritative between director passes. Do not
+// reconstruct them from constructor defaults or the current strategy on load.
+template<class Archive> void Maxima::directorBudgetContinuation(Archive& a)
+{
+    a("budget.food_ledger_enabled",budget.food_ledger_enabled);
+    a("budget.food_retirement_enabled",budget.food_retirement_enabled);
+    a("budget.food_inn_burden_percent",budget.food_inn_burden_percent);
+    a("budget.food_swarm_burden_percent",budget.food_swarm_burden_percent);
+    a("budget.food_recovered_percent",budget.food_recovered_percent);
+    a("budget.food_burden_confirm_ticks",budget.food_burden_confirm_ticks);
+    a("budget.food_retirement_cooldown_ticks",budget.food_retirement_cooldown_ticks);
+    a("budget.food_relocation_enabled",budget.food_relocation_enabled);
+    a("budget.food_relocation_min_quality_tiles",budget.food_relocation_min_quality_tiles);
+    a("budget.food_relocation_confirm_ticks",budget.food_relocation_confirm_ticks);
+    a("budget.food_relocation_cooldown_ticks",budget.food_relocation_cooldown_ticks);
+    a("budget.food_relocation_offer_ticks",budget.food_relocation_offer_ticks);
+    a("budget.food_inn_seats_level1",budget.food_inn_seats_level1);
+    a("budget.food_inn_seats_level2",budget.food_inn_seats_level2);
+    a("budget.food_inn_seats_level3",budget.food_inn_seats_level3);
+    a("budget.staffing_new_inn_workers",budget.staffing_new_inn_workers);
+    a("budget.staffing_new_swarm_workers",budget.staffing_new_swarm_workers);
+    a("budget.tactical_siege_radius",budget.tactical_siege_radius);
+    a("budget.raid_flag_radius",budget.raid_flag_radius);
+    a("budget.tactical_quarantine_enabled",budget.tactical_quarantine_enabled);
+    a("budget.tactical_quarantine_ticks",budget.tactical_quarantine_ticks);
+}
+
 void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
 {
     stream->writeEnterSection("MaximaExecution");
@@ -224,6 +251,7 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     context.saveExecutionState(stream);
     archive("wave_delivery",wave_delivery);
     archive("failed_waves",failed_waves);
+    directorBudgetContinuation(archive);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -278,6 +306,8 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         archive("wheat_maturity_cursor",discardedCursor);
         archive("wheat_maturity_pending",discardedPending);
     }
+    if(versionMinor>=FILE_FORMAT_VERSION_MAXIMA_DIRECTOR_BUDGET)
+        directorBudgetContinuation(archive);
     stream->readLeaveSection();
 
 }

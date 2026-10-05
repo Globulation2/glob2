@@ -5306,6 +5306,10 @@ nivel de atac
 războinici inamici
 [stat unit strength count]
 forță
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 După loc
 [AI Library]

@@ -381,7 +381,7 @@ completed pending fields and their remaining deadlines without publishing them e
 older saves remain loadable and start with an empty queue. The save compatibility
 floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
-versions before 123 used a different routing schedule. The current replay floor is
+versions before 123 used a different routing schedule. Format 127 raises the replay floor to
 127: the sixteen-team capacity changes Warrush's opening window from 24 to 32 ticks.
 Format 127 also counts Maxima opponents and script-generation team slots while
 keeping old saves loadable. Format 128 losslessly packs save data without changing
@@ -405,3 +405,37 @@ selection and weights. The save floor stays 58 and replay floor stays 127;
 fresh-game decision behavior is unchanged. Older saves use historical defaults
 for omitted state, whose original values cannot be recovered. Protocol 54 carries
 the additional continuation fields.
+
+
+### Scheduled building gradients
+
+Formats 135/136 add the saved `building-gradient-pipeline` experiment and its
+`buildingGradientDelay` rule (2, 4 or 8 ticks; default 4). Older saves retain the
+experiment-off behavior and load with an empty building queue; the minimum save
+version remains 58. Pending results, remaining deadlines, lifetime identities,
+admission reservations and dirty notifications after capture survive a save.
+Saving waits for private work without publishing it. Replay acceptance starts at
+138 because scripts can observe the new saved rule even when the experiment is
+disabled. The format ceiling rejects future headers. Network protocol 56 requires peers that understand the new header and
+queue state. Simulation revision 15 identifies the new rules.
+Format 136 retains independent access metadata for every building swim-cost class;
+older saves restore their legacy shared metadata before the experiment is enabled.
+Format 137 also preserves wood-reservation flags in Maxima's frozen placement
+snapshot. Without those flags, resuming an incremental selection could change
+candidate eligibility and the tick when the AI issues its selected order.
+Format 138 preserves the remaining resolved food, staffing and tactical director
+budget. Those values remain authoritative between planning passes; reconstructing
+constructor defaults after load could defer food retirement or change staffing.
+
+For checkpoint experiments, `--fork-rule building-gradient-pipeline=1
+--fork-rule buildingGradientDelay=4` explicitly derives a new game from a save.
+Overrides are rejected if building jobs or requests remain pending. Ordinary
+`--rule` and `--experiment` options still cannot override a saved game's rules.
+The derivative replay carries the changed header.
+
+`--telemetry building-gradient-impact` records fresh-field comparisons without
+changing the simulation. Offline `--gradient-counterfactual T:EVENT` requires
+that telemetry mode and substitutes fresh building fields at the recorded
+simulation decision. This deliberate intervention creates a separate continuation;
+it is not a saved rule. Reproduce the event from the same preceding checkpoint,
+seed, orders and configuration. See [measurement details](performance-telemetry.md#scheduled-building-gradient-experiment).

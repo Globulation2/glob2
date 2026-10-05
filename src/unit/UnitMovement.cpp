@@ -412,7 +412,12 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy))
+	if (map->buildingGradientImpactEnabled())
+		map->beginGradientDecision("movement", attachedBuilding->gid, gid);
+	const bool found = map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy);
+	if (map->buildingGradientImpactEnabled())
+		map->auditBuildingMovement(this, attachedBuilding, found);
+	if (found)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -528,14 +533,22 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy))
-	{
-		movement=MOV_GOING_DX_DY;
-	}
 	else
 	{
-		stopAttachedForBuilding(true);
-		movement=MOV_RANDOM_GROUND;
+		if (map->buildingGradientImpactEnabled())
+			map->beginGradientDecision("movement", targetBuilding->gid, gid);
+		const bool found = map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy);
+		if (map->buildingGradientImpactEnabled())
+			map->auditBuildingMovement(this, targetBuilding, found);
+		if (found)
+		{
+			movement = MOV_GOING_DX_DY;
+		}
+		else
+		{
+			stopAttachedForBuilding(true);
+			movement = MOV_RANDOM_GROUND;
+		}
 	}
 }
 
@@ -579,7 +592,13 @@ void Unit::handleMovementGoingToResource()
 	int teamNumber=owner->teamNumber;
 	int swim=swimClass();
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding))
+	if (map->buildingGradientImpactEnabled() && attachedBuilding)
+		map->beginGradientDecision("movement", attachedBuilding->gid, gid);
+	const bool found = map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx,
+											 &dy, &stopWork, attachedBuilding);
+	if (map->buildingGradientImpactEnabled())
+		map->auditBuildingMovement(this, attachedBuilding, found, destinationPurpose);
+	if (found)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

@@ -5306,6 +5306,10 @@ tingkat serang
 prajurit musuh
 [stat unit strength count]
 kekuatan
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Per tempat
 [AI Library]

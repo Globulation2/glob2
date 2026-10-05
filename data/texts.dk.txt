@@ -5306,6 +5306,10 @@ angrebsniveau
 fjendtlige krigere
 [stat unit strength count]
 styrke
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Efter sted
 [AI Library]

@@ -219,6 +219,7 @@ void Game::syncStep(Sint32 localTeam)
 	if (!anyPlayerWaited)
 	{
 		PERF_SCOPE_TIME(Tick);
+		map.beginBuildingGradientTick();
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();
@@ -228,13 +229,17 @@ void Game::syncStep(Sint32 localTeam)
 
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
+		map.publishBuildingRefreshes();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 
+		map.buildingGradientPhase("map");
 		map.syncStep(stepCounter);
+		map.submitBuildingRefreshes();
 		if (globalContainer->replaying && globalContainer->replayReader)
 			globalContainer->replayReader->applyTelemetry(*this);
+		map.buildingGradientPhase("other");
 		if ((stepCounter & 31) == 0)
 		{
 			for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
@@ -281,6 +286,7 @@ void Game::syncStep(Sint32 localTeam)
 		Uint64 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
+		map.endBuildingGradientTick();
 		stepCounter++;
 	}
 }

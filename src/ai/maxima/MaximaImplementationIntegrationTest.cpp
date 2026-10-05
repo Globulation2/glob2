@@ -14,6 +14,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "AIMaximaFoodSupply.h"
 #include "TeamStat.h"
 #include <memory>
@@ -884,6 +885,73 @@ static void executionStateSaveRegression()
     }
 }
 
+static void resolvedBudgetSaveRegression()
+{
+    Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
+    game.addTeam(); game.teams[0]->race.loadDefault();
+    Player player; player.setTeam(game.teams[0]);
+    AIMaxima::Maxima source(&player), restored(&player), legacy(&player);
+    source.ensure_strategy();
+    source.budget.food_ledger_enabled=false;
+    source.budget.food_retirement_enabled=false;
+    source.budget.food_inn_burden_percent=21;
+    source.budget.food_swarm_burden_percent=22;
+    source.budget.food_recovered_percent=23;
+    source.budget.food_burden_confirm_ticks=24;
+    source.budget.food_retirement_cooldown_ticks=25;
+    source.budget.food_relocation_enabled=false;
+    source.budget.food_relocation_min_quality_tiles=27;
+    source.budget.food_relocation_confirm_ticks=28;
+    source.budget.food_relocation_cooldown_ticks=29;
+    source.budget.food_relocation_offer_ticks=30;
+    source.budget.food_inn_seats_level1=31;
+    source.budget.food_inn_seats_level2=32;
+    source.budget.food_inn_seats_level3=33;
+    source.budget.staffing_new_inn_workers=34;
+    source.budget.staffing_new_swarm_workers=35;
+    source.budget.tactical_siege_radius=36;
+    source.budget.raid_flag_radius=37;
+    source.budget.tactical_quarantine_enabled=false;
+    source.budget.tactical_quarantine_ticks=39;
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(backend);
+    source.saveExecutionState(&output);
+    const auto bytes=backend->takeContents();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(bytes)));
+    restored.loadExecutionState(&input,VERSION_MINOR);
+    REQUIRE(restored.budget.food_ledger_enabled==source.budget.food_ledger_enabled);
+    REQUIRE(restored.budget.food_retirement_enabled==source.budget.food_retirement_enabled);
+    REQUIRE(restored.budget.food_inn_burden_percent==source.budget.food_inn_burden_percent);
+    REQUIRE(restored.budget.food_swarm_burden_percent==source.budget.food_swarm_burden_percent);
+    REQUIRE(restored.budget.food_recovered_percent==source.budget.food_recovered_percent);
+    REQUIRE(restored.budget.food_burden_confirm_ticks==source.budget.food_burden_confirm_ticks);
+    REQUIRE(restored.budget.food_retirement_cooldown_ticks==source.budget.food_retirement_cooldown_ticks);
+    REQUIRE(restored.budget.food_relocation_enabled==source.budget.food_relocation_enabled);
+    REQUIRE(restored.budget.food_relocation_min_quality_tiles==source.budget.food_relocation_min_quality_tiles);
+    REQUIRE(restored.budget.food_relocation_confirm_ticks==source.budget.food_relocation_confirm_ticks);
+    REQUIRE(restored.budget.food_relocation_cooldown_ticks==source.budget.food_relocation_cooldown_ticks);
+    REQUIRE(restored.budget.food_relocation_offer_ticks==source.budget.food_relocation_offer_ticks);
+    REQUIRE(restored.budget.food_inn_seats_level1==source.budget.food_inn_seats_level1);
+    REQUIRE(restored.budget.food_inn_seats_level2==source.budget.food_inn_seats_level2);
+    REQUIRE(restored.budget.food_inn_seats_level3==source.budget.food_inn_seats_level3);
+    REQUIRE(restored.budget.staffing_new_inn_workers==source.budget.staffing_new_inn_workers);
+    REQUIRE(restored.budget.staffing_new_swarm_workers==source.budget.staffing_new_swarm_workers);
+    REQUIRE(restored.budget.tactical_siege_radius==source.budget.tactical_siege_radius);
+    REQUIRE(restored.budget.raid_flag_radius==source.budget.raid_flag_radius);
+    REQUIRE(restored.budget.tactical_quarantine_enabled==source.budget.tactical_quarantine_enabled);
+    REQUIRE(restored.budget.tactical_quarantine_ticks==source.budget.tactical_quarantine_ticks);
+    REQUIRE(input.isEndOfStream());
+    // The pre-138 body is unchanged and leaves the omitted values at their
+    // historical defaults. It remains readable without the appended budget.
+    GAGCore::BinaryInputStream oldBody(new GAGCore::MemoryStreamBackend(std::string(bytes)));
+    legacy.loadExecutionState(&oldBody,FILE_FORMAT_VERSION_MAXIMA_DIRECTOR_BUDGET-1);
+    REQUIRE(legacy.budget.food_inn_seats_level1==0);
+    REQUIRE(oldBody.getPosition()<bytes.size());
+    GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(bytes.substr(0,oldBody.getPosition())));
+    legacy.loadExecutionState(&oldInput,FILE_FORMAT_VERSION_MAXIMA_DIRECTOR_BUDGET-1);
+    REQUIRE(oldInput.isEndOfStream());
+}
+
 // The relocation executor nominates a far building, offers it to the planner,
 // destroys it once the replacement stands, and gives up when the planner finds
 // no site or the build fails. Planner actions are injected directly.
@@ -1749,6 +1817,7 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("review bug regressions") { glob2test::HeadlessGlobals globals; reviewBugRegressions(); }
 	TEST_CASE("mission force regressions") { glob2test::HeadlessGlobals globals; missionForceRegressions(); }
 	TEST_CASE("economy staffing regressions") { glob2test::HeadlessGlobals globals; economyStaffingRegressions(); }
+	TEST_CASE("resolved director budget survives saves and reads the older layout") { glob2test::HeadlessGlobals globals; resolvedBudgetSaveRegression(); }
 	TEST_CASE("execution state save regression") { glob2test::HeadlessGlobals globals; executionStateSaveRegression(); }
 	TEST_CASE("food relocation executor regression") { glob2test::HeadlessGlobals globals; foodRelocationExecutorRegression(); }
 	TEST_CASE("explorer swarm staffing regressions") { glob2test::HeadlessGlobals globals; explorerSwarmStaffingRegressions(); }

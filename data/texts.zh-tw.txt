@@ -5306,6 +5306,10 @@ AI 遙測
 敵方士兵
 [stat unit strength count]
 戰力
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 依地點
 [AI Library]

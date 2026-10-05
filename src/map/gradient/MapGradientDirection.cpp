@@ -46,61 +46,65 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
     return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
-bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
+Map::GradientDirectionDecision Map::evaluateGradientDirection(Uint32 teamMask, int swimClass, int x,
+															  int y, const Uint16 *gradient,
+															  bool strict,
+															  Uint32 guardAreaMask) const
 {
-	PERF_SCOPE_TIME(PathDirection);
-	const bool canSwim = swimClass > 0;
-	Uint16 here = gradient[coordToIndex(x, y)];
-	// Settling the whole cost layer of `here` also finalizes every better or
-	// equal-valued neighbor inspected below; worse neighbors cannot be selected.
+	GradientDirectionDecision decision;
+	const auto here = gradient[coordToIndex(x, y)];
 	if (here <= GRADIENT_UNREACHABLE)
-		return false;
+		return decision;
 	if (here == GRADIENT_AT_GOAL)
 	{
-		*dx = 0;
-		*dy = 0;
-		return true;
+		decision.atGoal = true;
+		return decision;
 	}
 	int best = -1;
-	int bestD = -1;
-	int sidesteps[8];
-	int sidestepCount = 0;
-	for (int d = 0; d < 8; d++)
+	for (int d = 0; d < 8; ++d)
 	{
-		int ddx = tabClose[d][0];
-		int ddy = tabClose[d][1];
-		size_t n = coordToIndex(x + ddx, y + ddy);
-		Uint16 g = gradient[n];
-		if (g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
+		const auto nx = x + tabClose[d][0], ny = y + tabClose[d][1];
+		const auto n = coordToIndex(nx, ny);
+		const auto g = gradient[n];
+		if (g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(nx, ny, swimClass > 0, teamMask))
 			continue;
 		if (guardAreaMask && !(tiles[n].guardArea & guardAreaMask))
 			continue;
 		if (g > here)
 		{
-			// Worth of going through n: its value less the step to get there.
-			int score = g - stepCost(ddx, ddy, n, swimClass);
+			const int score = g - stepCost(tabClose[d][0], tabClose[d][1], n, swimClass);
 			if (score > best)
 			{
 				best = score;
-				bestD = d;
+				decision.best = d;
 			}
 		}
-		else if (g == here)
-			sidesteps[sidestepCount++] = d;
+		else if (!strict && g == here)
+			decision.sidesteps[decision.count++] = d;
 	}
-	if (bestD >= 0)
+	return decision;
+}
+
+bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient,
+							  int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
+{
+	PERF_SCOPE_TIME(PathDirection);
+	const auto decision =
+		evaluateGradientDirection(teamMask, swimClass, x, y, gradient, strict, guardAreaMask);
+	if (decision.atGoal)
 	{
-		*dx = tabClose[bestD][0];
-		*dy = tabClose[bestD][1];
+		*dx = 0;
+		*dy = 0;
 		return true;
 	}
-	if (strict || sidestepCount == 0)
-		return false;
-	// Blocked: sidestep to a random neighbour no farther from the goal, so two
-	// units blocking each other do not mirror each other forever. syncRand
-	// keeps the choice deterministic.
-	int pick = sidesteps[syncRand() % sidestepCount];
-	*dx = tabClose[pick][0];
-	*dy = tabClose[pick][1];
+	int d = decision.best;
+	if (d < 0)
+	{
+		if (!decision.count)
+			return false;
+		d = decision.sidesteps[syncRand() % decision.count];
+	}
+	*dx = tabClose[d][0];
+	*dy = tabClose[d][1];
 	return true;
 }

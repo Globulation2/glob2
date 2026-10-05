@@ -195,3 +195,14 @@ static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
 
 //! Canonical terrain identities, terrain experiment requirements and exposure state.
 static constexpr int FILE_FORMAT_VERSION_TERRAIN_PROPERTIES = 134;
+// Saved building publication rules, identities and completed pending bundles.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 135;
+
+//! Independent publication metadata for each building swim-cost class.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES = 136;
+
+//! Wood reservations in Maxima's frozen incremental placement snapshot.
+static constexpr int FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES = 137;
+
+//! Resolved Maxima food, staffing and tactical budget between planning passes.
+static constexpr int FILE_FORMAT_VERSION_MAXIMA_DIRECTOR_BUDGET = 138;

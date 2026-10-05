@@ -5306,6 +5306,10 @@ niveau d'attaque
 guerrières ennemies
 [stat unit strength count]
 force
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
 [stat view by place]
 Par lieu
 [AI Library]

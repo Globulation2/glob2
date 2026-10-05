@@ -11,6 +11,7 @@
 #include "map/TerrainType.h"
 
 class Map;
+class BuildingGradientDiagnostics;
 
 // Resumable version of the building field's zero-cost, multi-source Dijkstra.
 // Obstacles/goals are already frozen in the initialized gradient. Weighted swim
@@ -27,17 +28,24 @@ class BuildingGradientSearch
 	int currentCost = 0, swimClass = 0;
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
+	const Map *sourceMap = nullptr;
+	int buildingId = -1;
+	std::uint32_t snapshotGeneration = 0;
+	void advance(std::size_t target);
 
-public:
-	void begin(const Map &map, std::uint16_t *seeded, int swim);
+  public:
+	void begin(const Map &map, std::uint16_t *seeded, int swim, int gid = -1);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
-	void resolve(std::size_t target);
-	void finish() { resolve(cells); }
+	void resolve(std::size_t target, const char *caller = "query");
+	void finish(const char *caller = "full_api") { resolve(cells, caller); }
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }
 	std::size_t retainedBytes() const;
+	// Complete a detached copy with the original frozen costs. No live fields,
+	// ages, call lists or diagnostic collectors are touched.
+	std::vector<std::uint16_t> completePrivateSnapshot() const;
 	void clearForReuse();
 };
 

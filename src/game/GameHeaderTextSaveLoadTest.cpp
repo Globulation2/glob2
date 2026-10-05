@@ -200,7 +200,8 @@ void testBinaryHeaderFormsAndLegacy()
 			sectionOut.flush();
 			experimentBytes=section->getPosition();
 		}
-		if (form!=1) extension+=ruleBytes+experimentBytes;
+		if (form != 1)
+			extension += ruleBytes + experimentBytes + 1;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;
 		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
@@ -215,7 +216,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes;
+			const size_t v101Size = memory->getPosition() - ruleBytes - experimentBytes - 1;
 			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -237,4 +238,34 @@ TEST_SUITE("GameHeaderTextSaveLoad")
 	TEST_CASE("FullRoundTrip") { testFullRoundTrip(); }
 	TEST_CASE("PlayerInfoRoundTrip") { testPlayerInfoRoundTrip(); }
 	TEST_CASE("BinaryHeaderFormsAndLegacy") { testBinaryHeaderFormsAndLegacy(); }
+	TEST_CASE(
+		"scheduled building configuration survives both header forms and rejects invalid delays")
+	{
+		for (unsigned delay : {2, 4, 8})
+			for (int form : {0, 1})
+			{
+				GameHeader original;
+				original.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+				original.setBuildingGradientDelay(delay);
+				auto *bytes = new MemoryStreamBackend;
+				BinaryOutputStream out(bytes);
+				if (form == 0)
+					original.save(&out);
+				else
+					original.saveWithoutPlayerInfo(&out);
+				out.flush();
+				auto data = bytes->takeContents();
+				BinaryInputStream in(new MemoryStreamBackend(std::move(data)));
+				GameHeader loaded;
+				REQUIRE((form == 0 ? loaded.load(&in, VERSION_MINOR)
+								   : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+				CHECK(loaded.hasExperiment(ExperimentId::BuildingGradientPipeline));
+				CHECK(loaded.getBuildingGradientDelay() == delay);
+			}
+		GameHeader header;
+		CHECK_FALSE(header.hasExperiment(ExperimentId::BuildingGradientPipeline));
+		CHECK(header.getBuildingGradientDelay() == 4);
+		for (unsigned delay : {0, 1, 3, 5, 6, 7, 9, 255})
+			CHECK_THROWS_AS(header.setBuildingGradientDelay(delay), std::invalid_argument);
+	}
 }
