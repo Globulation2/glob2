@@ -1,0 +1,11 @@
+import {readFile,mkdir,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createRunner} from '../platform/apps/ai-music-worker/src/runner.ts';
+const runner=await createRunner(resolve('tools/music'),resolve('tools/music/cache'),'/tmp/glob2-music-test-mount',resolve('tools/music/.venv/bin/python'));
+const source=await readFile('tools/music/sets/moss-lanterns/composition.py','utf8');
+const result=await runner.run(source,{pipeline:'acoustic-v1',seed:0},true,AbortSignal.timeout(1200000),e=>{if(e['check'])process.stdout.write(JSON.stringify(e)+'\n');}, {id:'moss-lanterns-final',origin:'https://music.invalid',title:'Glass Garden CPU revision',artist:'Local pipeline test',description:'Targeted mix repair, unchanged melody and seed',license:'CC-BY-4.0',credits:'Surge XT CC0 Init-derived patches; Globulation 2 DSP',tags:[],sources:[],aiGenerated:true});
+await mkdir('artifacts/music-studio-renders/acoustic-final',{recursive:true});
+await writeFile('artifacts/music-studio-renders/acoustic-final/composition.py',source);
+await writeFile('artifacts/music-studio-renders/acoustic-final/report.json',JSON.stringify(result.report,null,2));
+for(const[name,bytes]of Object.entries(result.files))await writeFile(resolve('artifacts/music-studio-renders/acoustic-final',name),bytes);
+process.stdout.write(JSON.stringify({passed:result.report.passed})+'\n');

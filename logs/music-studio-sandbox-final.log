@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/ai-music-worker/test/runner.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/02f3/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 1 skipped (2)
+   Start at  00:30:46
+   Duration  14.33s (tests 99%, transform 1%)
+

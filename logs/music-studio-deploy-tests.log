@@ -1,0 +1,21 @@
+...........F......................
+======================================================================
+FAIL: test_deploys_detached_and_reports (test_online_deploy.HostDriverTests.test_deploys_detached_and_reports)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/02f3/glob2/test/deployment/test_online_deploy.py", line 120, in test_deploys_detached_and_reports
+    self.assertEqual((status['state'], status['exit'], status['rollback']), ('done', '0', 'none'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('lost', '', '') != ('done', '0', 'none')
+
+First differing element 0:
+'lost'
+'done'
+
+- ('lost', '', '')
++ ('done', '0', 'none')
+
+----------------------------------------------------------------------
+Ran 34 tests in 11.816s
+
+FAILED (failures=1)
