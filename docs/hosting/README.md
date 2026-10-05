@@ -756,7 +756,8 @@ one command, in an order that never leaves a half-upgraded instance:
    only Docker) into the build tree, and every image with the checkout's sim
    version. The running images are first tagged `:previous`. A failed build
    changes nothing that runs.
-3. **Swap:** `up --wait` (migrations run first, in `init`). Profiles of optional
+3. **Swap:** `up --wait --force-recreate` (migrations run first, in `init`).
+   Containers are recreated to attach them to any replaced networks. Profiles of optional
    services already running on the host are included in the build and swap, so
    they cannot be left behind when Compose replaces a network. A network address
    pool change still requires the downtime described above.

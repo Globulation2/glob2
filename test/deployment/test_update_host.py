@@ -99,6 +99,7 @@ class UpdateHostTests(unittest.TestCase):
         self.assertLess(self.index('image tag'), self.index('run --rm'))  # web client build
         self.assertLess(self.index('run --rm'), self.index('up -d --wait'))
         self.assertLess(self.index(' build'), self.index('up -d --wait'))
+        self.assertIn('--force-recreate', self.calls()[self.index('up -d --wait')])
         [backup] = self.backups()
         self.assertEqual((backup / 'glob2.dump').read_text(), 'DUMP\n')
         self.assertTrue((backup / 'web-client.tar.gz').stat().st_size > 0)

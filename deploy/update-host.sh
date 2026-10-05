@@ -147,7 +147,7 @@ compose build
 
 # -------------------------------------------------------------------- 3. swap
 phase=swap
-if ! compose up -d --wait --wait-timeout 300 --remove-orphans; then
+if ! compose up -d --wait --wait-timeout 300 --remove-orphans --force-recreate; then
 	echo "update-host: the new stack did not become healthy; rolling back to $(git rev-parse --short "$previous")" >&2
 	compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Health}}' >&2 || true
 	for image in $images; do
