@@ -1323,6 +1323,11 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: platform/package-lock.json
+      - name: Install music upload processing tools
+        id: install_music_upload_processing_tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Install platform dependencies
         id: install_platform_dependencies
         run: npm ci
