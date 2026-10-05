@@ -1,0 +1,8 @@
+Collecting Pillow==12.2.0 (from -r /source/tools/asset-requirements.txt (line 2))
+  Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 22.4 MB/s eta 0:00:00
+Installing collected packages: Pillow
+Successfully installed Pillow-12.2.0
+12.2.0
+1.6.0

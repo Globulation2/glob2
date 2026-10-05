@@ -1,0 +1,13 @@
+test_corrupt_saved_game_fails_with_structured_diagnostic (__main__.CliSmoke.test_corrupt_saved_game_fails_with_structured_diagnostic) ... ok
+test_generated_map_image_export_import_and_preview_are_readable (__main__.CliSmoke.test_generated_map_image_export_import_and_preview_are_readable) ... ok
+test_headless_numeric_and_missing_input_errors_are_structured (__main__.CliSmoke.test_headless_numeric_and_missing_input_errors_are_structured) ... ok
+test_headless_workers_and_saved_continuation_match_complete_tick_records (__main__.CliSmoke.test_headless_workers_and_saved_continuation_match_complete_tick_records) ... ok
+test_help_and_catalog_describe_real_commands (__main__.CliSmoke.test_help_and_catalog_describe_real_commands) ... ok
+test_invalid_map_arguments_fail_before_writing_outputs (__main__.CliSmoke.test_invalid_map_arguments_fail_before_writing_outputs) ... ok
+test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds (__main__.CliSmoke.test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds) ... ok
+test_structured_map_study_writes_report_map_and_manifest (__main__.CliSmoke.test_structured_map_study_writes_report_map_and_manifest) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.197s
+
+OK
