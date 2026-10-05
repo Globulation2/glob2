@@ -1,5 +1,7 @@
 # Gradient optimization evidence for PR #791
 
+The latest independent review and cleanup is documented in [POLISH.md](POLISH.md), for product commit `478b9b4bae0aaf177b40c395f44466e8d2aa3152`. Its rebuilt game executable is identical to the previously measured binary.
+
 Review [REPORT.md](REPORT.md) for results, limits, implementation decisions and validation. This is an evidence-only orphan branch; it contains no product history and is not intended to merge.
 
 - Candidate: `37d609766374e7efc1679d643c7d18cde84364ab`
