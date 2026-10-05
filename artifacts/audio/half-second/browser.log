@@ -1,0 +1,97 @@
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:54] "GET /music-output.js HTTP/1.1" 200 -
+
+Running 15 tests using 2 workers
+
+(node:532842) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:532843) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:56] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:57] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:57] code 404, message File not found
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:57] "GET /favicon.ico HTTP/1.1" 404 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:58] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:58] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:58] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:22:58] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:01] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:01] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:01] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:01] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   1 [chromium] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (8.9s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:04] "GET /music-output.js HTTP/1.1" 200 -
+  ✓   2 [firefox] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (9.8s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:06] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:06] code 404, message File not found
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:06] "GET /favicon.ico HTTP/1.1" 404 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:07] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:07] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:07] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:07] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:09] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:09] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:09] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:09] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   3 [chromium] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (7.8s)
+  ✓   4 [firefox] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (8.6s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:15] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:15] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:15] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:15] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:18] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:18] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:18] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:18] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   5 [chromium] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (7.0s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:22] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:22] "GET /music-worker.js HTTP/1.1" 200 -
+  ✓   6 [firefox] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (7.7s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:22] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:22] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   7 [chromium] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (6.3s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:26] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:26] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:26] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:26] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:28] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:28] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:28] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:28] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   8 [firefox] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (6.7s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:32] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:33] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:33] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:33] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   9 [chromium] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (11.7s)
+(node:534542) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:39] "GET /music-output.js HTTP/1.1" 200 -
+  ✓  10 [firefox] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (11.5s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:42] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:42] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:42] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:42] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  11 [webkit] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (8.8s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:48] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:51] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:51] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:51] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:51] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  12 [webkit] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (8.9s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:59] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:59] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:59] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:23:59] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  13 [webkit] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (7.4s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:07] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:07] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:07] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:07] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  14 [webkit] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (7.6s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:14] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:14] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:14] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 12:24:14] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  15 [webkit] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (10.9s)
+
+  15 passed (1.5m)

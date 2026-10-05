@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: audio activation ignores missing, running and closed contexts
+ok 1 - audio activation ignores missing, running and closed contexts
+  ---
+  duration_ms: 2.744564
+  type: 'test'
+  ...
+# Subtest: closing audio during a pending resume does not reject the gesture handler
+ok 2 - closing audio during a pending resume does not reject the gesture handler
+  ---
+  duration_ms: 0.588836
+  type: 'test'
+  ...
+# Subtest: activation failures are reported and the next gesture can retry
+ok 3 - activation failures are reported and the next gesture can retry
+  ---
+  duration_ms: 3.025452
+  type: 'test'
+  ...
+# Subtest: only Firefox closed-resume rejection is suppressed after game exit
+ok 4 - only Firefox closed-resume rejection is suppressed after game exit
+  ---
+  duration_ms: 0.778795
+  type: 'test'
+  ...
+# Subtest: music controls coalesce behind one in-flight worker command
+ok 5 - music controls coalesce behind one in-flight worker command
+  ---
+  duration_ms: 4.655913
+  type: 'test'
+  ...
+# Subtest: replacing a preview discards controls for its previous session
+ok 6 - replacing a preview discards controls for its previous session
+  ---
+  duration_ms: 1.65722
+  type: 'test'
+  ...
+# Subtest: capture bridge frees memory and returns credits even when capture fails
+ok 7 - capture bridge frees memory and returns credits even when capture fails
+  ---
+  duration_ms: 4.094056
+  type: 'test'
+  ...
+# Subtest: 400ms producer stall at the refill threshold preserves audio at both device rates
+ok 8 - 400ms producer stall at the refill threshold preserves audio at both device rates
+  ---
+  duration_ms: 56.151024
+  type: 'test'
+  ...
+# Subtest: undersupply waits for target and starvation recovers once
+ok 9 - undersupply waits for target and starvation recovers once
+  ---
+  duration_ms: 42.358745
+  type: 'test'
+  ...
+# Subtest: generation resets recycle credits and reject stale packets
+ok 10 - generation resets recycle credits and reject stale packets
+  ---
+  duration_ms: 4.548434
+  type: 'test'
+  ...
+# Subtest: mute is immediate and visibility freezes consumption
+ok 11 - mute is immediate and visibility freezes consumption
+  ---
+  duration_ms: 2.735804
+  type: 'test'
+  ...
+# Subtest: queue is bounded and resampling does not drift over block boundaries
+ok 12 - queue is bounded and resampling does not drift over block boundaries
+  ---
+  duration_ms: 145.930003
+  type: 'test'
+  ...
+# Subtest: shared transport needs no message delivery to keep supplying audio
+ok 13 - shared transport needs no message delivery to keep supplying audio
+  ---
+  duration_ms: 226.706705
+  type: 'test'
+  ...
+# Subtest: capture is bounded and uses the consumed clock after gain
+ok 14 - capture is bounded and uses the consumed clock after gain
+  ---
+  duration_ms: 9.408195
+  type: 'test'
+  ...
+# Subtest: preview pause retains the exact next sample and cursor at both rates and transports
+ok 15 - preview pause retains the exact next sample and cursor at both rates and transports
+  ---
+  duration_ms: 124.711657
+  type: 'test'
+  ...
+# Subtest: visibility rebuffering is intentional silence, not producer starvation
+ok 16 - visibility rebuffering is intentional silence, not producer starvation
+  ---
+  duration_ms: 5.016561
+  type: 'test'
+  ...
+# Subtest: paused generation changes never replay the old audible tail
+ok 17 - paused generation changes never replay the old audible tail
+  ---
+  duration_ms: 17.660707
+  type: 'test'
+  ...
+# Subtest: preview Play only pauses consumption and preserves prepared decoder state
+ok 18 - preview Play only pauses consumption and preserves prepared decoder state
+  ---
+  duration_ms: 10.924996
+  type: 'test'
+  ...
+# Subtest: preview Reset uses consumed position and preserves paused state
+ok 19 - preview Reset uses consumed position and preserves paused state
+  ---
+  duration_ms: 3.289201
+  type: 'test'
+  ...
+# Subtest: Reset cannot rewind a newer Seek to stale consumer metadata
+ok 20 - Reset cannot rewind a newer Seek to stale consumer metadata
+  ---
+  duration_ms: 3.040492
+  type: 'test'
+  ...
+# Subtest: a suspended worklet cannot retain the command credit or leave preview paused
+ok 21 - a suspended worklet cannot retain the command credit or leave preview paused
+  ---
+  duration_ms: 12.210459
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 895.458676

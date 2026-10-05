@@ -1,0 +1,12 @@
+Base: dbc6253427edc1ca71227ec91a8cd9ab66b5d326 (fetched master before changes).
+Native validation: Linux x86_64, system g++, C++20 -O2, system opusfile from pkg-config.
+
+g++ -std=c++20 -O2 -Itest/support -Itest/third_party -Isrc/audio artifacts/audio/test-main.cpp src/audio/MusicBufferTest.cpp src/audio/MusicProducerTest.cpp src/audio/MusicProducer.cpp src/audio/MusicStream.cpp $(pkg-config --cflags --libs opusfile) -pthread -o artifacts/audio/half-second/portable-tests
+artifacts/audio/half-second/portable-tests
+node --test browser/unit/audio.test.js browser/unit/music-output.test.js browser/unit/music-worker.test.js
+browser/node_modules/.bin/playwright test -c artifacts/audio/half-second/playwright.config.cjs music-audio.spec.js
+git diff --check
+
+Browser server overlays current worker/worklet scripts onto the existing built music Wasm module. Its producer/runtime source inputs are unchanged from eb2f28703609189cd0875d61d4fe3c1bd9bf3d53. Application runtime is not exercised by these isolated audio integration cases.
+Coverage: native queue and shared producer, browser controls/worklet units; Chromium/Firefox/WebKit audio integration at 44.1/48 kHz, both transports, host stalls, producer stalls and recovery, visibility suspend/resume.
+Limits: no fresh full native or game-Wasm rebuild, physical audio output/listening, low-end device qualification, or long CPU stress run for this constant change. Simulation and save state are unchanged.

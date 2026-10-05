@@ -1,0 +1,22 @@
+{
+  "testedRevision": "504240f730d869b8339c921049a91bed5c0b4ce0",
+  "baseRevision": "dbc6253427edc1ca71227ec91a8cd9ab66b5d326",
+  "fetchedMaster": "dbc6253427edc1ca71227ec91a8cd9ab66b5d326",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "node": "v22.22.1",
+  "playwright": "Version 1.63.0",
+  "opusfile": "0.12",
+  "sourceHashes": {
+    "browser/README.md": "e0629293972f454395d64b15f80b7931fa2f648f95208a89d1158278565049cf",
+    "browser/music-output.js": "b0fc197936684b16a4081ab5065615913171810118e4ae6a3f7ff9416f2ecdd1",
+    "browser/music-worker.js": "fab2ae703409d399da9c451d9e9c209dce20e0883552d4e107c4b77c80a5415b",
+    "browser/tests/music-audio.spec.js": "18653055a0341d3e9e9fe0d9e2fd54f0e8aa7d0929aa08b9b48388bf8f41b01e",
+    "browser/unit/music-output.test.js": "681a619eecef454f112da9a22e80e58eaa1def8b274a2f74d28201af6032c428",
+    "docs/browser/implementation.md": "4f491676bb7379c45a4b14f9aa39b309fdf2fdecc3ff4b54152db936dd6d3f27",
+    "docs/development/reference.md": "d3a3a2822d17ce5d69f92b6c62bec151d5cca0523cbe5d9dce09a4330201d8c8",
+    "src/audio/MusicBuffer.h": "434c1c298d48f1452071e5b5554e146684f1d6d2baea3af68be5a54b63805714",
+    "src/audio/MusicBufferTest.cpp": "3256ebb4bf3997a80d5c7b8d658a9f4b74c418fda002af17ba8013bf5bb6911f"
+  },
+  "musicWasmSHA256": "6bd4cbfbe03342f61278a976d680e10e16fdd9056c0fc24198473e6660888639"
+}
