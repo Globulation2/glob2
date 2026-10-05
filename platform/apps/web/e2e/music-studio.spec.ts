@@ -190,4 +190,40 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       fullPage: true,
     });
   }
+  // A checkout return restores the project without treating a URL as payment proof
+  // or automatically resubmitting a request whose outcome is unknown.
+  const submission = {
+    path: `/api/v1/music-studio/threads/${id}/generate`,
+    body: {
+      id: '44444444-4444-4444-8444-444444444444',
+      settings: { pipeline: 'acoustic-v1', seed: 0 },
+      parent: second,
+    },
+  };
+  await page.evaluate(
+    ({ account, id, submission }) => {
+      sessionStorage.setItem(`music-studio-checkout:${account}`, id);
+      sessionStorage.setItem(`music-studio-checkout-balance:${account}`, '2');
+      sessionStorage.setItem(`music-studio-pending:${account}:${id}`, JSON.stringify(submission));
+    },
+    { account: seed.accounts.kestrel, id, submission },
+  );
+  await page.goto('/music-studio?payment=returned');
+  await expect(page).toHaveURL(new RegExp(`/music-studio/${id}\\?payment=returned$`));
+  await expect(
+    page.getByText('Confirming your payment. Your credits appear once payment is confirmed.'),
+  ).toBeVisible();
+  await expect(page.getByLabel('Your idea or next change')).toHaveValue(
+    'Keep the melody and soften the drums.',
+  );
+  await expect(page.getByRole('heading', { name: 'Refine your soundtrack' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Retry the same request' })).toBeVisible();
+  expect(
+    await page.evaluate(
+      ({ account, id }) =>
+        JSON.parse(sessionStorage.getItem(`music-studio-pending:${account}:${id}`) ?? 'null'),
+      { account: seed.accounts.kestrel, id },
+    ),
+  ).toEqual(submission);
+  expect(writes).toHaveLength(0);
 });
