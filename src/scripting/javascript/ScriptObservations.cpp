@@ -299,6 +299,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		Value a = Value::array();
 		for (unsigned i = 0; i < globalContainer->buildingsTypes.size(); ++i)
 		{
+			if (!game.isBuildingTypeAvailable(i)) continue;
 			const auto &b = *globalContainer->buildingsTypes.get(i);
 			charge(64, b.type.size());
 			a.items.push_back(

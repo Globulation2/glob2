@@ -5547,12 +5547,16 @@ Obmedzuje vykresľovanie v celej aplikácii. Nižšie hodnoty znižujú nároky 
 [ice]
 Ľad
 [road]
-Cesta
+Chodník
 [experiment ice-terrain]
 Ľadový terén
 [experiment ice-terrain help]
 Pridá ľad do editora máp. Pozemné jednotky sa pohybujú polovičnou rýchlosťou a každých 32 krokov simulácie na ľade stratia jeden bod zdravia. Na ľade nemôžu byť budovy ani suroviny.
 [experiment road-terrain]
-Terén ciest
+Terén chodníka
 [experiment road-terrain help]
-Pridá dláždené cesty do editora máp. Pozemné jednotky sa pohybujú dvojnásobnou rýchlosťou. Na cestách môžu byť budovy, ale nie suroviny.
+Pridáva do editora máp vyšliapané chodníky. Pozemné jednotky sa pohybujú dvojnásobnou rýchlosťou. Na chodníkoch možno stavať budovy, ale nemôžu na nich byť suroviny. Lietajúce jednotky nie sú ovplyvnené.
+[experiment markets-v2]
+Trhy V2
+[experiment markets-v2 help]
+Robotníci môžu brať zásoby zo spoločného skladu trhov. Trhy možno vylepšiť na skladovanie pšenice a dreva, potom všetkých surovín. Medzi tímami sa naďalej vymieňa iba ovocie. Platí pre nové hry; uložené hry si zachovajú pôvodné nastavenie.

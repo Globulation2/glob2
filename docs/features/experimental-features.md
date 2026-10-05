@@ -24,7 +24,7 @@ covers what players see, the compatibility rules, and how to add an experiment.
   saved game that carries any.
 - Terrain experiments control which brushes the editor offers. A map containing
   experimental terrain declares that requirement and enables it when played, even
-  if the local editor switch is off. Ice and road have separate switches.
+  if the local editor switch is off. Ice and Trail have separate switches.
 - Experiments can change balance and pacing. A map without experimental terrain
   does not acquire new terrain when a switch is enabled.
 
@@ -71,9 +71,16 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | --- | --- | --- |
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
-
 | `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
-| `road-terrain` | Road terrain | Enables the road editor brush. Roads double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
+| `road-terrain` | Trail terrain | Enables the Trail editor brush. Weathered trails double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
+| `markets-v2` | Markets V2 | Workers fetch shared market stock; upgrades add wheat and wood, then all resources. [Markets V2](markets-v2.md). |
+
+Trail retains the legacy experiment key `road-terrain`, terrain ID `4`, and
+external terrain name `road`. Existing preferences, maps, saves, scripts, map
+reports and `select road` editor actions keep working. The Trail artwork replaces
+the former cobblestone frames without changing movement, ecology or building
+rules. Its generated source and classic-frame recipe are recorded in
+[`datasrc/gfx/trail/`](../../datasrc/gfx/trail/).
 
 ## Adding an experiment
 
@@ -100,8 +107,10 @@ game's experiments. See [headless replays](../development/headless-replays.md).
    `glob2test::GameOptions::experiments` set, and its first case checks the default
    game's per-100-tick checksums against a golden, so an unintended change to the
    default path fails.
-5. Update the relevant guide and the table above. Stable experiment keys do not
-   themselves require a new header format. Simulation changes still require a
-   `SIM_REVISION` bump and refreshed golden match, including experimental rules.
+5. Write a short design and measurement guide under `docs/features/` and link it
+   from the table above. Adding a registry key does not require a header-format bump. New saved
+   simulation state still needs a version-gated format extension. Every simulation
+   change, including an experiment, needs a fresh `SIM_REVISION` and regenerated
+   golden match record as required by the simulation-version policy.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.

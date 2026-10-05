@@ -524,7 +524,7 @@ bool BeingUpgradedTo::passes(Context& c,int id) const {return c.get_building_reg
 bool SpecificBuildingType::passes(Context& c,int id) const {return c.get_building_register().get_type(id)==buildingType;}
 bool BuildingLevel::passes(Context& c,int id) const {return c.get_building_register().get_level(id)==level;}
 bool Upgradable::passes(Context& c,int id) const
-{ ::Building* b=c.get_building_register().get_building(id);return b&&b->type->nextLevel!=-1; }
+{ ::Building* b=c.get_building_register().get_building(id);return b&&(b->type->shortTypeNum!=IntBuildingType::MARKET_BUILDING||b->type->isBuildingSite)&&b->isUpgradeAvailable(); }
 void NotUnderConstruction::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
 void UnderConstruction::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
 void BeingUpgraded::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
@@ -1165,7 +1165,8 @@ bool Context::issue_upgrade_repair(int id,bool repair)
 	}
 	else
 	{
-		if(building->hp<building->getEffectiveMaxHp() || building->type->nextLevel<0
+		if(building->hp<building->getEffectiveMaxHp()
+		   || building->type->shortTypeNum==IntBuildingType::MARKET_BUILDING || !building->isUpgradeAvailable()
 		   || !building->isHardSpaceForBuildingSite(::Building::UPGRADE))return false;
 	}
 	push_order(shared_ptr<Order>(new OrderConstruction(building->gid,1,1)));

@@ -102,7 +102,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			// may reach this boundary directly. The damaged-building branch above
 			// remains a repair, which does not grant an unavailable building level.
 			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return;
-			if ((type->nextLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(UPGRADE))
+			if (!isUpgradeAvailable() || !isHardSpaceForBuildingSite(UPGRADE))
 				return;
 			constructionResultState=UPGRADE;
 		}
@@ -133,6 +133,8 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
+		if (type->canExchange)
+			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -254,6 +256,8 @@ void Building::launchDelete(void)
 	if (buildingState==ALIVE)
 	{
 		buildingState=WAITING_FOR_DESTRUCTION;
+		if (type->canExchange)
+			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitInside=0;

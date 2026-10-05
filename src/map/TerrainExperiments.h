@@ -9,7 +9,7 @@
 inline constexpr auto TERRAIN_EXPERIMENTS = [] {
     std::array<std::optional<ExperimentId>, TERRAIN_COUNT> values{};
     values[ICE] = ExperimentId::IceTerrain;
-    values[ROAD] = ExperimentId::RoadTerrain;
+    values[TRAIL] = ExperimentId::TrailTerrain;
     return values;
 }();
 inline constexpr std::optional<ExperimentId> terrainExperiment(TerrainType type)

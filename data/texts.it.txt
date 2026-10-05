@@ -5547,12 +5547,16 @@ Limita il disegno in tutta l’applicazione. Valori inferiori riducono il lavoro
 [ice]
 Ghiaccio
 [road]
-Strada
+Sentiero
 [experiment ice-terrain]
 Terreno ghiacciato
 [experiment ice-terrain help]
 Aggiunge ghiaccio all’editor delle mappe. Le unità terrestri si muovono a metà velocità e perdono un punto vita ogni 32 passi di simulazione sul ghiaccio. Il ghiaccio non può ospitare edifici o risorse.
 [experiment road-terrain]
-Terreno stradale
+Terreno del sentiero
 [experiment road-terrain help]
-Aggiunge strade acciottolate all’editor delle mappe. Le unità terrestri si muovono a velocità doppia. Le strade possono ospitare edifici, ma non risorse.
+Aggiunge sentieri consumati all’editor di mappe. Le unità terrestri si muovono al doppio della velocità. I sentieri consentono edifici, ma non risorse. Le unità volanti non sono interessate.
+[experiment markets-v2]
+Mercati V2
+[experiment markets-v2 help]
+I lavoratori possono prelevare scorte dal magazzino condiviso dei mercati. I mercati possono essere migliorati per conservare grano e legno, poi tutte le risorse. Gli scambi tra squadre restano limitati alla frutta. Si applica alle nuove partite; i salvataggi mantengono l’impostazione originale.

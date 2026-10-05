@@ -1660,3 +1660,31 @@ Audio selector and captures its layout. The mixer selection regression suite is
 `SoundMixerTrackSelection/*`. These display cases run in isolated runner processes.
 Only Original ships, so `MusicSet/*` builds its extra valid and broken sets from copies
 of the shipped Oggs in the disposable profile.
+## Market fetching
+
+`MarketFetch` covers hiring and arrival at stocked markets, preference for a
+nearer natural resource, stock exhaustion, a retained worker's next delivery, and binary/text preservation of market
+fields and pending gradient publications. Non-market buildings use these fields;
+markets themselves fetch from natural resources. The market fields participate
+in the existing one-field-per-tick round robin and optional fixed-delay gradient
+pipeline. Stock transitions invalidate pending market snapshots and request a
+refresh. Format 135 saves these fields and their scheduling flags; older saves
+load without them and allocate them on first use. Run
+`python3 test/run_tests.py --filter 'MarketFetch/*'`.
+
+`MarketFetch` also checks the three market levels: existing type IDs 49–50
+remain stable, higher-level sites and buildings append as IDs 51–54, and their
+stock and type IDs survive binary/text game saves. Level 2 accepts wood and
+wheat in addition to fruit; level 3 accepts all eight resource types. Costs and
+reuse of the level-1 artwork remain provisional while the feature is draft.
+
+`MarketsV2` checks both sides of the `markets-v2` experiment: disabled fetch
+entry points and construction gates, per-tick legacy market deliveries against
+master, all level/resource/swim-class combinations, upgrade cancellation and
+completion and repair with shared stock, legacy travelling workers, forbidden
+routes, and binary/text continuation. Simulation traces compare every checksum
+part except the MapHeader part, which includes the deliberately changed file-format
+version. The benchmark cases report identical market delivery workloads (including
+heavy checksums and save/load) and isolated resource-gradient refresh CPU/time and
+field memory. `browser/tests/determinism.spec.js` runs the same Markets V2 cases
+and frozen traces in serial and threaded Wasm builds.

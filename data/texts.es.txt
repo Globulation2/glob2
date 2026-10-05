@@ -5547,12 +5547,16 @@ Limita el dibujo en toda la aplicación. Los valores más bajos reducen el traba
 [ice]
 Hielo
 [road]
-Camino
+Sendero
 [experiment ice-terrain]
 Terreno de hielo
 [experiment ice-terrain help]
 Añade hielo al editor de mapas. Las unidades terrestres se mueven a la mitad de velocidad y pierden un punto de vida cada 32 pasos de simulación expuestas al hielo. El hielo no puede contener edificios ni recursos.
 [experiment road-terrain]
-Terreno de caminos
+Terreno de sendero
 [experiment road-terrain help]
-Añade caminos adoquinados al editor de mapas. Las unidades terrestres se mueven al doble de velocidad. Los caminos admiten edificios, pero no recursos.
+Añade senderos desgastados al editor de mapas. Las unidades terrestres se mueven al doble de velocidad. Los senderos permiten edificios, pero no recursos. Las unidades voladoras no se ven afectadas.
+[experiment markets-v2]
+Mercados V2
+[experiment markets-v2 help]
+Los trabajadores pueden recoger suministros del almacén compartido de los mercados. Los mercados pueden mejorarse para almacenar trigo y madera, y después todos los recursos. Entre equipos solo se intercambia fruta. Se aplica a partidas nuevas; las guardadas conservan su configuración original.

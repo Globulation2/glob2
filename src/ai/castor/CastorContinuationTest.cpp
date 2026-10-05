@@ -123,7 +123,7 @@ TEST_SUITE("CastorContinuation")
         World world(AI::CASTOR,false,713);
         auto& map=world.world.game.map;
         map.setTerrain(20,20,16); // Historical >16 check accidentally accepted this shore.
-        map.setCellTerrain(24,20,ROAD);
+        map.setCellTerrain(24,20,TRAIL);
         map.setCellTerrain(28,20,ICE);
         AICastor ai(world.world.game.players[0]);
         for(int tick=0;tick<AI_CASTOR_BOOT_IDLE_TICKS+2;++tick) ai.getOrder();

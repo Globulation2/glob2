@@ -52,7 +52,7 @@ void layeredCache(bool gpu)
     for(int y=0;y<32;++y) for(int x=0;x<32;++x) {
         if(x<3) map.setTerrain(x,y,256);
         if((x+y*3)%7==0) map.setCellTerrain(x,y,ICE);
-        else if((x*5+y)%11==0) map.setCellTerrain(x,y,ROAD);
+        else if((x*5+y)%11==0) map.setCellTerrain(x,y,TRAIL);
     }
     SceneMap scene;scene.extract(map);
     CHECK(scene.terrainLayerCapacity()==TerrainLayers::Capacity);
@@ -88,7 +88,7 @@ void layeredCache(bool gpu)
     CHECK(fixture.checksum()==checksum);
     if(!gpu) CHECK(cache.cacheHits()>0);
     const auto before=scene.terrainLayersAt(0,0);
-    map.setCellTerrain(0,0,ROAD);
+    map.setCellTerrain(0,0,TRAIL);
     CHECK(scene.terrainLayersAt(0,0)==before);
     scene.extract(map);compare();
     // Swap the loaded asset binding after warming the cache. Frame numbers
@@ -136,11 +136,11 @@ TEST_CASE("every side mask is decorative and preserves material identity") {
     auto &map=fixture.game.map;
     constexpr int dx[4]={0,1,0,-1},dy[4]={-1,0,1,0};
     for(unsigned mask=0;mask<16;++mask) {
-        map.setCellTerrain(8,8,ROAD);
-        for(int side=0;side<4;++side) map.setCellTerrain(8+dx[side],8+dy[side],mask&(1u<<side)?ICE:ROAD);
+        map.setCellTerrain(8,8,TRAIL);
+        for(int side=0;side<4;++side) map.setCellTerrain(8+dx[side],8+dy[side],mask&(1u<<side)?ICE:TRAIL);
         SceneMap scene;scene.extract(map);
         const auto layers=scene.terrainLayersAt(8,8);
-        CHECK(scene.terrainTypeAt(8,8)==ROAD);
+        CHECK(scene.terrainTypeAt(8,8)==TRAIL);
         CHECK(layers.frames[1]==(mask?terrainPresentation(ICE).edgeFirstFrame+int(mask)-1:-1));
     }
 }
@@ -153,9 +153,9 @@ TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [
         image.drawFilledRect(x,y,w,h,c.r,c.g,c.b);
     };
     paint(0,0,64,64,GRASS);
-    paint(4,4,12,12,WATER); paint(8,8,1,1,ROAD);
+    paint(4,4,12,12,WATER); paint(8,8,1,1,TRAIL);
     paint(0,8,3,8,WATER); paint(60,8,4,8,WATER); paint(0,10,1,1,ICE);
-    paint(20,10,1,1,ROAD);
+    paint(20,10,1,1,TRAIL);
     image.drawFilledRect(45,45,2,2,255,255,255);
     const auto filename=(glob2test::artifactDir()/"terrain-import-edges.png").string();
     REQUIRE(IMG_SavePNG(image.getSDLSurface(),filename.c_str()));
@@ -163,14 +163,14 @@ TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [
     MapImageImportReport report;
     importMapImage(fixture.game,filename,request,1,report,0);
     const auto &map=fixture.game.map;
-    CHECK(map.terrainTypeAt(8,8)==ROAD);
+    CHECK(map.terrainTypeAt(8,8)==TRAIL);
     CHECK(map.terrainTypeAt(7,8)==WATER);
     CHECK(map.terrainTypeAt(8,7)==WATER);
     CHECK(map.terrainTypeAt(7,7)==WATER);
     CHECK_FALSE(map.terrainPropertiesAt(7,8).walkable);
     CHECK(map.terrainTypeAt(0,10)==ICE);
     CHECK(map.terrainTypeAt(63,10)==WATER);
-    CHECK(map.terrainTypeAt(20,10)==ROAD);
+    CHECK(map.terrainTypeAt(20,10)==TRAIL);
     CHECK(map.terrainTypeAt(19,10)==GRASS);
     CHECK(map.terrainPropertiesAt(19,10).buildable);
     // An ordinary grass/water boundary still receives the legacy shore repair.
@@ -186,13 +186,13 @@ TEST_CASE("export uses registered whole-cell material colors [artifacts]") {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=0});
     auto &map=fixture.game.map;
-    map.setCellTerrain(1,1,ICE);map.setCellTerrain(2,1,ROAD);
+    map.setCellTerrain(1,1,ICE);map.setCellTerrain(2,1,TRAIL);
     const auto filename=(glob2test::artifactDir()/"terrain-colors.png").string();
     exportMapImage(fixture.game,filename);
     auto *source=IMG_Load(filename.c_str());REQUIRE(source);
     auto *image=SDL_ConvertSurface(source,SDL_PIXELFORMAT_RGBA32);SDL_DestroySurface(source);REQUIRE(image);
     for(int x=1;x<=2;++x) {
-        const auto c=terrainPresentation(x==1?ICE:ROAD).image;
+        const auto c=terrainPresentation(x==1?ICE:TRAIL).image;
         const auto *pixel=static_cast<Uint8*>(image->pixels)+image->pitch+x*4;
         CHECK(pixel[0]==c.r);CHECK(pixel[1]==c.g);CHECK(pixel[2]==c.b);
     }

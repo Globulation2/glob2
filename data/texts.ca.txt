@@ -5547,12 +5547,16 @@ Limita el dibuix a tota l’aplicació. Els valors més baixos redueixen el treb
 [ice]
 Gel
 [road]
-Camí
+Sender
 [experiment ice-terrain]
 Terreny de gel
 [experiment ice-terrain help]
 Afegeix gel a l’editor de mapes. Les unitats terrestres es mouen a la meitat de velocitat i perden un punt de vida cada 32 passos de simulació exposades al gel. El gel no pot contenir edificis ni recursos.
 [experiment road-terrain]
-Terreny de camins
+Terreny de sender
 [experiment road-terrain help]
-Afegeix camins empedrats a l’editor de mapes. Les unitats terrestres es mouen al doble de velocitat. Els camins admeten edificis, però no recursos.
+Afegeix senders desgastats a l’editor de mapes. Les unitats terrestres es mouen al doble de velocitat. Els senders permeten edificis, però no recursos. Les unitats voladores no es veuen afectades.
+[experiment markets-v2]
+Mercats V2
+[experiment markets-v2 help]
+Els treballadors poden recollir provisions de l’estoc compartit dels mercats. Els mercats es poden millorar per guardar blat i fusta, i després tots els recursos. Entre equips només s’intercanvia fruita. S’aplica a partides noves; les desades conserven la configuració original.

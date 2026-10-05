@@ -5547,12 +5547,16 @@ Begränsa ritningen i hela programmet. Lägre värden minskar renderingsarbetet.
 [ice]
 Is
 [road]
-Väg
+Stig
 [experiment ice-terrain]
 Isterräng
 [experiment ice-terrain help]
 Lägger till is i kartredigeraren. Markenheter rör sig med halva hastigheten och förlorar en hälsopoäng för varje 32 simuleringssteg på isen. Is kan inte innehålla byggnader eller resurser.
 [experiment road-terrain]
-Vägterräng
+Stigterräng
 [experiment road-terrain help]
-Lägger till kullerstensvägar i kartredigeraren. Markenheter rör sig med dubbel hastighet. Vägar tillåter byggnader men inte resurser.
+Lägger till slitna stigar i kartredigeraren. Markenheter rör sig med dubbel hastighet. Stigar tillåter byggnader men inga resurser. Flygande enheter påverkas inte.
+[experiment markets-v2]
+Marknader V2
+[experiment markets-v2 help]
+Arbetare kan hämta förnödenheter från marknadernas gemensamma lager. Marknader kan uppgraderas för att lagra vete och trä och sedan alla resurser. Handel mellan lag omfattar fortfarande bara frukt. Gäller nya spel; sparade spel behåller sin ursprungliga inställning.

@@ -270,7 +270,7 @@ class InstallWebClientTests(unittest.TestCase):
                 path = base / name
                 (path / 'assets').mkdir(parents=True)
                 (path / 'threaded').mkdir()
-                for file in ('index.html', 'index.js', 'index.wasm', 'loader.js', 'threaded/index.js', 'threaded/index.wasm'):
+                for file in ('index.html', 'studio.html', 'index.js', 'index.wasm', 'loader.js', 'threaded/index.js', 'threaded/index.wasm'):
                     (path / file).write_text(name + file)
                     if compressed and file != 'index.html':
                         (path / (file + '.br')).write_text(name + file + '.br')
@@ -289,6 +289,8 @@ class InstallWebClientTests(unittest.TestCase):
                     self.assertFalse((served / 'index.data').exists())
             self.assertEqual((served / 'index.js.br').read_text(), 'threeindex.js.br')
             self.assertEqual((served / 'index.html').read_text(), 'threeindex.html')
+            self.assertEqual((served / 'studio.html').read_text(), 'threestudio.html')
+            self.assertEqual((served / 'studio.html.br').read_text(), 'threestudio.html.br')
             self.assertEqual(sorted(p.name for p in (served / 'assets').iterdir()),
                              ['core.2222222222222222.data', 'core.3333333333333333.data'])
             self.assertEqual(json.loads((served / '.installed-assets.json').read_text()), ['core.3333333333333333.data'])

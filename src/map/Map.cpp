@@ -56,6 +56,9 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 			{
 				resourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
+				marketResourcesGradient[t][r][s] = NULL;
+				marketGradientDirty[t][r][s] = false;
+				marketGradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
@@ -242,7 +245,7 @@ void Map::finishTerrainEdit()
 					gradientUpdated[team][resource][swim] = false;
 				}
 				// Escape fields have no dirty flag. Their scheduled seed comparison
-				// cannot detect a cost-only change such as grass becoming road.
+				// cannot detect a cost-only change such as grass becoming trail.
 				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
 			}
 	}
@@ -346,6 +349,10 @@ void Map::clear()
 				delete[] resourcesGradient[t][r][swim];
 				resourcesGradient[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
+				delete[] marketResourcesGradient[t][r][swim];
+				marketResourcesGradient[t][r][swim] = NULL;
+				marketGradientDirty[t][r][swim] = false;
+				marketGradientUpdated[t][r][swim] = false;
 			}
 		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 		{

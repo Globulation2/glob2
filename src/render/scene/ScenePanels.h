@@ -50,6 +50,7 @@ struct SceneBuildingPanel
 	std::vector<std::pair<Sint32, Sint32>> workerPositions;
 	//! Queries answered during extraction.
 	bool hardSpaceForRepair = false, hardSpaceForUpgrade = false;
+	bool showLevel = false;
 	int repairCost[BASIC_COUNT] = {};
 	int buildingHpMultiplier = 1;
 };

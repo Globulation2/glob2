@@ -49,6 +49,21 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
+				else if (attachedBuilding->fetchesFromMarkets())
+				{
+					// The gradient led here to a stocked market of ours: take the
+					// resource at its door and carry it home.
+					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
+					{
+						market->removeResourceFromBuilding(destinationPurpose);
+						carriedResource=destinationPurpose;
+						setTargetBuilding(attachedBuilding);
+						displacement=DIS_GOING_TO_BUILDING;
+						validTarget=true;
+						if (verbose)
+							printf("guid=(%d) took resource (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
+					}
+				}
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
@@ -186,7 +201,7 @@ void Unit::handleDisplacement(void)
 									if (available)
 										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
 									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource, attachedBuilding->fetchesFromMarkets());
 									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
@@ -199,8 +214,7 @@ void Unit::handleDisplacement(void)
 											takeInExchangeBuilding=false;
 										}
 									}
-
-									if (attachedBuilding->type->canFeedUnit)
+									if (!owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2) && attachedBuilding->type->canFeedUnit)
 										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
 											if ((*bi)->resources[r]>0)
 											{
@@ -249,7 +263,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets()))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;

@@ -195,3 +195,6 @@ static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
 
 //! Canonical terrain identities, terrain experiment requirements and exposure state.
 static constexpr int FILE_FORMAT_VERSION_TERRAIN_PROPERTIES = 134;
+
+//! Optional market resource fields and their scheduling/publication state.
+static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 135;

@@ -40,7 +40,7 @@ def main():
         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
             copy(release / 'assets' / name, target)
     (served / 'threaded').mkdir(exist_ok=True)
-    for name in ENTRY_FILES + ('index.html',):
+    for name in ENTRY_FILES + ('studio.html', 'index.html'):
         if not (release / name).is_file():
             sys.exit(f'install-web-client: {release / name} is missing')
         for suffix in ENCODINGS[1:]:

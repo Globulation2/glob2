@@ -5547,12 +5547,16 @@ AI 遙測
 [ice]
 冰
 [road]
-道路
+小徑
 [experiment ice-terrain]
 冰地形
 [experiment ice-terrain help]
 在地圖編輯器中新增冰。地面單位以一半速度移動，在冰上每經過32個模擬步就損失1點生命值。冰上不能放置建築或資源。
 [experiment road-terrain]
-道路地形
+小徑地形
 [experiment road-terrain help]
-在地圖編輯器中新增石板道路。地面單位以兩倍速度移動。道路上可以放置建築，但不能放置資源。
+在地圖編輯器中加入風化的小徑。地面單位以兩倍速度移動。小徑允許建築，但不允許資源。飛行單位不受影響。
+[experiment markets-v2]
+市場 V2
+[experiment markets-v2 help]
+工人可以從市場的共用庫存取得物資。市場可升級以儲存小麥和木材，之後可儲存所有資源。隊伍之間仍只交換水果。適用於新遊戲；存檔保留原始設定。

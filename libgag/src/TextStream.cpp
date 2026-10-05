@@ -116,6 +116,7 @@ namespace GAGCore
 		};
 		
 		int next;
+		bool pendingColon = false;
 		StreamBackend *stream;
 		Token token;
 		size_t line, column;
@@ -148,6 +149,11 @@ namespace GAGCore
 		
 		Token nextToken(void)
 		{
+			if (pendingColon)
+			{
+				pendingColon = false;
+				return token = Token(Token::COLON);
+			}
 			if (!stream->isEndOfStream())
 			{
 				switch (next)
@@ -228,12 +234,20 @@ namespace GAGCore
 						if (isalnum(next) || (next == '_') || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
 						{
 							std::string tempValue;
-							do
+							for (;;)
 							{
 								tempValue += static_cast<std::string::value_type>(next);
 								nextChar();
+								if (next == ':')
+								{
+									// Save fields use C++ names; a single colon still denotes inheritance.
+									nextChar();
+									if (next != ':') { pendingColon = true; break; }
+									tempValue += ':';
+									continue;
+								}
+								if (!(isalnum(next) || next == '_' || next == '.' || next == '[' || next == ']')) break;
 							}
-							while (isalnum(next) || (next == '_') || (next == '.') || (next == '[') || (next==']'));
 							token = Token(Token::VAL, tempValue);
 						}
 						else

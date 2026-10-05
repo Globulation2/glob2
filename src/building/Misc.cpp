@@ -125,6 +125,10 @@ void Building::kill(int diagnosticRemoval)
 	}
 
 	buildingState=DEAD;
+	if (type->canExchange)
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+			if (resources[r]>0)
+				owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	
 	updateUnitsHarvesting();
 	
@@ -133,6 +137,17 @@ void Building::kill(int diagnosticRemoval)
 	owner->buildingsToBeDestroyed.push_front(this);
 }
 
+
+bool Building::fetchesFromMarkets() const
+{
+	return owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2)
+		&& type->shortTypeNum != IntBuildingType::MARKET_BUILDING;
+}
+
+bool Building::isUpgradeAvailable() const
+{
+	return owner->game->isBuildingTypeAvailable(type->nextLevel);
+}
 
 bool Building::canUnitWorkHere(Unit* unit)
 {
@@ -199,6 +214,9 @@ void Building::removeUnitFromInside(Unit* unit)
 
 void Building::updateResourcesPointer()
 {
+	if (type->shortTypeNum == IntBuildingType::MARKET_BUILDING && owner->map->marketsV2Enabled())
+		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+			owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	if(!type->useTeamResources)
 	{
 		resources=localResource;
@@ -214,6 +232,8 @@ void Building::updateResourcesPointer()
 void Building::addResourceIntoBuilding(int resourceType)
 {
 	const int before = resources[resourceType];
+	if (type->canExchange && resources[resourceType]<=0)
+		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
 	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
 	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
@@ -267,6 +287,8 @@ void Building::removeResourceFromBuilding(int resourceType)
 	owner->stats.measurements.withdrawn[resourceType] += before - resources[resourceType];
 	if (type->canExchange)
 		owner->stats.measurements.transferredOut[resourceType] += before - resources[resourceType];
+	if (type->canExchange && resources[resourceType]<=0)
+		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
 	updateCallLists();
 }
 

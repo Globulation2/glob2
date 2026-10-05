@@ -74,6 +74,8 @@ ENGINE_TESTS = [
     '#src/building/InnSwapHarness.cpp',
     '#src/building/LevelGateHarness.cpp',
     '#src/unit/ResourceFetchTargetHarness.cpp',
+    '#src/unit/MarketFetchHarness.cpp',
+    ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/RoundTripHungerGateHarness.cpp',
     '#src/map/TerrainResourcesHarness.cpp',
     '#src/map/TerrainEcologyHarness.cpp',
@@ -162,6 +164,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/AssetLoaderTest.cpp',
     '#libgag/src/SpriteLoadTest.cpp',
     '#libgag/src/RenderFramePacerTest.cpp',

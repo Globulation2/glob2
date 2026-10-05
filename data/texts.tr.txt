@@ -5547,12 +5547,16 @@ Uygulamanın tamamında çizimi sınırlar. Daha düşük değerler çizim işin
 [ice]
 Buz
 [road]
-Yol
+Patika
 [experiment ice-terrain]
 Buz arazisi
 [experiment ice-terrain help]
 Harita düzenleyicisine buz ekler. Kara birimleri yarı hızda hareket eder ve buz üzerinde geçen her 32 simülasyon adımında bir sağlık puanı kaybeder. Buz üzerinde bina veya kaynak bulunamaz.
 [experiment road-terrain]
-Yol arazisi
+Patika arazisi
 [experiment road-terrain help]
-Harita düzenleyicisine taş döşeli yollar ekler. Kara birimleri iki kat hızda hareket eder. Yollarda bina bulunabilir, ancak kaynak bulunamaz.
+Harita düzenleyicisine aşınmış patikalar ekler. Kara birimleri iki kat hızla hareket eder. Patikalarda bina bulunabilir, ancak kaynak bulunamaz. Uçan birimler etkilenmez.
+[experiment markets-v2]
+Pazarlar V2
+[experiment markets-v2 help]
+İşçiler pazarların ortak stokundan malzeme alabilir. Pazarlar önce buğday ve odun, sonra tüm kaynakları depolamak için yükseltilebilir. Takımlar arasında yalnızca meyve alışverişi yapılır. Yeni oyunlara uygulanır; kayıtlı oyunlar ilk ayarlarını korur.

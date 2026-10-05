@@ -283,7 +283,8 @@ namespace Cortex
 			//      Building::UPGRADE building/Building.h:110 (larger footprint fits)
 			if (b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite
-			 && bt->nextLevel != BUILDING_LEVEL_NONE
+			 && bt->shortTypeNum != IntBuildingType::MARKET_BUILDING
+			 && b->isUpgradeAvailable()
 			 && b->hp == b->getEffectiveMaxHp()
 			 && b->constructionResultState == Building::NO_CONSTRUCTION
 			 && maxBuildLevel > bt->level

@@ -5547,12 +5547,16 @@ Limitează desenarea în întreaga aplicație. Valorile mai mici reduc efortul d
 [ice]
 Gheață
 [road]
-Drum
+Potecă
 [experiment ice-terrain]
 Teren de gheață
 [experiment ice-terrain help]
 Adaugă gheață în editorul de hărți. Unitățile terestre se deplasează cu jumătate din viteză și pierd un punct de sănătate la fiecare 32 de pași de simulare pe gheață. Gheața nu poate conține clădiri sau resurse.
 [experiment road-terrain]
-Teren de drum
+Teren de potecă
 [experiment road-terrain help]
-Adaugă drumuri pietruite în editorul de hărți. Unitățile terestre se deplasează cu viteză dublă. Drumurile permit clădiri, dar nu resurse.
+Adaugă poteci bătătorite în editorul de hărți. Unitățile terestre se deplasează cu viteză dublă. Potecile permit clădiri, dar nu resurse. Unitățile zburătoare nu sunt afectate.
+[experiment markets-v2]
+Piețe V2
+[experiment markets-v2 help]
+Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbunătățite pentru a depozita grâu și lemn, apoi toate resursele. Între echipe se schimbă în continuare doar fructe. Se aplică jocurilor noi; salvările păstrează setarea inițială.

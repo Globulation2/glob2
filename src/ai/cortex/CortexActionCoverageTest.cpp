@@ -51,6 +51,28 @@ TEST_SUITE("CortexActionCoverage")
         CHECK(first->maxUnitWorking==7);
     }
 
+    TEST_CASE("market levels do not introduce an AI upgrade strategy")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool enabled : {false,true})
+        {
+            glob2test::GameOptions options{.clearImmobile=true,.loadDefaultRace=true,.header=true};
+            options.experiments.set(ExperimentId::MarketsV2,enabled);
+            glob2test::HeadlessGame world(options);
+            world.addUnit(WORKER,20,20,0,2);
+            auto* market=world.addBuilding("market",4,4);
+            REQUIRE(market);
+            AICortex ai(world.game.players[0]);
+            CHECK(ai.findUpgradeTarget(IntBuildingType::MARKET_BUILDING)==nullptr);
+            auto obs=Cortex::makeEmptyObservation(); obs.valid=1;
+            bool found=false; Sint32 x=0,y=0,r=0;
+            Cortex::observeBuildings(obs,world.team,&world.game,2,NOGBID,found,x,y,r);
+            CHECK(obs.upgradableCount[IntBuildingType::MARKET_BUILDING]==0);
+            ai.translateAction(Cortex::makeUpgradeAction(IntBuildingType::MARKET_BUILDING),obs);
+            CHECK(ai.orderQueue.empty());
+        }
+    }
+
     TEST_CASE("build actions reject invalid slots and cooldown suppresses duplicate orders")
     {
         glob2test::HeadlessGlobals globals;

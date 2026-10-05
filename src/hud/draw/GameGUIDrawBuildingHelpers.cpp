@@ -47,7 +47,7 @@ void GameGUI::drawBuildingHeader(const SceneBuildingPanel* selBuild, BuildingTyp
 
 	// building text
 	title = "";
-	if ((buildingType->nextLevel>=0) ||  (buildingType->prevLevel>=0))
+	if (selBuild->showLevel)
 	{
 		const std::string textT = Toolkit::getStringTable()->getString("[level]");
 		title += FormattableString("%0 %1").arg(textT).arg(buildingType->level+1);
@@ -340,12 +340,12 @@ void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, Building
 {
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
-	if (buildingType->canExchange)
-		return;
-
-	// resources in
+	// resources in. A market's fruit is drawn by drawBuildingExchange; its
+	// basic-resource stock, from level 2 on, is listed here like any store.
 	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
 	{
+		if (buildingType->canExchange && i>=BASIC_COUNT)
+			continue;
 		if (buildingType->maxResource[i])
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1/%2").arg(getResourceName(i)).arg(selBuild->resources[i]).arg(buildingType->maxResource[i]).c_str());

@@ -5547,12 +5547,16 @@ Omezí vykreslování v celé aplikaci. Nižší hodnoty snižují nároky na vy
 [ice]
 Led
 [road]
-Cesta
+Stezka
 [experiment ice-terrain]
 Ledový terén
 [experiment ice-terrain help]
 Přidá led do editoru map. Pozemní jednotky se pohybují poloviční rychlostí a každých 32 kroků simulace na ledu ztratí jeden bod zdraví. Na ledu nemohou být budovy ani suroviny.
 [experiment road-terrain]
-Terén cest
+Terén stezky
 [experiment road-terrain help]
-Přidá dlážděné cesty do editoru map. Pozemní jednotky se pohybují dvojnásobnou rychlostí. Na cestách mohou být budovy, ale ne suroviny.
+Přidává do editoru map vyšlapané stezky. Pozemní jednotky se pohybují dvojnásobnou rychlostí. Na stezkách lze stavět budovy, ale nemohou na nich být suroviny. Létající jednotky nejsou ovlivněny.
+[experiment markets-v2]
+Trhy V2
+[experiment markets-v2 help]
+Dělníci mohou odebírat zásoby ze společného skladu trhů. Trhy lze vylepšit pro skladování pšenice a dřeva, poté všech surovin. Mezi týmy se nadále vyměňuje pouze ovoce. Platí pro nové hry; uložené hry zachovají původní nastavení.

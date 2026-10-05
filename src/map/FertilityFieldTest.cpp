@@ -312,7 +312,7 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     map.makeWater(9,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
-    map.setCellTerrain(8,8,ROAD);
+    map.setCellTerrain(8,8,TRAIL);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)==0);
     map.setCellTerrain(8,8,GRASS);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)>0);
@@ -327,7 +327,7 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
     const auto wheat=cache.rate(index,WHEAT);
     REQUIRE(wheat>0);
-    for(const auto type : {ROAD,ICE,GRASS_SAND_SHORE,GRASS})
+    for(const auto type : {TRAIL,ICE,GRASS_SAND_SHORE,GRASS})
     {
         map.setCellTerrain(index,type);
         // This also checks validity after each edit's terrain-generation bump.

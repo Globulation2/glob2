@@ -5547,12 +5547,16 @@ Begrenzt die Darstellung in der gesamten Anwendung. Niedrigere Werte reduzieren 
 [ice]
 Eis
 [road]
-Straße
+Pfad
 [experiment ice-terrain]
 Eisgelände
 [experiment ice-terrain help]
 Fügt Eis zum Karteneditor hinzu. Bodeneinheiten bewegen sich mit halber Geschwindigkeit und verlieren alle 32 Simulationsschritte auf dem Eis einen Lebenspunkt. Auf Eis können keine Gebäude oder Ressourcen liegen.
 [experiment road-terrain]
-Straßengelände
+Pfadgelände
 [experiment road-terrain help]
-Fügt Kopfsteinpflasterstraßen zum Karteneditor hinzu. Bodeneinheiten bewegen sich mit doppelter Geschwindigkeit. Straßen erlauben Gebäude, aber keine Ressourcen.
+Fügt dem Karteneditor verwitterte Pfade hinzu. Bodeneinheiten bewegen sich mit doppelter Geschwindigkeit. Pfade erlauben Gebäude, aber keine Rohstoffe. Fliegende Einheiten bleiben unbeeinflusst.
+[experiment markets-v2]
+Märkte V2
+[experiment markets-v2 help]
+Arbeiter können Vorräte aus dem gemeinsamen Marktbestand holen. Märkte lassen sich zuerst für Weizen und Holz, dann für alle Rohstoffe ausbauen. Zwischen Teams wird weiterhin nur Obst ausgetauscht. Gilt für neue Spiele; Spielstände behalten ihre ursprüngliche Einstellung.

@@ -5547,12 +5547,16 @@ Korlátozza a rajzolást az egész alkalmazásban. Az alacsonyabb értékek csö
 [ice]
 Jég
 [road]
-Út
+Ösvény
 [experiment ice-terrain]
 Jeges terep
 [experiment ice-terrain help]
 Jeget ad a térképszerkesztőhöz. A szárazföldi egységek félsebességgel mozognak, és minden 32 jégen töltött szimulációs lépés után elveszítenek egy életpontot. A jégen nem lehetnek épületek vagy erőforrások.
 [experiment road-terrain]
-Útterep
+Ösvényterep
 [experiment road-terrain help]
-Macskaköves utakat ad a térképszerkesztőhöz. A szárazföldi egységek kétszeres sebességgel mozognak. Az utakon lehetnek épületek, de erőforrások nem.
+Kitaposott ösvényeket ad a térképszerkesztőhöz. A szárazföldi egységek kétszeres sebességgel mozognak. Az ösvényeken lehet építkezni, de nyersanyagok nem lehetnek rajtuk. A repülő egységeket nem érinti.
+[experiment markets-v2]
+Piacok V2
+[experiment markets-v2 help]
+A munkások a piacok közös készletéből is hozhatnak ellátmányt. A piacok fejleszthetők búza és fa, majd minden nyersanyag tárolására. A csapatok között továbbra is csak gyümölcs cserélhető. Új játékokra érvényes; a mentések megőrzik az eredeti beállítást.

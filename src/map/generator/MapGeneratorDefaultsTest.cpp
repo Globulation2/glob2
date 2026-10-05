@@ -808,7 +808,7 @@ TEST_SUITE("MapGeneratorDefaults")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world;
 		auto& map = world.game.map;
-		map.setCellTerrain(8, 8, ROAD);
+		map.setCellTerrain(8, 8, TRAIL);
 		map.setCellTerrain(9, 8, ICE);
 		map.setCellTerrain(10, 8, WATER);
 		CHECK(map.terrainPropertiesAt(8, 8).buildable);
@@ -835,7 +835,7 @@ TEST_SUITE("MapGeneratorDefaults")
         glob2test::HeadlessGame world;
         auto& map = world.game.map;
         const MapGeneration::Torus torus(map);
-        map.setCellTerrain(8,8,ROAD);
+        map.setCellTerrain(8,8,TRAIL);
         map.setCellTerrain(9,8,ICE);
         map.setCellTerrain(10,8,WATER);
         map.setCellTerrain(11,8,SAND);
@@ -859,7 +859,7 @@ TEST_SUITE("MapGeneratorDefaults")
         CHECK_EQ(stone.gaps,2);
 		const MapGeneration::SandFord ford{20, 20, 0, 1, 1, 0, 3, 1};
 		map.setCellTerrain(20, 20, ICE);
-		map.setCellTerrain(21, 20, ROAD);
+		map.setCellTerrain(21, 20, TRAIL);
 		CHECK(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
 		map.setCellTerrain(20, 20, WATER);
 		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());

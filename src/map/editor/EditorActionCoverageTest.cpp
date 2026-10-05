@@ -282,16 +282,16 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.game.map.terrainTypeAt(7,8)==GRASS);
         editor.performAction("select road");
         CHECK(editor.terrainType==TerrainSelector::Ice);
-        globals->settings.experiments.set(ExperimentId::RoadTerrain,true);
+        globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
         editor.performAction("select road");
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
-        CHECK(editor.game.map.terrainTypeAt(8,8)==ROAD);
+        CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
         CHECK(editor.game.map.terrainTypeAt(7,8)==GRASS);
         glob2test::TempDir scratch;const auto filename=(scratch.path/"whole-cell-terrain.map").string();
         REQUIRE(editor.save(filename,"whole-cell terrain"));
         globals->settings.experiments.clear();
         MapEdit restored;REQUIRE(restored.load(filename));
-        CHECK(restored.game.map.terrainTypeAt(8,8)==ROAD);
+        CHECK(restored.game.map.terrainTypeAt(8,8)==TRAIL);
     }
 
     TEST_CASE("registered terrain stamps batch invalidation and reject invalid selector IDs [display]")
@@ -299,23 +299,23 @@ TEST_SUITE("EditorActionCoverage")
         glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
             .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
         globals->settings.experiments.set(ExperimentId::IceTerrain,true);
-        globals->settings.experiments.set(ExperimentId::RoadTerrain,true);
+        globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
         MapEdit editor;blank(editor);
         REQUIRE(editor.additionalTerrainSelectors.size()==2);
         editor.performAction("select road");editor.brush.setFigure(6);
         const auto generation=editor.game.map.topologyGeneration;
         cursor(editor,8,8);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
         CHECK(editor.game.map.topologyGeneration==generation+1);
-        CHECK(editor.game.map.terrainTypeAt(8,8)==ROAD);
-        CHECK(editor.game.map.terrainTypeAt(7,8)==ROAD);
+        CHECK(editor.game.map.terrainTypeAt(8,8)==TRAIL);
+        CHECK(editor.game.map.terrainTypeAt(7,8)==TRAIL);
         for (auto invalid : {static_cast<TerrainSelector::TerrainType>(-1),
                 static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+TERRAIN_COUNT),
                 TerrainSelector::selectorFor(GRASS_SAND_SHORE),TerrainSelector::NoTerrain}) {
             editor.beginTerrainPlacement(invalid,MapEdit::TerrainPlacementMode::BaseTerrain);
-            CHECK(editor.terrainType==TerrainSelector::Road);
+            CHECK(editor.terrainType==TerrainSelector::Trail);
         }
-        editor.beginTerrainPlacement(TerrainSelector::Road,MapEdit::TerrainPlacementMode::Resource);
-        CHECK(editor.terrainType==TerrainSelector::Road);
+        editor.beginTerrainPlacement(TerrainSelector::Trail,MapEdit::TerrainPlacementMode::Resource);
+        CHECK(editor.terrainType==TerrainSelector::Trail);
         CHECK_FALSE(editor.brush.addRemoveEnabled);
         editor.beginTerrainPlacement(static_cast<TerrainSelector::TerrainType>(TerrainSelector::RegisteredBegin+GRASS),
             MapEdit::TerrainPlacementMode::BaseTerrain);
