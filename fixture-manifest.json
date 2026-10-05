@@ -1,0 +1,56 @@
+[
+  {
+    "id": "land-maxima-early",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+    "start": 0,
+    "sha256": "a90e5b0518babeb68f55a3baa0c751532bc85e7186e52f42cef9cdd3c425996d"
+  },
+  {
+    "id": "land-maxima-middle",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+    "start": 8192,
+    "sha256": "9de1d10ada474517befd4a05c3b9ee77bf9945917879a12216280c5f3a907dd0"
+  },
+  {
+    "id": "land-maxima-late",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+    "start": 24576,
+    "sha256": "5855f322224d60760e056cf3c7250dde6b44ce3eafd445a90a31be39c2470cb9"
+  },
+  {
+    "id": "water-nicowar-early",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+    "start": 0,
+    "sha256": "b8a27010815cdda81fafab68c7bbc3af26af053bcc4a9b8d7781ffed2247d198"
+  },
+  {
+    "id": "water-nicowar-middle",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+    "start": 8192,
+    "sha256": "1ecedc1a6ea7a344a36e27efd8a7b9a24a73d951fb82f6cb965fe0f96fff148f"
+  },
+  {
+    "id": "water-nicowar-late",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+    "start": 24576,
+    "sha256": "f4545919db52a3b79844d87e3608ace9f4a5dd6b106d0bbee9986ec426dd2211"
+  },
+  {
+    "id": "small-mixed-early",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+    "start": 0,
+    "sha256": "cbe48a3cb2369ee1433966a36031bb5aa5604e09b0cf72974341d0e60ab90db9"
+  },
+  {
+    "id": "small-mixed-middle",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+    "start": 8192,
+    "sha256": "e04eeef5a799b1e695454f598389901b20ae37753f39df97b8b47c38ecc20a51"
+  },
+  {
+    "id": "land-512",
+    "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+    "start": 0,
+    "sha256": "cd310e3713d8d607f78619e10fb58f4cb43a864f1fe182157f4109f982711b82"
+  }
+]

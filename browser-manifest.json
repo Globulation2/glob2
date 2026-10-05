@@ -1,0 +1,282 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+  "binary_sha256": "83079305348b9fab0cfb4f0c8c844a9bb72ff4e2c10f02d46bbf4f2501a29411",
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/test/run-browser-determinism.py",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/native/cross-replay"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/3bf0/glob2",
+      "log": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/native-cross-replay.log"
+    },
+    {
+      "argv": [
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+        "--nox",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+        "1024",
+        "1",
+        "--ai-threads",
+        "1"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/3bf0/glob2",
+      "log": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/native/land-maxima-256/run.log"
+    },
+    {
+      "argv": [
+        "node",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility.config.js",
+        "--project",
+        "chromium"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/3bf0/glob2",
+      "log": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/chromium.log"
+    },
+    {
+      "argv": [
+        "node",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility.config.js",
+        "--project",
+        "firefox"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/3bf0/glob2",
+      "log": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/firefox.log"
+    },
+    {
+      "argv": [
+        "node",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/browser/node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility.config.js",
+        "--project",
+        "webkit"
+      ],
+      "cwd": "/home/bradley/.codex/worktrees/3bf0/glob2",
+      "log": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/browser-compatibility/webkit.log"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "cross-replay",
+      "path": "/home/bradley/.codex/worktrees/3bf0/glob2/games/cross-replay.game.gz",
+      "ticks": 1500,
+      "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+      "trace_sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+      "cli_tail": [
+        "--nox",
+        "/tmp/initial.game.gz",
+        "1500",
+        "1"
+      ],
+      "seed_and_orders": "Same retained save and --nox CLI behavior for native and browser; no extra orders injected."
+    },
+    {
+      "name": "land-maxima-256",
+      "path": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "ticks": 1024,
+      "fixture_sha256": "a90e5b0518babeb68f55a3baa0c751532bc85e7186e52f42cef9cdd3c425996d",
+      "trace_sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "cli_tail": [
+        "--nox",
+        "/tmp/initial.game.gz",
+        "1024",
+        "1"
+      ],
+      "seed_and_orders": "Same retained save and --nox CLI behavior for native and browser; no extra orders injected."
+    }
+  ],
+  "browsers": {
+    "chromium": {
+      "passed": true,
+      "tests": 9,
+      "traces": [
+        {
+          "fixture": "cross-replay",
+          "variant": "serial-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-2",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-4",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "serial-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-2",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-4",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        }
+      ],
+      "golden_sha256": "4d86f4af451df0ee4ba94f63b85809f89013905ba380b446dfcf373af9ecd8ab"
+    },
+    "firefox": {
+      "passed": true,
+      "tests": 9,
+      "traces": [
+        {
+          "fixture": "cross-replay",
+          "variant": "serial-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-2",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-4",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "serial-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-2",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-4",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        }
+      ],
+      "golden_sha256": "4d86f4af451df0ee4ba94f63b85809f89013905ba380b446dfcf373af9ecd8ab"
+    },
+    "webkit": {
+      "passed": true,
+      "tests": 9,
+      "traces": [
+        {
+          "fixture": "cross-replay",
+          "variant": "serial-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-1",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-2",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "cross-replay",
+          "variant": "threaded-4",
+          "sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+          "bytes": 3506466
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "serial-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-1",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-2",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        },
+        {
+          "fixture": "land-maxima-256",
+          "variant": "threaded-4",
+          "sha256": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+          "bytes": 3630898
+        }
+      ],
+      "golden_sha256": "4d86f4af451df0ee4ba94f63b85809f89013905ba380b446dfcf373af9ecd8ab"
+    }
+  },
+  "wasm_builds": {
+    "index.js": "4290e5db54fa0cbe620ae72e4449fcae4fe4a3cbbff0503b8a9c84cff5b6e8d4",
+    "index.wasm": "b3b5dd6ac263257c3ab93ea05c458749875a0a18cfdb97f4dcb66f8f14eee3a7",
+    "asset-manifest.js": "90448e06b80ab7adf857f93f131abf8f03a4b30dfd9d9bccfe1b658277fcb8ab",
+    "threaded/index.js": "181df7bdc15494b133ffa8212dea573a98b7ac607f937f5ec1ec4aac71fff3c9",
+    "threaded/index.wasm": "a347b4a7879da309e1e0b5ff1160b3fd3af94b206b7aea9945547bc25458c4ff"
+  },
+  "server_command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/3bf0/glob2/browser/serve.py",
+    "59771",
+    "--bind",
+    "127.0.0.1",
+    "--directory",
+    "/home/bradley/.codex/worktrees/3bf0/glob2/build/emscripten/client/release"
+  ],
+  "passed": true
+}

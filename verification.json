@@ -1,0 +1,3020 @@
+[
+  {
+    "scenario": "land-maxima-early",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-early",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-early",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "land-maxima-early",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-early",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-early",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "a9001e6331466e9fc2d8ab9aa780b039a6b08decc8d328e3385f8173fac06ab5",
+      "game.replay": "de6557d4368288e4449e6fd9af1813d72e52f30cfa907f53413c0069fa4e0977",
+      "final.game": "d38fd188b51785bfabc1a36e7d28820addca92e3d81ca72536e1c2f6b9010b13"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-early/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-middle",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "72677daba3c0fee9db809bcc14104cb51f81b3be02bbf7e09c8fdaa55294f5ab",
+      "game.replay": "c984e5e3e880020ff83e66e91866d9639b19e44264ae736671fa77aeae4adb0d",
+      "final.game": "3799a9865556d62e4b5f2479c92082c70f7322fbdbf83e37b03cd3745b6a8ed1"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-middle/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "land-maxima-late",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "e5552916605cad55972ab01288c38087424952af538edb6624522a2e90ecdf79",
+      "game.replay": "6c8b65bf6b5e71c72a3d4308175aa99830542f7732857467d2c7a9584d1eba6a",
+      "final.game": "6952c9ffc215af3b698bc3ac3f759b67cf9131cddded174713dea328ed7a58ca"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-maxima-late/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-early",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "d52386018087ee026b0743978da642d79797d441598a66dad6dcda2b984a7329",
+      "game.replay": "8e4ef6cdd648c7b86ac9913a77304278d5ef75365551a7d9c9b47da6afc34545",
+      "final.game": "eaddd1233430cfa3a27890edf1bdbd2cc23c4b39a11f919101aa4573f526bf5d"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-early/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-middle",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "5374acf6dd701332e301bf22e3c166779d112d113180f81bce1891f00fc49216",
+      "game.replay": "ffe1d206511a16f22451b30e83ceb215c444771750bcddfb9bbab5ffea705243",
+      "final.game": "e25dadb36f355b9cde680de240c28305cf4f8a1a5fb4fe92deeefe39021329f0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-middle/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "water-nicowar-late",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "cf78f638acaa6ee95a862983f7da7047437cb50c99d35cf357ffb04c0e3fba75",
+      "game.replay": "73806f63e8e27f577e402d1b93122f8010e1e10584d6c4acc7bd5edb25148af6",
+      "final.game": "2c8b45216fc179c8e2e17cbac5c492fa2200a8a4f823c7d0ea819139b7a46209"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/water-nicowar/checkpoint-24576.game.gz",
+      "--ticks",
+      "25600",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/water-nicowar-late/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "small-mixed-early",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "08ed20ce0ed8526c7cba8d187ea0656ee6880f1b21f18d762de3b848163c1fb6",
+      "game.replay": "435ed414bb277ad12b2fd231f0f72960805a18db101b5df4180c3ec1e68529c4",
+      "final.game": "51d62c068a163bf5408bc708dc5a18fd23e9760ec5788a6e8fb6df9de446855b"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-early/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "small-mixed-middle",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "a12d4060fbd3a7367329490810fba2da0955e924df38f5c12b082fe74802681f",
+      "game.replay": "66cf710ed3caf9c25df951e5342247ed9b1e19a8e4818cecfa8ea8ca393744ed",
+      "final.game": "08b76cdca275365bf9f4b6b36d1bdbbbe3bdf1eb456a3fca321fa2efc6622cf0"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "--ticks",
+      "9216",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/small-mixed-middle/cache-2-4"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "baseline",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/baseline-0-1"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "baseline",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/baseline-1-2"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "baseline",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/baseline-2-4"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "cache",
+    "workers": 0,
+    "threads": 1,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "0",
+      "--compute-threads",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/cache-0-1"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "cache",
+    "workers": 1,
+    "threads": 2,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "1",
+      "--compute-threads",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/cache-1-2"
+    ]
+  },
+  {
+    "scenario": "land-512",
+    "variant": "cache",
+    "workers": 2,
+    "threads": 4,
+    "hashes": {
+      "game.replay.checksums": "f2e30803433a1f6d8b95a14c2263b45e11475d703315a470302fef3a81a7a166",
+      "game.replay": "681237f54dabee1118d6594fd703249aec49cdcbe1366cb0e58ffdb526a14121",
+      "final.game": "b5cf9ebe2e55ddf5693d61c8bb184ad2a7354855ba3d1b2fb7eefc1348fb63a4"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/fixture-512/initial.game.gz",
+      "--ticks",
+      "1024",
+      "--gradient-workers",
+      "2",
+      "--compute-threads",
+      "4",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-verification/land-512/cache-2-4"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-baseline-0"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-baseline-1"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-baseline-2"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-cache-0"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-cache-1"
+    ]
+  },
+  {
+    "phase": 0,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "dea84b2d41575170765e667152028b7c01705961848bb816b9c55da3e353d970",
+      "game.replay": "2815488148df3883896ef635275cb43aaba6397f8efc423772cd548d5def5185",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-0/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-0-cache-2"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-baseline-0"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-baseline-1"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-baseline-2"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-cache-0"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-cache-1"
+    ]
+  },
+  {
+    "phase": 1,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "4cc37303d1ae0ee98347c69c13208ef824e78640c97cb44b060bc03436443560",
+      "game.replay": "50bff895cd17d98ea87c0ea39e785212a9370ed35161fccd6a36113b0f77d91c",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-1/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-1-cache-2"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-baseline-0"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-baseline-1"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-baseline-2"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-cache-0"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-cache-1"
+    ]
+  },
+  {
+    "phase": 2,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "e9796f6f515c624cd4353270634737768ae518b6b18d19fd74130a035c2376ed",
+      "game.replay": "61e65bfd3af9143590569f58f486bd1606be9013ea25cba521be3326caa4605e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-2/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-2-cache-2"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-baseline-0"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-baseline-1"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-baseline-2"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-cache-0"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-cache-1"
+    ]
+  },
+  {
+    "phase": 3,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "afab531085b3c03f5579a15a8d73a512a7822fafc40a3df88418594b3f0eed3f",
+      "game.replay": "2d03132e609173d867c9e365708f2211d116e24189060480ae9d6a5b9f1b0f94",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-3/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-3-cache-2"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-baseline-0"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-baseline-1"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-baseline-2"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-cache-0"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-cache-1"
+    ]
+  },
+  {
+    "phase": 4,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "a79bba7031ffe5356a85e4e54c5a138c30aa781b619fa13d166ab0261263e30a",
+      "game.replay": "443bd4fbe8f6c440d0492bb5cc906dd55cbcfbf99f6b9ac8741fcc28fa70e81e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-4/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-4-cache-2"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-baseline-0"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-baseline-1"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-baseline-2"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-cache-0"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-cache-1"
+    ]
+  },
+  {
+    "phase": 5,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "0e65b2867de21ef1fe7df267d928e756a1e299859b347677f90c4b63cf03d426",
+      "game.replay": "773f3ac7f9ce4d9a4d82a9a7508101d285feaae27c602daffaf66acf4520a47e",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-5/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-5-cache-2"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-baseline-0"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-baseline-1"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-baseline-2"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-cache-0"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-cache-1"
+    ]
+  },
+  {
+    "phase": 6,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "baec753c1a982168717c5b5387700774f03d34d2424702f0a264aeaf3ab58cc9",
+      "game.replay": "dbdc4008ce522e40f85bdd2b2cf25235572c73db5d0f97770edf9f71bd3ddbe6",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-6/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-6-cache-2"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "baseline",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-baseline-0"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "baseline",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-baseline-1"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "baseline",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-baseline-2"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "cache",
+    "workers": 0,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "0",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-cache-0"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "cache",
+    "workers": 1,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "1",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-cache-1"
+    ]
+  },
+  {
+    "phase": 7,
+    "variant": "cache",
+    "workers": 2,
+    "hashes": {
+      "game.replay.checksums": "333a1ff3c75256619a2904937becbed0de251c6cbe3a534cb510dcc9d15d1679",
+      "game.replay": "cf293f6b4824b8f74e985a26b51d9eda25557cc20d6b272f000d4a1a94187122",
+      "final.game": "b5f090114fee6c8ef1164e2202b61688ec3cf123ef3791605f3a1b1f95926fac"
+    },
+    "command": [
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate",
+      "--run-game",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/checkpoint-7/final.game",
+      "--ticks",
+      "8512",
+      "--gradient-workers",
+      "2",
+      "--telemetry",
+      "checksums",
+      "--replay",
+      "true",
+      "--save",
+      "final",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/final-phases/resumed-7-cache-2"
+    ]
+  }
+]

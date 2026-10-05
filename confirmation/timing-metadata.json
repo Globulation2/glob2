@@ -1,0 +1,41 @@
+{
+  "binaries": {
+    "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/direct-control": "f83ee498a8235b9ff83be79ba76d524594d5403779fb973402ec96f6948b5f39",
+    "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/gradient-preparation/cache-integration/candidate": "83079305348b9fab0cfb4f0c8c844a9bb72ff4e2c10f02d46bbf4f2501a29411"
+  },
+  "fixtures": [
+    {
+      "id": "land-maxima-late",
+      "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/land-maxima/checkpoint-24576.game.gz",
+      "start": 24576,
+      "sha256": "5855f322224d60760e056cf3c7250dde6b44ce3eafd445a90a31be39c2470cb9"
+    },
+    {
+      "id": "small-mixed-early",
+      "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/initial.game.gz",
+      "start": 0,
+      "sha256": "cbe48a3cb2369ee1433966a36031bb5aa5604e09b0cf72974341d0e60ab90db9"
+    },
+    {
+      "id": "small-mixed-middle",
+      "fixture": "/home/bradley/.codex/worktrees/3bf0/glob2/artifacts/sim-hotpath/fixtures/small-mixed/checkpoint-8192.game.gz",
+      "start": 8192,
+      "sha256": "e04eeef5a799b1e695454f598389901b20ae37753f39df97b8b47c38ecc20a51"
+    }
+  ],
+  "ticks_per_run": 8192,
+  "pairs": 7,
+  "cpu_affinity": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "purpose": "Longer confirmation for noisy late-game CPU and short small-map windows; original measurements retained",
+  "max_background_cpu_cores": 6.4,
+  "load_policy": "Reject entire pair if either run exceeds background CPU threshold; retain rejected raw measurements. No speedup-based selection."
+}
