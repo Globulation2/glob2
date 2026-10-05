@@ -523,6 +523,23 @@ void exited(int result) {
 }
 void roomReady(bool canStart) { diagnostics.room = canStart; }
 void customGameReady(bool canStart) { diagnostics.custom = canStart; }
+void studioProgress(std::uint32_t tick, bool ended, bool disabled,
+                    const std::string &diagnostic, bool won, bool lost)
+{
+    const auto bounded = diagnostic.substr(0, 2000);
+    MAIN_THREAD_EM_ASM({
+        const now = performance.now();
+        if (!$1 && !$2 && now - (Module.studioProgressTime || 0) < 1000) return;
+        Module.studioProgressTime = now;
+        globalThis.glob2Studio?.progress($0, $1, $2, UTF8ToString($3), $4, $5);
+    }, tick, ended, disabled, bounded.c_str(), won, lost);
+}
+void studioError(const std::string &message)
+{
+    MAIN_THREAD_EM_ASM({
+        globalThis.glob2Studio?.send('error', {text: UTF8ToString($0).slice(0, 2000)});
+    }, message.c_str());
+}
 bool controlsObserved() { return true; }
 void controlsChanged(const void *owner, const char *json) {
     diagnostics.controls[reinterpret_cast<std::uintptr_t>(owner)] = json ? json : "";

@@ -10,9 +10,7 @@
 #include "scripting/javascript/ScriptRuntime.h"
 #include <cstdlib>
 #include <stdexcept>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
+#include <ApplicationHost.h>
 #include <StringTable.h>
 
 void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom,
@@ -33,13 +31,10 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 									 custom();
 							 });
 			else if (result == 2)
-            {
-#ifdef __EMSCRIPTEN__
-                if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
-                    const auto error = static_cast<GameLoadScreen &>(screen).failureMessage();
-                    MAIN_THREAD_EM_ASM({ globalThis.glob2Studio?.send('error', {text:UTF8ToString($0).slice(0,2000)}); }, error.c_str());
-                }
-#endif
+			{
+                if (std::getenv("GLOB2_STUDIO_PLAYTEST"))
+                    GAGCore::ApplicationHost::studioError(
+                        static_cast<GameLoadScreen &>(screen).failureMessage());
 				auto &strings = *GAGCore::Toolkit::getStringTable();
 				screens.push(std::make_unique<MessageScreen>(
 								 static_cast<GameLoadScreen &>(screen).failureMessage(),

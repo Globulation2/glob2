@@ -123,6 +123,14 @@ void overviewDrawn(bool drawn, bool settled);
 void roomReady(bool canStart);
 // Whether the custom-game lobby can launch its current map.
 void customGameReady(bool canStart);
+// Embedded Studio feedback; native hosts ignore it. Call progress only while
+// the simulation is parked; the browser host bounds and throttles publication.
+// tick is the completed simulation step. ended means the match/session stopped;
+// disabled/diagnostic describe the user's controller. won/lost describe its team.
+// The browser bridge supplies the launch's run and source-revision identifiers.
+void studioProgress(std::uint32_t tick, bool ended, bool disabled,
+                    const std::string &diagnostic, bool won, bool lost);
+void studioError(const std::string &message);
 // Read-only presentation diagnostic: the interactive controls of one element
 // host (a screen or dialog) after layout, as JSON keyed by control key with
 // logical-pixel bounds, or null when the host goes away. Tests drive the real
