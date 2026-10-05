@@ -46,7 +46,5 @@ class GameSessionScreen : public GAGGUI::Screen
 	Uint64 lastDraw = 0;
 #endif
 	Uint32 lastTick = 0;
-	//! Host tick at which the last threaded frame started (frame-rate cap).
-	Uint32 frameStarted = 0;
 	Uint64 clock = 0, nextTick = 0;
 };

@@ -714,6 +714,7 @@ namespace GAGCore
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
+        resetRenderPacing();
 		// check dimension
 		if (minW && (w < minW))
 		{

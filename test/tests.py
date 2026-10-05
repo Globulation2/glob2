@@ -158,6 +158,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#libgag/src/RenderFramePacerTest.cpp',
     '#libgag/src/FontMetricsTest.cpp',
     '#libgag/src/PackedArrayTest.cpp',
     '#libgag/src/EventQueueTest.cpp',

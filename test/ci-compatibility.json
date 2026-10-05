@@ -23,7 +23,9 @@
     "WinProbability/*",
     "AIRules/*",
     "MusicSet/*",
-    "CommunityMusic/*"
+    "CommunityMusic/*",
+    "ScreenExecution/*",
+    "SettingsGraphics/*"
   ],
   "unit_filters": [
     "*"

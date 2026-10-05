@@ -45,6 +45,9 @@ public:
 	int screenHeight;
 	//! interface scale in percent; 0 follows the desktop
 	int uiScale;
+    // Local drawing ceiling; zero is Unlimited. Never part of saves or orders.
+    int targetRenderFps = 60;
+    static constexpr int RENDER_FPS_PRESETS[] = {25, 30, 60, 90, 120, 144, 165, 240, 0};
 	Uint32 screenFlags;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
