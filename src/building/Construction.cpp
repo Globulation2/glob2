@@ -133,6 +133,8 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
+		if (type->canExchange)
+			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();

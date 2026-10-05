@@ -1681,6 +1681,10 @@ reuse of the level-1 artwork remain provisional while the feature is draft.
 `MarketsV2` checks both sides of the `markets-v2` experiment: disabled fetch
 entry points and construction gates, per-tick legacy market deliveries against
 master, all level/resource/swim-class combinations, upgrade cancellation and
-completion with shared stock, and binary/text continuation. The benchmark case
-reports identical market workloads with the experiment off and on, including
-heavy checksums and save/load overhead; it is not a standalone routing benchmark.
+completion and repair with shared stock, legacy travelling workers, forbidden
+routes, and binary/text continuation. Simulation traces compare every checksum
+part except the MapHeader part, which includes the deliberately changed file-format
+version. The benchmark cases report identical market delivery workloads (including
+heavy checksums and save/load) and isolated resource-gradient refresh CPU/time and
+field memory. `browser/tests/determinism.spec.js` runs the same Markets V2 cases
+and frozen traces in serial and threaded Wasm builds.

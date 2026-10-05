@@ -8,6 +8,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "Team.h"
+#include "Game.h"
 #include "MapInternal.h"
 
 
@@ -144,6 +145,11 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) c
 			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
+}
+
+bool Map::marketsV2Enabled() const
+{
+	return game && game->gameHeader.hasExperiment(ExperimentId::MarketsV2);
 }
 
 bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const

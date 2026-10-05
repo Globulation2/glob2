@@ -13,11 +13,6 @@
 
 #include <mutex>
 
-bool Map::marketsV2Enabled() const
-{
-	return game && game->gameHeader.hasExperiment(ExperimentId::MarketsV2);
-}
-
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
 	withMarkets = withMarkets && marketsV2Enabled();
