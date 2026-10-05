@@ -611,8 +611,11 @@ TEST_CASE("JavaScript repository starter scripts staff capabilities and respect 
             if(name=="desired")return Value::object();
             return Value();
         };
-        const auto source=glob2test::readFile(glob2test::sourceRoot()/"examples/javascript"/
-            (profile==1 ? "ai.js" : "studio-starter.js"));
+        const auto sourcePath=glob2test::sourceRoot()/"examples/javascript"/
+            (profile==1 ? "ai.js" : "studio-starter.js");
+        INFO(sourcePath.string());
+        const auto source=glob2test::readFile(sourcePath);
+        REQUIRE_FALSE(source.empty());
         const auto result=makeRuntime()->invoke(source,Value::object(),false,host);
         if(profile==1) {
             CHECK(result.effects.get("type").text=="workers");

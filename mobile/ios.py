@@ -145,7 +145,7 @@ def main():
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
     resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses')]
     if args.script_tests:
-        resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures')]
+        resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]
     for resource_root, folder in resource_roots:
         for resource in sorted((resource_root/folder).rglob('*')):
             if resource.is_file():

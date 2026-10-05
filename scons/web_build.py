@@ -183,6 +183,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
         tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
+                               '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
@@ -210,7 +211,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
                                'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js', 'browser/canvas-size.js'])
         env.Depends(harness, assets)
-        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
+        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'examples/javascript', 'games')
                                for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('wasm', 'data')], harness)
         if threaded:
