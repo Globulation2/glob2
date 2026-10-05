@@ -1,0 +1,9 @@
+Merge refresh at e9104135dd8f8431eac98f69e24dae8cf6e46f0f, base 42848408e327e7dceb877663ca04802f05504d6d. Rebased without conflicts to incorporate upstream Windows stack allocation and browser replay/Studio fixture fixes, plus save/import validation. macOS arm64, same toolchain/dependencies as parent evidence README.
+
+Build: GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix CCACHE=1 scons -j6 release=1 tests build/darwin/client/release/src/glob2
+
+Focused command: python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'MarketsV2/*' --filter 'MarketFetch/*' --filter 'CortexActionCoverage/*' --filter 'Maxima.Implementation/*' --filter 'TurnEngineHarness/the committed*' --filter 'OrderValidation/*' --filter 'ExperimentalFeatures/*' --filter 'JavaScriptCompatibility/*' --filter 'EngineSession/*' --filter 'SavegameSafety/*' --no-display
+
+73 JUnit cases: 70 passed, 3 display skips, no failures. Studio native trace generated using browser/tests/fixtures/README.md command with absolute input/output paths (the app changes its working directory): 1849612 bytes, SHA256 f01db26d35949e2685ce3a1544848342a4ba9ac5a2106e5f8ab330ba1852f422, exactly the upstream corrected fixture.
+
+Prior source 0fe0de15b hosted run https://github.com/Globulation2/glob2/actions/runs/37286569224 passed browser/native simulation equivalence, Linux, Clang, TSan, Android and MarketsV2 cases on Windows and browser serial/threaded runtimes. Its Windows stack-overflow and stale browser fixture failures are addressed by master changes #786 and #780-783 now incorporated. Full master run at the new base passed: https://github.com/Globulation2/glob2/actions/runs/37302842331 . Full cross-platform suite has not been rerun on this rebased head. Maintainer gameplay review remains a limitation; user authorized merging.
