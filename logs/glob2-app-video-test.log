@@ -1,0 +1,17 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep the colony moves
+
+[WebServer] (node:2861) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:2967) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (810ms)
+(node:2984) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [phone] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (879ms)
+
+  2 passed (20.1s)

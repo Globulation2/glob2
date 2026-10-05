@@ -1,0 +1,50 @@
+
+> @glob2/web@0.1.0 build
+> vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 807 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                          1.24 kB │ gzip:   0.60 kB
+dist/assets/hospital-CZ8mxl8H.webp                       4.16 kB
+dist/assets/glob-64-DRYAgOz9.png                         4.51 kB
+dist/assets/school-3kPEHozp.webp                         4.60 kB
+dist/assets/war-flag-ClpBapaP.webp                       4.61 kB
+dist/assets/exploration-flag-DEYVuIyb.webp               5.54 kB
+dist/assets/wood-BvhIq-A_.webp                           5.59 kB
+dist/assets/clearing-flag-Dr2FX3nZ.webp                  5.94 kB
+dist/assets/stone-CR7HLFDE.webp                          6.14 kB
+dist/assets/racetrack-BEfp0i51.webp                      6.45 kB
+dist/assets/inn-pEFHk1BY.webp                            6.51 kB
+dist/assets/fruit-C8P4nJfl.webp                          7.36 kB
+dist/assets/papyrus-sl-e5iDV.webp                        7.49 kB
+dist/assets/algae-Cf7k497T.webp                          7.53 kB
+dist/assets/swarm-C7Cw-oud.webp                          9.26 kB
+dist/assets/wordmark-letters-Cs-rHGsD.webp              14.87 kB
+dist/assets/studio-demo-ready-6TPlwnsP.png              15.58 kB
+dist/assets/studio-river-LCG01wyA.webp                  18.11 kB
+dist/assets/worker-east-Bqinqqlq.webp                   22.38 kB
+dist/assets/studio-islands-I4eUbnJe.webp                26.99 kB
+dist/assets/nunito-latin-wght-normal-BzFMHfZw.woff2     39.12 kB
+dist/assets/studio-demo-layout-DGT4ihyt.png             58.33 kB
+dist/assets/studio-demo-crop-CdI6sdAV.png               58.96 kB
+dist/assets/studio-hills-JCRT_X_C.webp                 116.12 kB
+dist/assets/colony-960-DI2K-hM_.webp                   159.77 kB
+dist/assets/colony-1600-yR11DKDO.webp                  385.40 kB
+dist/assets/colony-loop-DySpPHVm.mp4                 6,831.27 kB
+dist/assets/Account-BY2xzm8t.css                         1.05 kB │ gzip:   0.43 kB
+dist/assets/MapStudio-eGnNSmWg.css                      31.80 kB │ gzip:   6.80 kB
+dist/assets/index-DOD-SzUs.css                          69.37 kB │ gzip:  17.86 kB
+dist/assets/LineChart-DQWICHHe.js                        4.36 kB │ gzip:   1.91 kB │ map:    16.65 kB
+dist/assets/Player-DjeCKhkj.js                           8.89 kB │ gzip:   3.00 kB │ map:    26.65 kB
+dist/assets/Admin-vBQSWiqR.js                           10.85 kB │ gzip:   3.43 kB │ map:    31.69 kB
+dist/assets/Match-DmDHbfBQ.js                           15.99 kB │ gzip:   5.11 kB │ map:    46.49 kB
+dist/assets/Maps-iWv0oST-.js                            19.00 kB │ gzip:   5.79 kB │ map:    56.17 kB
+dist/assets/state-cW09G1UM.js                           22.36 kB │ gzip:  10.95 kB │ map:    65.25 kB
+dist/assets/Account-B-0y3LEf.js                         33.60 kB │ gzip:  10.18 kB │ map:   110.30 kB
+dist/assets/MapStudio-DE2Qhi4o.js                       41.58 kB │ gzip:  12.80 kB │ map:   129.21 kB
+dist/assets/index-12O0qQCT.js                          499.19 kB │ gzip: 153.28 kB │ map: 2,512.10 kB
+
+✓ built in 2.32s

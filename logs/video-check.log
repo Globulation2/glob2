@@ -1,0 +1,39 @@
+ffmpeg version 7.1 Copyright (c) 2000-2024 the FFmpeg developers
+  built with Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+  configuration: --prefix=/Volumes/tempdisk/sw --extra-cflags=-fno-stack-check --arch=arm64 --cc=/usr/bin/clang --enable-gpl --enable-libvmaf --enable-libopenjpeg --enable-libopus --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libvpx --enable-libwebp --enable-libass --enable-libfreetype --enable-fontconfig --enable-libtheora --enable-libvorbis --enable-libsnappy --enable-libaom --enable-libvidstab --enable-libzimg --enable-libsvtav1 --enable-libharfbuzz --enable-libkvazaar --pkg-config-flags=--static --enable-ffplay --enable-postproc --enable-neon --enable-runtime-cpudetect --disable-indev=qtkit --disable-indev=x11grab_xcb
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.100 / 61. 19.100
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'platform/apps/web/src/art/colony-loop.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf61.7.100
+  Duration: 00:00:59.96, start: 0.000000, bitrate: 911 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1600x900, 908 kb/s, 25.02 fps, 25 tbr, 1000k tbn (default)
+      Metadata:
+        handler_name    : VideoHandler
+        vendor_id       : [0][0][0][0]
+        encoder         : Lavc61.19.100 libx264
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> wrapped_avframe (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf61.7.100
+  Stream #0:0(und): Video: wrapped_avframe, yuv420p(progressive), 1600x900, q=2-31, 200 kb/s, 25 fps, 25 tbn (default)
+      Metadata:
+        handler_name    : VideoHandler
+        vendor_id       : [0][0][0][0]
+        encoder         : Lavc61.19.100 wrapped_avframe
+frame=  241 fps=0.0 q=-0.0 size=N/A time=00:00:09.64 bitrate=N/A speed=19.1x    frame=  375 fps=372 q=-0.0 size=N/A time=00:00:15.00 bitrate=N/A speed=14.9x    frame=  516 fps=341 q=-0.0 size=N/A time=00:00:20.64 bitrate=N/A speed=13.7x    frame=  748 fps=372 q=-0.0 size=N/A time=00:00:29.92 bitrate=N/A speed=14.9x    frame=  959 fps=381 q=-0.0 size=N/A time=00:00:38.36 bitrate=N/A speed=15.2x    frame= 1117 fps=370 q=-0.0 size=N/A time=00:00:44.68 bitrate=N/A speed=14.8x    frame= 1248 fps=354 q=-0.0 size=N/A time=00:00:49.92 bitrate=N/A speed=14.2x    frame= 1284 fps=319 q=-0.0 size=N/A time=00:00:51.36 bitrate=N/A speed=12.8x    frame= 1365 fps=301 q=-0.0 size=N/A time=00:00:54.60 bitrate=N/A speed=  12x    frame= 1489 fps=296 q=-0.0 size=N/A time=00:00:59.56 bitrate=N/A speed=11.8x    [out#0/null @ 0x133006c20] video:644KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame= 1499 fps=296 q=-0.0 Lsize=N/A time=00:00:59.96 bitrate=N/A speed=11.9x    

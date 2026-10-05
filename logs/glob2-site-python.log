@@ -1,0 +1,26 @@
+test_credentials_only_sent_to_explicit_tls_hosts (test_hosting.HostingSafetyTests.test_credentials_only_sent_to_explicit_tls_hosts) ... ok
+test_failed_upload_cannot_finalize_or_release (test_hosting.HostingSafetyTests.test_failed_upload_cannot_finalize_or_release) ... ok
+test_first_promotion_records_no_previous_version (test_hosting.HostingSafetyTests.test_first_promotion_records_no_previous_version) ... ok
+test_invalid_channel_rejected_before_any_cloud_action (test_hosting.HostingSafetyTests.test_invalid_channel_rejected_before_any_cloud_action) ... ok
+test_promotion_keeps_exact_tested_version_and_rollback_pointer (test_hosting.HostingSafetyTests.test_promotion_keeps_exact_tested_version_and_rollback_pointer) ... ok
+test_repeated_promotion_preserves_prior_release_for_rollback_without_post (test_hosting.HostingSafetyTests.test_repeated_promotion_preserves_prior_release_for_rollback_without_post) ... ok
+test_retry_first_active_release_has_no_rollback_pointer (test_hosting.HostingSafetyTests.test_retry_first_active_release_has_no_rollback_pointer) ... ok
+test_token_command_bounded (test_hosting.HostingSafetyTests.test_token_command_bounded) ... ok
+test_unfinalized_version_never_released (test_hosting.HostingSafetyTests.test_unfinalized_version_never_released) ... ok
+test_untrusted_version_never_calls_cloud (test_hosting.HostingSafetyTests.test_untrusted_version_never_calls_cloud) ... ok
+test_bootstrap_requires_generation_zero (test_publish_rankings.PublisherTest.test_bootstrap_requires_generation_zero) ... ok
+test_corrupt_old_snapshot_is_retained_for_operator_recovery (test_publish_rankings.PublisherTest.test_corrupt_old_snapshot_is_retained_for_operator_recovery) ... ok
+test_empty_ladder_is_valid_and_unknown_fields_rejected (test_publish_rankings.PublisherTest.test_empty_ladder_is_valid_and_unknown_fields_rejected) ... ok
+test_failures_do_not_delete_last_good_object (test_publish_rankings.PublisherTest.test_failures_do_not_delete_last_good_object) ... ok
+test_newer_snapshot_remains_and_writes_use_generation_precondition (test_publish_rankings.PublisherTest.test_newer_snapshot_remains_and_writes_use_generation_precondition) ... ok
+test_private_metadata_guests_ai_malformed_values_fail_closed (test_publish_rankings.PublisherTest.test_private_metadata_guests_ai_malformed_values_fail_closed) ... ok
+test_projection_exposes_only_allowed_fields_and_preserves_rank (test_publish_rankings.PublisherTest.test_projection_exposes_only_allowed_fields_and_preserves_rank) ... ok
+test_ties_keep_authoritative_order_and_truncation_is_explicit (test_publish_rankings.PublisherTest.test_ties_keep_authoritative_order_and_truncation_is_explicit) ... ok
+test_ci_workflows_cancel_superseded_runs (test_workflows.WorkflowConcurrencyTest.test_ci_workflows_cancel_superseded_runs) ... ok
+test_operations_are_classified (test_workflows.WorkflowConcurrencyTest.test_operations_are_classified) ... ok
+test_operations_never_cancel_in_progress (test_workflows.WorkflowConcurrencyTest.test_operations_never_cancel_in_progress) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.010s
+
+OK

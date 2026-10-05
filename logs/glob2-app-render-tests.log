@@ -1,0 +1,19 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep home shows|home: navigation
+
+[WebServer] (node:3654) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:3701) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (2.4s)
+  ✓  2 [desktop] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (376ms)
+(node:3714) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [phone] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (3.0s)
+  ✓  4 [phone] › e2e/smoke.spec.ts:131:1 › home: navigation and play controls remain reachable beside the colony (491ms)
+
+  4 passed (12.8s)

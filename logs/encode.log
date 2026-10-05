@@ -1,0 +1,104 @@
+ffmpeg version 7.1 Copyright (c) 2000-2024 the FFmpeg developers
+  built with Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+  configuration: --prefix=/Volumes/tempdisk/sw --extra-cflags=-fno-stack-check --arch=arm64 --cc=/usr/bin/clang --enable-gpl --enable-libvmaf --enable-libopenjpeg --enable-libopus --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libvpx --enable-libwebp --enable-libass --enable-libfreetype --enable-fontconfig --enable-libtheora --enable-libvorbis --enable-libsnappy --enable-libaom --enable-libvidstab --enable-libzimg --enable-libsvtav1 --enable-libharfbuzz --enable-libkvazaar --pkg-config-flags=--static --enable-ffplay --enable-postproc --enable-neon --enable-runtime-cpudetect --disable-indev=qtkit --disable-indev=x11grab_xcb
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.100 / 61. 19.100
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, image2, from '/Users/bradley/.codex/worktrees/1d3b/glob2/artifacts/menu-colony/frames/%04d.bmp':
+  Duration: 00:01:02.00, start: 0.000000, bitrate: N/A
+  Stream #0:0: Video: bmp, bgra, 1600x900, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 (bmp) -> split:default
+  format:default -> Stream #0:0 (libx264)
+Press [q] to stop, [?] for help
+[libx264 @ 0x15a206450] MB rate (5700000000) > level limit (16711680)
+[libx264 @ 0x15a206450] using cpu capabilities: ARMv8 NEON
+[libx264 @ 0x15a206450] profile High, level 6.2, 4:2:0, 8-bit
+[libx264 @ 0x15a206450] 264 - core 164 r3190 7ed753b - H.264/MPEG-4 AVC codec - Copyleft 2003-2024 - http://www.videolan.org/x264.html - options: cabac=1 ref=5 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=8 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=2 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=3 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=50 rc=crf mbtree=1 crf=27.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to '/Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web/src/art/colony-loop.mp4':
+  Metadata:
+    encoder         : Lavf61.7.100
+  Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, progressive), 1600x900, q=2-31, 1000k tbn
+      Metadata:
+        encoder         : Lavc61.19.100 libx264
+      Side data:
+        cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=   39 fps= 19 q=32.0 size=     256KiB time=00:00:01.44 bitrate=1456.6kbits/s speed=0.712x    frame=   69 fps= 27 q=32.0 size=     512KiB time=00:00:02.64 bitrate=1588.9kbits/s speed=1.05x    frame=  104 fps= 34 q=32.0 size=     512KiB time=00:00:04.04 bitrate=1038.3kbits/s speed=1.33x    frame=  135 fps= 38 q=32.0 size=     512KiB time=00:00:05.28 bitrate= 794.4kbits/s speed= 1.5x    frame=  171 fps= 42 q=32.0 size=     768KiB time=00:00:06.72 bitrate= 936.3kbits/s speed=1.67x    frame=  202 fps= 44 q=32.0 size=     768KiB time=00:00:07.96 bitrate= 790.4kbits/s speed=1.75x    frame=  206 fps= 41 q=32.0 size=     768KiB time=00:00:08.12 bitrate= 774.9kbits/s speed=1.61x    frame=  234 fps= 42 q=32.0 size=     768KiB time=00:00:09.24 bitrate= 680.9kbits/s speed=1.66x    frame=  250 fps= 41 q=32.0 size=     768KiB time=00:00:09.88 bitrate= 636.8kbits/s speed=1.63x    frame=  250 fps= 38 q=32.0 size=     768KiB time=00:00:09.88 bitrate= 636.8kbits/s speed= 1.5x    frame=  279 fps= 39 q=32.0 size=    1280KiB time=00:00:11.04 bitrate= 949.8kbits/s speed=1.56x    frame=  310 fps= 41 q=32.0 size=    1536KiB time=00:00:12.28 bitrate=1024.7kbits/s speed=1.62x    frame=  340 fps= 42 q=32.0 size=    1536KiB time=00:00:13.48 bitrate= 933.5kbits/s speed=1.67x    frame=  370 fps= 43 q=32.0 size=    1536KiB time=00:00:14.68 bitrate= 857.2kbits/s speed=1.71x    frame=  401 fps= 44 q=32.0 size=    1792KiB time=00:00:15.92 bitrate= 922.1kbits/s speed=1.75x    frame=  433 fps= 45 q=32.0 size=    1792KiB time=00:00:17.20 bitrate= 853.5kbits/s speed=1.79x    frame=  465 fps= 46 q=32.0 size=    1792KiB time=00:00:18.48 bitrate= 794.4kbits/s speed=1.83x    frame=  494 fps= 47 q=32.0 size=    2048KiB time=00:00:19.64 bitrate= 854.3kbits/s speed=1.85x    frame=  500 fps= 45 q=32.0 size=    2048KiB time=00:00:19.88 bitrate= 843.9kbits/s speed=1.79x    frame=  510 fps= 44 q=32.0 size=    2304KiB time=00:00:20.28 bitrate= 930.7kbits/s speed=1.75x    frame=  542 fps= 45 q=32.0 size=    2560KiB time=00:00:21.56 bitrate= 972.7kbits/s speed=1.78x    frame=  577 fps= 46 q=32.0 size=    2560KiB time=00:00:22.96 bitrate= 913.4kbits/s speed=1.82x    frame=  604 fps= 46 q=32.0 size=    2560KiB time=00:00:24.04 bitrate= 872.4kbits/s speed=1.83x    frame=  636 fps= 47 q=32.0 size=    2816KiB time=00:00:25.32 bitrate= 911.1kbits/s speed=1.86x    frame=  671 fps= 48 q=32.0 size=    2816KiB time=00:00:26.72 bitrate= 863.4kbits/s speed=1.89x    frame=  699 fps= 48 q=32.0 size=    2816KiB time=00:00:27.84 bitrate= 828.6kbits/s speed= 1.9x    frame=  731 fps= 48 q=32.0 size=    3072KiB time=00:00:29.12 bitrate= 864.2kbits/s speed=1.92x    frame=  750 fps= 48 q=32.0 size=    3072KiB time=00:00:29.88 bitrate= 842.2kbits/s speed=1.91x    frame=  750 fps= 46 q=32.0 size=    3072KiB time=00:00:29.88 bitrate= 842.2kbits/s speed=1.85x    frame=  787 fps= 47 q=32.0 size=    3584KiB time=00:00:31.36 bitrate= 936.2kbits/s speed=1.88x    frame=  813 fps= 47 q=32.0 size=    3584KiB time=00:00:32.40 bitrate= 906.2kbits/s speed=1.89x    frame=  848 fps= 48 q=32.0 size=    3840KiB time=00:00:33.80 bitrate= 930.7kbits/s speed=1.92x    frame=  877 fps= 48 q=32.0 size=    3840KiB time=00:00:34.96 bitrate= 899.8kbits/s speed=1.93x    frame=  908 fps= 49 q=32.0 size=    3840KiB time=00:00:36.20 bitrate= 869.0kbits/s speed=1.94x    frame=  932 fps= 49 q=32.0 size=    3840KiB time=00:00:37.16 bitrate= 846.5kbits/s speed=1.94x    frame=  958 fps= 49 q=32.0 size=    4096KiB time=00:00:38.20 bitrate= 878.4kbits/s speed=1.94x    frame=  977 fps= 48 q=32.0 size=    4096KiB time=00:00:38.96 bitrate= 861.3kbits/s speed=1.93x    frame= 1000 fps= 48 q=32.0 size=    4096KiB time=00:00:39.88 bitrate= 841.4kbits/s speed=1.93x    frame= 1000 fps= 47 q=32.0 size=    4096KiB time=00:00:39.88 bitrate= 841.4kbits/s speed=1.88x    frame= 1025 fps= 47 q=32.0 size=    4608KiB time=00:00:40.88 bitrate= 923.4kbits/s speed=1.89x    frame= 1051 fps= 47 q=32.0 size=    4608KiB time=00:00:41.92 bitrate= 900.5kbits/s speed=1.89x    frame= 1077 fps= 47 q=32.0 size=    4864KiB time=00:00:42.96 bitrate= 927.5kbits/s speed=1.89x    frame= 1101 fps= 47 q=32.0 size=    4864KiB time=00:00:43.96 bitrate= 906.4kbits/s speed= 1.9x    frame= 1125 fps= 47 q=32.0 size=    4864KiB time=00:00:44.88 bitrate= 887.8kbits/s speed=1.89x    frame= 1149 fps= 47 q=32.0 size=    4864KiB time=00:00:45.84 bitrate= 869.2kbits/s speed=1.89x    frame= 1170 fps= 47 q=32.0 size=    5120KiB time=00:00:46.68 bitrate= 898.5kbits/s speed=1.89x    frame= 1190 fps= 47 q=32.0 size=    5120KiB time=00:00:47.48 bitrate= 883.4kbits/s speed=1.88x    frame= 1199 fps= 47 q=32.0 size=    5120KiB time=00:00:47.84 bitrate= 876.7kbits/s speed=1.86x    frame= 1222 fps= 47 q=32.0 size=    5120KiB time=00:00:48.76 bitrate= 860.2kbits/s speed=1.86x    frame= 1250 fps= 47 q=32.0 size=    5120KiB time=00:00:49.88 bitrate= 840.9kbits/s speed=1.87x    frame= 1250 fps= 46 q=32.0 size=    5120KiB time=00:00:49.88 bitrate= 840.9kbits/s speed=1.83x    frame= 1267 fps= 46 q=32.0 size=    5632KiB time=00:00:50.56 bitrate= 912.5kbits/s speed=1.82x    frame= 1293 fps= 46 q=32.0 size=    5888KiB time=00:00:51.60 bitrate= 934.8kbits/s speed=1.83x    frame= 1326 fps= 46 q=32.0 size=    5888KiB time=00:00:52.92 bitrate= 911.5kbits/s speed=1.84x    frame= 1357 fps= 46 q=32.0 size=    5888KiB time=00:00:54.16 bitrate= 890.6kbits/s speed=1.85x    frame= 1378 fps= 46 q=32.0 size=    6144KiB time=00:00:55.00 bitrate= 915.1kbits/s speed=1.85x    frame= 1386 fps= 46 q=32.0 size=    6144KiB time=00:00:55.32 bitrate= 909.8kbits/s speed=1.83x    frame= 1389 fps= 45 q=32.0 size=    6144KiB time=00:00:55.44 bitrate= 907.9kbits/s speed= 1.8x    frame= 1392 fps= 45 q=32.0 size=    6144KiB time=00:00:55.56 bitrate= 905.9kbits/s speed=1.78x    frame= 1395 fps= 44 q=32.0 size=    6144KiB time=00:00:55.68 bitrate= 904.0kbits/s speed=1.75x    frame= 1398 fps= 43 q=32.0 size=    6144KiB time=00:00:55.80 bitrate= 902.0kbits/s speed=1.73x    frame= 1401 fps= 43 q=32.0 size=    6144KiB time=00:00:55.92 bitrate= 900.1kbits/s speed=1.71x    frame= 1404 fps= 42 q=32.0 size=    6144KiB time=00:00:56.04 bitrate= 898.1kbits/s speed=1.68x    frame= 1407 fps= 42 q=32.0 size=    6144KiB time=00:00:56.16 bitrate= 896.2kbits/s speed=1.66x    frame= 1410 fps= 41 q=32.0 size=    6144KiB time=00:00:56.28 bitrate= 894.3kbits/s speed=1.64x    frame= 1413 fps= 41 q=32.0 size=    6144KiB time=00:00:56.40 bitrate= 892.4kbits/s speed=1.62x    frame= 1416 fps= 40 q=32.0 size=    6144KiB time=00:00:56.52 bitrate= 890.5kbits/s speed= 1.6x    frame= 1419 fps= 40 q=32.0 size=    6144KiB time=00:00:56.64 bitrate= 888.6kbits/s speed=1.58x    frame= 1422 fps= 39 q=32.0 size=    6144KiB time=00:00:56.76 bitrate= 886.8kbits/s speed=1.56x    frame= 1425 fps= 39 q=32.0 size=    6144KiB time=00:00:56.88 bitrate= 884.9kbits/s speed=1.55x    frame= 1428 fps= 38 q=32.0 size=    6144KiB time=00:00:57.00 bitrate= 883.0kbits/s speed=1.53x    frame= 1431 fps= 38 q=32.0 size=    6144KiB time=00:00:57.12 bitrate= 881.2kbits/s speed=1.51x    frame= 1454 fps= 38 q=32.0 size=    6144KiB time=00:00:58.04 bitrate= 867.2kbits/s speed=1.51x    frame= 1482 fps= 38 q=32.0 size=    6400KiB time=00:00:59.16 bitrate= 886.2kbits/s speed=1.52x    [mp4 @ 0x15a204e90] Starting second pass: moving the moov atom to the beginning of the file
+[out#0/mp4 @ 0x15a204dd0] video:6653KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.276479%
+frame= 1500 fps= 38 q=-1.0 Lsize=    6671KiB time=00:00:59.88 bitrate= 912.7kbits/s speed=1.54x    
+[libx264 @ 0x15a206450] frame I:6     Avg QP:20.85  size:436137
+[libx264 @ 0x15a206450] frame P:410   Avg QP:23.69  size:  5883
+[libx264 @ 0x15a206450] frame B:1084  Avg QP:34.50  size:  1645
+[libx264 @ 0x15a206450] consecutive B-frames:  3.5%  0.4%  0.4% 95.7%
+[libx264 @ 0x15a206450] mb I  I16..4: 12.8% 40.7% 46.6%
+[libx264 @ 0x15a206450] mb P  I16..4:  0.1%  0.2%  0.1%  P16..4:  8.5%  1.5%  1.7%  0.0%  0.0%    skip:87.9%
+[libx264 @ 0x15a206450] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  6.0%  1.0%  0.4%  direct: 0.3%  skip:92.4%  L0:38.7% L1:55.9% BI: 5.4%
+[libx264 @ 0x15a206450] 8x8 transform intra:41.6% inter:32.1%
+[libx264 @ 0x15a206450] direct mvs  spatial:99.4% temporal:0.6%
+[libx264 @ 0x15a206450] coded y,uvDC,uvAC intra: 73.9% 85.9% 74.8% inter: 1.1% 1.7% 0.7%
+[libx264 @ 0x15a206450] i16 v,h,dc,p: 48% 20% 15% 17%
+[libx264 @ 0x15a206450] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu:  9%  6% 15% 12% 13% 10% 10% 13% 12%
+[libx264 @ 0x15a206450] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 12%  5%  8% 11% 12% 11% 11% 14% 16%
+[libx264 @ 0x15a206450] i8c dc,h,v,p: 55% 15% 14% 15%
+[libx264 @ 0x15a206450] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x15a206450] ref P L0: 62.2%  6.2% 13.5% 10.1%  7.4%  0.6%
+[libx264 @ 0x15a206450] ref B L0: 85.2%  8.5%  5.0%  1.2%
+[libx264 @ 0x15a206450] ref B L1: 94.9%  5.1%
+[libx264 @ 0x15a206450] kb/s:908.23
+ffmpeg version 7.1 Copyright (c) 2000-2024 the FFmpeg developers
+  built with Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+  configuration: --prefix=/Volumes/tempdisk/sw --extra-cflags=-fno-stack-check --arch=arm64 --cc=/usr/bin/clang --enable-gpl --enable-libvmaf --enable-libopenjpeg --enable-libopus --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libvpx --enable-libwebp --enable-libass --enable-libfreetype --enable-fontconfig --enable-libtheora --enable-libvorbis --enable-libsnappy --enable-libaom --enable-libvidstab --enable-libzimg --enable-libsvtav1 --enable-libharfbuzz --enable-libkvazaar --pkg-config-flags=--static --enable-ffplay --enable-postproc --enable-neon --enable-runtime-cpudetect --disable-indev=qtkit --disable-indev=x11grab_xcb
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.100 / 61. 19.100
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, bmp_pipe, from '/Users/bradley/.codex/worktrees/1d3b/glob2/artifacts/menu-colony/frames/0050.bmp':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: bmp, bgra, 1600x900, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (bmp (native) -> webp (libwebp_anim))
+Press [q] to stop, [?] for help
+Output #0, webp, to '/Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web/src/art/colony-960.webp':
+  Metadata:
+    encoder         : Lavf61.7.100
+  Stream #0:0: Video: webp, bgra(pc, gbr/unknown/unknown, progressive), 960x540, q=2-31, 200 kb/s, 25 fps, 1k tbn
+      Metadata:
+        encoder         : Lavc61.19.100 libwebp_anim
+[libwebp_anim @ 0x155b05a20] Using libwebp for RGB-to-YUV conversion. You may want to consider passing in YUV instead for lossy encoding.
+[out#0/webp @ 0x155b048c0] video:156KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.000000%
+frame=    1 fps=0.0 q=-0.0 Lsize=     156KiB time=00:00:00.04 bitrate=31955.2kbits/s speed=0.367x    
+ffmpeg version 7.1 Copyright (c) 2000-2024 the FFmpeg developers
+  built with Apple clang version 13.1.6 (clang-1316.0.21.2.5)
+  configuration: --prefix=/Volumes/tempdisk/sw --extra-cflags=-fno-stack-check --arch=arm64 --cc=/usr/bin/clang --enable-gpl --enable-libvmaf --enable-libopenjpeg --enable-libopus --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libvpx --enable-libwebp --enable-libass --enable-libfreetype --enable-fontconfig --enable-libtheora --enable-libvorbis --enable-libsnappy --enable-libaom --enable-libvidstab --enable-libzimg --enable-libsvtav1 --enable-libharfbuzz --enable-libkvazaar --pkg-config-flags=--static --enable-ffplay --enable-postproc --enable-neon --enable-runtime-cpudetect --disable-indev=qtkit --disable-indev=x11grab_xcb
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.100 / 61. 19.100
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, bmp_pipe, from '/Users/bradley/.codex/worktrees/1d3b/glob2/artifacts/menu-colony/frames/0050.bmp':
+  Duration: N/A, bitrate: N/A
+  Stream #0:0: Video: bmp, bgra, 1600x900, 25 fps, 25 tbr, 25 tbn
+Stream mapping:
+  Stream #0:0 -> #0:0 (bmp (native) -> webp (libwebp_anim))
+Press [q] to stop, [?] for help
+Output #0, webp, to '/Users/bradley/.codex/worktrees/1d3b/glob2/platform/apps/web/src/art/colony-1600.webp':
+  Metadata:
+    encoder         : Lavf61.7.100
+  Stream #0:0: Video: webp, bgra(pc, gbr/unknown/unknown, progressive), 1600x900, q=2-31, 200 kb/s, 25 fps, 1k tbn
+      Metadata:
+        encoder         : Lavc61.19.100 libwebp_anim
+[libwebp_anim @ 0x142e14110] Using libwebp for RGB-to-YUV conversion. You may want to consider passing in YUV instead for lossy encoding.
+[out#0/webp @ 0x142e048d0] video:376KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.000000%
+frame=    1 fps=0.0 q=-0.0 Lsize=     376KiB time=00:00:00.04 bitrate=77081.6kbits/s speed=0.173x    

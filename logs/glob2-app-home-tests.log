@@ -1,0 +1,20 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep ^home|phones:|the colony moves
+
+[WebServer] (node:3160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:3190) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (1.8s)
+  -  2 [desktop] › e2e/smoke.spec.ts:414:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets
+(node:3211) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [phone] › e2e/smoke.spec.ts:387:1 › the colony moves, can be paused, and keeps still for reduced motion (2.1s)
+  ✓  4 [phone] › e2e/smoke.spec.ts:414:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets (33.1s)
+
+  1 skipped
+  3 passed (1.2m)
