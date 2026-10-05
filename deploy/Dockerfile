@@ -75,10 +75,7 @@ RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,
     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 && \
     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ && \
     cp -a build/sdl3/prefix/share/licenses /output/licenses && \
-    if [ -d build/linux/client/release/runtime-assets/data ]; then \
-      cp -r build/linux/client/release/runtime-assets/data build/linux/client/release/runtime-assets/maps \
-        build/linux/client/release/runtime-assets/campaigns build/linux/client/release/runtime-assets/scripts /output/share/; \
-    else cp -r data maps campaigns scripts /output/share/; fi && \
+    cp -a build/linux/client/release/runtime-assets/. /output/share/ && \
     find /output/share -name SConscript -delete && \
     python3 /usr/local/bin/glob2-sim-version /source --expect "${GLOB2_SIM_VERSION}" > /output/sim-version && \
     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash && \

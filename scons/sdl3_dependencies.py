@@ -13,7 +13,7 @@ import urllib.request
 
 LOCK = Path(__file__).with_name('sdl3-versions.json')
 SDL_PATCHES = tuple(LOCK.parent / 'vcpkg-ports' / 'sdl3' / name for name in
-                    ('x11-reparent-race.patch', 'x11-map-notify.patch'))
+                    ('x11-reparent-race.patch', 'x11-map-notify.patch', 'png16-preserve-channels.patch'))
 TTF_PATCHES = (LOCK.parent / 'vcpkg-ports' / 'sdl3-ttf' / 'kerning-moves-pen.patch',)
 
 

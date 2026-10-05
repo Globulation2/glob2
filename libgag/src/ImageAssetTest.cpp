@@ -39,7 +39,13 @@ TEST_CASE("Q90 lossy WebP preserves dimensions and exact alpha") {
     SDL_DestroySurface(surface);
 }
 TEST_CASE("16-bit RGBA rounds normalized channels to the exporter reference") {
-    auto surface = IMG_Load_IO(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+    SDL_Surface *surface = nullptr;
+    SUBCASE("SDL_image decoder") {
+        surface = IMG_Load_IO(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+    }
+    SUBCASE("SDL PNG fallback decoder") {
+        surface = SDL_LoadPNG_IO(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+    }
     REQUIRE(surface != nullptr);
     auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
     REQUIRE(rgba != nullptr);

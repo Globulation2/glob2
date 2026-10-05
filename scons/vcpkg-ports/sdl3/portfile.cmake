@@ -8,6 +8,7 @@ vcpkg_from_github(
         fix-freebsd.patch
         x11-reparent-race.patch
         x11-map-notify.patch
+        png16-preserve-channels.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" SDL_STATIC)
