@@ -7,6 +7,8 @@ export type Projection = {
   visible: Uint8Array;
   used: Uint8Array;
   depth: Float32Array;
+  // Every projected surface contributor, including hidden and shared UVs.
+  samples: Float32Array;
 };
 function triangle(
   a: number[],
@@ -83,12 +85,14 @@ export function buildProjection(
     }
     return false;
   }
+  const samples: number[] = [];
   const result: Projection = {
     x: new Float32Array(65536),
     y: new Float32Array(65536),
     depth: new Float32Array(65536).fill(Infinity),
     visible: new Uint8Array(65536),
     used: new Uint8Array(65536),
+    samples: new Float32Array(),
   };
   for (let i = 0; i < mesh.indices.length; i += 3) {
     const ids = [mesh.indices[i]!, mesh.indices[i + 1]!, mesh.indices[i + 2]!];
@@ -102,20 +106,21 @@ export function buildProjection(
     triangle(ua, ub, uc, 256, 256, (x, y, u, v, t) => {
       const index = y * 256 + x;
       result.used[index] = 1;
-      if (Math.abs(area) < 1e-8) return;
       const sx = u * a[0]! + v * b[0]! + t * c[0]!,
         sy = u * a[1]! + v * b[1]! + t * c[1]!,
         z = u * a[2]! + v * b[2]! + t * c[2]!;
       const px = Math.floor(sx),
         py = Math.floor(sy);
-      if (px < 0 || py < 0 || px >= w || py >= h || z >= result.depth[index]! || hidden(sx, sy, z))
-        return;
+      if (px < 0 || py < 0 || px >= w || py >= h) return;
+      samples.push(index, (sx / w) * width, (sy / h) * height);
+      if (Math.abs(area) < 1e-8 || z >= result.depth[index]! || hidden(sx, sy, z)) return;
       result.visible[index] = 1;
       result.depth[index] = z;
       result.x[index] = (sx / w) * width;
       result.y[index] = (sy / h) * height;
     });
   }
+  result.samples = new Float32Array(samples);
   return result;
 }
 /** Rest-space charts keep curated fills independent of inspection camera and pose.
@@ -164,21 +169,21 @@ export function strokeCoverage(
     dx = to[0] - from[0],
     dy = to[1] - from[1],
     length = dx * dx + dy * dy;
-  for (let i = 0; i < coverage.length; i++) {
-    if (!projection.visible[i]) continue;
+  for (let at = 0; at < projection.samples.length; at += 3) {
+    const i = projection.samples[at]!,
+      x = projection.samples[at + 1]!,
+      y = projection.samples[at + 2]!;
     const t = length
-      ? Math.max(
-          0,
-          Math.min(
-            1,
-            ((projection.x[i]! - from[0]) * dx + (projection.y[i]! - from[1]) * dy) / length,
-          ),
-        )
+      ? Math.max(0, Math.min(1, ((x - from[0]) * dx + (y - from[1]) * dy) / length))
       : 0;
-    const distance =
-      Math.hypot(projection.x[i]! - from[0] - t * dx, projection.y[i]! - from[1] - t * dy) / radius;
+    const distance = Math.hypot(x - from[0] - t * dx, y - from[1] - t * dy) / radius;
+    // A shared texel may sit under the brush at several depths/positions. Take
+    // the strongest contribution once, so opacity does not depend on overlap.
     if (distance <= 1)
-      coverage[i] = distance <= hardness ? 1 : (1 - distance) / Math.max(0.001, 1 - hardness);
+      coverage[i] = Math.max(
+        coverage[i]!,
+        distance <= hardness ? 1 : (1 - distance) / Math.max(0.001, 1 - hardness),
+      );
   }
   return coverage;
 }

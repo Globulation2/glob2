@@ -168,7 +168,50 @@ test.describe('paint-to-publish demonstration', () => {
   });
 });
 
-test('direct strokes, orbit, animation, pattern cancel and undo preserve transactions', async ({
+test('inspection rotation keeps the camera fixed and turns every model horizontally', async ({
+  page,
+}) => {
+  await page.goto('/skins');
+  await page.getByRole('button', { name: 'Rotate', exact: true }).click();
+  await expect(
+    page.getByLabel('Camera view').getByRole('option', { name: 'Top', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByLabel('Camera view').getByRole('option', { name: 'Bottom', exact: true }),
+  ).toHaveCount(0);
+  for (const model of ['Worker', 'Warrior', 'Explorer', 'Swarm']) {
+    await page.getByRole('button', { name: model, exact: true }).click();
+    const preview = page.getByLabel(`Paint directly on the 3D ${model.toLowerCase()} model`);
+    const asset =
+      model === 'Explorer'
+        ? 'explorer-fly'
+        : model === 'Swarm'
+          ? 'swarm'
+          : `${model.toLowerCase()}-walk`;
+    await expect(preview).toHaveAttribute('data-model', asset);
+    await expect(preview).toHaveAttribute('data-frame', '0');
+    const box = await preview.boundingBox();
+    if (!box) throw new Error('No model viewport');
+    const x = box.x + box.width * 0.6,
+      y = box.y + box.height * 0.55;
+    await page.mouse.move(0, 0);
+    const before = await preview.screenshot();
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x, y + 60, { steps: 5 });
+    await page.mouse.up();
+    await page.mouse.move(0, 0);
+    expect(Buffer.compare(await preview.screenshot(), before), `${model}: vertical drag`).toBe(0);
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + 110, y, { steps: 5 });
+    await page.mouse.up();
+    await page.mouse.move(0, 0);
+    await expect.poll(async () => Buffer.compare(await preview.screenshot(), before)).not.toBe(0);
+  }
+});
+
+test('direct strokes, rotation, animation, pattern cancel and undo preserve transactions', async ({
   page,
 }) => {
   await page.goto('/skins');
@@ -199,7 +242,7 @@ test('direct strokes, orbit, animation, pattern cancel and undo preserve transac
   expect(pattern?.image).not.toBe(painted?.image);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   expect((await saved(page))?.image).toBe(painted?.image);
-  await page.getByRole('button', { name: 'Orbit', exact: true }).click();
+  await page.getByRole('button', { name: 'Rotate', exact: true }).click();
   await page.mouse.move(x, y);
   await page.mouse.down();
   await page.mouse.move(x + 60, y + 40);
@@ -383,7 +426,7 @@ test('idle viewport stops drawing and records stroke feedback latency', async ({
     samples,
   };
   const orbit = async () => {
-    await page.getByRole('button', { name: 'Orbit', exact: true }).click();
+    await page.getByRole('button', { name: 'Rotate', exact: true }).click();
     const bounds = await preview.boundingBox();
     if (!bounds) throw new Error('Missing orbit viewport');
     await page.mouse.move(bounds.x + bounds.width / 2 - 40, bounds.y + bounds.height / 2);

@@ -28,7 +28,7 @@ function asset(name: string) {
   };
 }
 describe('skin projection', () => {
-  it('excludes hidden geometry and paints a continuous screen-space stroke', () => {
+  it('paints a continuous stroke through separate front and hidden UVs', () => {
     const mesh: Mesh = {
       count: 6,
       frames: 1,
@@ -51,10 +51,19 @@ describe('skin projection', () => {
     expect(hidden).toBe(0);
     const coverage = strokeCoverage(p, [45, 300], [280, 300], 10, 1);
     expect(coverage.some((v) => v > 0)).toBe(true);
-    for (let i = 0; i < 65536; i++)
-      if (coverage[i]) expect(Math.abs((p.y[i] ?? 0) - 300)).toBeLessThanOrEqual(10.01);
+    let frontPaint = 0,
+      rearPaint = 0;
+    for (let i = 0; i < 65536; i++) {
+      if (i % 256 < 128) frontPaint += coverage[i] ?? 0;
+      else rearPaint += coverage[i] ?? 0;
+    }
+    expect(frontPaint).toBeGreaterThan(0);
+    expect(rearPaint).toBe(frontPaint);
+    for (let at = 0; at < p.samples.length; at += 3)
+      if (coverage[p.samples[at] ?? 0])
+        expect(Math.abs((p.samples[at + 2] ?? 0) - 300)).toBeLessThanOrEqual(10.01);
   });
-  it('does not paint through a nearby sloping occluder', () => {
+  it('keeps visible picking depth-tested but brushes through a nearby sloping occluder', () => {
     const pose = new Float32Array([
       -0.8, -0.8, -0.4, 0, 0, 1, 0.8, -0.8, 0.4, 0, 0, 1, -0.8, 0.8, -0.4, 0, 0, 1, -0.8, -0.8,
       -0.395, 0, 0, 1, 0.8, -0.8, 0.405, 0, 0, 1, -0.8, 0.8, -0.395, 0, 0, 1,
@@ -81,9 +90,17 @@ describe('skin projection', () => {
       }
       expect(front).toBe(16384);
       expect(rear).toBe(0);
+      const coverage = strokeCoverage(
+        projection,
+        [width! / 2, height! / 2],
+        [width! / 2, height! / 2],
+        30,
+        1,
+      );
+      expect(coverage.some((value, i) => i % 256 >= 128 && value > 0)).toBe(true);
     }
   });
-  it('does not paint edge-on geometry absent from the rendered surface', () => {
+  it('brushes edge-on texels even when the surface is invisible', () => {
     const pose = new Float32Array([-0.8, 0, 0, 0, 0, 1, 0.8, 0, 0, 0, 0, 1, 0, 0, 0.5, 0, 0, 1]);
     const mesh: Mesh = {
       count: 3,
@@ -95,6 +112,46 @@ describe('skin projection', () => {
     const projection = buildProjection(mesh, pose, 400, 400);
     expect(projection.used.some(Boolean)).toBe(true);
     expect(projection.visible.some(Boolean)).toBe(false);
+    expect(strokeCoverage(projection, [200, 200], [200, 200], 20, 1).some(Boolean)).toBe(true);
+  });
+  it('paints shared UVs at every projected position without accumulating opacity', () => {
+    const mesh: Mesh = {
+      count: 6,
+      frames: 1,
+      uv: new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]),
+      indices: new Uint32Array([0, 1, 2, 3, 4, 5]),
+      poses: new Float32Array(36),
+    };
+    const pose = new Float32Array([
+      -0.9, -0.5, 0, 0, 0, 1, -0.1, -0.5, 0, 0, 0, 1, -0.9, 0.5, 0, 0, 0, 1, 0.1, -0.5, 0.5, 0, 0,
+      1, 0.9, -0.5, 0.5, 0, 0, 1, 0.1, 0.5, 0.5, 0, 0, 1,
+    ]);
+    const projection = buildProjection(mesh, pose, 400, 400);
+    const left = strokeCoverage(projection, [60, 240], [60, 240], 30, 0);
+    const right = strokeCoverage(projection, [260, 240], [260, 240], 30, 0);
+    expect(left.some(Boolean)).toBe(true);
+    expect(Math.max(...right.map((value, i) => Math.abs(value - left[i]!)))).toBeLessThan(1e-6);
+    pose.set(pose.subarray(0, 18), 18);
+    expect(
+      strokeCoverage(buildProjection(mesh, pose, 400, 400), [60, 240], [60, 240], 30, 0),
+    ).toEqual(left);
+  });
+  it('rotates upright around model Z through a fixed camera basis', () => {
+    const { mesh, view } = asset('worker-walk');
+    const front = projectPose(mesh, view, 0, DEFAULT_CAMERA, 1);
+    const fullTurn = projectPose(mesh, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI * 2 }, 1);
+    for (let i = 0; i < front.length; i++) expect(fullTurn[i]).toBeCloseTo(front[i]!, 5);
+    // A vertical normal must not tilt when the model turns, even with an elevated camera.
+    const upright = { ...mesh, poses: mesh.poses.slice() };
+    for (let i = 0; i < mesh.count; i++)
+      upright.poses.set(
+        [view.normalToModel[6]!, view.normalToModel[7]!, view.normalToModel[8]!],
+        i * 6 + 3,
+      );
+    const before = projectPose(upright, view, 0, DEFAULT_CAMERA, 1);
+    const after = projectPose(upright, view, 0, { ...DEFAULT_CAMERA, yaw: Math.PI / 2 }, 1);
+    for (let i = 0; i < mesh.count; i++)
+      for (let k = 3; k < 6; k++) expect(after[i * 6 + k]).toBeCloseTo(before[i * 6 + k]!, 5);
   });
   it('pads only unused texels and never wraps a model edge', () => {
     const mask = new Float32Array(65536),

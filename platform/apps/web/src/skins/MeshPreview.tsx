@@ -401,17 +401,11 @@ export function MeshPreview(props: ViewportProps) {
               props.onCamera?.({
                 ...props.camera,
                 zoom: Math.max(0.45, Math.min(4, (props.camera.zoom * after) / before)),
-                yaw: props.camera.yaw - (pos[0] - old[0]) * 0.006,
-                pitch: Math.max(
-                  -Math.PI / 2,
-                  Math.min(Math.PI / 2, props.camera.pitch + (pos[1] - old[1]) * 0.006),
-                ),
               });
           } else if (gesture.current) {
             const previous = gesture.current.last;
             if (gesture.current.kind === 'orbit') {
-              const dx = pos[0] - previous[0],
-                dy = pos[1] - previous[1];
+              const dx = pos[0] - previous[0];
               props.onCamera?.(
                 props.camera.game
                   ? {
@@ -421,10 +415,6 @@ export function MeshPreview(props: ViewportProps) {
                   : {
                       ...props.camera,
                       yaw: props.camera.yaw - dx * 0.008,
-                      pitch: Math.max(
-                        -Math.PI / 2,
-                        Math.min(Math.PI / 2, props.camera.pitch + dy * 0.008),
-                      ),
                     },
               );
             } else dab(previous, pos, e.pointerType === 'pen' ? e.pressure : 1);
