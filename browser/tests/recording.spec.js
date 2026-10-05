@@ -22,6 +22,22 @@ for (const variant of ['serial','threaded']) {
  test(`${variant} recording segments full framebuffer and exports OPFS files`,async({page},info)=>{
   const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
   await page.goto(url.pathname+url.search); await screen(page,'MainMenuScreen');
+  // Exercise live post-gain worker capture, not only the recorder's silence fill.
+  await clickMainMenu(page,'settings');await clickPublishedControl(page,'nav.1');
+  await clickPublishedControl(page,'audio.mute');
+  await expect.poll(()=>page.evaluate(()=>Module.glob2Music.status.consumedFrames||0)).toBeGreaterThan(48000);
+  await page.evaluate(()=>{
+   const capture=Module._glob2_audio_capture;
+   window.recordedMusic=false;window.musicCaptureCalls=0;window.recordingChecks=0;
+   const active=Module._glob2_audio_recording_active;
+   Module._glob2_audio_recording_active=()=>{const result=active();if(result)window.recordingChecks++;return result;};
+   Module._glob2_audio_capture=(pointer,count,time)=>{
+    window.musicCaptureCalls++;
+    for(let i=pointer;i<pointer+count*2;i++) if(HEAPU8[i]) {window.recordedMusic=true;break;}
+    capture(pointer,count,time);
+   };
+  });
+  await clickPublishedControl(page,'nav.8');
   const completed=()=>page.evaluate(async()=>{
    const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});
    const values=[];for await(const [name,handle] of root.entries()) if(name.endsWith('.complete')) {try {if((await handle.getFile()).size) values.push(decodeURIComponent(name).slice(0,-9));}catch(_){}};return values.sort();
@@ -34,6 +50,9 @@ for (const variant of ['serial','threaded']) {
   await page.setViewportSize({width:1001,height:701});await page.waitForTimeout(1500);
   await clickControl(page,'recording/toggle');
   await expect.poll(async()=>(await sessionOutputs()).length,{timeout:30000}).toBe(2);
+  const audioEvidence=await page.evaluate(()=>({nonzero:window.recordedMusic,captures:window.musicCaptureCalls,activeChecks:window.recordingChecks,gain:Module.glob2Music.gain,status:Module.glob2Music.status}));
+  await info.attach('recorded-music',{body:JSON.stringify(audioEvidence),contentType:'application/json'});
+  expect(audioEvidence.nonzero,JSON.stringify(audioEvidence)).toBe(true);
   const paths=await sessionOutputs();
   const metadata=await page.evaluate(async paths=>{
    const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');

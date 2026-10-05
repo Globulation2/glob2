@@ -23,6 +23,7 @@
     "WinProbability/*",
     "AIRules/*",
     "MusicSet/*",
+    "SoundMixerTrackSelection/*",
     "CommunityMusic/*",
     "ColonySkinPreview/*",
     "HighResolutionIntegration/*",

@@ -473,6 +473,7 @@ CLIENT_SOURCES = (
     'audio/PlayerVoice.cpp',
     'audio/SoundMixer.cpp',
     'audio/MusicStream.cpp',
+    'audio/MusicProducer.cpp',
     'audio/MusicLibrary.cpp',
     'ui/screens/MusicLibraryScreen.cpp',
     'ui/screens/MusicSetScreen.cpp',
