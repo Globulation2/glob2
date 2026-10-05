@@ -41,6 +41,55 @@ class TerrainRuntimeFingerprintTests(unittest.TestCase):
                 self.assertNotEqual(fingerprints[name], terrain_tileset.pixel_fingerprint(original))
 
 
+class TerrainEncoderHandoffTests(unittest.TestCase):
+    def test_catalog_exports_delegate_before_importing_pillow(self):
+        import json
+        import os
+        import shutil
+        import subprocess
+        import sys
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "source"
+            (root / "data/gfx").mkdir(parents=True)
+            (root / "data/terrain").mkdir()
+            (root / "tools").mkdir()
+            shutil.copyfile(Path(package_assets.__file__).with_name("terrain_tileset.py"),
+                            root / "tools/terrain_tileset.py")
+            Image.new("RGBA", (32, 32), (20, 80, 130, 255)).save(root / "data/gfx/tile0.png")
+            document = {
+                "version": 1, "compiled_pack": "data/terrain/compiled/atlas.json",
+                "profiles": [{"key": "flat", "roughness_q8": 0,
+                              "contours_q12": [[0] * 5 for _ in range(4)]}],
+                "materials": [{"key": "water", "profile": "flat", "ocean": True,
+                               "sprite": "data/gfx/tile", "preview": [20, 80, 130],
+                               "variants": [{"frame": 0, "weight": 1}]}],
+                "bindings": {key: "water" for key in ("water", "sand", "grass", "ice", "road")},
+            }
+            (root / "data/terrain/tileset.json").write_text(json.dumps(document))
+            script = (
+                "import importlib.util,sys; "
+                "assert importlib.util.find_spec('PIL') is None; "
+                "from tools.package_assets import export_assets; "
+                "export_assets(sys.argv[1],sys.argv[2],optimized=sys.argv[3]=='1')"
+            )
+            env = dict(os.environ, GLOB2_ASSET_ENCODER_PYTHON=package_assets.encoder_python())
+            for optimized in (True, False):
+                with self.subTest(optimized=optimized):
+                    output = Path(tmp) / str(optimized)
+                    result = subprocess.run(
+                        [sys.executable, "-S", "-c", script, str(root), str(output), str(int(optimized))],
+                        cwd=package_assets.ROOT, env=env, capture_output=True, text=True, timeout=60,
+                    )
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    audit = json.loads(output.with_suffix(".json").read_text())
+                    self.assertEqual(audit["optimized"], optimized)
+                    self.assertTrue((output / document["compiled_pack"]).is_file())
+                    if not optimized:
+                        self.assertEqual((output / "data/gfx/tile0.png").read_bytes(),
+                                         (root / "data/gfx/tile0.png").read_bytes())
+
+
 class AssetExportTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

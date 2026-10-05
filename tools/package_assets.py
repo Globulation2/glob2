@@ -518,12 +518,6 @@ def _export_assets(
 ):
     root, output = Path(root).resolve(), Path(output).resolve()
     catalog = root / "data/terrain/tileset.json"
-    if catalog.is_file():
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("terrain_tileset", root / "tools/terrain_tileset.py")
-        compiler = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(compiler)
-        compiler.validate(json.loads(catalog.read_text()), root)
 
     if root.is_relative_to(output) or any(
         output == root / d or output.is_relative_to(root / d) for d in ASSET_DIRS
@@ -540,9 +534,9 @@ def _export_assets(
     ):
         raise ValueError("Unknown asset platform: " + platform)
     if (
-        optimized
+        (optimized or catalog.is_file())
         and not encoder_ready()
-        and any(p.suffix.lower() == ".png" for p in source_files(root, platform))
+        and (catalog.is_file() or any(p.suffix.lower() == ".png" for p in source_files(root, platform)))
     ):
         if worker:
             raise RuntimeError("Packaging requires Pillow 12.2.0 with libwebp 1.6.0")
@@ -557,11 +551,22 @@ def _export_assets(
             platform,
             "--worker",
         ]
+        if not optimized:
+            command.append("--original")
         command.append("--lossy-images" if lossy else "--lossless-images")
         if cache:
             command += ["--cache", str(cache)]
         subprocess.run(command, check=True)
         return json.loads(output.with_suffix(".json").read_text())
+    # Catalog validation and compilation also use Pillow. Import them only after
+    # handing off to the pinned encoder, including original-byte exports.
+    if catalog.is_file():
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("terrain_tileset", root / "tools/terrain_tileset.py")
+        compiler = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(compiler)
+        compiler.validate(json.loads(catalog.read_text()), root)
+
     if cache is None:
         cache = root / "build/asset-cache"
     cache = Path(cache).resolve()
@@ -785,7 +790,7 @@ def export_assets(
     output directory and is excluded from shipped resources. An encoder worker
     acquires the output lease itself, avoiding a recursive lock in its parent.
     """
-    if optimized and not encoder_ready() and not worker:
+    if (optimized or (Path(root) / "data/terrain/tileset.json").is_file()) and not encoder_ready() and not worker:
         return _export_assets(root, output, platform, optimized, lossy, cache, worker)
     sys.path.insert(0, str(ROOT / "scons"))
     from dev_store import Lease
