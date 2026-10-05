@@ -1,0 +1,4 @@
+src/app/cli/RenderSkin.cpp:3:10: fatal error: 'SkinRenderRecipe.h' file not found
+    3 | #include "SkinRenderRecipe.h"
+      |          ^~~~~~~~~~~~~~~~~~~~
+1 error generated.

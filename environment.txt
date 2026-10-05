@@ -1,0 +1,11 @@
+Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)
+Target: armv7a-unknown-linux-android24
+Thread model: posix
+InstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin
+g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+Copyright (C) 2025 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+6efc34db31c7ae5ff03daff7e0c79103268545b0
+42c7c07a51efe62bceebb36c425416704e8bc5a1
