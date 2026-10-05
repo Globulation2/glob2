@@ -11,3 +11,4 @@ export * from './mapFile.ts';
 export * from './engineAgents.ts';
 
 export * from './aiLibrary.ts';
+export * from './skinSprites.ts';

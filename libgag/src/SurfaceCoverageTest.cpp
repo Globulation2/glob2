@@ -3,6 +3,9 @@
 #include <SDLGraphicContext.h>
 #include <GUIStyle.h>
 #include <Toolkit.h>
+#include <SurfaceRaster.h>
+#include <RenderBackend.h>
+namespace GAGCore {std::unique_ptr<RenderBackend> makeSDLSoftwareGeometryBackend(SDL_Surface *);}
 #include <array>
 #include <cstring>
 
@@ -81,4 +84,41 @@ TEST_SUITE("SurfaceCoverage")
         CHECK(style.getStyleMetric(GAGGUI::Style::STYLE_METRIC_PROGRESS_BAR_HEIGHT)==22);
         CHECK(style.getStyleMetric(GAGGUI::Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH)==22);
     }
+    TEST_CASE("skin linear filtering preserves coverage and clipped sampling")
+    {
+        glob2test::ToolkitScope toolkit; Toolkit::initGraphic(64,64,0,"skin filter");
+        DrawableSurface source(2,1),full(9,5),clipped(9,5);
+        auto *raw=static_cast<Uint32 *>(source.getSDLSurface()->pixels);
+        raw[0]=0x00ffffff;raw[1]=0xffff0000;
+        black(full);black(clipped);clipped.setClipRect(3,1,3,3);
+        const SDL_Rect src{0,0,2,1},dst{1,1,6,3};
+        SurfaceRaster::skinBlit(full.getSDLSurface(),source.getSDLSurface(),src,dst,128);
+        SurfaceRaster::skinBlit(clipped.getSDLSurface(),source.getSDLSurface(),src,dst,128);
+        for(int y=0;y<5;++y)for(int x=0;x<9;++x) {
+            CHECK(pixel(clipped,x,y)==(x>=3 && x<6 && y>=1 && y<4?pixel(full,x,y):std::array<int,3>{0,0,0}));
+        }
+        CHECK(pixel(full,4,2)==std::array<int,3>{85,0,0});
+        CHECK(pixel(full,6,2)==std::array<int,3>{128,0,0});
+    }
+
+    TEST_CASE("skin filtering through SDL and CPU backends preserves premultiplied edges")
+    {
+        glob2test::ToolkitScope toolkit;Toolkit::initGraphic(64,64,0,"skin backends");
+        DrawableSurface source(2,1),cpu(9,5),sdl(9,5);black(cpu);black(sdl);
+        auto *raw=static_cast<Uint32 *>(source.getSDLSurface()->pixels);raw[0]=0x00ffffff;raw[1]=0xffff0000;
+        auto raster=makeSoftwareRenderBackend(cpu.getSDLSurface());
+        auto portable=makeSDLSoftwareGeometryBackend(sdl.getSDLSurface());
+        for(auto *backend:{raster.get(),portable.get()}) {
+            backend->transform(2,1,1,nullptr);
+            const SDL_Rect clip{1,0,2,2};backend->clip(&clip);
+            backend->blitLinear(&source,source.getSDLSurface(),1,{0,0,2,1},{0,0,3,1.5},128);
+            backend->flush();
+        }
+        for(int y=0;y<5;++y)for(int x=0;x<9;++x) {
+            const auto a=pixel(cpu,x,y),b=pixel(sdl,x,y);
+            for(unsigned c=0;c<3;++c)CHECK(std::abs(a[c]-b[c])<=3);
+        }
+        CHECK(pixel(cpu,4,2)==std::array<int,3>{85,0,0});
+    }
+
 }

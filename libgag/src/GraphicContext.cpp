@@ -246,7 +246,7 @@ namespace GAGCore
 		}
 
 
-        if (!SDL_InitSubSystem(SDL_INIT_AUDIO))
+        if (!(flags & NOAUDIO) && !SDL_InitSubSystem(SDL_INIT_AUDIO))
             SDL_Log("Audio unavailable: %s", SDL_GetError());
 		if (!TTF_Init()) {
 			SDL_Log("Font initialization failed: %s", SDL_GetError());

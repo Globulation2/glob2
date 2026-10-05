@@ -7,7 +7,7 @@
 #include <optional>
 struct Scene;
 class FogFade;
-namespace Online { class SkinDownloads; struct AuthorizedSkin; }
+namespace Online { class SkinDownloads; class SkinSprites; struct AuthorizedSkin; }
 namespace GAGCore { class GraphicContext; class DrawableSurface; }
 
 // Live colony geometry and authorized per-team appearance (layout colony-v2:
@@ -31,6 +31,7 @@ public:
     bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
                    float width, float height);
 private:
+    static unsigned unitClip(int type, int action);
     const GAGCore::SkinMesh *unitMesh(int type, int action) const;
     // The team's chosen swarm mesh, or null when it is unavailable.
     const GAGCore::SkinMesh *swarmMesh(int team) const;
@@ -46,6 +47,7 @@ private:
     std::shared_ptr<void> assetLifetime = std::make_shared<int>(0);
     std::array<GAGCore::AssetLoader::Handle<PreparedSkin>, 32> preparingSkins;
     std::unique_ptr<Online::SkinDownloads> downloads;
+    std::unique_ptr<Online::SkinSprites> sprites;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> textures;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> materials;
     // Per team and SkinRegion: whether the material map has any hairy (id 3)

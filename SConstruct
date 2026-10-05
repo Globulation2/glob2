@@ -482,7 +482,7 @@ def main():
     if not relay:
         env.Append(LIBS=['SDL3_net'])
     if not server_only:
-        env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'webp', 'speex'])
+        env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
@@ -506,6 +506,10 @@ def main():
         env.ParseConfig("pkg-config sdl3 --cflags")
     else:
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
+    if not server_only:
+        # Keep static libwebp's private libraries after the codec archive.
+        # Adding webp again later makes SCons deduplication reorder that edge.
+        env.ParseConfig("pkg-config libwebp --cflags --libs --static")
     if sdl_prefix and 'install' in COMMAND_LINE_TARGETS:
         # Depending on SCons' parser, sdl3.pc's -Wl,-rpath,${libdir}
         # lands in RPATH or LINKFLAGS. Installed copies use only

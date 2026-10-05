@@ -25,8 +25,14 @@ class UserDirectoryStorage final : public OnlineStorage
 		files.addWriteSubdir("online");
 		files.addWriteSubdir("online/maps");
 		files.addWriteSubdir("online/skins");
+        files.addWriteSubdir("online/skin-sprites");
 		files.addWriteSubdir("ais");
 	}
+    std::size_t size(const std::string &path) override {
+        std::unique_ptr<GAGCore::StreamBackend> stream(files.openInputStreamBackend(path));
+        if (!stream || !stream->isValid()) return 0;
+        stream->seekFromEnd(0); return stream->getPosition();
+    }
 	bool read(const std::string &path, std::string &contents) override
 	{
 		std::unique_ptr<GAGCore::StreamBackend> stream(files.openInputStreamBackend(path));
@@ -76,6 +82,9 @@ class DirectoryStorage final : public OnlineStorage
 
   public:
 	explicit DirectoryStorage(std::string directory) : root(std::move(directory)) {}
+    std::size_t size(const std::string &path) override {
+        std::error_code error; const auto result=std::filesystem::file_size(root/path,error); return error?0:result;
+    }
 	bool read(const std::string &path, std::string &contents) override
 	{
 		std::ifstream in(root / path, std::ios::binary);

@@ -445,6 +445,7 @@ static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, i
 	return 0;
 }
 
+int runRenderSkin(int argc, char **argv);
 namespace {
 class AssetStartupLoop : public GAGCore::ApplicationHost::Loop {
     std::shared_ptr<bool> cancelled;
@@ -482,6 +483,8 @@ public:
 
 int Glob2::run(int argc, char *argv[])
 {
+	const int skinCommand = runRenderSkin(argc, argv);
+	if (skinCommand >= 0) return skinCommand;
 	// --generate-map has a native file/report interface and a structured job interface.
 	// The latter is selected explicitly by --output-dir; preserve native CLI parsing.
 	bool structuredMap = false;

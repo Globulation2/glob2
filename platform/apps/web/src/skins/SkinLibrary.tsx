@@ -43,6 +43,16 @@ export function SkinLibrary({
             <p className="skin-muted">
               {SWARM_SHAPES[s.swarmMesh].name} · {s.swarmViewAngle ?? 0}°
             </p>
+            {s.softwareStatus === 'pending' && (
+              <p className="skin-muted">
+                Software artwork is preparing. You can equip this skin now.
+              </p>
+            )}
+            {s.softwareStatus === 'failed' && (
+              <p className="skin-muted">
+                Software artwork is unavailable. Software clients will use the default artwork.
+              </p>
+            )}
             <button disabled={busy} onClick={() => onOpen(s)}>
               {s.kind === 'custom' ? 'Edit this version' : 'Use as a starting point'}
             </button>

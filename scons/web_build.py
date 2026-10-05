@@ -58,6 +58,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                       ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['PROGSUFFIX'] = '.js'
+    env.Append(LINKFLAGS=['--js-library', 'browser/canvas-size.js'])
     if threaded:
         env.Append(CCFLAGS=['-pthread'], LINKFLAGS=['-pthread', '-sOFFSCREENCANVAS_SUPPORT=1',
             '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
@@ -111,7 +112,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             return 0
         asset_inputs = list(source_files(root, 'web'))
         exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +
-            ['tools/package_assets.py', 'tools/asset-requirements.txt', Value([identity['mode'], [str(p) for p in asset_inputs]])],
+            ['tools/package_assets.py', 'tools/asset-requirements.txt', 'tools/image_encoding.json', Value([identity['mode'], [str(p) for p in asset_inputs]])],
             Action(prepare_assets, 'Exporting verified browser assets'))
         env.Precious(exported)  # Keep the ownership audit while an export is rebuilt.
         if not (asset_root / 'data').is_dir():
@@ -205,7 +206,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.js'), production + test_objects)
         tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
-                               'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js'])
+                               'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js', 'browser/canvas-size.js'])
         env.Depends(harness, assets)
         tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
                                for p in Path(directory).rglob('*') if p.is_file()])
@@ -215,7 +216,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         env.Alias('web-tests', harness)
 
     env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
-                          'browser/asset-loader.js', 'browser/toolchain.json', assets])
+                          'browser/asset-loader.js', 'browser/canvas-size.js', 'browser/toolchain.json', assets])
     if threaded:
         env.Depends(program, 'browser/threaded-egl.js')
     env.SideEffect([str(output / 'index.wasm')], program)

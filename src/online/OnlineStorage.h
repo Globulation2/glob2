@@ -15,6 +15,7 @@ class OnlineStorage
 {
   public:
 	virtual ~OnlineStorage() = default;
+    virtual std::size_t size(const std::string &path) { std::string bytes; return read(path,bytes)?bytes.size():0; }
 	virtual bool read(const std::string &path, std::string &contents) = 0;
 	// Replaces the file only once the complete contents are written.
 	virtual bool write(const std::string &path, const std::string &contents) = 0;

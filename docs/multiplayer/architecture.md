@@ -197,7 +197,7 @@ Skin identity (`colony_skins`) is separate from immutable published paint
 (`texture_sha256`) and a material map (`material_sha256`), plus the layout
 `colony-v2`, building color and manifest digest. Database triggers reject edits
 and deletion of published versions; moderation disables the parent skin. Blob
-garbage collection retains both images of every published version. Account deletion removes private drafts
+garbage collection retains both images of every published version and all referenced sprite derivatives. Account deletion removes private drafts
 and equipment, replaces owned skin names with “Deleted skin” and disables their
 paint while preserving immutable version identifiers for match history. Guest
 retention keeps accounts referenced by skin reports so moderation records remain
@@ -236,13 +236,35 @@ top-right, explorer bottom-left, swarm bottom-right.
   lossless WebP.
 
 The version's `manifestSha256` is described below; native clients recompute it.
-Publishing identical content again returns the existing version.
+Publishing identical content again returns the existing version. Publication and
+equipment are immediate. The publication transaction queues `skin:render:<revision>`
+with three bounded attempts, deduplicated by immutable version and render revision.
+`skin-render-worker` registers its revision and backfills published designs and
+presets at startup. Its one native OpenGL process runs with Mesa/llvmpipe under
+Xvfb, a five-minute timeout and resource limits. `colony_skin_sprites` records
+`pending`, `ready` or `failed`; manifests and page references commit together only
+after every image is validated and stored. The library exposes `softwareStatus`
+and explains preparing or unavailable software artwork while keeping equipment
+available. Ready derivatives are immutable. Renderer upgrades create new records
+without rewriting published paint.
+
+A signed optional `softwareSprites` descriptor carries `format`,
+`manifestSha256` and `renderRevision`. Its optional `source` identifies the immutable
+paint, material and canonical source manifest separately from WebP wire renditions.
+Clients verify this signed identity before accepting a bundle; older descriptors
+use the signed version identity. Appearance refresh pins the first ready
+bundle to the match; later renderer revisions cannot replace it. Its addresses
+come from the trusted instance origin:
+`GET /api/v1/skins/versions/:id/sprites/:manifestHash/manifest` and
+`.../pages/:pageHash`. These endpoints serve only ready, linked blobs and retain
+the source version's moderation checks. Blob garbage collection includes both
+bundle manifests and pages.
 `GET /api/v1/skins/versions/:id/texture` serves the colour atlas and
 `GET /api/v1/skins/versions/:id/material` the material map, both as `image/webp`
 with the blob SHA-256 as ETag; disabled skins return 404. Older published sources remain immutable. The API caches lossless WebP wire
 renditions in `image_webp_renditions`, signs their exact texture/material hashes
 and recomputes the wire manifest hash while retaining version IDs. Apply migration
-0041 before deploying the API and worker together with the WebP-only client.
+0041 and 0042 before deploying the API and worker together with the WebP-only client.
 Old clients that require PNG skins need upgrading; existing signed PNG tickets
 must be refreshed before a new client can install their appearances. Skin image
 requests include `?sha256=<wire hash>` so cached PNG responses from earlier
@@ -874,9 +896,28 @@ or saved simulation data. The saved device preference **Show colony skins** is
 available in Settings > Display and the in-game Options dialog. Turning it off
 immediately restores classic units, swarms and building colors locally; verified
 appearance refreshes continue, so turning it back on uses current authorization.
-Software rendering uses classic unit and swarm sprites tinted with the skin's
-chosen building color; zoomed-out unit markers use that color too. Without an
-authorized skin, or with colony skins hidden, normal team colors apply.
+Software rendering uses the published sprite bundle for workers, warriors,
+explorers and the selected swarm mesh and angle. Other buildings and zoomed-out
+unit markers keep the signed building color. Without ready artwork, classic
+sprites remain visible with that color. Software clients download neither paint
+images nor meshes and create no OpenGL context for these skins. Unknown bundle
+formats retain this fallback; optional metadata keeps old claims compatible.
+
+The view verifies the signed descriptor, manifest hash and source identity before
+requesting pages, then verifies each page's SHA-256, byte count and static WebP
+header before decoding. Manifests are limited to 64 KiB, pages to 2 MiB compressed
+and their fixed 1024×1024 (unit) or 128×128 (swarm) dimensions. Up to four fetches
+run concurrently and at most one page decodes per view poll. Content-addressed
+pages are shared between teams, with a 64 MiB decoded LRU cache and 256 MiB disk
+cache whose bytes are revalidated on reuse. Completed offscreen requests release
+their slots without decoding; camera movement cannot block subsequent downloads.
+If disk writes fail, verified compressed buffers share the four-slot budget until
+decoding, so artwork remains available without an unbounded memory queue.
+Unused decoded pages are evicted;
+expiry or moderation removes installed appearance. Existing animation mapping,
+shadows, fog, zoom, clipping and the Show colony skins preference apply to both
+rendering paths. This is presentation state and does not alter saves, simulation
+checksums or `SIM_REVISION`.
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during

@@ -16,8 +16,13 @@ function png(size,channels,pixel){
   return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows,{level:9})),chunk('IEND',Buffer.alloc(0))]);
 }
 const quadrants=[[200,60,50],[60,90,200],[230,190,40],[150,60,170]];
-const texture=png(512,3,(x,y)=>{const base=quadrants[(y>=256?2:0)+(x>=256?1:0)];return ((x+y)>>4)&1?base.map(v=>Math.min(255,v+40)):base;});
-const material=png(512,1,(x,y)=>[(y>>5)&3]);
+const sourceTexture=png(512,3,(x,y)=>{const base=quadrants[(y>=256?2:0)+(x>=256?1:0)];return ((x+y)>>4)&1?base.map(v=>Math.min(255,v+40)):base;});
+const sourceMaterial=png(512,1,(x,y)=>[(y>>5)&3]);
+
+(async()=>{
+const sharp=require('../../platform/node_modules/sharp');
+const texture=await sharp(sourceTexture).webp({lossless:true,effort:4}).toBuffer();
+const material=await sharp(sourceMaterial).webp({lossless:true,effort:4}).toBuffer();
 
 const key=createPrivateKey({key:Buffer.from('302e020100300506032b657004220420'+'01'.repeat(32),'hex'),format:'der',type:'pkcs8'});
 const jwk={...createPublicKey(key).export({format:'jwk'}),kid:'skin-fixture',alg:'EdDSA',use:'sig'};
@@ -55,5 +60,17 @@ const angleVersion={...crown,swarmViewAngle:127}; angleVersion.manifestSha256=ma
 swarm.angle=token({...claims,version:angleVersion});
 for(const value of [-1,360,12.5,'90']) invalid['angle'+String(value)]=token({...claims,version:{...angleVersion,swarmViewAngle:value}});
 invalid.angleOutsideManifest=token({...claims,version:{...crown,swarmViewAngle:127}});
+const descriptor={format:'colony-sprites-v1',manifestSha256:'a'.repeat(64),renderRevision:'b'.repeat(64)};
+const sourceVersion={...version,textureSha256:sha(sourceTexture),materialSha256:sha(sourceMaterial)};
+sourceVersion.manifestSha256=manifest(sourceVersion);
+const source={manifestSha256:sourceVersion.manifestSha256,textureSha256:sourceVersion.textureSha256,materialSha256:sourceVersion.materialSha256};
+const software={ready:token({...claims,softwareSprites:descriptor}),unknown:token({...claims,softwareSprites:{...descriptor,format:'future-v2'}})};
+for(const [name,change] of Object.entries({manifestSha256:'xyz',renderRevision:'xyz'}))invalid['sprite'+name]=token({...claims,softwareSprites:{...descriptor,...{[name]:change}}});
+software.rendition=token({...claims,softwareSprites:{...descriptor,source}});
+for(const [name,change] of Object.entries({manifestSha256:'0'.repeat(64),textureSha256:'xyz',materialSha256:'0'.repeat(64)}))invalid['spriteSource'+name]=token({...claims,softwareSprites:{...descriptor,source:{...source,[name]:change}}});
+invalid.spriteSourceMissingMaterial=token({...claims,softwareSprites:{...descriptor,source:{manifestSha256:source.manifestSha256,textureSha256:source.textureSha256}}});
+invalid.spriteSourceMesh=token({...claims,version:crown,softwareSprites:{...descriptor,source}});
+invalid.spriteSourceAngle=token({...claims,version:angleVersion,softwareSprites:{...descriptor,source}});
 const teams=Array.from({length:32},(_,team)=>token({...claims,team}));invalid.signature=valid.slice(0,-5)+'AAAAA';
-writeFileSync(process.env.SKIN_FIXTURE_OUTPUT||'test/fixtures/skins/authorization.json',JSON.stringify({textureHex:texture.toString('hex'),materialHex:material.toString('hex'),teams,jwks:{keys:[jwk]},claims,valid,swarm,invalid},null,2)+'\n');
+writeFileSync(process.env.SKIN_FIXTURE_OUTPUT||'test/fixtures/skins/authorization.json',JSON.stringify({sourceTextureHex:sourceTexture.toString('hex'),sourceMaterialHex:sourceMaterial.toString('hex'),textureHex:texture.toString('hex'),materialHex:material.toString('hex'),teams,jwks:{keys:[jwk]},claims,valid,swarm,software,source,invalid},null,2)+'\n');
+})().catch(error=>{console.error(error);process.exitCode=1;});

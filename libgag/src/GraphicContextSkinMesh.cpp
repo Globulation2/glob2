@@ -428,6 +428,30 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         ++drawCalls;
     }
 }
+bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba)
+{
+    if (!valid(request)) return false;
+    prepareSkinMeshes({request});
+    auto &r = skinResources;
+    const auto found = r.slots.find(keyFor(request));
+    if (!found) return false;
+    SkinGLState saved;
+    const unsigned slot = *found, tile = slot % SlotsPerPage;
+    glBindFramebuffer(GL_FRAMEBUFFER, r.framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r.colors[slot/SlotsPerPage], 0);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return false;
+    std::vector<std::uint8_t> bottom(TileSize*TileSize*4);
+    glReadPixels((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize,
+                 GL_RGBA, GL_UNSIGNED_BYTE, bottom.data());
+    rgba.resize(bottom.size());
+    for (unsigned y=0;y<TileSize;++y) for (unsigned x=0;x<TileSize;++x) {
+        const auto *in = bottom.data()+((TileSize-1-y)*TileSize+x)*4;
+        auto *out = rgba.data()+(y*TileSize+x)*4;
+        out[3]=in[3];
+        for (unsigned c=0;c<3;++c) out[c]=in[3] ? std::min(255u,(unsigned(in[c])*255+in[3]/2)/in[3]) : 0;
+    }
+    return true;
+}
 bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
                                   DrawableSurface &material, std::uint8_t region,
                                   float x, float y, float w, float h, DrawableSurface *underlay, Uint8 alpha)
@@ -470,6 +494,7 @@ bool GraphicContext::drawSkinMesh(const SkinMesh &mesh, unsigned frame, Drawable
 #else
 namespace GAGCore
 {
+bool GraphicContext::readSkinMesh(const SkinMeshRequest &, std::vector<std::uint8_t> &) { return false; }
 void GraphicContext::destroySkinRenderer() { skinResources = {}; }
 void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &) {}
 bool GraphicContext::drawSkinMesh(const SkinMesh &, unsigned, DrawableSurface &, DrawableSurface &, std::uint8_t, float,float,float,float, DrawableSurface *, Uint8) { return false; }

@@ -121,8 +121,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// draw unit
 	Sprite *unitSprite = skin.sprite;
 	auto color = entities.owner(*unit).color;
-	// Software rendering keeps classic sprites, tinted with the colony's
-	// authorized skin color just like its buildings and classic swarm.
+	// Pending software artwork keeps the classic sprites with the authorized
+	// skin color, matching the treatment of other buildings.
 	if (!(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU))
 		if (const auto chosen = view.render.skinPreview().buildingColor(unit->team))
 			color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);

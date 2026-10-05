@@ -50,7 +50,24 @@ export const EquipSkinRequest = Strict({
   versionId: Type.Union([Uuid, Type.Null()]),
   buildingColor: Type.Optional(Type.Integer({ minimum: 0, maximum: 16777215 })),
 });
+export const SoftwareSprites = Open({
+  format: Type.Literal('colony-sprites-v1'),
+  manifestSha256: Sha256Hex,
+  renderRevision: Sha256Hex,
+  /** Immutable input identity, when live artwork uses separate WebP renditions. */
+  source: Type.Optional(
+    Open({
+      manifestSha256: Sha256Hex,
+      textureSha256: Sha256Hex,
+      materialSha256: Sha256Hex,
+    }),
+  ),
+});
+export type SoftwareSprites = Static<typeof SoftwareSprites>;
 export const ColonySkinVersion = Open({
+  softwareStatus: Type.Optional(
+    Type.Union([Type.Literal('pending'), Type.Literal('ready'), Type.Literal('failed')]),
+  ),
   id: Uuid,
   skinId: Uuid,
   /** Colour atlas. */
@@ -70,6 +87,7 @@ export type ColonySkinVersion = Static<typeof ColonySkinVersion>;
 export const COLONY_SKIN_TYPE = 'glob2-colony-skin+jwt';
 export const COLONY_SKIN_AUDIENCE = 'glob2-colony-renderer';
 export const MatchColonySkin = Open({
+  softwareSprites: Type.Optional(SoftwareSprites),
   team: TeamIndex,
   accountId: Uuid,
   version: ColonySkinVersion,
@@ -78,6 +96,7 @@ export const MatchColonySkin = Open({
 });
 export type MatchColonySkin = Static<typeof MatchColonySkin>;
 export const ColonySkinClaims = Open({
+  softwareSprites: Type.Optional(SoftwareSprites),
   iss: Type.String(),
   aud: Type.Literal(COLONY_SKIN_AUDIENCE),
   sub: Uuid,
