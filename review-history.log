@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/history.test.ts apps/api/test/playersScaling.test.ts --maxWorkers=2
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/fb2a/glob2/platform
+
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+   Start at  19:46:17
+   Duration  5.09s (tests 50%, import 30%, transform 20%)
+

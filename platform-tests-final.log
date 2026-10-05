@@ -1,0 +1,16 @@
+
+> test
+> vitest run apps/api/test apps/web/test packages/db/test packages/protocol/test apps/worker/test --maxWorkers=4
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/fb2a/glob2/platform
+
+
+ Test Files  46 passed (46)
+      Tests  314 passed (314)
+   Start at  19:51:34
+   Duration  51.66s (tests 69%, import 25%, transform 3%, environment 3%)
+
+    Isolate  46 workers spawned · ~452ms startup each (spawn + environment, per file)
+             at least ~4.75s faster with isolate: false — reuses workers across files instead of one per file
+
