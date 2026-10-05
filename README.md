@@ -1,6 +1,6 @@
 # PR 758 native/browser PNG verification
 
-Head 94033f1892e165b794b9b123ce97b783f8bdb911; base e7f249f41a5f354f696e9d65abc0a243a4556435. Linux x86_64, GCC 15.2.1 native SDK build, pinned Emscripten 4.0.15 SDK, Node 22.22.1. See toolchain.txt for actual tool versions.
+Head 94033f1892e165b794b9b123ce97b783f8bdb911; base e7f249f41a5f354f696e9d65abc0a243a4556435. Linux x86_64, GCC 15.2.0 native SDK build, pinned Emscripten 4.0.15 SDK, Node 22.22.1. See toolchain.txt for actual tool versions.
 
 Original hosted browser failures: https://github.com/Globulation2/glob2/actions/runs/37255462043/job/111600108498 ; retained tests.xml in browser-determinism-wasm-0 reports exact ImageAssets 16-bit RGBA failure for both serial and threaded cases. The unmodified native SDL fallback reproduces the same off-by-one RGB/alpha bytes (before.log).
 
@@ -22,7 +22,7 @@ For WebAssembly use the pinned SDK's emcmake with the same source, wasm-build/wa
 
 Against the freshly patched native shared SDL, exact GCC 13.3 unit binary from master run 37255462043 passes all five original ImageAssets cases. Use `GLOB2_TEST_SOURCE_ROOT=$PWD`, `GLOB2_ASSET_DIR=<matching 99958 runtime export>`, `LD_LIBRARY_PATH=<new SDL prefix/lib>:<hosted SDL prefix/lib>`, then `python3 test/run_tests.py --binary unit --build-dir <restored hosted build/linux/client/release> --filter 'ImageAssets/*' --verbose --artifacts artifacts/png16/native-unit`. This verifies unchanged WebP alpha/RGB and native PNG/JPEG paths; it does not claim recompilation of the expanded test source. The newly expanded direct fallback is independently executed by check.cpp in both native and wasm builds.
 
-Dependency contracts: private pinned encoder Python with `-m unittest discover -s test/build_system -p test_sdl3_dependencies.py -v`: 3 tests, one unrelated absent SDL_ttf archive skip. Complete build contracts are also running; final result will be recorded before merge.
+Dependency contracts: private pinned encoder Python with `-m unittest discover -s test/build_system -p test_sdl3_dependencies.py -v`: 3 tests, one unrelated absent SDL_ttf archive skip. Complete build contracts on final head: same private Python with `-m unittest discover -s test/build_system -v`: all 323 tests pass (56.170 seconds), two skips: missing unrelated SDL_ttf archive and unavailable NSIS compiler. Final fetched master remains e7f249f41a5f354f696e9d65abc0a243a4556435.
 
 ## Scope and limits
 
