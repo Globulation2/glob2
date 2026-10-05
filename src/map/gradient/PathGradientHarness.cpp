@@ -5,11 +5,14 @@
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BuildingGradientSearch.h"
+#include "GradientPipeline.h"
 #include "field/TerrainGradient.h"
 #include "field/TerrainTravel.h"
 
 #include <algorithm>
 #include <cinttypes>
+#include <chrono>
+#include <ctime>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -480,4 +483,353 @@ TEST_CASE("strategic terrain distances retain wide costs until publishing tile e
             CHECK_EQ(values[i],markers[i]==1?1:expected[i]==infinity?0:
                 2+(expected[i]+GRADIENT_STEP-1)/GRADIENT_STEP);
     }
+}
+
+
+TEST_CASE("terrain snapshots survive paused searches and release obsolete generations [pathfinding]")
+{
+    for (int swim = 0; swim < 7; ++swim)
+    {
+        PathMap map(5, 5, std::vector<Uint16>(1024, 0));
+        map.setCellTerrain(0, TRAIL);
+        auto captured = map.frozenTerrainSnapshot();
+        REQUIRE(captured == map.frozenTerrainSnapshot());
+        std::weak_ptr<const std::vector<TerrainType>> old = captured;
+        std::vector<Uint16> first(1024, Unreached), second(1024, Unreached);
+        first[0] = second[0] = Goal;
+        const auto expected = oracle(first, std::vector<Uint16>(1024, 0), 32, 32,
+            swim, CostLimit, captured.get());
+        BuildingGradientSearch a, b;
+        a.begin(map, first.data(), swim);
+        b.begin(map, second.data(), swim);
+        a.resolve(1);
+        REQUIRE_FALSE(a.complete());
+        map.setCellTerrain(0, ICE);
+        auto replacement = map.frozenTerrainSnapshot();
+        REQUIRE(replacement != captured);
+        REQUIRE((*captured)[0] == TRAIL);
+        REQUIRE((*replacement)[0] == ICE);
+        captured.reset();
+        REQUIRE_FALSE(old.expired());
+        a.finish();
+        REQUIRE(first == expected);
+        REQUIRE_FALSE(old.expired()); // The other search still owns this generation.
+        b.clearForReuse();
+        REQUIRE(old.expired());
+        // Reusing the same scratch storage must capture the new cost profile.
+        second.assign(1024, Unreached); second[0] = Goal;
+        b.begin(map, second.data(), swim); b.finish();
+        auto seeds = std::vector<Uint16>(1024, Unreached); seeds[0] = Goal;
+        REQUIRE(second == oracle(seeds, std::vector<Uint16>(1024, 0), 32, 32,
+            swim, CostLimit, replacement.get()));
+    }
+}
+
+// Opt-in production search benchmark. Measurements intentionally have no timing
+// assertions: compare matching compiler/input runs, not timings from CI hosts.
+TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
+{
+    using Clock = std::chrono::steady_clock;
+    auto elapsed = [](Clock::time_point start) {
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
+    };
+    std::printf("lazy_gradient,width,layout,swim,query,repeat,snapshot_ns,begin_ns,resolve_ns,cpu_ns,popped,retained_bytes,snapshot_bytes,digest\n");
+    for (int shift : {5, 7, 9}) for (int layout = 0; layout < 5; ++layout)
+    {
+        const int width = 1 << shift;
+        const std::size_t count = std::size_t(width) * width;
+        PathMap map(shift, shift, std::vector<Uint16>(count, 0));
+        // Classic, connected roads, dense mixes, uniform road, and uniform ice.
+        if (layout) for (std::size_t i = 0; i < count; ++i)
+            map.setCellTerrain(i, layout == 1
+                ? ((i % width) % 16 == 0 || (i / width) % 16 == 0 ? TRAIL : GRASS)
+                : layout == 3 ? TRAIL : layout == 4 ? ICE
+                : static_cast<TerrainType>((i * 37 + i / width * 19) % TERRAIN_COUNT));
+        const auto captureStart = Clock::now();
+        auto snapshot = map.frozenTerrainSnapshot();
+        const auto captureNs = elapsed(captureStart);
+        for (int swim = 0; swim < 7; ++swim) for (int query = 0; query < 3; ++query)
+        {
+            std::vector<Uint16> seeds(count, Unreached), actual;
+            const std::size_t target = query == 0 ? 1 : (count + width) / 2;
+            // An unblocked island surrounded by eight obstacles forces exhaustion.
+            if (query == 2) for (int dy = -1; dy <= 1; ++dy) for (int dx = -1; dx <= 1; ++dx)
+                if (dx || dy) seeds[target + dy * width + dx] = Blocked;
+            seeds[0] = Goal;
+            const auto expected = oracle(seeds, std::vector<Uint16>(count, 0),
+                width, width, swim, CostLimit, snapshot.get());
+            BuildingGradientSearch search;
+            for (int repeat = 0; repeat < 5; ++repeat)
+            {
+                actual = seeds;
+                const auto cpu = std::clock();
+                const auto start = Clock::now();
+                search.begin(map, actual.data(), swim);
+                const auto beginNs = elapsed(start);
+                const auto resolveStart = Clock::now();
+                search.resolve(target);
+                const auto resolveNs = elapsed(resolveStart);
+                const auto cpuNs = std::int64_t((std::clock()-cpu) * (1000000000.0/CLOCKS_PER_SEC));
+                REQUIRE(actual[target] == expected[target]);
+                std::uint64_t hash = 1469598103934665603ULL;
+                for (auto value : actual) hash = (hash ^ value) * 1099511628211ULL;
+                std::printf("lazy_gradient,%d,%d,%d,%d,%d,%lld,%lld,%lld,%lld,%llu,%zu,%zu,%llu\n",
+                    width,layout,swim,query,repeat,static_cast<long long>(captureNs),
+                    static_cast<long long>(beginNs),static_cast<long long>(resolveNs),
+                    static_cast<long long>(cpuNs),static_cast<unsigned long long>(search.poppedEntries()),
+                    search.retainedBytes(),snapshot->size()*sizeof(TerrainType),
+                    static_cast<unsigned long long>(hash));
+            }
+        }
+    }
+}
+
+
+TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [pathfinding]")
+{
+    for (unsigned workers : {0u, 2u}) for (int swim = 0; swim < 7; ++swim)
+    for (unsigned seedCost : {0u, 50u})
+    {
+        constexpr unsigned width = 32, count = width * width;
+        PathMap map(5, 5, std::vector<Uint16>(count, 0));
+        for (unsigned i = 0; i < count; ++i)
+            map.setCellTerrain(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
+        auto snapshot = map.frozenTerrainSnapshot();
+        std::vector<Uint16> seeds(count, Unreached); seeds[0] = Goal - seedCost;
+        for (unsigned i = 7; i < count; i += 17) seeds[i] = Blocked;
+        // Market sources start at cost 50; round-trip sources can also be
+        // deferred beyond a complete bucket-ring revolution.
+        if (seedCost) seeds[count / 2] = Goal - (gradient_kernel::BUCKETS + seedCost);
+        const auto expected = oracle(seeds, std::vector<Uint16>(count, 0), width,
+            width, swim, CostLimit, snapshot.get());
+        auto *published = new Uint16[count]{};
+        GradientPipeline pipeline;
+        pipeline.configure(workers, 2, count, [](auto &job, auto &workspace) {
+            const auto *types = job.terrain->data();
+            gradient_kernel::propagateTerrainField(job.data.get(), job.swim,
+                CostLimit, {width, width}, workspace,
+                [types](std::size_t i) { return types[i]; }, job.modifiedCosts);
+        });
+        pipeline.advance();
+        pipeline.submit(&published, swim, [&](auto &job) {
+            std::copy(seeds.begin(), seeds.end(), job.data.get());
+            job.terrain = snapshot; job.modifiedCosts = true;
+        });
+        for (unsigned i = 0; i < count; ++i) map.setCellTerrain(i, GRASS);
+        snapshot.reset();
+        pipeline.finish();
+        REQUIRE(published[0] == 0);
+        pipeline.advance(); REQUIRE(published[0] == 0);
+        pipeline.advance();
+        REQUIRE(std::equal(expected.begin(), expected.end(), published));
+        pipeline.reset(); delete[] published;
+    }
+}
+
+TEST_CASE("strategic terrain queue matches independent wide heap across boundaries and saturation [pathfinding]")
+{
+    auto checkTravel = [](int width, int height, const std::vector<TerrainType> &terrain,
+        const std::vector<std::int16_t> &markers, field::TerrainTravel mode) {
+        constexpr std::uint64_t infinity = std::numeric_limits<std::uint64_t>::max();
+        using Entry = std::pair<std::uint64_t, std::size_t>;
+        std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> queue;
+        std::vector<std::uint64_t> distance(markers.size(), infinity);
+        for (std::size_t i = 0; i < markers.size(); ++i) if (markers[i] == 2)
+        { distance[i] = 0; queue.push({0, i}); }
+        while (!queue.empty())
+        {
+            const auto [cost, index] = queue.top(); queue.pop();
+            if (cost != distance[index]) continue;
+            const auto &properties = terrainProperties(terrain[index]);
+            const unsigned speed = mode == field::TerrainTravel::Fly
+                ? properties.airSpeedQ8 : properties.groundSpeedQ8;
+            const unsigned step = std::max(1u, (10u * 256u + speed / 2u) / speed);
+            const int x = index % width, y = index / width;
+            for (int dy = -1; dy <= 1; ++dy) for (int dx = -1; dx <= 1; ++dx)
+            {
+                if (!dx && !dy) continue;
+                const std::size_t next = ((y + dy + height) % height) * width + (x + dx + width) % width;
+                if (markers[next] == 1 || cost + step >= distance[next]) continue;
+                distance[next] = cost + step; queue.push({distance[next], next});
+            }
+        }
+        auto actual = markers;
+        field::expandTerrainTravel(actual, width, height, mode,
+            [&](std::size_t i) { return terrain[i]; });
+        for (std::size_t i = 0; i < actual.size(); ++i)
+        {
+            const auto expected = markers[i] == 1 ? 1 : distance[i] == infinity ? 0
+                : 2 + std::min<std::uint64_t>(32765, (distance[i] + 9) / 10);
+            REQUIRE(actual[i] == expected);
+        }
+        return actual;
+    };
+    std::mt19937 random(0x853bb7u);
+    for (const auto [width, height] : {std::pair{1,1}, {1,31}, {33,1}, {2,17}, {31,33}, {32,64}})
+        for (int pattern = 0; pattern < 4; ++pattern)
+            for (auto mode : {field::TerrainTravel::Walk, field::TerrainTravel::Swim, field::TerrainTravel::Fly})
+            {
+                std::vector<TerrainType> terrain(width * height);
+                std::vector<std::int16_t> markers(width * height, 0);
+                for (std::size_t i = 0; i < markers.size(); ++i)
+                {
+                    terrain[i] = static_cast<TerrainType>(random() % TERRAIN_COUNT);
+                    if (pattern == 1) markers[i] = 2; // All sources.
+                    if (pattern >= 2)
+                        markers[i] = random() % 5 == 0 ? 1 : random() % 13 == 0 ? 2 : 0;
+                }
+                if (pattern == 3)
+                {
+                    // Source markers override terrain traversal eligibility. The
+                    // caller already froze blockers, so the queue must honor them.
+                    terrain[0] = WATER; markers[0] = 2;
+                }
+                checkTravel(width, height, terrain, markers, mode);
+                std::reverse(terrain.begin(), terrain.end());
+                std::reverse(markers.begin(), markers.end());
+                checkTravel(width, height, terrain, markers, mode);
+            }
+    constexpr int width = 512, height = 512;
+    std::vector<TerrainType> terrain(width * height, ICE);
+    std::vector<std::int16_t> markers(width * height, 1);
+    // A long isolated snake crosses the signed-short publication limit. Queue
+    // ordering must retain full cost even after the public distance saturates.
+    for (int y = 1; y < height - 1; ++y)
+        if (y % 2) for (int x = 1; x < width - 1; ++x) markers[y * width + x] = 0;
+        else markers[y * width + ((y / 2) % 2 ? width - 2 : 1)] = 0;
+    markers[width + 1] = 2;
+    const auto actual = checkTravel(width, height, terrain, markers, field::TerrainTravel::Walk);
+    REQUIRE(std::count(actual.begin(), actual.end(), std::int16_t(32767)) > 1000);
+}
+
+TEST_CASE("lazy terrain costs preserve uniform materials and source costs [pathfinding]")
+{
+    for (int swim = 0; swim < 7; ++swim)
+        for (TerrainType material : {TRAIL, ICE, GRASS})
+            for (bool differentGoal : {false, true})
+            {
+                constexpr int width = 32, count = width * width;
+                PathMap map(5, 5, std::vector<Uint16>(count, 0));
+                std::vector<TerrainType> terrain(count, material);
+                std::vector<Uint16> seeds(count, Unreached);
+                terrain[count - 1] = TRAIL; seeds[count - 1] = Blocked;
+                if (differentGoal) terrain[0] = material == ICE ? TRAIL : ICE;
+                seeds[0] = Goal;
+                for (int i = 0; i < count; ++i) map.setCellTerrain(i, terrain[i]);
+                const auto expected = oracle(seeds, std::vector<Uint16>(count, 0),
+                    width, width, swim, CostLimit, &terrain);
+                // Map dispatch and resumable searches are separate entry points;
+                // both must charge the goal's terrain in the reverse field.
+                auto actual = seeds;
+                map.propagateGradient(actual.data(), swim);
+                REQUIRE(actual == expected);
+                actual = seeds;
+                BuildingGradientSearch search;
+                search.begin(map, actual.data(), swim);
+                search.resolve(1);
+                REQUIRE(actual[1] == expected[1]);
+                map.setCellTerrain(0, material == ICE ? TRAIL : ICE);
+                search.finish();
+                REQUIRE(actual == expected);
+            }
+}
+
+TEST_CASE("prepared terrain profiles deduplicate pairs and alias queue destinations [pathfinding]")
+{
+    constexpr gradient_kernel::PreparedTerrainCosts<4> profile(
+        std::array<gradient_kernel::EntrySteps,4>{{{5,7}, {5,7}, {7,10}, {3,3}}});
+    REQUIRE(profile.classCount == 3);
+    REQUIRE(profile.stepCount == 4);
+    REQUIRE(profile.terrainClasses[0] == profile.terrainClasses[1]);
+    const auto a = profile.terrainClasses[0], b = profile.terrainClasses[2], c = profile.terrainClasses[3];
+    REQUIRE(profile.diagonalSlots[a] == profile.cardinalSlots[b]);
+    REQUIRE(profile.cardinalSlots[c] == profile.diagonalSlots[c]);
+    for (unsigned s = 0; s < profile.stepCount; ++s)
+    {
+        REQUIRE(profile.steps[s] > 0);
+        REQUIRE(profile.steps[s] < gradient_kernel::BUCKETS);
+        REQUIRE(profile.maxAppends[s] == (profile.steps[s] == 3 ? 8 : 4));
+    }
+    for (const auto &registered : gradient_kernel::PREPARED_TERRAIN_COSTS)
+        for (unsigned s = 0; s < registered.stepCount; ++s)
+        {
+            REQUIRE(registered.steps[s] > 0);
+            REQUIRE(registered.steps[s] < gradient_kernel::BUCKETS);
+        }
+}
+
+TEST_CASE("eager terrain specialization proves uniform costs across the whole field [pathfinding]")
+{
+    enum class Variation
+    {
+        Uniform,
+        DifferentGoal,
+        BlockedOutlier,
+        DistantOutlier,
+        DeferredSeed,
+        NoGoals,
+        AllBlocked
+    };
+    // Reuse one workspace across uniform/general dispatch, deferred seeds and
+    // empty solves so retained queues cannot supply stale results.
+    GradientWorkspace workspace;
+    for (const auto [width, height] : {std::pair{32, 32}, {17, 5}, {1, 31}})
+        for (int swim = 0; swim < 7; ++swim)
+            for (const auto variation : {Variation::Uniform, Variation::DifferentGoal,
+                Variation::BlockedOutlier, Variation::DistantOutlier,
+                Variation::DeferredSeed, Variation::NoGoals, Variation::AllBlocked})
+                for (int cap : {0, 127, CostLimit})
+                {
+                    INFO("shape=" << width << "x" << height << " swim=" << swim
+                        << " cap=" << cap << " variation=" << static_cast<int>(variation));
+                    const auto count = std::size_t(width) * height;
+                    // Stay beyond the seed neighborhood but before the torus
+                    // midpoint, so a cheaper cell can improve routes beyond it.
+                    const auto distant = std::size_t(height / 3) * width + width / 3;
+                    std::vector<TerrainType> terrain(count, ICE);
+                    std::vector<Uint16> seeds(count, Unreached), legacy(count, 0);
+                    seeds[0] = Goal;
+                    switch (variation)
+                    {
+                    case Variation::DifferentGoal:
+                        terrain[0] = TRAIL;
+                        break;
+                    case Variation::BlockedOutlier:
+                        terrain[distant] = TRAIL;
+                        seeds[distant] = Blocked;
+                        break;
+                    case Variation::DistantOutlier:
+                        // A distant cheaper cell is still relevant: fields must
+                        // not specialize from the goals or a local sample alone.
+                        terrain[distant] = TRAIL;
+                        break;
+                    case Variation::DeferredSeed:
+                        seeds[0] = Goal - (gradient_kernel::BUCKETS + 31);
+                        break;
+                    case Variation::NoGoals:
+                        seeds[0] = Unreached;
+                        break;
+                    case Variation::AllBlocked:
+                        terrain[distant] = TRAIL;
+                        std::fill(seeds.begin(), seeds.end(), Blocked);
+                        break;
+                    case Variation::Uniform:
+                        break;
+                    }
+                    const auto expected = oracle(seeds, legacy, width, height,
+                        swim, cap, &terrain);
+                    auto actual = seeds;
+                    gradient_kernel::propagateTerrainField(actual.data(), swim, cap,
+                        {width, height}, workspace,
+                        [&](std::size_t i) { return terrain[i]; }, true);
+                    REQUIRE(actual == expected);
+                    if (variation == Variation::DistantOutlier && cap == CostLimit)
+                    {
+                        const std::vector<TerrainType> uniform(count, ICE);
+                        // Prove that this fixture actually exposes a missed road,
+                        // rather than merely including an irrelevant outlier.
+                        REQUIRE(expected != oracle(seeds, legacy, width, height,
+                            swim, cap, &uniform));
+                    }
+                }
 }
