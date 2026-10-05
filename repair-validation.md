@@ -15,3 +15,7 @@ Local Linux x86_64 validation:
 An initial broad run using ambient Python instead of the pinned encoder interpreter failed eight unrelated packaging tests because the exporter re-executes into the encoder environment, bypassing in-process test mocks. Its log is retained as build-contracts-repair-ambient.log; it is not counted as a passing run. The correct CI invocation passes the full suite.
 
 No full native simulation rerun is needed for this Python-only contract/packaging repair; original terrain evidence remains applicable to its unchanged C++ source. Hosted results are separate from this local evidence. The maintainer's merge authorization covers completing this focused repair.
+
+## Final independently reviewed revision
+
+Tested commit: `97cce998c6a77556274a275c19b73e50db628860`. Independent review found and resolved the missing SCons dependency on TerrainPresentation.h, with an additional dependency regression. No further reviewer findings. The exact CI command above was rerun on this final source: exit0,325tests in55.382seconds,2environment skips. See build-contracts-repair-final.log. This supersedes the earlier324-case result for merge acceptance.
