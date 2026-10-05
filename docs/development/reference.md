@@ -699,13 +699,13 @@ captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
 
-Terrain geometry is cached in canonical 32 by 32 tile chunks. Fully revealed
-resources use canonical map rows, with sorted source-tile indices selecting the
-contiguous visible vertex range. Translation places a canonical chunk or row at
-its current wrapped-map position, so camera panning does not change its vertices.
-Each entry compares the exact current tile frame/visibility vector before reuse:
-a resource amount, terrain frame or discovery change must invalidate the entry.
-Partial-discovery resources keep the ordinary drawing path. The geometry budget
+Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
+on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
+Fully revealed resources use canonical map rows, with sorted source-tile indices
+selecting the contiguous visible vertex range. Translation places a canonical row
+at its wrapped-map position, so camera panning does not change its vertices.
+Each resource entry compares its exact frame/visibility vector before reuse.
+Partial-discovery resources keep the ordinary drawing path. The resource geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
 eviction; CPU metadata and driver allocation overhead are additional. Each scene
 attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
@@ -844,11 +844,15 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unknown category for legacy shores; never use it to index the property table.
   The old corner editor and old-file importer are explicit
   adapters; legacy shores have their own walkable, unbuildable profiles.
-- Presentation metadata is separate in `TerrainPresentation.h`: atlas, frame range,
-  animation, backdrop, decorative edges and independent map/preview/export colors.
-  Add a stable enum entry and complete both tables for a new material. Experimental
-  authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
-  into matches, while saves retain them independently of the user's current settings.
+- Saved sprite ranges, corner semantics and authoring frame selection are frozen in
+  `TerrainCompatibility.h`. Detailed terrain rendering resolves all five materials
+  through a presentation-only catalog, corner coverage resolver and CPU compositor.
+  `data/terrain/tileset.json` defines visual materials independently of gameplay IDs;
+  `TerrainPresentation.h` retains semantic editor and image-interchange metadata.
+  See [terrain material authoring](../assets/terrain-materials.md) for variants,
+  boundary profiles, asset validation and cache behavior. New gameplay terrain
+  still requires a stable enum, properties, compatibility descriptor and experiment
+  registration. Visual catalog changes must not change saved frames or RNG use.
 - Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,

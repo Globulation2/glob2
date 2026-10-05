@@ -61,6 +61,9 @@ class WebAssetPlanTests(unittest.TestCase):
         # Nothing else ends up there: every game file is a frame of a game sprite.
         self.assertTrue(all(p.startswith('data/gfx/') and p.endswith('.png') for p in self.packages['game']))
         self.assertFalse(web_assets.game_files(['data/gfx/unitmini0.png'], {'unit'}))
+        self.assertEqual(web_assets.game_files(['data/terrain/compiled/atlas.json', 'data/terrain/compiled/textures-0-mip0.webp'],
+                                               {'data/terrain/compiled/'}),
+                         {'data/terrain/compiled/atlas.json', 'data/terrain/compiled/textures-0-mip0.webp'})
         self.assertTrue(web_assets.game_files(['data/gfx/inn0b12r.png'], {'inn0b'}))
         # The runtime export's sheets (tools/package_assets.py) replace a sprite's frames.
         self.assertEqual(web_assets.game_files(['data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp',
@@ -79,12 +82,15 @@ class WebAssetPlanTests(unittest.TestCase):
             (root / 'src/map/TerrainPresentation.h').write_text(
                 'constexpr auto atlas = "data/gfx/future-terrain";\n'
                 'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
+            (root / 'data/terrain').mkdir(parents=True)
+            (root / 'data/terrain/tileset.json').write_text(json.dumps({'materials': [
+                {'sprite': 'data/materials/rock', 'backdrop': {'sprite': 'data/gfx/glow'}}]}))
             names = web_assets.game_sprites(root)
             self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
-                                     'future-terrain', 'future-backdrop'})
+                                     'future-terrain', 'future-backdrop', 'data/materials/rock', 'glow'})
             self.assertEqual(web_assets.game_files(
-                ['data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'], names),
-                {'data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet'})
+                ['data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet', 'data/materials/rock12.png'], names),
+                {'data/gfx/future-terrain0.png', 'data/gfx/future-backdrop.sheet', 'data/materials/rock12.png'})
 
     def test_terrain_registry_changes_invalidate_browser_asset_plan(self):
         tree = ast.parse((ROOT / 'scons/web_build.py').read_text())
@@ -92,7 +98,8 @@ class WebAssetPlanTests(unittest.TestCase):
                   and any(isinstance(target, ast.Name) and target.id == 'plan_inputs'
                           for target in node.targets)]
         self.assertEqual(len(inputs), 1)
-        self.assertIn('src/map/TerrainPresentation.h', ast.literal_eval(inputs[0]))
+        self.assertIn('data/terrain/tileset.json', ast.literal_eval(inputs[0]))
+        self.assertEqual(self.owner['data/terrain/tileset.json'], 'core')
 
     def test_core_ships_the_browser_copies_and_font_cjk_the_full_font(self):
         self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',

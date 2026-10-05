@@ -1,0 +1,317 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "TerrainCompositor.h"
+#include "TerrainCompiledPack.h"
+#include "render/scene/SceneMap.h"
+#include <Toolkit.h>
+#include <FileManager.h>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <algorithm>
+#include <stdexcept>
+#include <cstring>
+
+namespace TerrainVisual
+{
+Catalog Compositor::loadCatalog()
+{
+	std::unique_ptr<std::ifstream> input(
+		GAGCore::Toolkit::getFileManager()->openIFStream("data/terrain/tileset.json"));
+	if (!input || !*input)
+		throw std::runtime_error("Cannot read data/terrain/tileset.json");
+	return Catalog::parse(nlohmann::json::parse(*input));
+}
+Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
+{
+	pack = CompiledPack::load(definitions);
+	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
+	{
+		const auto found =
+			definitions.bindings.find(terrainPresentation(static_cast<TerrainType>(type)).name);
+		if (found != definitions.bindings.end())
+			terrainBindings[type] = found->second;
+		else if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+			throw std::runtime_error("Missing terrain material binding");
+	}
+	for (const auto &m : definitions.materials)
+	{
+		auto *sprite = GAGCore::Toolkit::getSprite(m.sprite);
+		if (!sprite)
+			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
+		for (const auto &v : m.variants)
+			for (int p = 0; p < m.animationFrames; ++p)
+			{
+				const int frame = v.frame + p * m.animationStride;
+				if (frame >= sprite->getFrameCount() || sprite->getW(frame) != 32 ||
+					sprite->getH(frame) != 32)
+					throw std::runtime_error("Terrain material requires a 32x32 logical frame: " +
+											 m.key);
+				auto *native = sprite->nativeFrame(frame);
+				cleanSources[native->lifetimeIdentity()] = native->contentRevision();
+			}
+		GAGCore::Sprite *backdrop = nullptr;
+		if (!m.backdrop.sprite.empty())
+		{
+			backdrop = GAGCore::Toolkit::getSprite(m.backdrop.sprite);
+			if (!backdrop || m.backdrop.firstFrame + m.backdrop.frames > backdrop->getFrameCount())
+				throw std::runtime_error("Missing terrain backdrop");
+			for (int frame = m.backdrop.firstFrame;
+				 frame < m.backdrop.firstFrame + m.backdrop.frames; ++frame)
+				if (backdrop->getW(frame) != 32 || backdrop->getH(frame) != 32)
+					throw std::runtime_error("Backdrop must use 32x32 logical tiles");
+		}
+		backdropSprites.push_back(backdrop);
+		backgrounds.emplace_back();
+		sprites.push_back(sprite);
+		textures.emplace_back(m.variants.size());
+		phases.push_back(-1);
+	}
+}
+void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
+{
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+		SDL_ConvertSurface(source->getSDLSurface(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+	if (!rgba)
+		throw std::runtime_error(SDL_GetError());
+	if (rgba->w != rgba->h || rgba->w < 32 || rgba->w > 512)
+	{
+		throw std::runtime_error("Invalid terrain texture dimensions");
+	}
+	std::vector<std::array<unsigned char, 4>> pixels(rgba->w * rgba->h);
+	for (int y = 0; y < rgba->h; ++y)
+		std::memcpy(pixels.data() + y * rgba->w,
+					static_cast<char *>(rgba->pixels) + y * rgba->pitch, rgba->w * 4);
+	t.pixels = std::move(pixels);
+	t.size = rgba->w;
+	t.source = source;
+	t.identity = source->lifetimeIdentity();
+	t.revision = source->contentRevision();
+}
+std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type) const
+{
+	const auto id = terrainBindings[unsigned(type)];
+	return {sprites[id], unsigned(definitions.materials[id].variants.front().frame)};
+}
+std::size_t Compositor::sourceBytes() const
+{
+	std::size_t bytes = pack ? pack->bytes() : 0;
+	for (const auto &set : textures)
+		for (const auto &t : set)
+			bytes += t.pixels.capacity() * 4;
+	for (const auto &t : backgrounds)
+		bytes += t.pixels.capacity() * 4;
+	return bytes;
+}
+void Compositor::prepare(bool hd, int time)
+{
+	animationTime = time;
+	int nextResolution = 1;
+	bool changed = false;
+	for (unsigned id = 0; id < definitions.materials.size(); ++id)
+	{
+		const auto &m = definitions.materials[id];
+		if (m.ocean)
+			continue;
+		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
+		changed |= phases[id] != phase;
+		phases[id] = phase;
+		bool refresh = false;
+		for (unsigned i = 0; i < m.variants.size(); ++i)
+		{
+			const int frame = m.variants[i].frame + phase * m.animationStride;
+			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+			if (!source)
+				throw std::runtime_error("Missing terrain texture: " + m.key);
+			auto &t = textures[id][i];
+			refresh |= t.source != source || t.identity != source->lifetimeIdentity() ||
+					   t.revision != source->contentRevision();
+			if (source->getW() > 32)
+				nextResolution = 4;
+		}
+		if (backdropSprites[id])
+		{
+			const int frame =
+				m.backdrop.firstFrame + unsigned(time) / m.backdrop.ticks % m.backdrop.frames;
+			auto *source = hd ? backdropSprites[id]->baseFrame(frame)
+							  : backdropSprites[id]->nativeFrame(frame);
+			if (!source)
+				throw std::runtime_error("Missing terrain backdrop frame");
+			auto &t = backgrounds[id];
+			if (t.source != source || t.identity != source->lifetimeIdentity() ||
+				t.revision != source->contentRevision())
+			{
+				readTexture(t, source);
+				refresh = true;
+			}
+			if (t.size > 32)
+				nextResolution = 4;
+		}
+		if (!refresh)
+			continue;
+		changed = true;
+		bool packaged = pack && !backdropSprites[id];
+		if (packaged)
+			for (const auto &variant : m.variants)
+			{
+				const int frame = variant.frame + phase * m.animationStride;
+				auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+				const auto clean = cleanSources.find(source->lifetimeIdentity());
+				packaged &= source == sprites[id]->nativeFrame(frame) &&
+							clean != cleanSources.end() &&
+							clean->second == source->contentRevision() &&
+							pack->contains(m.sprite + std::to_string(frame) + ".png");
+			}
+		for (unsigned i = 0; i < m.variants.size(); ++i)
+		{
+			const int frame = m.variants[i].frame + phase * m.animationStride;
+			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+			auto &t = textures[id][i];
+			if (packaged)
+			{
+				pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
+				t.size = 32;
+				t.source = source;
+				t.identity = source->lifetimeIdentity();
+				t.revision = source->contentRevision();
+			}
+			else
+				readTexture(t, source);
+		}
+		if (packaged)
+			continue; // Compiler already prepared the shared variant borders.
+		if (backdropSprites[id])
+			for (auto &t : textures[id])
+				for (int y = 0; y < t.size; ++y)
+					for (int x = 0; x < t.size; ++x)
+					{
+						auto &p = t.pixels[y * t.size + x];
+						const auto &bg = backgrounds[id];
+						const auto &b =
+							bg.pixels[(y * bg.size / t.size) * bg.size + x * bg.size / t.size];
+						const unsigned a = unsigned(p[3]) * 255 + unsigned(b[3]) * (255 - p[3]);
+						for (int k = 0; k < 3; ++k)
+							p[k] = a ? (unsigned(p[k]) * p[3] * 255 +
+										unsigned(b[k]) * b[3] * (255 - p[3])) /
+										   a
+									 : 0;
+						p[3] = (a + 127) / 255;
+					}
+		// One periodic master boundary per material, not a different edge for
+		// each variant. Keep interior detail and original alpha intact.
+		const auto master = textures[id][0];
+		for (auto &t : textures[id])
+			for (int y = 0; y < t.size; ++y)
+				for (int x = 0; x < t.size; ++x)
+				{
+					const int distance = std::min({x, y, t.size - 1 - x, t.size - 1 - y});
+					const int band = std::max(1, t.size / 8);
+					if (distance >= band)
+						continue;
+					const int mx = x * master.size / t.size, my = y * master.size / t.size;
+					// Reflect the master at each seam: opposing outer pixels agree.
+					const int xx = std::min(mx, master.size - 1 - mx),
+							  yy = std::min(my, master.size - 1 - my);
+					const auto &p = master.pixels[yy * master.size + xx];
+					for (int k = 0; k < 3; ++k)
+						t.pixels[y * t.size + x][k] =
+							(p[k] * (band - distance) + t.pixels[y * t.size + x][k] * distance) /
+							band;
+				}
+	}
+	changed |= resolution != nextResolution;
+	resolution = nextResolution;
+	if (changed)
+		++generation;
+}
+Recipe Compositor::describe(const SceneMap &map, int x, int y) const
+{
+	Recipe r;
+	r.x = x & map.getMaskW();
+	r.y = y & map.getMaskH();
+	r.width = map.getW();
+	r.height = map.getH();
+	for (int j = 0; j < 4; ++j)
+		for (int i = 0; i < 4; ++i)
+		{
+			const int qx = (r.x * 2 + i - 1) & (r.width * 2 - 1),
+					  qy = (r.y * 2 + j - 1) & (r.height * 2 - 1);
+			const int cx = qx / 2, cy = qy / 2;
+			auto type = map.terrainTypeAt(cx, cy);
+			unsigned material = unsigned(type);
+			if (terrainUsesLegacyCorners(type))
+				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
+			r.samples[j * 4 + i] = terrainBindings[material];
+		}
+	return r;
+}
+void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const
+{
+	if (target->format != SDL_PIXELFORMAT_ARGB8888)
+		throw std::runtime_error("Terrain compositor requires ARGB8888");
+	const int size = 32 * scale;
+	std::vector<const Texture *> selected(definitions.materials.size(), nullptr);
+	for (auto id : r.samples)
+		if (!selected[id] && !definitions.materials[id].ocean)
+		{
+			const auto &m = definitions.materials[id];
+			unsigned n = hash(r.x, r.y, m.salt) % m.totalWeight;
+			for (unsigned i = 0; i < m.variants.size(); ++i)
+			{
+				if (n < m.variants[i].weight)
+				{
+					selected[id] = &textures[id][i];
+					break;
+				}
+				n -= m.variants[i].weight;
+			}
+		}
+	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
+									 [&](auto id) { return id == r.samples[0]; });
+	if (uniform)
+	{
+		const auto *texture = selected[r.samples[0]];
+		for (int y = 0; y < size; ++y)
+		{
+			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+												   (oy + y) * target->pitch) +
+						ox;
+			for (int x = 0; x < size; ++x)
+			{
+				if (!texture)
+					row[x] = 0;
+				else
+				{
+					const auto &p = texture->pixels[(y * texture->size / size) * texture->size +
+													x * texture->size / size];
+					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
+							 (unsigned(p[1]) << 8) | p[2];
+				}
+			}
+		}
+		return;
+	}
+	for (int y = 0; y < size; ++y)
+		for (int x = 0; x < size; ++x)
+		{
+			const auto mask =
+				coverage(definitions, r, (x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			std::uint64_t rgb[3] = {};
+			unsigned alpha = 0;
+			for (int i = 0; i < 4; ++i)
+				if (mask.weight[i] && selected[mask.material[i]])
+				{
+					const auto &t = *selected[mask.material[i]];
+					const auto &p = t.pixels[(y * t.size / size) * t.size + x * t.size / size];
+					const unsigned a = mask.weight[i] * p[3];
+					alpha += a;
+					for (int k = 0; k < 3; ++k)
+						rgb[k] += std::uint64_t(p[k]) * a;
+				}
+			auto *p = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+												 (oy + y) * target->pitch) +
+					  ox + x;
+			const auto channel = [&](int k) { return unsigned(alpha ? rgb[k] / alpha : 0); };
+			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
+				 channel(2);
+		}
+}
+} // namespace TerrainVisual

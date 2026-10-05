@@ -3,7 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
-#include "TerrainPresentation.h"
+#include "TerrainCompatibility.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"

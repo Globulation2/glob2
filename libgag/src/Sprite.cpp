@@ -430,9 +430,12 @@ namespace GAGCore
         if(!resources && fileName!="data/gfx/terrain")return;
         int count=0;
         while(count<static_cast<int>(experimentImages.size()) && experimentImages[count])++count;
-        const int columns=resources?8:(count>16?16:4), rows=resources?9:(count>16?17:4);
-        if(count!=(resources?65:16) && !(count==272 && !resources))return;
-        const int border=resources?32:64, atlasW=columns*256, atlasH=rows*256;
+        if (!count) return;
+        // Legacy packs use a fixed cell pitch, but frame count and page extent
+        // come from the supplied image, not a list of recognized terrain counts.
+        // New terrain materials compose into independently budgeted view pages.
+        const int border=resources?32:64;
+        int columns=0, atlasW=0, atlasH=0;
         const std::string prefix=resources?"ressource":"terrain";
         if(experimentImages.size()<static_cast<size_t>(count))return;
         if(std::none_of(experimentImages.begin(),experimentImages.begin()+count,[](auto p){return p!=nullptr;}))return;
@@ -443,14 +446,23 @@ namespace GAGCore
         };
         for(int i=0;i<count;++i)if(!experimentImages[i]){reject();return;}
         GLint maxSize=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxSize);
-        if(atlasW>maxSize || atlasH>maxSize){reject();return;}
         const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         std::string directory=overrideDir?overrideDir:"data/highres/v1";
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
             auto s=Toolkit::assets().loadImageSurface(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp");
-            if(!s){reject();return;}
+            // A missing optional atlas keeps valid individual HD sources.
+            if(!s) return;
+            if (!mip) {
+                atlasW=s->w; atlasH=s->h; columns=atlasW/256;
+                if (!columns || atlasW%256 || atlasH%256 || count>columns*(atlasH/256) ||
+                    atlasW>maxSize || atlasH>maxSize) { SDL_DestroySurface(s); return; }
+                for(int i=0;i<count;++i)
+                    if (experimentImages[i]->getW()+border>256 || experimentImages[i]->getH()+border>256) {
+                        SDL_DestroySurface(s); return;
+                    }
+            }
             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_DestroySurface(s);reject();return;}
             levels.emplace_back(new DrawableSurface(s, DrawableSurface::AdoptPixels{}));
         }

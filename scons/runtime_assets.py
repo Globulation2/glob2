@@ -106,6 +106,7 @@ def prepare_assets(env):
         inputs
         + [
             "tools/package_assets.py",
+            "tools/terrain_tileset.py",
             "tools/asset-requirements.txt",
             "tools/image_encoding.json",
             "scons/runtime_assets.py",

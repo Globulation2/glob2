@@ -422,6 +422,9 @@ TEST_SUITE("SoftwareRenderer")
 		REQUIRE(coverage.size() == 1);
 		CHECK(coverage[0].w == 5120);
 		CHECK(coverage[0].h == 5120);
+		// Material variants are independent of saved frame IDs. Restore the
+		// deliberately translucent variant before asserting opaque coverage.
+		asset->drawPixel(0, 0, Color(17, 33, 51, 255));
 		// Fragmented opaque islands exercise the 64-region bookkeeping cap.
 		// One canonical chunk is repeated, so the pixel budget stays bounded.
 		int opaqueId = -1;

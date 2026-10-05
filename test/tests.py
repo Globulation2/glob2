@@ -136,6 +136,7 @@ ENGINE_TESTS = [
     ('#src/render/HighResolutionIntegrationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#libgag/src/PortableRendererHarness.cpp',
     '#src/render/SoftwareRendererTest.cpp',
+    '#src/render/terrain/TerrainMaterialsTest.cpp',
     ('#src/render/TerrainPresentationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#libgag/src/RuntimePackCheck.cpp', dict(require={'opengl'})),
     ('#libgag/src/TextRasterHarness.cpp', dict(require={'opengl'})),

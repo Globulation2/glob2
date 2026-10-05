@@ -42,7 +42,7 @@ constexpr auto palette = [] {
         {255,128,0,GRASS,ORANGE}, {128,0,255,GRASS,PRUNE}, {255,255,255,GRASS,NO_RES}}};
     constexpr auto authoredCount = [] {
         unsigned count=0;
-        for (const auto& p : TerrainPresentations) count += !p.legacyCorners;
+        for (const auto& p : TerrainCompatibilityTable) count += !p.legacyCorners;
         return count;
     }();
     std::array<Category,legacy.size()+authoredCount> result{};

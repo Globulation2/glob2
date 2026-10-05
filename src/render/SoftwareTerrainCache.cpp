@@ -2,36 +2,25 @@
 #include "SoftwareTerrainCache.h"
 #include "GlobalContainer.h"
 #include "scene/SceneMap.h"
+#include "terrain/TerrainCompositor.h"
 #include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
-#include <limits>
 #include <stdexcept>
-
+#ifdef HAVE_OPENGL
+#if defined(__APPLE__)
+#include <OpenGL/gl.h>
+#elif defined(GLOB2_WEBGL2)
+#include <GL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
 namespace
 {
 int chunkOf(int tile)
 {
 	return int(std::floor(double(tile) / SoftwareTerrainCache::ChunkTiles));
-}
-// Cache the source RGBA, not an alpha blend onto black. Otherwise a coastline
-// would be blended twice and darken when the cached image is laid over water.
-void copyRGBA(SDL_Surface *source, SDL_Surface *target, SDL_Rect destination)
-{
-	SDL_BlendMode blend;
-	Uint8 alpha, r, g, b;
-	SDL_GetSurfaceBlendMode(source, &blend);
-	SDL_GetSurfaceAlphaMod(source, &alpha);
-	SDL_GetSurfaceColorMod(source, &r, &g, &b);
-	SDL_SetSurfaceColorMod(source, 255, 255, 255);
-	SDL_SetSurfaceBlendMode(source, SDL_BLENDMODE_NONE);
-	SDL_SetSurfaceAlphaMod(source, 255);
-	const bool result = SDL_BlitSurface(source, nullptr, target, &destination);
-	SDL_SetSurfaceBlendMode(source, blend);
-	SDL_SetSurfaceAlphaMod(source, alpha);
-	SDL_SetSurfaceColorMod(source, r, g, b);
-	if (!result)
-		throw std::runtime_error(SDL_GetError());
 }
 // A CPU-only view owns its SDL descriptor, but borrows immutable chunk pixels.
 // The producer has already verified every pixel in this rectangle is opaque.
@@ -40,7 +29,8 @@ class OpaqueView final : public GAGCore::DrawableSurface
   public:
 	OpaqueView(SDL_Surface *owner, SDL_Rect rect)
 	{
-		sdlsurface = SDL_CreateSurfaceFrom(rect.w, rect.h, owner->format,
+		sdlsurface = SDL_CreateSurfaceFrom(
+			rect.w, rect.h, owner->format,
 			static_cast<char *>(owner->pixels) + rect.y * owner->pitch + rect.x * 4, owner->pitch);
 		if (!sdlsurface)
 			throw std::runtime_error(SDL_GetError());
@@ -55,9 +45,7 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 		for (int x = 0; x < SoftwareTerrainCache::ChunkTiles;)
 		{
 			auto opaque = [&](int column)
-			{
-				return chunk.tiles[y * SoftwareTerrainCache::ChunkTiles + column].opaque;
-			};
+			{ return chunk.opaque[y * SoftwareTerrainCache::ChunkTiles + column]; };
 			if (!opaque(x))
 			{
 				++x;
@@ -80,134 +68,189 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 			{rect, std::make_unique<OpaqueView>(chunk.image->getSDLSurface(), rect)});
 }
 } // namespace
+
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int animationTime)
+								   bool wholeMap, int time)
 {
 	PERF_SCOPE_TIME(TerrainCache);
 	copies.clear();
 	++frame;
-	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
 	if (!enabled || map.getW() < ChunkTiles || map.getH() < ChunkTiles)
 		return false;
-	const int x0 = chunkOf(left + vx), x1 = chunkOf(right + vx);
-	const int y0 = chunkOf(top + vy), y1 = chunkOf(bottom + vy);
-	// Wrapped copies share one stored image. Budget the distinct canonical
-	// chunks, rather than charging a small torus for every repeated screen copy.
-	const auto working = std::uint64_t(std::min(x1 - x0 + 1, map.getW() / ChunkTiles)) *
-						 std::min(y1 - y0 + 1, map.getH() / ChunkTiles) * ChunkStorageBytes;
-	if (working > Budget)
+	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
+	auto &compositor = globalContainer->terrainCompositor();
+	const bool nextGPU = globalContainer->gfx->getOptionFlags() &
+						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
+	compositor.prepare(nextGPU, time);
+	int nextResolution = compositor.scale();
+	const auto budget = nextGPU ? GPUBudget : Budget;
+	const int x0 = chunkOf(left + vx), x1 = chunkOf(right + vx), y0 = chunkOf(top + vy),
+			  y1 = chunkOf(bottom + vy);
+	const auto visiblePages = std::uint64_t(std::min(x1 - x0 + 1, map.getW() / ChunkTiles)) *
+							  std::min(y1 - y0 + 1, map.getH() / ChunkTiles);
+	int textureLimit = ChunkPixels * nextResolution;
+#ifdef HAVE_OPENGL
+	if (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &textureLimit);
+#endif
+	const auto pageBytes = [&](int scale)
+	{
+		return ChunkStorageBytes +
+			   (scale * scale * (nextGPU ? 3 : 1) - 1) * ChunkPixels * ChunkPixels * 4;
+	};
+	// Reduce oversampling before giving up the cache. A large HD viewport must
+	// not repeatedly recompose every tile simply because four 2048px pages exceed
+	// the budget. Geometry stays in native coordinates at every sample density.
+	while (nextResolution > 1 && (ChunkPixels * nextResolution > textureLimit ||
+								  visiblePages * pageBytes(nextResolution) > budget))
+		nextResolution /= 2;
+	if (ChunkPixels * nextResolution > textureLimit ||
+		visiblePages * pageBytes(nextResolution) > budget)
 		return false;
+	if (resolution != nextResolution || gpu != nextGPU)
+	{
+		chunks.clear();
+		resolution = nextResolution;
+		gpu = nextGPU;
+	}
+	const auto storage = pageBytes(resolution);
 	try
 	{
 		for (int cy = y0; cy <= y1; ++cy)
 			for (int cx = x0; cx <= x1; ++cx)
 			{
-				const int worldX = (cx * ChunkTiles) & map.getMaskW(),
-						  worldY = (cy * ChunkTiles) & map.getMaskH();
+				const int wx = (cx * ChunkTiles) & map.getMaskW(),
+						  wy = (cy * ChunkTiles) & map.getMaskH();
+				Chunk *entry = nullptr;
+				for (auto &c : chunks)
+					if (c->x == wx && c->y == wy)
+					{
+						entry = c.get();
+						break;
+					}
+				// Compare the source neighborhood once per page, rather than
+				// decoding sixteen overlapping lattice samples for every tile.
+				std::array<Uint32, (ChunkTiles + 2) * (ChunkTiles + 2)> sources{};
+				for (int y = -1; y <= ChunkTiles; ++y)
+					for (int x = -1; x <= ChunkTiles; ++x)
+						sources[(y + 1) * (ChunkTiles + 2) + x + 1] =
+							map.getTerrain(wx + x, wy + y) |
+							(Uint32(map.terrainTypeAt(wx + x, wy + y)) << 16);
+				bool unchanged = entry && entry->valid &&
+								 entry->revision == compositor.revision() &&
+								 entry->sources == sources;
+				if (unchanged)
+					for (int y = 0; y < ChunkTiles && unchanged; ++y)
+						for (int x = 0; x < ChunkTiles; ++x)
+						{
+							const bool discovered =
+								wholeMap ||
+								map.isMapPartiallyDiscovered(wx + x - 1, wy + y - 1, wx + x + 1,
+															 wy + y + 1, visibleTeams);
+							if (discovered != entry->tiles[y * ChunkTiles + x].discovered)
+							{
+								unchanged = false;
+								break;
+							}
+						}
+				if (unchanged)
+				{
+					entry->used = frame;
+					++hits;
+					copies.push_back(
+						{entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
+					continue;
+				}
 				std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 				for (int y = 0; y < ChunkTiles; ++y)
 					for (int x = 0; x < ChunkTiles; ++x)
 					{
-						const int wx = worldX + x, wy = worldY + y;
-						auto &tile = tiles[y * ChunkTiles + x];
-                        tile.layers = map.terrainLayersAt(wx,wy,animationTime);
-                        tile.discovered = wholeMap || map.isMapPartiallyDiscovered(wx-1,wy-1,wx+1,wy+1,visibleTeams);
-                        if (!tile.discovered) continue;
-                        for (int layer=0; layer<TerrainLayers::Capacity; ++layer)
-                        {
-                            const int id = tile.layers.frames[layer];
-                            if (id < 0) continue;
-                            auto *sprite = globalContainer->terrainLayerSprite(tile.layers.materials[layer],tile.layers.backdrop[layer]);
-                            if (!sprite) return false;
-                            auto *image = sprite->nativeFrame(id);
-                            if (!image || image->getW()!=32 || image->getH()!=32) return false;
-                            tile.images[layer] = image;
-                            tile.revisions[layer] = image->contentRevision();
-                            tile.opaque |= image->hasOpaquePixels();
-                        }
-					}
-				Chunk *entry = nullptr;
-				for (auto &candidate : chunks)
-					if (candidate->x == worldX && candidate->y == worldY)
-					{
-						entry = candidate.get();
-						break;
+						auto &t = tiles[y * ChunkTiles + x];
+						t.discovered = wholeMap || map.isMapPartiallyDiscovered(
+													   wx + x - 1, wy + y - 1, wx + x + 1,
+													   wy + y + 1, visibleTeams);
+						if (t.discovered)
+							t.recipe = compositor.describe(map, wx + x, wy + y);
 					}
 				if (!entry)
 				{
-					if (bytes() + ChunkStorageBytes > Budget)
+					if (bytes() + storage > budget)
 					{
 						auto oldest = chunks.end();
-						for (auto i = chunks.begin(); i != chunks.end(); ++i)
-							if ((*i)->used != frame &&
-								(oldest == chunks.end() || (*i)->used < (*oldest)->used))
-								oldest = i;
+						for (auto it = chunks.begin(); it != chunks.end(); ++it)
+							if ((*it)->used != frame &&
+								(oldest == chunks.end() || (*it)->used < (*oldest)->used))
+								oldest = it;
 						if (oldest == chunks.end())
 							return false;
 						chunks.erase(oldest);
 					}
 					auto fresh = std::make_unique<Chunk>();
-					fresh->x = worldX;
-					fresh->y = worldY;
-					fresh->image =
-						std::make_unique<GAGCore::DrawableSurface>(ChunkPixels, ChunkPixels);
-					if (!fresh->image->getSDLSurface())
-						return false;
+					fresh->x = wx;
+					fresh->y = wy;
+					fresh->scale = resolution;
+					auto *pixels =
+						SDL_CreateSurface(ChunkPixels * resolution, ChunkPixels * resolution,
+										  SDL_PIXELFORMAT_ARGB8888);
+					if (!pixels)
+						throw std::bad_alloc();
+					fresh->image = std::make_unique<TerrainVisual::Surface>(pixels, resolution > 1);
 					entry = fresh.get();
 					chunks.push_back(std::move(fresh));
 				}
 				entry->used = frame;
-				if (!entry->valid || entry->tiles != tiles)
+				if (!entry->valid || entry->revision != compositor.revision() ||
+					entry->tiles != tiles)
 				{
 					auto *target = entry->image->getSDLSurface();
+					const bool wasValid = entry->valid;
 					entry->valid = false;
-					if (!SDL_FillSurfaceRect(target, nullptr, 0))
-						throw std::runtime_error(SDL_GetError());
 					entry->opaqueRuns.clear();
 					for (int y = 0; y < ChunkTiles; ++y)
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
-                            const auto &tile = tiles[y*ChunkTiles+x];
-                            // Nonopaque cells retain the source layers; blending
-                            // them here would darken alpha when drawn over water.
-                            if (!tile.opaque) continue;
-                            bool first = true;
-                            for (auto *image : tile.images)
-                            {
-                                if (!image) continue;
-                                SDL_Rect destination{x*32,y*32,32,32};
-                                if (first) copyRGBA(image->getSDLSurface(),target,destination);
-                                else
-                                {
-                                    auto *source = image->getSDLSurface();
-                                    SDL_BlendMode mode;
-                                    SDL_GetSurfaceBlendMode(source,&mode);
-                                    SDL_SetSurfaceBlendMode(source,SDL_BLENDMODE_BLEND);
-                                    const bool ok=SDL_BlitSurface(source,nullptr,target,&destination);
-                                    SDL_SetSurfaceBlendMode(source,mode);
-                                    if (!ok) throw std::runtime_error(SDL_GetError());
-                                }
-                                first=false;
-                            }
+							const int i = y * ChunkTiles + x, n = 32 * resolution;
+							if (wasValid && entry->revision == compositor.revision() &&
+								entry->tiles[i] == tiles[i])
+								continue;
+							if (tiles[i].discovered)
+								compositor.compose(tiles[i].recipe, target, x * n, y * n,
+												   resolution);
+							else
+							{
+								SDL_Rect area{x * n, y * n, n, n};
+								SDL_FillSurfaceRect(target, &area, 0);
+							}
+							bool opaque = true;
+							for (int py = 0; py < n && opaque; ++py)
+								for (int px = 0; px < n; ++px)
+									if ((*(reinterpret_cast<Uint32 *>(
+											   static_cast<Uint8 *>(target->pixels) +
+											   (y * n + py) * target->pitch) +
+										   x * n + px) >>
+										 24) != 255)
+									{
+										opaque = false;
+										break;
+									}
+							entry->opaque[i] = opaque;
 						}
 					entry->image->markPixelsChanged();
 					entry->tiles = tiles;
-					buildOpaqueRuns(*entry);
+					entry->revision = compositor.revision();
+					if (!gpu)
+						buildOpaqueRuns(*entry);
 					entry->valid = true;
 					++rebuilds;
 				}
 				else
 					++hits;
+				entry->sources = sources;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
 	}
 	catch (const std::bad_alloc &)
-	{
-		copies.clear();
-		return false;
-	}
-	catch (const std::runtime_error &)
 	{
 		copies.clear();
 		return false;
@@ -218,9 +261,16 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 {
 	for (const auto &copy : copies)
 	{
-		// Terrain cells do not overlap. Batch opaque interiors; coastlines keep
-		// their original source and blending arithmetic instead of scanning the
-		// transparent holes of a 512-pixel composite on every frame.
+		if (gpu)
+		{
+			SDL_Rect area{copy.x, copy.y, ChunkPixels, ChunkPixels}, visible;
+			if (SDL_GetRectIntersection(&area, &paintBounds, &visible))
+				target.drawSurface(visible.x, visible.y, visible.w, visible.h,
+								   copy.chunk->image.get(), (visible.x - area.x) * resolution,
+								   (visible.y - area.y) * resolution, visible.w * resolution,
+								   visible.h * resolution);
+			continue;
+		}
 		for (const auto &run : copy.chunk->opaqueRuns)
 		{
 			SDL_Rect destination{copy.x + run.rect.x, copy.y + run.rect.y, run.rect.w, run.rect.h},
@@ -232,13 +282,13 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 		for (int y = 0; y < ChunkTiles; ++y)
 			for (int x = 0; x < ChunkTiles; ++x)
 			{
-                const auto &tile = copy.chunk->tiles[y*ChunkTiles+x];
-                if (tile.opaque) continue;
-                SDL_Rect destination{copy.x+x*32,copy.y+y*32,32,32}, visible;
-                if (SDL_GetRectIntersection(&destination,&paintBounds,&visible))
-                    for (auto *image : tile.images)
-                        if (image) target.drawSurface(visible.x,visible.y,image,visible.x-destination.x,
-                            visible.y-destination.y,visible.w,visible.h);
+				if (copy.chunk->opaque[y * ChunkTiles + x])
+					continue;
+				SDL_Rect area{copy.x + x * 32, copy.y + y * 32, 32, 32}, visible;
+				if (SDL_GetRectIntersection(&area, &paintBounds, &visible))
+					target.drawSurface(visible.x, visible.y, copy.chunk->image.get(),
+									   x * 32 + visible.x - area.x, y * 32 + visible.y - area.y,
+									   visible.w, visible.h);
 			}
 	}
 }

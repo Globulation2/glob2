@@ -1,25 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDLGraphicContext.h>
-#include "TerrainPresentation.h"
+#include "terrain/TerrainMaterials.h"
 #include <array>
 #include <cstdint>
 #include <memory>
 #include <vector>
 
 class SceneMap;
-// Presentation-only state. It never participates in saves, orders or checksums.
+// Shared presentation page cache. The historical name remains for existing view
+// controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
 {
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
-	static constexpr std::size_t Budget = 32u * 1024u * 1024u;
+	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
 	struct Tile
 	{
-		std::array<GAGCore::DrawableSurface *, TerrainLayers::Capacity> images{};
-        std::array<std::uint64_t, TerrainLayers::Capacity> revisions{};
-        TerrainLayers layers;
-        bool opaque = false;
+		TerrainVisual::Recipe recipe;
 		bool discovered = false;
 		bool operator==(const Tile &) const = default;
 	};
@@ -30,19 +28,19 @@ class SoftwareTerrainCache
 	};
 	struct Chunk
 	{
-		int x = 0, y = 0;
+		int x = 0, y = 0, scale = 1;
+		std::array<Uint32, (ChunkTiles + 2) * (ChunkTiles + 2)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
+		std::array<bool, ChunkTiles * ChunkTiles> opaque{};
 		std::unique_ptr<GAGCore::DrawableSurface> image;
-		// Views borrow image pixels, and must be destroyed before image.
 		std::vector<OpaqueRun> opaqueRuns;
 		bool valid = false;
-		std::uint64_t used = 0;
+		std::uint64_t used = 0, revision = 0;
 	};
-    // Include layer descriptors and worst-case borrowed surface views in the
-    // reservation, not only the RGBA payload. This remains bounded as new
-    // materials add layers or create highly fragmented transparent edges.
-    static constexpr std::size_t ChunkStorageBytes = ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
-        ChunkTiles * ChunkTiles * (sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface));
+	static constexpr std::size_t ChunkStorageBytes =
+		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
+		ChunkTiles * ChunkTiles *
+			(sizeof(OpaqueRun) + sizeof(GAGCore::DrawableSurface) + sizeof(SDL_Surface));
 	struct Copy
 	{
 		Chunk *chunk;
@@ -54,14 +52,20 @@ class SoftwareTerrainCache
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};
+	int resolution = 1;
+	bool gpu = false;
 
   public:
-	bool enabled = true; // Benchmark switch, not a saved gameplay preference.
-	bool prepare(const SceneMap &map, GAGCore::Sprite &terrain, int left, int top, int right, int bottom,
-				 int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);
-	void draw(GAGCore::GraphicContext &target);
+	bool enabled = true;
+	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
+				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);
+	void draw(GAGCore::GraphicContext &);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
-	std::size_t bytes() const { return chunks.size() * ChunkStorageBytes; }
+	std::size_t bytes() const
+	{
+		return chunks.size() * (ChunkStorageBytes + (resolution * resolution * (gpu ? 3 : 1) - 1) *
+														ChunkPixels * ChunkPixels * 4);
+	}
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 };
