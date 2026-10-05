@@ -143,9 +143,7 @@ it('repairs failed candidates, retains evidence, and edits the exact parent sour
     renders = 0;
   const actions = [
     { action: 'write', value: '# initial melody' },
-    { action: 'render' },
     { action: 'write', value: '# repaired bass line' },
-    { action: 'render' },
   ];
   const provider: MusicProvider = {
     text: async () => ({
@@ -179,6 +177,20 @@ it('repairs failed candidates, retains evidence, and edits the exact parent sour
   await worker(revisionProvider, runner).tick();
   expect((await studio.request(revision))?.status).toBe('ready');
   expect((await studio.request(id))?.release_id).toBe(id);
+});
+it('validates and renders a written score without another provider call, even at the call limit', async () => {
+  const { account, id } = await fixture();
+  const text = vi.fn<MusicProvider['text']>(async () => ({
+    text: JSON.stringify({ action: 'write', value: '# complete score' }),
+    usage: { input_tokens: 100, output_tokens: 100 },
+  }));
+  const run = vi.fn<MusicRunner['run']>(async () => candidate(true));
+  await worker({ text }, { run }, { ...cfg, maxCalls: 1 }).tick();
+  expect(text).toHaveBeenCalledTimes(1);
+  expect(run).toHaveBeenCalledTimes(1);
+  expect(run.mock.calls[0]?.[2]).toBe(true);
+  expect((await studio.request(id))?.status).toBe('ready');
+  expect(await studio.credits.balance(account)).toEqual({ balance: 3, reserved: 0, available: 3 });
 });
 it('stops after three failed renders and refunds the reservation', async () => {
   const { account, id } = await fixture();
@@ -317,7 +329,7 @@ it('recovers completed candidate bytes without repeating a render or provider ca
   await worker(provider, { run: render }).tick();
   expect((await studio.request(id))?.status).toBe('ready');
   expect(render).toHaveBeenCalledTimes(1);
-  expect(calls).toBe(2);
+  expect(calls).toBe(1);
 });
 
 it('keeps the three-cycle limit across repeated worker deaths during rendering', async () => {
