@@ -120,3 +120,19 @@ it('searches and filters the shared catalogue with a useful empty state', async 
   await screen.findByText('No AIs match these filters.');
   expect(screen.getByRole('link', { name: 'Share your AI' }).getAttribute('href')).toBe('/ais/new');
 });
+
+it('shows a failed file check and skipped dependent checks for an empty file', async () => {
+  window.history.replaceState(null, '', '/ais/new');
+  render(<App />);
+  fireEvent.change(await screen.findByLabelText(/Bundled JavaScript file/), {
+    target: { files: [new File([], 'empty.js')] },
+  });
+  await waitFor(() =>
+    expect(document.querySelectorAll('.ai-checklist [data-status="failed"]')).toHaveLength(1),
+  );
+  expect(document.querySelectorAll('.ai-checklist [data-status="skipped"]')).toHaveLength(6);
+  expect((screen.getByRole('button', { name: 'Publish' }) as HTMLButtonElement).disabled).toBe(
+    true,
+  );
+  expect(uploadNumber).toBe(0);
+});

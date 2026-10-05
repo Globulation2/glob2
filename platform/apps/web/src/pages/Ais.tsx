@@ -10,6 +10,7 @@ import {
   type PublishAiRequest,
 } from '@glob2/protocol';
 import { aiApi } from '../aiApi.ts';
+import { ApiError } from '../api.ts';
 import { Loaded, ErrorNotice, Empty } from '../components/common.tsx';
 import { GameArt } from '../art.tsx';
 import { Link, useRouter } from '../router.tsx';
@@ -564,7 +565,8 @@ export function AiPublish({ id }: { id?: string }) {
     [error, setError] = useState<Error>(),
     [busy, setBusy] = useState(false),
     [checking, setChecking] = useState(false),
-    [file, setFile] = useState<File>();
+    [file, setFile] = useState<File>(),
+    [fileFailure, setFileFailure] = useState('');
   const generation = useRef(0),
     controller = useRef<AbortController | undefined>(undefined);
   useEffect(
@@ -599,9 +601,13 @@ export function AiPublish({ id }: { id?: string }) {
     setError(undefined);
     setChecking(true);
     setFile(selected);
+    setFileFailure('');
+    let submitted = false;
     try {
       if (!selected.name.toLowerCase().endsWith('.js')) throw Error('Choose one bundled .js file.');
+      if (!selected.size) throw Error('Choose a nonempty JavaScript file.');
       if (selected.size > 128 * 1024) throw Error('The file must be no larger than 128 KiB.');
+      submitted = true;
       let u = await aiApi.upload(selected, c.signal);
       while (token === generation.current) {
         setUpload(u);
@@ -617,7 +623,11 @@ export function AiPublish({ id }: { id?: string }) {
         setVersion((v) => v || m.version || '1.0.0');
       }
     } catch (e) {
-      if (!c.signal.aborted) setError(e as Error);
+      if (!c.signal.aborted) {
+        setError(e as Error);
+        if (!submitted || (e instanceof ApiError && [400, 413].includes(e.status)))
+          setFileFailure((e as Error).message);
+      }
     } finally {
       if (token === generation.current) setChecking(false);
     }
@@ -647,7 +657,19 @@ export function AiPublish({ id }: { id?: string }) {
       setBusy(false);
     }
   };
-  const report = upload?.report ?? pendingAiReport('0'.repeat(64), '');
+  const pending = pendingAiReport('0'.repeat(64), '');
+  const report: AiValidationReport = upload?.report ?? {
+    ...pending,
+    checks: pending.checks.map((c) =>
+      fileFailure
+        ? {
+            ...c,
+            status: c.id === 'file' ? 'failed' : 'skipped',
+            ...(c.id === 'file' ? { message: fileFailure } : {}),
+          }
+        : c,
+    ),
+  };
   return (
     <>
       <header className="page-head">
