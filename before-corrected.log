@@ -1,0 +1,34 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+ ❯ packages/db/test/coordination.test.ts (10 tests | 1 failed | 9 skipped) 1309ms
+   ❯ LeaderElection (1)
+     × elects exactly one leader and fails over when it stops or dies 996ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/db/test/coordination.test.ts > LeaderElection > elects exactly one leader and fails over when it stops or dies
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ packages/db/test/coordination.test.ts:260:63
+    258|       await new Promise((resolve) => setTimeout(resolve, 200));
+    259|       expect([...leading]).toEqual(['b']);
+    260|       expect(await terminate('glob2-leader-matchmaker-test')).toBe(2);
+       |                                                               ^
+    261|       await until(() => leading.size === 1, 10_000);
+    262|       expect(maxConcurrent).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  05:17:53
+   Duration  2.11s (tests 72%, import 15%, transform 10%, setup 3%)
+

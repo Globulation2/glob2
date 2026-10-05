@@ -1,0 +1,17 @@
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+apps/ai-music-worker/src/main.ts(5,29): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.
+apps/ai-music-worker/src/pipeline.ts(5,56): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.
+apps/ai-music-worker/src/pipeline.ts(83,16): error TS7006: Parameter 'ok' implicitly has an 'any' type.
+apps/ai-music-worker/src/provider.ts(4,62): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.
+apps/ai-music-worker/src/provider.ts(45,55): error TS7006: Parameter 'db' implicitly has an 'any' type.
+apps/ai-music-worker/src/provider.ts(77,57): error TS7006: Parameter 'db' implicitly has an 'any' type.
+apps/ai-music-worker/src/provider.ts(118,59): error TS7006: Parameter 'db' implicitly has an 'any' type.
+apps/ai-music-worker/test/pipeline.test.ts(8,29): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.
+apps/ai-music-worker/test/pipeline.test.ts(163,32): error TS7006: Parameter 'c' implicitly has an 'any' type.
+apps/ai-music-worker/test/pipeline.test.ts(164,32): error TS7006: Parameter 'c' implicitly has an 'any' type.
+apps/ai-music-worker/test/pipeline.test.ts(301,79): error TS7019: Rest parameter 'args' implicitly has an 'any[]' type.
+apps/api/src/music/studio.ts(4,51): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.
+apps/api/test/musicStudio.test.ts(4,29): error TS2307: Cannot find module '@glob2/music-studio' or its corresponding type declarations.

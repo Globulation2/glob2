@@ -1,0 +1,1 @@
+Restarted leader connect delayed 600ms
