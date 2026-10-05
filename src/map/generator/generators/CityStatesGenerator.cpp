@@ -1064,7 +1064,7 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 						 : L.heartKind == Crag      ? L.ringR - 1
 													: L.lakeR + kOrchardReach + 3;
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.region[i] == Commons && L.radius[i] < reach && !map.isWater(i % t.w, i / t.w);
+		heart[i] = L.region[i] == Commons && L.radius[i] < reach && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
 	return heart;
 }
 
@@ -1099,7 +1099,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
 	for (int i = 0; i < n; ++i)
 		if ((L.strip[i] || L.ridge[i]) && !L.road[i] &&
-			map.getTerrainType(i % t.w, i / t.w) == GRASS)
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -1190,8 +1190,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 	std::vector<unsigned char> water(n), dry(n);
 	for (int i = 0; i < n; ++i)
 	{
-		water[i] = map.isWater(i % t.w, i / t.w);
-		dry[i] = !water[i];
+		water[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w));
+		dry[i] = map.terrainPropertiesAt(i).walkable;
 	}
 	const std::vector<int> shore = stepsFrom(t, water, dry);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
@@ -1470,7 +1470,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.isGrass(i % t.w, i / t.w);
+				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	// The swarm stands between the causeway's home end and the lake, a short walk from the lake's
@@ -1531,7 +1531,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto walkable = [&](int i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		return !map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	};
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
@@ -1563,7 +1563,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			{
 				const int x = t.x(site.x - 5 + dx), y = t.y(site.y - 2 + dy);
 				isletPlot[t.at(x, y)] = 1;
-				if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
+				if (!map.terrainPropertiesAt(x, y).buildable || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
 					return "The islet plot at " + where(t.at(site.x, site.y)) +
 						   " is not buildable.";
 			}
@@ -1572,7 +1572,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 
 	for (int i = 0; i < n; ++i)
-		if (L.region[i] == Islet && !isletPlot[i] && map.isGrass(i % t.w, i / t.w) &&
+		if (L.region[i] == Islet && !isletPlot[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
 			map.getResource(i % t.w, i / t.w).type != WHEAT)
 			return "The islet grass at " + where(i) + " is not covered with wheat.";
 

@@ -598,6 +598,9 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 			semanticError("/experiments", "unknown experiment \"" + key + "\"");
 		experimentSet.set(*id);
 	}
+	for (const auto& definition : experimentDefinitions())
+		if (mapHeader.requiredTerrainExperiments.has(definition.id) && !experimentSet.has(definition.id))
+			semanticError("/experiments", "missing map-required terrain experiment " + std::string(definition.key));
 	header.setExperiments(experimentSet);
 	return header;
 }
@@ -672,6 +675,8 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	r.permadeathDisabled = header.isPermadeathDisabled();
 	r.peacefulMode = header.isPeacefulModeEnabled();
 	r.buildingHpLevel = header.getBuildingHpLevel();
+	for (const auto& definition : experimentDefinitions())
+		if (mapHeader.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
 	setup.experiments = header.getExperiments().keys();
 	setup.validateSemantics();
 	return setup;

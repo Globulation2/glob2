@@ -17,9 +17,11 @@ Uint32 Map::checkSum(bool heavy)
 	Uint32 cs=size;
 	if (heavy)
 	{
-		for (const auto& c: tiles)
+		for (size_t index = 0; index < tiles.size(); ++index)
 		{
+			const auto& c = tiles[index];
 			cs+=
+				static_cast<Uint32>(terrainIds[index]) +
 				c.terrain +
 				c.building +
 				c.resource.getUint32() +
@@ -33,33 +35,6 @@ Uint32 Map::checkSum(bool heavy)
 	};
 	return cs;
 }
-
-Sint32 Map::warpDist1d(int p, int q, int l)
-{
-	Sint32 d=abs(p-q);
-	d%=l;
-	if (d>l/2)
-		d=l-d;
-	return d;
-}
-
-Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
-{
-	Sint32 dx=warpDist1d(px,qx,w);
-	Sint32 dy=warpDist1d(py,qy,h);
-	return ((dx*dx)+(dy*dy));
-}
-
-Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
-{
-	Sint32 dx=warpDist1d(px,qx,w);
-	Sint32 dy=warpDist1d(py,qy,h);
-	if (dx>dy)
-		return dx;
-	else
-		return dy;
-}
-
 
 void Map::dumpGradient(Uint8 *gradient, const std::string filename)
 {

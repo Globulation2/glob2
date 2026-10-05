@@ -46,8 +46,8 @@ static WorldState makeWorld()
 {
 	WorldState world;world.reset(32,32);world.profiles=makeProfiles();
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
-	{world.tile(x,y).discovered=true;world.tile(x,y).grass=true;world.tile(x,y).protectedness=60;}
-	for(int x=0;x<world.width;++x){world.tile(x,0).water=true;world.tile(x,0).grass=false;}
+	{world.tile(x,y).discovered=true;world.tile(x,y).buildable=true;world.tile(x,y).protectedness=60;}
+	for(int x=0;x<world.width;++x){world.tile(x,0).swimmable=true;world.tile(x,0).walkable=false;world.tile(x,0).fertilitySource=true;world.tile(x,0).buildable=false;}
 	return world;
 }
 
@@ -687,8 +687,8 @@ TEST_SUITE("Maxima.Placement")
 			WorldState fallback;fallback.reset(16,16);fallback.profiles=makeProfiles();
 			for(int y=0;y<16;++y)for(int x=0;x<16;++x)
 			{
-				fallback.tile(x,y).grass=x!=0;
-				fallback.tile(x,y).water=x==0;
+				fallback.tile(x,y).buildable=x!=0;
+				fallback.tile(x,y).swimmable=x==0;fallback.tile(x,y).walkable=x!=0;fallback.tile(x,y).fertilitySource=x==0;
 				fallback.tile(x,y).discovered=x==0;
 			}
 			for(int y=3;y<=8;++y)for(int x=4;x<=7;++x)
@@ -925,7 +925,7 @@ TEST_SUITE("Maxima.Placement")
 		// Colony seeds share the Swarm type but carry independent placement state.
 		WorldState colonyWorld;colonyWorld.reset(64,64);colonyWorld.profiles=makeProfiles();
 		for(int y=0;y<64;++y)for(int x=0;x<64;++x)
-		{colonyWorld.tile(x,y).discovered=true;colonyWorld.tile(x,y).grass=true;}
+		{colonyWorld.tile(x,y).discovered=true;colonyWorld.tile(x,y).buildable=true;}
 		WorldBuilding home;home.id=1;home.buildingType=0;home.level=1;
 		home.centerX=8;home.centerY=8;home.hp=home.hpMax=100;
 		colonyWorld.buildings.push_back(home);
@@ -987,12 +987,12 @@ TEST_SUITE("Maxima.Placement")
 			std::vector<DevelopmentIntent>(1,coreSwarm),fourSites,seed));
 		WorldState islands=colonyWorld;
 		for(size_t tile=0;tile<islands.tiles.size();++tile)
-		{islands.tiles[tile].grass=false;islands.tiles[tile].water=true;
+		{islands.tiles[tile].buildable=false;islands.tiles[tile].swimmable=true;islands.tiles[tile].walkable=false;islands.tiles[tile].fertilitySource=true;
 		 islands.tiles[tile].resourceType=-1;islands.tiles[tile].foodOpportunity=0;islands.tiles[tile].permanentResource=false;}
 		for(int y=0;y<=20;++y)for(int x=0;x<=20;++x)
-		{islands.tile(x,y).grass=true;islands.tile(x,y).water=false;}
+		{islands.tile(x,y).buildable=true;islands.tile(x,y).swimmable=false;islands.tile(x,y).walkable=true;islands.tile(x,y).fertilitySource=false;}
 		for(int y=32;y<=60;++y)for(int x=32;x<=60;++x)
-		{islands.tile(x,y).grass=true;islands.tile(x,y).water=false;}
+		{islands.tile(x,y).buildable=true;islands.tile(x,y).swimmable=false;islands.tile(x,y).walkable=true;islands.tile(x,y).fertilitySource=false;}
 		islands.tile(45,45).resourceType=1; islands.tile(45,45).foodOpportunity=64*65536;
 		islands.tile(45,45).resourceAmount=10;
 		islands.tile(45,45).permanentResource=true;
@@ -1006,8 +1006,8 @@ TEST_SUITE("Maxima.Placement")
 		{
 			WorldState bridged=islands;
 			for(int y=10;y<=35;++y)for(int x=10;x<=35;++x)
-				if((x<=13||y>=32)&&bridged.tile(x,y).water)
-				{bridged.tile(x,y).water=false;bridged.tile(x,y).grass=false;}
+				if((x<=13||y>=32)&&bridged.tile(x,y).swimmable)
+				{bridged.tile(x,y).swimmable=false;bridged.tile(x,y).walkable=true;bridged.tile(x,y).fertilitySource=false;bridged.tile(x,y).buildable=false;}
 			Planner bridgeColonizer;bridgeColonizer.configure(makeProfiles(),1,2,6,5,7);
 			bridgeColonizer.adoptStartingBuildings(bridged);
 			DevelopmentAction bridgeSeed;
@@ -1015,12 +1015,12 @@ TEST_SUITE("Maxima.Placement")
 			REQUIRE((!bridgeSeed.requiresSwimmingBuilders&&!bridgeSeed.arteryTiles.empty()));
 			int sandTile=-1;
 			for(int tile:bridgeSeed.arteryTiles)
-				if(!bridged.tiles[tile].grass)sandTile=tile;
+				if(!bridged.tiles[tile].buildable)sandTile=tile;
 			REQUIRE(sandTile>=0);
 			REQUIRE(bridgeColonizer.reserve(bridged,bridgeSeed));
 			RejectionReason reason;
 			REQUIRE(bridgeColonizer.revalidate(bridged,bridgeSeed,&reason,true));
-			bridged.tiles[sandTile].water=true;
+			bridged.tiles[sandTile].swimmable=true;bridged.tiles[sandTile].walkable=false;bridged.tiles[sandTile].fertilitySource=true;
 			REQUIRE(!bridgeColonizer.revalidate(bridged,bridgeSeed,&reason,true));
 			REQUIRE(reason==RejectedCirculation);
 		}
@@ -1192,7 +1192,7 @@ TEST_SUITE("Maxima.Placement")
 		WorldState resourceWorld=makeWorld();
 		for(size_t i=0;i<resourceWorld.tiles.size();++i)
 		{
-			if(!resourceWorld.tiles[i].grass)continue;
+			if(!resourceWorld.tiles[i].buildable)continue;
 			resourceWorld.tiles[i].clearableResource=true;
 			resourceWorld.tiles[i].resourceType=0;
 			resourceWorld.tiles[i].resourceAmount=5;

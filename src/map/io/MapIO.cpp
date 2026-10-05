@@ -3,6 +3,7 @@
 
 #include "BuildingGradientSearch.h"
 #include "Map.h"
+#include "TerrainPresentation.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "MapInternal.h"
@@ -71,6 +72,7 @@ try
 	displayedClearAreaView.resize(size, false);
 	displayedFarmAreaView.resize(size, false);
 	tiles.resize(size);
+	terrainIds.assign(size, GRASS);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
@@ -87,6 +89,8 @@ try
     {
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
+        if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::runtime_error("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(v); });
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.variety=v;});
@@ -110,7 +114,22 @@ try
 		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		if (!packed) tiles[i].terrain = stream->readUint16("terrain");
-		if (tiles[i].terrain >= 272) co_return false;
+		if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+		{
+			if (tiles[i].terrain >= 272) co_return false;
+			terrainIds[i] = legacyTerrainType(tiles[i].terrain);
+		}
+		else
+		{
+			if (!packed)
+			{
+				const auto id = stream->readUint16("terrainType");
+				if (!validTerrainType(id)) co_return false;
+				terrainIds[i] = static_cast<TerrainType>(id);
+			}
+			const auto& visual = terrainPresentation(terrainIds[i]);
+			if (tiles[i].terrain < visual.firstFrame || tiles[i].terrain >= visual.firstFrame + visual.variants) co_return false;
+		}
 		if (!packed) tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;
@@ -158,6 +177,7 @@ try
 	if (restoreExploredArea)
 		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL, versionMinor);
 
+	rebuildTerrainCounts();
 	this->game = game;
 
 	// We load sectors:
@@ -251,6 +271,7 @@ void Map::save(GAGCore::OutputStream *stream)
     {
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return mapDiscovered[i];});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].terrain;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(terrainIds[i]);});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].building;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.type;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.variety;});
@@ -272,6 +293,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
 		stream->writeUint16(tiles[i].terrain, "terrain");
+		stream->writeUint16(static_cast<Uint16>(terrainIds[i]), "terrainType");
 		stream->writeUint16(tiles[i].building, "building");
 		
 		stream->write(&(tiles[i].resource), 4, "ressource");

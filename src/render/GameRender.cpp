@@ -185,22 +185,24 @@ bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache 
 	if (frame.left != 0 || frame.top != 0)
 		return false;
 
-	auto *water = frame.water.nativeFrame(0);
+	const auto &p=TerrainOceanBackdrop;
+    auto *water=frame.water.nativeFrame(terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time));
 	if (water)
 	{
 		PERF_SCOPE_TIME(Water);
-		const int startX = -(((frame.viewportX << 5) + time / 2) % 512);
-		const int startY = -((frame.viewportY << 5) % 512);
+        const int width=water->getW(),height=water->getH();
+        const int startX=-(((frame.viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
+        const int startY=-(((frame.viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
         // Include the original pass's overshoot outside the logical viewport.
         // Fractional transforms can bring those pixels back inside the target.
         const SDL_Rect bounds{startX, startY,
-            ((frame.width - startX + 511) / 512) * 512,
-            ((frame.height - startY + 511) / 512) * 512};
+            ((frame.width - startX + width-1) / width) * width,
+            ((frame.height - startY + height-1) / height) * height};
         const auto regions = cache.waterRegions(bounds);
-        for (int y = startY; y < frame.height; y += 512)
-            for (int x = startX; x < frame.width; x += 512)
+        for (int y = startY; y < frame.height; y += height)
+            for (int x = startX; x < frame.width; x += width)
             {
-                const SDL_Rect tile{x, y, 512, 512};
+                const SDL_Rect tile{x, y, width, height};
                 // Keep the complete source mapping: cropping before scaling
                 // would restart nearest-neighbor sampling at coverage edges.
                 if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
@@ -347,7 +349,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 		softwareTerrainCache &&
 		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
-									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
+									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time);
 	bool coveredWater = false;
 	try
 	{
@@ -370,7 +372,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 		softwareTerrainCache->draw(frame.target);
 	}
 	else
-		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map);
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.

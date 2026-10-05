@@ -831,6 +831,37 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   unaffected.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
+- Terrain simulation properties live in `src/map/TerrainProperties.h`, indexed by
+  stable `TerrainType` IDs. Walking, swimming, flying, building eligibility,
+  resource habitats, irrigation, movement rates, health and projectile obstruction
+  are independent capabilities. Use a property predicate when asking what a cell
+  permits; compare IDs only when its identity is the actual question (for example,
+  an editor brush or a generator's material selection).
+- `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
+  state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
+  batch edits with `editTerrain()` so snapshots, topology and ecology caches are
+  invalidated together. The compatibility `getTerrainType` query returns an
+  unknown category for legacy shores; never use it to index the property table.
+  The old corner editor and old-file importer are explicit
+  adapters; legacy shores have their own walkable, unbuildable profiles.
+- Presentation metadata is separate in `TerrainPresentation.h`: atlas, frame range,
+  animation, backdrop, decorative edges and independent map/preview/export colors.
+  Add a stable enum entry and complete both tables for a new material. Experimental
+  authoring gates live in `TerrainExperiments.h`; maps carry the required experiments
+  into matches, while saves retain them independently of the user's current settings.
+- Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
+  The weighted kernels preserve the classic paired water/inhibition and rotated
+  shoreline probes; growth reads their cached results. Fields use Q16 integers,
+  while opportunity rates use `Fertility::kRateScale` (three times Q16) so wheat
+  retains positive growth even at the smallest nonzero fertility. Keep these
+  units distinct. Weighted contributions below one Q16 quantum round down;
+  classic terrain probabilities retain their exact integer numerators.
+  `Tile::canResourcesGrow` is the saved scenario override;
+  `Map::canResourcesGrow` also checks the terrain capability.
+- Save format 134 stores canonical terrain IDs and fractional terrain health effects.
+  Earlier supported saves derive IDs from their classic sprite ranges and adopt the
+  current simulation. Save floor 58 remains supported; replay floor 134 and network
+  protocol 55 separate clients using the new movement and ecology rules.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.
@@ -1307,15 +1338,16 @@ existing game rendering entry point. Presentation state a view keeps between fra
 animation phases, the cloud field, the overlay scratch buffer and the software terrain
 cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game` or `Map`;
 the simulation neither reads nor writes it and each view animates independently. The
-terrain cache is transient presentation state: 16×16 tile chunks, at most 32 MiB of pixel
-storage, least-recently-used eviction.
+terrain cache is transient presentation state: 16×16 tile chunks, a 32 MiB storage
+reservation including pixels, layer descriptors and borrowed views, with
+least-recently-used eviction.
 The cache is used during transformed software passes. Ordinary native drawing keeps
 its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
 transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
 chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
 over transparent chunk holes. Views are destroyed before their backing chunk.
-Each chunk validates exact terrain IDs, the existing discovery decisions and source
-content revisions. It stores raw color/alpha, so coastlines blend over animated water
+Each chunk validates canonical terrain IDs, material-owned layer frames, animation
+phases, the existing discovery decisions and source content revisions. It stores raw color/alpha, so coastlines blend over animated water
 once. Map replacement (a new `Map::identity()`) clears the cache; editor terrain changes and visible-team changes
 are detected during preparation. Resources, actors, fog and overlays keep their existing
 passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery

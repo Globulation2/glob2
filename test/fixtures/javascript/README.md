@@ -12,7 +12,7 @@ subnormal Math results. These are compatibility fixtures, not benchmarks.
 Changing them requires explaining the intended profile or simulation change.
 
 Run `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory. It compares against the frozen trace, compares
+with a fresh output directory. It compares against the current terrain trace, compares
 replays and saves at one and four compute workers, and checks resumed state and
 ticks from several saved checkpoints, including scenario-callback boundaries. The saved payload comparison excludes only
 the existing MapHeader SHA1, which depends on save history; scripts, RNG state,
@@ -107,7 +107,17 @@ aggregate checksums; the experiment and simulation records must match.
 The format-127 sixteen-team implementation hashes a larger script-generation
 table. `profile1-256-teams16.checksums.gz` and
 `realistic-profile1-256-teams16.checksums.gz` pin that aggregate checksum layout.
-The original traces remain intact: the native simulation test also requires every
-team, building and unit record to match them at all 256 ticks. The expanded traces
-were captured from Linux execution; one/four workers, save/resume and replay
-continue to compare complete records against the capacity-specific baseline.
+The original traces remain intact: both checkers compare every historical team,
+building and unit record between the original and expanded traces at all 256 ticks.
+The expanded traces were captured from Linux execution.
+
+`profile1-256-terrain.checksums.gz` and
+`realistic-profile1-256-terrain.checksums.gz` are the current simulation baselines.
+Canonical terrain IDs now participate in the map checksum, and property-based
+ecology can change subsequent simulation behavior. Both checkers still load the
+original version-125 saves, then compare complete current traces, one/four-worker
+execution and saved continuations; the native suite also checks replay playback.
+The native fixture runner's `--update-fixtures` option rewrites only the terrain
+traces. Historical traces, initial saves and numeric/data goldens remain intact.
+MapHeader version normalization and the final-save SHA1 exclusion described above
+remain unchanged.

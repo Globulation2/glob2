@@ -1,3 +1,4 @@
+#include "TerrainPresentation.h"
 #ifndef __EMSCRIPTEN__
 #include <SDL3_net/SDL_net.h>
 #endif
@@ -294,7 +295,34 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	// load terrain data
 	if (!terrain)
 		terrain = sprite("data/gfx/terrain");
-	terrainWater = sprite("data/gfx/water");
+	for (unsigned type=0; type<TERRAIN_COUNT; ++type)
+    {
+        const auto &p = TerrainPresentations[type];
+        terrainSprites[type] = sprite(p.sprite);
+        const auto checkFrames = [](Sprite *asset, int first, int count, bool tile) {
+            if (first < 0 || count <= 0 || first + count > asset->getFrameCount())
+                throw std::runtime_error("Terrain presentation references missing sprite frames");
+            for (int frame=first; frame<first+count; ++frame)
+                if ((tile && (asset->getW(frame)!=32 || asset->getH(frame)!=32)) ||
+                    asset->getW(frame)<=0 || asset->getH(frame)<=0)
+                    throw std::runtime_error("Terrain presentation has invalid frame dimensions");
+        };
+        checkFrames(terrainSprites[type],p.firstFrame,p.variants*p.animationFrames,true);
+        checkFrames(terrainSprites[type],p.editorFrame,1,true);
+        if(p.edgeFirstFrame>=0) checkFrames(terrainSprites[type],p.edgeFirstFrame,15,true);
+        if(p.backdropSprite) {
+            terrainBackdropSprites[type]=sprite(p.backdropSprite);
+            checkFrames(terrainBackdropSprites[type],p.backdropFirstFrame,p.backdropFrames,true);
+        }
+    }
+    terrainWater = sprite(TerrainOceanBackdrop.sprite);
+    if(terrainWater->getFrameCount()<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames) {
+        throw std::runtime_error("Terrain ocean backdrop has missing frames");
+    }
+    for(int f=TerrainOceanBackdrop.firstFrame;f<TerrainOceanBackdrop.firstFrame+TerrainOceanBackdrop.frames;++f) {
+        if(terrainWater->getW(f)<=0 || terrainWater->getH(f)<=0)
+            throw std::runtime_error("Terrain ocean backdrop has invalid frame dimensions");
+    }
 	terrainCloud = sprite("data/gfx/cloud");
 	
 	// black for unexplored terrain
@@ -345,6 +373,11 @@ void GlobalContainer::requestGameGraphics()
         "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
+    for (const auto &p : TerrainPresentations) {
+        Toolkit::requestSprite(p.sprite);
+        if (p.backdropSprite) Toolkit::requestSprite(p.backdropSprite);
+    }
+    Toolkit::requestSprite(TerrainOceanBackdrop.sprite);
     for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);
         if (type->type == "null") continue;

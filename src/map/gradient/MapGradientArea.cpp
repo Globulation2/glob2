@@ -69,7 +69,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!canSwim && isWater(i))
+		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -266,7 +266,7 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!canSwim && isWater(i))
+		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.guardArea & teamMask)
 		{
@@ -330,7 +330,7 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building != NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!canSwim && isWater(i))
+		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else
 			gradient[i] = GRADIENT_UNREACHABLE;

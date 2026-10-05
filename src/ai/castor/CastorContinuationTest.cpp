@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "AI.h"
 #include "AICastor.h"
+#include "AICastorTuning.h"
 #include "Order.h"
 #include "Player.h"
 #include "Utilities.h"
@@ -116,6 +117,20 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
 
 TEST_SUITE("CastorContinuation")
 {
+    TEST_CASE("crop habitat excludes transition sprite sixteen and new paved terrain")
+    {
+        glob2test::HeadlessGlobals globals;
+        World world(AI::CASTOR,false,713);
+        auto& map=world.world.game.map;
+        map.setTerrain(20,20,16); // Historical >16 check accidentally accepted this shore.
+        map.setCellTerrain(24,20,ROAD);
+        map.setCellTerrain(28,20,ICE);
+        AICastor ai(world.world.game.players[0]);
+        for(int tick=0;tick<AI_CASTOR_BOOT_IDLE_TICKS+2;++tick) ai.getOrder();
+        for(int x:{20,24,28})
+            CHECK(ai.notGrassMap[20*64+x]==AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE);
+        CHECK(ai.notGrassMap[40*64+40]<AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE);
+    }
     TEST_CASE("Castor boot and active projects survive save-load")
     {
         glob2test::HeadlessGlobals globals;

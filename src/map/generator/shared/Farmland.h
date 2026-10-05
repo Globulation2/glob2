@@ -322,7 +322,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	std::vector<int> rowRoom;
 	for (int i = 0; i < t.size(); ++i)
 		if (farm.row[i] >= 0 && farm.row[i] % 2 == 0 && fromWater[i] >= 0 && !farm.plot[i] &&
-			eligible(i) && map.isGrass(i % t.w, i / t.w))
+			eligible(i) && (map.terrainPropertiesAt(i).allowedResources & (1u<<WHEAT)))
 		{
 			crops.push_back({fromWater[i], i});
 			if (farm.row[i] >= int(rowRoom.size()))

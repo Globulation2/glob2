@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <cstdint>
 #include "Contact.h"
+#include "Channels.h"
+#include "Walls.h"
 #include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -32,6 +34,7 @@
 #include "Resources.h"
 #include "Sketch.h"
 #include "StartingPositions.h"
+#include "TerrainResourceProperties.h"
 #include "Unit.h"
 #include "Utilities.h"
 #include <SDL3_image/SDL_image.h>
@@ -151,7 +154,9 @@ class MapGeneratorDefaultsTest
 						   GenerationError::InvalidRequest);
 					continue;
 				}
-				REQUIRE(service.generate(world, rectangular));
+				const auto generated = service.generate(world, rectangular);
+				INFO(generated.diagnostic());
+				REQUIRE(generated);
 				REQUIRE(world.map.getW() == (1 << dimensions.first));
 				REQUIRE(world.map.getH() == (1 << dimensions.second));
 				for (int team = 0; team < rectangular.nbTeams; ++team)
@@ -798,6 +803,67 @@ TEST_SUITE("MapGeneratorDefaults")
 			REQUIRE(MazeOptions(small).cellShape == 0);
 		}
 	}
+	TEST_CASE("resource habitat distinguishes terrain permission from growth and occupancy")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world;
+		auto& map = world.game.map;
+		map.setCellTerrain(8, 8, ROAD);
+		map.setCellTerrain(9, 8, ICE);
+		map.setCellTerrain(10, 8, WATER);
+		CHECK(map.terrainPropertiesAt(8, 8).buildable);
+		CHECK_FALSE(map.terrainSupportsResourceAt(8, 8, WHEAT));
+		CHECK_FALSE(map.terrainSupportsResourceAt(9, 8, STONE));
+		CHECK(map.terrainSupportsResourceAt(10, 8, ALGA));
+		CHECK_FALSE(map.terrainSupportsResourceAt(10, 8, WHEAT));
+		map.setResource(7, 8, WHEAT, 1);
+		CHECK(map.terrainSupportsResourceAt(7, 8, WOOD));
+		CHECK_FALSE(map.terrainSupportsResourceAt(7, 8, -1));
+		CHECK_FALSE(map.terrainSupportsResourceAt(7, 8, 99));
+		auto custom = terrainProperties(GRASS);
+		custom.resourcesGrow = false;
+		CHECK(terrainSupportsResource(custom, WHEAT, true));
+		custom.nonGrowingResources = false;
+		CHECK_FALSE(terrainSupportsResource(custom, STONE, false));
+		CHECK(terrainSupportsResource(custom, WOOD, true));
+		custom.allowedResources &= ~(1u << WOOD);
+		CHECK_FALSE(terrainSupportsResource(custom, WOOD, true));
+	}
+    TEST_CASE("shared route and wall contracts use terrain capabilities")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        auto& map = world.game.map;
+        const MapGeneration::Torus torus(map);
+        map.setCellTerrain(8,8,ROAD);
+        map.setCellTerrain(9,8,ICE);
+        map.setCellTerrain(10,8,WATER);
+        map.setCellTerrain(11,8,SAND);
+        const auto open = MapGeneration::walkableTiles(map);
+        const auto beach = MapGeneration::beachTiles(map,torus);
+        CHECK(open[torus.at(8,8)]);
+        CHECK(open[torus.at(9,8)]);
+        CHECK_FALSE(open[torus.at(10,8)]);
+        CHECK_FALSE(beach[torus.at(8,8)]);
+        CHECK_FALSE(beach[torus.at(9,8)]);
+        CHECK(beach[torus.at(11,8)]);
+        CHECK_EQ(MapGeneration::stepCost(map,8,8,MapGeneration::StepCosts::walking()),1);
+        CHECK_EQ(MapGeneration::stepCost(map,10,8,MapGeneration::StepCosts::walking()),-1);
+        CHECK_EQ(MapGeneration::stepCost(map,10,8,MapGeneration::StepCosts::swimming(3)),3);
+        std::vector<unsigned char> wall(torus.size(),0);
+        wall[torus.at(7,8)]=wall[torus.at(8,8)]=wall[torus.at(9,8)]=1;
+        const auto stone = MapGeneration::designedStone(map,torus,wall);
+        CHECK(stone.stone[torus.at(7,8)]);
+        CHECK_FALSE(stone.stone[torus.at(8,8)]);
+        CHECK_FALSE(stone.stone[torus.at(9,8)]);
+        CHECK_EQ(stone.gaps,2);
+		const MapGeneration::SandFord ford{20, 20, 0, 1, 1, 0, 3, 1};
+		map.setCellTerrain(20, 20, ICE);
+		map.setCellTerrain(21, 20, ROAD);
+		CHECK(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
+		map.setCellTerrain(20, 20, WATER);
+		CHECK_FALSE(MapGeneration::fordWalkabilityFault(map, torus, ford).empty());
+    }
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
 	{
 		DefaultsFixture fixture;

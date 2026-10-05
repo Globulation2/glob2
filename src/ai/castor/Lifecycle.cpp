@@ -4,6 +4,7 @@
 #include <Stream.h>
 
 #include "AICastor.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "Order.h"
 #include "Player.h"
@@ -502,6 +503,9 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		{ stream->readLeaveSection(); return false; }
 	}
 	stream->readLeaveSection();
+	if (versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
+		&& computeBoot>AI_CASTOR_BOOT_IDLE_TICKS+1)
+		computeNotGrassMap();
 	return stream->isValid();
 }
 

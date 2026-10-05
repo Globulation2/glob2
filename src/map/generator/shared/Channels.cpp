@@ -35,7 +35,7 @@ std::vector<unsigned char> beachTiles(const Map &map, const Torus &t)
 	std::vector<unsigned char> beach(size_t(t.size()), 0);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
-			beach[size_t(y) * t.w + x] = !map.isGrass(x, y) && !map.isWater(x, y);
+			beach[size_t(y) * t.w + x] = map.terrainPropertiesAt(x, y).shoreline;
 	return beach;
 }
 
@@ -162,6 +162,26 @@ SandFord fordAlong(const Torus &t, const std::vector<ShapePoint> &centreline,
 	return f;
 }
 
+std::string fordWalkabilityFault(const Map &map, const Torus &t, const SandFord &f)
+{
+	const auto walkable = [&](double x, double y)
+	{
+		return map.terrainPropertiesAt(t.at(int(std::floor(x)), int(std::floor(y)))).walkable;
+	};
+	for (int a = -1; a <= 1; ++a)
+		for (double s = -f.span; s <= f.span + 1e-9; s += 0.5)
+			if (!walkable(f.x + f.alongX * a + f.acrossX * s,
+				f.y + f.alongY * a + f.acrossY * s))
+				return "A ford" + ChannelDetail::where(t, f.x, f.y) + " is not walkable.";
+	for (int side : {-1, 1})
+	{
+		const double s = side * (f.span + 1.0);
+		if (!walkable(f.x + f.acrossX * s, f.y + f.acrossY * s))
+			return "A ford" + ChannelDetail::where(t, f.x, f.y) + " has no walkable bank.";
+	}
+	return "";
+}
+
 bool fordLandingWalkable(const Map &map, const Torus &t, const SandFord &f, int side)
 {
 	const double s = side * (f.span + 1.0);
@@ -170,7 +190,7 @@ bool fordLandingWalkable(const Map &map, const Torus &t, const SandFord &f, int 
 		for (int dx = -1; dx <= 1; ++dx)
 		{
 			const int x = t.x(at % t.w + dx), y = t.y(at / t.w + dy);
-			if (!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID)
+			if (map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID)
 				return true;
 		}
 	return false;

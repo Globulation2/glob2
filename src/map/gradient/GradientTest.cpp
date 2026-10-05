@@ -51,6 +51,7 @@ namespace
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
 			tiles.assign(size, Tile());
+            importLegacyTerrain();
 		}
 		~GrassMap()
 		{
@@ -60,8 +61,8 @@ namespace
 			size = 0;
 		}
 		size_t cells() const { return size; }
-		void putWater(int x, int y) { tiles[coordToIndex(x, y)].terrain = 256; }
-		void putWaterAt(size_t i) { tiles[i].terrain = 256; }
+		void putWater(int x, int y) { setCellTerrain(x,y,WATER); }
+		void putWaterAt(size_t i) { setCellTerrain(i,WATER); }
 
 		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
 		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const

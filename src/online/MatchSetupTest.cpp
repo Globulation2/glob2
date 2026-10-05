@@ -284,6 +284,22 @@ TEST_SUITE("MatchSetup")
 		}
 	}
 
+	TEST_CASE("map-required terrain experiments propagate to setup and cannot be omitted")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto document = glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json");
+		const MatchSetup setup = MatchSetup::parse(document);
+		MapHeader map = mapWithTeams(4);
+		GameHeader header = setup.toGameHeader(map);
+		map.requiredTerrainExperiments.set(ExperimentId::IceTerrain);
+		map.requiredTerrainExperiments.set(ExperimentId::RoadTerrain);
+		CHECK_THROWS_AS(setup.toGameHeader(map),MatchSetupError);
+		const MatchSetup required = MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
+		const GameHeader restored = required.toGameHeader(map);
+		CHECK(restored.hasExperiment(ExperimentId::IceTerrain));
+		CHECK(restored.hasExperiment(ExperimentId::RoadTerrain));
+	}
+
 	TEST_CASE("closed seats close their team and follow every player seat")
 	{
 		glob2test::HeadlessGlobals globals;

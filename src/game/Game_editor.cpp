@@ -17,6 +17,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "UnitTiming.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
@@ -211,6 +212,9 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	teams[team]->myUnits[id]->directionFromDxDy();
 	teams[team]->myUnits[id]->delta=delta;
 	teams[team]->myUnits[id]->selectPreferredMovement();
+    const auto &terrain = map.terrainPropertiesAt(x,y);
+    auto *unit = teams[team]->myUnits[id];
+    unit->speed = unitTerrainMovementSpeed(unit->speed,fly ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
 	return teams[team]->myUnits[id];
 }
 
@@ -331,11 +335,14 @@ void Game::removeUnallowedUnitsAndBuildings(int x, int y, int w, int h)
 		{
 			int cx=dx&map.getMaskW();
 			int cy=dy&map.getMaskH();
-			if (!map.isGrass(cx, cy))
-				removeUnitAndBuildingAndFlags(cx, cy, 1, DEL_BUILDING);
-			Uint16 guid=map.getGroundUnit(cx, cy);
-			if (guid!=NOGUID && map.isWater(cx, cy) && !getUnit(guid)->performance[SWIM])
-				removeUnitAndBuildingAndFlags(cx, cy, 1, DEL_GROUND_UNIT);
+			const auto &terrain = map.terrainPropertiesAt(cx,cy);
+            if (!terrain.buildable)
+                removeUnitAndBuildingAndFlags(cx,cy,1,DEL_BUILDING);
+            Uint16 guid=map.getGroundUnit(cx,cy);
+            if (guid!=NOGUID && !terrain.walkable && !(terrain.swimmable && getUnit(guid)->performance[SWIM]))
+                removeUnitAndBuildingAndFlags(cx,cy,1,DEL_GROUND_UNIT);
+            if (!terrain.flyable && map.getAirUnit(cx,cy)!=NOGUID)
+                removeUnitAndBuildingAndFlags(cx,cy,1,DEL_AIR_UNIT);
 		}
 }
 

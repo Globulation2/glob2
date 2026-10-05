@@ -137,7 +137,7 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		blocked[i] = map.isWater(x, y) || map.getBuilding(x, y) != NOGBID ||
+		blocked[i] = !map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID ||
 					 (alsoBlocked && (*alsoBlocked)[i]);
 		costly[i] = map.isResource(x, y);
 	}
@@ -198,7 +198,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 	const auto openAt = [&](int i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		return !map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	};
 	// The open tiles round a colony's swarm.
 	const auto doorstep = [&](int team)
@@ -241,7 +241,8 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			cheapestWalk(t, GridNeighbors::Cardinal, reachable, target,
 						 [&](int, int to, int, int)
 						 {
-							 if (map.getBuilding(to % t.w, to / t.w) != NOGBID ||
+							 if ((!map.terrainPropertiesAt(to).walkable && map.terrainTypeAt(to) != WATER) ||
+								 map.getBuilding(to % t.w, to / t.w) != NOGBID ||
 								 (keep && (*keep)[to]))
 								 return -1;
 							 return stepCost(map, to % t.w, to / t.w, costs);
@@ -281,7 +282,7 @@ bool openTrail(Map &map, const Torus &t, const std::vector<int> &sources,
 	const auto cost = [&](int, int to, int, int)
 	{
 		const int x = to % t.w, y = to / t.w;
-		if (map.isWater(x, y) || map.getBuilding(x, y) != NOGBID || keep[to])
+		if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID || keep[to])
 			return -1;
 		if (!lie)
 			return map.isResource(x, y) ? 11 : 10;

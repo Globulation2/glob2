@@ -107,6 +107,10 @@ SandFord fordAlong(const Torus &, const std::vector<ShapePoint> &centreline,
 template <typename Water>
 std::string fordFault(const Torus &, const SandFord &, Water water, double probe = 2.5);
 
+/// Finished-map counterpart to the sketch's non-water test: the crossing and
+/// both bank endpoints must actually permit walking, whatever their material.
+std::string fordWalkabilityFault(const Map &, const Torus &, const SandFord &);
+
 /// Whether a walkable tile (no water, no deposit, no building) lies within one tile of the ford's
 /// landing on `side` (-1 or 1), a tile past its span.
 bool fordLandingWalkable(const Map &, const Torus &, const SandFord &, int side);

@@ -49,6 +49,13 @@ void Unit::setNewValidDirectionAir(void)
 void Unit::flyToTarget()
 {
 	assert(performance[FLY]);
+    if (owner->map->hasAirTerrainConstraints())
+    {
+        dx = dy = 0;
+        owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,&dx,&dy);
+        directionFromDxDy();
+        return;
+    }
 	int ldx=targetX-posX;
 	int ldy=targetY-posY;
 	simplifyDirection(ldx, ldy, &dx, &dy);

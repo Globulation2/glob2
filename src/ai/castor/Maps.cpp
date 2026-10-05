@@ -33,7 +33,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!canSwim && (c.terrain>=AI_CASTOR_TERRAIN_WATER_FIRST) && (c.terrain<AI_CASTOR_TERRAIN_WATER_FIRST+AI_CASTOR_TERRAIN_WATER_COUNT)) // !canSwim && isWater ?
+		else if (!map->terrainPropertiesAt(i).walkable && !(canSwim && map->terrainPropertiesAt(i).swimmable))
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -53,7 +53,7 @@ void AICastor::computeObstacleBuildingMap()
 		const Tile& c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (c.terrain>=AI_CASTOR_TERRAIN_GRASS_COUNT) // if (!isGrass)
+		else  if (!map->terrainPropertiesAt(i).buildable)
 			obstacleBuildingMap[i]=0;
 		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
@@ -433,8 +433,7 @@ void AICastor::computeHydratationMap()
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
-			Uint16 t=tiles[x+(y<<wDec)].terrain;
-			if ((t>=AI_CASTOR_TERRAIN_SAND_FIRST)&&(t<AI_CASTOR_TERRAIN_SAND_FIRST+AI_CASTOR_TERRAIN_SAND_COUNT)) // if SAND
+			if (terrainProvidesFertility(map->terrainPropertiesAt(x,y)))
 				for (int r=1; r<range; r++)
 				{
 					for (int dx=-r; dx<=r; dx++)
@@ -482,9 +481,9 @@ void AICastor::computeNotGrassMap()
 	const auto& tiles=map->tiles;
 	for (size_t i=0; i<size; i++)
 	{
-		Uint16 t=tiles[i].terrain;
-		// Preserve >16 (not >=16 like obstacleBuildingMap above) — see bug M6.
-		if (t>AI_CASTOR_TERRAIN_GRASS_COUNT)// if !GRASS
+		// Habitat replaces the historical >16 sprite test, including its
+		// accidental treatment of transition sprite 16 as a wheat tile.
+		if (!(map->terrainPropertiesAt(i).allowedResources & (1u<<WHEAT)))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -681,7 +680,8 @@ void AICastor::computeEnemyRangeMap()
 		}
 	}
 	
-	map->updateGlobalGradient(gradient);
+	if(map->hasTerrainMovementModifiers()) updateGlobalGradient(gradient);
+	else map->updateGlobalGradient(gradient);
 }
 
 void AICastor::computeEnemyWarriorsMap()
@@ -711,6 +711,7 @@ void AICastor::computeEnemyWarriorsMap()
 			continue;
 		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}
-	map->updateGlobalGradient(gradient);
+	if(map->hasTerrainMovementModifiers()) updateGlobalGradient(gradient);
+	else map->updateGlobalGradient(gradient);
 }
 

@@ -793,7 +793,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.padOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands a little seaward of the pad's middle, so the kit and the trunk lie in front
@@ -883,7 +883,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int teams = context.request.nbTeams;
 	for (size_t k = 0; k < L.trunkLines.size(); ++k)
 		for (const ShapePoint &p : L.trunkLines[k])
-			if (map.isWater(t.x(int(std::lround(p.x))), t.y(int(std::lround(p.y)))))
+			if (!map.terrainPropertiesAt(t.x(int(std::lround(p.x))), t.y(int(std::lround(p.y)))).walkable)
 				return "Colony " + std::to_string(k) + "'s trunk is broken by water.";
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 	const std::vector<unsigned char> walkable = walkableTiles(map);

@@ -28,7 +28,9 @@ ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
 
 bool clearGround(const Map &map, int x, int y)
 {
-	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
+	const auto& terrain=map.terrainPropertiesAt(x,y);
+	return terrain.walkable && (terrain.resourcesGrow || terrain.nonGrowingResources) &&
+		!map.isResource(x,y) && map.getBuilding(x,y)==NOGBID &&
 		   map.getGroundUnit(x, y) == NOGUID;
 }
 
@@ -86,7 +88,7 @@ int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &re
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (region[i] && map.isResource(x, y) && !map.isWater(x, y) && !(keep && (*keep)[i]))
+		if (region[i] && map.isResource(x, y) && map.terrainPropertiesAt(x,y).walkable && !(keep && (*keep)[i]))
 		{
 			map.setNoResource(x, y, 1);
 			++cleared;
@@ -97,49 +99,20 @@ int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &re
 
 namespace
 {
-// Map::growResources' algae test, evaluated exactly for chosen tiles. Each offset is the difference
-// of two independent draws of 0 to 15: -15 to 15, weighted 16 - |d| out of 256.
+// Generation and actual growth consume the same cached ecology. The view is
+// stable while a planting pass changes resources without changing terrain.
 class AlgaeGrowth
 {
-  public:
-	AlgaeGrowth(const Map &map, const Torus &t) : t(t), water(t.size(), 0), sand(t.size(), 0)
-	{
-		for (int y = 0; y < t.h; ++y)
-			for (int x = 0; x < t.w; ++x)
-			{
-				water[y * t.w + x] = map.isWater(x, y);
-				sand[y * t.w + x] = map.isSand(x, y);
-			}
-		for (int d = -15; d <= 15; ++d)
-			weight[d + 15] = (16 - std::abs(d)) / 256.0;
-		// The sand the test looks for lies within 30 tiles; beyond that the chance is 0.
-		toSand = stepsFrom(t, sand);
-	}
+public:
+	AlgaeGrowth(const Map& map, const Torus&) : map(map), field(map.resourceGrowthField()) {}
 	double at(int i) const
 	{
-		if (!water[i] || toSand[i] < 0 || toSand[i] > 30)
-			return 0;
-		// Map sizes are powers of two, so wrapping is a mask; this loop runs 961 times a tile.
-		const int x = i % t.w, y = i / t.w, wm = t.w - 1, hm = t.h - 1;
-		double sum = 0;
-		for (int dy = -15; dy <= 15; ++dy)
-		{
-			const int waterRow = ((y + dy) & hm) * t.w, sandColumn = (x + 2 * dy) & wm;
-			double row = 0;
-			for (int dx = -15; dx <= 15; ++dx)
-				if (water[waterRow + ((x + dx) & wm)] &&
-					sand[((y + 2 * dx) & hm) * t.w + sandColumn])
-					row += weight[dx + 15];
-			sum += row * weight[dy + 15];
-		}
-		return sum;
+		if (!(map.terrainPropertiesAt(i).allowedResources & (1u<<ALGA))) return 0;
+		return double(field.rate(i,ALGA))/Fertility::kRateScale;
 	}
-
-  private:
-	const Torus &t;
-	std::vector<unsigned char> water, sand;
-	std::vector<int> toSand;
-	double weight[31];
+private:
+	const Map& map;
+	const Fertility::GrowthCache& field;
 };
 } // namespace
 
@@ -165,7 +138,7 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 	if (band.nearestOffshore < 0)
 	{
 		for (int i = 0; i < n; ++i)
-			if (map.isWater(i % t.w, i / t.w))
+			if (map.isResourceAllowed(i % t.w, i / t.w, ALGA))
 				water.emplace_back(i % t.w, i / t.w);
 	}
 	else
@@ -174,8 +147,8 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 		for (int y = 0; y < t.h; ++y)
 			for (int x = 0; x < t.w; ++x)
 			{
-				wet[y * t.w + x] = map.isWater(x, y);
-				dry[y * t.w + x] = !map.isWater(x, y);
+				wet[y * t.w + x] = map.isResourceAllowed(x,y,ALGA);
+				dry[y * t.w + x] = !map.isResourceAllowed(x,y,ALGA);
 			}
 		const std::vector<int> offshore = stepsFrom(t, dry, wet);
 		for (int i = 0; i < n; ++i)
@@ -194,7 +167,7 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 							   band.clumpRadius);
 		return;
 	}
-	// Only the band's own tiles are measured: the test costs 961 lookups a tile.
+	// Rank the band against the same cached growth field used by simulation.
 	const AlgaeGrowth growth(map, t);
 	std::vector<std::vector<std::pair<double, int>>> byGroup(groups);
 	for (const MapGeneratorPoint &p : water)
@@ -245,16 +218,21 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 				  const char *stream)
 {
 	const int width = map.getW();
+	// The stock lottery may choose any of these deposits after the center.
+	constexpr unsigned stockMask=(1u<<STONE)|(1u<<WHEAT)|(1u<<CHERRY)|(1u<<ORANGE)|(1u<<PRUNE);
+	const auto acceptsStock=[&](int x,int y) {
+		return (map.terrainPropertiesAt(x,y).allowedResources & stockMask)==stockMask;
+	};
 	for (const Island &island : islands)
 	{
 		std::vector<MapGeneratorPoint> grass;
 		for (int i : island.tiles)
-			if (map.isGrass(i % width, i / width))
+			if (acceptsStock(i % width, i / width))
 				grass.emplace_back(i % width, i / width);
 		if (grass.empty())
 			continue;
 		MapGeneratorPoint centre(island.x, island.y);
-		if (!map.isGrass(centre.x, centre.y))
+		if (!acceptsStock(centre.x, centre.y))
 			centre = grass[context.bounded(stream, grass.size())];
 		switch (context.bounded(stream, 3))
 		{

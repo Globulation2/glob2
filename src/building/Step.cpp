@@ -15,6 +15,8 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Order.h"
+#include "field/AirPathfind.h"
+#include "field/TerrainMovementCosts.h"
 
 namespace
 {
@@ -320,7 +322,7 @@ bool Building::subscribeToBringResourcesStep()
 	return hired;
 }
 
-bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
+bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance)
 {
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
@@ -333,6 +335,21 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
 		return false;
 	}
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
+	if (terrainDistance == INT_MAX)
+	{
+		noteUnitFailing(unit, UnitCantAccessBuilding);
+		return false;
+	}
+	if (terrainDistance >= 0)
+	{
+		if (terrainDistance > timeLeft)
+		{
+			noteUnitFailing(unit, UnitTooFarFromBuilding);
+			return false;
+		}
+		*dist = int(std::min(std::int64_t(INT_MAX),std::int64_t(terrainDistance)*terrainDistance));
+		return true;
+	}
 	// warpDistSquare returns squared Euclidean distance, so timeLeft is
 	// squared here to keep the comparison in the same units. Worker/warrior
 	// flags compare against Map::buildingAvailable (linear gradient
@@ -437,6 +454,15 @@ bool Building::subscribeForFlagingStep()
 		// doesn't run (building already fully staffed). When the loop does run,
 		// this is overwritten by the per-iteration reset on iteration 1.
 		resetFailureTallies();
+		// One reverse search serves every explorer candidate and all hiring
+		// iterations. Ignore temporary flyer occupancy, as building selection
+		// does; individual steering resolves it. Uniform maps allocate nothing.
+		const Map& map = *owner->map;
+		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
+			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
+			[&map](int x,int y) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,map.terrainPropertiesAt(x,y).airSpeedQ8); },
+			type->zonable[EXPLORER] && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
+			field::AirDistanceDirection::ToDestination);
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
 		{
 			// Per-iteration reset: the same Unit::MAX_COUNT array is rescanned
@@ -461,7 +487,13 @@ bool Building::subscribeForFlagingStep()
 				{
 					if(unit->typeNum != EXPLORER)
 						continue;
-					if(considerUnitForExplorerFlag(unit, &distances[n]))
+					int travelDistance = -1;
+					if (airRoutes.enabled() && unit->activity==Unit::ACT_RANDOM && unit->medical==Unit::MED_FREE && canUnitWorkHere(unit))
+					{
+						const unsigned cost=airRoutes.costTo(unit->posX,unit->posY);
+						travelDistance = cost==decltype(airRoutes)::unreachable ? INT_MAX : int((cost+GRADIENT_STEP-1)/GRADIENT_STEP);
+					}
+					if(considerUnitForExplorerFlag(unit, &distances[n],travelDistance))
 						possibleUnits[n]=unit;
 				}
 				else if(type->zonable[WORKER])

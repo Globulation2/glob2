@@ -25,3 +25,9 @@ UnitDeathAnimation::UnitDeathAnimation(int x_, int y_, Team *t)
 
 // Map::setGame calls animations->resize(); never reached, but Map.o links the symbol.
 void GameAnimations::resize(int) {}
+
+// Lightweight Map fixtures never allocate forbidden fields. Fail loudly if a
+// future test reaches this engine-only refresh; those tests belong in engine.
+#include "Map.h"
+#include <cstdlib>
+void Map::updateForbiddenGradient(int, int) { std::abort(); }

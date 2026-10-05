@@ -457,15 +457,15 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 		// The arena belongs to "everyone else", so every colony's towers score for covering it.
 		const bool arena = ramps[i] || (L.zone[i] >= 0 && L.zone[i] < L.g.rings);
 		owner[i] = arena ? teams : L.territory[i];
-		target[i] = arena && !map.isWater(x, y) && !stone[i];
-		buildable[i] = L.territory[i] >= 0 && map.isGrass(x, y) && !stone[i] && !reserved[i] &&
+		target[i] = arena && map.terrainPropertiesAt(x, y).walkable && !stone[i];
+		buildable[i] = L.territory[i] >= 0 && map.terrainPropertiesAt(x, y).buildable && !stone[i] && !reserved[i] &&
 					   fromRamps[i] > kRampClearance && fromMouth[i] >= 0 &&
 					   fromMouth[i] <= kEntranceReach && !map.isResource(x, y);
 	}
 	// No tower on a shore strip narrow enough for it to close.
 	std::vector<unsigned char> land(n, 0);
 	for (int i = 0; i < n; ++i)
-		land[i] = !map.isWater(i % t.w, i / t.w);
+		land[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
 	const std::vector<unsigned char> roomy = roomyGround(t, land, kTowerRoom);
 	for (int i = 0; i < n; ++i)
 		buildable[i] = buildable[i] && roomy[i];
@@ -512,7 +512,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && !stone[i] && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.territory[i] == team && !stone[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)

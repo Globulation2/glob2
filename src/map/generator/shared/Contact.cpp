@@ -11,8 +11,9 @@ namespace MapGeneration
 {
 int stepCost(const Map &map, int x, int y, const StepCosts &costs)
 {
-	if (map.isWater(x, y))
-		return costs.water;
+	const auto& terrain = map.terrainPropertiesAt(x, y);
+	if (!terrain.walkable)
+		return terrain.swimmable ? costs.water : -1;
 	if (map.getBuilding(x, y) != NOGBID)
 		return costs.building;
 	if (map.isResource(x, y))

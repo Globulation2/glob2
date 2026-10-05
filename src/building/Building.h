@@ -301,6 +301,9 @@ class Building : public BuildingUtils
 	/// once the capacities of the own inns are hit, conversion is limited.
 	bool canConvertUnit(void);
 
+	// Uses the same pixel trajectory and terrain obstruction test as turret fire.
+	bool hasClearShotTo(int targetX, int targetY) const;
+
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 
@@ -423,10 +426,11 @@ private:
 	///
 	/// Distance metrics differ by flag type and are NOT interchangeable:
 	///   - Explorer flag: squared Euclidean distance from Map::warpDistSquare,
-	///     compared against timeLeft^2.
+	///     compared against timeLeft^2. On constrained air terrain, the same
+	///     squared score uses route travel distance supplied by a shared field.
 	///   - Worker / Warrior flag: linear gradient distance from
 	///     Map::buildingAvailable (range 0..~254), compared against timeLeft.
-	bool considerUnitForExplorerFlag(Unit* unit, int* dist);
+	bool considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance = -1);
 	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
 	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
 

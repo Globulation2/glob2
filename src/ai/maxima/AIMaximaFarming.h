@@ -9,6 +9,8 @@
 #define AI_MAXIMA_FARMING_H
 
 #include <stdint.h>
+#include "FertilityField.h"
+#include <utility>
 #include <vector>
 
 namespace AIMaxima
@@ -29,41 +31,27 @@ enum FertilityCalculationPath
 	WaterSplatFertilityPath
 };
 
+// Preserve the private API name for existing callers; the authoritative ecology
+// implementation is shared with simulation, generation and other AIs.
 class ExactFertilityCache
 {
 public:
-	ExactFertilityCache();
-
-	/// Rebuilds the exact growth numerator. Masks use row-major y*width+x layout.
 	void rebuild(int width, int height, const std::vector<uint8_t>& water,
 		const std::vector<uint8_t>& sand,
 		FertilityCalculationPath path=AdaptiveFertilityPath);
-
-	bool validFor(int width, int height) const;
-	uint32_t at(int x, int y) const;
-	const std::vector<uint32_t>& values() const { return fertility; }
-	FertilityCalculationPath pathUsed() const { return usedPath; }
-	int waterCount() const { return waterTiles; }
-	int sandCount() const { return sandTiles; }
-
+	void assign(Fertility::Field value, uint64_t revision)
+	{ field=std::move(value); generation=revision; }
+	bool validFor(int width, int height, uint64_t revision=0) const
+	{ return width==field.getW() && height==field.getH() &&
+		field.values().size()==size_t(width)*height && (!revision || generation==revision); }
+	uint32_t at(int x, int y) const { return field.at(x,y); }
+	const std::vector<uint32_t>& values() const { return field.values(); }
+	FertilityCalculationPath pathUsed() const { return static_cast<FertilityCalculationPath>(field.pathUsed()); }
+	int waterCount() const { return field.waterCount(); }
+	int sandCount() const { return field.sandCount(); }
 private:
-	int width;
-	int height;
-	int waterTiles;
-	int sandTiles;
-	FertilityCalculationPath usedPath;
-	// uint32_t is Glob2's Uint32 storage width without importing SDL here.
-	std::vector<uint32_t> fertility;
-	// Four length-16 box passes on binary water have maxima 16, 256, 4096,
-	// 65536. Temporary planes fit uint16; final fertility needs uint32.
-	std::vector<uint16_t> first;
-	std::vector<uint16_t> second;
-	std::vector<int> wrappedX;
-	std::vector<int> wrappedY;
-	int wx(int x, int offset) const;
-	int wy(int y, int offset) const;
-	void buildWrappedIndexes();
-	void buildWaterConvolution(const std::vector<uint8_t>& water);
+	Fertility::Field field;
+	uint64_t generation=0;
 };
 
 /// fertility * amount/8 * available-neighbours/8, with wheat's 1/3 factor.

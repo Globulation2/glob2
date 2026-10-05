@@ -54,6 +54,7 @@ ctx.game.unit({id, generation})
 ctx.game.building({id, generation})
 ctx.game.buildingTypes()
 ctx.game.experiments()
+ctx.game.terrainTypes()
 ctx.game.rules()
 ```
 
@@ -246,7 +247,7 @@ callback budget. For example, a 256×256 request exceeds the work budget.
 | Tile field | Presence and meaning |
 | --- | --- |
 | `x`, `y`, `visible`, `explored` | Always present; `visible` means current permission to see the tile |
-| `observedTick`, `terrain`, `resource` | Present only when explored; current data if visible, last observation otherwise |
+| `observedTick`, `terrain`, `terrainType`, `resource` | Present only when explored; current data if visible, last observation otherwise |
 | `resource.type`, `.variety`, `.amount` | Numeric resource ID, visual variety and engine amount (byte counters); no resource is `{type: 255, variety: 0, amount: 0}` |
 | `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
 | `fertility` | Map scripts only; raw `0..65535` wheat-growth fertility value |
@@ -260,11 +261,45 @@ not a request to reveal the engine's hidden current map. The history survives
 save/load and is updated during simulation independently of which tiles the
 script asks for.
 
-**`terrain` is the raw terrain graphic index, not `TerrainType`.** Pure grass
-indices are `0..15`, pure sand `128..143`, pure water `256..271`; other indices
-represent transition tiles. There is currently no normalized terrain-class or
-passability query. Do not compare `tile.terrain` to the C++ `GRASS=2` / `WATER=0`
-enum or treat a transition tile as proven traversable.
+**`terrain` is the raw terrain graphic index, retained for compatibility.** Use
+`terrainType` to index the immutable definitions returned by
+`ctx.game.terrainTypes()`. Both tile fields follow the same visibility and
+remembered-observation rules. Unexplored tiles do not expose either field.
+The registry is static public metadata and does not reveal map contents.
+
+```js
+const definitions = ctx.game.terrainTypes();
+const tile = ctx.game.map.tile(x, y);
+if (tile.explored) {
+  const terrain = definitions[tile.terrainType];
+  const groundSpeedMultiplier = terrain.groundSpeedQ8 / 256;
+  // Buildability is a terrain capability; occupancy and space still matter.
+  if (terrain.buildable) { /* consider a placement query */ }
+}
+```
+
+Each entry has `id`, stable `name`, `experiment` (a required experiment key or
+`null`), `editorSelectable`, and these gameplay properties:
+
+| Fields | Meaning |
+| --- | --- |
+| `walkable`, `swimmable`, `flyable` | Terrain movement permissions; swimmers may also walk |
+| `resourcesGrow`, `fertilitySource`, `nonGrowingResources` | Resource growth, nearby fertility contribution, and placement of non-growing resources |
+| `buildable`, `projectileBlocks`, `shoreline` | Building placement capability, projectile obstruction, and shoreline classification |
+| `groundSpeedQ8`, `airSpeedQ8`, `growthQ8` | Multipliers: `256` is normal, `128` half, `512` double |
+| `groundHealthQ8`, `airHealthQ8` | Signed HP per exposed tick, divided by `256`; negative damages |
+| `fertilityQ8`, `inhibitionQ8`, `shoreSupportQ8` | Nearby contribution, inhibition, and aquatic shoreline support in Q8 units |
+| `allowedResources` | Array of resource IDs that the terrain supports |
+| `farmCrop` | Farm crop resource ID, or `255` for none |
+
+The array is ID-indexed and includes internal shoreline profiles and experimental
+materials even when the current match has not enabled their authoring options.
+All nested registry values are read-only in both scripting profiles, including
+commander and map scripts. Existing IDs remain water `0`, sand `1`, grass `2`,
+ice `3`, road `4`, grass/sand shore `5`, and sand/water shore `6`; scripts should
+query capabilities instead of comparing those IDs or graphic frame ranges.
+`ctx.spatial.passable` additionally checks known occupancy and movement rules;
+spatial placement and connectivity use the same canonical terrain properties.
 
 Tile occupants are bare IDs, not complete references. To read an occupant,
 match its ID against the appropriate visible entity list and use that record's
@@ -489,12 +524,16 @@ counts for a wrapped region. Fertility is remembered under fog in profile 2.
 field. Sources select points, resources, permitted units, and building families.
 Movement is `walk`, `swim`, or `fly`; metrics are `path`, `manhattan`, or
 `chebyshev`. Path fields use eight-neighbor movement, known obstacles and forbidden
-areas; they do not predict moving-unit congestion. Resource and building sources
+areas. Their distances are terrain-weighted travel costs rounded up to neutral
+tile equivalents. Cardinal and diagonal steps have equal base cost, preserving
+the strategic Chebyshev metric; `swim` treats
+walking and swimming as equally fast before terrain modifiers. They do not
+predict moving-unit congestion. Resource and building sources
 seed obstacle tiles so their neighbors measure distance to the target.
 `fieldValue(field,x,y)` returns `known`, `reachable`, `distance`, and
 `observedTick`. Null distance is unavailable; reachability stays null when unknown
 map regions prevent a definitive unreachable answer. Geometric fields ignore
-obstacles. `passable` and `components` expose the same movement rules.
+obstacles and terrain speed. `passable` and `components` expose the same movement rules.
 
 `hotspots` ranks regional source sums, with optional visible-unit strength weights.
 With `weight: "strength"`, `strength: {worker: 0, explorer: 0, warrior: 2}` selects

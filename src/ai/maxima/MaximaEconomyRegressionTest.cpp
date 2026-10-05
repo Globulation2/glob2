@@ -80,7 +80,7 @@ struct Fixture
     void supply(int x,int y)
     {
         game.map.setResource(x+6,y+1,WHEAT,1);
-        game.map.getTile(x+6,y+3).terrain=256;
+        game.map.setCellTerrain(x+6,y+3,WATER);
     }
     int population() const
     {
@@ -228,7 +228,7 @@ void growingFoodFundsCapacity()
 {
     Fixture f; f.swarm(10,10,0); f.supply(10,10);
     for(int y=8;y<=24;++y) for(int x=21;x<=35;++x)
-        f.game.map.getTile(x,y).terrain=256;
+        f.game.map.setCellTerrain(x,y,WATER);
     auto& ai=*f.ai; auto& c=ai.context; c.initialize();
     ai.snapshot.population=120; ai.snapshot.workers=90;
     ai.update_environment_model(c); ai.build_policy_bids(); ai.arbitrate_policy_bids();
@@ -259,7 +259,7 @@ void distantWheatFundsRecovery()
     REQUIRE(ai.budget.swarm_workers==0);
     f.game.map.setResource(36,11,WHEAT,1);
     // A full water barrier (including the wrap edge) cuts off nonswimmers.
-    for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.getTile(x,y).terrain=256;
+    for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.setCellTerrain(x,y,WATER);
     ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
     ai.budget.can_swim=false;
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();

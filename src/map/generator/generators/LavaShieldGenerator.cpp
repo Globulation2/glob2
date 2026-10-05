@@ -554,7 +554,9 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 				existingPassage.assign(t.size(), 0);
 				for (int i = 0; i < t.size(); ++i)
 					existingPassage[i] =
-						!game.map.isGrass(i % t.w, i / t.w) &&
+						!(game.map.canResourcesGrow(i % t.w, i / t.w) &&
+							(game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+							game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) &&
 						game.map.isHardSpaceForGroundUnit(i % t.w, i / t.w, false, 0);
 			}
 			width = 1;
@@ -818,7 +820,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const int x = i % L.t.w, y = i / L.t.w;
 		if (lake[i] && !game.map.isWater(x, y))
 			return "Lava shield lost part of its crater or ocean.";
-		if (L.rock[i] && (game.map.getResource(x, y).type != STONE || !game.map.isGrass(x, y)))
+		if (L.rock[i] && (game.map.getResource(x, y).type != STONE || !game.map.terrainSupportsResourceAt(x, y, STONE)))
 			return "Lava shield lost structural stone or placed it on illegal terrain.";
 		if (L.rim[i] && !game.map.isHardSpaceForGroundUnit(x, y, false, 0))
 			return "Lava shield's reserved crater circuit is blocked.";

@@ -92,6 +92,7 @@ Entity* Entity::load(GAGCore::InputStream* stream)
 		case EResource: return new Resource(stream->readSint32("resource_type"));
 		case EAnyResource: return new AnyResource;
 		case EWater: return new Water;
+		case EUnwalkable: return new Unwalkable;
 		case EPosition:
 		{
 			const int x=stream->readSint32("x");
@@ -168,10 +169,17 @@ bool AnyResource::equals(const Entity& other) const
 void AnyResource::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
 
 bool Water::matches(Player* player,int x,int y) const
-{ return player->map->isWater(x,y); }
+{ return terrainProvidesFertility(player->map->terrainPropertiesAt(x,y)); }
 bool Water::equals(const Entity& other) const
-{ return dynamic_cast<const Water*>(&other)!=NULL; }
+{ return other.type()==EWater; }
 void Water::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
+
+bool Unwalkable::matches(Player* player,int x,int y) const
+{ return !player->map->terrainPropertiesAt(x,y).walkable; }
+bool Unwalkable::equals(const Entity& other) const
+{ return dynamic_cast<const Unwalkable*>(&other)!=nullptr; }
+void Unwalkable::save(GAGCore::OutputStream* stream) const
+{ stream->writeUint8(type(),"type"); }
 
 Position::Position(int x,int y) : x(x),y(y) {}
 bool Position::matches(Player*,int px,int py) const { return px==x && py==y; }
@@ -184,7 +192,7 @@ void Position::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(x,"x");stream->writeSint32(y,"y");}
 
 bool Sand::matches(Player* player,int x,int y) const
-{ return player->map->isSand(x,y); }
+{ return player->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0; }
 bool Sand::equals(const Entity& other) const
 { return dynamic_cast<const Sand*>(&other)!=NULL; }
 void Sand::save(GAGCore::OutputStream* stream) const{stream->writeUint8(type(),"type");}
@@ -214,7 +222,7 @@ bool GradientInfo::needs_updating() const
 }
 bool GradientInfo::operator==(const GradientInfo& rhs) const
 {
-	if(sources.size()!=rhs.sources.size() || obstacles.size()!=rhs.obstacles.size()) return false;
+	if(terrainTravel!=rhs.terrainTravel || sources.size()!=rhs.sources.size() || obstacles.size()!=rhs.obstacles.size()) return false;
 	for(size_t i=0;i<sources.size();++i) if(!sources[i]->equals(*rhs.sources[i])) return false;
 	for(size_t i=0;i<obstacles.size();++i) if(!obstacles[i]->equals(*rhs.obstacles[i])) return false;
 	return true;
@@ -222,19 +230,25 @@ bool GradientInfo::operator==(const GradientInfo& rhs) const
 void GradientInfo::save(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("GradientInfo");
+    stream->writeUint8(static_cast<unsigned>(terrainTravel),"terrainTravel");
 	stream->writeUint32(sources.size(),"source_count");
 	for(size_t i=0;i<sources.size();++i){stream->writeEnterSection(i);sources[i]->save(stream);stream->writeLeaveSection();}
 	stream->writeUint32(obstacles.size(),"obstacle_count");
 	for(size_t i=0;i<obstacles.size();++i){stream->writeEnterSection(i+sources.size());obstacles[i]->save(stream);stream->writeLeaveSection();}
 	stream->writeLeaveSection();
 }
-bool GradientInfo::load(GAGCore::InputStream* stream)
+bool GradientInfo::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 {
 	sources.clear();obstacles.clear();stream->readEnterSection("GradientInfo");
+    const unsigned travel=versionMinor>=FILE_FORMAT_VERSION_TERRAIN_PROPERTIES?stream->readUint8("terrainTravel"):0;
+    if(!field::validTerrainTravel(travel)) throw std::runtime_error("Invalid AI terrain travel mode");
+    terrainTravel=static_cast<field::TerrainTravel>(travel);
 	Uint32 count=stream->readCount("source_count");
 	for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);sources.push_back(shared_ptr<Entities::Entity>(Entities::Entity::load(stream)));stream->readLeaveSection();}
 	const Uint32 sourceCount=count;count=stream->readCount("obstacle_count");
 	for(Uint32 i=0;i<count;++i){stream->readEnterSection(i+sourceCount);obstacles.push_back(shared_ptr<Entities::Entity>(Entities::Entity::load(stream)));stream->readLeaveSection();}
+	for(auto& obstacle:obstacles) if(versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && obstacle->type()==Entities::EWater)
+		obstacle=std::make_shared<Entities::Unwalkable>();
 	stream->readLeaveSection();return true;
 }
 
@@ -244,6 +258,7 @@ void Gradient::recalculate(Player* player, field::Frontier& frontier)
 {
 	Map* map=player->map;
 	width=map->getW();
+    terrainGeneration=map->terrainGeneration();
 	const int height=map->getH();
 	values.assign(width*height,UnreachableCell);
 	sourceCount=0;
@@ -254,9 +269,15 @@ void Gradient::recalculate(Player* player, field::Frontier& frontier)
 		{
 			const int at=y*width+x;
 			if(info.matches_source(player,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
-			else if(info.matches_obstacle(player,x,y)) values[at]=ObstacleCell;
+			else if(info.matches_obstacle(player,x,y) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),info.terrainTravel)) values[at]=ObstacleCell;
 		}
-	field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
+	if(info.terrainTravel!=field::TerrainTravel::Geometric &&
+        (info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))
+    {
+        field::expandTerrainTravel(values,width,height,info.terrainTravel,[&](std::size_t i){return map->terrainTypeAt(i);});
+        queue.clear();
+    }
+    else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
 }
 
 int Gradient::get_height(int x,int y) const
@@ -287,7 +308,9 @@ Gradient& GradientManager::get_gradient(const GradientInfo& info)
 		ages.push_back(0); index=int(gradients.size())-1;
 		gradients[index]->recalculate(player,frontier);
 	}
-	else if(ages[index]>150 && info.needs_updating())
+	else if(gradients[index]->terrainGeneration!=player->map->terrainGeneration())
+    { gradients[index]->recalculate(player,frontier); ages[index]=0; }
+    else if(ages[index]>150 && info.needs_updating())
 	{
 		if(queuedIndexes.insert(index).second)
 			queued.push(index);
@@ -302,14 +325,14 @@ void GradientManager::queue_gradient(const GradientInfo& info)
 		gradients.push_back(shared_ptr<Gradient>(new Gradient(info)));
 		ages.push_back(200); index=int(gradients.size())-1;
 	}
-	if((info.needs_updating() || ages[index]>150)
+	if((gradients[index]->terrainGeneration!=player->map->terrainGeneration() || info.needs_updating() || ages[index]>150)
 	   && queuedIndexes.insert(index).second)
 		queued.push(index);
 }
 bool GradientManager::is_updated(const GradientInfo& info) const
 {
 	const int index=find(info);
-	return index<0 || !info.needs_updating() || ages[index]<=150;
+	return index<0 || (gradients[index]->terrainGeneration==player->map->terrainGeneration() && (!info.needs_updating() || ages[index]<=150));
 }
 void GradientManager::update(Uint32 step)
 {
@@ -320,7 +343,7 @@ void GradientManager::update(Uint32 step)
 	if(!queued.empty())
 	{
 		const int index=queued.front(); queued.pop();queuedIndexes.erase(index);
-		if(index>=0 && index<int(gradients.size()) && ages[index]>50)
+		if(index>=0 && index<int(gradients.size()) && (gradients[index]->terrainGeneration!=player->map->terrainGeneration() || ages[index]>50))
 		{ gradients[index]->recalculate(player,frontier); ages[index]=0; }
 	}
 }
@@ -336,6 +359,7 @@ void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
         stream->writeEnterSection(i);
         const Gradient& gradient=*gradients[i];
         gradient.info.save(stream);
+        stream->writeUint8(gradient.terrainGeneration==player->map->terrainGeneration(),"terrainCurrent");
         archive("width",gradient.width);
         archive("sourceCount",gradient.sourceCount);
         archive("values",gradient.values);
@@ -351,7 +375,7 @@ void GradientManager::loadExecutionState(GAGCore::InputStream* stream,Sint32 ver
 {
     invalidate();
     stream->readEnterSection("GradientExecution95");
-    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE,versionMinor);
     archive("lastWorldStep",lastWorldStep);
     archive("ages",ages);
     const Uint32 size=stream->readCount("size");
@@ -360,8 +384,10 @@ void GradientManager::loadExecutionState(GAGCore::InputStream* stream,Sint32 ver
     {
         stream->readEnterSection(i);
         GradientInfo info;
-        if(!info.load(stream)) throw std::runtime_error("Invalid gradient continuation source");
+        if(!info.load(stream,versionMinor)) throw std::runtime_error("Invalid gradient continuation source");
         shared_ptr<Gradient> gradient(new Gradient(info));
+        const bool terrainCurrent=versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES || stream->readUint8("terrainCurrent");
+        gradient->terrainGeneration=terrainCurrent?player->map->terrainGeneration():0;
         archive("width",gradient->width);
         archive("sourceCount",gradient->sourceCount);
         archive("values",gradient->values);
@@ -780,14 +806,14 @@ bool BuildingRegister::load(GAGCore::InputStream* stream)
 	stream->readLeaveSection(); return true;
 }
 
-Constraint* Constraint::load(GAGCore::InputStream* stream)
+Constraint* Constraint::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 {
 	stream->readEnterSection("Constraint");
 	const int kind=stream->readSint32("type");
 	Constraint* result=NULL;
 	if(kind>=0&&kind<=3)
 	{
-		Gradients::GradientInfo info;info.load(stream);
+		Gradients::GradientInfo info;info.load(stream,versionMinor);
 		const int value=stream->readSint32("value");
 		if(kind==0)result=new MinimumDistance(info,value);
 		else if(kind==1)result=new MaximumDistance(info,value);
@@ -837,10 +863,10 @@ void BuildingOrder::save(GAGCore::OutputStream* s) const
 	s->writeUint32(conditions.size(),"condition_count");for(size_t i=0;i<conditions.size();++i){s->writeEnterSection(i+constraints.size());conditions[i]->save(s);s->writeLeaveSection();}
 	s->writeLeaveSection();
 }
-BuildingOrder* BuildingOrder::load(GAGCore::InputStream* s)
+BuildingOrder* BuildingOrder::load(GAGCore::InputStream* s,Sint32 versionMinor)
 {
 	s->readEnterSection("BuildingOrder");const int buildingType=s->readSint32("building_type");const int workerCount=s->readSint32("workers");std::unique_ptr<BuildingOrder> order(new BuildingOrder(buildingType,workerCount));order->id=s->readSint32("id");
-	Uint32 count=s->readCount("constraint_count");for(Uint32 i=0;i<count;++i){s->readEnterSection(i);order->add_constraint(Constraint::load(s));s->readLeaveSection();}
+	Uint32 count=s->readCount("constraint_count");for(Uint32 i=0;i<count;++i){s->readEnterSection(i);order->add_constraint(Constraint::load(s,versionMinor));s->readLeaveSection();}
 	const Uint32 offset=count;count=s->readCount("condition_count");for(Uint32 i=0;i<count;++i){s->readEnterSection(i+offset);order->add_condition(Conditions::Condition::load(s));s->readLeaveSection();}
 	s->readLeaveSection();return order.release();
 }
@@ -1011,11 +1037,13 @@ bool MapInfo::is_clearing_area(int x,int y)const{return context.player->map->isC
 bool MapInfo::is_discovered(int x,int y)const{return context.player->map->isMapDiscovered(x,y,context.player->team->me);}
 bool MapInfo::is_resource(int x,int y,int type)const{return context.player->map->isResourceTakeable(x,y,type);}
 bool MapInfo::is_resource(int x,int y)const{return context.player->map->isResource(x,y);}
-bool MapInfo::is_water(int x,int y)const{return context.player->map->isWater(x,y);}
-bool MapInfo::is_sand(int x,int y)const{return context.player->map->isSand(x,y);}
-bool MapInfo::is_grass(int x,int y)const{return context.player->map->isGrass(x,y);}
+bool MapInfo::is_walkable(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).walkable;}
+bool MapInfo::is_crop_habitat(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);}
+bool MapInfo::is_water(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).swimmable;}
+bool MapInfo::is_sand(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0;}
+bool MapInfo::is_grass(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).buildable;}
 bool MapInfo::backs_onto_sand(int x,int y)const
-{for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if((dx||dy)&&is_sand(x+dx,y+dy))return true;return false;}
+{for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)if((dx||dy)&&context.player->map->terrainPropertiesAt(x+dx,y+dy).shoreline)return true;return false;}
 int MapInfo::get_ammount_resource(int x,int y)const{return context.player->map->getResource(x,y).amount;}
 }
 
@@ -1359,7 +1387,7 @@ void Context::saveExecutionState(GAGCore::OutputStream* stream) const
 void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
 {
     stream->readEnterSection("RuntimeExecution95");
-    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE,versionMinor);
     const Uint32 size=stream->readCount("size");
     if(size!=buildingOrders.size()) throw std::runtime_error("Invalid building search continuation count");
     for(Uint32 i=0;i<size;++i)
@@ -1392,7 +1420,7 @@ bool Context::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 	stream->readEnterSection("V3Runtime");timer=stream->readSint32("timer");previousBuildingId=stream->readSint32("previous_building_id");initialized=stream->readUint8("initialized");fruitOnMap=stream->readUint8("fruit_on_map");allies=stream->readUint32("allies");enemies=stream->readUint32("enemies");inn_view=stream->readUint32("inn_view");market_view=stream->readUint32("market_view");other_view=stream->readUint32("other_view");
 	orders.clear();stream->readEnterSection("orders");Uint32 size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);Uint32 length=stream->readCount("size");std::vector<Uint8> data(length+1);data[0]=stream->readUint8("type");stream->read(data.data()+1,length,"data");auto order=Order::getOrder(data.data(),data.size(),versionMinor);if(!order)throw std::runtime_error("Invalid saved AI order");orders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();
 	buildings.load(stream);gradients.invalidate();
-	buildingOrders.clear();stream->readEnterSection("building_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Construction::BuildingOrder> order(Construction::BuildingOrder::load(stream));if(order){order->queue_gradients(gradients);buildingOrders.push_back(order);}stream->readLeaveSection();}stream->readLeaveSection();
+	buildingOrders.clear();stream->readEnterSection("building_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Construction::BuildingOrder> order(Construction::BuildingOrder::load(stream,versionMinor));if(order){order->queue_gradients(gradients);buildingOrders.push_back(order);}stream->readLeaveSection();}stream->readLeaveSection();
 	managementOrders.clear();stream->readEnterSection("management_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Management::ManagementOrder> order(Management::ManagementOrder::load(stream));if(order)managementOrders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();
 	trackers.clear();stream->readEnterSection("trackers");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int id=stream->readSint32("id");trackers[id]=shared_ptr<Management::ResourceTracker>(Management::ResourceTracker::load(*this,stream));stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readLeaveSection();return true;

@@ -20,6 +20,7 @@
 class Team;
 class Race;
 class Building;
+struct TerrainProperties;
 
 namespace GAGCore
 {
@@ -154,6 +155,10 @@ protected:
 	void stopAttachedForBuilding(bool goingInside);
 	void handleMagic(void);
 	void handleMedical(void);
+	void resolveDeath();
+	void applyTerrainHealth();
+	void applyTerrainHealth(const TerrainProperties& terrain);
+	void applyTerrainHealthRate(int rate);
 	void handleActivity(void);
 	void handleDisplacement(void);
 	void handleMovement(void);
@@ -228,6 +233,7 @@ public:
 	Sint32 delta; // (Sint8)
 	Sint32 dx, dy; // (Sint8)
 	Sint32 direction; // (Sint8). direction=8 is no direction.
+	Sint32 terrainHealthRemainder = 0; // signed Q8 HP, serialized for exact continuation
 	Sint32 insideTimeout; // (Sint16) (if < 0, is in a building, otherwise is out)
 	Sint32 speed;
 

@@ -2,7 +2,8 @@
 
 Experiments are gameplay features we are still testing. They are off by default;
 a player switches them on under **Settings → Experiments**, and every game that
-player then starts or hosts carries exactly that set for its whole life. This guide
+player then starts or hosts carries that set plus any experiments required by its
+map for its whole life. This guide
 covers what players see, the compatibility rules, and how to add an experiment.
 
 ## What players see
@@ -13,22 +14,25 @@ covers what players see, the compatibility rules, and how to add an experiment.
   load screen, a headless `-test-games` match, and a multiplayer game the player
   hosts online or on LAN. A joiner plays with the host's set, whatever their own
   settings say.
-- **Campaign missions and the tutorial never take experiments**: scripted content
-  plays as its author tested it.
+- **Campaign missions and the tutorial ignore local experiment preferences**:
+  scripted content carries its authored requirements.
 - A **saved game or replay keeps the set it was started with**, even if the player
   has since changed the setting. Loading a save never applies current settings.
 - Where the set shows: the custom-game lobby footer ("Experiments: …"), the
   multiplayer lobby's side panel and its **Other options** dialog ("Experiments set
   by the host: …", read-only for every player), and the load screen's details for a
   saved game that carries any.
-- Experiments can change balance and pacing. Nothing in the default game changes
-  while every switch is off.
+- Terrain experiments control which brushes the editor offers. A map containing
+  experimental terrain declares that requirement and enables it when played, even
+  if the local editor switch is off. Ice and road have separate switches.
+- Experiments can change balance and pacing. A map without experimental terrain
+  does not acquire new terrain when a switch is enabled.
 
 ## Compatibility
 
 `Engine::applyLocalExperiments` (`src/engine/EngineInit.cpp`) is the one place the
-new-game rule lives: it copies the settings into a header unless the map is a saved
-game, and every entry point above calls it. A hosted multiplayer game sends its
+new-game rule lives: it combines settings and map requirements in a header unless
+the map is a saved game, and every entry point above calls it. A hosted multiplayer game sends its
 header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
@@ -36,10 +40,9 @@ The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
 save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays
 and the match setup every peer of a game starts from, so every peer runs the same
 set. Adding the field changed the header's wire
-format and introduced network protocol 47. The current protocol is 48, which
-also adds JavaScript scripting compatibility and refuses older clients. Replays
-recorded at format 123 still play, because a header without the section loads as
-"no experiments" and the default simulation is unchanged.
+format and introduced network protocol 47. Terrain format 134 adds required
+experiments to `MapHeader`; network protocol 55 and replay floor 134 separate the
+new terrain simulation from earlier clients. The supported save floor remains 58.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable
 kebab-case string such as `guard-area-balancing`), never a bit position. Retiring
@@ -49,6 +52,10 @@ plays without it, which is the documented policy for a save from a build whose
 experiment was removed. When an experiment graduates into default behaviour,
 remove its entry and its gate together: old saves that named it load and play the
 now-default rules.
+
+Required terrain keys are stricter: an unknown required key or unknown terrain ID
+rejects the map instead of silently changing its behavior. A save containing
+experimental terrain must already carry the matching enabled experiments.
 
 Preferences store the set as `experiments=<key>,<key>` in `preferences.txt`;
 unknown keys are dropped there too.
@@ -65,12 +72,18 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
 
+| `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
+| `road-terrain` | Road terrain | Enables the road editor brush. Roads double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |
+
 ## Adding an experiment
 
 1. Append an `ExperimentId` before `Count` in `src/game/ExperimentalFeatures.h` and add
    its definition (stable key, English label and help) to the table in
    `src/game/ExperimentalFeatures.cpp`. Keys are lowercase letters, digits and hyphens.
-2. Gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
+2. For terrain, associate its ID with the experiment in `TerrainExperiments.h` and
+   gate authoring controls. Simulation always reads the terrain properties; local
+   preferences must never change an existing map cell's behavior. For other features,
+   gate the simulation on `game->gameHeader.hasExperiment(ExperimentId::X)` (from a
    unit, `owner->game->gameHeader`). The path with the experiment off must stay
    byte-identical to the game before your change: existing replays and the
    checksum fixtures under `test/maxima/fixtures/` guard this. Consuming
@@ -87,8 +100,8 @@ game's experiments. See [headless replays](../development/headless-replays.md).
    `glob2test::GameOptions::experiments` set, and its first case checks the default
    game's per-100-tick checksums against a golden, so an unintended change to the
    default path fails.
-5. Write a short design and measurement guide under `docs/features/` and link it
-   from the table above. No version bump is needed for an added experiment: the
-   header format only changes when the framework itself does.
+5. Update the relevant guide and the table above. Stable experiment keys do not
+   themselves require a new header format. Simulation changes still require a
+   `SIM_REVISION` bump and refreshed golden match, including experimental rules.
 6. In the pull request, describe the feel changes with the experiment on; a
    maintainer playing it is part of review.

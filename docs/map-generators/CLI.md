@@ -229,6 +229,12 @@ which implies water. The palette is:
 | Orange | `#FF8000` |
 | Prune | `#8000FF` |
 | Colony marker | `#FFFFFF` |
+| Ice | `#BEE1F0` |
+| Road | `#B08A62` |
+
+Ice and road are whole-cell materials. Import retains them after legacy shore
+repair and records their required terrain experiments in the map; adjacent water
+is not converted into sand. Their colors are distinct from resource colors.
 
 Import defaults to 256×256, four workers per colony and seed 1. Width/height
 accept 64, 128, 256 or 512 tiles. Input dimensions may differ, but the aspect

@@ -8,6 +8,7 @@
 #include "Building.h"
 
 #include "Utilities.h"
+#include "UnitTiming.h"
 
 namespace
 {
@@ -56,7 +57,9 @@ void Unit::handleActionRandomGround()
 	owner->map->pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
-	speed=performance[action];
+	speed=unitTerrainMovementSpeed(performance[action], action == FLY
+        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -75,7 +78,7 @@ void Unit::handleActionRandomFly()
 	setNewValidDirectionAir();
 	wrapPosition();
 	action=FLY;
-	speed=performance[FLY];
+	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -91,7 +94,9 @@ void Unit::handleActionGoingTarget()
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredGroundMovement();
-	speed=performance[action];
+	speed=unitTerrainMovementSpeed(performance[action], action == FLY
+        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -107,7 +112,7 @@ void Unit::handleActionFlyingTarget()
 	wrapPosition();
 
 	action=FLY;
-	speed=performance[FLY];
+	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);
 
 	owner->map->setAirUnit(posX, posY, gid);
 }
@@ -124,7 +129,9 @@ void Unit::handleActionGoingDxDy()
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=unitTerrainMovementSpeed(performance[action], action == FLY
+        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
 
 	claimOccupiedMapSlot();
 
@@ -139,14 +146,18 @@ void Unit::handleActionEnteringBuilding()
 	wrapPosition();
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=unitTerrainMovementSpeed(performance[action], action == FLY
+        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
 }
 
 void Unit::handleActionExitingBuilding()
 {
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=performance[action];
+	speed=unitTerrainMovementSpeed(performance[action], action == FLY
+        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
 	claimOccupiedMapSlot();
 }
 

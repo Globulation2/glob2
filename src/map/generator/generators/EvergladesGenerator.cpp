@@ -463,7 +463,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.clearingOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.clearingOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	// The swarm stands just past the pond's beach on the far side from the map's centre, leaving

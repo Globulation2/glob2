@@ -852,7 +852,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground = dilate(t, plotGrass(home), kRingBand);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				ground[i] && L.cell[i] == L.homeCell[team] && !map.isWater(i % t.w, i / t.w);
+				ground[i] && L.cell[i] == L.homeCell[team] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -973,7 +973,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	// Every plot is buildable ground: pure grass with no deposit on any of its tiles.
 	for (int i = 0; i < n; ++i)
-		if (L.plots.plot[i] && (!map.isGrass(i % t.w, i / t.w) || map.isResource(i % t.w, i / t.w)))
+		if (L.plots.plot[i] && (!map.terrainPropertiesAt(i % t.w, i / t.w).buildable || map.isResource(i % t.w, i / t.w)))
 			return "A plot is not clear grass at (" + std::to_string(i % t.w) + ", " +
 				   std::to_string(i / t.w) + ").";
 	// Every plantation carries wheat and wood and nothing else.

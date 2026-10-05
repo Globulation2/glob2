@@ -335,7 +335,7 @@ namespace Cortex
 					if (swimField[idx] >= 0)
 					{
 						swimReached++;
-						if (map.isWater(x, y))
+						if (map.terrainPropertiesAt(x, y).swimmable)
 							swimWater++;
 					}
 				}
@@ -472,7 +472,7 @@ namespace Cortex
 					{
 						if (dx == 0 && dy == 0)
 							continue;
-						if (map.isWater(map.normalizeX(x + dx), map.normalizeY(y + dy)))
+						if (map.terrainPropertiesAt(x + dx, y + dy).swimmable)
 							shore = true;
 					}
 				if (!shore)

@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptSpatial.h"
+#include "TerrainProperties.h"
+#include "field/TerrainMovementCosts.h"
+#include <queue>
 #include "Game.h"
 #include "BuildingType.h"
 #include "GlobalContainer.h"
@@ -13,6 +16,13 @@ namespace Script
 {
 namespace
 {
+bool passable(const Observations::Cell& cell, const std::string& mode)
+{
+	const auto& terrain = terrainProperties(cell.terrainType);
+	if (mode == "fly") return terrain.flyable;
+	return !cell.building && !cell.forbidden && cell.resource == 255 &&
+		(terrain.walkable || (mode == "swim" && terrain.swimmable));
+}
 int number(const Value &v, const char *key, int fallback, int lo = -32768, int hi = 32767)
 {
 	return v.get(key).kind == Value::Null ? fallback : v.integer(key, lo, hi);
@@ -197,24 +207,28 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		throw std::runtime_error("Unknown distance metric");
 	charge(budget, cells.size() * 10, cells.size() * 10);
 	std::vector<unsigned char> seeds(cells.size()), passable(cells.size());
+    std::vector<unsigned> entryCosts(metric=="path"?cells.size():0);
 	for (std::size_t i = 0; i < cells.size(); ++i)
 	{
 		seeds[i] = source[i] > 0;
 		const auto &c = cells[i];
-		const bool water = c.terrain >= 256 && c.terrain < 272;
-		passable[i] =
-			metric != "path" ||
-			(c.known && (mode == "fly" || (!c.building && !c.forbidden &&
-										   (mode == "swim" || !water) && c.resource == 255)));
+        passable[i] = metric != "path" || (c.known && ::Script::passable(c, mode));
+        if(metric=="path")
+        {
+            const auto& properties=terrainProperties(c.terrainType);
+            entryCosts[i]=gradient_kernel::scaledTerrainStep(GRADIENT_STEP,
+                mode=="fly"?properties.airSpeedQ8:properties.groundSpeedQ8);
+        }
 	}
 	const auto key = spec.encode();
 	auto it = cache.find(key);
-	if (it != cache.end() && it->second->sources == seeds && it->second->passable == passable)
+	if (it != cache.end() && it->second->sources == seeds && it->second->passable == passable && it->second->entryCosts == entryCosts)
 		return it->second;
 	auto field = std::make_shared<Field>();
 	field->metric = metric;
 	field->sources = std::move(seeds);
 	field->passable = std::move(passable);
+    field->entryCosts=std::move(entryCosts);
 	field->distances.assign(cells.size(), -1);
 	frontier.clear();
 	frontier.reserve(cells.size());
@@ -224,23 +238,51 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 			field->distances[i] = 0;
 			frontier.push_back(i);
 		}
-	for (std::size_t head = 0; head < frontier.size(); ++head)
-	{
-		const auto from = frontier[head];
-		int x = from % width, y = from / width;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if ((!dx && !dy) || (metric == "manhattan" && dx && dy))
-					continue;
-				int to = index(x + dx, y + dy);
-				if (field->distances[to] < 0 && field->passable[to])
+    if(metric=="path")
+    {
+        // A field answers travel TO its sources. Reverse relaxation therefore
+        // charges entry into the popped cell, as engine gradients do.
+        using Entry=std::pair<int,unsigned>;
+        std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> queue;
+        for(const auto seed:frontier) queue.emplace(0,seed);
+        while(!queue.empty())
+        {
+            const auto [cost,from]=queue.top();queue.pop();
+            if(field->distances[from]!=cost) continue;
+            for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+            {
+                if(!dx&&!dy) continue;
+                const int to=index(from%width+dx,from/width+dy);
+                if(!field->passable[to]) continue;
+                const unsigned cardinal=field->entryCosts[from];
+                const int candidate=cost+cardinal;
+                if(field->distances[to]<0 || candidate<field->distances[to])
+                { field->distances[to]=candidate;queue.emplace(candidate,to); }
+            }
+        }
+        for(auto& distance:field->distances)
+            if(distance>=0) distance=(distance+GRADIENT_STEP-1)/GRADIENT_STEP;
+    }
+    else
+    {
+		for (std::size_t head = 0; head < frontier.size(); ++head)
+		{
+			const auto from = frontier[head];
+			int x = from % width, y = from / width;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
 				{
-					field->distances[to] = field->distances[from] + 1;
-					frontier.push_back(to);
+					if ((!dx && !dy) || (metric == "manhattan" && dx && dy))
+						continue;
+					int to = index(x + dx, y + dy);
+					if (field->distances[to] < 0 && field->passable[to])
+					{
+						field->distances[to] = field->distances[from] + 1;
+						frontier.push_back(to);
+					}
 				}
-			}
-	}
+		}
+    }
 	if (cache.size() >= 8 && !cache.contains(key))
 		cache.erase(cache.begin());
 	cache[key] = field;
@@ -354,10 +396,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		const auto mode = text(a, "movement", "walk");
 		if (mode != "walk" && mode != "swim" && mode != "fly")
 			throw std::runtime_error("Unknown movement mode");
-		return c.known ? Value(mode == "fly" ||
-							   (!c.building && !c.forbidden && c.resource == 255 &&
-								(mode == "swim" || c.terrain < 256 || c.terrain >= 272)))
-					   : Value();
+        return c.known ? Value(passable(c, mode)) : Value();
 	}
 	if (name == "summary")
 	{
@@ -443,9 +482,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		auto open = [&](int i)
 		{
 			const auto &c = cells[i];
-			return c.known &&
-				   (mode == "fly" || (!c.building && !c.forbidden && c.resource == 255 &&
-									  (mode == "swim" || c.terrain < 256 || c.terrain >= 272)));
+            return c.known && passable(c, mode);
 		};
 		for (unsigned i = 0; i < cells.size(); ++i)
 			if (labels[i] < 0 && open(i))
@@ -683,7 +720,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						const auto &c = cells[at];
 						bool inside = xx >= 0 && xx < bw && yy >= 0 && yy < bh;
 						if (!c.known || c.building || reserved[at] ||
-							(inside && (!c.visible || c.terrain >= 16 || c.resource != 255)))
+							(inside && (!c.visible || !terrainProperties(c.terrainType).buildable || c.resource != 255)))
 						{
 							valid = false;
 							break;

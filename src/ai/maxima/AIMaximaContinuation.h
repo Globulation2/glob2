@@ -4,6 +4,7 @@
 // Portable field-wise serialization for Maxima execution state.
 // Never serialize object layouts, pointers, padding, or host-sized containers.
 #include "AIMaximaDistanceField.h"
+#include "Version.h"
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <PackedArray.h>
@@ -51,6 +52,7 @@ class BufferedBinaryWriter
     }
 public:
     explicit BufferedBinaryWriter(GAGCore::BinaryOutputStream* s):stream(s) {}
+    int version() const { return VERSION_MINOR; }
     void flush() {if(used){stream->write(bytes,used,"");used=0;}}
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char*,const T& value)
@@ -116,6 +118,7 @@ class Writer
 public:
     explicit Writer(GAGCore::OutputStream* stream,bool compact=false):stream(stream),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
     bool compact() const { return compact_; }
+    int version() const { return VERSION_MINOR; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,const T& value)
     {
@@ -234,6 +237,7 @@ public:
 class Reader
 {
     GAGCore::InputStream* stream;
+    int version_;
     bool compact_;
     uint32_t count()
     {
@@ -244,7 +248,8 @@ class Reader
         return size;
     }
 public:
-    explicit Reader(GAGCore::InputStream* stream,bool compact=false):stream(stream),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
+    explicit Reader(GAGCore::InputStream* stream,bool compact=false,int version=VERSION_MINOR):stream(stream),version_(version),compact_(compact && GAGCore::PackedArray::binary(stream)) {}
+    int version() const { return version_; }
     bool compact() const { return compact_; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,T& value)

@@ -659,10 +659,10 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	{
 		const int x = i % t.w, y = i / t.w;
 		owner[i] = L.homeOf[i] >= 0 ? L.homeOf[i] : L.farmOf[i] >= 0 ? L.farmOf[i] : L.trailOf[i];
-		buildable[i] = L.trailOf[i] >= 0 && map.isGrass(x, y) && !stone[i] && !L.roadTile[i] &&
+		buildable[i] = L.trailOf[i] >= 0 && map.terrainPropertiesAt(x, y).buildable && !stone[i] && !L.roadTile[i] &&
 					   !reserved[i] && (fromCentre[i] < 0 || fromCentre[i] > kWalkway) &&
 					   !map.isResource(x, y) && facesInwardWall(i);
-		target[i] = L.trailOf[i] >= 0 && !map.isWater(x, y) && !stone[i];
+		target[i] = L.trailOf[i] >= 0 && map.terrainPropertiesAt(x, y).walkable && !stone[i];
 	}
 	TowerRequest request = startingTowerRequest(o.towers, o.towerCount, kTowerPads, kTowerSpacing);
 	request.otherWeight = 0;
@@ -712,7 +712,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.isGrass(i % t.w, i / t.w);
+				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -748,7 +748,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 	std::vector<unsigned char> heart(n, 0);
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.plateau[i] && !map.isWater(i % t.w, i / t.w) && !stone[i] &&
+		heart[i] = L.plateau[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !stone[i] &&
 				   std::hypot(i % t.w - L.cx, i / t.w - L.cy) < L.g.plateauPondR + 3;
 	for (int team = 0; team < teams; ++team)
 		if (!workers[team].empty() && !openRoad(map, t, workers[team], heart, &stone))
@@ -832,7 +832,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 		{
 			const int x = i % t.w, y = i / t.w;
-			const bool buildable = map.isGrass(x, y) && !map.isResource(x, y) && !L.roadTile[i];
+			const bool buildable = map.terrainPropertiesAt(x, y).buildable && !map.isResource(x, y) && !L.roadTile[i];
 			homeGround[i] = buildable && L.homeOf[i] == k;
 			plateauGround[i] = buildable && L.plateau[i];
 			first[i] = L.trailOf[i] == k && L.legOf[i] == 0;

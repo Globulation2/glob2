@@ -1024,7 +1024,7 @@ bool generate(Game &game, GenerationContext &context)
 			++wallTiles;
 		}
 	for (int i = 0; i < n; ++i)
-		if (L.hummocks[i] && map.isGrass(i % t.w, i / t.w) && !map.isResource(i % t.w, i / t.w))
+		if (L.hummocks[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) && !map.isResource(i % t.w, i / t.w))
 		{
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 			protectedStone[i] = 1;
@@ -1044,7 +1044,7 @@ bool generate(Game &game, GenerationContext &context)
 			for (int du = -6; du <= 9; ++du)
 			{
 				const int i = axes.at(home.u + du, home.v + dv);
-				mask[i] = L.comp[i] == home.terrace && map.isGrass(i % t.w, i / t.w) &&
+				mask[i] = L.comp[i] == home.terrace && map.terrainPropertiesAt(i % t.w, i / t.w).buildable &&
 						  !protectedStone[i];
 			}
 		return mask;
@@ -1063,7 +1063,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> grass(size_t(n), 0), notGrass(size_t(n), 0), swarms(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		grass[i] = map.isGrass(i % t.w, i / t.w);
+		grass[i] = (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE));
 		notGrass[i] = !grass[i];
 	}
 	for (int team = 0; team < teams; ++team)
@@ -1273,6 +1278,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string fault = checkBraid(L, [&](int x, int y) { return map.isWater(x, y); });
 		!fault.empty())
 		return fault;
+	for (const Riffle &r : L.riffles)
+		if (const auto fault = fordWalkabilityFault(map, t, r.ford); !fault.empty())
+			return fault;
 	for (const Riffle &r : L.riffles)
 		for (int side : {-1, 1})
 			if (!fordLandingWalkable(map, t, r.ford, side))

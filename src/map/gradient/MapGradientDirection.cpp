@@ -5,7 +5,7 @@
 #include "Map.h"
 #include "MapInternal.h"
 #include "Utilities.h"
-#include "field/GradientCosts.h"
+#include "field/TerrainMovementCosts.h"
 
 #include <cstdlib>
 
@@ -30,19 +30,20 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 
 int Map::minStepCost(int swimClass)
 {
-	if (swimClass > 0 && WATER_STEP[swimClass] < GRADIENT_STEP)
-		return WATER_STEP[swimClass];
-	return GRADIENT_STEP;
+    unsigned minimum = GRADIENT_STEP;
+    for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
+    {
+        const auto &p = terrainProperties(static_cast<TerrainType>(t));
+        if (p.walkable || (swimClass > 0 && p.swimmable))
+            minimum = std::min(minimum, gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass][t].cardinal);
+    }
+    return minimum;
 }
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
-	int step = GRADIENT_STEP;
-	if (swimClass > 0 && isWater((unsigned)targetIndex))
-		step = WATER_STEP[swimClass];
-	if (dx != 0 && dy != 0)
-		step = step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
-	return step;
+    const auto cost = gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass][terrainTypeAt(targetIndex)];
+    return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
 bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const

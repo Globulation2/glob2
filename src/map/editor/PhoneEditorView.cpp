@@ -199,10 +199,11 @@ void PhoneEditor::drawInteractionPreview()
 		Color fill = erase ? Color(220, 80, 65, 115) : Color(240, 208, 110, 110);
 		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain)
 		{
-			if (editor.terrainType == TerrainSelector::Water)
-				fill = Color(70, 145, 245, 130);
-			else if (editor.terrainType == TerrainSelector::Grass)
-				fill = Color(95, 220, 115, 130);
+            if (TerrainSelector::isBaseTerrain(editor.terrainType))
+            {
+                const auto color = terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType)).preview;
+                fill = Color(color.r, color.g, color.b, 130);
+            }
 		}
 		const Color edge = erase ? Color(255, 128, 110) : Color(255, 235, 156);
 		for (auto [x, y] : cells)

@@ -6,7 +6,7 @@
 #include <mutex>
 #include "Map.h"
 #include "MapInternal.h"
-#include "field/GradientRelaxation.h"
+#include "field/TerrainGradient.h"
 
 using gradient_kernel::BUCKETS;
 using gradient_kernel::COST_LIMIT;
@@ -28,8 +28,9 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	popped = 0;
 	pending = 0;
 	for (auto &bucket : buckets) bucket.clear();
-	const bool weighted = weightedClass(swim);
-	water = weighted ? map.frozenWaterSnapshot() : nullptr;
+	modifiedCosts = map.hasTerrainMovementModifiers();
+	const bool weighted = weightedClass(swim) || modifiedCosts;
+	terrain = weighted ? map.frozenTerrainSnapshot() : nullptr;
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
@@ -66,14 +67,27 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			++currentCost;
 		}
 	};
-	if (!water)
+	if (modifiedCosts)
+    {
+        const auto *types = terrain->data();
+        while (pending && (target == cells || !resolved(target)))
+        {
+            popped += buckets[currentCost % BUCKETS].size;
+            gradient_kernel::expandTerrainBucket(gradient, buckets.data(), pending,
+                currentCost, COST_LIMIT, {widthMask+1,heightMask+1},
+                gradient_kernel::TERRAIN_ENTRY_COSTS[swimClass],
+                [types](size_t i) { return types[i]; });
+            ++currentCost;
+        }
+    }
+    else if (!terrain)
 		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
 	{
-		const std::uint8_t *const waterCells = water->data();
-		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [waterCells](size_t i) { return waterCells[i] != 0; });
+		const auto *const terrainCells = terrain->data();
+		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [terrainCells](size_t i) { return gradient_kernel::terrainUsesSwimming(terrainCells[i]); });
 	}
-	if (complete()) water.reset();
+	if (complete()) terrain.reset();
 }
 
 std::size_t BuildingGradientSearch::retainedBytes() const
@@ -88,7 +102,7 @@ void BuildingGradientSearch::clearForReuse()
 {
 	gradient = nullptr;
 	cells = pending = 0;
-	water.reset();
+	terrain.reset();
 	for (auto &bucket : buckets) bucket.clear();
 }
 

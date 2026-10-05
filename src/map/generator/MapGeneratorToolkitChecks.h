@@ -2434,6 +2434,13 @@ inline void wallRouteAndStencilChecks()
 		request.nbWorkers = 5;
 		assert(validateGeneratedWorld(game, request, definition) == "Incomplete starting colony");
 		request.nbWorkers = 4;
+		// Natural non-growing terrain is permitted; it is the expected way to
+		// contain crops. A scenario override on even such a tile is forbidden.
+		game.map.setCellTerrain(5, 7, SAND);
+		game.map.setCellTerrain(6, 7, ROAD);
+		game.map.setCellTerrain(7, 7, ICE);
+		assert(!game.map.canResourcesGrow(5, 7));
+		assert(validateGeneratedWorld(game, request, definition).empty());
 		// A generated map may not disable resource growth anywhere, even one tile: no-growth
 		// zones belong to hand-made scenarios such as the tutorial.
 		game.map.getTile(5, 7).canResourcesGrow = false;

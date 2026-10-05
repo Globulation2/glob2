@@ -195,9 +195,13 @@ struct WorldTile
 	WorldTile();
 	bool discovered;
 	bool foodTraversable;
-	bool grass;
-	bool water;
-	bool sand;
+	bool buildable;
+	bool swimmable;
+	bool growthInhibiting;
+	bool walkable;
+	bool fertilitySource;
+	bool canWalk() const { return walkable && !swimmable; }
+	bool canTravel(bool swim) const { return canWalk() || (swim && swimmable); }
 	bool permanentResource;
 	/// Renewable seed or harvest outlet reserved against new construction.
 	bool woodReserve;

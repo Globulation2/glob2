@@ -21,14 +21,6 @@ int wrap(int v, int n)
 	return v < 0 ? v + n : v;
 }
 
-// The class of a tile's graphic (Map::lookup): grass, grass and sand, sand, sand and water, water. It
-// depends only on which terrains a tile's corners hold, not on which corner holds which, so it is
-// unchanged by any symmetry.
-int terrainClass(Uint16 terrain)
-{
-	return terrain < 16 ? 0 : terrain < 128 ? 1 : terrain < 144 ? 2 : terrain < 256 ? 3 : 4;
-}
-
 std::string at(int x, int y)
 {
 	return " at (" + std::to_string(x) + ", " + std::to_string(y) + ")";
@@ -375,7 +367,7 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 			for (int x = 0; x < w; ++x)
 			{
 				const int q = s.tile(e, x, y), qx = q % w, qy = q / w;
-				if (terrainClass(map.getTerrain(x, y)) != terrainClass(map.getTerrain(qx, qy)))
+				if (map.terrainTypeAt(x,y) != map.terrainTypeAt(qx,qy))
 					return "Terrain" + at(x, y) + under;
 				const Resource &ra = map.getResource(x, y), &rb = map.getResource(qx, qy);
 				if (ra.type != rb.type || ra.amount != rb.amount)

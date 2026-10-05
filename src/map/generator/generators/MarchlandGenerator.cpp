@@ -858,7 +858,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> home(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			home[i] = L.ownerOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			home[i] = L.ownerOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return home;
 	};
 	const auto anchor = [&](int team) { return L.homes[team].swarm; };
@@ -925,7 +925,11 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> cost = colonyCosts(map, t, teams);
 	std::vector<unsigned char> open(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = L.march[i] && map.isGrass(i % t.w, i / t.w) && clearGround(map, i % t.w, i / t.w);
+		open[i] = L.march[i] && (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE)) &&
+			clearGround(map, i % t.w, i / t.w);
 	const std::vector<int> room = clearance(t, open);
 	// Only genuinely contested ground is a candidate at all. A prize is required to sit on a front,
 	// so a site that no search could ever make contested has no business being proposed: filtering
@@ -1071,7 +1075,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<int> open2;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.isGrass(i % t.w, i / t.w))
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wheat-tiles",
@@ -1080,7 +1084,7 @@ bool generate(Game &game, GenerationContext &context)
 	open2.clear();
 	for (int i = 0; i < t.size(); ++i)
 		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.isGrass(i % t.w, i / t.w))
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wood-tiles",
@@ -1140,7 +1144,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// with none has a larder that empties and never refills, however much wheat it started with.
 	std::vector<unsigned char> wet(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		wet[i] = game.map.isWater(i % t.w, i / t.w);
+		wet[i] = terrainProvidesFertility(game.map.terrainPropertiesAt(i % t.w, i / t.w));
 	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, wet);
 	const std::vector<std::vector<int>> units = unitTilesByTeam(game.map, teams);
 	for (int k = 0; k < teams; ++k)

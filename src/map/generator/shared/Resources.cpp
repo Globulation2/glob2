@@ -155,7 +155,8 @@ std::vector<int> computeComponents(const Map &map, bool water, int &numComponent
 	std::vector<unsigned char> kind(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			kind[size_t(y) * w + x] = map.isWater(x, y) == water;
+			kind[size_t(y) * w + x] = water ? (map.terrainPropertiesAt(x,y).allowedResources & (1u<<ALGA)) != 0
+				: map.terrainPropertiesAt(x,y).walkable;
 	const std::vector<int> component = connectedRegions(kind, w, h, true, GridNeighbors::Eight);
 	numComponents = 0;
 	for (int c : component)
@@ -462,7 +463,7 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
 	const Torus t(map);
 	std::vector<unsigned char> open(size_t(t.size()));
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = !map.isWater(i % t.w, i / t.w) && !(protectedWalls && (*protectedWalls)[i]);
+		open[i] = map.terrainPropertiesAt(i).walkable && !(protectedWalls && (*protectedWalls)[i]);
 	return floodFrom(t, tileMask(t, {bootY * t.w + bootX}), open, limit).steps;
 }
 

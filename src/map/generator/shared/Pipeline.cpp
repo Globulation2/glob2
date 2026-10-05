@@ -180,7 +180,7 @@ std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
 {
 	std::vector<unsigned char> ground(size_t(t.size()), 0);
 	for (int i = 0; i < t.size(); ++i)
-		ground[i] = homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
+		ground[i] = homeOf[i] == team && map.terrainPropertiesAt(i).buildable;
 	return ground;
 }
 
@@ -202,7 +202,7 @@ std::string homePondMissing(const Map &map, const Torus &t, const std::vector<Sh
 		bool pond = false;
 		for (int dy = -2; dy <= 2 && !pond; ++dy)
 			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.isWater(t.x(int(kits[k].x) + dx), t.y(int(kits[k].y) + dy));
+				pond = map.terrainPropertiesAt(t.x(int(kits[k].x) + dx), t.y(int(kits[k].y) + dy)).fertilitySource;
 		if (!pond)
 			return "Colony " + std::to_string(k) + "'s " + place + " has lost its " + water + ".";
 	}

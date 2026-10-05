@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "field/GradientBucket.h"
+#include "map/TerrainType.h"
 
 class Map;
 
@@ -19,7 +20,8 @@ class Map;
 class BuildingGradientSearch
 {
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
-	std::shared_ptr<const std::vector<std::uint8_t>> water;
+	std::shared_ptr<const std::vector<TerrainType>> terrain;
+	bool modifiedCosts = false;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;

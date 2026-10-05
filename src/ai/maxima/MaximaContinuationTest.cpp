@@ -7,6 +7,7 @@
 #include <utility>
 #include <memory>
 #include "AIMaximaContinuation.h"
+#include "AIMaximaPlacementContinuation.h"
 #include <TextStream.h>
 #include <array>
 // Hide the binary dynamic type to exercise the unchanged scalar archive path.
@@ -137,4 +138,35 @@ TEST_CASE("compact fields retain legacy binary and text encodings [save-format]"
   REQUIRE(restoredFood==food);
  }
 }
+}
+
+namespace {
+struct LegacyTerrainWriter : AIMaximaContinuation::Writer
+{
+ using Writer::Writer;
+ int version() const { return FILE_FORMAT_VERSION_TERRAIN_PROPERTIES-1; }
+};
+}
+TEST_CASE("Maxima terrain snapshots retain independent properties and migrate legacy water [save-format]")
+{
+ for(bool legacy:{false,true})
+ {
+  auto* memory=new GAGCore::MemoryStreamBackend;
+  GAGCore::BinaryOutputStream output(memory);
+  AIMaximaPlacement::WorldTile tile;
+  tile.buildable=true; tile.walkable=true; tile.swimmable=false;
+  tile.fertilitySource=true; tile.growthInhibiting=false;
+  if(legacy) { LegacyTerrainWriter archive(&output); AIMaximaPlacement::fields(archive,tile); }
+  else { AIMaximaContinuation::Writer archive(&output); AIMaximaPlacement::fields(archive,tile); }
+  output.writeUint32(0x12345678,"sentinel");output.flush();
+  const auto bytes=memory->takeContents();
+  auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
+  GAGCore::BinaryInputStream input(source);
+  AIMaximaContinuation::Reader archive(&input,false,legacy?FILE_FORMAT_VERSION_TERRAIN_PROPERTIES-1:VERSION_MINOR);
+  AIMaximaPlacement::WorldTile restored;
+  AIMaximaPlacement::fields(archive,restored);
+  CHECK(restored.walkable);CHECK(restored.buildable);CHECK_FALSE(restored.swimmable);
+  CHECK(restored.fertilitySource==!legacy);
+  CHECK(input.readUint32("sentinel")==0x12345678);
+ }
 }

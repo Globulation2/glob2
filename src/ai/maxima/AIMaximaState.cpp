@@ -240,7 +240,7 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         strategy.reconnaissance.force_memory_hold_ticks,
         strategy.reconnaissance.stale_contact_age_ticks,
         strategy.reconnaissance.force_memory_enabled);
-    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE);
+    AIMaximaContinuation::Reader archive(stream,versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE,versionMinor);
     executionState(archive);
     if(offense_waves.size()>64)
         throw std::runtime_error("Too many saved Maxima offense waves");

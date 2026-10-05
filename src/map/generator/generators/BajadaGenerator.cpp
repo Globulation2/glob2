@@ -1272,7 +1272,7 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				std::vector<unsigned char> home(n, 0);
 				for (int i = 0; i < n; ++i)
-					home[i] = L.townOf[i] == team && map.isGrass(i % t.w, i / t.w);
+					home[i] = L.townOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 				return home;
 			},
 			[&](int team) { return L.swarms[team]; }))
@@ -1320,7 +1320,8 @@ bool generate(Game &game, GenerationContext &context)
 	const auto dryClear = [&](int i)
 	{
 		return clear(i) && fertility.at(i % t.w, i / t.w) == 0 && !L.ridge[i] && L.homeOf[i] < 0 &&
-			   map.isGrass(i % t.w, i / t.w);
+			   (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+				map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD));
 	};
 	for (int i = 0; i < n; ++i)
 	{
@@ -1378,7 +1379,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const std::string lost = homePondMissing(map, t, L.kits, teams, "spring", "pond"); !lost.empty())
 		return lost;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.isGrass(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+			map.getResource(i % t.w, i / t.w).type != STONE)
 			return "A range has lost its stone at (" + at(i) + ").";
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
 	// two homes' footprints overlap on a crowded map (their fans merge there).
@@ -1460,7 +1462,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 						continue;
 					offset[i] = d;
 					const bool stone = map.isResource(x, y) && map.getResource(x, y).type == STONE;
-					open[i] = !L.pass[i] && !map.isWater(x, y) && !stone;
+					open[i] = !L.pass[i] && map.terrainPropertiesAt(x, y).walkable && !stone;
 					north[i] = d < -band + 1 && open[i];
 				}
 			const Flood flood = floodFrom(t, north, open);
@@ -1479,7 +1481,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		{
 			const bool inTown = L.townOf[i] >= 0;
 			ground[i] = inTown ? L.townOf[i] : teams;
-			grass[i] = map.isGrass(i % t.w, i / t.w) && (inTown || fertility.at(i % t.w, i / t.w) > 0);
+			grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) &&
+				(map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+				map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) && (inTown || fertility.at(i % t.w, i / t.w) > 0);
 		}
 		if (const RegionLeak leak = firstRegionLeak(t, grass, ground, [](int, int) { return false; });
 			leak.tile >= 0)

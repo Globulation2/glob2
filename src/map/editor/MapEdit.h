@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "Brush.h"
+#include "TerrainPresentation.h"
 #include "GAGSys.h"
 #include "LoadSaveDialog.h"
 #include <memory>
@@ -194,7 +195,7 @@ private:
 class TerrainSelector : public MapEditorWidget
 {
 public:
-	enum TerrainType
+	enum TerrainType : int
 	{
 		Grass,
 		Sand,
@@ -207,8 +208,30 @@ public:
 		CherryTree,
 		OrangeTree,
 		PruneTree,
-		NoTerrain,
-	};
+        NoTerrain,
+        RegisteredBegin,
+        // Compatibility aliases for callers selecting the example materials.
+        Ice = RegisteredBegin + ICE,
+        Road = RegisteredBegin + ROAD,
+    };
+    static bool isBaseTerrain(TerrainType type)
+    {
+        return (type >= Grass && type <= Water) ||
+            (type >= RegisteredBegin && type < int(RegisteredBegin) + int(TERRAIN_COUNT));
+    }
+    static ::TerrainType baseTerrain(TerrainType type)
+    {
+        constexpr ::TerrainType legacy[] = {GRASS,SAND,WATER};
+        assert(isBaseTerrain(type));
+        return type <= Water ? legacy[type] : static_cast<::TerrainType>(type - RegisteredBegin);
+    }
+    static TerrainType selectorFor(::TerrainType type)
+    {
+        if (type == GRASS) return Grass;
+        if (type == SAND) return Sand;
+        if (type == WATER) return Water;
+        return static_cast<TerrainType>(int(RegisteredBegin) + int(type));
+    }
 	TerrainSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainType terrainType);
 	void draw();
 private:
@@ -628,6 +651,7 @@ private:
 	TerrainSelector* grass;
 	TerrainSelector* sand;
 	TerrainSelector* water;
+    std::vector<TerrainSelector*> additionalTerrainSelectors;
 	TerrainSelector* wheat;
 	TerrainSelector* trees;
 	TerrainSelector* stone;

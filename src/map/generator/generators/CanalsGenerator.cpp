@@ -573,13 +573,13 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (map.isWater(x, y))
+		if (!map.terrainPropertiesAt(x, y).walkable)
 			continue;
 		// Land on other blocks belongs to "everyone else": worth shooting at from any colony's bank.
 		owner[i] = L.homeOf[i] >= 0 ? L.homeOf[i] : teams;
 		target[i] = 1;
 		buildable[i] =
-			L.homeOf[i] >= 0 && map.isGrass(x, y) && !reserved[i] && !map.isResource(x, y);
+			L.homeOf[i] >= 0 && map.terrainPropertiesAt(x, y).buildable && !reserved[i] && !map.isResource(x, y);
 	}
 	TowerRequest request = startingTowerRequest(o.towers, o.towerCount, kTowerPads, kTowerSpacing);
 	request.otherWeight = 1;
@@ -615,7 +615,7 @@ bool generate(Game &game, GenerationContext &context)
 	// The built kinds' walls: stone on every designed wall tile (all pure grass, by the design's own
 	// check), before anything else is placed.
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.isGrass(i % t.w, i / t.w))
+		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
 			map.setResource(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "canals colonies";
@@ -630,7 +630,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> bridges(n, 0);
 	bool anyBridge = false;
 	for (int i = 0; i < n; ++i)
-		if (L.bridge[i] && L.canal[i] && !map.isWater(i % t.w, i / t.w))
+		if (L.bridge[i] && L.canal[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable)
 			bridges[i] = anyBridge = true;
 	if (!settleStartingTowers(game, context, towers, o.towers, o.towers > 0 && o.towerCount > 0,
 							  anyBridge ? &bridges : nullptr))

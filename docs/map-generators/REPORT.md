@@ -102,17 +102,21 @@ and movement connectivity use **eight neighbors**, including diagonals. All wrap
 
 ## Terrain, resources, space, and fertility
 
-`terrain` partitions every tile into one exclusive category, by its actual terrain
-sprite ID from `Map::lookup`: `grass` (0–15), `grass_sand_border` (16–127), `sand`
-(128–143), `sand_water_border` (144–255), `water` (256–271), or `unknown` (other IDs).
-Each value is coverage. Counts sum to `map.tiles`; percentages sum to 100 (subject
-to floating-point rounding). Resource/building occupancy does not change this
-classification. Borders are whole mixed tiles, not estimates of fractional land.
+`terrain` partitions every tile by its canonical gameplay material: `grass`,
+`grass_sand_border`, `sand`, `sand_water_border`, `water`, `ice`, or `road`.
+The retained `unknown` key is zero for validated maps. Each value is coverage;
+counts sum to `map.tiles`. Resource/building occupancy does not change this
+classification. Legacy borders remain whole mixed tiles. Ice and road each
+occupy a whole gameplay cell; decorative edge blending does not change its type.
+The additive `ice` and `road` coverage keys are optional in the version-2 schema
+so reports produced before those materials remain readable; current writers
+always emit both, including zero coverage.
 
 `underlying_terrain` separately partitions the engine's underlying terrain grid
 into `grass`, `sand`, `water`, and `unknown`, using coverage objects. It need not
 match the visible terrain percentages: visible tiles combine adjacent terrain
-corners and therefore include border classes.
+corners and therefore include border classes. This grid is a legacy editor
+representation; authored ice/road cells override its gameplay and appearance.
 
 `resources.occupied` counts all resource-bearing tiles, including unknown types.
 `unknown_type_tiles` counts resource IDs outside 0–7, excluding the no-resource
@@ -132,8 +136,8 @@ sentinel. `resources.types` always includes `wood`, `wheat`, `papyrus`, `stone`,
 `space` contains:
 
 - `building_footprint`: coverage of tiles whose map occupancy points to a building.
-- `buildable`: coverage passing the engine's `isFreeForBuilding` predicate: pure
-  grass, no resource, building, or ground unit. It does not test a particular
+- `buildable`: coverage passing the engine's `isFreeForBuilding` predicate: terrain permits
+  buildings, with no resource, building, or ground unit. It does not test a particular
   colony's visibility, ownership, or construction orders.
 - `build_sites_4x4`: number of valid top-left anchors for entirely buildable 4×4
   footprints, including ones spanning a map edge. **Anchors overlap**: this is a
@@ -141,18 +145,18 @@ sentinel. `resources.types` always includes `wood`, `wheat`, `papyrus`, `stone`,
 - `growth_disabled`: coverage of tiles whose `canResourcesGrow` flag is false. Always zero
   for a generated map, which may not disable growth; nonzero only for hand-made maps and
   scenarios such as the tutorial.
-- `land_regions`: four-connected regions of grass, sand, and their border tiles
-  (sprite IDs below 256); unknown terrain is excluded.
-- `water_regions`: four-connected regions of pure-water tiles (256–271).
+- `land_regions`: four-connected regions whose terrain permits walking.
+- `water_regions`: four-connected regions whose terrain permits swimming.
 
 `fertility` uses the engine's `Fertility::forMap` calculation. `scale` is 65536:
-a raw value f corresponds to the terrain-dependent probability f/65536, before
-other resource-growth conditions. This is not production per tick. Deposit amount,
+a raw value f corresponds to f/65536 expected growth opportunities per scheduled
+visit, including the terrain growth factor and before other resource conditions.
+Bonuses may raise this above one opportunity. This is not production per tick. Deposit amount,
 room to spread, the wheat growth divisor, and no-growth flags also affect growth.
 The field does not apply the `canResourcesGrow` flag; that is reported separately.
 
-- `all_tiles`: distribution over the full map, with non-grass and grass unreachable
-  by deposit spread set to zero by the engine's gating rule.
+- `all_tiles`: distribution over the full map, with terrain that does not permit
+  wheat and cells unreachable by deposit spread set to zero by the gating rule.
 - `grass_tiles`: the same gated field, sampled only on pure grass.
 - `potential_grass_ignoring_deposit_reachability`: terrain potential on pure grass
   without the existing-deposit reachability gate. Useful for spotting fertile

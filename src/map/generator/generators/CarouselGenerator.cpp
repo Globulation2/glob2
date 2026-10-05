@@ -712,7 +712,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	std::vector<unsigned char> stone =
 		sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
 	for (int i = 0; i < L.t.size(); ++i)
-		if (L.laneBand[i] && map.getTerrainType(i % L.t.w, i / L.t.w) == GRASS)
+		if (L.laneBand[i] && map.terrainSupportsResourceAt(i % L.t.w, i / L.t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -800,11 +800,11 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 				   : L.farmOf[i] >= 0  ? L.farmOf[i]
 									   : L.pathOf[i];
 		buildable[i] = L.homeOf[i] >= 0 && fromWall[i] >= 0 && fromWall[i] <= kSiegeLine &&
-					   map.isGrass(x, y) && !stone[i] && !L.roadTile[i] && !reserved[i] &&
+					   map.terrainPropertiesAt(x, y).buildable && !stone[i] && !L.roadTile[i] && !reserved[i] &&
 					   !map.isResource(x, y);
 		const int k = L.courtOf[i] >= 0 ? L.courtOf[i] : L.pathOf[i];
 		target[i] =
-			k >= 0 && !map.isWater(x, y) && !stone[i] &&
+			k >= 0 && map.terrainPropertiesAt(x, y).walkable && !stone[i] &&
 			std::hypot(t.offsetX(int(std::lround(L.courts[k].x)), x),
 					   t.offsetY(int(std::lround(L.courts[k].y)), y)) <= g.courtR + kElbowReach;
 	}
@@ -856,7 +856,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.isGrass(i % t.w, i / t.w);
+				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -892,7 +892,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 	std::vector<unsigned char> heart(n, 0);
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.plaza[i] && !map.isWater(i % t.w, i / t.w) && !stone[i] &&
+		heart[i] = L.plaza[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !stone[i] &&
 				   std::hypot(i % t.w - L.cx, i / t.w - L.cy) < L.g.plazaPondR + 3;
 	for (int team = 0; team < teams; ++team)
 	{
@@ -901,7 +901,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> court(n, 0);
 		std::vector<int> courtTiles;
 		for (int i = 0; i < n; ++i)
-			if (L.courtOf[i] == team && !stone[i] && !map.isWater(i % t.w, i / t.w))
+			if (L.courtOf[i] == team && !stone[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable)
 			{
 				court[i] = 1;
 				courtTiles.push_back(i);
@@ -971,14 +971,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int x = 0; x < t.w; ++x)
 		{
 			const int i = y * t.w + x;
-			if (L.side[i] < 0 || stone[i] || map.isWater(x, y))
+			if (L.side[i] < 0 || stone[i] || !map.terrainPropertiesAt(x, y).walkable)
 				continue;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const int j = t.at(x + dx, y + dy);
 					if (L.side[j] >= 0 && L.side[j] < L.side[i] && !stone[j] &&
-						!map.isWater(j % t.w, j / t.w) && !margin[i] && !margin[j] &&
+						map.terrainPropertiesAt(j % t.w, j / t.w).walkable && !margin[i] && !margin[j] &&
 						!borderOpen(L, i, j))
 						return "The wall between two parts of the carousel has a gap at " +
 							   where(i) + ".";
@@ -1008,8 +1008,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int i = 0; i < n; ++i)
 		{
 			const int x = i % t.w, y = i / t.w;
-			court[i] = L.courtOf[i] == k && !map.isWater(x, y) && !stone[i];
-			next[i] = L.homeOf[i] == (k + 1) % teams && map.isGrass(x, y) && !stone[i] &&
+			court[i] = L.courtOf[i] == k && map.terrainPropertiesAt(x, y).walkable && !stone[i];
+			next[i] = L.homeOf[i] == (k + 1) % teams && map.terrainPropertiesAt(x, y).buildable && !stone[i] &&
 					  !map.isResource(x, y);
 		}
 		const int reach = towerReach(t, next, court);

@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
+#include "TerrainResourceProperties.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -47,10 +48,22 @@ void Map::decResource(int x, int y, int resourceType)
 		decResource(x, y);
 }
 
-// Radius of the terrain probe in Map::growResources: it draws dwax and dway as
-// (syncRand()&0xF)-(syncRand()&0xF), so each lands anywhere in [-15,15] and the
-// probe can reach any tile of the 31x31 box around the source.
-static constexpr int GROWTH_PROBE_RADIUS = 15;
+namespace
+{
+bool terrainSupportsResource(const TerrainProperties &terrain, int resourceType)
+{
+	if (resourceType < 0 || resourceType >= MAX_NB_RESOURCES ||
+	    (terrain.allowedResources & (1u << resourceType)) == 0)
+		return false;
+	const ResourceType *resource = globalContainer->resourcesTypes.get(resourceType);
+	return ::terrainSupportsResource(terrain, resourceType, resource->shrinkable);
+}
+}
+
+bool Map::terrainSupportsResourceAt(int x, int y, int resourceType) const
+{
+	return terrainSupportsResource(terrainPropertiesAt(x, y), resourceType);
+}
 
 // The grain a farmed tile keeps back. decResource clears a granular tile at one
 // grain, so a pooled harvest that took the last one would leave bare ground and
@@ -64,52 +77,15 @@ bool Map::farmAreasEnabled() const
 
 bool Map::canResourceEverGrowHere(int x, int y, int resourceType) const
 {
-	if (resourceType == NO_RES_TYPE)
+	const auto &terrain = terrainPropertiesAt(x, y);
+	if (!terrain.resourcesGrow || !terrainSupportsResource(terrain, resourceType))
 		return false;
-	const ResourceType *type = globalContainer->resourcesTypes.get(resourceType);
-	if (getTerrainType(x, y) != type->terrain)
-		return false;
-
-	// Every gated resource needs water somewhere in the probe box. Scanning out
-	// from the tile finds it on the first ring for anything near a shore, and
-	// only runs the full box for the tiles that are about to be rejected.
-	bool water = false;
-	for (int r = 0; r <= GROWTH_PROBE_RADIUS && !water; r++)
-		for (int dy = -r; dy <= r && !water; dy++)
-			for (int dx = -r; dx <= r; dx++)
-			{
-				if (std::max(std::abs(dx), std::abs(dy)) != r)
-					continue;
-				if (isWater(x + dx, y + dy))
-				{
-					water = true;
-					break;
-				}
-			}
-	if (!water)
-		return false;
-
-	// Algae also need sand, at twice the offsets, so their box is twice as wide
-	// and only covers even offsets.
-	if (resourceType == ALGA)
-	{
-		for (int dy = -GROWTH_PROBE_RADIUS; dy <= GROWTH_PROBE_RADIUS; dy++)
-			for (int dx = -GROWTH_PROBE_RADIUS; dx <= GROWTH_PROBE_RADIUS; dx++)
-				if (isSand(x + dx * 2, y + dy * 2))
-					return true;
-		return false;
-	}
-	return true;
+	return resourceGrowthField().rate(coordToIndex(x, y), resourceType) != 0;
 }
 
 int Map::farmCropAt(int x, int y) const
 {
-	switch (getTerrainType(x, y))
-	{
-		case GRASS: return WHEAT;
-		case WATER: return ALGA;
-		default:    return NO_RES_TYPE;
-	}
+	return terrainPropertiesAt(x, y).farmCrop;
 }
 
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
@@ -269,6 +245,7 @@ bool Map::takeHarvest(int x, int y, int dx, int dy, int resourceType, Uint32 tea
 
 bool Map::incResource(int x, int y, int resourceType, int variety)
 {
+	if (!terrainSupportsResource(terrainPropertiesAt(x,y),resourceType)) return false;
 	Resource &r = getTile(x, y).resource;
 	const ResourceType *fulltype;
 	if (r.type == NO_RES_TYPE)
@@ -279,7 +256,7 @@ bool Map::incResource(int x, int y, int resourceType, int variety)
 			return false;
 
 		fulltype = globalContainer->resourcesTypes.get(resourceType);
-		if (getTerrainType(x, y) == fulltype->terrain)
+		if (terrainSupportsResource(terrainPropertiesAt(x, y), resourceType))
 		{
 			r.type = resourceType;
 			r.variety = variety;
@@ -330,7 +307,7 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 		for (int dy=y; dy<y+h; dy++)
 		{
 			Resource& r=tiles[coordToIndex(dx, dy)].resource;
-			if (r.type!=NO_RES_TYPE && getTerrainType(dx, dy)!=globalContainer->resourcesTypes.get(r.type)->terrain)
+			if (r.type!=NO_RES_TYPE && !terrainSupportsResource(terrainPropertiesAt(dx, dy), r.type))
 				r.clear();
 		}
 }
@@ -356,7 +333,7 @@ void Map::setResource(int x, int y, int type, int l)
 
 bool Map::isResourceAllowed(int x, int y, int type)
 {
-	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->resourcesTypes.get(type)->terrain);
+	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && terrainSupportsResource(terrainPropertiesAt(x, y), type);
 }
 
 bool Map::isPointSet(int n, int x, int y) const
@@ -495,6 +472,5 @@ bool Map::isGradientPeak(const T *gradient, int x, int y) const
 
 template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) const;
 template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
-
 
 

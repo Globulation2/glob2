@@ -54,7 +54,7 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 			value=GRADIENT_FORBIDDEN;
 		else if (c.resource.type==NO_RES_TYPE)
 		{
-			if (c.building!=NOGBID || (!canSwim && isWater(i)))
+			if (c.building!=NOGBID || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
 				value=GRADIENT_FORBIDDEN;
 			else
 				value=GRADIENT_UNREACHABLE;

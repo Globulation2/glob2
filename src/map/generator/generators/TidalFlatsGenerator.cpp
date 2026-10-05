@@ -505,7 +505,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.islandOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			home[i] = L.islandOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands on the far side of the pond from the map's centre, a short walk from the

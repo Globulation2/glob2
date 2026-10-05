@@ -45,7 +45,7 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 				  PointSearch search = PointSearch::Local, int maxPasses = 200);
 void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				 std::vector<MapGeneratorPoint> &points, std::vector<int> &weights,
-				 std::vector<int> &areaNumbers, bool grassOnly = false);
+				 std::vector<int> &areaNumbers, bool buildableOnly = false);
 void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points);
 void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,

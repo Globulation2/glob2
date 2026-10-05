@@ -16,7 +16,6 @@
 // old loader (booleans were stored as ints).
 struct ResourceType
 {
-	Sint32 terrain;
 	Sint32 gfxId;
 	Sint32 sizesCount;
 	Sint32 varietiesCount;

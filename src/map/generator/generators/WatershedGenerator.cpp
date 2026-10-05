@@ -1510,7 +1510,7 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 				// Kits go 6 to 22 steps from the colony's workers and outside the 15-tile square
 				// round the swarm (7.5 each way), so they neither crowd the swarm nor lie beyond an
 				// early worker's walk.
-				if (steps < 6 || steps > 22 || !map.isGrass(x, y) ||
+				if (steps < 6 || steps > 22 ||
 					!map.isResourceAllowed(x, y, WHEAT))
 					continue;
 				const Vec offset{centred(x - centre.x, w), centred(y - centre.y, h)};
@@ -1910,6 +1910,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::string error = checkFords(layout, water);
 	if (!error.empty())
 		return error;
+	for (const Ford &f : layout.fords)
+		if (const auto fault = fordWalkabilityFault(map, Torus(map), asSandFord(f)); !fault.empty())
+			return fault;
 	for (const Ford &f : layout.fords)
 		for (int side : {-1, 1})
 			if (!fordLandingWalkable(map, Torus(map), asSandFord(f), side))

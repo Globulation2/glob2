@@ -834,10 +834,10 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Protocol 52 prevents peers that cannot read the farm mask or its order.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION >= 52,
+	// Terrain format 134 changes movement/ecology and uses replay floor 134, protocol 55.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 134 && NET_PROTOCOL_VERSION == 55,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);

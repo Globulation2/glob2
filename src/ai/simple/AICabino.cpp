@@ -1076,7 +1076,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		if(getBuildingFromGid(team->game, map->getBuilding(x, y))->owner==team)
 			return true;
 	}
-	if(sources&Water && map->getTerrainType(x, y)==WATER)
+	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(x, y)))
 		return true;
 	return false;
 }

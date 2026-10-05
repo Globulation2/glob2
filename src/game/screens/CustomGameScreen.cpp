@@ -1054,8 +1054,12 @@ Element CustomGameScreen::build(const Presentation &p)
 	if (!note.empty())
 		summaryParts.push_back(fe::hint(note));
 	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
-	if (!globalContainer->settings.experiments.empty())
-		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments)));
+	ExperimentSet displayedExperiments = globalContainer->settings.experiments;
+	if (validMap)
+		for (const auto& definition : experimentDefinitions())
+			if (mapHeader.requiredTerrainExperiments.has(definition.id)) displayedExperiments.set(definition.id);
+	if (!displayedExperiments.empty())
+		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(displayedExperiments)));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
 	Element footerColumn = p.touch || narrow ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});

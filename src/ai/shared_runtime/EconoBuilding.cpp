@@ -55,6 +55,7 @@ void Econo::tick_inns_near_wheat(Runtime& runtime)
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
@@ -117,6 +118,7 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
@@ -184,6 +186,7 @@ void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
@@ -237,6 +240,7 @@ void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
@@ -273,6 +277,7 @@ void Econo::tick_school_inland(Runtime& runtime)
 
 			//Constraints around nearby settlement
 			AISharedRuntime::Gradients::GradientInfo gi_building;
+            gi_building.terrainTravel=field::TerrainTravel::Swim;
 			gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 			gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important

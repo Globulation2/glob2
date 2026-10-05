@@ -15,7 +15,9 @@ namespace MapGeneration
 
 /// What stepping onto a tile costs, by what is on it; -1 means the step cannot be taken. Clearable
 /// deposits are wheat, wood and algae (workers can clear them); eternal ones are stone and fruit.
-/// Water is checked first, then buildings, then deposits.
+/// Non-walkable terrain is checked first (water is the cost for swimmable terrain),
+/// then buildings, then deposits. These are caller-defined comparison/clearing
+/// costs, not elapsed travel time: terrain speed multipliers do not rescale them.
 struct StepCosts
 {
 	int open = 1;

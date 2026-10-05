@@ -1291,7 +1291,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && !L.buttes[i] && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.territory[i] == team && !L.buttes[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -1352,7 +1352,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> country(n, 0), ambientClear(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		country[i] = !nearMassif[i] && !L.buttes[i] && map.isGrass(i % t.w, i / t.w);
+		country[i] = !nearMassif[i] && !L.buttes[i] && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE));
 		ambientClear[i] = reserved[i] || L.noFields[i] || nearMouth[i] || L.washes[i];
 	}
 	const std::vector<unsigned char> none(n, 0);
@@ -1405,7 +1410,7 @@ bool generate(Game &game, GenerationContext &context)
 							 [&](int, int to, int, int)
 							 {
 								 const int x = to % t.w, y = to / t.w;
-								 if (map.isWater(x, y) || map.getBuilding(x, y) != NOGBID || stone[to])
+								 if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID || stone[to])
 									 return -1;
 								 return map.isResource(x, y) ? 11 : 10;
 							 });
@@ -1692,7 +1697,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				for (int dx = 0; dx < 3 && free; ++dx)
 				{
 					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					free = L.basin[j] && !L.garden[j] && map.isGrass(j % t.w, j / t.w) && !map.isResource(j % t.w, j / t.w);
+					free = L.basin[j] && !L.garden[j] && map.terrainPropertiesAt(j % t.w, j / t.w).buildable &&
+						!map.isResource(j % t.w, j / t.w);
 				}
 			room += free;
 		}
@@ -1711,7 +1717,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> basinGround;
 	for (int i = 0; i < n; ++i)
 	{
-		ground[i] = !map.isWater(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type != STONE;
+		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && map.getResource(i % t.w, i / t.w).type != STONE;
 		if (L.basin[i] && ground[i])
 			basinGround.push_back(i);
 	}
@@ -1771,7 +1777,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				ledges[i] = 1;
 		const std::vector<unsigned char> nearLedge = dilate(t, ledges, kFrontReach);
 		for (int i = 0; i < n; ++i)
-			if (nearLedge[i] && !ledges[i] && !L.massif[i] && map.isGrass(i % t.w, i / t.w) &&
+			if (nearLedge[i] && !ledges[i] && !L.massif[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable &&
 				map.getResource(i % t.w, i / t.w).type != STONE)
 				return "Ground outside the plateau at " + at(i) + " is within a tower's reach of a ledge.";
 	}

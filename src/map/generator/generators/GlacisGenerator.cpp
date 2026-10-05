@@ -917,11 +917,11 @@ bool generate(Game &game, GenerationContext &context)
 			const int x = i % t.w, y = i / t.w;
 			owner[i] = L.fortOf[i];
 			const bool towerBastion = L.kind[i] == kPocket;
-			buildable[i] = towerBastion && map.isGrass(x, y) && !map.isResource(x, y) &&
+			buildable[i] = towerBastion && map.terrainPropertiesAt(x, y).buildable && !map.isResource(x, y) &&
 						   map.getBuilding(x, y) == NOGBID && !reserved[i];
 			target[i] = L.fortOf[i] >= 0 && L.kind[i] != kCourt && L.kind[i] != kPocket &&
 						L.kind[i] != kGarden &&
-						!L.wall[i] && !map.isWater(x, y);
+						!L.wall[i] && map.terrainPropertiesAt(x, y).walkable;
 		}
 		TowerRequest request = startingTowerRequest(o.towerLevel, o.towerLevel > 0 ? 2 : 0,
 													kTowerPads, kTowerSpacing);
@@ -955,7 +955,8 @@ bool generate(Game &game, GenerationContext &context)
 								int(scaledCount(s.gardenTiles[h] * kGardenWheatPercent / 100, o.wheat)));
 			const auto eligible = [&](int i)
 			{
-				return L.gardenOf[i] == k * 3 + h && map.isGrass(i % t.w, i / t.w) && !reserved[i] &&
+				return L.gardenOf[i] == k * 3 + h &&
+					map.terrainSupportsResourceAt(i % t.w, i / t.w, (wood ? WOOD : WHEAT)) && !reserved[i] &&
 					   clearGround(map, i % t.w, i / t.w);
 			};
 			int placed = 0;
@@ -1064,7 +1065,8 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	for (int i = 0; i < n; ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		open[i] = map.isGrass(x, y) &&
+		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
+			map.terrainSupportsResourceAt(x, y, WOOD))) &&
 				  !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
 	}
 	std::vector<unsigned char> source(n, 0);

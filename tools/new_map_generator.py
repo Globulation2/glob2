@@ -163,7 +163,7 @@ bool generate(Game &game, GenerationContext &context)
 	{{
 		std::vector<unsigned char> ground(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			ground[i] = L.homeOf[i] == team && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(i).buildable;
 		return ground;
 	}};
 	const auto anchor = [&](int team) {{ return homeSwarmSite(L.homes[team], 0.0, L.homeRadius); }};

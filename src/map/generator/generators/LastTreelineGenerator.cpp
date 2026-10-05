@@ -310,7 +310,7 @@ bool generate(Game &game, GenerationContext &c)
 					for (int dx = -5; dx <= 5; ++dx)
 					{
 						int i = t.at(int(L.homes[k].x) + dx, int(L.homes[k].y) + dy);
-						mask[i] = game.map.isGrass(i % t.w, i / t.w) && L.plotOf[i] < 0;
+						mask[i] = game.map.terrainPropertiesAt(i % t.w, i / t.w).buildable && L.plotOf[i] < 0;
 					}
 				return mask;
 			},

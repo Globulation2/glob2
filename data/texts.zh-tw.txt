@@ -5544,3 +5544,15 @@ AI 遙測
 無限制
 [settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
 限制整個應用程式的繪製頻率。較低的數值可減少繪製工作量。遊戲速度不變。
+[ice]
+Ice
+[road]
+Road
+[experiment ice-terrain]
+Ice terrain
+[experiment ice-terrain help]
+Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
+[experiment road-terrain]
+Road terrain
+[experiment road-terrain help]
+Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.

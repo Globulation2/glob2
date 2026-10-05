@@ -3,15 +3,19 @@
 `checkpoint-30000-v115.game.gz` contains two default Maxima players at tick
 30000 on a 128×128 symmetric arena (map seed 42, game seed 19). The expected
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
-ordered team/entity checksum record when continuing that retained checkpoint with
-the current AI policy and version-123 scoped-gradient routing schedule.
-`expected-scoped-gradients-30000-30512.json` is the active trajectory; prior
-expected trajectories remain retained for their earlier scheduling policies. The current baseline includes permanent wheat seed protection,
+complete checksum record (tick, aggregate, and ordered team/entity fields) when
+continuing that retained checkpoint with the current AI policy and terrain-property
+simulation. `expected-terrain-30000-30512.json` is the active trajectory;
+`expected-scoped-gradients-30000-30512.json` and earlier expectations retain the
+historical team/entity-only hashes for their earlier simulation policies.
+The current baseline includes permanent wheat seed protection,
 renewable wood reserves and no supplemental expansion support. CI compares platform continuations against this same trajectory. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,
 reloads, and compares all remaining records against the uninterrupted continuation
-to verify save/load continuity independently of the fixed baseline. Aggregate hashes
-are excluded because they include the save header/version.
+to verify save/load continuity independently of the fixed baseline. Reload checks
+adjust only the MapHeader format-version contribution to the aggregate checksum,
+using the versions and team/player counts in both headers. All other aggregate
+bits and all team/entity fields must match.
 
 Run the retained regression from the repository root:
 
@@ -39,10 +43,11 @@ python3 test/compare_save_continuation.py \
 ```
 
 The generated checkpoint is compressed with gzip, with its timestamp set to zero.
-The expected JSON uses `test/compare_save_continuation.py`'s `records()` parser
-and hashes only records in `[30000, 30512)`.
+The current expected JSON uses `test/check_javascript.py`'s `complete_ticks()`
+parser and hashes complete records in `[30000, 30512)`.
 
-To refresh the current-policy baseline, decompress the retained checkpoint and run
-from it to tick 30512 with `--telemetry checksums`. Hash those 512 records with
-`records()`; do not replace the older checkpoint. The regression independently
-checks the midpoint save/reload before accepting continuity.
+To refresh only the terrain baseline, run the checker with `--update-fixtures`.
+It validates the midpoint save/reload before writing the expectation. Then run
+without that flag in both default and `--parallel-ai` modes. The legacy checkpoint
+and historical expectations remain unchanged. `--output artifacts/NAME` retains
+commands, logs, traces, saves and a hash manifest.

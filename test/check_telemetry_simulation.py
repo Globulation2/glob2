@@ -16,14 +16,14 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SCENARIOS = (
     (ROOT / "games/gd-large-4ai.game", 1024,
-     ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.terrain.checksums.gz"),
     (ROOT / "games/gd-bigarena-long.game", 2048,
-     ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.terrain.checksums.gz"),
     (ROOT / "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz", 2048,
-     ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.terrain.checksums.gz"),
 )
 CHECKPOINT = ROOT / "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz"
-PARENT_RELOAD = ROOT / "test/fixtures/scoped-gradients/v108-reload-256.checksums.gz"
+PARENT_RELOAD = ROOT / "test/fixtures/scoped-gradients/v108-reload-256.terrain.checksums.gz"
 
 
 def detailed_ticks(data: bytes) -> dict[int, bytes]:
@@ -61,7 +61,7 @@ def run_directory(evidence, name):
         yield str(directory)
 
 
-def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -> int:
+def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, update_fixtures: bool = False) -> int:
     if evidence is not None:
         evidence = evidence.resolve()
         evidence.mkdir(parents=True, exist_ok=False)
@@ -72,8 +72,10 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -
             "binarySha256": hashlib.sha256(Path(binary).read_bytes()).hexdigest(),
             "fixtureHashes": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                               for original in [*(p for case in SCENARIOS for p in (case[0], case[2])), CHECKPOINT, PARENT_RELOAD]
-                              for p in [original if original.is_file() else Path(str(original) + ".gz")]},
-            "checkpointAggregateExclusion": "Version-dependent aggregate changes after save/load; compare every stored team/entity record against the released reference. Fresh-load traces compare complete bytes.",
+                              for p in [original if original.is_file() else Path(str(original) + ".gz")]
+                              if p.is_file()},
+            "updatedFixtures": update_fixtures,
+            "checksumCoverage": "Complete checksum sidecars, including aggregate, for all legacy fresh loads and the retained v108 checkpoint.",
         }
         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
@@ -102,10 +104,13 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -
                     print(report.read_text(encoding="utf-8")[:4000], file=sys.stderr)
                 return 1
             actual = sidecar.read_bytes()
+            assert set(detailed_ticks(actual)) == set(range(ticks)), "incomplete scenario trace"
+            if update_fixtures:
+                fixture.write_bytes(gzip.compress(actual, mtime=0))
             with gzip.open(fixture, "rb") as stream:
                 expected = stream.read()
             if actual != expected:
-                print(f"{save.name}: per-tick checksums differ from the version-123 serial reference",
+                print(f"{save.name}: per-tick checksums differ from the terrain serial reference",
                       file=sys.stderr)
                 print(f"expected SHA-256 {hashlib.sha256(expected).hexdigest()}", file=sys.stderr)
                 print(f"actual   SHA-256 {hashlib.sha256(actual).hexdigest()}", file=sys.stderr)
@@ -133,14 +138,21 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None) -
             sys.stderr.write(result.stdout + result.stderr)
             print("output files:", [p.name for p in output.iterdir()], file=sys.stderr)
             return 1
+        actual = (output / "game.replay.checksums").read_bytes()
+        assert set(detailed_ticks(actual)) == set(range(1024, 1280)), "incomplete checkpoint trace"
+        if update_fixtures:
+            PARENT_RELOAD.write_bytes(gzip.compress(actual, mtime=0))
         with gzip.open(PARENT_RELOAD, "rb") as stream:
-            expected = detailed_ticks(stream.read())
-        actual = detailed_ticks((output / "game.replay.checksums").read_bytes())
+            expected = stream.read()
         if actual != expected:
-            print("legacy checkpoint differs from version-123 team/entity reference", file=sys.stderr)
+            print("legacy checkpoint differs from complete terrain reference", file=sys.stderr)
             return 1
-        print(f"PASS v108 checkpoint: {len(actual)} reloaded ticks, identical eight-tick "
-              "team/entity checksum records")
+        print("PASS v108 checkpoint: 256 reloaded ticks, identical complete checksum sidecar")
+    if evidence is not None:
+        # Include freshly generated traces in regeneration evidence too.
+        for fixture in [case[2] for case in SCENARIOS] + [PARENT_RELOAD]:
+            manifest["fixtureHashes"][str(fixture.relative_to(ROOT))] = hashlib.sha256(fixture.read_bytes()).hexdigest()
+        (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return 0
 
 
@@ -148,6 +160,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("binary")
     parser.add_argument("--parallel-ai", action="store_true")
+    parser.add_argument("--update-fixtures", action="store_true",
+                        help="Regenerate only terrain-era traces from retained legacy saves")
     parser.add_argument("--output", type=Path, help="Retain traces, replays, saves, commands and logs")
     args = parser.parse_args()
-    sys.exit(main(args.binary, args.parallel_ai, args.output))
+    if args.update_fixtures and args.parallel_ai:
+        parser.error("generate fixtures serially, then verify --parallel-ai without --update-fixtures")
+    sys.exit(main(args.binary, args.parallel_ai, args.output, args.update_fixtures))

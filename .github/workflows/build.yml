@@ -75,6 +75,7 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v' \
+            --check 'terrain ecology analysis contracts' 'python3 tools/test_terrain_ecology.py' \
             --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'
       - name: Check that the sim version follows the simulation
         env:

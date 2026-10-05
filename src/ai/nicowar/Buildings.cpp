@@ -359,10 +359,11 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_INN_BUILDING_PREF));
 
@@ -370,7 +371,7 @@ int NewNicowar::order_regular_inn(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_INN_CONSTRUCTION_MIN));
 
@@ -429,10 +430,11 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_SWARM_BUILDING_PREF));
 
@@ -440,7 +442,7 @@ int NewNicowar::order_regular_swarm(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_SWARM_CONSTRUCTION_MIN));
 
@@ -488,10 +490,11 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_RACETRACK_BUILDING_PREF));
 
@@ -504,7 +507,7 @@ int NewNicowar::order_regular_racetrack(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_RACETRACK_CONSTRUCTION_MIN));
 
@@ -547,10 +550,11 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_SWIMMINGPOOL_BUILDING_PREF));
 
@@ -563,7 +567,7 @@ int NewNicowar::order_regular_swimmingpool(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_SWIMMINGPOOL_CONSTRUCTION_MIN));
 
@@ -582,10 +586,11 @@ int NewNicowar::order_regular_school(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_SCHOOL_BUILDING_PREF));
 
@@ -599,7 +604,7 @@ int NewNicowar::order_regular_school(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_SCHOOL_CONSTRUCTION_MIN));
 
@@ -645,10 +650,11 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_BARRACKS_BUILDING_PREF));
 
@@ -656,7 +662,7 @@ int NewNicowar::order_regular_barracks(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_BARRACKS_CONSTRUCTION_MIN));
 
@@ -687,10 +693,11 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 
 	//Constraints around nearby settlement
 	AISharedRuntime::Gradients::GradientInfo gi_building;
+    gi_building.terrainTravel=can_swim?field::TerrainTravel::Swim:field::TerrainTravel::Walk;
 	gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You want to be close to other buildings
 	bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_HOSPITAL_BUILDING_PREF));
 
@@ -698,7 +705,7 @@ int NewNicowar::order_regular_hospital(Runtime& runtime)
 	gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
 	gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 	if(!can_swim)
-		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Water);
+		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::Unwalkable);
 	//You don't want to be too close
 	bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_HOSPITAL_CONSTRUCTION_MIN));
 

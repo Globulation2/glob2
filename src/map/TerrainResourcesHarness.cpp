@@ -25,7 +25,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 			for (const auto& position : positions)
 			{
 				Map map;
-				map.setSize(4, 4, static_cast<TerrainType>(globals->resourcesTypes.get(type)->terrain));
+				map.setSize(4, 4, type == ALGA ? WATER : GRASS);
 				for (int y = 0; y < 16; ++y)
 					for (int x = 0; x < 16; ++x)
 					{
@@ -61,7 +61,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 								(x == (px & 15) || x == ((px - 1) & 15)) &&
 								(y == (py & 15) || y == ((py - 1) & 15));
 							if (bareGrass || (expected.type != NO_RES_TYPE &&
-								map.getTerrainType(x, y) != globals->resourcesTypes.get(expected.type)->terrain))
+								!(map.terrainPropertiesAt(x,y).allowedResources & (1u<<expected.type))))
 								expected.clear();
 							REQUIRE(map.getResource(x, y).getUint32() == expected.getUint32());
 						}

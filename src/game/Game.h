@@ -389,7 +389,7 @@ private:
 	///draws the overlay representing water
 	static void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras
-	static void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
+	static void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime = 0);
 	///draws the resources like algae, wheat or fruit trees
 	static void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap);
 	///draws the ground units. up till now those are workers and warriors

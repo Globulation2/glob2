@@ -56,8 +56,17 @@ def save_header(path):
     name_length = struct.unpack_from('>I', data)[0]
     major, minor, teams = struct.unpack_from('>3I', data, 4 + name_length)
     assert minor >= 73, 'fixture predates fixed-size BaseTeam headers'
-    # Name, four MapHeader integers, saved flag, SHA1, then 20 bytes per team.
-    game_header = 4 + name_length + 16 + 1 + 20 + 20 * teams
+    # Version134 appends the required-terrain experiment keys before BaseTeams.
+    game_header = 4 + name_length + 16 + 1 + 20
+    if minor >= 134:
+        count = struct.unpack_from('>I', data, game_header)[0]
+        game_header += 4
+        assert count <= 256, 'invalid required terrain experiment count'
+        for _ in range(count):
+            length = struct.unpack_from('>I', data, game_header)[0]
+            game_header += 4 + length
+            assert game_header <= len(data), 'truncated terrain experiment key'
+    game_header += 20 * teams
     players = struct.unpack_from('>I', data, game_header + 5)[0]
     assert 0 < teams <= 32 and 0 < players <= 32
     return major, minor, teams, players
@@ -103,13 +112,22 @@ def main():
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     for name in names:
         released = gzip.decompress((FIXTURE / (name + '-256.checksums.gz')).read_bytes())
-        expected = gzip.decompress((FIXTURE / (name + '-256-teams16.checksums.gz')).read_bytes())
-        released_ticks, expanded_ticks = complete_ticks(released), complete_ticks(expected)
+        expanded = gzip.decompress((FIXTURE / (name + '-256-teams16.checksums.gz')).read_bytes())
+        released_ticks, expanded_ticks = complete_ticks(released), complete_ticks(expanded)
         assert released_ticks.keys() == expanded_ticks.keys()
         assert all(record[8:] == expanded_ticks[tick][8:]
                    for tick, record in released_ticks.items()), name + ': released entity records differ'
+        # Preserve historical migration evidence independently of the current
+        # simulation trace. Still load the original version-125 save below.
+        trace = FIXTURE / (name + '-256-terrain.checksums.gz')
+        expected = gzip.decompress(trace.read_bytes())
+        ticks = complete_ticks(expected)
+        assert set(ticks) == set(range(256)), name + ': incomplete terrain trace'
         initial = FIXTURE / (name + '-initial.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
+                                     'trace': str(trace.relative_to(ROOT)),
+                                     'releasedTraceSha256': hashlib.sha256(released).hexdigest(),
+                                     'teams16TraceSha256': hashlib.sha256(expanded).hexdigest(),
                                      'traceSha256': hashlib.sha256(expected).hexdigest()}
         interval = 32 if name == 'realistic-profile1' else 128
         baseline = output / name / 'workers1'
@@ -119,7 +137,6 @@ def main():
         assert run(binary, parallel, initial, 4, interval) == expected
         for filename in ('game.replay', 'game.replay.checksums', 'final.game.gz'):
             assert (baseline / filename).read_bytes() == (parallel / filename).read_bytes(), filename
-        ticks = complete_ticks(expected)
         # Include either side of the 32-tick scenario callback/AI cadence, using
         # several saved boundaries rather than only the halfway checkpoint.
         boundaries = (32, 64, 96, 128, 224) if name == 'realistic-profile1' else (128,)

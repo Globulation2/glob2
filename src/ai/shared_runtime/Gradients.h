@@ -4,6 +4,7 @@
 #pragma once
 
 #include "field/Frontier.h"
+#include "field/TerrainTravel.h"
 #include "shared_runtime/Position.h"
 #include "Map.h"
 
@@ -49,6 +50,7 @@ namespace AISharedRuntime
 				EWater,
 				EPosition,
 				ESand,
+				EUnwalkable,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -185,6 +187,16 @@ namespace AISharedRuntime
 				void save(GAGCore::OutputStream *stream);
 			};
 
+			/// Terrain obstacles for walking, independent of fertility sources.
+			class Unwalkable : public Water
+			{
+			protected:
+				bool is_entity(Map*, int, int) override;
+				bool operator==(const Entity&) const override;
+				EntityType get_type() override { return EUnwalkable; }
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Unwalkable>(*this); }
+			};
+
 			///Matches the provided position
 			class Position : public Entity
 			{
@@ -226,6 +238,7 @@ namespace AISharedRuntime
 		{
 		public:
 			GradientInfo();
+            field::TerrainTravel terrainTravel=field::TerrainTravel::Geometric;
 			~GradientInfo();
 			///Adds a provided source to the gradient. Ownership for the source is taken.
 			void add_source(Entities::Entity* source);
@@ -296,6 +309,7 @@ namespace AISharedRuntime
 			///Returns the gradient info for comparison
 			const GradientInfo& get_gradient_info() const { return gradient_info; }
 			int width;
+            std::uint64_t terrainGeneration=0;
 			int get_pos(int x, int y) const { return y*width + x; }
 			GradientInfo gradient_info;
 			std::vector<Sint16> gradient;

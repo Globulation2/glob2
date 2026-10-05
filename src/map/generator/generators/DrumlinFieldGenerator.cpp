@@ -501,7 +501,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		ground[i] = L.homeOf[i] >= 0 ? 2 * L.homeOf[i] : L.farmOf[i] >= 0 ? 2 * L.farmOf[i] + 1 : -1;
-		grass[i] = map.isGrass(i % t.w, i / t.w);
+		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD)));
 	}
 	if (const RegionLeak leak = firstRegionLeak(t, grass, ground, [](int, int) { return false; });
 		leak.tile >= 0)

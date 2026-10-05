@@ -118,7 +118,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 						const int x = p % w, y = p / w;
 						++band.reachedTiles;
 						band.buildableTiles += map.isFreeForBuilding(x, y);
-						if (map.isGrass(p))
+						if ((map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)))
 						{
 							++band.grassTiles;
 							band.fertileGrassTiles += fertility.at(x, y) > 0;
@@ -129,11 +129,11 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			const int x = p % w, y = p / w;
 			++colony.catchmentTiles;
 			colony.meanFertility += fertility.at(x, y);
-			if (map.isGrass(p))
+			if ((map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)))
 			{
 				++colony.catchmentGrass;
 				colony.catchmentFertileGrass += fertility.at(x, y) > 0;
-				colony.catchmentGrowthEnabledGrass += map.tiles[p].canResourcesGrow;
+				colony.catchmentGrowthEnabledGrass += map.canResourcesGrow(x,y);
 			}
 			colony.catchmentBuildable += map.isFreeForBuilding(x, y);
 			if (map.isFreeForBuilding(x, y, 4, 4))

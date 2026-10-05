@@ -2,6 +2,8 @@
 #pragma once
 
 #include "BitArray.h"
+#include "TerrainPresentation.h"
+#include "TerrainProperties.h"
 #include "Ressource.h"
 
 #include <SDL3/SDL_stdinc.h>
@@ -37,6 +39,15 @@ public:
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
+    TerrainType terrainTypeAt(int x, int y) const { return terrainTypes[coordToIndex(x,y)]; }
+    // Legacy preview hues are corner based; authored terrain has whole-cell identity.
+    TerrainType presentationTypeAt(int x, int y) const
+    {
+        const auto type = terrainTypeAt(x,y);
+        return terrainUsesLegacyCorners(type) ? static_cast<TerrainType>(getUMTerrain(x,y)) : type;
+    }
+    TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
+    int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
 	const Resource &getResource(size_t pos) const { return resources[pos]; }
 	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
@@ -61,7 +72,7 @@ public:
 	Uint16 getBuilding(int x, int y) const { return buildings[coordToIndex(x, y)]; }
 	//! Undermap terrain type (Map::getUMTerrain), as an int.
 	int getUMTerrain(int x, int y) const { return undermap[coordToIndex(x, y)]; }
-	//! Map::isHardSpaceForBuilding: every tile of the rectangle is grass, without a
+	//! Map::isHardSpaceForBuilding: every tile of the rectangle permits buildings, without a
 	//! resource or a building.
 	bool isHardSpaceForBuilding(int x, int y, int w, int h) const
 	{
@@ -69,7 +80,7 @@ public:
 			for (int xi = x; xi < x + w; xi++)
 			{
 				const size_t i = coordToIndex(xi, yi);
-				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || terrain[i] >= 16)
+				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || !terrainProperties(terrainTypes[i]).buildable)
 					return false;
 			}
 		return true;
@@ -85,6 +96,8 @@ private:
 	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
+    std::vector<TerrainType> terrainTypes;
+    bool layeredTerrain = false;
 	std::vector<Uint32> discovered, fogOfWar;
 	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

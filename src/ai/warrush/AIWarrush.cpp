@@ -562,7 +562,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{	
-			if (map->isWater(x,y))
+			if (terrainProvidesFertility(map->terrainPropertiesAt(x,y)))
 			{
 				water_gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
@@ -807,7 +807,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			{
 				gradient(x, y) = 0;
 			}
-			else if (map->isWater(x,y))
+			else if (!map->terrainPropertiesAt(x,y).walkable)
 			{
 				gradient(x, y) = 0;
 			}
@@ -867,7 +867,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (map->isWater(x,y))
+			else if (!map->terrainPropertiesAt(x,y).walkable)
 			{
 				availability_gradient(x, y) = 0;
 			}

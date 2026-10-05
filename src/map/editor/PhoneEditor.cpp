@@ -81,9 +81,12 @@ void PhoneEditor::prepare()
 		paletteMode = 0;
 	std::vector<MapEditorWidget *> items;
 	if (paletteMode == 0)
+    {
 		items = {editor.grass,        editor.sand,         editor.water,
 				 editor.deleteButton, editor.areasButton,  editor.noResourceGrowthButton,
 				 editor.areaNumber,   editor.areaNameLabel};
+        items.insert(items.begin()+3, editor.additionalTerrainSelectors.begin(), editor.additionalTerrainSelectors.end());
+    }
 	else if (paletteMode == 1)
 		items = {editor.wheat,   editor.trees,  editor.stone,  editor.algae,
 				 editor.papyrus, editor.orange, editor.cherry, editor.prune};
@@ -289,7 +292,7 @@ BrushHUD::Layout PhoneEditor::rail() const
 	// Paint/Erase applies to zones, areas, no-growth areas and resources, not
 	// to grass/sand/water or deletion.
 	const bool mode = editor.selectionMode != MapEdit::RemoveObject &&
-					  !(editor.selectionMode == MapEdit::PlaceTerrain && editor.terrainType <= TerrainSelector::Water);
+					  !(editor.selectionMode == MapEdit::PlaceTerrain && TerrainSelector::isBaseTerrain(editor.terrainType));
 	return BrushHUD::layout({content.x + inset, content.y + inset, content.w - 2 * inset, content.h - 2 * inset},
 							ThumbSide::left(), unit, mode, true, bool(undo));
 }
@@ -639,7 +642,7 @@ void PhoneEditor::act(const TouchAction &action)
 		}
 		else if (editor.selectionMode != MapEdit::RemoveObject &&
 				 !(editor.selectionMode == MapEdit::PlaceTerrain &&
-				   editor.terrainType <= TerrainSelector::Water))
+				   TerrainSelector::isBaseTerrain(editor.terrainType)))
 			editor.brush.setType(editor.brush.getType() == BrushTool::MODE_DEL
 									 ? BrushTool::MODE_ADD
 									 : BrushTool::MODE_DEL);
@@ -999,12 +1002,10 @@ void PhoneEditor::draw()
 			? GAGCore::Toolkit::getStringTable()->getString("[Done]")
 			: GAGCore::Toolkit::getStringTable()->getString("[Select]")};
 	if (editor.selectionMode == MapEdit::PlaceTerrain &&
-		editor.terrainType <= TerrainSelector::Water)
+		TerrainSelector::isBaseTerrain(editor.terrainType))
 	{
-		const std::string materials[] = {GAGCore::Toolkit::getStringTable()->getString("[grass]"),
-										 GAGCore::Toolkit::getStringTable()->getString("[sand]"),
-										 GAGCore::Toolkit::getStringTable()->getString("[Water]")};
-		labels[2] = materials[editor.terrainType];
+        labels[2] = GAGCore::Toolkit::getStringTable()->getString(
+            terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType)).label);
 	}
 	else if (editor.selectionMode == MapEdit::RemoveObject)
 		labels[2] = GAGCore::Toolkit::getStringTable()->getString("[delete]");

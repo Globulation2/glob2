@@ -547,7 +547,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		if (L.hedge[i] && (fertility.at(x, y) > 0 || game.map.getResource(x, y).type != WOOD))
 			return std::string(fertility.at(x, y) > 0 ? "A hedge is fertile at " : "A hedge is missing at ") +
 				std::to_string(x) + "," + std::to_string(y) + "; breaches must remain permanent.";
-		if (L.road[i] && (game.map.isWater(x, y) || game.map.isResource(x, y)))
+		if (L.road[i] && (!game.map.terrainPropertiesAt(x, y).walkable || game.map.isResource(x, y)))
 			return "An existing lane is blocked.";
 	}
 	const int accessDy = villageFor(HedgerowCountryOptions(c.request).fieldSize).accessDy;

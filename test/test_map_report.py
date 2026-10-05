@@ -248,6 +248,19 @@ def main():
         assert grass['movement']['walking']['between_colonies'] == [[0,1],[1,0]]
         assert grass['start_position_euclidean_distances'] == [[0,1],[1,0]]
         assert grass['movement']['walking']['colonies'][0]['resources']['wood']['nearest_gather_cost'] == 5
+        # Additive material keys preserve the established version-2 border names.
+        # Walking/buildability come from capabilities; colors/sprite IDs never
+        # participate in the partition or spatial calculations.
+        materials=fixtures['materials']
+        assert materials['terrain']['grass']['tiles']==4092
+        for name in ('ice','road','grass_sand_border','sand_water_border'):
+            assert materials['terrain'][name]['tiles']==1
+        assert materials['space']['buildable']['tiles']==4089
+        assert materials['space']['growth_disabled']['tiles']==0
+        assert materials['space']['land_regions']['passable']['tiles']==4096
+        legacy=json.loads(json.dumps(grass))
+        del legacy['terrain']['ice'],legacy['terrain']['road']
+        contract(legacy)
         islands=fixtures['islands']
         assert islands['terrain']['water']['tiles'] == 4094
         assert islands['movement']['walking']['between_colonies'] == [[0,None],[None,0]]

@@ -13,7 +13,7 @@ Entities::Water::Water()
 
 bool Entities::Water::is_entity(Map* map, int posx, int posy)
 {
-	return map->isWater(posx, posy);
+	return terrainProvidesFertility(map->terrainPropertiesAt(posx, posy));
 }
 
 bool Entities::Water::operator==(const Entity& rhs) const
@@ -76,9 +76,10 @@ bool Entities::Position::load(GAGCore::InputStream *stream, Player *player, Sint
 {
 	stream->readEnterSection("Position");
 	x=stream->readSint32("posX");
-	y=stream->readSint32("posY");
+	// Match the historical writer spelling; binary streams ignore field names.
+	y=stream->readSint32("posy");
 	stream->readLeaveSection();
-	return false;
+	return true;
 }
 
 void Entities::Position::save(GAGCore::OutputStream *stream)
@@ -96,7 +97,7 @@ Entities::Sand::Sand()
 
 bool Entities::Sand::is_entity(Map* map, int posx, int posy)
 {
-	return map->hasSand(posx, posy);
+	return map->terrainPropertiesAt(posx, posy).shoreline;
 }
 
 bool Entities::Sand::operator==(const Entity& rhs) const
@@ -126,3 +127,9 @@ void Entities::Sand::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("Sand");
 	stream->writeLeaveSection();
 }
+
+
+bool Entities::Unwalkable::is_entity(Map* map, int x, int y)
+{ return !map->terrainPropertiesAt(x,y).walkable; }
+bool Entities::Unwalkable::operator==(const Entity& rhs) const
+{ return typeid(rhs)==typeid(Entities::Unwalkable); }

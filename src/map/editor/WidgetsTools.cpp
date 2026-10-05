@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "TerrainPresentation.h"
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -76,12 +77,11 @@ TerrainSelector::TerrainSelector(MapEdit& me, const widgetRectangle& area, const
 
 void TerrainSelector::draw()
 {
-	if(terrainType==Grass)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 0);
-	if(terrainType==Sand)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 128);
-	if(terrainType==Water)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 259);
+    if (TerrainSelector::isBaseTerrain(terrainType))
+    {
+        const auto type = TerrainSelector::baseTerrain(terrainType);
+        globalContainer->gfx->drawSprite(area.x,area.y,globalContainer->terrainLayerSprite(type),terrainPresentation(type).editorFrame);
+    }
 	if(terrainType==Wheat)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
 	if(terrainType==Trees)
@@ -98,8 +98,11 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 59);
 	if(terrainType==PruneTree)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 64);
-	if (terrainType == Grass || terrainType == Sand || terrainType == Water)
-		globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
+	if (TerrainSelector::isBaseTerrain(terrainType))
+		{
+        const auto type = TerrainSelector::baseTerrain(terrainType);
+        globalContainer->gfx->finishDrawingSprite(globalContainer->terrainLayerSprite(type),255);
+    }
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 	if (me.terrainType == terrainType)

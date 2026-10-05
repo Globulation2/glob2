@@ -611,7 +611,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && map.isGrass(i % t.w, i / t.w);
+			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)

@@ -261,6 +261,10 @@ static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &g
 			case GRASS:
 				grassCount++;
 				continue;
+			default:
+				// This recipe measures only its three legacy corner materials.
+				assert(false);
+				continue;
 			}
 		}
 }
@@ -738,7 +742,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 					int dx, dy, dist;
 					Unit::dxDyFromDirection(dir, &dx, &dy);
 					for (dist = 5; dist < limitDist; dist++)
-						if (map.isGrass(bootX[team] + dx * dist, bootY[team] + dy * dist))
+						if (map.terrainSupportsResourceAt(bootX[team] + dx * dist, bootY[team] + dy * dist, res))
 							width++;
 						else if (width > 3)
 							break;
@@ -795,7 +799,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 					int dx, dy, dist;
 					Unit::dxDyFromDirection(dir, &dx, &dy);
 					for (dist = 0; dist < 2 * limitDist; dist++)
-						if (map.isGrass(bootX[team] + dx * dist, bootY[team] + dy * dist))
+						if (map.terrainSupportsResourceAt(bootX[team] + dx * dist, bootY[team] + dy * dist, smallestResource))
 							width++;
 						else if (width > 3)
 							break;
@@ -837,7 +841,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			int dx, dy, dist;
 			Unit::dxDyFromDirection(dir, &dx, &dy);
 			for (dist = 0; dist < 2 * limitDist; dist++)
-				if (map.isWater(bootX[team] + dx * dist, bootY[team] + dy * dist))
+				if (map.terrainSupportsResourceAt(bootX[team] + dx * dist, bootY[team] + dy * dist, ALGA))
 					width++;
 				else if (width > 3)
 					break;

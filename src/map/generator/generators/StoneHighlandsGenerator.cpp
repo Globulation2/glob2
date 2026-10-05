@@ -755,7 +755,7 @@ bool stampTerrain(Map &map, GenerationContext &context, const Layout &L)
 		{
 			if (!L.ridge[size_t(y) * t.w + x])
 				continue;
-			if (map.getTerrainType(x, y) != GRASS)
+			if (!map.terrainSupportsResourceAt(x, y, STONE))
 			{
 				context.detail = "ridge tile (" + std::to_string(x) + ", " + std::to_string(y) +
 								 ") is not solid grass";
@@ -802,7 +802,8 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 				const int x = t.x(ax + dx), y = t.y(ay + dy), i = y * t.w + x;
 				if (L.valley[i] != homeValley || L.passTile[i] || L.ridgeDistance[i] < kRidgeRoad)
 					continue;
-				if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
+				if (!map.terrainSupportsResourceAt(x, y, side > 0 ? WHEAT : WOOD) || map.isResource(x, y) ||
+					map.getBuilding(x, y) != NOGBID ||
 					map.getGroundUnit(x, y) != NOGUID)
 					continue;
 				// Two clear tiles all round the swarm, where its workers stand and walk out.
@@ -860,7 +861,8 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 		if (keepClear[i] || L.ridgeDistance[i] < kRidgeRoad || pondDistance[i] < 2 ||
 			pondDistance[i] > 9 || patch[i] < patchLevel || fertility.at(x, y) == 0)
 			continue;
-		if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
+		if (!(map.terrainSupportsResourceAt(x, y, WHEAT) && map.terrainSupportsResourceAt(x, y, WOOD)) ||
+			map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
 			map.getGroundUnit(x, y) != NOGUID)
 			continue;
 		pool[v].push_back(i);
@@ -902,7 +904,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 	const std::vector<int> noise = periodicNoise(t.w, t.h, 6, context.stream("highlands-algae"));
 	std::vector<int> water, levels;
 	for (int i = 0; i < t.w * t.h; ++i)
-		if (L.pond[i] && map.isWater(i % t.w, i / t.w))
+		if (L.pond[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, ALGA))
 		{
 			water.push_back(i);
 			levels.push_back(noise[i]);
@@ -936,7 +938,8 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 		if (v < 0 || keepClear[i] || L.pond[i] || L.ridgeDistance[i] < kRidgeRoad + 1 ||
 			pondDistance[i] < 3 || pondDistance[i] > 8)
 			continue;
-		if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
+		if (!(map.terrainSupportsResourceAt(x, y, CHERRY) && map.terrainSupportsResourceAt(x, y, ORANGE) &&
+			map.terrainSupportsResourceAt(x, y, PRUNE)) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
 			map.getGroundUnit(x, y) != NOGUID)
 			continue;
 		pool[v].push_back(i);
@@ -1080,7 +1083,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			return "The ridge at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) +
 				   ") has lost its stone.";
 	const auto walkable = [&](int x, int y)
-	{ return !map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID; };
+	{ return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID; };
 	for (size_t k = 0; k < L.passes.size(); ++k)
 	{
 		const Pass &p = L.passes[k];

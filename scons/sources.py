@@ -366,6 +366,7 @@ CLIENT_SOURCES = (
     'map/io/MapIO.cpp',
     'map/MapMisc.cpp',
     'map/pathfind/MapPathfindArea.cpp',
+    'map/pathfind/MapPathfindPoint.cpp',
     'map/pathfind/MapPathfindBuilding.cpp',
     'map/pathfind/MapPathfindRessource.cpp',
     'map/MapQuery.cpp',

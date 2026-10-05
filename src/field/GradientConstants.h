@@ -18,6 +18,7 @@
 // max-of-type sentinels with one unit per step.
 constexpr int GRADIENT_STEP          = 10;
 constexpr int GRADIENT_DIAGONAL_STEP = 14;
+constexpr int GRADIENT_SLOWEST_SWIM_STEP = 30;
 constexpr std::uint16_t GRADIENT_FORBIDDEN        = 0;
 constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
 constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;

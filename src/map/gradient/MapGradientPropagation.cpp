@@ -4,7 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
-#include "field/GradientPropagation.h"
+#include "field/TerrainGradient.h"
 
 static_assert(std::size(gradient_kernel::WATER_STEP) == SWIM_CLASS_COUNT);
 static_assert(gradient_kernel::COST_LIMIT == Map::GRADIENT_COST_LIMIT);
@@ -18,7 +18,7 @@ static_assert(gradient_kernel::COST_LIMIT == Map::GRADIENT_COST_LIMIT);
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
 	PERF_SCOPE_TIME(Propagation);
-	gradient_kernel::propagateField(gradient, swimClass, maxCost,
+	gradient_kernel::propagateTerrainField(gradient, swimClass, maxCost,
 		{getW(), getH()}, gradientRuntime->workspaces[compute.slot()].propagation,
-		[this](size_t i) { return isWater(static_cast<unsigned>(i)); });
+		[this](size_t i) { return terrainTypeAt(i); }, hasTerrainMovementModifiers());
 }

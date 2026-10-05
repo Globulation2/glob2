@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "Game.h"
+#include "ExperimentalFeatures.h"
+#include "TerrainExperiments.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"
@@ -20,6 +22,18 @@ void MapEdit::beginZonePlacement(BrushType type)
 
 void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPlacementMode mode)
 {
+    const bool isTerrain = TerrainSelector::isBaseTerrain(type);
+    const bool isResourceSelector = type >= TerrainSelector::Wheat && type <= TerrainSelector::PruneTree;
+    // Reject stale/invalid selector IDs and incompatible modes before changing
+    // the current selection. Normalize legacy aliases to retain corner alignment.
+    if (mode == TerrainPlacementMode::BaseTerrain ? !isTerrain : !isResourceSelector) return;
+    if (isTerrain) {
+        const auto material = TerrainSelector::baseTerrain(type);
+        if (!terrainPresentation(material).editorSelectable) return;
+        if (const auto requirement=terrainExperiment(material);
+            requirement && !globalContainer->settings.experiments.has(*requirement)) return;
+        type = TerrainSelector::selectorFor(material);
+    }
 	performAction("unselect");
 	terrainType=type;
 	selectionMode=PlaceTerrain;
@@ -38,6 +52,17 @@ void MapEdit::resetPlacementTracking()
 
 bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, float relMouseY)
 {
+    if (action.starts_with("select "))
+        for (unsigned id=0; id<TERRAIN_COUNT; ++id)
+        {
+            const auto type = static_cast<::TerrainType>(id);
+            const auto& presentation = terrainPresentation(type);
+            if (presentation.editorSelectable && action == std::string("select ")+presentation.name)
+            {
+                beginTerrainPlacement(TerrainSelector::selectorFor(type), TerrainPlacementMode::BaseTerrain);
+                return true;
+            }
+        }
 	if(action.substr(0, 29)=="set place building selection ")
 	{
 		performAction("unselect");
@@ -136,18 +161,7 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 		isDraggingZone=false;
 		resetPlacementTracking();
 	}
-	else if(action=="select grass")
-	{
-		beginTerrainPlacement(TerrainSelector::Grass, TerrainPlacementMode::BaseTerrain);
-	}
-	else if(action=="select sand")
-	{
-		beginTerrainPlacement(TerrainSelector::Sand, TerrainPlacementMode::BaseTerrain);
-	}
-	else if(action=="select water")
-	{
-		beginTerrainPlacement(TerrainSelector::Water, TerrainPlacementMode::BaseTerrain);
-	}
+
 	else if(action=="select wheat")
 	{
 		beginTerrainPlacement(TerrainSelector::Wheat, TerrainPlacementMode::Resource);

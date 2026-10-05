@@ -58,7 +58,7 @@ std::vector<unsigned char> potentialBuildingTiles(const Map &map)
 	const Torus t(map);
 	std::vector<unsigned char> open(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = map.isGrass(i % t.w, i / t.w) && !map.isResource(i % t.w, i / t.w) &&
+		open[i] = map.terrainPropertiesAt(i).buildable && !map.isResource(i % t.w, i / t.w) &&
 				  map.getBuilding(i % t.w, i / t.w) == NOGBID;
 	return open;
 }

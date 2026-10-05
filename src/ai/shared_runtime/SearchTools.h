@@ -161,6 +161,8 @@ namespace AISharedRuntime
 			bool is_water(int x, int y);
 			bool is_sand(int x, int y);
 			bool is_grass(int x, int y);
+			bool is_crop_habitat(int x, int y);
+			bool is_resource_habitat(int x, int y, int resource);
 			bool backs_onto_sand(int x, int y);
 			int get_amount_resource(int x, int y);
 		private:
