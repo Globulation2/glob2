@@ -4,15 +4,16 @@
 #include "BitArray.h"
 #include "TerrainPresentation.h"
 #include "TerrainProperties.h"
-#include "TerrainRegistry.h"
 #include "Ressource.h"
 
 #include <SDL3/SDL_stdinc.h>
 
 #include <cstddef>
+#include <memory>
 #include <vector>
 
 class Map;
+class TerrainRegistry;
 
 //! Immutable copy of the per-tile map layers the renderer reads: terrain,
 //! resources, discovery and fog of war for every team, and the locally displayed
@@ -21,15 +22,13 @@ class Map;
 //! the simulation advances. The query functions match Map's exactly.
 class SceneMap
 {
-	std::shared_ptr<const TerrainRegistry> registry = TerrainRegistry::builtins();
+	std::shared_ptr<const TerrainRegistry> registry;
 
   public:
+	SceneMap();
 	const TerrainRegistry &terrainRegistry() const { return *registry; }
 	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const { return registry; }
-	const TerrainPresentation &terrainPresentation(TerrainType type) const
-	{
-		return registry->presentation(type);
-	}
+	const TerrainPresentation &terrainPresentation(TerrainType type) const;
 	//! Copy the layers from map. Runs where the map may be read (the simulation side).
 	//! displayW/H: the drawn map area in pixels (a client value, see ClientRequests).
 	void extract(const Map &map, int displayW, int displayH, bool includeScriptAreas = false);
@@ -85,18 +84,7 @@ class SceneMap
 	int getUMTerrain(int x, int y) const { return undermap[coordToIndex(x, y)]; }
 	//! Map::isHardSpaceForBuilding: every tile of the rectangle permits buildings, without a
 	//! resource or a building.
-	bool isHardSpaceForBuilding(int x, int y, int w, int h) const
-	{
-		for (int yi = y; yi < y + h; yi++)
-			for (int xi = x; xi < x + w; xi++)
-			{
-				const size_t i = coordToIndex(xi, yi);
-				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF ||
-					!registry->properties(terrainTypes[i]).buildable)
-					return false;
-			}
-		return true;
-	}
+	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
 
