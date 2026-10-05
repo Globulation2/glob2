@@ -1,0 +1,3 @@
+cache_cpu_accounting_bytes 17090912
+cache_gpu_allocated_bytes 5592384
+prepared_source_bytes 4517888

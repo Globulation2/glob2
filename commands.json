@@ -1,0 +1,1298 @@
+[
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":1,\"terrain_changes\":35,\"cleared_resources\":0,\"dropped_resources\":24}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":48,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-loaded.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-loaded.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-export.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-restored.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-restored.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-restored.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/new-terrain-restored.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.png",
+      "--width",
+      "256",
+      "--height",
+      "256",
+      "--teams",
+      "16",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":16,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-export.png",
+      "--width",
+      "256",
+      "--height",
+      "256",
+      "--teams",
+      "16",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-restored.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-restored.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":16,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-restored.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/sixteen-restored.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seventeen.png",
+      "--width",
+      "256",
+      "--height",
+      "256",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seventeen.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Map image requires 1..16 colony markers (observed 17)\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/offset-river.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "0",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":176,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-0.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/offset-river.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "8",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":8,\"seam_terrain_changes\":48,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":196,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/river-8.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/offset-river.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/default-seam.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/default-seam.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":16,\"seam_shore_changes\":6,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":180,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/default-seam.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/default-seam.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--image-seam-width",
+      "0",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-False-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-False-True-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--image-seam-width",
+      "0",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-False-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":1,\"seam_shore_changes\":0,\"seam_resource_changes\":4,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":1,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/aligned-True-True-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--image-seam-width",
+      "8",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/protected.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/protected.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":8,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":1,\"terrain_changes\":35,\"cleared_resources\":0,\"dropped_resources\":24}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/protected.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/protected.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "2",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":64,\"seam_shore_changes\":66,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":321,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0.map.gz\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-0-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "2",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":64,\"seam_shore_changes\":66,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":331,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1.map.gz\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-1-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "2",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":2,\"seam_terrain_changes\":65,\"seam_shore_changes\":64,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":249,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2.map.gz\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/corner-2-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--image-seam-width",
+      "17",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/bad-width.map",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Image seam width must be 0..16 tiles\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--generate-map",
+      "coral",
+      "--image-seam-width",
+      "8",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/bad-option.map",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Unknown option for --generate-map: --image-seam-width\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-offset.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "0",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-0-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-offset.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "8",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":8,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":32,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8-export.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resource-8-export.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-resources.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "0",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-0.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-0.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":128,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-0.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-0.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-resources.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--image-seam-width",
+      "8",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-8.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-8.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":8,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":28,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":128,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-8.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/mixed-8.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second-report.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":1,\"terrain_changes\":35,\"cleared_resources\":0,\"dropped_resources\":24}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second-report.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/second.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--preview-map",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/loaded.json",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/loaded.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/enlarged.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resized.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":1,\"terrain_changes\":35,\"cleared_resources\":0,\"dropped_resources\":24}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resized.map.gz\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resized.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resized.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/resized.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--teams",
+      "4",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/failure.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "Map report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/failure.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Expected 4 colony markers; observed 1\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/empty.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Map image requires 1..16 colony markers (observed 0)\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/alpha.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Map images must be fully opaque\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "128",
+      "--height",
+      "64",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Map image and requested map must have matching aspect ratios\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "63",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Invalid value for width: 63; use --list-map-generators uniform\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-20.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-20.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-20.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-20.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-20.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-1-20.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-1-20.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-1-20.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-1-20.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-1-20.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-20.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-20.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-20.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-20.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-20.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-0.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-0.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-0.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-0.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-0.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-1.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-1.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-1.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-1.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-1.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-63.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-63.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-63.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-63.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-20-63.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-0.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-0.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-0.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-0.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-0-0.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-63.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-63.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-63.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":0,\"cleared_resources\":0,\"dropped_resources\":0}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-63.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/seam-63-63.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/clean.png",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--workers",
+      "8",
+      "--teams",
+      "1",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/upsampled.map.gz",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/upsampled.json",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Image import: {\"seam_width\":0,\"seam_terrain_changes\":0,\"seam_shore_changes\":0,\"seam_resource_changes\":0,\"resource_seam_fallback\":false,\"markers\":1,\"ignored_markers\":0,\"terrain_changes\":71,\"cleared_resources\":0,\"dropped_resources\":54}\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/upsampled.map.gz\nMap report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/upsampled.json\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/too-many.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Map image requires 1..16 colony markers (observed 17)\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/overlap.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/must-not-exist.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\nMap command: Colony starting patches overlap\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.map.gz",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--import-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/palette.png",
+      "--width",
+      "64",
+      "--height",
+      "64",
+      "--teams",
+      "1",
+      "--seed",
+      "19",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/alias.map",
+      "--json",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/alias.map.gz",
+      "--image-seam-width",
+      "0",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Map command: Input and output paths must be distinct\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--generate-map",
+      "coral",
+      "--seed",
+      "7",
+      "--width",
+      "128",
+      "--height",
+      "128",
+      "--teams",
+      "4",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated.map.gz",
+      "--map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "coral revision 1 seed 7 [complete]: \nMap image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated.png\nMap: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated.map.gz\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  },
+  {
+    "args": [
+      "/home/bradley/.codex/worktrees/3c38/glob2/build/linux/client/release/src/glob2",
+      "--export-map-image",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated.map.gz",
+      "--output",
+      "/home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated-copy.png",
+      "-d",
+      "/home/bradley/.codex/worktrees/3c38/glob2"
+    ],
+    "exit": 0,
+    "stdout": "Map image: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/map-image/generated-copy.png\n",
+    "stderr": "Settings::load(\"preferences.txt\") : error, can't open file.\nBuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13\n"
+  }
+]

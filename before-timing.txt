@@ -1,0 +1,13 @@
+cold_ms 25.8928
+warm_ms 4.9852
+cache_bytes 4595936
+uniform_cold_ms 19.3636
+uniform_warm_ms 4.20275
+uniform_moving_ms 5.34843
+uniform_rebuilds 4
+uniform_hits 3350
+dense_cold_ms 30.0218
+dense_warm_ms 3.95206
+dense_moving_ms 2.9759
+dense_rebuilds 4
+dense_hits 3350
