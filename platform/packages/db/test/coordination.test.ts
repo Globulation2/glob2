@@ -227,12 +227,14 @@ describe('LeaderElection', () => {
   it('elects exactly one leader and fails over when it stops or dies', async () => {
     const leading = new Set<string>();
     let maxConcurrent = 0;
+    let leaderships = 0;
     const make = (id: string) =>
       new LeaderElection({
         connectionString: database.url,
         name: 'matchmaker-test',
         retryMs: 50,
         lead: async (signal) => {
+          ++leaderships;
           leading.add(id);
           maxConcurrent = Math.max(maxConcurrent, leading.size);
           await new Promise<void>((resolve) => signal.addEventListener('abort', () => resolve()));
@@ -255,10 +257,23 @@ describe('LeaderElection', () => {
 
       // Crash: the leader's session dies, Postgres releases the lock.
       a.start();
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      // Both dedicated sessions must exist before simulating their crash;
+      // a restarted follower can take longer than a fixed sleep to connect.
+      await vi.waitFor(
+        async () => {
+          const result = await database.pool.query<{ count: string }>(
+            `SELECT count(*) AS count FROM pg_stat_activity
+             WHERE application_name = $1 AND datname = current_database()`,
+            ['glob2-leader-matchmaker-test'],
+          );
+          expect(Number(result.rows[0]?.count ?? 0)).toBe(2);
+        },
+        { timeout: 10_000, interval: 20 },
+      );
       expect([...leading]).toEqual(['b']);
+      const beforeCrash = leaderships;
       expect(await terminate('glob2-leader-matchmaker-test')).toBe(2);
-      await until(() => leading.size === 1, 10_000);
+      await until(() => leading.size === 1 && leaderships > beforeCrash, 10_000);
       expect(maxConcurrent).toBe(1);
     } finally {
       await a.stop();
