@@ -16,12 +16,15 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 ENTRY_FILES = ('threaded/index.wasm', 'threaded/index.js', 'index.wasm', 'index.js', 'loader.js',
-               'index.html')
+               'studio.html', 'index.html')
 
 FAKE_DOCKER = r'''#!/bin/sh
 # Logs each call; behaviour from FAKE_* variables.
 echo "$*" >> "$FAKE_LOG"
+echo "${COMPOSE_PROFILES:-}" >> "$FAKE_LOG.profiles"
 case "$*" in
+  *"ps --services --status running"*) echo "${FAKE_RUNNING_SERVICES:-postgres}" ;;
+  *"config --format json"*) echo '{"services":{"postgres":{},"ai-map-worker":{"profiles":["ai-maps"]}}}' ;;
   *"ps --status running -q postgres"*) echo 0123abcd ;;
   *"exec -T postgres pg_dump"*) echo DUMP ;;
   *"config --images"*) printf 'glob2-platform:development\nglob2-relay:development\n' ;;
@@ -96,11 +99,13 @@ class UpdateHostTests(unittest.TestCase):
         self.assertLess(self.index('image tag'), self.index('run --rm'))  # web client build
         self.assertLess(self.index('run --rm'), self.index('up -d --wait'))
         self.assertLess(self.index(' build'), self.index('up -d --wait'))
+        self.assertIn('--force-recreate', self.calls()[self.index('up -d --wait')])
         [backup] = self.backups()
         self.assertEqual((backup / 'glob2.dump').read_text(), 'DUMP\n')
         self.assertTrue((backup / 'web-client.tar.gz').stat().st_size > 0)
         # Installed after the new stack was up.
         self.assertEqual((self.web / 'index.html').read_text(), 'new index.html')
+        self.assertEqual((self.web / 'studio.html').read_text(), 'new studio.html')
         self.assertIn('glob2-platform:development glob2-platform:previous', '\n'.join(self.calls()))
 
     def test_keeps_only_the_newest_backups(self):
@@ -126,11 +131,31 @@ class UpdateHostTests(unittest.TestCase):
         ups = [call for call in calls if 'up -d' in call]
         self.assertEqual(len(ups), 2)
         self.assertIn('--no-build', ups[1])
+        self.assertIn('--force-recreate', ups[1])
         self.assertIn('image tag glob2-platform:previous glob2-platform:development', calls)
         self.assertIn('rolled back; the previous release is running again', result.stderr)
         self.assertIn('pg_restore', result.stderr)
         # The web client of the running release stays.
         self.assertEqual((self.web / 'index.html').read_text(), 'old index.html')
+
+    def test_preserves_running_optional_services(self):
+        result = self.run_script(FAKE_RUNNING_SERVICES='postgres ai-map-worker')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        profiles = self.log.with_name(self.log.name + '.profiles').read_text().splitlines()
+        self.assertTrue(all('ai-maps' in value for value in profiles[2:]))
+
+    def test_does_not_enable_idle_optional_services(self):
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn('ai-maps', self.log.with_name(self.log.name + '.profiles').read_text())
+
+    def test_preserves_configured_profiles_alongside_running_services(self):
+        with self.env_file.open('a') as stream:
+            stream.write('COMPOSE_PROFILES=another-profile\n')
+        result = self.run_script(FAKE_RUNNING_SERVICES='postgres ai-map-worker')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        profiles = self.log.with_name(self.log.name + '.profiles').read_text().splitlines()
+        self.assertTrue(all(value == 'another-profile,ai-maps' for value in profiles[2:]))
 
     def head(self):
         return subprocess.run(['git', '-C', str(self.repo), 'rev-parse', 'HEAD'], check=True,
