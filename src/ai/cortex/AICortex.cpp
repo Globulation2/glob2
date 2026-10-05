@@ -348,7 +348,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 			continue;
 		if (b->type->isBuildingSite)
 			continue;
-		if (b->type->nextLevel == BUILDING_LEVEL_NONE)
+		if (b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING || !b->isUpgradeAvailable())
 			continue;
 		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
