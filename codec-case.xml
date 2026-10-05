@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/image-inventory/codec-case" errors="0" failures="0" tests="12" time="0.000358" timestamp="2026-10-05T04:16:17Z" doctest_version="2.4.11">
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000358" status="run"/>
+  </testsuite>
+</testsuites>

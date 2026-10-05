@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/codec-wasm.js" errors="0" failures="0" tests="12" time="0.004" timestamp="2026-10-05T04:21:35Z" doctest_version="2.4.11">
+    <testcase classname="libgag/src/ImageAssetTest.cpp" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.004" status="run"/>
+  </testsuite>
+</testsuites>

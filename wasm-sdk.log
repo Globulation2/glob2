@@ -1,0 +1,1110 @@
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/freetype-9973564cfa63763a3e4ac67c09147899539b1e07 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/freetype-9973564cfa63763a3e4ac67c09147899539b1e07-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1")
+-- Looking for unistd.h
+-- Looking for unistd.h - found
+-- Looking for fcntl.h
+-- Looking for fcntl.h - found
+-- Configuring done (3.4s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_CXX_FLAGS
+    SDL3_DIR
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDLTTF_VENDORED
+    SDL_EXAMPLES
+    SDL_PTHREADS
+    SDL_SHARED
+    SDL_STATIC
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/freetype-9973564cfa63763a3e4ac67c09147899539b1e07-build
+[  4%] Building C object CMakeFiles/freetype.dir/src/base/ftbdf.c.o
+[  6%] Building C object CMakeFiles/freetype.dir/src/base/ftbitmap.c.o
+[  6%] Building C object CMakeFiles/freetype.dir/src/base/ftbbox.c.o
+[  9%] Building C object CMakeFiles/freetype.dir/src/base/ftbase.c.o
+[ 11%] Building C object CMakeFiles/freetype.dir/src/autofit/autofit.c.o
+[ 16%] Building C object CMakeFiles/freetype.dir/src/base/ftcid.c.o
+[ 16%] Building C object CMakeFiles/freetype.dir/src/base/ftfstype.c.o
+[ 18%] Building C object CMakeFiles/freetype.dir/src/base/ftgasp.c.o
+[ 20%] Building C object CMakeFiles/freetype.dir/src/base/ftglyph.c.o
+[ 23%] Building C object CMakeFiles/freetype.dir/src/base/ftgxval.c.o
+[ 25%] Building C object CMakeFiles/freetype.dir/src/base/ftinit.c.o
+[ 27%] Building C object CMakeFiles/freetype.dir/src/base/ftmm.c.o
+[ 30%] Building C object CMakeFiles/freetype.dir/src/base/ftotval.c.o
+[ 32%] Building C object CMakeFiles/freetype.dir/src/base/ftpatent.c.o
+[ 34%] Building C object CMakeFiles/freetype.dir/src/base/ftpfr.c.o
+[ 37%] Building C object CMakeFiles/freetype.dir/src/base/ftstroke.c.o
+[ 39%] Building C object CMakeFiles/freetype.dir/src/base/fttype1.c.o
+[ 41%] Building C object CMakeFiles/freetype.dir/src/base/ftsynth.c.o
+[ 44%] Building C object CMakeFiles/freetype.dir/src/base/ftwinfnt.c.o
+[ 46%] Building C object CMakeFiles/freetype.dir/src/bdf/bdf.c.o
+[ 51%] Building C object CMakeFiles/freetype.dir/src/bzip2/ftbzip2.c.o
+[ 51%] Building C object CMakeFiles/freetype.dir/src/cache/ftcache.c.o
+[ 53%] Building C object CMakeFiles/freetype.dir/src/cff/cff.c.o
+[ 55%] Building C object CMakeFiles/freetype.dir/src/cid/type1cid.c.o
+[ 58%] Building C object CMakeFiles/freetype.dir/src/gzip/ftgzip.c.o
+[ 60%] Building C object CMakeFiles/freetype.dir/src/lzw/ftlzw.c.o
+[ 62%] Building C object CMakeFiles/freetype.dir/src/pcf/pcf.c.o
+[ 65%] Building C object CMakeFiles/freetype.dir/src/pfr/pfr.c.o
+[ 67%] Building C object CMakeFiles/freetype.dir/src/psaux/psaux.c.o
+[ 69%] Building C object CMakeFiles/freetype.dir/src/pshinter/pshinter.c.o
+[ 72%] Building C object CMakeFiles/freetype.dir/src/psnames/psnames.c.o
+[ 74%] Building C object CMakeFiles/freetype.dir/src/raster/raster.c.o
+[ 76%] Building C object CMakeFiles/freetype.dir/src/sdf/sdf.c.o
+[ 79%] Building C object CMakeFiles/freetype.dir/src/sfnt/sfnt.c.o
+[ 81%] Building C object CMakeFiles/freetype.dir/src/smooth/smooth.c.o
+[ 83%] Building C object CMakeFiles/freetype.dir/src/svg/svg.c.o
+[ 86%] Building C object CMakeFiles/freetype.dir/src/truetype/truetype.c.o
+[ 88%] Building C object CMakeFiles/freetype.dir/src/type1/type1.c.o
+[ 90%] Building C object CMakeFiles/freetype.dir/src/type42/type42.c.o
+[ 93%] Building C object CMakeFiles/freetype.dir/src/winfonts/winfnt.c.o
+[ 95%] Building C object CMakeFiles/freetype.dir/builds/unix/ftsystem.c.o
+[ 97%] Building C object CMakeFiles/freetype.dir/src/base/ftdebug.c.o
+[100%] Linking C static library libfreetype.a
+[100%] Built target freetype
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/ftheader.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/ftmodule.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/ftstdlib.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/integer-types.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/mac-support.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/public-macros.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/freetype.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftadvanc.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftbbox.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftbdf.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftbitmap.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftbzip2.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftcache.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftchapters.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftcid.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftcolor.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftdriver.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/fterrdef.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/fterrors.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftfntfmt.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftgasp.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftglyph.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftgxval.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftgzip.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftimage.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftincrem.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftlcdfil.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftlist.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftlogging.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftlzw.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftmac.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftmm.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftmodapi.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftmoderr.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftotval.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftoutln.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftparams.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftpfr.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftrender.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftsizes.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftsnames.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftstroke.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftsynth.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftsystem.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/fttrigon.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/fttypes.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ftwinfnt.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/otsvg.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/t1tables.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/ttnameid.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/tttables.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/tttags.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/ft2build.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/ftconfig.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/freetype2/freetype/config/ftoption.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/freetype2.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libfreetype.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/freetype/freetype-config.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/freetype/freetype-config-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/freetype/freetype-config-version.cmake
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/libwebp-1.6.0 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/libwebp-1.6.0-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DWEBP_BUILD_CWEBP=OFF -DWEBP_BUILD_DWEBP=OFF -DWEBP_BUILD_VWEBP=OFF -DWEBP_BUILD_WEBPINFO=OFF -DWEBP_BUILD_IMG2WEBP=OFF -DWEBP_BUILD_WEBPMUX=OFF -DWEBP_BUILD_EXTRAS=OFF -DWEBP_BUILD_ANIM_UTILS=OFF -DWEBP_BUILD_LIBWEBPMUX=ON -DBUILD_TESTING=OFF -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Performing Test HAVE_BUILTIN_BSWAP16
+-- Performing Test HAVE_BUILTIN_BSWAP16 - Success
+-- Performing Test HAVE_BUILTIN_BSWAP32
+-- Performing Test HAVE_BUILTIN_BSWAP32 - Success
+-- Performing Test HAVE_BUILTIN_BSWAP64
+-- Performing Test HAVE_BUILTIN_BSWAP64 - Success
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Performing Test HAVE_MATH_LIBRARY
+-- Performing Test HAVE_MATH_LIBRARY - Success
+-- Found ZLIB: /home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libz.a (found version "1.3.1")
+-- Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR) 
+-- Could NOT find JPEG (missing: JPEG_LIBRARY JPEG_INCLUDE_DIR) 
+-- TIFF is disabled when statically linking.
+-- Could NOT find GIF (missing: GIF_LIBRARY GIF_INCLUDE_DIR) 
+-- Looking for include file GLUT/glut.h
+-- Looking for include file GLUT/glut.h - not found
+-- Looking for include file GL/glut.h
+-- Looking for include file GL/glut.h - found
+-- Looking for include file OpenGL/glut.h
+-- Looking for include file OpenGL/glut.h - not found
+-- Looking for include file shlwapi.h
+-- Looking for include file shlwapi.h - not found
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - found
+-- Looking for include file wincodec.h
+-- Looking for include file wincodec.h - not found
+-- Looking for include file windows.h
+-- Looking for include file windows.h - not found
+-- Disabling AVX2 optimization.
+-- Disabling AVX2 optimization.
+-- Performing Test HAS_COMPILE_FLAG
+-- Performing Test HAS_COMPILE_FLAG - Failed
+-- Disabling SSE41 optimization.
+-- Disabling SSE41 optimization.
+-- Performing Test HAS_COMPILE_FLAG
+-- Performing Test HAS_COMPILE_FLAG - Failed
+-- Configuring done (14.8s)
+-- Generating done (0.1s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    BUILD_TESTING
+    CMAKE_CXX_FLAGS
+    FT_DISABLE_BROTLI
+    FT_DISABLE_BZIP2
+    FT_DISABLE_HARFBUZZ
+    FT_DISABLE_PNG
+    FT_DISABLE_ZLIB
+    SDL3_DIR
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDLTTF_VENDORED
+    SDL_EXAMPLES
+    SDL_PTHREADS
+    SDL_SHARED
+    SDL_STATIC
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/libwebp-1.6.0-build
+[  1%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_sse2.c.o
+[  1%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_neon.c.o
+[  2%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing.c.o
+[  2%] Building C object CMakeFiles/webpdecode.dir/src/dec/alpha_dec.c.o
+[  2%] Building C object CMakeFiles/webpencode.dir/src/enc/alpha_enc.c.o
+[  3%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/bit_reader_utils.c.o
+[  4%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing.c.o
+[  4%] Building C object CMakeFiles/webputils.dir/src/utils/bit_reader_utils.c.o
+[  5%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cpu.c.o
+[  6%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_cpu.c.o
+[  6%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/color_cache_utils.c.o
+[  6%] Building C object CMakeFiles/webputils.dir/src/utils/color_cache_utils.c.o
+[  7%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/cpu.c.o
+[  8%] Building C object CMakeFiles/webpencode.dir/src/enc/analysis_enc.c.o
+[  8%] Building C object CMakeFiles/webpdecode.dir/src/dec/buffer_dec.c.o
+[  8%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec.c.o
+[  8%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec.c.o
+[  8%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_csp.c.o
+[  9%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/filters_utils.c.o
+[ 10%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_dsp.c.o
+[ 11%] Building C object CMakeFiles/webputils.dir/src/utils/filters_utils.c.o
+[ 11%] Building C object CMakeFiles/webpencode.dir/src/enc/backward_references_cost_enc.c.o
+[ 12%] Building C object CMakeFiles/webpdecode.dir/src/dec/frame_dec.c.o
+[ 12%] Building C object CMakeFiles/webpdecode.dir/src/dec/idec_dec.c.o
+[ 12%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_gamma.c.o
+[ 12%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/huffman_utils.c.o
+[ 12%] Building C object CMakeFiles/webputils.dir/src/utils/huffman_utils.c.o
+[ 13%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_clip_tables.c.o
+[ 14%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/palette.c.o
+[ 15%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv.c.o
+[ 16%] Building C object CMakeFiles/webpencode.dir/src/enc/backward_references_enc.c.o
+[ 17%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_clip_tables.c.o
+[ 18%] Building C object CMakeFiles/webputils.dir/src/utils/palette.c.o
+[ 18%] Building C object CMakeFiles/webputils.dir/src/utils/quant_levels_dec_utils.c.o
+[ 19%] Building C object CMakeFiles/webpdecode.dir/src/dec/io_dec.c.o
+[ 19%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters.c.o
+[ 19%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters.c.o
+[ 19%] Building C object CMakeFiles/webpdecode.dir/src/dec/quant_dec.c.o
+[ 20%] Linking C static library libsharpyuv.a
+[ 21%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless.c.o
+[ 21%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler.c.o
+[ 21%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/quant_levels_dec_utils.c.o
+[ 22%] Building C object CMakeFiles/webputils.dir/src/utils/rescaler_utils.c.o
+[ 23%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless.c.o
+[ 24%] Building C object CMakeFiles/webpdecode.dir/src/dec/tree_dec.c.o
+[ 24%] Building C object CMakeFiles/webpencode.dir/src/enc/config_enc.c.o
+[ 25%] Building C object CMakeFiles/webpencode.dir/src/enc/cost_enc.c.o
+[ 26%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/rescaler_utils.c.o
+[ 26%] Built target sharpyuv
+[ 26%] Building C object CMakeFiles/webpdecode.dir/src/dec/vp8_dec.c.o
+[ 26%] Building C object CMakeFiles/webputils.dir/src/utils/random_utils.c.o
+[ 27%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling.c.o
+[ 28%] Building C object CMakeFiles/webputils.dir/src/utils/thread_utils.c.o
+[ 28%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/random_utils.c.o
+[ 28%] Building C object CMakeFiles/webpencode.dir/src/enc/filter_enc.c.o
+[ 29%] Building C object CMakeFiles/webpencode.dir/src/enc/frame_enc.c.o
+[ 30%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler.c.o
+[ 30%] Building C object CMakeFiles/webpencode.dir/src/enc/histogram_enc.c.o
+[ 30%] Building C object CMakeFiles/webputils.dir/src/utils/utils.c.o
+[ 31%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/thread_utils.c.o
+[ 32%] Building C object CMakeFiles/webpdecode.dir/src/dec/vp8l_dec.c.o
+[ 33%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/utils.c.o
+[ 33%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling.c.o
+[ 34%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv.c.o
+[ 35%] Building C object CMakeFiles/webputils.dir/src/utils/bit_writer_utils.c.o
+[ 36%] Building C object CMakeFiles/webputils.dir/src/utils/huffman_encode_utils.c.o
+[ 36%] Built target webputilsdecode
+[ 37%] Building C object CMakeFiles/webpencode.dir/src/enc/iterator_enc.c.o
+[ 37%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv.c.o
+[ 38%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_avx2.c.o
+[ 39%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_sse41.c.o
+[ 39%] Building C object CMakeFiles/webputils.dir/src/utils/quant_levels_utils.c.o
+[ 39%] Building C object CMakeFiles/webpencode.dir/src/enc/near_lossless_enc.c.o
+[ 40%] Building C object CMakeFiles/webpdecode.dir/src/dec/webp_dec.c.o
+[ 40%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_avx2.c.o
+[ 40%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_sse41.c.o
+[ 41%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_sse41.c.o
+[ 42%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_sse41.c.o
+[ 42%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_sse41.c.o
+[ 42%] Built target webputils
+[ 43%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_enc.c.o
+[ 44%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_sse41.c.o
+[ 44%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_sse41.c.o
+[ 45%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_csp_enc.c.o
+[ 45%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_sse2.c.o
+[ 46%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_sse2.c.o
+[ 46%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_sse2.c.o
+[ 46%] Built target webpdecode
+[ 47%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_sse2.c.o
+[ 48%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_sse41.c.o
+[ 48%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_sse2.c.o
+[ 48%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_sse41.c.o
+[ 49%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_sse2.c.o
+[ 50%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_sse41.c.o
+[ 50%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_psnr_enc.c.o
+[ 51%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_rescale_enc.c.o
+[ 51%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_tools_enc.c.o
+[ 51%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_sse2.c.o
+[ 52%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_sse2.c.o
+[ 53%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_sse2.c.o
+[ 54%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_sse2.c.o
+[ 55%] Building C object CMakeFiles/webpencode.dir/src/enc/predictor_enc.c.o
+[ 55%] Building C object CMakeFiles/webpencode.dir/src/enc/quant_enc.c.o
+[ 55%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_neon.c.o
+[ 56%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_neon.c.o
+[ 56%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_sse2.c.o
+[ 56%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_neon.c.o
+[ 57%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_sse2.c.o
+[ 58%] Building C object CMakeFiles/webpencode.dir/src/enc/syntax_enc.c.o
+[ 58%] Building C object CMakeFiles/webpencode.dir/src/enc/token_enc.c.o
+[ 59%] Building C object CMakeFiles/webpencode.dir/src/enc/tree_enc.c.o
+[ 60%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_neon.c.o
+[ 60%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_neon.c.o
+[ 60%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_sse2.c.o
+[ 61%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_sse2.c.o
+[ 61%] Building C object CMakeFiles/webpencode.dir/src/enc/vp8l_enc.c.o
+[ 62%] Building C object CMakeFiles/webpencode.dir/src/enc/webp_enc.c.o
+[ 63%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_neon.c.o
+[ 63%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_neon.c.o
+[ 63%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_neon.c.o
+[ 64%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_neon.c.o
+[ 64%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_neon.c.o
+[ 65%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_neon.c.o
+[ 66%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_msa.c.o
+[ 66%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_neon.c.o
+[ 66%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_msa.c.o
+[ 67%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_neon.c.o
+[ 68%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_msa.c.o
+[ 68%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_neon.c.o
+[ 69%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_msa.c.o
+[ 70%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_msa.c.o
+[ 71%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_msa.c.o
+[ 71%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_msa.c.o
+[ 72%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_mips32.c.o
+[ 72%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_msa.c.o
+[ 73%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_msa.c.o
+[ 73%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_msa.c.o
+[ 74%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_mips32.c.o
+[ 74%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_mips32.c.o
+[ 75%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_mips32.c.o
+[ 75%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_mips32.c.o
+[ 76%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_mips32.c.o
+[ 76%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_mips_dsp_r2.c.o
+[ 76%] Built target webpencode
+[ 77%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_mips_dsp_r2.c.o
+[ 77%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_mips_dsp_r2.c.o
+[ 77%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_mips_dsp_r2.c.o
+[ 78%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_mips_dsp_r2.c.o
+[ 78%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_mips_dsp_r2.c.o
+[ 79%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_mips_dsp_r2.c.o
+[ 80%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_mips_dsp_r2.c.o
+[ 80%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_mips_dsp_r2.c.o
+[ 82%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_mips_dsp_r2.c.o
+[ 82%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_mips_dsp_r2.c.o
+[ 82%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_mips_dsp_r2.c.o
+[ 83%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_mips_dsp_r2.c.o
+[ 84%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_mips_dsp_r2.c.o
+[ 84%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost.c.o
+[ 85%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc.c.o
+[ 85%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc.c.o
+[ 86%] Building C object CMakeFiles/webpdsp.dir/src/dsp/ssim.c.o
+[ 86%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_sse2.c.o
+[ 87%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_sse2.c.o
+[ 87%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_sse2.c.o
+[ 87%] Built target webpdspdecode
+[ 87%] Linking C static library libwebpdecoder.a
+[ 88%] Building C object CMakeFiles/webpdsp.dir/src/dsp/ssim_sse2.c.o
+[ 89%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_sse41.c.o
+[ 89%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_sse41.c.o
+[ 90%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_avx2.c.o
+[ 90%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_neon.c.o
+[ 91%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_neon.c.o
+[ 91%] Built target webpdecoder
+[ 91%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_neon.c.o
+[ 92%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_msa.c.o
+[ 92%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_msa.c.o
+[ 93%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_mips32.c.o
+[ 93%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_mips32.c.o
+[ 94%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_mips32.c.o
+[ 95%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_mips_dsp_r2.c.o
+[ 95%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_mips_dsp_r2.c.o
+[ 96%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_mips_dsp_r2.c.o
+[ 96%] Built target webpdsp
+[ 96%] Linking C static library libwebp.a
+[ 96%] Built target webp
+[ 97%] Building C object CMakeFiles/webpdemux.dir/src/demux/demux.c.o
+[ 97%] Building C object CMakeFiles/webpdemux.dir/src/demux/anim_decode.c.o
+[ 99%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxedit.c.o
+[ 99%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxinternal.c.o
+[ 99%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxread.c.o
+[ 99%] Building C object CMakeFiles/libwebpmux.dir/src/mux/anim_encode.c.o
+[100%] Linking C static library libwebpdemux.a
+[100%] Linking C static library libwebpmux.a
+[100%] Built target webpdemux
+[100%] Built target libwebpmux
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/libsharpyuv.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libsharpyuv.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/sharpyuv/sharpyuv.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/sharpyuv/sharpyuv_csp.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/libwebpdecoder.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/libwebp.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/libwebpdemux.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/libwebpmux.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libwebpdecoder.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libwebp.a
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/encode.h
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libwebpdemux.a
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/demux.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/mux_types.h
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libwebpmux.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/mux.h
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/mux_types.h
+-- Up-to-date: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/WebP/cmake/WebPTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/WebP/cmake/WebPTargets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/WebP/cmake/WebPConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/WebP/cmake/WebPConfig.cmake
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3-3.4.16 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3-3.4.16-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1")
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - EMSCRIPTEN
+-- Performing Test COMPILER_SUPPORTS_FCOLOR_DIAGNOSTICS
+-- Performing Test COMPILER_SUPPORTS_FCOLOR_DIAGNOSTICS - Success
+-- Looking for getresgid
+-- Looking for getresgid - found
+-- Looking for getresuid
+-- Looking for getresuid - found
+-- Performing Test HAVE_POSIX_SPAWN
+-- Performing Test HAVE_POSIX_SPAWN - Failed
+-- Looking for vfork
+-- Looking for vfork - found
+-- 
+-- SDL3 was configured with the following options:
+-- 
+-- Platform: Emscripten-1
+-- 64-bit:   FALSE
+-- Compiler: /home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/emcc
+-- Revision: SDL-release-3.4.16-0-gfa2c02bb6
+-- Vendor:   
+-- 
+-- Subsystems:
+--   Audio:    ON
+--   Video:    ON
+--   GPU:      ON
+--   Render:   ON
+--   Camera:   ON
+--   Joystick: ON
+--   Haptic:   ON
+--   Hidapi:   ON
+--   Power:    ON
+--   Sensor:   ON
+--   Dialog:   ON
+--   Tray:     ON
+-- 
+-- Options:
+--   SDL_ALSA                       (Wanted: ON): OFF
+--   SDL_ALSA_SHARED                (Wanted: OFF): OFF
+--   SDL_ALTIVEC                    (Wanted: OFF): OFF
+--   SDL_ARMNEON                    (Wanted: OFF): OFF
+--   SDL_ASAN                       (Wanted: OFF): OFF
+--   SDL_ASSEMBLY                   (Wanted: OFF): OFF
+--   SDL_ASSERTIONS                 (Wanted: auto): auto
+--   SDL_AVX                        (Wanted: OFF): OFF
+--   SDL_AVX2                       (Wanted: OFF): OFF
+--   SDL_AVX512F                    (Wanted: OFF): OFF
+--   SDL_BACKGROUNDING_SIGNAL       (Wanted: OFF): OFF
+--   SDL_CCACHE                     (Wanted: OFF): OFF
+--   SDL_CLANG_TIDY                 (Wanted: OFF): OFF
+--   SDL_CLOCK_GETTIME              (Wanted: ON): ON
+--   SDL_COCOA                      (Wanted: OFF): OFF
+--   SDL_DBUS                       (Wanted: ON): OFF
+--   SDL_DEPS_SHARED                (Wanted: OFF): OFF
+--   SDL_DIRECTX                    (Wanted: OFF): OFF
+--   SDL_DISKAUDIO                  (Wanted: ON): ON
+--   SDL_DLOPEN_NOTES               (Wanted: ON): OFF
+--   SDL_DUMMYAUDIO                 (Wanted: ON): ON
+--   SDL_DUMMYCAMERA                (Wanted: ON): ON
+--   SDL_DUMMYVIDEO                 (Wanted: ON): ON
+--   SDL_EMSCRIPTEN_PERSISTENT_PATH (Wanted: ): OFF
+--   SDL_EXAMPLES                   (Wanted: OFF): OFF
+--   SDL_EXAMPLES_LINK_SHARED       (Wanted: OFF): OFF
+--   SDL_FOREGROUNDING_SIGNAL       (Wanted: OFF): OFF
+--   SDL_FRIBIDI                    (Wanted: ON): OFF
+--   SDL_FRIBIDI_SHARED             (Wanted: OFF): OFF
+--   SDL_GCC_ATOMICS                (Wanted: ON): ON
+--   SDL_HIDAPI                     (Wanted: ON): OFF
+--   SDL_HIDAPI_JOYSTICK            (Wanted: ON): OFF
+--   SDL_HIDAPI_LIBUSB              (Wanted: ON): OFF
+--   SDL_HIDAPI_LIBUSB_SHARED       (Wanted: OFF): OFF
+--   SDL_IBUS                       (Wanted: ON): OFF
+--   SDL_INSTALL                    (Wanted: ON): OFF
+--   SDL_INSTALL_TESTS              (Wanted: OFF): OFF
+--   SDL_JACK                       (Wanted: ON): OFF
+--   SDL_JACK_SHARED                (Wanted: OFF): OFF
+--   SDL_KMSDRM                     (Wanted: ON): OFF
+--   SDL_KMSDRM_SHARED              (Wanted: OFF): OFF
+--   SDL_LASX                       (Wanted: OFF): OFF
+--   SDL_LIBC                       (Wanted: ON): ON
+--   SDL_LIBICONV                   (Wanted: OFF): OFF
+--   SDL_LIBTHAI                    (Wanted: ON): OFF
+--   SDL_LIBTHAI_SHARED             (Wanted: OFF): OFF
+--   SDL_LIBUDEV                    (Wanted: ON): OFF
+--   SDL_LIBURING                   (Wanted: ON): OFF
+--   SDL_LSX                        (Wanted: OFF): OFF
+--   SDL_METAL                      (Wanted: OFF): OFF
+--   SDL_MMX                        (Wanted: OFF): OFF
+--   SDL_OFFSCREEN                  (Wanted: ON): ON
+--   SDL_OPENGL                     (Wanted: ON): OFF
+--   SDL_OPENGLES                   (Wanted: ON): ON
+--   SDL_OPENVR                     (Wanted: OFF): OFF
+--   SDL_OSS                        (Wanted: ON): OFF
+--   SDL_PIPEWIRE                   (Wanted: ON): OFF
+--   SDL_PIPEWIRE_SHARED            (Wanted: OFF): OFF
+--   SDL_PTHREADS                   (Wanted: OFF): OFF
+--   SDL_PTHREADS_SEM               (Wanted: OFF): OFF
+--   SDL_PULSEAUDIO                 (Wanted: ON): OFF
+--   SDL_PULSEAUDIO_SHARED          (Wanted: OFF): OFF
+--   SDL_RENDER_D3D                 (Wanted: OFF): OFF
+--   SDL_RENDER_D3D11               (Wanted: OFF): OFF
+--   SDL_RENDER_D3D12               (Wanted: OFF): OFF
+--   SDL_RENDER_GPU                 (Wanted: ON): OFF
+--   SDL_RENDER_METAL               (Wanted: OFF): OFF
+--   SDL_RENDER_VULKAN              (Wanted: OFF): OFF
+--   SDL_ROCKCHIP                   (Wanted: OFF): OFF
+--   SDL_RPATH                      (Wanted: ON): OFF
+--   SDL_RPI                        (Wanted: OFF): OFF
+--   SDL_SNDIO                      (Wanted: ON): OFF
+--   SDL_SNDIO_SHARED               (Wanted: OFF): OFF
+--   SDL_SSE                        (Wanted: OFF): OFF
+--   SDL_SSE2                       (Wanted: OFF): OFF
+--   SDL_SSE3                       (Wanted: OFF): OFF
+--   SDL_SSE4_1                     (Wanted: OFF): OFF
+--   SDL_SSE4_2                     (Wanted: OFF): OFF
+--   SDL_SYSTEM_ICONV               (Wanted: ON): ON
+--   SDL_TESTS                      (Wanted: OFF): OFF
+--   SDL_TESTS_LINK_SHARED          (Wanted: OFF): OFF
+--   SDL_UNINSTALL                  (Wanted: ON): ON
+--   SDL_VIRTUAL_JOYSTICK           (Wanted: ON): ON
+--   SDL_VIVANTE                    (Wanted: OFF): OFF
+--   SDL_VULKAN                     (Wanted: OFF): OFF
+--   SDL_WASAPI                     (Wanted: OFF): OFF
+--   SDL_WAYLAND                    (Wanted: ON): OFF
+--   SDL_WAYLAND_LIBDECOR           (Wanted: ON): OFF
+--   SDL_WAYLAND_LIBDECOR_SHARED    (Wanted: OFF): OFF
+--   SDL_WAYLAND_SHARED             (Wanted: OFF): OFF
+--   SDL_X11                        (Wanted: ON): OFF
+--   SDL_X11_SHARED                 (Wanted: OFF): OFF
+--   SDL_X11_XCURSOR                (Wanted: ON): OFF
+--   SDL_X11_XDBE                   (Wanted: ON): OFF
+--   SDL_X11_XFIXES                 (Wanted: ON): OFF
+--   SDL_X11_XINPUT                 (Wanted: ON): OFF
+--   SDL_X11_XRANDR                 (Wanted: ON): OFF
+--   SDL_X11_XSCRNSAVER             (Wanted: ON): OFF
+--   SDL_X11_XSHAPE                 (Wanted: ON): OFF
+--   SDL_X11_XSYNC                  (Wanted: ON): OFF
+--   SDL_X11_XTEST                  (Wanted: ON): OFF
+--   SDL_XINPUT                     (Wanted: OFF): OFF
+-- 
+--  Build Shared Library: OFF
+--  Build Static Library: ON
+-- 
+-- Enabled backends:
+--   Video drivers: dummy emscripten offscreen
+--   Render drivers: ogl_es2
+--   GPU drivers: 
+--   Audio drivers: disk dummy emscripten
+--   Joystick drivers: emscripten virtual
+--   Camera drivers: dummy emscripten
+-- 
+-- If something was not detected, although the libraries
+-- were installed, then make sure you have set the
+-- CMAKE_C_FLAGS and CMAKE_PREFIX_PATH CMake variables correctly.
+-- 
+-- Configuring done (7.5s)
+-- Generating done (0.1s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_CXX_FLAGS
+    FT_DISABLE_BROTLI
+    FT_DISABLE_BZIP2
+    FT_DISABLE_HARFBUZZ
+    FT_DISABLE_PNG
+    FT_DISABLE_ZLIB
+    SDL3_DIR
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDLTTF_VENDORED
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3-3.4.16-build
+[  0%] Building C object CMakeFiles/SDL3-static.dir/cmake_pch.h.pch
+[  0%] Building C object CMakeFiles/SDL3-static.dir/src/dynapi/SDL_dynapi.c.o
+[  1%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_assert.c.o
+[  2%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_guid.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_hints.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_list.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_hashtable.c.o
+[  3%] Building C object CMakeFiles/SDL3-static.dir/src/SDL.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_log.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_error.c.o
+[  4%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_properties.c.o
+[  5%] Building C object CMakeFiles/SDL3-static.dir/src/SDL_utils.c.o
+[  5%] Building C object CMakeFiles/SDL3-static.dir/src/atomic/SDL_atomic.c.o
+[  5%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audio.c.o
+[  6%] Building C object CMakeFiles/SDL3-static.dir/src/atomic/SDL_spinlock.c.o
+[  7%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audiodev.c.o
+[  7%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audioqueue.c.o
+[  8%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audiocvt.c.o
+[  8%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audiotypecvt.c.o
+[  8%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_audioresample.c.o
+[  9%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_mixer.c.o
+[  9%] Building C object CMakeFiles/SDL3-static.dir/src/audio/SDL_wave.c.o
+[ 10%] Building C object CMakeFiles/SDL3-static.dir/src/camera/SDL_camera.c.o
+[ 10%] Building C object CMakeFiles/SDL3-static.dir/src/core/SDL_core_unsupported.c.o
+[ 11%] Building C object CMakeFiles/SDL3-static.dir/src/cpuinfo/SDL_cpuinfo.c.o
+[ 12%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_clipboardevents.c.o
+[ 12%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_categories.c.o
+[ 13%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_displayevents.c.o
+[ 13%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_dropevents.c.o
+[ 14%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_events.c.o
+[ 15%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_eventwatch.c.o
+[ 15%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_keyboard.c.o
+[ 15%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_keymap.c.o
+[ 16%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_keysym_to_keycode.c.o
+[ 16%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_keysym_to_scancode.c.o
+[ 16%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_mouse.c.o
+[ 17%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_pen.c.o
+[ 17%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_quit.c.o
+[ 18%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_scancode_tables.c.o
+[ 18%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_touch.c.o
+[ 19%] Building C object CMakeFiles/SDL3-static.dir/src/events/SDL_windowevents.c.o
+[ 19%] Building C object CMakeFiles/SDL3-static.dir/src/events/imKStoUCS.c.o
+[ 20%] Building C object CMakeFiles/SDL3-static.dir/src/filesystem/SDL_filesystem.c.o
+[ 20%] Building C object CMakeFiles/SDL3-static.dir/src/gpu/SDL_gpu.c.o
+[ 21%] Building C object CMakeFiles/SDL3-static.dir/src/haptic/SDL_haptic.c.o
+[ 21%] Building C object CMakeFiles/SDL3-static.dir/src/hidapi/SDL_hidapi.c.o
+[ 22%] Building C object CMakeFiles/SDL3-static.dir/src/io/SDL_asyncio.c.o
+[ 22%] Building C object CMakeFiles/SDL3-static.dir/src/io/SDL_iostream.c.o
+[ 23%] Building C object CMakeFiles/SDL3-static.dir/src/io/generic/SDL_asyncio_generic.c.o
+[ 23%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/SDL_gamepad.c.o
+[ 24%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/SDL_joystick.c.o
+[ 24%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/SDL_steam_virtual_gamepad.c.o
+[ 25%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/controller_type.c.o
+[ 25%] Building C object CMakeFiles/SDL3-static.dir/src/locale/SDL_locale.c.o
+[ 25%] Building C object CMakeFiles/SDL3-static.dir/src/main/SDL_main_callbacks.c.o
+[ 26%] Building C object CMakeFiles/SDL3-static.dir/src/main/SDL_runapp.c.o
+[ 26%] Building C object CMakeFiles/SDL3-static.dir/src/misc/SDL_libusb.c.o
+[ 27%] Building C object CMakeFiles/SDL3-static.dir/src/misc/SDL_url.c.o
+[ 27%] Building C object CMakeFiles/SDL3-static.dir/src/power/SDL_power.c.o
+[ 28%] Building C object CMakeFiles/SDL3-static.dir/src/render/SDL_render.c.o
+[ 28%] Building C object CMakeFiles/SDL3-static.dir/src/render/SDL_render_unsupported.c.o
+[ 29%] Building C object CMakeFiles/SDL3-static.dir/src/render/SDL_yuv_sw.c.o
+[ 29%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d/SDL_render_d3d.c.o
+[ 30%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d/SDL_shaders_d3d.c.o
+[ 30%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d11/SDL_render_d3d11.c.o
+[ 31%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d11/SDL_shaders_d3d11.c.o
+[ 31%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d12/SDL_render_d3d12.c.o
+[ 32%] Building C object CMakeFiles/SDL3-static.dir/src/render/direct3d12/SDL_shaders_d3d12.c.o
+[ 32%] Building C object CMakeFiles/SDL3-static.dir/src/render/gpu/SDL_pipeline_gpu.c.o
+[ 33%] Building C object CMakeFiles/SDL3-static.dir/src/render/gpu/SDL_render_gpu.c.o
+[ 33%] Building C object CMakeFiles/SDL3-static.dir/src/render/gpu/SDL_shaders_gpu.c.o
+[ 33%] Building C object CMakeFiles/SDL3-static.dir/src/render/ngage/SDL_render_ngage.c.o
+[ 34%] Building C object CMakeFiles/SDL3-static.dir/src/render/opengl/SDL_render_gl.c.o
+[ 34%] Building C object CMakeFiles/SDL3-static.dir/src/render/opengl/SDL_shaders_gl.c.o
+[ 35%] Building C object CMakeFiles/SDL3-static.dir/src/render/opengles2/SDL_render_gles2.c.o
+[ 35%] Building C object CMakeFiles/SDL3-static.dir/src/render/opengles2/SDL_shaders_gles2.c.o
+[ 36%] Building C object CMakeFiles/SDL3-static.dir/src/render/ps2/SDL_render_ps2.c.o
+[ 36%] Building C object CMakeFiles/SDL3-static.dir/src/render/psp/SDL_render_psp.c.o
+[ 36%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_blendline.c.o
+[ 37%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_blendfillrect.c.o
+[ 38%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_blendpoint.c.o
+[ 38%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_drawline.c.o
+[ 39%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_drawpoint.c.o
+[ 39%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_render_sw.c.o
+[ 40%] Building C object CMakeFiles/SDL3-static.dir/src/render/software/SDL_triangle.c.o
+[ 40%] Building C object CMakeFiles/SDL3-static.dir/src/render/vitagxm/SDL_render_vita_gxm.c.o
+[ 41%] Building C object CMakeFiles/SDL3-static.dir/src/render/vitagxm/SDL_render_vita_gxm_memory.c.o
+[ 41%] Building C object CMakeFiles/SDL3-static.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.o
+[ 41%] Building C object CMakeFiles/SDL3-static.dir/src/render/vulkan/SDL_render_vulkan.c.o
+[ 42%] Building C object CMakeFiles/SDL3-static.dir/src/render/vulkan/SDL_shaders_vulkan.c.o
+[ 42%] Building C object CMakeFiles/SDL3-static.dir/src/sensor/SDL_sensor.c.o
+[ 43%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_crc16.c.o
+[ 43%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_crc32.c.o
+[ 44%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_getenv.c.o
+[ 44%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_iconv.c.o
+[ 45%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_malloc.c.o
+[ 45%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_memcpy.c.o
+[ 46%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_memmove.c.o
+[ 46%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_memset.c.o
+[ 47%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_mslibc.c.o
+[ 47%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_murmur3.c.o
+[ 48%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_qsort.c.o
+[ 48%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_random.c.o
+[ 49%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_stdlib.c.o
+[ 49%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_string.c.o
+[ 50%] Building C object CMakeFiles/SDL3-static.dir/src/stdlib/SDL_strtokr.c.o
+[ 50%] Building C object CMakeFiles/SDL3-static.dir/src/storage/SDL_storage.c.o
+[ 50%] Building C object CMakeFiles/SDL3-static.dir/src/thread/SDL_thread.c.o
+[ 51%] Building C object CMakeFiles/SDL3-static.dir/src/time/SDL_time.c.o
+[ 51%] Building C object CMakeFiles/SDL3-static.dir/src/timer/SDL_timer.c.o
+[ 52%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_RLEaccel.c.o
+[ 52%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit.c.o
+[ 53%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_0.c.o
+[ 53%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_1.c.o
+[ 54%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_A.c.o
+[ 54%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_N.c.o
+[ 55%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_auto.c.o
+[ 55%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_copy.c.o
+[ 56%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_blit_slow.c.o
+[ 56%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_bmp.c.o
+[ 57%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_clipboard.c.o
+[ 57%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_egl.c.o
+[ 58%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_fillrect.c.o
+[ 58%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_pixels.c.o
+[ 58%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_rect.c.o
+[ 59%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_rotate.c.o
+[ 59%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_stb.c.o
+[ 60%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_stretch.c.o
+[ 60%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_surface.c.o
+[ 61%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_video.c.o
+[ 61%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_video_unsupported.c.o
+[ 62%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_vulkan_utils.c.o
+[ 62%] Building C object CMakeFiles/SDL3-static.dir/src/video/SDL_yuv.c.o
+[ 63%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_lsx.c.o
+[ 63%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_sse.c.o
+[ 64%] Building C object CMakeFiles/SDL3-static.dir/src/video/yuv2rgb/yuv_rgb_std.c.o
+[ 64%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_atan2.c.o
+[ 65%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_exp.c.o
+[ 65%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_fmod.c.o
+[ 66%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_log.c.o
+[ 66%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_log10.c.o
+[ 66%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_pow.c.o
+[ 67%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_rem_pio2.c.o
+[ 67%] Building C object CMakeFiles/SDL3-static.dir/src/libm/e_sqrt.c.o
+[ 68%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_cos.c.o
+[ 68%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_rem_pio2.c.o
+[ 69%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_sin.c.o
+[ 69%] Building C object CMakeFiles/SDL3-static.dir/src/libm/k_tan.c.o
+[ 70%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_atan.c.o
+[ 70%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_copysign.c.o
+[ 71%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_cos.c.o
+[ 71%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_fabs.c.o
+[ 72%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_floor.c.o
+[ 73%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isinf.c.o
+[ 73%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isinff.c.o
+[ 73%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isnan.c.o
+[ 74%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_isnanf.c.o
+[ 74%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_modf.c.o
+[ 75%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_scalbn.c.o
+[ 75%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_tan.c.o
+[ 75%] Building C object CMakeFiles/SDL3-static.dir/src/libm/s_sin.c.o
+[ 76%] Building C object CMakeFiles/SDL3-static.dir/src/audio/dummy/SDL_dummyaudio.c.o
+[ 76%] Building C object CMakeFiles/SDL3-static.dir/src/audio/disk/SDL_diskaudio.c.o
+[ 77%] Building C object CMakeFiles/SDL3-static.dir/src/camera/dummy/SDL_camera_dummy.c.o
+[ 77%] Building C object CMakeFiles/SDL3-static.dir/src/loadso/dlopen/SDL_sysloadso.c.o
+[ 78%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/virtual/SDL_virtualjoystick.c.o
+[ 78%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullevents.c.o
+[ 79%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullframebuffer.c.o
+[ 79%] Building C object CMakeFiles/SDL3-static.dir/src/video/dummy/SDL_nullvideo.c.o
+[ 80%] Building C object CMakeFiles/SDL3-static.dir/src/main/emscripten/SDL_sysmain_callbacks.c.o
+[ 80%] Building C object CMakeFiles/SDL3-static.dir/src/main/emscripten/SDL_sysmain_runapp.c.o
+[ 81%] Building C object CMakeFiles/SDL3-static.dir/src/misc/emscripten/SDL_sysurl.c.o
+[ 81%] Building C object CMakeFiles/SDL3-static.dir/src/audio/emscripten/SDL_emscriptenaudio.c.o
+[ 82%] Building C object CMakeFiles/SDL3-static.dir/src/filesystem/emscripten/SDL_sysfilesystem.c.o
+[ 82%] Building C object CMakeFiles/SDL3-static.dir/src/filesystem/posix/SDL_sysfsops.c.o
+[ 83%] Building C object CMakeFiles/SDL3-static.dir/src/camera/emscripten/SDL_camera_emscripten.c.o
+[ 83%] Building C object CMakeFiles/SDL3-static.dir/src/joystick/emscripten/SDL_sysjoystick.c.o
+[ 84%] Building C object CMakeFiles/SDL3-static.dir/src/power/emscripten/SDL_syspower.c.o
+[ 84%] Building C object CMakeFiles/SDL3-static.dir/src/locale/emscripten/SDL_syslocale.c.o
+[ 84%] Building C object CMakeFiles/SDL3-static.dir/src/time/unix/SDL_systime.c.o
+[ 85%] Building C object CMakeFiles/SDL3-static.dir/src/timer/unix/SDL_systimer.c.o
+[ 85%] Building C object CMakeFiles/SDL3-static.dir/src/sensor/emscripten/SDL_emscriptensensor.c.o
+[ 86%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenevents.c.o
+[ 86%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenframebuffer.c.o
+[ 87%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenmouse.c.o
+[ 87%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenopengles.c.o
+[ 88%] Building C object CMakeFiles/SDL3-static.dir/src/video/emscripten/SDL_emscriptenvideo.c.o
+[ 88%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/SDL_dialog.c.o
+[ 89%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/SDL_dialog_utils.c.o
+[ 89%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_unixdialog.c.o
+[ 90%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_portaldialog.c.o
+[ 90%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_zenitydialog.c.o
+[ 91%] Building C object CMakeFiles/SDL3-static.dir/src/dialog/unix/SDL_zenitymessagebox.c.o
+[ 91%] Building C object CMakeFiles/SDL3-static.dir/src/process/SDL_process.c.o
+[ 91%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenevents.c.o
+[ 92%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenframebuffer.c.o
+[ 92%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenopengles.c.o
+[ 93%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenvideo.c.o
+[ 93%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenvulkan.c.o
+[ 94%] Building C object CMakeFiles/SDL3-static.dir/src/tray/SDL_tray_utils.c.o
+[ 94%] Building C object CMakeFiles/SDL3-static.dir/src/video/offscreen/SDL_offscreenwindow.c.o
+[ 94%] Building C object CMakeFiles/SDL3-static.dir/src/storage/generic/SDL_genericstorage.c.o
+[ 95%] Building C object CMakeFiles/SDL3-static.dir/src/haptic/dummy/SDL_syshaptic.c.o
+[ 96%] Building C object CMakeFiles/SDL3-static.dir/src/tray/dummy/SDL_tray.c.o
+[ 96%] Building C object CMakeFiles/SDL3-static.dir/src/process/dummy/SDL_dummyprocess.c.o
+[ 97%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_syscond.c.o
+[ 97%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_sysmutex.c.o
+[ 98%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_sysrwlock.c.o
+[ 98%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_syssem.c.o
+[ 99%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_systhread.c.o
+[ 99%] Building C object CMakeFiles/SDL3-static.dir/src/thread/generic/SDL_systls.c.o
+[100%] Linking C static library libSDL3.a
+[100%] Built target SDL3-static
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/sdl3.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libSDL3.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3/SDL3headersTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3/SDL3staticTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3/SDL3staticTargets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3/SDL3Config.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3/SDL3ConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_assert.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_asyncio.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_atomic.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_audio.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_begin_code.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_bits.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_blendmode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_camera.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_clipboard.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_close_code.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_copying.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_cpuinfo.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_dialog.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_dlopennote.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_egl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_endian.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_error.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_events.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_filesystem.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_gamepad.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_gpu.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_guid.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_haptic.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_hidapi.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_hints.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_init.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_intrin.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_iostream.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_joystick.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_keyboard.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_keycode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_loadso.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_locale.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_log.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_main.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_main_impl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_messagebox.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_metal.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_misc.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_mouse.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_mutex.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_oldnames.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengl.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengl_glext.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles2.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles2_gl2.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles2_gl2ext.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles2_gl2platform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_opengles2_khrplatform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_pen.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_pixels.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_platform.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_platform_defines.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_power.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_process.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_properties.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_rect.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_render.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_scancode.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_sensor.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_stdinc.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_storage.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_surface.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_system.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_thread.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_time.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_timer.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_touch.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_tray.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_version.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_video.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_vulkan.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3/SDL_revision.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/licenses/SDL3/LICENSE.txt
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_image-3.4.6 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_image-3.4.6-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF '-Dwebp_LINK_LIBRARIES=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libsharpyuv.a;m' -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Configuring SDL3_image 3.4.6
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - EMSCRIPTEN
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Failed
+-- libavif-1.0 or compatible not found
+-- libavif NOT found
+-- Found ZLIB: /home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/libz.a (found version "1.3.1")
+-- Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR) 
+libpng NOT found
+-- Could NOT find TIFF (missing: TIFF_LIBRARY TIFF_INCLUDE_DIR) 
+-- libtiff NOT found
+-- Found webp: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libwebp.a
+-- SDL3_image: Using system libwebp
+-- SDL3_image backends:
+-- - enabled:  stb ani bmp gif jpg lbm pcx png pnm qoi svg tga webp xcf xpm xv
+-- - disabled: imageio wic avif jxl apng tif
+-- Configuring done (2.9s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_CXX_FLAGS
+    FT_DISABLE_BROTLI
+    FT_DISABLE_BZIP2
+    FT_DISABLE_HARFBUZZ
+    FT_DISABLE_PNG
+    FT_DISABLE_ZLIB
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDLTTF_VENDORED
+    SDL_EXAMPLES
+    SDL_PTHREADS
+    SDL_SHARED
+    SDL_STATIC
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_image-3.4.6-build
+[  3%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG.c.o
+[ 11%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_avif.c.o
+[ 11%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_WIC.c.o
+[ 18%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_anim_decoder.c.o
+[ 18%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_bmp.c.o
+[ 25%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_anim_encoder.c.o
+[ 25%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_gif.c.o
+[ 29%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_ani.c.o
+[ 33%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_gpu.c.o
+[ 37%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_jpg.c.o
+[ 40%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_jxl.c.o
+[ 44%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_lbm.c.o
+[ 48%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_pcx.c.o
+[ 51%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_png.c.o
+[ 55%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_pnm.c.o
+[ 59%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_qoi.c.o
+[ 62%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_stb.c.o
+[ 66%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_svg.c.o
+[ 70%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_tga.c.o
+[ 74%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_tif.c.o
+[ 77%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_webp.c.o
+[ 81%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_xcf.c.o
+[ 85%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_xpm.c.o
+[ 88%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_xv.c.o
+[ 92%] Building C object CMakeFiles/SDL3_image-static.dir/src/IMG_libpng.c.o
+[ 96%] Building C object CMakeFiles/SDL3_image-static.dir/src/xmlman.c.o
+[100%] Linking C static library libSDL3_image.a
+[100%] Built target SDL3_image-static
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libSDL3_image.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3_image/SDL_image.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_image/SDL3_imageConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_image/SDL3_imageConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_image/Findwebp.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_image/SDL3_image-static-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_image/SDL3_image-static-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/sdl3-image.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/licenses/SDL3_image/LICENSE.txt
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_ttf-3.2.2 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_ttf-3.2.2-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Configuring SDL3_ttf 3.2.2
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - EMSCRIPTEN
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - not found
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Failed
+-- SDL3_ttf: Using system freetype library
+-- Found Freetype: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libfreetype.a (found version "2.13.2")
+-- Could NOT find plutovg (missing: plutovg_LIBRARY plutovg_INCLUDE_PATH) 
+-- Could NOT find plutosvg (missing: plutosvg_LIBRARY plutosvg_INCLUDE_PATH plutovg_FOUND) 
+-- plutosvg NOT found
+-- SDL3_ttf backends:
+-- - enabled:  freetype
+-- - disabled: harfbuzz plutosvg
+-- Configuring done (3.3s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_CXX_FLAGS
+    FT_DISABLE_BROTLI
+    FT_DISABLE_BZIP2
+    FT_DISABLE_HARFBUZZ
+    FT_DISABLE_PNG
+    FT_DISABLE_ZLIB
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_TESTS
+    SDL_EXAMPLES
+    SDL_PTHREADS
+    SDL_SHARED
+    SDL_STATIC
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_ttf-3.2.2-build
+[ 42%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_hashtable.c.o
+[ 42%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_gpu_textengine.c.o
+[ 42%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_hashtable_ttf.c.o
+[ 57%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_renderer_textengine.c.o
+[ 71%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_ttf.c.o
+[ 85%] Building C object CMakeFiles/SDL3_ttf-static.dir/src/SDL_surface_textengine.c.o
+[100%] Linking C static library libSDL3_ttf.a
+[100%] Built target SDL3_ttf-static
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libSDL3_ttf.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3_ttf/SDL_textengine.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3_ttf/SDL_ttf.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/SDL3_ttfConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/SDL3_ttfConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/PkgConfigHelper.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/Findharfbuzz.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/Findplutosvg.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/Findplutovg.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/SDL3_ttf-static-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_ttf/SDL3_ttf-static-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/sdl3-ttf.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/licenses/SDL3_ttf/LICENSE.txt
+configure: cmake -S /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_net-3.2.0 -B /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_net-3.2.0-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_PREFIX_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DCMAKE_INSTALL_LIBDIR=lib -DSDL_TESTS=OFF -DSDL_TEST_LIBRARY=OFF -DSDL_EXAMPLES=OFF -DSDLIMAGE_WEBP=ON -DSDLIMAGE_WEBP_SAVE=OFF -DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_DEPS_SHARED=OFF -DSDLTTF_SAMPLES=OFF -DSDLTTF_TESTS=OFF -DSDLTTF_HARFBUZZ=OFF -DSDLNET_SAMPLES=OFF -DSDLNET_TESTS=OFF -DCMAKE_FIND_ROOT_PATH=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix -DSDL3_DIR=/home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3 -DFT_DISABLE_ZLIB=ON -DFT_DISABLE_BZIP2=ON -DFT_DISABLE_PNG=ON -DFT_DISABLE_BROTLI=ON -DFT_DISABLE_HARFBUZZ=ON -DSDL_PTHREADS=OFF -DCMAKE_C_FLAGS=-sSUPPORT_LONGJMP=wasm -DCMAKE_CXX_FLAGS=-fwasm-exceptions -DBUILD_SHARED_LIBS=OFF -DSDL_SHARED=OFF -DSDL_STATIC=ON -DSDLTTF_VENDORED=OFF -DSDLTTF_HARFBUZZ=OFF -DCMAKE_TOOLCHAIN_FILE=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/node/24.19.0_64bit/bin/node
+-- Configuring SDL3_net 3.2.0
+CMake Warning at CMakeLists.txt:120 (message):
+  Only building a stub library.  The functions will be there but all of them
+  will fail!
+
+
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Failed
+-- Configuring done (1.8s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_CXX_FLAGS
+    FT_DISABLE_BROTLI
+    FT_DISABLE_BZIP2
+    FT_DISABLE_HARFBUZZ
+    FT_DISABLE_PNG
+    FT_DISABLE_ZLIB
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_TESTS
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDLTTF_VENDORED
+    SDL_EXAMPLES
+    SDL_PTHREADS
+    SDL_SHARED
+    SDL_STATIC
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/sources/SDL3_net-3.2.0-build
+[ 50%] Building C object CMakeFiles/SDL3_net-static.dir/src/SDL_net_stub_only.c.o
+[100%] Linking C static library libSDL3_net.a
+[100%] Built target SDL3_net-static
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/libSDL3_net.a
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/include/SDL3_net/SDL_net.h
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_net/SDL3_netConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_net/SDL3_netConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_net/SDL3_net-static-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/cmake/SDL3_net/SDL3_net-static-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/lib/pkgconfig/sdl3-net.pc
+-- Installing: /home/bradley/.codex/worktrees/repair-browser-png16/glob2/artifacts/image-inventory/wasm-full/prefix/share/licenses/SDL3_net/LICENSE.txt

@@ -1,0 +1,7 @@
+Native, Node WebAssembly and Chromium JUnit reports pass production exact selection matcher.
+Browser source inventory (native-only PNG/JPEG case excluded):
+WebP decoder preserves exact RGBA including transparent RGB
+Q90 lossy WebP preserves dimensions and exact alpha
+16-bit RGBA rounds normalized channels to the exporter reference
+WebP artwork lookup preserves directories without PNG alternatives
+Four stable test cases; no decoder subcases. Wrapper requires four and explicitly names lossy-alpha and PNG cases.

@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:3512148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/_ci-png-inventory.spec.js:4:1 › final PNG case: both real WebAssembly decoders, one strict inventory result (358ms)
+
+  1 passed (1.4s)
