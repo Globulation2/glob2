@@ -1,5 +1,5 @@
 {
-  "recipe": "bundled-images-v2",
+  "recipe": "bundled-images-v3-webp-only",
   "webpVersion": "1.6.0",
   "quality": 90,
   "method": 6,

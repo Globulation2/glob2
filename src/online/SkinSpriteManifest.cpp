@@ -17,7 +17,7 @@ bool SkinSpriteManifest::parse(const std::string &bytes, const AuthorizedSkin &s
             doc.at("materialSha256")!=skin.materialHash || doc.at("swarmMesh")!=SWARM_MESHES[skin.swarmMesh].id ||
             doc.at("swarmViewAngle")!=skin.swarmViewAngle || doc.at("tileSize")!=128 || doc.at("padding")!=1.25 ||
             doc.at("frameMapping")!=nlohmann::json{{"directions",8},{"phases",32},{"phaseShift",3},{"direction8Shift",5}} ||
-            doc.at("logicalSizes")!=SkinSpriteLogicalSizes || doc.at("encoding")!="bundled-images-v2-smallest-webp") return false;
+            doc.at("logicalSizes")!=SkinSpriteLogicalSizes || doc.at("encoding")!="bundled-images-v3-webp-only") return false;
         const auto &records=doc.at("pages");
         if (!records.is_array() || records.size()!=29) return false;
         std::vector<SkinSpritePage> candidate;

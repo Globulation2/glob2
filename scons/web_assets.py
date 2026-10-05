@@ -8,7 +8,7 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `core` holds what the main menu, the online hub and rooms need, including every
   simulation data file (deploy/sim_version.py), so startup and determinism are
   unchanged. Three files are smaller browser copies (browser/derive_assets.py):
-  the font without its CJK outlines, the menu backdrop as a JPEG and the wordmark
+  the font without its CJK outlines, the menu backdrop as selected PNG/WebP and the wordmark
   without the area the menu never shows.
 - `game`: the in-game sprites (GlobalContainer::loadGameGraphics and the building
   artwork). The page downloads it alongside core and WebAssembly before revealing
@@ -116,7 +116,7 @@ def sim_data_files(root):
     return load_module(root, 'glob2_sim_version', 'deploy/sim_version.py').SIM_DATA_FILES
 
 
-def derived_assets(root):
+def derived_assets(root, lossy=True, images=True):
     """{core path: browser copy} for the browser copies that still match their sources.
 
     A copy whose source changed after browser/derive_assets.py wrote it is not used:
@@ -128,11 +128,21 @@ def derived_assets(root):
         return {}
     names = hashlib.sha256(''.join(sorted(derive.language_names(root))).encode()).hexdigest()
     current = {}
-    for source, target in derive.DERIVED.items():
-        entry = recorded.get(target, {})
+    for target, entry in recorded.items():
+        source = entry.get('source')
+        if source not in derive.DERIVED or Path(target).parent.as_posix() != 'browser/assets':
+            continue
+        if source != derive.FONT and (
+                Path(target).suffix != ".webp" or
+                Path(target).stem != Path(source).stem or
+                not images or
+                entry.get('image_recipe') != derive.image_recipe() or
+                (not lossy and entry.get('lossy') is not False)):
+            continue
         if ((Path(root) / target).is_file() and entry.get('source') == source and
                 entry.get('sha256') == derive.digest(Path(root) / source) and
-                entry.get('languageNames', names) == names):
+                entry.get('languageNames', names) == names and
+                entry.get('output_sha256') == derive.digest(Path(root) / target)):
             current[source] = target
     return current
 
@@ -140,7 +150,7 @@ def derived_assets(root):
 def exported_substitutes(root, source, files, derived):
     """{packaged path: browser copy}. The runtime export may have re-encoded an
     image (menu-wordmark.png as .webp); its browser copy then stands in for the
-    exported file when smaller. SDL_image reads either format whatever the name."""
+    exported file when smaller. Both runtime artwork and its derivative are WebP."""
     tree = Path(source or root)
     result = {}
     for path in files:
@@ -199,7 +209,15 @@ def plan(root, source=None):
     for path in source_files(source or root):
         (skipped if excluded(path) else files).append(path)
     game = game_files(files, game_sprites(root))
-    substitutes = exported_substitutes(root, source, files, derived_assets(root))
+    lossy = images = True
+    if source:
+        try:
+            audit = json.loads(Path(source).with_suffix('.json').read_text())
+            images = audit.get('optimized', False)
+            lossy = images and audit.get('lossy_images', False)
+        except (OSError, ValueError):
+            lossy = images = False
+    substitutes = exported_substitutes(root, source, files, derived_assets(root, lossy, images))
     for path in files:
         name = 'game' if path in game or path.startswith(GAME_EXTRA) else next(
             (name for name, prefixes in OPTIONAL if path.startswith(prefixes)), 'core')

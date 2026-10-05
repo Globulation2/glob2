@@ -137,6 +137,12 @@ pages carry an OpenGraph image for link previews.
 | `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
 | `/admin/accounts`, `/admin/matches`, `/admin/reports` | Moderation: account search, rename, mute and (administrators) ban; match lookup; map report queue with hide and unhide |
 
+Map detail previews show one complete map period at its native aspect ratio.
+Drag with a mouse or touch, or focus the preview and use arrow keys, to pan
+across both torus seams. Reset view (or Home while focused) restores the original
+orientation; panning changes only the preview. The two-pixel decorative frame
+baked into CLI preview exports is cropped from the wrapping texture.
+
 The game links to `/players/<id>`, `/matches/<id>`, `/maps/<id>` and
 `/leaderboard/<queueId>`; keep these routes stable. Invite pages (`/j/<code>`)
 and sign-in (`/signin`) stay server-rendered by the API. The web app uses the

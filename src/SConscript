@@ -52,6 +52,8 @@ program_sources = [strict_objects.get(source, source) for source in source_files
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", program_sources + ["../libgag/src/libgag.a", "../libusl/src/libusl.a"])
+if env.get("RUNTIME_ASSET_STAMP"):
+    local.Depends(p1, env["RUNTIME_ASSET_STAMP"])
 
 # Shared with test/SConscript: every client object except the entry point, so test
 # binaries link exactly the objects the game was built from and nothing compiles twice.

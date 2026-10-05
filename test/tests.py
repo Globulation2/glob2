@@ -128,7 +128,7 @@ ENGINE_TESTS = [
     ('#src/render/EnteringUnitDrawHarness.cpp', dict(require={'opengl'})),
     ('#src/render/FailingUnitMarkersHarness.cpp', dict(require={'opengl'})),
     '#libgag/src/FullscreenAspectHarness.cpp',
-    '#src/render/HighResolutionIntegrationHarness.cpp',
+    ('#src/render/HighResolutionIntegrationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#libgag/src/PortableRendererHarness.cpp',
     '#src/render/SoftwareRendererTest.cpp',
     ('#libgag/src/RuntimePackCheck.cpp', dict(require={'opengl'})),

@@ -25,7 +25,7 @@ struct Fixture {
         skin.manifestHash=std::string(64,'a');skin.textureHash=std::string(64,'b');skin.materialHash=std::string(64,'c');skin.spriteRenderRevision=std::string(64,'d');
         doc={{"format","colony-sprites-v1"},{"renderRevision",skin.spriteRenderRevision},{"sourceManifestSha256",skin.manifestHash},
              {"textureSha256",skin.textureHash},{"materialSha256",skin.materialHash},{"swarmMesh","classic"},{"swarmViewAngle",0},
-             {"frameMapping",{{"directions",8},{"phases",32},{"phaseShift",3},{"direction8Shift",5}}},{"tileSize",128},{"padding",1.25},{"logicalSizes",Online::SkinSpriteLogicalSizes},{"encoding","bundled-images-v2-smallest-webp"},{"pages",nlohmann::json::array()}};
+             {"frameMapping",{{"directions",8},{"phases",32},{"phaseShift",3},{"direction8Shift",5}}},{"tileSize",128},{"padding",1.25},{"logicalSizes",Online::SkinSpriteLogicalSizes},{"encoding","bundled-images-v3-webp-only"},{"pages",nlohmann::json::array()}};
         for(unsigned i=0;i<29;++i) {
             const auto &bytes=i<28?unit:swarm;
             doc["pages"].push_back({{"clip",Online::SkinSpriteClips[i<28?i/4:7]},{"first",i<28?i%4*64:0},

@@ -196,7 +196,7 @@ void GlobalContainer::loadClient(void)
 		gfx->setMinRes(640, 480);
 		
 		// load data required for drawing progress screen
-		title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.png");
+		title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.webp");
 		if (gameData)
 			terrain = Toolkit::getSprite("data/gfx/terrain");
 		updateLoadProgressScreen(0);

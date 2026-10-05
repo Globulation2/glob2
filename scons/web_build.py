@@ -107,7 +107,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_root = output / 'runtime-assets'
         asset_stamp = asset_root.with_suffix('.json')
         def prepare_assets(target, source, env):
-            export_assets(root, asset_root, platform='web', optimized=identity['mode']=='release')
+            export_assets(root, asset_root, platform='web', optimized=True, lossy=identity['mode']=='release')
             return 0
         asset_inputs = list(source_files(root, 'web'))
         exported = env.Command(str(asset_stamp), [str(p) for p in asset_inputs] +

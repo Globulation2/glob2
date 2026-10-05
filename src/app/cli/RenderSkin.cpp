@@ -103,7 +103,7 @@ int runRenderSkin(int argc,char **argv)
     if (command!="--render-skin" && command!="--skin-render-info") return -1;
     if (command=="--skin-render-info") {
 #if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
-        std::cout<<Json{{"format","colony-sprites-v1"},{"renderRevision",SKIN_RENDER_REVISION},{"encoding","bundled-images-v2-smallest-webp"},{"webpVersion",SKIN_WEBP_VERSION}}.dump()<<'\n'; return 0;
+        std::cout<<Json{{"format","colony-sprites-v1"},{"renderRevision",SKIN_RENDER_REVISION},{"encoding","bundled-images-v3-webp-only"},{"webpVersion",SKIN_WEBP_VERSION}}.dump()<<'\n'; return 0;
 #else
         std::cerr<<"skin-render-info: requires a native OpenGL client build\n";return 1;
 #endif
@@ -157,7 +157,7 @@ int runRenderSkin(int argc,char **argv)
         staging=candidate;
         Json result={{"format","colony-sprites-v1"},{"renderRevision",SKIN_RENDER_REVISION},{"sourceManifestSha256",sourceHash},
                      {"textureSha256",textureHash},{"materialSha256",materialHash},{"swarmMesh",meshId},{"swarmViewAngle",angle},
-                     {"frameMapping",{{"directions",8},{"phases",32},{"phaseShift",3},{"direction8Shift",5}}},{"tileSize",128},{"padding",1.25},{"logicalSizes",Online::SkinSpriteLogicalSizes},{"encoding","bundled-images-v2-smallest-webp"},{"pages",Json::array()}};
+                     {"frameMapping",{{"directions",8},{"phases",32},{"phaseShift",3},{"direction8Shift",5}}},{"tileSize",128},{"padding",1.25},{"logicalSizes",Online::SkinSpriteLogicalSizes},{"encoding","bundled-images-v3-webp-only"},{"pages",Json::array()}};
         for (unsigned clip=0;clip<8;++clip) {
             GAGCore::SkinMesh mesh; std::string error;
             const std::string file=clip<7?std::string(Online::SkinSpriteClips[clip])+".gsk":std::string(Online::SWARM_MESHES[choice].file);

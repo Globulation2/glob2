@@ -105,6 +105,8 @@ engine = test_env.Program('glob2-engine-tests',
 unit = test_env.Program('glob2-unit-tests',
     objects(native_support + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
     + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
+if env.get('RUNTIME_ASSET_STAMP'):
+    test_env.Depends([engine, unit], env['RUNTIME_ASSET_STAMP'])
 test_env.Alias('engine-tests', engine)
 test_env.Alias('unit-tests', unit)
 test_env.Alias('tests', [engine, unit])
@@ -112,6 +114,8 @@ test_env.Alias('tests', [engine, unit])
 tools = []
 for target, source, alias, group in registry.PROGRAMS:
     program = test_env.Program(target, objects([source], 'program-') + client_objects + client_libs)
+    if env.get('RUNTIME_ASSET_STAMP'):
+        test_env.Depends(program, env['RUNTIME_ASSET_STAMP'])
     test_env.Alias(alias, program)
     if group == 'tools':
         tools += program

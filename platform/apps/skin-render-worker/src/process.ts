@@ -65,7 +65,7 @@ export function validateBundle(
     !validFrameMapping(doc['frameMapping']) ||
     doc['tileSize'] !== 128 ||
     doc['padding'] !== 1.25 ||
-    doc['encoding'] !== 'bundled-images-v2-smallest-webp' ||
+    doc['encoding'] !== 'bundled-images-v3-webp-only' ||
     JSON.stringify(doc['logicalSizes']) !== JSON.stringify(sizes)
   )
     throw new Error('Skin output identity mismatch');
