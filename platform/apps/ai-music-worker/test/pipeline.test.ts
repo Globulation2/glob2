@@ -362,6 +362,30 @@ it('keeps the three-cycle limit across repeated worker deaths during rendering',
   expect((await studio.request(id))?.charged).toBe(false);
 });
 
+it('selects the discussion response schema for chat without rendering or charging', async () => {
+  const { account, thread, id } = await fixture();
+  await studio.cancel(account, thread, id);
+  const chat = await studio.submit(
+    account,
+    thread,
+    'chat',
+    { id: randomUUID(), text: 'Discuss the melody' },
+    'music-v1',
+    30,
+    cfg,
+  );
+  const text = vi.fn<MusicProvider['text']>(async () => ({
+    text: JSON.stringify({ text: 'A quiet melody', brief: 'Quiet cave music' }),
+    usage: { input_tokens: 100, output_tokens: 50 },
+  }));
+  const run = vi.fn();
+  await worker({ text }, { run }).tick();
+  expect(text.mock.calls[0]?.[4]).toBe('discussion');
+  expect(run).not.toHaveBeenCalled();
+  expect((await studio.request(chat.id))?.status).toBe('ready');
+  expect((await studio.credits.balance(account)).balance).toBe(4);
+});
+
 it('fails expired recovered chat before dispatching a provider request', async () => {
   const { account, thread, id } = await fixture();
   await studio.cancel(account, thread, id);

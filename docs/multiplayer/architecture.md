@@ -1226,9 +1226,11 @@ cancellation, private artifacts and checkout. `packages/music-studio` owns the
 transactional journal and delivery; `apps/ai-music-worker` owns provider calls,
 bounded agent tools and isolated Python execution. The score/rendering contracts
 are described in the [music pipeline](../assets/music-pipeline.md#online-ai-music-studio).
-Discussion and composition calls require JSON output through the provider's
-response format; the worker validates discussion fields and tool actions before
-using them. A prompt alone does not establish that transport contract.
+Discussion and composition calls use distinct strict JSON response schemas
+through the provider's response format; the worker also validates discussion
+fields and tool actions before using them. A prompt alone does not establish
+that transport contract. Only the final answer message is consumed; commentary
+and intermediate JSON messages are not concatenated into composer actions.
 Common project/message and credit-pack schemas live in `protocol/src/studioCommon.ts`;
 studio-specific settings, products and balances remain separate.
 

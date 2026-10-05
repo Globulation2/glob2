@@ -170,8 +170,32 @@ export interface ModelReply {
   responseId?: string;
 }
 export interface MusicProvider {
-  text(model: string, prompt: string, maxOutput: number, signal: AbortSignal): Promise<ModelReply>;
+  text(
+    model: string,
+    prompt: string,
+    maxOutput: number,
+    signal: AbortSignal,
+    format?: 'discussion' | 'action',
+  ): Promise<ModelReply>;
 }
+const OUTPUT_SCHEMAS = {
+  discussion: {
+    type: 'object',
+    properties: { text: { type: 'string' }, brief: { type: 'string' } },
+    required: ['text', 'brief'],
+    additionalProperties: false,
+  },
+  action: {
+    type: 'object',
+    properties: {
+      action: { type: 'string', enum: ['read', 'write', 'check', 'render', 'done'] },
+      text: { type: 'string' },
+      value: { type: 'string' },
+    },
+    required: ['action', 'text', 'value'],
+    additionalProperties: false,
+  },
+} as const;
 /** Same Responses transport as Map Studio, with a per-request output allowance.
  * Requests are journalled by Attempts before this method is entered. */
 export class OpenAIMusic implements MusicProvider {
@@ -185,6 +209,7 @@ export class OpenAIMusic implements MusicProvider {
     prompt: string,
     maxOutput: number,
     signal: AbortSignal,
+    format: 'discussion' | 'action' = 'action',
   ): Promise<ModelReply> {
     if (signal.aborted) throw new ProviderRejected('Provider call cancelled before dispatch.');
     let response: Response;
@@ -196,7 +221,14 @@ export class OpenAIMusic implements MusicProvider {
           model,
           store: false,
           input: prompt,
-          text: { format: { type: 'json_object' } },
+          text: {
+            format: {
+              type: 'json_schema',
+              name: `music_${format}`,
+              strict: true,
+              schema: OUTPUT_SCHEMAS[format],
+            },
+          },
           max_output_tokens: maxOutput,
         }),
         signal: AbortSignal.any([signal, AbortSignal.timeout(240000)]),
@@ -229,12 +261,19 @@ export class OpenAIMusic implements MusicProvider {
         id: string;
         status: string;
         usage: ModelReply['usage'];
-        output: { content?: { type: string; text?: string }[] }[];
+        output: {
+          type: string;
+          phase?: string | null;
+          content?: { type: string; text?: string }[];
+        }[];
       };
       if (output.status !== 'completed')
         throw new ProviderRejected('The assistant exhausted its output budget.');
-      const text = output.output
-        .flatMap((o) => o.content ?? [])
+      const messages = output.output.filter(
+        (o) => o.type === 'message' && o.phase !== 'commentary',
+      );
+      const final = messages.findLast((o) => o.phase === 'final_answer') ?? messages.at(-1);
+      const text = (final?.content ?? [])
         .filter((c) => c.type === 'output_text')
         .map((c) => c.text ?? '')
         .join('');
