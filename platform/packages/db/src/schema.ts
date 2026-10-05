@@ -988,6 +988,7 @@ export interface AiReportsTable {
 }
 
 export interface MusicReleasesTable {
+  authoring: Generated<Record<string, unknown> | null>;
   id: string;
   owner_id: string;
   metadata: Json<MusicMetadata>;
@@ -1036,6 +1037,19 @@ export interface Database {
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
+  music_wallets: HiveWalletsTable;
+  music_ledger: HiveLedgerTable;
+  music_calls: HiveCallsTable;
+  music_purchases: HivePurchasesTable;
+  music_studio_threads: StudioThreadsTable;
+  music_studio_messages: StudioMessagesTable;
+  music_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'> & {
+    release_id: string | null;
+  };
+  music_studio_attempts: StudioAttemptsTable;
+  music_studio_events: StudioEventsTable;
+  music_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height'>;
+  music_studio_provider_usage: StudioProviderUsageTable;
   studio_events: StudioEventsTable;
   studio_provider_usage: StudioProviderUsageTable;
   studio_artifacts: StudioArtifactsTable;

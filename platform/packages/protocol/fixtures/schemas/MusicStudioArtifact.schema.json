@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioArtifact",
+  "title": "MusicStudioArtifact",
+  "type": "object",
+  "required": [
+    "id",
+    "requestId",
+    "stage",
+    "kind",
+    "label",
+    "url"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "stage": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "prepare"
+        },
+        {
+          "type": "string",
+          "const": "score"
+        },
+        {
+          "type": "string",
+          "const": "render"
+        },
+        {
+          "type": "string",
+          "const": "master"
+        },
+        {
+          "type": "string",
+          "const": "checks"
+        },
+        {
+          "type": "string",
+          "const": "repair"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        }
+      ]
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "preview"
+        },
+        {
+          "type": "string",
+          "const": "source"
+        },
+        {
+          "type": "string",
+          "const": "report"
+        }
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

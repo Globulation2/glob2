@@ -27,6 +27,9 @@ const MusicCreate = lazy(() =>
   import('./music/Library.tsx').then((m) => ({ default: m.MusicCreate })),
 );
 const Admin = lazy(() => import('./admin/Admin.tsx').then((m) => ({ default: m.Admin })));
+const MusicStudio = lazy(() =>
+  import('./pages/MusicStudio.tsx').then((m) => ({ default: m.MusicStudio })),
+);
 const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
 );
@@ -80,6 +83,18 @@ export const ROUTES: Route[] = [
     section: 'players',
     title: 'AI player',
     render: (p) => <AiPlayer key={p['aiId']} id={p['aiId'] ?? ''} />,
+  },
+  {
+    pattern: '/music-studio',
+    section: 'music-studio',
+    title: 'AI Music Studio',
+    render: () => <MusicStudio />,
+  },
+  {
+    pattern: '/music-studio/:id',
+    section: 'music-studio',
+    title: 'AI Music Studio',
+    render: (p) => <MusicStudio key={p['id']} id={p['id']} />,
   },
   { pattern: '/music', section: 'music', title: 'Music', render: () => <MusicLibrary /> },
   { pattern: '/music/new', section: 'music', title: 'Share music', render: () => <MusicCreate /> },
@@ -268,6 +283,7 @@ function Layout() {
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
     { to: '/ais', id: 'ais', name: 'AI Library', art: 'swarm' },
+    { to: '/music-studio', id: 'music-studio', name: 'AI Music Studio', art: 'fruit' },
     { to: '/music', id: 'music', name: 'Music', art: 'fruit' },
     { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
     { to: '/map-studio', id: 'studio', name: 'AI Map Studio', art: 'explorationFlag' },
@@ -322,7 +338,7 @@ function Layout() {
             group === 'Play'
               ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
-                ? ['maps', 'ais', 'music', 'skins', 'studio'].includes(item.id)
+                ? ['maps', 'ais', 'music', 'music-studio', 'skins', 'studio'].includes(item.id)
                 : item.id === 'admin',
           );
           return items.length ? (

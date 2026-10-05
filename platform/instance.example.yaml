@@ -153,3 +153,19 @@ mapStudio:
   packs: []
   # textModel: <qualified text model>
   # imageModel: <qualified image-editing model>
+
+# Optional CPU-only AI Music Studio. Sales remain off until listening and cost qualification.
+musicStudio:
+  enabled: false
+  salesEnabled: false
+  pipelineVersion: music-v1
+  # textModel: configure-an-approved-model
+  chatPerHour: 30
+  providerCallsPerDay: 200
+  maxCalls: 12
+  maxOutputTokens: 16000
+  maxTotalTokens: 250000
+  maxSourceBytes: 131072
+  maxOutputBytes: 134217728
+  timeoutSeconds: 1800
+  packs: [] # Configure dedicated Stripe music-credit packs after measuring costs.

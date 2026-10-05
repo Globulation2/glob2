@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicStudioStageProgress",
+  "title": "MusicStudioStageProgress",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "prepare"
+        },
+        {
+          "type": "string",
+          "const": "score"
+        },
+        {
+          "type": "string",
+          "const": "render"
+        },
+        {
+          "type": "string",
+          "const": "master"
+        },
+        {
+          "type": "string",
+          "const": "checks"
+        },
+        {
+          "type": "string",
+          "const": "repair"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        }
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "running"
+        },
+        {
+          "type": "string",
+          "const": "complete"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
+    "detail": {
+      "type": "string"
+    },
+    "completedAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -30,6 +30,8 @@ export interface RunOptions {
   signal?: AbortSignal;
   /** Bytes of stdout and of stderr kept (the tail is kept); default 64 KiB. */
   maxCaptureBytes?: number;
+  /** Trusted subprocess progress; caller must bound and validate each record. */
+  onStdout?: (chunk: Buffer) => void;
 }
 
 export interface RunResult {
@@ -138,7 +140,10 @@ export async function runProcess(options: RunOptions): Promise<RunResult> {
     }, options.limits.timeoutMs);
     const onAbort = () => kill();
     options.signal?.addEventListener('abort', onAbort, { once: true });
-    child.stdout.on('data', (chunk: Buffer) => stdout.push(chunk));
+    child.stdout.on('data', (chunk: Buffer) => {
+      stdout.push(chunk);
+      options.onStdout?.(chunk);
+    });
     child.stderr.on('data', (chunk: Buffer) => stderr.push(chunk));
     const finish = (fn: () => void) => {
       if (settled) return;

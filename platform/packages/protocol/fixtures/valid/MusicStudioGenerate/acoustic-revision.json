@@ -1,0 +1,9 @@
+{
+  "id": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "parent": "2a1b0c9d-8e7f-4a6b-9c5d-3e2f1a0b9c8d",
+  "settings": {
+    "pipeline": "acoustic-v1",
+    "seed": 12,
+    "license": "CC-BY-4.0"
+  }
+}

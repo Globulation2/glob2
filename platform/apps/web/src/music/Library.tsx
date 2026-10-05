@@ -3,6 +3,7 @@ import type { MusicMetadata, MusicRelease } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
+import { MusicValidation } from './Validation.tsx';
 import { MOODS, MusicPlayer } from './Player.tsx';
 import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
@@ -348,6 +349,7 @@ export function MusicDetail({ id }: { id: string }) {
           </div>
         </>
       )}
+      {release.validation && <MusicValidation checks={release.validation} />}
       {release.warnings.length > 0 && (
         <details open>
           <summary>Listening notes</summary>
@@ -358,7 +360,7 @@ export function MusicDetail({ id }: { id: string }) {
           </ul>
         </details>
       )}
-      {owner && ['draft', 'inspected'].includes(release.status) && (
+      {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
           <h2>Prepare this release</h2>
           {[...MOODS, 'Cover'].map((mood, i) => (
@@ -430,13 +432,26 @@ export function MusicDetail({ id }: { id: string }) {
         </section>
       )}
       {owner && release.status === 'ready' && (
-        <button disabled={busy} onClick={() => void action('POST', '/publish')}>
+        <button
+          disabled={busy}
+          onClick={() =>
+            void action(
+              'POST',
+              '/publish',
+              release.generated ? { license: release.metadata.license } : undefined,
+            )
+          }
+        >
           Publish this release
         </button>
       )}
       {owner && release.status !== 'withdrawn' && (
         <button disabled={busy} onClick={() => void action('DELETE', '')}>
-          {release.status === 'published' ? 'Withdraw release' : 'Cancel upload'}
+          {release.status === 'published'
+            ? 'Withdraw release'
+            : release.generated
+              ? 'Delete private release'
+              : 'Cancel upload'}
         </button>
       )}
       {account && release.status === 'published' && (

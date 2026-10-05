@@ -14,7 +14,7 @@ FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
 # inputs also select their affected runtime coverage when requested.
 MUSIC_TOOL_PATHS = ('tools/music/',)
 MUSIC_SHARED_PATHS = ('tools/music/web/', 'tools/music/build_web.py')
-MUSIC_PROCESSOR_PATHS = ('tools/music/glob2music/community.py', 'tools/encode_music.py')
+MUSIC_PROCESSOR_PATHS = ('tools/music/glob2music/studio/','tools/music/glob2music/community.py', 'tools/encode_music.py')
 CHEAP_PATHS = {'music': MUSIC_TOOL_PATHS}
 CHEAP_FLAGS = tuple(CHEAP_PATHS)
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
@@ -51,7 +51,7 @@ PLATFORM_STACK_PATHS = (
     'deploy/', 'test/deployment/', 'src/relay/', 'platform/package-lock.json',
     'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
     'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
-    'platform/apps/music-worker/',
+    'platform/apps/music-worker/', 'platform/apps/ai-music-worker/',
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}

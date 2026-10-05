@@ -120,6 +120,8 @@ services:
       HIVE_STRIPE_WEBHOOK_SECRET: ${HIVE_STRIPE_WEBHOOK_SECRET:-}
       MAP_STRIPE_SECRET_KEY: ${MAP_STRIPE_SECRET_KEY:-}
       MAP_STRIPE_WEBHOOK_SECRET: ${MAP_STRIPE_WEBHOOK_SECRET:-}
+      MUSIC_STRIPE_SECRET_KEY: ${MUSIC_STRIPE_SECRET_KEY:-}
+      MUSIC_STRIPE_WEBHOOK_SECRET: ${MUSIC_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.
     env_file:
       - path: ${GLOB2_ENV_FILE:-.env}
@@ -194,6 +196,35 @@ services:
     cpus: 2
     pids_limit: 64
     stop_grace_period: 32m
+    depends_on:
+      init: {condition: service_completed_successfully}
+
+  ai-music-worker:
+    <<: *hardening
+    profiles: [ai-music]
+    platform: linux/amd64
+    image: ${GLOB2_AI_MUSIC_IMAGE:-glob2-ai-music-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: ai-music-worker
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      MUSIC_OPENAI_API_KEY: ${MUSIC_OPENAI_API_KEY:-}
+      RELAY_KEYS_FILE: ''
+      ENGINE_AGENT_KEYS_FILE: ''
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend, egress]
+    tmpfs: ['/tmp:size=6g,mode=1777']
+    mem_limit: 12g
+    cpus: 2
+    pids_limit: 96
+    stop_grace_period: 40s
     depends_on:
       init: {condition: service_completed_successfully}
 

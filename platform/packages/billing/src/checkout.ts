@@ -22,7 +22,7 @@ export interface Purchase {
 export class Checkout {
   readonly product: CreditProduct;
   private table(name: string) {
-    return sql.table(`${this.product === 'hive' ? 'hive' : 'map'}_${name}`);
+    return sql.table(`${this.product === 'maps' ? 'map' : this.product}_${name}`);
   }
   readonly db: Kysely<Database>;
   readonly stripe: Stripe;
@@ -71,8 +71,8 @@ export class Checkout {
         client_reference_id: id,
         metadata: { purchaseId: id, creditProduct: this.product },
         payment_intent_data: { metadata: { purchaseId: id, creditProduct: this.product } },
-        success_url: `${this.origin}/${this.product === 'hive' ? 'commander' : 'map-studio'}?payment=returned`,
-        cancel_url: `${this.origin}/${this.product === 'hive' ? 'commander' : 'map-studio'}?payment=cancelled`,
+        success_url: `${this.origin}/${this.product === 'hive' ? 'commander' : this.product === 'maps' ? 'map-studio' : 'music-studio'}?payment=returned`,
+        cancel_url: `${this.origin}/${this.product === 'hive' ? 'commander' : this.product === 'maps' ? 'map-studio' : 'music-studio'}?payment=cancelled`,
       },
       { idempotencyKey: `${this.product}:${id}` },
     );
