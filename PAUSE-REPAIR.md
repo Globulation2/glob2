@@ -56,3 +56,11 @@ All exit0. Eight desktop/phone browser checks passed (13.4s). Logs are
 logs/pause-repair-current-*.log. Hosted game cheap contracts are separate from
 local behavioral evidence; an expensive hosted engine matrix is not requested
 for this TS-only repair.
+
+Final hosted Linux website verification passed all120 Chromium/Firefox/WebKit
+checks, including ordinary pause/resume and deterministic cancellation (2.4m
+browser runtime). Source/build/link/monitor/Python checks passed too.
+Run https://github.com/Globulation2/glob2-online-website/actions/runs/37250069625
+at exact tested head422e1ca. logs/range-site-hosted-verify.log retains output.
+Immutable preview publication and smoke test passed. This confirms the Linux
+WebKit failure is repaired; production promotion occurs after merging main.
