@@ -1,93 +1,194 @@
-# Terrain material renderer — review evidence
+# Terrain materials — reviewed implementation and verification
 
-Tested implementation: [`6ed2e2f15332d88bad9f91494924afb146ba1d88`](https://github.com/Globulation2/glob2/commit/6ed2e2f15332d88bad9f91494924afb146ba1d88).
-Integrated base: `9bfee5aeedac41e12f771f7aa3f05f419fb9a2a1`.
-Original-renderer comparison: `e1634ecda9a2a2d31f47dfe766ddbcb40e364791`.
+Tested implementation: [`22143b3446a94f20400a7b5ca4d68e3e52d10e0d`](https://github.com/Globulation2/glob2/commit/22143b3446a94f20400a7b5ca4d68e3e52d10e0d).
+Integrated master base: `9bfee5aeedac41e12f771f7aa3f05f419fb9a2a1`.
+Original renderer: `e1634ecda9a2a2d31f47dfe766ddbcb40e364791`.
 
-The later master `dbc6253427edc1ca71227ec91a8cd9ab66b5d326` was assessed with `git merge-tree --write-tree HEAD origin/master`: clean merge, tree `8112bedacd77e750401fdc74288d3ef50d41b0e7`. Its additional changes concern gradient preparation, a gradient benchmark CI contract and removal of an Emscripten include from audio. They do not modify the renderer or asset pipeline. That newer merge tree has not been compiled or executed; the runtime claims below apply to the tested head and integrated base above.
+The branch also incorporates the concurrent scene-boundary contract update
+`bab71abf7`. Current master `86df5ea49ef7fdf7914a57bf72bb527043876373` merges cleanly as tree
+`7ea04e0bda87fa9349d0c1fd1ad0ff9e5fc52e16`. Its additional gradient/audio changes are outside this
+renderer. The newer browser CI artifact changes were checked with all **18 browser
+package tests** against materialized files from that exact merged tree:
+[log](checks/merged-browser.log), [inputs and command](checks/merge-contract.json).
+The newer merged native runtime was not built; native claims below apply to the
+tested implementation and integrated base above.
 
-## Visual evidence
+## Review findings addressed
 
-[Normal play scale](comparison-normal.png) · [2× nearest-neighbor detail](comparison-detail.png) · [before original](before-terrain-gallery.png) · [after original](after-terrain-gallery.png).
+Two sub-agents reviewed rendering/cache behavior and the asset/compiler/documentation
+pipeline. The resulting fixes include:
 
-![Before and after](comparison-normal.png)
+- Compiled packs attest to decoded runtime source pixels, so artwork overridden
+  before compositor startup cannot be silently replaced by stale prepared textures.
+  Original source hashes remain provenance; lossy/sheet export fingerprints are separate.
+- Variant border preparation blends premultiplied RGBA, including opacity. Compiler
+  and runtime reject malformed schema fields and noncanonical paths consistently.
+- Boundary topology and shared contour choices are prepared once per tile. An
+  independent old/new coverage comparison verified **4,456,448 identical native/HD
+  samples**, including all 256 four-corner label configurations. [Result](review/coverage-comparison.txt),
+  [driver](review/compare-coverage.cpp), [reference](review/reference-coverage.cpp),
+  [command](review/coverage-command.txt).
+- Per-material revisions avoid rebuilding pages for unrelated animation or source
+  edits. Palette resolution preserves separate legacy shore colors and independent
+  minimap/overview colors. Weighted variant selection has one implementation.
+- Uncached rendering streams one canonical page at a time. Fractional pixel parity
+  now exercises that path directly, across both torus axes and small maps. Emergency
+  tiles have separate deterministic coverage tests; their resampling need not match pages.
+- Portable rendering now loads standalone HD frames. Legacy packed-HD GL operations
+  remain GL-only. A strict backend wrapper checks composed texture submissions at
+  limits of 1024, 512, 128, 32 and 16 pixels. This test initially exposed the missing
+  portable HD loader gate; [original failure](review/review-limit.log) is retained.
+- Fully transparent software tiles no longer submit draws. A real-backend counter
+  test checks zero draws for water, resumed drawing after an ice edit and zero after
+  restoring water.
+- SDL pixel ownership survives drawable allocation failure. Authoring documentation
+  now includes a complete material example, precise field constraints, reload behavior,
+  backend distinctions, budgets and honest fallback guarantees.
 
-These are engine screenshots of the same 32×32 map, seed 7331, at 1024×768. Ice, thin cobblestone roads, isolated diagonal contacts, a road crossing sand/water, and wrapped corner cells are present. The side-by-side sheets add labels and crop/enlarge pixels; they do not synthesize terrain art. The default material retains the requested cobblestones while the engine uses upstream's Trail identity and stable ID 4.
+## Visual and simulation evidence
 
-The screenshots support visual inspection, not maintainer acceptance. Human in-game review remains outstanding. The map-import fixture [new-terrain.map.gz](new-terrain.map.gz) and [semantic export](new-terrain-export.png) are also supplied; this is a separate import/export fixture, not the gallery layout.
+[Normal scale](comparison-normal.png) · [Enlarged detail](comparison-detail.png) ·
+[before](before-terrain-gallery.png) · [after](after-terrain-gallery.png).
+
+![Terrain comparison](comparison-normal.png)
+
+The engine gallery uses the same 32×32 map, seed 7331, and 1024×768 viewport.
+It covers ice, thin cobblestone roads, isolated diagonal contacts, sand/water
+crossings and wrapped corner cells. The reviewed native gallery is **exactly equal
+in RGBA pixels** to the pre-review material renderer at `6ed2e2f153`:
+[comparison record](review/visual-comparison.json). The labeled comparison sheets
+are reused only after that pixel check. They crop/label engine output, not generated art.
+
+All **256 per-tick checksums match** the original renderer, including every process
+in all three benchmark batches. [Before trace](before-checksums.txt),
+[after trace](after-checksums.txt). SHA-256:
+`10c411e808f59702902962f972d9219026baae8c832392af17760c72bdfeaafc`.
+The fixture has two workers on ice/road and an empty order stream. This establishes
+that Linux fixture, not all-map or cross-platform equivalence. Simulation revision,
+serialized terrain values and synchronized random calls remain unchanged.
+
+The original comparison build used an archived source tree with only the identical
+validation fixture appended. [Production source audit](baseline-source-audit.json),
+[fixture patch](baseline-fixture.patch). Baseline production objects were not taken
+from the new renderer.
+
+The [semantic map](new-terrain.map.gz), [export](new-terrain-export.png) and
+[CLI invocations](commands.json) are a separate import/export fixture. Human in-game
+review remains outstanding; screenshots do not constitute maintainer acceptance.
 
 ## Verification
 
-- **78 engine cases passed**, 0 failed, 0 skipped: [JUnit](checks/final-integration.xml), [log](checks/final-integration.log).
-- **80 unit cases passed**, 0 failed, 0 skipped: [JUnit](checks/unit-final.xml), [log](checks/unit-final.log). The runner groups headless cases into jobs; 13 jobs represent 80 cases.
-- Asset compiler: 3 tests passed. Packaging: 27 tests passed with the pinned encoder Python. Web asset planning: 19 tests, 1 existing skip. Browser package contracts: 17 passed. CI selector: 20 passed. [Logs](checks/).
-- Map-image CLI checks passed, including ice/Trail semantic import, save/load and export: [log](checks/map-image-final.log), [exact CLI invocations](commands.json).
-- Upstream Trail artwork provenance remains valid: [log](checks/upstream-trail-assets.log).
-- All **256 per-tick checksums are identical** before/after, also in all six benchmark runs. [Before trace](before-checksums.txt), [after trace](after-checksums.txt). SHA-256 of either trace: `10c411e808f59702902962f972d9219026baae8c832392af17760c72bdfeaafc`.
+- **92 engine cases passed**, 0 failures/skips: [JUnit](checks/final.xml), [log](checks/final.log).
+- **84 unit cases passed**, 0 failures/skips: [JUnit](checks/unit.xml), [log](checks/unit.log).
+  Grouped headless jobs explain why the runner's job count is smaller than its case count.
+- Compiler: **6 passed**. Asset packaging: **28 passed** with pinned encoder Python.
+  Web asset planning: **19 tests, one existing skip**. Browser package contracts:
+  **17 passed** at the tested head, plus the **18-test merged-master check** above.
+  CI selector: **20 passed**. Scene-boundary contracts: **2 passed**. [Logs](checks/).
+- Map-image CLI checks and upstream Trail artwork provenance passed.
+- Independent coverage comparison and per-tick simulation traces passed as described above.
 
-The trace uses two workers on ice and road, the same seed/map, and an empty order stream. It checks this fixture on Linux; it does not establish all-map or cross-platform determinism. Production simulation code, serialized terrain-frame selection and RNG calls are unchanged by this PR; the simulation revision is unchanged relative to the integrated base.
+Coverage includes legacy shoreline decoding against the frozen engine lookup,
+all binary corner shapes and multi-material junctions, diagonal separation, wrapped
+edges, a 64-material catalog and extra fixture material, weighted selection,
+malformed/stale/missing packs, startup artwork overrides, source revisions,
+selective animation invalidation, native/partial HD rendering, software/OpenGL
+pixel parity, portable HD sources, composed texture limits, cache eviction and
+admission refusal, streamed and emergency fallback, resize, torus views, previews,
+fog/discovery, legacy saves 84/88, current-save continuation and replay/network contracts.
+The small-limit wrapper is installed after source loading: it checks composed
+page/tile submission, not arbitrary tiny-device admission of all source artwork.
+Actual driver GPU-memory exhaustion is not injected.
 
-Coverage includes all 256 four-corner label configurations, legacy corner decoding against engine lookup, both torus axes, diagonal separation, 64 materials, an additional compositor material, deterministic weighted variants, malformed/stale/missing packs, source revision invalidation, animation, fractional zoom, native/partial HD assets, cache eviction/budget refusal, actual tile fallback, software/OpenGL pixel parity, portable renderer primitives, torus rendering, previews, fog/discovery, current-save continuation, legacy saves 84/88 and replay/network acceptance contracts. GPU page admission downsampling is exercised by the HD case; actual low-limit physical devices and injected allocation failures have not been exhaustively exercised.
+## Performance investigation
 
-The original comparison was built from an archived source tree with only the identical validation fixture appended. An audit of 1,739 source/build/test files found only that test-file difference: [audit](baseline-source-audit.json), [fixture patch](baseline-fixture.patch). No production objects from the refactored renderer were reused in that baseline executable.
-
-## Performance and memory
-
-CPU-pinned (`taskset -c 31`) alternating baseline/current runs, three pairs, same map and camera path. Warm uniform/dense results are medians of five batches of 60 frames per process, then medians across three processes. Mixed warm is 30 frames per process. Times cover terrain cache preparation and drawing; they exclude simulation and scrolling-ocean drawing.
+Six balanced before/after pairs at the final revision pin processes to CPU 31 and
+alternate which revision runs first. Warm uniform/dense values are medians of five
+60-frame batches per process, then medians across six processes. Mixed warm measures
+30 frames per process. Timing covers terrain preparation/drawing, excluding
+simulation and the scrolling ocean.
 
 | Scenario | Before ms | After ms | Change |
 | --- | ---: | ---: | ---: |
-| Mixed cold | 27.282 | 161.784 | +493.0% |
-| Uniform cold | 17.422 | 61.339 | +252.1% |
-| Dense boundaries cold | 38.130 | 443.819 | +1064.0% |
-| Mixed warm (30 frames) | 3.738 | 4.071 | +8.9% |
-| Uniform warm | 3.540 | 3.128 | -11.6% |
-| Uniform moving camera | 4.145 | 3.537 | -14.7% |
-| Dense boundaries warm | 3.819 | 3.296 | -13.7% |
-| Dense boundaries moving camera | 4.268 | 3.326 | -22.1% |
+| Mixed cold | 4.481 | 25.353 | +465.7% |
+| Uniform cold | 3.703 | 12.914 | +248.8% |
+| Dense boundaries cold | 5.770 | 60.051 | +940.8% |
+| Mixed warm | 0.414 | 0.508 | +22.8% |
+| Uniform warm | 0.380 | 0.359 | -5.4% |
+| Uniform moving camera | 0.439 | 0.479 | +9.3% |
+| Dense boundaries warm | 0.396 | 0.416 | +4.8% |
+| Dense boundaries moving camera | 0.492 | 0.395 | -19.7% |
 
-[Raw runs, commands and host load](benchmarks/runs.json) · [medians](benchmarks/medians.json) · [runner](benchmarks/run.py).
+[Final runs and host load](benchmarks/final/runs.json) ·
+[medians](benchmarks/final/medians.json) · [runner](benchmarks/final/run.py).
 
-The host was heavily shared and CPU-pinned timings differ substantially from unpinned runs. These are observations, not a release FPS claim. No median warm regression exceeded 10%; an earlier warm regression was investigated and reduced by comparing page neighborhoods once before decoding recipes. **Cold dense composition is substantially more expensive** than copying legacy sprites and can produce a first-view hitch. This remains a performance review concern, especially on slower machines and during rapid edits. The unpinned integrated run measured 79.8 ms dense cold composition; the contended pinned median above was higher. Large-map traversal, physical GPU upload costs and sustained editing should be reviewed before declaring performance acceptance.
+**Mixed warm remains 22.8% slower** in this batch; no other final warm median exceeds
+10% regression. Cold dense composition remains about **60 ms**, versus **5.8 ms**
+for legacy sprite copying, and is a first-view/editing hitch risk. These costs remain
+open acceptance concerns; this is not a performance sign-off.
 
-Current median initial terrain source decode/preparation: **68.612 ms**, measured separately before composition. Global graphics fixture loading: **3554.730 ms** (all graphics/setup, not terrain-only). Baseline does not have this separate loading timer. [Integrated timing](after-timing.txt).
+The investigation retained the initial three-pair batch (mixed +19.7%, dense moving
++11.8%) and a balanced six-pair follow-up before the empty-tile fix (mixed +24.6%,
+dense moving +6.3%): [initial](benchmarks/initial/medians.json),
+[pre-fix balanced](benchmarks/balanced/medians.json). Every batch and exact runner is
+published. The last batch follows an actual code change, not just another timing retry.
+Shared-host variation remains substantial, so absolute timings across batches cannot
+isolate the optimization's effect and are not a release FPS claim.
 
-Each uniform/dense run recorded 4 cold page rebuilds and 3,350 cache hits; the 32×32 map fits four pages and does not measure continuous eviction pressure. The separate software renderer test traverses 40 pages and verifies bounded eviction.
+[Geometry/source analysis](review/mixed-opacity-summary.json) explains why mixed
+terrain does more alpha work: 50 formerly opaque visible cells now require blending
+(23 sand, 22 grass, four road, one ice). It also found 20 wholly transparent water
+tiles submitted redundantly. The final fix skips those, reducing derived software
+submissions from 126 to 106; genuine partial shoreline draws are unchanged. This
+supports a cause for the mixed-only cost, not a complete timing attribution.
+Uniform/dense cache preparation is much faster than the legacy per-frame layer scan.
 
-| Allocation scope | Native software | Native OpenGL | Partial HD OpenGL |
+Prepared sources, CPU composed-page accounting and uploaded GPU bytes are separate:
+
+| Scope | Native software | Native OpenGL | Partial HD OpenGL |
 | --- | ---: | ---: | ---: |
-| Composed CPU page accounting | 4,508,000 B | 4,508,000 B | 17,090,912 B |
+| Composed CPU accounting | 4,771,232 B | 4,771,232 B | 17,354,144 B |
 | Additional uploaded texture storage | 0 B | 4,194,304 B | 5,592,384 B |
-| Prepared source pixels/pages | 4,456,448 B | 4,456,448 B | 4,517,888 B |
+| Prepared source storage | 4,456,448 B | 4,456,448 B | 5,439,488 B |
 
-CPU page accounting includes conservative metadata reservation; GPU bytes are the renderer's texture allocation delta including uploaded mip levels. Prepared sources are additional CPU storage. These are terrain allocations, not whole-process RSS or physical VRAM measurements. Individual memory reports are stored alongside this file. Software composed pages retain the 32 MiB budget; GPU-mode composed pages use a separate conservative 128 MiB budget and reduce HD sampling when needed.
+Reports are alongside this file. The HD fixture now supplies all 16 grass variants,
+with other materials falling back to native art. Conservative page accounting
+includes recipe/revision metadata; GPU bytes include uploaded mip levels. These
+are terrain allocations, not whole-process RSS or physical VRAM. Uniform/dense runs
+have four cold rebuilds and 3,350 hits; separate eviction tests traverse 40 pages.
+[Unpinned final-run timings](after-timing.txt) include asset preparation/loading.
 
-## Environment, commands and limits
+## Reproduction and limitations
 
-Ubuntu 26.04.1, x86_64, GCC 15.2.0, release `-O3`, C++20, client build. SDL 3.4.16 / SDL_image 3.4.6 / SDL_ttf 3.2.2 / SDL_net 3.2.0 and libwebp 1.6.0, with repository-pinned SDL patches. [Environment and GL driver](environment.txt). OpenGL is Mesa 26.0.8 **llvmpipe**, not a physical GPU.
+Ubuntu 26.04.1 x86_64, GCC 15.2.0, release `-O3`, C++20 client. SDL 3.4.16,
+SDL_image 3.4.6, SDL_ttf 3.2.2, SDL_net 3.2.0, WebP 1.6.0 with repository SDL patches.
+[Environment](environment.txt). OpenGL uses Mesa 26.0.8 **llvmpipe**, not a physical GPU.
 
-The final unit run explicitly selects the patched SDL prefix with `LD_LIBRARY_PATH`. An earlier run accidentally selected the machine's unpatched SDL family and failed the existing PNG16 normalization case; it passed with the correct runtime. Final engine and unit evidence uses the patched runtime consistently.
-
-Build (exit 0):
+Final build, exit 0: [log](checks/final-skip-build.log).
 
 ```sh
 GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix scons -j8 release=1 server=0 tests build/linux/client/release/src/glob2
 ```
 
-Tests (all exit 0):
+Both test binaries embed the clean tested revision: [engine identity](checks/engine-identity/build-provenance.json), [unit identity](checks/review-unit-provenance.json).
+
+Exact native validation and benchmark commands are in [validate.sh](checks/validate.sh),
+with runtime `LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib`. Python commands:
 
 ```sh
-export LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib
-python3 test/run_tests.py --binary engine --filter 'TerrainMaterials/*' --filter 'TerrainPresentation/*' --filter 'TerrainProperties/*' --filter 'SoftwareRenderer/*' --filter 'TerrainValidation/*' --filter 'HighResolutionIntegration/*' --filter 'PortableRenderer/*' --filter 'MapRenderGeometry/*' --filter 'Torus*/*' --filter 'MapPreview/*' --filter 'TeamStatsSave/*' --filter 'MatchSetup/*' --filter 'TerrainEcology/*' --artifacts artifacts/terrain/final-integration --junit artifacts/terrain/final-integration.xml --timeout 300 -j 4 --display-jobs 1
-python3 test/run_tests.py --binary unit --filter 'Sprite*/*' --filter 'ImageAssets/*' --filter 'AssetLoader/*' --filter 'Replay*/*' --filter 'PlatformProtocol/*' --filter 'FertilityField/*' --filter 'MusicBuffer/*' --filter 'MusicProducer/*' --artifacts artifacts/terrain/unit-final --junit artifacts/terrain/unit-final.xml --timeout 300 -j 4 --display-jobs 1
-python3 test/test_map_image.py build/linux/client/release/src/glob2
 python3 -m unittest discover -s tools -p test_terrain_tileset.py
 /home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python -m unittest discover -s test/build_system -p test_package_assets.py
 python3 -m unittest discover -s test/build_system -p test_web_assets.py
 python3 -m unittest discover -s test/build_system -p test_browser_package.py
 python3 -m unittest discover -s test/build_system -p test_ci_policy.py
+python3 -m unittest discover -s test/build_system -p test_scene_boundary.py
 python3 tools/artwork/validate_trail.py
-python3 artifacts/terrain/benchmark-final.py
+python3 artifacts/terrain/benchmark-review-final.py
 ```
 
-Not run: Windows, macOS, Android, browser/WASM execution, physical GPU drivers, cross-platform checksum comparisons, a full engine suite, or manual gameplay acceptance. Browser asset/package contracts do not establish browser rendering correctness. These gaps and cold-composition cost keep the PR in draft. Maintainer acceptance is pending; no acceptance is claimed on another person's behalf.
+Hosted [cheap PR contracts](https://github.com/Globulation2/glob2/actions/runs/37345740912) passed; expensive platform jobs were skipped. This is separate from the local runtime evidence above.
+
+Not run: Windows, macOS, Android, browser/WASM execution, physical GPU drivers,
+cross-platform checksum comparisons, full engine suite or manual gameplay acceptance.
+Browser packaging contracts do not establish browser rendering correctness. The PR
+remains draft for those acceptance gaps and the measured cold/mixed performance costs.

@@ -1,0 +1,39 @@
+{
+  "scope": "Geometry/source analysis, not a timing run. Reconstructs the TerrainValidation fixture and evaluates production PreparedCoverage at native 32x32 pixels for 32x24 visible cells. All 16 source variants of grass, sand, ice and cobblestone have alpha extrema 255..255.",
+  "baseline": {
+    "opaque_cells": 700,
+    "water_cells": 68,
+    "opaque_run_draws": 7,
+    "nonopaque_overlay_draws": 8,
+    "terrain_draw_calls": 15
+  },
+  "formerly_opaque_now_blended": {
+    "sand": 23,
+    "grass": 22,
+    "road": 4,
+    "ice": 1
+  },
+  "interpretation": "Natural water contours make 50 formerly opaque cells require blending. The reviewed renderer also submitted 20 empty water cells; the final change skips these, reducing derived submissions from 126 to 106. Genuine shoreline coverage and partial-alpha draws remain unchanged. These geometry counts support, but do not isolate all causes of, the mixed warm rendering cost.",
+  "source_references": [
+    "src/render/TerrainPresentationTest.cpp:TerrainValidation mixed fixture",
+    "src/render/SoftwareTerrainCache.cpp:draw",
+    "libgag/src/SoftwareRenderBackend.cpp:blit",
+    "baseline src/render/SoftwareTerrainCache.cpp:draw",
+    "baseline src/render/scene/SceneMap.cpp:terrainLayersAt"
+  ],
+  "pre_skip_revision": "0463a7e20aea1f68c3263a1b99e30d2911de6c5d",
+  "pre_skip": {
+    "opaque_cells": 650,
+    "partially_transparent_cells": 98,
+    "fully_transparent_cells": 20,
+    "opaque_run_draws": 8,
+    "nonopaque_tile_draws": 118,
+    "terrain_draw_calls": 126
+  },
+  "after_skip": {
+    "opaque_run_draws": 8,
+    "nonopaque_tile_draws": 98,
+    "skipped_empty_cells": 20,
+    "terrain_draw_calls": 106
+  }
+}

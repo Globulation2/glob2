@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="92" failures="0" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="30.5755" status="run" />
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="1.04444" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="2.07786" status="run" />
+  <testcase classname="MapPreview" name="preview geometry" time="0.135875" status="run" />
+  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="0.660558" status="run" />
+  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="1.08846" status="run" />
+  <testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.415694" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.004434" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.009273" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.002471" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.00719" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.002019" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.003341" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.002894" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.002665" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.003709" status="run" />
+  </testsuite><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="each accelerated backend uploads surface revisions independently [display]" time="0.372267" status="run" />
+  <testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.343103" status="run" />
+  <testcase classname="PortableRenderer" name="software targets resize and destroy safely during an active transform [display]" time="0.68573" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="1.65245" status="run" />
+  </testsuite><testsuite name="SoftwareRenderer"><testcase classname="SoftwareRenderer" name="fractional shared endpoints leave no seams; queued triangles obey direct writes" time="0.000279" status="run" />
+  <testcase classname="SoftwareRenderer" name="geometry-reference blits preserve mixed pixel formats and source modulation" time="0.000274" status="run" />
+  <testcase classname="SoftwareRenderer" name="integer transformed primitives retain SDL triangle blending exactly" time="0.000425" status="run" />
+  <testcase classname="SoftwareRenderer" name="large owned images retain SDL geometry sampling and overflow behavior" time="0.043925" status="run" />
+  <testcase classname="SoftwareRenderer" name="native display scaling preserves direct pixels through lazy geometry and target rotation" time="0.000355" status="run" />
+  <testcase classname="SoftwareRenderer" name="nearest blits retain sampling under destination clipping and restore source state" time="0.000136" status="run" />
+  <testcase classname="SoftwareRenderer" name="opacity classification follows content revisions; opaque copy matches alpha blending" time="0.004529" status="run" />
+  <testcase classname="SoftwareRenderer" name="opaque row copies retain SDL clipping and color modulation" time="0.000153" status="run" />
+  <testcase classname="SoftwareRenderer" name="presenter rotates full frames and preserves completed pixels during partial updates" time="0.000241" status="run" />
+  <testcase classname="SoftwareRenderer" name="terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts]" time="2.08546" status="run" />
+  <testcase classname="SoftwareRenderer" name="translucent fills preserve colors on 32-bit targets without alpha" time="0.000453" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="1.36024" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="0.742347" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.128358" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="0.986308" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.006688" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.006059" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.003551" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.058353" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.013198" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.007162" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="1.42566" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.019382" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.025291" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.004559" status="run" />
+  </testsuite><testsuite name="TerrainEcology"><testcase classname="TerrainEcology" name="empty and prohibited resource cells do not acquire bonus growth" time="0.002641" status="run" />
+  <testcase classname="TerrainEcology" name="four growth opportunities preserve stack updates and measured conservation" time="0.007627" status="run" />
+  </testsuite><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="all legacy shore groups retain their corner orientation" time="0" status="run" />
+  <testcase classname="TerrainMaterials" name="an additional material and a 64-material catalog compose without renderer branches [display]" time="0.747649" status="run" />
+  <testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="0.727802" status="run" />
+  <testcase classname="TerrainMaterials" name="catalog rejects corrupt references and grows independently of gameplay IDs" time="0.026353" status="run" />
+  <testcase classname="TerrainMaterials" name="compiled pages validate metadata and stale catalogs use source fallback [artifacts]" time="0.005364" status="run" />
+  <testcase classname="TerrainMaterials" name="compositor preserves native artwork overridden before startup [display] [artifacts]" time="0.715398" status="run" />
+  <testcase classname="TerrainMaterials" name="coverage partitions every binary shape and multi-material junction" time="0.100216" status="run" />
+  <testcase classname="TerrainMaterials" name="diagonal contacts stay distinct and both torus axes share coverage" time="0.002051" status="run" />
+  <testcase classname="TerrainMaterials" name="legacy decoder inverts the engine lookup for both compatibility profiles" time="0.001742" status="run" />
+  <testcase classname="TerrainMaterials" name="prepared coverage preserves native and HD contour geometry" time="0.261496" status="run" />
+  <testcase classname="TerrainMaterials" name="shared edges and wrapped samples have identical coverage" time="0.002108" status="run" />
+  <testcase classname="TerrainMaterials" name="single cells retain their center and animation does not reseed variants" time="0.0021" status="run" />
+  <testcase classname="TerrainMaterials" name="unequal variant weights affect deterministic texture selection" time="0.003438" status="run" />
+  <testcase classname="TerrainMaterials" name="weighted choices are stable and all existing variants are reachable" time="0.004076" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="HD material pages and fractional zoom preserve cached pixels with missing optional atlas [display][artifacts]" time="6.85987" status="run" />
+  <testcase classname="TerrainPresentation" name="catalog palettes preserve distinct legacy shores and independent preview colors" time="0.001885" status="run" />
+  <testcase classname="TerrainPresentation" name="emergency tiles remain deterministic and cover opaque fractional terrain [display]" time="3.02546" status="run" />
+  <testcase classname="TerrainPresentation" name="empty water pages skip software submissions and refresh after terrain edits [display]" time="0.836177" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.003007" status="run" />
+  <testcase classname="TerrainPresentation" name="image import keeps whole-cell material edges out of legacy gameplay [artifacts]" time="0.006627" status="run" />
+  <testcase classname="TerrainPresentation" name="portable texture limits reduce HD pages and admit only fitting fallback tiles [display]" time="0.843094" status="run" />
+  <testcase classname="TerrainPresentation" name="streaming pages match cached fractional pixels across wraps and small maps [display]" time="6.17687" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve OpenGL terrain caching [display]" time="1.38582" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="1.27842" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="canonical terrain survives presentation regeneration and batches snapshot invalidation" time="0.002272" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorer flag eligibility applies route accessibility and hunger distance" time="0.002321" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="0.002478" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="0.002251" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="0.012492" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="required terrain experiments survive tiling and distinguish map headers" time="0.002577" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and legacy import refresh ecology" time="0.002156" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs and supersede queued route snapshots" time="0.002559" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="0.002197" status="run" />
+  </testsuite><testsuite name="TerrainValidation"><testcase classname="TerrainValidation" name="mixed terrain simulation trace and visual gallery [display][artifacts]" time="1.3866" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="44.7761" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="42.9045" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.396048" status="run" />
+  <testcase classname="TorusRender" name="native tiled capture pixels and allocation fallback [display]" time="2.70157" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="0.797161" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="0.967404" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.398146" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.440025" status="run" />
+  </testsuite></testsuites>

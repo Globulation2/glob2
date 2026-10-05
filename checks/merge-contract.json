@@ -1,0 +1,20 @@
+{
+  "master": "86df5ea49ef7fdf7914a57bf72bb527043876373",
+  "merged_tree": "7ea04e0bda87fa9349d0c1fd1ad0ff9e5fc52e16",
+  "files": [
+    ".github/workflows/build.yml",
+    "browser/package-static.py",
+    "test/build_system/test_browser_package.py"
+  ],
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/tmp/glob2-terrain-merge-contract-357mykdq/test/build_system",
+    "-p",
+    "test_browser_package.py"
+  ],
+  "exit": 0
+}

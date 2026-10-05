@@ -1,0 +1,8 @@
+Master 86df5ea49ef7fdf7914a57bf72bb527043876373
+Merged tree 7ea04e0bda87fa9349d0c1fd1ad0ff9e5fc52e16
+Materialized tracked files: ['.github/workflows/build.yml', 'browser/package-static.py', 'test/build_system/test_browser_package.py']
+..................
+----------------------------------------------------------------------
+Ran 18 tests in 0.150s
+
+OK

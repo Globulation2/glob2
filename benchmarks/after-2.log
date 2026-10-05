@@ -1,4 +1,0 @@
-PASS TerrainValidation/mixed terrain simulation trace and visual gallery [display][artifacts] (10.4s)
-
-1 passed, 0 failed, 0 skipped (10.4s of test time)
-[run_tests] JUnit report: /home/bradley/.codex/worktrees/3c38/glob2/artifacts/terrain/benchmark-final/after-2.xml (1 cases)

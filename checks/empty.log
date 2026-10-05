@@ -1,0 +1,4 @@
+PASS TerrainPresentation/empty water pages skip software submissions and refresh after terrain edits [display] (0.8s)
+
+1 passed, 0 failed, 0 skipped (0.8s of test time)
+[run_tests] JUnit report: artifacts/terrain/review-empty.xml (1 cases)

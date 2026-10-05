@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="84" failures="0" errors="0" skipped="0"><testsuite name="OpaqueRectangleBatch"><testcase classname="OpaqueRectangleBatch" name="retains OpenGL pixels [display]" time="0.465705" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="retains portable renderer pixels [display]" time="0.377744" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="recovers from submission errors" time="0.006349" status="run" />
+  </testsuite><testsuite name="SpriteLoad"><testcase classname="SpriteLoad" name="variable frame atlas admission accounts for maximum sized padded cells [display]" time="0.356382" status="run" />
+  <testcase classname="SpriteLoad" name="source frames prepare in parallel without a graphic context" time="0.002154" status="run" />
+    <testcase classname="SpriteLoad" name="sheet tiles retain frame order and malformed sheets fall back to WebP frames" time="0.001904" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.300016" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.267777" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.006659" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.006023" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.004622" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.004456" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.024131" status="run" />
+  </testsuite><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.001845" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.002722" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.001262" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.002271" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.00052" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.00128" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.001244" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.000518" status="run" />
+  </testsuite><testsuite name="FertilityField"><testcase classname="FertilityField" name="TriangularWeightsMatchGrowResourcesRng" time="0" status="run" />
+    <testcase classname="FertilityField" name="ConvolutionMatchesDirectKernelWithoutSand" time="0.008397" status="run" />
+    <testcase classname="FertilityField" name="SandCorrectionPathMatchesDirectKernel" time="0.010761" status="run" />
+    <testcase classname="FertilityField" name="WaterSplatPathMatchesDirectKernel" time="0.011811" status="run" />
+    <testcase classname="FertilityField" name="AdaptivePathMatchesExplicitPaths" time="0.003503" status="run" />
+    <testcase classname="FertilityField" name="OpenWaterReachesFullScale" time="0" status="run" />
+    <testcase classname="FertilityField" name="SandOppositeWaterRemovesCredit" time="0" status="run" />
+    <testcase classname="FertilityField" name="NonPowerOfTwoDimensionsWrap" time="0.006311" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesNonGrass" time="0.000168" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesGrassNoDepositReaches" time="0" status="run" />
+    <testcase classname="FertilityField" name="ForMapUngatedKeepsUnreachableGrass" time="0" status="run" />
+    <testcase classname="FertilityField" name="UsefulExpansionCapacityFolds" time="0" status="run" />
+    <testcase classname="FertilityField" name="WithinPercentBand" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted ecology handles signed donors, inhibition and local growth" time="0" status="run" />
+    <testcase classname="FertilityField" name="cached ecology changes after canonical terrain mutation" time="0" status="run" />
+    <testcase classname="FertilityField" name="habitat and movement edits reuse exact ecology fields" time="0" status="run" />
+    <testcase classname="FertilityField" name="ecology rebuilt inside a terrain batch survives its commit" time="0" status="run" />
+    <testcase classname="FertilityField" name="future terrain ecology properties invalidate only their effective inputs" time="0.000109" status="run" />
+    <testcase classname="FertilityField" name="growth throughput includes multiple opportunities before occupancy" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted coupled land and shoreline kernels match independent probes" time="0.064782" status="run" />
+    <testcase classname="FertilityField" name="one-point wheat fertility retains exact positive growth potential" time="0" status="run" />
+    <testcase classname="FertilityField" name="fractional growth rejects incomplete RNG bucket and preserves whole bonuses" time="0" status="run" />
+    <testcase classname="FertilityField" name="rational growth rates preserve exact mass across complete random buckets" time="0.000737" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0.000144" status="run" />
+    <testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000136" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.000328" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.000339" status="run" />
+  </testsuite><testsuite name="MusicBuffer"><testcase classname="MusicBuffer" name="ring wraps under concurrent producer and consumer without loss" time="0.010211" status="run" />
+    <testcase classname="MusicBuffer" name="prefill capacity variable requests and bounded producer stalls" time="0.001051" status="run" />
+    <testcase classname="MusicBuffer" name="exhaustion fades once and waits for full recovery" time="0.000445" status="run" />
+    <testcase classname="MusicBuffer" name="preview pause retains partial PCM and the consumed clock" time="0" status="run" />
+    <testcase classname="MusicBuffer" name="seek while preview is paused replaces stale PCM without advancing the clock" time="0" status="run" />
+    <testcase classname="MusicBuffer" name="generation replacement rejects old PCM without resetting shared cursors" time="0" status="run" />
+  </testsuite><testsuite name="MusicProducer"><testcase classname="MusicProducer" name="normal PCM matches direct Opus decoding across trimmed loops" time="0.02205" status="run" />
+    <testcase classname="MusicProducer" name="file and memory producers have identical transitions and PCM" time="0.032462" status="run" />
+    <testcase classname="MusicProducer" name="replacement is atomic and preserves latest pending mood" time="0.00085" status="run" />
+    <testcase classname="MusicProducer" name="preview ownership pause seek and close preserve gameplay cursor" time="0.000946" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="requests encode as the realtime envelope" time="0.000129" status="run" />
+    <testcase classname="PlatformProtocol" name="responses and events decode; malformed frames are rejected" time="0.000135" status="run" />
+    <testcase classname="PlatformProtocol" name="RFC 3339 timestamps convert to epoch milliseconds" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="token lifetime comes from the JWT claims" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="refreshes are scheduled well before expiry" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="backoff grows exponentially to a cap, with bounded jitter" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="SHA-256 matches the FIPS 180-4 vectors" time="0.005529" status="run" />
+    <testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite><testsuite name="ReplayAppearance"><testcase classname="ReplayAppearance" name="only matching recordings and trusted origins restore appearance context" time="0.000281" status="run" />
+    <testcase classname="ReplayAppearance" name="companions survive copies but stale and oversized files are ignored" time="0.000486" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000891" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000371" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="SpriteCentering"><testcase classname="SpriteCentering" name="SquareSpriteInSquareBox" time="0" status="run" />
+    <testcase classname="SpriteCentering" name="AxesAreIndependent" time="0" status="run" />
+    <testcase classname="SpriteCentering" name="OddDifferenceFloors" time="0" status="run" />
+    <testcase classname="SpriteCentering" name="ExactFit" time="0" status="run" />
+    <testcase classname="SpriteCentering" name="SpriteLargerThanBox" time="0" status="run" />
+  </testsuite></testsuites>
