@@ -37,6 +37,9 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   match_colony_skins: ['account_id'],
   skin_purchases: ['account_id'],
   colony_skin_reports: ['reporter_account_id'],
+  music_releases: ['owner_id'],
+  music_likes: ['account_id'],
+  music_reports: ['account_id'],
   maps: ['owner_account_id'],
   map_likes: ['account_id'],
   map_reports: ['reporter_account_id'],
@@ -62,7 +65,7 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
  */
 export const UNEXPORTED_ACCOUNT_COLUMNS: Record<string, string> = {
   'admin_audit_log.actor_account_id': 'the moderator who acted, not the account',
-  'blobs.owner_account_id': 'the files are listed through maps, uploads and skins',
+  'blobs.owner_account_id': 'the files are listed through maps, uploads, music and skins',
   'colony_skin_reports.resolved_by_account_id': 'the moderator who resolved a report',
   'map_reports.resolved_by_account_id': 'the moderator who resolved a report',
   'maps.hidden_by_account_id': 'the moderator who hid a map',
@@ -319,6 +322,34 @@ export async function exportAccount(
         .orderBy('mp.created_at')
         .execute();
 
+      const music = await tx
+        .selectFrom('music_releases')
+        .select([
+          'id',
+          'metadata',
+          'status',
+          'inspection',
+          'result',
+          'options',
+          'hidden',
+          'downloads',
+          'error',
+          'created_at',
+          'updated_at',
+        ])
+        .where('owner_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const musicLikes = await tx
+        .selectFrom('music_likes')
+        .select('release_id')
+        .where('account_id', '=', id)
+        .execute();
+      const musicReports = await tx
+        .selectFrom('music_reports')
+        .select(['id', 'release_id', 'reason', 'resolved', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
       const maps = await tx
         .selectFrom('maps')
         .select([
@@ -725,6 +756,7 @@ export async function exportAccount(
           events: rows(studioEvents),
           artifacts: rows(studioArtifacts),
         },
+        music: { releases: rows(music), likes: rows(musicLikes), reports: rows(musicReports) },
         maps: {
           published: maps.map((m) => ({
             ...clean(m),

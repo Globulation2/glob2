@@ -5,8 +5,26 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/dist/**', 'packages/protocol/fixtures/**'] },
+  {
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      'packages/protocol/fixtures/**',
+      'apps/web/public/music/decoder.js',
+    ],
+  },
   js.configs.recommended,
+  {
+    files: ['apps/web/public/music/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.worker,
+        AudioWorkletProcessor: 'readonly',
+        sampleRate: 'readonly',
+        registerProcessor: 'readonly',
+      },
+    },
+  },
   ...tseslint.configs.strict,
   {
     languageOptions: { globals: globals.node },

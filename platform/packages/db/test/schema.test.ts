@@ -13,6 +13,24 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  music_releases: [
+    'id',
+    'owner_id',
+    'metadata',
+    'status',
+    'sources',
+    'inspection',
+    'result',
+    'options',
+    'error',
+    'hidden',
+    'downloads',
+    'created_at',
+    'updated_at',
+  ],
+  music_assets: ['release_id', 'kind', 'sha256'],
+  music_likes: ['release_id', 'account_id'],
+  music_reports: ['id', 'release_id', 'account_id', 'reason', 'resolved', 'created_at'],
   colony_skin_reports: [
     'id',
     'version_id',
@@ -728,6 +746,7 @@ describe('migrations', () => {
         '0036_players_avatars',
         '0037_studio_events',
         '0038_skin_view_angle',
+        '0039_music',
       ]);
       expect(
         (
@@ -797,7 +816,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(16);
+      expect(upgraded).toHaveLength(17);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -929,6 +948,7 @@ describe('migrations', () => {
         ['0036_players_avatars', 'Success'],
         ['0037_studio_events', 'Success'],
         ['0038_skin_view_angle', 'Success'],
+        ['0039_music', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1057,6 +1077,7 @@ describe('migrations', () => {
       await db.insertInto('colony_skin_drafts').values(draft).execute();
       expect((await migrateToLatest(db)).map((m) => [m.migrationName, m.status])).toEqual([
         ['0038_skin_view_angle', 'Success'],
+        ['0039_music', 'Success'],
       ]);
       expect(
         await db

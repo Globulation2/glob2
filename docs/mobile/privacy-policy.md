@@ -72,6 +72,7 @@ match on their devices. LAN games do not use an account and do not contact us.
 | **Connection quality:** per player in a match, the match server's measurements of round trip, how far the player's game ran behind, disconnects, time offline and order counts. These contain no address. | To show connection quality on the match page and investigate network problems. |
 | **Maps:** maps and saves you upload, catalog entries you publish (title, description, versions, previews), likes, and reports you file (reason and details). Map downloads are counted once per day per map, by account, or by IP address when you download without signing in. | To run the map catalog and moderate it. |
 | **Technical data:** your IP address, the time and the address of each request, kept in server logs and in rate-limit counters. Logs leave out passwords, tokens, cookies and credentials. | To keep the service secure and working, and to stop abuse. |
+| **Community music:** uploaded mood tracks and cover art, release titles, descriptions, artist/attribution details, licence, source links, tags, AI disclosure, likes and reports. Published files embed this metadata. | To convert, share and moderate music sets. |
 | **Moderation records:** actions moderators take on accounts, maps and reports | To keep moderation accountable. |
 
 The game also tells the service its version and platform when it connects, so the
@@ -110,6 +111,8 @@ Public leaderboard data is also published on the website
 | --- | --- |
 | Account, display name, matches, ratings, rating history, replays, catalog maps, map reports, moderation records | Until you delete the account (see below for what deletion keeps) |
 | Guest accounts | Deleted after 90 days without use if they never played a match, host no open room and own no catalog map |
+| Music source uploads and processing files | Deleted after conversion, cancellation or failure; abandoned/orphan uploads expire within 24 hours |
+| Community music releases, likes and reports | Until account deletion; withdrawing or hiding a release stops public access but retains it for administration |
 | Room chat | 30 days |
 | Matchmaking requests, including server-region round trips | 30 days |
 | Refresh tokens | 7 days after they are replaced or revoked, otherwise 30 days after they expire |
@@ -132,7 +135,7 @@ by typing your display name. Deletion takes effect at once and cannot be undone.
 - replaces your name with "Deleted player" in your past matches, in stored match
   setups, in other players' chat in your rooms, in the names of rooms you hosted and in
   moderation records;
-- deletes your room chat messages, your catalog maps, likes and uploads, and your
+- deletes your room chat messages, your catalog maps, music releases, music reports, likes and uploads, and your
   matchmaking requests;
 - deletes your AI Map Studio projects, conversations and generation history, and
   cancels unfinished generation without charging its reserved credit;
@@ -144,7 +147,7 @@ moderation records about the account. Credit purchases and ledger entries remain
 as financial records; anonymous daily AI call counts remain for service capacity
 accounting. Match records and replays are kept unchanged
 because they are the verified record of games other people played too, so they still
-contain the name you had in that game and your in-game text chat. Files you uploaded
+contain the name you had in that game and your in-game text chat. Previously downloaded music remains on other players’ devices. Files you uploaded
 stay stored only while matches played on them refer to them.
 
 #### Backups

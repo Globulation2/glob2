@@ -413,3 +413,31 @@ process that never initialized the Toolkit file system (some unit tests) reports
   credential, and sign-out. It needs `GLOB2_PLATFORM_DIR` (a `platform/`
   checkout with dependencies installed) and `GLOB2_PLATFORM_DATABASE_URL` (a
   Postgres role that may create databases); see the file's docstring.
+
+## Music library and offline imports
+
+Settings → Audio opens `MusicLibraryScreen` through the cooperative screen stack.
+`MusicSetScreen` owns the synchronized preview and `MusicImportScreen` uses the
+host file picker for a ZIP or three labelled Opus files. Browse uses the selected
+instance and its existing credentials; Installed and Import remain available in
+online-disabled editions. Creation and arbitrary-format conversion live on the
+website. Preview temporarily suspends background music; closing the screen
+restores it, and focus loss pauses preview.
+
+Online downloads check the API's SHA-256 before entering the same `Music::ImportJob`
+used by offline imports. Validation advances in short UI-frame slices and fully
+decodes each track. The installer stages all sets, checks metadata, identities,
+lengths and collisions, then renames complete directories under the writable
+`data/zik/community-<UUID>`. Identical installs are deduplicated; a conflicting
+release or bundled soundtrack is never overwritten. Existing untagged soundtrack
+directories keep their filename-derived labels; imported sets display the Calm
+file's embedded title and artwork.
+
+ZIPs may contain up to ten sets within 64 MiB, with at most 16 MiB per track.
+Only ordinary stored/deflated `a1.opus`, `a2.opus`, `a3.opus` entries in a set
+directory are accepted. Unsafe paths, links, duplicate entries, incomplete sets,
+excessive expansion and checksum failures are rejected. Browser installs are not
+reported complete until the host persistence request succeeds. A failed flush
+retains recovery bytes and offers retry/export. Local removal cannot delete
+bundled sets. Changes affect local music and presentation only; they do not alter
+simulation, saved games, replays or the match protocol.

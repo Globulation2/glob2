@@ -13,6 +13,7 @@
     "@glob2/db": "0.1.0",
     "@glob2/play": "0.1.0",
     "@glob2/protocol": "0.1.0",
-    "kysely": "^0.29.6"
+    "kysely": "^0.29.6",
+    "@glob2/music": "0.1.0"
   }
 }

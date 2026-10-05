@@ -61,6 +61,38 @@ if (!existsSync(join(dist, 'index.html'))) {
 }
 
 const harness = await createHarness();
+const musicRunner =
+  process.env['MUSIC_E2E_PROCESSING'] === '1'
+    ? await (async () => {
+        const { startJobRunner, createLogger } = await import('@glob2/core');
+        const { processMusic } = await import('../../music-worker/src/process.ts');
+        return startJobRunner({
+          pool: harness.database.pool,
+          logger: createLogger('music-e2e', 'silent'),
+          concurrency: 1,
+          tasks: {
+            'music-inspect': async (payload: unknown, helpers) =>
+              processMusic(
+                harness.database.db,
+                harness.blobs,
+                origin,
+                (payload as { id: string }).id,
+                true,
+                helpers.job.attempts >= helpers.job.max_attempts,
+              ),
+            'music-convert': async (payload: unknown, helpers) =>
+              processMusic(
+                harness.database.db,
+                harness.blobs,
+                origin,
+                (payload as { id: string }).id,
+                false,
+                helpers.job.attempts >= helpers.job.max_attempts,
+              ),
+          },
+        });
+      })()
+    : undefined;
 const api = await harness.start({
   origin,
   instance: {
@@ -166,6 +198,7 @@ front.listen(port, '127.0.0.1', () => {
 
 const stop = async () => {
   front.close();
+  await musicRunner?.stop();
   await harness.close();
   process.exit(0);
 };

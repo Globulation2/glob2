@@ -26,6 +26,7 @@ import (see [the former YOG lobby](#the-former-yog-lobby)).
 | `postgres` | `postgres:16-alpine` | 1 | All state, the job queue, pub/sub and the matchmaker's leader lock. |
 | `init` | `platform` | one-shot | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
 | `platform-api` | `platform` | `GLOB2_API_REPLICAS` (2) | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless. |
+| `music-worker` | `music-worker` | 1 | Community music inspection, conversion and final media storage. |
 | `platform-worker` | `platform` | `GLOB2_WORKER_REPLICAS` (1) | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time). |
 | `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key. |
 | `relay` | `relay` | `GLOB2_RELAY_REPLICAS` (1) | Match WebSockets ([relay](../multiplayer/relay.md)). |
@@ -44,7 +45,7 @@ Volumes (Compose project `glob2-platform`, so named `glob2-platform_<volume>`):
 | Volume | Contents | Back up? |
 | --- | --- | --- |
 | `postgres-data` | The database | Yes, with `pg_dump` (below) |
-| `blobs` | Maps, saves, previews, match records, replays (content-addressed) | Yes |
+| `blobs` | Maps, saves, previews, match records, replays and community music (content-addressed) | Yes |
 | `signing-keys` | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets | Yes, encrypted |
 | `relay-secret` | `relay.key`, the bearer key relays use on `/internal` | Yes, encrypted (or regenerate) |
 | `engine-agent-secret` | `agent.key`, the bearer key engine agents use on `/internal/v1/engine` | Optional (regenerate: delete it and `up`) |
@@ -853,7 +854,7 @@ live agent. Remove the service when the version is retired.
 
 ### Images
 
-The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
+The Dockerfile targets are `platform` (API, worker and CLI), `music-worker`, `engine-agent`,
 `relay` and `caddy` (Caddy with the built web app). A `server-v*` tag pushed by
 the owner to the release mirror `genixpro/glob2-release` runs
 `.github/workflows/server-image.yml` (it skips every job in any other repository; a
@@ -865,6 +866,7 @@ agents are also tagged `simver-<sim version>` and labelled
 
 ```dotenv
 GLOB2_PLATFORM_IMAGE=ghcr.io/<owner>/<repository>-platform@sha256:…
+GLOB2_MUSIC_IMAGE=ghcr.io/<owner>/<repository>-music-worker@sha256:…
 GLOB2_ENGINE_AGENT_IMAGE=ghcr.io/<owner>/<repository>-engine-agent@sha256:…
 GLOB2_RELAY_IMAGE=ghcr.io/<owner>/<repository>-relay@sha256:…
 GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
@@ -1256,3 +1258,44 @@ Monitor `studio_requests` status/age, `studio_attempts` usage/model, map-wallet
 reservations, delivery failure rates and queue age. Pause sales or generation via
 the instance flags; retain blobs and payment journals during rollback. Migrations
 are additive and preserve existing Hive tables and historical purchase IDs.
+
+## Music worker
+
+The default Compose stack includes `music-worker` (Dockerfile target
+`music-worker`, optional pinned `GLOB2_MUSIC_IMAGE`). It uses the worker database
+role and blob volume on the internal backend network. FFmpeg runs only in this
+service, independently of engine agents and sim versions. The image includes
+FFmpeg, Python and the existing mastering dependencies. Website builds also build
+the small WASM preview decoder with the game's pinned Opus dependencies.
+
+Default limits are one conversion per worker, two CPUs, 12 GiB memory, 6 GiB
+private temporary storage, 64 processes and a 30-minute processing deadline.
+These allow optional mastering of a 15-minute stereo trio. Inputs are at most
+512 MiB per mood and 8 MiB per cover (4096 pixels per side before thumbnailing).
+Only direct media containers are accepted; decoder network protocols and
+playlist/concat inputs are disabled. The API admits one buffered source upload
+per replica at a time, so allow memory headroom for a 512 MiB request and HTTP
+buffer copies. Each registered creator may create six releases/day, keep three
+active uploads and submit 24 files/hour. Bulk downloads contain at most ten sets
+and fit the game's 64 MiB archive limit.
+
+The worker's container health check checks a fresh heartbeat after a database
+round trip. Inspect queue/status totals and stored byte counts at
+`GET /api/v1/admin/music-status`, or use the Music administration tab. Monitor
+worker health, conversion failures, oldest pending jobs and blob-volume capacity.
+A cancelled job stops its decoder group and removes temporary PCM. Retries remove
+interrupted attempt directories for that release before starting again. The
+platform scheduler expires drafts after 24 hours without activity and collects
+unreferenced source files older than 24 hours. Resumed drafts retain all their
+referenced inputs, including files uploaded before their last activity.
+Transient storage/database failures preserve inputs and retry up to three times;
+technical failures and exhausted retries record failure before deleting sources.
+Successful conversion retains only final outputs.
+
+Back up music with the existing PostgreSQL dump and `blobs` volume backup: both
+metadata/references and media are necessary. Converted audio, artwork, waveform
+summaries and ZIPs are protected by `music_assets` references during blob GC.
+Withdrawn/hidden releases retain immutable output for administration but public
+media routes deny access. Original uploads are temporary and cannot be recovered
+after normal cleanup; creators should retain their source files. On restoration,
+expired in-flight uploads should be re-uploaded if their sources are absent.

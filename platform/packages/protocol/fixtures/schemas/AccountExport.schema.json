@@ -505,6 +505,43 @@
         }
       }
     },
+    "music": {
+      "type": "object",
+      "required": [
+        "releases",
+        "likes",
+        "reports"
+      ],
+      "properties": {
+        "releases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "reports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
     "maps": {
       "type": "object",
       "required": [

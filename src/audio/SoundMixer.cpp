@@ -3,6 +3,7 @@
 
 #include <GameplayRecording.h>
 #include "SoundMixer.h"
+#include "MusicStream.h"
 #include "Order.h"
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -42,22 +43,6 @@ using namespace GAGCore;
 //! seconds (2000 samples are 200 ms). One speaker talking in real time stays far
 //! below it; a client flooding voice orders would otherwise grow the queue forever.
 #define MAX_VOICE_BACKLOG_SAMPLES 100000
-
-static int interpolationTable[FADE_SAMPLE_COUNT];
-
-static void initInterpolationTable(void)
-{
-	double l = static_cast<double>(FADE_SAMPLE_COUNT-1);
-	double m = INTERPOLATION_RANGE;
-	double a = - (2) / (l * l * l);
-	double b = (3) / (l * l);
-	for (unsigned i=0; i<FADE_SAMPLE_COUNT; i++)
-	{
-		double x = static_cast<double>(i);
-		double v = m * (a * (x * x * x) + b * (x* x));
-		interpolationTable[i] = static_cast<int>(v);
-	}
-}
 
 // Callbacks live in the application CRT, including on Windows. A successful
 // open owns fp; failures close it here (opusfile does not close on open failure).
@@ -101,19 +86,16 @@ static OggOpusFile *openMusicFile(FILE *fp)
 	return track;
 }
 
-// opusfile 0.12's short forward seek can retain PCM buffered before the seek.
-// Reset that buffer first; then PCM seek retains pre-roll and trimmed positions.
-// This is necessary when switching into a mood previously played in this loop.
-static bool seekMusic(OggOpusFile *track, ogg_int64_t frame)
-{
-    return track && frame >= 0 && op_raw_seek(track, 0) == 0 && op_pcm_seek(track, frame) == 0;
-}
-
 // Fill native-endian, interleaved stereo samples. Decoder returns frames, not
 // interleaved sample counts. Bound holes and EOFs without progress so malformed
 // streams cannot spin indefinitely on the audio thread.
 static void readMusic(SoundMixer &mixer, Sint16 *output, int count, int &index, bool advance)
 {
+	if (!advance && index >= 0 && static_cast<size_t>(index) < mixer.tracks.size())
+	{
+		Music::read(mixer.tracks[index], output, unsigned(count) / 2);
+		return;
+	}
 	int failures = 0;
 	while (count > 0)
 	{
@@ -134,7 +116,7 @@ static void readMusic(SoundMixer &mixer, Sint16 *output, int count, int &index, 
 		if (advance) index = mixer.nextTrack;
 		track = index >= 0 && static_cast<size_t>(index) < mixer.tracks.size()
 			? mixer.tracks[index] : nullptr;
-		if (!seekMusic(track, 0)) break;
+		if (!Music::seek(track, 0)) break;
 	}
 	if (count > 0)
 	{
@@ -147,7 +129,7 @@ static void readMusic(SoundMixer &mixer, Sint16 *output, int count, int &index, 
 static inline int fadeValue(unsigned fadePos, unsigned i)
 {
 	unsigned p = fadePos + i;
-	return interpolationTable[p < FADE_SAMPLE_COUNT ? p : FADE_SAMPLE_COUNT-1];
+	return Music::fadeGain(p, FADE_SAMPLE_COUNT);
 }
 
 void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
@@ -193,7 +175,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		// Align moods once at fade start, using Opus's trimmed 48 kHz timeline.
 		bool aligned = true;
 		if (mixer->fadePos == 0)
-			aligned = seekMusic(mixer->tracks[mixer->nextTrack],
+			aligned = Music::seek(mixer->tracks[mixer->nextTrack],
 				op_pcm_tell(mixer->tracks[mixer->actTrack]));
 		readMusic(*mixer, track0, nsamples, mixer->actTrack, false);
 		if (aligned)
@@ -306,7 +288,16 @@ static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int add
 	while (additional > 0) {
         const int count = std::min(additional, static_cast<int>(buffer.size()));
         const int aligned = (count + 3) & ~3;
-        if (mixer->mode == SoundMixer::MODE_STOPPED || mixer->actTrack < 0)
+        if (mixer->preview) {
+            auto *samples = reinterpret_cast<Sint16 *>(buffer.data());
+            mixer->preview->render(samples, aligned / 4);
+            for (int i = 0; i < aligned / 2; ++i) {
+                int value = (int(samples[i]) * int(mixer->musicVolume)) >> 8;
+                mixer->handleVoiceInsertion(&value, int(mixer->voiceVolume));
+                samples[i] = Sint16(value);
+            }
+        }
+        else if (mixer->mode == SoundMixer::MODE_STOPPED || mixer->actTrack < 0)
             std::fill(buffer.begin(), buffer.begin() + aligned, 0);
         else
             mixaudio(mixer, buffer.data(), aligned);
@@ -359,7 +350,6 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	soundEnabled = false;
 	speexDecoderState = NULL;
 	
-	initInterpolationTable();
 	
 	// While muted there is nothing to play, so leave the device closed; the
 	// audio thread and its Opus decoding never start, and there is nothing for
@@ -534,6 +524,21 @@ std::vector<std::string> SoundMixer::getMusicSets()
 
 std::string SoundMixer::musicSetLabel(const std::string& name)
 {
+	if (name.rfind("community-", 0) == 0)
+	{
+		FILE *fp = Toolkit::getFileManager()->openFP("data/zik/" + name + "/a1.opus");
+		if (fp)
+		{
+			auto *track = openMusicFile(fp);
+			if (track)
+			{
+				const char *album = opus_tags_query(op_tags(track, 0), "ALBUM", 0);
+				std::string title = album ? std::string(album).substr(0, 512) : std::string();
+				op_free(track);
+				if (!title.empty()) return title;
+			}
+		}
+	}
 	std::string label = name;
 	bool capital = true;
 	for (char& c : label)
@@ -751,4 +756,17 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		if (audioStream) SDL_UnlockAudioStream(audioStream);
 	}
 #endif
+}
+
+void SoundMixer::setPreview(Music::Preview *value)
+{
+	if (value && !audioStream && musicVolume) openAudio();
+	if (audioStream) SDL_LockAudioStream(audioStream);
+	preview = value;
+	if (audioStream)
+	{
+		SDL_ClearAudioStream(audioStream);
+		SDL_UnlockAudioStream(audioStream);
+		if (value) SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream));
+	}
 }

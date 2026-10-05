@@ -1,3 +1,5 @@
+#include "MusicLibraryScreen.h"
+#include <ScreenStack.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -239,6 +241,9 @@ void SettingsScreen::buildGeneral()
 	else if (current == Category::Audio)
 	{
 		info(tr("Adjust music and voice volume."));
+        if(screens) button("audio.library", tr("Music library · Browse, install and import"), [this] {
+            screens->push(std::make_unique<MusicLibraryScreen>(*screens), [this](GAGGUI::Screen&,int){ invalidate(); });
+        });
 		toggle("audio.mute", "Mute audio", "Keep your volume levels while silencing audio.", s.mute,
 			   [this](int v)
 			   {

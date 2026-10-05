@@ -1345,7 +1345,10 @@ the PR still require resolution.
 
 Draft and ready PRs run the existing cheap contracts by default. Changes under `tools/music/` also run the cheap `music` job (the pipeline's
 Python unit tests in a venv from `requirements.txt`), on PRs without `ci:run` too; it
-gates no engine verification. Files inside a soundtrack set, `data/zik/<set>/`, select
+gates no engine verification. Community converter changes also select platform and
+stack verification; shared WASM exports/build inputs select full verification
+when hosted checks are requested. The music job includes a small C++ portable-file
+round trip using libopusfile. Files inside a soundtrack set, `data/zik/<set>/`, select
 the native and browser checks when hosted verification is requested, while
 `data/zik/SConscript` stays on full CI. Becoming ready
 starts no expensive jobs. `ci:run` requests hosted affected checks; `ci:full`
