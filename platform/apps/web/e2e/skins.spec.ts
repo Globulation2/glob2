@@ -182,6 +182,13 @@ test('inspection rotation keeps the camera fixed and turns every model horizonta
   for (const model of ['Worker', 'Warrior', 'Explorer', 'Swarm']) {
     await page.getByRole('button', { name: model, exact: true }).click();
     const preview = page.getByLabel(`Paint directly on the 3D ${model.toLowerCase()} model`);
+    const asset =
+      model === 'Explorer'
+        ? 'explorer-fly'
+        : model === 'Swarm'
+          ? 'swarm'
+          : `${model.toLowerCase()}-walk`;
+    await expect(preview).toHaveAttribute('data-model', asset);
     await expect(preview).toHaveAttribute('data-frame', '0');
     const box = await preview.boundingBox();
     if (!box) throw new Error('No model viewport');
