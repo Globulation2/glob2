@@ -1,0 +1,6 @@
+test_multiple_failures_are_reported_in_one_run (test_ci_failure_aggregation.CIFailureAggregationTests.test_multiple_failures_are_reported_in_one_run) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.112s
+
+OK

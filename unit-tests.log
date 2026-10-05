@@ -1,0 +1,12 @@
+test_area_groups_preserve_ai_subsystems_and_other_roots (test_run_coverage.CoverageSummaryTests.test_area_groups_preserve_ai_subsystems_and_other_roots) ... ok
+test_completed_report_compacts_only_selected_inputs (test_run_coverage.CoverageSummaryTests.test_completed_report_compacts_only_selected_inputs) ... ok
+test_counts_are_weighted_and_headers_are_not_implementation_lines (test_run_coverage.CoverageSummaryTests.test_counts_are_weighted_and_headers_are_not_implementation_lines) ... ok
+test_failed_report_retains_all_raw_profiles (test_run_coverage.CoverageSummaryTests.test_failed_report_retains_all_raw_profiles) ... ok
+test_multiplayer_external_and_test_sources_are_excluded (test_run_coverage.CoverageSummaryTests.test_multiplayer_external_and_test_sources_are_excluded) ... ok
+test_uncovered_functions_use_the_definition_file_and_exclude_headers (test_run_coverage.CoverageSummaryTests.test_uncovered_functions_use_the_definition_file_and_exclude_headers) ... ok
+test_unmeasured_sources_are_not_reported_as_zero_coverage (test_run_coverage.CoverageSummaryTests.test_unmeasured_sources_are_not_reported_as_zero_coverage) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.004s
+
+OK

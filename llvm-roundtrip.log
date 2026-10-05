@@ -1,0 +1,8 @@
+{
+  "export_identical_after_compaction": true,
+  "retention": {
+    "raw_profiles_retained": false,
+    "raw_profile_bytes_removed": 480
+  },
+  "llvm_version": "Ubuntu LLVM version 18.1.8\n  Optimized build."
+}

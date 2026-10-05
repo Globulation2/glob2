@@ -1,0 +1,23 @@
+{
+  "tested_head": "31c748ee56b0da55d8cda6e8a9960b928494ff95",
+  "base": "72f8c9373fbdd9bf6206cfdf4903d12595e91de1",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "commands": [
+    "python3 -m unittest discover -s test -p test_run_coverage.py -v",
+    "python3 artifacts/coverage-profile-repair/verify_compaction.py",
+    "python3 -m unittest discover -s test/build_system -p test_ci*.py -v",
+    "python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v",
+    "git diff --check"
+  ],
+  "results": {
+    "coverage_tests": 7,
+    "ci_contract_tests": 88,
+    "aggregation_tests": 1,
+    "llvm_export_identical": true
+  },
+  "observed_zip_bytes": 10563670210,
+  "observed_raw_compressed_bytes": 10344424855,
+  "observed_other_compressed_bytes": 217996249,
+  "limits": "No full native coverage matrix rerun locally; real LLVM probe verifies profile/report continuity. Latest master full CI remains active. Inventory sizes do not establish revised CI execution time."
+}
