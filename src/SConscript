@@ -152,6 +152,8 @@ local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
 # Original-derived skin comparison and full game render diagnostics.
 skin_preview = local.Program('skin-preview',
     local.Object('SkinPreview.o', '#tools/skins/preview.cpp')
+    + local.Object('LiveWorkerRig.o', '#tools/skins/LiveWorkerRig.cpp')
+    + local.Object('LiveWorkerPreview.o', '#tools/skins/LiveWorkerPreview.cpp')
     + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
 local.Alias('skin-preview', skin_preview)
 # Diagnostic harness inspects view-owned appearance, as engine render tests do.

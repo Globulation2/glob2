@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Compare every direction and sampled phase through the production draw paths.
+#include "LiveWorkerPreview.h"
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SkinMesh.h>
@@ -18,6 +19,7 @@ using namespace GAGCore;
 int main(int argc, char **argv)
 {
     if (argc != 3 && argc != 4) { std::cerr << "skin-preview ASSET_DIRECTORY OUTPUT_PREFIX\n"; return 2; }
+    if (argc == 4 && std::string(argv[3]) == "--live-verify") return verifyLiveWorker(argv[1],argv[2]);
     Toolkit::init("glob2-skin-preview");
     struct CloseToolkit { ~CloseToolkit() { Toolkit::close(); } } closeToolkit;
     auto *gfx = Toolkit::initGraphic(1024, 960, GraphicContext::USEGPU, "Colony skin feasibility");
@@ -31,6 +33,8 @@ int main(int argc, char **argv)
         gfx->nextFrame();
         SDL_Delay(20);
     }
+    if (argc == 4 && (std::string(argv[3]) == "--live-worker" || std::string(argv[3]) == "--live-capture" || std::string(argv[3]) == "--live-benchmark"))
+        return previewLiveWorker(*gfx,argv[1],argv[2],argv[3]);
     {
         // colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
         // map (absent means all glossy), one 256x256 quadrant per model.
