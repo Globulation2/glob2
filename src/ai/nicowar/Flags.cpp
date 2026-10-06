@@ -16,17 +16,6 @@ using namespace AISharedRuntime::Management;
 using namespace AISharedRuntime::Conditions;
 using namespace AISharedRuntime::SearchTools;
 
-namespace
-{
-	struct DefenseScanScratch
-	{
-		std::vector<Uint16> counts;
-		std::vector<Uint16> buildingGID;
-		std::vector<Uint16> unitGID;
-	};
-	// Independent per AI worker; each scan resets every tile before reading it.
-	thread_local DefenseScanScratch defenseScanScratch;
-}
 
 
 void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runtime)

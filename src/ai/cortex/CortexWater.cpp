@@ -23,17 +23,6 @@ namespace Cortex
 {
 	namespace
 	{
-		// AI decisions on different compute threads must not share mutable fields.
-		// Keeping the capacities here avoids rebuilding full-map arrays every cycle.
-		struct WaterScratch
-		{
-			std::vector<char> visited;
-			std::vector<int> frontier;
-			std::vector<int> land;
-			std::vector<int> swim;
-			std::vector<int> target;
-		};
-		thread_local WaterScratch waterScratch;
 
 		// Count tiles reachable from (cx, cy) by an 8-connected flood-fill, bounded
 		// to a Chebyshev radius of CORTEX_SWIM_REACH_RADIUS around the anchor and to
@@ -61,8 +50,8 @@ namespace Cortex
 			const Uint32 me = team->me;
 			const int R = CORTEX_SWIM_REACH_RADIUS;
 
-			std::vector<char>& visited = waterScratch.visited;
-			std::vector<int>& frontier = waterScratch.frontier;
+			std::vector<char>& visited = map.queryScratch().water.visited;
+			std::vector<int>& frontier = map.queryScratch().water.frontier;
 			visited.assign(static_cast<size_t>(w) * h, 0);
 			frontier.clear(); // queue of flattened indices, drained by head.
 
@@ -188,7 +177,7 @@ namespace Cortex
 			const int w = map.getW();
 			const int h = map.getH();
 			dist.assign(static_cast<size_t>(w) * h, -1);
-			std::vector<int>& frontier = waterScratch.frontier;
+			std::vector<int>& frontier = map.queryScratch().water.frontier;
 			frontier.clear(); // queue of flattened indices, drained by head.
 
 			for (int dy = -1; dy <= 1; dy++)
@@ -306,8 +295,8 @@ namespace Cortex
 
 		// Two full-map BFS from the rally: the LAND path (water blocks) and the SWIM
 		// path (water passes). Each distance is measured to the target's 8-neighbourhood.
-		std::vector<int>& landField = waterScratch.land;
-		std::vector<int>& swimField = waterScratch.swim;
+		std::vector<int>& landField = map.queryScratch().water.land;
+		std::vector<int>& swimField = map.queryScratch().water.swim;
 		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/false, landField);
 		bfsGroundField(map, me, rallyX, rallyY, /*canSwim=*/true,  swimField);
 		out.landDist = distToTarget(map, landField, targetX, targetY);
@@ -361,7 +350,7 @@ namespace Cortex
 			// target over land (canSwim=false) — each tile's true path distance to
 			// the target, the "how far forward is this tile" metric the staging
 			// selection minimizes.
-			std::vector<int>& targetLand = waterScratch.target;
+			std::vector<int>& targetLand = map.queryScratch().water.target;
 			bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
 
 			// Corridor scan. A staging tile must be reachable from the rally by LAND
@@ -448,7 +437,7 @@ namespace Cortex
 		// Third BFS (amphibious branch only): the TARGET's own land COMPONENT (canSwim=
 		// false reachable set from the target). The landing zone must sit in it — that is
 		// the land the swimmers climb out onto and then walk to the enemy.
-		std::vector<int>& targetLand = waterScratch.target;
+		std::vector<int>& targetLand = map.queryScratch().water.target;
 		bfsGroundField(map, me, targetX, targetY, /*canSwim=*/false, targetLand);
 
 		// Scan the component for shore tiles (8-adjacent to a water tile — where a

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ai/observation/AIWorldView.h"
+#include "CortexQueryScratch.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Unit.h"
@@ -85,6 +86,9 @@ struct WorldTeam
 struct WorldMap
 {
     const AIEngine::AIWorldView& source;
+    QueryScratch* borrowedScratch = nullptr;
+    QueryScratch localScratch;
+    QueryScratch& queryScratch() { return borrowedScratch ? *borrowedScratch : localScratch; }
     int getW() const { return source.width; }
     int getH() const { return source.height; }
     int normalizeX(int x) const { return source.normalizeX(x); }
@@ -160,7 +164,11 @@ struct World
     std::vector<WorldTeam> teamStorage;
     std::vector<WorldBuilding> buildingStorage;
     std::vector<WorldUnit> unitStorage;
-    explicit World(const AIEngine::AIWorldView& view);
+    // Borrow controller-owned capacity for repeated placement scans. Standalone
+    // owner/test facades use invocation-local scratch. Neither retains a view.
+    explicit World(const AIEngine::AIWorldView& view, QueryScratch* scratch = nullptr);
+    std::vector<unsigned char>& placementProximityScratch()
+    { return map.queryScratch().proximity; }
     int teamsCount() const { return teams.size(); }
     bool checkRoomForBuilding(int x,int y,const BuildingType* type,int team) const;
 };

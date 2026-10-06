@@ -36,6 +36,7 @@ namespace AISharedRuntime
 	public:
 	  AITelemetry::Sink telemetry;
 	  virtual void captureTelemetry() {}
+	  virtual Uint64 retainedQueryVectorBytes() const noexcept { return 0; }
 	  virtual Uint32 telemetrySchemaVersion() const { return 1; }
 	  virtual const std::vector<AITelemetry::Field> &telemetrySchema() const
 	  {

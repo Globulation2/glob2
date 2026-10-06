@@ -165,7 +165,7 @@ namespace Cortex
 		// Non-food buildings must stay close to an existing building edge;
 		// forward bases and empty colonies are exempt. Precompute that gate once
 		// instead of scanning every building for each candidate, keeping scan order.
-		thread_local std::vector<unsigned char> proximity;
+		auto& proximity = game->placementProximityScratch();
 		if (!isWheatFed && forward == NULL)
 			geometry.buildingProximityMask(w, h, CORTEX_MAX_BUILD_EDGE_DIST, proximity);
 		else

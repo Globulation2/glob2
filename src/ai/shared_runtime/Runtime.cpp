@@ -423,5 +423,6 @@ std::shared_ptr<Order> Runtime::getOrder(const AIEngine::DecisionContext& contex
 
 std::optional<Uint64> AISharedRuntime::Runtime::retainedQueryVectorBytes() const
 {
-    return (gm ? gm->retainedVectorBytes() : 0) + fm.flagmap.capacity() * sizeof(int);
+    return (gm ? gm->retainedVectorBytes() : 0) + fm.flagmap.capacity() * sizeof(int)
+        + (runtimeai ? runtimeai->retainedQueryVectorBytes() : 0);
 }

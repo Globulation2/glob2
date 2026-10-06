@@ -11,8 +11,8 @@ int WorldTeam::maxBuildLevel() const
         level=std::max(level, unit->constructionLevel);
     return level;
 }
-World::World(const AIEngine::AIWorldView& view)
-    : source(view),map{view},buildingsTypes{*view.catalog},gameHeader{view.rules},
+World::World(const AIEngine::AIWorldView& view, QueryScratch* scratch)
+    : source(view),map{view,scratch},buildingsTypes{*view.catalog},gameHeader{view.rules},
       stepCounter(view.tick),totalPrestige(view.totalPrestige),buildProjects(view.buildProjects)
 {
     teamStorage.reserve(view.teams.size());

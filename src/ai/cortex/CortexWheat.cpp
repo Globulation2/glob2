@@ -23,19 +23,6 @@ namespace Cortex
 {
 	namespace
 	{
-		struct WheatScratch
-		{
-			std::vector<int> fieldTiles;
-			std::vector<int> depth;
-			std::vector<int> queue;
-			std::vector<int> stack;
-			std::vector<unsigned char> seen;
-			std::vector<unsigned char> currentBit;
-			std::vector<int> current;
-		};
-		// A scan completes before its scratch is reused; parallel AI workers get
-		// independent buffers. All logical contents are reset for each scan.
-		thread_local WheatScratch wheatScratch;
 
 		// 4-neighbourhood in a fixed (deterministic) order: N, W, E, S.
 		const int NB_DX[4] = { 0, -1, 1, 0 };
@@ -48,7 +35,7 @@ namespace Cortex
 	} // namespace
 
 	template<class MapType> WheatScanResult scanWheatForbiddenImpl(
-		MapType& map, Uint32 teamMask, int teamNumber,
+		MapType& map, WheatScratch& wheatScratch, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll, bool farmPaint)
@@ -388,11 +375,11 @@ namespace Cortex
     WheatScanResult scanWheatForbidden(WorldMap& map, Uint32 mask, int team,
         const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
         int margin,bool ignoreFog,bool debug,bool lift,bool farm)
-    { return scanWheatForbiddenImpl(map,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+    { return scanWheatForbiddenImpl(map,map.queryScratch().wheat,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
     WheatScanResult scanWheatForbidden(::Map& map, Uint32 mask, int team,
         const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
         int margin,bool ignoreFog,bool debug,bool lift,bool farm)
-    { return scanWheatForbiddenImpl(map,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+    { WheatScratch scratch; return scanWheatForbiddenImpl(map,scratch,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
 
 }
 

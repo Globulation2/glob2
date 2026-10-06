@@ -420,15 +420,13 @@ shared_ptr<Order> AICortex::runObservation(const AIEngine::DecisionContext& cont
     std::erase_if(queuedCommands,[&](const auto& item) {
         return std::find(queuedBytes.begin(),queuedBytes.end(),item.bytes)==queuedBytes.end();
     });
-    Cortex::World world(context.world);
+    Cortex::World world(context.world, &queryScratch);
     applyQueuedIntent(world);
     Cortex::WorldPlayer local{&world, world.teams.at(context.team), int(context.player), &diagnosticStream};
-    struct Reset { AICortex& ai; ~Reset() {
-        ai.decisionPlayer = nullptr;
-        const auto text = ai.diagnosticStream.str();
-        if (!text.empty()) ai.bufferedDiagnostics.push_back({{}, {}, text});
-        ai.diagnosticStream.str({}); ai.diagnosticStream.clear();
-    } } reset{*this};
+    // Unwinding restores only the borrowed binding. Diagnostic allocation must
+    // happen in ordinary control flow so failures reach the scheduler.
+    struct Reset { AICortex& ai; ~Reset() noexcept { ai.decisionPlayer = nullptr; } } reset{*this};
+    diagnosticStream.str({}); diagnosticStream.clear();
     decisionPlayer = &local;
     auto result=decide();
     if(result->getOrderType()!=ORDER_NULL) {
@@ -439,6 +437,9 @@ shared_ptr<Order> AICortex::runObservation(const AIEngine::DecisionContext& cont
             if(emitted!=queuedCommands.end()) queuedCommands.erase(emitted);
         }
     }
+    auto text = diagnosticStream.str();
+    if (!text.empty()) bufferedDiagnostics.push_back({{}, {}, std::move(text)});
+    diagnosticStream.str({}); diagnosticStream.clear();
     return result;
 }
 shared_ptr<Order> AICortex::decide()
@@ -1200,9 +1201,10 @@ bool AICortex::loadCommands(GAGCore::InputStream* stream,std::vector<PendingComm
 
 std::optional<Uint64> AICortex::retainedQueryVectorBytes() const
 {
-    // World/query scratch is invocation-local. The retained decision vectors
-    // are the bounded delayed-intent ledgers (model weights are excluded).
-    Uint64 bytes=(issuedCommands.capacity()+queuedCommands.capacity())*sizeof(PendingCommand);
+    // Query scratch is controller-owned; the remaining retained vectors
+    // are bounded delayed-intent ledgers (model weights are excluded).
+    Uint64 bytes=queryScratch.retainedVectorBytes()
+        +(issuedCommands.capacity()+queuedCommands.capacity())*sizeof(PendingCommand);
     for(const auto* commands:{&issuedCommands,&queuedCommands})
         for(const auto& command:*commands) bytes+=command.bytes.capacity()*sizeof(Uint8);
     return bytes;

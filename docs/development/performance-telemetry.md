@@ -272,7 +272,11 @@ heaps. These measurements are not a complete heap census.
 Controller capacities are sampled on the controller's decision lane and published with
 its output. They include reported retained query vectors, including private resource
 initializations and projection scratch, while excluding temporary query allocations,
-node heaps and legacy raw-array caches. Availability is explicit. Snapshot and controller
+node heaps and legacy raw-array caches. Cortex placement/water/wheat and Nicowar
+defense scratch are controller-owned and included. Maxima's immutable shared
+neighborhood geometry is excluded from the private-vector metric; its payload is
+approximately 36 bytes per map cell, shared among controllers using the same dimensions.
+Availability is explicit. Snapshot and controller
 categories can share payloads; do not infer total resident memory by adding them.
 
 On macOS/Linux, prepare retained fixtures and run paired measurements:

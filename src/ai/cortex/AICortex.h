@@ -61,6 +61,7 @@ private:
 	std::shared_ptr<Order> decide();
 	std::shared_ptr<Order> runObservation(const AIEngine::DecisionContext&, bool worker);
 	mutable std::ostringstream diagnosticStream;
+    Cortex::QueryScratch queryScratch;
 	void applyQueuedIntent(Cortex::World&) const;
     struct PendingCommand {
         std::vector<Uint8> bytes;
