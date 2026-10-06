@@ -182,6 +182,9 @@ export const MatchRules = Strict(
     permadeathDisabled: Type.Boolean(),
     peacefulMode: Type.Boolean(),
     buildingHpLevel: Type.Integer({ minimum: 0, maximum: 2 }),
+    buildingGradientDelay: Type.Optional(
+      Type.Union([Type.Literal(2), Type.Literal(4), Type.Literal(8)], { default: 4 }),
+    ),
   },
   { description: 'Custom-game rules, named after the GameHeader accessors they set.' },
 );
@@ -224,6 +227,9 @@ export const BUILTIN_EXPERIMENT_KEYS = [
   'ice-terrain',
   'road-terrain',
   'markets-v2',
+  'building-gradient-pipeline',
+  'building-gradient-hybrid',
+  'building-gradient-partial',
 ] as const;
 
 /** Catalog metadata supplies additional legal keys without a platform code change. */
@@ -315,6 +321,7 @@ export const STANDARD_RULES: MatchRules = {
   permadeathDisabled: false,
   peacefulMode: false,
   buildingHpLevel: 0,
+  buildingGradientDelay: 4,
 };
 
 export interface SetupProblem {
@@ -329,6 +336,15 @@ export interface SetupProblem {
  */
 export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
   const problems: SetupProblem[] = [];
+  if (
+    (setup.experiments.includes('building-gradient-hybrid') ||
+      setup.experiments.includes('building-gradient-partial')) &&
+    !setup.experiments.includes('building-gradient-pipeline')
+  )
+    problems.push({
+      path: '/experiments',
+      message: 'hybrid and partial gradients require building-gradient-pipeline',
+    });
   const known = new Set<string>(BUILTIN_EXPERIMENT_KEYS);
   if (setup.buildingCatalog) {
     try {

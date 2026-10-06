@@ -8,15 +8,16 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientDiagnostics.h"
 #include <algorithm>
 #include <array>
 #include "Team.h"
 
 
 
-void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route) const
+void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route, const char *caller) const
 {
-	if (auto &search = building->globalGradientSearch[building->routeSlot(swimClass, route)]) search->finish();
+	if (auto &search = building->globalGradientSearch[building->routeSlot(swimClass, route)]) search->finish(caller);
 }
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
@@ -24,9 +25,10 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 // updateRoundTripGradient: the gradient of the trip to a resource and on to
 // the building.
 
-void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
+void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route, const char *reason)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
+	BuildingGradientDiagnostics::Scope evidence(buildingGradientDiagnostics(),building->gid,swimClass,"rebuild",reason,topologyGeneration,topologyGeneration);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
 	const int access = building->routeAccess(swimClass, route);
@@ -110,7 +112,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 						}
 					}
 			}
-			building->anyResourceToClear[canSwim] = anyResourceToClear ? 1 : 2;
+			building->anyResourceToClear[buildingPipelineEnabled() ? access : int(canSwim)] = anyResourceToClear ? 1 : 2;
 		}
 
 		initializeGradientCells([&](size_t begin, size_t end) {
@@ -170,16 +172,18 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
-	search->begin(*this, gradient, swimClass);
+	search->begin(*this, gradient, swimClass, building->gid);
 }
 
 
 void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(RoundTripGradient);
+	BuildingGradientDiagnostics::Scope evidence(buildingGradientDiagnostics(),building->gid,swimClass,"round_trip","refresh",topologyGeneration,building->gradientGeneration[swimClass]);
 	// Only construction needs the parent in full; reading a cached round-trip
 	// field must not force a newly refreshed walking field to finish.
-	finishBuildingGradient(building, swimClass, BuildingRoute::Footprint);
+	finishBuildingGradient(building, swimClass, BuildingRoute::Footprint,"round_trip_parent");
+	recycleBuildingGradientSearch(std::move(building->roundTripGradientSearch[resourceType][swimClass]));
 	Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
 	assert(gradient);
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;

@@ -178,6 +178,7 @@ export const SETUP_SAVE_SHARED: MatchSetup = {
     permadeathDisabled: true,
     peacefulMode: true,
     buildingHpLevel: 1,
+    buildingGradientDelay: 8,
   },
   experiments: ['guard-area-balancing'],
 };
@@ -1046,6 +1047,25 @@ export const fixtureCases: FixtureCase[] = [
     note: 'AI order delay must be an integer from zero through eight.',
     value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, aiOrderDelay: delay } },
   })),
+  {
+    schema: 'MatchSetup',
+    name: 'building-gradient-pipeline-delay-two',
+    valid: true,
+    note: 'Scheduled building gradients carry their non-default publication delay.',
+    value: {
+      ...SETUP_CATALOG_1V1,
+      rules: { ...STANDARD_RULES, buildingGradientDelay: 2 },
+      experiments: ['building-gradient-pipeline'],
+    },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'building-gradient-delay-three',
+    valid: false,
+    stage: 'schema',
+    note: 'Only two, four and eight tick delays are supported.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, buildingGradientDelay: 3 } },
+  },
   {
     schema: 'MatchSetup',
     name: 'catalog-1v1',

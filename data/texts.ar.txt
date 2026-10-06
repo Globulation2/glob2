@@ -5564,5 +5564,17 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 استيراد تعريفات التضاريس
 [Terrain palette]
 لوحة التضاريس
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 إعادة اختيار مظهر التضاريس

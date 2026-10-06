@@ -23,7 +23,7 @@ public:
 		Uint64 preparationNs = 0;
 	} metrics;
 	void reset() { latest.reset(); catalog.reset(); catalogConfigurationRevision = 0; storage = {}; metrics = {}; memoryPeaks = {}; }
-	Handle captureBoundary(const Game& game, Requirements required);
+	Handle captureBoundary(const Game& game, Requirements required, bool freshBoundary = false);
 	MemoryMetrics memoryMetrics() const;
 };
 } // namespace SimulationSnapshot

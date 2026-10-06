@@ -17,7 +17,7 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 140 (immutable AI pipeline).
+clients using those rules. The current replay floor is 141 (combined AI and building-gradient pipelines).
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -423,9 +423,15 @@ one completed-tick observation phase. `--compute-threads 1` serializes that phas
 at the same boundary. The default worker cap is unchanged. Fixed publication
 cadence and saved pending deadlines are unchanged; saves drain deferred preparation
 before serializing, and old saves still load. Moving the observation point can
-change routes/AI trajectories; that change raised the replay floor to 139; format 140 now sets the current floor. LAN and
+change routes/AI trajectories; that change raised the replay floor to 139; format 141 now sets the current floor. LAN and
 online sim-version gates reject clients using the older boundary. See the
 [phase contract](reference.md) before adding new parallel work.
+
+Version 141 / simulation revision 24 adds the opt-in scheduled building-gradient
+rules and preserves the completed-tick resource preparation phase. The replay
+floor is 140 and network protocol is 59. Save loading retains the existing floor
+of 58; saves before 140 disable the building pipeline and have no pending building
+jobs. Saved pending results retain their fixed remaining publication deadlines.
 
 ### Probability-based early victory
 
@@ -441,3 +447,48 @@ selection and weights. The save floor stays 58 and replay floor stays 127;
 fresh-game decision behavior is unchanged. Older saves use historical defaults
 for omitted state, whose original values cannot be recovered. Protocol 54 carries
 the additional continuation fields.
+
+
+### Scheduled building gradients
+
+Format 140 adds the saved `building-gradient-pipeline` experiment and its
+`buildingGradientDelay` rule (2, 4 or 8 ticks; default 4). It also carries the
+`building-gradient-hybrid` and `building-gradient-partial` policies, independent
+access metadata for each route and swim class, completed private results and
+remaining fixed deadlines. Older saves load with all three experiments disabled
+and no pending building jobs; the minimum save version remains 58. Saving finishes
+private work without publishing it early. Partial searches materialize using their
+original immutable terrain definitions and costs without changing cache ages.
+
+Replay acceptance starts at 140, network protocol is 59, and simulation revision
+22 identifies these rules. Earlier prototype formats on the draft branch are
+historical experiment binaries, not upstream save formats. Master's terrain and
+building catalog layouts remain unchanged. Worker count and instrumentation are
+local execution settings. The pipeline excludes the earlier hiring-frontier
+prepass; the hiring eligibility filter remains active.
+
+Building jobs publish before teams step. Capture runs after completed world
+mutations, including script, fog and construction tail work. Periodic resource
+selection, private preparation in the read phase and resource publication retain
+their own existing schedules. Building delay never changes AI cadence or resource
+deadlines. The Map capture adapter and pure build inputs form the integration
+boundary for engine-owned component snapshots; workers need no AI observation,
+controller, visibility or statistics state beyond the frozen routing inputs.
+
+For checkpoint experiments, `--fork-rule building-gradient-pipeline=1
+--fork-rule buildingGradientDelay=4` explicitly derives a new game from a save.
+Overrides are rejected if building jobs or requests remain pending. Ordinary
+`--rule` and `--experiment` options still cannot override a saved game's rules.
+The derivative replay carries the changed header.
+
+`--telemetry building-gradient-impact` records fresh-field comparisons without
+changing the simulation. Offline `--gradient-counterfactual T:EVENT` requires
+that telemetry mode and substitutes fresh building fields at the recorded
+simulation decision. This deliberate intervention creates a separate continuation;
+it is not a saved rule. Reproduce the event from the same preceding checkpoint,
+seed, orders and configuration. See [measurement details](performance-telemetry.md#scheduled-building-gradient-experiment).
+
+The combined layout retains the format-140 AI scheduling gate and introduces
+building-gradient state at format 141. The earlier standalone gradient draft
+also used format 140 with a different header; its private saves are not the AI
+format-140 layout and must be regenerated from released-format checkpoints.

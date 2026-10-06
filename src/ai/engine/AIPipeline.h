@@ -25,13 +25,14 @@ class Pipeline
   std::optional<Uint64> retainedQueryVectorBytes;
  };
  std::array<Actor,32> actors;
- SimulationSnapshot::Store snapshots;
+ std::shared_ptr<SimulationSnapshot::Store> snapshots;
  OrderScheduler scheduler;
  std::optional<Uint32> boundary;
  bool configured = false;
  Uint64 peakRetainedQueryVectorBytes = 0;
  std::weak_ptr<GameDiagnostics::Session> diagnosticsSession;
 public:
+ explicit Pipeline(std::shared_ptr<SimulationSnapshot::Store> store = std::make_shared<SimulationSnapshot::Store>()) : snapshots(std::move(store)) {}
  std::vector<std::pair<unsigned,std::shared_ptr<Order>>> prepare(Game& game,
   std::span<const unsigned> eligible, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics);
  std::shared_ptr<Order> validate(Game& game, std::shared_ptr<Order> order, unsigned player);
@@ -40,8 +41,8 @@ public:
  void drain() { scheduler.drain(); }
  void save(GAGCore::OutputStream* stream);
  bool load(Game& game, GAGCore::InputStream* stream);
- const auto& captureMetrics() const { return snapshots.metrics; }
- SimulationSnapshot::MemoryMetrics snapshotMemoryMetrics() const { return snapshots.memoryMetrics(); }
+ const auto& captureMetrics() const { return snapshots->metrics; }
+ SimulationSnapshot::MemoryMetrics snapshotMemoryMetrics() const { return snapshots->memoryMetrics(); }
  const auto& schedulingMetrics() const { return scheduler.metrics; }
  Uint64 computationNs() const { return scheduler.activeNs(); }
  bool wasPolled(unsigned player, Uint32 tick) const;

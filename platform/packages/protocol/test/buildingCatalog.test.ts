@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import {
   MatchSetup,
+  BUILTIN_EXPERIMENT_KEYS,
   matchSetupProblems,
   parse,
   simVersionKey,
@@ -59,7 +60,7 @@ describe('building catalog contracts', () => {
     expect(() =>
       buildingCatalogExperimentKeys(catalogWith([{ ...definition, help: '' }])),
     ).toThrow();
-    const definitions = Array.from({ length: 59 }, (_, i) => ({
+    const definitions = Array.from({ length: 64 - BUILTIN_EXPERIMENT_KEYS.length }, (_, i) => ({
       ...definition,
       key: `feature-${i}`,
     }));

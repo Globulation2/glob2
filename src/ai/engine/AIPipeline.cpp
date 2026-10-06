@@ -61,7 +61,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
  else if(scheduler.workerCount()!=workers) scheduler.configureWorkers(workers);
  if(paused) {
   const auto gradientRequirements=game.map.pendingGradientRequirements();
-  if(gradientRequirements) game.map.preparePendingGradient(snapshots.captureBoundary(game,gradientRequirements));
+  if(gradientRequirements) game.map.preparePendingGradient(snapshots->captureBoundary(game,gradientRequirements));
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
   return result;
  }
@@ -97,7 +97,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   const auto gradientRequirements=game.map.pendingGradientRequirements();
   SimulationSnapshot::Requirements requirements=gradientRequirements;
   for(auto p:polls) if(game.players[p]&&game.players[p]->ai&&game.players[p]->team->isAlive) requirements|=game.players[p]->ai->observationRequirements();
-  const auto captured=snapshots.captureBoundary(game,requirements);
+  const auto captured=snapshots->captureBoundary(game,requirements);
   if(gradientRequirements)game.map.preparePendingGradient(captured.project(gradientRequirements));
   for(auto p:polls) {
    auto* player=game.players[p]; auto& actor=actors[p]; actor.published.reset();

@@ -5564,5 +5564,17 @@ AI 遙測
 匯入地形定義
 [Terrain palette]
 地形選擇面板
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 重新隨機產生地形外觀

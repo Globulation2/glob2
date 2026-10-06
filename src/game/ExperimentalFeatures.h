@@ -43,6 +43,9 @@ enum class ExperimentId : Uint8
 	IceTerrain = 2,
 	TrailTerrain = 3, // Legacy serialized key: road-terrain.
 	MarketsV2 = 4,
+	BuildingGradientPipeline,
+	BuildingGradientHybrid,
+	BuildingGradientPartial,
 	Count
 };
 

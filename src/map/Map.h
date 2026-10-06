@@ -44,6 +44,7 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
+class BuildingGradientDiagnostics;
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -97,7 +98,7 @@ class Map
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedResourcesGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
-	void seedResourcesGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
+	void seedResourcesGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes, bool useCache=true);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
@@ -144,6 +145,15 @@ public:
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
 	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
 	void configureCompute(unsigned threads, unsigned experiments);
+	void configureBuildingGradientDiagnostics(const std::string &prefix);
+	BuildingGradientDiagnostics *buildingGradientDiagnostics() const;
+	void configureBuildingGradientTiming(const std::string &path);
+	void configureBuildingGradientInstrumentation(bool enabled);
+	void finishBuildingGradientTiming();
+	void beginBuildingGradientTick();
+	void endBuildingGradientTick();
+	void buildingGradientPhase(const char *phase);
+	void flushBuildingGradientDiagnostics();
 	ComputeExecutor &computeExecutor() { return compute; }
 	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
 	// Fixed chunks and synchronous barriers: thresholds affect execution only.
@@ -165,6 +175,48 @@ public:
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
 		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
 	};
+	struct BuildingRefreshStatus
+	{
+		std::uint64_t requests, coalesced, jobs, published, discarded, synchronousFallback,
+			snapshotNs, snapshotCpuNs, fallbackNs, fallbackCpuNs, walkingFields, tripFields,
+			buildNs, buildCpuNs, waitNs, maxBytes, maxPending;
+		std::size_t pending, bytes, queuedRequests;
+	};
+	BuildingRefreshStatus buildingRefreshStatus() const;
+	void configureBuildingGradientImpact(const std::string &prefix);
+	const Uint16 *publishedBuildingDecisionField(Building *building, int swim, int resource, std::vector<Uint16> &scratch, BuildingRoute route=BuildingRoute::Automatic) const;
+	bool buildingGradientImpactEnabled() const;
+	void configureGradientCounterfactual(std::uint64_t tick, std::uint64_t event);
+	void beginGradientDecision(const char *kind, int gid, int uid);
+	bool resourceDecisionDistance(int team, int resource, int swim, int x, int y, int *distance,
+								  bool fresh, bool withMarkets=false, const Building *consumer=nullptr);
+	const Uint16 *resourceDecisionField(int team,int resource,int swim,bool withMarkets=false,const Building *consumer=nullptr);
+	const Uint16 *publishedResourceGradient(int team,int resource,int swim,bool withMarkets=false,const Building *consumer=nullptr) const;
+	bool buildingDecisionDistance(Building *building, int swim, int resource, int x, int y,
+								  int *distance, bool fresh, bool publishedOnly = false, BuildingRoute route = BuildingRoute::Automatic);
+	int freshBuildingClearingState(Building *building, int swim);
+	const Uint16 *freshBuildingDecisionField(Building *building, int swim, int resource, BuildingRoute route=BuildingRoute::Automatic);
+	void recordGradientDecision(Building *building, int swim, int live, int fresh, int liveResource,
+								int freshResource, int liveScore, int freshScore, int harm = 0,
+								BuildingRoute route = BuildingRoute::Footprint);
+	void recordHiringCandidate(Building *building, Unit *unit, int resource, int liveReason,
+							   int freshReason, int liveScore, int freshScore);
+	void auditResourceDestination(Unit *unit, int liveResource, Building *liveMarket,
+								  int freshResource, Building *freshMarket);
+	void auditBuildingMovement(Unit *unit, Building *building, bool moved, int resource = -1);
+	void observeGradientImpact();
+	void finishGradientImpact();
+	void gradientOutcome(const char *kind, Unit *unit, Building *building, int resource,
+						 unsigned elapsed = 0, unsigned distance = 0, unsigned reversals = 0,
+						 bool censored = false, const Building *source = nullptr);
+	bool buildingPipelineEnabled() const;
+	int buildingAccessIndex(int swim, BuildingRoute route = BuildingRoute::Footprint) const;
+	bool requestBuildingRefresh(Building *building, int swim, BuildingRoute route = BuildingRoute::Automatic);
+	void submitBuildingRefreshes();
+	void publishBuildingRefreshes();
+	void invalidateBuildingRefresh(Building *building, int swim);
+	void saveBuildingRefreshes(GAGCore::OutputStream *stream) const;
+	void loadBuildingRefreshes(GAGCore::InputStream *stream, Sint32 versionMinor);
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
 	// Owner selects/reserves before any AI work; preparation writes private job data
@@ -943,6 +995,17 @@ public:
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
 	//! (guard-area balancing: stepping within an area).
+	struct GradientDirectionDecision
+	{
+		int best = -1;
+		std::array<int, 8> sidesteps{};
+		unsigned count = 0;
+		bool atGoal = false;
+		bool available() const { return atGoal || best >= 0 || count; }
+	};
+	GradientDirectionDecision evaluateGradientDirection(Uint32 teamMask, int swim, int x, int y,
+														const Uint16 *gradient, bool strict,
+														Uint32 guardAreaMask = 0) const;
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
 	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
 	//! Direction toward a resource of resourceType. With a target building the round-trip
@@ -953,7 +1016,7 @@ public:
 
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
-	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic, const char *reason="explicit");
 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
 	//! every tile of that resource is seeded with its distance to the building, so a
 	//! cell's value is the cheapest fetch-and-carry trip from there.
@@ -961,6 +1024,9 @@ public:
 	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
 	//! building cannot be reached.
 	const Uint16 *roundTripGradient(Building *building, int resourceType, int swimClass);
+	const Uint16 *prepareRoundTripGradient(Building *building, int resourceType, int swimClass);
+	const Uint16 *roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell);
+	void finishRoundTripGradient(Building *building, int resourceType, int swimClass) const;
 	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
 	//! building, read from a round-trip gradient a fetcher's walk has already built. False
 	//! when there is none or no such trip; the caller then scores by the plain distances.
@@ -969,7 +1035,7 @@ public:
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Finish a cached field without refreshing its age or last-use timestamp.
-	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
+	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic, const char *caller="full_api") const;
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
 	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);

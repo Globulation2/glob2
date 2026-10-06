@@ -81,6 +81,7 @@ namespace Online
 		bool permadeathDisabled = false;
 		bool peacefulMode = false;
 		int buildingHpLevel = 0; ///< 0..2
+		int buildingGradientDelay = 4; ///< 2, 4 or 8 ticks
 
 		bool operator==(const MatchRules& o) const;
 	};

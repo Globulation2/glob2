@@ -5564,5 +5564,17 @@ Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbu
 Importă definiții de teren
 [Terrain palette]
 Paletă de terenuri
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului

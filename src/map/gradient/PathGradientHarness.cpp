@@ -163,6 +163,12 @@ void lazyBuildingChecks()
 		search.resolve(1);
 		require(actual[1] == expected[1] && !search.complete(), "nearby lazy query must stop early");
 		map.changeTerrain();
+		const auto partial = actual;
+		const auto popped = search.poppedEntries();
+		require(search.completePrivateSnapshot() == expected,
+				"private completion preserves the original frozen terrain");
+		require(actual == partial && search.poppedEntries() == popped && !search.complete(),
+				"private completion changes neither live fields nor search progress");
 		search.resolve(32 + 32 * 64);
 		require(actual[32 + 32 * 64] == expected[32 + 32 * 64], "lazy weighted terrain snapshot changed during a pause");
 		search.finish();

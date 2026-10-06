@@ -66,7 +66,7 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, nullptr);
 }
 
-void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Building* consumer, unsigned modes)
+void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Building* consumer, unsigned modes, bool useCache)
 {
 	// Compile supplier eligibility and cost once; the map-sized loop only reads
 	// compact instance-indexed values, never the building catalog.
@@ -83,7 +83,7 @@ void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType,
 			supplierSeeds[Building::GIDtoID(supplier->gid)] = std::max<int>(GRADIENT_UNREACHABLE + 1,
 				GRADIENT_AT_GOAL - supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP);
 	});
-	if (!gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, supplierSeeds.data()))
+	if (!useCache || !gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, supplierSeeds.data()))
 		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, supplierSeeds.data());
 	// Overlay providers have no tile occupancy entry. Seed their small
 	// footprints after either cached or direct preparation.

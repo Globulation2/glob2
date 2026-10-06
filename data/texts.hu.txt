@@ -5564,5 +5564,17 @@ A munkások a piacok közös készletéből is hozhatnak ellátmányt. A piacok 
 Terepdefiníciók importálása
 [Terrain palette]
 Tereppaletta
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Terep megjelenésének újrasorsolása

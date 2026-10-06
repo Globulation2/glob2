@@ -94,6 +94,7 @@ void GameHeader::reset()
 	peacefulMode=false;
 	buildingHpLevel=0;
 	experiments.clear();
+	buildingGradientDelay = 4;
 }
 
 void GameHeader::setBuildingCatalogSnapshot(const std::string& snapshot)
@@ -233,6 +234,14 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	else
 		setBuildingCatalogSnapshot({});
 	if (!experiments.load(stream, versionMinor, false, buildingCatalogExperimentKeys)) return false;
+	buildingGradientDelay = 4;
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
+		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+	else {
+		experiments.set(ExperimentId::BuildingGradientPipeline, false);
+		experiments.set(ExperimentId::BuildingGradientHybrid, false);
+		experiments.set(ExperimentId::BuildingGradientPartial, false);
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -294,6 +303,7 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
 	experiments.save(stream);
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeLeaveSection();
 }
 
@@ -360,6 +370,14 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	else
 		setBuildingCatalogSnapshot({});
 	if (!experiments.load(stream, versionMinor, false, buildingCatalogExperimentKeys)) return false;
+	buildingGradientDelay = 4;
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE)
+		setBuildingGradientDelay(stream->readUint8("buildingGradientDelay"));
+	else {
+		experiments.set(ExperimentId::BuildingGradientPipeline, false);
+		experiments.set(ExperimentId::BuildingGradientHybrid, false);
+		experiments.set(ExperimentId::BuildingGradientPartial, false);
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -409,6 +427,7 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeUint8(buildingHpLevel, "buildingHpLevel");
 	writeCatalog(stream, buildingCatalogSnapshot);
 	experiments.save(stream);
+	stream->writeUint8(buildingGradientDelay, "buildingGradientDelay");
 	stream->writeLeaveSection();
 }
 

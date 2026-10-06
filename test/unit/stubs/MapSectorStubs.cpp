@@ -29,6 +29,9 @@ void GameAnimations::resize(int) {}
 // Lightweight Map fixtures never allocate forbidden fields. Fail loudly if a
 // future test reaches this engine-only refresh; those tests belong in engine.
 #include "Map.h"
+
+// Unit harnesses link Map without the engine impact observer.
+void Map::observeGradientImpact() {}
 #include <cstdlib>
 void Map::updateForbiddenGradient(int, int) { std::abort(); }
 

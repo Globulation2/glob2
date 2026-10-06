@@ -36,7 +36,7 @@ struct Building
     Uint8 underAttackTimer=0;
     std::array<Sint32,MAX_NB_RESOURCES> resources{};
     std::array<Sint32,NB_UNIT_TYPE> ratio{};
-    std::array<bool, BUILDING_ACCESS_COUNT> locked{};
+    std::array<bool, 6> locked{};
     int originType=-1;
     bool upgradeAvailable=false,hardSpaceUpgrade=false,hardSpaceRepair=false;
     int getEffectiveMaxHp() const {return maxHp;}

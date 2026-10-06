@@ -5564,5 +5564,17 @@ Pazarlar V2
 Arazi tanımlarını içe aktar
 [Terrain palette]
 Arazi paleti
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç

@@ -38,7 +38,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, in
 		// The round-trip gradient may lag behind this one by a few ticks; when
 		// it is blocked or stale here, the plain gradient below still leads to
 		// a resource.
-		const Uint16 *roundTrip=roundTripGradient(target, resourceType, swimClass);
+		const Uint16 *roundTrip=roundTripGradientAt(target, resourceType, swimClass, hereIndex);
 		if (roundTrip && roundTrip[hereIndex]>GRADIENT_UNREACHABLE
 			&& directionByGradient(teamMask, swimClass, x, y, roundTrip, dx, dy, true))
 			return true;

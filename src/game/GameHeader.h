@@ -145,6 +145,14 @@ public:
 	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < Team::MAX_COUNT); return aiConfig[player]; }
 	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values;  ++observationRevisionValue; }
 
+	Uint8 getBuildingGradientDelay() const { return buildingGradientDelay; }
+	void setBuildingGradientDelay(Uint8 delay)
+	{
+		if (delay != 2 && delay != 4 && delay != 8)
+			throw std::invalid_argument("building gradient delay must be 2, 4 or 8");
+		buildingGradientDelay = delay;
+		++observationRevisionValue;
+	}
 	///Returns whether resources are allowed to grow/spread over time (custom-game rule)
 	inline bool isResourceGrowthDisabled() const { return resourceGrowthDisabled; }
 
@@ -323,4 +331,5 @@ private:
 
 	///Experimental features enabled for this game; empty is the default game
 	ExperimentSet experiments;
+	Uint8 buildingGradientDelay = 4;
 };

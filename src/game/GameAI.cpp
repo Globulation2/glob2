@@ -4,15 +4,15 @@
 #include "AIJavaScript.h"
 #include "Player.h"
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics) {
- if(!aiPipeline)aiPipeline=std::make_unique<AIEngine::Pipeline>();return aiPipeline->prepare(*this,players,paused,diagnostics);
+ if(!aiPipeline)aiPipeline=std::make_unique<AIEngine::Pipeline>(snapshotStore());return aiPipeline->prepare(*this,players,paused,diagnostics);
 }
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() {aiPipeline.reset();}
-void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr);}aiPipeline->save(stream);}
-bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
+void Game::clearAI() {aiPipeline.reset();worldSnapshots.reset();}
+void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>(snapshotStore());aiPipeline->prepare(*this,{},true,nullptr);}aiPipeline->save(stream);}
+bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>(snapshotStore());if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
  const auto& capture=aiPipeline->captureMetrics();const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=aiPipeline->snapshotMemoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
@@ -48,4 +48,9 @@ void Game::observeUnpolledAI() {
   |SimulationSnapshot::bit(SimulationSnapshot::Component::Teams);
  const AIEngine::AIWorldView world(SimulationSnapshot::capture(*this,{},requirements));
  for(auto* controller:idle)controller->observe(world);
+}
+
+std::shared_ptr<SimulationSnapshot::Store> Game::snapshotStore() {
+ if(!worldSnapshots) worldSnapshots=std::make_shared<SimulationSnapshot::Store>();
+ return worldSnapshots;
 }

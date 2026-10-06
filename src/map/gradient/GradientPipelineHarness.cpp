@@ -6,11 +6,65 @@
 #include <thread>
 #include <cstdint>
 #include "map/gradient/GradientPipeline.h"
+#include "map/gradient/BuildingGradientBuild.h"
 #include <array>
 #include <stdexcept>
 
 TEST_SUITE("GradientPipeline")
 {
+	TEST_CASE("pure building bundles are identical with slow workers and thread creation failure")
+	{
+		building_gradient::Terrain terrain;
+		terrain.width = terrain.height = 8;
+		terrain.cells.assign(64, {0, 65535, 255, 255, 0, GRASS});
+		terrain.costs = std::make_shared<const std::vector<TerrainType>>(64, GRASS);
+		building_gradient::Destination destination;
+		destination.x = destination.y = 3;
+		destination.virtualBuilding = true;
+		destination.radius = 1;
+		destination.teamMask = destination.allies = 1;
+		std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> parents;
+		parents[0].assign(64, GRADIENT_UNREACHABLE);
+		parents[0][0] = GRADIENT_AT_GOAL;
+		GradientWorkspace scratch;
+		const auto expected = building_gradient::build(terrain, destination, parents, scratch);
+		for (unsigned workers : {0, 1, 2, 4, 8})
+			for (bool fail : {false, true})
+				for (bool partial : {false, true})
+			{
+				AsyncGradientExecutor executor;
+				unsigned created = 0;
+				executor.configure(workers,
+								   [&](auto work)
+								   {
+									   if (fail && ++created == 2)
+										   throw std::runtime_error("injected creation failure");
+									   return std::thread(
+										   [work = std::move(work)]
+										   {
+											   std::this_thread::sleep_for(
+												   std::chrono::milliseconds(10));
+											   work();
+										   });
+								   });
+				building_gradient::Result actual;
+				const std::vector<std::size_t> targets{1, 7};
+				auto task = executor.submit(
+					[&](auto &workspace)
+					{
+						actual = building_gradient::build(terrain, destination, parents, workspace,
+							partial ? &targets : nullptr);
+					});
+				executor.wait(task);
+				actual.materialize();
+				REQUIRE(actual.walking == expected.walking);
+				REQUIRE(actual.trips == expected.trips);
+				REQUIRE(actual.locked == expected.locked);
+				REQUIRE(actual.resourceState == expected.resourceState);
+				if (fail && workers >= 2)
+					REQUIRE(executor.workerCount() == 0);
+			}
+	}
 TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown")
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (unsigned delay : {1, 2, 3, 8}) {

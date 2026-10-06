@@ -45,6 +45,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[slot];
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[slot]=now;
+	const bool existed=gradient!=nullptr;
 	bool rebuild=false;
 	if (gradient==NULL)
 	{
@@ -57,8 +58,8 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (building->resolveRoute(route) == BuildingRoute::Clearing && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
 		rebuild=true;
-	if (rebuild)
-		updateGlobalGradient(building, swimClass, route);
+	if (rebuild && !(existed && requestBuildingRefresh(building,swimClass,route)))
+		updateGlobalGradient(building, swimClass, route,existed ? (building->resolveRoute(route)==BuildingRoute::Clearing ? "clearing_timer" : "topology_dirty") : "missing");
 	return !building->locked[building->routeAccess(swimClass, route)];
 }
 
@@ -109,7 +110,27 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 }
 
 
+void Map::finishRoundTripGradient(Building *building, int resourceType, int swimClass) const
+{
+	if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->finish("round_trip_full_api");
+}
+
 const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
+{
+	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	if (field) finishRoundTripGradient(building, resourceType, swimClass);
+	return field;
+}
+
+const Uint16 *Map::roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell)
+{
+	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	if (field)
+		if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(cell, "round_trip_query");
+	return field;
+}
+
+const Uint16 *Map::prepareRoundTripGradient(Building *building, int resourceType, int swimClass)
 {
 	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
 		return NULL;
@@ -118,6 +139,7 @@ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int s
 	building->roundTripGradientUsedStep[resourceType][swimClass]=now;
 	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
 		return gradient;
+	if (gradient!=NULL && requestBuildingRefresh(building,swimClass,BuildingRoute::Footprint)) return gradient;
 	if (gradient==NULL)
 		gradient=acquireBuildingGradientBuffer();
 	updateRoundTripGradient(building, resourceType, swimClass);
@@ -137,6 +159,7 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 	if (!resourceAvailable(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
 		return false;
 	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
+	if(auto &search=building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(coordToIndex(x,y),"hiring_trip");
 	Uint16 g=gradient[coordToIndex(x, y)];
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
@@ -156,7 +179,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).
-		finishBuildingGradient(building, swimClass, route);
+		finishBuildingGradient(building, swimClass, route,"forbidden_escape");
 		return pathfindForbidden(building->globalGradient[slot], building->owner->teamNumber, swimClass, x, y, dx, dy);
 	}
 
@@ -174,8 +197,10 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>game->stepCounter)
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
 
-	// Stuck for a while: the gradient may be stale, rebuild it now.
-	updateGlobalGradient(building, swimClass, route);
+	// Recover through the same fixed-deadline scheduler when enabled.
+	if (requestBuildingRefresh(building,swimClass,route)) return buildingGradientDirection(building,swimClass,x,y,dx,dy,false,route);
+	// Synchronous reference recovery.
+	updateGlobalGradient(building, swimClass, route,"stuck");
 	if (building->locked[building->routeAccess(swimClass, route)])
 		return false;
 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true, route))
@@ -185,7 +210,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 
 void Map::advanceHiringGradients(Building *building)
 {
-	if (!computeEnabled(ComputeHiring)) return;
+	if (buildingPipelineEnabled() || !computeEnabled(ComputeHiring)) return;
 	++hiringPrepasses;
 	// Most callers have at most one active class. Avoid a full unit scan when
 	// there cannot be an independent pair of searches to advance.
@@ -201,7 +226,8 @@ void Map::advanceHiringGradients(Building *building)
 			|| unit->medical != Unit::MED_FREE) continue;
 		const int swim = unit->swimClass();
 		const auto &search = building->globalGradientSearch[swim];
-		if (search && !search->complete()) targets[swim].push_back(coordToIndex(unit->posX, unit->posY));
+		const auto cell = coordToIndex(unit->posX, unit->posY);
+		if (search && !search->resolved(cell)) targets[swim].push_back(cell);
 	}
 	std::vector<int> jobs;
 	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)

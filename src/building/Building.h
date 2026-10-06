@@ -57,7 +57,7 @@ static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automatic };
 inline constexpr int BUILDING_ROUTE_COUNT = 3;
 inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT;
-inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
+inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_GRADIENT_COUNT;
 
 class Building : public BuildingUtils
 {
@@ -510,6 +510,24 @@ private:
 
 	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForResource
 	/// without exposing it to game callers, as GameGUI does for its own harness.
+	struct CandidateEvaluation
+	{
+		int reason = -1, distance = 0;
+		bool eligible() const { return reason < 0; }
+	};
+	CandidateEvaluation evaluateHiringCandidate(Unit *unit, int resource, bool fresh,
+												bool publishedOnly = false);
+	struct HiringDecision
+	{
+		Unit *chosen = nullptr;
+		int resource = -1, level = -1;
+		Sint64 score = INT64_MAX;
+		std::vector<std::pair<Unit *, int>> assignments;
+		std::vector<std::pair<Unit *, int>> failures;
+	};
+	HiringDecision evaluateHiring(bool fresh, bool borrowUnused=false);
+	CandidateEvaluation evaluateFlagCandidate(Unit *unit, bool fresh, bool publishedOnly = false, int terrainDistance = -1);
+	HiringDecision evaluateFlagHiring(bool fresh);
 	friend class RoundTripHungerGateHarness;
 
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
@@ -680,16 +698,17 @@ public:
 	//! by freeIdleGradients when unused for a while. Their last rebuild and last
 	//! use, in steps.
 	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	std::unique_ptr<BuildingGradientSearch> roundTripGradientSearch[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
 	//! buildings with fetchers need one, and each is a full map of Uint16.
 	void freeIdleGradients();
+	bool freshHiringEligibility(Unit *unit, int requestedResource);
 	BuildingRoute resolveRoute(BuildingRoute route) const;
 	int routeSlot(int swimClass, BuildingRoute route) const
 	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }
-	int routeAccess(int swimClass, BuildingRoute route) const
-	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass > 0); }
+	int routeAccess(int swimClass, BuildingRoute route) const;
 	int workRoleTarget(int role) const; // -1 delivery, otherwise attracted unit class
 	bool subscribeWorkStep();
 	bool locked[BUILDING_ACCESS_COUNT]; //True if the building is not reachable.
@@ -697,7 +716,7 @@ public:
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
 	// resource in range (set when its gradient is built). Stored value at each
 	// slot: 0 = unknown (not yet computed), 1 = true (has at least one), 2 = false (none).
-	int anyResourceToClear[SWIM_VARIANT_COUNT];
+	int anyResourceToClear[BUILDING_ACCESS_COUNT];
 
 	// shooting eye-candy data, not net synchronised
 	Uint32 lastShootStep;

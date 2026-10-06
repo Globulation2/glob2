@@ -220,7 +220,10 @@ Handle capture(const Game& game,
 				v.state = b->buildingState; v.construction = b->constructionResultState;
 				v.originType = b->getConstructionOriginTypeNum();
 				// Feasibility is prepared below from captured values, not live queries.
-				std::copy_n(b->locked, BUILDING_ACCESS_COUNT, v.locked.begin());
+				for (unsigned route = 0; route < 3; ++route)
+					for (unsigned swim = 0; swim < 2; ++swim)
+						v.locked[route * 2 + swim] = b->locked[b->routeAccess(
+							swim ? Map::SWIM_CLASS_EVEN : 0, static_cast<BuildingRoute>(route))];
 				v.hp = b->hp; v.maxHp = b->getEffectiveMaxHp();
 				v.workers = b->maxUnitWorking; v.futureWorkers = b->getMaxUnitWorkingFuture();
 				v.desiredWorkers = b->desiredMaxUnitWorking; v.maxInside = b->maxUnitInside;

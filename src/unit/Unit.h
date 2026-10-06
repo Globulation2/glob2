@@ -162,6 +162,14 @@ protected:
 	void applyTerrainHealth(const TerrainProperties& terrain);
 	void applyTerrainHealthRate(int rate);
 	void handleActivity(void);
+	struct FetchDecision
+	{
+		int resource = -1, score = 0;
+		bool exchange = false;
+		Building *market = nullptr;
+		std::vector<Building *> marketUpdates;
+	};
+	FetchDecision evaluateFetchDecision(const int *needs, int timeLeft, bool fresh);
 	void handleDisplacement(void);
 	void handleMovement(void);
 	// handleMovement() helpers — one per Displacement state, plus the pre-switch

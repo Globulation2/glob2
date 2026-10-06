@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SimVersion",
+  "title": "SimVersion",
+  "type": "object",
+  "required": [
+    "versionMinor",
+    "netProtocol",
+    "dataHash"
+  ],
+  "properties": {
+    "versionMinor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+    },
+    "netProtocol": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535,
+      "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+    },
+    "dataHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+    }
+  },
+  "additionalProperties": false,
+  "description": "Identity of a deterministic simulation build."
+}

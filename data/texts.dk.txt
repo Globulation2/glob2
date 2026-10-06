@@ -5564,5 +5564,17 @@ Arbejdere kan hente forsyninger fra markedernes fælles lager. Markeder kan opgr
 Importér terrændefinitioner
 [Terrain palette]
 Terrænpalet
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen

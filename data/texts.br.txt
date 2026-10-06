@@ -5564,5 +5564,17 @@ Gallout a ra al labourerien kemer pourvezioù e stok boutin ar marc’hadoù. Gw
 Enporzhiañ despizadurioù an tachennoù
 [Terrain palette]
 Paletenn an tachennoù
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Adtresañ neuz an douar

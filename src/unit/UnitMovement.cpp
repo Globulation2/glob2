@@ -411,12 +411,15 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy, BuildingRoute::Clearing))
+	if(map->buildingGradientImpactEnabled()) map->beginGradientDecision("movement",attachedBuilding->gid,gid);
+	const bool found=map->pathfindBuilding(attachedBuilding,swimClass(),posX,posY,&dx,&dy,BuildingRoute::Clearing);
+	if(map->buildingGradientImpactEnabled()) map->auditBuildingMovement(this,attachedBuilding,found);
+	if(found)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
 	}
-	else if (attachedBuilding->anyResourceToClear[canSwim]==2)
+	else if (attachedBuilding->anyResourceToClear[map->buildingPipelineEnabled() ? attachedBuilding->routeAccess(swimClass(),BuildingRoute::Clearing) : int(canSwim)]==2)
 	{
 		stopAttachedForBuilding(false);
 		movement=MOV_RANDOM_GROUND;
@@ -527,16 +530,14 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy,
-		activity == ACT_FLAG ? (typeNum == WORKER ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint))
-	{
-		movement=MOV_GOING_DX_DY;
-	}
-	else
-	{
-		stopAttachedForBuilding(true);
-		movement=MOV_RANDOM_GROUND;
-	}
+	else {
+  if(map->buildingGradientImpactEnabled()) map->beginGradientDecision("movement",targetBuilding->gid,gid);
+  const bool found=map->pathfindBuilding(targetBuilding,swimClass(),posX,posY,&dx,&dy,
+   activity==ACT_FLAG ? (typeNum==WORKER ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint);
+  if(map->buildingGradientImpactEnabled()) map->auditBuildingMovement(this,targetBuilding,found);
+  if(found) movement=MOV_GOING_DX_DY;
+  else { stopAttachedForBuilding(true); movement=MOV_RANDOM_GROUND; }
+ }
 }
 
 void Unit::handleMovementEnteringBuilding()
@@ -580,7 +581,10 @@ void Unit::handleMovementGoingToResource()
 	int swim=swimClass();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
+	if(map->buildingGradientImpactEnabled() && attachedBuilding) map->beginGradientDecision("movement",attachedBuilding->gid,gid);
+	const bool found=map->pathfindResource(teamNumber,destinationPurpose,swim,posX,posY,&dx,&dy,&stopWork,attachedBuilding,withMarkets);
+	if(map->buildingGradientImpactEnabled()) map->auditBuildingMovement(this,attachedBuilding,found,destinationPurpose);
+	if(found)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -594,9 +598,10 @@ void Unit::handleMovementGoingToResource()
 		// the stored target has stopped being a peak of that same gradient;
 		// isGradientPeak is a cheap check to run every action, the ascent
 		// itself only when it actually goes stale.
-		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
+		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradientAt(attachedBuilding, destinationPurpose, swim, map->coordToIndex(posX,posY)) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
 			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
+		if(gradient==roundTrip) map->roundTripGradientAt(attachedBuilding,destinationPurpose,swim,map->coordToIndex(targetX,targetY));
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

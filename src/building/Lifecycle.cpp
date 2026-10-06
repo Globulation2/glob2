@@ -22,6 +22,8 @@
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
+	// Teardown of initially empty storage must not consult an uninitialized owner.
+	this->owner = nullptr;
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
@@ -167,8 +169,8 @@ void Building::dirtyGradients()
 {
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		dirtyGradient[i] = true;
-	for (int i=0; i<BUILDING_ACCESS_COUNT; i++)
-		locked[i] = false;
+	if (!owner || !owner->map->buildingPipelineEnabled())
+		for (int i=0; i<BUILDING_ACCESS_COUNT; i++) locked[i] = false;
 }
 
 void Building::resetPathfindGradients()
@@ -176,6 +178,7 @@ void Building::resetPathfindGradients()
 	dirtyGradients();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		owner->map->invalidateBuildingRefresh(this,i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
@@ -186,10 +189,12 @@ void Building::resetPathfindGradients()
 
 void Building::resetRoundTripGradients()
 {
+	for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) owner->map->invalidateBuildingRefresh(this,sw);
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
+			recycleBuildingGradientSearch(std::move(roundTripGradientSearch[r][i]));
 			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
 			roundTripGradient[r][i] = NULL;
 			roundTripGradientStep[r][i] = 0;
@@ -207,6 +212,7 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
+			owner->map->invalidateBuildingRefresh(this,c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
@@ -217,6 +223,8 @@ void Building::freeIdleGradients()
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
 			{
+				owner->map->invalidateBuildingRefresh(this,c);
+				recycleBuildingGradientSearch(std::move(roundTripGradientSearch[r][c]));
 				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
 				roundTripGradient[r][c] = NULL;
 			}
@@ -225,9 +233,11 @@ void Building::freeIdleGradients()
 
 void Building::freeGradients()
 {
+	if (owner && owner->game) for (int slot=0; slot<BUILDING_GRADIENT_COUNT; ++slot) owner->map->invalidateBuildingRefresh(this,slot);
 	// Construction, reload and teardown may have no usable owner/map, or the
 	// map may have changed size. Only live invalidations recycle storage.
 	dirtyGradients();
+	std::fill(std::begin(locked), std::end(locked), false);
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		globalGradientSearch[i].reset();
@@ -239,6 +249,7 @@ void Building::freeGradients()
 	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
+			roundTripGradientSearch[r][i].reset();
 			delete[] roundTripGradient[r][i];
 			roundTripGradient[r][i] = NULL;
 			roundTripGradientStep[r][i] = 0;
@@ -250,7 +261,7 @@ void Building::freeGradients()
 		lastGlobalGradientUpdateStepCounter[i] = 0;
 		globalGradientUsedStep[i] = 0;
 	}
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	for (int i=0; i<BUILDING_ACCESS_COUNT; i++)
 		anyResourceToClear[i] = 0;
 }
 
@@ -767,4 +778,9 @@ void Building::bindType(Sint32 id, BuildingsTypes* catalog)
     typeNum=id;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
+}
+
+int Building::routeAccess(int swimClass, BuildingRoute route) const
+{
+ return owner->map->buildingAccessIndex(swimClass, resolveRoute(route));
 }

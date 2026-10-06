@@ -5564,5 +5564,17 @@ Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés.
 Importer des définitions de terrain
 [Terrain palette]
 Palette de terrains
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Tirer à nouveau l’apparence du terrain

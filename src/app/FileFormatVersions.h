@@ -210,3 +210,7 @@ static constexpr int FILE_FORMAT_VERSION_TERRAIN_SEED = 138;
 
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 140;
+// Scheduled building bundles and their saved delay/access metadata.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 141;
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES = 141;
+static constexpr int FILE_FORMAT_VERSION_PARTIAL_BUILDING_GRADIENTS = 141;

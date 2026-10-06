@@ -352,7 +352,7 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 		}
 	}
 
-	if (preparePeriodic) { stagePeriodicGradientPreparation(); preparePendingGradient(); }
+	if (preparePeriodic) { submitBuildingRefreshes(); stagePeriodicGradientPreparation(); preparePendingGradient(); }
 }
 
 void Map::stagePeriodicGradientPreparation()

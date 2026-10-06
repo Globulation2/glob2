@@ -5564,5 +5564,17 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 地形定義をインポート
 [Terrain palette]
 地形パレット
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 地形の外観を再抽選

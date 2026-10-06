@@ -14,6 +14,29 @@
 
 TEST_SUITE("WorldSnapshot")
 {
+	TEST_CASE("fresh owner boundaries replace changed components within one logical tick")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .clearImmobile=true}};
+		using namespace SimulationSnapshot;
+		const auto store = fixture.game.snapshotStore();
+		const auto required = bit(Component::Terrain) | bit(Component::Resources)
+			| bit(Component::Occupancy) | bit(Component::Areas);
+		fixture.game.map.setResource(20, 20, WHEAT, 1);
+		const auto before = store->captureBoundary(fixture.game, required);
+		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 7);
+		const auto after = store->captureBoundary(fixture.game, required, true);
+		const auto tile = fixture.game.map.coordToIndex(20, 20);
+		CHECK(after.tick == before.tick);
+		CHECK(before.resources->cells[tile].resource.amount == 1);
+		CHECK(after.resources->cells[tile].resource.amount == 7);
+		CHECK(after.terrain == before.terrain);
+		CHECK_FALSE(after.entities);
+		CHECK_FALSE(after.visibility);
+		CHECK_FALSE(after.teams);
+		CHECK(fixture.game.snapshotStore() == store);
+	}
+
 	TEST_CASE("narrow component queries preserve combined tile values and projection defaults")
 	{
 		glob2test::HeadlessGlobals globals;

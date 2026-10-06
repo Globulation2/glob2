@@ -65,7 +65,8 @@
         "unitsFearless": false,
         "permadeathDisabled": false,
         "peacefulMode": false,
-        "buildingHpLevel": 0
+        "buildingHpLevel": 0,
+        "buildingGradientDelay": 4
       },
       "experiments": [],
       "members": [

@@ -1,5 +1,17 @@
 # Saved-game continuation
 
+The optional building-gradient pipeline retains completed private results and
+their original publication deadlines. Saving finishes private jobs but never
+publishes them early. Format 140 adds scheduled, demand-based and partial-background
+experiment identities, route/class access metadata and completed pending bundles; older saves load with these experiments disabled. The
+minimum readable save version remains 58.
+
+Partial walking and round-trip searches retain immutable terrain costs during
+live execution. Saves complete those searches using their original snapshots and
+write the existing full-field representation, without changing field ages or
+dirty state. Loading discards previous search cursors before replacing buffers.
+Worker count and instrumentation settings remain local execution configuration.
+
 Save-format version 91 preserves the live Mersenne Twister state and routing state in saved games. Keeping only the original seed restarts the random sequence on load. Rebuilding cached gradients also changes unit decisions: these fields intentionally lag map edits until their scheduled refresh.
 
 New saved games retain:

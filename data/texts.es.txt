@@ -5564,5 +5564,17 @@ Los trabajadores pueden recoger suministros del almacén compartido de los merca
 Importar definiciones de terreno
 [Terrain palette]
 Paleta de terrenos
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Volver a sortear el aspecto del terreno

@@ -407,6 +407,19 @@
       "note": "AI order delay must be an integer from zero through eight."
     },
     {
+      "file": "valid/MatchSetup/building-gradient-pipeline-delay-two.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Scheduled building gradients carry their non-default publication delay."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-three.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only two, four and eight tick delays are supported."
+    },
+    {
       "file": "valid/MatchSetup/catalog-1v1.json",
       "schema": "MatchSetup",
       "valid": true,

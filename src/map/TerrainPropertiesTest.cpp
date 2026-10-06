@@ -293,11 +293,13 @@ TEST_CASE("explorer flag eligibility applies route accessibility and hunger dist
     explorer->activity=Unit::ACT_RANDOM;
     explorer->medical=Unit::MED_FREE;
     explorer->hungry=explorer->trigHungry+10*explorer->race->hungriness;
-    int distance=0;
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,11));
-    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,10));
-    CHECK_EQ(distance,100);
+    const auto blocked=flag->evaluateFlagCandidate(explorer,false,false,INT_MAX);
+    const auto distant=flag->evaluateFlagCandidate(explorer,false,false,11);
+    const auto eligible=flag->evaluateFlagCandidate(explorer,false,false,10);
+    CHECK_FALSE(blocked.eligible());
+    CHECK_FALSE(distant.eligible());
+    CHECK(eligible.eligible());
+    CHECK_EQ(eligible.distance,100);
 }
 
 TEST_CASE("projectile supercover tests intermediate cells corners and wrapped coordinates")

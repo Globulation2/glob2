@@ -49,14 +49,15 @@ struct Fixture
 	bool valid;
 };
 
-std::vector<Fixture> fixtures(const std::set<std::string>& schemas)
+std::vector<Fixture> fixtures(const std::set<std::string> &schemas)
 {
 	const json manifest = json::parse(glob2test::readFile(fixtureRoot() / "manifest.json"));
 	std::vector<Fixture> out;
-	for (const auto& entry : manifest.at("fixtures"))
+	for (const auto &entry : manifest.at("fixtures"))
 		if (schemas.count(entry.at("schema").get<std::string>()))
-			out.push_back({entry.at("file").get<std::string>(), entry.at("schema").get<std::string>(),
-			               entry.value("stage", ""), entry.at("valid").get<bool>()});
+			out.push_back({entry.at("file").get<std::string>(),
+						   entry.at("schema").get<std::string>(), entry.value("stage", ""),
+						   entry.at("valid").get<bool>()});
 	return out;
 }
 
@@ -68,19 +69,19 @@ MapHeader mapWithTeams(int teams, bool saved = false)
 	return map;
 }
 
-bool hasCondition(GameHeader& header, WinningConditionType type)
+bool hasCondition(GameHeader &header, WinningConditionType type)
 {
-	for (const auto& condition : header.getWinningConditions())
+	for (const auto &condition : header.getWinningConditions())
 		if (condition->getType() == type)
 			return true;
 	return false;
 }
 
-std::string sha256Hex(const std::string& text)
+std::string sha256Hex(const std::string &text)
 {
 	return toHex(Sha256::of(text));
 }
-}
+} // namespace
 
 TEST_SUITE("MatchSetup")
 {
@@ -164,27 +165,31 @@ TEST_SUITE("MatchSetup")
 	TEST_CASE("SHA-256 matches the FIPS 180-4 test vectors")
 	{
 		CHECK(sha256Hex("") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-		CHECK(sha256Hex("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+		CHECK(sha256Hex("abc") ==
+			  "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
 		CHECK(sha256Hex("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq") ==
-		      "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
+			  "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
 		Sha256 million;
 		const std::string chunk(1000, 'a');
 		for (int i = 0; i < 1000; ++i)
 			million.update(chunk);
-		CHECK(toHex(million.finish()) == "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0");
+		CHECK(toHex(million.finish()) ==
+			  "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0");
 		Sha256::Digest digest;
 		CHECK(parseSha256Hex(sha256Hex("abc"), digest));
-		CHECK_FALSE(parseSha256Hex("BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD", digest));
+		CHECK_FALSE(parseSha256Hex(
+			"BA7816BF8F01CFEA414140DE5DAE2223B00361A396177A9CB410FF61F20015AD", digest));
 		CHECK_FALSE(parseSha256Hex("abc", digest));
 	}
 
-	TEST_CASE("every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage")
+	TEST_CASE(
+		"every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage")
 	{
 		glob2test::HeadlessGlobals globals;
 		const auto cases = fixtures({"MatchSetup", "SimVersion"});
 		REQUIRE(cases.size() >= 20);
 		int valid = 0, schema = 0, semantic = 0;
-		for (const auto& f : cases)
+		for (const auto &f : cases)
 		{
 			INFO(f.file);
 			const std::string text = glob2test::readFile(fixtureRoot() / f.file);
@@ -226,7 +231,7 @@ TEST_SUITE("MatchSetup")
 				MatchSetup::parse(text);
 				FAIL("accepted an invalid fixture");
 			}
-			catch (const MatchSetupError& error)
+			catch (const MatchSetupError &error)
 			{
 				INFO(error.what());
 				if (f.stage == "schema")
@@ -257,18 +262,19 @@ TEST_SUITE("MatchSetup")
 		const fs::path copy = glob2test::fixture("protocol");
 		// The copy holds the MatchSetup and SimVersion cases only; other schemas may
 		// gain fixtures without touching it.
-		auto entries = [](const fs::path& root) {
+		auto entries = [](const fs::path &root)
+		{
 			std::vector<json> out;
 			// Keep the parsed manifest alive: a range-for over a member of a
 			// temporary dangles (the temporary dies before the loop body runs).
 			const json manifest = json::parse(glob2test::readFile(root / "manifest.json"));
-			for (const auto& entry : manifest.at("fixtures"))
+			for (const auto &entry : manifest.at("fixtures"))
 				if (entry.at("schema") == "MatchSetup" || entry.at("schema") == "SimVersion")
 					out.push_back(entry);
 			return out;
 		};
 		CHECK(entries(copy) == entries(source));
-		for (const auto& entry : fs::recursive_directory_iterator(copy))
+		for (const auto &entry : fs::recursive_directory_iterator(copy))
 			if (entry.is_regular_file() && entry.path().filename() != "manifest.json")
 			{
 				const auto relative = fs::relative(entry.path(), copy);
@@ -280,19 +286,20 @@ TEST_SUITE("MatchSetup")
 	TEST_CASE("valid setups become the GameHeader every client and the verifier run")
 	{
 		glob2test::HeadlessGlobals globals;
-		for (const auto& f : fixtures({"MatchSetup"}))
+		for (const auto &f : fixtures({"MatchSetup"}))
 		{
 			if (!f.valid)
 				continue;
 			INFO(f.file);
 			const MatchSetup setup = MatchSetup::parse(glob2test::readFile(fixtureRoot() / f.file));
-			const bool save = setup.map.kind == MapSource::Kind::Upload && setup.map.format == MapSource::Format::Save;
+			const bool save = setup.map.kind == MapSource::Kind::Upload &&
+							  setup.map.format == MapSource::Format::Save;
 			const MapHeader map = mapWithTeams(static_cast<int>(setup.teams.size()), save);
 			GameHeader header = setup.toGameHeader(map);
 			// Closed seats are not players: the players are the human and AI seats.
 			REQUIRE(header.getNumberOfPlayers() == setup.playerCount());
 			CHECK(header.getRandomSeed() == setup.seed);
-			for (const auto& seat : setup.seats)
+			for (const auto &seat : setup.seats)
 			{
 				if (seat.closed)
 				{
@@ -302,7 +309,7 @@ TEST_SUITE("MatchSetup")
 						CHECK(header.getBasePlayer(p).teamNumber != seat.team);
 					continue;
 				}
-				const BasePlayer& bp = header.getBasePlayer(seat.seat);
+				const BasePlayer &bp = header.getBasePlayer(seat.seat);
 				CHECK(bp.number == seat.seat);
 				CHECK(bp.teamNumber == seat.team);
 				CHECK(bp.name == seat.name);
@@ -312,19 +319,21 @@ TEST_SUITE("MatchSetup")
 				{
 					REQUIRE(bp.type >= BasePlayer::P_AI);
 					const int id = BasePlayer::implementationIdFromPlayerType(bp.type);
-					CHECK(seat.ai == (id == AI::NONE ? std::string("none") : AINames::getCLIName(id)));
+					CHECK(seat.ai ==
+						  (id == AI::NONE ? std::string("none") : AINames::getCLIName(id)));
 					CHECK(header.getAIConfig(seat.seat) == seat.aiConfig.value_or(""));
 				}
 			}
-			for (const auto& team : setup.teams)
+			for (const auto &team : setup.teams)
 				CHECK(header.getAllyTeamNumber(team.team) == team.alliance + 1);
-			const MatchRules& r = setup.rules;
+			const MatchRules &r = setup.rules;
 			CHECK(hasCondition(header, WCPrestige) == r.prestigeVictory);
 			CHECK(hasCondition(header, WCSuddenDeath) == (r.suddenDeathMinutes != 0));
-			for (const auto& condition : header.getWinningConditions())
+			for (const auto &condition : header.getWinningConditions())
 				if (condition->getType() == WCSuddenDeath)
-					CHECK(static_cast<const WinningConditionSuddenDeath&>(*condition).endStepTick ==
-					      Uint32(r.suddenDeathMinutes) * 60 * 25);
+					CHECK(
+						static_cast<const WinningConditionSuddenDeath &>(*condition).endStepTick ==
+						Uint32(r.suddenDeathMinutes) * 60 * 25);
 			CHECK(header.isMapDiscovered() == r.mapDiscovered);
 			CHECK(header.areAllyTeamsFixed() == r.allyTeamsFixed);
 			CHECK(header.isResourceGrowthDisabled() == r.resourceGrowthDisabled);
@@ -338,6 +347,7 @@ TEST_SUITE("MatchSetup")
 			CHECK(header.isPermadeathDisabled() == r.permadeathDisabled);
 			CHECK(header.isPeacefulModeEnabled() == r.peacefulMode);
 			CHECK(header.getBuildingHpLevel() == r.buildingHpLevel);
+			CHECK(header.getBuildingGradientDelay() == r.buildingGradientDelay);
 			CHECK(header.getExperiments().keys() == setup.experiments);
 
 			// GameHeader -> MatchSetup recreates the setup, apart from account ids,
@@ -346,23 +356,25 @@ TEST_SUITE("MatchSetup")
 			MatchSetup back = MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
 			MatchSetup expected = setup;
 			expected.seats.erase(std::remove_if(expected.seats.begin(), expected.seats.end(),
-			                                    [](const SetupSeat& s) { return s.closed; }),
-			                     expected.seats.end());
-			for (auto& seat : expected.seats)
+												[](const SetupSeat &s) { return s.closed; }),
+								 expected.seats.end());
+			for (auto &seat : expected.seats)
 				seat.accountId.reset();
 			// Nor the pause limit: the turn session enforces it, not the game.
 			expected.pauseLimit.reset();
 			CHECK(back.playerCount() == setup.playerCount());
-			for (const auto& team : setup.teams)
+			for (const auto &team : setup.teams)
 				CHECK(back.teamClosed(team.team) == setup.teamClosed(team.team));
 			CHECK(back.toJson() == expected.toJson());
 
 			// The map must have exactly the listed teams, and be a save exactly when
 			// the source says so.
-			CHECK_THROWS_AS(setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()) + 1, save)),
-			                MatchSetupError);
-			CHECK_THROWS_AS(setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()), !save)),
-			                MatchSetupError);
+			CHECK_THROWS_AS(
+				setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()) + 1, save)),
+				MatchSetupError);
+			CHECK_THROWS_AS(
+				setup.toGameHeader(mapWithTeams(static_cast<int>(setup.teams.size()), !save)),
+				MatchSetupError);
 		}
 	}
 
@@ -382,10 +394,30 @@ TEST_SUITE("MatchSetup")
 		CHECK(restored.hasExperiment(ExperimentId::TrailTerrain));
 	}
 
+	TEST_CASE(
+		"older network rules default to four ticks and unsupported building delays are refused")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (const auto &fixture : fixtures({"MatchSetup"}))
+			if (fixture.valid)
+			{
+				auto document = json::parse(glob2test::readFile(fixtureRoot() / fixture.file));
+				document["rules"].erase("buildingGradientDelay");
+				CHECK(MatchSetup::fromJson(document).rules.buildingGradientDelay == 4);
+				for (int delay : {0, 1, 3, 5, 7, 9})
+				{
+					document["rules"]["buildingGradientDelay"] = delay;
+					CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
+				}
+				break;
+			}
+	}
+
 	TEST_CASE("closed seats close their team and follow every player seat")
 	{
 		glob2test::HeadlessGlobals globals;
-		json document = json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
+		json document = json::parse(
+			glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
 		const MatchSetup setup = MatchSetup::parse(document.dump());
 		REQUIRE(setup.seats.size() == 4);
 		CHECK(setup.playerCount() == 2);
@@ -400,14 +432,16 @@ TEST_SUITE("MatchSetup")
 		CHECK(header.getBasePlayer(1).teamNumber == 2);
 		CHECK(header.getAllyTeamNumber(3) == setup.teams[3].alliance + 1);
 
-		auto stageOf = [](const json& value) {
+		auto stageOf = [](const json &value)
+		{
 			try
 			{
 				MatchSetup::parse(value.dump());
 			}
-			catch (const MatchSetupError& error)
+			catch (const MatchSetupError &error)
 			{
-				return error.stage == MatchSetupError::Stage::Schema ? std::string("schema") : error.path;
+				return error.stage == MatchSetupError::Stage::Schema ? std::string("schema")
+																	 : error.path;
 			}
 			return std::string("accepted");
 		};
@@ -437,7 +471,8 @@ TEST_SUITE("MatchSetup")
 	TEST_CASE("unknown experiments, JavaScript AIs and unexpressible headers are refused")
 	{
 		glob2test::HeadlessGlobals globals;
-		json document = json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
+		json document =
+			json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
 		json unknown = document;
 		unknown["experiments"] = {"no-such-experiment"};
 		try
@@ -445,15 +480,21 @@ TEST_SUITE("MatchSetup")
 			MatchSetup::parse(unknown.dump());
 			FAIL("accepted an unknown experiment");
 		}
-		catch (const MatchSetupError& error)
+		catch (const MatchSetupError &error)
 		{
 			CHECK(error.stage == MatchSetupError::Stage::Semantic);
 			CHECK(error.path == "/experiments/0");
 		}
-		for (const auto& definition : experimentDefinitions())
+		for (const auto &definition : experimentDefinitions())
 		{
 			json known = document;
 			known["experiments"] = {definition.key};
+			if (definition.id == ExperimentId::BuildingGradientHybrid ||
+				definition.id == ExperimentId::BuildingGradientPartial)
+			{
+				CHECK_THROWS_AS(MatchSetup::parse(known.dump()), MatchSetupError);
+				known["experiments"].push_back("building-gradient-pipeline");
+			}
 			CHECK_NOTHROW(MatchSetup::parse(known.dump()));
 		}
 
@@ -461,17 +502,21 @@ TEST_SUITE("MatchSetup")
 		const MapHeader map = mapWithTeams(2);
 		GameHeader header = setup.toGameHeader(map);
 		header.getBasePlayer(1).type = BasePlayer::playerTypeFromImplementationID(AI::JAVASCRIPT);
-		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion),
+						MatchSetupError);
 		header = setup.toGameHeader(map);
 		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), 1234);
-		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion),
+						MatchSetupError);
 		header = setup.toGameHeader(map);
 		header.getWinningConditions().pop_front();
-		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion), MatchSetupError);
+		CHECK_THROWS_AS(MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion),
+						MatchSetupError);
 		// Human seats map to P_IP whatever the source header used.
 		header = setup.toGameHeader(map);
 		header.getBasePlayer(0).type = BasePlayer::P_LOCAL;
-		const MatchSetup fromLocal = MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
+		const MatchSetup fromLocal =
+			MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
 		CHECK(fromLocal.seats[0].human);
 		CHECK(fromLocal.toGameHeader(map).getBasePlayer(0).type == BasePlayer::P_IP);
 	}
@@ -486,13 +531,15 @@ TEST_SUITE("MatchSetup")
 		CHECK(mapContentHash(inflated.string()) == hash);
 		CHECK(hash == toHex(Sha256::of(glob2test::readFile(inflated))));
 
-		MatchSetup setup = MatchSetup::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
+		MatchSetup setup = MatchSetup::parse(
+			glob2test::readFile(fixtureRoot() / "valid/MatchSetup/catalog-1v1.json"));
 		setup.map.hash = hash;
 		CHECK(resolveMatchMap(setup, path) == path);
 		glob2test::TempDir cache("map-cache");
 		fs::copy_file(path, cache.path / (hash + ".map.gz"));
 		// Compared as paths: Windows accepts either separator in the returned name.
-		CHECK(fs::path(resolveMatchMap(setup, "", cache.path.string())) == cache.path / (hash + ".map.gz"));
+		CHECK(fs::path(resolveMatchMap(setup, "", cache.path.string())) ==
+			  cache.path / (hash + ".map.gz"));
 		setup.map.hash = std::string(64, '0');
 		CHECK_THROWS_AS(resolveMatchMap(setup, path), MatchSetupError);
 		CHECK_THROWS_AS(resolveMatchMap(setup, "", cache.path.string()), MatchSetupError);
@@ -504,8 +551,9 @@ TEST_SUITE("MatchSetup")
 		// The list is complete: every strategy, Nicowar and USL runtime file.
 		std::set<std::string> onDisk;
 		const fs::path root = glob2test::sourceRoot();
-		for (const char* directory : {"data/maxima", "data/usl/Language/Runtime", "data/usl/Glob2/Runtime"})
-			for (const auto& entry : fs::directory_iterator(root / directory))
+		for (const char *directory :
+			 {"data/maxima", "data/usl/Language/Runtime", "data/usl/Glob2/Runtime"})
+			for (const auto &entry : fs::directory_iterator(root / directory))
 			{
 				const auto extension = entry.path().extension().string();
 				if (extension == ".strategy" || extension == ".usl")
@@ -542,9 +590,10 @@ TEST_SUITE("MatchSetup")
 		CHECK(simRevisionEntry(12).content == "12");
 		CHECK(simRevisionEntry().content == std::to_string(SIM_REVISION));
 		CHECK(simRevisionEntry().path < listed.front());
-		CHECK(simDataHashOf({simRevisionEntry(1), {"a", "x"}}) != simDataHashOf({simRevisionEntry(2), {"a", "x"}}));
+		CHECK(simDataHashOf({simRevisionEntry(1), {"a", "x"}}) !=
+			  simDataHashOf({simRevisionEntry(2), {"a", "x"}}));
 		std::vector<SimDataFile> files{simRevisionEntry()};
-		for (const auto& path : listed)
+		for (const auto &path : listed)
 			files.push_back({path, glob2test::readFile(root / path)});
 		const SimVersion version = currentSimVersion();
 		CHECK(version.versionMinor == VERSION_MINOR);

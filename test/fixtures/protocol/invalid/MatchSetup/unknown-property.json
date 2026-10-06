@@ -53,6 +53,7 @@
     "permadeathDisabled": false,
     "peacefulMode": false,
     "buildingHpLevel": 0,
+    "buildingGradientDelay": 4,
     "lowGravity": true
   },
   "experiments": []
