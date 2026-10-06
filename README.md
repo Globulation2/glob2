@@ -36,3 +36,10 @@ Local / VM verification
   `seam-ice-12x.png`, `terrain-gallery-branch-seams.png`, `compare-gallery-seams-3x.png` (in-engine before/after).
 - Cost: shading is a per-pixel multiply and lerp on composed pixels plus a runner-up scan already inside the
   resolver; harness per-sample time unchanged within noise (97-100 ns/sample for boundary tiles).
+
+## Merge with master (86943fe0b)
+
+- Conflicts in `TerrainMaterials.{h,cpp}` resolved by porting master's once-per-curve resolution and raw-array
+  storage onto the version-3 resolver. Rebuilt the merged tree and reran the three terrain suites:
+  `35 passed, 0 failed, 0 skipped` (`terrain-suites-merged.log`; master added four overview cases). Tool tests: 8 OK,
+  catalog `--check` OK. `terrain-gallery-merged.png` is the in-engine gallery from the merged build.
