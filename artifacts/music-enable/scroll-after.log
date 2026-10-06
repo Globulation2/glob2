@@ -1,0 +1,13 @@
+[WebServer] (node:77408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:77427) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit (1.7s)
+(node:77435) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [phone] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit (2.0s)
+
+  2 passed (6.5s)

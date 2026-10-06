@@ -1,0 +1,38 @@
+[WebServer] (node:77372) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:77378) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit (362ms)
+
+
+  1) [desktop] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      161 |       return root.scrollHeight <= root.clientHeight + 1;
+      162 |     }),
+    > 163 |   ).toBe(true);
+          |     ^
+      164 |   await expect(page.getByRole('heading', { name: 'Validation, in detail' })).toBeVisible();
+      165 |   await page.getByText('balance', { exact: true }).click();
+      166 |   await expect(
+        at /Users/bradley/.codex/worktrees/5f0c/glob2/platform/apps/web/e2e/music-studio.spec.ts:163:5
+
+    Error Context: ../../../artifacts/web-app/test-results/music-studio-music-workspa-cf3b8--keeps-publication-explicit-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/music-studio-music-workspa-cf3b8--keeps-publication-explicit-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/music-studio-music-workspa-cf3b8--keeps-publication-explicit-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit 
