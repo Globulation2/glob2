@@ -204,3 +204,6 @@ static constexpr int FILE_FORMAT_VERSION_RUNTIME_TERRAIN = 136;
 
 //! Per-game immutable building specifications and capability state.
 static constexpr int FILE_FORMAT_VERSION_BUILDING_CATALOG = 137;
+
+//! The map's terrain look seed (Map::terrainSeed), presentation only.
+static constexpr int FILE_FORMAT_VERSION_TERRAIN_SEED = 138;

@@ -23,6 +23,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 	{
 		LOAD_MAP,
 		SAVE_MAP,
+		REROLL_TERRAIN_LOOK,
 		OPEN_SCRIPT_EDITOR,
 		OPEN_TEAMS_EDITOR,
 		RETURN_EDITOR,

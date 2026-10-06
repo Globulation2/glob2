@@ -36,6 +36,7 @@ Element MapEditMenuScreen::build(const Presentation &p)
 						  {"share", "[maps share online]", SHARE_MAP, false},
 						  {"terrain/import", "[Import Terrain Definitions]", IMPORT_TERRAIN, false},
 						  {"terrain/palette", "[Terrain palette]", TERRAIN_PALETTE, false},
+						  {"terrain/reroll", "[Reroll terrain look]", REROLL_TERRAIN_LOOK, false},
 						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
 	for (const auto &item : items)

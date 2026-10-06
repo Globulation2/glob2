@@ -218,6 +218,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.y = y & map.getMaskH();
 	r.width = map.getW();
 	r.height = map.getH();
+	r.seed = map.terrainSeed();
 	for (int j = 0; j < 4; ++j)
 		for (int i = 0; i < 4; ++i)
 		{
@@ -249,7 +250,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	for (auto id : r.samples)
 		if (!sources[id].pixels && !definitions.materials[id].ocean)
 		{
-			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y)];
+			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
 		}
 	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),

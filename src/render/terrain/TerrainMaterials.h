@@ -73,8 +73,9 @@ class Catalog
 	static Catalog parse(const nlohmann::json &document);
 	MaterialId find(const std::string &key) const;
 	unsigned profileFor(MaterialId a, MaterialId b) const;
-	unsigned variantIndex(MaterialId material, int x, int y) const;
-	int frame(MaterialId material, int x, int y, int time) const;
+	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
+	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
+	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 // Pure presentation adapter. Saved sprite numbers never become material handles.
@@ -85,6 +86,9 @@ struct Recipe
 	std::array<MaterialId, 16> samples{};
 	// Canonical gameplay-cell coordinates and positive wrapped map dimensions.
 	int x = 0, y = 0, width = 0, height = 0;
+	// The map's terrain look seed: every hash of coordinates is salted with it,
+	// so caches that compare recipes rebuild when it changes.
+	std::uint32_t seed = 0;
 	bool operator==(const Recipe &) const = default;
 };
 struct Coverage
@@ -116,6 +120,7 @@ class PreparedCoverage
 	// Direct indexing avoids accessor calls in unoptimized coverage builds.
 	WarpLayer warp[3]{};
 	bool legacy = false; // Version-1 catalogs keep their original sampling.
+	std::uint32_t seed = 0; // Mixed map seed applied to every hash salt.
 	struct Curve
 	{
 		const Profile *profile = nullptr;
@@ -156,6 +161,7 @@ class PreparedCoverage
 	};
 	std::vector<PebbleField> pebbles;
 	int pebbleField(const Catalog &, const Recipe &, MaterialId);
+	std::uint32_t salted(std::uint32_t salt) const { return salt ^ seed; }
 };
 // Convenience for individual diagnostic samples. Bulk composition prepares once.
 Coverage coverage(const Catalog &, const Recipe &, int px, int py);

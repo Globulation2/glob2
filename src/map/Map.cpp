@@ -494,6 +494,7 @@ void Map::clear()
 {
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
+	terrainSeedValue = 0;
 	gradientRuntime->pipeline.reset();
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;

@@ -342,6 +342,7 @@
 [replay ended]
 [restore default shortcuts]
 [return to editor]
+[Reroll terrain look]
 [return to game]
 [return to replay]
 [return]
