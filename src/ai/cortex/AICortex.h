@@ -63,7 +63,7 @@ private:
 	/// straight to a productive hauler count so the early worker economy ramps at
 	/// once instead of crawling up one hauler per cycle through the ±1 worker-tuning
 	/// loop. One-shot (see swarmKickstarted); tuning takes over from this baseline.
-	static const int SWARM_START_WORKERS = 4;
+	static constexpr int SWARM_START_WORKERS = 4;
 
 	/// Ticks to suppress a new build order OF THE SAME TYPE after issuing one, so
 	/// the in-flight OrderCreate has time to execute and show up as a building site
