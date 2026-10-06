@@ -37,8 +37,9 @@ TEST_CASE("resource catalog import drains deferred material preparation before r
     header.setNumberOfPlayers(1);
     header.setRandomSeed(123456);
     header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
-    REQUIRE(source.loadFromHeaders(Engine::loadMapHeader("maps/balanced.map"), header, true, true));
-    source.game.edit = true;
+    auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
+    REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
+    REQUIRE(source.game.stepCounter == 0);
     auto &map = source.game.map;
     using Json = nlohmann::json;
     const auto trees = *map.resourceRegistry().find("trees");
