@@ -12,9 +12,7 @@ def receive(sock, size):
     return result
 
 
-def send_frame(sock, payload, opcode=2, final=True):
-    mask = os.urandom(4)
-    length = len(payload)
+def frame_header(length, opcode=2, final=True):
     header = bytes([(128 if final else 0) | opcode])
     if length < 126:
         header += bytes([128 | length])
@@ -22,7 +20,18 @@ def send_frame(sock, payload, opcode=2, final=True):
         header += b'\xfe' + struct.pack('!H', length)
     else:
         header += b'\xff' + struct.pack('!Q', length)
-    sock.sendall(header + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(payload)))
+    return header
+
+
+def send_frame_header(sock, length, opcode=2, final=True):
+    """Declare a masked frame without sending its body, for size-limit tests."""
+    sock.sendall(frame_header(length, opcode, final) + os.urandom(4))
+
+
+def send_frame(sock, payload, opcode=2, final=True):
+    mask = os.urandom(4)
+    sock.sendall(frame_header(len(payload), opcode, final) + mask +
+                 bytes(b ^ mask[i % 4] for i, b in enumerate(payload)))
 
 
 def read_frame(sock):
