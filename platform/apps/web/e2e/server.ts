@@ -22,6 +22,18 @@ const repo = resolve(here, '../../../..');
 const dist = resolve(here, '../dist');
 const port = Number(process.env['PORT'] ?? 4280);
 const origin = `http://127.0.0.1:${port}`;
+// Exercise the edge's actual policies, including dedicated-worker CSP, rather
+// than letting browser smoke tests run with unrestricted script execution.
+const edgeConfig = readFileSync(join(repo, 'deploy/Caddyfile'), 'utf8');
+function edgePolicy(matcher: string): string {
+  const policy = edgeConfig.match(
+    new RegExp(`header @${matcher} Content-Security-Policy "([^"]+)"`),
+  )?.[1];
+  if (!policy) throw new Error(`Missing edge policy for ${matcher}`);
+  return policy;
+}
+const webPolicy = edgePolicy('webApp');
+const musicDecoderPolicy = edgePolicy('musicDecoder');
 const gameDir =
   process.env['GLOB2_WEB_CLIENT_DIR'] ?? join(repo, 'build/emscripten/client/release');
 
@@ -227,6 +239,10 @@ const front = createServer((req, res) => {
     return;
   }
   const file = inside(dist, url.pathname === '/' ? 'index.html' : url.pathname);
+  res.setHeader(
+    'Content-Security-Policy',
+    url.pathname === '/music/decode-worker.js' ? musicDecoderPolicy : webPolicy,
+  );
   sendFile(res, file ?? join(dist, 'index.html'));
 });
 
