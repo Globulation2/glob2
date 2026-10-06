@@ -231,9 +231,11 @@ top-right, explorer bottom-left, swarm bottom-right.
 - `imageBase64`, the colour atlas, is at most 1 MiB. The server re-encodes it as
   an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
-  (R = G = B), opaque, and a material id: 0 glossy, 1 matte, 2 metallic,
-  3 hairy. Anything else is a 400. The server re-encodes it as an 8-bit
-  lossless WebP.
+  (R = G = B), opaque, and a material id below the count registered in
+  `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
+  the protocol package). Anything else is a 400. The server re-encodes it as an
+  8-bit lossless WebP. Native clients shade ids beyond their own catalogue as
+  matte rather than rejecting the skin, so newer materials degrade gracefully.
 
 The version's `manifestSha256` is described below; native clients recompute it.
 Publishing identical content again returns the existing version. Publication and
@@ -289,7 +291,9 @@ Alt-drag or the Rotate tool turns the model; touch uses explicit Paint/Rotate to
 two-finger pinch zoom. The view menu and +/− keys also adjust inspection zoom.
 Animation starts paused and painting freezes its displayed
 pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
-material swatches, model and pose strips float over the viewport; shop, saved
+material swatches (one sphere per registered material, grouped as in the
+registry, shaded by the game's own material GLSL including fur shells), model
+and pose strips float over the viewport; shop, saved
 skins, settings and patterns are dialogs that preserve the document. The workspace
 and its dialogs use the web application’s shared Meadow and Night colony themes,
 following the device setting or saved preference. Skin settings includes the shared

@@ -1,8 +1,9 @@
 /* WebGL resources are bounded to the lifetime of this effect. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { SKIN_MATERIAL_GLSL } from './materialShader.ts';
-import { MATERIALS } from './atlas.ts';
+import { COLONY_SKIN_SHELLS, type ColonySkinMaterial } from '@glob2/protocol';
+import { MATERIAL_GROUPS } from './atlas.ts';
 export function StudioIcon({ name }: { name: string }) {
   const paths: Record<string, ReactNode> = {
     brush: (
@@ -129,69 +130,136 @@ export function StudioDialog({
     </dialog>
   );
 }
-export function MaterialSwatches({
-  color,
+const SWATCH = 128;
+const SWATCH_COLUMNS = 4;
+const swatchRows = (count: number) => Math.ceil(count / SWATCH_COLUMNS);
+// One analytic sphere per material, lit by the shared material GLSL with fur
+// shells drawn over the body as the game does. All groups render from a single
+// WebGL context: browsers drop the oldest contexts past a small limit, and the
+// studio and pattern dialog each need one for their mesh preview.
+function renderSwatches(color: string): HTMLCanvasElement | null {
+  const target = document.createElement('canvas');
+  target.width = SWATCH * SWATCH_COLUMNS;
+  target.height = SWATCH * MATERIAL_GROUPS.reduce((n, g) => n + swatchRows(g.materials.length), 0);
+  const gl = target.getContext('webgl2', {
+    alpha: true,
+    antialias: true,
+    preserveDrawingBuffer: true,
+  });
+  if (!gl) return null;
+  const program = gl.createProgram()!;
+  const shaders: WebGLShader[] = [];
+  for (const [kind, source] of [
+    [gl.VERTEX_SHADER, '#version 300 es\nin vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'],
+    [
+      gl.FRAGMENT_SHADER,
+      `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;uniform vec2 cell;uniform float id;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec2 q=(gl_FragCoord.xy-cell-vec2(64.,80.))/(38.*(1.+shell*.2));float r=dot(q,q);if(r>1.)discard;vec3 n=vec3(q,sqrt(1.-r));vec4 shaded=skinShade(tint,id,n,(q+1.)*.5,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
+    ],
+  ] as const) {
+    const s = gl.createShader(kind)!;
+    gl.shaderSource(s, source);
+    gl.compileShader(s);
+    gl.attachShader(program, s);
+    shaders.push(s);
+  }
+  gl.linkProgram(program);
+  const release = () => {
+    shaders.forEach((s) => gl.deleteShader(s));
+    gl.deleteProgram(program);
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+  };
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    release();
+    return null;
+  }
+  gl.useProgram(program);
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(program, 'p');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  gl.uniform3f(
+    gl.getUniformLocation(program, 'tint'),
+    parseInt(color.slice(1, 3), 16) / 255,
+    parseInt(color.slice(3, 5), 16) / 255,
+    parseInt(color.slice(5, 7), 16) / 255,
+  );
+  const cell = gl.getUniformLocation(program, 'cell'),
+    id = gl.getUniformLocation(program, 'id'),
+    shell = gl.getUniformLocation(program, 'shell');
+  gl.viewport(0, 0, target.width, target.height);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.enable(gl.SCISSOR_TEST);
+  let row = 0;
+  for (const group of MATERIAL_GROUPS) {
+    group.materials.forEach((material, index) => {
+      const x = (index % SWATCH_COLUMNS) * SWATCH,
+        y = target.height - (row + Math.floor(index / SWATCH_COLUMNS) + 1) * SWATCH;
+      gl.scissor(x, y, SWATCH, SWATCH);
+      gl.uniform2f(cell, x, y);
+      gl.uniform1f(id, material.id);
+      const passes = material.shells ? COLONY_SKIN_SHELLS : 0;
+      for (let k = 0; k <= passes; k++) {
+        gl.uniform1f(shell, k / COLONY_SKIN_SHELLS);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+      }
+    });
+    row += swatchRows(group.materials.length);
+  }
+  gl.deleteBuffer(buffer);
+  // Copy out before releasing the context; the 2D copy outlives it.
+  const copy = document.createElement('canvas');
+  copy.width = target.width;
+  copy.height = target.height;
+  copy.getContext('2d')?.drawImage(target, 0, 0);
+  release();
+  return copy;
+}
+function SwatchStrip({
+  source,
+  offset,
+  materials,
   selected,
   onSelect,
 }: {
-  color: string;
+  source: HTMLCanvasElement | null;
+  offset: number;
+  materials: readonly ColonySkinMaterial[];
   selected: number;
   onSelect: (id: number) => void;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
+  const rows = swatchRows(materials.length);
   useEffect(() => {
     const target = canvas.current,
-      gl = target?.getContext('webgl2', { alpha: true, antialias: true });
-    if (!gl || !target) return;
-    const program = gl.createProgram()!;
-    const shaders: WebGLShader[] = [];
-    for (const [kind, source] of [
-      [gl.VERTEX_SHADER, '#version 300 es\nin vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'],
-      [
-        gl.FRAGMENT_SHADER,
-        `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;\n${SKIN_MATERIAL_GLSL}\nvoid main(){float id=floor(gl_FragCoord.x/128.);vec2 q=vec2(mod(gl_FragCoord.x,128.),gl_FragCoord.y)/64.-1.;q*=1.3;float r=dot(q,q);if(r>1.)discard;vec3 n=vec3(q,sqrt(1.-r));color=vec4(skinShade(tint,id,n,(q+1.)*.5),1.);}`,
-      ],
-    ] as const) {
-      const s = gl.createShader(kind)!;
-      gl.shaderSource(s, source);
-      gl.compileShader(s);
-      gl.attachShader(program, s);
-      shaders.push(s);
-    }
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      shaders.forEach((s) => gl.deleteShader(s));
-      gl.deleteProgram(program);
-      return;
-    }
-    gl.useProgram(program);
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(program, 'p');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    gl.uniform3f(
-      gl.getUniformLocation(program, 'tint'),
-      parseInt(color.slice(1, 3), 16) / 255,
-      parseInt(color.slice(3, 5), 16) / 255,
-      parseInt(color.slice(5, 7), 16) / 255,
-    );
-    gl.viewport(0, 0, 512, 128);
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    return () => {
-      gl.deleteBuffer(buffer);
-      shaders.forEach((s) => gl.deleteShader(s));
-      gl.deleteProgram(program);
-    };
-  }, [color]);
+      context = target?.getContext('2d');
+    if (!target || !context) return;
+    context.clearRect(0, 0, target.width, target.height);
+    if (source)
+      context.drawImage(
+        source,
+        0,
+        offset,
+        target.width,
+        target.height,
+        0,
+        0,
+        target.width,
+        target.height,
+      );
+  }, [source, offset]);
   return (
     <div className="skin-materials">
-      <canvas ref={canvas} width={512} height={128} aria-hidden="true" />
-      <div role="radiogroup" aria-label="Material">
-        {MATERIALS.map((m) => (
+      <canvas
+        ref={canvas}
+        width={SWATCH * SWATCH_COLUMNS}
+        height={SWATCH * rows}
+        aria-hidden="true"
+      />
+      <div>
+        {materials.map((m) => (
           <button
             key={m.id}
             role="radio"
@@ -202,6 +270,42 @@ export function MaterialSwatches({
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+// Row offset of each group in the rendered swatch sheet.
+const GROUP_OFFSETS = MATERIAL_GROUPS.reduce<number[]>((offsets, group, index) => {
+  offsets.push(
+    index
+      ? offsets[index - 1]! + SWATCH * swatchRows(MATERIAL_GROUPS[index - 1]!.materials.length)
+      : 0,
+  );
+  return offsets;
+}, []);
+export function MaterialSwatches({
+  color,
+  selected,
+  onSelect,
+}: {
+  color: string;
+  selected: number;
+  onSelect: (id: number) => void;
+}) {
+  const source = useMemo(() => renderSwatches(color), [color]);
+  return (
+    <div role="radiogroup" aria-label="Material" className="skin-material-groups">
+      {MATERIAL_GROUPS.map((group, index) => (
+        <section key={group.name} className="skin-material-group">
+          <h4>{group.name}</h4>
+          <SwatchStrip
+            source={source}
+            offset={GROUP_OFFSETS[index]!}
+            materials={group.materials}
+            selected={selected}
+            onSelect={onSelect}
+          />
+        </section>
+      ))}
     </div>
   );
 }

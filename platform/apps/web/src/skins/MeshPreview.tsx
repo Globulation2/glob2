@@ -1,11 +1,22 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
-import type { SwarmMeshId } from '@glob2/protocol';
-import { type Model, ATLAS_SIZE } from './atlas.ts';
+import { COLONY_SKIN_SHELLS, type SwarmMeshId } from '@glob2/protocol';
+import { type Model, ATLAS_SIZE, regionHasShells } from './atlas.ts';
 import { swarmModel } from './swarmShapes.ts';
-import { loadMesh, projectPose, type Camera, type Mesh, type ViewTransform } from './geometry.ts';
+import {
+  furScale,
+  loadMesh,
+  projectPose,
+  type Camera,
+  type Mesh,
+  type ViewTransform,
+} from './geometry.ts';
 import { buildProjection, strokeCoverage, padCoverage, type Projection } from './projection.ts';
 import { SKIN_MATERIAL_GLSL } from './materialShader.ts';
+// Fur length in the game's NDC (3.2 px of its 128 px tile) and the depth
+// bias that lets each shell pass win over the body it grows from.
+const FUR_LENGTH = 0.05;
+const SHELL_DEPTH = '0.002';
 export type Tool = 'brush' | 'erase' | 'pick' | 'orbit';
 export type SceneView = {
   mesh: Mesh;
@@ -121,11 +132,13 @@ export function MeshPreview(props: ViewportProps) {
       for (const [kind, source] of [
         [
           gl.VERTEX_SHADER,
-          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;out vec3 n;out vec2 tex;void main(){gl_Position=vec4(position,1.);n=normal;tex=uv;}`,
+          // Fur shells push the body outward along the normal and slightly
+          // nearer, as the game's tile renderer does.
+          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;out vec3 n;out vec2 tex;uniform float shell;uniform vec2 fur;void main(){gl_Position=vec4(position.xy+normalize(normal).xy*shell*fur,position.z-shell*${SHELL_DEPTH},1.);n=normal;tex=uv;}`,
         ],
         [
           gl.FRAGMENT_SHADER,
-          `#version 300 es\nprecision highp float;in vec3 n;in vec2 tex;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec2 p=tex*.5+region;float id=floor(texture(material,p).r*255.+.5);color=vec4(skinShade(texture(paint,p).rgb,id,n,tex),1.);}`,
+          `#version 300 es\nprecision highp float;in vec3 n;in vec2 tex;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec2 p=tex*.5+region;float id=floor(texture(material,p).r*255.+.5);vec4 shaded=skinShade(texture(paint,p).rgb,id,n,tex,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
         ],
       ] as const) {
         const shader = gl.createShader(kind)!;
@@ -179,12 +192,15 @@ export function MeshPreview(props: ViewportProps) {
         latest.current.model.x / ATLAS_SIZE,
         latest.current.model.y / ATLAS_SIZE,
       );
+      const shellLocation = gl.getUniformLocation(program, 'shell'),
+        furLocation = gl.getUniformLocation(program, 'fur');
       gl.enable(gl.DEPTH_TEST);
       gl.disable(gl.CULL_FACE);
       gl.clearColor(0, 0, 0, 0);
       let animationStart = 0,
         playing = false,
-        startFrame = 0;
+        startFrame = 0,
+        shells = 0;
       render = (time) => {
         const p = latest.current;
         if (p.active === false) return;
@@ -235,6 +251,8 @@ export function MeshPreview(props: ViewportProps) {
           }
           gl.bindBuffer(gl.ARRAY_BUFFER, positions);
           gl.bufferSubData(gl.ARRAY_BUFFER, 0, pose);
+          const fur = furScale(mesh, view, p.camera, width / height);
+          gl.uniform2f(furLocation, fur[0] * FUR_LENGTH, fur[1] * FUR_LENGTH);
           p.onScene?.(scene.current);
         }
         target!.dataset['model'] = asset;
@@ -257,11 +275,15 @@ export function MeshPreview(props: ViewportProps) {
             gl.UNSIGNED_BYTE,
             p.materials,
           );
+          shells = regionHasShells(p.materials, p.model) ? COLONY_SKIN_SHELLS : 0;
           uploaded = p.revision;
         }
         gl.viewport(0, 0, rw, rh);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_INT, 0);
+        for (let shell = 0; shell <= shells; shell++) {
+          gl.uniform1f(shellLocation, shell / COLONY_SKIN_SHELLS);
+          gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_INT, 0);
+        }
         if (!rendered) {
           rendered = true;
           setReady(true);

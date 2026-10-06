@@ -592,7 +592,35 @@ atomically. Existing output directories are never overwritten.
 
 The render revision hashes the meshes, production shaders, view transforms,
 animation mapping, layout and encoding recipe. Changing these inputs regenerates
-derivatives while existing matches retain their pinned bundle. Focused validation
+derivatives while existing matches retain their pinned bundle.
+
+### Skin materials
+
+Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
+(ids, keys, display names, picker groups and whether a material grows fur shells)
+and shaded once in `libgag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+compiles both into the generated `include/glob2/SkinMaterials.h`
+(`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
+GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL
+raw, and the protocol package carries a mirrored `COLONY_SKIN_MATERIALS` list that
+`packages/protocol/test/skinMaterials.test.ts` pins to the JSON.
+
+Every material fills a `SkinSurface` (albedo, perturbed normal, roughness,
+specular, metal, wrap, rim, cel, emissive, alpha) and one `skinLight` lights them
+all, so the catalogue stays consistent. Meshes carry no tangents: perturb normals
+with `skinTilt` from a UV-space height gradient (`SKIN_GRADIENT`), never from
+tangent-space maps. Materials with `shells: true` are drawn `SKIN_MATERIAL_SHELLS`
+extra times with vertices pushed along the camera-space normal; their shader sets
+`alpha` to 0 where a shell carries no strand. Tiles are cached per pose, so no
+material can animate over time.
+
+To add a material: append it to the JSON, add `skinMaterial_<key>` and its
+dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/skins.ts`,
+then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
+suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
+`test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
+`artifacts/skins/materials/`) and review the sheets. Any shader edit changes the
+sprite render revision and re-bakes every published skin. Focused validation
 uses the `SkinAuthorization`, `SkinDownloads`, `SkinSprites` and `SurfaceCoverage`
 unit suites plus the skin-render worker and API tests. To exercise the actual
 worker adapter, run its opt-in `native.test.ts` under Xvfb with

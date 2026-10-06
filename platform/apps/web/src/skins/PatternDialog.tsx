@@ -13,7 +13,7 @@ import {
 } from './projection.ts';
 import { applyCoverage } from './paint.ts';
 import { type Camera } from './geometry.ts';
-import { type Model, MATERIALS } from './atlas.ts';
+import { type Model, MATERIAL_GROUPS } from './atlas.ts';
 export function PatternDialog({
   data,
   model,
@@ -320,10 +320,14 @@ export function PatternDialog({
                   value={secondMaterial}
                   onChange={(e) => setSecondMaterial(Number(e.target.value))}
                 >
-                  {MATERIALS.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name}
-                    </option>
+                  {MATERIAL_GROUPS.map((group) => (
+                    <optgroup key={group.name} label={group.name}>
+                      {group.materials.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.name}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </label>
