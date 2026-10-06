@@ -69,7 +69,7 @@ GeneratorDefinition swampDefinition()
 			"swamp",
 			1,
 			"Swamp",
-			3,
+			4,
 			false,
 			std::move(controls),
 			generate,
