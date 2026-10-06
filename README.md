@@ -1,3 +1,7 @@
+## Aligned approved-fix control
+
+[f0-approved-fixes-control](f0-approved-fixes-control/README.md) retains the fresh 84-run control tournament, all raw logs, commands, fixtures, metrics and provenance. It isolates the approved fixes against pure f0; it is not the final resource-refactor candidate comparison. Every decompressed raw log was SHA-verified.
+
 ## 46ae traversal validation and second CPU gate failure
 
 The `native-46ae-summary.json` identifies production revision, base and frozen binary SHA. `native-46ae-focused.zip` retains 227 passing native cases, build logs, current stock/match traces and their inputs. `native-46ae-performance.zip` retains all rows from the stopped 16-scenario campaign, the 8,192-tick exact traversal comparison, and three-arm late Maxima/Cortex profiles. Every decompressed member was checked against its SHA inventory. Executables and dependencies are excluded.
