@@ -7,8 +7,8 @@
   line-height: 1.45;
 }
 .skin-studio {
-  position: fixed;
-  inset: 0;
+  position: relative;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -964,7 +964,7 @@
   }
   .skin-history {
     display: flex;
-    position: fixed;
+    position: absolute;
     left: 12px;
     top: 184px;
     padding: 3px;

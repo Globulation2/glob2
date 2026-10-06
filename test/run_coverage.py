@@ -30,6 +30,16 @@ def tool(name):
     raise RuntimeError(f'{name} is required (install the LLVM tools matching Clang)')
 
 
+def compact_profiles(profiles, successful):
+    """Drop redundant inputs only after passing tests and complete report generation."""
+    if not successful:
+        return {'raw_profiles_retained': True}
+    size = sum(path.stat().st_size for path in profiles)
+    for path in profiles:
+        path.unlink()
+    return {'raw_profiles_retained': False, 'raw_profile_bytes_removed': size}
+
+
 def area(path):
     parts = Path(path).parts
     if parts[0] == 'src' and len(parts) > 2:
@@ -103,6 +113,8 @@ def main():
     parser.add_argument('--quick', action='store_true')
     parser.add_argument('--no-display', action='store_true')
     parser.add_argument('--fullscreen', action='store_true')
+    parser.add_argument('--discard-merged-profiles', action='store_true',
+                        help='discard raw profiles after successful tests, merge, export and HTML; retain failed-run inputs')
     parser.add_argument('-j', '--jobs', type=int, default=4)
     args = parser.parse_args()
     default_build = 'native-coverage' if args.optimization == 0 else f'native-coverage-o{args.optimization}'
@@ -181,9 +193,13 @@ def main():
                 raise RuntimeError(f'{kind}: coverage diagnostics require investigation; see export.log')
             summary = summarize(json.loads((directory / 'coverage.json').read_text()))
             (directory / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
-            failed |= run(tool(args.llvm_cov) + ['show', *covargs, '-format=html',
+            html_status = run(tool(args.llvm_cov) + ['show', *covargs, '-format=html',
                           f'-output-dir={directory / "html"}', '-show-branches=count'], f'{kind}/html.log')
+            failed |= html_status
             manifest['binaries'][kind] = {'test_exit': test_status, 'profiles': len(profiles)}
+            if args.discard_merged_profiles:
+                manifest['binaries'][kind].update(compact_profiles(
+                    profiles, successful=test_status == 0 and html_status == 0))
     except (RuntimeError, OSError, subprocess.CalledProcessError) as error:
         manifest['error'] = str(error)
         print(error, file=sys.stderr)

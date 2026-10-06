@@ -17,13 +17,15 @@ import type { MusicRunner, CandidateReport, Rendered } from './runner.ts';
 const hash = (s: string) => createHash('sha256').update(s).digest('hex');
 const SYSTEM = `You compose original instrumental music for Globulation 2. Write a developed 50–120 second score on one shared timeline, arranged for calm, building and combat. Warm, cozy, downtempo, spacious, with humanised performance. Develop and vary phrases; never repeat a short loop to fill time. Combat changes orchestration, not just volume. Never copy example melodies. Never claim to have listened to audio.
 You can write Python composition code, executed without network in a disposable sandbox. Define SCORE (glob2music.score.Score), arrange(mood) -> list[Part], and optionally MIX_ADJUST. Standard trusted humanisation/mixing is used; custom performance hooks are not supported. The selected instrument palette is fixed; arbitrary dependencies and downloads are unavailable. Do not change QA or add waivers.
-Respond ONLY with one JSON object: {"action":"read"|"write"|"check"|"render"|"done", "text":"brief user-facing progress", "value":"..."}. read value is one of guide, example, api, instruments, source, report. write value replaces the complete composition.py (at most 128 KiB). check runs cheap score validation. render runs trusted rendering, mastering and all ten audio checks. done only after a passing render. Use the tools to investigate and repair failures. You have at most three render attempts. When revising, edit the supplied source to implement the user's requested change and preserve other musical choices.`;
+The API and example are already supplied below. Read each additional reference at most once and use the tool history results; never repeatedly read instruments or an empty source. After inspecting the palette, write the composition. Each write automatically runs trusted score validation and rendering; inspect the resulting report and repair failures. Passing score checks may include warnings: render to obtain the audio checks instead of repeatedly inspecting references.
+Respond ONLY with one JSON object: {"action":"read"|"write"|"check"|"render"|"done", "text":"brief user-facing progress", "value":"..."}. read value is one of guide, example, api, instruments, source, report. write value replaces the complete composition.py (at most 128 KiB). Use an empty value for check, render and done. check runs cheap score validation. render runs trusted rendering, mastering and all ten audio checks. done only after a passing render. Use the tools to investigate and repair failures. You have at most three render attempts. When revising, edit the supplied source to implement the user's requested change and preserve other musical choices.`;
 interface AgentState {
   source: string;
   step: number;
   renders: number;
   tokens: number;
   history: string[];
+  pendingRender?: boolean;
   report?: CandidateReport;
   delivery?: Delivery;
   renderedSource?: string;
@@ -128,7 +130,13 @@ export class Pipeline {
       this.budget(prompt, 0, cfg);
       signal.throwIfAborted();
       const reply = await attempts.run(row, 'chat', model, { prompt }, () =>
-        this.provider.text(model, prompt, Math.min(4000, cfg.maxOutputTokens ?? 4000), signal),
+        this.provider.text(
+          model,
+          prompt,
+          Math.min(4000, cfg.maxOutputTokens ?? 4000),
+          signal,
+          'discussion',
+        ),
       );
       const value = this.json(reply.text) as { text?: unknown; brief?: unknown };
       if (
@@ -213,27 +221,33 @@ export class Pipeline {
       'running',
       'Writing a composition for three synchronized moods',
     );
-    while (state.step < (cfg.maxCalls ?? 12)) {
+    while (state.step < (cfg.maxCalls ?? 12) || state.pendingRender) {
       signal.throwIfAborted();
       if (state.delivery && state.renderedSource === hash(state.source)) {
         await this.studio.finish(row, state.delivery);
         return;
       }
       const prompt = `${SYSTEM}\nPipeline: ${settings.pipeline}, seed ${settings.seed}\n${guide}\nAPI:\n${api}\nExample (write original music):\n${exampleText}\nBrief: ${row.input.brief}\nConversation: ${JSON.stringify(row.input.messages)}\nCurrent source:\n${state.source}\nTool history:\n${state.history.slice(-8).join('\n')}\nRemaining calls: ${(cfg.maxCalls ?? 12) - state.step}; remaining renders: ${3 - state.renders}`;
-      this.budget(prompt, state.tokens, cfg);
       const step = state.step;
-      signal.throwIfAborted();
-      const reply = await attempts.run(
-        row,
-        `agent:${step}`,
-        model,
-        { promptHash: hash(prompt) },
-        () => this.provider.text(model, prompt, cfg.maxOutputTokens ?? 16000, signal),
-      );
-      state.tokens +=
-        (reply.usage.input_tokens ?? Buffer.byteLength(prompt)) +
-        (reply.usage.output_tokens ?? Buffer.byteLength(reply.text));
-      const action = this.json(reply.text) as { action?: unknown; text?: unknown; value?: unknown };
+      let action: { action?: unknown; text?: unknown; value?: unknown };
+      if (state.pendingRender) {
+        delete state.pendingRender;
+        action = { action: 'render' };
+      } else {
+        this.budget(prompt, state.tokens, cfg);
+        signal.throwIfAborted();
+        const reply = await attempts.run(
+          row,
+          `agent:${step}`,
+          model,
+          { promptHash: hash(prompt) },
+          () => this.provider.text(model, prompt, cfg.maxOutputTokens ?? 16000, signal),
+        );
+        state.tokens +=
+          (reply.usage.input_tokens ?? Buffer.byteLength(prompt)) +
+          (reply.usage.output_tokens ?? Buffer.byteLength(reply.text));
+        action = this.json(reply.text) as typeof action;
+      }
       if (typeof action.text === 'string' && action.text.trim())
         await this.studio.text(row, action.text.slice(0, 16000), state.renders + 1);
       let feedback: string;
@@ -268,7 +282,10 @@ export class Pipeline {
             label: `Composition source · edit ${step + 1}`,
             hash: await this.blobs.write(Buffer.from(state.source), 'text/plain'),
           });
-          feedback = 'composition.py saved. Check or render it.';
+          // Advance a written candidate without relying on another model action.
+          // The trusted renderer includes score validation and all audio checks.
+          state.pendingRender = true;
+          feedback = 'composition.py saved. Validation and rendering will run next.';
         } else if (action.action === 'check' || action.action === 'render') {
           if (!state.source) throw Error('Write composition.py first.');
           const render = action.action === 'render';
@@ -419,7 +436,8 @@ export class Pipeline {
         }
       }
       delete state.candidate;
-      state.history.push(`${action.action}: ${feedback}`);
+      const tool = action.action === 'read' ? `read ${action.value}` : action.action;
+      state.history.push(`${tool}: ${feedback}`);
       state.history = state.history.slice(-8);
       state.step++;
       await this.studio.checkpoint(row, 'processing', { agent: state });

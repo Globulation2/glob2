@@ -12,6 +12,7 @@ for (const width of [320, 390, 900, 1100, 1440, 1920]) {
       await page.goto('/maps');
       await expect(page.getByRole('heading', { name: 'Maps', exact: true })).toBeVisible();
       await expect(page.getByTestId('map-card').first()).toBeVisible();
+      await expect(page.locator('.app-sidebar')).toBeVisible();
       expect(
         await page.evaluate(() => {
           const root = (
@@ -74,3 +75,36 @@ test('drawer closes across breakpoints without trapping focus', async ({ page },
     .click();
   await expect(page.getByRole('heading', { name: 'Maps', exact: true })).toBeVisible();
 });
+
+for (const [path, library] of [
+  ['/skins', 'Skins'],
+  ['/map-studio', 'Maps'],
+  ['/music-studio', 'Music'],
+]) {
+  test(`${path} keeps the shared sidebar visible`, async ({ page }) => {
+    await page.goto(path ?? '/');
+    const sidebar = page.locator('.app-sidebar');
+    await expect(sidebar).toBeVisible();
+    await expect(sidebar.getByRole('link', { name: library, exact: true })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    const sidebarBox = await sidebar.boundingBox();
+    const workspace = await page
+      .locator(path === '/skins' ? '.skin-studio' : '#main')
+      .boundingBox();
+    expect(workspace?.x ?? 0).toBeGreaterThanOrEqual(
+      (sidebarBox?.x ?? 0) + (sidebarBox?.width ?? 0),
+    );
+    if (path === '/skins') {
+      await expect(page.getByRole('status').first()).toHaveText('Ready');
+      await page.getByLabel('Skin name').fill('Sidebar recovery');
+    }
+    await sidebar.getByRole('link', { name: 'Maps', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'Maps', exact: true })).toBeVisible();
+    if (path === '/skins') {
+      await sidebar.getByRole('link', { name: 'Skins', exact: true }).click();
+      await expect(page.getByLabel('Skin name')).toHaveValue('Sidebar recovery');
+    }
+  });
+}

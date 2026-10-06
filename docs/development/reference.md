@@ -1546,6 +1546,11 @@ separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native 
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.
+Its deterministic world-space displacement continues contours across tiles at
+three scales, with shared wrapped control points and a bounded local contour
+budget. Prepared tiles hash control points once; pixel sampling interpolates them
+at the requested native/HD resolution. This changes coverage only, not terrain
+identities, texture selection or simulation randomness.
 
 Within a software page, adjacent opaque tiles become borrowed surface views over
 the raw pixels. Fully transparent tiles submit no draw. Partially transparent

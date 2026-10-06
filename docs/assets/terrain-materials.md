@@ -7,8 +7,10 @@ checksums or the synchronized random stream.
 
 ## Add artwork
 
-A version-1 catalog contains `profiles`, `materials`, `bindings` and optional
-`pair_treatments`. Material keys are unique strings. Bindings map semantic terrain
+A version-2 catalog contains `profiles`, `materials`, `bindings` and optional
+`pair_treatments`. Version-1 packs remain readable with their original five-point
+contours and sampling behavior; version 2 adds denser contours, edge softness and
+world-space bends. Material keys are unique strings. Bindings map semantic terrain
 names to material keys; the five shipped bindings are water, sand, grass, ice and
 road. Adding a visual material does not add gameplay rules. Runtime terrain definitions
 reuse a shipped appearance binding with independently resolved simulation properties;
@@ -99,15 +101,49 @@ reads the scene snapshot, never the live simulation. `PreparedCoverage` resolves
 the nine patches needed by a tile once, including shared contour choices and
 side-connected corner groups, then samples them at native or HD pixel centers.
 
+The optional catalog-level `boundary_warp_q8` array controls world-space bends at
+64-, 32- and 8-pixel scales. The shipped values `[768, 0, 0]` allow at most
+three pixels of broad displacement per axis. Fine breakup comes from the
+authored profiles below; leaving the other fields disabled avoids redundant
+noise and sampling work. When enabled, the first two scales interpolate
+smoothly; the finest adds angular irregularity. These bends continue across tile
+boundaries instead of restarting a motif in every patch. Values are nonnegative
+integers, bounded by `[1024, 384, 128]`; omitting the array disables the field
+for older packs. Try reducing the first value for straighter edges, or the last
+for less fine detail.
+
+All materials share this field so multi-material junctions remain joined. Wrapped
+world coordinates determine its control points, independently of texture variants,
+camera position, animation and simulation randomness. The resolver prepares the
+control points once per tile; native and HD samples use the same geometry.
+
 A boundary profile has `key`, `roughness_q8` (0–512, where 256 is a multiplier of 1),
-and `contours_q12`: exactly four
-five-point displacement curves. Each curve starts and ends at zero; each point is
-an integer within −256…256 in normalized units of 1/4096 of a lattice patch.
+and `contours_q12`: exactly four displacement curves. Each has 5, 9, 17 or 33
+evenly spaced points, starts and ends at zero, and uses integer displacements
+within −512…512 in normalized units of 1/4096 of a lattice patch. Existing
+five-point profiles remain valid; denser controls let artists add small bites
+and protrusions without adding more rendering cases.
 These are displacement controls, not pixel coordinates. The common endpoints
-keep neighboring patches joined.
+keep neighboring patches joined. In version 2, each shared edge has one displaced
+crossing; detailed curves shape the patch interior. This prevents steep authored
+notches from folding a shared edge into disconnected slivers.
 The runtime interpolates these curves in normalized coordinates, so native and HD
-renders use the same shape. Boundary support remains within the eight-pixel band
-between quadrant centers. Center regions and narrow roads remain visible.
+renders use the same shape. World-space displacement and local contours share an
+eight-pixel displacement budget: increasing the former limits the latter. Center
+regions and narrow roads remain visible. The shipped contours take their
+asymmetric bites from the original grass/sand
+transition artwork (`terrain64`, `65`, `68` and `71`). Sand retains 17 control
+points; ice reverses those shapes and increases roughness; cobblestone uses nine
+points for broader chips. The controls remove endpoint drift to preserve shared
+edges. These profiles shape silhouettes; they do not trace individual stones or
+cracks in the interior artwork. Diagonal-only cells still remain distinct.
+
+Optional `feather_q8` controls edge softness from 128 to 512 (half to two native
+pixels, default 256). Softness interpolates from material corner profiles, so
+adjacent patches agree even where three or four materials meet. Pair treatments
+select contour geometry; they do not override this material softness. Keep ice
+and cobblestone sharper than sand rather than using a wide fade to hide a regular
+outline.
 
 Shared edge keys include canonical wrapped coordinates, orientation and stable
 material keys. Both sides choose the same contour. Four corner materials resolve

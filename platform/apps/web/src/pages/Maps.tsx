@@ -229,6 +229,9 @@ export function Maps({ mine }: { mine: boolean }) {
             My maps
           </Link>
         </nav>
+        <Link className="btn" to="/map-studio">
+          Build in AI Map Studio
+        </Link>
         {account && (
           <Link className="btn primary" to="/maps/new">
             Upload a map

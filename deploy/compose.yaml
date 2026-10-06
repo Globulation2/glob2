@@ -205,6 +205,13 @@ services:
   ai-music-worker:
     <<: *hardening
     profiles: [ai-music]
+    # Bubblewrap creates nested user/mount/PID namespaces. Keep confinement,
+    # with the scoped profiles installed as described in the hosting guide.
+    security_opt:
+      - no-new-privileges:true
+      - seccomp=${GLOB2_AI_MUSIC_SECCOMP_PROFILE:-./security/ai-music-seccomp.json}
+      - apparmor=${GLOB2_AI_MUSIC_APPARMOR_PROFILE:-glob2-ai-music}
+      - systempaths=unconfined
     platform: linux/amd64
     image: ${GLOB2_AI_MUSIC_IMAGE:-glob2-ai-music-worker:development}
     build:

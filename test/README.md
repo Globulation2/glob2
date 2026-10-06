@@ -1454,6 +1454,11 @@ Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
 build/test logs, JUnit, compiler/tool versions, source revision, selection,
 profiles, full coverage JSON, weighted implementation summaries and HTML.
+CI passes `--discard-merged-profiles` to remove redundant raw profiles only after
+the binary's tests, profile merge, JSON export and HTML generation succeed. The
+merged profile and all reports and test evidence remain; failed runs retain raw
+profiles for diagnosis. Local runs keep raw profiles by default. The manifest
+records profile retention and the bytes removed for each completed report.
 Engine and unit profiles are merged and exported separately: the engine report
 is the implementation baseline, and the unit report supplements it. Never
 average their percentages or merge independently linked copies of the same

@@ -224,6 +224,14 @@ def main():
             raise RuntimeError("The trusted encoder and FFmpeg must be installed")
         import subprocess
 
+        for binary in ("ffmpeg", "ffprobe"):
+            subprocess.run(
+                [binary, "-version"],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+                timeout=10,
+            )
         acoustic = Backend("acoustic-v1", args.cache, args.job)
         synth = Backend("synth-v1", args.cache, args.job)
         subprocess.run(
