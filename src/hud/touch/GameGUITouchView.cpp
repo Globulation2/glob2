@@ -748,8 +748,9 @@ std::optional<GameGUITouch::ResourceInfo> GameGUITouch::resourceInfo() const
 		const auto& yield = catalog.yields(id)[m];
 		if (!yield.capacity) continue;
 		if (!info.amount.empty()) info.amount += "\n";
-		info.amount += getMaterialName(m) + ": " + (yield.consumption == ResourceConsumption::Infinite ? std::string("∞") :
-			std::to_string(gui.drawnScene().map.materialAmountAt(size_t(gui.selectionResource()),m))+"/"+std::to_string(yield.capacity));
+		const auto amount = gui.drawnScene().map.materialAmountAt(size_t(gui.selectionResource()),m);
+		info.amount += getMaterialName(m) + ": " + (yield.consumption == ResourceConsumption::Infinite && amount > 0 ? std::string("∞") :
+			std::to_string(amount)+"/"+std::to_string(yield.capacity));
 	}
 	return info;
 }

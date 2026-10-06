@@ -51,7 +51,7 @@ void GameGUI::drawResourceInfos(void)
 		if (!yield.capacity) continue;
 		const auto amount = drawnScene().map.materialAmountAt(size_t(selectionResource()),m);
 		const std::string line = getMaterialName(m) + ": " +
-			(yield.consumption == ResourceConsumption::Infinite ? std::string("∞") : std::to_string(amount)+"/"+std::to_string(yield.capacity));
+			(yield.consumption == ResourceConsumption::Infinite && amount > 0 ? std::string("∞") : std::to_string(amount)+"/"+std::to_string(yield.capacity));
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->littleFont, line.c_str());
 		ypos += YOFFSET_TEXT_PARA;
 	}
