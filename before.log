@@ -1,0 +1,23 @@
+.FF
+======================================================================
+FAIL: test_scene_types_do_not_include_simulation_headers (__main__.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) (header='SceneMap.h', include='ResourceRegistry.h')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-lan-windows-artifact-path/glob2/test/build_system/test_scene_boundary.py", line 45, in test_scene_types_do_not_include_simulation_headers
+    self.assertIn(name, SCENE_INCLUDES | {'SceneBuffer.h'})
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ResourceRegistry.h' not found in {'TerrainType.h', 'SceneMap.h', 'SDLGraphicContext.h', 'sim/ClientRequests.h', 'TerrainCompatibility.h', 'Ressource.h', 'AITelemetryValue.h', 'Scene.h', 'sim/EntityRef.h', 'SDL_stdinc.h', 'TerrainProperties.h', 'SDL3/SDL_stdinc.h', 'ScenePanels.h', 'UnitConsts.h', 'SceneBuffer.h', 'SceneEntities.h', 'BitArray.h', 'TerrainPresentation.h'}
+
+======================================================================
+FAIL: test_scene_types_do_not_include_simulation_headers (__main__.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) (header='TerrainProperties.h', include='resource/Material.h')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/repair-lan-windows-artifact-path/glob2/test/build_system/test_scene_boundary.py", line 45, in test_scene_types_do_not_include_simulation_headers
+    self.assertIn(name, SCENE_INCLUDES | {'SceneBuffer.h'})
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'resource/Material.h' not found in {'TerrainType.h', 'SceneMap.h', 'SDLGraphicContext.h', 'sim/ClientRequests.h', 'TerrainCompatibility.h', 'Ressource.h', 'AITelemetryValue.h', 'Scene.h', 'sim/EntityRef.h', 'SDL_stdinc.h', 'TerrainProperties.h', 'SDL3/SDL_stdinc.h', 'ScenePanels.h', 'UnitConsts.h', 'SceneBuffer.h', 'SceneEntities.h', 'BitArray.h', 'TerrainPresentation.h'}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.221s
+
+FAILED (failures=2)

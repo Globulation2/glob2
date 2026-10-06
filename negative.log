@@ -1,0 +1,5 @@
+src/resource/ResourceRegistry.h: Game.h rejected
+src/resource/ResourceProperties.h: Game.h rejected
+src/resource/Material.h: Game.h rejected
+src/game/ExperimentalFeatures.h: Game.h rejected
+libgag/include/Types.h: Game.h rejected
