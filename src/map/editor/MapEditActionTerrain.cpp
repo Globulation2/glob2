@@ -8,6 +8,7 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "GenerationContext.h"
 #include <SDL3/SDL.h>
 #include <charconv>
 
@@ -75,6 +76,13 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 		if (game.buildingsTypes.getFinishedTypeNum(type)<0) return false;
 		selectionName=type;
 		selectionMode=PlaceBuilding;
+	}
+	else if(action=="reroll terrain look")
+	{
+		// Presentation only: the next scene extraction carries the new seed and
+		// every terrain page recomposes. Not undoable, like team edits.
+		game.map.setTerrainSeed(GenerationContext::randomSeed());
+		mapHasBeenModified();
 	}
 	else if(action=="place building")
 	{

@@ -99,6 +99,9 @@ try
 			throw std::ios_base::failure(std::string("Invalid terrain registry: ") + error.what());
 		}
 	}
+	terrainSeedValue = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_SEED
+						   ? stream->readUint32("terrainSeed")
+						   : 0;
 	terrainCounts.assign(terrainRegistry().size(), 0);
 
 	// We allocate memory:
@@ -316,6 +319,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		}
 		stream->writeLeaveSection();
 	}
+	stream->writeUint32(terrainSeedValue, "terrainSeed");
 
 	// We write what's inside the map:
 	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});

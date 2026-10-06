@@ -18,6 +18,9 @@
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
+#include "GameGUI.h"
+#include "BinaryStream.h"
+#include "StreamBackend.h"
 #include <SDL3_image/SDL_image.h>
 #include <RenderBackend.h>
 #ifdef HAVE_OPENGL
@@ -290,6 +293,15 @@ void layeredCache(bool gpu, bool hd = false)
 	CHECK(scene.appearanceAt(0, 0) == TRAIL);
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == previousRecipe);
 	compare();
+	// The terrain look seed travels with the extraction and is part of every
+	// recipe, so a reroll recomposes software and GPU pages alike.
+	const auto seededRecipe = compositor.describe(scene, 0, 0);
+	map.setTerrainSeed(map.terrainSeed() + 1);
+	CHECK(compositor.describe(scene, 0, 0) == seededRecipe);
+	scene.extract(map);
+	CHECK(compositor.describe(scene, 0, 0).seed == map.terrainSeed());
+	CHECK_FALSE(compositor.describe(scene, 0, 0) == seededRecipe);
+	compare();
 	compare();
 	// Content revisions invalidate prepared source pixels and composed pages.
 	auto *source = globals->terrain->nativeFrame(272);
@@ -411,6 +423,34 @@ TEST_SUITE("TerrainPresentation")
 						  (evidence / "crossfade.png").string().c_str()));
 	}
 
+	TEST_CASE("terrain seed survives save and load and stays out of the simulation checksum")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture({.wDec = 5,
+										 .hDec = 5,
+										 .discovered = true,
+										 .loadDefaultRace = true,
+										 .header = true,
+										 .seed = 7331});
+		auto &map = fixture.game.map;
+		const auto checksum = fixture.checksum();
+		map.setTerrainSeed(0x1234abcdu);
+		CHECK(fixture.checksum() == checksum);
+		auto *backend = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream out(backend);
+		fixture.game.save(&out, true, "terrain seed");
+		out.flush();
+		const std::string bytes = backend->takeContents();
+		GameGUI restored(false);
+		GAGCore::BinaryInputStream input(
+			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+		input.seekFromStart(0);
+		REQUIRE(restored.game.load(&input));
+		CHECK(restored.game.map.terrainSeed() == 0x1234abcdu);
+		SceneMap scene;
+		scene.extract(restored.game.map);
+		CHECK(scene.terrainSeed() == 0x1234abcdu);
+	}
 	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
 	{
 		glob2test::HeadlessGlobals globals;

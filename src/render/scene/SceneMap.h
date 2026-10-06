@@ -47,6 +47,8 @@ class SceneMap
 	Uint64 identity() const { return sourceIdentity; }
 	//! Stable key for caches of drawn geometry: the same for every extraction of one map.
 	const void *cacheKey() const { return sourceKey; }
+	//! Map::terrainSeed() at extraction; salts the terrain material hashes.
+	Uint32 terrainSeed() const { return terrainSeedValue; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
@@ -108,6 +110,7 @@ class SceneMap
   private:
 	int w = 0, h = 0, wMask = 0, hMask = 0, wDec = 0;
 	Uint64 sourceIdentity = 0;
+	Uint32 terrainSeedValue = 0;
 	const void *sourceKey = nullptr;
 	int displayViewportW = 0, displayViewportH = 0;
 	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;

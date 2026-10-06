@@ -877,6 +877,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
   an editor brush or a generator's material selection).
+- `Map::terrainSeed()` is presentation state saved with the map (format 138): it salts
+  the terrain material hashes so maps look distinct; generators derive it from their
+  request seed and the editor can reroll it. It is never read by simulation code and
+  is not in `checkSum()`; see [terrain materials](../assets/terrain-materials.md#map-seed).
 - `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
   state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
   batch edits with `editTerrain()` so snapshots, topology and ecology caches stay

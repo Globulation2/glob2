@@ -290,6 +290,68 @@ TEST_SUITE("TerrainMaterials")
 			}
 		}
 	}
+	TEST_CASE("map seed reseeds variants and boundaries without breaking partitions or edges")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		const auto grass = c.find("grass"), sand = c.find("sand");
+		unsigned differentVariants = 0;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				differentVariants += c.variantIndex(grass, x, y, 1) != c.variantIndex(grass, x, y, 2);
+		CHECK(differentVariants > 700); // 15/16 of cells differ between independent seeds.
+		CHECK(c.variantIndex(grass, 5, 6) == c.variantIndex(grass, 5, 6, 0));
+		TerrainVisual::Recipe r;
+		r.width = r.height = 16;
+		r.x = 4;
+		r.y = 9;
+		for (int i = 0; i < 16; ++i)
+			r.samples[i] = (i % 4) < 2 ? grass : sand;
+		unsigned differentPixels = 0;
+		for (std::uint32_t seed : {0u, 1u, 0xdeadbeefu})
+		{
+			TerrainVisual::Recipe seeded = r;
+			seeded.seed = seed;
+			TerrainVisual::Recipe wrapped = seeded;
+			wrapped.x = r.width + r.x; // Same canonical cell reached through wrapping.
+			wrapped.x %= r.width;
+			const TerrainVisual::PreparedCoverage a(c, seeded), b(c, r), w(c, wrapped);
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+				{
+					const auto p = a.at(x * 256 + 128, y * 256 + 128);
+					unsigned total = 0;
+					for (int k = 0; k < 4; ++k)
+						total += p.weight[k];
+					CHECK(total == 65536);
+					CHECK(p.weight == w.at(x * 256 + 128, y * 256 + 128).weight);
+					differentPixels += p.weight != b.at(x * 256 + 128, y * 256 + 128).weight;
+				}
+		}
+		CHECK(differentPixels > 100); // Seeds 1 and 0xdeadbeef move the edge; seed 0 is the base.
+		// Both tiles along a shared edge agree for any seed, as the seedless test checks.
+		TerrainVisual::Recipe left = r, right = r;
+		left.seed = right.seed = 77;
+		right.x = r.x + 1; // One tile is two lattice columns.
+		for (int y = 0; y < 4; ++y)
+			for (int x = 0; x < 4; ++x)
+			{
+				left.samples[y * 4 + x] = (x + y) % 5;
+				right.samples[y * 4 + x] = (x + y + 2) % 5;
+			}
+		for (int y = 0; y < 32; ++y)
+		{
+			const auto p = TerrainVisual::coverage(c, left, 8192, y * 256),
+					   q = TerrainVisual::coverage(c, right, 0, y * 256);
+			std::array<unsigned, 5> pp{}, qq{};
+			for (int k = 0; k < 4; ++k)
+			{
+				pp[p.material[k]] += p.weight[k];
+				qq[q.material[k]] += q.weight[k];
+			}
+			CHECK(pp == qq);
+		}
+	}
 	TEST_CASE("all legacy shore groups retain their corner orientation")
 	{
 		constexpr unsigned masks[] = {8, 4, 1, 2, 3, 12, 5, 10, 7, 11, 14, 13, 6, 9};

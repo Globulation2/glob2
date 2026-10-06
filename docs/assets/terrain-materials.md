@@ -118,7 +118,22 @@ for less fine detail.
 
 All materials share this field so multi-material junctions remain joined. Wrapped
 world coordinates determine its control points, independently of texture variants,
-camera position, animation and simulation randomness. The resolver prepares the
+camera position, animation and simulation randomness.
+
+### Map seed
+
+Every hash in this chapter takes wrapped coordinates, a material or profile salt
+and the map's terrain look seed, `Map::terrainSeed()`. The seed is saved with the
+map (format 138), travels with the map file in multiplayer, and reaches the
+renderer through `SceneMap::terrainSeed()` and `Recipe::seed`, so composed pages
+rebuild when it changes. Generators derive it from the generation request seed
+(`GenerationContext::deriveSeed(seed, "terrain-look")`) without consuming the
+synchronized stream; the editor's menu entry **Reroll terrain look** draws a
+fresh one and marks the map modified; maps saved before format 138 load with
+seed 0. Two maps with the same cells therefore look different, while every
+client of one map draws it identically. The seed is presentation state: it is
+not part of `Map::checkSum()` and no simulation code reads it. Diagnostic calls
+such as `coverage()` default to seed 0. The resolver prepares the
 control points once per tile; native and HD samples use the same geometry.
 
 A boundary profile has `key`, `roughness_q8` (0–512, where 256 is a multiplier of 1),

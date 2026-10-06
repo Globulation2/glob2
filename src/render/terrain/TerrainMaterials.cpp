@@ -247,10 +247,16 @@ unsigned Catalog::profileFor(MaterialId a, MaterialId b) const
 			   ? bb.profile
 			   : (aa.key < bb.key ? aa.profile : bb.profile);
 }
-unsigned Catalog::variantIndex(MaterialId id, int x, int y) const
+std::uint32_t mapSeedSalt(std::uint32_t seed)
+{
+	// Spread the seed before it meets the material and profile salts, so small
+	// seeds do not merely flip low bits of every hash.
+	return seed ? hash(seed, 0x7f4a7c15u, 0x9e3779b9u) : 0;
+}
+unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) const
 {
 	const auto &m = materials[id];
-	unsigned n = hash(x, y, m.salt) % m.totalWeight;
+	unsigned n = hash(x, y, m.salt ^ mapSeedSalt(seed)) % m.totalWeight;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
 		if (n < m.variants[i].weight)
@@ -259,10 +265,10 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y) const
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::frame(MaterialId id, int x, int y, int time) const
+int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) const
 {
 	const auto &m = materials[id];
-	return m.variants[variantIndex(id, x, y)].frame +
+	return m.variants[variantIndex(id, x, y, seed)].frame +
 		   (unsigned(time) / m.animationTicks % m.animationFrames) * m.animationStride;
 }
 std::array<unsigned, 4> legacyCorners(unsigned frame)
@@ -314,6 +320,7 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 	// Local contours displace samples inside their own patch, so this field is
 	// the only displacement that consumes the eight-pixel halo of prepared patches.
 	legacy = c.version == 1;
+	seed = mapSeedSalt(r.seed);
 	constexpr int scales[] = {64, 32, 8};
 	for (unsigned i = 0; i < std::size(warp); ++i)
 	{
@@ -337,7 +344,8 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				const int gy = wrap(r.y * 32 / spacing + y, r.height * 32 / spacing);
 				for (unsigned axis = 0; axis < 2; ++axis)
 					layer.vertices[y * 5 + x][axis] =
-						int(hash(gx, gy, 0x61c88647u + i * 0x9e3779b9u + axis * 0x85ebca6bu) %
+						int(hash(gx, gy,
+								 salted(0x61c88647u + i * 0x9e3779b9u + axis * 0x85ebca6bu)) %
 							(2 * amplitude + 1)) -
 						amplitude;
 			}
@@ -363,7 +371,8 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				const auto salt =
 					c.materials[a].salt ^ c.materials[b].salt ^ (vertical ? 0x46ac23u : 0x973adafu);
 				const auto &profile = c.profiles[c.profileFor(a, b)];
-				const auto motif = hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salt);
+				const auto motif =
+					hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salted(salt));
 				Curve curve{&profile, motif};
 				curve.anchor = std::clamp(curve.wave(2048) * profile.roughness / 256,
 										  -profile.amplitude, profile.amplitude);
@@ -382,8 +391,8 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 				patch.speckle[i] = legacy ? 0 : profile.speckle;
 			}
 			const auto vertex = hash(wrap(qx, r.width * 2), wrap(qy, r.height * 2),
-									 c.materials[ids[0]].salt + c.materials[ids[1]].salt +
-										 c.materials[ids[2]].salt + c.materials[ids[3]].salt);
+									 salted(c.materials[ids[0]].salt + c.materials[ids[1]].salt +
+											c.materials[ids[2]].salt + c.materials[ids[3]].salt));
 			const auto contour =
 				[&](MaterialId a, MaterialId b, MaterialId d, MaterialId e, unsigned motif)
 			{
@@ -454,10 +463,10 @@ int PreparedCoverage::pebbleField(const Catalog &c, const Recipe &r, MaterialId 
 		for (int cx = -1; cx <= 8; ++cx)
 		{
 			const int gx = wrap(r.x * 8 + cx, columns), gy = wrap(r.y * 8 + cy, rows);
-			const auto h = hash(gx, gy, c.materials[id].salt ^ 0x2545f491u);
+			const auto h = hash(gx, gy, salted(c.materials[id].salt ^ 0x2545f491u));
 			if (h & 0x80)
 				continue; // Half of the cells carry a pebble.
-			const auto detail = hash(gx, gy, c.materials[id].salt ^ 0x9e3779b9u);
+			const auto detail = hash(gx, gy, salted(c.materials[id].salt ^ 0x9e3779b9u));
 			auto &pebble = field.cells[(cy + 1) * 10 + cx + 1];
 			pebble.x = cx * 1024 + int((h >> 8) & 1023);
 			pebble.y = cy * 1024 + int((h >> 18) & 1023);
