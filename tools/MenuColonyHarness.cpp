@@ -135,9 +135,11 @@ void generate(const char *path)
 				continue;
 			if ((x % 8 < 4) && (y % 8 < 4))
 			{
-				const int resource =
-					((x / 8 + y / 8) % 5 == 0) ? STONE : ((x / 8 + y / 8) % 2 ? WHEAT : WOOD);
-				game.map.setResource(x, y, resource, 3);
+				const char *key =
+					((x / 8 + y / 8) % 5 == 0) ? "rocks" : ((x / 8 + y / 8) % 2 ? "wheat" : "trees");
+				const auto resource = game.map.resourceRegistry().find(key);
+				require(resource.has_value(), "menu colony resource exists in the catalog");
+				game.map.setResource(x, y, *resource, 3);
 			}
 		}
 	game.sgslScript.compileScript(&game);
@@ -150,7 +152,7 @@ void generate(const char *path)
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
-	game.map.getResourceGradient(0, WHEAT, 0);
+	game.map.getMaterialGradient(0, MaterialId::Food, 0);
 	game.teams[0]->color = Color(73, 191, 184);
 	for (int i = 0; i < 12000; ++i)
 	{
@@ -594,7 +596,7 @@ int main(int argc, char **argv)
 			require(gui.game.load(&in), "load real-game fixture");
 			std::istringstream state(in.readText("rng") + " ");
 			state >> gui.game.syncRandom;
-			gui.game.map.getResourceGradient(0, WHEAT, 0);
+			gui.game.map.getMaterialGradient(0, MaterialId::Food, 0);
 			gui.localTeamNo = 0;
 			gui.localPlayer = 0;
 			gui.adjustLocalTeam();
