@@ -337,7 +337,8 @@ namespace GAGCore
         if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
             SDL_Rect transformed{int(std::floor(x*uiTransformScale+uiTransformX)),int(std::floor(y*uiTransformScale+uiTransformY)),
                 int(std::ceil(w*uiTransformScale)),int(std::ceil(h*uiTransformScale))};
-            SDL_Rect clipped{}; SDL_GetRectIntersection(&transformed,&uiBounds,&clipped);
+            SDL_Rect clipped{};
+            if (!SDL_GetRectIntersection(&transformed,&uiBounds,&clipped)) clipped={};
             x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
         }
 #endif

@@ -109,6 +109,17 @@ TEST_SUITE("GUIInteractionCoverage")
                 result.insert(result.end(),pixels+row*frame->pitch+(frame->w-40)*bytes,pixels+row*frame->pitch+frame->w*bytes);
             return result;
         };
+        const auto headerIsBlank=[&]() {
+            auto* frame=gfx->completedFrame();
+            for(int y=0;y<YPOS_BASE_BUILDING;++y)
+                for(int x=frame->w-RIGHT_MENU_WIDTH;x<frame->w;++x)
+                {
+                    Uint8 red,green,blue,alpha;
+                    if(!SDL_ReadSurfacePixel(frame,x,y,&red,&green,&blue,&alpha)
+                        || red!=24 || green!=35 || blue!=28) return false;
+                }
+            return true;
+        };
         const auto frameHash=[&]() {
             const auto* frame=gfx->completedFrame();const auto* pixels=static_cast<const Uint8*>(frame->pixels);
             Uint64 result=1469598103934665603ull;
@@ -158,13 +169,15 @@ TEST_SUITE("GUIInteractionCoverage")
         target->maxResource[WOOD]=9;render();CHECK(frameHash()!=original);
         const auto changedWood=frameHash();target->maxResource[STONE]=3;render();CHECK(frameHash()!=changedWood);
         target->maxResource[STONE]=0;target->maxResource[WOOD]=7;render();
+        CHECK(headerIsBlank());
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-upgrade-costs.bmp").string().c_str()));
         auto* site=world.game.buildingsTypes.get(nextSite);
         const auto beforeFruit=frameHash();site->semantics.constructionCost[PRUNE]+=5;render();CHECK(frameHash()!=beforeFruit);
         building->hp/=2;render();
         REQUIRE(gui.hoveredBuildingPreview(gui.frameScene.panels.building)==GameGUI::BuildingPreview::Repair);
         while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));
-        render();REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-repair-costs.bmp").string().c_str()));
+        render();CHECK(headerIsBlank());
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-repair-costs.bmp").string().c_str()));
         // A retained frame must resolve upgrade IDs through its own catalog,
         // even after the game installs a differently ordered catalog.
         building->hp=building->type->hpMax;render();
