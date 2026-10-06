@@ -360,6 +360,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	PERF_SCOPE_TIME(Stats);
 	if (!reloaded && needsMeasurementInitialization)
 		initializeMeasurements(team->game->stepCounter);
+	if (reloaded) rebuildMeasurementCountReset();
 	beginMeasurementSnapshot(team);
 	// handle end of game stat step
 	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
@@ -993,6 +994,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         importMeasurement(measurements);
         for (auto& sample : measurementHistory) importMeasurement(sample);
     }
+	rebuildMeasurementCountReset();
 	return true;
 }
 
@@ -1072,6 +1074,8 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 void TeamStats::initializeMeasurements(Uint32 tick)
 {
 	measurements = GameplayMeasurements{};
+	measurementCountTouched.clear();
+	measurementCountCatalogSize = 0;
 	measurements.tick = coverageStartTick = tick;
 	extendedCoverageStartTick = labourCoverageStartTick = tick;
 	coverageBuildingTick = 0;
@@ -1185,11 +1189,23 @@ void TeamStats::printMeasurements(int team, bool final) const
 	emit(measurements, "GLOB2_MEASURE", final);
 }
 
+void TeamStats::rebuildMeasurementCountReset()
+{
+	measurementCountTouched.clear();
+	measurementCountCatalogSize = measurements.variants.size();
+	measurementCountTouched.reserve(measurementCountCatalogSize);
+	for (size_t id=0; id<measurementCountCatalogSize; ++id)
+		if (measurements.variants[id].count) measurementCountTouched.push_back(id);
+}
+
 void TeamStats::beginMeasurementSnapshot(Team *team)
 {
 	measurements.tick = team->game->stepCounter;
 	measurements.variants.resize(team->game->buildingsTypes.size());
-	for (auto& variant : measurements.variants) variant.count=0;
+	if (measurementCountCatalogSize != measurements.variants.size())
+		rebuildMeasurementCountReset();
+	for (const auto id : measurementCountTouched) measurements.variants[id].count=0;
+	measurementCountTouched.clear();
 	std::fill(std::begin(measurements.stock), std::end(measurements.stock), 0);
 	std::fill(std::begin(measurements.carried), std::end(measurements.carried), 0);
 	for (auto &row : measurements.buildings)
@@ -1223,7 +1239,9 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 {
 	if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
 	{
-		++measurements.variants[b->typeNum].count;
+		auto& count=measurements.variants[b->typeNum].count;
+		if (count == 0) measurementCountTouched.push_back(size_t(b->typeNum));
+		++count;
 		if (b->type->shortTypeNum>=0 && b->type->shortTypeNum<IntBuildingType::NB_BUILDING && b->getLongLevel()<NB_BUILDING_LONG_LEVELS)
 			++measurements.buildings[b->type->shortTypeNum][b->getLongLevel()];
 		if (!b->type->useTeamResources)
@@ -1378,6 +1396,8 @@ void TeamStats::sampleDefence(Team *team)
 
 void TeamStats::refreshMeasurements(Team *team)
 {
+	// Explicit cold refresh also accepts caller-supplied diagnostic counts.
+	rebuildMeasurementCountReset();
 	beginMeasurementSnapshot(team);
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 		observeMeasurementUnit(team->myUnits[i]);

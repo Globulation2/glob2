@@ -3,6 +3,7 @@
 
 #include <Stream.h>
 #include <algorithm>
+#include <bit>
 
 #include "AICastor.h"
 #include "FileFormatVersions.h"
@@ -19,12 +20,8 @@ using std::shared_ptr;
 
 AIPlanning::BuildingIntent AICastor::intentForDemand(int demand)
 {
- using I = AIPlanning::BuildingIntent;
- static constexpr I intents[] = {I::ProduceWorker,I::Feed,I::Heal,I::TrainWalk,I::TrainSwim,
-  I::TrainAttackStrength,I::TrainConstruction,I::ProjectileDefense,I::AttractExplorers,
-  I::AttractWarriors,I::ClearResources,I::ExchangeResources};
  assert(demand >= 0 && demand < DemandCount);
- return intents[demand];
+ return demandIntents[demand];
 }
 bool AICastor::provides(const Building& b, int demand) const
 {
@@ -40,8 +37,9 @@ bool AICastor::demandAvailable(int demand) const
 }
 int AICastor::desiredWorkers(const Building& building, int request) const
 {
- int demands = 0;
- for (int demand = 0; demand < DemandCount; ++demand) demands += provides(building,demand);
+ const int completed=building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
+ const auto mask=game->buildingCapabilities().intentMask(completed);
+ const int demands=std::popcount(mask & demandIntentMask);
  if (demands > 1) request = std::max(request,building.maxUnitWorking);
  return std::clamp(request,0,building.type->semantics.assignmentLimit);
 }

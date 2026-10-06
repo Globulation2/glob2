@@ -95,7 +95,7 @@ namespace Cortex
 					obs.feedCapacity += Cortex::cortexInnUnitSupport(
 						bt->maxUnitInside, bt->semantics.feeding.duration);
 			}
-			if (Cortex::servesRole(*team->game, *bt, Cortex::CORTEX_BUILD_SWARM)
+			if ((roles & (1u << Cortex::CORTEX_BUILD_SWARM))
 			 && b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude swarm sites / swarms under upgrade
 			{
@@ -175,7 +175,7 @@ namespace Cortex
 			// C++: BuildingType::maxResource[WHEAT], maxUnitInside, maxUnitWorking
 			//      game/entities/BuildingType.h:76,79,80
 			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
-			if (Cortex::servesRole(*team->game, *bt, Cortex::CORTEX_BUILD_FOOD)
+			if ((roles & (1u << Cortex::CORTEX_BUILD_FOOD))
              && !bt->semantics.production.enabledUnitMask
 			 && b->buildingState == Building::ALIVE
 			 && !bt->isBuildingSite)  // exclude inn sites / inns under upgrade
@@ -245,7 +245,7 @@ namespace Cortex
 				}
 			}
 			// Warrior-attraction providers are independent of presentation or family.
-			if (Cortex::servesRole(*team->game, *bt, Cortex::CORTEX_BUILD_WAR)
+			if ((roles & (1u << Cortex::CORTEX_BUILD_WAR))
 			 && b->buildingState == Building::ALIVE)
 			{
 				obs.warFlagsActive++;

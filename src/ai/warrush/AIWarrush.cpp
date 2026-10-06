@@ -191,14 +191,39 @@ Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int ex
  });
 }
 
-Building *AIWarrush::getBuildingWithoutWorkersAssigned(Intent intent, int num_workers)const
+std::shared_ptr<Order> AIWarrush::staffingOrder() const
 {
- return findBuildingIf(team, [=, this](Building *b) {
-  return provides(*b, intent)
-   && b->maxUnitWorking < std::min(num_workers, b->type->semantics.assignmentLimit)
-   && (b->constructionResultState != Building::NO_CONSTRUCTION
-    || intent == Intent::ProduceWorker || intent == Intent::Feed);
- });
+	constexpr std::array intents = {Intent::ProduceWorker, Intent::ProduceExplorer,
+		Intent::ProduceWarrior, Intent::Feed, Intent::TrainAttackStrength};
+	constexpr std::array requests = {AI_WARRUSH_SWARM_WORKER_COUNT,
+		AI_WARRUSH_SWARM_WORKER_COUNT, AI_WARRUSH_SWARM_WORKER_COUNT,
+		AI_WARRUSH_INN_WORKER_COUNT, AI_WARRUSH_BARRACKS_WORKER_COUNT};
+	constexpr auto completedIntents = (std::uint64_t{1} << unsigned(Intent::ProduceWorker))
+		| (std::uint64_t{1} << unsigned(Intent::Feed));
+	std::array<Building*, intents.size()> candidates{};
+	const auto& index = game->buildingCapabilities();
+	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+	{
+		Building* building = team->myBuildings[slot];
+		if (!building || building->maxUnitWorking >= building->type->semantics.assignmentLimit)
+			continue;
+		const int completed = building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
+		auto mask = index.intentMask(completed);
+		if (building->constructionResultState == Building::NO_CONSTRUCTION)
+			mask &= completedIntents;
+		for (std::size_t intent = 0; intent < intents.size(); ++intent)
+			if (!candidates[intent] && (mask & (std::uint64_t{1} << unsigned(intents[intent])))
+				&& building->maxUnitWorking < requests[intent])
+				candidates[intent] = building;
+		// Intent priority precedes slot order: a later worker producer wins over
+		// an earlier explorer producer. Only the first worker candidate ends the scan.
+		if (candidates.front()) break;
+	}
+	for (std::size_t intent = 0; intent < intents.size(); ++intent)
+		if (Building* building = candidates[intent])
+			return std::make_shared<OrderModifyBuilding>(building->gid,
+				std::min(requests[intent], building->type->semantics.assignmentLimit));
+	return std::make_shared<NullOrder>();
 }
 
 Building *AIWarrush::getSwarmAtRandom()const
@@ -456,23 +481,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		}
 	}
 
-	//all swarms should always have 5 workers at them!
-    Building* weak_swarm=nullptr;
-    for(int unit=0;unit<NB_UNIT_TYPE && !weak_swarm;++unit)
-        weak_swarm=getBuildingWithoutWorkersAssigned(static_cast<Intent>(unit),AI_WARRUSH_SWARM_WORKER_COUNT);
-	if (weak_swarm) return shared_ptr<Order>(new OrderModifyBuilding(weak_swarm->gid, std::min(AI_WARRUSH_SWARM_WORKER_COUNT, weak_swarm->type->semantics.assignmentLimit)));
-
-	//all inns should always have 3 workers at them! (best to build fast, make sure they're fed)
-	Building *weak_inn = getBuildingWithoutWorkersAssigned(Intent::Feed, AI_WARRUSH_INN_WORKER_COUNT);
-	if (weak_inn) return shared_ptr<Order>(new OrderModifyBuilding(weak_inn->gid, std::min(AI_WARRUSH_INN_WORKER_COUNT, weak_inn->type->semantics.assignmentLimit)));
-
-	//work barracks more too.
-	Building *weak_barracks = getBuildingWithoutWorkersAssigned(Intent::TrainAttackStrength, AI_WARRUSH_BARRACKS_WORKER_COUNT);
-	if (weak_barracks && weak_barracks->constructionResultState != Building::NO_CONSTRUCTION)
-	 return shared_ptr<Order>(new OrderModifyBuilding(weak_barracks->gid, std::min(AI_WARRUSH_BARRACKS_WORKER_COUNT, weak_barracks->type->semantics.assignmentLimit)));
-	
-	//nothing at all to do?!
-	return shared_ptr<Order>(new NullOrder);
+	return staffingOrder();
 }
 
 std::shared_ptr<Order> AIWarrush::pruneGuardAreas()

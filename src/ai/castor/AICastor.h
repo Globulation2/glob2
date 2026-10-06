@@ -28,6 +28,20 @@ public:
   TrainAttack, TrainConstruction, DefendWithProjectiles, AttractExplorers,
   AttractWarriors, ClearResources, ExchangeResources, DemandCount };
  static const int NB_HARD_BUILDING=8;
+ // Exact strategy projection: extra production classes and unrelated training
+ // do not introduce additional Castor staffing demands.
+ using Intent = AIPlanning::BuildingIntent;
+ inline static constexpr auto demandIntents = std::to_array<Intent>({
+  Intent::ProduceWorker,Intent::Feed,Intent::Heal,Intent::TrainWalk,Intent::TrainSwim,
+  Intent::TrainAttackStrength,Intent::TrainConstruction,Intent::ProjectileDefense,
+  Intent::AttractExplorers,Intent::AttractWarriors,Intent::ClearResources,Intent::ExchangeResources});
+ static_assert(demandIntents.size() == DemandCount);
+ static_assert(static_cast<unsigned>(Intent::Count) <= 64);
+ inline static constexpr std::uint64_t demandIntentMask = [] {
+  std::uint64_t mask=0;
+  for (const auto intent:demandIntents) mask |= std::uint64_t{1} << static_cast<unsigned>(intent);
+  return mask;
+ }();
  static AIPlanning::BuildingIntent intentForDemand(int demand);
  bool provides(const Building& building, int demand) const;
  bool demandAvailable(int demand) const;

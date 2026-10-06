@@ -579,4 +579,175 @@ TEST_CASE("all native controllers continue deterministically with mixed permuted
         }
     }
 }
+TEST_CASE("Castor projects only its strategic demands and preserves mixed staffing")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int service=0;service<4;++service) {
+        CAPTURE(service);
+        CatalogWorld fixture(AI::CASTOR,false,false,false,[&](nlohmann::json& snapshot) {
+            for(auto& variant:snapshot["variants"]) {
+                const auto key=variant["key"].get<std::string>();
+                if(key=="hospital.0.site") {
+                    variant["semantics"]["assignmentLimit"]=3;
+                    variant["presentation"]["defaultAssigned"]=2;
+                }
+                if(key!="hospital.0.finished" && key!="hospital.1.finished")continue;
+                auto& semantics=variant["semantics"];
+                semantics["feeding"]["enabled"]=false;
+                semantics["healing"]["enabled"]=false;
+                semantics["training"]=nlohmann::json::object();
+                semantics["production"]["recipes"]=nlohmann::json::object();
+                semantics["assignmentLimit"]=6;
+                semantics["admittedUnitMask"]=7;
+                variant["properties"]["maxUnitInside"]=4;
+                const auto training=nlohmann::json{{"enabled",true},{"unitMask",7},{"targetLevel",1},{"duration",1},{"cost",nlohmann::json::object()}};
+                if(key=="hospital.1.finished" || service==2) {
+                    semantics["training"]["walk"]=training;
+                    semantics["training"]["walk"]["constructionLevel"]=1;
+                } else if(service==0) {
+                    const auto recipe=nlohmann::json{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}};
+                    semantics["production"]["recipes"]["worker"]=recipe;
+                    semantics["production"]["recipes"]["explorer"]=recipe;
+                } else if(service==1) {
+                    const auto visit=nlohmann::json{{"enabled",true},{"unitMask",7},{"duration",1},{"cost",nlohmann::json::object()}};
+                    semantics["feeding"]=visit;
+                    semantics["healing"]=visit;
+                } else {
+                    semantics["training"]["armor"]=training;
+                    semantics["training"]["build"]=training;
+                }
+            }
+        });
+        auto& game=fixture.world.game;
+        auto& ai=*dynamic_cast<AICastor*>(game.players[0]->ai->aiImplementation);
+        ai.computeBuildingSum();
+        int initial[AICastor::DemandCount][2][NB_UNIT_LEVELS];
+        for(int demand=0;demand<AICastor::DemandCount;++demand)
+            for(int site=0;site<2;++site)for(int stage=0;stage<NB_UNIT_LEVELS;++stage)
+                initial[demand][site][stage]=ai.buildingLevels[demand][site][stage];
+        auto* finished=game.addBuilding(20,4,fixture.completed,0,4,4);
+        REQUIRE(finished);
+        finished->maxUnitWorking=4;
+        ai.computeBuildingSum();
+        for(int demand=0;demand<AICastor::DemandCount;++demand) {
+            const bool expected=(service==0 && demand==AICastor::ProduceWorkers)
+                || (service==1 && (demand==AICastor::FeedUnits || demand==AICastor::HealUnits))
+                || (service==2 && (demand==AICastor::TrainWalking || demand==AICastor::TrainConstruction));
+            CHECK(ai.buildingLevels[demand][0][0]-initial[demand][0][0]==int(expected));
+        }
+        // Additional production classes and unrelated training do not turn one
+        // strategic demand into several; mixed Castor demands retain staffing.
+        CHECK(ai.desiredWorkers(*finished,1)==((service==1 || service==2) ? 4 : 1));
+        CHECK(ai.desiredWorkers(*finished,9)==6);
+        auto* site=game.addBuilding(25,4,fixture.replacement,0,2,2);
+        REQUIRE(site);
+        CHECK(ai.desiredWorkers(*site,9)==3);
+        if(service==1) {
+            // An upgrade is counted at its explicit target stage. Staffing still
+            // refers to the current feed+heal provider until that transition.
+            finished->buildingState=Building::WAITING_FOR_CONSTRUCTION;
+            finished->constructionResultState=Building::UPGRADE;
+            ai.computeBuildingSum();
+            CHECK(ai.buildingLevels[AICastor::FeedUnits][0][0]==initial[AICastor::FeedUnits][0][0]);
+            CHECK(ai.buildingLevels[AICastor::HealUnits][0][0]==initial[AICastor::HealUnits][0][0]);
+            CHECK(ai.buildingLevels[AICastor::TrainWalking][1][1]==1);
+            CHECK(ai.buildingLevels[AICastor::TrainConstruction][1][1]==1);
+            CHECK(ai.desiredWorkers(*finished,1)==4);
+            finished->buildingState=Building::ALIVE;
+            finished->constructionResultState=Building::NO_CONSTRUCTION;
+        }
+    }
+}
+TEST_CASE("Warrush staffing preserves intent priority slot order and current stage limits")
+{
+    glob2test::HeadlessGlobals globals;
+    CatalogWorld fixture(AI::WARRUSH,false,false,true,[](nlohmann::json& snapshot) {
+        nlohmann::json feeding;
+        for(const auto& variant:snapshot["variants"])
+            if(variant["key"]=="hospital.0.finished") feeding=variant["semantics"]["feeding"];
+        for(auto& variant:snapshot["variants"]) {
+            const auto key=variant["key"].get<std::string>();
+            if(key=="hospital.0.finished") {
+                variant["semantics"]["feeding"]["enabled"]=false;
+                variant["semantics"]["assignmentLimit"]=1;
+                variant["presentation"]["defaultAssigned"]=1;
+            }
+            if(key=="hospital.0.site") variant["semantics"]["assignmentLimit"]=2;
+            if(key=="swarm.0.site") {
+                variant["semantics"]["assignmentLimit"]=4;
+                variant["presentation"]["defaultAssigned"]=4;
+            }
+            if(key=="inn.0.finished") variant["semantics"]["feeding"]=feeding;
+        }
+    });
+    auto& game=fixture.world.game;
+    auto& ai=*dynamic_cast<AIWarrush*>(game.players[0]->ai->aiImplementation);
+    game.teams[0]->myBuildings[0]->maxUnitWorking=5;
+    const auto add=[&](const char* key,int x,int y) {
+        auto* building=game.addBuilding(x,y,game.buildingsTypes.findByKey(key),0,0,0);
+        REQUIRE(building);return building;
+    };
+    const auto selected=[&](Building* building,int requested) {
+        auto order=std::dynamic_pointer_cast<OrderModifyBuilding>(ai.staffingOrder());
+        REQUIRE(order);CHECK(order->gid==building->gid);CHECK(order->numberRequested==requested);
+    };
+    auto* explorer=add("hospital.0.site",14,4);
+    auto* worker=add("swarm.0.site",24,4);
+    auto* secondWorker=add("swarm.0.site",14,14);
+    auto* secondExplorer=add("hospital.0.site",24,14);
+    // Worker intent wins over the lower-slot explorer; within one intent the
+    // first slot wins. Requests use the site's cap, not its completion's cap.
+    selected(worker,4);
+    worker->maxUnitWorking=4;selected(secondWorker,4);
+    secondWorker->maxUnitWorking=4;selected(explorer,2);
+    explorer->maxUnitWorking=2;selected(secondExplorer,2);
+    secondExplorer->maxUnitWorking=2;
+    auto* finishedExplorer=add("hospital.0.finished",14,24);
+    auto* finishedWarrior=add("barracks.0.finished",24,24);
+    auto* trainingSite=add("barracks.1.site",34,14);
+    auto* feeder=add("inn.0.finished",34,24);
+    // Completed explorer/warrior staffing remains outside this strategy's
+    // existing policy; feeding precedes a pure attack-training construction.
+    CHECK(finishedExplorer->maxUnitWorking==0);
+    CHECK(finishedWarrior->maxUnitWorking==0);
+    selected(feeder,3);feeder->maxUnitWorking=3;
+    selected(trainingSite,3);trainingSite->maxUnitWorking=3;
+    CHECK(ai.staffingOrder()->getOrderType()==ORDER_NULL);
+}
+
+TEST_CASE("Warrush mixed producer staffing respects zero and saturated assignment limits")
+{
+    glob2test::HeadlessGlobals globals;
+    for(int limit:{0,2}) {
+        CAPTURE(limit);
+        CatalogWorld fixture(AI::WARRUSH,false,false,false,[&](nlohmann::json& snapshot) {
+            nlohmann::json feeding;
+            for(const auto& variant:snapshot["variants"])
+                if(variant["key"]=="hospital.0.finished") feeding=variant["semantics"]["feeding"];
+            for(auto& variant:snapshot["variants"]) if(variant["key"]=="racetrack.0.finished") {
+                auto& semantics=variant["semantics"];
+                semantics["assignmentLimit"]=limit;
+                variant["presentation"]["defaultAssigned"]=limit;
+                semantics["feeding"]=feeding;
+                semantics["production"]["scheduling"]="weighted_committed_job";
+                const nlohmann::json recipe={{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}};
+                semantics["production"]["recipes"]["worker"]=recipe;
+                semantics["production"]["recipes"]["explorer"]=recipe;
+            }
+        });
+        auto& game=fixture.world.game;
+        auto& ai=*dynamic_cast<AIWarrush*>(game.players[0]->ai->aiImplementation);
+        game.teams[0]->myBuildings[0]->maxUnitWorking=5;
+        auto* hybrid=game.addBuilding(14,4,game.buildingsTypes.findByKey("racetrack.0.finished"),0,0,0);
+        REQUIRE(hybrid);
+        auto order=ai.staffingOrder();
+        if(limit==0) CHECK(order->getOrderType()==ORDER_NULL);
+        else {
+            auto staffing=std::dynamic_pointer_cast<OrderModifyBuilding>(order);
+            REQUIRE(staffing);CHECK(staffing->gid==hybrid->gid);CHECK(staffing->numberRequested==limit);
+        }
+        hybrid->maxUnitWorking=limit;
+        CHECK(ai.staffingOrder()->getOrderType()==ORDER_NULL);
+    }
+}
 }

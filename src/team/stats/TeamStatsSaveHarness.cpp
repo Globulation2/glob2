@@ -39,6 +39,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 static void require(bool ok, const char* message)
 {
@@ -1643,4 +1644,88 @@ TEST_CASE("Compact team histories preserve samples across two batch boundaries" 
     // textRoundTrip; its legacy end-game labels are not valid text identifiers.
     auto restored = roundTrip(world.game);
     compare(stats, restored->game.teams[0]->stats);
+}
+
+
+TEST_CASE("Sparse variant snapshot reset clears vanished types without clearing history" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options; options.header=true;
+    glob2test::HeadlessGame world(options);
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto dormant=catalog["variants"][world.game.buildingsTypes.getTypeNum("stonewall",0,false)];
+    dormant["previous"]=""; dormant["next"]=""; dormant["properties"]["type"]="";
+    dormant["semantics"]["repairable"]=false; dormant["semantics"]["placeable"]=false;
+    for (int id=int(catalog["variants"].size()); id<1024; ++id) {
+        dormant["id"]=id; dormant["key"]="snapshot-dormant-"+std::to_string(id);
+        catalog["variants"].push_back(dormant);
+    }
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    auto* first=world.addBuilding("inn",4,4); auto* second=world.addBuilding("inn",10,4);
+    auto* rare=world.game.addBuilding(16,4,1023,0,0,0);
+    REQUIRE(first); REQUIRE(second); REQUIRE(rare);
+    const auto inn=size_t(first->typeNum);
+    auto& stats=world.team->stats;
+    stats.beginMeasurementSnapshot(world.team);
+    stats.observeMeasurementBuilding(first); stats.observeMeasurementBuilding(second); stats.observeMeasurementBuilding(rare);
+    REQUIRE(stats.measurements.variants[inn].count==2);
+    REQUIRE(stats.measurements.variants[1023].count==1);
+    auto& history=stats.measurements.variants[1023];
+    history.completed[0]=7; history.removed[1]=9; history.trapped[1][0]=11;
+    // The next observed cohort no longer contains either inn; old counts must
+    // disappear while cumulative and independently sampled fields survive.
+    stats.beginMeasurementSnapshot(world.team); stats.observeMeasurementBuilding(rare);
+    CHECK(stats.measurements.variants[inn].count==0);
+    CHECK(stats.measurements.variants[1023].count==1);
+    CHECK(history.completed[0]==7); CHECK(history.removed[1]==9); CHECK(history.trapped[1][0]==11);
+    stats.beginMeasurementSnapshot(world.team);
+    CHECK(stats.measurements.variants[1023].count==0);
+    stats.beginMeasurementSnapshot(world.team);
+    CHECK(stats.measurements.variants[inn].count==0);
+    stats.initializeMeasurements(123);
+    stats.beginMeasurementSnapshot(world.team); stats.observeMeasurementBuilding(first);
+    CHECK(stats.measurements.variants[inn].count==1);
+    CHECK(stats.measurements.variants[1023]==BuildingMeasurement{});
+}
+
+TEST_CASE("Sparse variant reset accepts refreshed diagnostics and restored snapshots" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool text : {false,true}) {
+        CAPTURE(text);
+        glob2test::GameOptions options; options.header=true;
+        glob2test::HeadlessGame world(options);
+        REQUIRE(world.game.sgslScript.compileScript(&world.game,"").type==ErrorReport::ET_OK);
+        auto* inn=world.addBuilding("inn",4,4); REQUIRE(inn);
+        const auto type=size_t(inn->typeNum);
+        const auto absent=size_t(world.game.buildingsTypes.getTypeNum("stonewall",0,false));
+        auto& stats=world.team->stats;
+        stats.refreshMeasurements(world.team);
+        stats.measurements.variants[absent].count=99; // public diagnostic replacement
+        stats.refreshMeasurements(world.team);
+        CHECK(stats.measurements.variants[absent].count==0);
+        CHECK(stats.measurements.variants[type].count==1);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text
+            ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory))
+            : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+        world.game.save(out.get(),false,"sparse snapshot counts");
+        out->flush();
+        const auto bytes=memory->takeContents();
+        for (int repeat=0;repeat<2;++repeat) {
+            auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()); source->seekFromStart(0);
+            std::unique_ptr<GAGCore::InputStream> in(text
+                ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source))
+                : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+            GameGUI restored; REQUIRE(restored.game.load(in.get()));
+            auto& loaded=restored.game.teams[0]->stats;
+            REQUIRE(loaded.measurements.variants[type].count==1);
+            loaded.beginMeasurementSnapshot(restored.game.teams[0]);
+            CHECK(loaded.measurements.variants[type].count==0);
+            loaded.observeMeasurementBuilding(restored.game.teams[0]->myBuildings[0]);
+            CHECK(loaded.measurements.variants[type].count==1);
+            loaded.beginMeasurementSnapshot(restored.game.teams[0]);
+            CHECK(loaded.measurements.variants[type].count==0);
+        }
+    }
 }

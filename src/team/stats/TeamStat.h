@@ -330,6 +330,13 @@ public:
   int getStarvingUnits();
 
 private:
+	// Derived reset index for the live per-variant count, never serialized.
+	// Counts are maintained by begin/observe; cold refresh/import rebuilds this
+	// index when replacing externally supplied diagnostic measurements.
+	std::vector<size_t> measurementCountTouched;
+	size_t measurementCountCatalogSize = 0;
+	void rebuildMeasurementCountReset();
+
 	enum
 	{
 		STATS_SMOOTH_SIZE=32,

@@ -103,6 +103,7 @@ void AICastor::computeBuildingSum()
 			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				buildingLevels[bi][si][li]=0;
 	
+	const auto& capabilities=game->buildingCapabilities();
 	Building **myBuildings=team->myBuildings;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
@@ -116,9 +117,10 @@ void AICastor::computeBuildingSum()
     completed = next->isBuildingSite ? next->nextLevel : b->type->nextLevel;
    }
    if (completed < 0) continue;
-   const int stage=std::clamp(game->buildingCapabilities().lineagePosition(completed)-1,0,NB_UNIT_LEVELS-1);
+   const int stage=std::clamp(capabilities.lineagePosition(completed)-1,0,NB_UNIT_LEVELS-1);
+   const auto mask=capabilities.intentMask(completed);
    for (int demand=0; demand<DemandCount; ++demand)
-    if (game->buildingCapabilities().matches(completed,intentForDemand(demand)))
+    if (mask & (std::uint64_t{1} << static_cast<unsigned>(demandIntents[demand])))
      buildingLevels[demand][upgrading || b->type->isBuildingSite][stage]++;
 
 		}

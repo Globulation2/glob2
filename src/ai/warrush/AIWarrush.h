@@ -79,7 +79,7 @@ private:
 	void init(Player *player);
 	//implementation functions to make the code more like the pseudocode;
 	//these should be improved, and some should be moved to Team.h.
-	Building *getBuildingWithoutWorkersAssigned(Intent intent, int num_workers)const;
+	std::shared_ptr<Order> staffingOrder() const;
 	bool allOfBuildingTypeAreCompleted(Intent intent)const;
 	bool allOfBuildingTypeAreFull(Intent intent)const;
 	bool allOfBuildingTypeAreFullyWorked(Intent intent)const;
