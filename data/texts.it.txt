@@ -5564,3 +5564,5 @@ I lavoratori possono prelevare scorte dal magazzino condiviso dei mercati. I mer
 Importa definizioni del terreno
 [Terrain palette]
 Tavolozza dei terreni
+[Reroll terrain look]
+Genera un nuovo aspetto casuale del terreno

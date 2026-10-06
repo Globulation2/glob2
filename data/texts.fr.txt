@@ -5564,3 +5564,5 @@ Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés.
 Importer des définitions de terrain
 [Terrain palette]
 Palette de terrains
+[Reroll terrain look]
+Tirer à nouveau l’apparence du terrain

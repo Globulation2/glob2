@@ -5564,3 +5564,5 @@ Arbetare kan hämta förnödenheter från marknadernas gemensamma lager. Marknad
 Importera terrängdefinitioner
 [Terrain palette]
 Terrängpalett
+[Reroll terrain look]
+Slumpa terrängens utseende igen

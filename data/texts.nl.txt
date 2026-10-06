@@ -5564,3 +5564,5 @@ Werkers kunnen voorraden uit de gedeelde marktvoorraad halen. Markten kunnen wor
 Terreindefinities importeren
 [Terrain palette]
 Terreinpalet
+[Reroll terrain look]
+Terreinuiterlijk opnieuw loten

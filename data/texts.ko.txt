@@ -5564,3 +5564,5 @@ AI 원격 측정
 지형 정의 가져오기
 [Terrain palette]
 지형 팔레트
+[Reroll terrain look]
+지형 외관 다시 무작위 선택

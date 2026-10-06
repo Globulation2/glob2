@@ -5564,3 +5564,5 @@ Gallout a ra al labourerien kemer pourvezioù e stok boutin ar marc’hadoù. Gw
 Enporzhiañ despizadurioù an tachennoù
 [Terrain palette]
 Paletenn an tachennoù
+[Reroll terrain look]
+Adtresañ neuz an douar

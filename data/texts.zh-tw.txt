@@ -5564,3 +5564,5 @@ AI 遙測
 匯入地形定義
 [Terrain palette]
 地形選擇面板
+[Reroll terrain look]
+重新隨機產生地形外觀

@@ -5564,3 +5564,5 @@ Arbeiter können Vorräte aus dem gemeinsamen Marktbestand holen. Märkte lassen
 Geländedefinitionen importieren
 [Terrain palette]
 Geländepalette
+[Reroll terrain look]
+Geländeaussehen neu auswürfeln

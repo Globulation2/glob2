@@ -5564,3 +5564,5 @@ Công nhân có thể lấy vật tư từ kho chung của các chợ. Chợ có
 Nhập định nghĩa địa hình
 [Terrain palette]
 Bảng chọn địa hình
+[Reroll terrain look]
+Chọn lại ngẫu nhiên diện mạo địa hình

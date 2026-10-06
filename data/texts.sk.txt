@@ -5564,3 +5564,5 @@ Robotníci môžu brať zásoby zo spoločného skladu trhov. Trhy možno vylep�
 Importovať definície terénu
 [Terrain palette]
 Paleta terénov
+[Reroll terrain look]
+Znova náhodne vybrať vzhľad terénu

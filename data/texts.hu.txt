@@ -5564,3 +5564,5 @@ A munkások a piacok közös készletéből is hozhatnak ellátmányt. A piacok 
 Terepdefiníciók importálása
 [Terrain palette]
 Tereppaletta
+[Reroll terrain look]
+Terep megjelenésének újrasorsolása

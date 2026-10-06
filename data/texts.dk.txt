@@ -5564,3 +5564,5 @@ Arbejdere kan hente forsyninger fra markedernes fælles lager. Markeder kan opgr
 Importér terrændefinitioner
 [Terrain palette]
 Terrænpalet
+[Reroll terrain look]
+Vælg terrænets udseende tilfældigt igen
