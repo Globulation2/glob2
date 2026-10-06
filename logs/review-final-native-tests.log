@@ -1,0 +1,8 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/3405/glob2/artifacts/rig/sdl-prefix/lib -Wl,--enable-new-dtags"}, "revision": "43a28506b14692cb91799c07345b8a0c79aaecaf", "sourceStatus": [], "sourceTreeSha256": "e2cf09544b6025a3d0d11ab6ac25d2a8da819aff650cf50d5b5958b9eb0a0192"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases:      44 |      44 passed | 0 failed | 801 skipped
+[doctest] assertions: 2499320 | 2499320 passed | 0 failed |
+[doctest] Status: SUCCESS!

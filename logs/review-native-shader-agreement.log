@@ -1,0 +1,2 @@
+GL_VENDOR=Mesa GL_RENDERER=llvmpipe (LLVM 21.1.8, 256 bits) GL_VERSION=4.5 (Compatibility Profile) Mesa 26.0.8-1ubuntu0.3
+vertices=2834 max_logical_pixels=1.13249e-06 max_normal_vector_error=2.89328e-07

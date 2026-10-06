@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+BuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13

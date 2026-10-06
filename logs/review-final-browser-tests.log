@@ -1,0 +1,20 @@
+
+Running 9 tests using 1 worker
+
+(node:1436060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › platform/apps/web/e2e/rig-conformance.ts:36:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (532ms)
+  ✓  2 [chromium] › platform/apps/web/e2e/rig-conformance.ts:36:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (382ms)
+  ✓  3 [chromium] › platform/apps/web/e2e/rig-conformance.ts:36:3 › installed worker: every clip and frame agrees with the production shader (2.7s)
+(node:1436652) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [firefox] › platform/apps/web/e2e/rig-conformance.ts:36:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (1.6s)
+  ✓  5 [firefox] › platform/apps/web/e2e/rig-conformance.ts:36:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (694ms)
+  ✓  6 [firefox] › platform/apps/web/e2e/rig-conformance.ts:36:3 › installed worker: every clip and frame agrees with the production shader (2.8s)
+(node:1437323) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  7 [webkit] › platform/apps/web/e2e/rig-conformance.ts:36:3 › analytic hierarchy and weighted normals: every clip and frame agrees with the production shader (611ms)
+  ✓  8 [webkit] › platform/apps/web/e2e/rig-conformance.ts:36:3 › translated camera with rounded influence sums: every clip and frame agrees with the production shader (475ms)
+  ✓  9 [webkit] › platform/apps/web/e2e/rig-conformance.ts:36:3 › installed worker: every clip and frame agrees with the production shader (3.1s)
+
+  9 passed (20.2s)

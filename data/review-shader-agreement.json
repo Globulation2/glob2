@@ -1,0 +1,83 @@
+[
+  {
+    "browser": "chromium",
+    "asset": "analytic hierarchy and weighted normals",
+    "positionError": 7.913502226117254e-07,
+    "normalError": 1.3328003749250113e-07,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  {
+    "browser": "chromium",
+    "asset": "translated camera with rounded influence sums",
+    "positionError": 0,
+    "normalError": 8.429369702178807e-08,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  {
+    "browser": "chromium",
+    "asset": "installed worker",
+    "positionError": 4.268012273340603e-06,
+    "normalError": 2.5474013384101925e-07,
+    "checkedPoses": 256,
+    "clips": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+  },
+  {
+    "browser": "firefox",
+    "asset": "analytic hierarchy and weighted normals",
+    "positionError": 7.913502226117254e-07,
+    "normalError": 1.3328003749250113e-07,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "NVIDIA GeForce GTX 980, or similar"
+  },
+  {
+    "browser": "firefox",
+    "asset": "translated camera with rounded influence sums",
+    "positionError": 0,
+    "normalError": 0,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "NVIDIA GeForce GTX 980, or similar"
+  },
+  {
+    "browser": "firefox",
+    "asset": "installed worker",
+    "positionError": 3.4559452041825706e-06,
+    "normalError": 2.443972150513042e-07,
+    "checkedPoses": 256,
+    "clips": 1,
+    "renderer": "NVIDIA GeForce GTX 980, or similar"
+  },
+  {
+    "browser": "webkit",
+    "asset": "analytic hierarchy and weighted normals",
+    "positionError": 7.913502226117254e-07,
+    "normalError": 1.3328003749250113e-07,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "Apple GPU"
+  },
+  {
+    "browser": "webkit",
+    "asset": "translated camera with rounded influence sums",
+    "positionError": 0,
+    "normalError": 0,
+    "checkedPoses": 512,
+    "clips": 2,
+    "renderer": "Apple GPU"
+  },
+  {
+    "browser": "webkit",
+    "asset": "installed worker",
+    "positionError": 3.4559452041825706e-06,
+    "normalError": 2.443972150513042e-07,
+    "checkedPoses": 256,
+    "clips": 1,
+    "renderer": "Apple GPU"
+  }
+]
