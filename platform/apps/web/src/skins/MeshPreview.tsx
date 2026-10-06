@@ -471,8 +471,10 @@ export function MeshPreview(props: ViewportProps) {
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>{error}</p>
-          <button onClick={() => setAttempt((n) => n + 1)}>Retry 3D canvas</button>
+          <p>{props.interactive === false ? 'Preview unavailable' : error}</p>
+          {props.interactive !== false && (
+            <button onClick={() => setAttempt((n) => n + 1)}>Retry 3D canvas</button>
+          )}
         </div>
       )}
     </div>

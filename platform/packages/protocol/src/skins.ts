@@ -192,3 +192,27 @@ export const SkinReportList = Open({
   nextCursor: Type.Optional(Uuid),
 });
 export type SkinReportList = Static<typeof SkinReportList>;
+
+/** Mutable account designs; these identifiers never replace immutable match versions. */
+export const CreateSkinDesignRequest = Strict({
+  id: Uuid,
+  name: Type.String({ minLength: 1, maxLength: 64 }),
+  sourceSkinId: Type.Optional(Uuid),
+});
+export const ApplySkinDesignRequest = Strict({ revision: Uuid });
+export const SkinDesign = Open({
+  ...SkinDraft.properties,
+  skinId: Uuid,
+  appliedRevision: Type.Union([Uuid, Type.Null()]),
+  appliedVersionId: Type.Union([Uuid, Type.Null()]),
+});
+export type SkinDesign = Static<typeof SkinDesign>;
+export const SkinCollection = Open({
+  activeArtworkStatus: ColonySkinVersion.properties.softwareStatus,
+  designs: Type.Array(SkinDesign),
+  presets: Type.Array(Open({ ...ColonySkinVersion.properties, name: Type.String() })),
+  equippedVersionId: Type.Union([Uuid, Type.Null()]),
+  activeSkinId: Type.Union([Uuid, Type.Null()]),
+  canUseCustom: Type.Boolean(),
+});
+export type SkinCollection = Static<typeof SkinCollection>;

@@ -94,7 +94,7 @@ export function useToolboxLayout(visible: boolean) {
           dragging.current !== null ||
           e.button !== 0 ||
           window.innerWidth < 900 ||
-          (e.target as HTMLElement).closest('button')
+          (e.target as HTMLElement).closest('button, summary')
         )
           return;
         const panel = toolbox.current?.getBoundingClientRect();
