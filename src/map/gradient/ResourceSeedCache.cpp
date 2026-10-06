@@ -122,7 +122,9 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 	{
 		const Uint8 resource = cell.resource.type;
 		const bool unoccupied = map.immobileUnits[index] == IMMOBILE_UNIT_NONE;
-		if (flags & (Resource | Immobile))
+		// Occupancy alone cannot change a resource-free cell's goal membership.
+		// Resource notices still handle removals, including coalesced edits.
+		if ((flags & Resource) || ((flags & Immobile) && resource != NO_RES_TYPE))
 		{
 			const Uint8 old = s.resourceTypes[index];
 			const Uint8 next = unoccupied ? resource : NO_RES_TYPE;

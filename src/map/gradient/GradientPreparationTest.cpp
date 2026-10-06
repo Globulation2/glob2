@@ -411,6 +411,17 @@ TEST_SUITE("GradientPreparation")
 			compare(WOOD, GRADIENT_FORBIDDEN);
 			m.clearImmobileUnit(x, y);
 			compare(WOOD, GRADIENT_AT_GOAL);
+			// A coalesced removal must clear a previously published resource bit,
+			// even when the final cell is empty and unoccupied again.
+			m.replaceResource(at, Resource{});
+			m.markImmobileUnit(x, y, 0);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
+			// Empty-cell occupancy still updates base passability without a goal.
+			m.markImmobileUnit(x, y, 0);
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
 			// Goals still override terrain/buildings, with fog live and paint last.
 			m.replaceResource(at, Resource{static_cast<Uint8>(hiddenResource), 0, 1, 0});
 			m.setCellTerrain(at, WATER);
