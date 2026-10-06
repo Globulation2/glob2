@@ -1,0 +1,76 @@
+[WebServer] (node:96318) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 132 tests using 1 worker
+
+(node:96324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘    1 [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) (39.0s)
+(node:96430) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘    2 [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) (16.1s)
+
+
+  1) [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) ─────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { level: 1 }).first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { level: 1 }).first() with timeout 5000ms
+      - waiting for getByRole('heading', { level: 1 }).first()
+
+
+      64 |       if (entry.signedIn) await signIn(page, seed.userSession);
+      65 |       await page.goto(entry.path);
+    > 66 |       await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+         |                                                                     ^
+      67 |       await page.waitForLoadState('networkidle');
+      68 |       const violations = await axe(page);
+      69 |       const overflow = await sidewaysScroll(page);
+        at /Users/bradley/.codex/worktrees/5f0c/glob2/platform/apps/web/e2e/a11y.spec.ts:66:69
+
+    Error Context: ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-light--desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-light--desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-light--desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) ──────────
+
+    Test was interrupted.
+
+    Error: page.waitForLoadState: Test ended.
+
+      65 |       await page.goto(entry.path);
+      66 |       await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+    > 67 |       await page.waitForLoadState('networkidle');
+         |                  ^
+      68 |       const violations = await axe(page);
+      69 |       const overflow = await sidewaysScroll(page);
+      70 |       if (violations.length > 0 || overflow > 0) found[entry.name] = { violations, overflow };
+        at /Users/bradley/.codex/worktrees/5f0c/glob2/platform/apps/web/e2e/a11y.spec.ts:67:18
+
+    Error Context: ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-dark--desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-dark--desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/a11y-every-page-passes-axe-and-fits-the-screen-dark--desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) ──────────
+  1 interrupted
+    [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) ───────────
+  130 did not run

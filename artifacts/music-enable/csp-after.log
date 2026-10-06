@@ -1,0 +1,15 @@
+[WebServer] (node:96177) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:96195) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (252ms)
+  ✓  2 [desktop] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit (1.2s)
+(node:96206) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [phone] › e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (229ms)
+  ✓  4 [phone] › e2e/music-studio.spec.ts:6:1 › music workspace exposes revision checks and keeps publication explicit (1.2s)
+
+  4 passed (5.7s)

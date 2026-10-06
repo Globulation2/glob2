@@ -1,0 +1,29 @@
+[WebServer] (node:96139) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:96147) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (552ms)
+
+
+  1) [desktop] › e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked 
+
+    Error: page.evaluate: Error: Aborted(CompileError: WebAssembly.instantiate(): Compiling or instantiating WebAssembly module violates the following Content Security policy directive because 'unsafe-eval' is not an allowed source of script in the following Content Security Policy directive: "script-src 'self'".). Build with -sASSERTIONS for more info.
+        at worker.onmessage (eval at evaluate (:311:30), <anonymous>:17:38)
+        at worker.onmessage (eval at evaluate (:311:30), <anonymous>:17:38)
+        at /Users/bradley/.codex/worktrees/5f0c/glob2/platform/apps/web/e2e/music-decoder.spec.ts:19:29
+
+    Error Context: ../../../artifacts/web-app/test-results/music-decoder-production-C-f6016-nt-evaluation-stays-blocked-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/music-decoder-production-C-f6016-nt-evaluation-stays-blocked-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/music-decoder-production-C-f6016-nt-evaluation-stays-blocked-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked 
