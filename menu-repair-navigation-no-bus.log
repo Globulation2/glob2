@@ -1,0 +1,35 @@
+global_assets_ms=5220.17
+theme_setup_ms=0.595106
+==================
+WARNING: ThreadSanitizer: data race (pid=2065436)
+  Write of size 8 at 0x720400010720 by main thread:
+    #0 free ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:735 (libtsan.so.2+0x8cb43) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 NET_UnrefAddress <null> (libSDL3_net.so.0+0x47be) (BuildId: 850c48394156fcbf48293bc679ea199543788338)
+    #2 NetBroadcastListener::~NetBroadcastListener() src/net/NetBroadcastListener.cpp:15 (MenuColonyHarness+0x1786ea7) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 LANFindScreen::~LANFindScreen() src/net/lan/screens/LANFindScreen.cpp:20 (MenuColonyHarness+0xd15d87) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 LANFindScreen::~LANFindScreen() src/net/lan/screens/LANFindScreen.cpp:20 (MenuColonyHarness+0xd15dfd) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 std::default_delete<GAGGUI::Screen>::operator()(GAGGUI::Screen*) const /usr/include/c++/13/bits/unique_ptr.h:99 (MenuColonyHarness+0x124d86) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #6 std::unique_ptr<GAGGUI::Screen, std::default_delete<GAGGUI::Screen> >::~unique_ptr() /usr/include/c++/13/bits/unique_ptr.h:404 (MenuColonyHarness+0x11de58) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #7 GAGGUI::ScreenStack::Entry::~Entry() libgag/include/ScreenStack.h:35 (MenuColonyHarness+0x259dae5) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #8 GAGGUI::ScreenStack::boundary() libgag/src/ScreenStack.cpp:89 (MenuColonyHarness+0x259ac74) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #9 GAGGUI::ScreenStack::frame(unsigned int, std::vector<SDL_Event, std::allocator<SDL_Event> > const&, bool) libgag/src/ScreenStack.cpp:146 (MenuColonyHarness+0x259b722) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #10 operator() tools/MenuColonyHarness.cpp:843 (MenuColonyHarness+0x10699e) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #11 main tools/MenuColonyHarness.cpp:857 (MenuColonyHarness+0x10ab9f) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+  Previous write of size 8 at 0x720400010720 by thread T15:
+    #0 memcpy ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:117 (libtsan.so.2+0x8edad) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 memcpy ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:109 (libtsan.so.2+0x8edad)
+    #2 SDL_strdup_REAL <null> (libSDL3.so.0+0x12aa73) (BuildId: 211c3e0d19fbf51196213b652fc16b0aad252ad1)
+
+  Thread T15 'SDLNetRslv0' (tid=2065721, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1078 (libtsan.so.2+0x5cb02) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_SYS_CreateThread <null> (libSDL3.so.0+0x2e586f) (BuildId: 211c3e0d19fbf51196213b652fc16b0aad252ad1)
+    #2 NetBroadcastListener::NetBroadcastListener() src/net/NetBroadcastListener.cpp:11 (MenuColonyHarness+0x1786e4b) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 LANFindScreen::LANFindScreen(GAGGUI::ScreenStack&) src/net/lan/screens/LANFindScreen.cpp:16 (MenuColonyHarness+0xd15c92) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 std::__detail::_MakeUniq<LANFindScreen>::__single_object std::make_unique<LANFindScreen, GAGGUI::ScreenStack&>(GAGGUI::ScreenStack&) /usr/include/c++/13/bits/unique_ptr.h:1070 (MenuColonyHarness+0x11ff15) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:857 (MenuColonyHarness+0x10ab66) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+SUMMARY: ThreadSanitizer: data race (/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib/libSDL3_net.so.0+0x47be) (BuildId: 850c48394156fcbf48293bc679ea199543788338) in NET_UnrefAddress
+==================
+PASS: actual screen loops, keyboard exits, theme restoration
+ThreadSanitizer: reported 1 warnings

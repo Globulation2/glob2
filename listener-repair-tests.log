@@ -1,0 +1,19 @@
+test_configured_proxy_preserves_numeric_client_address (test_listener.ListenerTests.test_configured_proxy_preserves_numeric_client_address) ... ok
+test_connection_limit_counts_stalled_handshakes (test_listener.ListenerTests.test_connection_limit_counts_stalled_handshakes) ... ok
+test_direct_client_cannot_spoof_peer_address (test_listener.ListenerTests.test_direct_client_cannot_spoof_peer_address) ... ok
+test_lan_browser_trust_and_explicit_origin_allowlist (test_listener.ListenerTests.test_lan_browser_trust_and_explicit_origin_allowlist) ... ok
+test_lan_certificate_pairing_and_changed_pin (test_listener.ListenerTests.test_lan_certificate_pairing_and_changed_pin) ... ok
+test_native_origin_optional_and_wrong_origin_rejected (test_listener.ListenerTests.test_native_origin_optional_and_wrong_origin_rejected) ... ok
+test_plaintext_and_missing_client_certificate_rejected (test_listener.ListenerTests.test_plaintext_and_missing_client_certificate_rejected) ... ok
+test_private_ca_keys_are_not_replaced (test_listener.ListenerTests.test_private_ca_keys_are_not_replaced) ... ok
+test_server_identity_is_loaded_once_at_startup (test_listener.ListenerTests.test_server_identity_is_loaded_once_at_startup) ... ok
+test_text_and_oversized_frames_rejected (test_listener.ListenerTests.test_text_and_oversized_frames_rejected) ... ok
+test_text_mode_echoes_text_and_rejects_binary (test_listener.ListenerTests.test_text_mode_echoes_text_and_rejects_binary) ... ok
+test_text_mode_rejects_oversized_declared_message (test_listener.ListenerTests.test_text_mode_rejects_oversized_declared_message) ... ok
+test_tls_before_12_rejected (test_listener.ListenerTests.test_tls_before_12_rejected) ... ok
+test_verified_binary_echo_and_fragmentation (test_listener.ListenerTests.test_verified_binary_echo_and_fragmentation) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 4.840s
+
+OK

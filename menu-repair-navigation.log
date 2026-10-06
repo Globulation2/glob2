@@ -1,0 +1,59 @@
+global_assets_ms=4899.35
+theme_setup_ms=0.579806
+==================
+WARNING: ThreadSanitizer: data race (pid=2063711)
+  Write of size 8 at 0x7204000108d0 by main thread:
+    #0 free ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:735 (libtsan.so.2+0x8cb43) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 NET_UnrefAddress <null> (libSDL3_net.so.0+0x47be) (BuildId: 850c48394156fcbf48293bc679ea199543788338)
+    #2 NetBroadcastListener::~NetBroadcastListener() src/net/NetBroadcastListener.cpp:15 (MenuColonyHarness+0x1786ea7) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 LANFindScreen::~LANFindScreen() src/net/lan/screens/LANFindScreen.cpp:20 (MenuColonyHarness+0xd15d87) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 LANFindScreen::~LANFindScreen() src/net/lan/screens/LANFindScreen.cpp:20 (MenuColonyHarness+0xd15dfd) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 std::default_delete<GAGGUI::Screen>::operator()(GAGGUI::Screen*) const /usr/include/c++/13/bits/unique_ptr.h:99 (MenuColonyHarness+0x124d86) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #6 std::unique_ptr<GAGGUI::Screen, std::default_delete<GAGGUI::Screen> >::~unique_ptr() /usr/include/c++/13/bits/unique_ptr.h:404 (MenuColonyHarness+0x11de58) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #7 GAGGUI::ScreenStack::Entry::~Entry() libgag/include/ScreenStack.h:35 (MenuColonyHarness+0x259dae5) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #8 GAGGUI::ScreenStack::boundary() libgag/src/ScreenStack.cpp:89 (MenuColonyHarness+0x259ac74) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #9 GAGGUI::ScreenStack::frame(unsigned int, std::vector<SDL_Event, std::allocator<SDL_Event> > const&, bool) libgag/src/ScreenStack.cpp:146 (MenuColonyHarness+0x259b722) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #10 operator() tools/MenuColonyHarness.cpp:843 (MenuColonyHarness+0x10699e) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #11 main tools/MenuColonyHarness.cpp:857 (MenuColonyHarness+0x10ab9f) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+  Previous write of size 8 at 0x7204000108d0 by thread T15:
+    #0 memcpy ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:117 (libtsan.so.2+0x8edad) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 memcpy ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors_memintrinsics.inc:109 (libtsan.so.2+0x8edad)
+    #2 SDL_strdup_REAL <null> (libSDL3.so.0+0x12aa73) (BuildId: 211c3e0d19fbf51196213b652fc16b0aad252ad1)
+
+  Thread T15 'SDLNetRslv0' (tid=2064093, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1078 (libtsan.so.2+0x5cb02) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_SYS_CreateThread <null> (libSDL3.so.0+0x2e586f) (BuildId: 211c3e0d19fbf51196213b652fc16b0aad252ad1)
+    #2 NetBroadcastListener::NetBroadcastListener() src/net/NetBroadcastListener.cpp:11 (MenuColonyHarness+0x1786e4b) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 LANFindScreen::LANFindScreen(GAGGUI::ScreenStack&) src/net/lan/screens/LANFindScreen.cpp:16 (MenuColonyHarness+0xd15c92) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 std::__detail::_MakeUniq<LANFindScreen>::__single_object std::make_unique<LANFindScreen, GAGGUI::ScreenStack&>(GAGGUI::ScreenStack&) /usr/include/c++/13/bits/unique_ptr.h:1070 (MenuColonyHarness+0x11ff15) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:857 (MenuColonyHarness+0x10ab66) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+SUMMARY: ThreadSanitizer: data race (/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib/libSDL3_net.so.0+0x47be) (BuildId: 850c48394156fcbf48293bc679ea199543788338) in NET_UnrefAddress
+==================
+==================
+WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=2063711)
+  Cycle in lock order graph: M0 (0x720c00021840) => M1 (0x720c00021540) => M0
+
+  Mutex M1 acquired here while holding mutex M0 in main thread:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1424 (libtsan.so.2+0x5c00a) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 <null> <null> (libdbus-1.so.3+0x1462c) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037)
+    #2 GAGCore::Toolkit::initGraphic(int, int, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) libgag/src/Toolkit.cpp:50 (MenuColonyHarness+0x257511c) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 GlobalContainer::loadClient() src/app/GlobalContainer.cpp:190 (MenuColonyHarness+0xcfcaf1) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 GlobalContainer::load() src/app/GlobalContainer.cpp:454 (MenuColonyHarness+0xd005ea) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:490 (MenuColonyHarness+0x106e58) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+    Hint: use TSAN_OPTIONS=second_deadlock_stack=1 to get more informative warning message
+
+  Mutex M0 acquired here while holding mutex M1 in main thread:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1424 (libtsan.so.2+0x5c00a) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 <null> <null> (libdbus-1.so.3+0x156a2) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037)
+    #2 GAGCore::GraphicContext::~GraphicContext() libgag/src/GraphicContext.cpp:306 (MenuColonyHarness+0x24b8f73) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 GAGCore::Toolkit::close() libgag/src/Toolkit.cpp:76 (MenuColonyHarness+0x2575527) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 GlobalContainer::~GlobalContainer() src/app/GlobalContainer.cpp:143 (MenuColonyHarness+0xcfbf57) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:943 (MenuColonyHarness+0x10bc92) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) (/usr/lib/x86_64-linux-gnu/libdbus-1.so.3+0x1462c) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037) 
+==================
+PASS: actual screen loops, keyboard exits, theme restoration
+ThreadSanitizer: reported 2 warnings

@@ -1,0 +1,32 @@
+global_assets_ms=5270.92
+theme_setup_ms=0.525856
+colony_load_ms=1735.52
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+Map generation: fingerprint revision 4 seed 1567874087 [complete]: 
+==================
+WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=2062421)
+  Cycle in lock order graph: M0 (0x720c0000c450) => M1 (0x720c0000c120) => M0
+
+  Mutex M1 acquired here while holding mutex M0 in main thread:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1424 (libtsan.so.2+0x5c00a) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 <null> <null> (libdbus-1.so.3+0x1462c) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037)
+    #2 GAGCore::Toolkit::initGraphic(int, int, unsigned int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) libgag/src/Toolkit.cpp:50 (MenuColonyHarness+0x257511c) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 GlobalContainer::loadClient() src/app/GlobalContainer.cpp:190 (MenuColonyHarness+0xcfcaf1) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 GlobalContainer::load() src/app/GlobalContainer.cpp:454 (MenuColonyHarness+0xd005ea) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:490 (MenuColonyHarness+0x106e58) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+    Hint: use TSAN_OPTIONS=second_deadlock_stack=1 to get more informative warning message
+
+  Mutex M0 acquired here while holding mutex M1 in main thread:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1424 (libtsan.so.2+0x5c00a) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 <null> <null> (libdbus-1.so.3+0x156a2) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037)
+    #2 GAGCore::GraphicContext::~GraphicContext() libgag/src/GraphicContext.cpp:306 (MenuColonyHarness+0x24b8f73) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #3 GAGCore::Toolkit::close() libgag/src/Toolkit.cpp:76 (MenuColonyHarness+0x2575527) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #4 GlobalContainer::~GlobalContainer() src/app/GlobalContainer.cpp:143 (MenuColonyHarness+0xcfbf57) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+    #5 main tools/MenuColonyHarness.cpp:943 (MenuColonyHarness+0x10bc92) (BuildId: 8b6c36099314c0693f5a2efaf7fce829435a95c2)
+
+SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) (/usr/lib/x86_64-linux-gnu/libdbus-1.so.3+0x1462c) (BuildId: 2fdc230f668d66316c34db81c69962c1339c7037) 
+==================
+PASS: presentation, bounded text, timing, isolation, determinism, scoped style, fallback
+ThreadSanitizer: reported 1 warnings

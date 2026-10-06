@@ -1,0 +1,11 @@
+# PR 831 verification
+Tested source 07d062c11d616530f23eef4f03d3c47c736ec681; fetched base 3cb9aa93dc491cf5b5e67d231f664f1084c7be18.
+Ubuntu 26.04 x86_64, GCC 13.4.0, Python 3.14.4. Native harnesses built with release=0 server=0, -g -fsanitize=thread, SDL3 3.4.16 / SDL3_net 3.2.0 / pinned recording dependencies. Build logs contain exact compile/link inputs.
+Commands:
+GLOB2_WSS_LISTENER=$PWD/build/capability-tsan/src/wss-listener-test GLOB2_WSS_PROBE=$PWD/build/capability-tsan/src/wss-transport-test GLOB2_HTTP_FETCH_PROBE=$PWD/build/capability-tsan/src/http-fetch-test python3 -m unittest discover -s test/transport -v
+Result: 34 tests pass, exit 0; listener-only 14 tests pass, exit 0.
+DBUS_SESSION_BUS_ADDRESS=unix:path=/nonexistent DBUS_SYSTEM_BUS_ADDRESS=unix:path=/nonexistent SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/capability-tsan/test/MenuColonyHarness check data/menu/colony.bin
+Result: complete presentation, timing, recording isolation, checksum/RNG determinism, style and fallback checks PASS, exit 0. No sanitizer warnings. Invalid D-Bus endpoints prevent unrelated desktop-bus initialization in this headless fixture; sanitizer checks remain enabled.
+Same environment, MenuColonyHarness navigation unused: all actual screen-loop / keyboard-exit / theme-restoration assertions PASS, but exit 66 due to an additional TSan report from the uninstrumented SDL3_net/SDL3 resolver dependency. Unsanitized native validation is in progress. Original desktop-bus runs additionally reported libdbus lock-order inversions; both reports preserved. These are not a claim of clean sanitizer coverage. Library resolver refcounts are atomic in the installed source, but this observation alone does not prove the report false; further investigation is required.
+Scope: diagnostic harness/Python tests only; transport limits, DatasetWriter, game simulation and native UI production sources unchanged. All transport wire-helper consumers exercised. No simulation/replay/save revision change required. Cross-platform full matrix omitted for this fixture-only repair; hosted full master will verify recovery.
+Failure evidence: https://github.com/Globulation2/glob2/actions/runs/37442302378/job/112210995824 and https://github.com/Globulation2/glob2/actions/runs/37442302378/job/112211114206

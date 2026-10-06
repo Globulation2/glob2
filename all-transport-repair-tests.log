@@ -1,0 +1,39 @@
+test_cancel_does_not_block (test_http_fetch.HttpFetchTests.test_cancel_does_not_block) ... ok
+test_error_status_is_a_response (test_http_fetch.HttpFetchTests.test_error_status_is_a_response) ... ok
+test_https_methods_with_verified_certificate (test_http_fetch.HttpFetchTests.test_https_methods_with_verified_certificate) ... ok
+test_plain_http_loopback_methods_headers_and_body (test_http_fetch.HttpFetchTests.test_plain_http_loopback_methods_headers_and_body) ... ok
+test_rejected_urls (test_http_fetch.HttpFetchTests.test_rejected_urls) ... ok
+test_response_limit (test_http_fetch.HttpFetchTests.test_response_limit) ... ok
+test_timeout (test_http_fetch.HttpFetchTests.test_timeout) ... ok
+test_untrusted_and_wrong_host_certificates_fail (test_http_fetch.HttpFetchTests.test_untrusted_and_wrong_host_certificates_fail) ... ok
+test_configured_proxy_preserves_numeric_client_address (test_listener.ListenerTests.test_configured_proxy_preserves_numeric_client_address) ... ok
+test_connection_limit_counts_stalled_handshakes (test_listener.ListenerTests.test_connection_limit_counts_stalled_handshakes) ... ok
+test_direct_client_cannot_spoof_peer_address (test_listener.ListenerTests.test_direct_client_cannot_spoof_peer_address) ... ok
+test_lan_browser_trust_and_explicit_origin_allowlist (test_listener.ListenerTests.test_lan_browser_trust_and_explicit_origin_allowlist) ... ok
+test_lan_certificate_pairing_and_changed_pin (test_listener.ListenerTests.test_lan_certificate_pairing_and_changed_pin) ... ok
+test_native_origin_optional_and_wrong_origin_rejected (test_listener.ListenerTests.test_native_origin_optional_and_wrong_origin_rejected) ... ok
+test_plaintext_and_missing_client_certificate_rejected (test_listener.ListenerTests.test_plaintext_and_missing_client_certificate_rejected) ... ok
+test_private_ca_keys_are_not_replaced (test_listener.ListenerTests.test_private_ca_keys_are_not_replaced) ... ok
+test_server_identity_is_loaded_once_at_startup (test_listener.ListenerTests.test_server_identity_is_loaded_once_at_startup) ... ok
+test_text_and_oversized_frames_rejected (test_listener.ListenerTests.test_text_and_oversized_frames_rejected) ... ok
+test_text_mode_echoes_text_and_rejects_binary (test_listener.ListenerTests.test_text_mode_echoes_text_and_rejects_binary) ... ok
+test_text_mode_rejects_oversized_declared_message (test_listener.ListenerTests.test_text_mode_rejects_oversized_declared_message) ... ok
+test_tls_before_12_rejected (test_listener.ListenerTests.test_tls_before_12_rejected) ... ok
+test_verified_binary_echo_and_fragmentation (test_listener.ListenerTests.test_verified_binary_echo_and_fragmentation) ... ok
+test_credential_and_path_urls_are_rejected (test_wss.WssTests.test_credential_and_path_urls_are_rejected) ... ok
+test_expired_certificate (test_wss.WssTests.test_expired_certificate) ... ok
+test_pinned_certificate_still_checks_hostname (test_wss.WssTests.test_pinned_certificate_still_checks_hostname) ... ok
+test_platform_trust_rejects_untrusted_certificate (test_wss.WssTests.test_platform_trust_rejects_untrusted_certificate) ... ok
+test_stalled_tls_can_be_cancelled (test_wss.WssTests.test_stalled_tls_can_be_cancelled) ... ok
+test_stalled_tls_times_out (test_wss.WssTests.test_stalled_tls_times_out) ... ok
+test_text_and_oversized_messages_close (test_wss.WssTests.test_text_and_oversized_messages_close) ... ok
+test_text_mode_echoes_whole_messages (test_wss.WssTests.test_text_mode_echoes_whole_messages) ... ok
+test_text_mode_rejects_binary_messages (test_wss.WssTests.test_text_mode_rejects_binary_messages) ... ok
+test_untrusted_certificate (test_wss.WssTests.test_untrusted_certificate) ... ok
+test_verified_echo_and_explicit_routes (test_wss.WssTests.test_verified_echo_and_explicit_routes) ... ok
+test_wrong_hostname (test_wss.WssTests.test_wrong_hostname) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 27.912s
+
+OK
