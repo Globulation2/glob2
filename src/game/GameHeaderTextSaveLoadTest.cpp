@@ -244,9 +244,9 @@ void testBinaryHeaderFormsAndLegacy()
             // following record stays aligned.
             constexpr Sint32 priorVersion=FILE_FORMAT_VERSION_AI_PIPELINE-1;
             constexpr Uint32 sentinel=0x51A140;
-            auto* priorBytes=new MemoryStreamBackend;
-            BinaryOutputStream legacyOut(priorBytes);
-            legacyOut.write(historical.data(),historical.size(),"header");
+            auto* v139Bytes=new MemoryStreamBackend;
+            BinaryOutputStream legacyOut(v139Bytes);
+            legacyOut.write(historical.data(),historical.size()-1,"header");
             legacyOut.writeUint32(sentinel,"nextRecord");legacyOut.flush();
             priorBytes->seekFromStart(0);
             BinaryInputStream prior(new MemoryStreamBackend(*priorBytes));
