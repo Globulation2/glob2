@@ -1373,9 +1373,10 @@ simulator, an owned `--simulator-set` to install, run and retrieve the separate 
 To retain released simulation compatibility traces, replays, commands, and logs,
 pass `--output artifacts/released-compatibility` to
 `test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
-the legacy checkpoint comparison excludes the version-dependent aggregate and
-compares every stored team/entity record. The evidence manifest records this
-exception. CI retains these artifacts even when verification fails.
+the legacy checkpoint comparison also checks complete bytes, including the
+aggregate checksum and every stored team/entity record. The current references
+include simulation revision 20's capability state; historical version-123
+references remain separate. CI retains these artifacts even when verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
