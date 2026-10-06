@@ -136,6 +136,14 @@ class Map
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(TerrainType type, bool add);
 	std::uint64_t terrainGenerationValue = 1;
+    // Explicit availability changes of intrinsically static material sources.
+    // Shared AI gradients persist only whether this generation is current.
+    std::uint64_t staticMaterialSourceGenerationValue = 1;
+    void bumpStaticMaterialSourceGeneration()
+    {
+        // Zero is reserved for a stale shared-runtime gradient after loading.
+        if (++staticMaterialSourceGenerationValue == 0) ++staticMaterialSourceGenerationValue;
+    }
 	void changeTerrainIdentity(size_t index, TerrainType type);
 	void rebuildTerrainCounts();
 	unsigned terrainEditDepth = 0;
@@ -489,6 +497,7 @@ public:
     std::uint64_t materialExpansionRateAt(size_t index,MaterialId material) const { return materialExpansionRateAtSlot(index,materialIndex(material)); }
 	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
+    std::uint64_t staticMaterialSourceGeneration() const { return staticMaterialSourceGenerationValue; }
 	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;

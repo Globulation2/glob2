@@ -57,6 +57,64 @@ TEST_SUITE("ResourceRegistry")
         CHECK(registry->properties(*registry->find("algae")).ecology == ResourceEcology::Shore);
     }
 
+    TEST_CASE("source mutability follows every definition and destructive secondary yield")
+    {
+        CHECK((stock()->mutableMaterialSources() & materialBit(MaterialId::Stone)) == 0);
+        CHECK((stock()->mutableMaterialSources() & materialBit(MaterialId::Paper)) != 0);
+        CHECK((stock()->mutableMaterialSources() & materialBit(MaterialId::Food)) != 0);
+        auto fixed = definition("test:fixed");
+        fixed["properties"] = {{"primaryMaterial", "gold"}, {"clearable", false},
+            {"growthRate", 0}, {"spreadRate", 0}, {"ecology", "none"}, {"persistsWhenEmpty", true}};
+        fixed["yields"] = {{"gold", {{"capacity", 9}, {"initial", 1}, {"consumption", "infinite"}}}};
+        const auto maskFor = [](const Json& item) { return ResourceRegistry::fromJson(source(Json::array({item})))->mutableMaterialSources(); };
+        CHECK(maskFor(fixed) == 0);
+        for (const auto* consumption : {"one", "all"})
+        {
+            auto changed = fixed;
+            changed["yields"]["gold"]["consumption"] = consumption;
+            CHECK(maskFor(changed) == materialBit(MaterialId::Gold));
+        }
+        auto changed = fixed;
+        changed["properties"]["clearable"] = true;
+        CHECK(maskFor(changed) == materialBit(MaterialId::Gold));
+        changed = fixed;
+        changed["properties"]["growthRate"] = ResourceRateScale;
+        // A rate without ecology has no natural source mutation.
+        CHECK(maskFor(changed) == 0);
+        changed["properties"]["ecology"] = "uniform";
+        CHECK(maskFor(changed) == materialBit(MaterialId::Gold));
+        changed["yields"]["gold"]["growthRate"] = 0;
+        CHECK(maskFor(changed) == 0);
+        changed["properties"]["spreadRate"] = ResourceRateScale;
+        CHECK(maskFor(changed) == materialBit(MaterialId::Gold));
+        for (const auto* consumption : {"one", "all"})
+        {
+            changed = fixed;
+            changed["yields"]["food"] = {{"capacity", 3}, {"initial", 1}, {"consumption", consumption}, {"destroysDeposit", true}};
+            CHECK(maskFor(changed) == (materialBit(MaterialId::Gold) | materialBit(MaterialId::Food)));
+        }
+        changed = fixed;
+        changed["yields"]["food"] = {{"capacity", 3}, {"initial", 1}, {"consumption", "one"}};
+        CHECK(maskFor(changed) == materialBit(MaterialId::Food));
+
+        Json many = Json::array();
+        for (unsigned i = 0; i < 260; ++i)
+        {
+            auto copy = fixed;
+            copy["key"] = "test:static-" + std::to_string(i);
+            many.push_back(copy);
+        }
+        auto registry = ResourceRegistry::fromJson(source(many));
+        CHECK(registry->mutableMaterialSources() == 0);
+        changed = fixed;
+        changed["key"] = "test:finite";
+        changed["yields"]["gold"]["consumption"] = "one";
+        registry = registry->importJson(source(Json::array({changed})));
+        REQUIRE(resourceIndex(*registry->find("test:finite")) > 255);
+        CHECK(registry->mutableMaterialSources() == materialBit(MaterialId::Gold));
+        CHECK(ResourceRegistry::deserialize(registry->serialize())->mutableMaterialSources() == registry->mutableMaterialSources());
+    }
+
     TEST_CASE("legacy definitions are frozen while default catalogs pin historical identities")
     {
         const auto frozen=ResourceRegistry::legacy();

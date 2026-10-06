@@ -505,6 +505,7 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
+    bumpStaticMaterialSourceGeneration();
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;

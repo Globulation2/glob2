@@ -64,6 +64,9 @@ public:
     const std::string& requiredExperiment(ResourceId id) const { assert(valid(id)); return requiredExperiments_[resourceIndex(id)]; }
     const std::vector<CatalogExperimentDefinition>& experiments() const { return experiments_; }
     std::vector<std::string> experimentKeys() const;
+    // Conservative intrinsic source mutability, across all definitions (including
+    // currently unplaced ones). Explicit map edits are tracked independently.
+    MaterialMask mutableMaterialSources() const { return mutableMaterialSources_; }
     const std::vector<ResourceProperties>& propertyTable() const { return properties_; }
     const std::string& digest() const { return digest_; }
     std::uint32_t checksum() const { return checksum_; }
@@ -80,4 +83,5 @@ private:
     std::vector<CatalogExperimentDefinition> experiments_;
     std::string digest_;
     std::uint32_t checksum_ = 0;
+    MaterialMask mutableMaterialSources_ = 0;
 };

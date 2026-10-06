@@ -66,6 +66,7 @@ void Map::installResourceDefinitions(const std::string& json)
     }
     gradientRuntime->pipeline.finish();
     resourceRegistryValue=next;
+    bumpStaticMaterialSourceGeneration();
     resourceHabitatProfiles=std::move(staged.resourceHabitatProfiles);
     resourceHabitatPermissions=std::move(staged.resourceHabitatPermissions);
     resourceHabitatProfileCount=staged.resourceHabitatProfileCount;
@@ -177,6 +178,11 @@ void Map::refreshResourceTotal(size_t index)
 void Map::materialStockChanged(size_t index, MaterialMask before)
 {
     const auto after=resourceMaterialMaskAt(index);
+    // Renewable membership may include empty stocks, but all such yields are
+    // intrinsically mutable. For the static subset these masks are exactly the
+    // positive-stock source membership used by shared-runtime material entities.
+    if ((before ^ after) & ~resourceRegistry().mutableMaterialSources())
+        bumpStaticMaterialSourceGeneration();
     for (unsigned changed=before^after;changed;changed&=changed-1)
     {
         const auto material=std::countr_zero(changed);
@@ -188,6 +194,7 @@ void Map::materialStockChanged(size_t index, MaterialMask before)
 
 void Map::rebuildResourceState()
 {
+    bumpStaticMaterialSourceGeneration();
     resourceStockIndices.clear(); resourceStocks.clear(); freeResourceStocks.clear(); materialSourceCounts.fill(0);
     for (size_t i=0;i<tiles.size();++i)
     {

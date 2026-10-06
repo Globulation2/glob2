@@ -28,6 +28,12 @@ bool Entities::MaterialSource::can_change()
 	return true;
 }
 
+bool Entities::MaterialSource::can_change(Map* map)
+{
+    return material>=0 && material<int(MaterialCount) &&
+        (map->resourceRegistry().mutableMaterialSources() & (MaterialMask(1)<<material))!=0;
+}
+
 Entities::EntityType Entities::MaterialSource::get_type()
 {
 	return Entities::EMaterialSource;
@@ -90,6 +96,11 @@ bool Entities::MaterialSources::is_entity(Map* map,int x,int y)
 {
  if(mask==0) return map->terrainPropertiesAt(x,y).walkable;
  return (map->materialMaskAt(map->coordToIndex(x,y)) & mask)!=0;
+}
+bool Entities::MaterialSources::can_change(Map* map)
+{
+    // The empty mask matches terrain; terrain generation owns its invalidation.
+    return (map->resourceRegistry().mutableMaterialSources() & mask)!=0;
 }
 bool Entities::MaterialSources::operator==(const Entity& other) const
 {

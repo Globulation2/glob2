@@ -117,6 +117,12 @@ capability-based habitats. Old numeric terrain resource masks are converted to
 key lists by the compatibility loader. Habitat predicates still apply to explicit
 allowlists. Unused material types do not create natural-material gradient work.
 
+AI source fields use a compiled material mutability mask covering every registered
+definition, including unplaced ones. Permanent sources avoid periodic queued
+refreshes only when harvesting, clearing and configured ecology cannot change
+their availability. Explicit source edits and catalog replacement invalidate these
+fields; save/load preserves whether a cached field was current or stale.
+
 ## Artwork and saved content
 
 `presentation.levels` starts at stock zero and has strictly increasing stock

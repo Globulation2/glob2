@@ -208,6 +208,105 @@ class RuntimeContinuationTest
     }
 
 public:
+    static void staticMaterialSourceContinuation()
+    {
+        using Json=nlohmann::json;
+        Game game(nullptr); game.map.setSize(5,5,GRASS); game.map.setGame(&game);
+        auto& map=game.map;
+        const auto stone=info(new Entities::MaterialSource(STONE));
+        const auto food=info(new Entities::MaterialSource(WHEAT));
+        const auto paper=info(new Entities::MaterialSource(PAPYRUS));
+        CHECK_FALSE(stone.needs_updating(&map));
+        CHECK(food.needs_updating(&map));
+        CHECK(paper.needs_updating(&map));
+        auto combined=info(new Entities::MaterialSources((1u<<STONE)|(1u<<WHEAT)));
+        CHECK(combined.needs_updating(&map));
+        auto amended=stone.clone();
+        CHECK_FALSE(amended.needs_updating(&map));
+        amended.add_obstacle(new Entities::MaterialSource(WHEAT));
+        CHECK(amended.needs_updating(&map));
+
+        // A high resource ID with an arbitrary name has the same static behavior.
+        const auto rocks=*map.resourceRegistry().find("rocks");
+        const auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(rocks)];
+        Json additions=Json::array();
+        for(unsigned i=0;i<300;++i)
+        {
+            auto spec=prototype; spec["key"]="test:permanent-"+std::to_string(i);
+            additions.push_back(std::move(spec));
+        }
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",additions}}.dump());
+        const auto custom=static_cast<ResourceId>(map.resourceRegistry().size()-1);
+        REQUIRE(resourceIndex(custom)>255);
+        CHECK_FALSE(stone.needs_updating(&map));
+        map.setResource(3,4,custom,3);
+        GradientManager original(&map);
+        REQUIRE(original.get_gradient(stone).get_height(3,4)==0);
+        original.ticks_since_update[0]=151;
+        original.queue_gradient(stone);
+        CHECK(original.queuedGradients.empty());
+        CHECK(original.is_updated(stone));
+        const auto generation=map.staticMaterialSourceGeneration();
+        REQUIRE(map.takeHarvest(2,4,1,0,MaterialId::Stone,0));
+        CHECK(map.materialAmountAt(map.coordToIndex(3,4),MaterialId::Stone)==3);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,2);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        // Ordinary growing/harvestable stock changes must not invalidate this field.
+        map.setResourceByIndex(8,8,WHEAT,3);
+        map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,2);
+        CHECK(map.staticMaterialSourceGeneration()==generation);
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,0);
+        CHECK(map.staticMaterialSourceGeneration()!=generation);
+        CHECK_FALSE(original.is_updated(stone));
+        original.queue_gradient(stone);
+        REQUIRE(original.queuedGradients.size()==1);
+        for(bool text:{false,true})
+        {
+            const auto bytes=save(original,text);
+            GradientManager restored(&map);
+            REQUIRE(load(restored,bytes,text));
+            CHECK(save(restored,text)==bytes);
+            CHECK_FALSE(restored.is_updated(stone));
+            auto cloned=original.clone();
+            CHECK(save(*cloned,text)==bytes);
+            CHECK_FALSE(cloned->is_updated(stone));
+            for(int tick=0;tick<3;++tick)
+            {
+                restored.update(); cloned->update();
+                CHECK(save(restored,text)==save(*cloned,text));
+                CHECK(restored.is_updated(stone));
+            }
+            CHECK(restored.get_gradient(stone).get_height(3,4)!=0);
+        }
+        original.update();
+        CHECK(original.is_updated(stone));
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,1);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(3,4)==0);
+        map.setNoResource(3,4,0);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(3,4)!=0);
+        map.setResource(10,10,custom,1);
+        CHECK_FALSE(original.is_updated(stone));
+        CHECK(original.get_gradient(stone).get_height(10,10)==0);
+        auto currentClone=original.clone();
+        CHECK(currentClone->is_updated(stone));
+        CHECK(save(*currentClone,false)==save(original,false));
+
+        // An unplaced finite source changes intrinsic mutability immediately.
+        auto finite=prototype; finite["key"]="test:finite-stone";
+        finite["yields"]["stone"]["consumption"]="one";
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({finite})}}.dump());
+        CHECK(stone.needs_updating(&map));
+        CHECK_FALSE(original.is_updated(stone));
+        original.get_gradient(stone);
+        original.queue_gradient(stone);
+        CHECK(original.queuedGradients.size()==1);
+    }
     static void recurringInputsAndProviderLookup()
     {
         using AISharedRuntime::Management::MaterialTracker;
@@ -408,4 +507,11 @@ TEST_CASE("recurring input tracking and provider lookup preserve composite membe
 {
     glob2test::HeadlessGlobals globals;
     RuntimeContinuationTest::recurringInputsAndProviderLookup();
+}
+
+TEST_CASE("static material fields invalidate on source edits and preserve continuation" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    RuntimeContinuationTest::staticMaterialSourceContinuation();
 }

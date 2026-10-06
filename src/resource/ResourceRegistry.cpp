@@ -491,6 +491,27 @@ std::vector<std::string> ResourceRegistry::experimentKeys() const
 }
 void ResourceRegistry::compile()
 {
+    mutableMaterialSources_ = 0;
+    for (unsigned id = 0; id < size(); ++id)
+    {
+        const auto& p = properties_[id];
+        const auto& yields = yields_[id];
+        // Harvesting any destructive secondary yield also removes an infinite
+        // primary source. Do not infer mutability from just the selected yield.
+        bool destroysSource = p.clearable;
+        for (const auto& yield : yields)
+            if (yield.capacity && (yield.consumption == ResourceConsumption::All || yield.destroysDeposit))
+                destroysSource = true;
+        for (unsigned material = 0; material < MaterialCount; ++material)
+        {
+            const auto& yield = yields[material];
+            if (!yield.capacity) continue;
+            const bool renews = p.growthRate && p.ecology != ResourceEcology::None
+                && (yield.growthRate || p.spreadRate);
+            if (destroysSource || yield.consumption != ResourceConsumption::Infinite || renews)
+                mutableMaterialSources_ |= MaterialMask(1u << material);
+        }
+    }
     keyIndex_.clear();
     for (unsigned id = 0; id < size(); ++id) keyIndex_.emplace(keys_[id], static_cast<ResourceId>(id));
     const auto allowed = experimentKeys();
