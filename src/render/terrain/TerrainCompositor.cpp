@@ -268,8 +268,8 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 					row[x] = 0;
 				else
 				{
-					const auto &p = texture.pixels[(y * texture.size / size) * texture.size +
-													x * texture.size / size];
+					const auto *p = texture.pixels[(y * texture.size / size) * texture.size +
+													x * texture.size / size].data();
 					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
 							 (unsigned(p[1]) << 8) | p[2];
 				}
