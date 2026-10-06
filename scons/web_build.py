@@ -191,6 +191,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/map/gradient/PathGradientHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
                 '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
+                '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
                 ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:
             source, options = (entry, {}) if isinstance(entry, str) else entry
