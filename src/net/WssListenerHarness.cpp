@@ -8,6 +8,10 @@
 #include <cstdlib>
 namespace { volatile std::sig_atomic_t stopped = 0; void stop(int) { stopped = 1; } }
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--text-message-limit") {
+        std::cout << NetTransport::textMessageLimit << '\n';
+        return 0;
+    }
     if (argc != 3) return 2;
     try {
         auto c = makeNetworkConfig(std::string(argv[2]) == "lan");
