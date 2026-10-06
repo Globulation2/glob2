@@ -42,7 +42,7 @@ namespace
 
 void Building::step(void)
 {
-	if (type->isBuildingSite && (siteCompletionPending || type->useTeamResources)) updateBuildingSite();
+	if (type->isBuildingSite && (siteCompletionPending || type->useTeamMaterials)) updateBuildingSite();
 	computeWishedMaterials(wishedMaterials);
 	if (((owner->game->stepCounter + gid) & 255) == 0)
 		freeIdleGradients();

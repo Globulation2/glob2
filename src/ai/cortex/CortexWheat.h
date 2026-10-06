@@ -16,7 +16,7 @@ class Player;
 //
 // Cortex paints a checkerboard `forbidden` pattern over its wheat so
 // workers harvest one half while the protected half stays full and reseeds it
-// (forbidden blocks harvest, MapGradientResource.cpp, but NOT growth,
+// (forbidden blocks harvest, MapGradientMaterial.cpp, but NOT growth,
 // MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md.
 //
 // Two layers live here:

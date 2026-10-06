@@ -1092,7 +1092,15 @@ int runMapStudy(int argc, char **argv)
 			<< ",\"shore\":" << shore << ",\"free\":" << free << ",\"fit4\":" << fit4
 			<< ",\"wheat_tiles\":" << materialSources[materialIndex(MaterialId::Food)] << ",\"wood_tiles\":" << materialSources[materialIndex(MaterialId::Wood)]
 			<< ",\"stone_tiles\":" << materialSources[materialIndex(MaterialId::Stone)] << ",\"algae_tiles\":" << materialSources[materialIndex(MaterialId::Algae)]
-			<< measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
+            << ",\"material_source_tiles\":{";
+        for(unsigned material=0;material<MaterialCount;++material)
+        {
+            if(material) out << ',';
+            out << Headless::quote(std::string(materialKey(static_cast<MaterialId>(material))))
+                << ':' << materialSources[material];
+        }
+        // Legacy wheat/wood/stone/algae keys above remain for old analysis consumers.
+        out << '}' << measurements.str() << "}," << diagnosticsJson(game, descriptor.nbTeams, diagnostics)
 			<< timingJson
 			<< "\"quality\":{\"score\":" << result.quality.score
 			<< ",\"fairness\":" << result.quality.fairness
@@ -1104,8 +1112,10 @@ int runMapStudy(int argc, char **argv)
 			const auto &c=result.quality.colonies[t];
 			if(t) out << ',';
 			out << "{\"start\":" << t << ",\"wheat_distance\":" << c.wheatDistance
+				<< ",\"food_distance\":" << c.wheatDistance
 				<< ",\"wood_distance\":" << c.woodDistance << ",\"catchment_tiles\":" << c.catchmentTiles
 				<< ",\"build_sites\":" << c.buildSites << ",\"resource_amount\":" << c.resourceAmount
+                << ",\"material_amount\":" << c.resourceAmount
 				<< ",\"rival_distance\":" << c.rivalDistance << ",\"rivals_within_threat\":" << c.rivalsWithinThreat
 				<< ",\"mean_fertility\":" << c.meanFertility << ",\"fitness\":" << c.fitness
 				<< ",\"win_probability\":" << c.winProbability << '}';

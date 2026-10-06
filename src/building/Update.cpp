@@ -53,7 +53,7 @@ void Building::updateBuildingSite(void)
 			if (completed->shortTypeNum>=0 && completed->shortTypeNum<IntBuildingType::NB_BUILDING && completed->level<NB_UNIT_LEVELS)
 				++measurements.completed[kind][completed->shortTypeNum][completed->level];
 		}
-		const bool wasShared=type->useTeamResources;
+		const bool wasShared=type->useTeamMaterials;
 		const bool wasRepair=constructionResultState==REPAIR;
 		if (wasRepair) applyConstructionHealth(0,instantComplete);
 		if (instantComplete) releaseConstructionReservations();
@@ -344,7 +344,7 @@ bool Building::tryToBuildingSiteRoom(void)
 				constructionBudget[r]=type->semantics.repairCost[r]-healthy;
 			}
 		}
-		const bool wasShared=type->useTeamResources;
+		const bool wasShared=type->useTeamMaterials;
 
 		if (type->semantics.occupiesGround)
 			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);

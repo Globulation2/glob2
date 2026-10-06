@@ -232,7 +232,7 @@ struct GameplayMeasurements
 	Uint64 transferredOut[MAX_NB_RESOURCES]{};
 	Uint64 consumed[PURPOSES][MAX_NB_RESOURCES]{};
 	Uint64 repairDelivered[MAX_NB_RESOURCES]{};
-	Uint64 resourceSpillageEvents{};
+	Uint64 materialSpillageEvents{};
 	Uint64 meals{};
 	Uint64 healingVisits{};
 	Uint64 hpRestored{};

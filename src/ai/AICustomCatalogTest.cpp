@@ -823,6 +823,7 @@ TEST_CASE("AI source selectors discover renamed multi-material deposits and inde
     CHECK(ground.is_entity(&map,40,40)==map.resourceBlocksGround(map.coordToIndex(40,40)));
     CHECK(building.is_entity(&map,40,40)==map.resourceBlocksBuilding(map.coordToIndex(40,40)));
     CHECK(ground.can_change()); CHECK(building.can_change());
+    map.replaceResource(41,40,Resource{}); // CatalogWorld has generated deposits here.
     CHECK_FALSE(ground.is_entity(&map,41,40));
     CHECK_FALSE(building.is_entity(&map,41,40));
     map.setMaterialAmount(map.coordToIndex(40,40),materialIndex(MaterialId::Food),0);

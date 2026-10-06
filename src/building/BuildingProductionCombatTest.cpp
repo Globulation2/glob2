@@ -516,7 +516,7 @@ TEST_CASE("partial supplier packets preserve raw equivalents and save continuati
         // 1/2 raw = 1 stock / 3 stock-per-raw + 1/6 deliberately discarded.
         CHECK(Uint64(cargo.numerator)*3*delivered.discardedDenominator
             == Uint64(cargo.denominator)*(Uint64(delivered.acceptedStock)*delivered.discardedDenominator+3*delivered.discardedNumerator));
-        CHECK(receiver->owner->stats.measurements.resourceSpillageEvents==1);
+        CHECK(receiver->owner->stats.measurements.materialSpillageEvents==1);
         const auto fractional=receiver->deliverMaterialPacket(WOOD,{1,10});
         CHECK(fractional.acceptedStock==0); CHECK(fractional.discardedNumerator==1); CHECK(fractional.discardedDenominator==10);
     }

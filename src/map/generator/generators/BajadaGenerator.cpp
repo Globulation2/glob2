@@ -15,6 +15,7 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
 #include "Roads.h"
 #include "Settlements.h"
 #include "Sketch.h"
@@ -1380,7 +1381,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return lost;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-			map.getResource(i % t.w, i / t.w).type != STONE)
+			!permanentResourceBarrier(map,i))
 			return "A range has lost its stone at (" + at(i) + ").";
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
 	// two homes' footprints overlap on a crowded map (their fans merge there).
@@ -1461,7 +1462,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 					if (std::abs(d) >= band)
 						continue;
 					offset[i] = d;
-					const bool stone = map.isResource(x, y) && map.getResource(x, y).type == STONE;
+					const bool stone = permanentResourceBarrier(map,i);
 					open[i] = !L.pass[i] && map.terrainPropertiesAt(x, y).walkable && !stone;
 					north[i] = d < -band + 1 && open[i];
 				}

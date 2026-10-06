@@ -227,7 +227,7 @@ namespace Cortex
 					//
 					// We do NOT gate on Map::resourceAvailable here: it reads the team
 					// resource gradient at (posX, posY), but updateResourcesGradient marks
-					// every building-occupied tile GRADIENT_FORBIDDEN (MapGradientResource.cpp
+					// every building-occupied tile GRADIENT_FORBIDDEN (MapGradientMaterial.cpp
 					// :141), so probing the inn's OWN footprint corner always returned false
 					// and zeroed the deficit — pinning every inn to one hauler. "No wheat in
 					// reach" is instead handled coarsely in the policy via nearestWheatDist

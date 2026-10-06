@@ -151,7 +151,7 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	}
 	leaveStatSection(stream);
 	statValue(stream, "repairDelivered", stat.repairDelivered);
-	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"resourceSpillageEvents",stat.resourceSpillageEvents);
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"resourceSpillageEvents",stat.materialSpillageEvents); // Historical save-field label.
 	statValue(stream, "meals", stat.meals);
 	statValue(stream, "healingVisits", stat.healingVisits);
 	statValue(stream, "hpRestored", stat.hpRestored);
@@ -1244,7 +1244,7 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 		++count;
 		if (b->type->shortTypeNum>=0 && b->type->shortTypeNum<IntBuildingType::NB_BUILDING && b->getLongLevel()<NB_BUILDING_LONG_LEVELS)
 			++measurements.buildings[b->type->shortTypeNum][b->getLongLevel()];
-		if (!b->type->useTeamResources)
+		if (!b->type->useTeamMaterials)
 			for (int r = 0; r < MAX_NB_RESOURCES; ++r)
 				measurements.stock[r] += std::max(0, b->materials[r]);
 	}

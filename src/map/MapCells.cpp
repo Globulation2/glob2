@@ -24,8 +24,16 @@ void Map::replaceResource(size_t index, const Resource &resource)
 void Map::replaceTile(size_t index, const Tile &tile)
 {
     const Tile old = tiles[index];
-    if (old.resource.getUint64()!=tile.resource.getUint64()) replaceResource(index,tile.resource);
-    const Resource resolved = tiles[index].resource;
+    // Sprite changes do not replace a deposit's independently stored stocks.
+    // Explicit replaceResource retains its reset-to-definition semantics.
+    if (old.resource.type!=tile.resource.type || old.resource.amount!=tile.resource.amount)
+        replaceResource(index,tile.resource);
+    Resource resolved = tiles[index].resource;
+    if (resolved.type!=NO_RES_TYPE)
+    {
+        resolved.variety=tile.resource.variety;
+        resolved.animation=tile.resource.animation;
+    }
     tiles[index] = tile;
     tiles[index].resource = resolved;
     unsigned changes = 0;

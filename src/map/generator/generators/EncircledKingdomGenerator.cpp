@@ -11,6 +11,7 @@
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
+#include "ResourceSemantics.h"
 #include "Room.h"
 #include "Sketch.h"
 #include "Walls.h"
@@ -818,9 +819,9 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		if (L.wall[i] &&
-			(!game.map.isResource(i % t.w, i / t.w) || game.map.getResource(i).type != STONE))
+			!permanentResourceBarrier(game.map,i))
 			return "A kingdom rampart is missing.";
-		if (L.roads[i] && game.map.isResource(i % t.w, i / t.w))
+		if (L.roads[i] && game.map.resourceBlocksGround(i))
 			return "A kingdom road is obstructed at " + std::to_string(i % t.w) + "," +
 				   std::to_string(i / t.w);
 	}

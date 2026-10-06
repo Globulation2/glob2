@@ -188,7 +188,7 @@ void productionRecovery(bool stocked, bool blocked) {
         globalContainer->buildingsTypes.getTypeNum("swarm", 0, false), 0);
     REQUIRE(swarm);
     f.game.teams[0]->addToStaticAbilitiesLists(swarm);
-    swarm->materials[WHEAT] = stocked ? swarm->type->resourceForOneUnit : 0;
+    swarm->materials[WHEAT] = stocked ? swarm->type->foodPerUnit : 0;
     swarm->productionTimeout = 100;
     // A player can enable production even when all sliders are at zero.
     for (int t = 0; t < NB_UNIT_TYPE; ++t) swarm->ratio[t] = 0;

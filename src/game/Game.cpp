@@ -233,7 +233,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		map.setMapDiscovered();
 
 	// Custom-game "stockpile start" rule: seed each team's shared market/
-	// exchange resource pool. Only feeds buildings with useTeamResources
+	// exchange resource pool. Only feeds buildings with useTeamMaterials
 	// (markets/exchanges) -- a fresh regular building still starts empty.
 	// setGameHeader can run more than once before a match starts (e.g. the
 	// lobby's player list changing) AND when loading an existing save

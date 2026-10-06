@@ -424,7 +424,7 @@ void Unit::recordLethalDamage(int damage, int cause)
 
 void Unit::receiveCarriedMaterial(int resource, MaterialPacket packet)
 {
-	if (carriedMaterial>=0) ++owner->stats.measurements.resourceSpillageEvents;
+	if (carriedMaterial>=0) ++owner->stats.measurements.materialSpillageEvents;
 	carriedMaterial=resource;
 	carriedPacket=packet;
 }

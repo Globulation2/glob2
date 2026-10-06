@@ -566,7 +566,7 @@ void BuildingsTypes::resolveAndValidate()
         b.canFeedUnit = semantic.feeding.enabled; b.timeToFeedUnit = semantic.feeding.duration;
         b.canHealUnit = semantic.healing.enabled; b.timeToHealUnit = semantic.healing.duration;
         b.upgradeInParallel = semantic.trainingInParallel;
-        b.useTeamResources = semantic.market.sharedStock;
+        b.useTeamMaterials = semantic.market.sharedStock;
         b.isVirtual = !semantic.occupiesGround;
         b.maxUnitWorking = semantic.assignmentLimit > 0;
         if (b.presentation.defaultAssigned < 0) b.presentation.defaultAssigned = std::min(2,semantic.assignmentLimit);
@@ -578,24 +578,24 @@ void BuildingsTypes::resolveAndValidate()
             b.upgradeTime[a] = semantic.training[a].duration;
         }
         b.semantics.production.enabledUnitMask = 0;
-        b.unitProductionTime = b.resourceForOneUnit = 0;
+        b.unitProductionTime = b.foodPerUnit = 0;
         for (int u = NB_UNIT_TYPE - 1; u >= 0; --u)
             if (semantic.production.recipes[u].enabled)
             {
                 b.semantics.production.enabledUnitMask |= 1u << u;
                 b.unitProductionTime = semantic.production.recipes[u].duration;
-                b.resourceForOneUnit = semantic.production.recipes[u].cost[materialIndex(MaterialId::Food)];
+                b.foodPerUnit = semantic.production.recipes[u].cost[materialIndex(MaterialId::Food)];
             }
 
         b.prevLevel = b.previousKey.empty() ? -1 : findByKey(b.previousKey);
         b.nextLevel = b.nextKey.empty() ? -1 : findByKey(b.nextKey);
         if ((!b.previousKey.empty() && b.prevLevel < 0) || (!b.nextKey.empty() && b.nextLevel < 0)) fail(b.key, "unresolved transition");
         for (const auto value : {b.hueImage, b.crossConnectMultiImage, b.upgradeInParallel, b.foodable, b.fillable,
-            b.zonableForbidden, b.canFeedUnit, b.canHealUnit, b.canExchange, b.useTeamResources, b.isVirtual, b.isCloaked, b.isBuildingSite})
+            b.zonableForbidden, b.canFeedUnit, b.canHealUnit, b.canExchange, b.useTeamMaterials, b.isVirtual, b.isCloaked, b.isBuildingSite})
             range(value, 0, 1, b.key + ".boolean property");
         for (const auto value : {b.gameSpriteImage, b.gameSpriteCount, b.flagImage, b.timeToFeedUnit, b.timeToHealUnit,
             b.shootDamage, b.shootSpeed, b.shootRhythm, b.maxBullets, b.multiplierStoneToBullets,
-            b.unitProductionTime, b.resourceForOneUnit, b.viewingRange, b.regenerationSpeed, b.prestige})
+            b.unitProductionTime, b.foodPerUnit, b.viewingRange, b.regenerationSpeed, b.prestige})
             range(value, 0, 1000000, b.key + ".nonnegative property");
         range(b.gameSpriteCount, 1, 65535, b.key + ".gameSpriteCount");
         range(b.miniSpriteImage, -1, 1000000, b.key + ".miniSpriteImage");

@@ -30,7 +30,7 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
 	a("level",value.level);
 	a("engineType",value.engineType);
 	a("footprint",value.footprint);
-	materialFields(a,"constructionResources",value.constructionResources,true);
+	materialFields(a,"constructionResources",value.constructionMaterials,true);
 	a("serviceThroughput",value.serviceThroughput);
 	a("durability",value.durability);
 	a("capability",value.capability);
@@ -46,11 +46,11 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
          for(int r=0;r<MaterialCount;++r)if(value.productionRecipes.costs[unit][r]<0 || value.productionRecipes.costs[unit][r]>1000000)throw std::runtime_error("Invalid saved production cost");
      }
      for(int r=0;r<MaterialCount;++r)if(value.productionRecipes.packetSize[r]<=0 || value.productionRecipes.packetSize[r]>1000000)throw std::runtime_error("Invalid saved packet size");
-	 materialFields(a,"operatingResources",value.operatingResources);
-     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);materialFields(a,"feedingResources",value.feedingResources);materialFields(a,"productionResources",value.productionResources);materialFields(a,"independentResources",value.independentResources);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+	 materialFields(a,"operatingResources",value.operatingMaterials);
+     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);materialFields(a,"feedingResources",value.feedingMaterials);materialFields(a,"productionResources",value.productionMaterials);materialFields(a,"independentResources",value.independentMaterials);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
 	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
      if(value.feedingRate<0 || value.feedingMask>7)throw std::runtime_error("Invalid saved feeding profile");
-     for(int r=0;r<MaterialCount;++r)if(value.independentResources[r]<0 || value.independentResources[r]>value.operatingResources[r] || value.feedingResources[r]<0 || value.feedingResources[r]>value.operatingResources[r] || value.productionResources[r]<0 || value.productionResources[r]>value.operatingResources[r])
+     for(int r=0;r<MaterialCount;++r)if(value.independentMaterials[r]<0 || value.independentMaterials[r]>value.operatingMaterials[r] || value.feedingMaterials[r]<0 || value.feedingMaterials[r]>value.operatingMaterials[r] || value.productionMaterials[r]<0 || value.productionMaterials[r]>value.operatingMaterials[r])
          throw std::runtime_error("Invalid saved feeding resource component");
 	}
 }
@@ -72,15 +72,15 @@ template<class A> void fields(A& a, WorldTile& value)
 	a("clearableResource",value.clearableResource);
 	a("occupied",value.occupied);
 	a("ownOccupied",value.ownOccupied);
-	// Preserve the signed 32-bit fields independently of compact storage.
-	int32_t resourceType=value.resourceType, resourceAmount=value.resourceAmount;
-	a("resourceType",resourceType); a("resourceAmount",resourceAmount);
-	if(resourceType < INT16_MIN || resourceType > INT16_MAX || resourceAmount < 0)
+	// Preserve the legacy resource-named wire labels and signed 32-bit fields.
+	int32_t materialType=value.materialType, materialAmount=value.materialAmount;
+	a("resourceType",materialType); a("resourceAmount",materialAmount);
+	if(materialType < INT16_MIN || materialType > INT16_MAX || materialAmount < 0)
 		throw std::runtime_error("Invalid compact world resource");
-	value.resourceType=int16_t(resourceType); value.resourceAmount=uint32_t(resourceAmount);
+	value.materialType=int16_t(materialType); value.materialAmount=uint32_t(materialAmount);
     if(a.version()>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
     { a("materialSources",value.materialSources); a("resourceBlocksGround",value.resourceBlocksGround); }
-    else value.resourceBlocksGround=value.resourceType>=0;
+    else value.resourceBlocksGround=value.materialType>=0;
 	a("fertility",value.fertility);
 	a("farmCapacity",value.farmCapacity);
 	a("foodOpportunity",value.foodOpportunity);
@@ -152,7 +152,7 @@ template<class A> void fields(A& a, DevelopmentIntent& value)
 	a("unmetCount",value.unmetCount);
 	a("priority",value.priority);
 	a("workers",value.workers);
-	a("requiredResourceType",value.requiredResourceType);
+	a("requiredResourceType",value.requiredMaterialType);
 	a("emergency",value.emergency);
 	a("replacesBuildingId",value.replacesBuildingId);
 }
@@ -184,7 +184,7 @@ template<class A> void fields(A& a, UtilityComponents& value)
 	a("projectedFarmLoss",value.projectedFarmLoss);
 	a("foodZonePressure",value.foodZonePressure);
 	a("newlyReservedLand",value.newlyReservedLand);
-	a("resourceScarcity",value.resourceScarcity);
+	a("resourceScarcity",value.materialScarcity);
 	a("constructionLabor",value.constructionLabor);
 	a("serviceDowntime",value.serviceDowntime);
 	a("threatExposure",value.threatExposure);

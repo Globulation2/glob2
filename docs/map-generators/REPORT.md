@@ -345,3 +345,12 @@ and worker counts, and all option entries, including invalid ones. Resolved `par
 The [telemetry guide](TELEMETRY.md) defines record kinds, limits, key/subject conventions,
 performance constraints, bulk analysis and permanent versus temporary instrumentation. Check
 both `dropped_records` and `invalid_values` before treating a trace as complete.
+
+Map-study JSON additionally exposes `statistics.material_source_tiles`, keyed by
+canonical material name for every supported material. Counts include any resource
+that currently supplies that material, so mixed deposits may contribute to multiple
+entries. `quality.colonies[].food_distance` and `.material_amount` give the canonical
+names for the historical `wheat_distance` and `resource_amount` fields. The older
+names and `wheat_tiles`/`wood_tiles`/`stone_tiles`/`algae_tiles` remain compatibility
+aliases for existing analysis tools; they describe material sources, not fixed
+resource identities.

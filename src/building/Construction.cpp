@@ -92,7 +92,7 @@ void Building::releaseConstructionReservations()
 
 bool Building::canTransferMaterialsTo(const BuildingType* destination) const
 {
-	if (!type->useTeamResources && destination->useTeamResources)
+	if (!type->useTeamMaterials && destination->useTeamMaterials)
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			if (Sint64(owner->teamMaterials[r])+localMaterials[r]>std::numeric_limits<Sint32>::max()) return false;
 	return true;
@@ -102,7 +102,7 @@ void Building::transferMaterialsPointer(bool wasShared)
 {
 	// Team stock belongs to the team after a building stops using it. Local
 	// stock entering a shared pool is transferred once, without a hidden copy.
-	if (!wasShared && type->useTeamResources)
+	if (!wasShared && type->useTeamMaterials)
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
 		{
 			assert(Sint64(owner->teamMaterials[r])+localMaterials[r]<=std::numeric_limits<Sint32>::max());
@@ -315,7 +315,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	repairInitialDeficit=repairHealthGranted=0;
 	constructionResultState=NO_CONSTRUCTION;
 	siteCompletionPending=false;
-	const bool wasShared=type->useTeamResources;
+	const bool wasShared=type->useTeamMaterials;
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
@@ -465,7 +465,7 @@ void Building::updateCallLists(void)
 		// this is for food handling
 		if (type->canFeedUnit)
 		{
-			if (type->useTeamResources || canOfferService(nullptr, FEED))
+			if (type->useTeamMaterials || canOfferService(nullptr, FEED))
 			{
 				if (inCanFeedUnit!=LS_IN)
 				{

@@ -282,6 +282,23 @@ TEST_CASE("custom compound deposit has independent material stock and destructiv
     REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Food),1));
     CHECK(map.materialAmountAt(tile,MaterialId::Wood)==3);
     CHECK(map.getResource(tile).amount==3);
+    map.setMaterialAmount(tile,MaterialId::Wood,2);
+    const auto stocks=map.materialStocksAt(tile);
+    const auto available=map.materialMaskAt(tile),renewable=map.resourceMaterialMaskAt(tile);
+    auto visual=map.getTile(tile);
+    visual.resource.variety=2;
+    visual.resource.animation=1;
+    map.replaceTile(tile,visual);
+    CHECK(map.materialStocksAt(tile)==stocks);
+    CHECK(map.materialMaskAt(tile)==available);
+    CHECK(map.resourceMaterialMaskAt(tile)==renewable);
+    CHECK(map.getResource(tile).amount==2);
+    CHECK(map.getResource(tile).variety==2);
+    CHECK(map.getResource(tile).animation==1);
+    // A deliberate replacement still reinitializes the compound definition.
+    map.replaceResource(tile,map.getResource(tile));
+    CHECK(map.materialAmountAt(tile,MaterialId::Food)==1);
+    CHECK(map.materialAmountAt(tile,MaterialId::Wood)==3);
     REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Wood),1));
     CHECK(map.getResource(tile).type==NO_RES_TYPE);
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Wood));
@@ -562,6 +579,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     // fall back to the missing or invalid default catalog at process startup.
     const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
     GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(),legacyBytes.size()));
+    oldInput.seekFromStart(0);
     GameGUI oldGame(false);
     REQUIRE(oldGame.game.load(&oldInput));
     CHECK(oldGame.game.map.resourceRegistry().digest()==ResourceRegistry::legacy()->digest());
@@ -833,10 +851,53 @@ TEST_CASE("legacy resource saves ignore reordered modified installed defaults in
     REQUIRE(resourceIndex(*defaults->find("trees"))==0);
     const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);
     GameGUI restored(false);
     REQUIRE(restored.game.load(&input));
     const auto& legacy=restored.game.map.resourceRegistry();
     REQUIRE(legacy.size()==8);
     CHECK(legacy.properties(*legacy.find("trees")).growthRate==ResourceRateScale);
     CHECK(legacy.digest()==ResourceRegistry::legacy()->digest());
+}
+
+TEST_CASE("custom ground and air obstruction independently govern routes across toroidal barriers" * doctest::test_suite("RuntimeResources"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json=nlohmann::json;
+    for (unsigned bits=0;bits<4;++bits)
+    {
+        CAPTURE(bits);
+        glob2test::HeadlessGame fixture({.wDec=4,.hDec=4,.clearImmobile=true,.header=true});
+        auto& map=fixture.game.map;
+        auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][0];
+        definition["key"]="route-obstruction";
+        definition["properties"]["blocksGround"]=bool(bits&1);
+        definition["properties"]["blocksAir"]=bool(bits&2);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("route-obstruction");
+        // Two complete columns prevent a blocked route wrapping around the torus.
+        for(int y=0;y<map.getH();++y) for(int x:{1,5}) map.setResource(x,y,id,0);
+        const auto route=[&](bool air) {
+            int x=4,y=8;
+            for(int steps=0;steps<32;++steps)
+            {
+                if(x==8 && y==8) return true;
+                int dx=0,dy=0;
+                const bool found=air ? map.pathfindAirPointToPoint(x,y,8,8,&dx,&dy)
+                    : map.pathfindPointToPoint(x,y,8,8,&dx,&dy,0,1,32);
+                if(!found) return false;
+                REQUIRE((dx || dy));
+                const int nx=(x+dx+map.getW())%map.getW(),ny=(y+dy+map.getH())%map.getH();
+                REQUIRE(air ? map.isFreeForAirUnit(nx,ny) : map.isFreeForGroundUnit(nx,ny,false,1));
+                x=nx;y=ny;
+            }
+            FAIL("A valid route must reach its goal within the bounded fixture");
+            return false;
+        };
+        CHECK(route(false)==!(bits&1));
+        CHECK(route(true)==!(bits&2));
+        map.replaceResource(5,8,Resource{});
+        CHECK(route(false));
+        CHECK(route(true));
+    }
 }

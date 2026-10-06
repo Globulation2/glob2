@@ -253,7 +253,7 @@ private:
 uint32_t cellYield(uint32_t fertility, int openNeighbors, int growthPeriodTicks);
 
 /// Full-capacity demand of a swarm, in micro-wheat per tick.
-int swarmDemand(int resourceForOneUnit, int unitProductionTime, int percent);
+int swarmDemand(int foodPerUnit, int unitProductionTime, int percent);
 
 /// Full-capacity demand of an inn serving `servedUnits`, in micro-wheat per
 /// tick, where a fed unit eats one wheat every `ticksPerMeal` ticks.

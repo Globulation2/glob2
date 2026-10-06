@@ -222,7 +222,7 @@ void colonyStartupAndAffordability()
     REQUIRE(!ai.budget.colony_swarm_requested);
     Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); REQUIRE(worker);
     swarm->unitsWorking.push_back(worker);
-    swarm->materials[WHEAT]=swarm->type->resourceForOneUnit;
+    swarm->materials[WHEAT]=swarm->type->foodPerUnit;
     ai.finalize_director_plan(ai.context);
     REQUIRE(ai.budget.colony_swarm_requested);
     swarm->unitsWorking.clear(); swarm->materials[WHEAT]=0;
@@ -776,7 +776,7 @@ static void schoolsDoNotRequireKnownAlgae()
         if(intent.buildingType==f.game.buildingsTypes.getPlaceableTypeNum("school"))
         {
             schoolRequested=true;
-            REQUIRE(intent.requiredResourceType==-1);
+            REQUIRE(intent.requiredMaterialType==-1);
         }
     REQUIRE(schoolRequested);
 }
@@ -1254,7 +1254,7 @@ TEST_CASE("projectile profiles reserve ammunition workers and cache nominal feed
     const int tower=world.game.buildingsTypes.getPlaceableTypeNum("defencetower");
     const int inn=world.game.buildingsTypes.getPlaceableTypeNum("inn");
     const auto* profile=ai.profile_variant(tower,1);REQUIRE(profile);
-    CHECK(profile->operatingResources[STONE]>0);
+    CHECK(profile->operatingMaterials[STONE]>0);
     CHECK(profile->serviceRates[AIMaximaBuildings::ProjectileDefense]>0);
     const auto* cached=ai.development_feeding_visit_rate.data();
     const int capacity=ai.feeding_capacity(inn,1);
@@ -1330,7 +1330,7 @@ TEST_CASE("feeding farm claims follow one cohort while hybrid operating demand s
     BuildingLevelProfile shape;shape.level=1;shape.footprint=Footprint(0,0,1,1);
     shape.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
     shape.feedingRate=1000;shape.feedingMask=7;
-    shape.operatingResources[WHEAT]=shape.feedingResources[WHEAT]=1000;
+    shape.operatingMaterials[WHEAT]=shape.feedingMaterials[WHEAT]=1000;
     profile.levels.push_back(shape);world.profiles.push_back(profile);
     WorldBuilding first;first.id=1;first.gid=1;first.buildingType=0;first.level=1;first.centerX=8;first.centerY=8;
     world.buildings.push_back(first);
@@ -1362,7 +1362,7 @@ TEST_CASE("feeding farm claims follow one cohort while hybrid operating demand s
     auto second=first;second.id=second.gid=2;second.centerX=10;world.buildings.push_back(second);
     const auto& both=planner.evaluateFoodLedger(world);
     CHECK(both.consumer(1)->demand+both.consumer(2)->demand==1000);
-    world.profiles[0].levels[0].operatingResources[WHEAT]+=250;
+    world.profiles[0].levels[0].operatingMaterials[WHEAT]+=250;
     configure();
     const auto& hybrid=planner.evaluateFoodLedger(world);
     CHECK(hybrid.consumer(1)->demand+hybrid.consumer(2)->demand==1500);
@@ -1373,7 +1373,7 @@ TEST_CASE("feeding farm claims follow one cohort while hybrid operating demand s
     // A free feeder still absorbs its share of meals; only its independent
     // production demand remains, and the other provider keeps its own budget.
     auto free=world.profiles[0];free.buildingType=1;
-    free.levels[0].operatingResources[WHEAT]=250;free.levels[0].feedingResources[WHEAT]=0;
+    free.levels[0].operatingMaterials[WHEAT]=250;free.levels[0].feedingMaterials[WHEAT]=0;
     world.profiles.push_back(free);second.buildingType=1;world.buildings.push_back(second);world.invalidateProfileIndex();configure();
     const auto& mixed=planner.evaluateFoodLedger(world);
     CHECK(mixed.consumer(1)->demand==750);CHECK(mixed.consumer(2)->demand==250);
@@ -1415,7 +1415,7 @@ TEST_CASE("feeding packet denominations preserve large stock rates and profile c
     const std::string saved(bytes->getBuffer(),bytes->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));input.seekFromStart(0);
     AIMaximaPlacement::BuildingProfile restored;AIMaximaContinuation::Reader reader(&input,true);reader("profile",restored);
-    CHECK(restored.levels.front().feedingResources[WHEAT]==restored.levels.front().operatingResources[WHEAT]);
+    CHECK(restored.levels.front().feedingMaterials[WHEAT]==restored.levels.front().operatingMaterials[WHEAT]);
 }
 
 TEST_CASE("feeding colonies join overlapping catchments transitively and preserve independent training" * doctest::test_suite("Maxima.Economy"))
@@ -1492,7 +1492,7 @@ TEST_CASE("mechanical production ceilings are separate from planned carrier thro
     f.ai->ensure_strategy();
     const auto* profile=f.ai->profile_variant(f.game.buildingsTypes.getPlaceableTypeNum("swarm"));
     REQUIRE(profile);
-    CHECK(profile->productionResources[WHEAT]>planned.productionResourcePackets[WHEAT]);
+    CHECK(profile->productionMaterials[WHEAT]>planned.productionResourcePackets[WHEAT]);
 }
 
 TEST_CASE("birth funding counts production packets without independent hybrid service costs" * doctest::test_suite("Maxima.Economy"))
@@ -1506,8 +1506,8 @@ TEST_CASE("birth funding counts production packets without independent hybrid se
     BuildingProfile profile;profile.buildingType=0;
     BuildingLevelProfile variant;variant.level=1;variant.engineType=0;variant.completedType=0;
     variant.footprint=Footprint(0,0,1,1);variant.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
-    variant.productionUnitMask=1u<<WORKER;variant.productionResources[WHEAT]=1000;
-    variant.operatingResources[WHEAT]=3000; // independent training consumes remaining2000
+    variant.productionUnitMask=1u<<WORKER;variant.productionMaterials[WHEAT]=1000;
+    variant.operatingMaterials[WHEAT]=3000; // independent training consumes remaining2000
     profile.levels.push_back(variant);world.profiles.push_back(profile);
     WorldBuilding building;building.id=building.gid=1;building.buildingType=0;building.level=1;building.centerX=7;building.centerY=8;world.buildings.push_back(building);
     ai.development_building_profiles=world.profiles;ai.development_profiles_initialized=true;
@@ -1521,7 +1521,7 @@ TEST_CASE("birth funding counts production packets without independent hybrid se
     CHECK(ai.food_birth_crop_rate==1000);
     CHECK(ai.birth_food_acreage()==1000LL*ai.strategy.food.growth_period_ticks*65536/AIMaximaFoodLedger::RateScale);
     world.profiles[0].levels[0].productionUnitMask=0;
-    world.profiles[0].levels[0].productionResources[WHEAT]=0;
+    world.profiles[0].levels[0].productionMaterials[WHEAT]=0;
     ai.development_building_profiles=world.profiles;
     ai.development_planner.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
         AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
@@ -1675,9 +1675,9 @@ TEST_CASE("production ledger uses requested staffing ratios and target stage wit
     stage.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
     stage.initialCarriers=8;stage.operatingAssignmentLimit=20;
     stage.productionRecipes.ticks[WORKER]=151;stage.productionRecipes.costs[WORKER][WHEAT]=5;
-    stage.productionResources[WHEAT]=5000000/151;
-    stage.independentResources[WHEAT]=1000;
-    stage.operatingResources[WHEAT]=stage.productionResources[WHEAT]+1000;
+    stage.productionMaterials[WHEAT]=5000000/151;
+    stage.independentMaterials[WHEAT]=1000;
+    stage.operatingMaterials[WHEAT]=stage.productionMaterials[WHEAT]+1000;
     profile.levels.push_back(stage);world.profiles.push_back(profile);
     WorldBuilding building;building.id=building.gid=1;building.buildingType=0;building.level=1;
     building.centerX=8;building.centerY=8;building.plannedCarriers=2;
@@ -1696,9 +1696,9 @@ TEST_CASE("production ledger uses requested staffing ratios and target stage wit
     const auto oldSignature=world.computeSignature();
     world.buildings[0].plannedCarriers=8;
     CHECK(world.computeSignature()!=oldSignature);
-    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingResources[WHEAT]);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingMaterials[WHEAT]);
     world.buildings[0].centerX=24;
-    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand<stage.operatingResources[WHEAT]);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand<stage.operatingMaterials[WHEAT]);
     world.buildings[0].productionRatios[WORKER]=0;
     CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==1000);
     CHECK(planner.evaluateFoodLedger(world).consumer(1)->productionDemand==0);
@@ -1711,8 +1711,8 @@ TEST_CASE("production ledger uses requested staffing ratios and target stage wit
     DevelopmentAction upgrade;upgrade.id=1;upgrade.buildingId=1;upgrade.buildingType=0;
     upgrade.type=UpgradeBuilding;upgrade.targetLevel=2;upgrade.state=ParcelReserved;
     planner.actionMap[1]=upgrade;
-    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingResources[WHEAT]);
-    CHECK(planner.evaluateFoodLedger(world).consumer(1)->productionDemand==stage.productionResources[WHEAT]);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingMaterials[WHEAT]);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->productionDemand==stage.productionMaterials[WHEAT]);
 
     auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
     AIMaximaContinuation::Writer writer(&output,true);writer("world",world);
@@ -1759,7 +1759,7 @@ TEST_CASE("producer candidates enforce local feasibility alongside strategic tar
     auto& producer=world.profiles[0];
     for(auto& level:producer.levels) {
         level.footprint=Footprint(0,0,1,1);level.initialCarriers=2;level.operatingAssignmentLimit=20;
-        level.productionResources[1]=10000;level.operatingResources[1]=10000;
+        level.productionMaterials[1]=10000;level.operatingMaterials[1]=10000;
         level.productionRecipes.ticks[0]=100;level.productionRecipes.costs[0][1]=1;
     }
     world.tile(9,8).foodOpportunity=1;world.tile(9,8).protectedYield=1000;
@@ -1807,13 +1807,13 @@ TEST_CASE("feeding candidates transfer funded meal shares through cache reload a
         BuildingProfile profile;profile.buildingType=type;
         for(int stage=1;stage<=2;++stage) {
             BuildingLevelProfile level;level.level=stage;level.footprint=Footprint(0,0,1,1);
-            level.initialCarriers=20;level.operatingAssignmentLimit=20;level.operatingResources[1]=8000;
+            level.initialCarriers=20;level.operatingAssignmentLimit=20;level.operatingMaterials[1]=8000;
             if(type==1) {
                 level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
-                level.feedingRate=8000;level.feedingMask=1;level.feedingResources[1]=8000;
+                level.feedingRate=8000;level.feedingMask=1;level.feedingMaterials[1]=8000;
             } else {
                 level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
-                level.productionResources[1]=8000;level.productionUnitMask=1;
+                level.productionMaterials[1]=8000;level.productionUnitMask=1;
                 level.productionRecipes.ticks[0]=125;level.productionRecipes.costs[0][1]=1;
             }
             profile.levels.push_back(level);
@@ -1855,10 +1855,10 @@ TEST_CASE("Food reach crosses passable nonfood deposits but respects resource ob
  for(auto& tile:world.tiles) { tile.discovered=true; tile.walkable=false; }
  for(int x=3;x<=8;++x) world.tile(x,4).walkable=true;
  auto& crossing=world.tile(5,4);
- crossing.resourceType=materialIndex(MaterialId::Fabric);
+ crossing.materialType=materialIndex(MaterialId::Fabric);
  crossing.materialSources=materialBit(MaterialId::Fabric);
  auto& food=world.tile(8,4); food.foodOpportunity=65536;
- food.resourceType=materialIndex(MaterialId::Food);
+ food.materialType=materialIndex(MaterialId::Food);
  food.materialSources=materialBit(MaterialId::Food);
  Planner planner;
  auto reached=planner.colonyFoodTiles(world,2,4,Footprint(0,0,1,1));
@@ -1868,4 +1868,67 @@ TEST_CASE("Food reach crosses passable nonfood deposits but respects resource ob
  REQUIRE(world.computeSignature()!=passableSignature);
  reached=planner.colonyFoodTiles(world,2,4,Footprint(0,0,1,1));
  REQUIRE(reached.empty());
+}
+
+TEST_CASE("custom construction supply counts reachable mixed yields and shore access" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;
+    auto catalog=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+    const int site=f.game.buildingsTypes.getTypeNum("inn",0,true);
+    REQUIRE(site>=0);
+    catalog["variants"][site]["properties"]["maxMaterial"][materialIndex(MaterialId::Gold)]=10;
+    catalog["variants"][site]["properties"]["maxMaterial"][materialIndex(MaterialId::Paper)]=10;
+    catalog["variants"][site]["semantics"]["constructionCost"]={{"gold",5},{"paper",5}};
+    f.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.configureBuildingCatalog();
+    auto resources=nlohmann::json::parse(f.game.map.resourceRegistry().serialize());
+    auto custom=resources["resources"][0];
+    custom["key"]="test:mixed-shore-stock";
+    custom.erase("requiredExperiment");
+    custom["properties"]={{"ecology","uniform"},{"habitatMask",3},
+        {"blocksGround",false},{"primaryMaterial","gold"},{"persistsWhenEmpty",true},{"visibleToHarvest",true}};
+    custom["yields"]={{"gold",{{"capacity",7},{"initial",7},{"consumption","all"}}},
+        {"paper",{{"capacity",3},{"initial",3},{"consumption","one"}}},
+        {"food",{{"capacity",4},{"initial",4},{"consumption","one"}}}};
+    resources["resources"].push_back(custom);
+    f.game.map.installResourceDefinitions(resources.dump());
+    const auto resource=f.game.map.resourceRegistry().find("test:mixed-shore-stock");
+    REQUIRE(resource.has_value());
+    auto* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0);REQUIRE(worker);
+    f.game.map.setCellTerrain(21,20,WATER);
+    f.game.map.setResource(21,20,*resource,0);
+    for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+        if(dx||dy)f.game.map.setCellTerrain(40+dx,40+dy,WATER);
+    f.game.map.setResource(40,40,*resource,0);
+    f.game.map.fogOfWar[f.game.map.coordToIndex(21,20)]|=f.player.team->me;
+    f.game.map.fogOfWar[f.game.map.coordToIndex(40,40)]|=f.player.team->me;
+    f.ai->ensure_strategy();
+    auto world=f.ai->collect_development_world(f.ai->context);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==1);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==3);
+    CHECK((world.tile(21,20).sources()&materialBit(MaterialId::Paper))!=0);
+    CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Gold))==0);
+    CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Paper))==0);
+    worker->performance[SWIM]=1;
+    world=f.ai->collect_development_world(f.ai->context);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==2);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==6);
+    CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Gold))!=0);
+    // Discovery is not current visibility. A hidden deposit cannot fund any
+    // material, including the food path that bypasses additional-input counts.
+    f.game.map.fogOfWar[f.game.map.coordToIndex(21,20)]&=~f.player.team->me;
+    f.game.map.fogOfWar[f.game.map.coordToIndex(40,40)]&=~f.player.team->me;
+    world=f.ai->collect_development_world(f.ai->context);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==0);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==0);
+    CHECK(world.tile(21,20).sources()==0);
+    CHECK(world.tile(21,20).materialAmount==0);
+    CHECK(world.tile(21,20).foodOpportunity==0);
+    CHECK(world.tile(21,20).clearableResource);
+    f.game.map.fogOfWar[f.game.map.coordToIndex(21,20)]|=f.player.team->me;
+    world=f.ai->collect_development_world(f.ai->context);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==1);
+    CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==3);
+    CHECK((world.tile(21,20).sources()&materialBit(MaterialId::Food))!=0);
+    CHECK(world.tile(21,20).materialAmount==4);
 }

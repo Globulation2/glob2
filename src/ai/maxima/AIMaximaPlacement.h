@@ -179,22 +179,22 @@ struct BuildingLevelProfile
 	int level;
 	int engineType;
 	Footprint footprint;
-	int constructionResources[MaterialCount];
+	int constructionMaterials[MaterialCount];
 	int completedType=-1;
 	unsigned roles=0;
 	int serviceRates[AIMaximaBuildings::RoleCount]{};
 	unsigned productionUnitMask=0;
 	int productionRates[3]{};
-	int operatingResources[MaterialCount]{}; // recurring carried packets, FoodLedger::RateScale per tick
+	int operatingMaterials[MaterialCount]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
-    int feedingResources[MaterialCount]{};
+    int feedingMaterials[MaterialCount]{};
     int operatingAssignmentLimit=1024;
     int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
     int productionDemandPercent=100;
     AIMaxima::ProductionRecipeModel productionRecipes;
-    int independentResources[MaterialCount]{};
-    int productionResources[MaterialCount]{}; // mechanical production-only packet ceiling // component already included in operatingResources
+    int independentMaterials[MaterialCount]{};
+    int productionMaterials[MaterialCount]{}; // mechanical production-only packet ceiling // component already included in operatingResources
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;
@@ -236,12 +236,12 @@ struct WorldTile
     bool resourceBlocksGround=false;
 	bool occupied;
 	bool ownOccupied;
-	// Match the engine's byte-sized amount while retaining a signed empty type.
+	// Selected material slot and its stock; -1 denotes no selected supply.
 	// These in-memory widths are independent of the legacy serialized widths.
-	int16_t resourceType;
-	uint32_t resourceAmount;
+	int16_t materialType;
+	uint32_t materialAmount;
     MaterialMask materialSources=0;
-    MaterialMask sources() const { return materialSources ? materialSources : resourceType>=0 && resourceType<MaterialCount ? MaterialMask(1u<<resourceType) : 0; }
+    MaterialMask sources() const { return materialSources ? materialSources : materialType>=0 && materialType<MaterialCount ? MaterialMask(1u<<materialType) : 0; }
 	uint32_t fertility;
 	uint32_t farmCapacity;
 	uint32_t foodOpportunity;
@@ -319,7 +319,7 @@ struct DevelopmentIntent
 	int unmetCount;
 	int priority;
 	int workers;
-	int requiredResourceType;
+	int requiredMaterialType;
 	bool emergency;
 	/// Relocation only: the building this intent replaces.
 	int replacesBuildingId;
@@ -361,7 +361,7 @@ struct UtilityComponents
 	int projectedFarmLoss;
 	int foodZonePressure;
 	int newlyReservedLand;
-	int resourceScarcity;
+	int materialScarcity;
 	int constructionLabor;
 	int serviceDowntime;
 	int threatExposure;
@@ -390,7 +390,7 @@ struct PlacementPolicy
 	int projectedFarmLossWeight;
 	int foodZonePenaltyWeight;
 	int newlyReservedLandWeight;
-	int resourceScarcityWeight;
+	int materialScarcityWeight;
 	int constructionLaborWeight;
 	int serviceDowntimeWeight;
 	int threatExposureWeight;
@@ -407,7 +407,7 @@ struct PlacementPolicy
 	int parallelNoService;
 	int duplicateFirstScore;
 	int duplicateScoreScale;
-	int resourceDistanceWeight;
+	int materialDistanceWeight;
 	int foodZoneRadius;
 	int innerFoodZoneMultiplier;
 	int hospitalFoodZoneMultiplier;
@@ -674,9 +674,9 @@ private:
 	bool waterTierPasses(const WorldState& world,
 		const std::vector<int>& parcel, int minimumDistance) const;
 	void prepareWaterDistanceCache(const WorldState& world) const;
-	void prepareResourceSources(const WorldState& world) const;
+	void prepareMaterialSources(const WorldState& world) const;
 	void prepareScoringCaches(const WorldState& world) const;
-	int resourceDistanceAt(const WorldState& world,int resourceType,
+	int materialDistanceAt(const WorldState& world,int materialType,
 		int index) const;
 	bool requiredSourcePresent(const WorldState& world,
 		const DevelopmentIntent& intent) const;
@@ -824,9 +824,9 @@ private:
 	mutable field::Frontier distanceFrontiers[3]; // transient scratch
 	mutable DistanceField footprintDistanceCache;
 	mutable uint32_t footprintDistanceCacheSignature;
-	mutable std::vector<MaterialMask> resourceSourceCache;
-	mutable DistanceField resourceDistanceCache[MaterialCount];
-	mutable bool resourceDistanceCacheValid[MaterialCount];
+	mutable std::vector<MaterialMask> materialSourceCache;
+	mutable DistanceField materialDistanceCache[MaterialCount];
+	mutable bool materialDistanceCacheValid[MaterialCount];
 	mutable uint64_t maximumFarmCapacityCache;
 	mutable uint64_t maximumFoodOpportunityCache;
 	mutable std::vector<uint32_t> foodOpportunitySourceCache;

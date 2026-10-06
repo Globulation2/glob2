@@ -28,9 +28,9 @@ Json catalog(unsigned count, bool multi) {
             yields["gold"]={{"capacity",9},{"initial",5},{"consumption","one"}};
         }
         definitions.push_back({{"key","stress:crop-"+std::to_string(n)},
-            {"properties",{{"ecology","land"},{"blocksGround",false},{"persistsWhenEmpty",true}}},
+            {"properties",{{"ecology","uniform"},{"growthRate",ResourceRateScale},{"spreadRate",ResourceRateScale/4},{"stockDependentGrowth",false},{"blocksGround",false},{"persistsWhenEmpty",true}}},
             {"yields",yields},
-            {"presentation",{{"name","Stress crop"},{"sprite","data/gfx/ressource"},
+            {"presentation",{{"name","Stress crop"},{"sprite","data/gfx/ressource"},{"minimap",{80,160,48}},
                 {"levels",Json::array({{{"stock",0},{"variants",Json::array({{{"frame",5}}})}}})}}}});
     }
     return {{"schemaVersion",1},{"resources",definitions}};
@@ -44,7 +44,7 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         {"cases",Json::array()}};
     const char* destination=std::getenv("GLOB2_RESOURCE_STRESS_OUTPUT");
     if(destination) std::filesystem::create_directories(destination);
-    std::map<int,std::uint64_t> singleYieldDigests;
+    std::map<int,std::uint64_t> singleYieldDigests,growthDigests;
     for(int shift:{8,9}) for(int variant=0;variant<3;++variant) {
         const unsigned definitions=variant==0?1:512;
         const bool multi=variant==2;
@@ -60,7 +60,7 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         for(int y=8;y<map.getH();y+=8) for(int x=8;x<map.getW();x+=8) {
             const auto id=map.resourceRegistry().find("stress:crop-"+std::to_string(deposits.size()%definitions));
             REQUIRE(id.has_value());
-            map.setResource(x,y,resourceIndex(*id),5);
+            map.setResource(x,y,*id,0); // One tile; initial stock comes from the definition.
             deposits.push_back(map.coordToIndex(x,y));
         }
         const auto placementNs=elapsed(start);
@@ -121,6 +121,29 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         row["digest"]=digest;
         if(variant==0) singleYieldDigests[shift]=digest;
         if(variant==1) CHECK(digest==singleYieldDigests[shift]);
+        // Growth is a separate phase so mutations never change the matched
+        // source-query workload above. Uniform ecology gives an intentional
+        // nonzero rate on this otherwise featureless stress map.
+        row["growth"]=Json::array();
+        for(int repeat=0;repeat<3;++repeat) {
+            start=Clock::now();
+            for(int pass=0;pass<16;++pass) map.growResources();
+            const auto growthNs=elapsed(start);
+            std::uint64_t stocks=0,hash=14695981039346656037ull;
+            for(size_t index=0;index<cells;++index) {
+                const auto amount=map.materialAmountAt(index,MaterialId::Food);
+                stocks+=amount;hash=(hash^amount)*1099511628211ull;
+            }
+            row["growth"].push_back({{"repeat",repeat},{"passes",16},{"ns",growthNs},
+                {"food_stock",stocks},{"food_sources",map.materialSourceCounts[materialIndex(MaterialId::Food)]},
+                {"food_stock_digest",hash}});
+            CHECK(stocks>=deposits.size()*5);
+            if(repeat==2 && variant==0) growthDigests[shift]=hash;
+            if(repeat==2 && variant==1) CHECK(hash==growthDigests[shift]);
+        }
+        size_t coverageBytes=map.growthCoverage.capacity()*sizeof(Uint64);
+        for(const auto& plane:map.growthCoverageCounts) coverageBytes+=plane.capacity()*sizeof(Uint16);
+        row["growth_coverage_bytes"]=coverageBytes;
         if(destination) {
             // Seed actual colonies for optional CLI continuation, after timed kernels.
             for(int team=0;team<8;++team) {

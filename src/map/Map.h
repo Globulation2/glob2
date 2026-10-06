@@ -666,10 +666,8 @@ public:
 		return getTile(x, y).canResourcesGrow && terrainPropertiesAt(x,y).resourcesGrow;
 	}
 
-	//! Decrement resource at position (x,y). Return true on success, false otherwise.
+	//! Apply one clearing action using the deposit's configured consumption policy.
 	void decResource(int x, int y);
-	//! Decrement resource at position (x,y) if resource type = resourceType. Return true on success, false otherwise.
-	void decResource(int x, int y, int resourceType);
 	bool incResource(int x,int y,ResourceId resource,int variety);
     bool incResource(int x,int y,int resource,int variety) { return resource>=0 && resource<NO_RES_TYPE && incResource(x,y,static_cast<ResourceId>(resource),variety); }
 

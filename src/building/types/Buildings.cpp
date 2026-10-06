@@ -169,9 +169,9 @@ void BuildingsTypes::initLegacy()
 		{
 			recipe.enabled = bt.unitProductionTime != 0;
 			recipe.duration = bt.unitProductionTime;
-			if (recipe.enabled) recipe.cost[materialIndex(MaterialId::Food)] = bt.resourceForOneUnit;
+			if (recipe.enabled) recipe.cost[materialIndex(MaterialId::Food)] = bt.foodPerUnit;
 		}
-		p.market.sharedStock = bt.useTeamResources;
+		p.market.sharedStock = bt.useTeamMaterials;
 		p.market.interTeamFruitExchange = bt.canExchange;
 		p.market.suppliesDirectStock = bt.canExchange;
 		p.market.fetchesDirectStock = bt.canFeedUnit;
@@ -372,7 +372,7 @@ void BuildingsTypes::compileRuntimeTraits()
         hot.width=b.width; hot.height=b.height; hot.decLeft=b.decLeft; hot.decTop=b.decTop;
         hot.shootRhythm=b.shootingRange ? b.shootRhythm : 0; hot.shootingRange=b.shootingRange; hot.assignmentLimit=s.assignmentLimit;
         hot.flags=(s.occupiesGround ? BuildingRuntimeTraits::OccupiesGround : 0)
-            | (b.useTeamResources ? BuildingRuntimeTraits::SharedStock : 0) | (b.isBuildingSite ? BuildingRuntimeTraits::Site : 0)
+            | (b.useTeamMaterials ? BuildingRuntimeTraits::SharedStock : 0) | (b.isBuildingSite ? BuildingRuntimeTraits::Site : 0)
             | (s.feeding.enabled ? BuildingRuntimeTraits::Feeds : 0) | (s.healing.enabled ? BuildingRuntimeTraits::Heals : 0)
             | (s.trainingInParallel ? BuildingRuntimeTraits::TrainingParallel : 0) | (b.runtimeAvailable ? BuildingRuntimeTraits::Available : 0);
         hot.admittedUnitMask=s.admittedUnitMask; hot.requiredWorkerLevel=s.requiredWorkerLevel;

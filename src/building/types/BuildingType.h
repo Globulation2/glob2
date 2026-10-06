@@ -56,7 +56,7 @@ struct BuildingType
 	Sint32 insideSpeed = 12;
 	// Derived mirrors of market.interTeamFruitExchange and market.sharedStock.
 	Sint32 canExchange = 0;
-	Sint32 useTeamResources = 0;
+	Sint32 useTeamMaterials = 0;
 
 	Sint32 width = 0, height = 0; // Footprint in map tiles.
 	Sint32 decLeft = 0, decTop = 0;
@@ -73,7 +73,7 @@ struct BuildingType
 	// enabled recipe. They cannot describe heterogeneous production recipes;
 	// simulation and strategy code must use semantics.production instead.
 	Sint32 unitProductionTime = 0;
-	Sint32 resourceForOneUnit = 0;
+	Sint32 foodPerUnit = 0;
 
 	Sint32 maxMaterial[MAX_NB_RESOURCES] = {};
 	// multiplierResource defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.

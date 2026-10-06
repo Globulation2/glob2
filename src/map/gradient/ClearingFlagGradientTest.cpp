@@ -48,17 +48,18 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
         f.game.map.buildingGradient(flag,swim,BuildingRoute::Clearing);
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
-            for(unsigned resource=0;resource<=MaterialCount;++resource) {
-                const auto type=resource==MaterialCount ? NO_RES_TYPE : resource;
+            for(unsigned resource=0;resource<=f.game.map.resourceRegistry().size();++resource) {
+                const auto type=resource==f.game.map.resourceRegistry().size() ? NO_RES_TYPE : resource;
                 auto tile=f.game.map.getResource(21,20);
                 tile.type=type;tile.amount=type==NO_RES_TYPE?0:1;
                 f.game.map.replaceResource(21,20,tile);
-                for(bool enabled:{false,true}) {
+                for(unsigned material=0;material<MaterialCount;++material) for(bool enabled:{false,true}) {
                     std::fill_n(flag->clearingMaterials,MaterialCount,false);
-                    if(resource<MaterialCount)flag->clearingMaterials[resource]=enabled;
+                    flag->clearingMaterials[material]=enabled;
                     f.game.map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
                     f.game.map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
-                    const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourceProperties(type).clearable;
+                    const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourceProperties(type).clearable
+                        && (f.game.map.resourceProperties(type).materialMask & materialBit(static_cast<MaterialId>(material)));
                     REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
                 }
             }

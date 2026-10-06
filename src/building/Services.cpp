@@ -10,7 +10,7 @@
 
 Sint32 Building::availableMaterial(int resource) const
 {
-	const auto reserved = type->useTeamResources ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
+	const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
 	return std::max(0, materials[resource] - reserved);
 }
 
@@ -21,7 +21,7 @@ bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
 	for (int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
 		reservedMaterials[r] += cost[r];
-		if (type->useTeamResources)
+		if (type->useTeamMaterials)
 		{
 			owner->reservedTeamMaterials[r] += cost[r];
 		}
@@ -32,7 +32,7 @@ bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
 bool Building::reserveMaterials(const BuildingMaterialCost& cost)
 {
 	if (!restoreMaterialsReservation(cost)) return false;
-	if (type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
+	if (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			if (cost[r] && availableMaterial(r)==0) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	return true;
@@ -45,12 +45,12 @@ void Building::releaseMaterials(const BuildingMaterialCost& cost)
 		const int before=availableMaterial(r);
 		assert(reservedMaterials[r] >= cost[r]);
 		reservedMaterials[r] -= cost[r];
-		if (type->useTeamResources)
+		if (type->useTeamMaterials)
 		{
 			assert(owner->reservedTeamMaterials[r] >= cost[r]);
 			owner->reservedTeamMaterials[r] -= cost[r];
 		}
-		if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
+		if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
 			owner->map->dirtyMarketGradients(owner->teamNumber,r);
 	}
 }
@@ -64,7 +64,7 @@ void Building::consumeReservedMaterials(const BuildingMaterialCost& cost, int di
 		assert(materials[r] >= cost[r] && reservedMaterials[r] >= cost[r]);
 		materials[r] -= cost[r];
 		reservedMaterials[r] -= cost[r];
-		if (type->useTeamResources)
+		if (type->useTeamMaterials)
 		{
 			assert(owner->reservedTeamMaterials[r] >= cost[r]);
 			owner->reservedTeamMaterials[r] -= cost[r];

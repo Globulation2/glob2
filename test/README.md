@@ -1828,7 +1828,9 @@ coverage must allocate fields only for materials present; equivalent definitions
 must preserve the query/field digest. No building recipes are changed.
 
 The `GLOB2_RESOURCE_STRESS` JSON rows separate definition installation, placement,
-field requests, source scans, mutations and seed refresh. They include allocated
+field requests, source scans, mutations, seed refresh and growth. Growth uses a
+configured nonzero uniform rate in three batches of 16 passes, after the matched
+query phases, with stock digests verifying equivalent-definition behavior. They include allocated
 material fields, shared absent fields, preparation and consumer cache bytes, and
 stock index/sidecar/free-list capacities. Set `GLOB2_RESOURCE_STRESS_OUTPUT` to an
 ignored artifact directory to save `report.json` and six binary games with eight
@@ -1836,3 +1838,24 @@ small colonies for additional CLI continuation. Colony creation and serializatio
 occur after the measured phases. This is a bounded component benchmark, not a
 statistical gameplay comparison or proof of no regression against the old engine.
 Run it on an otherwise idle host, separately from builds and tournaments.
+
+The five explicit-design generator regressions use
+`test/map-generator-resource-epoch.json` to separate topology from initial stock.
+Resource epoch 1 removes resource-sprite draws from the simulation RNG; historical
+full hashes are retained, while new full hashes include the resulting stock
+quantities. Topology hashes still cover every underlying/render terrain tile,
+resource identity/location, and colony start. A stock-only change cannot silently
+approve a changed route or deposit layout.
+
+To record an epoch row, first generate the five historical explicit designs with
+the archived engine (256², four teams, seed 1: maze `cell-shape=0`, fingerprint
+`pattern=0,barrier=0`, canals `block-shape=0`, caravanserai `desert=1`, honeycomb-isle
+`block-shape=1`). Keep their `.map.gz` files under their generator names in an
+ignored artifact directory. Set `GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS` to that
+absolute directory and run the `MapGeneratorDefaults/Explicit designs*` test.
+Recording verifies the historical full hashes and compares topology before writing
+an `epoch1-<platform>.json` artifact. Review every comparison before copying rows
+into the fixture. Record other platform/compiler variants on those actual builds;
+unavailable full hashes produce an explicit unverified warning. The four designs
+whose historical full hashes matched across platforms retain portable topology
+checks; Fingerprint's known platform variant requires its own recorded topology.

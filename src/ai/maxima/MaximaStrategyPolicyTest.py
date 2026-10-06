@@ -171,15 +171,15 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "accessible_algae_units>=school_algae_requirement()", self.maxima
         )
         self.assertIn(
-            "world.accessibleSupplies[ALGA]=accessible_algae_units;", self.maxima
+            "world.accessibleSupplies[materialIndex(MaterialId::Algae)]=accessible_algae_units;", self.maxima
         )
         self.assertIn(
-            "result.accessibleAlgaeUnits+=tile.resource.amount;", self.maxima
+            "result.accessibleAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));", self.maxima
         )
         self.assertIn(
             "walking[index]=clear && map->terrainPropertiesAt(index).walkable;", self.maxima
         )
-        self.assertNotIn("intent.requiredResourceType=ALGA;", self.maxima)
+        self.assertNotIn("intent.requiredMaterialType=materialIndex(MaterialId::Algae);", self.maxima)
         self.assertNotIn(
             "unit->carriedRessource==WHEAT || unit->carriedRessource==ALGA",
             self.maxima,

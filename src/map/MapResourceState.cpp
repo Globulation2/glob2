@@ -260,7 +260,6 @@ void Map::decResource(int x,int y)
     if (!tiles[index].resource.amount) replaceResource(index,Resource{});
 }
 
-void Map::decResource(int x,int y,int material) { harvestMaterial(coordToIndex(x,y),material); }
 
 void Map::rebuildResourceHabitats()
 {

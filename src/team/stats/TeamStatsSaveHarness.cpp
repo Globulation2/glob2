@@ -429,21 +429,21 @@ static void measurementScenarios()
 				"starting/editor buildings are not completions");
 		swarm->ratio[0] = 1;
 		swarm->ratio[1] = swarm->ratio[2] = 0;
-		swarm->materials[WHEAT] = swarm->type->resourceForOneUnit;
+		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements.births[WORKER] == 1, "successful swarm birth");
 		require(t->stats.measurements.consumed[Measurements::SPAWNING][WHEAT] ==
-					Uint64(swarm->type->resourceForOneUnit),
+					Uint64(swarm->type->foodPerUnit),
 				"spawning wheat cost");
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				w.game.map.setGroundUnit(x, y, 0);
-		swarm->materials[WHEAT] = swarm->type->resourceForOneUnit;
+		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements.births[WORKER] == 1, "blocked birth produces no event");
-		require(swarm->materials[WHEAT] == swarm->type->resourceForOneUnit,
+		require(swarm->materials[WHEAT] == swarm->type->foodPerUnit,
 				"blocked birth consumes nothing");
 	}
 	{

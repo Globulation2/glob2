@@ -159,6 +159,8 @@ TEST_SUITE("GUIInteractionCoverage")
                 CHECK(render()==before); // A configured cost alone must not expose absent materials.
                 world.team->teamMaterials[resource]=1;
                 CHECK(render()!=before); // Stored stock counts as presence without a natural deposit.
+                if (resource==int(materialIndex(MaterialId::Fabric)))
+                    REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fabric-cost.bmp").string().c_str()));
                 site->semantics.constructionCost[resource]=0;
                 CHECK(render()==before); // Present but unused inputs stay hidden.
             }

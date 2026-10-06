@@ -45,8 +45,8 @@ namespace
 		return table;
 	}
 
-	/// The engine's corn resource index, as carried in WorldTile::resourceType.
-	const int CornResourceType=1;
+	/// The engine's food material slot, as carried in WorldTile::materialType.
+	const int FoodMaterialType=1;
 
 	int clamp100(long long value) { return int(std::clamp<long long>(value,0,100)); }
 
@@ -110,7 +110,7 @@ namespace
 		WRITE_UTILITY(defendedness); WRITE_UTILITY(compactness);
 		WRITE_UTILITY(projectedFarmLoss); WRITE_UTILITY(foodZonePressure);
 		WRITE_UTILITY(newlyReservedLand);
-		WRITE_UTILITY(resourceScarcity); WRITE_UTILITY(constructionLabor);
+		stream->writeSint32(u.materialScarcity,"resourceScarcity"); WRITE_UTILITY(constructionLabor);
 		WRITE_UTILITY(serviceDowntime); WRITE_UTILITY(threatExposure);
 		WRITE_UTILITY(newArteryLength); WRITE_UTILITY(frontierGain);
 		WRITE_UTILITY(conqueredGain); WRITE_UTILITY(friendlyDistance);
@@ -127,7 +127,7 @@ namespace
 		READ_UTILITY(defendedness); READ_UTILITY(compactness);
 		READ_UTILITY(projectedFarmLoss); READ_UTILITY(foodZonePressure);
 		READ_UTILITY(newlyReservedLand);
-		READ_UTILITY(resourceScarcity); READ_UTILITY(constructionLabor);
+		u.materialScarcity=stream->readSint32("resourceScarcity"); READ_UTILITY(constructionLabor);
 		READ_UTILITY(serviceDowntime); READ_UTILITY(threatExposure);
 		READ_UTILITY(newArteryLength);
 		READ_UTILITY(frontierGain); READ_UTILITY(conqueredGain);
@@ -165,7 +165,7 @@ Campus::Campus()
 	  fallbackWaterTier(false) {}
 BuildingLevelProfile::BuildingLevelProfile()
 	: level(0), engineType(-1), serviceThroughput(0), durability(0), capability(0)
-{ std::fill(constructionResources, constructionResources+MaterialCount, 0); }
+{ std::fill(constructionMaterials, constructionMaterials+MaterialCount, 0); }
 BuildingProfile::BuildingProfile() : buildingType(-1) {}
 const BuildingLevelProfile* BuildingProfile::atLevel(int requested) const
 {
@@ -198,7 +198,7 @@ Footprint BuildingProfile::envelope(int throughLevel) const
 WorldTile::WorldTile()
 	: discovered(false), foodTraversable(true), buildable(false), swimmable(false), growthInhibiting(false), walkable(true), fertilitySource(false),
 	  permanentResource(false), woodReserve(false), clearableResource(false), occupied(false),
-	  ownOccupied(false), resourceType(-1), resourceAmount(0), fertility(0),
+	  ownOccupied(false), materialType(-1), materialAmount(0), fertility(0),
 	  farmCapacity(0), foodOpportunity(0), protectedYield(0), threat(0),
 	  protectedness(50), conqueredOpportunity(0) {}
 WorldBuilding::WorldBuilding()
@@ -282,7 +282,7 @@ uint32_t WorldState::computeSignature() const
 		uint32_t flags=(t.discovered?1u:0u)|(t.buildable?2u:0u)|(t.swimmable?4u:0u)
 			|(t.growthInhibiting?8u:0u)|(t.permanentResource?16u:0u)
 			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)|(t.woodReserve?256u:0u)|(t.walkable?512u:0u)|(t.fertilitySource?1024u:0u)|(t.resourceBlocksGround?2048u:0u);
-		hashValue(result, flags); hashValue(result, uint32_t(t.resourceType+1)); hashValue(result,t.sources());
+		hashValue(result, flags); hashValue(result, uint32_t(t.materialType+1)); hashValue(result,t.sources());
 	}
 	for(size_t i=0; i<buildings.size(); ++i)
 	{
@@ -301,7 +301,7 @@ uint32_t WorldState::computeSignature() const
 
 DevelopmentIntent::DevelopmentIntent()
 	: buildingType(-1), purpose(CoreCapacity), unmetCount(0), priority(0), workers(1),
-	  requiredResourceType(-1), emergency(false), replacesBuildingId(-1) {}
+	  requiredMaterialType(-1), emergency(false), replacesBuildingId(-1) {}
 DevelopmentLimits::DevelopmentLimits()
 	: newConstruction(0), level1Upgrades(0), level2Upgrades(0),
 	  activeNewConstruction(0), activeLevel1Upgrades(0), activeLevel2Upgrades(0),
@@ -315,7 +315,7 @@ UtilityComponents::UtilityComponents()
 	: unmetDemand(0), serviceGain(0), capabilityGain(0), parallelismGain(0),
 	  redundancyGain(0), roleLocationQuality(0), defendedness(0), compactness(0),
 	  projectedFarmLoss(0), foodZonePressure(0), newlyReservedLand(0),
-	  resourceScarcity(0),
+	  materialScarcity(0),
 	  constructionLabor(0), serviceDowntime(0), threatExposure(0),
 	  newArteryLength(0), frontierGain(0), conqueredGain(0),
 	  friendlyDistance(-1), cornDistance(-1), total(0) {}
@@ -325,13 +325,13 @@ PlacementPolicy::PlacementPolicy()
 	  defendednessWeight(6), compactnessWeight(5), spacingTargetTiles(2),
 	  spacingWeight(6), projectedFarmLossWeight(12),
 	  foodZonePenaltyWeight(12), newlyReservedLandWeight(4),
-	  resourceScarcityWeight(8),
+	  materialScarcityWeight(8),
 	  constructionLaborWeight(4), serviceDowntimeWeight(6),
 	  threatExposureWeight(8), newArteryLengthWeight(2), upgradeLevel1Workers(4),
 	  upgradeLevel2Workers(8), unmetCountWeight(10), unmetCountCap(40),
 	  upgradeUnmetDemand(25), serviceGainScale(5), capabilityGainScale(10),
 	  parallelServiceBase(30), parallelBuildBonus(20), parallelNoService(10),
-	  duplicateFirstScore(100), duplicateScoreScale(50), resourceDistanceWeight(8),
+	  duplicateFirstScore(100), duplicateScoreScale(50), materialDistanceWeight(8),
 	  foodZoneRadius(2), innerFoodZoneMultiplier(100),
 	  hospitalFoodZoneMultiplier(50), towerFoodZoneMultiplier(25),
 	  towerCriticalDistanceWeight(10), towerSpacingTarget(8), towerSpacingWeight(12),
@@ -371,7 +371,7 @@ int PlacementPolicy::score(const UtilityComponents& c,
 		-projectedFarmLossWeight*c.projectedFarmLoss
 		-foodZonePenaltyWeight*c.foodZonePressure
 		-newlyReservedLandWeight*c.newlyReservedLand
-		-resourceScarcityWeight*c.resourceScarcity
+		-materialScarcityWeight*c.materialScarcity
 		-constructionLaborWeight*c.constructionLabor
 		-serviceDowntimeWeight*c.serviceDowntime
 		-threatExposureWeight*c.threatExposure
@@ -439,9 +439,9 @@ void Planner::reset()
 	routeParentCache[0].clear();routeParentCache[1].clear();
 	waterMaskCache.clear();waterDistanceCache.clear();
 	footprintDistanceCache.clear();footprintDistanceCacheSignature=0;
-	resourceSourceCache.clear();
+	materialSourceCache.clear();
 	for(int resource=0;resource<MaterialCount;++resource)
-	{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
+	{materialDistanceCache[resource].clear();materialDistanceCacheValid[resource]=false;}
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
 	foodInput=AIMaximaFoodLedger::Input();
 	foodResult=AIMaximaFoodLedger::Result();
@@ -476,7 +476,7 @@ void Planner::configure(const std::vector<BuildingProfile>& profiles,
 	profileIndexes.assign(maxType+1,-1);foodManagedTypes.assign(maxType+1,0);
     for(size_t i=0;i<profiles.size();++i)if(profiles[i].buildingType>=0) {
         profileIndexes[profiles[i].buildingType]=int(i);
-        for(const auto& v:profiles[i].levels)if(v.feedingRate>0 || v.operatingResources[CornResourceType]>0)
+        for(const auto& v:profiles[i].levels)if(v.feedingRate>0 || v.operatingMaterials[FoodMaterialType]>0)
             foodManagedTypes[profiles[i].buildingType]=1;
     }
     foodLedgerPrepared=false;activeFoodCandidate=nullptr;foodQueryValid=false;candidateFoodLedgers.clear();foodServiceBaseline.clear();
@@ -783,28 +783,28 @@ void Planner::prepareWaterDistanceCache(const WorldState& world) const
 	field::expandDistances(waterDistanceCache,queue,{world.width,world.height},field::Cardinal,INT_MAX);
 }
 
-void Planner::prepareResourceSources(const WorldState& world) const
+void Planner::prepareMaterialSources(const WorldState& world) const
 {
     const int size=world.width*world.height;
-    bool changed=int(resourceSourceCache.size())!=size;
+    bool changed=int(materialSourceCache.size())!=size;
     const auto sourceMask=[](const WorldTile& tile) -> MaterialMask {
         if(!tile.discovered) return 0;
         MaterialMask result=tile.sources();
         if(tile.foodOpportunity>0) result|=materialBit(MaterialId::Food);
         return result;
     };
-    for(int i=0;i<size&&!changed;++i) changed=resourceSourceCache[i]!=sourceMask(world.tiles[i]);
+    for(int i=0;i<size&&!changed;++i) changed=materialSourceCache[i]!=sourceMask(world.tiles[i]);
     if(!changed)return;
-    resourceSourceCache.resize(size);
-    for(int i=0;i<size;++i) resourceSourceCache[i]=sourceMask(world.tiles[i]);
+    materialSourceCache.resize(size);
+    for(int i=0;i<size;++i) materialSourceCache[i]=sourceMask(world.tiles[i]);
     for(int resource=0;resource<MaterialCount;++resource) {
-        resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;
+        materialDistanceCache[resource].clear();materialDistanceCacheValid[resource]=false;
     }
 }
 
 void Planner::prepareScoringCaches(const WorldState& world) const
 {
-    prepareResourceSources(world);
+    prepareMaterialSources(world);
 	prepareColonyClaims(world);
 	prepareFoodLedger(world);
 	const int size=world.width*world.height;
@@ -985,32 +985,32 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	}
 }
 
-int Planner::resourceDistanceAt(const WorldState& world,int resourceType,
+int Planner::materialDistanceAt(const WorldState& world,int materialType,
 	int index) const
 {
-	if(resourceType<0||resourceType>=MaterialCount)return INT_MAX;
-	if(!resourceDistanceCacheValid[resourceType])
+	if(materialType<0||materialType>=MaterialCount)return INT_MAX;
+	if(!materialDistanceCacheValid[materialType])
 	{
 		const int size=world.width*world.height;
-		DistanceField& distances=resourceDistanceCache[resourceType];
+		DistanceField& distances=materialDistanceCache[materialType];
 		distances.assign(size,INT_MAX);
 		auto& queue=distanceFrontiers[0];queue.clear();
-		for(int i=0;i<size;++i)if((resourceSourceCache[i] & (1u<<resourceType))!=0)
+		for(int i=0;i<size;++i)if((materialSourceCache[i] & (1u<<materialType))!=0)
 		{distances[i]=0;queue.push_back(i);}
 		field::expandDistances(distances,queue,{world.width,world.height},field::Cardinal,INT_MAX);
-		resourceDistanceCacheValid[resourceType]=true;
+		materialDistanceCacheValid[materialType]=true;
 	}
-	return resourceDistanceCache[resourceType][index];
+	return materialDistanceCache[materialType][index];
 }
 
 bool Planner::requiredSourcePresent(const WorldState& world,
 	const DevelopmentIntent& intent) const
 {
-	if(intent.requiredResourceType<0) return true;
+	if(intent.requiredMaterialType<0) return true;
 	for(size_t i=0; i<world.tiles.size(); ++i)
 		if(world.tiles[i].discovered
-		   && (intent.requiredResourceType==1 ? world.tiles[i].foodOpportunity>0
-			: (world.tiles[i].sources() & (1u<<intent.requiredResourceType))!=0)) return true;
+		   && (intent.requiredMaterialType==1 ? world.tiles[i].foodOpportunity>0
+			: (world.tiles[i].sources() & (1u<<intent.requiredMaterialType))!=0)) return true;
 	return false;
 }
 
@@ -1107,7 +1107,7 @@ std::pair<int,int> Planner::colonyBenefit(const WorldState& world,
 	long long cost=1+static_cast<long long>(distance)*std::max(1,action.workers);
 	const BuildingProfile* profile=world.profile(action.buildingType);
 	const BuildingLevelProfile* level=profile?profile->atLevel(1):NULL;
-	if(level)for(int amount:level->constructionResources)cost+=amount;
+	if(level)for(int amount:level->constructionMaterials)cost+=amount;
 	return std::make_pair(capacity,int(capacity*100LL/cost));
 }
 
@@ -1139,7 +1139,7 @@ bool Planner::foodManagedType(int buildingType) const
 int Planner::foodDemandFor(int buildingType, int level) const
 {
 	const auto* p=configuredProfile(buildingType);const auto* v=p?p->atLevel(level):nullptr;
-	return v ? v->operatingResources[CornResourceType] : 0;
+	return v ? v->operatingMaterials[FoodMaterialType] : 0;
 }
 
 std::array<int,MaterialCount> Planner::operatingTrips(const WorldState& world,int x,int y,
@@ -1147,7 +1147,7 @@ std::array<int,MaterialCount> Planner::operatingTrips(const WorldState& world,in
 {
     std::array<int,MaterialCount> trips{};
     for(int r=0;r<MaterialCount;++r)if(independent[r]>0 || production[r]>0) {
-        int distance=resourceDistanceAt(world,r,world.index(x,y));
+        int distance=materialDistanceAt(world,r,world.index(x,y));
         if(distance==INT_MAX)distance=placementPolicy.foodSupplyRadius+placementPolicy.foodUnreachablePenaltyTiles;
         trips[r]=int(std::min<long long>(INT_MAX,std::max(1LL,
             static_cast<long long>(placementPolicy.carrierFixedTicksPerTrip)+2LL*placementPolicy.carrierTicksPerTile*distance)));
@@ -1172,7 +1172,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     std::vector<const WorldBuilding*> buildings;
     foodCandidateIndependent={};foodCandidateProduction={};foodCandidateFeeding=0;
 	if(!placementPolicy.foodLedgerEnabled)return;
-    if(candidateType<0)prepareResourceSources(world);
+    if(candidateType<0)prepareMaterialSources(world);
 	const int size=world.width*world.height;
 	if(size<=0)return;
 	foodInput.width=world.width;foodInput.height=world.height;
@@ -1292,18 +1292,18 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
         const bool livePlan=building && !building->site && building->level==profile->level && building->plannedCarriers>=0;
         if(livePlan) {
             production=AIMaxima::productionPacketCeiling(profile->productionRecipes,building->productionRatios);
-            production[CornResourceType]=int(std::min<long long>(INT_MAX,
-                static_cast<long long>(production[CornResourceType])*profile->productionDemandPercent/100));
-        } else std::copy_n(profile->productionResources,MaterialCount,production.begin());
+            production[FoodMaterialType]=int(std::min<long long>(INT_MAX,
+                static_cast<long long>(production[FoodMaterialType])*profile->productionDemandPercent/100));
+        } else std::copy_n(profile->productionMaterials,MaterialCount,production.begin());
         for(int r=0;r<MaterialCount;++r) {
             const long long mealCost=profile->feedingRate>0?
-                (static_cast<long long>(profile->feedingResources[r])*feeding+profile->feedingRate-1)/profile->feedingRate:0;
+                (static_cast<long long>(profile->feedingMaterials[r])*feeding+profile->feedingRate-1)/profile->feedingRate:0;
             // Explicit independent components avoid subtracting saturated sums.
             // Unknown planner-only profiles retain their historical projection.
             const int other=profile->initialCarriers<0?
-                std::max(0,profile->operatingResources[r]-profile->feedingResources[r]-profile->productionResources[r]):profile->independentResources[r];
+                std::max(0,profile->operatingMaterials[r]-profile->feedingMaterials[r]-profile->productionMaterials[r]):profile->independentMaterials[r];
             independent[r]=int(std::min<long long>(INT_MAX,other+mealCost));
-            if(r==CornResourceType)feedingPackets=int(std::min<long long>(INT_MAX,mealCost));
+            if(r==FoodMaterialType)feedingPackets=int(std::min<long long>(INT_MAX,mealCost));
         }
         const int requested=livePlan?building->plannedCarriers:profile->initialCarriers;
         const int carriers=requested<0?-1:std::min(requested,profile->operatingAssignmentLimit);
@@ -1314,15 +1314,15 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
         // Initializing distance fields happens here, outside all candidate loops.
         const auto claim=AIMaxima::operatingClaim(independent,production,carriers,operatingTrips(world,x,y,independent,production));
         if(real) {
-            foodInput.consumers[i].demand=claim.total[CornResourceType];
-            foodInput.consumers[i].productionDemand=claim.production[CornResourceType];
+            foodInput.consumers[i].demand=claim.total[FoodMaterialType];
+            foodInput.consumers[i].productionDemand=claim.production[FoodMaterialType];
             auto& plan=foodInput.consumers[i].operating;
             plan.carriers=carriers;plan.independent=independent;plan.production=production;
             plan.trips=operatingTrips(world,x,y,independent,production);
             plan.fixedTicks=placementPolicy.carrierFixedTicksPerTrip;
             plan.ticksPerTile=placementPolicy.carrierTicksPerTile;
         } else {
-            foodCandidateDemand=claim.total[CornResourceType];
+            foodCandidateDemand=claim.total[FoodMaterialType];
             foodCandidateIndependent=independent;foodCandidateProduction=production;foodCandidateFeeding=feedingPackets;
         }
     }
@@ -1399,9 +1399,9 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 		if(!rebuilt)continue;
 		for(int r=0;r<MaterialCount;++r)
 		{
-			const int units=rebuilt->constructionResources[r];
+			const int units=rebuilt->constructionMaterials[r];
 			if(units<=0)continue;
-			int distance=resourceDistanceAt(world,r,index);
+			int distance=materialDistanceAt(world,r,index);
 			if(distance==INT_MAX)
 				distance=p.foodSupplyRadius+p.foodUnreachablePenaltyTiles;
 			cost+=units*(p.carrierFixedTicksPerTrip+2LL*p.carrierTicksPerTile*distance
@@ -1471,10 +1471,10 @@ int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAc
         if(!foodLedgerPrepared || foodLedgerExcludedAction!=excludeAction || foodLedgerExcludedBuilding!=replaced)
             prepareFoodLedger(world,excludeAction,replaced);
         activeFoodCandidate=nullptr;
-        std::copy_n(variant->productionResources,MaterialCount,production.begin());
+        std::copy_n(variant->productionMaterials,MaterialCount,production.begin());
         for(int r=0;r<MaterialCount;++r)independent[r]=variant->initialCarriers<0?
-            std::max(0,variant->operatingResources[r]-variant->productionResources[r]):
-            int(std::min<long long>(INT_MAX,static_cast<long long>(variant->independentResources[r])+variant->feedingResources[r]));
+            std::max(0,variant->operatingMaterials[r]-variant->productionMaterials[r]):
+            int(std::min<long long>(INT_MAX,static_cast<long long>(variant->independentMaterials[r])+variant->feedingMaterials[r]));
     } else {
         colony=world.feedingColonyAt(action.centerX,action.centerY);
         prepareFeedingCandidateSet(world,action.buildingType,level,excludeAction,replaced);
@@ -1495,14 +1495,14 @@ int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAc
     plan.fixedTicks=placementPolicy.carrierFixedTicksPerTrip;plan.ticksPerTile=placementPolicy.carrierTicksPerTile;
     plan.trips=operatingTrips(world,action.centerX,action.centerY,independent,production);
     auto pessimisticTrips=plan.trips;
-    pessimisticTrips[CornResourceType]=int(std::min<long long>(INT_MAX,std::max(1,plan.fixedTicks)+
+    pessimisticTrips[FoodMaterialType]=int(std::min<long long>(INT_MAX,std::max(1,plan.fixedTicks)+
         2LL*plan.ticksPerTile*(placementPolicy.foodSupplyRadius+placementPolicy.foodUnreachablePenaltyTiles)));
     const auto minimum=AIMaxima::operatingClaim(independent,production,plan.carriers,pessimisticTrips);
     const auto bound=foodLedger.residualUpperBound(foodInput,selectedFoodResult(),action.centerX,
         action.centerY,shape.left,shape.top,shape.width,shape.height,true);
-    if(independent[CornResourceType]==0 && production[CornResourceType]==0)foodQuery={};
-    else if(bound<minimum.total[CornResourceType]) {
-        foodQuery={minimum.total[CornResourceType],minimum.production[CornResourceType],
+    if(independent[FoodMaterialType]==0 && production[FoodMaterialType]==0)foodQuery={};
+    else if(bound<minimum.total[FoodMaterialType]) {
+        foodQuery={minimum.total[FoodMaterialType],minimum.production[FoodMaterialType],
             (placementPolicy.foodSupplyRadius+placementPolicy.foodUnreachablePenaltyTiles)*100,bound,0,false};
     } else foodQuery=foodLedger.operatingQuery(foodInput,selectedFoodResult(),candidate,placementPolicy.foodMarginPercent,
         &foodServiceBaseline,feedingTransferLimit);
@@ -2344,34 +2344,34 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(serves(action.buildingType,configuredSchoolType,action.targetLevel))
 		u.threatExposure=clamp100(threat+threat/2);
 
-	auto resourceQuality=[this,&world,&action](int resourceType)->int
+	auto materialQualityAt=[this,&world,&action](int materialType)->int
 	{
-		const int best=resourceDistanceAt(world,resourceType,
+		const int best=materialDistanceAt(world,materialType,
 			world.index(action.centerX,action.centerY));
-		return best==INT_MAX?0:clamp100(100-best*placementPolicy.resourceDistanceWeight);
+		return best==INT_MAX?0:clamp100(100-best*placementPolicy.materialDistanceWeight);
 	};
 	int materialType=-1,materialNeed=0;
 	if(target)for(int resource=0;resource<MaterialCount;++resource)
-		if(target->constructionResources[resource]>materialNeed)
-		{materialNeed=target->constructionResources[resource];materialType=resource;}
-	const int materialQuality=materialType>=0?resourceQuality(materialType):0;
+		if(target->constructionMaterials[resource]>materialNeed)
+		{materialNeed=target->constructionMaterials[resource];materialType=resource;}
+	const int materialQuality=materialType>=0?materialQualityAt(materialType):0;
 	int operatingQuality=0,operatingKinds=0;
-	if(target)for(int resource=0;resource<MaterialCount;++resource)if(target->operatingResources[resource]>0){operatingQuality+=resourceQuality(resource);++operatingKinds;}
+	if(target)for(int resource=0;resource<MaterialCount;++resource)if(target->operatingMaterials[resource]>0){operatingQuality+=materialQualityAt(resource);++operatingKinds;}
 	if(serves(action.buildingType,configuredInnType,action.targetLevel))
 	{
 		int fruitQuality=0;
-		for(int fruit=5;fruit<=7;++fruit)fruitQuality=std::max(fruitQuality,resourceQuality(fruit));
+		for(int fruit=5;fruit<=7;++fruit)fruitQuality=std::max(fruitQuality,materialQualityAt(fruit));
 		// With the ledger on, food siting is unclaimed capacity rather than
 		// distance to the nearest wheat, which spreads settlements out on its
 		// own: claimed wheat stops attracting further buildings.
 		const int foodQuality=foodManagedType(action.buildingType)
-			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
+			?foodLocationQuality(world,action):materialQualityAt(FoodMaterialType);
 		u.roleLocationQuality=clamp100((foodQuality*3+fruitQuality)/4);
 	}
 	else if(serves(action.buildingType,configuredSwarmType,action.targetLevel))
 	{
 		const int foodQuality=foodManagedType(action.buildingType)
-			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
+			?foodLocationQuality(world,action):materialQualityAt(FoodMaterialType);
 		u.roleLocationQuality=clamp100((foodQuality*3+protection)/4);
 	}
 	else if(serves(action.buildingType,configuredSchoolType,action.targetLevel))
@@ -2413,7 +2413,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		const int threatFacing=clamp100(100
 			-std::abs(threat-placementPolicy.towerThreatTarget)
 				*placementPolicy.towerThreatWeight);
-		u.roleLocationQuality=clamp100((criticalQuality*4+resourceQuality(3)*2
+		u.roleLocationQuality=clamp100((criticalQuality*4+materialQualityAt(3)*2
 			+threatFacing*2+spacingQuality+protection)/10);
 	}
 	else
@@ -2423,7 +2423,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(purpose==ColonySeed)
 	{
 		u.friendlyDistance=colonyAnchorDistance(world,action.centerX,action.centerY);
-		u.cornDistance=resourceDistanceAt(world,1,world.index(action.centerX,action.centerY));
+		u.cornDistance=materialDistanceAt(world,1,world.index(action.centerX,action.centerY));
 		const auto benefit=colonyBenefit(world,action);
 		// Colony utility measures new food capacity and food gained per cost.
 		u.frontierGain=benefit.first;
@@ -2528,9 +2528,9 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(target)
 	{
 		int scarcity=0,needed=0;
-		for(int r=0;r<MaterialCount;++r)if(target->constructionResources[r]>0)
-		{needed+=target->constructionResources[r];scarcity+=std::max(0,target->constructionResources[r]-world.accessibleSupplies[r]);}
-		u.resourceScarcity=needed?clamp100(scarcity*100/needed):0;
+		for(int r=0;r<MaterialCount;++r)if(target->constructionMaterials[r]>0)
+		{needed+=target->constructionMaterials[r];scarcity+=std::max(0,target->constructionMaterials[r]-world.accessibleSupplies[r]);}
+		u.materialScarcity=needed?clamp100(scarcity*100/needed):0;
 	}
 	if(operatingKinds)u.roleLocationQuality=(u.roleLocationQuality+operatingQuality/operatingKinds)/2;
 	u.constructionLabor=clamp100(action.workers*placementPolicy.laborScale);
@@ -2538,7 +2538,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	{
 		int constructionWork=1;
 		if(target)for(int resource=0;resource<MaterialCount;++resource)
-			constructionWork+=target->constructionResources[resource];
+			constructionWork+=target->constructionMaterials[resource];
 		u.serviceDowntime=clamp100(static_cast<long long>(from->serviceThroughput)*constructionWork
 			/std::max(1,action.workers*placementPolicy.downtimeWorkerScale));
 	}
@@ -2629,8 +2629,8 @@ void Planner::prepareRetrySignature(const WorldState& world)
             for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.ticks[unit]);
             hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
             for(int r=0;r<MaterialCount;++r) {
-                hashValue(signature,level.constructionResources[r]);
-                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);hashValue(signature,level.productionResources[r]);hashValue(signature,level.independentResources[r]);
+                hashValue(signature,level.constructionMaterials[r]);
+                hashValue(signature,level.operatingMaterials[r]);hashValue(signature,level.feedingMaterials[r]);hashValue(signature,level.productionMaterials[r]);hashValue(signature,level.independentMaterials[r]);
                 hashValue(signature,level.productionRecipes.packetSize[r]);for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.costs[unit][r]);
             }
 		}
@@ -2649,7 +2649,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.projectedFarmLossWeight);
 	hashValue(signature,placementPolicy.foodZonePenaltyWeight);
 	hashValue(signature,placementPolicy.newlyReservedLandWeight);
-	hashValue(signature,placementPolicy.resourceScarcityWeight);
+	hashValue(signature,placementPolicy.materialScarcityWeight);
 	hashValue(signature,placementPolicy.constructionLaborWeight);
 	hashValue(signature,placementPolicy.serviceDowntimeWeight);
 	hashValue(signature,placementPolicy.threatExposureWeight);
@@ -2666,7 +2666,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.parallelNoService);
 	hashValue(signature,placementPolicy.duplicateFirstScore);
 	hashValue(signature,placementPolicy.duplicateScoreScale);
-	hashValue(signature,placementPolicy.resourceDistanceWeight);
+	hashValue(signature,placementPolicy.materialDistanceWeight);
 	hashValue(signature,placementPolicy.foodZoneRadius);
 	hashValue(signature,placementPolicy.innerFoodZoneMultiplier);
 	hashValue(signature,placementPolicy.hospitalFoodZoneMultiplier);
@@ -2715,7 +2715,7 @@ uint32_t Planner::retrySignature(const DevelopmentIntent& intent,uint32_t spatia
 	hashValue(signature,retryInputSignature);
 	hashValue(signature,intent.buildingType);hashValue(signature,intent.purpose);
 	hashValue(signature,intent.unmetCount);hashValue(signature,intent.priority);
-	hashValue(signature,intent.workers);hashValue(signature,intent.requiredResourceType);
+	hashValue(signature,intent.workers);hashValue(signature,intent.requiredMaterialType);
 	hashValue(signature,intent.emergency);
 	return signature;
 }
@@ -3642,21 +3642,21 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("footprintDistanceCache",footprintDistanceCache);
 	a("footprintDistanceCacheSignature",footprintDistanceCacheSignature);
     if(a.version()>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES) {
-        a("resourceSourceCache",resourceSourceCache);
-        a("resourceDistanceCache",resourceDistanceCache);
-        a("resourceDistanceCacheValid",resourceDistanceCacheValid);
+        a("resourceSourceCache",materialSourceCache);
+        a("resourceDistanceCache",materialDistanceCache);
+        a("resourceDistanceCacheValid",materialDistanceCacheValid);
     } else {
         std::vector<int8_t> oldSources; a("resourceSourceCache",oldSources);
-        resourceSourceCache.clear(); resourceSourceCache.reserve(oldSources.size());
+        materialSourceCache.clear(); materialSourceCache.reserve(oldSources.size());
         for(int source:oldSources) {
             if(source < -1 || source>=8) throw std::runtime_error("Invalid legacy material source");
-            resourceSourceCache.push_back(source<0 ? 0 : MaterialMask(1u<<source));
+            materialSourceCache.push_back(source<0 ? 0 : MaterialMask(1u<<source));
         }
         DistanceField oldDistances[8]; bool oldValid[8]{};
         a("resourceDistanceCache",oldDistances);a("resourceDistanceCacheValid",oldValid);
         for(unsigned m=0;m<MaterialCount;++m) {
-            resourceDistanceCache[m]=m<8 ? std::move(oldDistances[m]) : DistanceField{};
-            resourceDistanceCacheValid[m]=m<8 && oldValid[m];
+            materialDistanceCache[m]=m<8 ? std::move(oldDistances[m]) : DistanceField{};
+            materialDistanceCacheValid[m]=m<8 && oldValid[m];
         }
     }
 	a("maximumFarmCapacityCache",maximumFarmCapacityCache);
@@ -3800,9 +3800,9 @@ bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 	routeParentCache[0].clear();routeParentCache[1].clear();
 	waterMaskCache.clear();waterDistanceCache.clear();
 	footprintDistanceCache.clear();footprintDistanceCacheSignature=0;
-	resourceSourceCache.clear();
+	materialSourceCache.clear();
 	for(int resource=0;resource<MaterialCount;++resource)
-	{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
+	{materialDistanceCache[resource].clear();materialDistanceCacheValid[resource]=false;}
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
 	scoringGeneration=0;

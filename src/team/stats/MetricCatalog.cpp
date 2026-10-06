@@ -52,8 +52,8 @@ std::vector<Band> perMaterial(std::function<double(const M &, int)> value)
 {
 	const char *keys[MAX_RESOURCES] = {"[Wood]", "[Food]", "[Paper]", "[Stone]", "[Algae]", "[Cherries]", "[Oranges]", "[Prunes]", "[Gold]", "[Metal]", "[Glass]", "[Fabric]"};
 	std::vector<Band> bands;
-	for (int resource = 0; resource < MAX_RESOURCES; ++resource)
-		bands.push_back({keys[resource], [value, resource](const M &m) { return value(m, resource); }});
+	for (int material = 0; material < int(MaterialCount); ++material)
+		bands.push_back({keys[material], [value, material](const M &m) { return value(m, material); }, false, material});
 	return bands;
 }
 
@@ -245,21 +245,21 @@ std::vector<Metric> build()
 		m.mean = m.labour = true;
 	}
 
-	// Resources
+	// Materials
 	{
-		Metric &m = add({.id = "gathered", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
+		Metric &m = add({.id = "gathered", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.harvested); }});
 		m.splitKey = "[stat view by resource]";
 		m.bands = perMaterial([](const M &s, int r) { return double(s.harvested[r]); });
 	}
 	{
-		Metric &m = add({.id = "stored", .group = Group::Resources, .unitKey = "[stat unit resources]",
+		Metric &m = add({.id = "stored", .group = Group::Materials, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.stock); }});
 		m.splitKey = "[stat view by resource]";
 		m.bands = perMaterial([](const M &s, int r) { return double(s.stock[r]); });
 	}
 	{
-		Metric &m = add({.id = "spending", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
+		Metric &m = add({.id = "spending", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.consumed); }});
 		const char *keys[M::PURPOSES] = {"[stat band meals]", "[stat band new units]", "[stat band ammunition]",
 										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]"};
@@ -268,12 +268,12 @@ std::vector<Metric> build()
 		m.composition = true;
 	}
 	{
-		Metric &m = add({.id = "delivered", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
+		Metric &m = add({.id = "delivered", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.delivered); }});
 		m.splitKey = "[stat view by resource]";
 		m.bands = perMaterial([](const M &s, int r) { return double(s.delivered[r]); });
 	}
-	add({.id = "traded", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
+	add({.id = "traded", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 		 .value = [](const M &m) { return total(m.transferredIn); },
 		 .minus = [](const M &m) { return total(m.transferredOut); }});
 
@@ -624,6 +624,25 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 		// Every team recorded the same map-wide values: the first stands for all.
 		if (metric.global)
 			break;
+	}
+	// Future materials do not clutter stock-game charts. Keep a band once any
+	// recorded sample uses it, including activity before the displayed rate window.
+	if (view.split)
+	{
+		for (size_t index=metric.bands.size(); index-->0;)
+		{
+			const auto& band=metric.bands[index];
+			if (band.material<int(MaterialId::Gold)) continue;
+			bool used=false;
+			for (const auto& history:teams)
+				for (const auto& point:history.points)
+					if (point.measurements && band.value && band.value(*point.measurements)!=0)
+						used=true;
+			if (used) continue;
+			chart.bandKeys.erase(chart.bandKeys.begin()+index);
+			chart.bandLabelLiteral.erase(chart.bandLabelLiteral.begin()+index);
+			for (auto& team:chart.teams) team.values.erase(team.values.begin()+index);
+		}
 	}
 	if (view.share)
 		shareAcrossTeams(chart.teams);

@@ -6,6 +6,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <BinaryStream.h>
+#include <GzipUtil.h>
+#include <StreamBackend.h>
 #include <stdexcept>
 #include <cstdlib>
 #include <cstdint>
@@ -942,7 +946,7 @@ TEST_SUITE("MapGeneratorDefaults")
 					REQUIRE(mapFingerprint(a) == mapFingerprint(b));
 				}
 	}
-	TEST_CASE("Explicit designs preserve pre-Random golden worlds")
+	TEST_CASE("Explicit designs preserve topology across the runtime-resource RNG epoch")
 	{
 #if (defined(__APPLE__) && defined(__aarch64__)) || (defined(__linux__) && defined(__x86_64__))
 		DefaultsFixture fixture;
@@ -956,6 +960,41 @@ TEST_SUITE("MapGeneratorDefaults")
 #else
 		constexpr std::uint64_t fingerprint = 5648058033288605271ULL;
 #endif
+        // Sprite selection ceased consuming simulation RNG in resource epoch1.
+        // Deposit stocks therefore need new full hashes; topology is checked
+        // independently against maps produced by the archived pre-epoch engine.
+        const char* baselineDirectory=std::getenv("GLOB2_RECORD_RESOURCE_DESIGN_GOLDENS");
+#if defined(__APPLE__)
+        const std::string platform="macos-arm64";
+#elif defined(__clang__) && __clang_major__ == 18 && defined(GLOB2_TEST_COVERAGE) && !defined(__OPTIMIZE__)
+        const std::string platform="linux-x86_64-clang18-coverage";
+#else
+        const std::string platform="linux-x86_64";
+#endif
+        nlohmann::json golden;
+        const auto fixturePath=glob2test::sourceRoot()/"test/map-generator-resource-epoch.json";
+        {
+            std::ifstream fixture(fixturePath);
+            REQUIRE_MESSAGE(fixture.good(),fixturePath.string());
+            fixture>>golden;
+        }
+        REQUIRE(golden.at("resource_epoch")==1);
+        nlohmann::json recorded=nlohmann::json::object();
+        auto topologyHash=[](const Game& game) {
+            std::uint64_t hash=14695981039346656037ull;
+            auto add=[&](unsigned value) { hash=(hash^value)*1099511628211ull; };
+            add(game.map.getW());add(game.map.getH());
+            for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x) {
+                add(game.map.getUMTerrain(x,y));add(game.map.getTerrain(x,y));
+                const auto type=game.map.getResource(x,y).type;
+                add(type==NO_RES_TYPE?255u:type);
+            }
+            add(game.teamsCount());
+            for(int team=0;team<game.teamsCount();++team) {
+                add(game.teams[team]->startPosX);add(game.teams[team]->startPosY);
+            }
+            return hash;
+        };
 		struct Original
 		{
 			const char *id, *key;
@@ -978,11 +1017,44 @@ TEST_SUITE("MapGeneratorDefaults")
 			Game game(nullptr);
 			const auto result = GenerationService().generate(game, request);
 			REQUIRE_MESSAGE(bool(result), result.diagnostic());
-			REQUIRE_MESSAGE(mapFingerprint(game) == original.hash, original.id);
-		}
+            const auto full=mapFingerprint(game),shape=topologyHash(game);
+            if(baselineDirectory) {
+                const auto path=std::filesystem::path(baselineDirectory)/(std::string(original.id)+".map.gz");
+                GAGCore::BinaryInputStream input(GAGCore::openInflatingFileStreamBackend(path.string()));
+                Game historical(nullptr);
+                REQUIRE_MESSAGE(historical.load(&input),path.string());
+                REQUIRE_MESSAGE(mapFingerprint(historical)==original.hash,original.id);
+                CHECK_MESSAGE(topologyHash(historical)==shape,original.id);
+                recorded[original.id]={{"historical_full",original.hash},{"topology",topologyHash(historical)},
+                    {"candidate_topology",shape},{"topology_preserved",topologyHash(historical)==shape},{"full",full}};
+                std::cout<<"RESOURCE_DESIGN_EPOCH "<<platform<<' '<<original.id<<' '
+                    <<recorded[original.id].dump()<<'\n';
+            } else {
+                if(golden.at("platforms").contains(platform)) {
+                    const auto& row=golden.at("platforms").at(platform).at(original.id);
+                    REQUIRE(row.at("historical_full").get<std::uint64_t>()==original.hash);
+                    CHECK_MESSAGE(shape==row.at("topology").get<std::uint64_t>(),original.id);
+                    CHECK_MESSAGE(full==row.at("full").get<std::uint64_t>(),original.id);
+                } else {
+                    // Four historical worlds were already identical across the
+                    // supported platforms. Preserve their independently recorded
+                    // topology checks while full epoch hashes await platform runs.
+                    if(golden.at("portable_topology").contains(original.id))
+                        CHECK_MESSAGE(shape==golden.at("portable_topology").at(original.id).get<std::uint64_t>(),original.id);
+                    else
+                        WARN_MESSAGE(false,"No verified portable topology for ",original.id," on ",platform);
+                    WARN_MESSAGE(false,"Full resource-epoch golden unverified on ",platform," for ",original.id);
+                }
+            }
+        }
+        if(baselineDirectory) {
+            std::ofstream output(std::filesystem::path(baselineDirectory)/("epoch1-"+platform+".json"));
+            output<<nlohmann::json{{"resource_epoch",1},{"platform",platform},{"designs",recorded}}.dump(2)<<'\n';
+            REQUIRE(output.good());
+        }
 #endif
-	}
-	TEST_CASE("Bastion Keys contracts")
+    }
+    TEST_CASE("Bastion Keys contracts")
 	{
 		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
@@ -1239,5 +1311,39 @@ TEST_SUITE("MapGeneratorRegistry")
         DefaultsFixture fixture;
         MapGeneratorDefaultsTest::globalsInit();
         MapGeneratorDefaultsTest::scatterAlgaeOnWater();
+    }
+}
+
+TEST_CASE("contact costs follow custom deposit obstruction and removal properties" * doctest::test_suite("MapGeneratorDefaults"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.clearImmobile=true,.header=true});
+    auto& map=fixture.game.map;
+    using Json=nlohmann::json;
+    const auto original=Json::parse(map.resourceRegistry().serialize())["resources"][0];
+    const MapGeneration::StepCosts costs{2,5,17,3,23};
+    for (int bits=0;bits<8;++bits)
+    {
+        CAPTURE(bits);
+        auto definition=original;
+        definition["key"]="contact-properties-"+std::to_string(bits);
+        const bool blocking=bits&1,clearable=bits&2,infinite=bits&4;
+        definition["properties"]["blocksGround"]=blocking;
+        definition["properties"]["clearable"]=clearable;
+        definition["properties"]["habitatMask"]=3;
+        definition["properties"]["requiresGrowthTerrain"]=false;
+        definition["yields"]["wood"]["consumption"]=infinite ? "infinite" : "one";
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find(definition["key"].get<std::string>());
+        for (auto terrain : {GRASS,WATER})
+        {
+            map.replaceResource(12,12,Resource{});
+            map.setCellTerrain(12,12,terrain);
+            map.setResource(12,12,id,0);
+            REQUIRE(map.getResource(12,12).type==resourceIndex(id));
+            const int open=terrain==GRASS ? costs.open : costs.water;
+            const int expected=!blocking ? open : !clearable && infinite ? costs.eternal : costs.clearable;
+            CHECK(MapGeneration::stepCost(map,12,12,costs)==expected);
+        }
     }
 }
