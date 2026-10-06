@@ -1,9 +1,10 @@
 # Experimental features
 
 Experiments are gameplay features we are still testing. They are off by default;
-a player switches them on under **Settings → Experiments**, and every game that
-player then starts or hosts carries that set plus any experiments required by its
-map for its whole life. This guide
+a player switches them on under **Settings → Experiments**. New local or hosted
+games retain enabled built-in experiments and enabled building experiments declared
+by their destination catalog, plus any terrain experiments required by the map.
+That selection stays with the game for its whole life. This guide
 covers what players see, the compatibility rules, and how to add an experiment.
 
 ## What players see
@@ -34,8 +35,9 @@ covers what players see, the compatibility rules, and how to add an experiment.
 ## Compatibility
 
 `Engine::applyLocalExperiments` (`src/engine/EngineInit.cpp`) is the one place the
-new-game rule lives: it combines settings and map requirements in a header unless
-the map is a saved game, and every entry point above calls it. A hosted multiplayer game sends its
+new-game rule lives: it filters settings to built-in keys and the destination
+building catalog, then adds required terrain experiments to the header unless the
+map is a saved game. The local-preference entry points above call it. A hosted multiplayer game sends its
 header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/game/GameHeader.h`) as an `ExperimentSet`
@@ -100,7 +102,9 @@ rules. Its generated source and classic-frame recipe are recorded in
 
 For a building-catalog experiment, declare its stable `key`, English `label` and
 `help` in the catalog and reference that key from the gated building definition.
-No `ExperimentId` or C++ registry entry is needed. Keys use lowercase ASCII
+The [tested field-kitchen example](building-catalogs.md#complete-field-kitchen-example)
+includes a complete definition and commands for extending a copy of the stock
+catalog. No `ExperimentId` or C++ registry entry is needed. Keys use lowercase ASCII
 letters, digits and single separating hyphens, up to 128 bytes. Labels and help
 must be nonempty. The startup loader registers the installed catalog's definitions
 with `registerCatalogExperiments`; built-in keys such as `markets-v2` retain their

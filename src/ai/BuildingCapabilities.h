@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "UnitConsts.h"
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -8,7 +10,7 @@
 #include <memory>
 
 class BuildingsTypes;
-class BuildingType;
+struct BuildingType;
 class GameHeader;
 class Game;
 class Team;
@@ -43,7 +45,7 @@ bool hasIndependentAttractionUse(const BuildingType& type,unsigned retiringUnitM
 // Cold strategy fallback for a nonzero production demand whose output class has
 // no current or pending provider. Pending placement IDs include queued AI plans.
 std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
-    const std::array<int, 3>& desired, int workers, int futureWorkers,
+    const std::array<int, NB_UNIT_TYPE>& desired, int workers, int futureWorkers,
     const std::vector<int>& pendingPlacements = {});
 
 // Build once after the game's catalog is installed. The catalog must outlive
@@ -80,6 +82,7 @@ public:
 
 private:
 	static constexpr std::size_t IntentCount = static_cast<std::size_t>(BuildingIntent::Count);
+	static_assert(IntentCount <= 64, "Building intents must fit the cached uint64_t mask");
 	using ServiceMasks = std::array<unsigned, IntentCount>;
 	const BuildingsTypes& catalog_;
 	std::vector<ServiceMasks> masks_;

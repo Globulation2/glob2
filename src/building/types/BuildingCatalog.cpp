@@ -44,6 +44,21 @@ constexpr const char* RESOURCE_NAMES[MAX_RESOURCES] = {
 {
     throw std::runtime_error("Building catalog " + context + ": " + message);
 }
+// Add the authoring location at loader boundaries, where a field-only error
+// would otherwise lose the file or concrete variant that needs correcting.
+[[noreturn]] void failWithContext(const std::string& context, const std::exception& error)
+{
+    std::string message = error.what();
+    const std::string prefix = "Building catalog ";
+    if (message.compare(0, prefix.size(), prefix) == 0) message.erase(0, prefix.size());
+    fail(context, message);
+}
+template<class Read> auto withContext(const std::string& context, Read read)
+{
+    try { return read(); }
+    catch (const Json::exception& error) { failWithContext(context, error); }
+    catch (const std::runtime_error& error) { failWithContext(context, error); }
+}
 void object(const Json& value, const std::string& context)
 {
     if (!value.is_object()) fail(context, "expected an object");
@@ -365,11 +380,16 @@ Json parse(const std::string& text)
         return true;
     });
 }
+Json parseFile(const std::string& path)
+{
+    const auto text = readFile(path);
+    return withContext(path, [&] { return parse(text); });
+}
 }
 
 void BuildingsTypes::loadManifest(const std::string& path)
 {
-    Json manifest = parse(readFile(path));
+    Json manifest = parseFile(path);
     keys(manifest, {"schemaVersion", "catalogKey", "startingBuilding", "experiments", "files"}, "manifest");
     Json snapshot = manifest;
     snapshot.erase("files"); snapshot["variants"] = Json::array();
@@ -377,6 +397,7 @@ void BuildingsTypes::loadManifest(const std::string& path)
     const auto slash = path.find_last_of("/\\");
     const std::string directory = slash == std::string::npos ? "" : path.substr(0, slash + 1);
     std::set<std::string> seen;
+    std::vector<std::string> variantSources;
     for (const auto& f : manifest.at("files"))
     {
         const std::string filename = string(f, "filename");
@@ -384,7 +405,7 @@ void BuildingsTypes::loadManifest(const std::string& path)
         if (filename.empty() || filename.find_first_of("/\\:") != std::string::npos || filename == "." || filename == "..")
             fail(path, "definition filename must be a basename");
         if (!seen.insert(filename).second) fail(path, "duplicate definition filename");
-        const Json definitions = parse(readFile(directory + filename));
+        const Json definitions = parseFile(directory + filename);
         keys(definitions, {"variants"}, filename);
         if (!definitions.contains("variants") || !definitions.at("variants").is_array()) fail(filename, "missing variants array");
         for (auto v : definitions.at("variants"))
@@ -393,13 +414,19 @@ void BuildingsTypes::loadManifest(const std::string& path)
             // to this compiled snapshot, so deleting a file never requires renumbering others.
             v["id"] = snapshot["variants"].size();
             snapshot["variants"].push_back(std::move(v));
+            variantSources.push_back(directory + filename);
         }
         if (snapshot["variants"].size() > MAX_CATALOG_VARIANTS) fail(path, "too many variants");
     }
-    loadSnapshotJson(snapshot.dump());
+    withContext(path, [&] { loadSnapshotJson(snapshot.dump(), variantSources); });
 }
 
 void BuildingsTypes::loadSnapshotJson(const std::string& text)
+{
+    loadSnapshotJson(text, {});
+}
+
+void BuildingsTypes::loadSnapshotJson(const std::string& text, const std::vector<std::string>& variantSources)
 {
     const Json root = parse(text);
     keys(root, {"schemaVersion", "catalogKey", "startingBuilding", "experiments", "variants"}, "snapshot");
@@ -423,19 +450,29 @@ void BuildingsTypes::loadSnapshotJson(const std::string& text)
     if (!variants.is_array() || variants.empty() || variants.size() > MAX_CATALOG_VARIANTS) fail("variants", "invalid variant count");
     parsed.entries_->resize(variants.size());
     std::vector<bool> seen(variants.size());
-    for (const auto& v : variants)
+    for (std::size_t index = 0; index < variants.size(); ++index)
     {
-        keys(v, {"id", "key", "previous", "next", "requiredExperiment", "properties", "semantics", "presentation"}, "variant");
-        const Sint32 id = integer(v.at("id"), "id");
-        if (id < 0 || std::size_t(id) >= variants.size() || seen[id]) fail("id", "IDs must be unique and dense from zero");
-        seen[id] = true;
-        auto& b = (*parsed.entries_)[id];
-        b.key = string(v.at("key"), "key");
-        optional(v, "previous", b.previousKey); optional(v, "next", b.nextKey);
-        optional(v, "requiredExperiment", b.requiredExperiment);
-        properties(v.at("properties"), b);
-        b.semantics = semantics(v.at("semantics"));
-        if (v.contains("presentation")) presentation(v.at("presentation"), b.presentation);
+        const auto& v = variants[index];
+        std::string context = "variants[" + std::to_string(index) + "]";
+        if (!variantSources.empty()) context = variantSources.at(index) + ": " + context;
+        // The array position remains useful even when the key itself is absent
+        // or malformed. Bound the optional key in diagnostics before validation.
+        if (v.is_object() && v.contains("key") && v.at("key").is_string()
+            && v.at("key").get_ref<const std::string&>().size() <= 128)
+            context += " (key " + v.at("key").dump() + ")";
+        withContext(context, [&] {
+            keys(v, {"id", "key", "previous", "next", "requiredExperiment", "properties", "semantics", "presentation"}, "variant");
+            const Sint32 id = integer(v.at("id"), "id");
+            if (id < 0 || std::size_t(id) >= variants.size() || seen[id]) fail("id", "IDs must be unique and dense from zero");
+            seen[id] = true;
+            auto& b = (*parsed.entries_)[id];
+            b.key = string(v.at("key"), "key");
+            optional(v, "previous", b.previousKey); optional(v, "next", b.nextKey);
+            optional(v, "requiredExperiment", b.requiredExperiment);
+            properties(v.at("properties"), b);
+            b.semantics = semantics(v.at("semantics"));
+            if (v.contains("presentation")) presentation(v.at("presentation"), b.presentation);
+        });
     }
     parsed.resolveAndValidate();
     if (parsed.snapshotJson().size() > MAX_CATALOG_BYTES)

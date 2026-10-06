@@ -1,32 +1,30 @@
-#include <stdexcept>
-#include <algorithm>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// Frozen stock importer retains the previous tables (was data/buildings.txt +
-// data/buildings.default.txt parsed at startup). The 55 entries are grouped
-// by role across four siblings, following the grouping IntBuildingType::Number
-// already uses:
+// Only the old-save importer uses these frozen tables. New games load the JSON
+// manifest; changing installed definitions must never reinterpret old save IDs.
+// The 55 historical entries are grouped across four siblings:
 //   - BuildingTypesColony.cpp  : swarm, inn, hospital, market
 //   - BuildingTypesUpgrade.cpp : racetrack, swimming pool, barracks, school
 //   - BuildingTypesDefence.cpp : defencetower, stonewall
 //   - BuildingTypesFlags.cpp   : exploration, war and clearing flags
-// each declaring one or more non-static BuildingType[] arrays; this file
-// splices them into a single flat vector indexed 0..54, with the original entries in the same order
-// data/buildings.txt declared, plus the market levels 51..54 appended after it.
+// Each declares one or more BuildingType[] arrays. initLegacy() copies them into
+// a flat vector indexed 0..54 in the original data/buildings.txt order, followed
+// by the upgraded market variants at 51..54.
 //
 // Role grouping and ID order do not agree — market sits at the end of the
 // table and the flags sit between the defencetower and the stonewall — so a
-// role file may hold more than one array. g_tableParts below is the single
-// authoritative statement of ID order.
+// role file may hold more than one array. g_tableParts below defines the frozen
+// import order; it does not define the order of an installed custom catalog.
 //
-// The order is the in-game integer ID and is persisted in saves, replays
-// and network traffic — reordering is a behavioral change.
+// Reordering these entries would reinterpret persisted IDs in supported saves.
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <iostream>
 #include <map>
+#include <stdexcept>
 
 #include <Toolkit.h>
 
@@ -54,15 +52,14 @@ struct TablePart
 	const std::size_t &count;
 };
 
-// Listed in flat-index order — this is the in-game building ID order and is
-// persisted in saves, replays and network traffic.
+// Frozen flat-index order used for pre-catalog saves.
 static const TablePart g_tableParts[] = {
 	{ g_buildingTypesColony,       g_buildingTypesColonyCount },        //  0..13
 	{ g_buildingTypesUpgrade,      g_buildingTypesUpgradeCount },       // 14..37
 	{ g_buildingTypesDefenceTower, g_buildingTypesDefenceTowerCount },  // 38..43
 	{ g_buildingTypesFlags,        g_buildingTypesFlagsCount },         // 44..46
 	{ g_buildingTypesStoneWall,    g_buildingTypesStoneWallCount },     // 47..48
-	{ g_buildingTypesMarket,       g_buildingTypesMarketCount },        // 49..50
+	{ g_buildingTypesMarket,       g_buildingTypesMarketCount },        // 49..54
 };
 
 void BuildingsTypes::init()
@@ -195,10 +192,8 @@ void BuildingsTypes::loadSprites()
 
 void BuildingsTypes::loadSpritesForTypes(std::vector<BuildingType>& types)
 {
-	// Resolve sprite pointers, replacing the lazy load that happened inside
-	// the old loadFromConfigFile. The legacy default block is not in this table.
-	// The caller explicitly requests artwork, including offline tools.
-	// GlobalContainer loads them with the rest of the game graphics.
+	// Simulation-only catalogs do not require graphics. Callers that publish a
+	// rendered Scene bind installed artwork here before exposing descriptors.
 	const std::size_t count = types.size();
 	for (std::size_t i = 0; i < count; ++i)
 	{

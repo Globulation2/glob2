@@ -1,0 +1,65 @@
+{
+  "variants": [
+    {
+      "key": "field-kitchen.finished",
+      "requiredExperiment": "field-kitchens",
+      "properties": {
+        "width": 2,
+        "height": 2,
+        "hpInit": 200,
+        "hpMax": 200,
+        "insideSpeed": 12,
+        "maxUnitInside": 3,
+        "maxResource": [
+          0,
+          12,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "gameSprite": "data/gfx/inn0b",
+        "miniSprite": "data/gfx/miniinn0b"
+      },
+      "semantics": {
+        "placeable": true,
+        "instantPlacement": true,
+        "repairable": false,
+        "assignmentLimit": 2,
+        "admittedUnitMask": 7,
+        "replenishResources": [
+          "wheat"
+        ],
+        "feeding": {
+          "enabled": true,
+          "unitMask": 7,
+          "duration": 20,
+          "cost": {
+            "wheat": 1
+          }
+        },
+        "healing": {
+          "enabled": true,
+          "unitMask": 7,
+          "duration": 40,
+          "cost": {}
+        }
+      },
+      "presentation": {
+        "displayName": "Field kitchen",
+        "iconFrame": 1,
+        "showLevel": false,
+        "defaultAssigned": 2
+      }
+    }
+  ]
+}

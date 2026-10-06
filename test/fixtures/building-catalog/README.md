@@ -45,3 +45,13 @@ traces cover the new custom rules; they are distinct from stock parity evidence.
 state. The regression imports it, resaves to the current format, and compares
 subsequent AI orders and simulation components. Compressed SHA-256:
 `2c9945b6b909b8ad014ec488c1eeb2091049f23b331eb5fbd7dd17e2249b1d6a`.
+
+## Authoring example
+
+`authoring/manifest.json` and `authoring/field-kitchen.json` are the complete
+experimental feeding/healing example in
+[the building authoring guide](../../../docs/features/building-catalogs.md#complete-field-kitchen-example).
+The `BuildingCatalog` suite loads these exact files and checks admission, storage,
+service costs, staffing and enabled/disabled availability. Keep the guide's JSON
+example synchronized with the definition. The small catalog has no starting
+colony; the guide shows how to add its definition and experiment to a stock copy.

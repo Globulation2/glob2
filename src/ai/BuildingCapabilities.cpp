@@ -24,45 +24,72 @@ bool hasIndependentAttractionUse(const BuildingType& type,unsigned retiringUnitM
         || std::any_of(spec.training.begin(),spec.training.end(),[](const auto& r){return r.enabled;});
 }
 
+namespace
+{
+// Production intent bits deliberately share the unit-class positions so a
+// provider's cached mask can answer a multi-class request with one bitwise AND.
+static_assert(static_cast<unsigned>(BuildingIntent::ProduceWorker) == WORKER);
+static_assert(static_cast<unsigned>(BuildingIntent::ProduceExplorer) == EXPLORER);
+static_assert(static_cast<unsigned>(BuildingIntent::ProduceWarrior) == WARRIOR);
+static_assert(NB_UNIT_TYPE == 3, "Extend production intents when adding unit classes");
+constexpr unsigned ProductionIntentMask = (1u << NB_UNIT_TYPE) - 1;
+}
+
 std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
-    const std::array<int,3>& desired, int workers, int futureWorkers,
+    const std::array<int, NB_UNIT_TYPE>& desired, int workers, int futureWorkers,
     const std::vector<int>& pendingPlacements)
 {
-    const auto& index=game.buildingCapabilities();
-    unsigned required=0,provided=0;
-    for(int unit=0;unit<NB_UNIT_TYPE;++unit)
-        if(desired[unit]>0 && BuildingCapabilityIndex::allowed(static_cast<BuildingIntent>(unit),game.gameHeader)) required|=1u<<unit;
-    if(!required) return {};
-    Building* anchor=nullptr;
-    auto include=[&](int type) {
-        if(type<0 || std::size_t(type)>=game.buildingsTypes.size()) return;
-        const auto* descriptor=game.buildingsTypes.get(type);
-        if(descriptor->isBuildingSite) type=descriptor->nextLevel;
-        provided|=unsigned(index.intentMask(type))&7u;
+    const auto& index = game.buildingCapabilities();
+    unsigned required = 0, provided = 0;
+    for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
+        if (desired[unit] > 0 && BuildingCapabilityIndex::allowed(static_cast<BuildingIntent>(unit), game.gameHeader))
+            required |= 1u << unit;
+    if (!required) return {};
+
+    Building* anchor = nullptr;
+    auto includeProvider = [&](int type) {
+        if (type < 0 || std::size_t(type) >= game.buildingsTypes.size()) return;
+        const auto* descriptor = game.buildingsTypes.get(type);
+        if (descriptor->isBuildingSite) type = descriptor->nextLevel;
+        provided |= unsigned(index.intentMask(type)) & ProductionIntentMask;
     };
-    for(int id=0;id<Building::MAX_COUNT;++id) if(auto* building=team.myBuildings[id];building && building->buildingState==Building::ALIVE) {
-        include(building->type->isBuildingSite ? building->getConstructionCompletionTypeNum() : building->typeNum);
-        if(!anchor || (index.intentMask(building->typeNum)&7u)) anchor=building;
-        if((provided&required)==required) return {};
+    for (int id = 0; id < Building::MAX_COUNT; ++id)
+    {
+        auto* building = team.myBuildings[id];
+        if (!building || building->buildingState != Building::ALIVE) continue;
+        includeProvider(building->type->isBuildingSite
+            ? building->getConstructionCompletionTypeNum() : building->typeNum);
+        if (!anchor || (index.intentMask(building->typeNum) & ProductionIntentMask)) anchor = building;
+        if ((provided & required) == required) return {};
     }
-    for(int type:pendingPlacements) include(type);
-    if((provided&required)==required || !anchor) return {};
-    for(int unit=0;unit<NB_UNIT_TYPE;++unit) {
-        if(!(required&(1u<<unit)) || (provided&(1u<<unit))) continue;
-        const auto intent=static_cast<BuildingIntent>(unit);
-        for(const auto& candidate:index.placementsByCost(intent)) {
-            const auto* type=game.buildingsTypes.get(candidate.placementType);
-            int eligible=0;
-            for(int level=type->semantics.requiredWorkerLevel;level<NB_UNIT_LEVELS;++level) eligible+=team.stats.getWorkersLevel(level);
-            if(!index.available(candidate,intent,game.gameHeader) || eligible==0) continue;
+    for (int type : pendingPlacements) includeProvider(type);
+    if ((provided & required) == required || !anchor) return {};
+
+    for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
+    {
+        if (!(required & (1u << unit)) || (provided & (1u << unit))) continue;
+        const auto intent = static_cast<BuildingIntent>(unit);
+        for (const auto& candidate : index.placementsByCost(intent))
+        {
+            const auto* type = game.buildingsTypes.get(candidate.placementType);
+            int eligible = 0;
+            for (int level = type->semantics.requiredWorkerLevel; level < NB_UNIT_LEVELS; ++level)
+                eligible += team.stats.getWorkersLevel(level);
+            if (!index.available(candidate, intent, game.gameHeader) || eligible == 0) continue;
             // Try each provider in cached cost/ID order. An obstructed large
             // footprint must not hide a smaller usable alternative.
-            for(int radius=1;radius<=32;++radius) for(int dx=-radius;dx<=radius;++dx) for(int dy=-radius;dy<=radius;++dy) {
-                if(std::abs(dx)!=radius && std::abs(dy)!=radius) continue;
-                const int x=game.map.normalizeX(anchor->posX+dx),y=game.map.normalizeY(anchor->posY+dy);
-                if(!game.map.isMapDiscovered(x,y,team.allies) || !game.checkRoomForBuilding(x,y,type,team.teamNumber)) continue;
-                return AIRules::createOrder(game,team.teamNumber,x,y,candidate.placementType,workers,futureWorkers);
-            }
+            for (int radius = 1; radius <= 32; ++radius)
+                for (int dx = -radius; dx <= radius; ++dx)
+                    for (int dy = -radius; dy <= radius; ++dy)
+                    {
+                        if (std::abs(dx) != radius && std::abs(dy) != radius) continue;
+                        const int x = game.map.normalizeX(anchor->posX + dx);
+                        const int y = game.map.normalizeY(anchor->posY + dy);
+                        if (!game.map.isMapDiscovered(x, y, team.allies)
+                            || !game.checkRoomForBuilding(x, y, type, team.teamNumber)) continue;
+                        return AIRules::createOrder(game, team.teamNumber, x, y,
+                            candidate.placementType, workers, futureWorkers);
+                    }
         }
     }
     return {};
@@ -113,13 +140,14 @@ unsigned serviceMask(const BuildingType& type, Intent intent)
 		case Intent::Heal:
 			return semantics.healing.enabled ? recipients(type, semantics.healing.unitMask) : 0;
 		case Intent::TrainConstruction:
-  {
-   unsigned mask = 0;
-   for (const auto& training : semantics.training)
-    if (training.enabled && training.constructionLevel > 0) mask |= recipients(type,training.unitMask);
-   return mask;
-  }
-  case Intent::ProjectileDefense:
+		{
+			unsigned mask = 0;
+			for (const auto& training : semantics.training)
+				if (training.enabled && training.constructionLevel > 0)
+					mask |= recipients(type, training.unitMask);
+			return mask;
+		}
+		case Intent::ProjectileDefense:
 		{
 			if (type.shootingRange <= 0 || type.shootRhythm <= 0) return 0;
 			unsigned mask = semantics.projectileBuildingDamage > 0 ? NoUnitRequired : 0;
@@ -197,13 +225,16 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 			if (masks_[complete][demand])
 				placements_[demand].push_back({static_cast<int>(id), complete});
 	}
-    placementsByCost_=placements_;
+    // This fallback ranks the unweighted construction resource total, then ID.
+    // Strategies with labor/throughput models can use their own valuation.
+    placementsByCost_ = placements_;
     std::vector<int> costs(catalog.size());
-    for(std::size_t id=0;id<catalog.size();++id)
-        for(int amount:catalog.get(id)->semantics.constructionCost) costs[id]+=amount;
-    for(auto& candidates:placementsByCost_)
-        std::sort(candidates.begin(),candidates.end(),[&](const auto& a,const auto& b) {
-            return std::tie(costs[a.placementType],a.placementType)<std::tie(costs[b.placementType],b.placementType);
+    for (std::size_t id = 0; id < catalog.size(); ++id)
+        for (int amount : catalog.get(id)->semantics.constructionCost) costs[id] += amount;
+    for (auto& candidates : placementsByCost_)
+        std::sort(candidates.begin(), candidates.end(), [&](const auto& a, const auto& b) {
+            return std::tie(costs[a.placementType], a.placementType)
+                < std::tie(costs[b.placementType], b.placementType);
         });
 }
 

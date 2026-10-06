@@ -18,8 +18,10 @@ a catalog does not have to supply every service.
 
 Copy the stock manifest and the definition files you want to change into a new
 directory. Edit the manifest's `catalogKey` and its explicit `files` list. Each
-file contains a `variants` array. Paths are relative to the manifest, and only listed
-files are loaded. Select the manifest with `--building-catalog PATH` (also accepted
+file contains a `variants` array. Each `files` entry is a sibling basename, such
+as `field-kitchen.json`; subdirectories, absolute paths and duplicate filenames
+are rejected. Only listed files are loaded. Manifests do not inherit another
+catalog implicitly. Select the manifest with `--building-catalog PATH` (also accepted
 by structured headless commands and map-generation setup).
 
 `schemaVersion` is currently 1. The loader rejects unknown fields, invalid ranges,
@@ -51,9 +53,11 @@ Existing authored maps keep their explicit definitions.
 ## Capabilities and units
 
 Resource cost objects use `wood`, `wheat`, `papyrus`, `stone`, `algae`, `cherry`,
-`orange` and `prune`. Costs are stock units. `maxResource` and `multiplierResource`
-use the existing 15-slot resource wire order; the seven unused slots remain zero
-capacity when authoring new definitions. A natural resource packet represents one raw unit; a supplier withdrawal
+`orange` and `prune`. Costs are stock units. `properties.maxResource` and
+`properties.multiplierResource` are 15-element arrays: the first eight positions
+use that resource order, followed by seven reserved positions. Reserved storage
+capacities must be zero; every delivery multiplier must be at least one. A natural
+resource packet represents one raw unit; a supplier withdrawal
 retains its exact fraction of a raw unit. Delivery converts that fraction using
 the recipient's multiplier, accepts available capacity and reports discarded
 remainder explicitly.
@@ -88,23 +92,27 @@ timeout: a recipe duration of N completes after N+1 eligible producer ticks
 (duration zero completes on its first tick). Do not compare these clocks without
 conversion.
 
+All paths in this table are relative to one variant:
+
 | Configuration | Behavior |
 | --- | --- |
-| `semantics.feeding`, `healing` | Enabled flag, class mask, duration, costs, partial-settlement policy, exit admission and configured outcomes |
-| `semantics.training` | Explicit ability results, duration, class admission, resource cost and optional independent construction qualification |
-| `trainingInParallel` | One configured visit may grant its eligible training bundle |
-| `production.recipes` | Independently enabled worker/explorer/warrior recipes with costs and durations |
-| `projectileDamage` | Damage by target class, independent of the projectile's building damage |
-| `ammunitionResource`, `ammunitionCost` | Ammunition recipe; capacity/cadence/range/speed remain explicit properties |
-| `constructionCost`, `repairCost` | Materials independent of operating storage limits |
-| `repairable`, `regenerationPerTick` | Permission to repair and passive regeneration are independent |
-| `requiredWorkerLevel` | Construction qualification, separate from work speed and presentation tier |
-| `assignmentLimit`, `admittedUnitMask` | Shared assignment bound and allowed interior unit classes |
-| `occupiesGround`, `relocatable`, `instantPlacement` | Independent placement and movement behavior |
+| `semantics.feeding`, `semantics.healing` | Enabled flag, class mask, duration, costs, partial-settlement policy, exit admission and configured outcomes |
+| `semantics.training` | Ability-name object with explicit results, duration, class admission, resource cost and optional independent construction qualification |
+| `semantics.trainingInParallel` | One configured visit may grant its eligible training bundle |
+| `semantics.production.recipes` | Unit-name object with independently enabled worker/explorer/warrior recipes, costs and durations |
+| `semantics.projectileDamage`, `semantics.projectileBuildingDamage` | Unit-class damage array and independent building damage |
+| `semantics.ammunitionResource`, `semantics.ammunitionCost` | Resource index and amount per ammunition refill; capacity/cadence/range/speed remain explicit properties |
+| `semantics.constructionCost`, `semantics.repairCost` | Materials independent of operating storage limits |
+| `semantics.repairable`, `semantics.regenerationPerTick` | Permission to repair and passive regeneration are independent |
+| `semantics.requiredWorkerLevel` | Construction qualification, separate from work speed and presentation tier |
+| `semantics.assignmentLimit`, `semantics.admittedUnitMask` | Shared assignment bound and allowed interior unit classes |
+| `properties.maxUnitInside` | Shared interior seats; every enabled interior service needs at least one admitted class and one seat |
+| `semantics.placeable`, `semantics.instantPlacement` | Availability for placement and whether a completed variant can be placed directly |
+| `semantics.occupiesGround`, `semantics.relocatable` | Independent occupancy and movement behavior |
 | `properties.zonable` | Attraction enabled independently for each unit class |
-| `defaultUnitStayRange`, `maxUnitStayRange` | Initial and maximum attraction radius |
-| `market` | Shared/local inventory, direct or routed supply/fetch and inter-team fruit exchange |
-| `workPriorityBias`, `sightSharing` | Worker task preference and visibility sharing policy |
+| `properties.defaultUnitStayRange`, `properties.maxUnitStayRange` | Initial and maximum attraction radius |
+| `semantics.market` | Shared/local inventory, direct or routed supply/fetch and inter-team fruit exchange |
+| `semantics.workPriorityBias`, `semantics.sightSharing` | Worker task preference and visibility sharing policy |
 
 Interior services share seats and inventory. A unit requests a service, and unpaid
 resource reservations are distinct from occupancy. Completion, cancellation,
@@ -162,18 +170,85 @@ workers use the existing shared-field interface.
 
 ## Experimental definitions
 
-Declare experiment metadata in the manifest and reference the key from a variant:
+Declare experiment metadata in the manifest and reference its key through a
+variant's `requiredExperiment` field. The definition remains in the catalog when
+the experiment is off, but is unavailable for placement.
+
+### Complete field-kitchen example
+
+The retained [example manifest](../../test/fixtures/building-catalog/authoring/manifest.json)
+and [field-kitchen definition](../../test/fixtures/building-catalog/authoring/field-kitchen.json)
+are loaded directly by the `BuildingCatalog` tests. The definition has no historical
+family alias. It composes feeding and healing, three shared seats, wheat storage,
+and two delivery-worker slots using the installed inn artwork:
 
 ```json
-"experiments": [
-  {"key": "field-kitchens", "label": "Field kitchens",
-   "help": "Makes the configured mobile feeding buildings available."}
-]
+{
+  "variants": [{
+    "key": "field-kitchen.finished",
+    "requiredExperiment": "field-kitchens",
+    "properties": {
+      "width": 2, "height": 2, "hpInit": 200, "hpMax": 200,
+      "insideSpeed": 12, "maxUnitInside": 3,
+      "maxResource": [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "gameSprite": "data/gfx/inn0b", "miniSprite": "data/gfx/miniinn0b"
+    },
+    "semantics": {
+      "placeable": true, "instantPlacement": true, "repairable": false,
+      "assignmentLimit": 2, "admittedUnitMask": 7,
+      "replenishResources": ["wheat"],
+      "feeding": {"enabled": true, "unitMask": 7, "duration": 20, "cost": {"wheat": 1}},
+      "healing": {"enabled": true, "unitMask": 7, "duration": 40, "cost": {}}
+    },
+    "presentation": {
+      "displayName": "Field kitchen", "iconFrame": 1,
+      "showLevel": false, "defaultAssigned": 2
+    }
+  }]
+}
 ```
 
-```json
-"requiredExperiment": "field-kitchens"
+The example deliberately uses free instant placement and free healing to keep the
+configuration small; those are balance choices, not implied by feeding or healing.
+It has no repair or upgrade edge. Wheat capacity alone would not recruit delivery
+workers: `replenishResources`, `assignmentLimit` and staffing also matter. The
+standalone example manifest validates this one definition; it has no starting
+colony and is not a replacement for a playable stock catalog.
+
+To try it alongside the stock buildings, run this from the repository root. It
+copies the stock catalog and explicitly appends the example file and experiment:
+
+```sh
+python3 - <<'PYTHON'
+import json
+import shutil
+from pathlib import Path
+
+output = Path("artifacts/field-kitchen-catalog")
+shutil.copytree("data/buildings", output)  # Choose a fresh directory for each copy.
+example = Path("test/fixtures/building-catalog/authoring")
+shutil.copy2(example / "field-kitchen.json", output)
+manifest_path = output / "manifest.json"
+manifest = json.loads(manifest_path.read_text())
+manifest["catalogKey"] = "stock-with-field-kitchens"
+manifest["files"].append("field-kitchen.json")
+manifest["experiments"].extend(json.loads((example / "manifest.json").read_text())["experiments"])
+manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+PYTHON
+
+build/linux/client/release/src/glob2 --run-game \
+  --building-catalog artifacts/field-kitchen-catalog/manifest.json \
+  --generator 15 --map-seed 42 --param teams=2 --param width=7 --param height=7 \
+  --game-seed 19 --player numbi --player castor --experiment field-kitchens \
+  --ticks 512 --save initial --save final --telemetry checksums \
+  --output-dir artifacts/field-kitchen-game
 ```
+
+Use your platform's client executable and a fresh output directory. This creates a
+map with the copied catalog and enables the extra building; the AIs still choose
+providers according to their strategies. Omitting `--experiment field-kitchens`
+keeps the definition unavailable. Existing authored maps retain their own building
+references and are not silently converted by `--building-catalog`.
 
 Experiment keys use lowercase letters/digits separated by single hyphens, with
 1–128 characters; labels and help must be nonempty. At most 64 distinct keys,

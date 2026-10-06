@@ -17,13 +17,14 @@
 namespace GAGCore { class Sprite; }
 using GAGCore::Sprite;
 
-// Runtime descriptor of one concrete building variant. The catalog owns these
-// values and resolves links once, before a match starts. No parsing or string
-// lookup belongs in a simulation loop. Legacy scalar fields remain during the
-// consumer migration; semantic descriptors remove the old family assumptions.
+// Resolved descriptor of one concrete building variant. The catalog combines
+// authored properties, semantic capabilities and presentation, then derives
+// scalar mirrors and transition IDs before a match starts. Mirrors are marked
+// below; they are not independent authoring inputs. Hot simulation code uses
+// BuildingRuntimeTraits or hoisted descriptors rather than parsing or key lookup.
 struct BuildingType
 {
-	// basic infos
+	// Optional historical family alias for old saves and authored scripts.
 	std::string type = "null";
 
 	// visualisation
@@ -35,46 +36,50 @@ struct BuildingType
 
 	Sint32 hueImage = 0; // bool. The way we show the building's team (false=we draw a flag, true=we hue all the sprite)
 	Sint32 flagImage = 49;
-	Sint32 crossConnectMultiImage = 0; // If true, mean we have a wall-like building
+	Sint32 crossConnectMultiImage = 0; // Use connected-segment artwork and presentation connection rules.
 
-	// could be Uint8, if non 0 tell the number of maximum units locked by building for:
-	// by order of priority (top = max)
-	Sint32 upgrade[NB_ABILITY] = {}; // What kind on units can be upgraded here
-	Sint32 upgradeTime[NB_ABILITY] = {}; // Time to upgrade an unit, given the upgrade type needed.
-	Sint32 upgradeInParallel = 0; // if true, can learn all upgrades with one learning time into the building
+	// Derived mirrors of semantics.training and semantics.trainingInParallel.
+	Sint32 upgrade[NB_ABILITY] = {};
+	Sint32 upgradeTime[NB_ABILITY] = {};
+	Sint32 upgradeInParallel = 0;
 	Sint32 foodable = 0;
 	Sint32 fillable = 0;
-	Sint32 zonable[NB_UNIT_TYPE] = {}; // If an unit is required for a presence.
+	Sint32 zonable[NB_UNIT_TYPE] = {}; // Attraction enabled independently for each unit class.
 	Sint32 zonableForbidden = 0;
 
+	// Derived mirrors of the feeding/healing capabilities.
 	Sint32 canFeedUnit = 0;
 	Sint32 timeToFeedUnit = 0;
 	Sint32 canHealUnit = 0;
 	Sint32 timeToHealUnit = 0;
+	// Authored base speed for the interior service clock.
 	Sint32 insideSpeed = 12;
+	// Derived mirrors of market.interTeamFruitExchange and market.sharedStock.
 	Sint32 canExchange = 0;
 	Sint32 useTeamResources = 0;
 
-	Sint32 width = 0, height = 0; // Uint8, size in square
+	Sint32 width = 0, height = 0; // Footprint in map tiles.
 	Sint32 decLeft = 0, decTop = 0;
-	Sint32 isVirtual = 0; // bool, doesn't occupy ground occupation map, used for war-flag and exploration-flag.
+	Sint32 isVirtual = 0; // Derived inverse of semantics.occupiesGround.
 	Sint32 isCloaked = 0; // bool, graphically invisible for enemy.
-	Sint32 shootingRange = 0; // Uint8, if 0 can't shoot
-	Sint32 shootDamage = 0; // Uint8
-	Sint32 shootSpeed = 0; // Uint8, the actual speed at which the shots fly through the air.
-	Sint32 shootRhythm = 0; // Uint8, The frequency with which a tower fires. It fires once every
-	                        // SHOOTING_COOLDOWN_MAX/shootRhythm ticks.
+	Sint32 shootingRange = 0; // Zero disables projectile firing.
+	Sint32 shootDamage = 0; // Frozen import/snapshot field; simulation uses semantic damage by target.
+	Sint32 shootSpeed = 0; // Projectile travel speed in fixed-point map coordinates.
+	Sint32 shootRhythm = 0; // Cooldown increment; firing interval is SHOOTING_COOLDOWN_MAX/shootRhythm ticks.
 	Sint32 maxBullets = 0;
-	Sint32 multiplierStoneToBullets = 0; // The tower gets this many bullets every time a worker delivers stone to it.
+	Sint32 multiplierStoneToBullets = 0; // Bullets per semantic ammunition recipe, regardless of its resource kind.
 
-	Sint32 unitProductionTime = 0; // Uint8, nb tick to produce one unit
-	Sint32 resourceForOneUnit = 0; // The amount of wheat consumed in the production of a unit.
+	// Frozen importer inputs and derived compatibility summaries of the first
+	// enabled recipe. They cannot describe heterogeneous production recipes;
+	// simulation and strategy code must use semantics.production instead.
+	Sint32 unitProductionTime = 0;
+	Sint32 resourceForOneUnit = 0;
 
 	Sint32 maxResource[MAX_NB_RESOURCES] = {};
 	// multiplierResource defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.
 	Sint32 multiplierResource[MAX_NB_RESOURCES] = { 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
 	Sint32 maxUnitInside = 0;
-	Sint32 maxUnitWorking = 0;
+	Sint32 maxUnitWorking = 0; // Derived boolean: semantics.assignmentLimit is positive.
 
 	Sint32 hpInit = 0; // (Uint16) Initial HP of the building. This is generally equal to hpMax for completed buildings,
 	                   // equal to 1 for newly created buildings, and equal to the hpMax of the original building for
@@ -93,13 +98,14 @@ struct BuildingType
 	Sint32 maxUnitStayRange = 0;
 
 	Sint32 viewingRange = 1;
-	Sint32 regenerationSpeed = 0;
+	Sint32 regenerationSpeed = 0; // Frozen snapshot field; simulation uses semantics.regenerationPerTick.
 
 	Sint32 prestige = 0;
 
-	// Regenerated parameters — set by BuildingsTypes::init() at startup, not part of the data table.
+	// Non-owning Toolkit artwork handles, populated only by loadSprites().
 	Sprite *gameSpritePtr = nullptr;
 	Sprite *miniSpritePtr = nullptr;
+	// Resolved explicit transition keys; -1 means no transition.
 	int prevLevel = -1;
 	int nextLevel = -1;
 
@@ -122,7 +128,12 @@ struct BuildingType
 
 };
 
-// Value-owned catalog: copying it makes independent descriptors and indexes.
+// Each game owns its catalog. Copies have independent descriptors and runtime
+// rows; retained Scenes share only a const view of that game's descriptor storage.
+// Complete loading and experiment configuration before publishing entities;
+// bind sprites before publishing rendered Scenes. Descriptor and runtime pointers
+// remain stable until catalog replacement; there is no supported mid-game
+// definition mutation or hot reload.
 // Sprite handles refer to Toolkit-owned graphics and are deliberately non-owning.
 class BuildingsTypes
 {
@@ -132,6 +143,8 @@ public:
 	BuildingsTypes& operator=(const BuildingsTypes& other);
 	BuildingsTypes(BuildingsTypes&&) noexcept = default;
 	BuildingsTypes& operator=(BuildingsTypes&&) noexcept = default;
+	// Keeps descriptors alive across catalog replacement while a Scene uses them.
+	// This is lifetime retention, not a deep copy or synchronization mechanism.
 	std::shared_ptr<const std::vector<BuildingType>> retainTypes() const { return entries_; }
 	void init();
 	// Frozen pre-catalog definitions for importing older supported saves. Never
@@ -139,6 +152,8 @@ public:
 	void initLegacy();
 	void loadManifest(const std::string& path);
 	void loadSnapshotJson(const std::string& json);
+	// Canonical authored/resolved data only: artwork handles and effective match
+	// gates are excluded. Enabled experiments are persisted separately by GameHeader.
 	std::string snapshotJson() const;
 	std::string fingerprint() const;
 	const std::string& catalogKey() const { return catalogKey_; }
@@ -147,6 +162,7 @@ public:
 	// Returns -1 when no stable key matches.
 	Sint32 findByKey(const std::string& key) const;
 	bool isAvailable(std::size_t id, const std::set<std::string>& enabledExperiments) const;
+	// Rebuild effective gates and compact runtime rows in place during setup.
 	void configureExperiments(const std::vector<std::string>& keys);
 	std::uint8_t stockSupplyMask() const { return stockSupplyMask_; }
 	std::uint8_t directSupplyMask() const { return directSupplyMask_; }
@@ -167,6 +183,8 @@ public:
 	BuildingType *getByType(const char *type, int level, bool isBuildingSite);
 	BuildingType *getByType(const std::string &s, int level, bool isBuildingSite);
 private:
+	// Manifest-only diagnostic provenance; source paths never enter the catalog.
+	void loadSnapshotJson(const std::string& json, const std::vector<std::string>& variantSources);
 	void resolveAndValidate();
 	void compileRuntimeTraits();
 	std::vector<BuildingRuntimeTraits> runtimeTypes_;
