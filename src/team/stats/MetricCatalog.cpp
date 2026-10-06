@@ -148,10 +148,11 @@ std::vector<Metric> build()
 				   {"[stat band healing]", [](const M &s) { return double(s.healing); }}};
 		m.perUnits = m.perUnitsByDefault = true;
 	}
+	// Stable metric IDs/translation tokens are legacy aliases for the Food material.
 	add({.id = "wheat harvested", .group = Group::Food, .kind = Metric::Counter, .unitKey = "[stat unit wheat]",
-		 .value = [](const M &m) { return double(m.harvested[WHEAT]); }});
+		 .value = [](const M &m) { return double(m.harvested[materialIndex(MaterialId::Food)]); }});
 	add({.id = "wheat stored", .group = Group::Food, .unitKey = "[stat unit wheat]",
-		 .value = [](const M &m) { return double(m.stock[WHEAT]); }});
+		 .value = [](const M &m) { return double(m.stock[materialIndex(MaterialId::Food)]); }});
 	{
 		Metric &m = add({.id = "meals", .group = Group::Food, .kind = Metric::Counter, .unitKey = "[stat unit meals]",
 						 .value = [](const M &s) { return double(s.meals); }});

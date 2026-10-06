@@ -30,7 +30,7 @@ namespace Cortex
 	/// commit early at 8 — a smaller but EARLIER force that harasses before the enemy
 	/// army matures, paired with the hysteresis so the push holds instead of melting.
 	static const int ATTACK_MIN_WARRIORS = 8;
-	/// Blitz commit size: when the colony is past wheat capacity and starving
+	/// Blitz commit size: when the colony is past food capacity and starving
 	/// (foodSaturated), it will die in place if it sits still — so we spend whatever
 	/// army we have on the enemy NOW, at a lower bar than the patient turtle-then-
 	/// commit ATTACK_MIN_WARRIORS. Tunable.
@@ -302,7 +302,7 @@ namespace Cortex
 	// to the pool; once they rebuild to ATTACK_MIN_WARRIORS with a seen target, the
 	// offense rung re-commits a fresh flag (the create cooldown damps threshold thrash).
 	//
-	// Hoisted ABOVE wheat/economy on purpose: flag teardown is a cheap one-shot and
+	// Hoisted ABOVE food/economy on purpose: flag teardown is a cheap one-shot and
 	// must not be starvable by per-cycle farm upkeep or build/upgrade work.
 	//
 	// HOLD-ONLY straggler grace: while visible enemy units still loiter inside the
@@ -340,8 +340,8 @@ namespace Cortex
 	// Wheat sustainability (checkerboard forbidden paint) is NOT a rung here: it
 	// runs every decision cycle in parallel with whatever primary action this ladder
 	// picks, so it can never be starved by build/upgrade/offense work (and conversely
-	// never steals a cycle from them). See wantWheatProtection() below and
-	// AICortex::enqueueWheatForbidden, called each cycle in getOrder().
+	// never steals a cycle from them). See wantFoodSourceProtection() below and
+	// AICortex::enqueueFoodSourcesForbidden, called each cycle in getOrder().
 	ScoredAction CortexPolicy::scoreOffense(const CortexObservation& obs, const DecideFacts& f) const
 	{
 		// The commit decision lives in computeOffenseCommit (shared with scoreRetireFlag
@@ -413,29 +413,29 @@ namespace Cortex
 		return cortexDecline();
 	}
 
-	bool CortexPolicy::wantWheatProtection(const CortexObservation& obs) const
+	bool CortexPolicy::wantFoodSourceProtection(const CortexObservation& obs) const
 	{
-		if (obs.growthDisabled) return false; // Finite wheat cannot replenish protected seeds.
+		if (obs.growthDisabled) return false; // Finite food cannot replenish protected seeds.
 		// Reject an observation built against a layout this policy wasn't written
 		// for, or one that was never populated — same guard decide() uses.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)
 			return false;
 
-		// Same starving gate as decide()'s economy rungs: never wall off wheat
+		// Same starving gate as decide()'s economy rungs: never wall off food
 		// while the colony is dying. Computed here independently because this runs
 		// in parallel with (not inside) the primary-action ladder.
 		const Sint32 starvingPct = (obs.totalUnit > 0)
 			? (obs.starvingUnits * 100 / obs.totalUnit) : 0;
 		const bool starving = (starvingPct >= STARVE_HALT_PERCENT);
 
-		// Emit only when the reconcile has real work: ADD newly-revealed wheat tiles
-		// or DEL tiles where the wheat is gone / out of view. An empty diff means the
+		// Emit only when the reconcile has real work: ADD newly-revealed food tiles
+		// or DEL tiles where the food is gone / out of view. An empty diff means the
 		// paint already matches what we want, so there is nothing to order this cycle.
 		return !starving
 		    && (obs.wheatProtectAddCount > 0 || obs.wheatProtectDelCount > 0);
 	}
 
-	bool CortexPolicy::wantWheatBlitzLift(const CortexObservation& obs) const
+	bool CortexPolicy::wantFoodBurstLift(const CortexObservation& obs) const
 	{
 		// Reject an unpopulated / wrong-layout observation — same guard decide() uses.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)

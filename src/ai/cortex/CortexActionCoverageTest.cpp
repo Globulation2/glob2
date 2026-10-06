@@ -6,7 +6,7 @@
 #include "ai/model/BuildingProjection.h"
 #include "Order.h"
 #include "CortexPlacement.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 #include <algorithm>
 #include "CortexPolicy.h"
 #include <nlohmann/json.hpp>
@@ -40,8 +40,8 @@ TEST_SUITE("CortexActionCoverage")
         auto& map=world.game.map;
         std::fill(map.fogOfWar,map.fogOfWar+32*32,world.team->me);
         for(int x=2;x<=14;++x)map.setTerrain(x,8,GRASS);
-        // A longer land-only detour reaches the far side of the third wheat
-        // cell later; it must not replace the first path's greater wheat depth.
+        // A longer land-only detour reaches the far side of the third food
+        // cell later; it must not replace the first path's greater food depth.
         for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
         for(int x:{6,7,10,12}) {
             map.setResourceByIndex(x,8,WHEAT,1);
@@ -50,7 +50,7 @@ TEST_SUITE("CortexActionCoverage")
         auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
         const int seed=index(2,8); // Its land exit ring ends at x=5.
         auto scan=[&](const std::vector<int>& seeds,int right,bool ignoreFog) {
-            return Cortex::scanWheatForbidden(map,world.team->me,0,seeds,
+            return Cortex::scanFoodSourcesForbidden(map,world.team->me,0,seeds,
                 0,0,right,31,0,ignoreFog,true);
         };
         const auto first=scan({seed},31,false);
@@ -115,7 +115,7 @@ TEST_SUITE("CortexActionCoverage")
         auto checkCandidate=[](const BuildCandidate& actual,const BuildCandidate& expected) {
             CHECK(actual.valid==expected.valid);
             CHECK(actual.x==expected.x); CHECK(actual.y==expected.y);
-            CHECK(actual.score==expected.score); CHECK(actual.wheatDist==expected.wheatDist);
+            CHECK(actual.score==expected.score); CHECK(actual.foodSourceDistance==expected.foodSourceDistance);
         };
         for(int qualification=0;qualification<=1;++qualification) {
             CAPTURE(qualification);

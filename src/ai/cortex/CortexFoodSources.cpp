@@ -3,7 +3,7 @@
 
 #include "Material.h"
 #include "field/UniformTraversal.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 
 #include "map/Map.h"
 #include "building/BuildingUtils.h"
@@ -16,7 +16,7 @@
 
 #include <climits>
 
-// See CortexWheat.h for the design rationale. This is the geometry + reconcile
+// See CortexFoodSources.h for the design rationale. This is the geometry + reconcile
 // core only; it builds tile sets but emits no Orders.
 
 namespace Cortex
@@ -41,21 +41,21 @@ namespace Cortex
 		const int NB_DX[4] = { 0, -1, 1, 0 };
 		const int NB_DY[4] = { -1, 0, 0, 1 };
 
-		bool isWheat(Map& map, int x, int y)
+		bool isFoodSource(Map& map, int x, int y)
 		{
 			return map.isMaterialTakeable(x, y,MaterialId::Food);
 		}
 	} // namespace
 
-	WheatScanResult scanWheatForbidden(
+	FoodSourceScanResult scanFoodSourcesForbidden(
 		Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll, bool farmPaint)
 	{
-		WheatScanResult res;
+		FoodSourceScanResult res;
 
-		// The open margin is disabled: every reachable wheat row is checkerboarded,
+		// The open margin is disabled: every reachable food row is checkerboarded,
 		// so `openMargin` no longer gates classification. The parameter is retained
 		// only to keep the observation/action layout and call sites unchanged.
 		(void)openMargin;
@@ -77,18 +77,18 @@ namespace Cortex
 		auto inBox = [&](int x, int y) {
 			return x >= boxMinX && x <= boxMaxX && y >= boxMinY && y <= boxMaxY;
 		};
-		// A WHEAT tile counts as field only if the team can see it (unless the
+		// A Food tile counts as field only if the team can see it (unless the
 		// debug caller bypasses fog on a freshly-loaded, fully-fogged map).
-		auto wheatVisible = [&](int x, int y) {
+		auto foodSourceVisible = [&](int x, int y) {
 			return ignoreFOW || map.isFOWDiscovered(x, y, teamMask);
 		};
-		// A tile belongs to our field if it is discovered wheat inside the
+		// A tile belongs to our field if it is discovered food inside the
 		// territory box; a tile is "land" if a ground unit can stand on it (the
 		// BFS floods over land to reach the field, but land never counts toward
 		// depth). Forbidden status is ignored on purpose so our own paint never
 		// changes the measured depth (keeps the reconcile stable).
 		auto isField = [&](int x, int y) {
-			return inBox(x, y) && isWheat(map, x, y) && wheatVisible(x, y);
+			return inBox(x, y) && isFoodSource(map, x, y) && foodSourceVisible(x, y);
 		};
 		auto isLand = [&](int x, int y) {
 			return inBox(x, y) && map.isFreeForGroundUnitNoForbidden(x, y, false);
@@ -110,12 +110,12 @@ namespace Cortex
 		if (fieldTiles.empty() && !farmPaint)
 			return res;
 
-		// --- Land+wheat BFS from the consumer's walkable exit ring. ---
+		// --- Land+food BFS from the consumer's walkable exit ring. ---
 		// Plain breadth-first over walkable terrain, so each tile is first reached
 		// along a shortest WALKING path from the inn. The stored value is not the
-		// walking distance but the number of wheat tiles crossed along that path:
-		// land steps advance the path without bumping the count, and the first wheat
-		// tile entered is depth 1. So depth == "wheat tiles deep from where the inn's
+		// walking distance but the number of food tiles crossed along that path:
+		// land steps advance the path without bumping the count, and the first food
+		// tile entered is depth 1. So depth == "food tiles deep from where the inn's
 		// nearest approach enters the field" — the inn<->field land gap and intra-
 		// field land never count toward N, yet the gradient still recedes away from
 		// the inn (a far edge reached only by ploughing through the field stays deep
@@ -145,14 +145,14 @@ namespace Cortex
 					const int idx = static_cast<int>(map.coordToIndex(x, y));
 					if (depth[idx] == INT_MAX)
 					{
-						depth[idx] = 0; // land exit ring: zero wheat crossed so far.
+						depth[idx] = 0; // land exit ring: zero food crossed so far.
 						q.push_back(idx);
 					}
 				}
 		}
 
-		// First discovery follows the shortest walking path, carrying its wheat
-		// depth. Do not relax a later path with fewer wheat tiles: that changes
+		// First discovery follows the shortest walking path, carrying its food
+		// depth. Do not relax a later path with fewer food tiles: that changes
 		// classification, including ties resolved by seed and neighbour order.
 		std::array<field::Offset,4> neighbors;
 		for(int k=0;k<4;++k)neighbors[k]={NB_DX[k],NB_DY[k]};
@@ -168,28 +168,28 @@ namespace Cortex
 				depth[ni]=depth[cur]+(wheat?1:0);q.push_back(ni);
 			});
 
-		// --- Classify field wheat and collect the desired forbidden set. ---
+		// --- Classify field food and collect the desired forbidden set. ---
 		for (int idx : fieldTiles)
 		{
 			const int x = idx % w;
 			const int y = idx / w;
 			const int d = depth[idx];
 			if (d == INT_MAX)
-				continue; // wheat the consumer cannot reach over land: not harvested.
+				continue; // food the consumer cannot reach over land: not harvested.
 			if (wantDebug)
 				res.depthOf[idx] = static_cast<Sint16>(d < 32767 ? d : 32767);
 
-			// Open margin removed: EVERY reachable row of wheat is checkerboarded,
+			// Open margin removed: EVERY reachable row of food is checkerboarded,
 			// with no exempt rows nearest the harvest source. Classification is purely
-			// by parity — half the field (the WHEAT_PARITY half) is protected, the
+			// by parity — half the field (the FOOD_SOURCE_PARITY half) is protected, the
 			// other half harvest-open, all the way in to depth 1. (`openMargin` is no
 			// longer consulted; it is retained only for the observation/action layout.)
-			// WHEAT-BLITZ liftAll: classify what WOULD be the protected half as
+			// Food-BLITZ liftAll: classify what WOULD be the protected half as
 			// WC_CHECKER_OPEN instead of WC_FORBIDDEN so `desired` stays empty — the
 			// reconcile then un-forbids the WHOLE field. Iteration order, BFS, depths,
 			// and the add/del diff are untouched, so determinism is preserved.
 			Uint8 cls;
-			if (!liftAll && ((x + y) & 1) == WHEAT_PARITY
+			if (!liftAll && ((x + y) & 1) == FOOD_SOURCE_PARITY
 			    && (!farmPaint || map.canPaintFarmArea(x, y)))
 			{
 				cls = WC_FORBIDDEN;
@@ -204,7 +204,7 @@ namespace Cortex
 		}
 		res.forbiddenCount = static_cast<Sint32>(res.desired.size());
 
-		// --- Connected components among reachable field wheat (informational). ---
+		// --- Connected components among reachable field food (informational). ---
 		{
 			std::vector<unsigned char>& seen = wheatScratch.seen;
 			seen.assign(static_cast<size_t>(w) * h, 0);
@@ -213,7 +213,7 @@ namespace Cortex
 				for (int x = boxMinX; x <= boxMaxX; x++)
 				{
 					const int idx = static_cast<int>(map.coordToIndex(x, y));
-					if (seen[idx] || !isWheat(map, x, y) || !wheatVisible(x, y)
+					if (seen[idx] || !isFoodSource(map, x, y) || !foodSourceVisible(x, y)
 					    || depth[idx] == INT_MAX)
 						continue;
 					res.componentCount++;
@@ -223,7 +223,7 @@ namespace Cortex
 					field::depthFirst(stack,[](int){return field::Visit::Expand;},
 						[&](int c) {
 							field::Grid(w,h).neighbors(c,neighbors,[&](int nx,int ny) {
-								if(!inBox(nx,ny) || !isWheat(map,nx,ny) || !wheatVisible(nx,ny))return;
+								if(!inBox(nx,ny) || !isFoodSource(map,nx,ny) || !foodSourceVisible(nx,ny))return;
 								const int ni=static_cast<int>(map.coordToIndex(nx,ny));
 								if(seen[ni] || depth[ni]==INT_MAX)return;
 								seen[ni]=true;stack.push_back(ni);
@@ -248,7 +248,7 @@ namespace Cortex
 					continue;
 				const Uint16 gid = map.getBuilding(x, y);
 				if (!farmPaint && gid != NOGBID && BuildingUtils::GIDtoTeam(gid) == teamNumber)
-					continue; // our footprint, not wheat paint.
+					continue; // our footprint, not food paint.
 				const int idx = static_cast<int>(map.coordToIndex(x, y));
 				currentBit[idx] = true;
 				current.push_back(idx);
@@ -259,21 +259,21 @@ namespace Cortex
 			if (!currentBit[idx])
 				res.add.push_back(idx);
 		// A forbidden tile is retired ONLY when we can currently SEE it (no fog of
-		// war) AND the wheat under it is gone. This is deliberately INDEPENDENT of the
+		// war) AND the food under it is gone. This is deliberately INDEPENDENT of the
 		// desired checkerboard: the desired pattern drives where we ADD paint, never
-		// where we remove it. Stripping paint from a tile that still has wheat — just
+		// where we remove it. Stripping paint from a tile that still has food — just
 		// because it fell in the harvest half, the open margin, or briefly went
 		// unreachable — tears protection off field we are trying to maintain and lets
 		// workers harvest the reseed half, which is exactly what breaks the field.
 		//   - fogged tile          -> keep paint (we cannot confirm depletion);
-		//   - visible, still wheat -> keep paint (reachable or not, it is still field);
-		//   - visible, wheat gone  -> retire paint.
+		//   - visible, still food -> keep paint (reachable or not, it is still field);
+		//   - visible, food gone  -> retire paint.
 		// The debug/static path (ignoreFOW) treats every tile as visible.
 		//
-		// WHEAT-BLITZ liftAll: the steady-state depletion guards above are SKIPPED —
+		// Food-BLITZ liftAll: the steady-state depletion guards above are SKIPPED —
 		// we retire ALL current paint (DEL = current, ADD empty since `desired` is
 		// empty), un-forbidding the whole field for a one-time harvest burst even
-		// though the wheat is still standing. This is the deliberate famine override,
+		// though the food is still standing. This is the deliberate famine override,
 		// distinct from the steady-state "retire only when depleted" invariant; normal
 		// protection re-paints the checkerboard once the famine clears. Iterating
 		// `current` in index order keeps the DEL list deterministic.
@@ -285,9 +285,9 @@ namespace Cortex
 				const int y = idx / w;
 				if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
 					continue; // in fog: confirmation pending, leave the paint.
-				if (isWheat(map, x, y) && (!farmPaint ||
-				    (((x + y) & 1) == WHEAT_PARITY && map.canPaintFarmArea(x, y))))
-					continue; // still field wheat: keep protecting it.
+				if (isFoodSource(map, x, y) && (!farmPaint ||
+				    (((x + y) & 1) == FOOD_SOURCE_PARITY && map.canPaintFarmArea(x, y))))
+					continue; // still field food: keep protecting it.
 			}
 			res.del.push_back(idx);
 		}
@@ -297,10 +297,10 @@ namespace Cortex
 		return res;
 	}
 
-	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
+	FoodSourceReconcile reconcileFoodSourcesForbidden(Player* player, int openMargin, bool buildMasks,
 	                                       bool liftAll, bool farmPaint)
 	{
-		WheatReconcile out;
+		FoodSourceReconcile out;
 		if (player == NULL || player->team == NULL || player->team->game == NULL)
 			return out;
 
@@ -315,11 +315,11 @@ namespace Cortex
 		const Uint32 teamMask = team->me;
 		const int teamNumber = team->teamNumber;
 
-		// Consumer seeds = feeding-building (inn) centre tiles; scanWheatForbidden
+		// Consumer seeds = feeding-building (inn) centre tiles; scanFoodSourcesForbidden
 		// expands each to its walkable exit ring. The colony bounding box grows over
 		// our REAL buildings only — virtual buildings (war flags) can sit at the
 		// enemy base and would balloon the region, so they are excluded here (the
-		// -dump-wheat tool didn't need this: a freshly-loaded map has no flags).
+		// -dump-food tool didn't need this: a freshly-loaded map has no flags).
 		// Iterate by array index, never a std::set, for lockstep determinism.
 		std::vector<int> seeds;
 		int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
@@ -340,7 +340,7 @@ namespace Cortex
 
 		// Always fold the team start into the bbox so the region is valid even
 		// before the first building, and seed the start as a fallback consumer when
-		// no inn exists yet (matches the -dump-wheat derivation).
+		// no inn exists yet (matches the -dump-food derivation).
 		const int startX = team->startPosX;
 		const int startY = team->startPosY;
 		if (startX < bbMinX) bbMinX = startX;
@@ -352,7 +352,7 @@ namespace Cortex
 		if (seeds.empty())
 			seeds.push_back(static_cast<int>(map.coordToIndex(startX, startY)));
 
-		// Colony region = bbox padded by WHEAT_REGION_MARGIN (scanWheatForbidden
+		// Colony region = bbox padded by WHEAT_REGION_MARGIN (scanFoodSourcesForbidden
 		// clamps to the map, but clamp here too so the values are sane).
 		int boxMinX = bbMinX - WHEAT_REGION_MARGIN;
 		int boxMinY = bbMinY - WHEAT_REGION_MARGIN;
@@ -363,9 +363,9 @@ namespace Cortex
 		if (boxMaxX > w - 1) boxMaxX = w - 1;
 		if (boxMaxY > h - 1) boxMaxY = h - 1;
 
-		// Live path: real fog-of-war (only paint wheat we can currently see), and
+		// Live path: real fog-of-war (only paint food we can currently see), and
 		// no debug overlays. buildMasks decides whether we also paint the brushes.
-		WheatScanResult r = scanWheatForbidden(
+		FoodSourceScanResult r = scanFoodSourcesForbidden(
 			map, teamMask, teamNumber, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
 			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll, farmPaint);

@@ -7,7 +7,7 @@
 #include "CortexPlacement.h"
 #include "CortexPolicy.h"
 #include "CortexPlacementGeo.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 #include "CortexWater.h"
 
 #include "Player.h"
@@ -536,19 +536,19 @@ namespace Cortex
 			obs.enemyCount = slot;
 		}
 
-		// --- wheat sustainability: counts-only reconcile over the colony region ---
+		// --- food sustainability: counts-only reconcile over the colony region ---
 		// The full per-tile masks are rebuilt in the action layer (which has the
 		// Map to paint into); the observation carries only the cheap diff counts so
-		// the pure policy (CortexPolicy::wantWheatProtection) can tell whether the
-		// per-cycle wheat-forbidden pass has real work to do.
+		// the pure policy (CortexPolicy::wantFoodSourceProtection) can tell whether the
+		// per-cycle food-forbidden pass has real work to do.
 		const bool farms = player->team->game->map.farmAreasEnabled()
 			&& !player->game->gameHeader.isResourceGrowthDisabled();
-		const Cortex::WheatReconcile wr = Cortex::reconcileWheatForbidden(
+		const Cortex::FoodSourceReconcile wr = Cortex::reconcileFoodSourcesForbidden(
 			player, openMargin, /*buildMasks=*/false, /*liftAll=*/false, farms);
 		obs.wheatProtectAddCount = wr.addCount;
 		obs.wheatProtectDelCount = wr.delCount;
 		if (farms)
-			obs.wheatProtectDelCount += Cortex::reconcileWheatForbidden(
+			obs.wheatProtectDelCount += Cortex::reconcileFoodSourcesForbidden(
 				player, openMargin, /*buildMasks=*/false, /*liftAll=*/true).delCount;
 
 		obs.valid = 1;

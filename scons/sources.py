@@ -77,7 +77,7 @@ CLIENT_SOURCES = (
     'ai/cortex/CortexPolicyTech.cpp',
     'ai/cortex/CortexPolicyCombat.cpp',
     'ai/cortex/CortexTuning.cpp',
-    'ai/cortex/CortexWheat.cpp',
+    'ai/cortex/CortexFoodSources.cpp',
     'ai/cortex/CortexWater.cpp',
     'ai/cortex/CortexNet.cpp',
     'ai/cortex/AICortex.cpp',

@@ -91,27 +91,27 @@ namespace Cortex
 		}
 	} // namespace
 
-	// Chebyshev distance from tile (x, y) to the nearest wheat resource
+	// Chebyshev distance from tile (x, y) to the nearest food resource
 	// tile, found by an outward "ring" scan capped at `cap`. Shared utility used
-	// by placeCandidates (wheatDist of each retained BuildCandidate) and by
-	// Cortex::observe (TrackedBuilding::nearestWheatDist for each tracked swarm
-	// and inn), so the wheat-proximity metric is defined in exactly one place.
+	// by placeCandidates (foodSourceDistance of each retained BuildCandidate) and by
+	// Cortex::observe (TrackedBuilding::nearestFoodSourceDistance for each tracked swarm
+	// and inn), so the food-proximity metric is defined in exactly one place.
 	//
 	// Algorithm: for r = 0, 1, 2, ..., cap, iterate every tile at EXACTLY
 	// Chebyshev distance r from (x, y) — the square ring of side 2r+1. Return
-	// the first r at which a WHEAT tile is found. The scan terminates immediately
+	// the first r at which a Food tile is found. The scan terminates immediately
 	// on the first hit at the current radius, not at the first hit overall, so we
-	// never report a radius larger than the true minimum. Return -1 if no WHEAT is
+	// never report a radius larger than the true minimum. Return -1 if no Food is
 	// found within `cap`.
 	//
-	// WHEAT detection: map.isMaterialTakeableSlot(x, y, WHEAT) — identical to the
-	// isWheat() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
-	// the two subsystems agree on what counts as wheat.
-	// C++: Resource.h:#define WHEAT 1; Map::getResource (map/Map.h:302).
+	// Food detection: map.isMaterialTakeableSlot(x, y, Food) — identical to the
+	// isFoodSource() predicate in CortexFoodSources.cpp (anonymous namespace, line ~29) so
+	// the two subsystems agree on what counts as food.
+	// C++: Resource.h:#define Food 1; Map::getResource (map/Map.h:302).
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
-	int nearestWheatDist(const Map& map, int x, int y, int cap)
+	int nearestFoodSourceDistance(const Map& map, int x, int y, int cap)
 	{
 		for (int r = 0; r <= cap; r++)
 		{
@@ -165,7 +165,7 @@ namespace Cortex
 					return r;
 			}
 		}
-		return -1; // no WHEAT within cap tiles
+		return -1; // no Food within cap tiles
 	}
 
 	// AICortex war-flag offense-target surface.

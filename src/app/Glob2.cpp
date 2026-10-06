@@ -59,7 +59,7 @@
 #include "team/Team.h"
 #include "building/Building.h"
 #include "BuildingType.h"
-#include "ai/cortex/CortexWheat.h"
+#include "ai/cortex/CortexFoodSources.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -253,7 +253,7 @@ static int dumpResources(const std::string& mapName)
 // Headless tooling (AI wheat-protection eyeball): run the Cortex wheat scan over
 // one team's territory on a freshly-loaded map and print the checkerboard it
 // WOULD paint, swept over the open-margin range N=0..2. No Orders are emitted —
-// this is the isolated geometry/reconcile core (ai/cortex/CortexWheat.*).
+// this is the isolated geometry/reconcile core (ai/cortex/CortexFoodSources.*).
 //
 // A loaded .map has no colony and is fully fogged, so this differs from the live
 // path in two debug-only ways, both documented inline: fog is bypassed
@@ -349,7 +349,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 
 	for (int N = 0; N <= 2; N++)
 	{
-		Cortex::WheatScanResult r = Cortex::scanWheatForbidden(
+		Cortex::FoodSourceScanResult r = Cortex::scanFoodSourcesForbidden(
 			map, teamMask, team, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
 			/*openMargin=*/N, /*ignoreFOW=*/true, /*wantDebug=*/true);

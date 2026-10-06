@@ -6,7 +6,7 @@
 #include "AIStateSerialization.h"
 #include "AICortex.h"
 #include "CortexObservation.h"
-#include "CortexWheat.h"
+#include "CortexFoodSources.h"
 
 #include "Order.h"
 #include "AIRuleOrders.h"
@@ -149,7 +149,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
 	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
-	// every load and desync replays. -1 means a pre-wheat save (or a game that has
+	// every load and desync replays. -1 means a pre-food save (or a game that has
 	// not reached its first decision cycle yet) — getOrder draws it next cycle.
 	wheatOpenMargin = stream->readSint32("wheatOpenMargin");
 	if (versionMinor >= 101)
@@ -411,7 +411,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 	timer++;
 	if ((timer % OBSERVE_INTERVAL) == 0)
 	{
-		// Draw the per-game wheat open-margin N exactly once, lazily, on the first
+		// Draw the per-game food open-margin N exactly once, lazily, on the first
 		// decision cycle — not in the constructor — so the sync RNG is live and the
 		// draw lands at the same point in the shared stream on every client (all
 		// clients run getOrder in lockstep). syncRand(), NEVER rand(): this value
@@ -519,43 +519,43 @@ shared_ptr<Order> AICortex::getOrder(void)
 			          << " underAtk=" << (obs.buildingsUnderAttack + obs.unitsUnderAttack)
 			          << " starv=" << obs.starvingUnits
 			          << "\n";
-			// Per-inn wheat-gate detail (feedCap root-cause). feedCapacity sums only
+			// Per-inn food-gate detail (feedCap root-cause). feedCapacity sums only
 			// inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES=5).
 			// nearestWheat is forbidden-BLIND; harvestable is forbidden-AWARE. When
-			// feedCap==0: wheat-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
+			// feedCap==0: food-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
 			// nearestWheat large/-1 => DEPLETED/ABSENT (c).
 			for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
 			{
 				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
 				if (!n.valid) continue;
 				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
-				          << " wheat=" << n.wheat << "/" << n.maxWheat
+				          << " wheat=" << n.supplyStock << "/" << n.supplyCapacity
 				          << " haulers=" << n.maxUnitWorking
 				          << " restockReq=" << n.restockTripsNeeded
 				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
-				          << " nearestWheat=" << n.nearestWheatDist
-				          << " blindWheat=" << n.diagBlindWheatNearby
-				          << " harvestable=" << n.harvestableWheatNearby
-				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
+				          << " nearestWheat=" << n.nearestFoodSourceDistance
+				          << " blindWheat=" << n.unrestrictedFoodSourcesNearby
+				          << " harvestable=" << n.harvestableFoodSourcesNearby
+				          << " feedsGate=" << (n.harvestableFoodSourcesNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
 				          << "\n";
 			}
-			// Per-swarm wheat buffer + assigned haulers: contrast against the inns above to
-			// see whether the scarce haulers are feeding PRODUCTION (swarm wheat full) while
+			// Per-swarm food buffer + assigned haulers: contrast against the inns above to
+			// see whether the scarce haulers are feeding PRODUCTION (swarm food full) while
 			// the inns (FEEDING) sit empty.
 			for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			{
 				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
 				if (!s.valid) continue;
 				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
-				          << " wheat=" << s.wheat << "/" << s.maxWheat
+				          << " wheat=" << s.supplyStock << "/" << s.supplyCapacity
 				          << " haulers=" << s.maxUnitWorking
 				          << " prio=" << s.priority
-				          << " harvestable=" << s.harvestableWheatNearby
+				          << " harvestable=" << s.harvestableFoodSourcesNearby
 				          << "\n";
 			}
 			// Direct engine-gradient probe per real inn: is COLLECTABLE (ripe, reachable)
-			// wheat actually available at the inn? wheatAvail=0 with wheat tiles nearby ⇒ the
-			// local wheat is unripe/over-harvested, not merely fogged — that is why
+			// food actually available at the inn? wheatAvail=0 with food tiles nearby ⇒ the
+			// local food is unripe/over-harvested, not merely fogged — that is why
 			// restockTripsNeeded computes 0 and the inn never refills.
 			{
 				Game* g = player->team->game;
@@ -926,15 +926,15 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// says yes we enqueue the full ADD/DEL paint here, alongside whatever orders
 		// translateAction queued. They drain one-per-tick over the many ticks until
 		// the next decision cycle, so both go out — they no longer compete for a turn.
-		// WHEAT-BLITZ takes precedence: during a famine (foodSaturated with a
-		// committable army and a target) we LIFT all wheat protection for a one-time
-		// food burst to fuel the attack. wantWheatProtection returns false while
+		// Food-BLITZ takes precedence: during a famine (foodSaturated with a
+		// committable army and a target) we LIFT all food protection for a one-time
+		// food burst to fuel the attack. wantFoodSourceProtection returns false while
 		// starving, so the two gates are mutually exclusive and the executor never
 		// double-emits; blitz-lift wins when both could apply.
-		if (policy.wantWheatBlitzLift(obs))
-			enqueueWheatForbidden(obs, /*liftAll=*/true);
-		else if (policy.wantWheatProtection(obs))
-			enqueueWheatForbidden(obs);
+		if (policy.wantFoodBurstLift(obs))
+			enqueueFoodSourcesForbidden(obs, /*liftAll=*/true);
+		else if (policy.wantFoodSourceProtection(obs))
+			enqueueFoodSourcesForbidden(obs);
 
 		while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
 		if (!orderQueue.empty())
