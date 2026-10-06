@@ -32,6 +32,15 @@ struct Backdrop
 	std::string sprite;
 	int firstFrame = 0, frames = 1, ticks = 1;
 };
+// Contact treatment where this material meets another. A higher material casts
+// a shade onto lower neighbors within castWidth; a fringe tints any neighbor.
+struct Seam
+{
+	int height = 0;                 // Stacking rank; equal ranks cast nothing.
+	int cast = 0, castWidth = 0;    // Q8 darkening strength and Q8 pixel width.
+	int fringe = 0, fringeWidth = 0; // Q8 tint strength and Q8 pixel width.
+	std::array<unsigned char, 3> fringeColor{255, 255, 255};
+};
 struct Material
 {
 	std::string key, sprite;
@@ -43,6 +52,7 @@ struct Material
 	Backdrop backdrop;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
 	std::array<unsigned char, 3> preview{}, minimap{};
+	Seam seam;
 };
 struct PairTreatment
 {
@@ -81,6 +91,10 @@ struct Coverage
 {
 	std::array<MaterialId, 4> material{};
 	std::array<unsigned, 4> weight{}; // Sum exactly 65536, including ocean.
+	// Nearest other material and an estimate of the Q8 pixel distance to it,
+	// for seam shading. Interior samples report 65535 and their own material.
+	MaterialId neighbor = 0;
+	unsigned margin = 65535;
 };
 // A tile's nine transition patches share immutable topology and contour choices
 // across all native/HD samples. Catalog must outlive this prepared view.

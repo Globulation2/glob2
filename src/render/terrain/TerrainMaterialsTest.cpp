@@ -232,6 +232,64 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(result.hasOpaquePixels());
 	}
 
+	TEST_CASE("seam treatment tones only the lower material beside a higher edge [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		definitions.boundaryWarp = {}; // A straight ice/grass seam at x = 16.
+		for (auto &profile : definitions.profiles)
+			profile.roughness = profile.speckle = 0;
+		for (auto &material : definitions.materials)
+			material.seam = {};
+		const auto ice = definitions.find("ice"), grass = definitions.find("grass");
+		TerrainVisual::Recipe r;
+		r.width = r.height = 16;
+		r.x = 3;
+		r.y = 5;
+		for (int j = 0; j < 4; ++j)
+			for (int i = 0; i < 4; ++i)
+				r.samples[j * 4 + i] = i < 2 ? ice : grass;
+		const auto render = [&](const TerrainVisual::Catalog &c)
+		{
+			TerrainVisual::Compositor compositor(c);
+			compositor.prepare(false, 0);
+			GAGCore::DrawableSurface result(32, 32);
+			compositor.compose(r, result.getSDLSurface(), 0, 0, 1);
+			std::array<unsigned, 32> brightness{};
+			for (int y = 0; y < 32; ++y)
+			{
+				const auto *row = reinterpret_cast<const Uint32 *>(
+					static_cast<const unsigned char *>(result.getSDLSurface()->pixels) +
+					y * result.getSDLSurface()->pitch);
+				for (int x = 0; x < 32; ++x)
+					brightness[x] += (row[x] >> 16 & 255) + (row[x] >> 8 & 255) + (row[x] & 255);
+			}
+			return brightness;
+		};
+		const auto plain = render(definitions);
+		auto shaded = definitions;
+		shaded.materials[ice].seam = {4, 128, 768, 0, 0};
+		shaded.materials[grass].seam = {2, 128, 768, 0, 0};
+		const auto dark = render(shaded);
+		auto frosted = definitions;
+		frosted.materials[ice].seam = {4, 0, 0, 256, 768, {255, 255, 255}};
+		const auto light = render(frosted);
+		for (int x = 0; x < 32; ++x)
+		{
+			INFO(x);
+			if (x < 16 || x >= 20)
+			{
+				CHECK(dark[x] == plain[x]); // Ice casts only downhill, grass not at all.
+				CHECK(light[x] == plain[x]);
+			}
+			else if (x < 18)
+			{
+				CHECK(dark[x] < plain[x] * 9 / 10);
+				CHECK(light[x] > plain[x] * 11 / 10);
+			}
+		}
+	}
 	TEST_CASE("all legacy shore groups retain their corner orientation")
 	{
 		constexpr unsigned masks[] = {8, 4, 1, 2, 3, 12, 5, 10, 7, 11, 14, 13, 6, 9};
@@ -279,6 +337,8 @@ TEST_SUITE("TerrainMaterials")
 				auto j = nlohmann::json::parse(input);
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
+				for (auto &material : j["materials"])
+					material.erase("seam");
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
 				{
@@ -321,7 +381,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 18185691832014944171ull : 227142420051831929ull));
+			CHECK(digest == (legacy ? 18185691832014944171ull : 1965875410804105497ull));
 		}
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
@@ -609,6 +669,11 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/profiles/0/speckle_q8"), true},
 			{nlohmann::json::json_pointer("/profiles/0/bridge_q8"), -1},
 			{nlohmann::json::json_pointer("/version"), 2},
+			{nlohmann::json::json_pointer("/materials/3/seam"), nlohmann::json::array()},
+			{nlohmann::json::json_pointer("/materials/3/seam/cast_q8"), 257},
+			{nlohmann::json::json_pointer("/materials/3/seam/height"), -1},
+			{nlohmann::json::json_pointer("/materials/3/seam/fringe"), {0, 0}},
+			{nlohmann::json::json_pointer("/materials/3/seam/fringe_width_q8"), 2049},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {true, 0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 1.5, 0}},

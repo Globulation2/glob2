@@ -62,6 +62,11 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["profiles"][0].update(speckle_q8=True),
             lambda d: d["profiles"][0].update(bridge_q8=-1),
             lambda d: d.update(version=2),
+            lambda d: d["materials"][3].update(seam=[]),
+            lambda d: d["materials"][3]["seam"].update(cast_q8=257),
+            lambda d: d["materials"][3]["seam"].update(height=-1),
+            lambda d: d["materials"][3]["seam"].update(fringe=[0, 0]),
+            lambda d: d["materials"][3]["seam"].update(fringe_width_q8=2049),
             lambda d: d["profiles"][0].update(feather_q8=True),
             lambda d: d["profiles"][0].update(feather_q8=127),
             lambda d: d["profiles"][0].update(feather_q8=513),
@@ -100,6 +105,8 @@ class TerrainTileset(unittest.TestCase):
             for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"):
                 profile.pop(field)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
+        for material in self.document["materials"]:
+            material.pop("seam", None)
         self.assertEqual(len(validate(self.document)), 80)
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):

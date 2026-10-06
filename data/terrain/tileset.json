@@ -40,7 +40,7 @@
       "key": "fractured",
       "roughness_q8": 320,
       "amplitude_q8": 768,
-      "feather_q8": 192,
+      "feather_q8": 320,
       "speckle_q8": 128,
       "bridge_q8": 256,
       "contours_q12": [
@@ -154,7 +154,12 @@
           "weight": 1
         }
       ],
-      "minimap": [0, 40, 120]
+      "minimap": [0, 40, 120],
+      "seam": {
+        "height": 5,
+        "cast_q8": 72,
+        "cast_width_q8": 640
+      }
     },
     {
       "key": "sand",
@@ -228,7 +233,10 @@
           "weight": 1
         }
       ],
-      "minimap": [170, 170, 0]
+      "minimap": [170, 170, 0],
+      "seam": {
+        "height": 1
+      }
     },
     {
       "key": "grass",
@@ -302,7 +310,12 @@
           "weight": 1
         }
       ],
-      "minimap": [0, 90, 0]
+      "minimap": [0, 90, 0],
+      "seam": {
+        "height": 2,
+        "cast_q8": 56,
+        "cast_width_q8": 512
+      }
     },
     {
       "key": "ice",
@@ -376,7 +389,15 @@
           "weight": 1
         }
       ],
-      "minimap": [190, 225, 240]
+      "minimap": [190, 225, 240],
+      "seam": {
+        "height": 4,
+        "cast_q8": 64,
+        "cast_width_q8": 640,
+        "fringe": [228, 240, 248],
+        "fringe_q8": 96,
+        "fringe_width_q8": 384
+      }
     },
     {
       "key": "road",
@@ -450,7 +471,12 @@
           "weight": 1
         }
       ],
-      "minimap": [176, 138, 98]
+      "minimap": [176, 138, 98],
+      "seam": {
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512
+      }
     }
   ],
   "bindings": {

@@ -134,6 +134,22 @@ def _validate(document, root):
             type(n) is not int or not 0 <= n <= 255 for n in minimap
         ):
             raise ValueError("Invalid minimap color")
+        if "seam" in m:
+            if version < 3:
+                raise ValueError("Seam treatments require catalog version 3")
+            seam = m["seam"]
+            if not isinstance(seam, dict):
+                raise ValueError("Seam must be an object")
+            integer(seam.get("height", 0), 0, 255, "Seam height")
+            integer(seam.get("cast_q8", 0), 0, 256, "Seam cast_q8")
+            integer(seam.get("cast_width_q8", 0), 0, 2048, "Seam cast_width_q8")
+            integer(seam.get("fringe_q8", 0), 0, 256, "Seam fringe_q8")
+            integer(seam.get("fringe_width_q8", 0), 0, 2048, "Seam fringe_width_q8")
+            fringe = seam.get("fringe", [255, 255, 255])
+            if not isinstance(fringe, list) or len(fringe) != 3 or any(
+                type(n) is not int or not 0 <= n <= 255 for n in fringe
+            ):
+                raise ValueError("Invalid seam fringe color")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),

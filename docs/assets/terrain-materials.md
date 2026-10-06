@@ -30,6 +30,8 @@ Each material supplies:
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
 - optional `backdrop` with `sprite`, `first_frame`, `frames`, and `ticks`;
+- optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
+  `fringe_q8` and `fringe_width_q8`, see [Seams](#seams);
 - `ocean: true` only for materials that reveal the shared scrolling ocean.
 
 Logical frames are 32×32. Existing HD frame registration supplies higher resolution
@@ -183,6 +185,25 @@ material's variant borders toward one periodic master while keeping interior
 texture detail. The four-pixel border blend operates on premultiplied RGBA, so both
 color and opacity agree across variants without introducing dark transparent fringes.
 The compositor does not bake a texture-by-mask-by-material-pair product.
+
+### Seams
+
+Textures are never cross-faded across a boundary; a wide fade averages unrelated
+textures into a smear. Instead the compositor tones a narrow contact band, as the
+original tiles did with a dark lip on sand under grass and a wet line along the
+shore. The resolver reports, per sample, the nearest other material and an
+estimate of the distance to it (the score gap grows by 12288 per Q8 pixel along a
+straight edge). Each material's optional `seam` object sets `height` (0–255, a
+stacking rank), `cast_q8` (0–256) and `cast_width_q8` (0–2048 Q8 pixels): a
+material darkens lower-ranked neighbors by up to `cast_q8`/256 at the contact,
+fading to nothing at that width. Equal ranks cast nothing, so sand beside sand
+of another variant is untouched. `fringe` (RGB), `fringe_q8` and
+`fringe_width_q8` tint any neighbor toward that color, which ice uses for a
+faint frost rim on grass. The shipped ranks place water highest so sand and
+grass take a wet band at the waterline, then ice, trail and grass, with sand
+lowest. Ocean pixels are transparent and receive nothing. Keep casts short
+(two to three pixels) and under about a third strength; the goal is a sense of
+thickness, not an outline.
 
 ## Validate and inspect
 

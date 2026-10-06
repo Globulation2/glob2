@@ -200,6 +200,20 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				"animated material needs a frame stride");
 		v.preview = rgbColor(m.at("preview"));
 		v.minimap = rgbColor(m.value("minimap", m.at("preview")));
+		if (m.contains("seam"))
+		{
+			require(version >= 3, "seam treatments require catalog version 3");
+			const auto &s = m.at("seam");
+			require(s.is_object(), "seam must be an object");
+			v.seam.height = integerInRange(s.value("height", nlohmann::json(0)), 0, 255);
+			v.seam.cast = integerInRange(s.value("cast_q8", nlohmann::json(0)), 0, 256);
+			v.seam.castWidth = integerInRange(s.value("cast_width_q8", nlohmann::json(0)), 0, 2048);
+			v.seam.fringe = integerInRange(s.value("fringe_q8", nlohmann::json(0)), 0, 256);
+			v.seam.fringeWidth =
+				integerInRange(s.value("fringe_width_q8", nlohmann::json(0)), 0, 2048);
+			if (s.contains("fringe"))
+				v.seam.fringeColor = rgbColor(s.at("fringe"));
+		}
 		require(m.at("variants").is_array() && !m.at("variants").empty(),
 				"material needs variants");
 		for (const auto &a : m.at("variants"))
@@ -508,6 +522,7 @@ Coverage PreparedCoverage::at(int px, int py) const
 	const auto &patch = patches[sy * 3 + sx];
 	Coverage out;
 	out.material = patch.materials;
+	out.neighbor = patch.materials[0];
 	if (patch.count == 1)
 	{
 		out.weight[0] = 65536;
@@ -595,6 +610,25 @@ Coverage PreparedCoverage::at(int px, int py) const
 				}
 	}
 	const unsigned maximum = *std::max_element(scores.begin(), scores.end());
+	// Along a straight edge the score gap grows by 12288 per Q8 pixel, so it
+	// doubles as a cheap distance estimate to the nearest other material.
+	{
+		unsigned top = 0, next = patch.count;
+		for (unsigned i = 1; i < patch.count; ++i)
+			if (scores[i] > scores[top])
+				top = i;
+		for (unsigned i = 0; i < patch.count; ++i)
+			if (patch.materials[i] != patch.materials[top] &&
+				(next == patch.count || scores[i] > scores[next]))
+				next = i;
+		if (next < patch.count)
+		{
+			out.neighbor = patch.materials[next];
+			out.margin = std::min(65535u, (scores[top] - scores[next]) / 12288);
+		}
+		else
+			out.neighbor = patch.materials[top];
+	}
 	unsigned total = 0;
 	for (unsigned i = 0; i < patch.count; ++i)
 	{
