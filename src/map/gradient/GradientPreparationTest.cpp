@@ -959,3 +959,48 @@ TEST_CASE("seed cache allocates only live material bitsets and reuses them after
     }
 }
 }
+
+TEST_CASE("compact clearing traits preserve custom high-ID property combinations" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    using Json=nlohmann::json;
+    const auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    Json definitions=Json::array();
+    for(unsigned n=0;n<272;++n) {
+        auto definition=prototype;
+        definition["key"]="clearing-traits-"+std::to_string(1000+n);
+        definition["properties"]["persistsWhenEmpty"]=true;
+        definition["properties"]["blocksGround"]=bool(n&1);
+        definition["properties"]["clearable"]=bool(n&2);
+        definition["properties"]["farmable"]=bool(n&4);
+        definitions.push_back(std::move(definition));
+    }
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",definitions}}.dump());
+    std::vector<Uint16> actual(map.size),expected(map.size);
+    for(unsigned n=264;n<272;++n) {
+        const auto id=*map.resourceRegistry().find("clearing-traits-"+std::to_string(1000+n));
+        REQUIRE(resourceIndex(id)>255);
+        const auto index=map.coordToIndex(8+n-264,8);
+        map.setResource(8+n-264,8,id,0);
+        // Empty persistent stocks remain clearable according to properties.
+        map.tiles[index].resource.amount=0;
+        for(bool farms:{false,true}) for(unsigned paint=0;paint<8;++paint) {
+            CAPTURE(n);CAPTURE(farms);CAPTURE(paint);
+            world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas,farms);
+            auto& tile=map.tiles[index];
+            tile.clearArea=paint&1 ? 1:0;
+            tile.farmArea=paint&2 ? 1:0;
+            tile.forbidden=paint&4 ? 1:0;
+            tile.building=42;map.immobileUnits[index]=0;
+            scalarClear(map,0,0,expected.data());
+            map.seedClearAreasGradient(0,0,actual.data());
+            CHECK(actual==expected);
+            const bool goal=!(paint&4) && (n&2) && ((paint&1) || (farms && (paint&2) && !(n&4)));
+            CHECK(actual[index]==(goal ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN));
+            tile.building=NOGBID;map.immobileUnits[index]=IMMOBILE_UNIT_NONE;
+            tile.clearArea=tile.farmArea=tile.forbidden=0;
+        }
+    }
+}

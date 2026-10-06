@@ -54,9 +54,11 @@ int Map::farmCropAt(int x,int y) const
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
 {
     const auto& tile=tiles[index];
-    if (tile.resource.type==NO_RES_TYPE || !resourcePropertiesByIndex(tile.resource.type).clearable) return false;
-    if (tile.clearArea&teamMask) return true;
-    return farmAreas && (tile.farmArea&teamMask) && !isFarmableResourceByIndex(tile.resource.type);
+    if (tile.resource.type==NO_RES_TYPE) return false;
+    const bool explicitClear=(tile.clearArea&teamMask)!=0;
+    if (!explicitClear && !(farmAreas && (tile.farmArea&teamMask))) return false;
+    const auto& properties=resourcePropertiesByIndex(tile.resource.type);
+    return properties.clearable && (explicitClear || !properties.farmable);
 }
 
 bool Map::canPaintFarmArea(int x,int y) const

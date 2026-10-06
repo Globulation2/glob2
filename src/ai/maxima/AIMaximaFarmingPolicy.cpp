@@ -113,10 +113,17 @@ namespace
         return AIResourcePolicy::emptyGrowthCell(map,x,y);
     }
 
-    bool can_seed_target(const Map& map,int sx,int sy,int tx,int ty,int material)
+    bool cached_seed(const std::vector<Uint8>& eligibility,const Map& map,int x,int y,int material)
     {
-        return is_spreading_seed(map,sx,sy,material)
-            && AIResourcePolicy::canSpreadTo(map,sx,sy,tx,ty,static_cast<MaterialId>(material));
+        return eligibility[map.coordToIndex(x,y)] & (material==materialIndex(MaterialId::Food)?1:2);
+    }
+
+    bool can_seed_target(const std::vector<Uint8>& eligibility,const Map& map,
+        int sx,int sy,int tx,int ty,int material)
+    {
+        return cached_seed(eligibility,map,sx,sy,material)
+            && AIResourcePolicy::emptyGrowthCell(map,tx,ty)
+            && map.terrainSupportsResourceAt(map.coordToIndex(tx,ty),static_cast<ResourceId>(map.getResource(sx,sy).type));
     }
 
 	// Close one-cell harvest gaps before identifying the outer farm boundary.
@@ -162,7 +169,7 @@ namespace
 
 	FarmTileClassification classify_farm_tile(MapInfo& mi, Map* map,
 		const Farming::ExactFertilityCache& fertility_cache,
-		const std::vector<Uint8>& wheat_exterior,
+		const std::vector<Uint8>& wheat_exterior, const std::vector<Uint8>& seedEligibility,
 		bool shoreline_backed, int x, int y, int resource_type, Uint32 minimum_fertility)
 	{
 		FarmTileClassification pattern;
@@ -173,7 +180,7 @@ namespace
 		const bool seed_lattice=Farming::isInteriorSeed(x, y);
 		const bool expansion_lattice=Farming::isExpansionCell(x, y);
 		const Uint32 fertility=fertility_cache.at(x, y);
-		const bool resource=is_spreading_seed(*map,x,y,resource_type);
+		const bool resource=cached_seed(seedEligibility,*map,x,y,resource_type);
 		// A coastal wheat wall must cross local fertility dips. Only the
 		// immediate frontier of a live crop qualifies below, so this cannot
 		// reserve unrelated empty coast. Keep the exemption after growth too:
@@ -187,7 +194,7 @@ namespace
 				for(int dx=-1; dx<=1; ++dx)
 				{
 					if(!dx && !dy) continue;
-					if(can_seed_target(*map,x+dx,y+dy,x,y,resource_type)
+					if(can_seed_target(seedEligibility,*map,x+dx,y+dy,x,y,resource_type)
                         && (fertile || !uses_land_fertility(*map,x+dx,y+dy)))
 						adjacent_resource=true;
 				}
@@ -203,7 +210,7 @@ namespace
 				{
 					if(!dx && !dy) continue;
 					const Tile& neighbor=map->getTile(x+dx, y+dy);
-					const bool eligible=can_seed_target(*map,x,y,x+dx,y+dy,resource_type)
+					const bool eligible=can_seed_target(seedEligibility,*map,x,y,x+dx,y+dy,resource_type)
 						&& (fertility_cache.at(x+dx,y+dy)>=minimum_fertility || !uses_land_fertility(*map,x,y))
 						&& (resource_type!=materialIndex(MaterialId::Food)
 							|| wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]);
@@ -220,7 +227,7 @@ namespace
 					{
 						const int nx=(x+dx+w)%w;
 						const int ny=(y+dy+h)%h;
-						if(!is_spreading_seed(*map,nx,ny,resource_type)) continue;
+						if(!cached_seed(seedEligibility,*map,nx,ny,resource_type)) continue;
 						nearby_lattice_resource=nearby_lattice_resource
 							|| Farming::isInteriorSeed(nx, ny);
 						local_anchor=std::min(local_anchor, ny*w+nx);
@@ -1000,7 +1007,7 @@ bool Maxima::has_hard_farming_contract(int index) const
 		|| development_planner.isCirculationReserved(index);
 }
 
-Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
+Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime, const std::vector<Uint8>* seedEligibility) const
 {
 	Map* map=runtime.player->map;
 	const int w=map->getW(), h=map->getH();
@@ -1036,7 +1043,7 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 	std::vector<int> candidates;
 	for(int i=0;i<w*h;++i)
 		if(eligible(i,true) && map->isMaterialTakeable(i%w,i/w,MaterialId::Wood)
-		   && is_spreading_seed(*map,i%w,i/w,materialIndex(MaterialId::Wood))
+		   && (seedEligibility ? ((*seedEligibility)[i]&2)!=0 : is_spreading_seed(*map,i%w,i/w,materialIndex(MaterialId::Wood)))
 		   && !externally_forbidden(i) && (fertility->at(i%w,i/w)>0 || !uses_land_fertility(*map,i%w,i/w)))
 			candidates.push_back(i);
 	// Fixed terrain scores avoid moving the reserve on every harvest or refill.
@@ -1113,7 +1120,16 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 	const int w=map->getW();
 	const int h=map->getH();
 	FarmProtectionPlan plan(w*h);
-	plan.wood_reserve=select_wood_reserve(runtime);
+	// The plan is read-only with respect to deposits and ecology. Snapshot the
+    // two relevant eligibility bits once, rather than querying growth for every
+    // neighboring classifier and component edge. This cache never survives a plan.
+    std::vector<Uint8> seedEligibility(w*h,0);
+    for(int index=0;index<w*h;++index)
+    {
+        if(is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Food))) seedEligibility[index]|=1;
+        if(is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Wood))) seedEligibility[index]|=2;
+    }
+    plan.wood_reserve=select_wood_reserve(runtime,&seedEligibility);
 	plan.wood_pressure=budget.farming_wood_pressure;
 	plan.wood_fertility=budget.farming_minimum_wood_fertility;
 	int clearing_x=0, clearing_y=0;
@@ -1129,13 +1145,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
-			const Tile& resource=map->getTile(x, y);
-			Uint8 bit=0;
-			if(resource.resource.amount>0)
-			{
-				if(is_spreading_seed(*map,x,y,materialIndex(MaterialId::Food))) bit|=1;
-				if(is_spreading_seed(*map,x,y,materialIndex(MaterialId::Wood))) bit|=2;
-			}
+			const Uint8 bit=seedEligibility[y*w+x];
 			if(!bit) continue;
 			for(int dy=-1; dy<=1; ++dy)
 				for(int dx=-1; dx<=1; ++dx)
@@ -1149,18 +1159,18 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		{
 			const int index=y*w+x;
 			const Tile& cell=map->getTile(x, y);
-			const bool wheat=is_spreading_seed(*map,x,y,materialIndex(MaterialId::Food));
-			const bool wood=is_spreading_seed(*map,x,y,materialIndex(MaterialId::Wood));
+			const bool wheat=cached_seed(seedEligibility,*map,x,y,materialIndex(MaterialId::Food));
+			const bool wood=cached_seed(seedEligibility,*map,x,y,materialIndex(MaterialId::Wood));
 			const bool empty_growth=is_empty_growth_cell(*map,x,y);
 
 			FarmTileClassification wheat_role;
 			FarmTileClassification wood_role;
             if(wheat || (empty_growth && (adjacent_resource_mask[index]&1)))
-                wheat_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,
+                wheat_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,seedEligibility,
                     farming_shoreline_mask[index]!=0,x,y,materialIndex(MaterialId::Food),
                     Uint32(budget.farming_wheat_fertility_min));
             if(wood || (empty_growth && (adjacent_resource_mask[index]&2)))
-                wood_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,
+                wood_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,seedEligibility,
                     farming_shoreline_mask[index]!=0,x,y,materialIndex(MaterialId::Wood),plan.wood_fertility);
 			const bool wheat_farm=wheat_role.protected_tile();
 			const bool wood_farm=wood_role.protected_tile();
@@ -1216,7 +1226,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
     for(int start=0;start<w*h;++start)
 	{
         const Uint8 visitBit=resource==materialIndex(MaterialId::Food)?1:2;
-        if((visited[start]&visitBit) || !is_spreading_seed(*map,start%w,start/w,resource)) continue;
+        if((visited[start]&visitBit) || !cached_seed(seedEligibility,*map,start%w,start/w,resource)) continue;
 		std::vector<int> component(1,start);
 		visited[start]|=visitBit;
 		bool protected_live=false;
@@ -1244,7 +1254,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 				const int nx=map->normalizeX(px), ny=map->normalizeY(py);
 				const int next=ny*w+nx;
 				if(!(visited[next]&visitBit)
-				   && is_spreading_seed(*map,nx,ny,resource))
+				   && cached_seed(seedEligibility,*map,nx,ny,resource))
 				{
 					visited[next]|=visitBit;
 					component.push_back(next);

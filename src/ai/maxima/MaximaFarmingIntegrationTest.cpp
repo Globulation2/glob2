@@ -900,3 +900,32 @@ TEST_CASE("mixed donor reserves its propagating wood without borrowing food rene
     CHECK(forbidden);
     CHECK_FALSE(farm);
 }
+
+TEST_CASE("farming eligibility snapshot refreshes after stock and catalog changes" * doctest::test_suite("Maxima.FarmingIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json=nlohmann::json;
+    Fixture f;auto& ai=*f.ai;auto& map=f.game.map;
+    REQUIRE(f.game.addUnit(8,8,0,WORKER,0,0,0,0));
+    auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][0];
+    spec["key"]="fixture:changing-seed";
+    spec["properties"]["ecology"]="uniform";
+    spec["properties"]["stockDependentGrowth"]=false;
+    const auto install=[&] {map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());};
+    install(); const auto id=map.resourceRegistry().find("fixture:changing-seed"); REQUIRE(id);
+    map.setResource(11,21,*id,0);
+    ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
+    ai.budget.farming_management_radius=0;
+    ai.update_farming(ai.context);
+    const auto original=ai.farm_protection_mask;
+    REQUIRE(original[21*64+11]);
+    spec["properties"]["spreadRate"]=0;install();
+    ai.update_farming(ai.context);
+    CHECK(std::none_of(ai.farm_protection_mask.begin(),ai.farm_protection_mask.end(),[](Uint8 value){return value!=0;}));
+    spec["properties"]["spreadRate"]=ResourceRateScale;install();
+    ai.update_farming(ai.context);
+    CHECK(ai.farm_protection_mask==original);
+    map.setNoResource(11,21,0);
+    ai.update_farming(ai.context);
+    CHECK(std::none_of(ai.farm_protection_mask.begin(),ai.farm_protection_mask.end(),[](Uint8 value){return value!=0;}));
+}
