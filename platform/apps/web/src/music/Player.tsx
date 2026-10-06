@@ -153,6 +153,17 @@ export function MusicPlayer({
   const duration = release.frames / 48000;
   return (
     <section className="music-player" aria-label="Synchronized music player">
+      <div className="music-player-transport">
+        <button onClick={() => void togglePlay()} disabled={loading}>
+          {loading ? 'Loading music…' : playing ? 'Pause' : 'Play'}
+        </button>
+        <span>
+          {Math.floor(position / 60)}:{String(Math.floor(position % 60)).padStart(2, '0')} /{' '}
+          {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')} · loops
+          continuously
+        </span>
+      </div>
+      {error && <p role="alert">{error}</p>}
       <div className="music-moods">
         {MOODS.map((mood, i) => (
           <button
@@ -213,16 +224,6 @@ export function MusicPlayer({
           }}
         />
       </label>
-      <div className="music-player-transport">
-        <button onClick={() => void togglePlay()} disabled={loading}>
-          {loading ? 'Loading music…' : playing ? 'Pause' : 'Play'}
-        </button>
-        <span>
-          {Math.floor(position / 60)}:{String(Math.floor(position % 60)).padStart(2, '0')} /{' '}
-          {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')} · loops
-          continuously
-        </span>
-      </div>
       <details>
         <summary>Test crossfades</summary>
         <label>
@@ -279,7 +280,6 @@ export function MusicPlayer({
           Reset to game behavior
         </button>
       </details>
-      {error && <p role="alert">{error}</p>}
     </section>
   );
 }

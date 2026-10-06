@@ -90,15 +90,14 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	// would pile up the most important one stays.
 	const ZoomDetail *detail = drawnRender ? &drawnRender->detail : nullptr;
 	const float spriteOpacity = detail ? detail->buildingSprite : 1.f;
-	// The sprite stays opaque under the chip fading in over it, and goes once
-	// the chip is solid: a translucent sprite would leave the sprite batch.
+	const Uint8 spriteAlpha = Uint8(std::lround(255 * spriteOpacity));
 	if (spriteOpacity > 0)
 	{
 		const bool skinned = view && type->presentation.skinSlot == "swarm"
 			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
 				*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
-				buildingSprite->getW(imgid), buildingSprite->getH(imgid));
-		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+				buildingSprite->getW(imgid), buildingSprite->getH(imgid), spriteAlpha);
+		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid, spriteAlpha);
 	}
 	if (detail && detail->buildingIcon > 0)
 	{

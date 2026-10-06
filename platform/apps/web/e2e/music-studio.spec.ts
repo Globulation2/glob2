@@ -142,10 +142,25 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       },
     }),
   );
+  if (info.project.name === 'desktop') await page.setViewportSize({ width: 1470, height: 730 });
   await page.goto(`/music-studio/${id}`);
   await expect(page.getByRole('heading', { name: 'AI Music Studio' })).toBeVisible();
   if (info.project.name === 'phone')
     await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
+  const seek = page.getByRole('slider', { name: 'Playback position' });
+  await seek.scrollIntoViewIfNeeded();
+  await expect(seek).toBeInViewport();
+  const validation = page.getByRole('heading', { name: 'Validation, in detail' });
+  await validation.scrollIntoViewIfNeeded();
+  await expect(validation).toBeInViewport();
+  // Scrolling a hidden-overflow ancestor can reveal content in automation even
+  // though users cannot reach it. The workspace must contain its full content.
+  expect(
+    await page.locator('.music-studio').evaluate((root) => {
+      return root.scrollHeight <= root.clientHeight + 1;
+    }),
+  ).toBe(true);
   await expect(page.getByRole('heading', { name: 'Validation, in detail' })).toBeVisible();
   await page.getByText('balance', { exact: true }).click();
   await expect(

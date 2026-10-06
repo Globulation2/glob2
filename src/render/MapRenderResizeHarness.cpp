@@ -8,7 +8,9 @@
 #include <utility>
 #include <cmath>
 #include <cstdlib>
+#include <memory>
 #include "GlobalContainer.h"
+#include <RenderBackend.h>
 #ifdef HAVE_OPENGL
 #include <SDL3/SDL_opengl.h>
 #endif
@@ -72,6 +74,88 @@ static void capturePixels(GraphicContext *gfx)
 		}
 	}
 #endif
+}
+
+void buildingCrossFade(Uint32 flags)
+{
+	CAPTURE(flags);
+	glob2test::HeadlessGlobals globals({.display = true, .screenFlags = flags});
+	glob2test::HeadlessGame fixture({.clearImmobile = true, .loadDefaultRace = true});
+	auto *gfx = globals->gfx;
+	const auto captureFrame = [&]() -> SDL_Surface *
+	{
+		if (gfx->renderer) return gfx->renderer->capture();
+#ifdef HAVE_OPENGL
+		if (flags & GraphicContext::USEGPU)
+		{
+			// Read the full drawable on Retina displays, not just its logical size.
+			int width, height;
+			REQUIRE(SDL_GetWindowSizeInPixels(gfx->window, &width, &height));
+			auto *pixels = SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32);
+			REQUIRE(pixels);
+			glReadBuffer(GL_BACK);
+			glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
+			REQUIRE(glGetError() == GL_NO_ERROR);
+			return pixels;
+		}
+#endif
+		return SDL_DuplicateSurface(gfx->getSDLSurface());
+	};
+	Game::ViewState view;
+	int buildingX = 7;
+	for (const char *type : {"inn", "swarm"})
+	{
+		auto *building = fixture.addBuilding(type, buildingX, 7);
+		buildingX += 7;
+		REQUIRE(building);
+		const Scene &scene = glob2test::sceneOf(fixture.game, view);
+		std::uint64_t fullBrightness = 0, previous = 0;
+		// Keep the raster geometry fixed so only opacity changes. These are real
+		// zoom-detail values across the transition, including just before removal.
+		for (double tilePoints : {9., 8.5, 8., 7.5, 7.1, 7.})
+		{
+			view.render.detail = ZoomDetail::forView(tilePoints / 32, 1, true);
+			view.render.overlays.glyphs.clear();
+			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
+			gfx->beginMapTransform(.25, 80, 80, 0, 0, gfx->getW(), gfx->getH());
+			fixture.game.drawMapBuilding(0, 0, building->gid, 0, 0, 0, 0,
+				scene, &view.render, &view);
+			gfx->endMapTransform();
+			// Icons are queued for the later overlay pass. Read the building layer
+			// separately: an opaque sprite under a fading icon must fail this test.
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+				captureFrame(), SDL_DestroySurface);
+			REQUIRE(pixels);
+			std::uint64_t brightness = 0;
+			for (int y = 0; y < pixels->h; ++y) for (int x = 0; x < pixels->w; ++x)
+			{
+				Uint32 pixel;
+				memcpy(&pixel, static_cast<char*>(pixels->pixels) + y*pixels->pitch + x*4, 4);
+				Uint8 r, g, b;
+				SDL_GetRGB(pixel, SDL_GetPixelFormatDetails(pixels->format), SDL_GetSurfacePalette(pixels.get()), &r, &g, &b);
+				brightness += r + g + b;
+			}
+			CAPTURE(type);
+			CAPTURE(tilePoints);
+			CAPTURE(brightness);
+			if (tilePoints == 9)
+			{
+				REQUIRE(brightness > 0);
+				fullBrightness = brightness;
+				CHECK(view.render.overlays.glyphs.empty());
+			}
+			else
+			{
+				CHECK(brightness < previous);
+				const double ratio = double(brightness) / fullBrightness;
+				CHECK(ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1));
+				REQUIRE(view.render.overlays.glyphs.size() == 1);
+				CHECK(view.render.overlays.glyphs.front().alpha == Uint8(std::lround(255 * view.render.detail.buildingIcon)));
+			}
+			if (tilePoints == 7) CHECK(brightness == 0);
+			previous = brightness;
+		}
+	}
 }
 
 void run(bool gpu)
@@ -608,6 +692,14 @@ void run(bool gpu)
 
 TEST_SUITE("MapRenderResize")
 {
+	TEST_CASE("building sprites fade out while icons fade in across rendering backends [display]")
+	{
+		buildingCrossFade(0);
+		buildingCrossFade(GraphicContext::PORTABLEGPU);
+#ifdef HAVE_OPENGL
+		buildingCrossFade(GraphicContext::USEGPU);
+#endif
+	}
 	TEST_CASE("repeated map copies; settings and credits after resizing in software rendering") { run(false); }
 #ifdef HAVE_OPENGL
 	TEST_CASE("repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]") { run(true); }

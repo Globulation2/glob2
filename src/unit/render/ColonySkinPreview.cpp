@@ -250,15 +250,15 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
 }
 
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
-                                 float x, float y, float width, float height)
+                                 float x, float y, float width, float height, std::uint8_t alpha)
 {
     if (!visible) return false;
-    if(sprites)return sprites->draw(gfx,team,7,0,x,y,width,height);
+    if(sprites)return sprites->draw(gfx,team,7,0,x,y,width,height,nullptr,alpha);
     if (!ready || team < 0 || team >= 32 || !textures[team]) return false;
     const auto *mesh = swarmMesh(team);
     // Whichever mesh is chosen, the swarm is painted from the swarm quadrant.
     return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], *materials[team], GAGCore::SkinRegionSwarm,
-                                    x, y, width, height);
+                                    x, y, width, height, nullptr, alpha);
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const
