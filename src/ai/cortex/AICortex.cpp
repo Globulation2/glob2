@@ -420,6 +420,15 @@ shared_ptr<Order> AICortex::runObservation(const AIEngine::DecisionContext& cont
     std::erase_if(queuedCommands,[&](const auto& item) {
         return std::find(queuedBytes.begin(),queuedBytes.end(),item.bytes)==queuedBytes.end();
     });
+    // Idle polls advance the same cadence without materializing entity adapters.
+    // Widen only the predicate: the actual timer increment remains the one used
+    // by decide(), including signed values restored from older saves.
+    if(orderQueue.empty() && ((Sint64(timer)+1) % OBSERVE_INTERVAL)!=0) {
+        policy.telemetry=telemetry;
+        diagnosticStream.str({}); diagnosticStream.clear();
+        ++timer;
+        return std::make_shared<NullOrder>();
+    }
     Cortex::World world(context.world, &queryScratch);
     applyQueuedIntent(world);
     Cortex::WorldPlayer local{&world, world.teams.at(context.team), int(context.player), &diagnosticStream};

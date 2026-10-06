@@ -1603,3 +1603,45 @@ TEST_CASE("JavaScript ordered observations keep the first view of each logical t
     }
     CHECK_FALSE(observations.hasObservation());
 }
+
+TEST_CASE("JavaScript projected boundary preserves history and spatial resources without ecology fields" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=4,.hDec=4,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    game.gameHeader.setAIConfig(0,config("export function step(ctx){return null;}"));
+    AIJavaScript controller(game.players[0]);
+    const auto requirements=controller.observationRequirements();
+    CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
+    CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
+    for(int y=0;y<16;++y)for(int x=0;x<16;++x)game.map.fogOfWar[game.map.coordToIndex(x,y)]=1;
+    game.map.setResource(2,2,WHEAT,1);
+    Observations full(game,0),projected(game,0);
+    full.setProfile(2);projected.setProfile(2);
+    Spatial fullSpatial(game,0,full),projectedSpatial(game,0,projected);
+    auto compare=[&] {
+        const auto captured=SimulationSnapshot::capture(game,{},SimulationSnapshot::All);
+        AIEngine::AIWorldView complete(captured),narrow(captured.project(requirements));
+        REQUIRE_FALSE(narrow.components().growth);
+        REQUIRE_FALSE(narrow.components().resourceFields);
+        auto fullScope=full.bindObservation(complete);
+        auto projectedScope=projected.bindObservation(narrow);
+        full.observe();projected.observe();
+        CHECK(full.query("tile",{Value(2),Value(2)}).encode()==projected.query("tile",{Value(2),Value(2)}).encode());
+        CHECK(full.query("terrainTypes",{}).encode()==projected.query("terrainTypes",{}).encode());
+        fullSpatial.begin(Value::array());projectedSpatial.begin(Value::array());
+        for(const auto* metric:{"chebyshev","path"}) {
+            const auto spec=Value::object().set("sources",Value::object().set("resource","wheat")).set("metric",metric);
+            const auto a=fullSpatial.query("distanceField",{spec},{});
+            const auto b=projectedSpatial.query("distanceField",{spec},{});
+            CHECK(fullSpatial.query("fieldValue",{a,Value(4),Value(2)},{}).encode()==
+                projectedSpatial.query("fieldValue",{b,Value(4),Value(2)},{}).encode());
+        }
+    };
+    compare();
+    ++game.stepCounter;
+    game.map.fogOfWar[game.map.coordToIndex(2,2)]=0;
+    game.map.setResourceAmount(game.map.coordToIndex(2,2),7);
+    compare();
+}

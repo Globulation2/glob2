@@ -25,6 +25,9 @@ class AIJavaScript : public AIImplementation
 	void save(GAGCore::OutputStream *) override;
 	std::shared_ptr<Order> getOrder() override;
 	bool supportsObservation() const override { return true; }
+    SimulationSnapshot::Requirements observationRequirements() const override
+    { return SimulationSnapshot::All & ~(SimulationSnapshot::bit(SimulationSnapshot::Component::Growth)
+        | SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields)); }
     std::optional<Uint64> retainedQueryVectorBytes() const override;
 	std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
 	bool isDisabled() const { return disabled; }

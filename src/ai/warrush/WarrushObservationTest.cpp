@@ -8,6 +8,38 @@
 
 TEST_SUITE("WarrushObservation")
 {
+ TEST_CASE("declared inputs omit published fields without changing decisions")
+ {
+  glob2test::HeadlessGlobals globals;
+  glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
+  auto& game=fixture.game;
+  REQUIRE(fixture.addBuilding("swarm",4,4));
+  game.map.setResource(18,18,WHEAT,1);
+  Sint32 x=0,y=0,distance=0;
+  game.map.resourceAvailableUpdate(0,WHEAT,0,4,4,&x,&y,&distance);
+  AIWarrush full(game.players[0]),projected(game.players[0]);
+  MersenneTwister fullRandom(713),projectedRandom(713);
+  full.setRandomEngine(fullRandom);projected.setRandomEngine(projectedRandom);
+  const auto requirements=projected.observationRequirements();
+  CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
+  CHECK(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
+  const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+  REQUIRE_FALSE(world->resourceGradient(0,WHEAT,0).empty());
+  const AIEngine::AIWorldView input(world->components().project(requirements));
+  CHECK_FALSE(input.components().resourceFields);
+  std::vector<AIEngine::ExecutionReceipt> receipts;
+  std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
+  for(Uint64 poll=0;poll<128;++poll) {
+   AIEngine::DecisionContext before{*world,0,0,receipts},after{input,0,0,receipts};
+   before.pollSequence=after.pollSequence=poll;after.resourceEnrollments=&enrollments;
+   auto a=full.getOrder(before),b=projected.getOrder(after);
+   REQUIRE(a);REQUIRE(b);REQUIRE(a->getOrderType()==b->getOrderType());
+   REQUIRE(a->getDataLength()==b->getDataLength());
+   if(a->getDataLength()) CHECK(std::equal(a->getData(),a->getData()+a->getDataLength(),b->getData()));
+   CHECK(enrollments.empty());
+  }
+ }
+
  TEST_CASE("snapshot influence and uphill destination preserve live query semantics")
  {
   glob2test::HeadlessGlobals globals;

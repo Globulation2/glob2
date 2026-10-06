@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "ai/engine/AIDecision.h"
 #include "Version.h"
+#include "Utilities.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 
@@ -41,6 +42,7 @@ class ObservedCortex : public AICortex
     }
 public:
     explicit ObservedCortex(Player* player) : AICortex(player),owner(player) {}
+    std::shared_ptr<Order> slowPollForTest() { return decision([&]{return AICortex::decide();}); }
     void queueForTest(std::shared_ptr<Order> order) { decision([&]{enqueueOrder(std::move(order));}); }
     Building* findFlagByGid(Uint16 gid) { return target([&]{return AICortex::findFlagByGid(gid);}); }
     Building* findUpgradeTarget(int type) { return target([&]{return AICortex::findUpgradeTarget(type);}); }
@@ -78,6 +80,32 @@ void drain(AICortex& ai,Game& game)
 }
 TEST_SUITE("CortexActionCoverage")
 {
+    TEST_CASE("idle polls preserve slow path timer and random state")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        const auto view=AIEngine::AIWorldView::capture(fixture.game,
+            AIEngine::AIWorldView::captureCatalog(fixture.game));
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        AIEngine::DecisionContext context{*view,0,0,receipts};
+        for(int initial:{-25,-24,-2,0,1,23,25,26,48}) {
+            ObservedCortex fast(fixture.game.players[0]),slow(fixture.game.players[0]);
+            fast.timer=slow.timer=initial;
+            const auto randomBefore=syncRandEngine();
+            const auto fastOrder=fast.getOrder(context);
+            const auto randomAfter=syncRandEngine();
+            const auto slowOrder=slow.slowPollForTest();
+            CAPTURE(initial);
+            CHECK(fastOrder->getOrderType()==ORDER_NULL);
+            CHECK(slowOrder->getOrderType()==fastOrder->getOrderType());
+            CHECK(fast.timer==slow.timer);
+            CHECK(randomBefore==randomAfter);
+            CHECK(randomAfter==syncRandEngine());
+            CHECK(fast.decisionPlayer==nullptr);
+            CHECK(fast.queryScratch.retainedVectorBytes()==0);
+            CHECK(fast.bufferedDiagnostics.empty());
+        }
+    }
     TEST_CASE("wheat discovery keeps first path depths and local fog boundaries")
     {
         glob2test::HeadlessGlobals globals;
