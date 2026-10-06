@@ -5,8 +5,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <numeric>
+#include <limits>
 
 #include "Building.h"
+#include <stdexcept>
 #include "BuildingType.h"
 #include "Game.h"
 #include "Team.h"
@@ -22,7 +25,9 @@
 // is scaled once by Game::applyStartingRules.
 int Building::getEffectiveMaxHp(void) const
 {
-	return type->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
+	const BuildingRuntimeTraits* healthType = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
+		? owner->game->buildingsTypes.getRuntime(constructionOriginTypeNum) : runtime;
+	return healthType->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
 }
 
 int Building::getEffectiveInitHp(void) const
@@ -49,9 +54,19 @@ void Building::kill(int diagnosticRemoval)
 {
 	if (buildingState==DEAD)
 		return;
+	const bool unfundedNewSite = type->isBuildingSite && constructionResultState == NEW_BUILDING
+		&& std::none_of(constructionReserved.begin(), constructionReserved.end(), [](int amount) { return amount > 0; });
+	cancelProduction();
+	cancelConstructionMaterials();
 
 	if (!type->isVirtual)
-		++owner->stats.measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
+	{
+		auto& measurements=owner->stats.measurements;
+		measurements.variants.resize(owner->game->buildingsTypes.size());
+		++measurements.variants[typeNum].removed[diagnosticRemoval];
+		if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && getLongLevel()<NB_BUILDING_LONG_LEVELS)
+			++measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
+	}
 	// Units inside need the footprint freed before they can be placed.
 	std::vector<Unit *> unitsToExpel;
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
@@ -94,18 +109,8 @@ void Building::kill(int diagnosticRemoval)
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 		owner->dirtyGlobalGradient();
 		owner->map->updateTeamAreaGradients(owner->teamNumber);
-		if (type->isBuildingSite && type->level==0)
-		{
-			bool good=false;
-			for (int r=0; r<BASIC_COUNT; r++)
-				if (resources[r]>0)
-				{
-					good=true;
-					break;
-				}
-			if (!good)
-				owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
-		}
+		if (unfundedNewSite)
+			owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
 
 	}
 
@@ -125,7 +130,10 @@ void Building::kill(int diagnosticRemoval)
 	}
 
 	buildingState=DEAD;
-	if (type->canExchange)
+	owner->stockSuppliers.remove(this);
+	owner->directStockSuppliers.remove(this);
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			if (resources[r]>0)
 				owner->map->dirtyMarketGradients(owner->teamNumber, r);
@@ -140,8 +148,7 @@ void Building::kill(int diagnosticRemoval)
 
 bool Building::fetchesFromMarkets() const
 {
-	return owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2)
-		&& type->shortTypeNum != IntBuildingType::MARKET_BUILDING;
+	return type->runtimeFetchesStock;
 }
 
 bool Building::isUpgradeAvailable() const
@@ -149,9 +156,9 @@ bool Building::isUpgradeAvailable() const
 	return owner->game->isBuildingTypeAvailable(type->nextLevel);
 }
 
-bool Building::canUnitWorkHere(Unit* unit)
+bool Building::canUnitWorkHere(Unit* unit, bool attraction)
 {
-	if(type->isVirtual)
+	if(attraction)
 	{
 		if(type->zonable[unit->typeNum])
 		{
@@ -163,21 +170,21 @@ bool Building::canUnitWorkHere(Unit* unit)
 			}
 			else if (unit->typeNum == EXPLORER)
 			{
-				if(minLevelToFlag && !unit->level[MAGIC_ATTACK_GROUND])
+				if(explorersRequireBombing && !unit->level[MAGIC_ATTACK_GROUND])
 					return false;
 				else
 					return true;
 			}
 			else if (unit->typeNum == WORKER)
 			{
-				return true;
+				return unit->workerLevel() >= minWorkerLevelToFlag;
 			}
 
 		}
 	}
 	else if(unit->typeNum ==  WORKER)
 	{
-		if(type->level <= unit->workerLevel())
+		if(runtime->requiredWorkerLevel <= unit->workerLevel())
 			return true;
 	}
 	return false;
@@ -206,6 +213,7 @@ void Building::removeUnitFromHarvesting(Unit* unit)
 
 void Building::removeUnitFromInside(Unit* unit)
 {
+	releaseService(unit);
 	unitsInside.remove(unit);
 	updateCallLists();
 }
@@ -214,7 +222,7 @@ void Building::removeUnitFromInside(Unit* unit)
 
 void Building::updateResourcesPointer()
 {
-	if (type->shortTypeNum == IntBuildingType::MARKET_BUILDING && owner->map->marketsV2Enabled())
+	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
 			owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	if(!type->useTeamResources)
@@ -231,65 +239,66 @@ void Building::updateResourcesPointer()
 
 void Building::addResourceIntoBuilding(int resourceType)
 {
+	deliverResourcePacket(resourceType,{});
+}
+
+ResourceDeliveryResult Building::deliverResourcePacket(int resourceType, ResourcePacket packet)
+{
+	if (packet.denominator==0 || packet.denominator>1000000 || packet.numerator>packet.denominator)
+		throw std::runtime_error("Invalid resource packet");
+	const Uint64 multiplier=type->multiplierResource[resourceType];
+	const Sint32 converted=Uint64(packet.numerator)*multiplier/packet.denominator;
 	const int before = resources[resourceType];
-	if (type->canExchange && resources[resourceType]<=0)
+	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableResource(resourceType)<=0)
 		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
-	resources[resourceType]+=type->multiplierResource[resourceType];
-	//You can not exceed the maximum amount
-	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
+	// A shared pool may already exceed this recipient's own acceptance limit.
+	// Reject excess delivery without deleting inventory owned by other consumers.
+	resources[resourceType] += std::min({resourceDeliveryNeed(resourceType),converted,std::numeric_limits<Sint32>::max()-before});
 	const int accepted = std::max(0, resources[resourceType] - before);
+	int funded=0;
+	if (type->isBuildingSite)
+	{
+		BuildingResourceCost funding{};
+		funding[resourceType]=std::min(accepted,constructionResourceNeed(resourceType));
+		if (reserveResources(funding)) { funded=funding[resourceType]; constructionReserved[resourceType]+=funded; }
+	}
 	owner->stats.measurements.delivered[resourceType] += accepted;
 	if (type->canExchange)
 		owner->stats.measurements.transferredIn[resourceType] += accepted;
 	if (constructionResultState == REPAIR)
 		owner->stats.measurements.repairDelivered[resourceType] += accepted;
-	switch (constructionResultState)
-	{
-		case NO_CONSTRUCTION:
-		break;
-		case NEW_BUILDING:
-		case UPGRADE:
-		{
-			hp+=getEffectiveHpInc();
-			hp = std::min(hp, getEffectiveMaxHp());
-		}
-		break;
-
-		case REPAIR:
-		{
-			int totResources=0;
-			for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
-				totResources+=type->maxResource[i];
-			if (totResources>0)
-			{
-				// Scaled like the cap below: full resource delivery must
-				// repair up to the fortress-scaled ceiling, not the
-				// type's authored (unscaled) hpMax.
-				hp += getEffectiveMaxHp()/totResources;
-				hp = std::min(hp, getEffectiveMaxHp());
-			}
-		}
-		break;
-
-		default:
-			assert(false);
-	}
+	applyConstructionHealth(funded);
+	ResourceDeliveryResult result; result.acceptedStock=accepted;
+	result.discardedNumerator=Uint64(packet.numerator)*multiplier-Uint64(accepted)*packet.denominator;
+	result.discardedDenominator=Uint64(packet.denominator)*multiplier;
+	const auto divisor=std::gcd(result.discardedNumerator,result.discardedDenominator);
+	result.discardedNumerator/=divisor; result.discardedDenominator/=divisor;
+	if (result.discardedNumerator) ++owner->stats.measurements.resourceSpillageEvents;
 	update();
+	return result;
 }
 
 
 
 void Building::removeResourceFromBuilding(int resourceType)
 {
+	withdrawResourcePacket(resourceType);
+}
+
+ResourcePacket Building::withdrawResourcePacket(int resourceType)
+{
 	const int before = resources[resourceType];
-	resources[resourceType]-=type->multiplierResource[resourceType];
+	resources[resourceType]-=std::min(availableResource(resourceType), type->multiplierResource[resourceType]);
 	resources[resourceType]= std::max(resources[resourceType], 0);
 	owner->stats.measurements.withdrawn[resourceType] += before - resources[resourceType];
 	if (type->canExchange)
 		owner->stats.measurements.transferredOut[resourceType] += before - resources[resourceType];
-	if (type->canExchange && resources[resourceType]<=0)
+	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableResource(resourceType)<=0)
 		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
 	updateCallLists();
+	const Uint32 amount=before-resources[resourceType], denomination=type->multiplierResource[resourceType];
+	const Uint32 divisor=std::gcd(amount,denomination);
+	return {amount/divisor,denomination/divisor};
 }
 
 
@@ -450,20 +459,26 @@ int Building::getLongLevel(void)
 	return ((type->level)<<1)+1-type->isBuildingSite;
 }
 
-Uint32 Building::eatOnce(Uint32 *mask)
+Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 {
-	resources[WHEAT]--;
+	if (visitor) settleService(visitor);
+	else
+	{
+		const auto& cost = type->semantics.feeding.cost;
+		if (!reserveResources(cost)) throw std::runtime_error("Insufficient meal resources");
+		consumeReservedResources(cost, GameplayMeasurements::MEAL);
+	}
 	++owner->stats.measurements.meals;
-	++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][WHEAT];
-	assert(resources[WHEAT]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPINESS_COUNT; i++)
 	{
 		int resId=i+HAPPINESS_BASE;
-		if (resources[resId])
+		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableResource(resId) > 0)
 		{
 			resources[resId]--;
+			if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableResource(resId)==0)
+				owner->map->dirtyMarketGradients(owner->teamNumber,resId);
 			++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;
@@ -477,11 +492,11 @@ Uint32 Building::eatOnce(Uint32 *mask)
 int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (resources[WHEAT] <= inside)
+	if (!canOfferService(nullptr, FEED))
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPINESS_COUNT; i++)
-		if (resources[i + HAPPINESS_BASE]  >inside)
+		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableResource(i + HAPPINESS_BASE) > inside)
 			happyness++;
 	return happyness;
 }
@@ -490,9 +505,7 @@ bool Building::canConvertUnit(void)
 {
 	assert(type->canFeedUnit);
 	return
-			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<resources[WHEAT]) && 
-			((int)unitsInside.size()<maxUnitInside);
+			canNotConvertUnitTimer<=0 && type->semantics.feeding.convertsUnits && canOfferService(nullptr, FEED);
 }
 
 bool Building::integrity()
@@ -602,6 +615,18 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(cs);// [15]
 
 	cs^=productionTimeout;
+	cs^=productionUnit + 1;
+	cs^=constructionOriginTypeNum+1;
+	for (int value : constructionOriginRatios) cs=rotl1(cs)^value;
+	cs^=repairInitialDeficit; cs=(cs<<1)|(cs>>31); cs^=repairHealthGranted;
+	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	{
+		cs=(cs<<1)|(cs>>31); cs^=constructionBudget[r];
+		cs=(cs<<1)|(cs>>31); cs^=constructionReserved[r];
+	}
+	cs^=siteCompletionPending ? 0x73697465 : 0;
+	cs^=explorersRequireBombing ? 0x626f6d62 : 0;
+	cs^=Uint32(minWorkerLevelToFlag)<<24;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [16]
 

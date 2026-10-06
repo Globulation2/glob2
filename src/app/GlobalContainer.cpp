@@ -37,7 +37,7 @@
  * The GlobalContainer basically holds all preferences, data,
  * configuration information, etc.
  */
-GlobalContainer::GlobalContainer(const char *profileName)
+GlobalContainer::GlobalContainer(const char *profileName, const std::string& buildingCatalog)
 {
 	// Init toolkit
 	Toolkit::init(profileName);
@@ -59,6 +59,14 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	// Start browser profiles quietly and without clouds. Saved preferences win.
 	settings.mute = 1;
 #endif
+	// Catalog experiments must be known before preferences parse enabled keys.
+	if (buildingCatalog.empty()) buildingsTypes.init();
+	else buildingsTypes.loadManifest(buildingCatalog);
+	std::vector<CatalogExperimentDefinition> buildingExperiments;
+	for (const auto& definition : buildingsTypes.experiments())
+		buildingExperiments.push_back({definition.key, definition.label, definition.help});
+	registerCatalogExperiments(buildingExperiments);
+
 	// load user preference
 	settings.load();
 	Glob2UI::applyThemes(settings.menuTheme, settings.gameTheme);
@@ -174,7 +182,6 @@ void GlobalContainer::loadClient(void)
 	// Native builds have every data package; the browser installs game sprites
 	// before startup and menu music afterward (scons/web_assets.py).
 	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
-    buildingsTypes.init();
     IntBuildingType::init();
 	if (!runNoX)
 	{

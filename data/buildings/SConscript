@@ -1,0 +1,10 @@
+import os
+Import('env', 'PackTar')
+
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    for name in sorted(os.listdir(env.Dir('.').srcnode().abspath)):
+        if name.endswith('.json'):
+            PackTar(env['TARFILE'], name)
+            env.Install(env['INSTALLDIR'] + '/glob2/data/buildings', name)
+    env.Alias('install', env['INSTALLDIR'] + '/glob2/data/buildings')
+    PackTar(env['TARFILE'], 'SConscript')

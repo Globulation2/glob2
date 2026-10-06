@@ -263,6 +263,8 @@ def configure(env, server_only, relay=False):
         Exit(1)
        
     configfile.finish()
+    import skin_materials
+    skin_materials.register(env)
     conf.Finish()
     contents = configfile.f.getvalue()
     previous = None

@@ -307,7 +307,7 @@ class WssTransport final : public NetTransport
 								  if (!active(error))
 									  return;
 								  const bool binary = mode == NetMessageMode::Binary;
-								  if (socket.got_binary() != binary || size > queueLimit)
+								  if (socket.got_binary() != binary || size > (binary ? queueLimit : textMessageLimit))
 								  {
 									  failure = socket.got_binary() != binary
 													? (binary ? "Text WebSocket messages are not allowed"
@@ -340,7 +340,7 @@ class WssTransport final : public NetTransport
 		}
 		bool incomingFull() const
 		{
-			return incomingBytes >= queueLimit || incoming.size() >= incomingMessageLimit;
+			return incomingBytes >= (mode == NetMessageMode::Binary ? queueLimit : textQueueLimit) || incoming.size() >= incomingMessageLimit;
 		}
 		void resumeReading()
 		{
@@ -472,7 +472,7 @@ class WssTransport final : public NetTransport
 		if (mode != NetMessageMode::Text || text.size() > textMessageLimit ||
 			text.find('\0') != std::string::npos || state() != State::Connected)
 			return false;
-		if (text.size() > queueLimit - session->outgoingBytes)
+		if (text.size() > textQueueLimit - session->outgoingBytes)
 		{
 			session->failure = "Network output queue overflow";
 			return false;

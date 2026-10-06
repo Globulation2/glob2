@@ -3,6 +3,7 @@
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
+#include "AIMaximaBuildings.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"
@@ -45,7 +46,7 @@ namespace
 			for(int b=0;b<Building::MAX_COUNT;++b)
 			{
 				Building* building=ally->myBuildings[b];
-				if(!building || building->type->isVirtual)continue;
+				if(!building || !building->type->semantics.occupiesGround)continue;
 				for(int dy=-radius;dy<=radius;++dy)for(int dx=-radius;dx<=radius;++dx)
 					if(dx*dx+dy*dy<=radius*radius)
 						nearby[map->normalizeY(building->posY+dy)*w
@@ -325,7 +326,7 @@ void Maxima::retire_clearing_campaign(Context& runtime, const char* reason,
 	const std::string& details)
 {
 	telemetry.count(AITrace::AI7::Maxima_retire_clearing_campaign_calls);
-	runtime.add_management_order(new DestroyBuilding(proactive_clearing_flag));
+	runtime.add_management_order(new RetireAttraction(proactive_clearing_flag,1u<<WORKER));
 	emit_telemetry(runtime, "land_clearing_finished",
 		"\tflag="+telemetryText(proactive_clearing_flag)
 		+details+"\treason="+reason);
@@ -404,7 +405,7 @@ void Maxima::manage_land_clearing(Context& runtime)
 				proactive_clearing_flag)
 			||runtime.get_building_register().is_building_pending(
 				proactive_clearing_flag)))
-			runtime.add_management_order(new DestroyBuilding(proactive_clearing_flag));
+			runtime.add_management_order(new RetireAttraction(proactive_clearing_flag,1u<<WORKER));
 		proactive_clearing_flag=-1;
 		farming_urgent=false;
 		return;
@@ -449,7 +450,7 @@ void Maxima::manage_land_clearing(Context& runtime)
 	// Start unstaffed so the WOOD-only selector is installed before a worker can
 	// touch an overlapping wheat farm.
 	BuildingOrder* flag_order=new BuildingOrder(
-		IntBuildingType::CLEARING_FLAG, 0);
+		AIMaximaBuildings::WorkerAttraction, 0);
 	flag_order->add_constraint(new Construction::SinglePosition(best_x, best_y));
 	proactive_clearing_flag=runtime.add_building_order(flag_order);
 	proactive_clearing_started_tick=timer;
@@ -566,9 +567,9 @@ std::vector<std::vector<int> > Maxima::reservation_member_footprints(
 		if(building&&action&&action->type==AIMaximaPlacement::UpgradeBuilding
 		   &&action->state==AIMaximaPlacement::ParcelReserved)
 		{
-			const BuildingType* target=globalContainer->buildingsTypes.getByType(
-				building->type->type,action->targetLevel-1,true);
-			if(!target)return;
+			const int targetId=building->type->nextLevel;
+			if(targetId<0)return;
+			const BuildingType* target=runtime.player->game->buildingsTypes.get(targetId);
 			x=action->centerX+target->decLeft;y=action->centerY+target->decTop;
 			width=target->width;height=target->height;
 		}

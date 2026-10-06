@@ -5,6 +5,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include "Types.h"
 
 namespace GAGCore
@@ -14,12 +15,14 @@ namespace GAGCore
 };
 
 
+class Game;
+
 ///This class manages the default number of units to be assigned when constructing a new buildings
 class GameGUIDefaultAssignManager
 {
 public:
 	///Constructs a GameGUIDefaultAssignManager
-	GameGUIDefaultAssignManager();
+	explicit GameGUIDefaultAssignManager(Game& game);
 	
 	///Retrieve the default assigned units for a given building typenum (note, not the 
 	///ntBuildingType typenum, the BuildingTypes typenum)
@@ -35,7 +38,8 @@ public:
 	void load(GAGCore::InputStream* stream, Sint32 versionMinor);
 	
 private:
-	std::map<int, int> unitCount;
+	Game& game;
+	std::map<std::string, int> unitCount;
 };
 
 

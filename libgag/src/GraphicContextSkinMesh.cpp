@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
 #include <SkinMesh.h>
+#include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 #include <string>
 #include <stdexcept>
+#include <utility>
 
 namespace GAGCore
 {
@@ -36,6 +39,26 @@ std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path)
     if (auto value = normalized.take()) surface = value->releaseSurface();
     else surface = SDL_DuplicateSurface(normalized.get()->surface);
     return surface ? std::make_unique<DrawableSurface>(surface, DrawableSurface::AdoptPixels{}) : nullptr;
+}
+bool skinMaterialShells(unsigned id)
+{
+    return id < SKIN_MATERIAL_COUNT && SkinMaterials[id].shells;
+}
+std::array<bool, 4> skinShellRegions(DrawableSurface &material)
+{
+    std::array<bool, 4> result{};
+    auto *source = material.getSDLSurface();
+    if (!source || source->w != 512 || source->h != 512) return result;
+    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+        SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+    if (!rgba || !SDL_LockSurface(rgba.get())) return result;
+    const auto *pixels = static_cast<const Uint8 *>(rgba->pixels);
+    for (int y = 0; y < 512; ++y)
+        for (int x = 0; x < 512; ++x)
+            if (skinMaterialShells(pixels[y*rgba->pitch + x*4]))
+                result[(y >= 256 ? 2 : 0) + (x >= 256 ? 1 : 0)] = true;
+    SDL_UnlockSurface(rgba.get());
+    return result;
 }
 }
 
@@ -71,68 +94,6 @@ constexpr unsigned TileSize = 128, AtlasSize = 2048;
 constexpr unsigned Columns = AtlasSize / TileSize, SlotsPerPage = Columns * Columns;
 constexpr unsigned MaxPages = 4, MaxSlots = SkinAtlasCache::Capacity;
 constexpr float Padding = 1.25f;
-// Shared verbatim with the web designer preview (materialShader.ts); keep the
-// marked block identical. Normals are camera space; the camera is orthographic.
-const char *const SkinMaterialGLSL = R"GLSL(
-// BEGIN skin-material
-float skinHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-float skinNoise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  vec2 s = f * f * (3.0 - 2.0 * f);
-  return mix(mix(skinHash(i), skinHash(i + vec2(1.0, 0.0)), s.x),
-             mix(skinHash(i + vec2(0.0, 1.0)), skinHash(i + vec2(1.0, 1.0)), s.x), s.y);
-}
-// The original glob material bumps its normals with Stucci noise (norfac 5).
-float skinStucci(vec2 p) { return skinNoise(p) + 0.5 * skinNoise(p * 2.03 + 17.0); }
-vec3 skinBump(vec3 n, vec2 uv, float amount, float frequency) {
-  float e = 0.25 / frequency;
-  float h = skinStucci(uv * frequency);
-  float gu = (skinStucci((uv + vec2(e, 0.0)) * frequency) - h) / e;
-  float gv = (skinStucci((uv + vec2(0.0, e)) * frequency) - h) / e;
-  // Express the UV height gradient in screen directions, independent of resolution.
-  vec2 du = vec2(dFdx(uv.x), dFdy(uv.x));
-  vec2 dv = vec2(dFdx(uv.y), dFdy(uv.y));
-  float density = max(0.5 * (length(du) + length(dv)), 1e-6);
-  vec2 g = amount * (gu * du + gv * dv) / density;
-  // Stretched UV regions exaggerate the gradient; keep the tilt bounded.
-  g *= min(1.0, 0.7 / max(length(g), 1e-6));
-  return normalize(n - vec3(g, 0.0));
-}
-// Material ids come from the skin's material map: 0 classic glossy,
-// 1 matte, 2 metallic, 3 hairy (shell fur adds strands in extra passes).
-vec3 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv) {
-  vec3 n = normalize(surfaceNormal);
-  vec3 l = normalize(vec3(-0.4, 0.7, 1.0));
-  vec3 h = normalize(l + vec3(0.0, 0.0, 1.0));
-  if (material < 0.5) {
-    // The original glob material: Stucci-bumped body and broad white streaks
-    // (specular 0.5, hardness 2), lit like the classic sprites.
-    vec3 b = skinBump(n, uv, 0.08, 12.0);
-    float nh = max(0.0, dot(b, h));
-    return albedo * (0.24 + 0.66 * max(0.0, dot(b, l))) + vec3(0.42 * pow(nh, 4.0));
-  }
-  if (material < 1.5) {
-    return albedo * (0.45 + 0.55 * max(0.0, dot(n, l)));
-  }
-  if (material < 2.5) {
-    // Metal: albedo-tinted reflection of a sky/ground gradient, a tight
-    // highlight and a brightening rim.
-    vec3 b = skinBump(n, uv, 0.015, 20.0);
-    float facing = max(0.0, b.z);
-    float nh = max(0.0, dot(b, h));
-    vec3 sky = mix(vec3(0.18), vec3(1.0), smoothstep(-0.6, 0.8, b.y));
-    float rim = pow(1.0 - facing, 3.0);
-    vec3 tint = mix(albedo, vec3(1.0), 0.3 * rim);
-    return tint * (0.12 + 0.2 * max(0.0, dot(b, l)) + 0.75 * sky) + vec3(pow(nh, 40.0));
-  }
-  // Hairy: soft, wrapped diffuse with a light fringe.
-  float wrap = max(0.0, (dot(n, l) + 0.5) / 1.5);
-  float fringe = pow(1.0 - max(0.0, n.z), 2.0);
-  return albedo * (0.35 + 0.65 * wrap) + albedo * 0.35 * fringe;
-}
-// END skin-material
-)GLSL";
 GLuint compileShader(GLenum type, const std::string &text)
 {
     const char *source = text.c_str();
@@ -284,27 +245,33 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         r.attempted = true;
         GLint limit = 0; glGetIntegerv(GL_MAX_TEXTURE_SIZE, &limit);
         if (limit < static_cast<int>(AtlasSize)) return;
+        // The body fills the tile inside its 1.25 padding; fur shells add an
+        // offset that is already in NDC (SKIN_FUR_LENGTH, 3.2 px of the 128 px
+        // tile) and sit slightly nearer so strands win the depth test.
+        const std::string place =
+            "gl_Position=vec4(position.xy/1.25+normalize(surfaceNormal).xy*shell*furLength,position.z-shell*shellDepth,1.0);";
+        // Shell passes keep only strands; the body pass never discards.
+        const std::string shade = "vec4 shaded=skinShadeAtlas(paint,material,region,normal,uv,shell);if(shaded.a<0.5)discard;";
 #ifdef GLOB2_WEBGL2
         const auto vertex = compileShader(GL_VERTEX_SHADER,
             "#version 300 es\nprecision highp float;\n"
             "layout(location=0) in vec3 position;layout(location=1) in vec3 surfaceNormal;layout(location=2) in vec2 texcoord;\n"
-            "out vec2 uv;out vec3 normal;void main(){uv=texcoord;normal=surfaceNormal;gl_Position=vec4(position.xy/1.25,position.z,1.0);}\n");
+            "uniform float shell;uniform float furLength;uniform float shellDepth;\n"
+            "out vec2 uv;out vec3 normal;void main(){uv=texcoord;normal=surfaceNormal;" + place + "}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
-            std::string("#version 300 es\nprecision highp float;\n")+
-            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;in vec2 uv;in vec3 normal;out vec4 color;\n"
+            std::string("#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\n")+
+            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;in vec2 uv;in vec3 normal;out vec4 color;\n"
             + std::string(SkinMaterialGLSL) +
-            // Atlas lookups use the model's quadrant; material noise keeps mesh UVs.
-            "void main(){vec2 atlasUv=uv*0.5+region;float id=floor(texture(material,atlasUv).r*255.0+0.5);"
-            "color=vec4(skinShade(texture(paint,atlasUv).rgb,id,normal,uv),1.0);}\n");
+            "void main(){" + shade + "color=vec4(shaded.rgb,1.0);}\n");
 #else
         const auto vertex = compileShader(GL_VERTEX_SHADER,
-            "#version 120\nvarying vec2 uv;varying vec3 normal;\n"
-            "void main(){uv=gl_MultiTexCoord0.xy;normal=gl_Normal;gl_Position=vec4(gl_Vertex.xy/1.25,gl_Vertex.z,1.0);}\n");
+            "#version 120\nuniform float shell;uniform float furLength;uniform float shellDepth;varying vec2 uv;varying vec3 normal;\n"
+            "void main(){uv=gl_MultiTexCoord0.xy;normal=gl_Normal;vec3 position=gl_Vertex.xyz;vec3 surfaceNormal=gl_Normal;" + place + "}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
-            std::string("#version 120\nuniform sampler2D paint;uniform sampler2D material;uniform vec2 region;varying vec2 uv;varying vec3 normal;\n")
+            std::string("#version 120\n#define SKIN_TEXTURE texture2D\n")+
+            "uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;varying vec2 uv;varying vec3 normal;\n"
             + std::string(SkinMaterialGLSL) +
-            "void main(){vec2 atlasUv=uv*0.5+region;float id=floor(texture2D(material,atlasUv).r*255.0+0.5);"
-            "gl_FragColor=vec4(skinShade(texture2D(paint,atlasUv).rgb,id,normal,uv),1.0);}\n");
+            "void main(){" + shade + "gl_FragColor=vec4(shaded.rgb,1.0);}\n");
 #endif
         if (vertex && fragment)
         {
@@ -352,6 +319,9 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
     glUniform1i(glGetUniformLocation(r.program, "paint"), 0);
     glUniform1i(glGetUniformLocation(r.program, "material"), 1);
     const GLint regionLocation = glGetUniformLocation(r.program, "region");
+    const GLint shellLocation = glGetUniformLocation(r.program, "shell");
+    glUniform1f(glGetUniformLocation(r.program, "furLength"), SKIN_FUR_LENGTH);
+    glUniform1f(glGetUniformLocation(r.program, "shellDepth"), SKIN_SHELL_DEPTH);
     unsigned boundPage = ~0u;
     for (const auto &[key, request] : unique)
     {
@@ -411,6 +381,15 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         glBindBuffer(GL_ARRAY_BUFFER,r.uv); glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2,GL_FLOAT,0,nullptr);
 #endif
+        // Fur materials add shell passes; the scan result is cached per map revision.
+        const auto shellKey = std::make_pair(request.material->lifetimeIdentity(), request.material->contentRevision());
+        auto shells = r.shellRegions.find(shellKey);
+        if (shells == r.shellRegions.end())
+        {
+            if (r.shellRegions.size() >= 64) r.shellRegions.clear();
+            shells = r.shellRegions.emplace(shellKey, skinShellRegions(*request.material)).first;
+        }
+        const unsigned passes = shells->second[request.region] ? SKIN_MATERIAL_SHELLS : 0;
         geometryTime.stop();
         PERF_SCOPE_TIME(SkinRaster);
         glViewport((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
@@ -424,8 +403,12 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         float regionU, regionV; regionOffset(request.region, regionU, regionV);
         glUniform2f(regionLocation, regionU, regionV);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
-        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
-        ++drawCalls;
+        for (unsigned shell = 0; shell <= passes; ++shell)
+        {
+            glUniform1f(shellLocation, static_cast<float>(shell) / SKIN_MATERIAL_SHELLS);
+            glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, nullptr);
+            ++drawCalls;
+        }
     }
 }
 bool GraphicContext::readSkinMesh(const SkinMeshRequest &request, std::vector<std::uint8_t> &rgba)

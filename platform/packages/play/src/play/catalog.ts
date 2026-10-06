@@ -48,6 +48,9 @@ export async function applyCatalogValidation(
         width: result.map.width,
         height: result.map.height,
         team_count: result.map.teamCount,
+        building_catalog: result.map.buildingCatalog
+          ? JSON.stringify(result.map.buildingCatalog)
+          : null,
         min_version_minor: result.versionMinor,
         file_title: result.title ?? null,
       })

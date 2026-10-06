@@ -77,7 +77,7 @@ struct Fixture
         for(int i=0;i<count;++i)ai->food_burden_since[i]=1000;
         DevelopmentAction action; action.id=77; action.type=BuildStandalone;
         action.purpose=Relocation; action.replacesBuildingId=0; action.buildingId=1;
-        action.buildingType=buildings[0]->type->shortTypeNum;
+        action.buildingType=game.buildingsTypes.getPlaceableTypeNum(kind);
         action.issuedTick=3000; action.state=Completed;
         ai->development_planner.actionMap[action.id]=action;
     }

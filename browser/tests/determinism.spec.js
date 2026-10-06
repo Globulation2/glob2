@@ -266,3 +266,43 @@ for (const variant of ['serial', 'threaded']) {
     fs.writeFileSync(info.outputPath('markets-v2-tests.xml'),result.files['tests.xml']);
   });
 }
+
+for (const variant of ['serial', 'threaded']) {
+  test(`WebAssembly preserves custom building compositions (${variant})`, async ({page}, info) => {
+    test.setTimeout(300000);
+    const output=path.resolve(__dirname,'../../artifacts/browser-determinism/buildings',variant,info.project.name);
+    fs.mkdirSync(output,{recursive:true});
+    const progress=[];
+    page.on('console',message=>progress.push(message.text()));
+    await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
+      var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
+        print:m=>console.log(String(m)),printErr:m=>console.error(String(m)),
+        preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';
+          ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
+        async onRuntimeInitialized(){
+          try {window.result={exit:(await Module.start([
+            '--test-suite=BuildingCatalog,BuildingCatalogFixtures,BuildingServices,BuildingProductionCombat,AICustomCatalog',
+            '--test-case-exclude=*display*,*benchmark*','--reporters=junit','--out=/evidence/tests.xml']))??0};}
+          catch(error){window.result={error:String(error)};}
+          window.result.xml=FS.readFile('/evidence/tests.xml',{encoding:'utf8'});
+          window.result.producer=FS.readFile('/evidence/cases/build-provenance.json',{encoding:'utf8'});
+          window.done=true;
+        }};
+      </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);
+    try {await page.waitForFunction(()=>window.done===true,null,{timeout:280000});}
+    finally {fs.writeFileSync(path.join(output,'run.log'),progress.join('\n'));}
+    const result=await page.evaluate(()=>window.result);
+    fs.writeFileSync(path.join(output,'tests.xml'),result.xml);
+    fs.writeFileSync(path.join(output,'build-provenance.json'),result.producer);
+    const source=JSON.parse(require('node:child_process').execFileSync('python3',
+      [path.resolve(__dirname,'../../test/build_provenance.py')],{cwd:path.resolve(__dirname,'../..'),encoding:'utf8'}));
+    const producer=JSON.parse(result.producer);
+    for(const key of ['revision','dirty','sourceTreeSha256']) expect(producer[key]).toEqual(source[key]);
+    fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({variant,
+      browser:info.project.name,browserVersion:page.context().browser().version(),exit:result.exit,error:result.error},null,2)+'\n');
+    expect(result.error).toBeUndefined(); expect(result.exit).toBe(0);
+    expect(result.xml).toMatch(/failures="0"/); expect(result.xml).toMatch(/errors="0"/);
+    expect(result.xml).toContain('retained seeded compositions preserve full simulation continuation');
+  });
+}

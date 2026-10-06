@@ -13,7 +13,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'deploy'))
 from provision_tls import provision
-from websocket_wire import receive, send_frame, read_frame
+from websocket_wire import receive, send_frame, send_frame_header, read_frame
 
 class ListenerTests(unittest.TestCase):
     @classmethod
@@ -25,6 +25,8 @@ class ListenerTests(unittest.TestCase):
         build = ROOT/f'build/{platform.system().lower()}/client/release/src'
         cls.listener = Path(os.environ.get('GLOB2_WSS_LISTENER', build/'wss-listener-test'))
         cls.probe = Path(os.environ.get('GLOB2_WSS_PROBE', build/'wss-transport-test'))
+        cls.text_message_limit = int(subprocess.check_output(
+            [str(cls.listener), '--text-message-limit'], text=True))
 
     def start(self, mode='public', limit=256, proxies=''):
         with socket.socket() as socket_:
@@ -124,7 +126,7 @@ class ListenerTests(unittest.TestCase):
         self.assertEqual(read_frame(sock), (1, b'{"part":2}'))
         send_frame(sock, b'', opcode=1)
         self.assertEqual(read_frame(sock), (1, b''))
-        large = b'x' * (200 * 1024)
+        large = b'x' * (300 * 1024)
         send_frame(sock, large, opcode=1)
         echoed, opcode = bytearray(), None
         while len(echoed) < len(large):
@@ -132,14 +134,24 @@ class ListenerTests(unittest.TestCase):
             opcode = opcode or frame_opcode
             echoed.extend(chunk)
         self.assertEqual((opcode, bytes(echoed)), (1, large))
-        # Binary messages, invalid UTF-8 and oversized text close the connection.
-        for body, opcode in [(b'binary', 2), (b'\xff\xfe', 1), (b'x' * (256 * 1024 + 1), 1)]:
+        # Binary messages and invalid UTF-8 close the connection.
+        for body, opcode in [(b'binary', 2), (b'\xff\xfe', 1)]:
             sock = self.connect()
             try:
                 # A rejected frame can close TLS before its whole payload is sent.
                 send_frame(sock, body, opcode)
                 self.assertEqual(read_frame(sock)[0], 8)
             except (EOFError, ConnectionResetError, BrokenPipeError, ssl.SSLEOFError): pass
+
+    def test_text_mode_rejects_oversized_declared_message(self):
+        self.start('text')
+        sock = self.connect()
+        try:
+            # Reject the compiled limit at the frame header, without allocating
+            # or transmitting a large body under the socket's short timeout.
+            send_frame_header(sock, self.text_message_limit + 1, opcode=1)
+            self.assertEqual(read_frame(sock)[0], 8)
+        except (EOFError, ConnectionResetError, BrokenPipeError, ssl.SSLEOFError): pass
 
     def test_plaintext_and_missing_client_certificate_rejected(self):
         self.start('register')

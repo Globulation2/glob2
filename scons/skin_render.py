@@ -17,7 +17,9 @@ def configure(env):
               root / 'src/online/SkinViewTransforms.h',
               root / 'src/online/SwarmMeshCatalog.h',
               root / 'src/unit/render/UnitAnimation.h',
-              root / 'src/unit/render/ColonySkinPreview.cpp']
+              root / 'src/unit/render/ColonySkinPreview.cpp',
+              root / 'libgag/shaders/skin-materials.json',
+              root / 'libgag/shaders/skin-material.glsl']
     inputs += sorted((root / 'data/skins/colony-v1').glob('*.gsk'))
 
     def generate(target, source, env):

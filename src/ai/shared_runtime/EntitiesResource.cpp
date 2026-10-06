@@ -85,3 +85,23 @@ void Entities::AnyResource::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AnyRessource");
 	stream->writeLeaveSection();
 }
+
+bool Entities::ResourceSet::is_entity(Map* map,int x,int y)
+{
+ if(mask==0) return map->terrainPropertiesAt(x,y).walkable;
+ const int resource=map->getTile(x,y).resource.type;
+ return resource>=0 && resource<MAX_NB_RESOURCES && (mask&(1u<<resource)) && map->isResourceTakeable(x,y,resource);
+}
+bool Entities::ResourceSet::operator==(const Entity& other) const
+{
+ return typeid(other)==typeid(ResourceSet) && static_cast<const ResourceSet&>(other).mask==mask;
+}
+bool Entities::ResourceSet::load(GAGCore::InputStream* stream,Player*,Sint32)
+{
+ stream->readEnterSection("ResourceSet"); mask=stream->readUint32("mask"); stream->readLeaveSection();
+ return (mask&~((1u<<MAX_NB_RESOURCES)-1))==0;
+}
+void Entities::ResourceSet::save(GAGCore::OutputStream* stream)
+{
+ stream->writeEnterSection("ResourceSet"); stream->writeUint32(mask,"mask"); stream->writeLeaveSection();
+}

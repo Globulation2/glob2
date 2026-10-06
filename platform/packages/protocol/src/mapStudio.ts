@@ -14,6 +14,14 @@ export const StudioGenerate = Strict({
   parent: Type.Optional(Uuid),
 });
 export type StudioGenerate = Static<typeof StudioGenerate>;
+/** A conversation turn authorizes at most one server-directed build. */
+export const StudioTurn = Strict({
+  id: Uuid,
+  text: Type.String({ minLength: 1, maxLength: 8000 }),
+  settings: StudioSettings,
+  parent: Type.Optional(Uuid),
+});
+export type StudioTurn = Static<typeof StudioTurn>;
 export const MapStudioConfig = Strict({
   enabled: Type.Boolean(),
   salesEnabled: Type.Boolean(),
@@ -41,6 +49,8 @@ export interface StudioRequest {
     | 'uncertain';
   input: {
     settings?: StudioSettings;
+    turn?: boolean;
+    sourceTurnId?: string;
     parent?: string;
     brief: string;
     messages: { role: 'user' | 'assistant'; text: string }[];
@@ -181,6 +191,7 @@ export const studioSchemas = {
   StudioCreate,
   StudioMessage,
   StudioGenerate,
+  StudioTurn,
   MapStudioConfig,
   StudioStageProgress,
   StudioCheck,

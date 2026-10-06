@@ -10,7 +10,7 @@ import {
   type AiProfile,
   type MatchList,
 } from '@glob2/protocol';
-import { displayRating, PROVISIONAL_SIGMA } from '@glob2/play';
+import { currentCatalogRulesVersions, displayRating, PROVISIONAL_SIGMA } from '@glob2/play';
 import { avatarUrl } from '../avatars/urls.ts';
 import { overallRanks } from './rankings.ts';
 import { apiError } from '../errors.ts';
@@ -124,7 +124,7 @@ export class PublicPlayers {
     this.db = db;
     this.queues = queues;
     this.configuredAis = configuredAis;
-    this.currentVersions = currentVersions;
+    this.currentVersions = async () => currentCatalogRulesVersions(db, await currentVersions());
   }
 
   private async orderedCurrentVersions(): Promise<SimVersion[]> {
@@ -242,7 +242,7 @@ export class PublicPlayers {
     const played = await this.db
       .selectFrom('match_participants as p')
       .innerJoin('matches as m', 'm.id', 'p.match_id')
-      .select('m.sim_version')
+      .select(sql<string>`coalesce(m.rules_identity, m.sim_version)`.as('sim_version'))
       .distinct()
       .where('p.kind', '=', 'ai')
       .where('p.ai_id', '=', ai)
@@ -292,7 +292,7 @@ export class PublicPlayers {
       .selectFrom('matches as m')
       .selectAll('m')
       .where('m.origin', '=', 'queue')
-      .where('m.sim_version', '=', selected)
+      .where(sql<string>`coalesce(m.rules_identity, m.sim_version)`, '=', selected)
       .where('m.status', '!=', 'cancelled')
       .where((eb) =>
         eb.exists(

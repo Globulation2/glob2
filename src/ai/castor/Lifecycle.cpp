@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <Stream.h>
+#include <algorithm>
+#include <bit>
 
 #include "AICastor.h"
 #include "FileFormatVersions.h"
@@ -12,20 +14,55 @@
 #include "Utilities.h"
 
 #define AI_FILE_MIN_VERSION 1
-#define AI_FILE_VERSION 3
+#define AI_FILE_VERSION 4
 
 using std::shared_ptr;
 
+AIPlanning::BuildingIntent AICastor::intentForDemand(int demand)
+{
+ assert(demand >= 0 && demand < DemandCount);
+ return demandIntents[demand];
+}
+bool AICastor::provides(const Building& b, int demand) const
+{
+ return game->buildingCapabilities().matches(b.type->isBuildingSite ? b.type->nextLevel : b.typeNum, intentForDemand(demand));
+}
+bool AICastor::demandAvailable(int demand) const
+{
+ const auto& index = game->buildingCapabilities();
+ const auto intent = intentForDemand(demand);
+ for (const auto& c : index.placements(intent))
+  if (index.available(c, intent, game->gameHeader)) return true;
+ return false;
+}
+int AICastor::desiredWorkers(const Building& building, int request) const
+{
+ const int completed=building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
+ const auto mask=game->buildingCapabilities().intentMask(completed);
+ const int demands=std::popcount(mask & demandIntentMask);
+ if (demands > 1) request = std::max(request,building.maxUnitWorking);
+ return std::clamp(request,0,building.type->semantics.assignmentLimit);
+}
+int AICastor::selectBuilding(int demand) const
+{
+ const auto& index = game->buildingCapabilities();
+ const auto intent = intentForDemand(demand);
+ int result = -1, count = 0;
+ for (const auto& c : index.placements(intent))
+  if (index.available(c, intent, game->gameHeader) && random() % ++count == 0) result = c.placementType;
+ return result;
+}
+
 // AICastor::Project part:
 
-AICastor::Project::Project(IntBuildingType::Number shortTypeNum, const char *suffix)
+AICastor::Project::Project(int demand, const char *suffix)
 {
-	this->shortTypeNum=shortTypeNum;
+	this->demand=demand;
 	init(suffix);
 }
-AICastor::Project::Project(IntBuildingType::Number shortTypeNum, int amount, Sint32 mainWorkers, const char *suffix)
+AICastor::Project::Project(int demand, int amount, Sint32 mainWorkers, const char *suffix)
 {
-	this->shortTypeNum=shortTypeNum;
+	this->demand=demand;
 	init(suffix);
 	this->amount=amount;
 	this->mainWorkers=mainWorkers;
@@ -33,11 +70,11 @@ AICastor::Project::Project(IntBuildingType::Number shortTypeNum, int amount, Sin
 void AICastor::Project::init(const char *suffix)
 {
 	amount=AI_CASTOR_PROJECT_DEFAULT_AMOUNT;
-	food=(this->shortTypeNum==IntBuildingType::SWARM_BUILDING
-		|| this->shortTypeNum==IntBuildingType::FOOD_BUILDING);
-	defense=(this->shortTypeNum==IntBuildingType::DEFENSE_BUILDING);
+	food=(this->demand==AICastor::ProduceWorkers
+		|| this->demand==AICastor::FeedUnits);
+	defense=(this->demand==AICastor::DefendWithProjectiles);
 
-	debugStdName += IntBuildingType::typeFromShortNumber(this->shortTypeNum);
+	debugStdName += std::to_string(this->demand);
 	debugStdName += "-";
 	debugStdName += suffix;
 	this->debugName=debugStdName.c_str();
@@ -369,12 +406,26 @@ template<class Archive> void strategyBuild(Archive& archive, AICastor::Strategy:
 	archive.value(b.newWorkers,"newWorkers");
 	archive.value(b.newUpgrade,"newUpgrade");
 }
-template<class Archive> void snapshot(Archive& archive, AICastor& ai)
+template<class Archive> void snapshot(Archive& archive, AICastor& ai, bool legacy = false)
 {
 	archive.value(ai.canSwim,"canSwim");
 	archive.value(ai.needSwim,"needSwim");
-	archive.value(ai.buildingSum,"buildingSum");
-	archive.value(ai.buildingLevels,"buildingLevels");
+	if (legacy) {
+  int sums[13][2]{};
+  int levels[13][2][4]{};
+  archive.value(sums,"buildingSum");
+  archive.value(levels,"buildingLevels");
+  for (int old=0; old<13; ++old) if (old != 11) {
+   const int demand = old == 12 ? AICastor::ExchangeResources : old;
+   for (int site=0; site<2; ++site) {
+    ai.buildingSum[demand][site]=sums[old][site];
+    for (int level=0; level<4; ++level) ai.buildingLevels[demand][site][level]=levels[old][site][level];
+   }
+  }
+ } else {
+  archive.value(ai.buildingSum,"buildingSum");
+  archive.value(ai.buildingLevels,"buildingLevels");
+ }
 	archive.value(ai.warLevel,"warLevel");
 	archive.value(ai.warTimeTriggerLevel,"warTimeTriggerLevel");
 	archive.value(ai.warLevelTriggerLevel,"warLevelTriggerLevel");
@@ -408,13 +459,22 @@ template<class Archive> void snapshot(Archive& archive, AICastor& ai)
 	archive.value(ai.strategy.successWait,"strategysuccessWait");
 	archive.value(ai.strategy.isFreePart,"strategyisFreePart");
 	archive.enter("strategyBuild");
-	unsigned index=0;
-	for (auto& b : ai.strategy.build)
-	{
-		archive.enter(index++);
-		strategyBuild(archive,b);
-		archive.leave();
-	}
+ if (legacy) {
+  for (unsigned old=0; old<13; ++old) {
+   AICastor::Strategy::Build policy{};
+   archive.enter(old);
+   strategyBuild(archive,policy);
+   archive.leave();
+   if (old != 11) ai.strategy.build[old == 12 ? AICastor::ExchangeResources : old]=policy;
+  }
+ } else {
+  unsigned index=0;
+  for (auto& policy : ai.strategy.build) {
+   archive.enter(index++);
+   strategyBuild(archive,policy);
+   archive.leave();
+  }
+ }
 	archive.leave();
 	archive.value(ai.strategy.warTimeTrigger,"strategywarTimeTrigger");
 	archive.value(ai.strategy.warLevelTrigger,"strategywarLevelTrigger");
@@ -440,9 +500,9 @@ template<class Archive> void snapshot(Archive& archive, AICastor& ai)
 	for (unsigned i=0; i<4; ++i) archive.bytes(ai.oldWheatGradient[i],size,("oldWheatGradient"+std::to_string(i)).c_str());
 	for (unsigned i=0; i<2; ++i) archive.bytes(ai.wheatCareMap[i],size,("wheatCareMap"+std::to_string(i)).c_str());
 }
-template<class Archive> void projectSnapshot(Archive& archive, AICastor::Project& p)
+template<class Archive> void projectSnapshot(Archive& archive, AICastor::Project& p, bool legacy=false)
 {
-	archive.value(p.shortTypeNum,"shortTypeNum");
+	archive.value(p.demand,legacy ? "shortTypeNum" : "demand");
 	archive.value(p.amount,"amount");
 	archive.value(p.food,"food");
 	archive.value(p.defense,"defense");
@@ -484,20 +544,22 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	if (aiFileVersion>=3)
 	{
 		SnapshotReader archive{stream};
-		snapshot(archive,*this);
+		snapshot(archive,*this,aiFileVersion<4);
 		const Uint32 count=stream->readUint32("projects");
 		if (count>4096) { stream->readLeaveSection(); return false; }
 		for (Uint32 i=0; i<count; ++i)
 		{
 			stream->readEnterSection(i);
-			auto project=std::make_unique<Project>(IntBuildingType::SWARM_BUILDING,"restored");
-			projectSnapshot(archive,*project);
-			if (project->shortTypeNum<0 || project->shortTypeNum>=IntBuildingType::NB_BUILDING)
+			auto project=std::make_unique<Project>(AICastor::ProduceWorkers,"restored");
+			projectSnapshot(archive,*project,aiFileVersion<4);
+   const bool obsolete = aiFileVersion<4 && project->demand==11;
+   if (aiFileVersion<4 && project->demand==12) project->demand=ExchangeResources;
+			if (project->demand<0 || project->demand>=AICastor::DemandCount)
 			{ stream->readLeaveSection(2); return false; }
 			project->debugStdName=stream->readText("debugName");
 			project->debugName=project->debugStdName.c_str();
 			stream->readLeaveSection();
-			projects.push_back(project.release());
+			if (!obsolete) projects.push_back(project.release());
 		}
 		if (computeBoot<0 || computeBoot>AI_CASTOR_BOOT_IDLE_TICKS+AI_CASTOR_BOOT_COMPUTE_STEPS)
 		{ stream->readLeaveSection(); return false; }

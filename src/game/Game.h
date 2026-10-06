@@ -20,6 +20,7 @@
 #include "GameHints.h"
 #include "MapScript.h"
 #include "BuildingGuiState.h"
+#include "BuildingType.h"
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"
 #include "render/MapRenderState.h"
@@ -62,6 +63,7 @@ class SetAllianceOrder;
 class PlayerQuitsGameOrder;
 class GameAnimations;
 class SoftwareTerrainCache;
+namespace AIPlanning { class BuildingCapabilityIndex; }
 
 // Minimum value of the prestige-victory threshold.
 #define MIN_MAX_PRESTIGE 500
@@ -144,6 +146,13 @@ class Game
 	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
 public:
+	// Frozen for the lifetime of this simulation. Entity type pointers always
+	// refer to this registry, never to the application's authoring defaults.
+	BuildingsTypes buildingsTypes;
+	const AIPlanning::BuildingCapabilityIndex& buildingCapabilities() const;
+	// Setup/load only: compile experiment gates and discard catalog-derived AI
+	// indexes before controllers observe the resolved game configuration.
+	void configureBuildingCatalog();
 	//! This game's synchronized random stream. syncStep, executeOrder, load and save
 	//! bind it, so syncRand() draws from the game being simulated on whichever thread
 	//! simulates it. Saved and restored with the game; never shared between games.
@@ -151,6 +160,7 @@ public:
 	//! Bind syncRandom for other code that advances this game's simulation.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 private:
+	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;
@@ -201,6 +211,8 @@ public:
 		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
 		DRAW_NO_CLOUD_LAYER = 0x200,
+		// All tiles of a torus atlas share one whole-map terrain sampling density.
+		DRAW_TILED_CAPTURE = 0x400,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,

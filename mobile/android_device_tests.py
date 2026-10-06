@@ -116,6 +116,7 @@ def main():
         shutil.copytree(ROOT / 'games', payload / 'games')
         shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
         shutil.copytree(ROOT / 'test/maxima/fixtures', payload / 'test/maxima/fixtures')
+        shutil.copytree(ROOT / 'examples/javascript', payload / 'examples/javascript')
         command('push', str(payload), remote, stdout=subprocess.DEVNULL)
     for name in names:
         profile = remote + '/profiles/' + name

@@ -135,6 +135,8 @@ void FractionValueText::draw()
 
 void FractionValueText::setValues(Sint32* aNumerator, Sint32* aDenominator)
 {
+	if (isDenominatorPreset) delete denominator;
+	isDenominatorPreset=false;
 	numerator=aNumerator;
 	denominator=aDenominator;
 }
@@ -179,7 +181,7 @@ void ValueScrollBox::draw()
 	{
 		globalContainer->gfx->setClipRect(area.x, area.y, 112, 16);
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 9);
-		int size=((*value)*92)/(*max);
+		int size=int((Sint64(*value)*92)/(*max));
 		globalContainer->gfx->setClipRect(area.x+10, area.y, size, 16);
 		globalContainer->gfx->drawSprite(area.x+10, area.y+3, globalContainer->gamegui, 10);
 		globalContainer->gfx->setClipRect();
@@ -209,6 +211,8 @@ void ValueScrollBox::setValue(int requested)
 
 void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax)
 {
+	if (isMaxPreset) delete max;
+	isMaxPreset=false;
 	value=aValue;
 	max=aMax;
 }

@@ -54,12 +54,19 @@ so on Windows (and in the browser) the thread still polls every millisecond.
 ## Room messages
 
 `0xC0 RoomJson` is a `u32` length, then a UTF-8 JSON object with a `type` member, at most
-60,000 bytes. `0xC1 MapChunk` carries the 32-byte SHA-256 of the decompressed map, the
+32 MiB. Messages larger than one 65,535-byte frame use `0xC2 JsonChunk`: a `u32`
+total payload size, a `u32` offset, then up to 48 KiB of the original RoomJson payload
+(including its type and length). Chunks must be contiguous, ordered, and cannot
+interleave other frames. Receivers reject gaps, overlaps, mismatched totals, and
+transfers exceeding 32 MiB plus the five-byte RoomJson header. This carries the
+embedded building catalog without changing the turn-message frame size.
+
+`0xC1 MapChunk` carries the 32-byte SHA-256 of the decompressed map, the
 `u32` offset and `u32` total size of the gzip-compressed transfer, then up to 48 KiB.
 
 | Type | Direction | Members |
 | --- | --- | --- |
-| `hello` | guest → host | `protocol` (room protocol, 1), `turnProtocol`, `simVersion` (key), `name` |
+| `hello` | guest → host | `protocol` (room protocol, 2), `turnProtocol`, `simVersion` (key), `name` |
 | `welcome` | host → guest | `member`, `name` (made unique) |
 | `refuse` | host → guest | `reason`: `version`, `full`, `started`, `kicked`, `malformed`; `detail` |
 | `state` | host → all | `setup` (MatchSetup, seed 0 until the start), `mapName`, `hostName`, `teamColors`, `mapBytes`, `members` (`id`, `name`, `seat`, `ready`, `hasMap`), `started` |

@@ -175,6 +175,7 @@ export interface RelaysTable {
 }
 
 export interface EngineAgentsTable {
+  building_catalog_hash: Nullable<string>;
   id: string;
   sim_version: string;
   kinds: string[];
@@ -247,6 +248,7 @@ export interface MapsTable {
 }
 
 export interface MapVersionsTable {
+  building_catalog: NullableJson<JsonValue>;
   id: Generated<string>;
   map_id: string;
   hash: string;
@@ -355,6 +357,7 @@ export type MatchVerification =
   'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable' | 'failed';
 
 export interface MatchesTable {
+  rules_identity: Nullable<string>;
   skins_frozen_at: NullableTimestamp;
   id: Generated<string>;
   sim_version: string;
@@ -385,6 +388,7 @@ export interface MatchesTable {
 }
 
 export interface MapUploadsTable {
+  building_catalog: NullableJson<JsonValue>;
   id: Generated<string>;
   owner_account_id: string;
   blob_sha256: string;
@@ -405,6 +409,7 @@ export interface MapUploadsTable {
 }
 
 export interface GeneratedMapsTable {
+  building_catalog: NullableJson<JsonValue>;
   descriptor_hash: string;
   sim_version: string;
   descriptor: Json<JsonValue>;

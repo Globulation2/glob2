@@ -231,9 +231,13 @@ top-right, explorer bottom-left, swarm bottom-right.
 - `imageBase64`, the colour atlas, is at most 1 MiB. The server re-encodes it as
   an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
-  (R = G = B), opaque, and a material id: 0 glossy, 1 matte, 2 metallic,
-  3 hairy. Anything else is a 400. The server re-encodes it as an 8-bit
-  lossless WebP.
+  (R = G = B), opaque, and a material id below the count registered in
+  `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
+  the protocol package). Anything else is a 400. The server re-encodes it as an
+  8-bit lossless WebP. Native clients built with the registry shade ids beyond
+  their own catalogue as matte, so later materials degrade gracefully; clients
+  from before the registry reject such a skin and keep that team's previous
+  appearance, since they only knew ids 0 to 3.
 
 The version's `manifestSha256` is described below; native clients recompute it.
 Publishing identical content again returns the existing version. Publication and
@@ -288,11 +292,13 @@ Alt-drag or the Rotate tool turns the model; touch uses explicit Paint/Rotate to
 two-finger pinch zoom. The view menu and +/− keys also adjust inspection zoom.
 Animation starts paused and painting freezes its displayed
 pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
-material swatches, model and pose strips float over the viewport. Patterns, paint
-copying and shape selection use focused dialogs; the collection is a separate
-screen and the Shop opens from it. The workspace and dialogs use the web
-application’s shared Meadow and Night colony themes, following the device setting
-or saved preference. The sidebar's theme control preserves paint and editing state.
+material swatches (one sphere per registered material, grouped as in the
+registry, shaded by the game's own material GLSL including fur shells), model
+and pose strips float over the viewport. Patterns, paint copying and shape
+selection use focused dialogs; the collection is a separate screen and the Shop
+opens from it. The workspace and dialogs use the web application’s shared Meadow
+and Night colony themes, following the device setting or saved preference. The
+sidebar's theme control preserves paint and editing state.
 
 Glob meshes share paint coordinates across matching front/back and top/bottom
 surfaces, including limb pairs exchanged by their flipping gait. Brush coverage
@@ -787,6 +793,9 @@ Administrators may also delete any map. Every moderation action is written to
 
 The workspace needs Node 22.18 or newer (TypeScript runs directly through Node's
 type stripping, so there is no build step except for the web app).
+`npm run typecheck` checks server code, the web app, and browser end-to-end tests
+in separate TypeScript projects; the latter includes DOM types for code evaluated
+in the browser without adding browser globals to server checks.
 
 ```sh
 cd platform
@@ -1018,7 +1027,7 @@ job routed by simulation version. Its map, preview, categorical export and repor
 are private blobs. Provider keys never reach Python or engine subprocesses.
 
 REST under `/api/v1/map-studio` provides account state, thread creation/listing,
-messages, explicit generation, checkout, per-request progress and authorized stage
+messages, conversation turns, legacy explicit generation, checkout, per-request progress and authorized stage
 images. Thread creation accepts an optional client UUID; retrying the same owner,
 UUID and title returns the original project. Clients persist this UUID and the
 first message request ID before sending so an unknown HTTP outcome does not
@@ -1036,14 +1045,30 @@ thread. Image descriptors reference owner-authorized routes, never arbitrary
 blob hashes. Older requests recover only recorded images and delivery summaries
 from a safe checkpoint allowlist; missing historical checks are not invented.
 Events and descriptors participate in account export and cascade on deletion.
-The workspace beside the shared sidebar separates chat from the inspected map, supports
-following live stages or inspecting history, and displays playability checks.
+The workspace defaults the shared sidebar to a collapsed rail and gives conversation
+and canvas equal, resizable full-height panes. Settings and the accumulated brief
+live beside the anchored composer; build cards appear in the conversation. A compact
+canvas status and an expandable Build details inspector retain live stages, images,
+playability checks and history. Mobile Chat/Map tabs preserve drafts and scrolling.
+Selecting an older delivered version makes it the visible editing target; changing
+settings starts a fresh map. Preparing a failed-build retry only fills and focuses
+the composer; sending it is a new turn, never an automatic repair.
 The separate no-credit landing page preserves draft writing and access to saved
 projects; active last-credit generations open their workspace. Drafts, pending
 submission identities and revision settings survive same-tab refresh and checkout.
 Payment-return URLs trigger wallet refresh without granting credits themselves.
 Messages cost no map credits but require an available
-map credit. A Generate action reserves one credit; a successful validated
+map credit. Sending to `/threads/:id/turns` authorizes at most one build and snapshots
+text, settings and optional parent context. The worker returns a validated `discuss`
+or `build` decision with its reply and updated brief. Questions, brainstorming and
+material ambiguity remain discussion; concrete creation and edit requests can build.
+Completing a build-directed turn atomically saves the reply/brief, completes the chat,
+enqueues one generation with a persisted identity and `sourceTurnId`, and reserves
+one credit under the wallet lock. Reloads, lost responses and worker retries cannot
+enqueue another build. The browser follows events and never enqueues from them.
+Legacy `/messages` requests remain discussion-only and `/generate` stays available
+for older clients. Deploy the updated workers before the API and browser so every
+new turn is handled by a worker that understands build decisions. A generation reserves one credit; a successful validated
 delivery consumes it and failures return it. Each request snapshots the rolling
 conversation and accumulated design brief, settings, parent version and pipeline
 version. A parent revision retains its dimensions/player count; changing these

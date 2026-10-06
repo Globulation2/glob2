@@ -586,6 +586,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 			entry.time = stamp;
 			entry.bytes = bytes;
 			entry.header = world->mapHeader;
+			entry.buildingCatalogSnapshot = world->gameHeader.getBuildingCatalogSnapshot();
 			entry.terrain.loadFromMap(world->map);
 			if (!entry.terrain.isLoaded())
 				throw std::runtime_error("map terrain");
@@ -595,6 +596,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		}
 		int old = setup.capacity;
 		mapHeader = entry.header;
+		gameHeader.setBuildingCatalogSnapshot(entry.buildingCatalogSnapshot);
 		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
 		generatedSnapshot.reset();
@@ -688,10 +690,12 @@ bool CustomGameScreen::generateMap()
 					if (Unit *unit = game->teams[team]->myUnits[i])
 						unit->resetAtLevel(setup.startingUnitLevel);
 		GameHeader initial;
+		initial.setBuildingCatalogSnapshot(game->gameHeader.getBuildingCatalogSnapshot());
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
 		Engine::applyLocalExperiments(initial, game->mapHeader);
 		game->setGameHeader(initial);
+		gameHeader.setBuildingCatalogSnapshot(initial.getBuildingCatalogSnapshot());
 		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
 		// this process just generated and is about to load right back gets no benefit from a
 		// round trip through disk, so the serialized bytes just move to another in-memory owner.

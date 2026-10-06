@@ -530,7 +530,15 @@ const typedColumns: ColumnLists = {
     'registered_at',
     'last_heartbeat_at',
   ],
-  engine_agents: ['id', 'sim_version', 'kinds', 'build', 'started_at', 'last_seen_at'],
+  engine_agents: [
+    'building_catalog_hash',
+    'id',
+    'sim_version',
+    'kinds',
+    'build',
+    'started_at',
+    'last_seen_at',
+  ],
   engine_jobs: [
     'id',
     'kind',
@@ -571,6 +579,7 @@ const typedColumns: ColumnLists = {
     'hidden_by_account_id',
   ],
   map_versions: [
+    'building_catalog',
     'id',
     'map_id',
     'hash',
@@ -639,6 +648,7 @@ const typedColumns: ColumnLists = {
   ],
   room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
   matches: [
+    'rules_identity',
     'skins_frozen_at',
     'id',
     'sim_version',
@@ -767,6 +777,7 @@ const typedColumns: ColumnLists = {
   ],
   queue_cooldowns: ['account_id', 'until', 'reason', 'created_at'],
   map_uploads: [
+    'building_catalog',
     'id',
     'owner_account_id',
     'blob_sha256',
@@ -786,6 +797,7 @@ const typedColumns: ColumnLists = {
     'completed_at',
   ],
   generated_maps: [
+    'building_catalog',
     'descriptor_hash',
     'sim_version',
     'descriptor',
@@ -1006,6 +1018,7 @@ describe('migrations', () => {
         '0042_music_studio',
         '0043_skin_sprites',
         '0044_ai_studio',
+        '0045_building_catalogs',
         '0046_skin_collection',
       ]);
       expect(
@@ -1214,6 +1227,7 @@ describe('migrations', () => {
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
         ['0044_ai_studio', 'Success'],
+        ['0045_building_catalogs', 'Success'],
         ['0046_skin_collection', 'Success'],
       ]);
       for (const table of [
@@ -1349,6 +1363,7 @@ describe('migrations', () => {
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
         ['0044_ai_studio', 'Success'],
+        ['0045_building_catalogs', 'Success'],
         ['0046_skin_collection', 'Success'],
       ]);
       expect(

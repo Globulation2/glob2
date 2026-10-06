@@ -91,13 +91,11 @@ void PhoneEditor::prepare()
 		items = {editor.wheat,   editor.trees,  editor.stone,  editor.algae,
 				 editor.papyrus, editor.orange, editor.cherry, editor.prune};
 	else if (paletteMode == 2)
-		items = {editor.swarm,        editor.inn,      editor.hospital, editor.racetrack,
-				 editor.swimmingpool, editor.barracks, editor.school,   editor.defencetower,
-				 editor.stonewall,    editor.market};
+		items.assign(editor.buildingSelectors.begin(),editor.buildingSelectors.end());
 	else
 	{
-		items = {editor.explorationflag, editor.warflag,   editor.clearingflag,
-				 editor.forbiddenZone,   editor.guardZone, editor.clearingZone};
+		items.assign(editor.flagSelectors.begin(),editor.flagSelectors.end());
+		items.insert(items.end(),{editor.forbiddenZone,editor.guardZone,editor.clearingZone});
 		if (editor.farmingZone)
 			items.push_back(editor.farmingZone);
 		items.insert(items.end(), {editor.worker, editor.explorer, editor.warrior});
@@ -638,7 +636,7 @@ void PhoneEditor::act(const TouchAction &action)
 									 std::to_string((editor.placingUnitLevel + 1) % 4 + 1));
 			else
 				editor.performAction("switch to building level " +
-									 std::to_string((editor.buildingLevel + 1) % 3 + 1));
+									 std::to_string((editor.buildingLevel + 1) % editor.buildingLevelCount + 1));
 		}
 		else if (editor.selectionMode != MapEdit::RemoveObject &&
 				 !(editor.selectionMode == MapEdit::PlaceTerrain &&

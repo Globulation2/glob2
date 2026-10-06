@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <limits>
+#include <iterator>
 #include <stdexcept>
 #include <set>
 
@@ -64,15 +65,6 @@ int wrap(int x, int size)
 {
 	x %= size;
 	return x < 0 ? x + size : x;
-}
-// Artist-authored piecewise-linear contours; zero at both sample centers. Q12 in/out.
-int wave(const Profile &profile, int t, unsigned motif)
-{
-	const auto &points = profile.contours[motif & 3];
-	const int segments = int(points.size()) - 1;
-	const int scaled = t * segments;
-	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
-	return (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
 }
 } // namespace
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt)
@@ -267,6 +259,18 @@ std::array<unsigned, 4> legacyCorners(unsigned frame)
 		result[i] = (mask & (1u << i)) ? (shore ? 1 : 2) : (shore ? 0 : 1);
 	return result;
 }
+PreparedCoverage::Curve::Curve(const Profile *p, unsigned motif)
+	: profile(p), points(p->contours[motif & 3].data()),
+	  segments(int(p->contours[motif & 3].size()) - 1)
+{
+}
+int PreparedCoverage::Curve::wave(int t) const
+{
+	// Artist-authored piecewise-linear contours; Q12 in/out, with the original rounding.
+	const int scaled = t * segments;
+	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
+	return (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
+}
 PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 {
 	// A single world-space field bends the complete material partition. Using
@@ -277,7 +281,7 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 	localDisplacementLimit =
 		std::min(512, (2048 - c.boundaryWarp[0] - c.boundaryWarp[1] - c.boundaryWarp[2]) / 2);
 	constexpr int scales[] = {64, 32, 8};
-	for (unsigned i = 0; i < warp.size(); ++i)
+	for (unsigned i = 0; i < std::size(warp); ++i)
 	{
 		const int amplitude = c.boundaryWarp[i];
 		if (!amplitude)
@@ -326,9 +330,10 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 					c.materials[a].salt ^ c.materials[b].salt ^ (vertical ? 0x46ac23u : 0x973adafu);
 				const auto &profile = c.profiles[c.profileFor(a, b)];
 				const auto motif = hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salt);
-				return Curve{&profile, motif,
-							 std::clamp(wave(profile, 2048, motif) * profile.roughness / 256,
-										-localDisplacementLimit, localDisplacementLimit)};
+				Curve curve{&profile, motif};
+				curve.anchor = std::clamp(curve.wave(2048) * profile.roughness / 256,
+										  -localDisplacementLimit, localDisplacementLimit);
+				return curve;
 			};
 			// Adjoining patches use the same wrapped coordinates and endpoint keys.
 			patch.edges = {
@@ -423,11 +428,16 @@ Coverage PreparedCoverage::at(int px, int py) const
 	const auto &patch = patches[sy * 3 + sx];
 	Coverage out;
 	out.material = patch.materials;
+	auto *outputWeight = out.weight.data();
 	if (patch.count == 1)
 	{
-		out.weight[0] = 65536;
+		outputWeight[0] = 65536;
 		return out;
 	}
+	const auto *edges = patch.edges.data();
+	const auto *contours = patch.contours.data();
+	const auto *slots = patch.slots.data();
+	const auto *feathers = patch.feather.data();
 	const auto edge = [this](const Curve &curve, int t)
 	{
 		if (!curve.profile)
@@ -437,39 +447,39 @@ Coverage PreparedCoverage::at(int px, int py) const
 		// crossing and taper to the vertices; put the detail in interior shears.
 		if (!curve.profile->legacyEdges)
 			return curve.anchor * std::min(t, 4096 - t) / 2048;
-		return std::clamp(wave(*curve.profile, t, curve.motif) * curve.profile->roughness / 256,
+		return std::clamp(curve.wave(t) * curve.profile->roughness / 256,
 						  -localDisplacementLimit, localDisplacementLimit);
 	};
-	const int du = (edge(patch.edges[0], u) * (4096 - v) + edge(patch.edges[1], u) * v) / 4096;
-	const int dv = (edge(patch.edges[2], v) * (4096 - u) + edge(patch.edges[3], v) * u) / 4096;
+	const int du = (edge(edges[0], u) * (4096 - v) + edge(edges[1], u) * v) / 4096;
+	const int dv = (edge(edges[2], v) * (4096 - u) + edge(edges[3], v) * u) / 4096;
 	u = std::clamp(u + du, 0, 4096);
 	v = std::clamp(v + dv, 0, 4096);
 	// Bounded interior shears vanish on every patch edge. Their sequential
 	// evaluation preserves connectivity and the original integer rounding.
 	const auto contour = [this](const Curve &curve, int t)
 	{
-		return curve.profile ? std::clamp(wave(*curve.profile, t, curve.motif) *
+		return curve.profile ? std::clamp(curve.wave(t) *
 											  curve.profile->roughness / 128,
 										  -localDisplacementLimit, localDisplacementLimit)
 							 : 0;
 	};
-	u += contour(patch.contours[0], v) * std::min(u, 4096 - u) / 2048;
-	v += contour(patch.contours[1], u) * std::min(v, 4096 - v) / 2048;
+	u += contour(contours[0], v) * std::min(u, 4096 - u) / 2048;
+	v += contour(contours[1], u) * std::min(v, 4096 - v) / 2048;
 	const unsigned weights[] = {unsigned((4096 - u) * (4096 - v)), unsigned(u * (4096 - v)),
 								unsigned((4096 - u) * v), unsigned(u * v)};
-	std::array<unsigned, 4> scores{};
+	unsigned scores[4]{};
 	for (int i = 0; i < 4; ++i)
-		scores[patch.slots[i]] += weights[i];
-	const unsigned maximum = *std::max_element(scores.begin(), scores.end());
+		scores[slots[i]] += weights[i];
+	const unsigned maximum = *std::max_element(scores, scores + 4);
 	unsigned total = 0;
 	std::uint64_t featherSum = 0;
 	for (int i = 0; i < 4; ++i)
-		featherSum += std::uint64_t(weights[i]) * patch.feather[i];
+		featherSum += std::uint64_t(weights[i]) * feathers[i];
 	const unsigned feather = unsigned(featherSum >> 12);
 	for (unsigned i = 0; i < patch.count; ++i)
 	{
-		out.weight[i] = scores[i] + feather > maximum ? scores[i] + feather - maximum : 0;
-		total += out.weight[i];
+		outputWeight[i] = scores[i] + feather > maximum ? scores[i] + feather - maximum : 0;
+		total += outputWeight[i];
 	}
 	unsigned sum = 0;
 	unsigned largest = 0;
@@ -477,10 +487,10 @@ Coverage PreparedCoverage::at(int px, int py) const
 	{
 		if (scores[i] > scores[largest])
 			largest = i;
-		out.weight[i] = std::uint64_t(out.weight[i]) * 65536 / total;
-		sum += out.weight[i];
+		outputWeight[i] = std::uint64_t(outputWeight[i]) * 65536 / total;
+		sum += outputWeight[i];
 	}
-	out.weight[largest] += 65536 - sum;
+	outputWeight[largest] += 65536 - sum;
 	return out;
 }
 Coverage coverage(const Catalog &c, const Recipe &r, int px, int py)

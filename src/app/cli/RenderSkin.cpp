@@ -16,6 +16,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SkinMesh.h>
+#include <glob2/SkinMaterials.h>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include <fstream>
@@ -102,7 +103,7 @@ std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bo
 		for (int x = 0; x < 512; ++x)
 		{
 			const auto *p = static_cast<const uint8_t *>(rgba->pixels) + y * rgba->pitch + x * 4;
-			if (p[3] != 255 || (material && (p[0] > 3 || p[0] != p[1] || p[0] != p[2])))
+			if (p[3] != 255 || (material && (p[0] >= SKIN_MATERIAL_COUNT || p[0] != p[1] || p[0] != p[2])))
 			{
 				valid = false;
 				break;

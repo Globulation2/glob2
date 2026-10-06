@@ -21,7 +21,7 @@
 // (glob2/src/ai/nicowar/Phases.cpp), so the policy never has to reach past this
 // struct into Game*. The field comments name the exact TeamStat / Game source
 // each value mirrors. The cortex-local CORTEX_* size constants mirror the engine
-// constants (NB_UNIT_LEVELS, IntBuildingType::NB_BUILDING, NB_BUILDING_LONG_LEVELS,
+// constants (NB_UNIT_LEVELS, Cortex role count, NB_BUILDING_LONG_LEVELS,
 // Team count); CortexObservation.cpp static_asserts that they stay in sync so
 // this header itself stays free of heavy engine includes.
 //
@@ -153,7 +153,9 @@ namespace Cortex
 	/// (forward rally or amphibious landing) so warriors eat forward instead of
 	/// hunger-commuting home across the long march.
 	/// v21 adds effective rule capabilities to observation-only planning state.
-	static const Uint32 OBSERVATION_VERSION = 21;
+	/// v22 projects semantic building roles and independent construction qualification.
+	/// v23 adds policy-only per-class production bindings; model vectors stay unchanged.
+	static const Uint32 OBSERVATION_VERSION = 23;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -192,7 +194,8 @@ namespace Cortex
 	/// extend the attack-range support envelope toward the front). No field-layout
 	/// change (reuses buildingType); ACTION_PLACE_DEFENSE_FLAG now reconciles the
 	/// whole defenseTargets[] SET (one flag per valid target), not a single flag.
-	static const Uint32 ACTION_VERSION = 13;
+	/// v14 buildingType names a strategic capability role, independent of catalog IDs.
+	static const Uint32 ACTION_VERSION = 14;
 
 	// --- tunable constants + enums: see CortexConstants.h (included above) ---
 
@@ -320,9 +323,20 @@ namespace Cortex
 		Sint32 upgradableCount[CORTEX_BUILDING_TYPES];
 
 		// --- buildings: full per-type, per-long-level histogram ---
-		// Direct mirror of stat->numberBuildingPerTypePerLevel. Read it through
+		// Bounded semantic role histogram; mixed buildings contribute to each supported role. Read it through
 		// the cortex* helpers (finished vs site, by level) below.
 		Sint32 buildingCountPerLevel[CORTEX_BUILDING_TYPES][CORTEX_BUILDING_LONG_LEVELS];
+        // Live model adapter projection: each GID belongs to one dominant role.
+        // Hand-authored policy fixtures may omit it and use the policy histogram.
+        Sint32 hasModelProjection;
+        Sint32 modelBuildingCountPerLevel[CORTEX_BUILDING_TYPES][CORTEX_BUILDING_LONG_LEVELS];
+        Sint32 modelUpgradableTotal;
+        // Runtime policy facts only: not added to either learned-model vector.
+        Sint32 productionMask;
+        Sint32 productionPlannedMask;
+        Sint32 productionMissingMask;
+        Sint32 productionPlacementType;
+        Sint32 productionNeedsRetune;
 
 		// --- candidate build locations, per building type ---
 		// Filled by the placement helper for the building types the AI may build;
@@ -576,7 +590,7 @@ namespace Cortex
 	{
 		Uint32 version;      ///< == ACTION_VERSION.
 		Sint32 kind;         ///< A CortexActionKind value.
-		Sint32 buildingType; ///< For ACTION_BUILD: an IntBuildingType::Number in [0, CORTEX_BUILDING_TYPES). Else -1.
+		Sint32 buildingType; ///< For ACTION_BUILD: a Cortex semantic role in [0, CORTEX_BUILDING_TYPES). Else -1.
 		Sint32 locationSlot; ///< For ACTION_BUILD: index in [0, CORTEX_BUILD_CANDIDATES). For ACTION_PLACE_WAR_FLAG: index in [0, CORTEX_FLAG_TARGETS). Else -1.
 		Sint32 productionRatio[CORTEX_UNIT_TYPES]; ///< For ACTION_SET_PRODUCTION: target swarm ratio [WORKER,EXPLORER,WARRIOR], each 0..CORTEX_MAX_RATIO ({0,0,0} = halt). Else all 0.
 		Sint32 flagRadius;   ///< For ACTION_PLACE_*_FLAG: war-flag attraction radius (unitStayRange), clamped to [1, CORTEX_MAX_FLAG_RADIUS]. Else -1.

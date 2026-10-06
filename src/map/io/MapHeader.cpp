@@ -46,15 +46,16 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 bool MapHeader::loadFields(GAGCore::InputStream *stream)
 {
-	///First, check if its an old format map
-	Uint32 pos = stream->getPosition();
-	char signature[4];
-	stream->read(signature, 4, "signature");
-	if(memcmp(signature, "SEGb",4) == 0)
+	// The obsolete binary prefix is a byte-stream probe, not a named text
+	// field. Structured text maps begin directly with the MapHeader section.
+	if (stream->canSeek())
 	{
-		return false;
+		const auto pos=stream->getPosition();
+		char signature[4];
+		stream->read(signature,4,"signature");
+		if (memcmp(signature,"SEGb",4)==0) return false;
+		stream->seekFromStart(pos);
 	}
-	stream->seekFromStart(pos);
 
 	stream->readEnterSection("MapHeader");
 	mapName = stream->readText("mapName");

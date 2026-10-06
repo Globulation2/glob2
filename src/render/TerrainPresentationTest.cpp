@@ -303,7 +303,8 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
-	TEST_CASE("overview palette follows detailed shore coverage across both wrapped axes [display] [artifacts]")
+	TEST_CASE("overview palette follows detailed shore coverage across both wrapped axes [display] "
+			  "[artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512});
 		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true});
@@ -318,30 +319,36 @@ TEST_SUITE("TerrainPresentation")
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
 		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
-		GAGCore::DrawableSurface overview(16*samples, 16*samples);
+		GAGCore::DrawableSurface overview(16 * samples, 16 * samples);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 			{
 				const auto recipe = compositor.describe(scene, x, y);
-				compositor.composeOverview(recipe, overview.getSDLSurface(), x*samples, y*samples);
+				compositor.composeOverview(recipe, overview.getSDLSurface(), x * samples,
+										   y * samples);
 				const TerrainVisual::PreparedCoverage coverage(compositor.catalog(), recipe);
 				for (int sy = 0; sy < samples; ++sy)
 					for (int sx = 0; sx < samples; ++sx)
 					{
-						CAPTURE(x); CAPTURE(y); CAPTURE(sx); CAPTURE(sy);
-						const auto mask = coverage.at((sx*32/samples + 16/samples)*256,
-													 (sy*32/samples + 16/samples)*256);
+						CAPTURE(x);
+						CAPTURE(y);
+						CAPTURE(sx);
+						CAPTURE(sy);
+						const auto mask = coverage.at((sx * 32 / samples + 16 / samples) * 256,
+													  (sy * 32 / samples + 16 / samples) * 256);
 						unsigned expected[3]{};
 						for (int i = 0; i < 4; ++i)
 							for (int k = 0; k < 3; ++k)
-								expected[k] += mask.weight[i] * compositor.catalog().materials[mask.material[i]].preview[k];
+								expected[k] +=
+									mask.weight[i] *
+									compositor.catalog().materials[mask.material[i]].preview[k];
 						const auto *row = reinterpret_cast<const Uint32 *>(
 							static_cast<const Uint8 *>(overview.getSDLSurface()->pixels) +
-							(y*samples+sy)*overview.getSDLSurface()->pitch);
-						const auto pixel = row[x*samples+sx];
+							(y * samples + sy) * overview.getSDLSurface()->pitch);
+						const auto pixel = row[x * samples + sx];
 						CHECK((pixel >> 24) == 255);
 						for (int k = 0; k < 3; ++k)
-							CHECK(((pixel >> (16-8*k)) & 255) == (expected[k]+32768)/65536);
+							CHECK(((pixel >> (16 - 8 * k)) & 255) == (expected[k] + 32768) / 65536);
 					}
 			}
 		// Custom saved whole-cell palettes still override their appearance colour.
@@ -352,8 +359,9 @@ TEST_SUITE("TerrainPresentation")
 		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customColor);
 		for (int y = 0; y < samples; ++y)
 			for (int x = 0; x < samples; ++x)
-				CHECK(reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(customOverview.getSDLSurface()->pixels) +
-					  y*customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
+				CHECK(reinterpret_cast<const Uint32 *>(
+						  static_cast<const Uint8 *>(customOverview.getSDLSurface()->pixels) +
+						  y * customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
 		map.setResource(9, 9, WHEAT, 1);
@@ -363,24 +371,27 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(render.overview->getH() == overview.getH());
 		const auto *resource = globals->resourcesTypes.get(WHEAT);
 		const int tint[] = {resource->minimapR, resource->minimapG, resource->minimapB};
-		for (int y = 0; y < 16*samples; ++y)
-			for (int x = 0; x < 16*samples; ++x)
+		for (int y = 0; y < 16 * samples; ++y)
+			for (int x = 0; x < 16 * samples; ++x)
 			{
 				const auto pixelAt = [&](auto &image)
 				{
 					auto *surface = image.getSDLSurface();
-					return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) + y*surface->pitch)[x];
+					return reinterpret_cast<const Uint32 *>(
+						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch)[x];
 				};
 				const auto ground = pixelAt(overview), actual = pixelAt(*render.overview);
-				if (x/samples == 9 && y/samples == 9)
+				if (x / samples == 9 && y / samples == 9)
 					for (int k = 0; k < 3; ++k)
-						CHECK(((actual >> (16-8*k)) & 255) == (((ground >> (16-8*k)) & 255) + 3*tint[k])/4);
+						CHECK(((actual >> (16 - 8 * k)) & 255) ==
+							  (((ground >> (16 - 8 * k)) & 255) + 3 * tint[k]) / 4);
 				else
 					CHECK(actual == ground);
 			}
 		// Preserve review evidence of the same coastline in both looks and mid-fade.
 		GAGCore::DrawableSurface enlarged(512, 512);
-		REQUIRE(SDL_BlitSurfaceScaled(overview.getSDLSurface(), nullptr, enlarged.getSDLSurface(), nullptr, SDL_SCALEMODE_NEAREST));
+		REQUIRE(SDL_BlitSurfaceScaled(overview.getSDLSurface(), nullptr, enlarged.getSDLSurface(),
+									  nullptr, SDL_SCALEMODE_NEAREST));
 		const auto evidence = glob2test::artifactDir() / "overview-alignment";
 		std::filesystem::create_directories(evidence);
 		CHECK(IMG_SavePNG(enlarged.getSDLSurface(), (evidence / "overview.png").string().c_str()));
@@ -388,14 +399,17 @@ TEST_SUITE("TerrainPresentation")
 		Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		GAGCore::Sprite::flushBatches(globals->gfx);
-		if (globals->gfx->renderer) globals->gfx->renderer->flush();
-		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(), (evidence / "detailed.png").string().c_str()));
+		if (globals->gfx->renderer)
+			globals->gfx->renderer->flush();
+		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(),
+						  (evidence / "detailed.png").string().c_str()));
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		GAGCore::Sprite::flushBatches(globals->gfx);
-		if (globals->gfx->renderer) globals->gfx->renderer->flush();
-		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(), (evidence / "crossfade.png").string().c_str()));
+		if (globals->gfx->renderer)
+			globals->gfx->renderer->flush();
+		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(),
+						  (evidence / "crossfade.png").string().c_str()));
 	}
-
 
 	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
 	{
@@ -635,6 +649,39 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(fixture.checksum() == checksum);
 			}
 	}
+	TEST_CASE("tiled capture keeps whole-map density and warm pages at narrow edges [display]")
+	{
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
+											highResolutionFixture().string().c_str());
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 256,
+			 .height = 256,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		GAGCore::Sprite::setHighResolution(true);
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		// An independently sized strip fits HD pages, unlike its whole capture.
+		SoftwareTerrainCache independent;
+		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
+									true));
+		CHECK(globals->terrainCompositor().scale() == 4);
+		CHECK(independent.resolution == 2);
+		SoftwareTerrainCache tiled;
+		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0, fixture.team->me, true,
+							  0, true));
+		CHECK(tiled.resolution == 1);
+		const auto rebuilds = tiled.cacheRebuilds();
+		for (const auto &strip : {SDL_Rect{0, 0, 7, 64}, SDL_Rect{0, 0, 64, 7}})
+		{
+			REQUIRE(tiled.prepare(scene, *globals->terrain, strip.x, strip.y, strip.x + strip.w - 1,
+								  strip.y + strip.h - 1, 0, 0, fixture.team->me, true, 0, true));
+			CHECK(tiled.resolution == 1);
+			CHECK(tiled.cacheRebuilds() == rebuilds);
+			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget);
+		}
+	}
 	TEST_CASE(
 		"portable texture limits reduce HD pages and admit only fitting fallback tiles [display]")
 	{
@@ -683,6 +730,257 @@ TEST_SUITE("TerrainPresentation")
 														   0, fixture.team->me, true),
 						std::runtime_error);
 		CHECK(backend.largestTexture == 0);
+	}
+	TEST_CASE("zoomed-out GPU terrain retains pages across frames and wrapped views [display] "
+			  "[artifacts]")
+	{
+		for (Uint32 flags : {Uint32(GAGCore::GraphicContext::PORTABLEGPU),
+							 Uint32(GAGCore::GraphicContext::USEGPU)})
+		{
+#ifndef HAVE_OPENGL
+			if (flags == GAGCore::GraphicContext::USEGPU)
+				continue;
+#endif
+			CAPTURE(flags);
+			const bool portable = flags == GAGCore::GraphicContext::PORTABLEGPU;
+			glob2test::HeadlessGlobals globals(
+				{.display = true, .width = 1152, .height = 896, .screenFlags = flags});
+			glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+			auto &map = fixture.game.map;
+			{
+				auto edit = map.editTerrain();
+				for (int y = 0; y < map.getH(); ++y)
+					for (int x = 0; x < map.getW(); ++x)
+						if (x % 32 < 4)
+							map.setCellTerrain(x, y, WATER);
+						else if (y % 32 < 4)
+							map.setCellTerrain(x, y, ICE);
+			}
+			SceneMap scene;
+			scene.extract(map);
+			const auto checksum = fixture.checksum();
+			auto &gfx = *globals->gfx;
+			SoftwareTerrainCache cache;
+			bool admitted = false;
+			const auto draw = [&](int vx, int vy)
+			{
+				gfx.drawFilledRect(0, 0, 1152, 896, 17, 29, 41);
+				gfx.beginMapTransform(.25f, .375f, .625f, 0, 0, 1152, 896);
+				// 80 canonical pages including the partially visible edge pages.
+				admitted = cache.prepare(scene, *globals->terrain, 0, 0, 144, 112, vx, vy,
+										 fixture.team->me, true, 19);
+				if (admitted)
+					cache.draw(gfx);
+				else
+					SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 144, 112, vx,
+													   vy, fixture.team->me, true, 19);
+				gfx.endMapTransform();
+				if (portable)
+					gfx.renderer->flush();
+#ifdef HAVE_OPENGL
+				else
+					glFinish();
+#endif
+			};
+			const auto start = std::chrono::steady_clock::now();
+			draw(249, 250);
+			const auto cold = std::chrono::steady_clock::now();
+			const auto rebuilds = cache.cacheRebuilds();
+			for (int i = 0; i < 5; ++i)
+				draw(249, 250);
+			const auto warm = std::chrono::steady_clock::now();
+			std::ofstream timing(glob2test::artifactDir() /
+								 (portable ? "zoom-portable.txt" : "zoom-opengl.txt"));
+			timing << "cached " << admitted << "\ncold_ms "
+				   << std::chrono::duration<double, std::milli>(cold - start).count()
+				   << "\nwarm_ms "
+				   << std::chrono::duration<double, std::milli>(warm - cold).count() / 5
+				   << "\nbytes " << cache.bytes() << "\nrebuilds " << cache.cacheRebuilds() << '\n';
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> capture(nullptr,
+																				SDL_DestroySurface);
+			if (portable)
+				capture.reset(gfx.renderer->capture());
+			else
+			{
+				auto rgba = terrainPixels(true);
+				capture.reset(SDL_CreateSurface(gfx.getDrawableW(), gfx.getDrawableH(),
+												SDL_PIXELFORMAT_RGBA32));
+				REQUIRE(capture);
+				for (int y = 0; y < capture->h; ++y)
+					std::memcpy(static_cast<Uint8 *>(capture->pixels) + y * capture->pitch,
+								rgba.data() + (capture->h - 1 - y) * capture->w * 4,
+								capture->w * 4);
+			}
+			REQUIRE(capture);
+			REQUIRE(IMG_SavePNG(
+				capture.get(),
+				(glob2test::artifactDir() / (portable ? "zoom-portable.png" : "zoom-opengl.png"))
+					.string()
+					.c_str()));
+			CHECK(admitted);
+			if (!admitted)
+				continue;
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(cache.cacheRebuilds() == rebuilds);
+			CHECK(cache.cacheHits() >= rebuilds * 5);
+			REQUIRE(!cache.chunks.empty());
+			CHECK(cache.chunks.front()->image->getW() < SoftwareTerrainCache::ChunkPixels);
+			// Check the reduced pixels against independent area averages of native
+			// composition, including partially transparent coast tiles.
+			const auto &chunk = *cache.chunks.front();
+			const int divisor = SoftwareTerrainCache::ChunkPixels / chunk.image->getW();
+			const int tileSize = 32 / divisor, count = divisor * divisor;
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> tile(
+				SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+			REQUIRE(tile);
+			unsigned mismatches = 0, partial = 0;
+			for (int ty : {0, 3, 4, 15})
+				for (int tx : {0, 3, 4, 15})
+				{
+					globals->terrainCompositor().compose(chunk.tiles[ty * 16 + tx].recipe,
+														 tile.get(), 0, 0, 1);
+					for (int y = 0; y < tileSize; ++y)
+						for (int x = 0; x < tileSize; ++x)
+						{
+							unsigned a = 0, red = 0, green = 0, blue = 0;
+							for (int dy = 0; dy < divisor; ++dy)
+								for (int dx = 0; dx < divisor; ++dx)
+								{
+									const auto *row = reinterpret_cast<const Uint32 *>(
+										static_cast<const Uint8 *>(tile->pixels) +
+										(y * divisor + dy) * tile->pitch);
+									const Uint32 p = row[x * divisor + dx];
+									const unsigned alpha = p >> 24;
+									a += alpha;
+									red += ((p >> 16) & 255) * alpha;
+									green += ((p >> 8) & 255) * alpha;
+									blue += (p & 255) * alpha;
+								}
+							const auto *surface = chunk.image->getSDLSurface();
+							const auto *row = reinterpret_cast<const Uint32 *>(
+								static_cast<const Uint8 *>(surface->pixels) +
+								(ty * tileSize + y) * surface->pitch);
+							const Uint32 p = row[tx * tileSize + x];
+							partial += a > 0 && a < 255u * count;
+							mismatches += (p >> 24) != (a + count / 2) / count ||
+										  ((p >> 16) & 255) != (a ? (red + a / 2) / a : 0) ||
+										  ((p >> 8) & 255) != (a ? (green + a / 2) / a : 0) ||
+										  (p & 255) != (a ? (blue + a / 2) / a : 0);
+						}
+				}
+			CHECK(mismatches == 0);
+			CHECK(partial > 0);
+			// Equivalent wrapped coordinates reuse the same pages and pixels.
+			const auto pixels = [&]
+			{
+				if (!portable)
+					return terrainPixels(true);
+				std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> capture(
+					gfx.renderer->capture(), SDL_DestroySurface);
+				REQUIRE(capture);
+				const auto *data = static_cast<const Uint8 *>(capture->pixels);
+				return std::vector<Uint8>(data, data + capture->pitch * capture->h);
+			};
+			const auto expected = pixels();
+			draw(-7, -6);
+			CHECK(pixels() == expected);
+			CHECK(cache.cacheRebuilds() == rebuilds);
+			cache.enabled = false;
+			draw(-7, -6);
+			CHECK(pixels() == expected);
+			cache.enabled = true;
+			map.setCellTerrain(0, 0, TRAIL);
+			scene.extract(map);
+			draw(-7, -6);
+			CHECK(cache.cacheRebuilds() > rebuilds);
+			CHECK(pixels() != expected);
+			map.setCellTerrain(0, 0, WATER);
+			CHECK(fixture.checksum() == checksum);
+			// Returning to a close view restores native page density.
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
+								  true, 19));
+			CHECK(cache.chunks.front()->image->getW() >= SoftwareTerrainCache::ChunkPixels);
+			const int drawableW = gfx.drawableW, drawableH = gfx.drawableH;
+			// The upper half of the crossfade on a 2x display lies just above
+			// half native density. It must still cache the nearest density.
+			gfx.drawableW = gfx.getW() * 2;
+			gfx.drawableH = gfx.getH() * 2;
+			gfx.beginMapTransform(.28f, 0, 0, 0, 0, 1152, 896);
+			const bool retinaAdmitted = cache.prepare(scene, *globals->terrain, 0, 0, 144, 112, 249,
+													  250, fixture.team->me, true, 19);
+			gfx.endMapTransform();
+			gfx.drawableW = drawableW;
+			gfx.drawableH = drawableH;
+			CHECK(retinaAdmitted);
+			// A much denser output must not magnify coarse pages without bound.
+			gfx.drawableW = gfx.getW() * 4;
+			gfx.drawableH = gfx.getH() * 4;
+			gfx.beginMapTransform(.25f, 0, 0, 0, 0, 1152, 896);
+			const bool hidpiAdmitted = cache.prepare(scene, *globals->terrain, 0, 0, 144, 112, 249,
+													 250, fixture.team->me, true, 19);
+			gfx.endMapTransform();
+			gfx.drawableW = drawableW;
+			gfx.drawableH = drawableH;
+			CHECK_FALSE(hidpiAdmitted);
+		}
+	}
+	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
+			  "[display]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 256,
+			 .height = 256,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		auto &gfx = *globals->gfx;
+		// Restore all process-wide drawing state even if a REQUIRE aborts.
+		struct RestoreTarget
+		{
+			GAGCore::GraphicContext &gfx;
+			int width, height;
+			float scale;
+			~RestoreTarget()
+			{
+				gfx.endMapTransform();
+				gfx.setRenderTargetScale(scale);
+				gfx.drawableW = width;
+				gfx.drawableH = height;
+			}
+		} restore{gfx, gfx.drawableW, gfx.drawableH, gfx.renderTargetScale};
+		gfx.beginMapTransform(.25f, 0, 0, 0, 0, 256, 256);
+		for (int windowScale : {1, 2})
+		{
+			CAPTURE(windowScale);
+			gfx.drawableW = gfx.getW() * windowScale;
+			gfx.drawableH = gfx.getH() * windowScale;
+			// Torus captures compensate for the shown zoom: .25 * 4 gives
+			// 32 physical pixels per tile, irrespective of the window DPI.
+			gfx.setRenderTargetScale(4);
+			SoftwareTerrainCache cache;
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
+								  true, 19, true));
+			CHECK(cache.chunks.front()->image->getW() == SoftwareTerrainCache::ChunkPixels);
+			// The same map captured at 8px per cell needs reduced pages. A
+			// narrow edge must retain the complete capture's sampling density.
+			gfx.setRenderTargetScale(1);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 31, 0, 0, fixture.team->me,
+								  true, 19, true));
+			const auto side = cache.chunks.front()->image->getW();
+			CHECK(side < SoftwareTerrainCache::ChunkPixels);
+			const auto rebuilds = cache.cacheRebuilds();
+			for (const auto &strip : {SDL_Rect{0, 0, 7, 32}, SDL_Rect{0, 0, 32, 7}})
+			{
+				REQUIRE(cache.prepare(scene, *globals->terrain, strip.x, strip.y,
+									  strip.x + strip.w - 1, strip.y + strip.h - 1, 0, 0,
+									  fixture.team->me, true, 19, true));
+				CHECK(cache.chunks.front()->image->getW() == side);
+				CHECK(cache.cacheRebuilds() == rebuilds);
+				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+			}
+		}
 	}
 	TEST_CASE(
 		"empty water pages skip software submissions and refresh after terrain edits [display]")

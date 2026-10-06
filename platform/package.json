@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json && tsc -p apps/web/e2e/tsconfig.json",
     "test": "vitest run",
     "fixtures": "npm run --workspace @glob2/protocol generate",
     "migrate": "npm run --workspace @glob2/db migrate --",

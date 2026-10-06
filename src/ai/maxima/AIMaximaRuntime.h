@@ -15,6 +15,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "TeamStat.h"
+#include "Ressource.h"
 
 #include <memory>
 #include <limits>
@@ -352,6 +353,17 @@ namespace Conditions
 		void save(GAGCore::OutputStream*) const;
 	private: int id;
 	};
+    class AttractionRetiredOrDestroyed : public Condition
+    {
+    public:
+        AttractionRetiredOrDestroyed(int id,unsigned unitMask):id(id),unitMask(unitMask) {}
+        Result passes(Context&) const override;
+        int type() const override {return 4;}
+        void save(GAGCore::OutputStream*) const override;
+    private:
+        int id;unsigned unitMask;
+    };
+
 	class EnemyBuildingDestroyed : public Condition
 	{
 	public:
@@ -418,6 +430,7 @@ namespace Construction
 		bool is_building_found(unsigned id) const;
 		bool is_building_upgrading(unsigned id) const;
 		int get_type(unsigned id) const;
+		bool has_role(unsigned id,int role) const;
 		int get_level(unsigned id) const;
 		int get_assigned(unsigned id) const;
 		int get_enrolled(unsigned id) const;
@@ -427,7 +440,7 @@ namespace Construction
 		const std::map<int, BuildingRecord>& found() const { return foundBuildings; }
 		const std::map<int, BuildingRecord>& pending() const { return pendingBuildings; }
 		void save(GAGCore::OutputStream*) const;
-		bool load(GAGCore::InputStream*);
+		bool load(GAGCore::InputStream*,Sint32 versionMinor);
 		///Records which Building object occupies each of the team's slots. Call
 		///once per AI order, before anything reads identities.
 		void observe_buildings() const;
@@ -513,6 +526,7 @@ namespace Construction
 		Conditions::Result conditions_pass(Context&) const;
 		void queue_gradients(Gradients::GradientManager&);
 		int type, workers, id;
+		int concreteType; // Chosen once; saved across incremental placement searches.
 		// Full-map searches resume in x-major order using saved execution state.
 		int searchCursor, searchWidth, searchHeight, searchBestScore;
 		position searchBest;
@@ -527,6 +541,7 @@ namespace Management
 	class ResourceTracker
 	{
 	public:
+		static constexpr int RecurringInputStock = MAX_RESOURCES;
 		ResourceTracker(Context&, int id, int length, int resource);
 		int get_total_level() const;
 		int get_age() const { return timer; }
@@ -551,7 +566,7 @@ namespace Management
 		virtual int type() const=0;
 		virtual void save_payload(GAGCore::OutputStream*) const=0;
 		void save(GAGCore::OutputStream*) const;
-		static ManagementOrder* load(GAGCore::InputStream*);
+		static ManagementOrder* load(GAGCore::InputStream*,Sint32 versionMinor);
 	private:
 		std::vector<std::shared_ptr<Conditions::Condition> > conditions;
 	};
@@ -561,12 +576,15 @@ namespace Management
 	{ public: ChangeSwarm(int worker,int explorer,int warrior,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 1;} void save_payload(GAGCore::OutputStream*)const; private:int worker,explorer,warrior,id; };
 	class DestroyBuilding : public ManagementOrder
 	{ public: explicit DestroyBuilding(int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 2;} void save_payload(GAGCore::OutputStream*)const; private:int id; };
+	// Tactical cleanup must not demolish a building providing another service.
+	class RetireAttraction : public ManagementOrder
+	{ public: RetireAttraction(int id,unsigned unitMask) : id(id),unitMask(unitMask) {} Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 13;} void save_payload(GAGCore::OutputStream*)const; private:int id; unsigned unitMask; };
 	class AddResourceTracker : public ManagementOrder
 	{ public: AddResourceTracker(int length,int resource,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 3;} void save_payload(GAGCore::OutputStream*)const; private:int length,resource,id; };
 	class ChangeFlagSize : public ManagementOrder
 	{ public: ChangeFlagSize(int size,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 4;} void save_payload(GAGCore::OutputStream*)const; private:int size,id; };
 	class ChangeFlagMinimumLevel : public ManagementOrder
-	{ public: ChangeFlagMinimumLevel(int level,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 5;} void save_payload(GAGCore::OutputStream*)const; private:int level,id; };
+	{ public: ChangeFlagMinimumLevel(int level,int id,int targetRole=0); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 5;} void save_payload(GAGCore::OutputStream*)const; private:int level,id,targetRole; };
 	class ChangeFlagPosition : public ManagementOrder
 	{ public: ChangeFlagPosition(int x,int y,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 6;} void save_payload(GAGCore::OutputStream*)const; private:int x,y,id; };
 	class AddArea : public ManagementOrder
@@ -665,7 +683,11 @@ class Context
 	std::shared_ptr<Order> getOrder(RuntimeAI& ai);
 	unsigned add_building_order(Construction::BuildingOrder*);
 	///Cancel an unissued request, or delete the building once its issued order resolves.
-	void cancel_or_destroy_building(int id);
+	void cancel_or_destroy_building(int id,unsigned retiringUnitMask);
+    // Bind a new task after its predecessor completed; never call for routine staffing.
+    bool begin_attraction(int id,unsigned unitMask);
+    unsigned complete_attraction_retirement(int id,unsigned unitMask);
+    bool attraction_retired_or_destroyed(int id,unsigned unitMask) const;
 	///Find queued, issued, and observed exploration flags anchored on a resource.
 	std::vector<int> resource_flags(int resource) const;
 	///Issue an exact planner-selected construction after a final engine-space
@@ -706,6 +728,7 @@ private:
 	std::vector<std::shared_ptr<Construction::BuildingOrder> > buildingOrders;
 	std::vector<std::shared_ptr<Management::ManagementOrder> > managementOrders;
 	std::map<int, std::shared_ptr<Management::ResourceTracker> > trackers;
+    std::map<int,unsigned> retiredAttractions;
 	int timer;
 	int previousBuildingId;
 	bool initialized;

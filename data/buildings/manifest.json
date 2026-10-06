@@ -1,0 +1,27 @@
+{
+  "catalogKey": "stock",
+  "experiments": [
+    {
+      "help": "Workers fetch shared market stock; upgrades add wheat and wood, then all resources.",
+      "key": "markets-v2",
+      "label": "Markets V2"
+    }
+  ],
+  "schemaVersion": 1,
+  "files": [
+    "swarm.json",
+    "inn.json",
+    "hospital.json",
+    "racetrack.json",
+    "swimmingpool.json",
+    "barracks.json",
+    "school.json",
+    "defencetower.json",
+    "explorationflag.json",
+    "warflag.json",
+    "clearingflag.json",
+    "stonewall.json",
+    "market.json"
+  ],
+  "startingBuilding": "swarm.0.finished"
+}

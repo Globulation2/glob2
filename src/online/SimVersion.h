@@ -84,4 +84,8 @@ namespace Online
 
 	/// This build's SimVersion.
 	SimVersion currentSimVersion();
+
+	// Rating/rules identity only; never use this to select an engine executable.
+	// An empty catalog hash preserves the historical engine identity.
+	SimVersion catalogRulesVersion(const SimVersion& engine, const std::string& catalogHash);
 }

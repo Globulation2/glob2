@@ -36,10 +36,12 @@ struct SceneBuildingPanel
 	BuildingType *type = nullptr; //!< static building type definition
 	Sint32 typeNum = 0, posX = 0, posY = 0;
 	Sint32 hp = 0, effectiveMaxHp = 0, buildingState = 0, constructionResultState = 0;
+	bool explorersRequireBombing=false;
+	Sint32 minWorkerLevelToFlag=0;
 	Sint32 maxUnitWorking = 0, desiredMaxUnitWorking = 0, priority = 0, unitStayRange = 0, minLevelToFlag = 0;
 	bool clearingResources[BASIC_COUNT] = {};
 	Sint32 resources[MAX_RESOURCES] = {};
-	Sint32 bullets = 0, productionTimeout = 0;
+	Sint32 bullets = 0, productionTimeout = 0, productionDuration = 0;
 	Sint32 ratio[NB_UNIT_TYPE] = {};
 	std::array<Uint32, SceneSelectedBuilding::FailReasons> unitsFailingRequirements{};
 	Sint32 unitsInside = 0, unitsWorking = 0;
@@ -51,7 +53,7 @@ struct SceneBuildingPanel
 	//! Queries answered during extraction.
 	bool hardSpaceForRepair = false, hardSpaceForUpgrade = false;
 	bool showLevel = false;
-	int repairCost[BASIC_COUNT] = {};
+	int repairCost[MAX_RESOURCES] = {};
 	int buildingHpMultiplier = 1;
 };
 

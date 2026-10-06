@@ -152,6 +152,11 @@ namespace Online
 		std::vector<SetupSeat> seats;
 		MatchRules rules;
 		std::vector<std::string> experiments;
+		// Optional for schema-1 compatibility. New games carry the complete frozen
+		// catalog; its hash identifies simulation rules independently of the engine
+		// build used to route verification jobs.
+		std::string buildingCatalogSnapshot;
+		std::string buildingCatalogHash;
 		/// Absent: pausing is unlimited (and the setup's JSON has no pauseLimit).
 		std::optional<PauseLimit> pauseLimit;
 

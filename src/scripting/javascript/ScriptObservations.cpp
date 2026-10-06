@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptObservations.h"
+#include "ScriptBuildingCapabilities.h"
 #include "FileFormatVersions.h"
 #include "TerrainProperties.h"
 #include "TerrainPresentation.h"
@@ -104,6 +105,10 @@ Value Observations::building(const Building &b) const
 	v.set("team", b.owner->teamNumber)
 		.set("type", b.typeNum)
 		.set("shortType", b.shortTypeNum)
+		.set("key", b.type->key)
+		.set("capabilities", buildingCapabilities(game, b.typeNum))
+		.set("relocatable", b.type->semantics.relocatable)
+		.set("interTeamExchange", b.type->semantics.market.interTeamFruitExchange)
 		.set("x", b.posX)
 		.set("y", b.posY)
 		.set("hp", b.hp)
@@ -118,6 +123,8 @@ Value Observations::building(const Building &b) const
 			.set("priority", b.priority)
 			.set("range", b.unitStayRange)
 			.set("minimumLevel", b.minLevelToFlag)
+			.set("requireBombing", b.explorersRequireBombing)
+			.set("workerMinimumLevel", b.minWorkerLevelToFlag)
 			.set("resources", numbers(b.resources, MAX_NB_RESOURCES))
 			.set("wishedResources", numbers(b.wishedResources, MAX_NB_RESOURCES))
 			.set("production", numbers(b.ratio, NB_UNIT_TYPE))
@@ -317,15 +324,46 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 	if (name == "buildingTypes")
 	{
 		Value a = Value::array();
-		for (unsigned i = 0; i < globalContainer->buildingsTypes.size(); ++i)
+		const Value options = args.empty() ? Value::object() : args[0];
+        const int offset = options.get("offset").kind == Value::Null ? 0 : options.integer("offset", 0, int(game.buildingsTypes.size()));
+        const int limit = options.get("limit").kind == Value::Null ? int(game.buildingsTypes.size()) : options.integer("limit", 1, int(game.buildingsTypes.size()));
+        for (unsigned i = offset; i < game.buildingsTypes.size() && i < unsigned(offset + limit); ++i)
 		{
 			if (!game.isBuildingTypeAvailable(i)) continue;
-			const auto &b = *globalContainer->buildingsTypes.get(i);
-			charge(64, b.type.size());
+			const auto &b = *game.buildingsTypes.get(i);
+			charge(256 + NB_ABILITY * (MAX_NB_RESOURCES + 8), b.type.size() + b.key.size());
+            auto service = [&](const BuildingServiceSpec& spec) {
+                return Value::object().set("enabled", spec.enabled).set("unitMask", spec.unitMask)
+                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES));
+            };
+            Value training = Value::array(), production = Value::array();
+            for (const auto& spec : b.semantics.training)
+                training.items.push_back(Value::object().set("enabled", spec.enabled).set("unitMask", spec.unitMask)
+                    .set("targetLevel", spec.targetLevel).set("constructionLevel", spec.constructionLevel)
+                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES)));
+            for (const auto& spec : b.semantics.production.recipes)
+                production.items.push_back(Value::object().set("enabled", spec.enabled).set("duration", spec.duration)
+                    .set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES)));
 			a.items.push_back(
 				Value::object()
 					.set("id", i)
-					.set("name", b.type)
+                    .set("key", b.key).set("nextType", b.nextLevel).set("previousType", b.prevLevel)
+                    .set("placeable", b.semantics.placeable).set("instantPlacement", b.semantics.instantPlacement)
+                    .set("requiredWorkerLevel", b.semantics.requiredWorkerLevel)
+                    .set("admittedUnitMask", b.semantics.admittedUnitMask)
+                    .set("maxUnitsInside", b.maxUnitInside).set("maxRadius", b.maxUnitStayRange)
+                    .set("relocatable", b.semantics.relocatable).set("occupiesGround", b.semantics.occupiesGround)
+                    .set("repairable", b.semantics.repairable).set("regeneration", b.semantics.regenerationPerTick)
+                    .set("feeding", service(b.semantics.feeding)).set("healing", service(b.semantics.healing))
+                    .set("training", training).set("production", production)
+                    .set("capabilities", buildingCapabilities(game, i))
+                    .set("projectileDamage", numbers(b.semantics.projectileDamage.data(), NB_UNIT_TYPE))
+                    .set("projectileRange", b.shootingRange).set("projectileSpeed", b.shootSpeed).set("projectileRhythm", b.shootRhythm)
+                    .set("ammunitionResource", b.semantics.ammunitionResource).set("ammunitionCost", b.semantics.ammunitionCost)
+                    .set("suppliesStock", b.runtimeSuppliesStock).set("fetchesStock", b.runtimeFetchesStock)
+                    .set("suppliesDirectStock", b.semantics.market.suppliesDirectStock)
+                    .set("exchangesFruit", b.semantics.market.interTeamFruitExchange)
+                    .set("name", b.type)
 					.set("shortType", b.shortTypeNum)
 					.set("level", b.level)
 					.set("site", bool(b.isBuildingSite))
@@ -333,7 +371,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					.set("width", b.width)
 					.set("height", b.height)
 					.set("maxHp", b.hpMax)
-					.set("maxWorkers", b.maxUnitWorking)
+					.set("maxWorkers", b.semantics.assignmentLimit).set("usesWorkers", bool(b.maxUnitWorking))
 					.set("resourceCapacity", numbers(b.maxResource, MAX_NB_RESOURCES)));
 		}
 		return a;
@@ -618,7 +656,7 @@ void Script::Observations::visitSpatialEntities(
 					const auto *b = game.teams[t]->myBuildings[i];
 					if (b && b->buildingState != Building::DEAD && visible(game, team, *b))
 						visit({t, b->shortTypeNum, b->posX, b->posY, b->hp, 0,
-							   bool(b->type->isVirtual)});
+							   bool(b->type->isVirtual), b->typeNum});
 				}
 		}
 }

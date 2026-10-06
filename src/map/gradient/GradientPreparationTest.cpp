@@ -3,8 +3,10 @@
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include <type_traits>
+#include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <array>
 #include <vector>
 
 namespace
@@ -26,7 +28,7 @@ void scalarResource(Map &m, int team, int resource, int swim, Uint16 *out, bool 
 		{
 			if (c.building != NOGBID)
 				out[i] = markets && m.isStockedMarketTile(c.building, team, resource)
-					? GRADIENT_MARKET_SEED : GRADIENT_FORBIDDEN;
+					? (GRADIENT_AT_GOAL - 5 * GRADIENT_STEP) : GRADIENT_FORBIDDEN;
 			else if (!m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable))
 				out[i] = GRADIENT_FORBIDDEN;
 			else
@@ -119,6 +121,105 @@ static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map 
 
 TEST_SUITE("GradientPreparation")
 {
+	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+		auto& game=world.game; auto& m=game.map;
+		auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+		const char* names[]={"inn","hospital","racetrack","swimmingpool"};
+		for (int k=0;k<4;++k)
+		{
+			auto& spec=catalog["variants"][game.buildingsTypes.getFinishedTypeNum(names[k])];
+			spec["properties"]["maxResource"][WHEAT]=20;
+			auto& semantics=spec["semantics"];
+			semantics["occupiesGround"]=k!=1;
+			auto& market=semantics["market"];
+			market["sharedStock"]=k>=2;
+			market["suppliesStock"]=k!=1;
+			market["suppliesDirectStock"]=k==1;
+			market["suppliesStockExperiment"]="";
+			market["suppliesStockResources"]={"wheat"};
+			market["suppliesDirectStockResources"]={"wheat"};
+			market["pickupPenalty"]=k+2;
+		}
+		game.buildingsTypes.loadSnapshotJson(catalog.dump()); game.configureBuildingCatalog();
+		auto* unified=world.addBuilding(names[0],8,8);
+		auto* direct=world.addBuilding(names[1],20,8);
+		auto* shared=world.addBuilding(names[2],32,8);
+		auto* consumer=world.addBuilding(names[3],44,8);
+		REQUIRE(unified); REQUIRE(direct); REQUIRE(shared); REQUIRE(consumer);
+		auto* foreign=world.addBuilding(names[0],56,8,0,1); REQUIRE(foreign);
+		foreign->resources[WHEAT]=10;
+		unified->resources[WHEAT]=10; direct->resources[WHEAT]=10; shared->resources[WHEAT]=10;
+		auto& cache=m.gradientRuntime->resourceSeeds;
+		std::vector<Uint16> expected(m.size), actual(m.size);
+		cache.allocationFailed=true;
+		m.seedResourcesGradient(0,WHEAT,0,expected.data(),true,consumer,3);
+		cache.allocationFailed=false;
+		for(int i=0;i<32;++i)m.seedResourcesGradient(0,WHEAT,0,actual.data(),true,consumer,3);
+		REQUIRE(cache.valid);
+		requireSameField(m,"custom cached suppliers",actual,expected);
+		CHECK(actual[m.coordToIndex(8,8)]==GRADIENT_AT_GOAL-2*GRADIENT_STEP);
+		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_AT_GOAL-3*GRADIENT_STEP);
+		CHECK(actual[m.coordToIndex(32,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(44,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(56,8)]==GRADIENT_FORBIDDEN);
+		// Live stock changes must not wait for template invalidation.
+		direct->resources[WHEAT]=0;
+		m.seedResourcesGradient(0,WHEAT,0,actual.data(),true,consumer,3);
+		CHECK(cache.valid);
+		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_UNREACHABLE);
+		direct->resources[WHEAT]=10;
+		m.addForbidden(20,8,0); m.markImmobileUnit(21,8,0);
+		m.seedResourcesGradient(0,WHEAT,0,actual.data(),true,consumer,3);
+		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(21,8)]==GRADIENT_FORBIDDEN);
+		m.seedResourcesGradient(0,WOOD,0,actual.data(),true,consumer,3);
+		CHECK(actual[m.coordToIndex(8,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(20,9)]==GRADIENT_UNREACHABLE);
+		// Mode selection remains independent, including overlay-only Direct mode.
+		m.removeForbidden(20,8,0);
+		m.seedResourcesGradient(0,WHEAT,0,actual.data(),true,consumer,2);
+		CHECK(actual[m.coordToIndex(8,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_AT_GOAL-3*GRADIENT_STEP);
+	}
+
+
+	TEST_CASE("supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=Team::MAX_COUNT,
+			.discovered=true, .clearImmobile=true, .header=true});
+		auto& m=world.game.map;
+		const int lastTeam=Team::MAX_COUNT-1;
+		const std::array<Uint16,6> gids={Building::GIDfrom(0,0),
+			Building::GIDfrom(Building::MAX_COUNT-1,0), Building::GIDfrom(0,lastTeam),
+			Building::GIDfrom(Building::MAX_COUNT-1,lastTeam), Uint16(NOGBID-1), NOGBID};
+		for (size_t i=0;i<gids.size();++i) m.setBuilding(4+int(i),4,1,1,gids[i]);
+		std::array<Uint16,Building::MAX_COUNT> seeds{};
+		seeds[0]=GRADIENT_AT_GOAL-2*GRADIENT_STEP;
+		seeds.back()=GRADIENT_AT_GOAL-4*GRADIENT_STEP;
+		std::vector<Uint16> direct(m.size),cached(m.size);
+		for (int team:{0,lastTeam})
+		{
+			CAPTURE(team);
+			m.seedResourcesGradientDirect(team,WHEAT,0,direct.data(),seeds.data());
+			for (int request=0;request<32;++request)
+				m.gradientRuntime->resourceSeeds.trySeed(m,team,WHEAT,0,cached.data(),seeds.data());
+			REQUIRE(m.gradientRuntime->resourceSeeds.valid);
+			requireSameField(m,"supplier GID bounds",cached,direct);
+			const int ownOffset=team==0 ? 0 : 2;
+			const int otherOffset=team==0 ? 2 : 0;
+			CHECK(cached[m.coordToIndex(4+ownOffset,4)]==seeds[0]);
+			CHECK(cached[m.coordToIndex(5+ownOffset,4)]==seeds.back());
+			CHECK(cached[m.coordToIndex(4+otherOffset,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(5+otherOffset,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(8,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(9,4)]==GRADIENT_UNREACHABLE);
+		}
+	}
+
 	TEST_CASE("resource cache tracks cell writes and falls back through mutation bursts")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -136,7 +237,7 @@ TEST_SUITE("GradientPreparation")
 				scalarResource(m, team, resource, swim, expected.data(), false);
 				m.seedResourcesGradient(team, resource, swim, actual.data(), false);
 				requireSameField(m, "tracked resource", actual, expected);
-				m.seedResourcesGradientDirect(team, resource, swim, actual.data(), false);
+				m.seedResourcesGradientDirect(team, resource, swim, actual.data(), nullptr);
 				requireSameField(m, "direct resource", actual, expected);
 			}
 		};
@@ -238,6 +339,133 @@ TEST_SUITE("GradientPreparation")
 		CHECK_FALSE(cache.storage);
 	}
 
+	TEST_CASE("cached natural goals follow immobile occupancy and live overlays")
+	{
+		glob2test::HeadlessGlobals globals;
+		int hiddenResource = -1;
+		for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+			if (globalContainer->resourcesTypes.get(resource)->visibleToBeCollected)
+			{
+				hiddenResource = resource;
+				break;
+			}
+		REQUIRE(hiddenResource >= 0);
+		for (const int wDec : {5, 7})
+		{
+			CAPTURE(wDec);
+			glob2test::HeadlessGame world({.wDec=wDec, .hDec=wDec, .teams=2, .clearImmobile=true, .header=true});
+			auto &m = world.game.map;
+			auto &cache = m.gradientRuntime->resourceSeeds;
+			const int x = 10, y = 10;
+			const size_t at = m.coordToIndex(x, y);
+			const Uint32 mask = Team::teamNumberToMask(0);
+			std::vector<Uint16> expected(m.size), actual(m.size);
+			m.replaceTile(at, Tile{});
+			m.setCellTerrain(at, GRASS);
+			m.clearImmobileUnit(x, y);
+			m.fogOfWar[at] = mask;
+			m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
+			auto compare = [&](int checkedResource, Uint16 checkedValue) {
+				for (const int swim : {0, 3})
+					for (const int resource : {int(WHEAT), int(WOOD), hiddenResource})
+					{
+						CAPTURE(swim);
+						CAPTURE(resource);
+						scalarResource(m, 0, resource, swim, expected.data(), false);
+						m.seedResourcesGradient(0, resource, swim, actual.data(), false);
+						requireSameField(m, "occupied natural goal", actual, expected);
+						if (resource == checkedResource) CHECK(actual[at] == checkedValue);
+						m.seedResourcesGradientDirect(0, resource, swim, actual.data(), nullptr);
+						requireSameField(m, "direct occupied natural goal", actual, expected);
+					}
+			};
+			auto warm = [&] {
+				for (int i = 0; i < 32; ++i)
+					m.seedResourcesGradient(0, WHEAT, 0, actual.data(), false);
+				CHECK(cache.valid == (wDec == 7));
+			};
+			warm();
+			const auto bytes = cache.allocatedBytes();
+			compare(WHEAT, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			compare(WHEAT, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WHEAT, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 1);
+			compare(WHEAT, GRADIENT_FORBIDDEN);
+			m.replaceResource(at, Resource{WOOD, 0, 1, 0});
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			m.replaceResource(at, Resource{});
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
+			// Coalesced resource/occupancy edits use the final effective goal type.
+			m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
+			m.markImmobileUnit(x, y, 0);
+			m.replaceResource(at, Resource{WOOD, 0, 1, 0});
+			m.clearImmobileUnit(x, y);
+			m.markImmobileUnit(x, y, 1);
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_AT_GOAL);
+			// A coalesced removal must clear a previously published resource bit,
+			// even when the final cell is empty and unoccupied again.
+			m.replaceResource(at, Resource{});
+			m.markImmobileUnit(x, y, 0);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
+			// Empty-cell occupancy still updates base passability without a goal.
+			m.markImmobileUnit(x, y, 0);
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
+			// Goals still override terrain/buildings, with fog live and paint last.
+			m.replaceResource(at, Resource{static_cast<Uint8>(hiddenResource), 0, 1, 0});
+			m.setCellTerrain(at, WATER);
+			m.setBuilding(x, y, 1, 1, 42);
+			m.fogOfWar[at] = 0;
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.fogOfWar[at] = mask;
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			m.addForbidden(x, y, 0);
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.removeForbidden(x, y, 0);
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			cache.invalidate();
+			warm();
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			CHECK(cache.allocatedBytes() == bytes);
+			if (wDec == 7)
+			{
+				// A burst exceeds the existing dirty bound; fallback and rebuild
+				// must both preserve blocked resource membership.
+				for (size_t i = 0; i <= m.size / 64; ++i)
+				{
+					m.replaceResource(i, Resource{WHEAT, 0, 1, 0});
+					m.markImmobileUnit(i & m.wMask, i >> m.wDec, 0);
+				}
+				REQUIRE_FALSE(cache.valid);
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				warm();
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				for (size_t i = 0; i <= m.size / 64; ++i)
+					m.clearImmobileUnit(i & m.wMask, i >> m.wDec);
+				REQUIRE_FALSE(cache.valid);
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				warm();
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				CHECK(cache.allocatedBytes() == bytes);
+			}
+		}
+	}
+
 	TEST_CASE("concurrent preparation owns buffers and serializes dirty cache refresh")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -291,7 +519,7 @@ TEST_SUITE("GradientPreparation")
 				scalarResource(m, 0, resource, swim, expected.data(), false);
 				m.seedResourcesGradient(0, resource, swim, actual.data(), false);
 				requireSameField(m, "custom cached terrain", actual, expected);
-				m.seedResourcesGradientDirect(0, resource, swim, actual.data(), false);
+				m.seedResourcesGradientDirect(0, resource, swim, actual.data(), nullptr);
 				requireSameField(m, "custom direct terrain", actual, expected);
 				scalarClear(m, 0, swim, expected.data());
 				m.seedClearAreasGradient(0, swim, actual.data());
@@ -376,6 +604,7 @@ TEST_SUITE("GradientPreparation")
 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, phase & 1);
 				world.game.gameHeader.getExperiments().set(ExperimentId::MarketsV2, phase & 2);
 				world.game.gameHeader.getExperiments().set(ExperimentId::GuardAreaBalancing, phase & 1);
+				world.game.configureBuildingCatalog();
 				m.fogOfWar = phase & 1 ? m.fogOfWarB.data() : m.fogOfWarA.data();
 				world.game.teams[0]->allies = phase & 1 ? 3 : 1;
 				for (int r=0; r<MAX_RESOURCES; ++r)
@@ -398,7 +627,13 @@ TEST_SUITE("GradientPreparation")
 						scalarResource(m, team, resource, swim, expected.data(), markets);
 						m.seedResourcesGradient(team, resource, swim, actual.data(), markets);
 						requireSameField(m, "resource", actual, expected);
-						m.seedResourcesGradientDirect(team, resource, swim, actual.data(), markets);
+						std::array<Uint16, Building::MAX_COUNT> supplierSeeds{};
+						if (markets && m.marketsV2Enabled())
+							for (const auto* b : world.game.teams[team]->stockSuppliers)
+								if (m.isStockedMarketTile(b->gid, team, resource))
+									supplierSeeds[Building::GIDtoID(b->gid)] = (GRADIENT_AT_GOAL - 5 * GRADIENT_STEP);
+						m.seedResourcesGradientDirect(team, resource, swim, actual.data(),
+							markets && m.marketsV2Enabled() ? supplierSeeds.data() : nullptr);
 						requireSameField(m, "direct resource", actual, expected);
 					}
 					scalarClear(m, team, swim, expected.data());
