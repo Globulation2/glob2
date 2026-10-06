@@ -1,0 +1,11 @@
+{
+  "archiveSHA256": "d08bbd98733695b013d9f564adb024e38990fa72887aa80118bfaa10b4979732",
+  "archiveBytes": 27680639,
+  "duplicateFilesAsHardlinks": 250,
+  "parts": [
+    {
+      "name": "verification.part-001",
+      "SHA256": "d08bbd98733695b013d9f564adb024e38990fa72887aa80118bfaa10b4979732"
+    }
+  ]
+}
