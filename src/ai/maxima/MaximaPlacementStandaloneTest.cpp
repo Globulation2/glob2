@@ -26,6 +26,7 @@ static BuildingProfile makeProfile(int type,int initial,int terminal)
 		BuildingLevelProfile value;value.level=level;
 		const int size=level==3?terminal:initial;
 		value.footprint=Footprint(-size/2,-size/2,size,size);
+		value.roles=AIMaximaBuildings::roleBit(type);value.operatingResources[1]=(type==0?100:type==1?100*level:0);
 		value.serviceThroughput=level*5;value.capability=level;
 		result.levels.push_back(value);
 	}
@@ -1336,4 +1337,30 @@ TEST_CASE("Explicit noncanonical neighborhood tables survive compact saves" * do
     GAGCore::BinaryOutputStream writer(result);
     restored.saveExecutionState(&writer);
     CHECK(result->takeContents()==bytes);
+}
+
+TEST_CASE("Catalog profiles share capabilities without sharing template identity" * doctest::test_suite("Maxima.Placement"))
+{
+ using namespace AIMaximaPlacement;
+ auto world=makeWorld();world.profiles.clear();
+ auto mixed=makeProfile(101,2,3),other=makeProfile(205,3,4);
+ for(auto& v:mixed.levels){v.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding)|AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);v.productionUnitMask=2;}
+ for(auto& v:other.levels)v.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+ // Five explicit steps are legal planner positions, independent of engine tier labels.
+ for(int level=4;level<=5;++level){auto v=other.levels.back();v.level=level;v.engineType=900+level;other.levels.push_back(v);}
+ world.profiles={mixed,other};Planner planner;planner.configure(world.profiles,1,2,6,5,7,0);
+ std::set<int> identities;for(const auto& t:planner.templates())CHECK(identities.insert(int(t.id)).second);
+ WorldBuilding building;building.id=10;building.gid=55;building.buildingType=101;building.level=1;world.buildings.push_back(building);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Feeding)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production)==1);
+ CHECK(planner.committedBuildingCount(world,101)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,1)==0);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,2)==1);
+ CHECK(planner.committedRoleCount(world,AIMaximaBuildings::Production,4)==0);
+ // A copied snapshot must not retain pointers into its source cache.
+ auto copied=world;copied.profiles[0].levels[0].seats=37;
+ REQUIRE(copied.profile(101));CHECK(copied.profile(101)->atLevel(1)->seats==37);
+ CHECK(world.profile(101)->atLevel(1)->seats!=37);
+ CHECK(world.profile(205)->atLevel(5)->engineType==905);
+ CHECK(world.profile(205)->maximumLevel()==5);
 }

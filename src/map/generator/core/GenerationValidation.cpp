@@ -76,7 +76,7 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 					++workers;
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (const auto *building = team->myBuildings[slot];
-					building && building->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+					building && building->typeNum == g.buildingsTypes.getStartingBuildingTypeNum())
 					swarm = true;
 			if (workers != expectedWorkers || !swarm)
 				return "Incomplete starting colony";

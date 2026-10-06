@@ -73,7 +73,9 @@ MINIMUM_DECISION_TICK = 5120
 # Per-team state read from the timeline, and how each name is built from the
 # GLOB2_TL/GLOB2_ECON fields. Every one is a non-negative integer that the
 # engine can read straight off TeamStat, which is what lets the same model be
-# evaluated inside a running game.
+# evaluated inside a running game. Historical building-column names are semantic
+# service counts in catalog-aware output, not concrete family IDs; hybrids may
+# appear in more than one field, so these columns are never summed as a total.
 TIMELINE_FIELDS = {
     'units': ('tl', 'units'), 'buildings': ('tl', 'bld'), 'prestige': ('tl', 'prestige'),
     'hp': ('tl', 'hp'), 'attack': ('tl', 'atk'), 'defense': ('tl', 'def'),

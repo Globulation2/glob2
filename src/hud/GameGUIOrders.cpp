@@ -102,9 +102,18 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 		{
 			auto omw = std::static_pointer_cast<OrderModifyMinLevelToFlag>(order);
 			auto it = buildingGuiState.find(omw->gid);
-			if (it != buildingGuiState.end()
-				&& (landed(*omw) || it->second.pendingMinLevelToFlag == omw->minLevelToFlag))
-				it->second.pendingMinLevelToFlag.reset();
+			if (it != buildingGuiState.end())
+			{
+				if ((omw->targetRole==0 || omw->legacyCombinedRole) &&
+					(landed(*omw) || it->second.pendingMinLevelToFlag==omw->minLevelToFlag))
+					it->second.pendingMinLevelToFlag.reset();
+				if (omw->targetRole==2 &&
+					(landed(*omw) || it->second.pendingMinWorkerLevelToFlag==omw->minLevelToFlag))
+					it->second.pendingMinWorkerLevelToFlag.reset();
+				if ((omw->targetRole==1 || omw->legacyCombinedRole) &&
+					(landed(*omw) || it->second.pendingExplorersRequireBombing==bool(omw->minLevelToFlag)))
+					it->second.pendingExplorersRequireBombing.reset();
+			}
 			break;
 		}
 		case ORDER_MODIFY_SWARM:

@@ -142,7 +142,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 {
 	for (int  i=1; i<argc; i++)
 	{
-		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
+		if (strcmp(argv[i], "--building-catalog")==0)
+		{
+			// Resolved before constructing GlobalContainer and loading preferences.
+			if (++i >= argc) throw std::invalid_argument("--building-catalog requires a manifest path");
+		}
+		else if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
 			bool good=true;
 			if (i + 3 < argc)

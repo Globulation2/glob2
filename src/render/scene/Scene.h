@@ -10,11 +10,14 @@
 #include <memory>
 
 class OverlayArea;
+struct BuildingType;
 
 //! Everything the renderer draws for one frame, extracted from the simulation at a
 //! tick boundary and read-only afterwards. Grows as render passes are ported to it.
 struct Scene
 {
+	// Retain the immutable type storage referenced by entity and panel records.
+	std::shared_ptr<const std::vector<BuildingType>> buildingTypes;
 	bool editor = false;
 	Uint32 tick = 0;
 	//! When that tick finished (SDL_GetTicks) and the interval to the next one in

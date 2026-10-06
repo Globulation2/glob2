@@ -217,7 +217,7 @@ private:
 	/// resolve->emit->arm step (the candidate SOURCE is all that differs between them).
 	/// Returns true when an OrderCreate was actually queued (false when the type has no
 	/// buildable site), so translateActionBuildForward can record the ordered position.
-	bool emitBuildOrder(int type, int x, int y, int tick);
+	bool emitBuildOrder(int type, int x, int y, int tick, int placementType = -1);
 
 	/// Shared "decode GID → verify building → dedup → push OrderModifyBuilding"
 	/// loop used by translateActionTuneWorkers for all three building sets
@@ -342,7 +342,7 @@ private:
 	void sweepOrphanWarFlags(const Cortex::CortexObservation& obs);
 
 	/// Find the single best finished instance of `buildingType` (an
-	/// IntBuildingType shortTypeNum) to upgrade to its next level, or NULL if no
+	/// Cortex semantic role) to upgrade to its next level, or NULL if no
 	/// instance currently passes the full engine Upgradable predicate. Scans
 	/// team->myBuildings by ARRAY INDEX (never a std::set) and ranks eligible
 	/// instances deterministically — improving on Nicowar's random pick. See the
@@ -371,7 +371,7 @@ private:
 	/// (building/Construction.cpp:394-423) — so without this guard the policy,
 	/// still seeing the pre-upgrade count finished and none upgrading, re-issues a
 	/// SECOND upgrade and blacks out the whole class at once (measured: both
-	/// barracks offline simultaneously). Holds the shortTypeNum of an upgrade we
+	/// barracks offline simultaneously). Holds the semantic role of an upgrade we
 	/// issued that has not yet become a visible site; -1 == none pending. Cleared
 	/// the cycle the upgrade becomes visible (the policy's own
 	/// cortexBuildingsUpgrading / finished-count gates take over then) or after

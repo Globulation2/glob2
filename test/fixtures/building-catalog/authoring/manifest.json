@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "catalogKey": "field-kitchen-example",
+  "experiments": [
+    {
+      "key": "field-kitchens",
+      "label": "Field kitchens",
+      "help": "Enables a building that feeds and heals visiting units."
+    }
+  ],
+  "files": [
+    "field-kitchen.json"
+  ]
+}

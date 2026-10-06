@@ -22,6 +22,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	building_orders.clear();
 	resource_trackers.clear();
 	starting_buildings.clear();
+    retired_attractions.clear();
 	previous_building_id=-1;
 	from_load_timer=0;
 	is_fruit=false;
@@ -41,6 +42,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		} else stream->read(buffer.data(),buffer.size(),"data");
 		auto order = Order::getOrder(buffer.data(), buffer.size(), versionMinor);
 		if (!order) return false;
+		AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);
 		orders.push_back(order);
 		stream->readLeaveSection();
 	}
@@ -175,6 +177,18 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 				gm=runtime->gm->clone();
 			}
 		}
+        if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+            stream->readEnterSection("retiredAttractions");
+            const auto count=stream->readCount("size");
+            for(Uint32 i=0;i<count;++i) {
+                stream->readEnterSection(i);
+                const int id=stream->readSint32("id");
+                const unsigned mask=stream->readUint8("unitMask");
+                if(id<0 || !mask || (mask&~((1u<<NB_UNIT_TYPE)-1)) || !retired_attractions.emplace(id,mask).second) return false;
+                stream->readLeaveSection();
+            }
+            stream->readLeaveSection();
+        }
 		stream->readLeaveSection();
 	}
 
@@ -296,6 +310,15 @@ void Runtime::save(GAGCore::OutputStream *stream)
 	stream->writeUint8(is_fruit,"isFruit");
 	stream->writeUint8(gm != nullptr,"hasGradientManager");
 	if(gm)gm->save(stream);
+    stream->writeEnterSection("retiredAttractions");
+    stream->writeUint32(retired_attractions.size(),"size");
+    Uint32 retiredIndex=0;
+    for(const auto& [id,mask]:retired_attractions) {
+        stream->writeEnterSection(retiredIndex++);
+        stream->writeSint32(id,"id");stream->writeUint8(mask,"unitMask");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
 	stream->writeLeaveSection();
 
 	stream->writeLeaveSection();

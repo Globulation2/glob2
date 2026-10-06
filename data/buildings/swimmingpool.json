@@ -1,0 +1,775 @@
+{
+  "variants": [
+    {
+      "key": "swimmingpool.0.site",
+      "next": "swimmingpool.0.finished",
+      "previous": "",
+      "properties": {
+        "decLeft": -2,
+        "decTop": -2,
+        "fillable": 1,
+        "gameSprite": "data/gfx/pool0c",
+        "height": 4,
+        "hpInc": 97,
+        "hpInit": 1,
+        "hpMax": 675,
+        "isBuildingSite": 1,
+        "maxResource": [
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minipool0c",
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood"
+          ],
+          "suppliesDirectStockResources": [
+            "wood"
+          ],
+          "fetchesStockResources": [
+            "wood"
+          ],
+          "fetchesDirectStockResources": [
+            "wood"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": true,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 8
+        },
+        "repairCost": {},
+        "replenishResources": [
+          "wood"
+        ]
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 2
+      }
+    },
+    {
+      "key": "swimmingpool.0.finished",
+      "next": "swimmingpool.1.site",
+      "previous": "swimmingpool.0.site",
+      "properties": {
+        "armor": 5,
+        "decLeft": -2,
+        "decTop": -2,
+        "gameSprite": "data/gfx/pool0b",
+        "gameSpriteCount": 2,
+        "height": 4,
+        "hpInit": 675,
+        "hpMax": 675,
+        "maxUnitInside": 2,
+        "miniSprite": "data/gfx/minipool0b",
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 4
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 0,
+        "sightSharing": "other",
+        "training": {
+          "swim": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 1,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 1,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 8
+        },
+        "replenishResources": []
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "swimmingpool.1.site",
+      "next": "swimmingpool.1.finished",
+      "previous": "swimmingpool.0.finished",
+      "properties": {
+        "armor": 5,
+        "decLeft": -3,
+        "decTop": -3,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 5,
+        "height": 6,
+        "hpInc": 19,
+        "hpInit": 675,
+        "hpMax": 1000,
+        "isBuildingSite": 1,
+        "level": 1,
+        "maxResource": [
+          12,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 5,
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 12,
+          "wheat": 6
+        },
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "wheat"
+        ]
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 5
+      }
+    },
+    {
+      "key": "swimmingpool.1.finished",
+      "next": "swimmingpool.2.site",
+      "previous": "swimmingpool.1.site",
+      "properties": {
+        "armor": 8,
+        "decLeft": -3,
+        "decTop": -3,
+        "gameSprite": "data/gfx/pool1b",
+        "height": 6,
+        "hpInit": 1000,
+        "hpMax": 1000,
+        "level": 1,
+        "maxUnitInside": 4,
+        "miniSprite": "data/gfx/minipool1b",
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 1,
+        "sightSharing": "other",
+        "training": {
+          "swim": {
+            "cost": {},
+            "duration": 21,
+            "enabled": true,
+            "targetLevel": 2,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 11,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 12,
+          "wheat": 6
+        },
+        "replenishResources": []
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    },
+    {
+      "key": "swimmingpool.2.site",
+      "next": "swimmingpool.2.finished",
+      "previous": "swimmingpool.1.finished",
+      "properties": {
+        "armor": 8,
+        "decLeft": -3,
+        "decTop": -3,
+        "fillable": 1,
+        "gameSprite": "data/gfx/buildingsite",
+        "gameSpriteImage": 5,
+        "height": 6,
+        "hpInc": 20,
+        "hpInit": 1000,
+        "hpMax": 1500,
+        "isBuildingSite": 1,
+        "level": 2,
+        "maxResource": [
+          8,
+          4,
+          0,
+          6,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "data/gfx/minibuildingsite",
+        "miniSpriteImage": 5,
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "suppliesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ],
+          "fetchesDirectStockResources": [
+            "wood",
+            "wheat",
+            "stone",
+            "algae"
+          ]
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": false,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {},
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 20,
+        "constructionCost": {
+          "wood": 8,
+          "wheat": 4,
+          "stone": 6,
+          "algae": 8
+        },
+        "repairCost": {},
+        "replenishResources": [
+          "wood",
+          "wheat",
+          "stone",
+          "algae"
+        ]
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 12
+      }
+    },
+    {
+      "key": "swimmingpool.2.finished",
+      "next": "",
+      "previous": "swimmingpool.2.site",
+      "properties": {
+        "armor": 12,
+        "decLeft": -3,
+        "decTop": -3,
+        "gameSprite": "data/gfx/pool2b",
+        "height": 6,
+        "hpInit": 1500,
+        "hpMax": 1500,
+        "level": 2,
+        "maxUnitInside": 6,
+        "miniSprite": "data/gfx/minipool2b",
+        "shortTypeNum": 4,
+        "type": "swimmingpool",
+        "width": 6
+      },
+      "requiredExperiment": "",
+      "semantics": {
+        "admittedUnitMask": 7,
+        "ammunitionCost": 1,
+        "ammunitionResource": 3,
+        "feeding": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "healing": {
+          "convertsUnits": false,
+          "cost": {},
+          "duration": 0,
+          "enabled": false,
+          "holdAdmissionUntilExit": false,
+          "optionalFruitMask": 0,
+          "partial": "none",
+          "unitMask": 7
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesStock": true,
+          "fetchesStockExperiment": "markets-v2",
+          "interTeamFruitExchange": false,
+          "pickupPenalty": 5,
+          "sharedStock": false,
+          "suppliesStock": false,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesDirectStock": false,
+          "fetchesDirectStock": false,
+          "suppliesStockResources": [],
+          "suppliesDirectStockResources": [],
+          "fetchesStockResources": [],
+          "fetchesDirectStockResources": []
+        },
+        "occupiesGround": true,
+        "placeable": false,
+        "production": {
+          "fallbackUnit": 0,
+          "initialRatios": [
+            1,
+            0,
+            0
+          ],
+          "recipes": {},
+          "scheduling": "weighted_late_choice"
+        },
+        "projectileBuildingDamage": 0,
+        "projectileDamage": [
+          0,
+          0,
+          0
+        ],
+        "regenerationPerTick": 0,
+        "relocatable": false,
+        "repairable": true,
+        "requiredWorkerLevel": 2,
+        "sightSharing": "other",
+        "training": {
+          "swim": {
+            "cost": {},
+            "duration": 24,
+            "enabled": true,
+            "targetLevel": 3,
+            "unitMask": 7
+          }
+        },
+        "trainingInParallel": false,
+        "workPriorityBias": 21,
+        "assignmentLimit": 0,
+        "constructionCost": {},
+        "repairCost": {
+          "wood": 8,
+          "wheat": 4,
+          "stone": 6,
+          "algae": 8
+        },
+        "replenishResources": []
+      },
+      "presentation": {
+        "displayName": "swimmingpool",
+        "iconFrame": 4,
+        "iconTile": false,
+        "iconPriority": 100,
+        "skinSlot": "",
+        "showLevel": true,
+        "connectionGroup": "",
+        "connectsAcrossTeams": false,
+        "defaultAssigned": 0
+      }
+    }
+  ]
+}

@@ -162,6 +162,8 @@ public:
 	std::list<Building *> canFeedUnit; // excludes buildings that are out of food
 	std::list<Building *> canHealUnit;
 	std::list<Building *> canExchange;
+	std::list<Building *> directStockSuppliers, combatFlags; // derived capability memberships
+	std::list<Building *> stockSuppliers; // derived capability membership, not serialized
 
 	// Buildings in a transitional state.
 	std::list<Building *> buildingsWaitingForDestruction;
@@ -196,6 +198,8 @@ public:
 
 	/// Team-wide resource totals, for markets.
 	Sint32 teamResources[MAX_NB_RESOURCES];
+	// Derived from active service/production commitments when restoring a save.
+	Sint32 reservedTeamResources[MAX_NB_RESOURCES] = {};
 
 private:
 	std::queue<GameEvent> events;

@@ -15,6 +15,7 @@ class LobbyMapPreview : public MapPreview
 		std::filesystem::file_time_type time;
 		uintmax_t bytes;
 		MapHeader header;
+		std::string buildingCatalogSnapshot;
 		MapThumbnail terrain;
 		std::vector<Start> starts;
 	};

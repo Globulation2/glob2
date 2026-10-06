@@ -210,6 +210,57 @@ export type PauseLimit = Static<typeof PauseLimit>;
 /** The pause limit of queue (quick and rated) matches. */
 export const QUEUE_PAUSE_LIMIT: PauseLimit = { pauses: 3, seconds: 60 };
 
+/** Immutable canonical engine catalog; clients and verifiers use these exact bytes. */
+export const BuildingCatalog = Strict({
+  snapshot: Type.String({ minLength: 1, maxLength: 8 * 1024 * 1024 }),
+  hash: Sha256Hex,
+});
+export type BuildingCatalog = Static<typeof BuildingCatalog>;
+
+export const BUILTIN_EXPERIMENT_KEYS = [
+  'guard-area-balancing',
+  'farm-areas',
+  'ice-terrain',
+  'road-terrain',
+  'markets-v2',
+] as const;
+
+/** Catalog metadata supplies additional legal keys without a platform code change. */
+export function buildingCatalogExperimentKeys(catalog: BuildingCatalog): string[] {
+  const value: unknown = JSON.parse(catalog.snapshot);
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('catalog must be an object');
+  const root = value as Record<string, unknown>;
+  if (
+    root['schemaVersion'] !== 1 ||
+    !Array.isArray(root['variants']) ||
+    !Array.isArray(root['experiments'])
+  )
+    throw new Error('unsupported or incomplete building catalog');
+  const keys = root['experiments'].map((entry: unknown) => {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry))
+      throw new Error('invalid catalog experiment');
+    const e = entry as Record<string, unknown>;
+    if (
+      typeof e['key'] !== 'string' ||
+      !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(e['key']) ||
+      e['key'].length > 128 ||
+      typeof e['label'] !== 'string' ||
+      !e['label'] ||
+      typeof e['help'] !== 'string' ||
+      !e['help']
+    )
+      throw new Error('invalid catalog experiment');
+    return e['key'];
+  });
+  if (
+    new Set([...BUILTIN_EXPERIMENT_KEYS, ...keys]).size > 64 ||
+    new Set(keys).size !== keys.length
+  )
+    throw new Error('duplicate or excessive catalog experiments');
+  return keys;
+}
+
 export const MatchSetup = Strict(
   {
     schemaVersion: Type.Literal(MATCH_SETUP_SCHEMA_VERSION),
@@ -232,13 +283,14 @@ export const MatchSetup = Strict(
         'Player records (human and AI seats) in BasePlayer number order 0..p-1, then any closed seats.',
     }),
     rules: MatchRules,
-    experiments: Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', maxLength: 64 }), {
+    experiments: Type.Array(Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', maxLength: 128 }), {
       maxItems: 64,
       uniqueItems: true,
       description:
         'Experimental-feature keys (ExperimentalFeatures.cpp); unknown keys are an error.',
     }),
     pauseLimit: Type.Optional(PauseLimit),
+    buildingCatalog: Type.Optional(BuildingCatalog),
   },
   { description: 'Complete engine-independent description of a match.' },
 );
@@ -275,6 +327,20 @@ export interface SetupProblem {
  */
 export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
   const problems: SetupProblem[] = [];
+  const known = new Set<string>(BUILTIN_EXPERIMENT_KEYS);
+  if (setup.buildingCatalog) {
+    try {
+      if (utf8ByteLength(setup.buildingCatalog.snapshot) > 8 * 1024 * 1024)
+        throw new Error('catalog exceeds 8388608 UTF-8 bytes');
+      for (const key of buildingCatalogExperimentKeys(setup.buildingCatalog)) known.add(key);
+    } catch (error) {
+      problems.push({ path: '/buildingCatalog/snapshot', message: String(error) });
+    }
+  }
+  setup.experiments.forEach((key, index) => {
+    if (!known.has(key))
+      problems.push({ path: `/experiments/${index}`, message: `unknown experiment "${key}"` });
+  });
   setup.teams.forEach((team, index) => {
     if (team.team !== index) {
       problems.push({

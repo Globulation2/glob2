@@ -68,8 +68,7 @@ int GameGUI::drawEventFeed(int x, int y)
 		case GEBuildingUnderAttack:
 		case GEBuildingCompleted:
 		{
-			BuildingType *type = globalContainer->buildingsTypes.getByType(
-				IntBuildingType::typeFromShortNumber(row.subject), 0, false);
+			BuildingType *type = row.subject < game.buildingsTypes.size() ? game.buildingsTypes.get(row.subject) : nullptr;
 			if (!type)
 				break;
 			const bool mini = type->miniSpriteImage >= 0;

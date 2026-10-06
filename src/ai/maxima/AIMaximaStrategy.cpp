@@ -51,9 +51,9 @@ namespace
 
 	const ParameterSpec parameterSpecs[] =
 	{
-		INT_SPEC(model, inn_capacity_level1, "model.inn_capacity_level1", 1, 1000, "units", "model", "Estimated level-one inn feeding capacity", StrategyImpactHigh),
-		INT_SPEC(model, inn_capacity_level2, "model.inn_capacity_level2", 1, 1000, "units", "model", "Estimated level-two inn feeding capacity", StrategyImpactHigh),
-		INT_SPEC(model, inn_capacity_level3, "model.inn_capacity_level3", 1, 1000, "units", "model", "Estimated level-three inn feeding capacity", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level1, "model.inn_capacity_level1", 1, 1000, "units", "model", "Legacy level-one feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level2, "model.inn_capacity_level2", 1, 1000, "units", "model", "Legacy level-two feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
+		INT_SPEC(model, inn_capacity_level3, "model.inn_capacity_level3", 1, 1000, "units", "model", "Legacy level-three feeding estimate; accepted for saved strategy compatibility, unused by capability planning", StrategyImpactHigh),
 
 		INT_SPEC(staffing, control_window_samples, "staffing.control_window_samples", 1, 1000, "samples", "staffing", "Length of each building's rolling stock and staffing averages, in control passes", StrategyImpactHigh),
 		INT_SPEC(staffing, control_low_permille, "staffing.control_low_permille", 0, 1000, "permille", "staffing", "Stock below this share of a building's own capacity earns another carrier", StrategyImpactHigh),
@@ -220,9 +220,9 @@ namespace
 		INT_SPEC(economy, service_unserved_percent, "economy.service_unserved_percent", 0, 100, "percent", "economy", "Unserved-food share that adds an inn", StrategyImpactHigh),
 		INT_SPEC(economy, service_critical_percent, "economy.service_critical_percent", 0, 100, "percent", "economy", "Critical-food share that adds an inn", StrategyImpactHigh),
 		INT_SPEC(economy, service_combined_percent, "economy.service_combined_percent", 0, 100, "percent", "economy", "Combined food-pressure share that adds an inn", StrategyImpactHigh),
-		INT_SPEC(economy, sustainable_inn_floor, "economy.sustainable_inn_floor", 1, 32, "buildings", "economy", "Minimum inn count considered sustainable regardless of visible corn", StrategyImpactHigh),
-		INT_SPEC(economy, sustainable_inn_corn_divisor, "economy.sustainable_inn_corn_divisor", 1, 100, "tiles", "economy", "Accessible corn required per additional sustainable inn", StrategyImpactHigh),
-		INT_SPEC(economy, sustainable_inn_offset, "economy.sustainable_inn_offset", 0, 32, "buildings", "economy", "Inn allowance added to the corn-derived sustainable limit", StrategyImpactHigh),
+		INT_SPEC(economy, sustainable_inn_floor, "economy.sustainable_inn_floor", 1, 32, "buildings", "economy", "Legacy input retained for saved configurations; no longer bounds feeding count", StrategyImpactHigh),
+		INT_SPEC(economy, sustainable_inn_corn_divisor, "economy.sustainable_inn_corn_divisor", 1, 100, "tiles", "economy", "Legacy crop-per-inn input; no longer applies to shared recipient demand", StrategyImpactHigh),
+		INT_SPEC(economy, sustainable_inn_offset, "economy.sustainable_inn_offset", 0, 32, "buildings", "economy", "Legacy crop-derived inn offset retained for saved configurations", StrategyImpactHigh),
 		INT_SPEC(economy, inn_target_floor, "economy.inn_target_floor", 0, 32, "buildings", "economy", "Minimum normal inn target", StrategyImpactHigh),
 		INT_SPEC(economy, inn_target_cap, "economy.inn_target_cap", 1, 64, "buildings", "economy", "Maximum normal inn target", StrategyImpactHigh),
 		INT_SPEC(economy, abundance_inn_target_cap, "economy.abundance_inn_target_cap", 1, 64, "buildings", "economy", "Maximum inn target during an abundance surge", StrategyImpactHigh),
@@ -649,7 +649,7 @@ namespace
 
 		BOOL_SPEC(food, enabled, "food.enabled", "enabled", "food", "Account protected farm capacity against inn and swarm demand before placing, upgrading or retiring them", StrategyImpactCritical),
 		BOOL_SPEC(food, retirement_enabled, "food.retirement_enabled", "enabled", "food", "Retire inns and swarms that stay below their burden coverage", StrategyImpactHigh),
-		BOOL_SPEC(food, target_capping_enabled, "food.target_capping_enabled", "enabled", "food", "Cap director inn and swarm targets by the capacity the ledger can supply", StrategyImpactHigh),
+		BOOL_SPEC(food, target_capping_enabled, "food.target_capping_enabled", "enabled", "food", "Bound strategic producer targets by covered providers and remaining peak-recipe supply", StrategyImpactHigh),
 		INT_SPEC(food, growth_period_ticks, "food.growth_period_ticks", 1, 100000, "ticks", "food", "Mean ticks between growth samples of one wheat cell, including the wheat growth gate", StrategyImpactCritical),
 		INT_SPEC(food, ticks_per_meal, "food.ticks_per_meal", 1, 100000, "ticks", "food", "Ticks a fed unit takes to consume one wheat, measured from real games because hunger drains per unit action rather than per tick", StrategyImpactCritical),
 		INT_SPEC(food, inn_demand_percent, "food.inn_demand_percent", 1, 1000, "percent", "food", "Scale applied to modelled inn consumption at full capacity", StrategyImpactHigh),

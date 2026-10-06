@@ -184,6 +184,15 @@ def game_sprites(root):
                     names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     for path in sorted((root / 'src/building/types').glob('BuildingTypes*.cpp')):
         names.update(SPRITE.findall(path.read_text()))
+    # Include every installed definition, including optional experimental catalogs.
+    # The frozen C++ table above only covers artwork needed by old save imports.
+    for path in sorted((root / 'data/buildings').rglob('*.json')):
+        for variant in json.loads(path.read_text()).get('variants', []):
+            properties = variant.get('properties', {})
+            for field in ('gameSprite', 'miniSprite'):
+                source = properties.get(field)
+                if source:
+                    names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     if not {'unit', 'terrain', 'gamegui', 'swarm0b'} <= names:
         raise ValueError('could not find the game sprites in src/app/GlobalContainer.cpp')
     return names

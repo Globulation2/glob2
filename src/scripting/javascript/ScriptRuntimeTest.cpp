@@ -545,6 +545,7 @@ TEST_CASE("JavaScript managed properties coalesce and reject persistent handles"
 				.set("team", 0)
 				.set("shortType", 8)
 				.set("virtual", true)
+				.set("relocatable", true)
 				.set("x", 1)
 				.set("y", 2)
 				.set("workers", 3);
@@ -582,4 +583,47 @@ TEST_CASE("JavaScript metadata cannot mutate game globals" *
 	host.profile = 2;
 	auto result = makeRuntime()->invoke(source, Value::object(), true, host);
 	CHECK(result.telemetry.get("test.counter").get("value").number == 0);
+}
+
+TEST_CASE("JavaScript repository starter scripts staff capabilities and respect assignment caps" *
+          doctest::test_suite("JavaScriptRuntime"))
+{
+    for(unsigned profile:{1u,2u}) for(int scenario=0;scenario<4;++scenario) {
+        CAPTURE(profile);CAPTURE(scenario);
+        const bool noUpgrades=scenario!=3;
+        const bool otherService=scenario==1 || scenario==2;
+        const int limit=scenario==1 ? 1 : 2;
+        const int expected=noUpgrades && !otherService ? 0 : limit;
+        Value capabilities=Value::array();
+        if(otherService)capabilities.items.emplace_back(scenario==1 ? "feed" : "produceWorker");
+        Value training=Value::array();
+        training.items.push_back(Value::object().set("enabled",true));
+        const auto type=Value::object().set("id",30).set("name",otherService ? "school" : "unfamiliar")
+            .set("site",false).set("training",training).set("capabilities",capabilities).set("maxWorkers",limit);
+        const auto building=Value::object().set("id",1).set("generation",2).set("team",0)
+            .set("type",30).set("workers",7).set("virtual",true);
+        Host host;host.profile=profile;host.team=0;host.random=[] {return 1u;};
+        host.query=[&](const std::string& name,const auto&,const QueryBudget&) {
+            if(name=="buildingTypes"){auto a=Value::array();a.items.push_back(type);return a;}
+            if(name=="buildings"){auto a=Value::array();a.items.push_back(building);return a;}
+            if(name=="building")return building;
+            if(name=="rules")return Value::object().set("noUpgrades",noUpgrades);
+            if(name=="desired")return Value::object();
+            return Value();
+        };
+        const auto sourcePath=glob2test::sourceRoot()/"examples/javascript"/
+            (profile==1 ? "ai.js" : "studio-starter.js");
+        INFO(sourcePath.string());
+        const auto source=glob2test::readFile(sourcePath);
+        REQUIRE_FALSE(source.empty());
+        const auto result=makeRuntime()->invoke(source,Value::object(),false,host);
+        if(profile==1) {
+            CHECK(result.effects.get("type").text=="workers");
+            CHECK(result.effects.get("workers").number==expected);
+        } else {
+            REQUIRE(result.commands.items.size()==1);
+            CHECK(result.commands.items[0].get("type").text=="workers");
+            CHECK(result.commands.items[0].get("workers").number==expected);
+        }
+    }
 }

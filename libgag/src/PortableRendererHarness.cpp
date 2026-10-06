@@ -60,6 +60,14 @@ void verifyUITransform(unsigned flags)
 	context.setUITransform(2, 100, 50, &bounds);
 	context.setClipRect(0, 0, 8, 8);
 	context.drawFilledRect(0, 0, 30, 30, Color(255, 0, 0));
+	// An inner clip wholly outside the viewport is empty, not disabled.
+	// Alpha texture pixels exercise the software geometry sprite path too.
+	DrawableSurface sprite(8, 8);
+	sprite.drawFilledRect(0, 0, 8, 8, Color(255, 255, 0, 128));
+	context.setClipRect(0, -10, 8, 8);
+	context.drawSurface(0, -10, &sprite);
+	context.setClipRect(-10, 0, 8, 8);
+	context.drawSurface(-10, 0, &sprite);
 	context.setUITransform();
 	int x, y, w, h;
 	context.getClipRect(&x, &y, &w, &h);
@@ -77,6 +85,8 @@ void verifyUITransform(unsigned flags)
 		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels->pixels);
 		// GL's first row is the bottom of the drawable.
 		expect(pixels, 110 * width / 320, height - 1 - 60 * height / 240, 255, 0, 0);
+		expect(pixels, 110 * width / 320, height - 1 - 35 * height / 240, 0, 0, 0);
+		expect(pixels, 85 * width / 320, height - 1 - 60 * height / 240, 0, 0, 0);
 		expect(pixels, 118 * width / 320, height - 1 - 60 * height / 240, 0, 0, 0);
 		expect(pixels, 12 * width / 320, height - 1 - 12 * height / 240, 0, 255, 0);
 		SDL_DestroySurface(pixels);
@@ -84,6 +94,8 @@ void verifyUITransform(unsigned flags)
 	}
 #endif
 	expect(pixels, 110*pixels->w/context.getW(), 60*pixels->h/context.getH(), 255, 0, 0);
+	expect(pixels, 110*pixels->w/context.getW(), 35*pixels->h/context.getH(), 0, 0, 0);
+	expect(pixels, 85*pixels->w/context.getW(), 60*pixels->h/context.getH(), 0, 0, 0);
 	expect(pixels, 118*pixels->w/context.getW(), 60*pixels->h/context.getH(), 0, 0, 0);
 	expect(pixels, 12*pixels->w/context.getW(), 12*pixels->h/context.getH(), 0, 255, 0);
 }

@@ -6,7 +6,7 @@
 
 #include "FormatableString.h"
 #include "Game.h"
-#include "IntBuildingType.h"
+#include "BuildingPresentation.h"
 #include "StringTable.h"
 #include "Team.h"
 #include "TeamDisplay.h"
@@ -35,12 +35,12 @@ GameEvent GameEvent::unitGainedConversion(Uint32 step, Sint16 x, Sint16 y, Uint8
 	return GameEvent(GEUnitGainedConversion, step, x, y, 0, otherTeamNumber);
 }
 
-GameEvent GameEvent::buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
+GameEvent GameEvent::buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 buildingType)
 {
 	return GameEvent(GEBuildingUnderAttack, step, x, y, buildingType, 0);
 }
 
-GameEvent GameEvent::buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
+GameEvent GameEvent::buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint32 buildingType)
 {
 	return GameEvent(GEBuildingCompleted, step, x, y, buildingType, 0);
 }
@@ -60,18 +60,14 @@ std::string GameEvent::formatMessage(const Game& game) const
 		return FormattableString(table->getString("[%0's team unit got converted to your team]"))
 		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
 	case GEBuildingUnderAttack:
-	{
-		std::string key = "[the ";
-		key += IntBuildingType::typeFromShortNumber(typeNum);
-		key += " is under attack]";
-		return table->getString(key.c_str());
-	}
 	case GEBuildingCompleted:
 	{
-		std::string key = "[the ";
-		key += IntBuildingType::typeFromShortNumber(typeNum);
-		key += " is finished]";
-		return table->getString(key.c_str());
+		if (typeNum>=game.buildingsTypes.size()) return {};
+		const auto& building=*game.buildingsTypes.get(typeNum);
+		const bool completed=type==GEBuildingCompleted;
+		const std::string key="[the "+building.type+(completed ? " is finished]" : " is under attack]");
+		if (building.presentation.displayName==building.type && !building.type.empty() && table->doesStringExist(key)) return table->getString(key);
+		return buildingDisplayName(building)+(completed ? " is finished" : " is under attack");
 	}
 	case GESize:
 		break;

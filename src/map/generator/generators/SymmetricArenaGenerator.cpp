@@ -493,11 +493,11 @@ bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const
 	Map &map = game.map;
 	const Symmetry &s = a.symmetry;
 	const int w = a.width, h = a.height;
-	const int type = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
-	const BuildingType *swarm = globalContainer->buildingsTypes.get(type);
-	if (!swarm)
+	const int type = game.buildingsTypes.getStartingBuildingTypeNum();
+	const BuildingType *swarm = type>=0 ? game.buildingsTypes.get(type) : nullptr;
+	if (!swarm || !swarm->runtimeAvailable)
 	{
-		context.detail = "missing swarm type";
+		context.detail = "catalog has no available starting building";
 		return false;
 	}
 	const int x0 = l.homeU - swarm->width / 2, y0 = l.homeV - swarm->height / 2;

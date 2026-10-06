@@ -12,10 +12,12 @@ content with CR LF replaced by LF.
 Until every deployed binary reports its own hash (`glob2 --sim-version`), the
 engine-agent image passes this value as ENGINE_DATA_HASH; an agent whose binary
 reports a different hash refuses to start, so a drifted file list fails loudly.
-Keep SIM_DATA_FILES identical to simDataFiles() in the engine.
+Keep the static SIM_DATA_FILES plus default manifest discovery identical to
+simDataFiles() in the engine. Historical trees without a manifest use the static list.
 """
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import re
 import sys
@@ -59,9 +61,31 @@ def sim_revision(source):
     return int(found.group(1))
 
 
-def data_hash(root, files=SIM_DATA_FILES, revision='read'):
+def sim_data_files(root):
+    """Default catalog dependencies are discovered, never a manually maintained list."""
+    manifest_path = Path(root) / 'data/buildings/manifest.json'
+    if not manifest_path.exists():
+        # Historical revisions predate repository catalogs.
+        return SIM_DATA_FILES
+    manifest = json.loads(manifest_path.read_text())
+    names = manifest.get('files')
+    if not isinstance(names, list):
+        raise ValueError('default building catalog lacks files array')
+    seen = set()
+    for name in names:
+        if (not isinstance(name, str) or not name or name in ('.', '..') or
+                any(c in name for c in '/\\:') or name in seen):
+            raise ValueError('invalid default building catalog filename')
+        seen.add(name)
+    return tuple(sorted((*SIM_DATA_FILES, 'data/buildings/manifest.json',
+                         *(f'data/buildings/{name}' for name in names))))
+
+
+def data_hash(root, files=None, revision='read'):
     """revision: SIM_REVISION ('read': from root's src/game/SimRevision.h; None: none)."""
     digest = hashlib.sha256()
+    if files is None:
+        files = sim_data_files(root)
     if revision == 'read':
         revision = sim_revision(root)
     if revision is not None:
@@ -95,7 +119,7 @@ def main():
     parser.add_argument('--expect', help='fail unless the key equals this value (empty: no check)')
     arguments = parser.parse_args()
     root = arguments.data_root or arguments.source
-    for name in SIM_DATA_FILES:
+    for name in sim_data_files(root):
         if not (Path(root) / name).is_file():
             print(f'warning: missing simulation data file {name}', file=sys.stderr)
     key = sim_version_key(arguments.source, root)

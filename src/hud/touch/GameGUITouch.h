@@ -6,6 +6,7 @@
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
 #include "BrushHUD.h"
+#include "MetricCatalog.h"
 #include <SDL3/SDL.h>
 #include <string>
 #include <optional>
@@ -162,6 +163,7 @@ class GameGUITouch
 	// end-game chart, own team only), a metric switcher and current counters.
 	bool statsOpen = false;
 	int statsMetric = 0;
+	std::vector<Stats::Metric> statsCatalog;
 	double statsDrag = 0;
 	struct StatsLayout
 	{

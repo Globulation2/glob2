@@ -125,6 +125,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(innType >= 0, "inn type exists");
 	Building* inn = game.addBuilding(5, 5, innType, 0);
 	require(inn != nullptr, "inn placed");
+	require(game.map.resourceSupplyModes(inn, WHEAT) == 0, "stock permission without a supplier uses natural routing");
 	game.map.setBuilding(5, 5, inn->type->width, inn->type->height, inn->gid);
 
 	const int unitX = 16, unitY = 16;
@@ -175,6 +176,17 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"target is refreshed to the only remaining wheat tile");
 
+	require(game.map.resourceRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
+	const auto* natural=game.map.getResourceGradient(teamNumber,WHEAT,swimClass);
+	const int marketType=game.buildingsTypes.getTypeNum("market",0,false);
+	auto* market=game.addBuilding(24,24,marketType,0);
+	require(market!=nullptr, "fruit-only market placed");
+	market->resources[CHERRY]=1;
+	require(!team->directStockSuppliers.empty(), "fruit-only market is a direct supplier");
+	require(game.map.resourceSupplyModes(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
+	require(game.map.getResourceGradient(teamNumber,WHEAT,swimClass,true,inn)==natural,
+		"fruit-only supplier retains the original natural wheat field");
+	require(game.map.resourceRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
 	std::puts("PASS resource-fetch target tracks the round-trip gradient and refreshes when it is rebuilt");
 }
 }

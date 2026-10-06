@@ -39,6 +39,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include <nlohmann/json.hpp>
 
 static void require(bool ok, const char* message)
 {
@@ -639,10 +640,13 @@ static void measurementScenarios()
 		site->constructionResultState = kind == Measurements::NEW_BUILDING ? Building::NEW_BUILDING
 										: kind == Measurements::UPGRADED   ? Building::UPGRADE
 																		   : Building::REPAIR;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
-			site->resources[r] = site->type->maxResource[r];
+        // Seed a fully paid construction ledger. Storage capacity is independent
+        // of the construction budget; repair deliveries are reserved as they arrive.
+        for (int r = 0; r < MAX_RESOURCES; ++r) site->resources[r]=site->constructionBudget[r];
+        require(site->reserveResources(site->constructionBudget),"fixture construction resources reserve");
+        site->constructionReserved=site->constructionBudget;
 		int level = site->type->level, shortType = site->type->shortTypeNum;
-		const int wheatCost = site->type->maxResource[WHEAT];
+		const int wheatCost = site->constructionBudget[WHEAT];
 		site->update();
 		site->update();
 		auto &m = w.game.teams[0]->stats.measurements;
@@ -796,9 +800,12 @@ static void measurementAttributionFields()
 	GAGCore::BinaryOutputStream writer(storage);
 	bullet.save(&writer);
 	const std::string bytes(storage->getBuffer(), storage->getPosition());
-	// All pre-105 projectile fields are an unchanged prefix.
+	// Thirteen fixed-width fields precede sourceTeam. Per-unit damage fields
+	// follow it in building-catalog saves, so attribution is no longer the tail.
+	constexpr size_t sourceOffset = 13 * sizeof(Sint32);
+	require(bytes.size() >= sourceOffset + sizeof(Sint32), "projectile attribution exists");
 	GAGCore::BinaryInputStream oldReader(
-		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size() - 4));
+		new GAGCore::MemoryStreamBackend(bytes.data(), sourceOffset));
 	oldReader.seekFromStart(0);
 	Bullet old(&oldReader, 100);
 	require(old.sourceTeam == -1 && old.shootDamage == 6,
@@ -806,11 +813,11 @@ static void measurementAttributionFields()
 	for (bool truncated : {false, true})
 	{
 		auto *input =
-			new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size() - (truncated ? 2 : 0));
+			new GAGCore::MemoryStreamBackend(bytes.data(), truncated ? sourceOffset + 2 : bytes.size());
 		if (!truncated)
 		{
 			GAGCore::BinaryOutputStream patch(input);
-			patch.seekFromStart(bytes.size() - 4);
+			patch.seekFromStart(sourceOffset);
 			patch.writeSint32(Team::MAX_COUNT, "invalidSource");
 			input = new GAGCore::MemoryStreamBackend(*input);
 		}
@@ -834,10 +841,10 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Runtime terrain embeds definitions in format 136; old terrain replays remain supported.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 134 && NET_PROTOCOL_VERSION == 56,
+	// Building format 137 changes services/AI and uses replay floor 137, protocol 57.
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG && NET_PROTOCOL_VERSION == 57,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1453,11 +1460,23 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
  {
   CAPTURE(kind);
   TeamStatsMeasurementFixture w;
-  auto* site=w.building("inn",8,8,0,true,kind==Building::UPGRADE?1:0);
-  site->constructionResultState=kind;
+  auto* site=w.building("inn",8,8,0,kind==Building::NEW_BUILDING,0);
   auto generations=w.game.scriptGenerations; auto identity=site->scriptIdentity;
-  for(int resource=0;resource<MAX_RESOURCES;++resource) site->resources[resource]=site->type->maxResource[resource];
+  if(kind!=Building::NEW_BUILDING) {
+   if(kind==Building::REPAIR)--site->hp;
+   site->launchConstruction(1,1);
+   REQUIRE(site->constructionResultState==kind);
+   // Team::syncStep normally performs this queued transition. Updating the
+   // building alone cannot move an upgrade or repair into its site stage.
+   REQUIRE(site->tryToBuildingSiteRoom());
+  }
+  REQUIRE(site->type->isBuildingSite);
+  REQUIRE(site->constructionResultState==kind);
+  for(int resource=0;resource<MAX_RESOURCES;++resource)site->resources[resource]=site->constructionBudget[resource];
+  REQUIRE(site->reserveResources(site->constructionBudget));
+  site->constructionReserved=site->constructionBudget;
   site->update(); site->update();
+  REQUIRE_FALSE(site->type->isBuildingSite);
   CHECK(site->scriptIdentity==identity);
   CHECK(w.game.scriptGenerations==generations);
   auto loaded=roundTrip(w.game);
@@ -1625,4 +1644,88 @@ TEST_CASE("Compact team histories preserve samples across two batch boundaries" 
     // textRoundTrip; its legacy end-game labels are not valid text identifiers.
     auto restored = roundTrip(world.game);
     compare(stats, restored->game.teams[0]->stats);
+}
+
+
+TEST_CASE("Sparse variant snapshot reset clears vanished types without clearing history" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options; options.header=true;
+    glob2test::HeadlessGame world(options);
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto dormant=catalog["variants"][world.game.buildingsTypes.getTypeNum("stonewall",0,false)];
+    dormant["previous"]=""; dormant["next"]=""; dormant["properties"]["type"]="";
+    dormant["semantics"]["repairable"]=false; dormant["semantics"]["placeable"]=false;
+    for (int id=int(catalog["variants"].size()); id<1024; ++id) {
+        dormant["id"]=id; dormant["key"]="snapshot-dormant-"+std::to_string(id);
+        catalog["variants"].push_back(dormant);
+    }
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+    auto* first=world.addBuilding("inn",4,4); auto* second=world.addBuilding("inn",10,4);
+    auto* rare=world.game.addBuilding(16,4,1023,0,0,0);
+    REQUIRE(first); REQUIRE(second); REQUIRE(rare);
+    const auto inn=size_t(first->typeNum);
+    auto& stats=world.team->stats;
+    stats.beginMeasurementSnapshot(world.team);
+    stats.observeMeasurementBuilding(first); stats.observeMeasurementBuilding(second); stats.observeMeasurementBuilding(rare);
+    REQUIRE(stats.measurements.variants[inn].count==2);
+    REQUIRE(stats.measurements.variants[1023].count==1);
+    auto& history=stats.measurements.variants[1023];
+    history.completed[0]=7; history.removed[1]=9; history.trapped[1][0]=11;
+    // The next observed cohort no longer contains either inn; old counts must
+    // disappear while cumulative and independently sampled fields survive.
+    stats.beginMeasurementSnapshot(world.team); stats.observeMeasurementBuilding(rare);
+    CHECK(stats.measurements.variants[inn].count==0);
+    CHECK(stats.measurements.variants[1023].count==1);
+    CHECK(history.completed[0]==7); CHECK(history.removed[1]==9); CHECK(history.trapped[1][0]==11);
+    stats.beginMeasurementSnapshot(world.team);
+    CHECK(stats.measurements.variants[1023].count==0);
+    stats.beginMeasurementSnapshot(world.team);
+    CHECK(stats.measurements.variants[inn].count==0);
+    stats.initializeMeasurements(123);
+    stats.beginMeasurementSnapshot(world.team); stats.observeMeasurementBuilding(first);
+    CHECK(stats.measurements.variants[inn].count==1);
+    CHECK(stats.measurements.variants[1023]==BuildingMeasurement{});
+}
+
+TEST_CASE("Sparse variant reset accepts refreshed diagnostics and restored snapshots" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool text : {false,true}) {
+        CAPTURE(text);
+        glob2test::GameOptions options; options.header=true;
+        glob2test::HeadlessGame world(options);
+        REQUIRE(world.game.sgslScript.compileScript(&world.game,"").type==ErrorReport::ET_OK);
+        auto* inn=world.addBuilding("inn",4,4); REQUIRE(inn);
+        const auto type=size_t(inn->typeNum);
+        const auto absent=size_t(world.game.buildingsTypes.getTypeNum("stonewall",0,false));
+        auto& stats=world.team->stats;
+        stats.refreshMeasurements(world.team);
+        stats.measurements.variants[absent].count=99; // public diagnostic replacement
+        stats.refreshMeasurements(world.team);
+        CHECK(stats.measurements.variants[absent].count==0);
+        CHECK(stats.measurements.variants[type].count==1);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        std::unique_ptr<GAGCore::OutputStream> out(text
+            ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory))
+            : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
+        world.game.save(out.get(),false,"sparse snapshot counts");
+        out->flush();
+        const auto bytes=memory->takeContents();
+        for (int repeat=0;repeat<2;++repeat) {
+            auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()); source->seekFromStart(0);
+            std::unique_ptr<GAGCore::InputStream> in(text
+                ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source))
+                : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+            GameGUI restored; REQUIRE(restored.game.load(in.get()));
+            auto& loaded=restored.game.teams[0]->stats;
+            REQUIRE(loaded.measurements.variants[type].count==1);
+            loaded.beginMeasurementSnapshot(restored.game.teams[0]);
+            CHECK(loaded.measurements.variants[type].count==0);
+            loaded.observeMeasurementBuilding(restored.game.teams[0]->myBuildings[0]);
+            CHECK(loaded.measurements.variants[type].count==1);
+            loaded.beginMeasurementSnapshot(restored.game.teams[0]);
+            CHECK(loaded.measurements.variants[type].count==0);
+        }
+    }
 }

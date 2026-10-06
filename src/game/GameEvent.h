@@ -33,8 +33,8 @@ public:
 	static GameEvent unitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 unitType);
 	static GameEvent unitLostConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber);
 	static GameEvent unitGainedConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber);
-	static GameEvent buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType);
-	static GameEvent buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType);
+	static GameEvent buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 buildingType);
+	static GameEvent buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint32 buildingType);
 
 	std::string formatMessage(const Game& game) const;
 	GAGCore::Color formatColor() const;
@@ -53,7 +53,7 @@ private:
 	Uint32 step;
 	Sint16 x;
 	Sint16 y;
-	// Unit type for GEUnitUnderAttack; building shortTypeNum for GEBuildingUnderAttack
+	// Unit type for GEUnitUnderAttack; building catalog ID for GEBuildingUnderAttack
 	// and GEBuildingCompleted; unused for conversion events.
 	Uint32 typeNum;
 	// Other team's index in Game::teams for conversion events; unused otherwise.

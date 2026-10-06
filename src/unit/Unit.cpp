@@ -49,6 +49,8 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	dy=0;
 	direction=UNIT_DIRECTION_NONE;
 	insideTimeout=0;
+	serviceResourcesReserved=false;
+	constructionLevel=level;
 	terrainHealthRemainder=0;
 	speed=32;
 
@@ -147,11 +149,11 @@ void Unit::setTargetBuilding(Building * b)
     targetBuilding = b;
 }
 
-void Unit::subscriptionSuccess(Building* building, bool inside)
+void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction)
 {
 	Building* b=building;
 
-	if (building->type->isVirtual)
+	if (attraction && !inside)
 	{
 		destinationPurpose=UNIT_DEST_PURPOSE_NONE;
 		activity=ACT_FLAG;
@@ -217,7 +219,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets());
+						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets(), attachedBuilding);
 						validTarget=true;
 					}
 				}
@@ -319,7 +321,7 @@ void Unit::syncStep(void)
 
 				enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
 
-				enemy->owner->pushGameEvent(GameEvent::buildingUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->shortTypeNum));
+				enemy->owner->pushGameEvent(GameEvent::buildingUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 
 				if (enemy->hp<0)
 					enemy->kill(GameplayMeasurements::DESTROYED);
@@ -344,7 +346,7 @@ void Unit::syncStep(void)
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	stepSpeed=unitActionStepSpeed(speed, action, dx, dy);
+	stepSpeed=unitActionStepSpeed(speed, action, dx, dy, displacement==DIS_INSIDE);
 	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
 		delta+=stepSpeed;
@@ -389,6 +391,7 @@ void Unit::resetAtLevel(Sint32 newLevel)
 
 void Unit::setWorkerLevel(Sint32 newLevel)
 {
+	constructionLevel = newLevel;
 	for (int ability : {(int)BUILD, (int)HARVEST})
 	{
 		level[ability] = newLevel;
@@ -396,8 +399,32 @@ void Unit::setWorkerLevel(Sint32 newLevel)
 	}
 }
 
+bool Unit::needsTraining(const BuildingTrainingSpec& training, int ability) const
+{
+	return training.enabled && canLearn[ability] && (training.unitMask & (1u << typeNum))
+		&& (level[ability] < training.targetLevel || (typeNum == WORKER && constructionLevel < training.constructionLevel));
+}
+
+void Unit::applyTraining(const BuildingTrainingSpec& training, int ability)
+{
+	if (level[ability] < training.targetLevel)
+	{
+		level[ability] = training.targetLevel;
+		performance[ability] = race->getUnitType(typeNum, training.targetLevel)->performance[ability];
+		if (ability == HP) performance[ability] = std::max(1, performance[ability] / owner->game->gameHeader.getGlassCannonScale());
+	}
+	if (typeNum == WORKER) constructionLevel = std::max(constructionLevel, training.constructionLevel);
+}
+
 void Unit::recordLethalDamage(int damage, int cause)
 {
 	if (hp >= UNIT_HP_DEATH_THRESHOLD && hp - damage < UNIT_HP_DEATH_THRESHOLD)
 		diagnosticDeathCause = cause;
+}
+
+void Unit::receiveCarriedResource(int resource, ResourcePacket packet)
+{
+	if (carriedResource>=0) ++owner->stats.measurements.resourceSpillageEvents;
+	carriedResource=resource;
+	carriedPacket=packet;
 }

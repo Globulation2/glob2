@@ -39,6 +39,7 @@ import {
   type WinRate,
 } from '@glob2/protocol';
 import {
+  currentCatalogRulesVersions,
   PROVISIONAL_SIGMA,
   STORED_MATCH_SETUP,
   STORED_VERIFY_VERDICT,
@@ -181,7 +182,8 @@ export class HistoryService {
     this.db = options.db;
     this.origin = options.origin;
     this.queueNames = options.queueNames;
-    this.currentSimVersions = options.currentSimVersions;
+    this.currentSimVersions = async () =>
+      currentCatalogRulesVersions(this.db, await options.currentSimVersions());
   }
 
   // ------------------------------------------------------- leaderboards

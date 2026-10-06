@@ -896,7 +896,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
-  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  remains unchanged. Building format 137 adds the per-game building catalog; replay
+  floor 137 and network protocol 57 gate the current simulation and catalog transport.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapRender.h"
 #include "Game.h"
+#include "BuildingType.h"
 #include "GlobalContainer.h"
 #include "render/scene/Scene.h"
 #include <SDL3_image/SDL_image.h>
@@ -63,10 +64,28 @@ void toPng(const Scene& scene, const std::string& path, int maximumPixels, const
 	Surface canvas(SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	if (!canvas) throw std::runtime_error(SDL_GetError());
 	globalContainer->loadOffscreenGraphics();
+	// Captures may predate graphics initialization, or outlive a graphics context.
+	// Bind fresh artwork on an export-owned copy, never on immutable sim storage.
+	Scene rendered=scene;
+	if (scene.buildingTypes)
+	{
+		auto types=std::make_shared<std::vector<BuildingType>>(*scene.buildingTypes);
+		BuildingsTypes::loadSpritesForTypes(*types);
+		const auto remap=[&](BuildingType* type) -> BuildingType* {
+			return type ? &types->at(type-scene.buildingTypes->data()) : nullptr;
+		};
+		for (auto& building : rendered.entities.buildings)
+		{
+			building.type=remap(building.type);
+			building.lastUpgradeType=remap(building.lastUpgradeType);
+		}
+		rendered.panels.building.type=remap(rendered.panels.building.type);
+		rendered.buildingTypes=std::move(types);
+	}
 	globalContainer->gfx->drawToSurface(canvas.get(), float(std::min(extent, maximumPixels))/extent, [&] {
 		Game::ViewState view;
-		view.scene = &scene;
-		Game::drawSceneMap(scene, 0, 0, fullW, fullH, 0, 0, 0, 0, 0, view,
+		view.scene = &rendered;
+		Game::drawSceneMap(rendered, 0, 0, fullW, fullH, 0, 0, 0, 0, 0, view,
 			Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_BUILDING_RECT,
 			nullptr, nullptr, true, 64);
 		if (field)

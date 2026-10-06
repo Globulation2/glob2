@@ -102,6 +102,7 @@ namespace
 			w = h = 1 << kMapDec;
 			wMask = hMask = w - 1;
 			size = size_t(w) * h;
+			// Test-only private access bootstraps this partial map.
 			tiles.assign(size, Tile());
 			importLegacyTerrain();
 		}
@@ -111,9 +112,7 @@ namespace
 		void makeSand(int x, int y) { setCellTerrain(x,y,SAND); }
 		void putResource(int x, int y, int type)
 		{
-			Resource& r = tiles[coordToIndex(x, y)].resource;
-			r.type = type;
-			r.amount = 1;
+			replaceResource(x, y, Resource{static_cast<Uint8>(type), 0, 1, 0});
 		}
 	};
 }

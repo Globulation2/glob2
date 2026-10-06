@@ -38,11 +38,17 @@ struct PathMap : Map
 		w = 1 << wDec; h = 1 << hDec;
 		wMask = w - 1; hMask = h - 1;
 		size = static_cast<size_t>(w) * h;
+		// Test-only private access bootstraps this partial map.
 		tiles.assign(size, Tile());
-		for (size_t i = 0; i < size; ++i) tiles[i].terrain = terrain[i];
+		for (size_t i = 0; i < size; ++i)
+		{
+			auto cell = getTile(i);
+			cell.terrain = terrain[i];
+			replaceTile(i, cell);
+		}
         importLegacyTerrain();
 	}
-	void changeTerrain() { for (size_t i=0; i<size; ++i) setTerrain(i & wMask, i >> wDec, tiles[i].terrain == 256 ? 0 : 256); }
+	void changeTerrain() { for (size_t i=0; i<size; ++i) setTerrain(i & wMask, i >> wDec, getTile(i).terrain == 256 ? 0 : 256); }
 	~PathMap()
 	{
 		// Map::clear expects zero geometry when setSize has not built its arrays.

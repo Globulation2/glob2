@@ -126,6 +126,7 @@ TEST_SUITE("CastorContinuation")
         map.setCellTerrain(24,20,TRAIL);
         map.setCellTerrain(28,20,ICE);
         AICastor ai(world.world.game.players[0]);
+        MersenneTwister random(713); ai.setRandomEngine(random);
         for(int tick=0;tick<AI_CASTOR_BOOT_IDLE_TICKS+2;++tick) ai.getOrder();
         for(int x:{20,24,28})
             CHECK(ai.notGrassMap[20*64+x]==AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE);
@@ -164,8 +165,9 @@ TEST_SUITE("CastorContinuation")
         glob2test::HeadlessGlobals globals;
         World world(AI::CASTOR,false,713);
         AICastor initial(world.world.game.players[0]);
+        MersenneTwister random(713); initial.setRandomEngine(random);
         for (int i=0; i<300; ++i) initial.getOrder();
-        auto* project=new AICastor::Project(IntBuildingType::FOOD_BUILDING,"snapshot");
+        auto* project=new AICastor::Project(AICastor::FeedUnits,"snapshot");
         project->amount=7; project->mainWorkers=3; project->foodWorkers=4;
         project->subPhase=AICastor::AI_CASTOR_SUBPHASE_WAIT_FINISHED;
         project->timer=217; project->blocking=false; project->priority=17;

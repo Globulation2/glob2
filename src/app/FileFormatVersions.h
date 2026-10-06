@@ -201,3 +201,6 @@ static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 135;
 
 //! Immutable map-owned custom terrain definitions.
 static constexpr int FILE_FORMAT_VERSION_RUNTIME_TERRAIN = 136;
+
+//! Per-game immutable building specifications and capability state.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_CATALOG = 137;

@@ -140,10 +140,17 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
     const version = simVersionKey(beat.simVersion);
     await db
       .insertInto('engine_agents')
-      .values({ id: beat.agentId, sim_version: version, kinds: beat.kinds, build: beat.build })
+      .values({
+        id: beat.agentId,
+        sim_version: version,
+        kinds: beat.kinds,
+        build: beat.build,
+        building_catalog_hash: beat.buildingCatalogHash ?? null,
+      })
       .onConflict((conflict) =>
         conflict.column('id').doUpdateSet({
           sim_version: version,
+          building_catalog_hash: beat.buildingCatalogHash ?? null,
           kinds: beat.kinds,
           build: beat.build,
           last_seen_at: sql<Date>`now()`,
@@ -214,7 +221,7 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
 
   app.post<{ Params: { jobId: string } }>(
     '/internal/v1/engine/jobs/:jobId/result',
-    internal,
+    { ...internal, bodyLimit: 32 * 1024 * 1024 },
     async (request, reply) => {
       const key = agentKey(request);
       const id = jobId(request);

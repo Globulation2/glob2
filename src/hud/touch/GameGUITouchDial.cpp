@@ -196,7 +196,7 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 	for (const auto &row : rows)
 	{
 		if (row.kind == 6)
-			slider(workerRing, row, MAX_UNIT_WORKING);
+			slider(workerRing, row, b->type->semantics.assignmentLimit);
 		else if (row.kind == 7)
 		{
 			const std::string labels[] = {Toolkit::getStringTable()->getString("[↓ Low]"),

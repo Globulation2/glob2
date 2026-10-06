@@ -3,247 +3,125 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include "BuildingType.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <FormatableString.h>
+#include <set>
 
 using namespace GAGCore;
+namespace {
+std::string buildingName(const BuildingType& type)
+{
+    const auto& name=type.presentation.displayName.empty() ? type.key : type.presentation.displayName;
+    const auto key="["+name+"]";
+    auto* strings=Toolkit::getStringTable();
+    return strings->doesStringExist(key) ? strings->getString(key) : name;
+}
+bool attracts(const BuildingType& type)
+{
+    return type.zonable[WORKER] || type.zonable[WARRIOR] || type.zonable[EXPLORER];
+}
+std::string variantName(const BuildingType& type)
+{
+    auto name=buildingName(type);
+    if(type.presentation.showLevel) name+=" · "+std::to_string(type.level+1);
+    return name;
+}
+}
 
 void SettingsScreen::buildBuildings()
 {
-	// Detail starts with the selected building, not the list's global defaults
-	// explanation and remember toggle. Those remain on the parent list.
-	if (phoneLayout && selectedBuilding >= 0)
-	{
-		buildBuildingDetail(selectedBuilding);
-		return;
-	}
-	auto &s = globalContainer->settings;
-	if (phoneLayout)
-	{
-		for (int t = 0; t < IntBuildingType::NB_BUILDING; ++t)
-		{
-			const auto name = Toolkit::getStringTable()->getString(
-				"[" + IntBuildingType::typeFromShortNumber(t) + "]");
-			button(
-				"buildings.open." + std::to_string(t),
-				FormattableString(tr("%0 · %1 Units")).arg(name).arg(s.defaultUnitsAssigned[t][1]),
-				[this, t]
-				{
-					selectedBuilding = t;
-					resetScroll();
-				});
-			form.back().buildingIcon = t;
-		}
-		toggle("buildings.remember", "Remember assignments between games",
-			   "Changes you make during play update these defaults for future games.",
-			   s.rememberUnit,
-			   [this](int v)
-			   {
-				   globalContainer->settings.rememberUnit = v;
-				   commit();
-			   });
-		return;
-	}
-	info(tr("Set starting unit assignments by building type and level."));
-	toggle("buildings.remember", "Remember assignments between games",
-		   "Changes you make during play update these defaults for future games.", s.rememberUnit,
-		   [this](int v)
-		   {
-			   globalContainer->settings.rememberUnit = v;
-			   commit();
-		   });
-	const char *tabs[] = {"Completed", "Construction", "Upgrades", "Flags"};
-	for (int i = 0; i < 4; ++i)
-	{
-		button(
-			"buildings.tab." + std::to_string(i), tr(tabs[i]),
-			[this, i]
-			{
-				buildingTab = i;
-				resetScroll();
-			},
-			buildingTab == i);
-		form.back().columns = 4;
-		form.back().column = i;
-	}
-	if (buildingTab == 3)
-	{
-		info(tr("Starting unit counts and radius for newly placed flags."));
-		const bool table = wideTable;
-		if (table)
-		{
-			int col = 0;
-			for (auto label : {"Flag", "Units", "Radius"})
-			{
-				auto &r = add("", Kind::Info, tr(label));
-				r.columns = 3;
-				r.column = col++;
-			}
-		}
-		for (int t = IntBuildingType::EXPLORATION_FLAG; t <= IntBuildingType::CLEARING_FLAG; ++t)
-		{
-			const int n = t - IntBuildingType::EXPLORATION_FLAG;
-			auto name = Toolkit::getStringTable()->getString(
-				"[" + IntBuildingType::typeFromShortNumber(t) + "]");
-			auto &title = add("", table ? Kind::Info : Kind::Section, name);
-			if (table)
-			{
-				title.columns = 3;
-				title.column = 0;
-			}
-			number("units." + std::to_string(t) + ".1", table ? "" : tr("Units"),
-				   s.defaultUnitsAssigned[t][1], 1, 20,
-				   [this, t](int v)
-				   {
-					   globalContainer->settings.defaultUnitsAssigned[t][1] = v;
-					   commit();
-				   });
-			if (table)
-			{
-				form.back().columns = 3;
-				form.back().column = 1;
-			}
-			number("radius." + std::to_string(n), table ? "" : tr("Radius"), s.defaultFlagRadius[n],
-				   0, 20,
-				   [this, n](int v)
-				   {
-					   globalContainer->settings.defaultFlagRadius[n] = v;
-					   commit();
-				   });
-			if (s.defaultFlagRadius[n] == 0)
-				form.back().value = tr("Default");
-			if (table)
-			{
-				form.back().columns = 3;
-				form.back().column = 2;
-			}
-		}
-		return;
-	}
-	info(tr(buildingTab == 0   ? "Unit counts for completed buildings."
-			: buildingTab == 1 ? "Unit counts assigned to new construction sites."
-							   : "Unit counts while a building is being upgraded."));
-	// At wide sizes use a real comparison table. Narrow forms group levels by
-	// building instead; both layouts are generated from the same slot mapping.
-	const bool table = wideTable;
-	const int columns = buildingTab == 0 ? 4 : buildingTab == 1 ? 2 : 3;
-	if (table)
-	{
-		auto &h = add("", Kind::Info, tr("Building"));
-		h.columns = columns;
-		h.column = 0;
-		for (int col = 1; col < columns; ++col)
-		{
-			auto &r = add("", Kind::Info,
-						  FormattableString(tr("Level %0")).arg(buildingTab == 2 ? col + 1 : col));
-			r.columns = columns;
-			r.column = col;
-		}
-	}
-	for (int t = 0; t < IntBuildingType::NB_BUILDING; ++t)
-	{
-		if (t == IntBuildingType::EXPLORATION_FLAG || t == IntBuildingType::WAR_FLAG ||
-			t == IntBuildingType::CLEARING_FLAG)
-			continue;
-		const auto shortName = IntBuildingType::typeFromShortNumber(t);
-		const auto name = Toolkit::getStringTable()->getString("[" + shortName + "]");
-		std::vector<int> slots;
-		for (int l = (buildingTab == 2 ? 1 : 0); l < (buildingTab == 1 ? 1 : 3); ++l)
-		{
-			auto *type = globalContainer->buildingsTypes.getByType(shortName, l, buildingTab != 0);
-			if (type && (buildingTab != 0 || type->foodable || type->fillable))
-				slots.push_back(l * 2 + (buildingTab == 0 ? 1 : 0));
-			else
-				slots.push_back(-1);
-		}
-		bool any = false;
-		for (int slot : slots)
-			any |= slot >= 0;
-		if (!any)
-			continue;
-		auto &title = add("", table ? Kind::Info : Kind::Section, name);
-		if (table)
-		{
-			title.columns = columns;
-			title.column = 0;
-		}
-		for (size_t i = 0; i < slots.size(); ++i)
-		{
-			int slot = slots[i];
-			if (slot >= 0)
-			{
-				std::string label =
-					table ? "" : FormattableString(tr("Level %0")).arg(slot / 2 + 1);
-				number("units." + std::to_string(t) + "." + std::to_string(slot), label,
-					   s.defaultUnitsAssigned[t][slot], 1, 20,
-					   [this, t, slot](int v)
-					   {
-						   globalContainer->settings.defaultUnitsAssigned[t][slot] = v;
-						   commit();
-					   });
-			}
-			else if (table)
-				add("", Kind::Info, "—");
-			else
-				continue;
-			if (table)
-			{
-				form.back().columns = columns;
-				form.back().column = int(i) + 1;
-			}
-		}
-	}
+    auto& catalog=globalContainer->buildingsTypes;
+    auto& settings=globalContainer->settings;
+    if(phoneLayout && selectedBuilding>=0)
+    {
+        buildBuildingDetail(selectedBuilding);
+        return;
+    }
+    const auto fingerprint=catalog.fingerprint();
+    auto remember=[&] {
+        toggle("buildings.remember","Remember assignments between games",
+            "Changes you make during play update these defaults for future games.",settings.rememberUnit,
+            [this](int value) {globalContainer->settings.rememberUnit=value;commit();});
+    };
+    if(phoneLayout)
+    {
+        for(std::size_t i=0;i<catalog.size();++i)
+        {
+            const auto& type=*catalog.get(i);
+            if(!type.semantics.placeable) continue;
+            const int completed=type.isBuildingSite ? type.nextLevel : int(i);
+            const auto& shown=*catalog.get(completed);
+            button("buildings.open."+type.key,
+                FormattableString(tr("%0 · %1 Units")).arg(buildingName(shown)).arg(settings.buildingAssignment(fingerprint,shown)),
+                [this,i] {selectedBuilding=int(i);resetScroll();});
+            form.back().buildingIcon=completed;
+        }
+        remember();
+        return;
+    }
+    info(tr("Set starting unit assignments by building type and level."));
+    remember();
+    const char* tabs[]={"Completed","Construction","Upgrades","Flags"};
+    for(int i=0;i<4;++i)
+    {
+        button("buildings.tab."+std::to_string(i),tr(tabs[i]),[this,i] {buildingTab=i;resetScroll();},buildingTab==i);
+        form.back().columns=4;form.back().column=i;
+    }
+    info(tr(buildingTab==0 ? "Unit counts for completed buildings." : buildingTab==1 ?
+        "Unit counts assigned to new construction sites." : buildingTab==2 ?
+        "Unit counts while a building is being upgraded." : "Starting unit counts and radius for newly placed flags."));
+    const bool table=wideTable;
+    const int columns=buildingTab==3 ? 3 : 2;
+    if(table)
+    {
+        auto& title=add("",Kind::Info,tr("Building"));title.columns=columns;title.column=0;
+        auto& count=add("",Kind::Info,tr("Units"));count.columns=columns;count.column=1;
+        if(columns==3) {auto& radius=add("",Kind::Info,tr("Radius"));radius.columns=columns;radius.column=2;}
+    }
+    for(std::size_t i=0;i<catalog.size();++i)
+    {
+        const auto& type=*catalog.get(i);
+        const bool flag=attracts(type) && type.semantics.placeable;
+        const bool selected=buildingTab==3 ? flag : buildingTab==0 ? !type.isBuildingSite && !flag :
+            type.isBuildingSite && (buildingTab==1 ? type.semantics.placeable : !type.semantics.placeable);
+        if(!selected || (buildingTab!=3 && type.semantics.assignmentLimit==0)) continue;
+        auto& title=add("",table?Kind::Info:Kind::Section,variantName(type));
+        if(table) {title.columns=columns;title.column=0;}
+        number("units."+type.key,table?"":tr("Units"),settings.buildingAssignment(fingerprint,type),0,type.semantics.assignmentLimit,
+            [this,i,fingerprint](int value) {globalContainer->settings.setBuildingAssignment(fingerprint,*globalContainer->buildingsTypes.get(i),value);commit();});
+        if(table) {form.back().columns=columns;form.back().column=1;}
+        if(buildingTab==3)
+        {
+            number("radius."+type.key,table?"":tr("Radius"),settings.buildingRadius(fingerprint,type),0,type.maxUnitStayRange,
+                [this,i,fingerprint](int value) {globalContainer->settings.setBuildingRadius(fingerprint,*globalContainer->buildingsTypes.get(i),value);commit();});
+            if(table) {form.back().columns=columns;form.back().column=2;}
+        }
+    }
 }
 
-// Presentation-only detail view: slots and callbacks are identical to the wide
-// table. Unsupported building levels are omitted, never mapped to another slot.
-void SettingsScreen::buildBuildingDetail(int t)
+void SettingsScreen::buildBuildingDetail(int id)
 {
-	auto &s = globalContainer->settings;
-	const auto shortName = IntBuildingType::typeFromShortNumber(t);
-	add("", Kind::Section, Toolkit::getStringTable()->getString("[" + shortName + "]"));
-	const bool flag = t >= IntBuildingType::EXPLORATION_FLAG && t <= IntBuildingType::CLEARING_FLAG;
-	auto units = [&](int slot, const std::string &label)
-	{
-		number("units." + std::to_string(t) + "." + std::to_string(slot), label,
-			   s.defaultUnitsAssigned[t][slot], 1, 20,
-			   [this, t, slot](int v)
-			   {
-				   globalContainer->settings.defaultUnitsAssigned[t][slot] = v;
-				   commit();
-			   });
-	};
-	if (flag)
-	{
-		units(1, tr("Units"));
-		const int n = t - IntBuildingType::EXPLORATION_FLAG;
-		number("radius." + std::to_string(n), tr("Radius"), s.defaultFlagRadius[n], 0, 20,
-			   [this, n](int v)
-			   {
-				   globalContainer->settings.defaultFlagRadius[n] = v;
-				   commit();
-			   });
-		if (s.defaultFlagRadius[n] == 0)
-			form.back().value = tr("Default");
-		return;
-	}
-	const char *sections[] = {"Completed", "Construction", "Upgrades"};
-	for (int phase = 0; phase < 3; ++phase)
-	{
-		bool hasSection = false;
-		for (int level = phase == 2 ? 1 : 0; level < (phase == 1 ? 1 : 3); ++level)
-		{
-			auto *type = globalContainer->buildingsTypes.getByType(shortName, level, phase != 0);
-			if (!type || (phase == 0 && !type->foodable && !type->fillable))
-				continue;
-			if (!hasSection)
-			{
-				section(sections[phase]);
-				hasSection = true;
-			}
-			units(level * 2 + (phase == 0 ? 1 : 0),
-				  FormattableString(tr("Level %0")).arg(level + 1));
-		}
-	}
+    const auto& catalog=globalContainer->buildingsTypes;
+    if(id<0 || std::size_t(id)>=catalog.size()) return;
+    const auto fingerprint=catalog.fingerprint();
+    auto& settings=globalContainer->settings;
+    std::set<int> visited;
+    while(id>=0 && visited.insert(id).second)
+    {
+        const auto& type=*catalog.get(id);
+        if(type.semantics.assignmentLimit>0 || attracts(type))
+        {
+            add("",Kind::Section,variantName(type));
+            if(type.isBuildingSite) info(tr(type.semantics.placeable ? "Construction" : "Upgrades"));
+            else info(tr("Completed"));
+            number("units."+type.key,tr("Units"),settings.buildingAssignment(fingerprint,type),0,type.semantics.assignmentLimit,
+                [this,id,fingerprint](int value) {globalContainer->settings.setBuildingAssignment(fingerprint,*globalContainer->buildingsTypes.get(id),value);commit();});
+            if(attracts(type) && type.semantics.placeable)
+                number("radius."+type.key,tr("Radius"),settings.buildingRadius(fingerprint,type),0,type.maxUnitStayRange,
+                    [this,id,fingerprint](int value) {globalContainer->settings.setBuildingRadius(fingerprint,*globalContainer->buildingsTypes.get(id),value);commit();});
+        }
+        id=type.nextLevel;
+    }
 }

@@ -5,6 +5,20 @@ biases for the Cortex swarm worker-tuning net. Owned end-to-end by the inference
 track (quantizer in `quantize.py`, numpy reference in `int_ref.py`, C++ loader in
 `CortexNet.{h,cpp}`) so the Python and C++ sides cannot drift.
 
+## Building catalog projection
+
+Cortex observation v23 adds per-class production selection in policy-only fields; model vector dimensions remain unchanged.
+Cortex observation v23 and action v14 use semantic strategy roles rather than
+engine family IDs. The policy counts every capability of a mixed building. The
+fixed model input keeps a lossy, exclusive projection: each building contributes
+to its lowest-numbered supported role, and upgrade totals count each building
+once. Existing input dimensions and integer inference arithmetic are unchanged.
+Producer/feeder worker tracking also counts each GID once, with producer tracking
+taking precedence; feeding throughput remains an independent service fact. Non-wheat
+recipes use a dominant resource stock signal and omit wheat scarcity gates.
+Models trained on stock catalogs remain usable, but their quality on arbitrary
+capability combinations is not guaranteed by this adapter.
+
 ## Fixed-point representation
 
 All weights and biases are stored as **I16F16**: a signed 32-bit integer holding a

@@ -1,3 +1,4 @@
+import { parseSimVersionKey, simVersionKey } from '@glob2/protocol';
 // The quick-match matchmaker. One tick (every second, on the worker replica
 // holding the scheduler leader lock):
 //   1. resolve accept prompts: all accepted → starting; a decline or the
@@ -24,6 +25,7 @@ import type { Database } from '@glob2/db';
 import {
   DEFAULT_RATING,
   aiLadderRatings,
+  currentCatalogRulesVersions,
   backfillAt,
   backfillDue,
   displayRating,
@@ -340,8 +342,13 @@ export class Matchmaker {
     let proposed = 0;
     for (const [simVersion, tickets] of byVersion) {
       const needAis = tickets.some((t) => backfillDue(queue, t, now));
+      const engineVersion = parseSimVersionKey(simVersion);
+      const rulesIdentity =
+        needAis && engineVersion
+          ? simVersionKey((await currentCatalogRulesVersions(this.db, [engineVersion]))[0]!)
+          : simVersion;
       const ais = needAis
-        ? (await aiLadderRatings(this.db, queue.aiPool, simVersion, queue.id)).map((r) => ({
+        ? (await aiLadderRatings(this.db, queue.aiPool, rulesIdentity, queue.id)).map((r) => ({
             ai: r.ai,
             entityId: r.entityId,
             mu: r.mu,
@@ -601,7 +608,13 @@ export class Matchmaker {
         const key = `${queue.id}\n${row.sim_version}`;
         let pending = aiLadders.get(key);
         if (!pending) {
-          pending = aiLadderRatings(this.db, queue.aiPool, row.sim_version, queue.id);
+          pending = (async () => {
+            const engineVersion = parseSimVersionKey(row.sim_version);
+            const rulesIdentity = engineVersion
+              ? simVersionKey((await currentCatalogRulesVersions(this.db, [engineVersion]))[0]!)
+              : row.sim_version;
+            return aiLadderRatings(this.db, queue.aiPool, rulesIdentity, queue.id);
+          })();
           aiLadders.set(key, pending);
         }
         const ladder = await pending;

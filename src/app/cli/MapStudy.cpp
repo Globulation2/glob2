@@ -594,11 +594,14 @@ int runMapStudy(int argc, char **argv)
 	const unsigned seed = std::strtoul(argv[2], nullptr, 10);
 
 	SDL_SetMainReady();
-	GlobalContainer globals(argv[3]);
+	std::string buildingCatalog;
+	for (int i=4; i<argc; ++i)
+		if (std::string(argv[i]).starts_with("building-catalog=")) buildingCatalog=std::string(argv[i]).substr(17);
+	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
+
 	IntBuildingType::init();
 	Race::loadDefault();
 	Game game(nullptr);
@@ -649,6 +652,8 @@ int runMapStudy(int argc, char **argv)
 			if (eq == std::string::npos)
 				return 2;
 			std::string id = arg.substr(0, eq);
+			// Consumed before GlobalContainer construction, not a numeric generator control.
+			if (id == "building-catalog") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump

@@ -49,6 +49,7 @@ struct Bed
 	Bed(int unitX, int unitY) : game(gui.game)
 	{
 		game.gameHeader.getExperiments().set(ExperimentId::MarketsV2);
+        game.configureBuildingCatalog();
 		game.map.setSize(6, 6, GRASS); // 64x64
 		game.map.setGame(&game);
 		for (int y = 0; y < game.map.getH(); ++y)
@@ -60,7 +61,7 @@ struct Bed
 		// Fruit is only a goal while seen: give the team vision of the whole bed.
 		game.map.setMapDiscovered(0, 0, game.map.getW(), game.map.getH(), team->me);
 		// A level-2 inn wants 80 of each fruit.
-		int innType = globalContainer->buildingsTypes.getTypeNum("inn", 1, false);
+		int innType = game.buildingsTypes.getTypeNum("inn", 1, false);
 		require(innType >= 0, "inn type exists");
 		inn = game.addBuilding(6, 6, innType, 0);
 		require(inn != nullptr, "inn placed");
@@ -68,7 +69,7 @@ struct Bed
 		inn->maxUnitWorking = 2;
 		inn->resources[WHEAT] = inn->type->maxResource[WHEAT];
 		inn->updateCallLists();
-		int marketType = globalContainer->buildingsTypes.getTypeNum("market", 0, false);
+		int marketType = game.buildingsTypes.getTypeNum("market", 0, false);
 		require(marketType >= 0, "market type exists");
 		market = game.addBuilding(40, 40, marketType, 0);
 		require(market != nullptr, "market placed");
@@ -163,13 +164,14 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		// Market levels: a level-1 market never hands out wood even though the
 		// team pool holds some; a level-3 market does.
 		Bed bed(36, 36);
-		require(globalContainer->buildingsTypes.getTypeNum("market", 1, false) >= 0 && globalContainer->buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
+		require(bed.game.buildingsTypes.getTypeNum("market", 1, false) >= 0 && bed.game.buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
 		bed.market->resources[WOOD] = 20;
 		int dist = 0;
 		require(!bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
-		int top = globalContainer->buildingsTypes.getTypeNum("market", 2, false);
-		bed.market->typeNum = top;
-		bed.market->type = globalContainer->buildingsTypes.get(top);
+		int top = bed.game.buildingsTypes.getTypeNum("market", 2, false);
+        auto* supplier=bed.game.addBuilding(50,50,top,0);
+        REQUIRE(supplier);
+        bed.game.map.setBuilding(50,50,supplier->type->width,supplier->type->height,supplier->gid);
 		bed.game.map.updateResourcesGradient(0, WOOD, bed.unit->swimClass(), true);
 		require(bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
 		std::puts("market levels: only a level that takes the resource hands it out");
@@ -269,7 +271,7 @@ TEST_CASE("MarketFetch/upgraded market IDs and stock survive binary and text sav
 		auto *market=source.addBuilding("market",8,8,level);
 		REQUIRE(market);
 		CHECK(market->typeNum==(level ? 50+2*level : 50));
-		CHECK(globalContainer->buildingsTypes.getTypeNum("market",level,true)==(level ? 49+2*level : 49));
+		CHECK(source.game.buildingsTypes.getTypeNum("market",level,true)==(level ? 49+2*level : 49));
 		CHECK((market->type->maxResource[WOOD]>0)==(level>=1));
 		CHECK((market->type->maxResource[WHEAT]>0)==(level>=1));
 		CHECK((market->type->maxResource[STONE]>0)==(level>=2));
