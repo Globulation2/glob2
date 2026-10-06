@@ -1,0 +1,60 @@
+{
+  "source_revision": "4ca3b6eb63bd6b71055ba238be9fd33de15da79d",
+  "production_revision": "da80dbaac80284db77c5ee6e1de64ac6c772fe00",
+  "base_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "candidate_cli_sha256": "6233113cc96911197f7c44248dc225499248efa8cf590ea998fa61189b99a68a",
+  "production_identity": "4ca merges browser fixture changes only; clean 4ca CLI byte-identical to frozen da80 CLI. Native broad/focused/display executed at da80; 4ca clean build and traces retained. No embedded Git label is claimed.",
+  "native": {
+    "broad": {
+      "cases": 1911,
+      "passed": 1763,
+      "skipped": 148,
+      "failures": 0,
+      "errors": 0
+    },
+    "focused": {
+      "cases": 362,
+      "passed": 361,
+      "skipped": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    "display": {
+      "passed": 9,
+      "failures": 0
+    }
+  },
+  "performance_acceptance": false,
+  "performance_status": "Full98 campaign stopped after completed eight-pair middle scenario credibly failed individual5%CPU limit. Ratio1.1858837664, CI[1.1766913936,1.1957015741]. Every row retained; inputs unchanged. No full-corpus aggregate. Three-arm diagnosis reproduces candidate terminalstate with approvedfixcontrol; fixes do not waive user gate.",
+  "limitations": [
+    "Final platform refresh pending for current source.",
+    "Final candidate gameplay tournament pending.",
+    "Eight-team and component stress pending.",
+    "macOS/iOS/physical ARM and human gameplay review not verified.",
+    "Executables, symbolized binaries, dependencies and full source not bundled; hashes and source revisions identify them.",
+    "Raw diagnostics are not acceptance CPU measurements."
+  ],
+  "archives": [
+    {
+      "path": "native-4ca-broad.zip",
+      "bytes": 59302619,
+      "sha256": "5abf1d6f10d95db51c8f366d57083e7d55f37f26c265c662a858a1b9016a3106",
+      "files": 586,
+      "verification": "Every decompressed member SHA256 matches retained source bytes."
+    },
+    {
+      "path": "native-4ca-focused-display.zip",
+      "bytes": 57561286,
+      "sha256": "c81663e5830a6978222780d4b983e5a392aecfc73d20c736013dc45b2a953876",
+      "files": 273,
+      "verification": "Every decompressed member SHA256 matches retained source bytes."
+    },
+    {
+      "path": "native-4ca-performance-diagnostics.zip",
+      "bytes": 15802354,
+      "sha256": "164f4318f3d80a3ef7280bc62961bcf9f68fac40d6379ee1618f17e7bd565c21",
+      "files": 2213,
+      "verification": "Every decompressed member SHA256 matches retained source bytes."
+    }
+  ]
+}

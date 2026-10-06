@@ -1,3 +1,13 @@
+## Native 4ca checkpoint and credible CPU regression
+
+`native-4ca-summary.json` identifies source revisions, exact CLI identity and limitations. The current CLI at 4ca3b6eb6 is byte-identical to da80dbaac; the intervening merge only refreshes the browser replay fixture. No embedded Git revision label is claimed.
+
+- `native-4ca-broad.zip`: 1,911 native cases, 1,763 passed, 148 skipped, no failures/errors, with raw outputs and fixtures.
+- `native-4ca-focused-display.zip`: 361 focused passes and one intentional display skip; all nine display cases pass. Includes screenshots, clean builds and stock/match traces.
+- `native-4ca-performance-diagnostics.zip`: retained calibrations, aligned fixed-window preflight, the stopped full-corpus campaign, and independent three-arm diagnosis. The completed middle scenario fails the 5% individual CPU gate: ratio 1.185884, 95% interval [1.176691, 1.195702]. All rows remain, input hashes are unchanged, and no full-corpus aggregate is claimed. The approved-fixes control reproduces the changed end state; this does not waive the performance gate. Profiles are diagnostic, not acceptance timings.
+
+Each archive contains a per-file SHA256 inventory; every decompressed member was verified. Executables and dependencies are not bundled. Final platform refresh, candidate tournament and remaining stress runs are pending. This is checkpoint evidence, not completion or performance acceptance.
+
 Identity clarification: earlier raw notes used “build label” for the checkout revision during a build. No embedded Git label was verified; those notes describe checkout provenance only. Binary SHA256 records remain authoritative.
 
 ## Native query-optimization checkpoint641dca365 (historical)
