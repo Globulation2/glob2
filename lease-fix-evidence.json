@@ -1,0 +1,59 @@
+{
+  "review_head": "3c40a8ab023e7f098022716978a0b733113e03ee",
+  "base": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "status": "focused debugging evidence; full final-revision validation and shipping gates remain open",
+  "platform": "macOS arm64",
+  "completed_runs": {
+    "controller-scratch-focused": {
+      "revision": "3c40a8ab023e7f098022716978a0b733113e03ee",
+      "passed_jobs": 61,
+      "junit_cases": 65
+    },
+    "lease-fix-focused": {
+      "passed": 28,
+      "revision_note": "lease synchronization patch before later metrics/scratch changes"
+    },
+    "lease-metrics-focused": {
+      "passed": 13,
+      "revision": "c75b3c03bac9d245e87709c10aed3f7fb4349a4e"
+    },
+    "controller-tsan-lease-fix": {
+      "passed": 30,
+      "timeout": 1,
+      "timeout_seconds": 120,
+      "revision_note": "lease synchronization patch before later metrics/scratch changes"
+    },
+    "controller-tsan-lease-fix-continuation-rerun": {
+      "passed": 1,
+      "duration_seconds": 255.5,
+      "timeout_seconds": 600
+    }
+  },
+  "limitations": [
+    "Full 3c40a8ab controller TSAN and broad native runs underway; not included as completed",
+    "Earlier TSAN C++ coverage did not instrument the vendored C runtime; fuller C instrumentation pending",
+    "No paired performance gate or gameplay experiments completed",
+    "Matching cross-platform traces and browser coverage unavailable/pending",
+    "Clean current-master ImageAssets failure reproduced separately"
+  ],
+  "sha256": {
+    "lease-fix-focused.log": "ed31450746ab7aefcbac38607db22e4338104e9beee2c83436d360e21a3eb546",
+    "lease-fix-focused.xml": "47ded8894da7fbd3d772969087454a03a6f37cd969688c4518793236d96141ba",
+    "lease-metrics-focused.log": "6e66f468c3e0cc0e4f091bb496649e6dd0fb4d2d7496d4d36fad0f2d8e9174ea",
+    "lease-metrics-focused.xml": "fb1d9af8ae54c702e1b76bd184685fa1adb31b17e5ed4bfb2b3a1015b6234c2e",
+    "controller-scratch-focused.log": "ff3f9c704e18b79ea4d1638798fae03bd6dbf80ede6f2fa342fd26857c592ac1",
+    "controller-scratch-focused.xml": "e079da4ccf9317ee4d7109c909a18a00de18e17f9023cf498db1a91acdc6263c",
+    "ai-engine-tsan-lease-fix.log": "b6073477062dd4dd7af8dc54281aeca1c6f69d43f2c29fb76c222a31d61ae79b",
+    "ai-engine-tsan-lease-fix.xml": "d4d925b78ca49fc1a58943721fb6804b108359631dc3b7607b32e03a49cd50bb",
+    "tsan-continuation-lease-fix.log": "162ca511a960ccbf5952dcc51c598394f5a827650a3e793a0bb32a5f2d87a3a0",
+    "tsan-continuation-lease-fix.xml": "41a166cbcbb07b0a64d1b40d74319628ffe827152dafc6f9086df5107ede40a0",
+    "lease-pool-smoke.cpp": "57823428038c8b09ec672baac568925923e5cf7d816ad73f571314dacfb6df7d",
+    "lease-pool-smoke-tsan.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "review-update/release/build-provenance.json": "e7199164a0dac1e35a9aa84cb7debb7df4831ba2f3fda16cd656c995027ac469",
+    "review-update/tsan/build-provenance.json": "7de5653dcf2ec514432332b966cce0b025c499f6f306f7b8b728960abda3c824",
+    "performance/baseline-current/image-assets-metadata.json": "d9b2da9ee0c41b51346a3fd1e40994f32c15d02a87dfeb0acac9a54311cccb2b",
+    "performance/baseline-current/image-assets.log": "ec9194c5f01d0adf86025d62c92b46b9118d3ee4564b46f7a1a1740a3cb4755d",
+    "performance/baseline-current/image-assets.xml": "b59b24c8b48bea30945538fcc33e24ad9e9801550c7b229289ecee63a5b6d5cc"
+  },
+  "archive_sha256": "c2aeb1adbdce44cb2eaa59c0987d82b8c3cb03446cddf0a6c5bd2f5133eedec2"
+}
