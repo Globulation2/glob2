@@ -29,7 +29,7 @@ public:
     bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
               int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow = nullptr, std::uint8_t alpha = 255);
     bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
-                   float width, float height);
+                   float width, float height, std::uint8_t alpha = 255);
 private:
     static unsigned unitClip(int type, int action);
     const GAGCore::SkinMesh *unitMesh(int type, int action) const;
