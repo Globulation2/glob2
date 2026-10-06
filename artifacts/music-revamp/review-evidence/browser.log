@@ -1,0 +1,48 @@
+[WebServer] (node:37285) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 25 tests using 1 worker
+
+(node:37315) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › apps/web/e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (627ms)
+  ✓   2 [desktop] › apps/web/e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (4.4s)
+{"seconds":83.82989583333334,"decoderHeapBytes":16777216}
+  ✓   3 [desktop] › apps/web/e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (5.5s)
+  -   4 [desktop] › apps/web/e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓   5 [desktop] › apps/web/e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (13.3s)
+(node:37468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [phone] › apps/web/e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (478ms)
+  ✓   7 [phone] › apps/web/e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (4.0s)
+{"seconds":83.82989583333334,"decoderHeapBytes":16777216}
+  ✓   8 [phone] › apps/web/e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (4.9s)
+  -   9 [phone] › apps/web/e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓  10 [phone] › apps/web/e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (12.0s)
+(node:37603) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [firefox] › apps/web/e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (1.1s)
+  ✓  12 [firefox] › apps/web/e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (3.9s)
+{"seconds":83.82989583333334,"decoderHeapBytes":16777216}
+  ✓  13 [firefox] › apps/web/e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (5.6s)
+  -  14 [firefox] › apps/web/e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓  15 [firefox] › apps/web/e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (12.8s)
+(node:37672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  16 [webkit] › apps/web/e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (854ms)
+  ✓  17 [webkit] › apps/web/e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (3.4s)
+{"seconds":83.82989583333334,"decoderHeapBytes":16777216}
+  ✓  18 [webkit] › apps/web/e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (5.4s)
+  -  19 [webkit] › apps/web/e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓  20 [webkit] › apps/web/e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (12.8s)
+(node:37788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [iphone] › apps/web/e2e/music-decoder.spec.ts:5:1 › production CSP permits worker Opus decoding while document evaluation stays blocked (530ms)
+  ✓  22 [iphone] › apps/web/e2e/music-studio.spec.ts:7:1 › music workspace exposes revision checks and keeps publication explicit (3.4s)
+{"seconds":83.82989583333334,"decoderHeapBytes":16777216}
+  ✓  23 [iphone] › apps/web/e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (5.3s)
+  -  24 [iphone] › apps/web/e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓  25 [iphone] › apps/web/e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (12.4s)
+
+  5 skipped
+  20 passed (2.0m)
