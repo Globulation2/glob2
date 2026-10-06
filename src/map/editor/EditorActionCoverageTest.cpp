@@ -10,6 +10,7 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <filesystem>
+#include <set>
 #include "BuildingType.h"
 #include "Unit.h"
 #include <nlohmann/json.hpp>
@@ -36,6 +37,22 @@ void cursor(MapEdit& editor,int x,int y)
 
 TEST_SUITE("EditorActionCoverage")
 {
+    TEST_CASE("rerolling the terrain look changes the map seed and marks the map modified [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        editor.hasMapBeenModified=false;
+        editor.game.map.setTerrainSeed(0);
+        std::set<Uint32> seeds;
+        for (int i=0; i<4; ++i)
+        {
+            editor.performAction("reroll terrain look");
+            seeds.insert(editor.game.map.terrainSeed());
+        }
+        CHECK(seeds.size()>1);
+        CHECK(editor.hasMapBeenModified);
+    }
     TEST_CASE("custom catalog editor exposes resources mixed controls and long upgrade paths [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{

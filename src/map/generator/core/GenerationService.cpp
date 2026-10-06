@@ -60,6 +60,9 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "engine"));
 	game.gameHeader.setRandomSeed(request.seed);
 	game.map.setSize(request.wDec, request.hDec);
+	// The drawn terrain look follows the request seed too, without touching the
+	// synchronized stream, so a regenerated map is identical on every client.
+	game.map.setTerrainSeed(GenerationContext::deriveSeed(request.seed, "terrain-look"));
 	game.map.setGame(&game);
 	bool generated = false;
 	try

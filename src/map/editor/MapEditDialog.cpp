@@ -38,6 +38,7 @@ Element MapEditMenuScreen::build(const Presentation &p)
 						  {"terrain/palette", "[Terrain palette]", TERRAIN_PALETTE, false},
 						  {"resource/import", "[Import Resource Definitions]", IMPORT_RESOURCES, false},
 						  {"resource/palette", "[Resource palette]", RESOURCE_PALETTE, false},
+						  {"terrain/reroll", "[Reroll terrain look]", REROLL_TERRAIN_LOOK, false},
 						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
 	for (const auto &item : items)

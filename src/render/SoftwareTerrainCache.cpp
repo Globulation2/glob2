@@ -282,6 +282,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.materialRevision(revision.first) != revision.second; };
 				bool unchanged = entry && entry->valid && entry->sources == sources &&
+								 entry->seed == map.terrainSeed() &&
 								 std::none_of(entry->materialRevisions.begin(),
 											  entry->materialRevisions.end(), revisionChanged);
 				if (unchanged)
@@ -437,6 +438,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				else
 					++hits;
 				entry->sources = sources;
+				entry->seed = map.terrainSeed();
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
 	}

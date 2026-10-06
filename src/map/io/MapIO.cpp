@@ -102,6 +102,9 @@ try
 			throw std::ios_base::failure(std::string("Invalid terrain registry: ") + error.what());
 		}
 	}
+	terrainSeedValue = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_SEED
+						   ? stream->readUint32("terrainSeed")
+						   : 0;
     if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
     {
         stream->readEnterSection("resourceRegistry");
@@ -405,6 +408,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		}
 		stream->writeLeaveSection();
 	}
+	stream->writeUint32(terrainSeedValue, "terrainSeed");
 
     {
         const auto definitions=resourceRegistry().serialize();

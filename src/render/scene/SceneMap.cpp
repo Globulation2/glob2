@@ -24,6 +24,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	wDec = map.getShiftW();
 	sourceIdentity = map.identity();
 	sourceKey = &map;
+	terrainSeedValue = map.terrainSeed();
 	const size_t size = size_t(w) * h;
 	terrain.resize(size);
 	terrainTypes = map.terrainTypes();

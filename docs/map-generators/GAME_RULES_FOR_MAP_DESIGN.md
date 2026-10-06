@@ -68,7 +68,9 @@ of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set)
 Select the file in the import dialog, choose a type from the scrollable palette,
 and paint it like built-in terrain. The picker lists `.json` files only. A failed
 import displays an error and keeps the dialog open so you can correct the file
-and retry. For example:
+and retry. The same menu offers **Reroll terrain look**, which draws a new terrain seed for
+the map (see [terrain materials](../assets/terrain-materials.md#map-seed)): the cells stay as
+painted, only the boundary shapes and texture variants change. For example:
 
 ```json
 {

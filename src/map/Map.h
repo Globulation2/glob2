@@ -845,6 +845,15 @@ public:
 	//! Process-unique identity, renewed whenever the map is cleared or resized.
 	//! Presentation caches key on it to notice a replaced map; never saved.
 	Uint64 identity() const { return identityValue; }
+	//! Seed of the terrain's drawn appearance. It salts the deterministic hashes
+	//! that choose texture variants, boundary contours, pebbles and diagonal
+	//! joins, so two maps with the same cells look different while every client
+	//! of one map draws it identically. Saved with the map (format 138) and shared
+	//! through it; presentation only: never in checkSum(), never read by
+	//! simulation code. Generators derive it from their request seed, the editor
+	//! rerolls it, and maps saved before format 138 load with seed 0.
+	Uint32 terrainSeed() const { return terrainSeedValue; }
+	void setTerrainSeed(Uint32 seed) { terrainSeedValue = seed; }
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
@@ -1030,6 +1039,7 @@ private:
 	std::vector<Tile> tiles;
 public:
 	Uint64 identityValue = 0;
+	Uint32 terrainSeedValue = 0;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;

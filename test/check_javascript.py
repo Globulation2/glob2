@@ -66,7 +66,7 @@ def save_header(path):
             length = struct.unpack_from('>I', data, game_header)[0]
             game_header += 4 + length
             assert game_header <= len(data), 'truncated terrain experiment key'
-    if minor >= 138:
+    if minor >= 139:
         # Resource experiment declarations precede their required enabled keys.
         # Metadata is bounded by the native catalog transport contract.
         count = struct.unpack_from('>I', data, game_header)[0]

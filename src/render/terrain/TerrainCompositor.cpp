@@ -218,6 +218,7 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.y = y & map.getMaskH();
 	r.width = map.getW();
 	r.height = map.getH();
+	r.seed = map.terrainSeed();
 	for (int j = 0; j < 4; ++j)
 		for (int i = 0; i < 4; ++i)
 		{
@@ -249,7 +250,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	for (auto id : r.samples)
 		if (!sources[id].pixels && !definitions.materials[id].ocean)
 		{
-			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y)];
+			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
 		}
 	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
@@ -299,7 +300,28 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			auto *p = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
 												 (oy + y) * target->pitch) +
 					  ox + x;
-			const auto channel = [&](int k) { return unsigned(alpha ? rgb[k] / alpha : 0); };
+			// Seam treatment: the dominant material darkens under a higher
+			// neighbor's edge and takes that neighbor's fringe tint. Textures are
+			// never blended across the seam; only the contact band is toned.
+			unsigned dominant = 0;
+			for (unsigned i = 1; i < 4; ++i)
+				if (mask.weight[i] > mask.weight[dominant])
+					dominant = i;
+			const auto &self = definitions.materials[mask.material[dominant]].seam;
+			const auto &other = definitions.materials[mask.neighbor].seam;
+			int shade = 256, tint = 0;
+			if (mask.neighbor != mask.material[dominant])
+			{
+				if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
+					shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
+				if (other.fringe && int(mask.margin) < other.fringeWidth)
+					tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
+			}
+			const auto channel = [&](int k)
+			{
+				unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
+				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
+			};
 			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
 				 channel(2);
 		}

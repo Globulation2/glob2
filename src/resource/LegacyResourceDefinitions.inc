@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Frozen pre-138 resource identities and definitions. Only the legacy save
+// Frozen pre-139 resource identities and definitions. Only the legacy save
 // adapter uses this content; installed catalogs must never reinterpret old IDs.
 R"legacy_resources(
 {

@@ -203,7 +203,7 @@ void testBinaryHeaderFormsAndLegacy()
 			experimentBytes=section->getPosition();
 		}
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
-        const size_t resourceExperimentBytes=4; // Empty declaration count (version138).
+        const size_t resourceExperimentBytes=4; // Empty declaration count (version139).
 		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;

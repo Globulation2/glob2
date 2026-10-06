@@ -1072,3 +1072,75 @@ TEST_CASE("custom ground and air obstruction independently govern routes across 
         CHECK(route(true));
     }
 }
+
+
+TEST_CASE("released terrain-seed format 138 retains legacy resource and material continuation" * doctest::test_suite("RuntimeResources"))
+{
+    glob2test::HeadlessGlobals globals;
+    const auto manifest = nlohmann::json::parse(glob2test::readFile(
+        glob2test::sourceRoot()/"test/fixtures/resources/terrain-seed138.game.manifest.json"));
+    const auto bytes = glob2test::readFile(glob2test::inflated("resources/terrain-seed138.game.gz"));
+    // Undo the documented, sole format138 addition to compare the same authentic
+    // format137 checkpoint. Never reinterpret an unpublished resource138 draft.
+    auto legacyBytes = bytes;
+    const size_t seedOffset = manifest["terrain_seed_offset"].get<size_t>();
+    const size_t minorOffset = manifest["header_minor_offset"].get<size_t>();
+    REQUIRE(seedOffset + 4 <= legacyBytes.size());
+    REQUIRE(minorOffset + 4 <= legacyBytes.size());
+    legacyBytes.erase(seedOffset, 4);
+    legacyBytes[minorOffset + 3] = 137;
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(), legacyBytes.size()));
+    GameGUI restored(false), legacy(false);
+    REQUIRE(restored.game.load(&input));
+    REQUIRE(legacy.game.load(&legacyInput));
+    auto &map = restored.game.map;
+    CHECK(map.terrainSeed() == manifest["terrain_seed"].get<Uint32>());
+    CHECK(legacy.game.map.terrainSeed() == 0);
+    REQUIRE(map.resourceRegistry().size() == 8);
+    CHECK(map.resourceRegistry().digest() == ResourceRegistry::legacy()->digest());
+    CHECK(restored.game.stepCounter == 8192);
+    unsigned deposits = 0, pendingHarvests = 0;
+    for (size_t i = 0; i < size_t(map.w)*map.h; ++i)
+    {
+        CHECK(map.materialStocksAt(i) == legacy.game.map.materialStocksAt(i));
+        deposits += map.getResource(i).type != NO_RES_TYPE;
+        for (unsigned material = 8; material < MaterialCount; ++material)
+            CHECK(map.materialAmountAtSlot(i, material) == 0);
+    }
+    REQUIRE(deposits > 0);
+    for (int t = 0; t < restored.game.mapHeader.getNumberOfTeams(); ++t)
+    {
+        for (unsigned u = 0; u < Unit::MAX_COUNT; ++u)
+            if (const auto *unit = restored.game.teams[t]->myUnits[u])
+            {
+                const auto *oldUnit = legacy.game.teams[t]->myUnits[u];
+                REQUIRE(oldUnit != nullptr);
+                CHECK(unit->movement == oldUnit->movement);
+                CHECK(unit->destinationPurpose == oldUnit->destinationPurpose);
+                CHECK(unit->carriedMaterial == oldUnit->carriedMaterial);
+                pendingHarvests += unit->movement == Unit::MOV_HARVESTING;
+            }
+        for (unsigned b = 0; b < Building::MAX_COUNT; ++b)
+            if (const auto *building = restored.game.teams[t]->myBuildings[b])
+            {
+                const auto *oldBuilding = legacy.game.teams[t]->myBuildings[b];
+                REQUIRE(oldBuilding != nullptr);
+                for (unsigned material = 0; material < MaterialCount; ++material)
+                {
+                    CHECK(building->materials[material] == oldBuilding->materials[material]);
+                    if (material >= 8) CHECK(building->materials[material] == 0);
+                }
+            }
+    }
+    REQUIRE(pendingHarvests > 0);
+    // Full checksums include cached routing and pending unit state; terrain seed
+    // is presentation-only and must not change continued simulation.
+    for (unsigned tick = 0; tick < 32; ++tick)
+    {
+        CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
+        { auto random = restored.game.bindRandom(); restored.game.syncStep(0); }
+        { auto random = legacy.game.bindRandom(); legacy.game.syncStep(0); }
+    }
+    CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
+}

@@ -728,6 +728,8 @@ Do you want to save before quitting?
 Save game
 [save map]
 Save Map
+[Reroll terrain look]
+Reroll terrain look
 [save replay]
 Save Replay
 [save script]

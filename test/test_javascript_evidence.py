@@ -179,7 +179,7 @@ class SaveHeaderTests(unittest.TestCase):
         result += struct.pack('>IIII', 0, version, 2, 0) + b'\1' + bytes(20)
         if version >= 134:
             result += struct.pack('>I', 1) + text('ice-terrain')
-        if version >= 138:
+        if version >= 139:
             declarations = resource_declarations or []
             result += struct.pack('>I', len(declarations))
             for definition in declarations:
@@ -197,10 +197,10 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138):
+        for version in (125, 137, 138, 139):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
-        self.assertEqual(self.parse(self.fixture(138, declarations, ['custom-crops'])), (0, 138, 2, 3))
+        self.assertEqual(self.parse(self.fixture(139, declarations, ['custom-crops'])), (0, 139, 2, 3))
 
     def test_resource_header_metadata_bounds_are_checked(self):
         for declarations, required in [([('x' * 129, 'Label', 'Help')], []),
@@ -209,7 +209,7 @@ class SaveHeaderTests(unittest.TestCase):
                                       ([], ['x' * 129]),
                                       ([('key', 'Label', 'Help')] * 65, [])]:
             with self.assertRaises(AssertionError):
-                self.parse(self.fixture(138, declarations, required))
+                self.parse(self.fixture(139, declarations, required))
 
 
 if __name__ == '__main__':

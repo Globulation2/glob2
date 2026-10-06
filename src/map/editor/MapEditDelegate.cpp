@@ -75,6 +75,12 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("open save screen");
 			}
 			break;
+			case MapEditMenuScreen::REROLL_TERRAIN_LOOK:
+			{
+				performAction("close menu screen");
+				performAction("reroll terrain look");
+			}
+			break;
 			case MapEditMenuScreen::OPEN_SCRIPT_EDITOR:
 			{
 				performAction("close menu screen");

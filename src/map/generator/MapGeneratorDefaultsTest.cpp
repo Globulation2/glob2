@@ -120,6 +120,10 @@ class MapGeneratorDefaultsTest
 						 method, a.diagnostic().c_str(), b.diagnostic().c_str());
 		REQUIRE((bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat)));
 		REQUIRE(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
+		// The drawn terrain look follows the request seed, not the sync stream.
+		REQUIRE(first.map.terrainSeed() != 0);
+		REQUIRE(first.map.terrainSeed() == repeat.map.terrainSeed());
+		REQUIRE(first.map.terrainSeed() != other.map.terrainSeed());
 		REQUIRE((request.seed == 22001 && request.options == DWithDefaults(method).options));
 		if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
 		{
