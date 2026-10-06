@@ -11,7 +11,8 @@
 }
 .app-shell {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  --sidebar-width: 240px;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   align-items: start;
 }
 .app-sidebar {
@@ -24,6 +25,7 @@
   background: var(--surface);
   border-right: 1px solid var(--line);
   z-index: 10;
+  overflow-y: auto;
 }
 .sidebar-brand {
   position: relative;
@@ -189,7 +191,19 @@ main:focus {
   width: 44px;
   height: 44px;
 }
-.mobile-bar,
+/* Studio content uses the shared persistent app sidebar. */
+.studio-shell > main > .wrap {
+  padding: 0;
+}
+.studio-shell > main > .wrap > .page {
+  padding: 0;
+  max-width: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .rail-expand {
   display: none;
 }
@@ -223,7 +237,8 @@ main:focus {
   min-width: 44px;
 }
 .sidebar-collapsed {
-  grid-template-columns: 72px minmax(0, 1fr);
+  --sidebar-width: 72px;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
 }
 .sidebar-collapsed .app-sidebar .nav-label,
 .sidebar-collapsed .app-sidebar .wordmark,
@@ -287,9 +302,10 @@ main:focus {
   white-space: nowrap;
   box-shadow: var(--shadow-md);
 }
-@media (min-width: 900px) and (max-width: 1099px) {
+@media (max-width: 1099px) {
   .app-shell {
-    grid-template-columns: 72px minmax(0, 1fr);
+    --sidebar-width: 72px;
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   }
   .app-sidebar .nav-label,
   .app-sidebar .wordmark,
@@ -355,32 +371,6 @@ main:focus {
   }
 }
 @media (max-width: 899px) {
-  .app-shell,
-  .sidebar-collapsed {
-    display: block;
-  }
-  .app-sidebar,
-  .sidebar-collapsed .rail-expand {
-    display: none;
-  }
-  .mobile-bar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 8px 16px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--line);
-  }
-  .mobile-bar button {
-    padding: 0;
-    width: 44px;
-  }
-  .mobile-bar .wordmark {
-    height: 24px;
-  }
   .wrap {
     padding: 20px 16px;
   }

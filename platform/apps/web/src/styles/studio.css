@@ -1,34 +1,4 @@
-/* Full-screen studio shell and shared controls. */
-.studio-shell.app-shell {
-  display: block;
-}
-.studio-shell > .app-sidebar,
-.studio-shell > .mobile-bar {
-  display: none;
-}
-.studio-shell > .rail-expand {
-  display: grid;
-  position: absolute;
-  left: 18px;
-  top: 22px;
-  z-index: 25;
-  min-width: 42px;
-  min-height: 42px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-}
-.studio-shell > main > .wrap {
-  padding: 0;
-}
-.studio-shell > main > .wrap > .page {
-  padding: 0;
-  max-width: none;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
+/* Shared map and music studio controls. */
 .ms-root {
   --ms-panel: color-mix(in srgb, var(--surface) 85%, var(--bg));
   --ms-border: color-mix(in srgb, var(--line) 75%, transparent);
@@ -112,7 +82,7 @@
   display: flex;
   align-items: center;
   gap: 28px;
-  padding: 12px 28px 12px 78px;
+  padding: 12px 28px;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-panel);
 }
@@ -1610,15 +1580,9 @@
   }
 }
 @media (max-width: 899px) {
-  .studio-shell > .rail-expand {
-    left: 12px;
-    top: 16px;
-    min-width: 36px;
-    min-height: 36px;
-  }
   .ms-header {
     height: 72px;
-    padding: 10px 14px 10px 58px;
+    padding: 10px 14px;
     gap: 12px;
   }
   .ms-emblem {

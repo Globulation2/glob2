@@ -261,6 +261,14 @@ export function useSkinDocument(accountId: string | undefined) {
     return () => window.removeEventListener('pagehide', save);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, revision]);
+  useEffect(() => {
+    // Sidebar navigation unmounts the studio before the autosave timer may fire.
+    return () => {
+      if (hydrated) saveLocal();
+    };
+    // saveLocal reads the current document through refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
   async function run(operation: () => Promise<void>) {
     if (operationPending.current) return;
     operationPending.current = true;

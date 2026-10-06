@@ -280,7 +280,9 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
-The `/skins` route opens Colony Studio, a full-window mesh painting workspace.
+The `/skins` route opens Colony Studio, a mesh painting workspace beside the
+shared persistent sidebar. All app pages retain this sidebar, with a compact icon
+rail below 1100 pixels and a drawer for expanded navigation.
 Brush and eraser paint every surface underneath the cursor, including hidden
 surfaces. The eyedropper samples visible geometry. Horizontal right-drag,
 Alt-drag or the Rotate tool turns the model; touch uses explicit Paint/Rotate tools and
@@ -980,7 +982,9 @@ attachment and full performance validation remain required
 before release.
 ## AI Map Studio
 
-The optional map studio lives at `/map-studio` on the online app host. The public
+The optional map studio lives at `/map-studio` on the online app host, reached
+through **Build in AI Map Studio** in the Maps library. The persistent main sidebar groups
+the studio under Maps. The public
 static website can link into it; it does not hold accounts, credits or authoring
 state. The maintained image-authoring modules were ported from the separate
 `Globulation2/glob2-ai-map-generation` prototype (GPL-3.0-or-later, originally
@@ -1014,7 +1018,7 @@ thread. Image descriptors reference owner-authorized routes, never arbitrary
 blob hashes. Older requests recover only recorded images and delivery summaries
 from a safe checkpoint allowlist; missing historical checks are not invented.
 Events and descriptors participate in account export and cascade on deletion.
-The full-screen workspace separates chat from the inspected map, supports
+The workspace beside the shared sidebar separates chat from the inspected map, supports
 following live stages or inspecting history, and displays playability checks.
 The separate no-credit landing page preserves draft writing and access to saved
 projects; active last-credit generations open their workspace. Drafts, pending
@@ -1223,7 +1227,9 @@ operational limits.
 
 ## AI Music Studio
 
-`/music-studio` provides CPU-only conversational soundtrack authoring. REST under
+`/music-studio` provides CPU-only conversational soundtrack authoring, reached
+through **Build in AI Music Studio** in the Music library. The persistent main sidebar groups
+the studio under Music. REST under
 `/api/v1/music-studio` owns account state, projects, messages, explicit generation,
 cancellation, private artifacts and checkout. `packages/music-studio` owns the
 transactional journal and delivery; `apps/ai-music-worker` owns provider calls,

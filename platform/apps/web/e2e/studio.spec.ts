@@ -9,6 +9,7 @@ test('design conversation, private versions and explicit generation fit desktop 
   page,
   request,
 }, info) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
   await page.context().addCookies([{ name: 'glob2_session', value: seed.userSession, url: base }]);
   const map = (await (await request.get(`/api/v1/maps/${seed.mapId}`)).json()) as {
@@ -89,13 +90,12 @@ test('design conversation, private versions and explicit generation fit desktop 
       });
   });
   await page.goto(`/map-studio/${id}`);
-  await page.getByRole('button', { name: 'Open navigation' }).click();
+  await expect(page.locator('.app-sidebar')).toBeVisible();
   await expect(
     page
       .getByRole('navigation', { name: 'Main', exact: true })
-      .getByRole('link', { name: 'AI Map Studio' }),
+      .getByRole('link', { name: 'Maps', exact: true }),
   ).toHaveAttribute('aria-current', 'page');
-  await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: /Generate map/ })).toBeVisible();
   const versionsTab = page.getByRole('button', { name: 'Map', exact: true });
   if (await versionsTab.isVisible()) await versionsTab.click();
