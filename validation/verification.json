@@ -1,0 +1,29 @@
+{
+  "tested_commit": "51389e79281925477ecdf1c2abda80902c073628",
+  "base": "3bbe89f0e879a2ed42399369caea49c029ca2a3e",
+  "integration": "PR head directly based on freshly fetched master",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "python": "3.12.14",
+    "pillow": "12.2.0",
+    "numpy": "2.3.5",
+    "scipy": "1.18.1",
+    "libwebp": "1.6.0"
+  },
+  "commands": [
+    "artifacts/grass-test-env/bin/python tools/artwork/package_runtime.py --runtime-output artifacts/terrain-runtime-final",
+    "artifacts/grass-test-env/bin/python tools/artwork/terrain_materials.py --check",
+    "artifacts/grass-test-env/bin/python tools/artwork/package_runtime.py --check",
+    "artifacts/grass-test-env/bin/python tools/artwork/runtime_provenance.py --check",
+    "artifacts/grass-test-env/bin/python tools/artwork/validate_runtime.py --export artifacts/terrain-runtime-final",
+    "artifacts/grass-test-env/bin/python -m unittest tools.artwork.test_terrain_materials tools.artwork.ai.test_upscale tools.artwork.test_validate_runtime -v",
+    "artifacts/grass-test-env/bin/python -m unittest discover -s test/build_system -p test_package_assets.py -v",
+    "artifacts/grass-test-env/bin/python -m unittest discover -s test/build_system -p test_artwork_package.py -v"
+  ],
+  "coverage": "51 regression tests; selected material interiors; exact shoreline alpha in 112 source frames and all four atlas levels; 91136 source terrain joins; 3378 shared-policy WebP layers and atlas outputs; source/index/provenance hashes",
+  "omissions": "No compiled client/GPU gameplay run or other-OS runtime testing. No simulation, native artwork, save/replay/network, topology, renderer or build inputs changed; no simulation revision bump is needed.",
+  "acceptance": "Bradley approved both visual candidates and requested this merge; author accepts focused local artwork/packaging evidence.",
+  "build_flags": "generic platform; optimized assets; default shared Q90/lossless selection; no model inference",
+  "evidence_subset": "runtime-terrain.zip contains the 256 changed WebP frames, four terrain atlases and full frame index; it is an inspection subset, not a standalone client."
+}

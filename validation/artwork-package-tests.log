@@ -1,0 +1,12 @@
+test_assembly_preserves_approved_source_bytes (test_artwork_package.ArtworkPackageTests.test_assembly_preserves_approved_source_bytes) ... ok
+test_assembly_rejects_stale_or_symlinked_source_exports (test_artwork_package.ArtworkPackageTests.test_assembly_rejects_stale_or_symlinked_source_exports) ... ok
+test_bad_hash_fails_before_any_output_write (test_artwork_package.ArtworkPackageTests.test_bad_hash_fails_before_any_output_write) ... ok
+test_capture_validates_all_source_hashes_before_production_changes (test_artwork_package.ArtworkPackageTests.test_capture_validates_all_source_hashes_before_production_changes) ... ok
+test_index_rejects_duplicate_paths_traversal_and_wrong_categories (test_artwork_package.ArtworkPackageTests.test_index_rejects_duplicate_paths_traversal_and_wrong_categories) ... ok
+test_inventory_rejects_duplicate_or_misnamed_layers_and_unknown_recipes (test_artwork_package.ArtworkPackageTests.test_inventory_rejects_duplicate_or_misnamed_layers_and_unknown_recipes) ... ok
+test_unindexed_files_and_overlapping_output_are_rejected (test_artwork_package.ArtworkPackageTests.test_unindexed_files_and_overlapping_output_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.019s
+
+OK

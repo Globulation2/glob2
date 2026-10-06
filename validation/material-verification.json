@@ -1,0 +1,14 @@
+{
+  "grass": {
+    "mean_rgb_error": 1.1302083333333333,
+    "max_rgb_error": 5.0,
+    "selected_interior_exact": true
+  },
+  "sand": {
+    "mean_rgb_error": 4.2724609375,
+    "max_rgb_error": 20.0,
+    "selected_interior_exact": true
+  },
+  "shoreline_source_alpha_exact": true,
+  "all_four_atlas_alpha_exact": true
+}

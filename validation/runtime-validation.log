@@ -1,0 +1,5 @@
+PASS: 2287 frames; world coverage, paired layers, logical dimensions, RGBA and hashes
+PASS: 65 resource frames, recovered pixels/constrained alpha and four padded atlas levels
+PASS: 91136 terrain joins, all corner junctions and padded borders through four mip levels
+PASS: opaque periodic water through four mip levels
+PASS: 3378 WebP layers/atlases; shared encoding, hashes, alpha, geometry and runtime index

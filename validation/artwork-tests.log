@@ -1,0 +1,23 @@
+test_edges_match_every_legal_neighbor_and_preserve_interiors (tools.artwork.test_terrain_materials.TerrainMaterialTests.test_edges_match_every_legal_neighbor_and_preserve_interiors) ... ok
+test_soft_color_target_keeps_grain_without_exact_block_sums (tools.artwork.test_terrain_materials.TerrainMaterialTests.test_soft_color_target_keeps_grain_without_exact_block_sums) ... ok
+test_zero_detail_preserves_constant_colors (tools.artwork.test_terrain_materials.TerrainMaterialTests.test_zero_detail_preserves_constant_colors) ... ok
+test_finishing_preserves_alpha_and_checks_model_dimensions (tools.artwork.ai.test_upscale.CandidateTests.test_finishing_preserves_alpha_and_checks_model_dimensions) ... ok
+test_inference_failure_does_not_publish_partial_pair (tools.artwork.ai.test_upscale.CandidateTests.test_inference_failure_does_not_publish_partial_pair) ... ok
+test_prepare_fills_rgb_and_records_both_layers_without_inference (tools.artwork.ai.test_upscale.CandidateTests.test_prepare_fills_rgb_and_records_both_layers_without_inference) ... ok
+test_rejects_existing_staging_without_overwriting_it (tools.artwork.ai.test_upscale.CandidateTests.test_rejects_existing_staging_without_overwriting_it) ... ok
+test_rejects_originals_terrain_unknown_and_missing_layers_before_writes (tools.artwork.ai.test_upscale.CandidateTests.test_rejects_originals_terrain_unknown_and_missing_layers_before_writes) ... ok
+test_rejects_protected_ancestor_and_symlink_outputs (tools.artwork.ai.test_upscale.CandidateTests.test_rejects_protected_ancestor_and_symlink_outputs) ... ok
+test_changed_rgb_fails_for_lossless_but_is_allowed_by_lossy_policy (tools.artwork.test_validate_runtime.ExportValidationTests.test_changed_rgb_fails_for_lossless_but_is_allowed_by_lossy_policy) ... ok
+test_exact_webp_and_rewritten_index_pass (tools.artwork.test_validate_runtime.ExportValidationTests.test_exact_webp_and_rewritten_index_pass) ... ok
+test_generated_terrain_can_have_multiple_outputs_per_catalog_source (tools.artwork.test_validate_runtime.ExportValidationTests.test_generated_terrain_can_have_multiple_outputs_per_catalog_source) ... ok
+test_source_png_runtime_name_and_stale_index_fail (tools.artwork.test_validate_runtime.ExportValidationTests.test_source_png_runtime_name_and_stale_index_fail) ... ok
+test_unstandardized_recipe_and_leaked_png_fail (tools.artwork.test_validate_runtime.ExportValidationTests.test_unstandardized_recipe_and_leaked_png_fail) ... ok
+test_wrong_alpha_fails_even_with_valid_output_hash (tools.artwork.test_validate_runtime.ExportValidationTests.test_wrong_alpha_fails_even_with_valid_output_hash) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.533s
+
+OK
+PASS: 1 WebP layers/atlases; shared encoding, hashes, alpha, geometry and runtime index
+PASS: 1 WebP layers/atlases; shared encoding, hashes, alpha, geometry and runtime index
+PASS: 1 WebP layers/atlases; shared encoding, hashes, alpha, geometry and runtime index
