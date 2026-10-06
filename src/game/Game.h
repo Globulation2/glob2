@@ -201,6 +201,8 @@ public:
 		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
 		DRAW_NO_CLOUD_LAYER = 0x200,
+		// All tiles of a torus atlas share one whole-map terrain sampling density.
+		DRAW_TILED_CAPTURE = 0x400,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,
