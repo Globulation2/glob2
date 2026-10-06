@@ -1,0 +1,34 @@
+{
+  "archive": "native-query-641-evidence.zip",
+  "bytes": 61648437,
+  "sha256": "4984f73fd7c29963c88fd3351a81241a90bd84eaeaa6129955a347bccf6d6151",
+  "files": 725,
+  "source_revision": "641dca365",
+  "base": "f0ff8384b",
+  "tests": {
+    "junit_cases": 317,
+    "passed": 316,
+    "skipped": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped_reason": "--no-display",
+    "build_label": "72fdb68c8 in focused test binary; exact6file optimization changes subsequently committed as641dca365; clean641metadata rebuild and CLI traces retained"
+  },
+  "timing_acceptance": false,
+  "limits": "No final corpus performance gate or final platform refresh. Samples/instructions are diagnostic; quiet41384single-case measurements are historical, not a current641gate. Source/binary identities retained in per-run records. Executables/dependencies not bundled.",
+  "publication_archives": [
+    {
+      "path": "native-query-641-cases.zip",
+      "bytes": 51442000,
+      "sha256": "beb43ab23163bdf0edc7d15d17efd03d16f9183ec5975b8727922b82eacdf86c",
+      "verification": "Every decompressed member matches original inventory SHA256"
+    },
+    {
+      "path": "native-query-641-diagnostics.zip",
+      "bytes": 10228128,
+      "sha256": "f690d04176bfa370139cda1d994abeae36e2b2c9c70822f21a7d22ca14d733c3",
+      "verification": "Every decompressed member matches original inventory SHA256"
+    }
+  ],
+  "packaging_recovery": "Initial split reused mutable ZipInfo objects across two destination loops, invalidating in-memory source offsets; original source ZIP unchanged. Reopened source and copied ZipInfo objects, then verified every output member. No engine run was repeated or changed."
+}

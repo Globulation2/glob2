@@ -1,3 +1,11 @@
+## Native query-optimization checkpoint641dca365 (historical)
+
+The `native-query-641-cases.zip` and `native-query-641-diagnostics.zip` pair retains 725 evidence files: focused native tests, build logs, the clean641 stock/match traces, the preceding f0 integration checks, profiling commands/raw samples/stat counters, and historical41384 single-case calibration rows. `native-query-641-summary.json` records exact boundaries and limitations. Extract both ZIPs into one directory; the common `file-inventory.json` authenticates every member by SHA256. Each decompressed member was verified before publication. Executables and dependency installations are omitted; existing corpus/SDL packages supply related reproduction inputs.
+
+Focused native JUnit has317cases:316pass, one deliberately skipped display case, zero failures/errors. These tests ran against the exact source subsequently committed as641dca365 (binary build label72fdb68c8); a clean641 metadata rebuild and native CLI traces are separately retained. This is not a final full-suite or final platform run. Source has since advanced to da80dbaac with additional reviewed query optimizations; that revision's acceptance remains pending.
+
+The first cache pass preserves checksums/fullteam histories/job counts across7680ticks and reduces user instructions9.1%. Instructions and sampled cycles are diagnostic because these profiling runs include startup and concurrent workloads. Earlier quiet41384 calibration is retained with its inconclusive/drifting pure-control result and slower approved-fixes comparison, not presented as a641 performance verdict. No corpus CPU gate has passed. The ZIP splitting helper initially reused mutable ZipInfo objects and failed; the original archive remained unchanged, the helper was corrected, and all published members passed fresh hash verification. No simulation was rerun or altered by that packaging repair.
+
 ## Historical approved-fixes control tournament (ee3 baseline)
 
 `ee3-approved-fixes-control/` preserves all 84 runs (42 pairs) comparing pure `ee3be8ecd9d7100de78ef63869271371d427cb66` with that same engine plus only the three approved behavior fixes. This is **not a refactor comparison**, and master has since advanced to `f0ff8384b`; a fresh aligned campaign is running. No performance claim is made from these concurrent runs.
