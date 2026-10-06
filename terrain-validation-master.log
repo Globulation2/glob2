@@ -1,0 +1,5 @@
+[run_tests] /home/bradley/glob2-terrain-borders/build/linux/client/release/test/glob2-unit-tests is not built; skipping
+PASS TerrainValidation/mixed terrain simulation trace and visual gallery [display][artifacts] (4.1s)
+
+1 passed, 0 failed, 0 skipped (4.1s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-terrain-borders/artifacts/tests/junit.xml (1 cases)
