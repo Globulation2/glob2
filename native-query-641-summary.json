@@ -12,7 +12,7 @@
     "failed": 0,
     "errors": 0,
     "skipped_reason": "--no-display",
-    "build_label": "72fdb68c8 in focused test binary; exact6file optimization changes subsequently committed as641dca365; clean641metadata rebuild and CLI traces retained"
+    "execution_checkout": "Tests executed while checkout HEAD was72fdb68c8 plus the exact six-file change subsequently committed as641dca365. This records build provenance, not a verified embedded Git label."
   },
   "timing_acceptance": false,
   "limits": "No final corpus performance gate or final platform refresh. Samples/instructions are diagnostic; quiet41384single-case measurements are historical, not a current641gate. Source/binary identities retained in per-run records. Executables/dependencies not bundled.",
@@ -30,5 +30,6 @@
       "verification": "Every decompressed member matches original inventory SHA256"
     }
   ],
-  "packaging_recovery": "Initial split reused mutable ZipInfo objects across two destination loops, invalidating in-memory source offsets; original source ZIP unchanged. Reopened source and copied ZipInfo objects, then verified every output member. No engine run was repeated or changed."
+  "packaging_recovery": "Initial split reused mutable ZipInfo objects across two destination loops, invalidating in-memory source offsets; original source ZIP unchanged. Reopened source and copied ZipInfo objects, then verified every output member. No engine run was repeated or changed.",
+  "identity_clarification": "Earlier notes used build label for the checkout revision. An embedded Git revision was not verified. Interpret such labels in retained raw notes as checkout provenance only. The fresh4ca CLI is byte-identical to frozen da80 after the browser-only fixture change."
 }
