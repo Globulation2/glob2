@@ -20,6 +20,8 @@ async function fillMaterial(page: Page, name: string) {
 test('every registered material previews on the worker and in the swatches', async ({
   page,
 }, info) => {
+  // The shader output does not depend on the device; one project is enough.
+  test.skip(info.project.name !== 'desktop', 'desktop captures cover every material');
   // Each whole-model fill re-renders the dialog preview; software WebGL is slow.
   test.setTimeout(60_000 * COLONY_SKIN_MATERIALS.length);
   mkdirSync(output, { recursive: true });

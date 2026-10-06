@@ -234,8 +234,10 @@ top-right, explorer bottom-left, swarm bottom-right.
   (R = G = B), opaque, and a material id below the count registered in
   `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
   the protocol package). Anything else is a 400. The server re-encodes it as an
-  8-bit lossless WebP. Native clients shade ids beyond their own catalogue as
-  matte rather than rejecting the skin, so newer materials degrade gracefully.
+  8-bit lossless WebP. Native clients built with the registry shade ids beyond
+  their own catalogue as matte, so later materials degrade gracefully; clients
+  from before the registry reject such a skin and keep that team's previous
+  appearance, since they only knew ids 0 to 3.
 
 The version's `manifestSha256` is described below; native clients recompute it.
 Publishing identical content again returns the existing version. Publication and

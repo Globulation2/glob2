@@ -94,10 +94,6 @@ constexpr unsigned TileSize = 128, AtlasSize = 2048;
 constexpr unsigned Columns = AtlasSize / TileSize, SlotsPerPage = Columns * Columns;
 constexpr unsigned MaxPages = 4, MaxSlots = SkinAtlasCache::Capacity;
 constexpr float Padding = 1.25f;
-// Shells push fur this far outward in NDC: 3.2 px of the 128 px tile, inside
-// its padding. They also move slightly nearer so strands win the depth test
-// over the body they grow from.
-constexpr float FurLength = 0.05f, ShellDepth = 0.002f;
 GLuint compileShader(GLenum type, const std::string &text)
 {
     const char *source = text.c_str();
@@ -249,14 +245,13 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         r.attempted = true;
         GLint limit = 0; glGetIntegerv(GL_MAX_TEXTURE_SIZE, &limit);
         if (limit < static_cast<int>(AtlasSize)) return;
-        // The 1.25 is the tile padding; shells offset in NDC before it applies.
+        // The body fills the tile inside its 1.25 padding; fur shells add an
+        // offset that is already in NDC (SKIN_FUR_LENGTH, 3.2 px of the 128 px
+        // tile) and sit slightly nearer so strands win the depth test.
         const std::string place =
-            "vec3 n=normalize(surfaceNormal);gl_Position=vec4((position.xy+n.xy*shell*furLength*1.25)/1.25,position.z-shell*shellDepth,1.0);";
-        // Atlas lookups use the model's quadrant; material noise keeps mesh UVs.
+            "gl_Position=vec4(position.xy/1.25+normalize(surfaceNormal).xy*shell*furLength,position.z-shell*shellDepth,1.0);";
         // Shell passes keep only strands; the body pass never discards.
-        const std::string shade =
-            "vec2 atlasUv=uv*0.5+region;float id=floor(SKIN_TEXTURE(material,atlasUv).r*255.0+0.5);"
-            "vec4 shaded=skinShade(SKIN_TEXTURE(paint,atlasUv).rgb,id,normal,uv,shell);if(shaded.a<0.5)discard;";
+        const std::string shade = "vec4 shaded=skinShadeAtlas(paint,material,region,normal,uv,shell);if(shaded.a<0.5)discard;";
 #ifdef GLOB2_WEBGL2
         const auto vertex = compileShader(GL_VERTEX_SHADER,
             "#version 300 es\nprecision highp float;\n"
@@ -325,8 +320,8 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
     glUniform1i(glGetUniformLocation(r.program, "material"), 1);
     const GLint regionLocation = glGetUniformLocation(r.program, "region");
     const GLint shellLocation = glGetUniformLocation(r.program, "shell");
-    glUniform1f(glGetUniformLocation(r.program, "furLength"), FurLength);
-    glUniform1f(glGetUniformLocation(r.program, "shellDepth"), ShellDepth);
+    glUniform1f(glGetUniformLocation(r.program, "furLength"), SKIN_FUR_LENGTH);
+    glUniform1f(glGetUniformLocation(r.program, "shellDepth"), SKIN_SHELL_DEPTH);
     unsigned boundPage = ~0u;
     for (const auto &[key, request] : unique)
     {
@@ -386,6 +381,15 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         glBindBuffer(GL_ARRAY_BUFFER,r.uv); glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(2,GL_FLOAT,0,nullptr);
 #endif
+        // Fur materials add shell passes; the scan result is cached per map revision.
+        const auto shellKey = std::make_pair(request.material->lifetimeIdentity(), request.material->contentRevision());
+        auto shells = r.shellRegions.find(shellKey);
+        if (shells == r.shellRegions.end())
+        {
+            if (r.shellRegions.size() >= 64) r.shellRegions.clear();
+            shells = r.shellRegions.emplace(shellKey, skinShellRegions(*request.material)).first;
+        }
+        const unsigned passes = shells->second[request.region] ? SKIN_MATERIAL_SHELLS : 0;
         geometryTime.stop();
         PERF_SCOPE_TIME(SkinRaster);
         glViewport((tile%Columns)*TileSize, (tile/Columns)*TileSize, TileSize, TileSize);
@@ -399,15 +403,6 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
         float regionU, regionV; regionOffset(request.region, regionU, regionV);
         glUniform2f(regionLocation, regionU, regionV);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.indices);
-        // Fur materials add shell passes; the scan result is cached per map revision.
-        const auto shellKey = std::make_pair(request.material->lifetimeIdentity(), request.material->contentRevision());
-        auto shells = r.shellRegions.find(shellKey);
-        if (shells == r.shellRegions.end())
-        {
-            if (r.shellRegions.size() >= 64) r.shellRegions.clear();
-            shells = r.shellRegions.emplace(shellKey, skinShellRegions(*request.material)).first;
-        }
-        const unsigned passes = shells->second[request.region] ? SKIN_MATERIAL_SHELLS : 0;
         for (unsigned shell = 0; shell <= passes; ++shell)
         {
             glUniform1f(shellLocation, static_cast<float>(shell) / SKIN_MATERIAL_SHELLS);

@@ -133,70 +133,92 @@ export function StudioDialog({
 const SWATCH = 128;
 const SWATCH_COLUMNS = 4;
 const swatchRows = (count: number) => Math.ceil(count / SWATCH_COLUMNS);
+const SWATCH_HEIGHT =
+  SWATCH * MATERIAL_GROUPS.reduce((n, g) => n + swatchRows(g.materials.length), 0);
 // One analytic sphere per material, lit by the shared material GLSL with fur
-// shells drawn over the body as the game does. All groups render from a single
-// WebGL context: browsers drop the oldest contexts past a small limit, and the
-// studio and pattern dialog each need one for their mesh preview.
-function renderSwatches(color: string): HTMLCanvasElement | null {
-  const target = document.createElement('canvas');
-  target.width = SWATCH * SWATCH_COLUMNS;
-  target.height = SWATCH * MATERIAL_GROUPS.reduce((n, g) => n + swatchRows(g.materials.length), 0);
-  const gl = target.getContext('webgl2', {
+// shells drawn over the body as the game does. Every picker shares one hidden
+// WebGL context and compiled program, re-drawn per paint colour: browsers drop
+// the oldest contexts past a small limit (the studio and the pattern dialog
+// each need one for their mesh preview), and the 22-material shader is too
+// large to recompile on every colour-slider tick.
+type SwatchRenderer = {
+  canvas: HTMLCanvasElement;
+  gl: WebGL2RenderingContext;
+  tint: WebGLUniformLocation | null;
+  cell: WebGLUniformLocation | null;
+  id: WebGLUniformLocation | null;
+  shell: WebGLUniformLocation | null;
+};
+let swatchRenderer: SwatchRenderer | null | undefined;
+function createSwatchRenderer(): SwatchRenderer | null {
+  const canvas = document.createElement('canvas');
+  canvas.width = SWATCH * SWATCH_COLUMNS;
+  canvas.height = SWATCH_HEIGHT;
+  const gl = canvas.getContext('webgl2', {
     alpha: true,
     antialias: true,
     preserveDrawingBuffer: true,
   });
   if (!gl) return null;
+  // A lost context is recreated on the next render rather than reused.
+  canvas.addEventListener('webglcontextlost', () => {
+    swatchRenderer = undefined;
+  });
   const program = gl.createProgram()!;
-  const shaders: WebGLShader[] = [];
   for (const [kind, source] of [
     [gl.VERTEX_SHADER, '#version 300 es\nin vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'],
     [
       gl.FRAGMENT_SHADER,
-      `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;uniform vec2 cell;uniform float id;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec2 q=(gl_FragCoord.xy-cell-vec2(64.,80.))/(38.*(1.+shell*.2));float r=dot(q,q);if(r>1.)discard;vec3 n=vec3(q,sqrt(1.-r));vec4 shaded=skinShade(tint,id,n,(q+1.)*.5,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
+      `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;uniform vec2 cell;uniform float id;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec2 q=(gl_FragCoord.xy-cell-vec2(64.,80.))/(38.*(1.+shell*.2));vec4 shaded=skinShadeSphere(tint,id,q,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
     ],
   ] as const) {
     const s = gl.createShader(kind)!;
     gl.shaderSource(s, source);
     gl.compileShader(s);
     gl.attachShader(program, s);
-    shaders.push(s);
+    gl.deleteShader(s);
   }
   gl.linkProgram(program);
-  const release = () => {
-    shaders.forEach((s) => gl.deleteShader(s));
-    gl.deleteProgram(program);
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
-  };
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    release();
+    gl.deleteProgram(program);
     return null;
   }
   gl.useProgram(program);
-  const buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(program, 'p');
   gl.enableVertexAttribArray(loc);
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(0, 0, 0, 0);
+  gl.enable(gl.SCISSOR_TEST);
+  return {
+    canvas,
+    gl,
+    tint: gl.getUniformLocation(program, 'tint'),
+    cell: gl.getUniformLocation(program, 'cell'),
+    id: gl.getUniformLocation(program, 'id'),
+    shell: gl.getUniformLocation(program, 'shell'),
+  };
+}
+/** Draws every group's spheres in `color`; the strips copy their rows out. */
+function renderSwatches(color: string): HTMLCanvasElement | null {
+  if (swatchRenderer === undefined) swatchRenderer = createSwatchRenderer();
+  if (!swatchRenderer) return null;
+  const { canvas, gl, tint, cell, id, shell } = swatchRenderer;
   gl.uniform3f(
-    gl.getUniformLocation(program, 'tint'),
+    tint,
     parseInt(color.slice(1, 3), 16) / 255,
     parseInt(color.slice(3, 5), 16) / 255,
     parseInt(color.slice(5, 7), 16) / 255,
   );
-  const cell = gl.getUniformLocation(program, 'cell'),
-    id = gl.getUniformLocation(program, 'id'),
-    shell = gl.getUniformLocation(program, 'shell');
-  gl.viewport(0, 0, target.width, target.height);
-  gl.clearColor(0, 0, 0, 0);
+  gl.scissor(0, 0, canvas.width, canvas.height);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.enable(gl.SCISSOR_TEST);
   let row = 0;
   for (const group of MATERIAL_GROUPS) {
     group.materials.forEach((material, index) => {
       const x = (index % SWATCH_COLUMNS) * SWATCH,
-        y = target.height - (row + Math.floor(index / SWATCH_COLUMNS) + 1) * SWATCH;
+        y = canvas.height - (row + Math.floor(index / SWATCH_COLUMNS) + 1) * SWATCH;
       gl.scissor(x, y, SWATCH, SWATCH);
       gl.uniform2f(cell, x, y);
       gl.uniform1f(id, material.id);
@@ -208,23 +230,18 @@ function renderSwatches(color: string): HTMLCanvasElement | null {
     });
     row += swatchRows(group.materials.length);
   }
-  gl.deleteBuffer(buffer);
-  // Copy out before releasing the context; the 2D copy outlives it.
-  const copy = document.createElement('canvas');
-  copy.width = target.width;
-  copy.height = target.height;
-  copy.getContext('2d')?.drawImage(target, 0, 0);
-  release();
-  return copy;
+  return canvas;
 }
 function SwatchStrip({
   source,
+  color,
   offset,
   materials,
   selected,
   onSelect,
 }: {
   source: HTMLCanvasElement | null;
+  color: string;
   offset: number;
   materials: readonly ColonySkinMaterial[];
   selected: number;
@@ -249,7 +266,8 @@ function SwatchStrip({
         target.width,
         target.height,
       );
-  }, [source, offset]);
+    // `color` keys the copy: the shared source canvas is redrawn in place.
+  }, [source, color, offset]);
   return (
     <div className="skin-materials">
       <canvas
@@ -299,6 +317,7 @@ export function MaterialSwatches({
           <h4>{group.name}</h4>
           <SwatchStrip
             source={source}
+            color={color}
             offset={GROUP_OFFSETS[index]!}
             materials={group.materials}
             selected={selected}

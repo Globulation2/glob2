@@ -1,5 +1,7 @@
 {
   "shells": 8,
+  "furLength": 0.05,
+  "shellDepth": 0.002,
   "materials": [
     { "id": 0, "key": "glossy", "name": "Classic glossy", "group": "Basics", "shells": false },
     { "id": 1, "key": "matte", "name": "Matte", "group": "Basics", "shells": false },

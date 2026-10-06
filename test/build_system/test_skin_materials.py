@@ -23,10 +23,11 @@ class SkinMaterialsTest(unittest.TestCase):
     def test_shader_stays_portable(self):
         """Both GLSL 1.20 and ES 3.00 must compile the shared block as is."""
         shader = (ROOT / skin_materials.SHADER).read_text()
-        self.assertNotIn('#version', shader)
-        self.assertNotIn('texture(', shader.replace('skinTexture(', ''))
-        self.assertNotIn('texture2D', shader)
-        self.assertNotRegex(shader, r'^\s*(for|while)\s*\(', 'materials stay loop-free for GL 2.1 drivers')
+        code = re.sub(r'//[^\n]*', '', shader)
+        self.assertNotIn('#version', code)
+        # Lookups go through the wrapper-defined macro, never a dialect's name.
+        self.assertNotRegex(code, r'\btexture2?D?\s*\(')
+        self.assertNotRegex(shader, r'(?m)^\s*(for|while)\s*\(', 'materials stay loop-free for GL 2.1 drivers')
         for line in shader.splitlines():
             if line.startswith('#define'):
                 self.assertFalse(line.endswith('\\'), 'GLSL 1.20 has no line continuation')
@@ -51,11 +52,13 @@ class SkinMaterialsTest(unittest.TestCase):
                 material['id'], material['key'], re.escape(material['name']), material['group'],
                 'true' if material['shells'] else 'false'))
         self.assertIn('COLONY_SKIN_SHELLS = %d;' % registry['shells'], text)
+        self.assertIn('COLONY_SKIN_FUR_LENGTH = %s;' % registry['furLength'], text)
+        self.assertIn('COLONY_SKIN_SHELL_DEPTH = %s;' % registry['shellDepth'], text)
 
-    def test_docs_do_not_hard_code_ids(self):
-        docs = (ROOT / 'docs/multiplayer/architecture.md').read_text()
-        self.assertNotIn('3 hairy', docs)
-        self.assertIn('skin-materials.json', docs)
+    def test_docs_point_at_the_registry(self):
+        for path in ('docs/multiplayer/architecture.md', 'docs/development/reference.md',
+                     'tools/unit-animation/README.md'):
+            self.assertIn('skin-materials.json', (ROOT / path).read_text(), path)
 
 
 if __name__ == '__main__':

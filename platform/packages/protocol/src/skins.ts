@@ -48,8 +48,11 @@ export const COLONY_SKIN_MATERIALS = [
   { id: 21, key: 'slime', name: 'Slime', group: 'Wet', shells: false },
 ] as const;
 export type ColonySkinMaterial = (typeof COLONY_SKIN_MATERIALS)[number];
-/** Fur shell passes drawn beyond the body for `shells` materials. */
+/** Fur shell passes drawn beyond the body for `shells` materials, how far the
+ * outermost reaches in the game's tile NDC, and the per-shell depth bias. */
 export const COLONY_SKIN_SHELLS = 8;
+export const COLONY_SKIN_FUR_LENGTH = 0.05;
+export const COLONY_SKIN_SHELL_DEPTH = 0.002;
 /** Colour atlas: PNG or WebP, at most 1 MiB decoded. */
 const ColonyAtlasBase64 = Type.String({
   minLength: 4,

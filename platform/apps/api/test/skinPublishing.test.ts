@@ -260,7 +260,7 @@ it('validates and canonicalizes material maps', async () => {
     [
       'out of range',
       await materialMap({ pixel: { x: 300, y: 5, value: [255, 255, 255] } }),
-      /ids 0 \(glossy\) to \d+/,
+      /ids 0 to \d+/,
     ],
     [
       'transparent',

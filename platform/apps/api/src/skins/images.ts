@@ -83,7 +83,7 @@ export async function canonicalMaterialMap(encoded: string): Promise<Buffer> {
     if (value >= SKIN_MATERIAL_COUNT)
       throw apiError(
         'bad_request',
-        `Material map pixels must be material ids 0 (${COLONY_SKIN_MATERIALS[0].key}) to ${SKIN_MATERIAL_COUNT - 1} (${COLONY_SKIN_MATERIALS.at(-1)?.key}).`,
+        `Material map pixels must be material ids 0 to ${SKIN_MATERIAL_COUNT - 1}.`,
       );
     ids[i] = value;
   }

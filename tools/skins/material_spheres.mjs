@@ -57,7 +57,7 @@ const error = await page.evaluate(
       ],
       [
         gl.FRAGMENT_SHADER,
-        `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;uniform vec2 cell;uniform float id;uniform float shell;\n${glsl}\nvoid main(){vec2 q=(gl_FragCoord.xy-cell-vec2(100.,112.))/(72.*(1.+shell*.2));float r=dot(q,q);if(r>1.)discard;vec3 n=vec3(q,sqrt(1.-r));vec4 shaded=skinShade(tint,id,n,(q+1.)*.5,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
+        `#version 300 es\nprecision highp float;out vec4 color;uniform vec3 tint;uniform vec2 cell;uniform float id;uniform float shell;\n${glsl}\nvoid main(){vec2 q=(gl_FragCoord.xy-cell-vec2(100.,112.))/(72.*(1.+shell*.2));vec4 shaded=skinShadeSphere(tint,id,q,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
       ],
     ]) {
       const shader = gl.createShader(kind);
