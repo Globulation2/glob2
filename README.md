@@ -1,8 +1,8 @@
-# Evidence: terrain-border-variety (108f132ae on dbc12ed58)
+# Evidence: terrain-border-variety (108f132ae + 96378693c on dbc12ed58)
 
 Local / VM verification
 
-- Tested commit SHA: 108f132ae (branch `terrain-border-variety`), base dbc12ed58 (master), branch = base + 1 commit.
+- Tested commits: 108f132ae (masks) and 96378693c (seam treatment), branch `terrain-border-variety`, base dbc12ed58 (master), branch = base + 2 commits.
 - Environment: Linux 7.0.0-31-generic x86_64, system GCC, pinned SDL3 prefix (`scons/sdl3_dependencies.py`), Xvfb for display cases.
 - Build: `GLOB2_SDL3_PREFIX=<prefix> scons -j24 release=1 server=0 engine-tests`.
 - Coverage rationale: presentation-only change to `TerrainVisual` coverage resolution and catalog schema (version 3).
@@ -25,3 +25,14 @@ Local / VM verification
   Standalone resolver harness, unloaded: master 65-70 ns/sample, branch 98-122 ns/sample for boundary tiles
   (pebble lookups and smoothstep). Composition results are cached per page, uniform tiles are unaffected.
 - Omitted: Windows/Android/browser runs (pure integer C++; no simulation, save, replay or network data touched).
+
+## Seam treatment (96378693c)
+
+- Same build/test commands at 96378693c: terrain suites `31 passed, 0 failed, 0 skipped`
+  (`terrain-suites-branch-seams.log`), including the new compositor test that checks the shade falls only on the
+  lower material and the fringe tint only beside the casting material. Tool tests: 8 OK.
+- Gallery checksum trace at 96378693c identical to master (`checksums-master.txt`).
+- Visuals: `orig-seams-6x.png` (original tiles' contact bands), `seam-impl.png` (harness before/after, ice and coast),
+  `seam-ice-12x.png`, `terrain-gallery-branch-seams.png`, `compare-gallery-seams-3x.png` (in-engine before/after).
+- Cost: shading is a per-pixel multiply and lerp on composed pixels plus a runner-up scan already inside the
+  resolver; harness per-sample time unchanged within noise (97-100 ns/sample for boundary tiles).
