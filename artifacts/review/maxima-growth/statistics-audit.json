@@ -1,0 +1,26 @@
+{
+  "duels": {
+    "independent_means": {
+      "historical": 0.7627314814814815,
+      "latest": 0.7974537037037037
+    },
+    "effect": 0.03472222222222221,
+    "matches": true
+  },
+  "island": {
+    "independent_means": {
+      "historical": 0.6875,
+      "latest": 0.6875
+    },
+    "effect": 0.0,
+    "matches": true
+  },
+  "passive": {
+    "independent_means": {
+      "historical": 75.56362976190476,
+      "latest": 80.54524642857143
+    },
+    "effect": 0.06592611660349501,
+    "matches": true
+  }
+}

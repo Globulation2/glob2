@@ -1,0 +1,22 @@
+{
+  "commit": "8c80349fcda032e134111be856dd6ff7a9c3fd71",
+  "base": "ee3be8ecd9d7100de78ef63869271371d427cb66",
+  "clean": true,
+  "system": {
+    "system": "Linux",
+    "node": "therig",
+    "release": "7.0.0-31-generic",
+    "version": "#31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026",
+    "machine": "x86_64",
+    "processor": ""
+  },
+  "compiler": "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0",
+  "buildCommand": "CCACHE=1 GLOB2_SDL3_PREFIX=/home/bradley/glob2-verify/integrator/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/.codex/worktrees/96d8/glob2/build/linux/client/release/recording/prefix scons -j6 release=1 server=0 CC=gcc-13 CXX=g++-13 tests build/linux/client/release/src/glob2",
+  "sourceStatus": "",
+  "binaries": {
+    "build/linux/client/release/src/glob2": "d546dcf1469cb5e122c18be168c21d2c62d1d0e15fd6b46d188c582721bdf3bb",
+    "build/linux/client/release/test/glob2-unit-tests": "157f32885217bd58716879658fc444ab7b46cae661ee772d87b66f664ecc9bbb",
+    "build/linux/client/release/test/glob2-engine-tests": "2dd554efe31ef9a8a2e9d7162a5fa9c0e59710a3808784ae1f7c9fdb8209d615"
+  },
+  "integrationNote": "Current master ee3be8ecd integrated before validation. Final commit changes test registration only; gameplay refresh and continuation ran at 136abe9a3, with identical production sources. No claim that the historical tournament ran at final HEAD."
+}

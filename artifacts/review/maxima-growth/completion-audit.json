@@ -1,0 +1,31 @@
+{
+  "planned_games": 2080,
+  "complete_pairs": 1040,
+  "counts": {
+    "duels/historical": 864,
+    "duels/latest": 864,
+    "island/historical": 48,
+    "island/latest": 48,
+    "passive-fixed/historical": 128,
+    "passive-fixed/latest": 128
+  },
+  "errors": [],
+  "gradient_settings": {
+    "historical/2/8": 1040,
+    "latest/2/8": 1040
+  },
+  "terminations": {
+    "duels/historical/engine_end": 831,
+    "duels/latest/engine_end": 832,
+    "duels/historical/tick_cap": 33,
+    "island/historical/tick_cap": 12,
+    "island/latest/engine_end": 38,
+    "duels/latest/tick_cap": 32,
+    "island/historical/engine_end": 36,
+    "island/latest/tick_cap": 10,
+    "passive-fixed/historical/tick_cap": 128,
+    "passive-fixed/latest/tick_cap": 128
+  },
+  "candidate_head": "b3da680f163041b55a7b5ced65f6153d45e13076",
+  "tracked_status": ""
+}

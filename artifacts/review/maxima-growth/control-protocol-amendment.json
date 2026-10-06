@@ -1,0 +1,14 @@
+{
+  "reason": "Death-only controls can end with living units after engine defeat. Two original controls ended before the intended 30000-tick horizon, so carrying final counts forward is not valid observed growth.",
+  "original_runs_retained": true,
+  "replacement": "Repeat every one of the 256 passive-control scenarios with the same binaries, maps, seeds, seats, alliances and passive script; use script-only outcome conditions to prevent death from ending the observation window. No seed addition, removal or tuning. Competitive scenarios are unchanged.",
+  "gates": [
+    "Every corrected control reaches 30000 ticks",
+    "Compare ECON and MEASURE prefixes to original controls through their observed endpoints; report any mismatches",
+    "Retain original defeat times and report them separately"
+  ],
+  "primary_estimand": "Ratio of equal-map-weighted mean population over the fixed 30000-tick observation window",
+  "margins_unchanged": true,
+  "status": "setup correction; no behavior aggregate results inspected",
+  "discovered_before_aggregate_results_inspected": true
+}

@@ -1,0 +1,8 @@
+{
+  "measured_candidate_text_bytes": 25752,
+  "cleaned_text_bytes": 25752,
+  "equal": true,
+  "sha256_measured": "6b833c62a7780199d870f5198db06f4d4f121e0e6e1637606272d6b8d8a4328c",
+  "sha256_cleaned": "6b833c62a7780199d870f5198db06f4d4f121e0e6e1637606272d6b8d8a4328c",
+  "scope": "GCC13 -O3 primary .text section of the ledger translation unit; not an entire-engine performance claim"
+}

@@ -1,0 +1,238 @@
+{
+  "versions": {
+    "historical": {
+      "binary": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2/artifacts/maxima-historical-validation/bin/historical",
+      "cwd": "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-master-baseline/source",
+      "revision": "71d7eee1bb2c7105d7f1711a799c967c96687cca",
+      "sha256": "bfe350e01e93fdebacaaf8d262b84adb42441f0cf0ec6e72b9179b6cb150a80f"
+    },
+    "latest": {
+      "binary": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2/artifacts/maxima-historical-validation/bin/latest",
+      "cwd": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2",
+      "revision": "b3da680f163041b55a7b5ced65f6153d45e13076",
+      "sha256": "af069c6963690e7b391f99c3b655fe8fbeb7ff023f7b84f25333690af054794e"
+    }
+  },
+  "maps": {
+    "SmallForTwo.map.gz": {
+      "teams": 2,
+      "sha256": "a551bc8ccf3ccd36596100b9d9dcf67dae84a465ee609f41703dfbdff67b6858"
+    },
+    "balanced_for_2.map.gz": {
+      "teams": 2,
+      "sha256": "adae148dbc9eaf630caab7525d17dcc8fb0392326503b4a0c750babe2238a770"
+    },
+    "Dejans.map.gz": {
+      "teams": 2,
+      "sha256": "6c466751ba07c3be0d2bf755d7f5c7292fb02d1428e991a8f97ac640874fa172"
+    },
+    "Mazury.map.gz": {
+      "teams": 2,
+      "sha256": "e58c5838d8ba084f1e771c124a7374e23aef807eb36afe615e4e70f3ead9751e"
+    },
+    "Muka.map.gz": {
+      "teams": 2,
+      "sha256": "8413b5313f7b4e7055a72a0bd37be2822c92270dcd7259aaf50b07f79e008daa"
+    },
+    "strange2.map.gz": {
+      "teams": 2,
+      "sha256": "5b40ac40f7420b391c2daa432a3b3c96f5167a0765e7f06914be6f626bf9fdba"
+    },
+    "Holiday_Island_2.map.gz": {
+      "teams": 4,
+      "sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9"
+    }
+  },
+  "normalRules": true,
+  "duelOpponents": [
+    "cortex",
+    "castor",
+    "warrush"
+  ],
+  "pilotSeeds": [
+    9401
+  ],
+  "confirmatorySeedsReserved": [
+    9500,
+    9501,
+    9502,
+    9503,
+    9504,
+    9505,
+    9506,
+    9507,
+    9508,
+    9509,
+    9510,
+    9511,
+    9512,
+    9513,
+    9514,
+    9515,
+    9516,
+    9517,
+    9518,
+    9519,
+    9520,
+    9521,
+    9522,
+    9523,
+    9524,
+    9525,
+    9526,
+    9527,
+    9528,
+    9529,
+    9530,
+    9531,
+    9532,
+    9533,
+    9534,
+    9535,
+    9536,
+    9537,
+    9538,
+    9539,
+    9540,
+    9541,
+    9542,
+    9543,
+    9544,
+    9545,
+    9546,
+    9547,
+    9548,
+    9549,
+    9550,
+    9551,
+    9552,
+    9553,
+    9554,
+    9555,
+    9556,
+    9557,
+    9558,
+    9559,
+    9560,
+    9561,
+    9562,
+    9563,
+    9564,
+    9565,
+    9566,
+    9567,
+    9568,
+    9569,
+    9570,
+    9571,
+    9572,
+    9573,
+    9574,
+    9575,
+    9576,
+    9577,
+    9578,
+    9579,
+    9580,
+    9581,
+    9582,
+    9583,
+    9584,
+    9585,
+    9586,
+    9587,
+    9588,
+    9589,
+    9590,
+    9591,
+    9592,
+    9593,
+    9594,
+    9595,
+    9596,
+    9597,
+    9598,
+    9599
+  ],
+  "margins": {
+    "winRateDifference": 0.05,
+    "relativePopulationAUC": 0.1,
+    "relativeMilestoneRestrictedTime": 0.1
+  },
+  "method": "Cross maps and opponents; paired seeds and both duel seats; four seats for island FFA. No tuning. Pilot used for feasibility/variance only, excluded from confirmatory analysis. Freeze confirmatory sample count before opening its outcomes. Stratify by fixed map/opponent and resample map-seed clusters with seats/opponents together. Report unresolved games and missing milestones; no favorable-result exclusions. Competitive comparison includes other-AI changes; passive normal-rule controls isolate that confound.",
+  "capTicks": 60000,
+  "independentProcesses": 6,
+  "confirmation": {
+    "duelSeeds": [
+      9500,
+      9501,
+      9502,
+      9503,
+      9504,
+      9505,
+      9506,
+      9507,
+      9508,
+      9509,
+      9510,
+      9511,
+      9512,
+      9513,
+      9514,
+      9515,
+      9516,
+      9517,
+      9518,
+      9519,
+      9520,
+      9521,
+      9522,
+      9523
+    ],
+    "islandSeeds": [
+      9550,
+      9551,
+      9552,
+      9553
+    ],
+    "passiveSeeds": [
+      9600,
+      9601,
+      9602,
+      9603,
+      9604,
+      9605,
+      9606,
+      9607
+    ],
+    "duelPairs": 864,
+    "islandPairs": 48,
+    "passivePairs": 128,
+    "selection": "Pilot discordance variance .256 implies roughly 806 independent pairs for 80% power at a zero true difference under a 5-point margin; round to 864 balanced pairs. Cluster correlation can reduce actual power; report measured uncertainty without extending the cohort based on its outcomes.",
+    "passiveSetup": "Normal hunger, construction and upgrades; unchanged no-op JavaScript allies; death-only loss condition prevents an immediate allied victory. Fixed 30000-tick horizon. This isolates economic/technology pacing, not military behavior.",
+    "primaryOutcomes": [
+      "duel win-rate difference, with unresolved fraction reported separately",
+      "passive population-time mean ratio; overall and by map"
+    ],
+    "secondaryOutcomes": [
+      "win rate by map and opponent",
+      "match duration",
+      "starvation counts and rates",
+      "producer and feeding counts over time",
+      "first completed school/barracks/producer/upgrade",
+      "first training and warrior birth",
+      "first offensive target and observed combat damage",
+      "event attainment rates and capped event times"
+    ],
+    "uncertainty": "Paired map-seed clusters; bootstrap fixed-map strata, retaining opponents and seats together. No tuning, no selective exclusions, no optional sample extension. Per-stratum results are exploratory."
+  },
+  "analysisDetails": {
+    "weights": "Equal weight per map; within a map, equal weight per opponent and then seat. Duel and four-player outcomes remain separate.",
+    "bootstrapReplicates": 10000,
+    "bootstrapSeed": 381902,
+    "primaryIntervals": "Two-sided 95% percentile intervals for paired differences/ratios, resampling map-seed clusters within fixed maps. Also report global-seed resampling sensitivity to cross-map correlation.",
+    "equivalenceDecision": "An interval must lie wholly inside the preset margin; include sensitivity intervals, unresolved games, failures and per-map exceptions in interpretation. No significance-based early stop or sample expansion.",
+    "milestones": "Report attainment and mean min(event tick, cohort cap), counting unobserved events at the cap. These are bounded descriptive scores, not uncensored event-time estimates. Early game termination competes with later milestones.",
+    "growth": "Population-time averages at a fixed 30000-tick horizon are primary only in allied passive controls. Competitive population-time means use each actual game duration and are descriptive, not proof of equal pacing."
+  }
+}

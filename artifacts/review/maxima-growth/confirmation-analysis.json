@@ -1,0 +1,4644 @@
+{
+  "protocol": {
+    "versions": {
+      "historical": {
+        "binary": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2/artifacts/maxima-historical-validation/bin/historical",
+        "cwd": "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-master-baseline/source",
+        "revision": "71d7eee1bb2c7105d7f1711a799c967c96687cca",
+        "sha256": "bfe350e01e93fdebacaaf8d262b84adb42441f0cf0ec6e72b9179b6cb150a80f"
+      },
+      "latest": {
+        "binary": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2/artifacts/maxima-historical-validation/bin/latest",
+        "cwd": "/home/bradley/.codex/worktrees/maxima-growth-policy/glob2",
+        "revision": "b3da680f163041b55a7b5ced65f6153d45e13076",
+        "sha256": "af069c6963690e7b391f99c3b655fe8fbeb7ff023f7b84f25333690af054794e"
+      }
+    },
+    "maps": {
+      "SmallForTwo.map.gz": {
+        "teams": 2,
+        "sha256": "a551bc8ccf3ccd36596100b9d9dcf67dae84a465ee609f41703dfbdff67b6858"
+      },
+      "balanced_for_2.map.gz": {
+        "teams": 2,
+        "sha256": "adae148dbc9eaf630caab7525d17dcc8fb0392326503b4a0c750babe2238a770"
+      },
+      "Dejans.map.gz": {
+        "teams": 2,
+        "sha256": "6c466751ba07c3be0d2bf755d7f5c7292fb02d1428e991a8f97ac640874fa172"
+      },
+      "Mazury.map.gz": {
+        "teams": 2,
+        "sha256": "e58c5838d8ba084f1e771c124a7374e23aef807eb36afe615e4e70f3ead9751e"
+      },
+      "Muka.map.gz": {
+        "teams": 2,
+        "sha256": "8413b5313f7b4e7055a72a0bd37be2822c92270dcd7259aaf50b07f79e008daa"
+      },
+      "strange2.map.gz": {
+        "teams": 2,
+        "sha256": "5b40ac40f7420b391c2daa432a3b3c96f5167a0765e7f06914be6f626bf9fdba"
+      },
+      "Holiday_Island_2.map.gz": {
+        "teams": 4,
+        "sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9"
+      }
+    },
+    "normalRules": true,
+    "duelOpponents": [
+      "cortex",
+      "castor",
+      "warrush"
+    ],
+    "pilotSeeds": [
+      9401
+    ],
+    "confirmatorySeedsReserved": [
+      9500,
+      9501,
+      9502,
+      9503,
+      9504,
+      9505,
+      9506,
+      9507,
+      9508,
+      9509,
+      9510,
+      9511,
+      9512,
+      9513,
+      9514,
+      9515,
+      9516,
+      9517,
+      9518,
+      9519,
+      9520,
+      9521,
+      9522,
+      9523,
+      9524,
+      9525,
+      9526,
+      9527,
+      9528,
+      9529,
+      9530,
+      9531,
+      9532,
+      9533,
+      9534,
+      9535,
+      9536,
+      9537,
+      9538,
+      9539,
+      9540,
+      9541,
+      9542,
+      9543,
+      9544,
+      9545,
+      9546,
+      9547,
+      9548,
+      9549,
+      9550,
+      9551,
+      9552,
+      9553,
+      9554,
+      9555,
+      9556,
+      9557,
+      9558,
+      9559,
+      9560,
+      9561,
+      9562,
+      9563,
+      9564,
+      9565,
+      9566,
+      9567,
+      9568,
+      9569,
+      9570,
+      9571,
+      9572,
+      9573,
+      9574,
+      9575,
+      9576,
+      9577,
+      9578,
+      9579,
+      9580,
+      9581,
+      9582,
+      9583,
+      9584,
+      9585,
+      9586,
+      9587,
+      9588,
+      9589,
+      9590,
+      9591,
+      9592,
+      9593,
+      9594,
+      9595,
+      9596,
+      9597,
+      9598,
+      9599
+    ],
+    "margins": {
+      "winRateDifference": 0.05,
+      "relativePopulationAUC": 0.1,
+      "relativeMilestoneRestrictedTime": 0.1
+    },
+    "method": "Cross maps and opponents; paired seeds and both duel seats; four seats for island FFA. No tuning. Pilot used for feasibility/variance only, excluded from confirmatory analysis. Freeze confirmatory sample count before opening its outcomes. Stratify by fixed map/opponent and resample map-seed clusters with seats/opponents together. Report unresolved games and missing milestones; no favorable-result exclusions. Competitive comparison includes other-AI changes; passive normal-rule controls isolate that confound.",
+    "capTicks": 60000,
+    "independentProcesses": 6,
+    "confirmation": {
+      "duelSeeds": [
+        9500,
+        9501,
+        9502,
+        9503,
+        9504,
+        9505,
+        9506,
+        9507,
+        9508,
+        9509,
+        9510,
+        9511,
+        9512,
+        9513,
+        9514,
+        9515,
+        9516,
+        9517,
+        9518,
+        9519,
+        9520,
+        9521,
+        9522,
+        9523
+      ],
+      "islandSeeds": [
+        9550,
+        9551,
+        9552,
+        9553
+      ],
+      "passiveSeeds": [
+        9600,
+        9601,
+        9602,
+        9603,
+        9604,
+        9605,
+        9606,
+        9607
+      ],
+      "duelPairs": 864,
+      "islandPairs": 48,
+      "passivePairs": 128,
+      "selection": "Pilot discordance variance .256 implies roughly 806 independent pairs for 80% power at a zero true difference under a 5-point margin; round to 864 balanced pairs. Cluster correlation can reduce actual power; report measured uncertainty without extending the cohort based on its outcomes.",
+      "passiveSetup": "Normal hunger, construction and upgrades; unchanged no-op JavaScript allies; death-only loss condition prevents an immediate allied victory. Fixed 30000-tick horizon. This isolates economic/technology pacing, not military behavior.",
+      "primaryOutcomes": [
+        "duel win-rate difference, with unresolved fraction reported separately",
+        "passive population-time mean ratio; overall and by map"
+      ],
+      "secondaryOutcomes": [
+        "win rate by map and opponent",
+        "match duration",
+        "starvation counts and rates",
+        "producer and feeding counts over time",
+        "first completed school/barracks/producer/upgrade",
+        "first training and warrior birth",
+        "first offensive target and observed combat damage",
+        "event attainment rates and capped event times"
+      ],
+      "uncertainty": "Paired map-seed clusters; bootstrap fixed-map strata, retaining opponents and seats together. No tuning, no selective exclusions, no optional sample extension. Per-stratum results are exploratory."
+    },
+    "analysisDetails": {
+      "weights": "Equal weight per map; within a map, equal weight per opponent and then seat. Duel and four-player outcomes remain separate.",
+      "bootstrapReplicates": 10000,
+      "bootstrapSeed": 381902,
+      "primaryIntervals": "Two-sided 95% percentile intervals for paired differences/ratios, resampling map-seed clusters within fixed maps. Also report global-seed resampling sensitivity to cross-map correlation.",
+      "equivalenceDecision": "An interval must lie wholly inside the preset margin; include sensitivity intervals, unresolved games, failures and per-map exceptions in interpretation. No significance-based early stop or sample expansion.",
+      "milestones": "Report attainment and mean min(event tick, cohort cap), counting unobserved events at the cap. These are bounded descriptive scores, not uncensored event-time estimates. Early game termination competes with later milestones.",
+      "growth": "Population-time averages at a fixed 30000-tick horizon are primary only in allied passive controls. Competitive population-time means use each actual game duration and are descriptive, not proof of equal pacing."
+    }
+  },
+  "control_protocol_amendment": {
+    "reason": "Death-only controls can end with living units after engine defeat. Two original controls ended before the intended 30000-tick horizon, so carrying final counts forward is not valid observed growth.",
+    "original_runs_retained": true,
+    "replacement": "Repeat every one of the 256 passive-control scenarios with the same binaries, maps, seeds, seats, alliances and passive script; use script-only outcome conditions to prevent death from ending the observation window. No seed addition, removal or tuning. Competitive scenarios are unchanged.",
+    "gates": [
+      "Every corrected control reaches 30000 ticks",
+      "Compare ECON and MEASURE prefixes to original controls through their observed endpoints; report any mismatches",
+      "Retain original defeat times and report them separately"
+    ],
+    "primary_estimand": "Ratio of equal-map-weighted mean population over the fixed 30000-tick observation window",
+    "margins_unchanged": true,
+    "status": "setup correction; no behavior aggregate results inspected",
+    "discovered_before_aggregate_results_inspected": true
+  },
+  "method": "Equal fixed-map weights; paired bootstrap of map-seed clusters and global-seed sensitivity, 10000 replicates. Primary margins must hold for both intervals. Per-map/opponent and milestones are exploratory; no multiplicity-adjusted equivalence claim for them.",
+  "cohorts": {
+    "duels": {
+      "outcomes": {
+        "historical": {
+          "games": 864,
+          "outcomes": {
+            "won": 659,
+            "lost": 172,
+            "unresolved": 33
+          },
+          "wins": 659,
+          "unresolved": 33,
+          "subject_unresolved": 33,
+          "starvation": 62725,
+          "births": 124380,
+          "starvation_per_1000_unit_ticks": 0.03478178009042676
+        },
+        "latest": {
+          "games": 864,
+          "outcomes": {
+            "won": 689,
+            "lost": 143,
+            "unresolved": 32
+          },
+          "wins": 689,
+          "unresolved": 32,
+          "subject_unresolved": 32,
+          "starvation": 52993,
+          "births": 108420,
+          "starvation_per_1000_unit_ticks": 0.028841561618024026
+        },
+        "paired_transitions": {
+          "won -> won": 585,
+          "lost -> won": 83,
+          "unresolved -> won": 21,
+          "won -> lost": 58,
+          "lost -> lost": 80,
+          "won -> unresolved": 16,
+          "lost -> unresolved": 9,
+          "unresolved -> lost": 5,
+          "unresolved -> unresolved": 7
+        }
+      },
+      "primary": {
+        "metric": "win_probability_by_60000",
+        "historical": 0.7627314814814814,
+        "latest": 0.7974537037037037,
+        "effect": 0.03472222222222232,
+        "effect_kind": "absolute_difference",
+        "map_seed_clusters": 144,
+        "global_seed_clusters": 24,
+        "games_per_version": 864,
+        "margin": 0.05,
+        "map_seed_95_interval": [
+          0.006944444444444309,
+          0.06250000000000011
+        ],
+        "global_seed_95_interval": [
+          0.005758101851851614,
+          0.06365740740740733
+        ],
+        "equivalent_within_margin": false
+      },
+      "by_map": {
+        "Dejans.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.9513888888888888,
+            "latest": 1.0,
+            "effect": 0.04861111111111116,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.02083333333333337,
+              0.08333333333333337
+            ],
+            "global_seed_95_interval": [
+              0.02083333333333337,
+              0.08333333333333337
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "won": 137,
+                "lost": 7
+              },
+              "wins": 137,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 703,
+              "births": 8811,
+              "starvation_per_1000_unit_ticks": 0.004260201289844722
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 144
+              },
+              "wins": 144,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 211,
+              "births": 7879,
+              "starvation_per_1000_unit_ticks": 0.0011647668215762378
+            },
+            "paired_transitions": {
+              "won -> won": 137,
+              "lost -> won": 7
+            }
+          }
+        },
+        "Mazury.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.5,
+            "latest": 0.6388888888888887,
+            "effect": 0.13888888888888873,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.05555555555555547,
+              0.22916666666666657
+            ],
+            "global_seed_95_interval": [
+              0.05555555555555547,
+              0.22916666666666652
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "unresolved": 22,
+                "lost": 50,
+                "won": 72
+              },
+              "wins": 72,
+              "unresolved": 22,
+              "subject_unresolved": 22,
+              "starvation": 7662,
+              "births": 33648,
+              "starvation_per_1000_unit_ticks": 0.01463718498942046
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 92,
+                "lost": 33,
+                "unresolved": 19
+              },
+              "wins": 92,
+              "unresolved": 19,
+              "subject_unresolved": 19,
+              "starvation": 3940,
+              "births": 24579,
+              "starvation_per_1000_unit_ticks": 0.007701324120516848
+            },
+            "paired_transitions": {
+              "unresolved -> won": 10,
+              "lost -> lost": 23,
+              "won -> won": 64,
+              "lost -> won": 18,
+              "won -> lost": 5,
+              "lost -> unresolved": 9,
+              "unresolved -> lost": 5,
+              "unresolved -> unresolved": 7,
+              "won -> unresolved": 3
+            }
+          }
+        },
+        "Muka.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.7083333333333335,
+            "latest": 0.6041666666666667,
+            "effect": -0.10416666666666674,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              -0.1805555555555557,
+              -0.027777777777777676
+            ],
+            "global_seed_95_interval": [
+              -0.1805555555555557,
+              -0.02083333333333348
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "won": 102,
+                "lost": 40,
+                "unresolved": 2
+              },
+              "wins": 102,
+              "unresolved": 2,
+              "subject_unresolved": 2,
+              "starvation": 911,
+              "births": 11025,
+              "starvation_per_1000_unit_ticks": 0.004355144800437561
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 87,
+                "lost": 51,
+                "unresolved": 6
+              },
+              "wins": 87,
+              "unresolved": 6,
+              "subject_unresolved": 6,
+              "starvation": 381,
+              "births": 8945,
+              "starvation_per_1000_unit_ticks": 0.001926857461766141
+            },
+            "paired_transitions": {
+              "won -> won": 67,
+              "won -> lost": 29,
+              "lost -> lost": 22,
+              "won -> unresolved": 6,
+              "lost -> won": 18,
+              "unresolved -> won": 2
+            }
+          }
+        },
+        "SmallForTwo.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.9027777777777777,
+            "latest": 0.9097222222222223,
+            "effect": 0.006944444444444642,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              -0.05555555555555547,
+              0.06944444444444431
+            ],
+            "global_seed_95_interval": [
+              -0.05555555555555558,
+              0.06944444444444453
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "won": 130,
+                "lost": 14
+              },
+              "wins": 130,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 468,
+              "births": 12505,
+              "starvation_per_1000_unit_ticks": 0.0026077261856301526
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 131,
+                "unresolved": 2,
+                "lost": 11
+              },
+              "wins": 131,
+              "unresolved": 2,
+              "subject_unresolved": 2,
+              "starvation": 241,
+              "births": 10253,
+              "starvation_per_1000_unit_ticks": 0.0015359893750834875
+            },
+            "paired_transitions": {
+              "won -> won": 120,
+              "lost -> won": 11,
+              "won -> unresolved": 2,
+              "lost -> lost": 3,
+              "won -> lost": 8
+            }
+          }
+        },
+        "balanced_for_2.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.9166666666666666,
+            "latest": 0.8819444444444443,
+            "effect": -0.03472222222222232,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              -0.08333333333333348,
+              0.013888888888889062
+            ],
+            "global_seed_95_interval": [
+              -0.08333333333333337,
+              0.013888888888889062
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "lost": 12,
+                "won": 132
+              },
+              "wins": 132,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 67,
+              "births": 18379,
+              "starvation_per_1000_unit_ticks": 0.00023279255622522213
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 127,
+                "unresolved": 5,
+                "lost": 12
+              },
+              "wins": 127,
+              "unresolved": 5,
+              "subject_unresolved": 5,
+              "starvation": 199,
+              "births": 19797,
+              "starvation_per_1000_unit_ticks": 0.0006120982322926018
+            },
+            "paired_transitions": {
+              "lost -> won": 7,
+              "won -> won": 120,
+              "won -> unresolved": 5,
+              "won -> lost": 7,
+              "lost -> lost": 5
+            }
+          }
+        },
+        "strange2.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.5972222222222222,
+            "latest": 0.75,
+            "effect": 0.1527777777777778,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 24,
+            "global_seed_clusters": 24,
+            "games_per_version": 144,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.06944444444444464,
+              0.23611111111111105
+            ],
+            "global_seed_95_interval": [
+              0.06944444444444442,
+              0.23611111111111105
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 144,
+              "outcomes": {
+                "won": 86,
+                "lost": 49,
+                "unresolved": 9
+              },
+              "wins": 86,
+              "unresolved": 9,
+              "subject_unresolved": 9,
+              "starvation": 52914,
+              "births": 40012,
+              "starvation_per_1000_unit_ticks": 0.12068278320151764
+            },
+            "latest": {
+              "games": 144,
+              "outcomes": {
+                "won": 108,
+                "lost": 36
+              },
+              "wins": 108,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 48021,
+              "births": 36967,
+              "starvation_per_1000_unit_ticks": 0.10329627555158816
+            },
+            "paired_transitions": {
+              "won -> won": 77,
+              "won -> lost": 9,
+              "lost -> lost": 27,
+              "unresolved -> won": 9,
+              "lost -> won": 22
+            }
+          }
+        }
+      },
+      "by_opponent": {
+        "castor": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.8819444444444445,
+            "latest": 0.9756944444444445,
+            "effect": 0.09375,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 288,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.05902777777777768,
+              0.1284722222222222
+            ],
+            "global_seed_95_interval": [
+              0.05902777777777779,
+              0.1284722222222221
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 288,
+              "outcomes": {
+                "won": 254,
+                "unresolved": 15,
+                "lost": 19
+              },
+              "wins": 254,
+              "unresolved": 15,
+              "subject_unresolved": 15,
+              "starvation": 27686,
+              "births": 53941,
+              "starvation_per_1000_unit_ticks": 0.03983733646860433
+            },
+            "latest": {
+              "games": 288,
+              "outcomes": {
+                "won": 281,
+                "unresolved": 4,
+                "lost": 3
+              },
+              "wins": 281,
+              "unresolved": 4,
+              "subject_unresolved": 4,
+              "starvation": 21256,
+              "births": 39089,
+              "starvation_per_1000_unit_ticks": 0.03846977061767638
+            },
+            "paired_transitions": {
+              "won -> won": 248,
+              "unresolved -> won": 15,
+              "won -> unresolved": 4,
+              "lost -> won": 18,
+              "won -> lost": 2,
+              "lost -> lost": 1
+            }
+          }
+        },
+        "cortex": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.5625,
+            "latest": 0.6527777777777778,
+            "effect": 0.09027777777777779,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 288,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.03125000000000011,
+              0.14930555555555558
+            ],
+            "global_seed_95_interval": [
+              0.02777777777777779,
+              0.1527777777777778
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 288,
+              "outcomes": {
+                "won": 162,
+                "lost": 114,
+                "unresolved": 12
+              },
+              "wins": 162,
+              "unresolved": 12,
+              "subject_unresolved": 12,
+              "starvation": 17787,
+              "births": 36368,
+              "starvation_per_1000_unit_ticks": 0.028890178834300045
+            },
+            "latest": {
+              "games": 288,
+              "outcomes": {
+                "won": 188,
+                "lost": 83,
+                "unresolved": 17
+              },
+              "wins": 188,
+              "unresolved": 17,
+              "subject_unresolved": 17,
+              "starvation": 15043,
+              "births": 36683,
+              "starvation_per_1000_unit_ticks": 0.02080379056431971
+            },
+            "paired_transitions": {
+              "won -> won": 135,
+              "lost -> won": 50,
+              "won -> lost": 24,
+              "lost -> lost": 55,
+              "unresolved -> won": 3,
+              "lost -> unresolved": 9,
+              "unresolved -> unresolved": 5,
+              "unresolved -> lost": 4,
+              "won -> unresolved": 3
+            }
+          }
+        },
+        "warrush": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.84375,
+            "latest": 0.763888888888889,
+            "effect": -0.07986111111111105,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 288,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              -0.12499999999999989,
+              -0.03472222222222221
+            ],
+            "global_seed_95_interval": [
+              -0.11458333333333337,
+              -0.04513888888888873
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 288,
+              "outcomes": {
+                "won": 243,
+                "lost": 39,
+                "unresolved": 6
+              },
+              "wins": 243,
+              "unresolved": 6,
+              "subject_unresolved": 6,
+              "starvation": 17252,
+              "births": 34071,
+              "starvation_per_1000_unit_ticks": 0.0350127937340916
+            },
+            "latest": {
+              "games": 288,
+              "outcomes": {
+                "won": 220,
+                "lost": 57,
+                "unresolved": 11
+              },
+              "wins": 220,
+              "unresolved": 11,
+              "subject_unresolved": 11,
+              "starvation": 16694,
+              "births": 32648,
+              "starvation_per_1000_unit_ticks": 0.029717525591361805
+            },
+            "paired_transitions": {
+              "won -> won": 202,
+              "won -> lost": 32,
+              "lost -> won": 15,
+              "unresolved -> won": 3,
+              "lost -> lost": 24,
+              "won -> unresolved": 9,
+              "unresolved -> lost": 1,
+              "unresolved -> unresolved": 2
+            }
+          }
+        }
+      },
+      "milestones": {
+        "first_population_50": {
+          "attainment": {
+            "metric": "first_population_50_attainment",
+            "historical": 0.8935185185185185,
+            "latest": 0.8715277777777778,
+            "effect": -0.0219907407407407,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.04282407407407418,
+              -0.0011574074074073293
+            ],
+            "global_seed_95_interval": [
+              -0.04513888888888906,
+              0.0023148148148148806
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_50_capped_time",
+            "historical": 15516.592592592591,
+            "latest": 16247.592592592593,
+            "effect": 0.0471108586268465,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.016502854680647838,
+              0.11527235568503606
+            ],
+            "global_seed_95_interval": [
+              -0.027536931510447983,
+              0.1258948419890081
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_population_100": {
+          "attainment": {
+            "metric": "first_population_100_attainment",
+            "historical": 0.5451388888888888,
+            "latest": 0.6284722222222222,
+            "effect": 0.08333333333333337,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.05092592592592593,
+              0.11574074074074081
+            ],
+            "global_seed_95_interval": [
+              0.04742476851851835,
+              0.11921296296296302
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_100_capped_time",
+            "historical": 36560.40740740741,
+            "latest": 32675.07407407407,
+            "effect": -0.10627160934060442,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.1358396709156982,
+              -0.07535031306027139
+            ],
+            "global_seed_95_interval": [
+              -0.13885799197736418,
+              -0.07279310250325309
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_second_producer": {
+          "attainment": {
+            "metric": "first_second_producer_attainment",
+            "historical": 0.8564814814814815,
+            "latest": 0.8587962962962963,
+            "effect": 0.0023148148148147696,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.02083333333333337,
+              0.02546296296296302
+            ],
+            "global_seed_95_interval": [
+              -0.0185185185185186,
+              0.02546296296296291
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_second_producer_capped_time",
+            "historical": 16455.851851851854,
+            "latest": 15068.962962962964,
+            "effect": -0.08427937376774675,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.1512514957513617,
+              -0.016832339611522758
+            ],
+            "global_seed_95_interval": [
+              -0.1449112252625638,
+              -0.018064309201489704
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_new_producer": {
+          "attainment": {
+            "metric": "first_new_producer_attainment",
+            "historical": 0.5104166666666666,
+            "latest": 0.5659722222222222,
+            "effect": 0.05555555555555558,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.02430555555555558,
+              0.08680555555555558
+            ],
+            "global_seed_95_interval": [
+              0.01620370370370383,
+              0.09375000000000017
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_new_producer_capped_time",
+            "historical": 37618.26851851852,
+            "latest": 34238.710648148146,
+            "effect": -0.08983820902619966,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.12645256848643585,
+              -0.051967370829361474
+            ],
+            "global_seed_95_interval": [
+              -0.1362847402752324,
+              -0.04281337600953781
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_school": {
+          "attainment": {
+            "metric": "first_school_attainment",
+            "historical": 0.7361111111111112,
+            "latest": 0.6956018518518517,
+            "effect": -0.04050925925925941,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.06365740740740722,
+              -0.01736111111111116
+            ],
+            "global_seed_95_interval": [
+              -0.06134259259259256,
+              -0.01967592592592604
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_school_capped_time",
+            "historical": 25152.19675925926,
+            "latest": 27332.82175925926,
+            "effect": 0.0866971986928835,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.04482703589709163,
+              0.13031722167887635
+            ],
+            "global_seed_95_interval": [
+              0.04798192974490808,
+              0.12490574244778004
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_upgrade": {
+          "attainment": {
+            "metric": "first_upgrade_attainment",
+            "historical": 0.6527777777777778,
+            "latest": 0.6504629629629629,
+            "effect": -0.0023148148148148806,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.02777777777777779,
+              0.02314814814814814
+            ],
+            "global_seed_95_interval": [
+              -0.03356481481481499,
+              0.02893518518518534
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_upgrade_capped_time",
+            "historical": 31479.67824074074,
+            "latest": 31822.81944444445,
+            "effect": 0.010900403780481405,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.023132890596496366,
+              0.04601122624927454
+            ],
+            "global_seed_95_interval": [
+              -0.028052465588966458,
+              0.05168409953178568
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_training": {
+          "attainment": {
+            "metric": "first_training_attainment",
+            "historical": 0.9756944444444445,
+            "latest": 0.9016203703703702,
+            "effect": -0.07407407407407429,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.08796296296296302,
+              -0.05902777777777768
+            ],
+            "global_seed_95_interval": [
+              -0.09143518518518468,
+              -0.05787037037037002
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_training_capped_time",
+            "historical": 6411.222222222223,
+            "latest": 11612.407407407409,
+            "effect": 0.8112626586483194,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.6529976535980587,
+              0.9805952643639398
+            ],
+            "global_seed_95_interval": [
+              0.6479161087039216,
+              0.9973983336119884
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_barracks": {
+          "attainment": {
+            "metric": "first_barracks_attainment",
+            "historical": 0.9745370370370371,
+            "latest": 0.9143518518518517,
+            "effect": -0.06018518518518534,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.07523148148148151,
+              -0.04513888888888884
+            ],
+            "global_seed_95_interval": [
+              -0.07754629629629572,
+              -0.043981481481481066
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_barracks_capped_time",
+            "historical": 6926.88888888889,
+            "latest": 11316.666666666666,
+            "effect": 0.6337300696159889,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.5041641340350993,
+              0.770201180261984
+            ],
+            "global_seed_95_interval": [
+              0.5084531641715957,
+              0.7667594237247602
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_warrior_birth": {
+          "attainment": {
+            "metric": "first_warrior_birth_attainment",
+            "historical": 1.0,
+            "latest": 1.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.11734615615494881
+          },
+          "capped_time": {
+            "metric": "first_warrior_birth_capped_time",
+            "historical": 662.5185185185186,
+            "latest": 660.7407407407408,
+            "effect": -0.0026833631484795006,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.009883198562443796,
+              0.0035906642728906757
+            ],
+            "global_seed_95_interval": [
+              -0.010714285714285898,
+              0.003593890386343057
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_offensive_target": {
+          "attainment": {
+            "metric": "first_offensive_target_attainment",
+            "historical": 0.8310185185185185,
+            "latest": 0.8275462962962963,
+            "effect": -0.00347222222222221,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.02893518518518512,
+              0.02083333333333337
+            ],
+            "global_seed_95_interval": [
+              -0.025462962962962687,
+              0.01851851851851849
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_offensive_target_capped_time",
+            "historical": 13876.178240740739,
+            "latest": 13636.12037037037,
+            "effect": -0.01729999904912971,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.1101416144227993,
+              0.08508267835188334
+            ],
+            "global_seed_95_interval": [
+              -0.10262074005087267,
+              0.07415422924756365
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_combat_damage": {
+          "attainment": {
+            "metric": "first_combat_damage_attainment",
+            "historical": 0.9965277777777777,
+            "latest": 0.991898148148148,
+            "effect": -0.00462962962962965,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.0127314814814814,
+              0.0023148148148148806
+            ],
+            "global_seed_95_interval": [
+              -0.01388888888888884,
+              0.00347222222222221
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_combat_damage_capped_time",
+            "historical": 3808.3333333333335,
+            "latest": 4272.777777777777,
+            "effect": 0.12195477753464612,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.010096775625588117,
+              0.24636280521302814
+            ],
+            "global_seed_95_interval": [
+              -0.006804456330485978,
+              0.276252342094346
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_operating_colony": {
+          "attainment": {
+            "metric": "first_operating_colony_attainment",
+            "historical": 0.08680555555555554,
+            "latest": 0.03009259259259259,
+            "effect": -0.05671296296296295,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.07407407407407407,
+              -0.039351851851851874
+            ],
+            "global_seed_95_interval": [
+              -0.07523148148148145,
+              -0.03819444444444443
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_operating_colony_capped_time",
+            "historical": 57068.74537037037,
+            "latest": 58964.335648148146,
+            "effect": 0.03321590943476305,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 144,
+            "global_seed_clusters": 24,
+            "games_per_version": 864,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.02181742543137971,
+              0.04446389695440143
+            ],
+            "global_seed_95_interval": [
+              0.020134973860603905,
+              0.04640058445079347
+            ],
+            "equivalent_within_margin": true
+          }
+        }
+      },
+      "descriptive": {
+        "population": {
+          "metric": "population",
+          "historical": 98.69675925925924,
+          "latest": 101.43287037037037,
+          "effect": 0.02772240073175891,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.03528377301106453,
+            0.09874612498690605
+          ],
+          "global_seed_95_interval": [
+            -0.04226163939563237,
+            0.10082426092547744
+          ],
+          "equivalent_within_margin": false
+        },
+        "population_auc": {
+          "metric": "population_auc",
+          "historical": 71.55716647948718,
+          "latest": 74.6493875805938,
+          "effect": 0.0432132971893604,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.00842063067337231,
+            0.07911439506201316
+          ],
+          "global_seed_95_interval": [
+            0.0028971557933955457,
+            0.08526229636262019
+          ],
+          "equivalent_within_margin": false
+        },
+        "workers_auc": {
+          "metric": "workers_auc",
+          "historical": 53.95452796075983,
+          "latest": 57.118294927523344,
+          "effect": 0.05863765445347724,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.02163619101736809,
+            0.09751869889502232
+          ],
+          "global_seed_95_interval": [
+            0.01674759498105138,
+            0.10291788841077792
+          ],
+          "equivalent_within_margin": false
+        },
+        "warriors_auc": {
+          "metric": "warriors_auc",
+          "historical": 12.22506727083446,
+          "latest": 11.888961568696454,
+          "effect": -0.027493157681010016,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.06540188834184674,
+            0.010634712054572068
+          ],
+          "global_seed_95_interval": [
+            -0.07117656520694929,
+            0.018923967914466384
+          ],
+          "equivalent_within_margin": false
+        },
+        "producer_auc": {
+          "metric": "producer_auc",
+          "historical": 2.5021896356898985,
+          "latest": 2.7745987942277526,
+          "effect": 0.10886831063975122,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.08712707865962069,
+            0.13165717848784642
+          ],
+          "global_seed_95_interval": [
+            0.08475986096249727,
+            0.13568675412472414
+          ],
+          "equivalent_within_margin": false
+        },
+        "feeding_auc": {
+          "metric": "feeding_auc",
+          "historical": 3.9475207984711975,
+          "latest": 5.913730120643542,
+          "effect": 0.49808713431828444,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.4556631578910245,
+            0.5428500764967779
+          ],
+          "global_seed_95_interval": [
+            0.44741934040316195,
+            0.5502298873891104
+          ],
+          "equivalent_within_margin": false
+        },
+        "food_pressure_auc": {
+          "metric": "food_pressure_auc",
+          "historical": 14.320093445048466,
+          "latest": 13.449116541523397,
+          "effect": -0.06082201257047182,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.09434860131732899,
+            -0.025415771968904616
+          ],
+          "global_seed_95_interval": [
+            -0.09996505012236781,
+            -0.021172992654218296
+          ],
+          "equivalent_within_margin": false
+        },
+        "starvation": {
+          "metric": "starvation",
+          "historical": 72.59837962962963,
+          "latest": 61.33449074074074,
+          "effect": -11.263888888888893,
+          "effect_kind": "absolute_difference",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -14.231655092592606,
+            -8.22798032407406
+          ],
+          "global_seed_95_interval": [
+            -14.391319444444443,
+            -8.048582175925937
+          ],
+          "equivalent_within_margin": false
+        },
+        "births": {
+          "metric": "births",
+          "historical": 143.95833333333334,
+          "latest": 125.4861111111111,
+          "effect": -0.12831644958996635,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.17377401003782128,
+            -0.08049735052934667
+          ],
+          "global_seed_95_interval": [
+            -0.17291967102273123,
+            -0.0765750563122199
+          ],
+          "equivalent_within_margin": false
+        },
+        "completed_buildings": {
+          "metric": "completed_buildings",
+          "historical": 26.024305555555554,
+          "latest": 26.599537037037038,
+          "effect": 0.022103624638648123,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.00980568829912733,
+            0.055710481940902966
+          ],
+          "global_seed_95_interval": [
+            -0.010917106118752087,
+            0.056088644603181644
+          ],
+          "equivalent_within_margin": false
+        },
+        "upgrades": {
+          "metric": "upgrades",
+          "historical": 9.0,
+          "latest": 7.03587962962963,
+          "effect": -0.2182355967078189,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.2825392016097617,
+            -0.14833170410242916
+          ],
+          "global_seed_95_interval": [
+            -0.2860835613024404,
+            -0.14596720674888308
+          ],
+          "equivalent_within_margin": false
+        },
+        "training": {
+          "metric": "training",
+          "historical": 115.06944444444444,
+          "latest": 97.53472222222223,
+          "effect": -0.15238382619191304,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.2040780527382896,
+            -0.09895640655827964
+          ],
+          "global_seed_95_interval": [
+            -0.20625149150759137,
+            -0.09260536675009476
+          ],
+          "equivalent_within_margin": false
+        },
+        "ticks": {
+          "metric": "ticks",
+          "historical": 27513.331018518515,
+          "latest": 26792.370370370365,
+          "effect": -0.02620404805448273,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 144,
+          "global_seed_clusters": 24,
+          "games_per_version": 864,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.05123435688775702,
+            0.00032170301307060645
+          ],
+          "global_seed_95_interval": [
+            -0.052287412044855396,
+            0.00026608515480006637
+          ],
+          "equivalent_within_margin": false
+        }
+      }
+    },
+    "island": {
+      "outcomes": {
+        "historical": {
+          "games": 48,
+          "outcomes": {
+            "unresolved": 12,
+            "won": 33,
+            "lost": 3
+          },
+          "wins": 33,
+          "unresolved": 12,
+          "subject_unresolved": 12,
+          "starvation": 716,
+          "births": 4765,
+          "starvation_per_1000_unit_ticks": 0.0055387520956363635
+        },
+        "latest": {
+          "games": 48,
+          "outcomes": {
+            "won": 33,
+            "unresolved": 10,
+            "lost": 5
+          },
+          "wins": 33,
+          "unresolved": 10,
+          "subject_unresolved": 10,
+          "starvation": 799,
+          "births": 3030,
+          "starvation_per_1000_unit_ticks": 0.006156283252549516
+        },
+        "paired_transitions": {
+          "unresolved -> won": 3,
+          "won -> won": 30,
+          "unresolved -> unresolved": 8,
+          "lost -> lost": 3,
+          "unresolved -> lost": 1,
+          "won -> lost": 1,
+          "won -> unresolved": 2
+        }
+      },
+      "primary": {
+        "metric": "win_probability_by_60000",
+        "historical": 0.6874999999999999,
+        "latest": 0.6874999999999999,
+        "effect": 0.0,
+        "effect_kind": "absolute_difference",
+        "map_seed_clusters": 4,
+        "global_seed_clusters": 4,
+        "games_per_version": 48,
+        "margin": 0.05,
+        "map_seed_95_interval": [
+          0.0,
+          0.0
+        ],
+        "global_seed_95_interval": [
+          0.0,
+          0.0
+        ],
+        "equivalent_within_margin": false,
+        "degenerate_paired_difference": true,
+        "unseen_discordance_95_upper": 0.5271291954984121
+      },
+      "by_map": {
+        "Holiday_Island_2.map.gz": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.6874999999999999,
+            "latest": 0.6874999999999999,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.5271291954984121
+          },
+          "outcomes": {
+            "historical": {
+              "games": 48,
+              "outcomes": {
+                "unresolved": 12,
+                "won": 33,
+                "lost": 3
+              },
+              "wins": 33,
+              "unresolved": 12,
+              "subject_unresolved": 12,
+              "starvation": 716,
+              "births": 4765,
+              "starvation_per_1000_unit_ticks": 0.0055387520956363635
+            },
+            "latest": {
+              "games": 48,
+              "outcomes": {
+                "won": 33,
+                "unresolved": 10,
+                "lost": 5
+              },
+              "wins": 33,
+              "unresolved": 10,
+              "subject_unresolved": 10,
+              "starvation": 799,
+              "births": 3030,
+              "starvation_per_1000_unit_ticks": 0.006156283252549516
+            },
+            "paired_transitions": {
+              "unresolved -> won": 3,
+              "won -> won": 30,
+              "unresolved -> unresolved": 8,
+              "lost -> lost": 3,
+              "unresolved -> lost": 1,
+              "won -> lost": 1,
+              "won -> unresolved": 2
+            }
+          }
+        }
+      },
+      "by_opponent": {
+        "castor": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 1.0,
+            "latest": 1.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 16,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.5271291954984121
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "won": 16
+              },
+              "wins": 16,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 13,
+              "births": 1466,
+              "starvation_per_1000_unit_ticks": 0.00047045810785874574
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "won": 16
+              },
+              "wins": 16,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 67,
+              "births": 905,
+              "starvation_per_1000_unit_ticks": 0.0030336934674618263
+            },
+            "paired_transitions": {
+              "won -> won": 16
+            }
+          }
+        },
+        "cortex": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 0.0625,
+            "latest": 0.1875,
+            "effect": 0.125,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 16,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              0.0,
+              0.25
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.25
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 12,
+                "lost": 3,
+                "won": 1
+              },
+              "wins": 1,
+              "unresolved": 12,
+              "subject_unresolved": 12,
+              "starvation": 661,
+              "births": 1992,
+              "starvation_per_1000_unit_ticks": 0.008523712141887388
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "won": 3,
+                "unresolved": 9,
+                "lost": 4
+              },
+              "wins": 3,
+              "unresolved": 9,
+              "subject_unresolved": 9,
+              "starvation": 662,
+              "births": 1210,
+              "starvation_per_1000_unit_ticks": 0.008015574624739431
+            },
+            "paired_transitions": {
+              "unresolved -> won": 3,
+              "unresolved -> unresolved": 8,
+              "lost -> lost": 3,
+              "unresolved -> lost": 1,
+              "won -> unresolved": 1
+            }
+          }
+        },
+        "warrush": {
+          "effect": {
+            "metric": "win_probability_by_60000",
+            "historical": 1.0,
+            "latest": 0.875,
+            "effect": -0.125,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 16,
+            "margin": 0.05,
+            "map_seed_95_interval": [
+              -0.25,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              -0.25,
+              0.0
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "won": 16
+              },
+              "wins": 16,
+              "unresolved": 0,
+              "subject_unresolved": 0,
+              "starvation": 42,
+              "births": 1307,
+              "starvation_per_1000_unit_ticks": 0.0017434632477739815
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "won": 14,
+                "lost": 1,
+                "unresolved": 1
+              },
+              "wins": 14,
+              "unresolved": 1,
+              "subject_unresolved": 1,
+              "starvation": 70,
+              "births": 915,
+              "starvation_per_1000_unit_ticks": 0.00278755657047393
+            },
+            "paired_transitions": {
+              "won -> won": 14,
+              "won -> lost": 1,
+              "won -> unresolved": 1
+            }
+          }
+        }
+      },
+      "milestones": {
+        "first_population_50": {
+          "attainment": {
+            "metric": "first_population_50_attainment",
+            "historical": 1.0,
+            "latest": 0.9791666666666666,
+            "effect": -0.02083333333333337,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.06250000000000011,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              -0.06250000000000011,
+              0.0
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_50_capped_time",
+            "historical": 12362.666666666666,
+            "latest": 12930.0,
+            "effect": 0.045890854184641894,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.0757201646090534,
+              0.20580970790378017
+            ],
+            "global_seed_95_interval": [
+              -0.0757201646090534,
+              0.20580970790378017
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_population_100": {
+          "attainment": {
+            "metric": "first_population_100_attainment",
+            "historical": 0.6458333333333333,
+            "latest": 0.45833333333333337,
+            "effect": -0.1874999999999999,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.25,
+              -0.062499999999999944
+            ],
+            "global_seed_95_interval": [
+              -0.25,
+              -0.062499999999999944
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_100_capped_time",
+            "historical": 34679.33333333333,
+            "latest": 40649.333333333336,
+            "effect": 0.1721486379976549,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.04112804281726179,
+              0.269130164002491
+            ],
+            "global_seed_95_interval": [
+              0.04112804281726179,
+              0.269130164002491
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_second_producer": {
+          "attainment": {
+            "metric": "first_second_producer_attainment",
+            "historical": 0.7708333333333334,
+            "latest": 0.6041666666666666,
+            "effect": -0.16666666666666674,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.3333333333333333,
+              -0.04166666666666663
+            ],
+            "global_seed_95_interval": [
+              -0.3333333333333333,
+              -0.04166666666666663
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_second_producer_capped_time",
+            "historical": 21931.333333333332,
+            "latest": 29371.33333333333,
+            "effect": 0.33924066024257526,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.009060912376263719,
+              0.8902091254752851
+            ],
+            "global_seed_95_interval": [
+              -0.009060912376263719,
+              0.8902091254752851
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_new_producer": {
+          "attainment": {
+            "metric": "first_new_producer_attainment",
+            "historical": 0.6458333333333333,
+            "latest": 0.47916666666666674,
+            "effect": -0.16666666666666652,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.3333333333333333,
+              -0.04166666666666663
+            ],
+            "global_seed_95_interval": [
+              -0.3333333333333333,
+              -0.04166666666666663
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_new_producer_capped_time",
+            "historical": 31210.041666666668,
+            "latest": 38130.0,
+            "effect": 0.2217221754216392,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.02501133500323327,
+              0.506602492903863
+            ],
+            "global_seed_95_interval": [
+              0.02501133500323327,
+              0.506602492903863
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_school": {
+          "attainment": {
+            "metric": "first_school_attainment",
+            "historical": 0.8333333333333334,
+            "latest": 0.75,
+            "effect": -0.08333333333333337,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.14583333333333348,
+              -0.02083333333333326
+            ],
+            "global_seed_95_interval": [
+              -0.14583333333333348,
+              -0.02083333333333326
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_school_capped_time",
+            "historical": 24624.0,
+            "latest": 28045.333333333332,
+            "effect": 0.13894303660385532,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.02202086470208653,
+              0.24803636754895608
+            ],
+            "global_seed_95_interval": [
+              0.02202086470208653,
+              0.24803636754895608
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_upgrade": {
+          "attainment": {
+            "metric": "first_upgrade_attainment",
+            "historical": 0.7708333333333333,
+            "latest": 0.6875,
+            "effect": -0.08333333333333326,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.25,
+              0.08333333333333348
+            ],
+            "global_seed_95_interval": [
+              -0.25,
+              0.08333333333333348
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_upgrade_capped_time",
+            "historical": 29110.0,
+            "latest": 31880.666666666668,
+            "effect": 0.09517920531317992,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.11656931545993199,
+              0.3488020938192071
+            ],
+            "global_seed_95_interval": [
+              -0.11656931545993199,
+              0.3488020938192071
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_training": {
+          "attainment": {
+            "metric": "first_training_attainment",
+            "historical": 1.0,
+            "latest": 0.9791666666666666,
+            "effect": -0.02083333333333337,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.06250000000000011,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              -0.06250000000000011,
+              0.0
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_training_capped_time",
+            "historical": 4682.666666666666,
+            "latest": 8364.666666666666,
+            "effect": 0.7863041002277906,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.44394618834080735,
+              1.405720338983051
+            ],
+            "global_seed_95_interval": [
+              0.44394618834080735,
+              1.405720338983051
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_barracks": {
+          "attainment": {
+            "metric": "first_barracks_attainment",
+            "historical": 1.0,
+            "latest": 0.9583333333333333,
+            "effect": -0.04166666666666674,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.08333333333333337,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              -0.08333333333333337,
+              0.0
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_barracks_capped_time",
+            "historical": 7765.333333333333,
+            "latest": 10724.0,
+            "effect": 0.3810096153846154,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.0781671159029651,
+              0.6957282913165268
+            ],
+            "global_seed_95_interval": [
+              0.0781671159029651,
+              0.6957282913165268
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_warrior_birth": {
+          "attainment": {
+            "metric": "first_warrior_birth_attainment",
+            "historical": 1.0,
+            "latest": 1.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.5271291954984121
+          },
+          "capped_time": {
+            "metric": "first_warrior_birth_capped_time",
+            "historical": 928.0,
+            "latest": 938.6666666666666,
+            "effect": 0.011494252873563093,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.0,
+              0.03571428571428559
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.03571428571428559
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_offensive_target": {
+          "attainment": {
+            "metric": "first_offensive_target_attainment",
+            "historical": 0.9583333333333333,
+            "latest": 1.0,
+            "effect": 0.04166666666666674,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.08333333333333337
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.08333333333333337
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_offensive_target_capped_time",
+            "historical": 6636.083333333334,
+            "latest": 4453.416666666666,
+            "effect": -0.32890886943854947,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.4922150397172249,
+              -0.020650892938083643
+            ],
+            "global_seed_95_interval": [
+              -0.4922150397172249,
+              -0.020650892938083643
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_combat_damage": {
+          "attainment": {
+            "metric": "first_combat_damage_attainment",
+            "historical": 1.0,
+            "latest": 1.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.5271291954984121
+          },
+          "capped_time": {
+            "metric": "first_combat_damage_capped_time",
+            "historical": 7818.666666666667,
+            "latest": 8181.333333333334,
+            "effect": 0.04638472032742169,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.01866666666666672,
+              0.11452513966480438
+            ],
+            "global_seed_95_interval": [
+              -0.01866666666666672,
+              0.11452513966480438
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_operating_colony": {
+          "attainment": {
+            "metric": "first_operating_colony_attainment",
+            "historical": 0.16666666666666666,
+            "latest": 0.041666666666666664,
+            "effect": -0.125,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.20833333333333334,
+              -0.04166666666666666
+            ],
+            "global_seed_95_interval": [
+              -0.20833333333333334,
+              -0.04166666666666666
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_operating_colony_capped_time",
+            "historical": 54410.979166666664,
+            "latest": 58598.0625,
+            "effect": 0.07695291276615057,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 4,
+            "global_seed_clusters": 4,
+            "games_per_version": 48,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.011703776531569732,
+              0.14750179297155142
+            ],
+            "global_seed_95_interval": [
+              0.011703776531569732,
+              0.14750179297155142
+            ],
+            "equivalent_within_margin": false
+          }
+        }
+      },
+      "descriptive": {
+        "population": {
+          "metric": "population",
+          "historical": 120.35416666666667,
+          "latest": 97.97916666666667,
+          "effect": -0.1859096416825342,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.23967363590005086,
+            -0.10982658959537572
+          ],
+          "global_seed_95_interval": [
+            -0.23967363590005086,
+            -0.10982658959537572
+          ],
+          "equivalent_within_margin": false
+        },
+        "population_auc": {
+          "metric": "population_auc",
+          "historical": 65.75846047826359,
+          "latest": 63.25871640987279,
+          "effect": -0.038014029680896844,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.09719681772681488,
+            0.03601488788910778
+          ],
+          "global_seed_95_interval": [
+            -0.09719681772681488,
+            0.03601488788910778
+          ],
+          "equivalent_within_margin": false
+        },
+        "workers_auc": {
+          "metric": "workers_auc",
+          "historical": 44.5435881529472,
+          "latest": 44.708151810712494,
+          "effect": 0.003694440986663272,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.06983767460613355,
+            0.08726424699366886
+          ],
+          "global_seed_95_interval": [
+            -0.06983767460613344,
+            0.08726424699366886
+          ],
+          "equivalent_within_margin": false
+        },
+        "warriors_auc": {
+          "metric": "warriors_auc",
+          "historical": 14.936364168111044,
+          "latest": 12.616467289831947,
+          "effect": -0.15531871425792154,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.22747681608468973,
+            -0.08152576477955065
+          ],
+          "global_seed_95_interval": [
+            -0.22747681608468973,
+            -0.08152576477955065
+          ],
+          "equivalent_within_margin": false
+        },
+        "producer_auc": {
+          "metric": "producer_auc",
+          "historical": 1.4212449462698158,
+          "latest": 1.276702320378244,
+          "effect": -0.10170141766972463,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.18994407998215868,
+            -0.03447397325108237
+          ],
+          "global_seed_95_interval": [
+            -0.18994407998215868,
+            -0.03447397325108237
+          ],
+          "equivalent_within_margin": false
+        },
+        "feeding_auc": {
+          "metric": "feeding_auc",
+          "historical": 5.655161136269452,
+          "latest": 6.567349533833808,
+          "effect": 0.16130192855408199,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.09700022894526517,
+            0.23242221796559126
+          ],
+          "global_seed_95_interval": [
+            0.09700022894526517,
+            0.23242221796559126
+          ],
+          "equivalent_within_margin": false
+        },
+        "food_pressure_auc": {
+          "metric": "food_pressure_auc",
+          "historical": 5.20783692076335,
+          "latest": 5.796906210032522,
+          "effect": 0.11311208438969844,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.002486266665400416,
+            0.2315340450617831
+          ],
+          "global_seed_95_interval": [
+            -0.002486266665400305,
+            0.2315340450617831
+          ],
+          "equivalent_within_margin": false
+        },
+        "starvation": {
+          "metric": "starvation",
+          "historical": 14.916666666666666,
+          "latest": 16.645833333333332,
+          "effect": 1.729166666666666,
+          "effect_kind": "absolute_difference",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -3.7916666666666643,
+            9.833333333333337
+          ],
+          "global_seed_95_interval": [
+            -3.7916666666666643,
+            9.833333333333337
+          ],
+          "equivalent_within_margin": false
+        },
+        "births": {
+          "metric": "births",
+          "historical": 99.27083333333333,
+          "latest": 63.125,
+          "effect": -0.3641133263378803,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.4294664894626923,
+            -0.28604868913857673
+          ],
+          "global_seed_95_interval": [
+            -0.4294664894626923,
+            -0.28604868913857673
+          ],
+          "equivalent_within_margin": false
+        },
+        "completed_buildings": {
+          "metric": "completed_buildings",
+          "historical": 30.916666666666668,
+          "latest": 25.958333333333336,
+          "effect": -0.160377358490566,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.229086229086229,
+            -0.06387508871540104
+          ],
+          "global_seed_95_interval": [
+            -0.229086229086229,
+            -0.06387508871540104
+          ],
+          "equivalent_within_margin": false
+        },
+        "upgrades": {
+          "metric": "upgrades",
+          "historical": 9.4375,
+          "latest": 6.3125,
+          "effect": -0.33112582781456956,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.3886255924170615,
+            -0.2713004484304934
+          ],
+          "global_seed_95_interval": [
+            -0.3886255924170615,
+            -0.2713004484304934
+          ],
+          "equivalent_within_margin": false
+        },
+        "training": {
+          "metric": "training",
+          "historical": 154.64583333333331,
+          "latest": 110.35416666666667,
+          "effect": -0.2864071130270779,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.32776241433209086,
+            -0.24725877192982448
+          ],
+          "global_seed_95_interval": [
+            -0.32776241433209086,
+            -0.24725877192982448
+          ],
+          "equivalent_within_margin": false
+        },
+        "ticks": {
+          "metric": "ticks",
+          "historical": 36484.16666666667,
+          "latest": 35546.25,
+          "effect": -0.025707498686645014,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 4,
+          "global_seed_clusters": 4,
+          "games_per_version": 48,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.0998198966879904,
+            0.0543669113122236
+          ],
+          "global_seed_95_interval": [
+            -0.0998198966879904,
+            0.0543669113122236
+          ],
+          "equivalent_within_margin": false
+        }
+      }
+    },
+    "passive": {
+      "outcomes": {
+        "historical": {
+          "games": 128,
+          "outcomes": {
+            "unresolved": 128
+          },
+          "wins": 0,
+          "unresolved": 128,
+          "subject_unresolved": 128,
+          "starvation": 8501,
+          "births": 23233,
+          "starvation_per_1000_unit_ticks": 0.03071437895113875
+        },
+        "latest": {
+          "games": 128,
+          "outcomes": {
+            "unresolved": 128
+          },
+          "wins": 0,
+          "unresolved": 128,
+          "subject_unresolved": 128,
+          "starvation": 7824,
+          "births": 21301,
+          "starvation_per_1000_unit_ticks": 0.0265979196564963
+        },
+        "paired_transitions": {
+          "unresolved -> unresolved": 128
+        }
+      },
+      "primary": {
+        "metric": "population_time_mean",
+        "historical": 75.56362976190475,
+        "latest": 80.54524642857143,
+        "effect": 0.06592611660349523,
+        "effect_kind": "relative_change",
+        "map_seed_clusters": 56,
+        "global_seed_clusters": 8,
+        "games_per_version": 128,
+        "margin": 0.1,
+        "map_seed_95_interval": [
+          0.037362219767865294,
+          0.09645620949212427
+        ],
+        "global_seed_95_interval": [
+          0.03683165825316129,
+          0.09830969407212538
+        ],
+        "equivalent_within_margin": true
+      },
+      "by_map": {
+        "Dejans.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 54.157466666666664,
+            "latest": 49.636449999999996,
+            "effect": -0.08347910168127015,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.14772174781558245,
+              -0.012545404461271673
+            ],
+            "global_seed_95_interval": [
+              -0.1467422065808036,
+              -0.013116803572218241
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 519,
+              "births": 1846,
+              "starvation_per_1000_unit_ticks": 0.01996492942801362
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 12,
+              "births": 1417,
+              "starvation_per_1000_unit_ticks": 0.0005036621273278004
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        },
+        "Holiday_Island_2.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 47.671058333333335,
+            "latest": 49.01315833333334,
+            "effect": 0.028153350207070105,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.07481447034560908,
+              0.13542708192741637
+            ],
+            "global_seed_95_interval": [
+              -0.0782746667376425,
+              0.13432062008947332
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 32,
+              "outcomes": {
+                "unresolved": 32
+              },
+              "wins": 0,
+              "unresolved": 32,
+              "subject_unresolved": 32,
+              "starvation": 36,
+              "births": 3622,
+              "starvation_per_1000_unit_ticks": 0.0007866408112399434
+            },
+            "latest": {
+              "games": 32,
+              "outcomes": {
+                "unresolved": 32
+              },
+              "wins": 0,
+              "unresolved": 32,
+              "subject_unresolved": 32,
+              "starvation": 7,
+              "births": 3790,
+              "starvation_per_1000_unit_ticks": 0.00014876957361280023
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 32
+            }
+          }
+        },
+        "Mazury.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 94.79585,
+            "latest": 79.54515,
+            "effect": -0.16087940558579295,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.2437787856569692,
+              -0.04475896425779258
+            ],
+            "global_seed_95_interval": [
+              -0.2422579098965073,
+              -0.04856776559520492
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 154,
+              "births": 4399,
+              "starvation_per_1000_unit_ticks": 0.0033844660218072136
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 395,
+              "births": 2302,
+              "starvation_per_1000_unit_ticks": 0.010345277702872729
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        },
+        "Muka.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 23.72831666666667,
+            "latest": 22.366099999999996,
+            "effect": -0.05740890455075165,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.1791569502912689,
+              0.09835116904723
+            ],
+            "global_seed_95_interval": [
+              -0.1776192574163728,
+              0.09552247151950695
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 11,
+              "births": 736,
+              "starvation_per_1000_unit_ticks": 0.0009657940337107773
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 1,
+              "births": 819,
+              "starvation_per_1000_unit_ticks": 9.31469202647459e-05
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        },
+        "SmallForTwo.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 86.38766666666668,
+            "latest": 79.83728333333335,
+            "effect": -0.07582544576193351,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.141046382192808,
+              -0.0017267133731447837
+            ],
+            "global_seed_95_interval": [
+              -0.14072719908798625,
+              -0.0022811698168103633
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 19,
+              "births": 3331,
+              "starvation_per_1000_unit_ticks": 0.00045820583956814823
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 2,
+              "births": 2807,
+              "starvation_per_1000_unit_ticks": 5.2189484570387645e-05
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        },
+        "balanced_for_2.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 88.94745,
+            "latest": 130.91084999999998,
+            "effect": 0.4717774371272023,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.4123259635778318,
+              0.5282035340916824
+            ],
+            "global_seed_95_interval": [
+              0.4131102688925643,
+              0.5277862550797388
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 0,
+              "births": 3585,
+              "starvation_per_1000_unit_ticks": 0.0
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 0,
+              "births": 4807,
+              "starvation_per_1000_unit_ticks": 0.0
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        },
+        "strange2.map.gz": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 133.25759999999997,
+            "latest": 152.50773333333333,
+            "effect": 0.14445805217363494,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.1333315565068652,
+              0.15360213302432718
+            ],
+            "global_seed_95_interval": [
+              0.13359862646619924,
+              0.1535193788590764
+            ],
+            "equivalent_within_margin": false
+          },
+          "outcomes": {
+            "historical": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 7762,
+              "births": 5714,
+              "starvation_per_1000_unit_ticks": 0.12135017690047947
+            },
+            "latest": {
+              "games": 16,
+              "outcomes": {
+                "unresolved": 16
+              },
+              "wins": 0,
+              "unresolved": 16,
+              "subject_unresolved": 16,
+              "starvation": 7407,
+              "births": 5359,
+              "starvation_per_1000_unit_ticks": 0.10118339354157341
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 16
+            }
+          }
+        }
+      },
+      "by_opponent": {
+        "javascript": {
+          "effect": {
+            "metric": "population_time_mean",
+            "historical": 75.56362976190475,
+            "latest": 80.54524642857143,
+            "effect": 0.06592611660349523,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.037362219767865294,
+              0.09645620949212427
+            ],
+            "global_seed_95_interval": [
+              0.03683165825316129,
+              0.09830969407212538
+            ],
+            "equivalent_within_margin": true
+          },
+          "outcomes": {
+            "historical": {
+              "games": 128,
+              "outcomes": {
+                "unresolved": 128
+              },
+              "wins": 0,
+              "unresolved": 128,
+              "subject_unresolved": 128,
+              "starvation": 8501,
+              "births": 23233,
+              "starvation_per_1000_unit_ticks": 0.03071437895113875
+            },
+            "latest": {
+              "games": 128,
+              "outcomes": {
+                "unresolved": 128
+              },
+              "wins": 0,
+              "unresolved": 128,
+              "subject_unresolved": 128,
+              "starvation": 7824,
+              "births": 21301,
+              "starvation_per_1000_unit_ticks": 0.0265979196564963
+            },
+            "paired_transitions": {
+              "unresolved -> unresolved": 128
+            }
+          }
+        }
+      },
+      "milestones": {
+        "first_population_50": {
+          "attainment": {
+            "metric": "first_population_50_attainment",
+            "historical": 0.9151785714285714,
+            "latest": 0.9508928571428571,
+            "effect": 0.0357142857142857,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.0044642857142858094,
+              0.07589285714285698
+            ],
+            "global_seed_95_interval": [
+              1.1102230246251565e-16,
+              0.0758928571428572
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_50_capped_time",
+            "historical": 13591.5,
+            "latest": 13340.642857142857,
+            "effect": -0.01845691372233693,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.05621424643319092,
+              0.0150981467671237
+            ],
+            "global_seed_95_interval": [
+              -0.06879850267060261,
+              0.0238768974291479
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_population_100": {
+          "attainment": {
+            "metric": "first_population_100_attainment",
+            "historical": 0.6785714285714286,
+            "latest": 0.6741071428571429,
+            "effect": -0.004464285714285698,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.06696428571428559,
+              0.049107142857142794
+            ],
+            "global_seed_95_interval": [
+              -0.05803571428571441,
+              0.049107142857143016
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_population_100_capped_time",
+            "historical": 20655.428571428572,
+            "latest": 19964.214285714286,
+            "effect": -0.0334640495753451,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.06330804930076415,
+              -0.005095629630885883
+            ],
+            "global_seed_95_interval": [
+              -0.06174553242559731,
+              -0.007808329414096411
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_second_producer": {
+          "attainment": {
+            "metric": "first_second_producer_attainment",
+            "historical": 0.9553571428571429,
+            "latest": 0.9642857142857143,
+            "effect": 0.008928571428571397,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.017857142857143016,
+              0.03571428571428581
+            ],
+            "global_seed_95_interval": [
+              -0.017857142857142905,
+              0.0357142857142857
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_second_producer_capped_time",
+            "historical": 7263.857142857143,
+            "latest": 6436.0,
+            "effect": -0.11396935905756489,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.25000980788499055,
+              0.057359681925980316
+            ],
+            "global_seed_95_interval": [
+              -0.21551515277960867,
+              0.016307436087563847
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_new_producer": {
+          "attainment": {
+            "metric": "first_new_producer_attainment",
+            "historical": 0.7901785714285714,
+            "latest": 0.7991071428571429,
+            "effect": 0.008928571428571508,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.044642857142857206,
+              0.05803571428571441
+            ],
+            "global_seed_95_interval": [
+              -0.044642857142857095,
+              0.0625
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_new_producer_capped_time",
+            "historical": 16704.214285714286,
+            "latest": 15814.214285714286,
+            "effect": -0.05327996784387168,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.11091919550574501,
+              0.014933522930410824
+            ],
+            "global_seed_95_interval": [
+              -0.09644780911312062,
+              -0.01005315912309221
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_school": {
+          "attainment": {
+            "metric": "first_school_attainment",
+            "historical": 0.7455357142857143,
+            "latest": 0.7991071428571429,
+            "effect": 0.0535714285714286,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.013392857142856984,
+              0.11607142857142838
+            ],
+            "global_seed_95_interval": [
+              0.004464285714285698,
+              0.10267857142857117
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_school_capped_time",
+            "historical": 19393.0,
+            "latest": 19295.785714285714,
+            "effect": -0.005012854417278723,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.05104053599817087,
+              0.045611646260635345
+            ],
+            "global_seed_95_interval": [
+              -0.04710145126713027,
+              0.04663161672953213
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_upgrade": {
+          "attainment": {
+            "metric": "first_upgrade_attainment",
+            "historical": 0.6428571428571429,
+            "latest": 0.7232142857142857,
+            "effect": 0.0803571428571428,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.017857142857142794,
+              0.1428571428571428
+            ],
+            "global_seed_95_interval": [
+              0.03125,
+              0.1339285714285714
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_upgrade_capped_time",
+            "historical": 22621.928571428572,
+            "latest": 22496.0,
+            "effect": -0.005566659404433794,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.03689336953602786,
+              0.027607860380479323
+            ],
+            "global_seed_95_interval": [
+              -0.04345228011273483,
+              0.032445235220381945
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_training": {
+          "attainment": {
+            "metric": "first_training_attainment",
+            "historical": 1.0,
+            "latest": 0.8928571428571429,
+            "effect": -0.1071428571428571,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.1339285714285714,
+              -0.0803571428571428
+            ],
+            "global_seed_95_interval": [
+              -0.1339285714285715,
+              -0.0803571428571428
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_training_capped_time",
+            "historical": 6205.714285714285,
+            "latest": 9874.857142857143,
+            "effect": 0.5912523020257829,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.4441380548923573,
+              0.7474722830185716
+            ],
+            "global_seed_95_interval": [
+              0.4264610847871458,
+              0.7910295788858862
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_barracks": {
+          "attainment": {
+            "metric": "first_barracks_attainment",
+            "historical": 0.9910714285714286,
+            "latest": 0.8928571428571429,
+            "effect": -0.0982142857142857,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.125,
+              -0.0714285714285714
+            ],
+            "global_seed_95_interval": [
+              -0.1339285714285715,
+              -0.0625
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_barracks_capped_time",
+            "historical": 7934.142857142857,
+            "latest": 11500.0,
+            "effect": 0.44943193071535315,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.3344815203871783,
+              0.5748242125976821
+            ],
+            "global_seed_95_interval": [
+              0.3207298230994915,
+              0.6023512620192308
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "first_warrior_birth": {
+          "attainment": {
+            "metric": "first_warrior_birth_attainment",
+            "historical": 1.0,
+            "latest": 1.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.31234397806636793
+          },
+          "capped_time": {
+            "metric": "first_warrior_birth_capped_time",
+            "historical": 694.8571428571429,
+            "latest": 717.7142857142857,
+            "effect": 0.03289473684210509,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.010033444816053505,
+              0.05685618729096986
+            ],
+            "global_seed_95_interval": [
+              0.013071895424836555,
+              0.05298013245033073
+            ],
+            "equivalent_within_margin": true
+          }
+        },
+        "first_offensive_target": {
+          "attainment": {
+            "metric": "first_offensive_target_attainment",
+            "historical": 0.0,
+            "latest": 0.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.31234397806636793
+          },
+          "capped_time": {
+            "metric": "first_offensive_target_capped_time",
+            "historical": 30000.0,
+            "latest": 30000.0,
+            "effect": 0.0,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": true,
+            "degenerate_paired_difference": true
+          }
+        },
+        "first_combat_damage": {
+          "attainment": {
+            "metric": "first_combat_damage_attainment",
+            "historical": 0.0,
+            "latest": 0.0,
+            "effect": 0.0,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true,
+            "unseen_discordance_95_upper": 0.31234397806636793
+          },
+          "capped_time": {
+            "metric": "first_combat_damage_capped_time",
+            "historical": 30000.0,
+            "latest": 30000.0,
+            "effect": 0.0,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "global_seed_95_interval": [
+              0.0,
+              0.0
+            ],
+            "equivalent_within_margin": true,
+            "degenerate_paired_difference": true
+          }
+        },
+        "first_operating_colony": {
+          "attainment": {
+            "metric": "first_operating_colony_attainment",
+            "historical": 0.26339285714285715,
+            "latest": 0.19196428571428573,
+            "effect": -0.07142857142857142,
+            "effect_kind": "absolute_difference",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": null,
+            "map_seed_95_interval": [
+              -0.1517857142857143,
+              0.008928571428571452
+            ],
+            "global_seed_95_interval": [
+              -0.1294642857142857,
+              -0.01785714285714285
+            ],
+            "equivalent_within_margin": false
+          },
+          "capped_time": {
+            "metric": "first_operating_colony_capped_time",
+            "historical": 26582.683035714286,
+            "latest": 27374.33035714286,
+            "effect": 0.029780565053007635,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 56,
+            "global_seed_clusters": 8,
+            "games_per_version": 128,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.017053437549573888,
+              0.07680743951302971
+            ],
+            "global_seed_95_interval": [
+              -0.011051827584969148,
+              0.07297687672504094
+            ],
+            "equivalent_within_margin": true
+          }
+        }
+      },
+      "descriptive": {
+        "population": {
+          "metric": "population",
+          "historical": 138.38392857142858,
+          "latest": 126.29910714285714,
+          "effect": -0.0873282147235307,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": 0.1,
+          "map_seed_95_interval": [
+            -0.14146135233870755,
+            -0.031030376914878824
+          ],
+          "global_seed_95_interval": [
+            -0.14759998758881743,
+            -0.024018827438222472
+          ],
+          "equivalent_within_margin": false
+        },
+        "population_auc": {
+          "metric": "population_auc",
+          "historical": 75.56362976190475,
+          "latest": 80.54524642857143,
+          "effect": 0.06592611660349523,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.03703134238727935,
+            0.09685181867880228
+          ],
+          "global_seed_95_interval": [
+            0.03688062057139551,
+            0.09794488886815696
+          ],
+          "equivalent_within_margin": false
+        },
+        "workers_auc": {
+          "metric": "workers_auc",
+          "historical": 59.1867880952381,
+          "latest": 64.22599880952382,
+          "effect": 0.0851408038256285,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.051355694535429396,
+            0.12218538653445615
+          ],
+          "global_seed_95_interval": [
+            0.051428352376967856,
+            0.12343486645684569
+          ],
+          "equivalent_within_margin": false
+        },
+        "warriors_auc": {
+          "metric": "warriors_auc",
+          "historical": 11.690570238095237,
+          "latest": 11.139245238095238,
+          "effect": -0.047159803907891096,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.06354623503949056,
+            -0.030542603812257468
+          ],
+          "global_seed_95_interval": [
+            -0.06619140799178369,
+            -0.028040820381640574
+          ],
+          "equivalent_within_margin": false
+        },
+        "producer_auc": {
+          "metric": "producer_auc",
+          "historical": 3.069814285714286,
+          "latest": 3.2871071428571423,
+          "effect": 0.07078371423120022,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": 0.1,
+          "map_seed_95_interval": [
+            0.04013237344247347,
+            0.10072071269007724
+          ],
+          "global_seed_95_interval": [
+            0.04998000151339909,
+            0.09036347882323015
+          ],
+          "equivalent_within_margin": false
+        },
+        "feeding_auc": {
+          "metric": "feeding_auc",
+          "historical": 4.509745238095238,
+          "latest": 7.145854761904762,
+          "effect": 0.5845362397728096,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": 0.1,
+          "map_seed_95_interval": [
+            0.5370127647704832,
+            0.6346671083626936
+          ],
+          "global_seed_95_interval": [
+            0.5284833198774058,
+            0.6487470303578146
+          ],
+          "equivalent_within_margin": false
+        },
+        "food_pressure_auc": {
+          "metric": "food_pressure_auc",
+          "historical": 11.963421428571426,
+          "latest": 10.799559523809524,
+          "effect": -0.09728503770521113,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.13013608751157227,
+            -0.06609936628649694
+          ],
+          "global_seed_95_interval": [
+            -0.1389423438797008,
+            -0.05989392425312445
+          ],
+          "equivalent_within_margin": false
+        },
+        "starvation": {
+          "metric": "starvation",
+          "historical": 75.74107142857143,
+          "latest": 69.82589285714286,
+          "effect": -5.915178571428569,
+          "effect_kind": "absolute_difference",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -7.950892857142861,
+            -3.990959821428561
+          ],
+          "global_seed_95_interval": [
+            -8.415178571428555,
+            -3.4285714285714306
+          ],
+          "equivalent_within_margin": false
+        },
+        "births": {
+          "metric": "births",
+          "historical": 191.26785714285714,
+          "latest": 173.26785714285714,
+          "effect": -0.09410886005041541,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.1295666111936022,
+            -0.05554346980276592
+          ],
+          "global_seed_95_interval": [
+            -0.12766495129571775,
+            -0.06056530447183225
+          ],
+          "equivalent_within_margin": false
+        },
+        "completed_buildings": {
+          "metric": "completed_buildings",
+          "historical": 29.191964285714285,
+          "latest": 29.325892857142858,
+          "effect": 0.004587857470561341,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.0408359370608563,
+            0.05188679245283012
+          ],
+          "global_seed_95_interval": [
+            -0.04612706701479541,
+            0.05550102503857662
+          ],
+          "equivalent_within_margin": false
+        },
+        "upgrades": {
+          "metric": "upgrades",
+          "historical": 8.799107142857142,
+          "latest": 8.705357142857142,
+          "effect": -0.010654490106544956,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.08764871090305573,
+            0.0726002368339419
+          ],
+          "global_seed_95_interval": [
+            -0.07054337464251681,
+            0.07329842931937147
+          ],
+          "equivalent_within_margin": false
+        },
+        "training": {
+          "metric": "training",
+          "historical": 131.88392857142858,
+          "latest": 116.41071428571429,
+          "effect": -0.11732448717080768,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            -0.1569002695169411,
+            -0.07662414973745944
+          ],
+          "global_seed_95_interval": [
+            -0.14750033064409462,
+            -0.07874328775891218
+          ],
+          "equivalent_within_margin": false
+        },
+        "ticks": {
+          "metric": "ticks",
+          "historical": 30000.0,
+          "latest": 30000.0,
+          "effect": 0.0,
+          "effect_kind": "relative_change",
+          "map_seed_clusters": 56,
+          "global_seed_clusters": 8,
+          "games_per_version": 128,
+          "margin": null,
+          "map_seed_95_interval": [
+            0.0,
+            0.0
+          ],
+          "global_seed_95_interval": [
+            0.0,
+            0.0
+          ],
+          "equivalent_within_margin": false,
+          "degenerate_paired_difference": true
+        }
+      },
+      "by_map_behavior": {
+        "Dejans.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 86.9375,
+            "latest": 91.8125,
+            "effect": 0.05607476635514019,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.09214662024603656,
+              0.2024539877300613
+            ],
+            "global_seed_95_interval": [
+              -0.0891934402324233,
+              0.20135746606334837
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 1.5591666666666666,
+            "latest": 1.8330333333333333,
+            "effect": 0.17564938535542485,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.08617760047281309,
+              0.508965876375293
+            ],
+            "global_seed_95_interval": [
+              -0.09356400965496979,
+              0.5129436819687652
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 3.8772999999999995,
+            "latest": 5.1672,
+            "effect": 0.33267995770252523,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.17658078766115304,
+              0.5391216274912735
+            ],
+            "global_seed_95_interval": [
+              0.18027556316121984,
+              0.5408377065872956
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 2.9375,
+            "latest": 7.625,
+            "effect": 1.5957446808510638,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.5853658536585367,
+              4.583333333333333
+            ],
+            "global_seed_95_interval": [
+              0.591549295774648,
+              4.636363636363637
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 116.6875,
+            "latest": 131.8125,
+            "effect": 0.1296197107659347,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.0738255033557047,
+              0.4506097721863669
+            ],
+            "global_seed_95_interval": [
+              -0.07753235162873716,
+              0.43947730398899587
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "Holiday_Island_2.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 117.0625,
+            "latest": 123.21875,
+            "effect": 0.05258942872397232,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.10958254269449719,
+              0.22110983981693355
+            ],
+            "global_seed_95_interval": [
+              -0.1085537731314373,
+              0.21690962099125355
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 1.8809666666666667,
+            "latest": 1.93685,
+            "effect": 0.029709900937461287,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.0387786620306686,
+              0.11954117012772114
+            ],
+            "global_seed_95_interval": [
+              -0.038171051623671695,
+              0.12032957762321694
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 4.168783333333334,
+            "latest": 5.460983333333332,
+            "effect": 0.3099705349682358,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.23147609542819114,
+              0.3866178021644291
+            ],
+            "global_seed_95_interval": [
+              0.23273047320622142,
+              0.3857893245391033
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 1.46875,
+            "latest": 1.375,
+            "effect": -0.06382978723404253,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.40910953800298056,
+              0.7059436274509794
+            ],
+            "global_seed_95_interval": [
+              -0.40625,
+              0.7142857142857142
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 91.25,
+            "latest": 84.25,
+            "effect": -0.0767123287671233,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 32,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.22049689440993792,
+              0.10361842105263164
+            ],
+            "global_seed_95_interval": [
+              -0.22223322164686768,
+              0.09752493535278917
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "Mazury.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 271.3125,
+            "latest": 125.1875,
+            "effect": -0.5385855793595946,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.636595744680851,
+              -0.41539674198633736
+            ],
+            "global_seed_95_interval": [
+              -0.636595744680851,
+              -0.4126944305067737
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 3.38,
+            "latest": 2.8884333333333334,
+            "effect": -0.14543392504930963,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.23516349771291212,
+              -0.06659217643741777
+            ],
+            "global_seed_95_interval": [
+              -0.23190801833621388,
+              -0.06501487984866969
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 7.117800000000001,
+            "latest": 8.3097,
+            "effect": 0.1674534266205847,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.054162141432633835,
+              0.28885860199893476
+            ],
+            "global_seed_95_interval": [
+              0.051273713702834504,
+              0.29588584701779025
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 13.6875,
+            "latest": 5.875,
+            "effect": -0.5707762557077626,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.6982758620689655,
+              -0.4381443298969072
+            ],
+            "global_seed_95_interval": [
+              -0.6933387096774194,
+              -0.4375
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 190.625,
+            "latest": 93.5,
+            "effect": -0.5095081967213115,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.6053736171399914,
+              -0.4196739131902687
+            ],
+            "global_seed_95_interval": [
+              -0.6058551700666972,
+              -0.41756568620208867
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "Muka.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 50.3125,
+            "latest": 56.125,
+            "effect": 0.11552795031055907,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.007063669525620467,
+              0.2542372881355932
+            ],
+            "global_seed_95_interval": [
+              0.008591376676483,
+              0.24896095418941355
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 2.0612333333333335,
+            "latest": 2.1800333333333333,
+            "effect": 0.05763539628377812,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.005082352701374429,
+              0.11535320570479254
+            ],
+            "global_seed_95_interval": [
+              -0.005302160197611655,
+              0.11588135552012294
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 2.9779,
+            "latest": 3.461266666666667,
+            "effect": 0.1623179645611561,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.12821751586989483,
+              0.21155822317716844
+            ],
+            "global_seed_95_interval": [
+              0.12820231016936123,
+              0.21197616196366895
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 1.4375,
+            "latest": 0.8125,
+            "effect": -0.4347826086956522,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.6944444444444444,
+              0.25
+            ],
+            "global_seed_95_interval": [
+              -0.696969696969697,
+              0.25
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 40.6875,
+            "latest": 36.125,
+            "effect": -0.11213517665130568,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.33045977011494254,
+              0.20630207980489096
+            ],
+            "global_seed_95_interval": [
+              -0.32791327913279134,
+              0.19924098671726753
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "SmallForTwo.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 211.0,
+            "latest": 179.3125,
+            "effect": -0.15017772511848337,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.23030127462340677,
+              -0.061784207353827614
+            ],
+            "global_seed_95_interval": [
+              -0.2299110244333235,
+              -0.05782621858916137
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 2.030866666666667,
+            "latest": 2.009933333333333,
+            "effect": -0.010307586252174983,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.11695021476284373,
+              0.10905352049381686
+            ],
+            "global_seed_95_interval": [
+              -0.1191999124220009,
+              0.1062593782484512
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 6.143566666666667,
+            "latest": 8.840266666666668,
+            "effect": 0.4389469743417236,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.36981156441354646,
+              0.5142566895737634
+            ],
+            "global_seed_95_interval": [
+              0.36966228625987835,
+              0.5149754259410779
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 14.6875,
+            "latest": 12.0,
+            "effect": -0.18297872340425536,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.26877470355731226,
+              -0.09003677456854173
+            ],
+            "global_seed_95_interval": [
+              -0.26749538252162924,
+              -0.091324200913242
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 214.9375,
+            "latest": 195.3125,
+            "effect": -0.09130561209653965,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.1409507143193427,
+              -0.04247576890932017
+            ],
+            "global_seed_95_interval": [
+              -0.14463048498845266,
+              -0.04190026556506343
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "balanced_for_2.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 232.0625,
+            "latest": 308.4375,
+            "effect": 0.3291139240506329,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.27082117206258816,
+              0.3886124930901049
+            ],
+            "global_seed_95_interval": [
+              0.27258339747825644,
+              0.3881762409369771
+            ],
+            "equivalent_within_margin": false
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 2.412033333333333,
+            "latest": 3.2382666666666666,
+            "effect": 0.3425463993034923,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.2974527625916736,
+              0.3897225540867339
+            ],
+            "global_seed_95_interval": [
+              0.29712788090027265,
+              0.3898048337184292
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 6.291399999999999,
+            "latest": 9.678366666666667,
+            "effect": 0.5383486452405932,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.4745311112272088,
+              0.6017022003662826
+            ],
+            "global_seed_95_interval": [
+              0.4745103559010131,
+              0.6008651949869586
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 27.375,
+            "latest": 33.25,
+            "effect": 0.21461187214611877,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.0967032967032968,
+              0.3672456575682381
+            ],
+            "global_seed_95_interval": [
+              0.09542560246632563,
+              0.36775818639798485
+            ],
+            "equivalent_within_margin": false
+          },
+          "training": {
+            "metric": "training",
+            "historical": 254.25,
+            "latest": 271.625,
+            "effect": 0.0683382497541789,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.031006297881621694,
+              0.10951935703233066
+            ],
+            "global_seed_95_interval": [
+              0.031006814127921094,
+              0.11177794448612155
+            ],
+            "equivalent_within_margin": false
+          }
+        },
+        "strange2.map.gz": {
+          "population": {
+            "metric": "population",
+            "historical": 0.0,
+            "latest": 0.0,
+            "effect": null,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": null,
+            "global_seed_95_interval": null,
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true
+          },
+          "producer_auc": {
+            "metric": "producer_auc",
+            "historical": 8.164433333333333,
+            "latest": 8.9232,
+            "effect": 0.09293561912849624,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              0.08026875971025604,
+              0.10469367711264987
+            ],
+            "global_seed_95_interval": [
+              0.08020773225620315,
+              0.10481221626083337
+            ],
+            "equivalent_within_margin": false
+          },
+          "feeding_auc": {
+            "metric": "feeding_auc",
+            "historical": 0.9914666666666667,
+            "latest": 9.1032,
+            "effect": 8.181549220010757,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              7.725658956428186,
+              8.57493948359333
+            ],
+            "global_seed_95_interval": [
+              7.727810650887573,
+              8.578167025282408
+            ],
+            "equivalent_within_margin": false
+          },
+          "upgrades": {
+            "metric": "upgrades",
+            "historical": 0.0,
+            "latest": 0.0,
+            "effect": null,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": null,
+            "global_seed_95_interval": null,
+            "equivalent_within_margin": false,
+            "degenerate_paired_difference": true
+          },
+          "training": {
+            "metric": "training",
+            "historical": 14.75,
+            "latest": 2.25,
+            "effect": -0.847457627118644,
+            "effect_kind": "relative_change",
+            "map_seed_clusters": 8,
+            "global_seed_clusters": 8,
+            "games_per_version": 16,
+            "margin": 0.1,
+            "map_seed_95_interval": [
+              -0.9500051867219916,
+              -0.725
+            ],
+            "global_seed_95_interval": [
+              -0.950207468879668,
+              -0.7238493723849373
+            ],
+            "equivalent_within_margin": false
+          }
+        }
+      }
+    }
+  }
+}
