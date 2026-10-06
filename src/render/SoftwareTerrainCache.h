@@ -55,13 +55,14 @@ class SoftwareTerrainCache
   private:
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime, int preferredResolution);
+							 int animationTime, int preferredResolution, int preferredDownsample = 0);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};
 	int resolution = 1;
+	int downsample = 1; //!< GPU page reduction after native composition; software stays at 1.
 	bool gpu = false;
 
   public:
@@ -84,8 +85,9 @@ class SoftwareTerrainCache
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
 	std::size_t bytes() const
 	{
-		return chunks.size() * (ChunkStorageBytes + (resolution * resolution * (gpu ? 3 : 1) - 1) *
-														ChunkPixels * ChunkPixels * 4);
+		const std::size_t pixels = ChunkPixels * resolution / downsample;
+		return chunks.size() * (ChunkStorageBytes - ChunkPixels * ChunkPixels * 4 +
+								pixels * pixels * 4 * (gpu ? 3 : 1));
 	}
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }

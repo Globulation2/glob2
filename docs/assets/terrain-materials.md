@@ -234,7 +234,15 @@ Changes to the overall native/HD sampling density still invalidate view pages.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
 but the cache also draws GPU pages. Software storage stays bounded by 32 MiB;
 GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× or
-1× when necessary to fit the visible pages or the device texture limit. Prepared
+1× when necessary to fit the visible pages or the device texture limit. If native
+pages still exceed the budget in a zoomed-out GPU view, the cache reduces them by
+powers of two as needed, going no coarser than the nearest level to the display's
+physical pixel density (at most √2 magnification). Reduction averages composed
+native pixels with alpha-weighted colors;
+it preserves fractional coast coverage without darkening edges against the ocean.
+This keeps terrain reusable during the detailed-to-overview crossfade, instead of
+recomposing the entire visible map every frame. The reduced detail can soften
+texture grain at distant zooms. Software pages retain native density. Prepared
 source pixels are reported separately by `sourceBytes()`.
 
 When the full view cannot stay cached, rendering streams one temporary canonical
