@@ -1,0 +1,14 @@
+{
+  "revision": "de4a315d8edf0aae7e08f3709db0c622c5f521ce",
+  "passed": 76,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "sourceFilesVerifiedBeforeAndAfter": 16018,
+  "sourceMismatches": 0,
+  "nativeTraceMatches": 2,
+  "compositionGoldenMatches": 1,
+  "toolchain": "Windows 11 10.0.26200 x86_64; MSYS2 MinGW GCC 16.2.0 Rev4; SDL 3.4.16, SDL_image 3.4.6, SDL_ttf 3.2.2; SCons Python 3.14; ccache 4.14",
+  "flags": "release=1 mingw=1 optimized_assets=0 -j8",
+  "limitations": "Focused headless suites; no full Windows display suite. Revision a1 adds only unrelated Python scene audit and standalone map-report fixtures/schema/docs after this exact de4 snapshot. No macOS or iOS execution."
+}

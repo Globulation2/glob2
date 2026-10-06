@@ -1,0 +1,15 @@
+{
+  "revision": "a1c437295265d5593b3055bd166d5c9cdb62027f",
+  "finalSelectedCases": 51,
+  "primaryPassed": 27,
+  "expandedPassedFirstAttempt": 18,
+  "observationPassedAfterSelectorCorrection": 6,
+  "stockTraceMatches": 12,
+  "matchTraceMatches": 3,
+  "compositionGoldenMatches": 6,
+  "caseManifests": 36,
+  "firstAttemptIssue": "Ignored wrapper selected SharedWorkerLifecycle but direct completed steps case belongs to SimulationReadPhase. C++ executions passed; six expected-case-presence assertions failed. Final selector includes both suites; all six reran successfully.",
+  "nativeReference": "artifacts/resource-refactor/native-9a54-determinism",
+  "toolchain": "Emscripten 4.0.15; Playwright 1.63.0; serial and threaded Wasm; Chromium, Firefox, WebKit",
+  "limits": "Registry fresh-process catalog poisoning cases run natively, not in browser. No macOS or iOS execution in this bundle."
+}
