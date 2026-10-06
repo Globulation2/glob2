@@ -7,6 +7,7 @@
 #include "CortexBuildings.h"
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 
 namespace
 {
@@ -74,6 +75,29 @@ static unsigned compare(Game& game)
 
 TEST_SUITE("CortexGeometry")
 {
+    TEST_CASE("snapshot distances preserve wrapped inputs and discovery never bypasses legality")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto& game=fixture.game;
+        auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+        Cortex::World observed(*captured);
+        const std::array coordinates{std::numeric_limits<int>::min(),-4097,-33,-1,0,1,31,32,4097,std::numeric_limits<int>::max()};
+        const auto axis=[](int a,int b,int period) {
+            auto wrap=[&](int v){int r=v%period;return r<0?r+period:r;};
+            int delta=std::abs(wrap(a)-wrap(b));return std::min(delta,period-delta);
+        };
+        for(int x:coordinates)for(int y:coordinates)for(int xx:coordinates)for(int yy:coordinates)
+            CHECK(observed.map.warpDistMax(x,y,xx,yy)==std::max(axis(x,xx,32),axis(y,yy,32)));
+        auto type=*game.buildingsTypes.get(game.buildingsTypes.getTypeNum("inn",0,false));
+        type.width=2;type.height=2;type.isVirtual=false;
+        CHECK(observed.checkRoomForBuilding(10,10,&type,0));
+        game.map.setBuilding(11,11,1,1,Building::GIDfrom(0,7));
+        captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+        Cortex::World blocked(*captured);
+        CHECK_FALSE(blocked.checkRoomForBuilding(10,10,&type,0));
+    }
+
 	TEST_CASE("placement geometry matches the tile-scan oracle")
 	{
 		glob2test::HeadlessGlobals globals;

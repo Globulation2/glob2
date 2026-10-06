@@ -68,14 +68,13 @@ bool World::checkRoomForBuilding(int x,int y,const BuildingType* type,int team) 
             if(building->posX==nx&&building->posY==ny)return false;
         return true;
     }
-    bool discovered=false;
     for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
-    {
-        const auto index=source.tileIndex(x+dx,y+dy);
-        if(!map.isHardSpaceForBuildingAt(index,0xffff,true))return false;
-        discovered|=source.visibilityAt(index).discovered&teams[team]->me;
-    }
-    return discovered;
+        if(!map.isHardSpaceForBuildingAt(source.tileIndex(x+dx,y+dy),0xffff,true))return false;
+    // Discovery cannot bypass any legality check. Once the whole footprint is
+    // legal, the first discovered tile satisfies the original placement rule.
+    for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
+        if(source.visibilityAt(source.tileIndex(x+dx,y+dy)).discovered&teams[team]->me)return true;
+    return false;
 }
 bool permittedQueuedOrder(const World& world, Order& order)
 {

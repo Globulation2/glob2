@@ -96,8 +96,16 @@ struct WorldMap
     unsigned coordToIndex(int x, int y) const { return source.tileIndex(x,y); }
     int warpDistMax(int x, int y, int xx, int yy) const
     {
-        int dx=std::abs(normalizeX(x)-normalizeX(xx)),dy=std::abs(normalizeY(y)-normalizeY(yy));
-        return std::max(std::min(dx,getW()-dx),std::min(dy,getH()-dy));
+        const auto distance=[](int a,int b,int period) {
+            // Reduce the difference once, rather than normalizing both ends.
+            // Widen subtraction so extreme wrapped inputs cannot overflow abs.
+            Sint64 delta=Sint64(a)-Sint64(b);
+            if(delta<0)delta=-delta;
+            if(delta>=period)delta%=period;
+            if(delta>period/2)delta=period-delta;
+            return int(delta);
+        };
+        return std::max(distance(x,xx,getW()),distance(y,yy,getH()));
     }
     auto getResource(int x,int y) const { return source.resourceAt(source.tileIndex(x,y)).resource; }
     auto getBuilding(int x,int y) const { return source.occupancyAt(source.tileIndex(x,y)).building; }
