@@ -34,6 +34,96 @@ Uint64 renderPanel(GameGUI& gui)
 }
 TEST_SUITE("GUIInteractionCoverage")
 {
+    TEST_CASE("service progress horizon covers mixed visits and preserves stock horizons")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto& catalog=globals->buildingsTypes;
+        for(size_t id=0;id<catalog.size();++id)
+        {
+            const auto& type=*catalog.get(id);CAPTURE(type.key);
+            int prior=type.timeToFeedUnit ? type.timeToFeedUnit : type.timeToHealUnit;
+            if(!prior)for(int ability=0;ability<NB_ABILITY;++ability)prior=std::max(prior,type.upgradeTime[ability]);
+            CHECK(buildingServiceProgressTimeout(type)==prior);
+        }
+        BuildingType mixed;mixed.timeToFeedUnit=10;mixed.timeToHealUnit=100;mixed.upgradeTime[WALK]=250;
+        CHECK(buildingServiceProgressTimeout(mixed)==250);
+        mixed.upgradeTime[WALK]=20;CHECK(buildingServiceProgressTimeout(mixed)==100);
+        mixed.timeToFeedUnit=200;CHECK(buildingServiceProgressTimeout(mixed)==200);
+        mixed.timeToFeedUnit=mixed.timeToHealUnit=mixed.upgradeTime[WALK]=0;
+        CHECK(buildingServiceProgressTimeout(mixed)==0);
+    }
+
+    TEST_CASE("mixed service progress stays in its row and preserves downstream hit testing [display:1700x900][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1600,.height=800});
+        auto* gfx=globals->gfx;
+        for(bool instant : {false,true})
+        {
+            CAPTURE(instant);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            const int typeId=world.game.buildingsTypes.getFinishedTypeNum("inn");
+            auto& spec=catalog["variants"][typeId];auto& properties=spec["properties"];auto& semantics=spec["semantics"];
+            spec["previous"]="";spec["next"]="";semantics["repairable"]=false;
+            semantics["assignmentLimit"]=0;spec["presentation"]["defaultAssigned"]=0;
+            properties["armor"]=0;properties["maxResource"]=std::vector<int>(15,0);properties["maxUnitInside"]=3;
+            const int feed=instant?0:10,heal=instant?0:100,training=instant?0:250;
+            semantics["feeding"]={{"enabled",true},{"duration",feed},{"cost",nlohmann::json::object()}};
+            semantics["healing"]={{"enabled",true},{"duration",heal},{"cost",nlohmann::json::object()}};
+            semantics["training"]={{"walk",{{"enabled",true},{"duration",training},{"targetLevel",1},{"cost",nlohmann::json::object()}}}};
+            semantics["production"]={{"scheduling","weighted_committed_job"},{"fallbackUnit",0},{"initialRatios",{1,0,0}},
+                {"recipes",{{"worker",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}}}};
+            world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
+            auto* building=world.game.addBuilding(8,8,typeId,0,0,0);REQUIRE(building);
+            auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.extractScene(gui.frameScene);
+            auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
+            const auto checksum=world.checksum();
+            const int rowY=YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_ICON+YOFFSET_B_SEP+YOFFSET_INFOS;
+            const int left=gfx->getW()-RIGHT_MENU_RIGHT_OFFSET;
+            const auto begin=[&] {
+                gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
+                gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            };
+            // Render valid visit clocks into the extracted presentation snapshot only.
+            // Calling the real row helper without the outer panel clip exposes overflow.
+            for(bool smooth : {false,true})for(int duration : {feed,heal,training})
+                for(int remaining : {duration,0})for(int delta : {0,127,255})
+            {
+                CAPTURE(smooth);CAPTURE(duration);CAPTURE(remaining);CAPTURE(delta);
+                globals->settings.smoothProgressIndicators=smooth;
+                panel.insideUnits={{true,-remaining,delta}};
+                begin();int y=rowY;unsigned rowHeight=0;
+                gui.drawBuildingTimeToLeaveBar(&panel,building->type,y,rowHeight);gfx->nextFrame();
+                CHECK(y==rowY+(instant?0:YOFFSET_PROGRESS_BAR));
+                CHECK(rowHeight==unsigned(instant?0:YOFFSET_PROGRESS_BAR));
+                auto* image=gfx->completedFrame();REQUIRE(image);
+                unsigned markerPixels=0;
+                for(int x=0;x<image->w;++x)
+                {
+                    Uint8 r,g,b,a;REQUIRE(SDL_ReadSurfacePixel(image,x,rowY+3,&r,&g,&b,&a));
+                    if(r==63&&g==111&&b==149)++markerPixels;
+                    // The existing smooth marker has a +/-2px halo, including at
+                    // the right endpoint one pixel past the128px rectangle.
+                    if(instant || x<left-2 || x>left+128+2)
+                        CHECK((r==24&&g==35&&b==28));
+                }
+                CHECK((markerPixels>0)==!instant);CHECK(world.checksum()==checksum);
+            }
+            // Full actual panel capture and actual production-slider click, with
+            // both a present row and the existing all-zero/no-row behavior.
+            panel.insideUnits={{true,-feed,64},{true,-heal,127},{true,-training,0}};panel.unitsInside=3;
+            begin();gui.drawBuildingInfos();gfx->nextFrame();
+            REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/(instant?"instant-services.bmp":"mixed-service-progress.bmp")).string().c_str()));
+            const int productionY=rowY+(instant?0:YOFFSET_PROGRESS_BAR)+YOFFSET_B_SEP+YOFFSET_RESOURCE_SECTION_PAD+YOFFSET_SWARM_PROGRESS_BAR;
+            const int ratio=gui.displayedRatio(*building)[WORKER];
+            gui.handleMenuClickBuildingSelection(RIGHT_MENU_OFFSET+119,productionY+8,SDL_BUTTON_LEFT);
+            REQUIRE(gui.orderQueue.size()==1);CHECK(gui.orderQueue.front()->getOrderType()==ORDER_MODIFY_SWARM);
+            CHECK(gui.displayedRatio(*building)[WORKER]==ratio+1);CHECK(world.checksum()==checksum);
+            gui.orderQueue.clear();
+        }
+    }
+
     TEST_CASE("construction choice displays recipe costs independently of storage [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});

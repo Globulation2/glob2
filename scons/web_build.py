@@ -192,6 +192,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
                 '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
                 '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',

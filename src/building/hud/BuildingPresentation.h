@@ -34,12 +34,10 @@ inline bool buildingHasSeparateAttractionHeader(const BuildingType& type)
         && (type.hpMax>0 || type.maxUnitInside>0);
 }
 
-// Shared presence/timeout for the existing inside-service progress row.
+// Shared horizon for the existing inside-service row must cover every visit.
 inline int buildingServiceProgressTimeout(const BuildingType& type)
 {
-    if (type.timeToFeedUnit) return type.timeToFeedUnit;
-    if (type.timeToHealUnit) return type.timeToHealUnit;
-    int duration=0;
+    int duration=std::max(type.timeToFeedUnit,type.timeToHealUnit);
     for (int ability=0;ability<NB_ABILITY;++ability)
         duration=std::max(duration,type.upgradeTime[ability]);
     return duration;
