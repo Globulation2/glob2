@@ -905,12 +905,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
-- Format 138 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
+- Format 140 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
   older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
   count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
   `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
   byte for byte; custom registries re-serialize with shifted IDs, so their digest
-  changes and format-137 replays that embed one no longer verify.
+  changes and replays from formats 136 to 139 that embed one no longer verify.
 - Runtime types inherit a shipped appearance and use full tiles; legacy corner
   adapters apply only to built-ins. Any paintable built-in is a valid `base` or
   `appearance`. Import definitions through

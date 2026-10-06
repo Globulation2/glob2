@@ -18,7 +18,7 @@ enum TerrainType : std::uint16_t
 	// Compatibility profiles for old corner-based shores, not paintable types.
 	GRASS_SAND_SHORE=5,
 	SAND_WATER_SHORE=6,
-	// Terrain catalogue (format 138). Groups are defined in TerrainGroup.h.
+	// Terrain catalogue (format 140). Groups are defined in TerrainGroup.h.
 	BOULDERS=7,
 	HEDGE=8,
 	THICKET=9,
@@ -45,6 +45,6 @@ enum TerrainType : std::uint16_t
 	CHASM=30,
 	TERRAIN_COUNT=31,
 };
-// Files older than format 138 were written when seven built-ins existed; their
+// Files older than format 140 were written when seven built-ins existed; their
 // custom definitions and tile identities start at this count and are remapped on load.
 inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;
