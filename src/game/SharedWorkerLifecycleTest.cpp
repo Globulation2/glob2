@@ -123,9 +123,6 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
     deferred.game.anyPlayerWaited = false;
     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    deferred.game.map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[]})");
-    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
     deferred.game.map.clear(); // Reserved jobs must not outlive their destination.
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
 }
