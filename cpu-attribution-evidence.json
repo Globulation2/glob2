@@ -1,0 +1,37 @@
+{
+  "status": "diagnostic only; not shipping performance acceptance",
+  "candidate_revision": "9d4a364725f1872434403be8ced92e630e529fc7",
+  "baseline_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "clean_targeted_sweep": {
+    "pairs_per_fixture": 3,
+    "warmups_per_variant": 1,
+    "fixtures": 4,
+    "variants": 6,
+    "total_runs": 96,
+    "compiler_interference_monitor": "before, during, after each run; interrupted runs excluded/retried"
+  },
+  "clocks": {
+    "scope": "CLOCK_THREAD_CPUTIME_ID, exclusive nested accounting",
+    "window": "CLOCK_PROCESS_CPUTIME_ID",
+    "whole_process": "wait4 user+system; includes startup/output"
+  },
+  "limits": [
+    "Original ten-pair sweep interfered with external compilation and is not clean timing evidence. Reduced rerun aborted when compilation restarted. Only targeted sweep is used here.",
+    "Timing probes change code layout and consume CPU. Same-binary on/off and original production binary comparisons are included. No universal correction is applied.",
+    "Three pairs and fixed 8192-tick windows do not establish full-match performance acceptance, gameplay equivalence or cross-platform determinism.",
+    "Single Time Profiler probe uses sampled Running stacks, with startup/blocking leaves excluded; inclusive weights overlap.",
+    "Final checksums agree across variants/revisions for these four fixtures; no new per-tick cross-platform trace was performed."
+  ],
+  "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "included_patch_note": "Temporary absolute Attribution.h includes require path relocation when reproducing elsewhere. Exact diagnostic source patches and header are archived; they are not production changes.",
+  "archive_sha256": "952fd8a008052deccde51baba3a1b6cbd6b50b05392842370daf73b77da17d32",
+  "archive_bytes": 1251622,
+  "fixture_relocation": {
+    "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/land-2-1003-numbi/initial.game.gz": "fixtures/numbi-initial.game.gz",
+    "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/extra/water-2-1008-javascript/initial.game.gz": "fixtures/javascript-initial.game.gz",
+    "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/land-2-1002-mixed/initial.game.gz": "fixtures/mixed-initial.game.gz",
+    "/Users/bradley/.codex/worktrees/async-ai-engine/glob2/artifacts/async-ai/performance/quick/water-4-1001-cortex/initial.game.gz": "fixtures/cortex-initial.game.gz"
+  },
+  "master_refetched": "e53a673b2609175e781ad2608a15a220866cf2fa"
+}
