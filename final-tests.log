@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/e90d/glob2/platform
+
+
+ Test Files  16 passed (16)
+      Tests  134 passed (134)
+   Start at  07:32:47
+   Duration  22.85s (tests 69%, import 11%, environment 11%, transform 9%)
+

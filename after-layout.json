@@ -1,0 +1,76 @@
+[
+  {
+    "width": 1440,
+    "height": 900,
+    "conversation": {
+      "x": 72,
+      "y": 56,
+      "width": 684,
+      "height": 844
+    },
+    "log": {
+      "x": 72,
+      "y": 56,
+      "width": 684,
+      "height": 681.40625
+    },
+    "canvas": {
+      "x": 782,
+      "y": 141,
+      "width": 641,
+      "height": 623.90625
+    },
+    "image": {
+      "x": 823.5,
+      "y": 194.953125,
+      "width": 558,
+      "height": 558
+    }
+  },
+  {
+    "width": 1366,
+    "height": 768,
+    "conversation": {
+      "x": 72,
+      "y": 56,
+      "width": 647,
+      "height": 712
+    },
+    "log": {
+      "x": 72,
+      "y": 56,
+      "width": 647,
+      "height": 549.40625
+    },
+    "canvas": {
+      "x": 745,
+      "y": 141,
+      "width": 604,
+      "height": 491.90625
+    },
+    "image": {
+      "x": 834,
+      "y": 194.953125,
+      "width": 426,
+      "height": 426
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "conversation": null,
+    "log": null,
+    "canvas": {
+      "x": 85,
+      "y": 225,
+      "width": 292,
+      "height": 434.359375
+    },
+    "image": {
+      "x": 97,
+      "y": 329.171875,
+      "width": 268,
+      "height": 268
+    }
+  }
+]
