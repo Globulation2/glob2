@@ -6,6 +6,8 @@
 #include "ai/model/BuildingProjection.h"
 #include "Order.h"
 #include "CortexPlacement.h"
+#include "CortexWheat.h"
+#include <algorithm>
 #include "CortexPolicy.h"
 #include <nlohmann/json.hpp>
 #include "Player.h"
@@ -31,6 +33,70 @@ void drain(AICortex& ai,Game& game)
 }
 TEST_SUITE("CortexActionCoverage")
 {
+    TEST_CASE("wheat discovery keeps first path depths and local fog boundaries")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.terrain=WATER,.clearImmobile=true,.header=true});
+        auto& map=world.game.map;
+        std::fill(map.fogOfWar,map.fogOfWar+32*32,world.team->me);
+        for(int x=2;x<=14;++x)map.setTerrain(x,8,GRASS);
+        // A longer land-only detour reaches the far side of the third wheat
+        // cell later; it must not replace the first path's greater wheat depth.
+        for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
+        for(int x:{6,7,10,12}) {
+            map.setResource(x,8,WHEAT,1);
+            REQUIRE(map.getResource(x,8).type==WHEAT);
+        }
+        auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
+        const int seed=index(2,8); // Its land exit ring ends at x=5.
+        auto scan=[&](const std::vector<int>& seeds,int right,bool ignoreFog) {
+            return Cortex::scanWheatForbidden(map,world.team->me,0,seeds,
+                0,0,right,31,0,ignoreFog,true);
+        };
+        const auto first=scan({seed},31,false);
+        CHECK(first.fieldTileCount==4);
+        CHECK(first.componentCount==3);
+        CHECK(first.depthOf[index(6,8)]==1);
+        CHECK(first.depthOf[index(7,8)]==2);
+        CHECK(first.depthOf[index(10,8)]==3);
+        CHECK(first.depthOf[index(12,8)]==4);
+        CHECK(first.classOf[index(7,8)]==Cortex::WC_CHECKER_OPEN);
+        for(int x:{6,10,12})CHECK(first.classOf[index(x,8)]==Cortex::WC_FORBIDDEN);
+        CHECK((first.desired==std::vector<int>{index(6,8),index(10,8),index(12,8)}));
+        CHECK(first.add==first.desired);
+        CHECK(first.del.empty());
+        const auto repeated=scan({seed,seed,seed},31,false);
+        CHECK(repeated.depthOf==first.depthOf);
+        CHECK(repeated.classOf==first.classOf);
+        CHECK(repeated.desired==first.desired);
+        CHECK(repeated.add==first.add);CHECK(repeated.del==first.del);
+        CHECK(repeated.fieldTileCount==first.fieldTileCount);
+        CHECK(repeated.componentCount==first.componentCount);
+        CHECK(repeated.forbiddenCount==first.forbiddenCount);
+        CHECK(repeated.addCount==first.addCount);CHECK(repeated.delCount==first.delCount);
+        const auto clipped=scan({seed},9,false);
+        CHECK(clipped.fieldTileCount==2);
+        CHECK(clipped.componentCount==1);
+        CHECK(clipped.depthOf[index(10,8)]==-1);
+        CHECK((clipped.desired==std::vector<int>{index(6,8)}));
+        map.fogOfWar[index(12,8)]=0;
+        const auto fogged=scan({seed},31,false);
+        CHECK(fogged.fieldTileCount==3);
+        CHECK(fogged.depthOf[index(12,8)]==-1);
+        CHECK((fogged.desired==std::vector<int>{index(6,8),index(10,8)}));
+        const auto revealed=scan({seed},31,true);
+        CHECK(revealed.depthOf==first.depthOf);
+        CHECK(revealed.desired==first.desired);
+        // This scan's territory does not wrap, even when it touches the seam.
+        for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
+        map.setTerrain(31,20,GRASS);
+        map.setResource(31,20,WHEAT,1);
+        REQUIRE(map.getResource(31,20).type==WHEAT);
+        const auto edge=scan({index(0,20)},31,true);
+        CHECK(edge.depthOf[index(31,20)]==-1);
+        CHECK(edge.desired.empty());
+    }
+
     TEST_CASE("placement reuses observation qualification without persisting stale worker levels")
     {
         using namespace Cortex;

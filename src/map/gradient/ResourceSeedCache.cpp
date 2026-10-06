@@ -118,23 +118,23 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 {
 	auto &s = *storage;
 	const auto &cell = map.tiles[index];
-	if (flags & (Resource | Immobile))
-	{
-		const Uint8 old = s.resourceTypes[index];
-		const Uint8 next = map.immobileUnits[index] == IMMOBILE_UNIT_NONE
-			? cell.resource.type : NO_RES_TYPE;
-		if (old != next)
-		{
-			if (old != NO_RES_TYPE) setBit(s.resources[old], index, false);
-			if (next != NO_RES_TYPE) setBit(s.resources[next], index, true);
-			s.resourceTypes[index] = next;
-		}
-	}
 	if (flags & (Resource | Terrain | Building | Immobile))
 	{
+		const Uint8 resource = cell.resource.type;
+		const bool unoccupied = map.immobileUnits[index] == IMMOBILE_UNIT_NONE;
+		if (flags & (Resource | Immobile))
+		{
+			const Uint8 old = s.resourceTypes[index];
+			const Uint8 next = unoccupied ? resource : NO_RES_TYPE;
+			if (old != next)
+			{
+				if (old != NO_RES_TYPE) setBit(s.resources[old], index, false);
+				if (next != NO_RES_TYPE) setBit(s.resources[next], index, true);
+				s.resourceTypes[index] = next;
+			}
+		}
 		const auto &terrain = map.terrainPropertiesAt(index);
-		const bool open = cell.resource.type == NO_RES_TYPE && cell.building == NOGBID &&
-			map.immobileUnits[index] == IMMOBILE_UNIT_NONE;
+		const bool open = resource == NO_RES_TYPE && cell.building == NOGBID && unoccupied;
 		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
 		s.base[1][index] = open && (terrain.walkable || terrain.swimmable)
 			? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;

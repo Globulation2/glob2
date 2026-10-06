@@ -157,10 +157,13 @@ namespace Cortex
 		for(int k=0;k<4;++k)neighbors[k]={NB_DX[k],NB_DY[k]};
 		field::traverse(q,{w,h},neighbors,[](int){return field::Visit::Expand;},
 			[&](int cur,int nx,int ny) {
-				const bool wheat=isField(nx,ny);
-				if(!wheat && !isLand(nx,ny))return;
+				// Neighbours are unwrapped; reject the local territory boundary
+				// before indexing, then skip cells whose first path is settled.
+				if(!inBox(nx,ny))return;
 				const int ni=static_cast<int>(map.coordToIndex(nx,ny));
 				if(depth[ni]!=INT_MAX)return;
+				const bool wheat=isField(nx,ny);
+				if(!wheat && !isLand(nx,ny))return;
 				depth[ni]=depth[cur]+(wheat?1:0);q.push_back(ni);
 			});
 
