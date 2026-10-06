@@ -505,8 +505,8 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
         map.setResource(8,8,id,0);
         return map.resourceGrowthField().rate(index,resourceIndex(id));
     };
-    // Independent integer branch rounding can discard at most one ecology
-    // quantum when equal growth/spread rates do not divide evenly by eight.
+    // Combining branch numerators preserves exact calibration even when the
+    // ecological rate does not divide evenly by eight.
     {
         auto definition=prototype;
         definition["properties"]["growthRate"]=ResourceRateScale-3;
@@ -520,8 +520,7 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
         {
             map.setMaterialAmount(index,MaterialId::Food,stock);
             const auto potential=AIResourceSources::renewablePotential(map,index,food);
-            CHECK(potential<=rate);
-            CHECK(potential+1>=rate);
+            CHECK(potential==rate);
         }
     }
     const auto gold=materialIndex(MaterialId::Gold);
@@ -559,4 +558,47 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     install("one",true,true,true,2);
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==0);
     CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)>0);
+}
+
+
+TEST_CASE("prospective material supply combines mixed branch numerators without overflow" * doctest::test_suite("AIRules"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
+    auto& map=w.game.map;
+    const auto index=map.coordToIndex(8,8);
+    using Json=nlohmann::json;
+    auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    definition["key"]="prospective-mixed";
+    definition["properties"]["primaryMaterial"]="gold";
+    definition["properties"]["growthRate"]=ResourceRateScale-3;
+    definition["properties"]["spreadRate"]=ResourceRateScale/2;
+    definition["yields"]={{"gold",{{"capacity",3},{"initial",3},{"growthRate",ResourceRateScale/2},{"consumption","one"}}},
+        {"food",{{"capacity",2},{"initial",2},{"growthRate",ResourceRateScale},{"consumption","one"}}}};
+    auto install=[&] {
+        map.setNoResource(8,8,0);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("prospective-mixed");
+        map.setResource(8,8,id,0);
+        return std::uint64_t(map.resourceGrowthField().rate(index,resourceIndex(id)));
+    };
+    const auto rate=install();
+    REQUIRE(rate%8!=0);
+    // Total stock5 controls both branches; Gold and secondary Food retain their
+    // own local rate and offspring quantities3 and2 respectively.
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==((rate/2)*3+(rate/2)*3*5)/8);
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Food)==(rate*3+(rate/2)*2*5)/8);
+    definition["properties"]["stockDependentGrowth"]=false;
+    definition["properties"]["growthRate"]=4u*ResourceRateScale;
+    definition["properties"]["spreadRate"]=ResourceRateScale;
+    definition["yields"]["gold"]={{"capacity",65535},{"initial",65535},
+        {"growthRate",ResourceRateScale},{"consumption","one"}};
+    const auto largeRate=install();
+    const auto expected=largeRate+largeRate*65535;
+    REQUIRE(expected>std::numeric_limits<Uint32>::max());
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==expected);
+    CHECK(AIResourceSources::renewablePotential(map,index,materialIndex(MaterialId::Gold))==expected);
+    definition["yields"]["gold"]["consumption"]="all";
+    const auto destructiveRate=install();
+    CHECK(map.materialRenewalPotentialAt(index,MaterialId::Gold)==destructiveRate);
 }

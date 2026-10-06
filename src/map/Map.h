@@ -481,10 +481,10 @@ public:
     bool terrainSupportsMaterialAt(int x,int y,MaterialId material) const { return terrainSupportsMaterialAtSlot(x,y,materialIndex(material)); }
     std::uint32_t materialGrowthRateAtSlot(size_t index,int material) const;
     std::uint32_t materialGrowthRateAt(size_t index,MaterialId material) const { return materialGrowthRateAtSlot(index,materialIndex(material)); }
-    // Local replenishment potential under continued harvesting, before saturation.
+    // Total local and offspring supply potential under harvesting, before saturation.
     // This is a planning rate, not the next natural-growth event's expected delta.
-    std::uint32_t materialRenewalPotentialAtSlot(size_t index,int material) const;
-    std::uint32_t materialRenewalPotentialAt(size_t index,MaterialId material) const { return materialRenewalPotentialAtSlot(index,materialIndex(material)); }
+    std::uint64_t materialRenewalPotentialAtSlot(size_t index,int material) const;
+    std::uint64_t materialRenewalPotentialAt(size_t index,MaterialId material) const { return materialRenewalPotentialAtSlot(index,materialIndex(material)); }
     std::uint64_t materialExpansionRateAtSlot(size_t index,int material) const;
     std::uint64_t materialExpansionRateAt(size_t index,MaterialId material) const { return materialExpansionRateAtSlot(index,materialIndex(material)); }
 	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }

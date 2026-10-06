@@ -364,20 +364,26 @@ std::uint32_t Map::materialGrowthRateAtSlot(size_t index,int material) const
     return std::min<std::uint64_t>(rate,4u*ResourceRateScale);
 }
 
-std::uint32_t Map::materialRenewalPotentialAtSlot(size_t index,int material) const
+std::uint64_t Map::materialRenewalPotentialAtSlot(size_t index,int material) const
 {
-    if (!tiles[index].canResourcesGrow || (game && game->gameHeader.isResourceGrowthDisabled())) return 0;
+    if (game && game->gameHeader.isResourceGrowthDisabled()) return 0;
     const auto& r=tiles[index].resource;
     if (r.type==NO_RES_TYPE || material<0 || material>=int(MaterialCount)) return 0;
     const auto& p=resourcePropertiesByIndex(r.type);
     const auto& y=resourceRegistry().yields(static_cast<ResourceId>(r.type))[material];
-    if (!y.capacity || !y.growthRate || y.consumption!=ResourceConsumption::One || y.destroysDeposit) return 0;
-    // A one-unit, nonpersistent deposit disappears when harvested unless another
-    // material keeps it alive. Larger stocks can retain a seed while harvesting.
-    if (y.capacity==1 && !p.persistsWhenEmpty && r.amount<=materialAmountAtSlot(index,material)) return 0;
-    auto rate=std::uint64_t(resourceGrowthField().rate(index,r.type))*y.growthRate/ResourceRateScale;
-    if (p.stockDependentGrowth) rate=rate*(p.stockBranchDivisor-std::min<Uint32>(r.amount,p.stockBranchDivisor))/p.stockBranchDivisor;
-    return std::min<std::uint64_t>(rate,4u*ResourceRateScale);
+    if (!y.capacity) return 0;
+    const std::uint64_t ecology=resourceGrowthField().rate(index,r.type);
+    const bool survives=y.capacity>1 || p.persistsWhenEmpty || r.amount>materialAmountAtSlot(index,material);
+    const bool renewableLocal=tiles[index].canResourcesGrow && survives
+        && y.consumption==ResourceConsumption::One && !y.destroysDeposit;
+    const std::uint64_t local=renewableLocal ? ecology*y.growthRate/ResourceRateScale : 0;
+    const std::uint64_t offspring=ecology*p.spreadRate/ResourceRateScale
+        *((y.consumption==ResourceConsumption::All || y.destroysDeposit) ? (y.initial ? 1u : 0u) : y.initial);
+    if (!p.stockDependentGrowth) return local+offspring;
+    const auto stock=std::min<Uint32>(r.amount,p.stockBranchDivisor);
+    // Divide the combined branch expectation once: equal local/offspring yields
+    // preserve their exact ecology rate at every stock, even for odd rates.
+    return (local*(p.stockBranchDivisor-stock)+offspring*stock)/p.stockBranchDivisor;
 }
 
 std::uint64_t Map::materialExpansionRateAtSlot(size_t index,int material) const

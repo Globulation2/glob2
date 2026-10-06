@@ -16,8 +16,7 @@ inline std::uint64_t renewablePotential(const Map& map,std::size_t index,int mat
     const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(resource.type))[material];
     if(!yield.capacity || !map.materialAmountAtSlot(index,material)) return 0;
     if(yield.consumption==ResourceConsumption::Infinite && !yield.destroysDeposit) return ResourceRateScale;
-    auto potential=std::uint64_t(map.materialRenewalPotentialAtSlot(index,material))
-        +map.materialExpansionRateAtSlot(index,material);
+    auto potential=map.materialRenewalPotentialAtSlot(index,material);
     if(map.game) potential/=1u<<map.game->gameHeader.getResourceScarcityLevel();
     return potential;
 }
