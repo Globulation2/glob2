@@ -1,0 +1,14 @@
+{
+  "producer": "4a20ff44e08b5e0605e85b92ea4e393fbfb6e99b",
+  "prHead": "9b0e3e719b8f908b14ba4cc44c9a8bd2f27992e0",
+  "base": "ac938788cdfd289f4dfd6757eeb765409b32eef3",
+  "fetchedMaster": "c63c75f7f46e459c07b9d820cbec77abf78f8121",
+  "platform": "Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux",
+  "gcc": "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0",
+  "clang": "Ubuntu clang version 18.1.8 (20ubuntu8)",
+  "linuxRows": 40,
+  "repeatIdentical": true,
+  "productionTreeDifference": "none between producer 4a20 and PR 9b0 (table only)",
+  "unitTestLimit": "golden coverage test uses existing unit binary; tested header unchanged by repair",
+  "macStatus": "pending actual observations"
+}
