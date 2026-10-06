@@ -70,7 +70,7 @@ void PhoneEditor::prepareInspector()
 		add("[ground attack]",editor.buildingBombingScrollBox);
 		for (int r=0; r<MAX_RESOURCES; ++r)
 			if (editor.buildingResourceControls[r]->enabled)
-				properties.push_back({editor.buildingResourceControls[r],getResourceName(r),{}});
+				properties.push_back({editor.buildingResourceControls[r],getMaterialName(r),{}});
 		add("[range]", editor.buildingRadiusScrollBox);
 	}
 	else

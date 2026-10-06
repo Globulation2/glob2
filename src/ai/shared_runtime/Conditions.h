@@ -195,8 +195,8 @@ namespace AISharedRuntime
 			CNotSpecificBuildingType = 5,
 			CBuildingLevel = 6,
 			CUpgradable = 7,
-			CResourceTrackerAmount = 8,
-			CResourceTrackerAge = 9,
+			CMaterialTrackerAmount = 8,
+			CMaterialTrackerAge = 9,
 			// value 10 reserved (was CTicksPassed, removed — debug-only, never instantiated by any AI)
 		};
 
@@ -328,7 +328,7 @@ namespace AISharedRuntime
 		};
 
 		///This class compares the total amount of resources recorded by a resource tracker.
-		class ResourceTrackerAmount : public BuildingCondition
+		class MaterialTrackerAmount : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -337,10 +337,10 @@ namespace AISharedRuntime
 				Lesser,
 			};
 
-			explicit ResourceTrackerAmount(int amount, TrackerMethod tracker_method);
+			explicit MaterialTrackerAmount(int amount, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			ResourceTrackerAmount() = default;
+			MaterialTrackerAmount() = default;
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -350,7 +350,7 @@ namespace AISharedRuntime
 		};
 
 		///This class compares the age provided by a resource tracker
-		class ResourceTrackerAge : public BuildingCondition
+		class MaterialTrackerAge : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -359,10 +359,10 @@ namespace AISharedRuntime
 				Lesser,
 			};
 
-			explicit ResourceTrackerAge(int age, TrackerMethod tracker_method);
+			explicit MaterialTrackerAge(int age, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			ResourceTrackerAge() = default;
+			MaterialTrackerAge() = default;
 			bool passes(Runtime& runtime, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
@@ -103,7 +104,7 @@ namespace Cortex
 	// never report a radius larger than the true minimum. Return -1 if no WHEAT is
 	// found within `cap`.
 	//
-	// WHEAT detection: map.getResource(x, y).type == WHEAT — identical to the
+	// WHEAT detection: map.isMaterialTakeable(x, y, WHEAT) — identical to the
 	// isWheat() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
 	// the two subsystems agree on what counts as wheat.
 	// C++: Resource.h:#define WHEAT 1; Map::getResource (map/Map.h:302).
@@ -117,7 +118,7 @@ namespace Cortex
 			if (r == 0)
 			{
 				// Centre tile: radius-0 ring is just (x, y) itself.
-				if (map.getResource(map.normalizeX(x), map.normalizeY(y)).type == WHEAT)
+				if (map.isMaterialTakeable(map.normalizeX(x), map.normalizeY(y), materialIndex(MaterialId::Food)))
 					return 0;
 				continue;
 			}
@@ -136,7 +137,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y - r);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					return r;
 			}
 			// Right column: (x+r, y-r .. y+r-1)
@@ -144,7 +145,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					return r;
 			}
 			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
@@ -152,7 +153,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + r);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					return r;
 			}
 			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
@@ -160,7 +161,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x - r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					return r;
 			}
 		}

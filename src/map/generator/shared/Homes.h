@@ -350,7 +350,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 	int wheat = 0;
 	for (int dy = -reach; dy <= reach; ++dy)
 		for (int dx = -reach; dx <= reach; ++dx)
-			wheat += map.getResource(t.at(sx + dx, sy + dy) % t.w, t.at(sx + dx, sy + dy) / t.w).type == WHEAT;
+			wheat += map.materialAmountAt(t.at(sx + dx, sy + dy), MaterialId::Food) > 0;
 	WheatTopUp result;
 	const int missing = wanted - wheat;
 	if (missing <= 0)
@@ -366,7 +366,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 			{
 				const int i = t.at(sx + dx, sy + dy);
 				const int type = map.getResource(i % t.w, i / t.w).type;
-				if (nearby(i) && ambient[i] && type != WHEAT && type != STONE && type != NO_RES_TYPE)
+				if (nearby(i) && ambient[i] && type != NO_RES_TYPE && !map.materialAmountAt(i, MaterialId::Food) && map.resourceProperties(type).clearable)
 					standing.push_back({dx * dx + dy * dy, i});
 			}
 		std::sort(standing.begin(), standing.end());

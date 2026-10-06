@@ -45,7 +45,7 @@ TEST_SUITE("EditorActionCoverage")
         variants[3]["properties"]["zonable"]={1,1,1};
         variants[3]["properties"]["defaultUnitStayRange"]=5;
         variants[3]["properties"]["maxUnitStayRange"]=20;
-        variants[3]["properties"]["maxResource"]={30,30,30,30,30,30,30,30,0,0,0,0,0,0,0};
+        variants[3]["properties"]["maxMaterial"]={30,30,30,30,30,30,30,30,0,0,0,0,0,0,0};
         variants[3]["semantics"]["assignmentLimit"]=40;
         variants[3]["semantics"]["production"]=variants[1]["semantics"]["production"];
         int previous=7;
@@ -86,7 +86,7 @@ TEST_SUITE("EditorActionCoverage")
         {
             CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
             editor.buildingResourceControls[resource]->setValue(resource+1);
-            CHECK(building->resources[resource]==resource+1);
+            CHECK(building->materials[resource]==resource+1);
         }
         editor.buildingEditFirstRow=100; editor.layoutBuildingEditRows();
         CHECK(editor.buildingWorkerLevelScrollBox->enabled);

@@ -19,7 +19,7 @@ TEST_SUITE("SceneExtract")
         BuildingType type;
         type.semantics.feeding.enabled=true;
         type.semantics.feeding.cost[ALGA]=2;
-        type.maxResource[ALGA]=20;
+        type.maxMaterial[ALGA]=20;
         Sint32 stock[MAX_RESOURCES]{}; stock[ALGA]=2;
         CHECK_FALSE(buildingFeedingUnfunded(type,stock));
         CHECK(buildingResourceBarResource(type,stock)==ALGA);
@@ -30,7 +30,7 @@ TEST_SUITE("SceneExtract")
         CHECK(buildingResourceBarResource(type,stock)==-1);
         auto& recipe=type.semantics.production.recipes[WARRIOR];
         recipe.enabled=true; recipe.cost[STONE]=3;
-        type.maxResource[STONE]=30;stock[STONE]=9;
+        type.maxMaterial[STONE]=30;stock[STONE]=9;
         CHECK(buildingResourceBarResource(type,stock)==STONE);
         type.semantics.feeding.cost[ALGA]=2;
         CHECK(buildingResourceBarResource(type,stock)==ALGA);

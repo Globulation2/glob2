@@ -29,26 +29,34 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
         // Re-read the source after each attempt: growth can change its amount.
         const Resource& resource=map.getResource(x,y);
         if(resource.type==NO_RES_TYPE) break;
-        if(resource.amount<=(syncRand()&7))
+        const auto& properties=map.resourceProperties(resource.type);
+        const bool growsHere=!properties.stockDependentGrowth || resource.amount <= syncRand()%properties.stockBranchDivisor;
+        if(growsHere)
         {
             if(map.canResourcesGrow(x,y))
             {
-                const int type=resource.type, amount=resource.amount;
-                map.incResource(x,y,type,resource.variety);
-                map.recordNaturalGrowth(x,y,type,type,amount);
+                const int type=resource.type;
+                const auto stocks=map.materialStocksAt(map.coordToIndex(x,y));
+                if (map.incResource(x,y,type,resource.variety))
+                    map.recordNaturalGrowth(x,y,type,type,stocks);
             }
         }
-        else if(globalContainer->resourcesTypes.get(resource.type)->expendable)
+        if(properties.spreadRate && (!properties.stockDependentGrowth || !growsHere))
         {
-            int dx,dy;
-            Unit::dxDyFromDirection(syncRand()&7,&dx,&dy);
-            const int nx=x+dx,ny=y+dy;
-            if(map.canResourcesGrow(nx,ny))
+            const auto spreads=Fertility::growthOpportunities(properties.spreadRate,[]{return syncRand();});
+            for (unsigned spread=0;spread<spreads;++spread)
             {
-                const auto& before=map.getResource(nx,ny);
-                const int oldType=before.type,oldAmount=before.amount,type=resource.type;
-                map.incResource(nx,ny,type,resource.variety);
-                map.recordNaturalGrowth(nx,ny,type,oldType,oldAmount);
+                int dx,dy;
+                Unit::dxDyFromDirection(syncRand()&7,&dx,&dy);
+                const int nx=x+dx,ny=y+dy;
+                if(map.canResourcesGrow(nx,ny))
+                {
+                    const auto& before=map.getResource(nx,ny);
+                    const int oldType=before.type,type=resource.type;
+                    const auto stocks=map.materialStocksAt(map.coordToIndex(nx,ny));
+                    if (map.incResource(nx,ny,type,resource.variety))
+                        map.recordNaturalGrowth(nx,ny,type,oldType,stocks);
+                }
             }
         }
     }
@@ -171,34 +179,47 @@ void Map::rebuildGrowthCoverage()
 	}
 }
 
-void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount)
+void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,int oldAmount)
 {
-	const Resource &after = getResource(x,y);
-	if (resourceType < 0 || resourceType >= MAX_NB_RESOURCES) return;
-	const int tiles = oldType == NO_RES_TYPE && after.type == resourceType;
-	const int delta = after.amount - (tiles ? 0 : oldAmount);
-	if (!tiles && !delta) return;
-	const size_t index = size_t(y & hMask) * w + (x & wMask);
-	const Uint64 packed = growthCoverage[index];
-	Uint32 masks[GROWTH_COVERAGE_BANDS];
-	for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
-		masks[band] = Uint32(packed >> (band * Team::MAX_COUNT));
-	for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
-	{
-		Team *team = game->teams[t];
-		if (!team) continue;
-		auto &m = team->stats.measurements;
-		m.growthGlobal[0][resourceType] += tiles;
-		m.growthGlobal[1][resourceType] += std::max(0,delta);
-		m.growthGlobal[2][resourceType] += std::max(0,-delta);
-		for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
-			if (masks[band] & (Uint32(1) << t))
-			{
-				m.growthTiles[band][resourceType] += tiles;
-				m.growthAmount[band][resourceType] += std::max(0,delta);
-				m.growthReduction[band][resourceType] += std::max(0,-delta);
-			}
-	}
+    std::array<Uint16,MaterialCount> stocks{};
+    if (oldType!=NO_RES_TYPE && resourceRegistry().valid(unsigned(oldType)))
+        stocks[materialIndex(resourceProperties(oldType).primaryMaterial)]=oldAmount;
+    recordNaturalGrowth(x,y,resourceType,oldType,stocks);
+}
+
+void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std::array<Uint16,MaterialCount>& oldStocks)
+{
+    if (!game || !resourceRegistry().valid(unsigned(resourceType))) return;
+    const auto index=coordToIndex(x,y);
+    const auto& after=tiles[index].resource;
+    const bool newTile=oldType==NO_RES_TYPE && after.type==resourceType;
+    const auto stocks=materialStocksAt(index);
+    if (growthCoverage.size()!=size) rebuildGrowthCoverage();
+    const auto packed=growthCoverage[index];
+    MaterialMask changedMaterials=resourceProperties(resourceType).materialMask;
+    if (oldType!=NO_RES_TYPE) changedMaterials|=resourceProperties(oldType).materialMask;
+    for (unsigned mask=changedMaterials;mask;mask&=mask-1)
+    {
+        const auto material=std::countr_zero(mask);
+        const int delta=int(stocks[material])-oldStocks[material];
+        const int added=newTile && stocks[material]>0;
+        if (!delta && !added) continue;
+        for (int t=0;t<game->mapHeader.getNumberOfTeams();++t)
+        {
+            Team* team=game->teams[t]; if (!team) continue;
+            auto& m=team->stats.measurements;
+            m.growthGlobal[0][material]+=added;
+            m.growthGlobal[1][material]+=std::max(0,delta);
+            m.growthGlobal[2][material]+=std::max(0,-delta);
+            for (int band=0;band<GROWTH_COVERAGE_BANDS;++band)
+                if ((packed>>(band*Team::MAX_COUNT))&(Uint64(1)<<t))
+                {
+                    m.growthTiles[band][material]+=added;
+                    m.growthAmount[band][material]+=std::max(0,delta);
+                    m.growthReduction[band][material]+=std::max(0,-delta);
+                }
+        }
+    }
 }
 
 
@@ -288,7 +309,7 @@ void Map::syncStep(Uint32 stepCounter)
 				for (size_t i = 0; i < size; ++i)
 				{
 					const Tile& tile = tiles[i];
-					const bool blocked = tile.resource.type != NO_RES_TYPE
+					const bool blocked = resourceBlocksGround(i)
 						|| tile.building != NOGBID || (!terrainPropertiesAt(i).walkable && !(escapeSwim > 0 && terrainPropertiesAt(i).swimmable))
 						|| immobileUnits[i] != IMMOBILE_UNIT_NONE;
 					const bool goal = !blocked && !(tile.forbidden & teamMask);
@@ -331,10 +352,10 @@ void Map::syncStep(Uint32 stepCounter)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
+					if (hasMaterialSource(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
 					{
-						if (gradientRuntime->pipeline.enabled()) dispatch(&resourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field); });
-						else updateResourcesGradient(t, r, s);
+						if (gradientRuntime->pipeline.enabled()) dispatch(&materialGradients[t][r][s], s, [&](Uint16 *field) { seedMaterialGradient(t, r, s, field); });
+						else updateMaterialGradient(t, r, s);
 						gradientUpdated[t][r][s]=true;
 						return;
 					}
@@ -343,12 +364,12 @@ void Map::syncStep(Uint32 stepCounter)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (marketsV2Enabled() && marketResourcesGradient[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
+					if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
 						// Stock transitions already invalidate stale snapshots. Regular refreshes
 						// must let earlier jobs publish, even when this is the only field.
-						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field, true); });
-						else updateResourcesGradient(t, r, s, true);
+						if (gradientRuntime->pipeline.enabled()) dispatch(&marketMaterialGradients[t][r][s], s, [&](Uint16 *field) { seedMaterialGradient(t, r, s, field, true); });
+						else updateMaterialGradient(t, r, s, true);
 						marketGradientDirty[t][r][s]=false;
 						marketGradientUpdated[t][r][s]=true;
 						return;

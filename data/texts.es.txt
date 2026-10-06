@@ -5564,3 +5564,43 @@ Los trabajadores pueden recoger suministros del almacén compartido de los merca
 Importar definiciones de terreno
 [Terrain palette]
 Paleta de terrenos
+[Food]
+Food
+[Paper]
+Paper
+[Cherries]
+Cherries
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Gold
+[Metal]
+Metal
+[Glass]
+Glass
+[Fabric]
+Fabric
+[Import Resource Definitions]
+Import Resource Definitions
+[Resource palette]
+Resource palette
+[Trees]
+Trees
+[Rocks]
+Rocks
+[Cherry tree]
+Cherry tree
+[Orange tree]
+Orange tree
+[Prune tree]
+Prune tree
+[Gold ore]
+Gold ore
+[Iron ore]
+Iron ore
+[Sand]
+Sand
+[Cotton]
+Cotton

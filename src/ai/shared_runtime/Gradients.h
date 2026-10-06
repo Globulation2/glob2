@@ -45,13 +45,15 @@ namespace AISharedRuntime
 				EBuilding,
 				EAnyTeamBuilding,
 				EAnyBuilding,
-				EResource,
+				EMaterialSource,
 				EAnyResource,
 				EWater,
 				EPosition,
 				ESand,
 				EUnwalkable,
-    EResourceSet,
+    EMaterialSources,
+    EResourceGroundObstacle,
+    EResourceBuildingObstacle,
 			};
 
 			///An entity is any observable object on the map. Its entirely generic, not specific to a certain team
@@ -77,18 +79,18 @@ namespace AISharedRuntime
 				static void save_entity(Entity* entity, GAGCore::OutputStream *stream);
 			};
 
-   // Cold-compiled resource mask: tile scans never look up building definitions.
-   class ResourceSet : public Entity
+   // Cold-compiled material mask: tile scans never look up building definitions.
+   class MaterialSources : public Entity
    {
    public:
-    explicit ResourceSet(unsigned mask=0):mask(mask) {}
+    explicit MaterialSources(unsigned mask=0):mask(mask) {}
    protected:
     friend class Entity;
     bool is_entity(Map*,int,int) override;
     bool operator==(const Entity&) const override;
     bool can_change() override { return true; }
-    EntityType get_type() override { return EResourceSet; }
-    std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceSet>(*this); }
+    EntityType get_type() override { return EMaterialSources; }
+    std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSources>(*this); }
     bool load(GAGCore::InputStream*,Player*,Sint32) override;
     void save(GAGCore::OutputStream*) override;
    private:
@@ -155,23 +157,23 @@ namespace AISharedRuntime
 				bool under_construction;
 			};
 
-			///Matches a particular resource type
-			class Resource : public Entity
+			///Matches a resource that supplies a particular material
+			class MaterialSource : public Entity
 			{
 			public:
-				explicit Resource(int resource_type);
+				explicit MaterialSource(int material);
 			protected:
-				Resource() : resource_type(-1) {}
+				MaterialSource() : material(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
-				std::shared_ptr<Entity> clone() const override { return std::make_shared<Resource>(*this); }
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<MaterialSource>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
-				int resource_type;
+				int material;
 			};
 
 			///Matches any resource type
@@ -189,6 +191,34 @@ namespace AISharedRuntime
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			};
+
+            ///Matches a runtime resource with the corresponding obstruction property.
+            class ResourceGroundObstacle : public Entity
+            {
+            protected:
+                friend class Entity;
+                bool is_entity(Map*, int, int) override;
+                bool operator==(const Entity&) const override;
+                bool can_change() override { return true; }
+                EntityType get_type() override { return EResourceGroundObstacle; }
+                std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceGroundObstacle>(*this); }
+                bool load(GAGCore::InputStream*, Player*, Sint32) override;
+                void save(GAGCore::OutputStream*) override;
+            };
+
+            ///Matches a runtime resource with the corresponding obstruction property.
+            class ResourceBuildingObstacle : public Entity
+            {
+            protected:
+                friend class Entity;
+                bool is_entity(Map*, int, int) override;
+                bool operator==(const Entity&) const override;
+                bool can_change() override { return true; }
+                EntityType get_type() override { return EResourceBuildingObstacle; }
+                std::shared_ptr<Entity> clone() const override { return std::make_shared<ResourceBuildingObstacle>(*this); }
+                bool load(GAGCore::InputStream*, Player*, Sint32) override;
+                void save(GAGCore::OutputStream*) override;
+            };
 
 			///Matches water
 			class Water : public Entity

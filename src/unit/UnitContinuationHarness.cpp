@@ -90,9 +90,9 @@ static void checkContinuation(int checkpoint)
     auto* secondInn = game.addBuilding(20, 4, innType, 0);
     REQUIRE((firstInn && secondInn));
     // Availability order deliberately differs from building-id order.
-    secondInn->resources[WHEAT] = 10;
+    secondInn->materials[WHEAT] = 10;
     secondInn->update();
-    firstInn->resources[WHEAT] = 10;
+    firstInn->materials[WHEAT] = 10;
     firstInn->update();
     auto* flyer = game.addUnit(12, 4, 0, EXPLORER, 0, 0, 0, 0);
     REQUIRE((flyer && game.teams[0]->findNearestFood(flyer) == firstInn));

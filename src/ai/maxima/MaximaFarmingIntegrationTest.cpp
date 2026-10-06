@@ -204,7 +204,7 @@ void applyFlagOrders(Context& c,Building* flag)
             if(move->gid==flag->gid){flag->posX=move->x;flag->posY=move->y;}
         if(auto selector=std::dynamic_pointer_cast<OrderModifyClearingFlag>(order))
             if(selector->gid==flag->gid)
-                for(int r=0;r<BASIC_COUNT;++r)flag->clearingResources[r]=selector->clearingResources[r];
+                for(int r=0;r<BASIC_COUNT;++r)flag->clearingMaterials[r]=selector->clearingMaterials[r];
     }
     c.orders.clear();
 }
@@ -365,7 +365,7 @@ void woodReserveSurvivesWheatPincer()
             update();
             REQUIRE(!map.isClearArea(outlet%64,outlet/64,f.player.team->me));
             REQUIRE(!map.isForbidden(outlet%64,outlet/64,f.player.team->me));
-            while(map.isResourceTakeable(outlet%64,outlet/64,WOOD))
+            while(map.isMaterialTakeable(outlet%64,outlet/64,WOOD))
                 map.decResource(outlet%64,outlet/64);
         }
         // Competing wheat in the outlet remains harvestable, never a new seed.
@@ -592,7 +592,7 @@ void archipelagoHarvestDoesNotSealWheat()
             int wheat=0,open=0;
             for(int y=patch?103:95;y<=(patch?106:99);++y)
                 for(int x=patch?55:48;x<=(patch?61:53);++x)
-                    if(game.map.isResourceTakeable(x,y,WHEAT)) {
+                    if(game.map.isMaterialTakeable(x,y,WHEAT)) {
                         ++wheat;open+=!ai.farm_protection_mask[y*128+x];
                     }
             REQUIRE((wheat>0 && open>0));
@@ -618,7 +618,7 @@ void seedStabilityAcrossMaps()
         ai.update_farming(ai.context);
         std::vector<int> seeds;
         for(int y=1;y<h;y+=2)for(int x=1;x<w;x+=2)
-            if(game.map.isResourceTakeable(x,y,WHEAT)&&ai.farm_protection_mask[y*w+x])
+            if(game.map.isMaterialTakeable(x,y,WHEAT)&&ai.farm_protection_mask[y*w+x])
                 seeds.push_back(y*w+x);
         REQUIRE(!seeds.empty());
         // Adversarial harvest: remove every available wheat tile each round.
@@ -626,7 +626,7 @@ void seedStabilityAcrossMaps()
         // exercise the exact feedback loop that destroyed Holiday's left farm.
         for(int round=0;round<12;++round) {
             for(int y=0;y<h;++y)for(int x=0;x<w;++x)
-                if(game.map.isResourceTakeable(x,y,WHEAT)&&!ai.farm_protection_mask[y*w+x])
+                if(game.map.isMaterialTakeable(x,y,WHEAT)&&!ai.farm_protection_mask[y*w+x])
                     game.map.setNoResource(x,y,1);
             for(int seed:seeds) {
                 int x=game.map.normalizeX(seed%w+(round%3)-1);
@@ -637,7 +637,7 @@ void seedStabilityAcrossMaps()
             }
             ai.timer+=64;ai.update_farming(ai.context);
             for(int seed:seeds) {
-                REQUIRE(game.map.isResourceTakeable(seed%w,seed/w,WHEAT));
+                REQUIRE(game.map.isMaterialTakeable(seed%w,seed/w,WHEAT));
                 REQUIRE(ai.farm_protection_mask[seed]);
             }
         }

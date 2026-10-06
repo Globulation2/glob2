@@ -88,6 +88,8 @@ export class FakeEngine {
   private running = false;
   /** Generation fails while set. */
   failGeneration = false;
+  resourceExperiments: import('@glob2/protocol').ResourceExperimentDefinitions = [];
+  requiredResourceExperiments: string[] = [];
   readonly ran: { kind: EngineJobKind; jobId: string }[] = [];
 
   constructor(db: Kysely<Database>, blobs: BlobStore) {
@@ -146,7 +148,13 @@ export class FakeEngine {
         result: {
           mapHash: stored.sha256,
           size: stored.size,
-          map: { width: 128, height: 128, teamCount: teams },
+          map: {
+            width: 128,
+            height: 128,
+            teamCount: teams,
+            resourceExperiments: this.resourceExperiments,
+            requiredResourceExperiments: this.requiredResourceExperiments,
+          },
           chosenSeed: generator.seed,
         },
       };

@@ -14,7 +14,7 @@
 
 bool MapEdit::hasDialog() const
 {
-	return bool(terrainPalette) || showingMenuScreen || showingLoad || showingSave ||
+	return bool(terrainPalette) || bool(resourcePalette) || showingMenuScreen || showingLoad || showingSave ||
 		   showingScriptEditor || showingTeamsEditor || isShowingAreaName;
 }
 
@@ -22,6 +22,8 @@ Glob2UI::InGameDialog *MapEdit::activeDialog() const
 {
 	if (terrainPalette)
 		return terrainPalette.get();
+	if (resourcePalette)
+		return resourcePalette.get();
 	if (showingMenuScreen)
 		return menuScreen.get();
 	if (showingLoad || showingSave)
@@ -105,6 +107,14 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close menu screen");
 				performAction("open terrain palette");
 				break;
+			case MapEditMenuScreen::IMPORT_RESOURCES:
+				performAction("close menu screen");
+				performAction("import resource definitions");
+				break;
+			case MapEditMenuScreen::RESOURCE_PALETTE:
+				performAction("close menu screen");
+				performAction("open resource palette");
+				break;
 			case MapEditMenuScreen::QUIT_EDITOR:
 			{
 				performAction("close menu screen");
@@ -119,11 +129,13 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveDialog::OK:
 			{
-				if (importingTerrain)
+				if (importingTerrain || importingResources)
 				{
+					const bool resources = importingResources;
 					try
 					{
-						importTerrainFile(loadSaveScreen->getFileName());
+						if (resources) importResourceFile(loadSaveScreen->getFileName());
+						else importTerrainFile(loadSaveScreen->getFileName());
 					}
 					catch (const std::exception &e)
 					{
@@ -131,7 +143,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 						break;
 					}
 					performAction("close load screen");
-					performAction("open terrain palette");
+					performAction(resources ? "open resource palette" : "open terrain palette");
 				}
 				else
 				{
@@ -156,6 +168,16 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			performAction("switch to terrain view");
 			beginTerrainPlacement(TerrainSelector::selectorFor(TerrainType(selected)),
 								  TerrainPlacementMode::BaseTerrain);
+		}
+	}
+	if (resourcePalette && resourcePalette->finished())
+	{
+		const int selected = resourcePalette->result();
+		resourcePalette.reset();
+		if (selected >= 0)
+		{
+			performAction("switch to terrain view");
+			beginTerrainPlacement(TerrainSelector::selectorForResource(static_cast<ResourceId>(selected)), TerrainPlacementMode::Resource);
 		}
 	}
 	if(showingSave && loadSaveScreen->finished())

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <algorithm>
 #include "Unit.h"
 #include "UnitTiming.h"
@@ -43,7 +44,7 @@ void Unit::handleDisplacement(void)
 
 			if (displacement==DIS_GOING_TO_RESOURCE)
 			{
-				if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
+				if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
 				{
 					dx = off->dx;
 					dy = off->dy;
@@ -56,12 +57,12 @@ void Unit::handleDisplacement(void)
 					// resource at its door and carry it home.
 					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
 					{
-						receiveCarriedResource(destinationPurpose,market->withdrawResourcePacket(destinationPurpose));
+						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
 						validTarget=true;
 						if (verbose)
-							printf("guid=(%d) took resource (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
+							printf("guid=(%d) took material (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
 					}
 				}
 			}
@@ -72,7 +73,7 @@ void Unit::handleDisplacement(void)
 				// under the animation, and an exhausted field hands out nothing.
 				// Everywhere else this is the old unconditional grant.
 				const bool gotResource = owner->map->takeHarvest(posX, posY, dx, dy,
-					destinationPurpose, owner->me);
+					static_cast<MaterialId>(destinationPurpose), owner->me);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
 
@@ -89,8 +90,8 @@ void Unit::handleDisplacement(void)
 				else
 				{
 					// we got the resource.
-					receiveCarriedResource(destinationPurpose,{});
-					++owner->stats.measurements.harvested[carriedResource];
+					receiveCarriedMaterial(destinationPurpose,{});
+					++owner->stats.measurements.harvested[carriedMaterial];
 
 					setTargetBuilding(attachedBuilding);
 					if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
@@ -130,7 +131,7 @@ void Unit::handleDisplacement(void)
 					assert(targetBuilding);
 					assert(ownExchangeBuilding);
 					if (!(targetBuilding->runtime->suppliesDirectStockMask&(1u<<destinationPurpose)) || !(attachedBuilding->runtime->fetchesDirectStockMask&(1u<<destinationPurpose))
-						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->resources == attachedBuilding->resources)
+						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->materials == attachedBuilding->materials)
 					{
 						stopAttachedForBuilding(false);
 						break;
@@ -142,13 +143,13 @@ void Unit::handleDisplacement(void)
 
 					assert(attachedBuilding);
 					assert(attachedBuilding->type->runtimeFetchesDirectStock);
-					assert(destinationPurpose>=0 && destinationPurpose<MAX_RESOURCES);
+					assert(destinationPurpose>=0 && destinationPurpose<MaterialCount);
 
 					// Let's grab the right resource.
 
-					if (targetBuilding->availableResource(destinationPurpose)>0)
+					if (targetBuilding->availableMaterial(destinationPurpose)>0)
 					{
-						receiveCarriedResource(destinationPurpose,targetBuilding->withdrawResourcePacket(destinationPurpose));
+						receiveCarriedMaterial(destinationPurpose,targetBuilding->withdrawMaterialPacket(destinationPurpose));
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -160,12 +161,12 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((carriedResource>=0) && (targetBuilding->resourceDeliveryNeed(carriedResource)>0))
+				else if ((carriedMaterial>=0) && (targetBuilding->materialDeliveryNeed(carriedMaterial)>0))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
-					targetBuilding->deliverResourcePacket(carriedResource,carriedPacket);
-					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
+						printf("guid=(%d) Giving material (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->materials[carriedMaterial]);
+					targetBuilding->deliverMaterialPacket(carriedMaterial,carriedPacket);
+					carriedMaterial=UNIT_CARRIED_RESOURCE_NONE;
 					carriedPacket={};
 				}
 
@@ -187,7 +188,7 @@ void Unit::handleDisplacement(void)
 						///The location may be a market, or the harvesting the resource from the
 						///map.
 						int needs[MAX_NB_RESOURCES];
-						attachedBuilding->computeWishedResources(needs);
+						attachedBuilding->computeWishedMaterials(needs);
 						int teamNumber=owner->teamNumber;
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
@@ -196,14 +197,14 @@ void Unit::handleDisplacement(void)
 							int minValue=owner->map->getW()+owner->map->getW();
 
 							Map* map=owner->map;
-							for (int r=0; r<MAX_RESOURCES; ++r)
+							for (int r=0; r<MaterialCount; ++r)
 							{
 								const int need=needs[r];
 								if (need<=0) continue;
 								int distance;
 								bool available=map->roundTripDistance(attachedBuilding,r,swimClass(),posX,posY,&distance);
 								if (available) distance=(distance+1)/2;
-								else available=map->resourceAvailable(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								else available=map->materialAvailable(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
@@ -218,14 +219,14 @@ void Unit::handleDisplacement(void)
 								assert(activity==ACT_FILLING);
 								{
 									int dummyDist;
-									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
+									if (auto off = owner->map->doesUnitTouchMaterialSource(this, static_cast<MaterialId>(destinationPurpose)))
 									{
 										dx = off->dx;
 										dy = off->dy;
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
+									else if (map->materialAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
@@ -240,7 +241,7 @@ void Unit::handleDisplacement(void)
 							else
 							{
 								if (verbose)
-									printf("guid=(%d) can't find any wished resource, unsubscribing.\n", gid);
+									printf("guid=(%d) can't find any requested material, unsubscribing.\n", gid);
 								stopAttachedForBuilding(false);
 							}
 						}
@@ -438,7 +439,7 @@ void Unit::handleDisplacement(void)
 							int x=posX+tdx;
 							int y=posY+tdy;
 							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2
-								&& map->isResourceTakeable(x, y, attachedBuilding->clearingResources))
+								&& map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterials))
 							{
 								dx=tdx;
 								dy=tdy;

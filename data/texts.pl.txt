@@ -5564,3 +5564,43 @@ Robotnicy mogą pobierać zapasy ze wspólnego magazynu rynków. Rynki można ul
 Importuj definicje terenu
 [Terrain palette]
 Paleta terenów
+[Food]
+Food
+[Paper]
+Paper
+[Cherries]
+Cherries
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Gold
+[Metal]
+Metal
+[Glass]
+Glass
+[Fabric]
+Fabric
+[Import Resource Definitions]
+Import Resource Definitions
+[Resource palette]
+Resource palette
+[Trees]
+Trees
+[Rocks]
+Rocks
+[Cherry tree]
+Cherry tree
+[Orange tree]
+Orange tree
+[Prune tree]
+Prune tree
+[Gold ore]
+Gold ore
+[Iron ore]
+Iron ore
+[Sand]
+Sand
+[Cotton]
+Cotton

@@ -1817,3 +1817,22 @@ routing workload reports cold, warm and depletion passes below, at and above the
 cache budget, including retained cell bytes. These custom-catalog measurements
 complement the unchanged-source stock comparison; they have no historical
 baseline equivalent.
+
+### Runtime resource stress components
+
+`ResourceRuntimeBenchmark` is opt-in (`--tag benchmark --filter
+'ResourceRuntimeBenchmark/*'`). It holds map geometry fixed at 256² and 512² with
+eight teams, comparing one resource definition against 512 equivalent definitions
+and a 512-definition variant whose deposits yield three materials. Sparse material
+coverage must allocate fields only for materials present; equivalent definitions
+must preserve the query/field digest. No building recipes are changed.
+
+The `GLOB2_RESOURCE_STRESS` JSON rows separate definition installation, placement,
+field requests, source scans, mutations and seed refresh. They include allocated
+material fields, shared absent fields, preparation and consumer cache bytes, and
+stock index/sidecar/free-list capacities. Set `GLOB2_RESOURCE_STRESS_OUTPUT` to an
+ignored artifact directory to save `report.json` and six binary games with eight
+small colonies for additional CLI continuation. Colony creation and serialization
+occur after the measured phases. This is a bounded component benchmark, not a
+statistical gameplay comparison or proof of no regression against the old engine.
+Run it on an otherwise idle host, separately from builds and tournaments.

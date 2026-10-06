@@ -16,6 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "GameDiagnostics.h"
 #include "AITelemetryFields.h"
@@ -250,7 +251,7 @@ namespace
 				const bool clear=map->isMapDiscovered(x, y, player->team->me)
 					&& !(tile.forbidden&player->team->me)
 					&& tile.building==NOGBID
-					&& tile.resource.type==NO_RES_TYPE;
+					&& !map->resourceBlocksGround(index);
 				swimming[index]=clear && (map->terrainPropertiesAt(index).walkable || map->terrainPropertiesAt(index).swimmable);
 				walking[index]=clear && map->terrainPropertiesAt(index).walkable;
 			}
@@ -274,11 +275,10 @@ namespace
 				if(!localTiles[index]
 				   || !map->isMapDiscovered(x, y, player->team->me)
 				   || tile.resource.amount<=0
-				   || (tile.resource.type!=ALGA && tile.resource.type!=WHEAT
-					   && tile.resource.type!=WOOD && tile.resource.type!=STONE))
+)
 					continue;
-				if(tile.resource.type==ALGA)
-					result.knownAlgaeUnits+=tile.resource.amount;
+				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)))
+					result.knownAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
 				if(tile.forbidden&player->team->me)
 					continue;
 				bool walkingReach=false;
@@ -294,22 +294,17 @@ namespace
 							swimmingReach=swimmingReach
 								|| swimmingDistance[neighbor]!=PREEMPTIVE_UNREACHABLE;
 						}
-				if(tile.resource.type==ALGA && walkingReach)
-					result.walkingAlgaeUnits+=tile.resource.amount;
-				if(tile.resource.type==ALGA && swimmingReach)
-					result.swimmingAlgaeUnits+=tile.resource.amount;
+				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)) && walkingReach)
+					result.walkingAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
+				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)) && swimmingReach)
+					result.swimmingAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
 				if(walkingReach || swimmingReach)
 				{
-					switch(tile.resource.type)
-					{
-						case WHEAT: ++result.accessibleCornTiles; break;
-						case WOOD: ++result.accessibleWoodTiles; break;
-						case STONE: ++result.accessibleStoneTiles; break;
-						case ALGA:
-							++result.accessibleAlgaeTiles;
-							result.accessibleAlgaeUnits+=tile.resource.amount;
-							break;
-					}
+                    result.accessibleCornTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food));
+                    result.accessibleWoodTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Wood));
+                    result.accessibleStoneTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Stone));
+                    result.accessibleAlgaeTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae));
+                    result.accessibleAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
 				}
 			}
 		return result;
@@ -715,7 +710,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		if(!building->type->isBuildingSite
 		   && AIMaximaBuildings::serves(*context.player->game,*building->type,AIMaximaBuildings::ProjectileDefense))
 		{
-			state.tower_stone+=building->resources[STONE];
+			state.tower_stone+=building->materials[materialIndex(MaterialId::Stone)];
 			state.tower_bullets+=building->bullets;
 		}
 	}
@@ -790,13 +785,13 @@ void Maxima::initialize_topology_profile(Context& runtime)
 			land+=map.is_walkable(x,y) ? 1 : 0;
 			grass+=map.is_crop_habitat(x, y) ? 1 : 0;
 			buildable+=map.is_grass(x, y) && !resource ? 1 : 0;
-			corn+=map.is_resource(x, y, WHEAT) ? 1 : 0;
-			wood+=map.is_resource(x, y, WOOD) ? 1 : 0;
-			stone+=map.is_resource(x, y, STONE) ? 1 : 0;
-			algae+=map.is_resource(x, y, ALGA) ? 1 : 0;
-			fruit+=map.is_resource(x, y, CHERRY)
-				|| map.is_resource(x, y, ORANGE)
-				|| map.is_resource(x, y, PRUNE) ? 1 : 0;
+			corn+=map.is_resource(x, y, materialIndex(MaterialId::Food)) ? 1 : 0;
+			wood+=map.is_resource(x, y, materialIndex(MaterialId::Wood)) ? 1 : 0;
+			stone+=map.is_resource(x, y, materialIndex(MaterialId::Stone)) ? 1 : 0;
+			algae+=map.is_resource(x, y, materialIndex(MaterialId::Algae)) ? 1 : 0;
+			fruit+=map.is_resource(x, y, materialIndex(MaterialId::Cherries))
+				|| map.is_resource(x, y, materialIndex(MaterialId::Oranges))
+				|| map.is_resource(x, y, materialIndex(MaterialId::Prunes)) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water((x+1)%width, y) ? 1 : 0;
 			shoreline_edges+=here!=map.is_water(x, (y+1)%height) ? 1 : 0;
 			if(map.is_walkable(x,y))
@@ -880,12 +875,12 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				continue;
 			component_buildable[label]+=map.is_grass(x, y)
 				&& !map.is_resource(x, y) ? 1 : 0;
-			component_corn[label]+=map.is_resource(x, y, WHEAT) ? 1 : 0;
-			component_wood[label]+=map.is_resource(x, y, WOOD) ? 1 : 0;
-			component_stone[label]+=map.is_resource(x, y, STONE) ? 1 : 0;
-			component_fruit[label]+=map.is_resource(x, y, CHERRY)
-				|| map.is_resource(x, y, ORANGE)
-				|| map.is_resource(x, y, PRUNE) ? 1 : 0;
+			component_corn[label]+=map.is_resource(x, y, materialIndex(MaterialId::Food)) ? 1 : 0;
+			component_wood[label]+=map.is_resource(x, y, materialIndex(MaterialId::Wood)) ? 1 : 0;
+			component_stone[label]+=map.is_resource(x, y, materialIndex(MaterialId::Stone)) ? 1 : 0;
+			component_fruit[label]+=map.is_resource(x, y, materialIndex(MaterialId::Cherries))
+				|| map.is_resource(x, y, materialIndex(MaterialId::Oranges))
+				|| map.is_resource(x, y, materialIndex(MaterialId::Prunes)) ? 1 : 0;
 		}
 	int start_label=largest_label;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
@@ -1500,19 +1495,19 @@ void Maxima::update_reconnaissance(Context& runtime)
 				reconnaissance.observeEconomicActivity(*team,
 					unit->posX, unit->posY);
 				int economic_value=strategy.raiding.other_resource_value;
-				if(unit->carriedResource==WHEAT)
+				if(unit->carriedMaterial==materialIndex(MaterialId::Food))
 					economic_value=strategy.raiding.food_resource_value;
-				else if(unit->carriedResource==WOOD
-				   || unit->carriedResource==STONE
-				   || unit->carriedResource==ALGA)
+				else if(unit->carriedMaterial==materialIndex(MaterialId::Wood)
+				   || unit->carriedMaterial==materialIndex(MaterialId::Stone)
+				   || unit->carriedMaterial==materialIndex(MaterialId::Algae))
 					economic_value=strategy.raiding.material_resource_value;
-				else if(unit->carriedResource>=HAPPINESS_BASE
-				   && unit->carriedResource<MAX_RESOURCES)
+				else if(unit->carriedMaterial>=HAPPINESS_BASE
+				   && unit->carriedMaterial<MAX_RESOURCES)
 					economic_value=strategy.raiding.fruit_resource_value;
 				tactics.observeWorker(Tactics::WorkerSighting(unit->gid, *team,
 					unit->posX, unit->posY, timer,
 					unit->displacement==Unit::DIS_HARVESTING,
-					unit->carriedResource>=0, economic_value));
+					unit->carriedMaterial>=0, economic_value));
 			}
 			if(warrior)
 				tactics.observeThreat(Tactics::ThreatSighting(unit->gid, *team,
@@ -1648,7 +1643,7 @@ void Maxima::update_opponent_models(Context& runtime)
     home_info.terrainTravel=snapshot.swimming_warriors<6?field::TerrainTravel::Walk:field::TerrainTravel::Swim;
 	home_info.add_source(new Entities::AnyTeamBuilding(
 		runtime.player->team->teamNumber, CompletedBuildings));
-	home_info.add_obstacle(new Entities::AnyResource);
+	home_info.add_obstacle(new Entities::ResourceGroundObstacle);
 	if(snapshot.swimming_warriors<6)
 		home_info.add_obstacle(new Entities::Unwalkable);
 	Gradient& home=runtime.get_gradient_manager().get_gradient(home_info);
@@ -2010,13 +2005,12 @@ void Maxima::plan_reconnaissance_objectives(Context& runtime)
 							EconomicWatchSite site;
 							site.x=x;
 							site.y=y;
-							const int resource=map->getResource(x, y).type;
-							site.score=(resource==CHERRY || resource==ORANGE
-								|| resource==PRUNE)
+							const MaterialMask sources=map->materialMaskAt(index);
+                            site.score=(sources & (((1u<<HAPPINESS_COUNT)-1)<<HAPPINESS_BASE))
 								? strategy.raiding.fruit_resource_value
-								: (resource==WHEAT
+								: ((sources&(1u<<materialIndex(MaterialId::Food)))
 									? strategy.raiding.food_resource_value
-									: ((resource==WOOD || resource==STONE)
+									: ((sources&((1u<<materialIndex(MaterialId::Wood))|(1u<<materialIndex(MaterialId::Stone))))
 										? strategy.raiding.material_resource_value
 										: strategy.raiding.other_resource_value));
 							site.distance=distance;
@@ -3026,7 +3020,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 		// Once provisioned, remember startup so a later pause cannot block expansion.
 		if(building && !operating_colonies.count(action.id))
 		{
-			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=building->resources[r]>=recipe.cost[r];ready|=stocked;}
+			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=building->materials[r]>=recipe.cost[r];ready|=stocked;}
 			if(ready)
 			{
 				operating_colonies.insert(action.id);
@@ -3073,8 +3067,8 @@ void Maxima::finalize_director_plan(Context& runtime)
 	if(budget.fruit_active)
 	{
 		int missions=0;
-		for(int fruit=CHERRY;fruit<=PRUNE;++fruit)
-			missions+=runtime.resource_flags(fruit).size();
+		for(int fruit=materialIndex(MaterialId::Cherries);fruit<=materialIndex(MaterialId::Prunes);++fruit)
+			missions+=runtime.material_source_flags(fruit).size();
 		budget.desired_explorers+=missions*strategy.fruit.units_per_flag;
 	}
 	budget.fruit_units_per_flag=strategy.fruit.units_per_flag;
@@ -4053,7 +4047,7 @@ Maxima::collect_building_profiles() const
    v.repairable=complete->semantics.repairable;v.available=placement->runtimeAvailable&&complete->runtimeAvailable;
    const int left=std::min(complete->decLeft,placement->decLeft),top=std::min(complete->decTop,placement->decTop);
    v.footprint=Footprint(left,top,std::max(complete->decLeft+complete->width,placement->decLeft+placement->width)-left,std::max(complete->decTop+complete->height,placement->decTop+placement->height)-top);
-   if(placement->isBuildingSite)for(int r=0;r<8;++r)v.constructionResources[r]=placement->semantics.constructionCost[r];
+   if(placement->isBuildingSite)for(int r=0;r<MaterialCount;++r)v.constructionResources[r]=placement->semantics.constructionCost[r];
    const auto& semantic=complete->semantics;
    v.foodRetirable=std::none_of(semantic.training.begin(),semantic.training.end(),[](const auto& t){return t.enabled;})
        && !(complete->shootingRange>0 && complete->shootRhythm>0
@@ -4064,9 +4058,9 @@ Maxima::collect_building_profiles() const
    for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled &&
        !(unit==WARRIOR && game.gameHeader.isPeacefulModeEnabled())) {
        v.productionRecipes.ticks[unit]=semantic.production.recipes[unit].duration+1;
-       std::copy_n(semantic.production.recipes[unit].cost.begin(),8,v.productionRecipes.costs[unit]);
+       std::copy_n(semantic.production.recipes[unit].cost.begin(),MaterialCount,v.productionRecipes.costs[unit]);
    }
-   std::copy_n(complete->multiplierResource,8,v.productionRecipes.packetSize);
+   std::copy_n(complete->materialMultiplier,MaterialCount,v.productionRecipes.packetSize);
    const auto& operation=operations[completeID];
    std::copy(operation.resourcePackets.begin(),operation.resourcePackets.end(),v.operatingResources);
    v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
@@ -4076,12 +4070,12 @@ Maxima::collect_building_profiles() const
    const auto production=AIMaxima::productionPacketCeiling(v.productionRecipes,nominalRatios);
    std::copy(production.begin(),production.end(),v.productionResources);
    std::copy(operation.independentResourcePackets.begin(),operation.independentResourcePackets.end(),v.independentResources);
-   for(int r=0;r<8;++r)v.operatingResources[r]=int(std::min<long long>(INT_MAX,
+   for(int r=0;r<MaterialCount;++r)v.operatingResources[r]=int(std::min<long long>(INT_MAX,
        static_cast<long long>(v.independentResources[r])+v.feedingResources[r]+v.productionResources[r]));
-   const int otherWheat=v.independentResources[WHEAT];
-   v.feedingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.feedingResources[WHEAT])*strategy.food.inn_demand_percent/100));
-   v.productionResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionResources[WHEAT])*strategy.food.swarm_demand_percent/100));
-   v.operatingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingResources[WHEAT]+v.productionResources[WHEAT]));
+   const int otherWheat=v.independentResources[materialIndex(MaterialId::Food)];
+   v.feedingResources[materialIndex(MaterialId::Food)]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.feedingResources[materialIndex(MaterialId::Food)])*strategy.food.inn_demand_percent/100));
+   v.productionResources[materialIndex(MaterialId::Food)]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionResources[materialIndex(MaterialId::Food)])*strategy.food.swarm_demand_percent/100));
+   v.operatingResources[materialIndex(MaterialId::Food)]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingResources[materialIndex(MaterialId::Food)]+v.productionResources[materialIndex(MaterialId::Food)]));
    if(position==1 && v.available && semantic.feeding.enabled && complete->maxUnitInside>0)
        for(int unit=0;unit<3;++unit)if(v.feedingMask&(1u<<unit))
            development_feeding_pause[unit]=std::min(development_feeding_pause[unit],serviceTicks(*complete,semantic.feeding.duration));
@@ -4292,7 +4286,7 @@ void Maxima::configure_development_planner()
 	// constant: a swarm's wheat per produced unit, and an inn's modelled
 	// population times the rate at which a fed unit eats.
 	const auto* swarmProfile=profile_variant(preferred_profile(AIMaximaBuildings::Production));
-	policy.foodSwarmDemand=swarmProfile?swarmProfile->productionResources[WHEAT]:0;
+	policy.foodSwarmDemand=swarmProfile?swarmProfile->productionResources[materialIndex(MaterialId::Food)]:0;
     // Historical tier arrays remain serialized by old formats only. Live
     // demand is the same per-variant operating plan used for feeding capacity.
     std::fill(std::begin(policy.foodInnDemand),std::end(policy.foodInnDemand),0);
@@ -4315,10 +4309,10 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		if(worker && worker->typeNum==WORKER && worker->performance[SWIM]>0)
 			++world.swimmingBuilders;
 	}
-	world.accessibleSupplies[WOOD]=environment.accessible_wood;
-	world.accessibleSupplies[WHEAT]=environment.accessible_corn;
-	world.accessibleSupplies[STONE]=environment.accessible_stone;
-	world.accessibleSupplies[ALGA]=accessible_algae_units;
+	world.accessibleSupplies[materialIndex(MaterialId::Wood)]=environment.accessible_wood;
+	world.accessibleSupplies[materialIndex(MaterialId::Food)]=environment.accessible_corn;
+	world.accessibleSupplies[materialIndex(MaterialId::Stone)]=environment.accessible_stone;
+	world.accessibleSupplies[materialIndex(MaterialId::Algae)]=accessible_algae_units;
 	world.profiles=collect_building_profiles();
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
@@ -4342,32 +4336,38 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			&&Building::GIDtoTeam(cell.building)==runtime.player->team->teamNumber;
 		if(cell.resource.type!=NO_RES_TYPE)
 		{
-			tile.resourceType=cell.resource.type;tile.resourceAmount=cell.resource.amount;
-			tile.permanentResource=globalContainer->resourcesTypes.get(
-				cell.resource.type)->eternal;
-			tile.clearableResource=!tile.permanentResource;
+			const auto& properties=map->resourceProperties(cell.resource.type);
+            tile.materialSources=map->materialMaskAt(index);
+            if(tile.discovered) for(unsigned material=8;material<MaterialCount;++material)
+                if(tile.materialSources&(1u<<material)) ++world.accessibleSupplies[material];
+            tile.resourceType=tile.materialSources & materialBit(MaterialId::Food) ? int(materialIndex(MaterialId::Food)) : int(materialIndex(properties.primaryMaterial));
+            tile.resourceAmount=map->materialAmountAt(index,tile.resourceType);
+            tile.permanentResource=!properties.clearable && properties.blocksBuilding;
+            tile.clearableResource=properties.clearable && properties.blocksBuilding;
+            tile.resourceBlocksGround=properties.blocksGround;
 		}
 		const Uint32 flags=(tile.discovered?1u:0u)|(tile.buildable?2u:0u)
 			|(tile.swimmable?4u:0u)|(tile.growthInhibiting?8u:0u)
 			|(tile.permanentResource?16u:0u)
 			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u)
-			|(tile.walkable?512u:0u)|(tile.fertilitySource?1024u:0u);
+			|(tile.walkable?512u:0u)|(tile.fertilitySource?1024u:0u)|(tile.resourceBlocksGround?2048u:0u);
 		add_preemptive_hash(worldSignature,flags);
-		add_preemptive_hash(worldSignature,Uint32(tile.resourceType+1));
+		add_preemptive_hash(worldSignature,Uint32(tile.resourceType+1)); add_preemptive_hash(worldSignature,tile.materialSources);
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
 		// keep live amounts for scoring without invalidating topology caches.
-		tile.fertility=Uint32(effectiveWheatRegrowth(map,cachedFertility?fertilityValues[index]:cell.fertility));
+		tile.fertility=Uint32(std::min<long long>(std::numeric_limits<Uint32>::max(),effectiveWheatRegrowth(map,
+            cell.resource.type!=NO_RES_TYPE ? AIResourceSources::renewableRate(*map,index,tile.resourceType)
+            : cachedFertility?fertilityValues[index]:cell.fertility)));
 		int expansionNeighbors=0;
-		if((tile.resourceType==WHEAT||tile.resourceType==WOOD)&&tile.resourceAmount>0)
+		if((tile.resourceType==materialIndex(MaterialId::Food)||tile.resourceType==materialIndex(MaterialId::Wood))&&tile.resourceAmount>0)
 		{
 			expansionNeighbors=available_expansion_neighbors(runtime,x,y);
-			tile.farmCapacity=Farming::usefulExpansionCapacity(tile.fertility,
-				tile.resourceAmount,expansionNeighbors,
-				tile.resourceType==WHEAT);
+			tile.farmCapacity=Uint32(std::min<std::uint64_t>(std::numeric_limits<Uint32>::max(),
+                map->materialExpansionRateAt(index,tile.resourceType)*expansionNeighbors/24));
 		}
 		if(tile.discovered && !tile.occupied
-		   && tile.resourceType==WHEAT && tile.resourceAmount>0)
+		   && tile.resourceType==materialIndex(MaterialId::Food) && tile.resourceAmount>0)
 		{
 			// A stack is an opportunity even where nothing regrows: a colony
 			// seeded beside it lives by mining it (Locust).
@@ -4385,7 +4385,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// but can be harvested to nothing, so it is a stock with a yield rather
 		// than a kept farm. Without it a rich map's abundance never turns into
 		// buildings, and the colony is sized to its farms instead of its land.
-		if(strategy.food.enabled && tile.resourceType==WHEAT
+		if(strategy.food.enabled && tile.resourceType==materialIndex(MaterialId::Food)
 		   && tile.resourceAmount>0 && tile.discovered)
 		{
 			const bool farm=index<int(wheat_farm_protection_mask.size())
@@ -4661,7 +4661,7 @@ Maxima::collect_development_intents(
 		DevelopmentIntent colony;
 		colony.buildingType=preferred_profile(AIMaximaBuildings::Production);
 		colony.purpose=ColonySeed;
-		colony.requiredResourceType=WHEAT;
+		colony.requiredResourceType=materialIndex(MaterialId::Food);
 		colony.unmetCount=1;
 		colony.workers=strategy.staffing.construction_swarm_workers;
 		// Colony priority comes from new food / establishment cost in placement.
@@ -5201,7 +5201,7 @@ void Maxima::update_food_retirement(Context& runtime,
 	// A plain total would add up remnants no single building can ever reach.
 	const long long margin=std::max(1,policy.foodMarginPercent);
     const auto* feeding=profile_variant(preferred_profile(AIMaximaBuildings::Feeding));
-    const long long inn_cost=feeding?static_cast<long long>(feeding->operatingResources[WHEAT])*margin/100:0;
+    const long long inn_cost=feeding?static_cast<long long>(feeding->operatingResources[materialIndex(MaterialId::Food)])*margin/100:0;
 	const long long swarm_cost=static_cast<long long>(policy.foodSwarmDemand)*margin/100;
     if(inn_cost==0 && feeding && feeding_capacity(feeding->engineType,1)>0) {
         supported_inns=Building::MAX_COUNT; // Wheat cannot constrain a wheat-free service.
@@ -5789,8 +5789,8 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 	// staffing, regardless of which combination of services consumes it.
 	int stock=1,capacity=1;bool selected=false;
 	const auto* profile=profile_variant(AIMaximaBuildings::lineageRoot(*runtime.player->game,building->typeNum),AIMaximaBuildings::lineagePosition(*runtime.player->game,building->typeNum));
-	if(profile)for(int r=0;r<8;++r)if(profile->operatingResources[r]>0&&building->type->maxResource[r]>0){
-	 if(!selected||static_cast<long long>(building->resources[r])*capacity<static_cast<long long>(stock)*building->type->maxResource[r]){stock=building->resources[r];capacity=building->type->maxResource[r];selected=true;}
+	if(profile)for(int r=0;r<MaterialCount;++r)if(profile->operatingResources[r]>0&&building->type->maxMaterial[r]>0){
+	 if(!selected||static_cast<long long>(building->materials[r])*capacity<static_cast<long long>(stock)*building->type->maxMaterial[r]){stock=building->materials[r];capacity=building->type->maxMaterial[r];selected=true;}
 	}
 	if(!selected){state.request=0;return 0;}
 	const int request=StaffingControl::update(state, policy,stock,capacity,
@@ -5800,8 +5800,8 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 		std::ostringstream fields;
 		fields<<"\tbuilding_id="<<id<<"\tworkers="<<request
 			<<"\tprevious="<<previous
-			<<"\tcorn="<<building->resources[WHEAT]
-			<<"\tcapacity="<<building->type->maxResource[WHEAT]
+			<<"\tcorn="<<building->materials[materialIndex(MaterialId::Food)]
+			<<"\tcapacity="<<building->type->maxMaterial[materialIndex(MaterialId::Food)]
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
 		emit_telemetry(runtime,"staffing_control",fields.str());
@@ -5884,16 +5884,15 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 	{
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
 		const ::Tile& cell=map->getTile(x,y);
-		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
+		tile.passable=cell.building==NOGBID && !map->resourceBlocksGround(map->coordToIndex(x,y))
 			&& !(cell.forbidden&runtime.player->team->me)
 			&& (map->terrainPropertiesAt(x,y).walkable || (budget.can_swim && map->terrainPropertiesAt(x,y).swimmable));
 		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,runtime.player->team->allies);
-		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
-		   && map->isMapDiscovered(x,y,runtime.player->team->allies))
-			tile.variety=cell.resource.type-CHERRY;
+        if(map->isMapDiscovered(x,y,runtime.player->team->allies))
+            tile.varieties=(map->materialMaskAt(map->coordToIndex(x,y))>>HAPPINESS_BASE)&((1u<<HAPPINESS_COUNT)-1);
 	}
 	bool knownFruit=false;
-	for(const auto& tile:field.tiles)knownFruit=knownFruit || tile.variety>=0;
+	for(const auto& tile:field.tiles)knownFruit=knownFruit || tile.mask()!=0;
 	if(!knownFruit)return AIMaximaFruit::Field();
 	// Completed friendly buildings provide persistent vision using the same
 	// rectangular footprint as Building::setMapDiscovered.
@@ -5932,7 +5931,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 		for(int v=0;v<3;++v)
 		{
 			if(!(assessment.available&(1u<<v)))continue;
-			supply=supply || inn->resources[CHERRY+v]>0;
+			supply=supply || inn->materials[materialIndex(MaterialId::Cherries)+v]>0;
 			if(!(assessment.covered&(1u<<v)) && assessment.varietyCount>varieties[v])
 			{
 				selected[v]=assessment.source[v];
@@ -5942,7 +5941,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 	}
 	for(int v=0;v<3;++v)
 	{
-		auto flags=runtime.resource_flags(CHERRY+v);
+		auto flags=runtime.material_source_flags(materialIndex(MaterialId::Cherries)+v);
 		flags.erase(std::remove_if(flags.begin(),flags.end(),
 			[&](int id){return other_flags.count(id)!=0;}),flags.end());
 		const int source=budget.fruit_active?selected[v]:-1;
@@ -5964,7 +5963,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 				runtime.add_management_order(new ChangeFlagPosition(x,y,flags[0]));
 			continue;
 		}
-		GradientInfo resource;resource.add_source(new Entities::Resource(CHERRY+v));
+		GradientInfo resource;resource.add_source(new Entities::MaterialSource(materialIndex(MaterialId::Cherries)+v));
 		BuildingOrder* order=new BuildingOrder(AIMaximaBuildings::ExploreAttraction,
 			budget.fruit_units_per_flag);
 		order->add_constraint(new SinglePosition(x,y));

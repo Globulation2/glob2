@@ -15,7 +15,7 @@
         "hpMax": 700,
         "hueImage": 1,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           0,
           35,
           0,
@@ -41,7 +41,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -73,17 +73,17 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
-            "wheat"
+          "suppliesStockMaterials": [
+            "food"
           ],
-          "suppliesDirectStockResources": [
-            "wheat"
+          "suppliesDirectStockMaterials": [
+            "food"
           ],
-          "fetchesStockResources": [
-            "wheat"
+          "fetchesStockMaterials": [
+            "food"
           ],
-          "fetchesDirectStockResources": [
-            "wheat"
+          "fetchesDirectStockMaterials": [
+            "food"
           ]
         },
         "occupiesGround": true,
@@ -114,11 +114,11 @@
         "workPriorityBias": 1,
         "assignmentLimit": 20,
         "constructionCost": {
-          "wheat": 35
+          "food": 35
         },
         "repairCost": {},
-        "replenishResources": [
-          "wheat"
+        "replenishMaterials": [
+          "food"
         ]
       },
       "presentation": {
@@ -146,7 +146,7 @@
         "hpInit": 700,
         "hpMax": 700,
         "hueImage": 1,
-        "maxResource": [
+        "maxMaterial": [
           0,
           20,
           0,
@@ -174,7 +174,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -206,17 +206,17 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
-            "wheat"
+          "suppliesStockMaterials": [
+            "food"
           ],
-          "suppliesDirectStockResources": [
-            "wheat"
+          "suppliesDirectStockMaterials": [
+            "food"
           ],
-          "fetchesStockResources": [
-            "wheat"
+          "fetchesStockMaterials": [
+            "food"
           ],
-          "fetchesDirectStockResources": [
-            "wheat"
+          "fetchesDirectStockMaterials": [
+            "food"
           ]
         },
         "occupiesGround": true,
@@ -231,21 +231,21 @@
           "recipes": {
             "explorer": {
               "cost": {
-                "wheat": 5
+                "food": 5
               },
               "duration": 150,
               "enabled": true
             },
             "warrior": {
               "cost": {
-                "wheat": 5
+                "food": 5
               },
               "duration": 150,
               "enabled": true
             },
             "worker": {
               "cost": {
-                "wheat": 5
+                "food": 5
               },
               "duration": 150,
               "enabled": true
@@ -270,10 +270,10 @@
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {
-          "wheat": 35
+          "food": 35
         },
-        "replenishResources": [
-          "wheat"
+        "replenishMaterials": [
+          "food"
         ]
       },
       "presentation": {

@@ -58,7 +58,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	                              &globalContainer->buildingsTypes, 4, 4);
 	team->myBuildings[0] = site;
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
-	require(site->neededResource(WOOD) > 0, "the site still wants wood");
+	require(site->neededMaterial(WOOD) > 0, "the site still wants wood");
 
 	// One patch of wood, a walk away from a unit standing at the site.
 	const int woodX = siteX + 9, woodY = siteY;
@@ -77,7 +77,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.resourceAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
 
 	// The round-trip field only exists once somebody has fetched this resource
@@ -144,7 +144,7 @@ static void theFallbackScoresAWholeRoundTrip()
 	int distBuilding = 0, distResource = 0, unused = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.resourceAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
 	require(!game.map.roundTripDistance(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
 		"no round-trip field exists for a building nothing has fetched for");

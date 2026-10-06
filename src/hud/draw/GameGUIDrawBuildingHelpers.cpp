@@ -324,7 +324,7 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 	for (unsigned i=0; i<HAPPINESS_COUNT; i++)
 	{
 		rows.resource[i+HAPPINESS_BASE]=ypos;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1/%2)").arg(getResourceName(i+HAPPINESS_BASE)).arg(selBuild->resources[i+HAPPINESS_BASE]).arg(buildingType->maxResource[i+HAPPINESS_BASE]).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1/%2)").arg(getMaterialName(i+HAPPINESS_BASE)).arg(selBuild->materials[i+HAPPINESS_BASE]).arg(buildingType->maxMaterial[i+HAPPINESS_BASE]).c_str());
 
 		/*
 		// Exchange feature is broken/disabled. If revived, this should use
@@ -355,14 +355,14 @@ void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, Building
 		return;
 	// resources in. A market's fruit is drawn by drawBuildingExchange; its
 	// basic-resource stock, from level 2 on, is listed here like any store.
-	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
+	for (unsigned i=0; i<MaterialCount; i++)
 	{
-		if (buildingType->canExchange && i>=BASIC_COUNT)
+		if (buildingType->canExchange && i>=HAPPINESS_BASE && i<HAPPINESS_BASE+HAPPINESS_COUNT)
 			continue;
-		if (buildingType->maxResource[i])
+		if (buildingType->maxMaterial[i] && drawnScene().materialVisible(i))
 		{
 			rows.resource[i]=ypos;
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1/%2").arg(getResourceName(i)).arg(selBuild->resources[i]).arg(buildingType->maxResource[i]).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1/%2").arg(getMaterialName(i)).arg(selBuild->materials[i]).arg(buildingType->maxMaterial[i]).c_str());
 			ypos += YOFFSET_RESOURCE_LINE;
 		}
 	}
@@ -603,19 +603,18 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
-	// cleared resources for clearing flags: one checkbox row per clearable
-	// resource (stone is never cleared, so it has no row)
+	// Clearing flags select materials yielded by clearable resource definitions.
 	if (buildingType->zonable[WORKER])
 	{
 		ypos += YOFFSET_B_SEP;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont,
 			Toolkit::getStringTable()->getString("[Clearing:]"));
 		ypos += YOFFSET_TEXT_PARA;
-		for (int i=0; i<BASIC_COUNT; i++)
-			if (i!=STONE)
+		for (int i=0; i<MaterialCount; i++)
+			if (drawnScene().clearableMaterial(i))
 			{
 				globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+28, ypos, globalContainer->littleFont,
-					getResourceName(i));
+					getMaterialName(i));
 				int spriteId;
 				if (displayedClearingResource(*selBuild, i))
 					spriteId=20;
@@ -741,7 +740,8 @@ void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, Bui
         metric(-1,Toolkit::getStringTable()->getString("[damage]"),target->semantics.projectileDamage[0]);
     metric(rows.range,Toolkit::getStringTable()->getString("[range]"),damageRows ? target->shootingRange : 0);
     for (int resource=0;resource<MAX_RESOURCES;++resource)
-        metric(rows.resource[resource],getResourceName(resource),target->maxResource[resource]);
+        if (drawnScene().materialVisible(resource))
+            metric(rows.resource[resource],getMaterialName(resource),target->maxMaterial[resource]);
     metric(rows.bullets,Toolkit::getStringTable()->getString("[Bullets]"),target->maxBullets);
     beginAppendix();
     drawCosts(site->semantics.constructionCost.data(),globalContainer->littleFont,ypos);

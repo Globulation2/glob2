@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Material.h"
 #include <climits>
 #include <list>
 #include <memory>
@@ -11,7 +12,7 @@
 #include "BuildingUtils.h"
 #include "MapInternal.h"
 #include "Ressource.h"
-#include "ResourcePacket.h"
+#include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include "BuildingCatalog.h"
 
@@ -147,7 +148,7 @@ class Building : public BuildingUtils
 	void loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
-	bool isResourceFull(void);
+	bool isMaterialFull(void);
 	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
 	///configured multiplier. Use this instead of reading type->hpMax
 	///directly anywhere the result affects simulation or display.
@@ -158,23 +159,23 @@ class Building : public BuildingUtils
 	///Same rule, for type->hpInc: a site delivered in full must still reach
 	///the scaled hpInit, or every new building would finish badly damaged.
 	int getEffectiveHpInc(void) const;
-	int neededResource(void);
+	int neededMaterial(void);
 	/**
 	 * calls neededResource(int res) for all possible resources.
 	 * @param array of needs that will be filled by this function
 	 */
-	void neededResources(int needs[MAX_NB_RESOURCES]);
+	void neededMaterials(int needs[MAX_NB_RESOURCES]);
 	/**
 	 * @param res The resource type
 	 * @return count of resources needed of type res. In case of higher multiplicity
 	 * of the requested resource (fruits have 10) the value is reduced by (multiplicity-1)
 	 * and clipped to >= 0
 	 */
-	int neededResource(int res);
+	int neededMaterial(int res);
 	///Wished resources are any resources that are needed, and not being carried by a unit already.
 	///Fills `needs[]` with the result; pass `wishedResources` to refresh the cached member.
-	void computeWishedResources(int needs[MAX_NB_RESOURCES]);
-	int totalWishedResource();
+	void computeWishedMaterials(int needs[MAX_NB_RESOURCES]);
+	int totalWishedMaterial();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
 	///and the number of units that should be working after the construction is finished.
@@ -211,7 +212,7 @@ class Building : public BuildingUtils
 	void setMapDiscovered(void);
 
 	///Gets the amount of resources for each type of resource that are needed to repair the building.
-	void getResourceCountToRepair(int resources[MAX_RESOURCES]);
+	void getMaterialCountToRepair(int materials[MaterialCount]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
@@ -244,13 +245,13 @@ class Building : public BuildingUtils
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
 	// Reservations protect shared stock from other services and production.
-	BuildingResourceCost reservedResources{};
-	Sint32 availableResource(int resource) const;
-	bool reserveResources(const BuildingResourceCost& cost);
-	bool restoreResourcesReservation(const BuildingResourceCost& cost);
-	void releaseResources(const BuildingResourceCost& cost);
-	void consumeReservedResources(const BuildingResourceCost& cost, int diagnosticUse);
-	BuildingResourceCost serviceCost(const Unit* unit, int purpose) const;
+	BuildingMaterialCost reservedMaterials{};
+	Sint32 availableMaterial(int resource) const;
+	bool reserveMaterials(const BuildingMaterialCost& cost);
+	bool restoreMaterialsReservation(const BuildingMaterialCost& cost);
+	void releaseMaterials(const BuildingMaterialCost& cost);
+	void consumeReservedMaterials(const BuildingMaterialCost& cost, int diagnosticUse);
+	BuildingMaterialCost serviceCost(const Unit* unit, int purpose) const;
 	bool canOfferService(const Unit* unit, int purpose) const;
 	void reserveService(Unit* unit);
 	void releaseService(Unit* unit);
@@ -295,20 +296,20 @@ class Building : public BuildingUtils
 	void removeUnitFromInside(Unit* unit);
 
 	/// This function is called when a Unit places a resource into the building.
-	void addResourceIntoBuilding(int resourceType);
-	ResourceDeliveryResult deliverResourcePacket(int resourceType, ResourcePacket packet);
-	ResourcePacket withdrawResourcePacket(int resourceType);
+	void addMaterialIntoBuilding(int resourceType);
+	MaterialDeliveryResult deliverMaterialPacket(int resourceType, MaterialPacket packet);
+	MaterialPacket withdrawMaterialPacket(int resourceType);
 	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
 	int getConstructionCompletionTypeNum() const;
-	int constructionResourceNeed(int resource) const;
-	int resourceDeliveryNeed(int resource) const;
-	int resourceDeliveryTarget(int resource) const;
+	int constructionMaterialNeed(int resource) const;
+	int materialDeliveryNeed(int resource) const;
+	int materialDeliveryTarget(int resource) const;
 	void fundConstructionFromInventory();
 	void restoreConstructionReservations();
 	void releaseConstructionReservations();
-	bool canTransferResourcesTo(const BuildingType* destination) const;
-	void transferResourcesPointer(bool wasShared);
-	BuildingResourceCost constructionBudget{}, constructionReserved{};
+	bool canTransferMaterialsTo(const BuildingType* destination) const;
+	void transferMaterialsPointer(bool wasShared);
+	BuildingMaterialCost constructionBudget{}, constructionReserved{};
 	Sint32 constructionOriginTypeNum = -1;
 	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
 	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
@@ -317,7 +318,7 @@ class Building : public BuildingUtils
 	void cancelConstructionMaterials();
 
 	/// This function is called when a Unit takes a resource from a building, such as a market
-	void removeResourceFromBuilding(int resourceType);
+	void removeMaterialFromBuilding(int resourceType);
 
 	///Gets the middle x coordinate relative to posX
 	int getMidX(void);
@@ -560,7 +561,7 @@ private:
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
-	void updateResourcesPointer();
+	void updateMaterialsPointer();
 
 	/// checkstyle found this block of 26 lines being repeated 4 times.
 	void checkGroundExitQuality(
@@ -621,7 +622,7 @@ public:
 
 	// Flag useful :
 	Sint32 unitStayRange; // (Uint8)
-	bool clearingResources[BASIC_COUNT]; // true if the resource has to be cleared.
+	bool clearingMaterials[MaterialCount]; // true if the resource has to be cleared.
 	Sint32 minLevelToFlag;
 	Sint32 minWorkerLevelToFlag = 0;
 	bool explorersRequireBombing = false;
@@ -630,8 +631,8 @@ public:
 	/// Amount stocked, or used for building building. Local resources stores the resources this particular building contains
 	/// in the event that the building type designates using global resources instead of local resources, the resources pointer
 	/// will be changed to point to the global resources Team::teamResources instead of localResources.
-	Sint32* resources;
-	Sint32 wishedResources[MAX_NB_RESOURCES];
+	Sint32* materials;
+	Sint32 wishedMaterials[MAX_NB_RESOURCES];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -647,8 +648,8 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 
 	// exchange building parameters
-	Uint32 receiveResourceMask;
-	Uint32 sendResourceMask;
+	Uint32 receiveMaterialMask;
+	Uint32 sendMaterialMask;
 
 	// turrets building parameters
 	Sint32 bullets;
@@ -759,7 +760,7 @@ private:
 	Uint8 callListState;
 
 	// Building specific (private):
-	Sint32 localResource[MAX_NB_RESOURCES];
+	Sint32 localMaterials[MAX_NB_RESOURCES];
 
 	// swarm building parameters (private):
 	Sint32 totalRatio;

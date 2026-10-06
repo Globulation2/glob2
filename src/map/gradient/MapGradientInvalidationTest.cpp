@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <nlohmann/json.hpp>
 #include <algorithm>
 #include <iostream>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Map.h"
+#include "MapInternal.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
@@ -38,6 +40,33 @@ void player(Fixture& f){f.game.players[0]=new Player();f.game.players[0]->setTea
 
 TEST_SUITE("MapGradientInvalidation")
 {
+ TEST_CASE("forbidden painting refreshes routes across passable resources")
+ {
+  glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+  for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+   Fixture f(0); player(f); auto& map=f.game.map;
+   auto* building=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
+   REQUIRE(building);
+   using Json=nlohmann::json;
+   const auto cottonId=*map.resourceRegistry().find("cotton");
+   auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(cottonId)];
+   definition["key"]="test-passable-fabric";
+   definition["properties"]["blocksGround"]=false;
+   definition["properties"]["clearable"]=true;
+   map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+   const auto cotton=*map.resourceRegistry().find("test-passable-fabric");
+   map.setResource(20,20,cotton,1);
+   REQUIRE(!map.resourceBlocksGround(map.coordToIndex(20,20)));
+   map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
+   edit(f,20,20,true);
+   const auto* gradient=map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
+   REQUIRE(gradient[map.coordToIndex(20,20)]==GRADIENT_FORBIDDEN);
+   const std::vector<Uint16> actual(gradient,gradient+map.getW()*map.getH());
+   map.updateGlobalGradient(building,swim); map.finishBuildingGradient(building,swim);
+   REQUIRE(std::equal(actual.begin(),actual.end(),building->globalGradient[building->routeSlot(swim,BuildingRoute::Automatic)]));
+  }
+ }
+
 	TEST_CASE("forbidden edits invalidate exactly the affected fields and preserve the rest")
 	{
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
@@ -45,7 +74,7 @@ TEST_SUITE("MapGradientInvalidation")
 	 for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)for(int resource:{WHEAT,WOOD,NO_RES_TYPE})for(bool selected:{false,true})for(bool mixed:{false,true})for(bool add:{false,true}) {
 	  Fixture f(1);player(f);auto& m=f.game.map;int n=m.getW()*m.getH();std::vector<Building*> bs;
 	  for(int team=0;team<2;++team)for(const char* kind:{"inn","warflag","explorationflag","clearingflag"}){
-	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->clearingResources[WHEAT]=b->clearingResources[WOOD]=true;bs.push_back(b);
+	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->clearingMaterials[WHEAT]=b->clearingMaterials[WOOD]=true;bs.push_back(b);
 	  }
 	  if(resource!=NO_RES_TYPE)m.setResource(20,20,resource,1);
 	  m.setResource(25,24,WHEAT,1);m.addGuardArea(26,26,0);if(selected)m.addClearArea(20,20,0);

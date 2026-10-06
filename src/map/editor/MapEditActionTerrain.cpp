@@ -24,7 +24,7 @@ void MapEdit::beginZonePlacement(BrushType type)
 void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPlacementMode mode)
 {
     const bool isTerrain = TerrainSelector::isBaseTerrain(type);
-    const bool isResourceSelector = type >= TerrainSelector::Wheat && type <= TerrainSelector::PruneTree;
+    const bool isResourceSelector = TerrainSelector::isResource(type);
     // Reject stale/invalid selector IDs and incompatible modes before changing
     // the current selection. Normalize legacy aliases to retain corner alignment.
     if (mode == TerrainPlacementMode::BaseTerrain ? !isTerrain : !isResourceSelector) return;
@@ -36,6 +36,14 @@ void MapEdit::beginTerrainPlacement(TerrainSelector::TerrainType type, TerrainPl
 		if (const auto requirement=terrainExperiment(material);
             requirement && !globalContainer->settings.experiments.has(*requirement)) return;
         type = TerrainSelector::selectorFor(material);
+    }
+    else
+    {
+        const auto resource = TerrainSelector::resourceType(type, game.map.resourceRegistry());
+        if (!game.map.resourceRegistry().valid(resource)) return;
+        const auto& requirement = game.map.resourceRegistry().requiredExperiment(resource);
+        if (!requirement.empty() && !globalContainer->settings.experiments.has(requirement) &&
+            !game.gameHeader.getExperiments().has(requirement)) return;
     }
 	performAction("unselect");
 	terrainType=type;
@@ -55,6 +63,12 @@ void MapEdit::resetPlacementTracking()
 
 bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, float relMouseY)
 {
+    if (action.starts_with("select resource "))
+    {
+        const auto id = game.map.resourceRegistry().find(action.substr(16));
+        if (id) beginTerrainPlacement(TerrainSelector::selectorForResource(*id), TerrainPlacementMode::Resource);
+        return true;
+    }
     if (action.starts_with("select "))
     {
         for (unsigned id=0; id<game.map.terrainRegistry().size(); ++id)

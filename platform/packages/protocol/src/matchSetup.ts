@@ -217,6 +217,45 @@ export const BuildingCatalog = Strict({
 });
 export type BuildingCatalog = Static<typeof BuildingCatalog>;
 
+/** Resource catalog metadata. Embedded map definitions remain authoritative. */
+export const ResourceExperimentDefinition = Strict({
+  key: Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', minLength: 1, maxLength: 128 }),
+  label: Type.String({ minLength: 1, maxLength: 512 }),
+  help: Type.String({ minLength: 1, maxLength: 4096 }),
+});
+export type ResourceExperimentDefinition = Static<typeof ResourceExperimentDefinition>;
+export const ResourceExperimentDefinitions = Type.Array(ResourceExperimentDefinition, {
+  maxItems: 64,
+});
+export type ResourceExperimentDefinitions = Static<typeof ResourceExperimentDefinitions>;
+
+export function resourceExperimentKeys(definitions: ResourceExperimentDefinitions): string[] {
+  if (!Array.isArray(definitions) || definitions.length > 64)
+    throw new Error('invalid resource experiment declarations');
+  const keys = definitions.map((definition) => {
+    if (
+      !definition ||
+      typeof definition.key !== 'string' ||
+      !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(definition.key) ||
+      utf8ByteLength(definition.key) > 128 ||
+      typeof definition.label !== 'string' ||
+      !definition.label ||
+      utf8ByteLength(definition.label) > 512 ||
+      typeof definition.help !== 'string' ||
+      !definition.help ||
+      utf8ByteLength(definition.help) > 4096
+    )
+      throw new Error('invalid resource experiment metadata');
+    return definition.key;
+  });
+  if (
+    new Set(keys).size !== keys.length ||
+    new Set([...BUILTIN_EXPERIMENT_KEYS, ...keys]).size > 64
+  )
+    throw new Error('duplicate or excessive resource experiments');
+  return keys;
+}
+
 export const BUILTIN_EXPERIMENT_KEYS = [
   'guard-area-balancing',
   'farm-areas',
@@ -291,6 +330,7 @@ export const MatchSetup = Strict(
     }),
     pauseLimit: Type.Optional(PauseLimit),
     buildingCatalog: Type.Optional(BuildingCatalog),
+    resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
   },
   { description: 'Complete engine-independent description of a match.' },
 );
@@ -337,6 +377,15 @@ export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
       problems.push({ path: '/buildingCatalog/snapshot', message: String(error) });
     }
   }
+  if (setup.resourceExperiments) {
+    try {
+      for (const key of resourceExperimentKeys(setup.resourceExperiments)) known.add(key);
+    } catch (error) {
+      problems.push({ path: '/resourceExperiments', message: String(error) });
+    }
+  }
+  if (known.size > 64)
+    problems.push({ path: '/resourceExperiments', message: 'combined catalogs declare too many experiments' });
   setup.experiments.forEach((key, index) => {
     if (!known.has(key))
       problems.push({ path: `/experiments/${index}`, message: `unknown experiment "${key}"` });

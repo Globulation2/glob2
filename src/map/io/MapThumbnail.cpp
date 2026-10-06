@@ -2,6 +2,7 @@
 #include "TerrainPresentation.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "MapThumbnail.h"
+#include "ResourceRegistry.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "GUIBase.h"
@@ -186,13 +187,12 @@ void MapThumbnail::render(const Map &map, const MapHeader *header)
 										   ? palette[terrain]
 										   : map.terrainPresentation(terrain).preview;
 					int channels[3] = {color.r,color.g,color.b};
-					const int resources[] = {WOOD, WHEAT, STONE, ALGA};
-					for (int r = 0; r < 4; ++r)
-						if (map.isResourceTakeable(sx, sy, resources[r]))
-						{
-							std::copy_n(colors[r+3],3,channels);
-							break;
-						}
+					const auto& resource = map.getResource(sx, sy);
+					if (resource.type != NO_RES_TYPE)
+					{
+						const auto& resourceColor = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type)).minimap;
+						std::copy_n(resourceColor.begin(), 3, channels);
+					}
 					for (int c = 0; c < 3; ++c)
 						sums[c] += channels[c];
 					++count;

@@ -20,7 +20,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	orders.clear();
 	management_orders.clear();
 	building_orders.clear();
-	resource_trackers.clear();
+	material_trackers.clear();
 	starting_buildings.clear();
     retired_attractions.clear();
 	previous_building_id=-1;
@@ -103,9 +103,9 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	{
 		stream->readEnterSection(resourceTrackerIndex);
 		int id=stream->readUint32("echo_building_id");
-		std::shared_ptr<ResourceTracker> rt(new ResourceTracker(*this, stream, player, versionMinor));
+		std::shared_ptr<MaterialTracker> rt(new MaterialTracker(*this, stream, player, versionMinor));
 		bool activated=stream->readUint8("active");
-		resource_trackers[id]=std::make_tuple(rt, activated);
+		material_trackers[id]=std::make_tuple(rt, activated);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -262,9 +262,9 @@ void Runtime::save(GAGCore::OutputStream *stream)
 	signature_write(stream);
 
 	stream->writeEnterSection("ressource_trackers");
-	stream->writeUint32(resource_trackers.size(), "size");
+	stream->writeUint32(material_trackers.size(), "size");
 	Uint32 resourceTrackerIndex=0;
-	for(tracker_iterator i=resource_trackers.begin(); i!=resource_trackers.end(); ++resourceTrackerIndex, ++i)
+	for(tracker_iterator i=material_trackers.begin(); i!=material_trackers.end(); ++resourceTrackerIndex, ++i)
 	{
 		stream->writeEnterSection(resourceTrackerIndex);
 		stream->writeUint32(i->first, "echo_building_id");

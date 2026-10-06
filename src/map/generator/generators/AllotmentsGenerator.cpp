@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AllotmentsGenerator.h"
+#include "ResourceSemantics.h"
 #include "Contact.h"
 #include "Drawing.h"
 #include "Game.h"
@@ -582,7 +583,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	{
 		const int x = i % t.w, y = i / t.w;
 		return (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+			map.terrainSupportsResourceAt(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 	};
 	for (int i = 0; i < n; ++i)
 		if (L.plotOf[i] >= 0 && open(i))

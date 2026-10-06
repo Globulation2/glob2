@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "source": "datasrc/gfx/resources/gold-ore.png",
+      "output": "data/gfx/resource-gold-ore0.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game map resource sprite. Subject: A small cluster of muted violet-grey rocks with warm golden mineral veins, a gold ore deposit. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "0fbe1b770e6d29f8c6261c87b461efe1069c4bab5707106e48b67c4cb1dbf41e",
+      "canvas": 32,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/iron-ore.png",
+      "output": "data/gfx/resource-iron-ore0.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game map resource sprite. Subject: A small cluster of muted violet-grey rocks with rusty red iron mineral veins, an iron ore deposit. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "c5b341f5717e159357366f1162b383b56455354f2d510a044c8fff3f00697fb5",
+      "canvas": 32,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/sand-deposit.png",
+      "output": "data/gfx/resource-sand0.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game map resource sprite. Subject: A small pale beige mound of harvestable sand with a few loose grains. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "b2102ed1ef0ac0458050bb4e3aab7eb057ff615274536432e2c2f89147777025",
+      "canvas": 32,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/cotton.png",
+      "output": "data/gfx/resource-cotton0.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game map resource sprite. Subject: A compact living cotton plant with muted green leaves and distinct white cotton bolls. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "55a9c5a5222e27c33ef7e8d0a75fb397ca5d1e9eeb2173a9e1fdb0664c773672",
+      "canvas": 32,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/gold.png",
+      "output": "data/gfx/ressourcemini8.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game material inventory icon. Subject: Two small warm gold ingots. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "dc1f149ada6b10032471007c52bb1939105e2ab0ec158ae5b0381520da654402",
+      "canvas": 16,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/metal.png",
+      "output": "data/gfx/ressourcemini9.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game material inventory icon. Subject: Two small dark grey iron ingots. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "51ab624a43e3f558d35f8fd6a710db81e7591d35a1b72dbbd27559a43add4889",
+      "canvas": 16,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/glass.png",
+      "output": "data/gfx/ressourcemini10.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game material inventory icon. Subject: A small stack of pale blue translucent glass panes. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "11e3b51e4b2bcb0e4ed1c13fe78d4e5e6fabe4619eaf0603d49105646c9d31f7",
+      "canvas": 16,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    },
+    {
+      "source": "datasrc/gfx/resources/fabric.png",
+      "output": "data/gfx/ressourcemini11.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: Globulation 2 RTS game material inventory icon. Subject: A small roll of cream woven cotton fabric. Single isolated object centered, 3/4 overhead top-down RTS perspective, entirely transparent background. Match an early 2000s hand-painted 32px strategy-game sprite: simple readable silhouette, tiny soft highlights upper-left, subtle violet-grey shadows, restrained earthy palette, no outlines, no ground tile, no text or borders. It must remain readable downscaled to 32x32 and 16x16. Leave generous transparent margins. Generate only this one asset.",
+      "source_sha256": "c7437ea20cecc39c607179bcce1a57e32539f65fd5f7fab32e49dc12c1f144ac",
+      "canvas": 16,
+      "recipe": "FFmpeg scale to fit square with transparent centered padding; preserve RGBA alpha."
+    }
+  ]
+}

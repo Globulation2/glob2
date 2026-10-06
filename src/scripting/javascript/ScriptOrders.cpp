@@ -147,22 +147,20 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 	if (type == "moveFlag")
 		return std::make_shared<OrderMoveFlag>(gid, number("x", 0, game.map.getW() - 1),
 											   number("y", 0, game.map.getH() - 1), false);
-	if (type == "clearingResources")
+	if (type == "clearingResources" || type == "clearingMaterials")
 	{
 		if (!b->type->zonable[WORKER])
 			throw std::runtime_error("Building does not attract resource-clearing workers");
-		const auto &a = d.get("resources");
-		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT)
-			throw std::runtime_error("Clearing requires five booleans");
-		bool resources[BASIC_COUNT];
-		for (int i = 0; i < BASIC_COUNT; ++i)
+		const auto &a = d.get(type == "clearingMaterials" ? "materials" : "resources");
+		if (a.kind != Value::Array || a.items.size() != BASIC_COUNT && a.items.size() != MaterialCount)
+			throw std::runtime_error("Clearing requires twelve material booleans (or five legacy booleans)");
+		bool resources[MaterialCount]{};
+		for (unsigned i = 0; i < a.items.size(); ++i)
 		{
 			if (a.items[i].kind != Value::Boolean)
 				throw std::runtime_error("Clearing requires booleans");
 			resources[i] = a.items[i].number != 0;
 		}
-		if (resources[STONE])
-			throw std::runtime_error("Clearing flags cannot clear stone");
 		return std::make_shared<OrderModifyClearingFlag>(gid, resources);
 	}
 	throw std::runtime_error("Unsupported gameplay order");

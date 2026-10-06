@@ -251,7 +251,7 @@ GLuint createMaterial()
 #endif
 } // namespace
 
-void TorusView::releaseResources()
+void TorusView::releaseMaterials()
 {
 #ifdef GLOB2_TORUS_OPENGL
     if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
@@ -296,7 +296,7 @@ bool TorusView::prepareRenderTarget()
     if (graphicsContext != SDL_GL_GetCurrentContext() ||
         graphicsGeneration != globalContainer->gfx->getGLContextGeneration())
     {
-        releaseResources();
+        releaseMaterials();
         graphicsContext = SDL_GL_GetCurrentContext();
         graphicsGeneration = globalContainer->gfx->getGLContextGeneration();
         failed = false;

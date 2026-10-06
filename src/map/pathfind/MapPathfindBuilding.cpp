@@ -134,7 +134,7 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 		return false;
 	// It may be a few ticks older than the resource gradient the callers walk
 	// by; never report a resource that one says is gone.
-	if (!resourceAvailable(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
+	if (!materialAvailable(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
 		return false;
 	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
 	Uint16 g=gradient[coordToIndex(x, y)];

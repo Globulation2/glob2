@@ -401,7 +401,7 @@ TEST_CASE("operating supply tails retain positive demand and zero coverage for u
 
 TEST_CASE("operating fractions preserve positive rates beneath a saturated recipe ceiling" * doctest::test_suite("Maxima.FoodLedger"))
 {
-    std::array<int,8> independent{},production{},trips{};
+    std::array<int,MaterialCount> independent{},production{},trips{};
     production[1]=INT_MAX;trips.fill(1000);
     const auto result=AIMaxima::operatingClaimWithWheatWork(independent,production,1,trips,
         [](long long q){return q*1000;});

@@ -15,7 +15,7 @@
         "hpInit": 1,
         "hpMax": 440,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           7,
           0,
           0,
@@ -42,7 +42,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -74,16 +74,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood"
           ]
         },
@@ -118,7 +118,7 @@
           "wood": 7
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood"
         ]
       },
@@ -156,7 +156,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -188,10 +188,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -239,7 +239,7 @@
         "repairCost": {
           "wood": 7
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "barracks",
@@ -270,7 +270,7 @@
         "hpMax": 800,
         "isBuildingSite": 1,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           3,
           0,
           0,
@@ -297,7 +297,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -329,19 +329,19 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone"
           ]
@@ -378,7 +378,7 @@
           "stone": 10
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone"
         ]
@@ -418,7 +418,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -450,10 +450,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -502,7 +502,7 @@
           "wood": 3,
           "stone": 10
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "barracks",
@@ -533,7 +533,7 @@
         "hpMax": 1300,
         "isBuildingSite": 1,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           10,
           0,
           0,
@@ -560,7 +560,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -592,19 +592,19 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone"
           ]
@@ -641,7 +641,7 @@
           "stone": 10
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone"
         ]
@@ -681,7 +681,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -713,10 +713,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -765,7 +765,7 @@
           "wood": 10,
           "stone": 10
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "barracks",

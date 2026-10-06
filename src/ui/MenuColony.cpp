@@ -52,7 +52,7 @@ bool MenuColony::load(const std::string& path)
 		if (!(state >> loaded->syncRandom)) throw std::runtime_error("invalid colony RNG");
 		loaded->setWaitingOnMask(0);
 		// The map round-robin updater expects at least one lazy gradient.
-		loaded->map.getResourceGradient(0, WHEAT, 0);
+		loaded->map.getMaterialGradient(0, WHEAT, 0);
 		centerX = loaded->teams[0]->startPosX;
 		centerY = loaded->teams[0]->startPosY;
 

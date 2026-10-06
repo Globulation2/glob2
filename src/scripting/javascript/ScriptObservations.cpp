@@ -1,3 +1,4 @@
+#include <bit>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptObservations.h"
 #include "ScriptBuildingCapabilities.h"
@@ -81,7 +82,8 @@ Value Observations::unit(const Unit &u) const
 			.set("action", int(u.action))
 			.set("medical", int(u.medical))
 			.set("insideTimeout", u.insideTimeout)
-			.set("carriedResource", u.carriedResource)
+			.set("carriedMaterial", u.carriedMaterial)
+			.set("carriedResource", u.carriedMaterial)
 			.set("speed", u.speed)
 			.set("direction", u.direction)
 			.set("fruitMask", u.fruitMask)
@@ -125,16 +127,18 @@ Value Observations::building(const Building &b) const
 			.set("minimumLevel", b.minLevelToFlag)
 			.set("requireBombing", b.explorersRequireBombing)
 			.set("workerMinimumLevel", b.minWorkerLevelToFlag)
-			.set("resources", numbers(b.resources, MAX_NB_RESOURCES))
-			.set("wishedResources", numbers(b.wishedResources, MAX_NB_RESOURCES))
+			.set("materials", numbers(b.materials, MaterialCount))
+			.set("resources", numbers(b.materials, MAX_NB_RESOURCES))
+			.set("wishedMaterials", numbers(b.wishedMaterials, MaterialCount))
+			.set("wishedResources", numbers(b.wishedMaterials, MAX_NB_RESOURCES))
 			.set("production", numbers(b.ratio, NB_UNIT_TYPE))
 			.set("productionTimeout", b.productionTimeout)
-			.set("receiveMask", b.receiveResourceMask)
-			.set("sendMask", b.sendResourceMask)
+			.set("receiveMask", b.receiveMaterialMask)
+			.set("sendMask", b.sendMaterialMask)
 			.set("bullets", b.bullets);
 		Value a = Value::array();
 		for (int i = 0; i < BASIC_COUNT; ++i)
-			a.items.emplace_back(b.clearingResources[i]);
+			a.items.emplace_back(b.clearingMaterials[i]);
 		v.set("clearingResources", a);
 	}
 	return v;
@@ -172,6 +176,10 @@ void Observations::observe()
 				const auto &r = t.resource;
 				remember(unsigned(game.map.coordToIndex(x, y))) = {
 					game.stepCounter, t.terrain, t.fertility, game.map.terrainTypeAt(x,y), r.type, r.variety, r.amount, true};
+				const auto index = unsigned(game.map.coordToIndex(x,y));
+				if (r.type != NO_RES_TYPE && std::popcount(game.map.resourceProperties(r.type).materialMask) > 1)
+					rememberedStocks[index] = game.map.materialStocksAt(index);
+				else rememberedStocks.erase(index);
 			}
 	lastTick = game.stepCounter;
 }
@@ -203,6 +211,18 @@ Value Observations::tile(int x, int y) const
 							 .set("type", int(t.type))
 							 .set("variety", int(t.variety))
 							 .set("amount", int(t.amount)));
+	Value stock = Value::array();
+	const auto at = game.map.coordToIndex(x,y);
+	const auto rememberedStock = rememberedStocks.find(unsigned(at));
+	for (unsigned m=0; m<MaterialCount; ++m)
+	{
+		unsigned amount = 0;
+		if (current) amount = game.map.materialAmountAt(at,m);
+		else if (rememberedStock != rememberedStocks.end()) amount = rememberedStock->second[m];
+		else if (t.type != NO_RES_TYPE && materialIndex(game.map.resourceProperties(t.type).primaryMaterial)==m) amount=t.amount;
+		stock.items.emplace_back(amount);
+	}
+	v.set("materialStocks", stock);
 	if (team < 0 || profile == 2)
 		v.set("fertility", int(t.fertility));
 	if (current)
@@ -267,6 +287,47 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		}
 		return a;
 	}
+	if (name == "materialTypes")
+	{
+		Value result=Value::array(); charge(MaterialCount*2);
+		for (unsigned m=0; m<MaterialCount; ++m)
+			result.items.push_back(Value::object().set("id",m).set("key",std::string(MaterialKeys[m])));
+		return result;
+	}
+	if (name == "resourceTypes")
+	{
+		const auto& registry=game.map.resourceRegistry();
+		charge(registry.size()*48);
+		const auto snapshot = game.map.frozenResourceRegistry();
+		if (resourceDefinitionRegistry == snapshot) return resourceDefinitions;
+		Value result=Value::array();
+		for (unsigned id=0; id<registry.size(); ++id)
+		{
+			const auto resource=static_cast<ResourceId>(id);
+			const auto& p=registry.properties(resource);
+			Value yields=Value::array();
+			for (unsigned m=0; m<MaterialCount; ++m)
+			{
+				const auto& y=registry.yields(resource)[m];
+				if (y.capacity) yields.items.push_back(Value::object().set("material",m).set("capacity",y.capacity)
+					.set("initial",y.initial).set("growthRate",y.growthRate).set("consumption",int(y.consumption))
+					.set("seedReserve", y.seedReserve).set("destroysDeposit", y.destroysDeposit).set("placementMaximum", y.placementMaximum));
+			}
+			result.items.push_back(Value::object().set("id",id).set("key",registry.key(resource))
+				.set("name",registry.presentation(resource).name).set("yields",yields)
+				.set("blocksGround",p.blocksGround).set("blocksAir",p.blocksAir).set("blocksBuilding",p.blocksBuilding)
+				.set("clearable",p.clearable).set("farmable",p.farmable).set("spreadRate",p.spreadRate)
+				.set("primaryMaterial", materialIndex(p.primaryMaterial)).set("growthRate", p.growthRate)
+				.set("ecology", int(p.ecology)).set("habitatMask", p.habitatMask).set("visibleToHarvest", p.visibleToHarvest)
+				.set("persistsWhenEmpty", p.persistsWhenEmpty).set("stockDependentGrowth", p.stockDependentGrowth)
+				.set("stockBranchDivisor", p.stockBranchDivisor).set("clearConsumption", int(p.clearConsumption))
+				.set("requiresGrowthTerrain", p.requiresGrowthTerrain).set("requiresPermanentDepositsTerrain", p.requiresPermanentDepositsTerrain)
+				.set("requiredExperiment", registry.requiredExperiment(resource)));
+		}
+		resourceDefinitionRegistry = snapshot;
+		resourceDefinitions = std::move(result);
+		return resourceDefinitions;
+	}
     if (name == "terrainTypes")
     {
 		// Registry definitions reveal no tile state. Cache per immutable registry;
@@ -313,7 +374,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 							.set("inhibitionQ8", int(p.inhibitionQ8))
 							.set("shoreSupportQ8", int(p.shoreSupportQ8))
 							.set("allowedResources", resources)
-							.set("farmCrop", int(p.farmCrop)));
+							.set("farmMaterial", p.farmMaterial == 255 ? Value() : Value(std::string(materialKey(static_cast<MaterialId>(p.farmMaterial))))));
 				}
 				return result;
 			}();
@@ -359,7 +420,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
                     .set("capabilities", buildingCapabilities(game, i))
                     .set("projectileDamage", numbers(b.semantics.projectileDamage.data(), NB_UNIT_TYPE))
                     .set("projectileRange", b.shootingRange).set("projectileSpeed", b.shootSpeed).set("projectileRhythm", b.shootRhythm)
-                    .set("ammunitionResource", b.semantics.ammunitionResource).set("ammunitionCost", b.semantics.ammunitionCost)
+                    .set("ammunitionMaterial", b.semantics.ammunitionMaterial).set("ammunitionResource", b.semantics.ammunitionMaterial).set("ammunitionCost", b.semantics.ammunitionCost)
                     .set("suppliesStock", b.runtimeSuppliesStock).set("fetchesStock", b.runtimeFetchesStock)
                     .set("suppliesDirectStock", b.semantics.market.suppliesDirectStock)
                     .set("exchangesFruit", b.semantics.market.interTeamFruitExchange)
@@ -372,7 +433,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					.set("height", b.height)
 					.set("maxHp", b.hpMax)
 					.set("maxWorkers", b.semantics.assignmentLimit).set("usesWorkers", bool(b.maxUnitWorking))
-					.set("resourceCapacity", numbers(b.maxResource, MAX_NB_RESOURCES)));
+					.set("materialCapacity", numbers(b.maxMaterial, MaterialCount))
+					.set("resourceCapacity", numbers(b.maxMaterial, MAX_NB_RESOURCES)));
 		}
 		return a;
 	}
@@ -386,7 +448,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 			Value v = Value::object().set("id", t).set("alive", tm.isAlive);
 			if (team < 0 || team == t)
 				v.set("allies", tm.allies)
-					.set("resources", numbers(tm.teamResources, MAX_NB_RESOURCES));
+					.set("materials", numbers(tm.teamMaterials, MaterialCount))
+					.set("resources", numbers(tm.teamMaterials, MAX_NB_RESOURCES));
 			a.items.push_back(v);
 		}
 		return a;
@@ -548,10 +611,23 @@ void Observations::save(GAGCore::OutputStream *s) const
 		s->writeUint32(t.tick, "tick");
 		s->writeUint16(t.terrain, "terrain");
 		s->writeUint16(t.fertility, "fertility");
-		s->writeUint8(t.type, "type");
+		s->writeUint16(t.type, "type");
 		s->writeUint8(t.variety, "variety");
-		s->writeUint8(t.amount, "amount");
+		s->writeUint32(t.amount, "amount");
 		s->writeUint16(t.terrainType, "terrainType");
+		const auto stocks=rememberedStocks.find(index);
+		s->writeUint8(stocks!=rememberedStocks.end(),"multiStock");
+		if (stocks != rememberedStocks.end())
+		{
+			s->writeEnterSection("materialStocks");
+			for (unsigned m = 0; m < MaterialCount; ++m)
+			{
+				s->writeEnterSection(m);
+				s->writeUint16(stocks->second[m], "stock");
+				s->writeLeaveSection();
+			}
+			s->writeLeaveSection();
+		}
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
@@ -559,6 +635,7 @@ void Observations::save(GAGCore::OutputStream *s) const
 void Observations::load(GAGCore::InputStream *s, int version)
 {
 	remembered.clear();
+	rememberedStocks.clear();
 	knownTiles = 0;
 	s->readEnterSection("scriptObservations");
 	lastTick = s->readUint32("tick");
@@ -574,9 +651,14 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		t.tick = s->readUint32("tick");
 		t.terrain = s->readUint16("terrain");
 		t.fertility = s->readUint16("fertility");
-		t.type = s->readUint8("type");
+		t.type = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint16("type") : s->readUint8("type");
+		if (version < FILE_FORMAT_VERSION_RUNTIME_RESOURCES && t.type==255) t.type=NO_RES_TYPE;
 		t.variety = s->readUint8("variety");
-		t.amount = s->readUint8("amount");
+		t.amount = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint32("amount") : s->readUint8("amount");
+        // Legacy clearing sometimes retained unused variety/amount bytes after
+        // setting the no-resource sentinel; they are not inventory or map stock.
+        if (version < FILE_FORMAT_VERSION_RUNTIME_RESOURCES && t.type == NO_RES_TYPE)
+        { t.variety = 0; t.amount = 0; }
 		const unsigned terrainType = version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
 			? s->readUint16("terrainType") : unsigned(legacyTerrainType(t.terrain));
 		if (!game.map.validTerrainType(terrainType))
@@ -584,6 +666,36 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		t.terrainType = static_cast<TerrainType>(terrainType);
 		if (index >= size || lookup(index))
 			throw std::runtime_error("Invalid terrain memory");
+		if(t.type!=NO_RES_TYPE && !game.map.resourceRegistry().valid(t.type)) throw std::runtime_error("Invalid remembered resource");
+		const auto multiStock = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint8("multiStock") : 0;
+		if (multiStock > 1) throw std::runtime_error("Invalid remembered stock representation");
+		const auto* properties = t.type == NO_RES_TYPE ? nullptr : &game.map.resourceProperties(t.type);
+		if (version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
+			bool(multiStock) != bool(properties && std::popcount(properties->materialMask) > 1))
+			throw std::runtime_error("Remembered stock representation does not match resource yields");
+		if (multiStock)
+		{
+			auto& stock=rememberedStocks[index];
+			const auto& yields = game.map.resourceRegistry().yields(static_cast<ResourceId>(t.type));
+			unsigned total = 0;
+			s->readEnterSection("materialStocks");
+			for (unsigned m = 0; m < MaterialCount; ++m)
+			{
+				s->readEnterSection(m);
+				stock[m] = s->readUint16("stock");
+				if (stock[m] > yields[m].capacity) throw std::runtime_error("Remembered material exceeds capacity");
+				total += stock[m];
+				s->readLeaveSection();
+			}
+			s->readLeaveSection();
+			if (total != t.amount) throw std::runtime_error("Remembered resource total does not match material stocks");
+		}
+		else if (properties)
+		{
+			const auto capacity = game.map.resourceRegistry().yields(static_cast<ResourceId>(t.type))[materialIndex(properties->primaryMaterial)].capacity;
+			if (t.amount > capacity) throw std::runtime_error("Remembered material exceeds capacity");
+		}
+		else if (t.amount || t.variety) throw std::runtime_error("Empty remembered tile contains resource stock");
 		t.known = true;
 		remember(index) = t;
 		s->readLeaveSection();
@@ -591,6 +703,21 @@ void Observations::load(GAGCore::InputStream *s, int version)
 	s->readLeaveSection();
 }
 } // namespace Script
+
+unsigned Script::Observations::materialStock(int x, int y, MaterialId material) const
+{
+	if (!validMaterial(materialIndex(material))) return 0;
+	x &= game.map.getW() - 1;
+	y &= game.map.getH() - 1;
+	const auto index = unsigned(game.map.coordToIndex(x, y));
+	if (team < 0 || game.map.isFOWDiscovered(x, y, game.teams[team]->me))
+		return game.map.materialAmountAt(index, material);
+	const auto* old = lookup(index);
+	if (!old || old->type == NO_RES_TYPE) return 0;
+	const auto stocks = rememberedStocks.find(index);
+	if (stocks != rememberedStocks.end()) return stocks->second[materialIndex(material)];
+	return game.map.resourceProperties(old->type).primaryMaterial == material ? old->amount : 0;
+}
 
 Script::Observations::Cell Script::Observations::cell(int x, int y) const
 {

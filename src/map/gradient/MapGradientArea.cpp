@@ -67,7 +67,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
-		if (c.resource.type!=NO_RES_TYPE)
+		if (resourceBlocksGround(i))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -264,7 +264,7 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.resource.type != NO_RES_TYPE)
+		else if (resourceBlocksGround(i))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -318,11 +318,6 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 
 	const Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	const bool farmAreas = farmAreasEnabled();
-	// Mirror isClearingTarget using per-call lookup tables. Clearing goals
-	// override occupancy and terrain blockers; forbidden cells still win.
-	std::array<bool, MAX_RESOURCES> clearable;
-	for (unsigned r = 0; r < clearable.size(); ++r)
-		clearable[r] = globalContainer->resourcesTypes.get(r)->clearable;
 	gradient_preparation::withTerrain(*this, canSwim, [&](auto terrainAt) {
 		initializeGradientCells([&](size_t begin, size_t end) {
 			for (size_t i = begin; i < end; ++i)
@@ -331,15 +326,9 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 				Uint16 value = GRADIENT_FORBIDDEN;
 				if (!(c.forbidden & teamMask))
 				{
-					if (c.resource.type != NO_RES_TYPE)
-					{
-						if (clearable[c.resource.type] &&
-							((c.clearArea & teamMask) ||
-							 (farmAreas && (c.farmArea & teamMask) &&
-							  c.resource.type != terrainAt(i).farmCrop)))
-							value = GRADIENT_AT_GOAL;
-					}
-					else if (immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
+					if (isClearingTarget(i, teamMask, farmAreas))
+						value = GRADIENT_AT_GOAL;
+					else if (!resourceBlocksGround(i) && immobileUnits[i] == IMMOBILE_UNIT_NONE && c.building == NOGBID)
 						value = terrainAt(i).open;
 				}
 				gradient[i] = value;

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CaravanseraiGenerator.h"
+#include "ResourceSemantics.h"
 #include "BuildingType.h"
 #include "Contact.h"
 #include "Drawing.h"
@@ -763,7 +764,7 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	{
 		const int x = i % t.w, y = i / t.w;
 		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))) && !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+			map.terrainSupportsResourceAt(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 		source[i] = from[i] && open[i];
 	}
 	return stepsFrom(t, source, open);

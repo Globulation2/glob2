@@ -341,7 +341,7 @@ TEST_SUITE("TeamStatsSave")
 		glob2test::HeadlessGame world(glob2test::GameOptions{
 			.wDec = 6, .hDec = 6, .clearImmobile = true, .loadDefaultRace = true, .header = true});
 		auto *swarm = world.addBuilding("swarm", 10, 10);
-		swarm->resources[WHEAT] = swarm->type->maxResource[WHEAT];
+		swarm->materials[WHEAT] = swarm->type->maxMaterial[WHEAT];
 		swarm->update();
 		world.addBuilding("inn", 20, 10);
 		for (int i = 0; i < 6; ++i)

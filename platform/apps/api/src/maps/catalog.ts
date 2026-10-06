@@ -71,6 +71,11 @@ export type MapRow = {
 };
 
 export type VersionRow = {
+  building_catalog: import('kysely').Selectable<Database['map_versions']>['building_catalog'];
+  resource_experiments: import('kysely').Selectable<
+    Database['map_versions']
+  >['resource_experiments'];
+  required_resource_experiments: string[];
   id: string;
   map_id: string;
   hash: string;

@@ -1,3 +1,4 @@
+#include "../shared/ResourceSemantics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BastionKeysGenerator.h"
 #include "Drawing.h"
@@ -611,7 +612,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<unsigned char> clearedGround(t.size());
 	for (int i = 0; i < t.size(); ++i)
 		clearedGround[i] =
-			game.map.terrainPropertiesAt(i % t.w, i / t.w).walkable && game.map.getResource(i).type != STONE;
+			game.map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !permanentResourceBarrier(game.map, i);
 	const auto regions = connectedRegions(clearedGround, t.w, t.h, true, GridNeighbors::Eight);
 	const auto ownership = labelComponents(regions, L.homeOf);
 	if (ownership.conflictTile >= 0)
@@ -637,7 +638,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// and clearable crops: neither may hide a defect in a permanent enclosure.
 	std::vector<unsigned char> swim(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		swim[i] = !(game.map.getResource(i).type == STONE) && !L.gates[i];
+		swim[i] = !permanentResourceBarrier(game.map, i) && !L.gates[i];
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		if (countBuildings(game, team, "swimmingpool") != 1)

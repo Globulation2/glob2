@@ -5564,3 +5564,43 @@ AI 원격 측정
 지형 정의 가져오기
 [Terrain palette]
 지형 팔레트
+[Food]
+Food
+[Paper]
+Paper
+[Cherries]
+Cherries
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Gold
+[Metal]
+Metal
+[Glass]
+Glass
+[Fabric]
+Fabric
+[Import Resource Definitions]
+Import Resource Definitions
+[Resource palette]
+Resource palette
+[Trees]
+Trees
+[Rocks]
+Rocks
+[Cherry tree]
+Cherry tree
+[Orange tree]
+Orange tree
+[Prune tree]
+Prune tree
+[Gold ore]
+Gold ore
+[Iron ore]
+Iron ore
+[Sand]
+Sand
+[Cotton]
+Cotton

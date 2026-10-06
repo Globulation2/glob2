@@ -324,7 +324,7 @@ static void resources(Game &game, GenerationContext &context,
 	// back out. From 2003 until revision 2 Map::smoothResources read the old resource encoding and
 	// did nothing, leaving the deposits as squares; working, it adds about a quarter more wheat and
 	// wood.
-	context.telemetry.measure("rugged-archipelago.resources.smoothing-rounds", smoothResources * 2);
+	context.telemetry.measure("rugged-archipelago.materials.smoothing-rounds", smoothResources * 2);
 	map.smoothResources(smoothResources * 2);
 }
 

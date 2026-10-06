@@ -238,7 +238,7 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 			if (needs[resource])
 			{
 				int rx, ry, distance;
-				supplied = map->resourceAvailableUpdate(team->teamNumber, resource, 0, px, py, &rx, &ry, &distance)
+				supplied = map->materialAvailableUpdate(team->teamNumber, resource, 0, px, py, &rx, &ry, &distance)
 					&& distance <= AI_NUMBI_WHEAT_DISTANCE_BIAS + width*height;
 			}
 		if (!supplied) continue;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <list>
 #include <math.h>
 #include <stdlib.h>
@@ -42,7 +43,7 @@ namespace
 void Building::step(void)
 {
 	if (type->isBuildingSite && (siteCompletionPending || type->useTeamResources)) updateBuildingSite();
-	computeWishedResources(wishedResources);
+	computeWishedMaterials(wishedMaterials);
 	if (((owner->game->stepCounter + gid) & 255) == 0)
 		freeIdleGradients();
 
@@ -116,10 +117,10 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	int distResource = 0;
-	if(!owner->map->resourceAvailable(owner->teamNumber, wantedResource, unit->swimClass(),
+	if(!owner->map->materialAvailable(owner->teamNumber, wantedResource, unit->swimClass(),
 	                                  unit->posX, unit->posY, &distResource, fetchesFromMarkets(), this))
 	{
-		if(wantedResource<BASIC_COUNT)
+		if(wantedResource<HAPPINESS_BASE || wantedResource>=HAPPINESS_BASE+HAPPINESS_COUNT)
 			noteUnitFailing(unit, UnitCantAccessResource);
 		else
 			noteUnitFailing(unit, UnitCantAccessFruit);
@@ -127,7 +128,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	}
 	if(distResource >= timeLeft)
 	{
-		if(wantedResource<BASIC_COUNT)
+		if(wantedResource<HAPPINESS_BASE || wantedResource>=HAPPINESS_BASE+HAPPINESS_COUNT)
 			noteUnitFailing(unit, UnitTooFarFromResource);
 		else
 			noteUnitFailing(unit, UnitTooFarFromFruit);
@@ -181,9 +182,9 @@ void Building::fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_
 {
 	for(int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
-		int multiplier = type->multiplierResource[r];
-		targets[r] = (resourceDeliveryTarget(r)+multiplier-1)/multiplier;
-		const int missing=resourceDeliveryNeed(r);
+		int multiplier = type->materialMultiplier[r];
+		targets[r] = (materialDeliveryTarget(r)+multiplier-1)/multiplier;
+		const int missing=materialDeliveryNeed(r);
 		served[r] = targets[r]-(missing+multiplier-1)/multiplier;
 	}
 	for(std::list<Unit *>::const_iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
@@ -200,7 +201,7 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
 	// neededResource covers the physical room for one more delivery, which the
 	// delivery counts round away from when maxResource is not a whole number of
 	// deliveries. served covers the units already on their way.
-	return neededResource(r)>0 && served[r]<targets[r];
+	return neededMaterial(r)>0 && served[r]<targets[r];
 }
 
 void Building::selectUnitCarryingWantedResource(const int* targets, const int* served, BringResourcesSelection& sel)
@@ -215,7 +216,7 @@ void Building::selectUnitCarryingWantedResource(const int* targets, const int* s
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
 			continue;
 
-		int r=unit->carriedResource;
+		int r=unit->carriedMaterial;
 		if(r<0 || !wantsAnotherDelivery(r, targets, served))
 			continue;
 		int distBuilding;
@@ -245,7 +246,7 @@ void Building::selectFetcher(const BringResourcesCandidate* candidates, int coun
 
 		// A unit already carrying what is wanted is a delivery, not a fetch, and
 		// selectUnitCarryingWantedResource has first refusal on it.
-		int carried=unit->carriedResource;
+		int carried=unit->carriedMaterial;
 		if(carried==wantedResource)
 			continue;
 
@@ -267,8 +268,8 @@ void Building::selectFetcher(const BringResourcesCandidate* candidates, int coun
 int Building::workRoleTarget(int role) const
 {
 	bool active[NB_UNIT_TYPE+1]{};
-	for (int r=0; r<MAX_RESOURCES; ++r)
-		active[0] |= resourceDeliveryNeed(r)>0;
+	for (int r=0; r<MaterialCount; ++r)
+		active[0] |= materialDeliveryNeed(r)>0;
 	int count=active[0];
 	for (int unit=0; unit<NB_UNIT_TYPE; ++unit) count += active[unit+1]=runtime->attracts(unit);
 	if (!count || !active[role+1]) return 0;

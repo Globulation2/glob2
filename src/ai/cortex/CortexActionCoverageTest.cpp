@@ -45,7 +45,7 @@ TEST_SUITE("CortexActionCoverage")
         for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
         for(int x:{6,7,10,12}) {
             map.setResource(x,8,WHEAT,1);
-            REQUIRE(map.getResource(x,8).type==WHEAT);
+            REQUIRE(map.isMaterialTakeable(x,8, WHEAT));
         }
         auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
         const int seed=index(2,8); // Its land exit ring ends at x=5.
@@ -91,7 +91,7 @@ TEST_SUITE("CortexActionCoverage")
         for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
         map.setTerrain(31,20,GRASS);
         map.setResource(31,20,WHEAT,1);
-        REQUIRE(map.getResource(31,20).type==WHEAT);
+        REQUIRE(map.isMaterialTakeable(31,20, WHEAT));
         const auto edge=scan({index(0,20)},31,true);
         CHECK(edge.depthOf[index(31,20)]==-1);
         CHECK(edge.desired.empty());
@@ -183,7 +183,7 @@ TEST_SUITE("CortexActionCoverage")
             spec["semantics"]["market"]["fetchesStock"]=true;
             spec["semantics"]["market"]["fetchesStockExperiment"]="";
             spec["semantics"]["market"]["suppliesDirectStock"]=purpose==1;
-            spec["semantics"]["market"]["suppliesDirectStockResources"]={"wheat"};
+            spec["semantics"]["market"]["suppliesDirectStockMaterials"]={"food"};
             world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
             auto* hybrid=world.addBuilding("inn",4,4);
             CHECK(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
@@ -339,12 +339,12 @@ TEST_SUITE("CortexActionCoverage")
         const int first=world.game.buildingsTypes.getPlaceableTypeNum("inn");
         const int second=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
         const int finished=world.game.buildingsTypes.get(second)->nextLevel;
-        snapshot["variants"][first]["properties"]["maxResource"]=std::vector<int>(MAX_NB_RESOURCES,0);
+        snapshot["variants"][first]["properties"]["maxMaterial"]=std::vector<int>(MAX_NB_RESOURCES,0);
         snapshot["variants"][first]["semantics"]["constructionCost"]={{"wood",50}};
         snapshot["variants"][finished]["semantics"]["feeding"]["enabled"]=true;
         snapshot["variants"][finished]["semantics"]["feeding"]["unitMask"]=7;
-        snapshot["variants"][second]["properties"]["maxResource"]=std::vector<int>(MAX_NB_RESOURCES,0);
-        snapshot["variants"][second]["properties"]["maxResource"][WHEAT]=100;
+        snapshot["variants"][second]["properties"]["maxMaterial"]=std::vector<int>(MAX_NB_RESOURCES,0);
+        snapshot["variants"][second]["properties"]["maxMaterial"][WHEAT]=100;
         snapshot["variants"][second]["semantics"]["constructionCost"]={{"wood",1}};
         world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
         CHECK(Cortex::selectBuilding(world.game,*world.team,Cortex::CORTEX_BUILD_FOOD).placementType==world.game.buildingsTypes.getPlaceableTypeNum("hospital"));

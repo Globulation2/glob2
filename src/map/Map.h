@@ -6,6 +6,7 @@
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include <array>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <list>
@@ -17,6 +18,7 @@
 
 #include "Building.h"
 #include "Ressource.h"
+#include "ResourceRegistry.h"
 #include "Sector.h"
 #include "Team.h"
 #include "TerrainType.h"
@@ -91,8 +93,8 @@ class Map
 	friend class ResourceSeedCache;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
-	void seedResourcesGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
-	void seedResourcesGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
+	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
+	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
@@ -100,6 +102,27 @@ class Map
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
 	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
+	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
+	// Single-yield tiles keep stock inline. The index plane is allocated only
+	// when a multi-yield deposit is first placed; zero means no sidecar slot.
+    std::vector<Uint16> resourceHabitatProfiles;
+    std::vector<Uint8> resourceHabitatPermissions;
+    std::vector<MaterialMask> terrainMaterialPermissions;
+    std::vector<std::shared_ptr<const std::vector<Uint64>>> terrainResourceAllowLists;
+    std::vector<MaterialMask> explicitTerrainMaterialPermissions;
+    std::vector<int> terrainFarmResources;
+    unsigned resourceHabitatProfileCount=0;
+    void rebuildResourceHabitats();
+	std::vector<Uint32> resourceStockIndices;
+	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
+	std::vector<Uint32> freeResourceStocks;
+	std::array<size_t, MaterialCount> materialSourceCounts{};
+	void initializeResourceStock(size_t index);
+	void releaseResourceStock(size_t index);
+	void refreshResourceTotal(size_t index);
+	void rebuildResourceState();
+	void materialStockChanged(size_t index, MaterialMask before);
+	bool harvestMaterial(size_t index, int material);
 	std::vector<TerrainType> terrainIds;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
 	std::vector<Uint16> terrainPropertyIndices;
@@ -165,7 +188,7 @@ public:
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
-	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
+	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
 	void advanceHiringGradients(Building *building);
@@ -238,6 +261,7 @@ public:
 	//! Grow resources on map
 	void growResources(void);
 	void recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount);
+    void recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std::array<Uint16,MaterialCount>& oldStocks);
 	void rebuildGrowthCoverage();
 	//! Mask of teams with a non-flag building within GROWTH_COVERAGE_RADII[band] of
 	//! (x, y), as of each team's last 512-tick building snapshot. Call
@@ -448,7 +472,16 @@ public:
 	}
 	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
 	// Terrain habitat only: ignores deposits, buildings and units already here.
-	bool terrainSupportsResourceAt(int x, int y, int resourceType) const;
+	bool terrainSupportsResourceAt(size_t index, ResourceId resource) const;
+    bool terrainSupportsResourceAt(int x, int y, ResourceId resource) const { return terrainSupportsResourceAt(coordToIndex(x,y),resource); }
+    // Integer adapters are retained at legacy authoring/script boundaries.
+    bool terrainSupportsResourceAt(int x,int y,int resource) const { return resource>=0 && resource<NO_RES_TYPE && terrainSupportsResourceAt(x,y,static_cast<ResourceId>(resource)); }
+    bool terrainSupportsMaterialAt(int x,int y,int material) const;
+    bool terrainSupportsMaterialAt(int x,int y,MaterialId material) const { return terrainSupportsMaterialAt(x,y,materialIndex(material)); }
+    std::uint32_t materialGrowthRateAt(size_t index,int material) const;
+    std::uint32_t materialGrowthRateAt(size_t index,MaterialId material) const { return materialGrowthRateAt(index,materialIndex(material)); }
+    std::uint64_t materialExpansionRateAt(size_t index,int material) const;
+    std::uint64_t materialExpansionRateAt(size_t index,MaterialId material) const { return materialExpansionRateAt(index,materialIndex(material)); }
 	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
 	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
@@ -460,6 +493,7 @@ public:
 	bool hasProjectileBlockingTerrain() const { return projectileBlockingTerrain; }
 	bool projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const;
 	ExperimentSet requiredTerrainExperiments() const;
+    ExperimentSet requiredResourceExperiments() const;
 	class TerrainEditBatch
 	{
 		Map& map;
@@ -480,6 +514,56 @@ public:
 		return type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE ? TERRAIN_TYPE_UNKNOWN : int(type);
 	}
 
+	const ResourceRegistry& resourceRegistry() const { return *resourceRegistryValue; }
+    std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceRegistryValue; }
+	void installResourceDefinitions(const std::string& json);
+	const ResourceProperties& resourceProperties(ResourceId type) const
+	{
+	    return resourceRegistry().properties(type);
+	}
+    const ResourceProperties& resourceProperties(int type) const { return resourceProperties(static_cast<ResourceId>(type)); }
+	Uint16 materialAmountAt(size_t index, int material) const
+	{
+	    if (material < 0 || material >= int(MaterialCount)) return 0;
+	    const auto& r = tiles[index].resource;
+	    if (r.type == NO_RES_TYPE) return 0;
+	    const auto& p = resourceProperties(r.type);
+	    if (!(p.materialMask & (1u << material))) return 0;
+	    if (std::has_single_bit(p.materialMask)) return static_cast<Uint16>(r.amount);
+	    const auto slot = resourceStockIndices.empty() ? 0 : resourceStockIndices[index];
+	    return slot ? resourceStocks[slot - 1][material] : 0;
+	}
+	Uint16 materialAmountAt(size_t index, MaterialId material) const { return materialAmountAt(index, static_cast<int>(material)); }
+	MaterialMask materialMaskAt(size_t index) const
+	{
+	    const auto& r = tiles[index].resource;
+	    if (r.type == NO_RES_TYPE) return 0;
+	    const auto& p = resourceProperties(r.type);
+	    if (std::has_single_bit(p.materialMask)) return r.amount ? p.materialMask : 0;
+	    const auto slot=resourceStockIndices.empty() ? 0 : resourceStockIndices[index];
+	    if (!slot) return 0;
+	    const auto& stocks=resourceStocks[slot-1];
+	    MaterialMask result = 0;
+	    for (unsigned mask=p.materialMask; mask; mask&=mask-1)
+	    {
+	        const auto material=std::countr_zero(mask);
+	        if (stocks[material]) result|=MaterialMask(1u<<material);
+	    }
+	    return result;
+	}
+    std::array<Uint16,MaterialCount> materialStocksAt(size_t index) const;
+	MaterialMask resourceMaterialMaskAt(size_t index) const;
+	bool resourceBlocksGround(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourceProperties(id).blocksGround; }
+	bool resourceBlocksAir(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourceProperties(id).blocksAir; }
+	bool resourceBlocksBuilding(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourceProperties(id).blocksBuilding; }
+	bool resourceVisibleToHarvest(size_t index) const { const auto id=tiles[index].resource.type; return id!=NO_RES_TYPE && resourceProperties(id).visibleToHarvest; }
+	bool hasMaterialSource(int material) const { return material >= 0 && material < int(MaterialCount) && materialSourceCounts[material] != 0; }
+	bool hasMaterialSource(MaterialId material) const { return hasMaterialSource(static_cast<int>(material)); }
+	void setMaterialAmount(size_t index, MaterialId material, Uint16 amount);
+    void setMaterialAmount(size_t index,int material,Uint16 amount) { if (validMaterial(material)) setMaterialAmount(index,static_cast<MaterialId>(material),amount); }
+	bool growResourceStock(size_t index);
+	bool isMaterialTakeable(int x,int y,MaterialId material) const { return materialAmountAt(coordToIndex(x,y),material)>0; }
+    bool isMaterialTakeable(int x,int y,int material) const { return validMaterial(material) && isMaterialTakeable(x,y,static_cast<MaterialId>(material)); }
 	const Resource& getResource(int x, int y) const
 	{
 		return tiles[coordToIndex(x, y)].resource;
@@ -500,7 +584,7 @@ public:
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
 	void replaceResource(size_t index, const Resource &resource);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
-	void setResourceAmount(size_t index, Uint8 amount) { tiles[index].resource.amount = amount; }
+	void setResourceAmount(size_t index, Uint32 amount);
 	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; }
 	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; }
 	// Raw mask replacement for order application/import; callers retain their
@@ -558,20 +642,15 @@ public:
 		return getTile(x, y).resource.type != NO_RES_TYPE;
 	}
 
-	bool isResourceTakeable(int x, int y, int resourceType) const
-	{
-		const Resource &resource = getTile(x, y).resource;
-		return (resource.type == resourceType && resource.amount > 0);
-	}
-
-	bool isResourceTakeable(int x, int y, bool resourceTypes[BASIC_COUNT]) const
-	{
-		const Resource &resource = getTile(x, y).resource;
-		return (resource.type != NO_RES_TYPE
-			&& resource.amount > 0
-			&& resource.type < BASIC_COUNT
-			&& resourceTypes[resource.type]);
-	}
+    bool isClearableResourceForMaterials(int x,int y,bool materials[MaterialCount]) const
+    {
+        const auto index=coordToIndex(x,y);
+        const auto& r=tiles[index].resource;
+        if (r.type==NO_RES_TYPE || !resourceProperties(r.type).clearable) return false;
+        const auto mask=materialMaskAt(index);
+        for (unsigned m=0;m<MaterialCount;++m) if (materials[m] && (mask&(1u<<m))) return true;
+        return false;
+    }
 
 	bool isResource(int x, int y, int *resourceType) const
 	{
@@ -591,7 +670,8 @@ public:
 	void decResource(int x, int y);
 	//! Decrement resource at position (x,y) if resource type = resourceType. Return true on success, false otherwise.
 	void decResource(int x, int y, int resourceType);
-	bool incResource(int x, int y, int resourceType, int variety);
+	bool incResource(int x,int y,ResourceId resource,int variety);
+    bool incResource(int x,int y,int resource,int variety) { return resource>=0 && resource<NO_RES_TYPE && incResource(x,y,static_cast<ResourceId>(resource),variety); }
 
 	// Farm areas (the "farm-areas" experiment, docs/features/farm-areas.md).
 	// Every rule below is inert unless the game carries the experiment, so a
@@ -651,7 +731,8 @@ public:
 	//! rule: the target tile is decremented if it still holds the resource and
 	//! the unit is granted one either way. Inside one, the grain comes off the
 	//! ripest tile of the connected field and an exhausted field yields nothing.
-	bool takeHarvest(int x, int y, int dx, int dy, int resourceType, Uint32 teamMask);
+	bool takeHarvest(int x,int y,int dx,int dy,MaterialId material,Uint32 teamMask);
+    bool takeHarvest(int x,int y,int dx,int dy,int material,Uint32 teamMask) { return validMaterial(material) && takeHarvest(x,y,dx,dy,static_cast<MaterialId>(material),teamMask); }
 
 private:
 	//! Allocate/refresh and mark use, without exposing the possibly partial field.
@@ -681,7 +762,7 @@ public:
 	//! Return true if unit can go to position (x,y)
 	bool isFreeForGroundUnit(int x, int y, bool canSwim, Uint32 teamMask) const;
 	bool isFreeForGroundUnitNoForbidden(int x, int y, bool canSwim) const;
-	bool isFreeForAirUnit(int x, int y) const { return terrainPropertiesAt(x,y).flyable && (getAirUnit(x+w, y+h)==NOGUID); }
+	bool isFreeForAirUnit(int x, int y) const { return terrainPropertiesAt(x,y).flyable && !resourceBlocksAir(coordToIndex(x,y)) && (getAirUnit(x+w, y+h)==NOGUID); }
 	bool isFreeForBuilding(int x, int y) const;
 	bool isFreeForBuilding(int x, int y, int w, int h) const;
 	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const;
@@ -698,10 +779,10 @@ public:
 
 	//! Return contact direction (dx, dy) if unit touches a resource of any type; nullopt otherwise.
 	std::optional<Offset> doesUnitTouchResource(Unit *unit) const;
-	//! Return contact direction (dx, dy) if unit touches a resource of the given type; nullopt otherwise.
-	std::optional<Offset> doesUnitTouchResource(Unit *unit, int resourceType) const;
-	//! Return contact direction (dx, dy) if (x, y) touches a resource of the given type; nullopt otherwise.
-	std::optional<Offset> doesPosTouchResource(int x, int y, int resourceType) const;
+	//! Return contact direction (dx, dy) if unit touches a source of the requested material; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchMaterialSource(Unit *unit, MaterialId material) const;
+	//! Return contact direction (dx, dy) if (x, y) touches a source of the requested material; nullopt otherwise.
+	std::optional<Offset> doesPosTouchMaterialSource(int x, int y, MaterialId material) const;
 	//! Return contact direction (dx, dy) if unit touches an enemy; nullopt otherwise.
 	std::optional<Offset> doesUnitTouchEnemy(Unit *unit) const;
 
@@ -754,7 +835,8 @@ public:
 	//! used after the terrain under it changed
 	void removeUnallowedResources(int x, int y, int w, int h);
 	//! With l==0, it will add resource only on one tile. (Aligned coordinates)
-	void setResource(int x, int y, int type, int l);
+	void setResource(int x,int y,ResourceId type,int l);
+    void setResource(int x,int y,int type,int l) { if (type>=0 && type<NO_RES_TYPE) setResource(x,y,static_cast<ResourceId>(type),l); }
 	bool isResourceAllowed(int x, int y, int type);
 	
 
@@ -797,7 +879,7 @@ public:
 	enum GradientType
 	{
 		GT_UNDEFINED = 0,
-		GT_RESOURCE = 1,
+		GT_MATERIAL = 1,
 		GT_BUILDING = 2,
 		GT_FORBIDDEN = 3,
 		GT_GUARD_AREA = 4,
@@ -821,16 +903,17 @@ public:
 	//! withMarkets: the variant where the team's stocked markets are goals too,
 	//! priced by each supplier's configured pickup penalty. Used when a
 	//! consumer enables stock fetching (Building::fetchesFromMarkets).
-	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
+	Uint16 *getMaterialGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false, const Building* consumer = nullptr);
+    Uint16* getMaterialGradient(int team,MaterialId material,int swim,bool withMarkets=false,const Building* consumer=nullptr) { return getMaterialGradient(team,materialIndex(material),swim,withMarkets,consumer); }
 	// Consumer-aware requests are simulation-thread only. Returned cache pointers
 	// remain valid until the next consumer-aware request (which may evict them).
-	unsigned resourceSupplyModes(const Building* consumer, int resource) const;
-	Uint16 *cachedResourceGradient(const Building* consumer, int resource, int swim, unsigned modes);
+	unsigned materialSupplyModes(const Building* consumer, int resource) const;
+	Uint16 *cachedMaterialGradient(const Building* consumer, int resource, int swim, unsigned modes);
 	bool stockSupplierEligible(const Building* supplier, const Building* consumer, int resource, unsigned modes) const;
-	void setResourceRoutingCacheBudget(Uint64 bytes);
-	Uint64 resourceRoutingCacheBytes() const;
-	void saveResourceRoutingCache(GAGCore::OutputStream* stream) const;
-	void loadResourceRoutingCache(GAGCore::InputStream* stream, bool packed);
+	void setMaterialRoutingCacheBudget(Uint64 bytes);
+	Uint64 materialRoutingCacheBytes() const;
+	void saveMaterialRoutingCache(GAGCore::OutputStream* stream) const;
+	void loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor);
 	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
 	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
 	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
@@ -840,9 +923,11 @@ public:
 	//! untouched, when the team has no such warrior.
 	bool computeWarriorCrowding(int teamNumber, Uint16 *out) const;
 	
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
-	bool resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
+	bool materialAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr);
+    bool materialAvailable(int team,MaterialId material,int swim,int x,int y,bool markets=false,const Building* consumer=nullptr) { return materialAvailable(team,materialIndex(material),swim,x,y,markets,consumer); }
+	bool materialAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
+    bool materialAvailable(int team,MaterialId material,int swim,int x,int y,int* distance,bool markets=false,const Building* consumer=nullptr) { return materialAvailable(team,materialIndex(material),swim,x,y,distance,markets,consumer); }
+	bool materialAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false, const Building* consumer = nullptr);
 	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
 	Building *touchedStockedMarket(Unit *unit, int resourceType) const;
 	//! A stock of resourceType in one of the team's markets appeared or ran out:
@@ -864,7 +949,7 @@ public:
 
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false, const Building* consumer = nullptr)
 	{
-		return getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, consumer)[coordToIndex(x, y)];
+		return getMaterialGradient(teamNumber, resourceType, swimClass, withMarkets, consumer)[coordToIndex(x, y)];
 	}
 	
 	// Chamfer distance transform on a pre-seeded Uint8 buffer. Caller fills the
@@ -887,11 +972,11 @@ public:
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
 	//! (guard-area balancing: stepping within an area).
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
-	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
+	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
 	//! Direction toward a resource of resourceType. With a target building the round-trip
 	//! gradient is descended, so the unit heads for the resource that is nearest for
 	//! fetching and carrying it there; without one, for the resource nearest to itself.
-	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
+	bool pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
 
 	//! Initialize a fresh building field and retain its search frontier. Point
@@ -1019,10 +1104,10 @@ protected:
 	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
-	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
-	mutable std::mutex resourcesGradientMutex;
+	Uint16 *materialGradients[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	mutable std::mutex materialGradientMutex;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
-	Uint16 *marketResourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint16 *marketMaterialGradients[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];

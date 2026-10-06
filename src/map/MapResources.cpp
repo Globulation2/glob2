@@ -3,6 +3,7 @@
 
 #include "Map.h"
 #include "gradient/ResourceSeedCache.h"
+#include "gradient/GradientRuntime.h"
 #include "Utilities.h"
 #include "ExperimentalFeatures.h"
 #include "Game.h"
@@ -11,69 +12,15 @@
 #include "TerrainResourceProperties.h"
 
 #include <algorithm>
+#include <bit>
+#include <stdexcept>
+#include <map>
 #include <cstdlib>
 #include <limits>
 
 
 
 // Resource grid mutations + resource availability + points/area names
-
-void Map::decResource(int x, int y)
-{
-	const size_t index = coordToIndex(x, y);
-	Resource &r = tiles[index].resource;
-	
-	if (r.type == NO_RES_TYPE || r.amount == 0)
-		return;
-	
-	const ResourceType *fulltype = globalContainer->resourcesTypes.get(r.type);
-	
-	if (!fulltype->shrinkable)
-		return;
-	if (fulltype->eternal)
-	{
-		if (r.amount > 0)
-			r.amount--;
-	}
-	else
-	{
-		if (!fulltype->granular || r.amount<=1)
-		{
-			r.clear();
-			resourceSeedChanged(index, ResourceSeedCache::Resource);
-		}
-		else
-			r.amount--;
-	}
-}
-
-void Map::decResource(int x, int y, int resourceType)
-{
-	if (isResourceTakeable(x, y, resourceType))
-		decResource(x, y);
-}
-
-namespace
-{
-bool terrainSupportsResource(const TerrainProperties &terrain, int resourceType)
-{
-	if (resourceType < 0 || resourceType >= MAX_NB_RESOURCES ||
-	    (terrain.allowedResources & (1u << resourceType)) == 0)
-		return false;
-	const ResourceType *resource = globalContainer->resourcesTypes.get(resourceType);
-	return ::terrainSupportsResource(terrain, resourceType, resource->shrinkable);
-}
-}
-
-bool Map::terrainSupportsResourceAt(int x, int y, int resourceType) const
-{
-	return terrainSupportsResource(terrainPropertiesAt(x, y), resourceType);
-}
-
-// The grain a farmed tile keeps back. decResource clears a granular tile at one
-// grain, so a pooled harvest that took the last one would leave bare ground and
-// the farm would have protected nothing.
-static constexpr int FARM_SEED_AMOUNT = 1;
 
 bool Map::farmAreasEnabled() const
 {
@@ -83,61 +30,52 @@ bool Map::farmAreasEnabled() const
 bool Map::canResourceEverGrowHere(int x, int y, int resourceType) const
 {
 	const auto &terrain = terrainPropertiesAt(x, y);
-	if (!terrain.resourcesGrow || !terrainSupportsResource(terrain, resourceType))
+	if (!terrain.resourcesGrow || !terrainSupportsResourceAt(x,y,resourceType))
 		return false;
 	return resourceGrowthField().rate(coordToIndex(x, y), resourceType) != 0;
 }
 
-int Map::farmCropAt(int x, int y) const
+int Map::farmCropAt(int x,int y) const
 {
-	return terrainPropertiesAt(x, y).farmCrop;
+    const unsigned requested=terrainPropertiesAt(x,y).farmMaterial;
+    if (requested>=MaterialCount) return NO_RES_TYPE;
+    // Prefer a compatible nearby living source without scanning the catalog.
+    int nearby=NO_RES_TYPE;
+    for (int dy=-1;dy<=1;++dy) for (int dx=-1;dx<=1;++dx)
+    {
+        const auto id=getResource(x+dx,y+dy).type;
+        if (id==NO_RES_TYPE) continue;
+        const auto& p=resourceProperties(id);
+        if (p.farmable && (p.materialMask&(1u<<requested)) && terrainSupportsResourceAt(x,y,id)) nearby=std::min<int>(nearby,id);
+    }
+    return nearby!=NO_RES_TYPE ? nearby : terrainFarmResources[static_cast<size_t>(terrainTypeAt(x,y))];
 }
 
 bool Map::isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const
 {
-	const Tile &tile = tiles[index];
-	if (tile.resource.type == NO_RES_TYPE)
-		return false;
-	if (!globalContainer->resourcesTypes.get(tile.resource.type)->clearable)
-		return false;
-	if (tile.clearArea & teamMask)
-		return true;
-	if (!farmAreas || (tile.farmArea & teamMask) == 0)
-		return false;
-	// Inside a farm, everything clearable except the crop the terrain grows.
-	return tile.resource.type != farmCropAt(static_cast<int>(index & wMask),
-	                                        static_cast<int>(index >> wDec));
+    const auto& tile=tiles[index];
+    if (tile.resource.type==NO_RES_TYPE || !resourceProperties(tile.resource.type).clearable) return false;
+    if (tile.clearArea&teamMask) return true;
+    return farmAreas && (tile.farmArea&teamMask) && !isFarmableResource(tile.resource.type);
 }
 
-bool Map::canPaintFarmArea(int x, int y) const
+bool Map::canPaintFarmArea(int x,int y) const
 {
-	if (!canResourcesGrow(x, y))
-		return false;
-
-	const Resource &resource = getTile(x, y).resource;
-	// Wood shares wheat's terrain, so a forest inside a wheat farm is paintable:
-	// the farm clears it and grows into it. Stone, papyrus and the fruits are
-	// never farmed, and stone and the fruits cannot even be removed.
-	if (resource.type != NO_RES_TYPE
-		&& resource.type != WHEAT && resource.type != WOOD && resource.type != ALGA)
-		return false;
-
-	const int crop = farmCropAt(x, y);
-	return crop != NO_RES_TYPE && canResourceEverGrowHere(x, y, crop);
+    if (!canResourcesGrow(x,y)) return false;
+    const auto& r=getResource(x,y);
+    if (r.type!=NO_RES_TYPE && !resourceProperties(r.type).clearable && !isFarmableResource(r.type)) return false;
+    const int crop=farmCropAt(x,y);
+    return crop!=NO_RES_TYPE && canResourceEverGrowHere(x,y,crop);
 }
 
 bool Map::isFarmableResource(int resourceType) const
 {
-	if (resourceType == NO_RES_TYPE)
-		return false;
-	const ResourceType *type = globalContainer->resourcesTypes.get(resourceType);
-	return type->granular && type->shrinkable && !type->eternal && type->expendable;
+    return resourceType!=NO_RES_TYPE && resourceRegistry().valid(unsigned(resourceType)) && resourceProperties(resourceType).farmable;
 }
 
 std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, Uint32 teamMask)
 {
-	if (!isFarmableResource(resourceType))
-		return std::nullopt;
+	if (resourceType < 0 || resourceType >= int(MaterialCount)) return std::nullopt;
 
 	// A tile belongs to the field only while it is inside the team's farm area
 	// and still holds the resource; an emptied tile drops out and can split the
@@ -145,8 +83,10 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 	auto inField = [&](size_t index) {
 		const Tile &tile = tiles[index];
 		return (tile.farmArea & teamMask) != 0
-			&& tile.resource.type == resourceType
-			&& tile.resource.amount > 0;
+			&& isFarmableResource(tile.resource.type)
+            && materialAmountAt(index,resourceType)>0
+            && resourceRegistry().yields(static_cast<ResourceId>(tile.resource.type))[resourceType].consumption != ResourceConsumption::All
+            && !resourceRegistry().yields(static_cast<ResourceId>(tile.resource.type))[resourceType].destroysDeposit;
 	};
 
 	// One stamp buffer per map, bumped instead of cleared. Wrapping the counter
@@ -197,10 +137,11 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		// a worker harvesting it meanwhile gets nothing and harvests again until
 		// a tile is back above its seed (Unit::handleDisplacement). Seed tiles
 		// still carry the flood, so the field does not split as it is worked down.
-		const Sint32 amount = tiles[index].resource.amount;
+		const Sint32 amount = materialAmountAt(index,resourceType);
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
 		// No regrowth makes every grain finite supply, including the last seed.
-		const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : FARM_SEED_AMOUNT;
+        const auto& harvest=resourceRegistry().yields(static_cast<ResourceId>(tiles[index].resource.type))[resourceType];
+        const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : harvest.seedReserve;
 		if (amount > seedAmount
 			&& (amount > bestAmount
 				|| (amount == bestAmount && distance < bestDistance)
@@ -228,75 +169,57 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 	return best;
 }
 
-bool Map::takeHarvest(int x, int y, int dx, int dy, int resourceType, Uint32 teamMask)
+bool Map::takeHarvest(int x,int y,int dx,int dy,MaterialId materialId,Uint32 teamMask)
 {
-	// The trigger is the painted area, not the resource on it: the target tile
-	// can have emptied while the unit played its harvest animation, and a farm
-	// has to keep working across that.
-	if (isFarmArea(x + dx, y + dy, teamMask) && isFarmableResource(resourceType) && farmAreasEnabled())
-	{
-		const std::optional<size_t> source = pickFarmHarvestTile(x, y, resourceType, teamMask);
-		if (!source)
-			return false;
-		decResource(static_cast<int>(*source & wMask), static_cast<int>(*source >> wDec), resourceType);
-		return true;
-	}
-
-	// The original rule, phantom grain included: the unit is granted a
-	// resource whether or not the tile still had one.
-	decResource(x + dx, y + dy, resourceType);
-	return true;
+    const int material=materialIndex(materialId);
+    const auto target=coordToIndex(x+dx,y+dy);
+    if (isFarmArea(x+dx,y+dy,teamMask) && farmAreasEnabled())
+    {
+        const auto source=pickFarmHarvestTile(x,y,material,teamMask);
+        if (source) return harvestMaterial(*source,material);
+        if (isFarmableResource(tiles[target].resource.type)) return false;
+    }
+    return harvestMaterial(target,material);
 }
 
-bool Map::incResource(int x, int y, int resourceType, int variety)
+bool Map::growResourceStock(size_t index)
 {
-	if (!terrainSupportsResource(terrainPropertiesAt(x,y),resourceType)) return false;
-	const size_t index = coordToIndex(x, y);
-	Resource &r = tiles[index].resource;
-	const ResourceType *fulltype;
-	if (r.type == NO_RES_TYPE)
-	{
-		if (getBuilding(x, y) != NOGBID)
-			return false;
-		if (getGroundUnit(x, y) != NOGUID)
-			return false;
-
-		fulltype = globalContainer->resourcesTypes.get(resourceType);
-		if (terrainSupportsResource(terrainPropertiesAt(x, y), resourceType))
-		{
-			r.type = resourceType;
-			r.variety = variety;
-			r.amount = RESOURCE_INITIAL_AMOUNT;
-			r.animation = 0;
-			resourceSeedChanged(index, ResourceSeedCache::Resource);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		fulltype = globalContainer->resourcesTypes.get(r.type);
-	}
-
-	if (r.type != resourceType)
-		return false;
-	if (!fulltype->shrinkable)
-		return false;
-	if (r.amount < fulltype->sizesCount)
-	{
-		r.amount++;
-		return true;
-	}
-	else
-	{
-		r.amount--;
-	}
-	return false;
+    const auto& r=tiles[index].resource;
+    if (r.type==NO_RES_TYPE) return false;
+    const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(r.type));
+    bool changed=false;
+    for (unsigned remaining=resourceProperties(r.type).materialMask;remaining;remaining&=remaining-1)
+    {
+        const auto m=std::countr_zero(remaining);
+        const auto& y=yields[m];
+        if (!y.growthRate) continue;
+        const auto amount=materialAmountAt(index,m);
+        if (amount>=y.capacity) continue;
+        const auto increment=Fertility::growthOpportunities(y.growthRate,[]{return syncRand();});
+        if (increment) { setMaterialAmount(index,m,std::min<unsigned>(y.capacity,unsigned(amount)+increment)); changed=true; }
+    }
+    return changed;
 }
 
+bool Map::incResource(int x,int y,ResourceId resourceId,int variety)
+{
+    const int resourceType=resourceIndex(resourceId);
+    if (!terrainSupportsResourceAt(x,y,resourceType)) return false;
+    const auto index=coordToIndex(x,y);
+    const auto& r=tiles[index].resource;
+    if (r.type==NO_RES_TYPE)
+    {
+        const auto& p=resourceProperties(resourceType);
+        if ((p.blocksBuilding && getBuilding(x,y)!=NOGBID) || (p.blocksGround && getGroundUnit(x,y)!=NOGUID) || (p.blocksAir && getAirUnit(x,y)!=NOGUID)) return false;
+        Resource next;
+        next.type=resourceType; next.variety=variety;
+        next.amount=resourceRegistry().yields(static_cast<ResourceId>(resourceType))[materialIndex(p.primaryMaterial)].initial;
+        replaceResource(index,next);
+        return true;
+    }
+    if (r.type!=resourceType) return false;
+    return growResourceStock(index);
+}
 
 void Map::setNoResource(int x, int y, int l)
 {
@@ -314,35 +237,35 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 		for (int dy=y; dy<y+h; dy++)
 		{
 			Resource& r=tiles[coordToIndex(dx, dy)].resource;
-			if (r.type!=NO_RES_TYPE && !terrainSupportsResource(terrainPropertiesAt(dx, dy), r.type))
+			if (r.type!=NO_RES_TYPE && !terrainSupportsResourceAt(dx,dy,r.type))
 				replaceResource(dx, dy, Resource{});
 		}
 }
 
-void Map::setResource(int x, int y, int type, int l)
+void Map::setResource(int x,int y,ResourceId resourceId,int l)
 {
-	assert(l>=0);
-	assert(l<w);
-	assert(l<h);
-	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
-		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			if (isResourceAllowed(dx, dy, type))
-			{
-				Resource& rp=tiles[coordToIndex(dx, dy)].resource;
-				const bool changedType = rp.type != type;
-				rp.type=type;
-				const ResourceType *rt=globalContainer->resourcesTypes.get(type);
-				rp.variety=syncRand()%rt->varietiesCount;
-				assert(rt->sizesCount>1);
-				rp.amount=RESOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
-				rp.animation=0;
-				if (changedType) resourceSeedChanged(coordToIndex(dx, dy), ResourceSeedCache::Resource);
-			}
+    const int type=resourceIndex(resourceId);
+    assert(l>=0 && l<w && l<h);
+    for (int dx=x-(l>>1);dx<x+(l>>1)+1;++dx)
+        for (int dy=y-(l>>1);dy<y+(l>>1)+1;++dy)
+            if (isResourceAllowed(dx,dy,type))
+            {
+                Resource r; r.type=type;
+                const auto& p=resourceProperties(type);
+                const auto& yld=resourceRegistry().yields(static_cast<ResourceId>(type))[materialIndex(p.primaryMaterial)];
+                r.amount=yld.initial;
+                // Stock is simulation state; variant selection is deterministic presentation.
+                if (std::has_single_bit(p.materialMask) && yld.placementMaximum>yld.initial)
+                    r.amount+=syncRand()%(yld.placementMaximum-yld.initial+1);
+                replaceResource(dx,dy,r);
+            }
 }
 
-bool Map::isResourceAllowed(int x, int y, int type)
+bool Map::isResourceAllowed(int x,int y,int type)
 {
-	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && terrainSupportsResource(terrainPropertiesAt(x, y), type);
+    if (!terrainSupportsResourceAt(x,y,type)) return false;
+    const auto& p=resourceProperties(type);
+    return (!p.blocksBuilding || getBuilding(x,y)==NOGBID) && (!p.blocksGround || getGroundUnit(x,y)==NOGUID) && (!p.blocksAir || getAirUnit(x,y)==NOGUID);
 }
 
 bool Map::isPointSet(int n, int x, int y) const
@@ -371,13 +294,13 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets, const Building* consumer)
+bool Map::materialAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets, const Building* consumer)
 {
 	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets, const Building* consumer)
+bool Map::materialAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets, const Building* consumer)
 {
 	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	if (g>GRADIENT_UNREACHABLE)
@@ -389,17 +312,17 @@ bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int
 		return false;
 }
 
-bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets, const Building* consumer)
+bool Map::materialAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets, const Building* consumer)
 {
 	// distance and availability
 	bool result;
 	if (dist)
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, dist, withMarkets, consumer);
+		result = materialAvailable(teamNumber, resourceType, swimClass, x, y, dist, withMarkets, consumer);
 	else
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
+		result = materialAvailable(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 		
 	// target position
-	const Uint16 *gradient = getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, consumer);
+	const Uint16 *gradient = getMaterialGradient(teamNumber, resourceType, swimClass, withMarkets, consumer);
 	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
 
 	return result;

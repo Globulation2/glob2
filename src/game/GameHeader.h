@@ -248,9 +248,13 @@ public:
 	const std::string& getBuildingCatalogSnapshot() const { return buildingCatalogSnapshot; }
 	void setBuildingCatalogSnapshot(const std::string& snapshot);
 	const std::vector<std::string>& buildingExperimentKeys() const { return buildingCatalogExperimentKeys; }
+	const std::vector<CatalogExperimentDefinition>& resourceExperiments() const { return resourceCatalogExperiments; }
+	void setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions);
+	std::vector<std::string> catalogExperimentKeys() const;
 private:
 	std::string buildingCatalogSnapshot;
 	std::vector<std::string> buildingCatalogExperimentKeys;
+	std::vector<CatalogExperimentDefinition> resourceCatalogExperiments;
 	std::string aiConfig[Team::MAX_COUNT];
 	bool loadAIConfig(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void saveAIConfig(GAGCore::OutputStream *stream) const;

@@ -5564,3 +5564,43 @@ Les ouvriers peuvent prendre des provisions dans le stock partagé des marchés.
 Importer des définitions de terrain
 [Terrain palette]
 Palette de terrains
+[Food]
+Food
+[Paper]
+Paper
+[Cherries]
+Cherries
+[Oranges]
+Oranges
+[Prunes]
+Prunes
+[Gold]
+Gold
+[Metal]
+Metal
+[Glass]
+Glass
+[Fabric]
+Fabric
+[Import Resource Definitions]
+Import Resource Definitions
+[Resource palette]
+Resource palette
+[Trees]
+Trees
+[Rocks]
+Rocks
+[Cherry tree]
+Cherry tree
+[Orange tree]
+Orange tree
+[Prune tree]
+Prune tree
+[Gold ore]
+Gold ore
+[Iron ore]
+Iron ore
+[Sand]
+Sand
+[Cotton]
+Cotton

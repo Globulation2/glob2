@@ -293,7 +293,7 @@ TEST_SUITE("ExperimentalFeatures")
 			// experiment set. Remove both additions to form a version 123 header.
 			const std::string sectionBytes = bytesOf(original.getExperiments());
 			REQUIRE(bytes.size() > sectionBytes.size());
-			const size_t legacySize = bytes.size() - sectionBytes.size() - sizeof(Uint32);
+			const size_t legacySize = bytes.size() - sectionBytes.size() - 2 * sizeof(Uint32);
 			auto* legacy = new MemoryStreamBackend(bytes.data(), legacySize);
 			legacy->seekFromStart(0);
 			BinaryInputStream old(legacy);
@@ -311,5 +311,29 @@ TEST_SUITE("ExperimentalFeatures")
 		// reset() clears the set like every other option.
 		original.reset();
 		CHECK(original.getExperiments().empty());
+	}
+	TEST_CASE("resource catalog keys and metadata survive both game-header transport forms")
+	{
+		GameHeader original;
+		const std::vector<CatalogExperimentDefinition> definitions{{"test-resource", "Test resource", "Enables a resource."}};
+		original.setResourceExperiments(definitions);
+		original.getExperiments().set("test-resource", true, original.catalogExperimentKeys());
+		for (bool players : {false, true})
+		{
+			auto* memory = new MemoryStreamBackend;
+			BinaryOutputStream out(memory);
+			if (players) original.save(&out); else original.saveWithoutPlayerInfo(&out);
+			out.flush();
+			const std::string bytes(memory->getBuffer(), memory->getPosition());
+			auto* restored = new MemoryStreamBackend(bytes.data(), bytes.size());
+			restored->seekFromStart(0);
+			BinaryInputStream in(restored);
+			GameHeader loaded;
+			REQUIRE((players ? loaded.load(&in, VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+			CHECK(loaded.resourceExperiments() == definitions);
+			CHECK(loaded.getExperiments().has("test-resource"));
+			CHECK(restored->getPosition() == bytes.size());
+		}
+		CHECK_FALSE(knownExperimentKey("test-resource"));
 	}
 }

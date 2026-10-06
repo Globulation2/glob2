@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
@@ -144,9 +145,9 @@ namespace Cortex
 
 		const bool isSwarm = completed->semantics.production.enabledUnitMask != 0;
         const bool isInn = completed->semantics.feeding.enabled;
-        bool isWheatFed = isInn && completed->semantics.feeding.cost[WHEAT] > 0;
+        bool isWheatFed = isInn && completed->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0;
         for (const auto& recipe : completed->semantics.production.recipes)
-            isWheatFed |= recipe.enabled && recipe.cost[WHEAT] > 0;
+            isWheatFed |= recipe.enabled && recipe.cost[materialIndex(MaterialId::Food)] > 0;
 
 		// Effective footprint used for space reservation. Some buildings grow on
 		// upgrade and must reserve room for the final size at placement time, or the

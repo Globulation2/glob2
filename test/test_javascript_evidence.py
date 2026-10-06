@@ -1,4 +1,6 @@
 """Regression checks for evidence provenance and Android transfer failures."""
+import gzip
+import struct
 import importlib.util
 import os
 from pathlib import Path
@@ -9,6 +11,7 @@ from unittest.mock import patch
 
 from build_provenance import build_issues, source_identity
 from check_javascript_evidence import provenance_issues, inventory
+from check_javascript import save_header
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'mobile/android_device_tests.py')
@@ -164,6 +167,49 @@ class AndroidRetrievalTests(unittest.TestCase):
                 self.assertFalse(android.retrieve(['adb'], '/remote/tests.xml', destination, errors, xml=True))
                 self.assertFalse(android.retrieve(['adb'], '/remote/artifacts', Path(directory) / 'corpus', errors))
             self.assertEqual(len(errors), 2)
+
+
+class SaveHeaderTests(unittest.TestCase):
+    @staticmethod
+    def fixture(version, resource_declarations=None, required=()):
+        def text(value):
+            encoded = value.encode('utf8')
+            return struct.pack('>I', len(encoded)) + encoded
+        result = text('Resource header fixture')
+        result += struct.pack('>IIII', 0, version, 2, 0) + b'\1' + bytes(20)
+        if version >= 134:
+            result += struct.pack('>I', 1) + text('ice-terrain')
+        if version >= 138:
+            declarations = resource_declarations or []
+            result += struct.pack('>I', len(declarations))
+            for definition in declarations:
+                result += b''.join(text(value) for value in definition)
+            result += struct.pack('>I', len(required))
+            result += b''.join(text(key) for key in required)
+        result += bytes(40)  # Two BaseTeam headers.
+        result += bytes(5) + struct.pack('>I', 3)  # Three players in GameHeader.
+        return gzip.compress(result)
+
+    def parse(self, value):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'fixture.game.gz'
+            path.write_bytes(value)
+            return save_header(path)
+
+    def test_legacy_and_resource_headers_have_correct_player_offsets(self):
+        for version in (125, 137, 138):
+            self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
+        declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
+        self.assertEqual(self.parse(self.fixture(138, declarations, ['custom-crops'])), (0, 138, 2, 3))
+
+    def test_resource_header_metadata_bounds_are_checked(self):
+        for declarations, required in [([('x' * 129, 'Label', 'Help')], []),
+                                      ([('key', 'L' * 513, 'Help')], []),
+                                      ([('key', 'Label', 'H' * 4097)], []),
+                                      ([], ['x' * 129]),
+                                      ([('key', 'Label', 'Help')] * 65, [])]:
+            with self.assertRaises(AssertionError):
+                self.parse(self.fixture(138, declarations, required))
 
 
 if __name__ == '__main__':

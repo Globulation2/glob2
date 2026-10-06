@@ -8,79 +8,79 @@
 #include <bit>
 #include <stdexcept>
 
-Sint32 Building::availableResource(int resource) const
+Sint32 Building::availableMaterial(int resource) const
 {
-	const auto reserved = type->useTeamResources ? owner->reservedTeamResources[resource] : reservedResources[resource];
-	return std::max(0, resources[resource] - reserved);
+	const auto reserved = type->useTeamResources ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
+	return std::max(0, materials[resource] - reserved);
 }
 
-bool Building::restoreResourcesReservation(const BuildingResourceCost& cost)
+bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
 {
 	for (int r=0; r<MAX_NB_RESOURCES; ++r)
-		if (cost[r] > availableResource(r)) return false;
+		if (cost[r] > availableMaterial(r)) return false;
 	for (int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
-		reservedResources[r] += cost[r];
+		reservedMaterials[r] += cost[r];
 		if (type->useTeamResources)
 		{
-			owner->reservedTeamResources[r] += cost[r];
+			owner->reservedTeamMaterials[r] += cost[r];
 		}
 	}
 	return true;
 }
 
-bool Building::reserveResources(const BuildingResourceCost& cost)
+bool Building::reserveMaterials(const BuildingMaterialCost& cost)
 {
-	if (!restoreResourcesReservation(cost)) return false;
+	if (!restoreMaterialsReservation(cost)) return false;
 	if (type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
-			if (cost[r] && availableResource(r)==0) owner->map->dirtyMarketGradients(owner->teamNumber, r);
+			if (cost[r] && availableMaterial(r)==0) owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	return true;
 }
 
-void Building::releaseResources(const BuildingResourceCost& cost)
+void Building::releaseMaterials(const BuildingMaterialCost& cost)
 {
 	for (int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
-		const int before=availableResource(r);
-		assert(reservedResources[r] >= cost[r]);
-		reservedResources[r] -= cost[r];
+		const int before=availableMaterial(r);
+		assert(reservedMaterials[r] >= cost[r]);
+		reservedMaterials[r] -= cost[r];
 		if (type->useTeamResources)
 		{
-			assert(owner->reservedTeamResources[r] >= cost[r]);
-			owner->reservedTeamResources[r] -= cost[r];
+			assert(owner->reservedTeamMaterials[r] >= cost[r]);
+			owner->reservedTeamMaterials[r] -= cost[r];
 		}
 		if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
 			owner->map->dirtyMarketGradients(owner->teamNumber,r);
 	}
 }
 
-void Building::consumeReservedResources(const BuildingResourceCost& cost, int diagnosticUse)
+void Building::consumeReservedMaterials(const BuildingMaterialCost& cost, int diagnosticUse)
 {
 	// Settling simultaneously removes stock and its reservation. Availability
 	// does not change, so no resource-gradient invalidation is needed.
 	for (int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
-		assert(resources[r] >= cost[r] && reservedResources[r] >= cost[r]);
-		resources[r] -= cost[r];
-		reservedResources[r] -= cost[r];
+		assert(materials[r] >= cost[r] && reservedMaterials[r] >= cost[r]);
+		materials[r] -= cost[r];
+		reservedMaterials[r] -= cost[r];
 		if (type->useTeamResources)
 		{
-			assert(owner->reservedTeamResources[r] >= cost[r]);
-			owner->reservedTeamResources[r] -= cost[r];
+			assert(owner->reservedTeamMaterials[r] >= cost[r]);
+			owner->reservedTeamMaterials[r] -= cost[r];
 		}
 		if (diagnosticUse >= 0) owner->stats.measurements.consumed[diagnosticUse][r] += cost[r];
 	}
 }
 
-BuildingResourceCost Building::serviceCost(const Unit* unit, int purpose) const
+BuildingMaterialCost Building::serviceCost(const Unit* unit, int purpose) const
 {
 	if (purpose == FEED) return type->semantics.feeding.cost;
 	if (purpose == HEAL) return type->semantics.healing.cost;
 	if (purpose < 0 || purpose >= NB_ABILITY) return {};
 	if (!type->semantics.trainingCostMask) return {};
 	if (!type->semantics.trainingInParallel || !unit) return type->semantics.training[purpose].cost;
-	BuildingResourceCost result{};
+	BuildingMaterialCost result{};
 	for (int a=WALK; a<NB_ABILITY; ++a)
 	{
 		const auto& training = type->semantics.training[a];
@@ -116,8 +116,8 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 		if (unit && !unit->needsTraining(spec.training[purpose], purpose)) return false;
 	}
 	if (!allowed || (unit && !(allowed & (1u << unit->typeNum)))) return false;
-	BuildingResourceCost bundleCost{};
-	const BuildingResourceCost* cost;
+	BuildingMaterialCost bundleCost{};
+	const BuildingMaterialCost* cost;
 	unsigned mask;
 	if (purpose == FEED) { cost = &spec.feeding.cost; mask = spec.feeding.costMask; }
 	else if (purpose == HEAL) { cost = &spec.healing.cost; mask = spec.healing.costMask; }
@@ -132,7 +132,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 	for (; mask; mask &= mask - 1)
 	{
 		const int r = std::countr_zero(mask);
-		if (availableResource(r) < (*cost)[r]) return false;
+		if (availableMaterial(r) < (*cost)[r]) return false;
 		if (holdAdmission)
 		{
 			Sint64 admissionBuffer = 0;
@@ -144,7 +144,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 				else if (occupant->destinationPurpose == HEAL && spec.healing.holdAdmissionUntilExit)
 					admissionBuffer += spec.healing.cost[r];
 			}
-			if (availableResource(r) < Sint64((*cost)[r]) + admissionBuffer) return false;
+			if (availableMaterial(r) < Sint64((*cost)[r]) + admissionBuffer) return false;
 		}
 	}
 	return true;
@@ -153,15 +153,15 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 void Building::reserveService(Unit* unit)
 {
 	assert(!unit->serviceResourcesReserved);
-	if (!reserveResources(serviceCost(unit, unit->destinationPurpose)))
-		throw std::runtime_error("Service admission overbooked building resources");
+	if (!reserveMaterials(serviceCost(unit, unit->destinationPurpose)))
+		throw std::runtime_error("Service admission overbooked building materials");
 	unit->serviceResourcesReserved = true;
 }
 
 void Building::releaseService(Unit* unit)
 {
 	if (!unit->serviceResourcesReserved) return;
-	releaseResources(serviceCost(unit, unit->destinationPurpose));
+	releaseMaterials(serviceCost(unit, unit->destinationPurpose));
 	unit->serviceResourcesReserved = false;
 }
 
@@ -170,7 +170,7 @@ void Building::settleService(Unit* unit)
 	// Completion, expulsion and destruction may all visit settlement. Only the
 	// outstanding commitment can debit inventory; an already settled visit cannot.
 	if (!unit->serviceResourcesReserved) return;
-	consumeReservedResources(serviceCost(unit, unit->destinationPurpose),
+	consumeReservedMaterials(serviceCost(unit, unit->destinationPurpose),
 		unit->destinationPurpose == FEED ? GameplayMeasurements::MEAL :
 		unit->destinationPurpose == HEAL ? GameplayMeasurements::HEALING_COST : GameplayMeasurements::TRAINING_COST);
 	unit->serviceResourcesReserved = false;
@@ -182,6 +182,6 @@ void Building::restoreServiceReservations()
 	{
 		if (!unit->serviceResourcesReserved) continue;
 		const auto cost = serviceCost(unit, unit->destinationPurpose);
-		if (!restoreResourcesReservation(cost)) throw std::runtime_error("Saved building services exceed available resources");
+		if (!restoreMaterialsReservation(cost)) throw std::runtime_error("Saved building services exceed available materials");
 	}
 }

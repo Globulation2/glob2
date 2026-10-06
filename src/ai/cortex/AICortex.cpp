@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "AIStateSerialization.h"
 #include "AICortex.h"
@@ -569,9 +570,9 @@ shared_ptr<Order> AICortex::getOrder(void)
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
-					          << " wheat=" << bb->resources[WHEAT] << "/" << bb->type->maxResource[WHEAT]
-					          << " wheatAvail=" << (g->map.resourceAvailable(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY) ? 1 : 0)
-					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY)
+					          << " wheat=" << bb->materials[materialIndex(MaterialId::Food)] << "/" << bb->type->maxMaterial[materialIndex(MaterialId::Food)]
+					          << " wheatAvail=" << (g->map.materialAvailable(tm->teamNumber, materialIndex(MaterialId::Food), 0, bb->posX, bb->posY) ? 1 : 0)
+					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, materialIndex(MaterialId::Food), 0, bb->posX, bb->posY)
 					          << "\n";
 				}
 			}

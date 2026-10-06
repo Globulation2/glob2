@@ -204,7 +204,7 @@ namespace
 
 TEST_SUITE("FarmAreas")
 {
-	TEST_CASE("without the experiment the default game's checksums are unchanged [golden]")
+	TEST_CASE("without the experiment the default game has a stable checksum trace [golden]")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::expectGolden("farm-areas/off-path-checksums.txt", offPathTrace());
@@ -236,7 +236,7 @@ TEST_SUITE("FarmAreas")
 					if (Unit* u = world.team->myUnits[i])
 					{
 						u->hungry = Unit::HUNGRY_MAX;
-						carrying += u->carriedResource == WHEAT;
+						carrying += u->carriedMaterial == WHEAT;
 					}
 			}
 			struct { int harvested, left, carrying; } result{
@@ -365,7 +365,7 @@ TEST_SUITE("FarmAreas")
 		}
 	}
 
-	TEST_CASE("off a farm, and for another team's farm, the original harvest is unchanged, phantom grain included")
+	TEST_CASE("off a farm and for another team's farm harvesting depletes only the targeted stock")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world(options(true));
@@ -375,7 +375,7 @@ TEST_SUITE("FarmAreas")
 		REQUIRE(harvest(map, 4, 5, 1, 0));
 		CHECK(wheatAt(map, 5, 5) == 0);
 		CHECK(wheatAt(map, 7, 5) == 5);
-		CHECK(harvest(map, 4, 5, 1, 0)); // the tile is empty and a grain is still granted
+		CHECK_FALSE(harvest(map, 4, 5, 1, 0)); // empty deposits never grant phantom material
 
 		paintFarm(map, 10, 10, 20, 20, 1);
 		setWheat(map, 15, 15, 1);
@@ -554,7 +554,7 @@ TEST_SUITE("FarmAreas")
 		REQUIRE(harvest(map, 12, 5, 1, 0));
 		CHECK(wheatAt(map, 13, 5) == 0);
 		CHECK(wheatAt(map, 14, 5) == 5);
-		CHECK(harvest(map, 12, 5, 1, 0));
+		CHECK_FALSE(harvest(map, 12, 5, 1, 0));
 		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(15, 8), TEAM_MASK, map.farmAreasEnabled()));
 
 		glob2test::HeadlessGame withExperiment(options(true));

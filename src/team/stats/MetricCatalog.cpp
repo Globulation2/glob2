@@ -48,9 +48,9 @@ std::vector<Band> perUnitType(std::function<double(const M &, int)> value)
 	return bands;
 }
 
-std::vector<Band> perResource(std::function<double(const M &, int)> value)
+std::vector<Band> perMaterial(std::function<double(const M &, int)> value)
 {
-	const char *keys[MAX_RESOURCES] = {"[Wood]", "[Wheat]", "[Papyrus]", "[Stone]", "[Alga]", "[Cherry]", "[Orange]", "[Prune]"};
+	const char *keys[MAX_RESOURCES] = {"[Wood]", "[Food]", "[Paper]", "[Stone]", "[Algae]", "[Cherries]", "[Oranges]", "[Prunes]", "[Gold]", "[Metal]", "[Glass]", "[Fabric]"};
 	std::vector<Band> bands;
 	for (int resource = 0; resource < MAX_RESOURCES; ++resource)
 		bands.push_back({keys[resource], [value, resource](const M &m) { return value(m, resource); }});
@@ -250,13 +250,13 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "gathered", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.harvested); }});
 		m.splitKey = "[stat view by resource]";
-		m.bands = perResource([](const M &s, int r) { return double(s.harvested[r]); });
+		m.bands = perMaterial([](const M &s, int r) { return double(s.harvested[r]); });
 	}
 	{
 		Metric &m = add({.id = "stored", .group = Group::Resources, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.stock); }});
 		m.splitKey = "[stat view by resource]";
-		m.bands = perResource([](const M &s, int r) { return double(s.stock[r]); });
+		m.bands = perMaterial([](const M &s, int r) { return double(s.stock[r]); });
 	}
 	{
 		Metric &m = add({.id = "spending", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
@@ -271,7 +271,7 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "delivered", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.delivered); }});
 		m.splitKey = "[stat view by resource]";
-		m.bands = perResource([](const M &s, int r) { return double(s.delivered[r]); });
+		m.bands = perMaterial([](const M &s, int r) { return double(s.delivered[r]); });
 	}
 	add({.id = "traded", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 		 .value = [](const M &m) { return total(m.transferredIn); },
@@ -420,7 +420,7 @@ std::vector<Metric> build()
 						 .value = [](const M &s) { return total(s.growthGlobal[1]); }});
 		m.unitKey = "[stat unit growth]";
 		m.splitKey = "[stat view by resource]";
-		m.bands = perResource([](const M &s, int r) { return double(s.growthGlobal[1][r]); });
+		m.bands = perMaterial([](const M &s, int r) { return double(s.growthGlobal[1][r]); });
 		m.extended = m.global = true;
 	}
 	{
@@ -432,7 +432,7 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "cleared", .group = Group::Map, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.cleared); }});
 		m.splitKey = "[stat view by resource]";
-		m.bands = perResource([](const M &s, int r) { return double(s.cleared[r]); });
+		m.bands = perMaterial([](const M &s, int r) { return double(s.cleared[r]); });
 	}
 
 	// Score

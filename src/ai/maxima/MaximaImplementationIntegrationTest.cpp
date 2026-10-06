@@ -414,7 +414,7 @@ static void fruitStrategyRegressions()
     auto opportunity=field.assessBuilding(10,10,inn->type->width,inn->type->height);
     REQUIRE((opportunity.available==1 && opportunity.covered==0));
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     bool advertisesInn=false;
     for(const auto& order:c.managementOrders)
         if(auto* alliance=dynamic_cast<Management::ChangeAlliances*>(order.get()))
@@ -424,7 +424,7 @@ static void fruitStrategyRegressions()
         }
     REQUIRE(advertisesInn);
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     for(auto posture:{AIMaxima::Maxima::PostureDefend,AIMaxima::Maxima::PostureRecover})
     {
         ai.posture=posture;
@@ -433,7 +433,7 @@ static void fruitStrategyRegressions()
         REQUIRE(ai.budget.fruit_active);
         REQUIRE(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
         ai.update_fruit_flags(c);
-        REQUIRE(c.resource_flags(CHERRY).size()==1);
+        REQUIRE(c.material_source_flags(CHERRY).size()==1);
     }
     // Pending mission identity survives a save; the next pass must reuse it.
     auto* backend=new GAGCore::MemoryStreamBackend;
@@ -444,22 +444,22 @@ static void fruitStrategyRegressions()
     input.seekFromStart(0);
     AIMaxima::Maxima restored(&player);
     REQUIRE(restored.load(&input,&player,VERSION_MINOR));
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.context.material_source_flags(CHERRY)==c.material_source_flags(CHERRY));
     restored.update_fruit_flags(restored.context);
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.context.material_source_flags(CHERRY)==c.material_source_flags(CHERRY));
     // Completed building vision replaces the pending explorer assignment.
     ::Building* covering=game.addBuilding(22,11,innType,0);REQUIRE(covering);
     const int coverId=c.buildings.register_building();
     c.buildings.issue_order(coverId,22,11,innType);
     c.buildings.tick();
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.material_source_flags(CHERRY).empty());
     covering->kill();player.team->syncStep();c.buildings.tick();
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.material_source_flags(CHERRY).size()==1);
     ai.strategy.fruit.enabled=false;ai.budget.fruit_active=false;
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.material_source_flags(CHERRY).empty());
 }
 
 static void reviewBugRegressions()
@@ -628,7 +628,7 @@ static void applyClearingGeometry(Context& c, ::Building* flag)
         auto selector=std::dynamic_pointer_cast<OrderModifyClearingFlag>(order);
         if(selector && selector->gid==flag->gid)
             for(int r=0; r<BASIC_COUNT; ++r)
-                flag->clearingResources[r]=selector->clearingResources[r];
+                flag->clearingMaterials[r]=selector->clearingMaterials[r];
     }
     c.orders.clear();
 }
@@ -1031,7 +1031,7 @@ static void innCompletionStaffingRegressions()
     // Finish through the engine so its one-worker post-construction default
     // is in place before the completion callback runs.
     for(int resource=0;resource<MAX_RESOURCES;++resource)
-        inn->resources[resource]=inn->type->maxResource[resource];
+        inn->materials[resource]=inn->type->maxMaterial[resource];
     inn->updateBuildingSite();
     REQUIRE(inn->constructionResultState==Building::NO_CONSTRUCTION);
     REQUIRE(inn->maxUnitWorking==1);
@@ -1318,7 +1318,7 @@ static void explorerSwarmStaffingRegressions()
     // apportionment to check: what matters is that the empty one ends up with
     // more carriers than the full ones.
     for(int id=0;id<3;++id)
-        c.buildings.get_building(id)->resources[WHEAT]=id ? 20 : 0;
+        c.buildings.get_building(id)->materials[WHEAT]=id ? 20 : 0;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -1396,7 +1396,7 @@ static void completedSwarmBudgetRegressions()
             ai.strategy.economy.swarm_pressure_sensitivity,ai.strategy.economy.swarm_workers_per_building).workers);
     };
     verify(1);
-    for(int resource=0;resource<MAX_RESOURCES;++resource) site->resources[resource]=site->type->maxResource[resource];
+    for(int resource=0;resource<MAX_RESOURCES;++resource) site->materials[resource]=site->type->maxMaterial[resource];
     site->updateBuildingSite(); verify(2);
     // Repair changes available producers, not the colony-wide labor budget.
     complete->hp/=2; complete->launchConstruction(1,1);

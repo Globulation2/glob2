@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Material.h"
 #include "BuildingType.h"
 #include "ExperimentalFeatures.h"
 #include "Sha256.h"
@@ -24,8 +25,19 @@ constexpr const char* ABILITY_NAMES[NB_ABILITY] = {
     "stopWalk", "stopSwim", "stopFly", "walk", "swim", "fly", "build", "harvest",
     "attackSpeed", "attackStrength", "magicAttackAir", "magicAttackGround", "magicCreateWood", "magicCreateWheat", "magicCreateAlgae", "armor", "hp"};
 constexpr const char* UNIT_NAMES[NB_UNIT_TYPE] = {"worker", "explorer", "warrior"};
-constexpr const char* RESOURCE_NAMES[MAX_RESOURCES] = {
-    "wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune"};
+constexpr const char* MATERIAL_NAMES[MaterialCount] = {
+    "wood", "food", "paper", "stone", "algae", "cherries", "oranges", "prunes", "gold", "metal", "glass", "fabric"};
+int authoredMaterial(const std::string& key)
+{
+    for (unsigned m=0; m<MaterialCount; ++m) if (key==MATERIAL_NAMES[m]) return m;
+    // Old catalogs and embedded snapshots used deposit names for inventories.
+    if (key=="wheat") return materialIndex(MaterialId::Food);
+    if (key=="papyrus") return materialIndex(MaterialId::Paper);
+    if (key=="cherry") return materialIndex(MaterialId::Cherries);
+    if (key=="orange") return materialIndex(MaterialId::Oranges);
+    if (key=="prune") return materialIndex(MaterialId::Prunes);
+    return -1;
+}
 
 #define BUILDING_STRING_FIELDS(X) X(type) X(gameSprite) X(miniSprite)
 #define BUILDING_INT_FIELDS(X) \
@@ -38,7 +50,7 @@ constexpr const char* RESOURCE_NAMES[MAX_RESOURCES] = {
     X(maxUnitInside) X(hpInit) X(hpMax) X(hpInc) X(armor) X(level) \
     X(shortTypeNum) X(isBuildingSite) X(defaultUnitStayRange) X(maxUnitStayRange) \
     X(viewingRange) X(regenerationSpeed) X(prestige)
-#define BUILDING_ARRAY_FIELDS(X) X(zonable) X(maxResource) X(multiplierResource)
+#define BUILDING_ARRAY_FIELDS(X) X(zonable) X(maxMaterial) X(materialMultiplier)
 
 [[noreturn]] void fail(const std::string& context, const std::string& message)
 {
@@ -124,24 +136,26 @@ template<class A> void array(const Json& j, A& target, const std::string& contex
     if (!j.is_array() || j.size() != std::size(target)) fail(context, "incorrect array length");
     for (std::size_t i = 0; i < j.size(); ++i) target[i] = integer(j[i], context);
 }
-BuildingResourceCost cost(const Json& j)
+BuildingMaterialCost cost(const Json& j)
 {
-    BuildingResourceCost out{};
+    BuildingMaterialCost out{};
     object(j, "cost");
+    MaterialMask seen=0;
     for (auto i = j.begin(); i != j.end(); ++i)
     {
-        int resource = -1;
-        for (int r = 0; r < MAX_RESOURCES; ++r) if (i.key() == RESOURCE_NAMES[r]) resource = r;
-        if (resource < 0) fail("cost", "unknown resource '" + i.key() + "'");
+        int resource = authoredMaterial(i.key());
+        if (resource < 0) fail("cost", "unknown material '" + i.key() + "'");
+        if (seen & (1u<<resource)) fail("cost", "duplicate material alias");
+        seen |= 1u<<resource;
         out[resource] = integer(i.value(), i.key());
         range(out[resource], 0, 1000000, i.key());
     }
     return out;
 }
-Json costJson(const BuildingResourceCost& values)
+Json costJson(const BuildingMaterialCost& values)
 {
     Json j = Json::object();
-    for (int r = 0; r < MAX_RESOURCES; ++r) if (values[r]) j[RESOURCE_NAMES[r]] = values[r];
+    for (int r = 0; r < MaterialCount; ++r) if (values[r]) j[MATERIAL_NAMES[r]] = values[r];
     return j;
 }
 BuildingServiceSpec service(const Json& j)
@@ -163,38 +177,41 @@ Json serviceJson(const BuildingServiceSpec& s)
         {"cost", costJson(s.cost)}, {"partial", s.partial == BuildingPartialService::None ? "none" : "proportional_full_cost"},
         {"holdAdmissionUntilExit", s.holdAdmissionUntilExit}, {"optionalFruitMask", s.optionalFruitMask}, {"convertsUnits", s.convertsUnits}};
 }
-std::uint8_t resourceMask(const Json& j, const std::string& context)
+MaterialMask resourceMask(const Json& j, const std::string& context)
 {
-    if (!j.is_array()) fail(context, "expected an array of resource names");
-    std::uint8_t mask=0;
+    if (!j.is_array()) fail(context, "expected an array of material names");
+    MaterialMask mask=0;
     for (const auto& item : j)
     {
         const auto name=string(item,context);
-        int resource=-1;
-        for (int r=0; r<MAX_RESOURCES; ++r) if (name==RESOURCE_NAMES[r]) resource=r;
-        if (resource<0) fail(context,"unknown resource '"+name+"'");
-        if (mask&(1u<<resource)) fail(context,"duplicate resource '"+name+"'");
+        int resource=authoredMaterial(name);
+        if (resource<0) fail(context,"unknown material '"+name+"'");
+        if (mask&(1u<<resource)) fail(context,"duplicate material '"+name+"'");
         mask|=1u<<resource;
     }
     return mask;
 }
-Json resourceMaskJson(std::uint8_t mask)
+Json resourceMaskJson(MaterialMask mask)
 {
     auto j=Json::array();
-    for (int r=0; r<MAX_RESOURCES; ++r) if (mask&(1u<<r)) j.push_back(RESOURCE_NAMES[r]);
+    for (int r=0; r<MaterialCount; ++r) if (mask&(1u<<r)) j.push_back(MATERIAL_NAMES[r]);
     return j;
 }
 BuildingSemantics semantics(const Json& j)
 {
-    keys(j, {"replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
+    keys(j, {"replenishMaterials", "ammunitionMaterial", "replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
         "admittedUnitMask", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
         "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost"}, "semantics");
     BuildingSemantics s;
-    if (j.contains("replenishResources")) s.replenishResourceMask=resourceMask(j.at("replenishResources"),"replenishResources");
+    if (j.contains("replenishMaterials") && j.contains("replenishResources")) fail("semantics", "conflicting replenishment aliases");
+    if (j.contains("ammunitionMaterial") && j.contains("ammunitionResource")) fail("semantics", "conflicting ammunition aliases");
+    if (j.contains("replenishMaterials")) s.replenishMaterialMask=resourceMask(j.at("replenishMaterials"),"replenishMaterials");
+    if (j.contains("replenishResources")) s.replenishMaterialMask=resourceMask(j.at("replenishResources"),"replenishResources");
 #define READ(n) optional(j, #n, s.n)
     READ(requiredWorkerLevel); READ(assignmentLimit); READ(regenerationPerTick); READ(repairable); READ(placeable); READ(instantPlacement); READ(relocatable);
     READ(occupiesGround); READ(admittedUnitMask); READ(workPriorityBias); READ(trainingInParallel);
-    READ(projectileBuildingDamage); READ(ammunitionResource); READ(ammunitionCost);
+    READ(projectileBuildingDamage); READ(ammunitionMaterial); READ(ammunitionCost);
+    optional(j, "ammunitionResource", s.ammunitionMaterial);
 #undef READ
     if (j.contains("constructionCost")) s.constructionCost = cost(j.at("constructionCost"));
     if (j.contains("repairCost")) s.repairCost = cost(j.at("repairCost"));
@@ -250,15 +267,21 @@ BuildingSemantics semantics(const Json& j)
     if (j.contains("market"))
     {
         const auto& m = j.at("market");
-        keys(m, {"sharedStock", "interTeamFruitExchange", "suppliesStock", "suppliesStockExperiment",
-            "fetchesStock", "fetchesStockExperiment", "pickupPenalty", "suppliesDirectStock", "fetchesDirectStock", "suppliesStockResources", "suppliesDirectStockResources", "fetchesStockResources", "fetchesDirectStockResources"}, "market");
+        keys(m, {"suppliesStockResources", "suppliesDirectStockResources", "fetchesStockResources", "fetchesDirectStockResources", "sharedStock", "interTeamFruitExchange", "suppliesStock", "suppliesStockExperiment",
+            "fetchesStock", "fetchesStockExperiment", "pickupPenalty", "suppliesDirectStock", "fetchesDirectStock", "suppliesStockMaterials", "suppliesDirectStockMaterials", "fetchesStockMaterials", "fetchesDirectStockMaterials"}, "market");
 #define READ(n) optional(m, #n, s.market.n)
         READ(sharedStock); READ(interTeamFruitExchange); READ(suppliesStock); READ(suppliesStockExperiment);
         READ(fetchesStock); READ(fetchesStockExperiment); READ(pickupPenalty); READ(suppliesDirectStock); READ(fetchesDirectStock);
-        for (auto [name, mask] : {std::pair{"suppliesStockResources", &s.market.suppliesStockMask},
-            {"suppliesDirectStockResources", &s.market.suppliesDirectStockMask},
-            {"fetchesStockResources", &s.market.fetchesStockMask}, {"fetchesDirectStockResources", &s.market.fetchesDirectStockMask}})
-            if (m.contains(name)) *mask=resourceMask(m.at(name),name);
+        for (auto [name, mask] : {std::pair{"suppliesStockMaterials", &s.market.suppliesStockMask},
+            {"suppliesDirectStockMaterials", &s.market.suppliesDirectStockMask},
+            {"fetchesStockMaterials", &s.market.fetchesStockMask}, {"fetchesDirectStockMaterials", &s.market.fetchesDirectStockMask}})
+        {
+            const std::string modern=name;
+            const std::string legacy=modern.substr(0,modern.size()-9)+"Resources";
+            if (m.contains(modern) && m.contains(legacy)) fail("market", "conflicting material aliases");
+            if (m.contains(modern)) *mask=resourceMask(m.at(modern),modern);
+            else if (m.contains(legacy)) *mask=resourceMask(m.at(legacy),legacy);
+        }
 #undef READ
     }
     return s;
@@ -266,11 +289,11 @@ BuildingSemantics semantics(const Json& j)
 Json semanticsJson(const BuildingSemantics& s)
 {
     Json j;
-    j["replenishResources"]=resourceMaskJson(s.replenishResourceMask);
+    j["replenishMaterials"]=resourceMaskJson(s.replenishMaterialMask);
 #define WRITE(n) j[#n] = s.n
     WRITE(requiredWorkerLevel); WRITE(assignmentLimit); WRITE(regenerationPerTick); WRITE(repairable); WRITE(placeable); WRITE(instantPlacement); WRITE(relocatable);
     WRITE(occupiesGround); WRITE(admittedUnitMask); WRITE(workPriorityBias); WRITE(trainingInParallel);
-    WRITE(projectileDamage); WRITE(projectileBuildingDamage); WRITE(ammunitionResource); WRITE(ammunitionCost);
+    WRITE(projectileDamage); WRITE(projectileBuildingDamage); WRITE(ammunitionMaterial); WRITE(ammunitionCost);
 #undef WRITE
     j["constructionCost"] = costJson(s.constructionCost);
     j["repairCost"] = costJson(s.repairCost);
@@ -280,7 +303,7 @@ Json semanticsJson(const BuildingSemantics& s)
     for (int a = 0; a < NB_ABILITY; ++a)
     {
         const auto& t = s.training[a];
-        if (t.enabled || t.unitMask != BUILDING_ALL_UNIT_TYPES || t.targetLevel || t.duration || t.constructionLevel >= 0 || t.cost != BuildingResourceCost{})
+        if (t.enabled || t.unitMask != BUILDING_ALL_UNIT_TYPES || t.targetLevel || t.duration || t.constructionLevel >= 0 || t.cost != BuildingMaterialCost{})
             training[ABILITY_NAMES[a]] = {{"enabled", t.enabled}, {"unitMask", t.unitMask},
                 {"targetLevel", t.targetLevel}, {"duration", t.duration}, {"cost", costJson(t.cost)}};
         if (t.constructionLevel >= 0) training[ABILITY_NAMES[a]]["constructionLevel"] = t.constructionLevel;
@@ -292,14 +315,14 @@ Json semanticsJson(const BuildingSemantics& s)
     for (int u = 0; u < NB_UNIT_TYPE; ++u)
     {
         const auto& r = s.production.recipes[u];
-        if (r.enabled || r.duration || r.cost != BuildingResourceCost{})
+        if (r.enabled || r.duration || r.cost != BuildingMaterialCost{})
             p["recipes"][UNIT_NAMES[u]] = {{"enabled", r.enabled}, {"duration", r.duration}, {"cost", costJson(r.cost)}};
     }
     auto& m = j["market"];
-    m["suppliesStockResources"]=resourceMaskJson(s.market.suppliesStockMask);
-    m["suppliesDirectStockResources"]=resourceMaskJson(s.market.suppliesDirectStockMask);
-    m["fetchesStockResources"]=resourceMaskJson(s.market.fetchesStockMask);
-    m["fetchesDirectStockResources"]=resourceMaskJson(s.market.fetchesDirectStockMask);
+    m["suppliesStockMaterials"]=resourceMaskJson(s.market.suppliesStockMask);
+    m["suppliesDirectStockMaterials"]=resourceMaskJson(s.market.suppliesDirectStockMask);
+    m["fetchesStockMaterials"]=resourceMaskJson(s.market.fetchesStockMask);
+    m["fetchesDirectStockMaterials"]=resourceMaskJson(s.market.fetchesDirectStockMask);
 #define WRITE(n) m[#n] = s.market.n
     WRITE(sharedStock); WRITE(interTeamFruitExchange); WRITE(suppliesStock); WRITE(suppliesStockExperiment);
     WRITE(fetchesStock); WRITE(fetchesStockExperiment); WRITE(pickupPenalty); WRITE(suppliesDirectStock); WRITE(fetchesDirectStock);
@@ -332,7 +355,7 @@ Json propertiesJson(const BuildingType& b)
 void properties(const Json& j, BuildingType& b)
 {
 #define NAME(n) #n,
-    keys(j, { BUILDING_STRING_FIELDS(NAME) BUILDING_INT_FIELDS(NAME) BUILDING_ARRAY_FIELDS(NAME) }, "properties");
+    keys(j, { BUILDING_STRING_FIELDS(NAME) BUILDING_INT_FIELDS(NAME) BUILDING_ARRAY_FIELDS(NAME) "maxResource", "multiplierResource" }, "properties");
 #undef NAME
 #define READ(n) optional(j, #n, b.n);
     BUILDING_STRING_FIELDS(READ) BUILDING_INT_FIELDS(READ)
@@ -340,6 +363,10 @@ void properties(const Json& j, BuildingType& b)
 #define READ(n) if (j.contains(#n)) array(j.at(#n), b.n, #n);
     BUILDING_ARRAY_FIELDS(READ)
 #undef READ
+    for (const auto& names : {std::pair{"maxResource", "maxMaterial"}, std::pair{"multiplierResource", "materialMultiplier"}})
+        if (j.contains(names.first) && j.contains(names.second)) fail("properties", "conflicting material aliases");
+    if (j.contains("maxResource")) array(j.at("maxResource"), b.maxMaterial, "maxResource");
+    if (j.contains("multiplierResource")) array(j.at("multiplierResource"), b.materialMultiplier, "multiplierResource");
     if (!j.contains("shortTypeNum")) b.shortTypeNum = -1;
     if (!j.contains("type")) b.type.clear();
 }
@@ -557,7 +584,7 @@ void BuildingsTypes::resolveAndValidate()
             {
                 b.semantics.production.enabledUnitMask |= 1u << u;
                 b.unitProductionTime = semantic.production.recipes[u].duration;
-                b.resourceForOneUnit = semantic.production.recipes[u].cost[WHEAT];
+                b.resourceForOneUnit = semantic.production.recipes[u].cost[materialIndex(MaterialId::Food)];
             }
 
         b.prevLevel = b.previousKey.empty() ? -1 : findByKey(b.previousKey);
@@ -591,22 +618,22 @@ void BuildingsTypes::resolveAndValidate()
         range(b.insideSpeed, 1, 256, b.key + ".insideSpeed");
         for (int r = 0; r < MAX_NB_RESOURCES; ++r)
         {
-            range(b.maxResource[r], 0, r < MAX_RESOURCES ? 1000000 : 0, b.key + ".maxResource");
-            range(b.multiplierResource[r], 1, 1000000, b.key + ".multiplierResource");
+            range(b.maxMaterial[r], 0, r < MaterialCount ? 1000000 : 0, b.key + ".maxMaterial");
+            range(b.materialMultiplier[r], 1, 1000000, b.key + ".materialMultiplier");
         }
         auto& s = b.semantics;
         const auto compileCost = [&](auto& recipe) {
             recipe.costMask = 0;
             for (int r = 0; r < MAX_NB_RESOURCES; ++r)
             {
-                range(recipe.cost[r], 0, r < MAX_RESOURCES ? 1000000 : 0, b.key + ".cost");
+                range(recipe.cost[r], 0, r < MaterialCount ? 1000000 : 0, b.key + ".cost");
                 if (recipe.cost[r]) recipe.costMask |= std::uint16_t(1u << r);
             }
         };
         for (int r=0; r<MAX_NB_RESOURCES; ++r)
         {
-            range(s.constructionCost[r], 0, r<MAX_RESOURCES ? 1000000 : 0, b.key + ".constructionCost");
-            range(s.repairCost[r], 0, r<MAX_RESOURCES ? 1000000 : 0, b.key + ".repairCost");
+            range(s.constructionCost[r], 0, r<MaterialCount ? 1000000 : 0, b.key + ".constructionCost");
+            range(s.repairCost[r], 0, r<MaterialCount ? 1000000 : 0, b.key + ".repairCost");
             if (!b.isBuildingSite && s.constructionCost[r]) fail(b.key, "constructionCost belongs to a construction site");
         }
         compileCost(s.feeding); compileCost(s.healing);
@@ -662,7 +689,7 @@ void BuildingsTypes::resolveAndValidate()
         if (s.placeable && !b.isBuildingSite && !s.instantPlacement)
             fail(b.key, "placeable completed variant requires instant placement");
         range(s.market.pickupPenalty, 0, 1000000, b.key + ".pickupPenalty");
-        range(s.ammunitionResource, 0, MAX_RESOURCES - 1, b.key + ".ammunitionResource");
+        range(s.ammunitionMaterial, 0, MaterialCount - 1, b.key + ".ammunitionMaterial");
         range(s.ammunitionCost, 0, 1000000, b.key + ".ammunitionCost");
         for (const auto damage : s.projectileDamage) range(damage, 0, 1000000, b.key + ".projectileDamage");
         range(s.projectileBuildingDamage, 0, 1000000, b.key + ".projectileBuildingDamage");

@@ -122,7 +122,7 @@ namespace
 		{
 			if (options.resourceGradients)
 				for (int r = 0; r < MAX_RESOURCES; ++r)
-					game.map.getResourceGradient(0, r, 0);
+					game.map.getMaterialGradient(0, r, 0);
 			if (options.slowCadence)
 			{
 				// Two more teams with every resource field allocated: the round-robin
@@ -132,7 +132,7 @@ namespace
 				for (int t = 0; t < 3; ++t)
 					for (int r = 0; r < MAX_RESOURCES; ++r)
 						for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-							game.map.getResourceGradient(t, r, c);
+							game.map.getMaterialGradient(t, r, c);
 			}
 		}
 
@@ -627,7 +627,7 @@ namespace
 
 TEST_SUITE("GuardAreaBalance")
 {
-	TEST_CASE("without the experiment every warrior takes the nearest area; nobody leaves it; the default game's checksums are unchanged [golden]")
+	TEST_CASE("without the experiment every warrior takes the nearest area; nobody leaves it; the checksum trace is stable [golden]")
 	{
 		glob2test::HeadlessGlobals globals;
 		Options options;

@@ -241,7 +241,7 @@ static bool generate(Game &game, GenerationContext &context)
 		}
 		else
 			context.telemetry.fallback(
-				"concrete-islands.neutral.resources-omitted",
+				"concrete-islands.neutral.materials-omitted",
 				"Neutral island is too small to subdivide into wheat and fruit zones.", i);
 	}
 

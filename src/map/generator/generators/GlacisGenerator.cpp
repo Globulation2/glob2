@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GlacisGenerator.h"
+#include "ResourceSemantics.h"
 #include "Contact.h"
 #include "Drawing.h"
 #include "FertilityField.h"
@@ -1067,7 +1068,7 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 		const int x = i % t.w, y = i / t.w;
 		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
 			map.terrainSupportsResourceAt(x, y, WOOD))) &&
-				  !(map.isResource(x, y) && map.getResource(x, y).type == STONE);
+				  !permanentResourceBarrier(map, i);
 	}
 	std::vector<unsigned char> source(n, 0);
 	for (int i = 0; i < n; ++i)

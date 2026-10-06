@@ -482,6 +482,7 @@ TEST_SUITE("MatchSetup")
 		onDisk.insert("data/nicowar.default.txt");
 		onDisk.insert("data/nicowar.txt");
 		onDisk.insert("data/buildings/manifest.json");
+        onDisk.insert("data/resources/registry.json");
 		const auto buildingManifest = json::parse(glob2test::readFile(root / "data/buildings/manifest.json"));
 		for (const auto& name : buildingManifest.at("files"))
 			onDisk.insert("data/buildings/" + name.get<std::string>());

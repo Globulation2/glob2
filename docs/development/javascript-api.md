@@ -55,6 +55,8 @@ ctx.game.building({id, generation})
 ctx.game.buildingTypes()
 ctx.game.experiments()
 ctx.game.terrainTypes()
+ctx.game.resourceTypes()
+ctx.game.materialTypes()
 ctx.game.rules()
 ```
 
@@ -262,7 +264,8 @@ callback budget. For example, a 256×256 request exceeds the work budget.
 | --- | --- |
 | `x`, `y`, `visible`, `explored` | Always present; `visible` means current permission to see the tile |
 | `observedTick`, `terrain`, `terrainType`, `resource` | Present only when explored; current data if visible, last observation otherwise |
-| `resource.type`, `.variety`, `.amount` | Numeric resource ID, visual variety and engine amount (byte counters); no resource is `{type: 255, variety: 0, amount: 0}` |
+| `resource.type`, `.variety`, `.amount` | Map-local resource ID, visual variety and total stock; no resource is `{type: 65535, variety: 0, amount: 0}` |
+| `materialStocks` | Twelve quantities indexed by fixed material ID; current stocks if visible, remembered stocks otherwise |
 | `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
 | `fertility` | Map scripts only; raw `0..65535` wheat-growth fertility value |
 | `forbidden` | AI scripts only, on explored tiles; current own-team forbidden-area boolean, even if terrain is remembered |
@@ -280,6 +283,20 @@ script asks for.
 `ctx.game.terrainTypes()`. Both tile fields follow the same visibility and
 remembered-observation rules. Unexplored tiles do not expose either field.
 The registry is static public metadata and does not reveal map contents.
+
+`resourceTypes()` and `materialTypes()` also return immutable public metadata in
+both profiles, including commander AIs. Resource descriptors expose `id`, `key`,
+`name`, `yields`, mobility and placement obstruction, habitat and ecology fields,
+growth/spread rates, farming/clearing behavior and experiment requirements. Each
+yield names a numeric `material`, capacity, initial stock, seed reserve, growth
+probability and consumption policy (`0` one, `1` entire deposit, `2` infinite).
+Rates use 196608 units per opportunity. Material descriptors have fixed `id` and
+canonical `key`; see [resource catalogs](../features/resource-catalogs.md).
+
+Unit `carriedMaterial`, building `materials` and `wishedMaterials`, and team
+`materials` distinguish inventory from map deposits. Historical `carriedResource`,
+`resources` and `wishedResources` names remain legacy script aliases; their numeric
+inventory positions mean materials, not resource IDs.
 
 ```js
 const definitions = ctx.game.terrainTypes();
@@ -304,7 +321,7 @@ Each entry has `id`, stable `name`, `experiment` (a required experiment key or
 | `groundHealthQ8`, `airHealthQ8` | Signed HP per exposed tick, divided by `256`; negative damages |
 | `fertilityQ8`, `inhibitionQ8`, `shoreSupportQ8` | Nearby contribution, inhibition, and aquatic shoreline support in Q8 units |
 | `allowedResources` | Array of resource IDs that the terrain supports |
-| `farmCrop` | Farm crop resource ID, or `255` for none |
+| `farmMaterial` | Preferred renewable farming material key, or `null` for none |
 
 The array is ID-indexed and includes internal shoreline profiles and experimental
 materials even when the current match has not enabled their authoring options.
@@ -540,7 +557,12 @@ seams. Coordinates use tiles; footprint distance is the gap between rectangles.
 counts for a wrapped region. Fertility is remembered under fog in profile 2.
 
 `distanceField({sources, movement, metric})` builds a reusable callback-local
-field. Sources select points, resources, permitted units, and buildings. Building filters
+field. Sources select points, resources, materials, permitted units, and buildings.
+Use `{material: "food"}` (or a numeric material ID) to include all deposits carrying
+food, independent of their resource identity. `weight: "amount"` uses that
+material's stock; `harvestable: true` applies forbidden-area and visibility rules.
+Hidden cells use remembered stocks and never reveal current hidden inventory.
+Building filters
 accept `capability` (one operation from `buildingTypes().capabilities`), `buildingType`
 (an exact match-local variant ID), or `type` (an authored name/key or a legacy numeric
 family). Capability filtering includes construction sites for their completed service.

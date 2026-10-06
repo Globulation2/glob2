@@ -222,10 +222,10 @@ void colonyStartupAndAffordability()
     REQUIRE(!ai.budget.colony_swarm_requested);
     Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); REQUIRE(worker);
     swarm->unitsWorking.push_back(worker);
-    swarm->resources[WHEAT]=swarm->type->resourceForOneUnit;
+    swarm->materials[WHEAT]=swarm->type->resourceForOneUnit;
     ai.finalize_director_plan(ai.context);
     REQUIRE(ai.budget.colony_swarm_requested);
-    swarm->unitsWorking.clear(); swarm->resources[WHEAT]=0;
+    swarm->unitsWorking.clear(); swarm->materials[WHEAT]=0;
     ai.finalize_director_plan(ai.context);
     REQUIRE(ai.budget.colony_swarm_requested); // Later idleness is not a new startup.
 }
@@ -260,7 +260,7 @@ void distantWheatFundsRecovery()
     ai.manage_swarm(c,0);f.applyStaffing();REQUIRE(swarm->ratio[WORKER]>0);
     // Full stores cannot manufacture recurring capacity when no wheat remains.
     f.game.map.setNoResource(36,11,1);
-    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
     REQUIRE(ai.budget.swarm_workers==0);
     f.game.map.setResource(36,11,WHEAT,1);
@@ -287,13 +287,13 @@ void soleSwarmStaffsFromItsOwnStock()
     // Carriers no longer come from the colony birth budget: the swarm reads
     // its own wheat stock. A full swarm holds the minimum whatever the budget
     // says, and an empty one asks for more.
-    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
     for(int budget:{10,0,2}) {
         ai.budget.swarm_workers=budget;
         for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
         REQUIRE(swarm->maxUnitWorking==1);
     }
-    swarm->resources[WHEAT]=0;
+    swarm->materials[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
     REQUIRE(swarm->maxUnitWorking>1);
 }
@@ -309,22 +309,20 @@ void nearbyCornDeterminesStaffing()
 
     const long long before=ai.nearby_farm_capacity(c,0);
     REQUIRE(before>0);
-    const int originalAmount=f.game.map.getTile(16,11).resource.amount;
-    // A cell with no wheat is no supply. A cell with wheat supplies its
-    // recurring growth plus the stock standing on it, amortised over the
-    // planning horizon, so a deeper stack is more supply and not the same
-    // supply: on ground where nothing regrows the stock is the only food there
-    // is, and treating it as nothing left Maxima unable to play such a map.
-    long long previous=0;
-    for(int amount=0;amount<=8;++amount)
+    const auto originalResource=f.game.map.getTile(16,11).resource;
+    const auto stockLimit=f.game.map.resourceRegistry().yields(static_cast<ResourceId>(originalResource.type))[materialIndex(MaterialId::Food)].capacity;
+    // Empty nonpersistent deposits disappear. Recreate each authored stock
+    // level independently; only valid levels up to its declared capacity apply.
+    // Live replenishment varies with stock, while standing food always counts.
+    for(unsigned amount=0;amount<=stockLimit;++amount)
     {
+        f.game.map.replaceResource(16,11,originalResource);
         f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), amount);
         const long long capacity=ai.nearby_farm_capacity(c,0);
         if(amount==0) REQUIRE(capacity==0);
-        else REQUIRE((capacity>0 && capacity>=previous));
-        previous=capacity;
+        else REQUIRE(capacity>0);
     }
-    f.game.map.setResourceAmount(f.game.map.coordToIndex(16,11), originalAmount);
+    f.game.map.replaceResource(16,11,originalResource);
     auto world=ai.collect_development_world(c);
     REQUIRE(world.tile(16,11).foodOpportunity>0);
     REQUIRE(world.tile(15,11).fertility>0);
@@ -344,8 +342,8 @@ void nearbyCornDeterminesStaffing()
     // Staffing no longer divides a colony total between swarms by nearby corn.
     // Each reads its own stock, so the empty one outgrows the full one and
     // neither drops below the minimum.
-    first->resources[WHEAT]=0;
-    second->resources[WHEAT]=second->type->maxResource[WHEAT];
+    first->materials[WHEAT]=0;
+    second->materials[WHEAT]=second->type->maxMaterial[WHEAT];
     for(int pass=0;pass<6;++pass)
     {
         for(int id=0;id<2;++id) ai.manage_swarm(c,id);
@@ -398,10 +396,10 @@ void cornPileInteriorIsSupply()
     ai.budget.staffing_slack=1;
     ai.budget.staffing_minimum_workers=1;
     ai.budget.staffing_maximum_workers=20;
-    inn->resources[WHEAT]=0;
+    inn->materials[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     REQUIRE(inn->maxUnitWorking>=2);
-    inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
+    inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
     for(int pass=0;pass<12;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     REQUIRE(inn->maxUnitWorking==1);
 }
@@ -542,7 +540,7 @@ void armyBirthsMatchPlatformChecksums()
     defense.desired_warriors=12;defense.warrior_ratio=3;defense.utility=100;
     a.arbitrate_policy_bids();a.manage_swarm(c,0);f.applyStaffing();
     REQUIRE((swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0));
-    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
     swarm->productionTimeout=-1;
     const std::string fixtureFile=(glob2test::sourceRoot() / "test/maxima/fixtures/army-birth-checksums.txt").string();
     const char* path=fixtureFile.c_str();
@@ -601,14 +599,14 @@ void crisisProductionPause()
         // are the building's own business now and keep their minimum.
         REQUIRE(swarm->maxUnitWorking>=1);
         for(int type=0;type<NB_UNIT_TYPE;++type) REQUIRE(swarm->ratio[type]==0);
-        swarm->resources[WHEAT]=20;
+        swarm->materials[WHEAT]=20;
         swarm->productionTimeout=expiredTimer;
         const int before=f.population();
         for(int tick=0;tick<1000;++tick) swarm->swarmStep();
         // The existing engine cannot cancel an already-expired timer through
         // AI orders. That one pending birth may finish; further births stop.
         const int pending=expiredTimer<0 ? 1 : 0;
-        REQUIRE((f.population()==before+pending && swarm->resources[WHEAT]==20-5*pending));
+        REQUIRE((f.population()==before+pending && swarm->materials[WHEAT]==20-5*pending));
         REQUIRE(swarm->productionTimeout==(pending ? swarm->type->unitProductionTime : expiredTimer));
 
         // Funding returns through the same director and executor path.
@@ -620,7 +618,7 @@ void crisisProductionPause()
         REQUIRE((swarm->ratio[WORKER]==4 && swarm->ratio[EXPLORER]==1
             && swarm->ratio[WARRIOR]==2));
         for(int tick=0;tick<=swarm->type->unitProductionTime;++tick) swarm->swarmStep();
-        REQUIRE((f.population()==before+pending+1 && swarm->resources[WHEAT]==15-5*pending));
+        REQUIRE((f.population()==before+pending+1 && swarm->materials[WHEAT]==15-5*pending));
     }
 }
 
@@ -647,7 +645,7 @@ void completionReallocatesColony()
     // The construction site carries the workers the placement action asked for.
     REQUIRE(fresh->maxUnitWorking==2);
     for(int resource=0;resource<MAX_RESOURCES;++resource)
-        fresh->resources[resource]=fresh->type->maxResource[resource];
+        fresh->materials[resource]=fresh->type->maxMaterial[resource];
     fresh->updateBuildingSite();
     REQUIRE(fresh->maxUnitWorking==1);
     // Completion no longer redistributes a colony total. Each swarm runs its
@@ -655,7 +653,7 @@ void completionReallocatesColony()
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
-    old->resources[WHEAT]=0; fresh->resources[WHEAT]=0;
+    old->materials[WHEAT]=0; fresh->materials[WHEAT]=0;
     for(int pass=0;pass<6;++pass)
     {
         // The pre-existing swarm is the first building the fixture created.
@@ -682,10 +680,10 @@ void trackerLogicalCadence()
         Fixture f;
         Building* swarm=f.swarm(10,10);
         auto& c=f.ai->context; c.initialize(); c.timer=phase;
-        swarm->resources[WHEAT]=20;
-        c.add_resource_tracker(new Management::ResourceTracker(c,0,25,WHEAT),0);
+        swarm->materials[WHEAT]=20;
+        c.add_material_tracker(new Management::MaterialTracker(c,0,25,WHEAT),0);
         IdleAI idle;
-        auto tracker=c.get_resource_tracker(0);
+        auto tracker=c.get_material_tracker(0);
         const auto tick=[&]() {++f.game.stepCounter; c.getOrder(idle);};
         for(int i=0;i<9;++i) tick();
         REQUIRE((tracker->get_age()==9 && tracker->get_total_level()==0));
@@ -696,7 +694,7 @@ void trackerLogicalCadence()
         REQUIRE((tracker->get_age()==10 && tracker->get_total_level()==20));
         for(int i=10;i<250;++i) tick();
         REQUIRE((tracker->get_age()==250 && tracker->get_total_level()==500));
-        swarm->resources[WHEAT]=0;
+        swarm->materials[WHEAT]=0;
         for(int i=0;i<250;++i) tick();
         REQUIRE((tracker->get_age()==500 && tracker->get_total_level()==0));
     }
@@ -749,8 +747,8 @@ void newBuildingsStartStaffed()
     REQUIRE(inn->maxUnitWorking==4);
     // The seed applies once. From here the loop owns the number, so a building
     // that stays full hands carriers back below its starting count.
-    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
-    inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
+    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
+    inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
     for(int pass=0;pass<40;++pass)
     {
         ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
@@ -966,7 +964,7 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     Building* inn=world.addBuilding("inn",8,8);
-    inn->resources[WHEAT]=10;
+    inn->materials[WHEAT]=10;
     Unit* worker=world.addUnit(WORKER);
     worker->destinationPurpose=FEED;
     inn->subscribeUnitForInside(worker);
@@ -979,7 +977,7 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     while(worker->displacement==Unit::DIS_INSIDE && elapsed<2000){worker->syncStep();++elapsed;}
     CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);
     CHECK(elapsed==AIMaximaBuildings::serviceTicks(*inn->type,inn->type->semantics.feeding.duration));
-    CHECK(inn->resources[WHEAT]==9);
+    CHECK(inn->materials[WHEAT]==9);
 }
 
 TEST_CASE("feeding estimate shares resources and seats across capability combinations" * doctest::test_suite("Maxima.Economy"))
@@ -994,27 +992,27 @@ TEST_CASE("feeding estimate shares resources and seats across capability combina
         return AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),p);
     };
     const auto normal=estimate(baseline,plan);
-    auto costly=baseline;costly["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",2},{"wood",1}};
-    costly["variants"][id]["properties"]["maxResource"][WOOD]=20;
+    auto costly=baseline;costly["variants"][id]["semantics"]["feeding"]["cost"]={{"food",2},{"wood",1}};
+    costly["variants"][id]["properties"]["maxMaterial"][WOOD]=20;
     const auto mixedCost=estimate(costly,plan);
     CHECK(mixedCost.visitsPerTick<=normal.visitsPerTick);
-    CHECK(mixedCost.resources[WHEAT]==2*mixedCost.resources[WOOD]);
+    CHECK(mixedCost.materials[WHEAT]==2*mixedCost.materials[WOOD]);
     auto distant=plan;distant.oneWayTravelTicks*=2;
     CHECK(estimate(baseline,distant).visitsPerTick<=normal.visitsPerTick);
     auto free=baseline;free["variants"][id]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
     auto nobody=plan;nobody.carriers=0;
     const auto freeEstimate=estimate(free,nobody);
     CHECK(freeEstimate.visitsPerTick>=normal.visitsPerTick);
-    CHECK(freeEstimate.resources[WHEAT]==0);
+    CHECK(freeEstimate.materials[WHEAT]==0);
     CHECK(freeEstimate.haulingWorkerTicks==0);
     auto hybrid=baseline;auto& spec=hybrid["variants"][id]["semantics"];
-    spec["healing"]["enabled"]=true;spec["healing"]["duration"]=12;spec["healing"]["cost"]={{"wheat",1}};
-    spec["production"]["recipes"]={{"worker",{{"enabled",true},{"duration",80},{"cost",{{"wheat",2}}}}}};
+    spec["healing"]["enabled"]=true;spec["healing"]["duration"]=12;spec["healing"]["cost"]={{"food",1}};
+    spec["production"]["recipes"]={{"worker",{{"enabled",true},{"duration",80},{"cost",{{"food",2}}}}}};
     const auto shared=estimate(hybrid,plan);
     CHECK(shared.visitsPerTick<=normal.visitsPerTick);
     CHECK(shared.haulingWorkerTicks<=plan.carriers*AIMaxima::FeedingEstimate::Scale);
-    CHECK(shared.resources[WHEAT]>shared.visitsPerTick);
-    CHECK(normal.resources[WHEAT]==normal.visitsPerTick);
+    CHECK(shared.materials[WHEAT]>shared.visitsPerTick);
+    CHECK(normal.materials[WHEAT]==normal.visitsPerTick);
 }
 
 namespace
@@ -1192,30 +1190,30 @@ TEST_CASE("operating estimates use one production clock and packet denominators"
     const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
     auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
     auto& variant=snapshot["variants"][id];
-    variant["properties"]["maxResource"][WOOD]=20;
+    variant["properties"]["maxMaterial"][WOOD]=20;
     variant["semantics"]["feeding"]["enabled"]=false;
     variant["semantics"]["production"]["initialRatios"]={0,0,0};
     variant["semantics"]["production"]["scheduling"]="weighted_committed_job";
     variant["semantics"]["production"]["recipes"]={
-        {"worker",{{"enabled",true},{"duration",10},{"cost",{{"wheat",1}}}}},
+        {"worker",{{"enabled",true},{"duration",10},{"cost",{{"food",1}}}}},
         {"explorer",{{"enabled",true},{"duration",100},{"cost",{{"wood",3}}}}}};
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
     const AIMaxima::FeedingPlan plan{1000,0,1};
     const auto ordinary=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
     const auto rate=AIMaxima::FeedingEstimate::Scale/(11+101);
-    CHECK(ordinary.resources[WHEAT]==rate);
-    CHECK(ordinary.resources[WOOD]==3*rate);
+    CHECK(ordinary.materials[WHEAT]==rate);
+    CHECK(ordinary.materials[WOOD]==3*rate);
     CHECK(ordinary.productionRates[WORKER]==rate*1000/AIMaxima::FeedingEstimate::Scale);
     CHECK(ordinary.productionRates[EXPLORER]==ordinary.productionRates[WORKER]);
-    variant["properties"]["multiplierResource"][WHEAT]=10;
-    variant["properties"]["multiplierResource"][WOOD]=10;
+    variant["properties"]["materialMultiplier"][WHEAT]=10;
+    variant["properties"]["materialMultiplier"][WOOD]=10;
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
     const auto packet=AIMaxima::estimateFeeding(*world.game.buildingsTypes.get(id),plan);
-    CHECK(packet.resources==ordinary.resources);
+    CHECK(packet.materials==ordinary.materials);
     CHECK(packet.resourcePackets[WHEAT]==ordinary.resourcePackets[WHEAT]/10);
     CHECK(packet.resourcePackets[WOOD]==ordinary.resourcePackets[WOOD]/10);
     CHECK(packet.productionRates==ordinary.productionRates);
-    CHECK(packet.haulingWorkerTicks==ordinary.resources[WHEAT]/10+ordinary.resources[WOOD]/10);
+    CHECK(packet.haulingWorkerTicks==ordinary.materials[WHEAT]/10+ordinary.materials[WOOD]/10);
     CHECK(packet.haulingWorkerTicks<ordinary.haulingWorkerTicks);
 }
 
@@ -1226,26 +1224,26 @@ TEST_CASE("parallel training budgets separate compatible recipients and disabled
     const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
     auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());auto& variant=snapshot["variants"][id];
     variant["properties"]["maxUnitInside"]=2;
-    variant["properties"]["maxResource"][WOOD]=20;variant["properties"]["maxResource"][STONE]=20;
+    variant["properties"]["maxMaterial"][WOOD]=20;variant["properties"]["maxMaterial"][STONE]=20;
     variant["semantics"]["feeding"]["enabled"]=false;
     variant["semantics"]["trainingInParallel"]=true;
     variant["semantics"]["training"]={
         {"walk",{{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",10},{"cost",{{"wood",1}}}}},
         {"attackStrength",{{"enabled",true},{"unitMask",4},{"targetLevel",1},{"duration",100},{"cost",{{"stone",3}}}}},
-        {"swim",{{"enabled",true},{"unitMask",1},{"targetLevel",0},{"constructionLevel",0},{"duration",500},{"cost",{{"wheat",5}}}}}};
+        {"swim",{{"enabled",true},{"unitMask",1},{"targetLevel",0},{"constructionLevel",0},{"duration",500},{"cost",{{"food",5}}}}}};
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
     AIMaxima::FeedingPlan plan{1000,0,1};
     const auto* type=world.game.buildingsTypes.get(id);
     const auto trained=AIMaxima::estimateFeeding(*type,plan);
-    CHECK(trained.resources[WOOD]==AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,10));
-    CHECK(trained.resources[STONE]==3*(AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,100)));
-    CHECK(trained.resources[WHEAT]==0); // no level-zero improvement
+    CHECK(trained.materials[WOOD]==AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,10));
+    CHECK(trained.materials[STONE]==3*(AIMaxima::FeedingEstimate::Scale/AIMaximaBuildings::serviceTicks(*type,100)));
+    CHECK(trained.materials[WHEAT]==0); // no level-zero improvement
     variant["semantics"]["feeding"]["enabled"]=true;
     world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();type=world.game.buildingsTypes.get(id);
     const auto hybrid=AIMaxima::estimateFeeding(*type,plan);
     plan.training=false;const auto disabled=AIMaxima::estimateFeeding(*type,plan);
     CHECK(disabled.visitsPerTick>hybrid.visitsPerTick);
-    CHECK(disabled.resources[WOOD]==0);CHECK(disabled.resources[STONE]==0);
+    CHECK(disabled.materials[WOOD]==0);CHECK(disabled.materials[STONE]==0);
     plan.feeding=false;CHECK(AIMaxima::estimateFeeding(*type,plan).visitsPerTick==0);
 }
 
@@ -1287,7 +1285,7 @@ TEST_CASE("one training course credits independent movement and worker construct
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     const int id=world.game.buildingsTypes.getFinishedTypeNum("inn");
     auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());auto& variant=snapshot["variants"][id];
-    variant["properties"]["maxResource"][WOOD]=20;
+    variant["properties"]["maxMaterial"][WOOD]=20;
     variant["semantics"]["feeding"]["enabled"]=false;
     variant["semantics"]["trainingInParallel"]=true;
     variant["semantics"]["training"]={{"walk",{{"enabled",true},{"unitMask",5},{"targetLevel",1},
@@ -1398,14 +1396,14 @@ TEST_CASE("feeding packet denominations preserve large stock rates and profile c
     glob2test::HeadlessGlobals globals;
     Fixture f;auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
     const int id=f.game.buildingsTypes.getFinishedTypeNum("inn");
-    snapshot["variants"][id]["properties"]["maxResource"][WHEAT]=1000000;
-    snapshot["variants"][id]["properties"]["multiplierResource"]=std::vector<int>(MAX_NB_RESOURCES,1);
-    snapshot["variants"][id]["properties"]["multiplierResource"][WHEAT]=1000000;
-    snapshot["variants"][id]["semantics"]["feeding"]["cost"]={{"wheat",1000000}};
+    snapshot["variants"][id]["properties"]["maxMaterial"][WHEAT]=1000000;
+    snapshot["variants"][id]["properties"]["materialMultiplier"]=std::vector<int>(MAX_NB_RESOURCES,1);
+    snapshot["variants"][id]["properties"]["materialMultiplier"][WHEAT]=1000000;
+    snapshot["variants"][id]["semantics"]["feeding"]["cost"]={{"food",1000000}};
     f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();
     f.ai->ensure_strategy();
     const auto estimate=AIMaxima::estimateFeeding(*f.game.buildingsTypes.get(id),{4,16*23,105});
-    CHECK(estimate.resources[WHEAT]==INT_MAX);
+    CHECK(estimate.materials[WHEAT]==INT_MAX);
     CHECK(estimate.resourcePackets[WHEAT]>INT_MAX/1000000);
     CHECK(estimate.resourcePackets[WHEAT]==estimate.feedingResourcePackets[WHEAT]);
     const int root=f.game.buildingCapabilities().lineageRoot(id);
@@ -1483,7 +1481,7 @@ TEST_CASE("mechanical production ceilings are separate from planned carrier thro
     const auto& recipe=producer->semantics.production.recipes[WORKER];
     const auto raw=AIMaxima::FeedingEstimate::Scale/(recipe.duration+1);
     CHECK(ceiling.productionRates[WORKER]==raw*1000/AIMaxima::FeedingEstimate::Scale);
-    CHECK(ceiling.productionResourcePackets[WHEAT]==raw*recipe.cost[WHEAT]/producer->multiplierResource[WHEAT]);
+    CHECK(ceiling.productionResourcePackets[WHEAT]==raw*recipe.cost[WHEAT]/producer->materialMultiplier[WHEAT]);
     CHECK(ceiling.productionRates[WORKER]>planned.productionRates[WORKER]);
     plan.carriers=1;plan.oneWayTravelTicks=1000;
     const auto distant=AIMaxima::estimateFeeding(*producer,plan);
@@ -1609,7 +1607,7 @@ TEST_CASE("aggregate feeding demand escapes a crop count cap during service shor
             auto catalog=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
             for(auto& variant:catalog["variants"])if(variant["semantics"]["feeding"]["enabled"].get<bool>()) {
                 variant["semantics"]["feeding"]["cost"]=recipe==1?nlohmann::json::object():nlohmann::json{{"wood",1}};
-                if(recipe==2)variant["properties"]["maxResource"][WOOD]=20;
+                if(recipe==2)variant["properties"]["maxMaterial"][WOOD]=20;
             }
             f.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.configureBuildingCatalog();
         }
@@ -1651,7 +1649,7 @@ TEST_CASE("operating production claims preserve weighted recipe costs and shared
     ratios[WARRIOR]=32767;
     CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==999999);
 
-    std::array<int,8> independent{},production{},trips{};
+    std::array<int,MaterialCount> independent{},production{},trips{};
     independent[WHEAT]=3000;independent[WOOD]=4000;production[WHEAT]=10000;trips.fill(300);
     const auto shared=operatingClaim(independent,production,3,trips);
     CHECK(shared.production[WHEAT]==3000);CHECK(shared.total[WHEAT]==6000);CHECK(shared.total[WOOD]==4000);
@@ -1848,4 +1846,26 @@ TEST_CASE("feeding candidates transfer funded meal shares through cache reload a
     // Lost supply invalidates both the reservation reference and cached query.
     world.tile(8,8).protectedYield=0;restored.evaluateFoodLedger(world);
     CHECK_FALSE(restored.foodUpgradePasses(world,action,reason));CHECK(restored.foodQuery.transferred==0);
+}
+
+TEST_CASE("Food reach crosses passable nonfood deposits but respects resource obstruction" * doctest::test_suite("Maxima.Economy"))
+{
+ using namespace AIMaximaPlacement;
+ WorldState world; world.reset(16,16);
+ for(auto& tile:world.tiles) { tile.discovered=true; tile.walkable=false; }
+ for(int x=3;x<=8;++x) world.tile(x,4).walkable=true;
+ auto& crossing=world.tile(5,4);
+ crossing.resourceType=materialIndex(MaterialId::Fabric);
+ crossing.materialSources=materialBit(MaterialId::Fabric);
+ auto& food=world.tile(8,4); food.foodOpportunity=65536;
+ food.resourceType=materialIndex(MaterialId::Food);
+ food.materialSources=materialBit(MaterialId::Food);
+ Planner planner;
+ auto reached=planner.colonyFoodTiles(world,2,4,Footprint(0,0,1,1));
+ REQUIRE(std::find(reached.begin(),reached.end(),world.index(8,4))!=reached.end());
+ const auto passableSignature=world.computeSignature();
+ crossing.resourceBlocksGround=true;
+ REQUIRE(world.computeSignature()!=passableSignature);
+ reached=planner.colonyFoodTiles(world,2,4,Footprint(0,0,1,1));
+ REQUIRE(reached.empty());
 }

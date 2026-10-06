@@ -538,10 +538,10 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	{ c.telemetry.choice("faulted-city.rejected-check", "food"); c.detail = food; return false; }
 	if (const auto room = colonyRoom(map, L, c.request.nbTeams); !room.empty())
 	{ c.telemetry.choice("faulted-city.rejected-check", "room"); c.detail = room; return false; }
-	c.telemetry.measure("faulted-city.resources.wheat", planted[0]);
-	c.telemetry.measure("faulted-city.resources.wood", planted[1]);
-	c.telemetry.measure("faulted-city.resources.stone-extra", stones);
-	c.telemetry.measure("faulted-city.resources.fruit", fruits);
+	c.telemetry.measure("faulted-city.materials.wheat", planted[0]);
+	c.telemetry.measure("faulted-city.materials.wood", planted[1]);
+	c.telemetry.measure("faulted-city.materials.stone-extra", stones);
+	c.telemetry.measure("faulted-city.materials.fruit", fruits);
 	return true;
 }
 
@@ -549,8 +549,8 @@ std::string qualityFailure(const StartQualityReport &q)
 {
 	for (const auto &s : q.colonies)
 		if (s.wheatDistance < 0 || s.wheatDistance > 12 || s.woodDistance < 0 || s.woodDistance > 24 ||
-			s.resources[STONE].nearestDistance < 0 || s.resources[STONE].nearestDistance > 32 || s.buildSites < 48 ||
-			s.distanceBands[0].depositTiles[WHEAT] < 12 || s.resources[WHEAT].catchmentDeposits < 24)
+			s.materials[materialIndex(MaterialId::Stone)].nearestDistance < 0 || s.materials[materialIndex(MaterialId::Stone)].nearestDistance > 32 || s.buildSites < 48 ||
+			s.distanceBands[0].depositTiles[materialIndex(MaterialId::Food)] < 12 || s.materials[materialIndex(MaterialId::Food)].catchmentDeposits < 24)
 		return "A city neighbourhood lacks reachable crops or building room.";
 	if (q.fairness < 0.80) return "The city neighbourhoods are too unequal; try another seed.";
 	return {};

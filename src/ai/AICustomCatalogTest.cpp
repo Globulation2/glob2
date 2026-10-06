@@ -59,7 +59,7 @@ struct CatalogWorld
             if(!missing && old->type=="hospital" && !old->isBuildingSite) {
                 variant["semantics"]["feeding"]=feeding;
                 variant["semantics"]["assignmentLimit"]=20;
-                variant["properties"]["maxResource"][WHEAT]=32;
+                variant["properties"]["maxMaterial"][WHEAT]=32;
             }
             if(splitProduction) {
                 auto& recipes=variant["semantics"]["production"]["recipes"];
@@ -92,13 +92,13 @@ struct CatalogWorld
             const int offset=32*team;
             auto* building=game.addBuilding(4+offset,4+offset,anchor,team,4,4);
             REQUIRE(building);
-            building->resources[WHEAT]=building->type->maxResource[WHEAT];
+            building->materials[WHEAT]=building->type->maxMaterial[WHEAT];
             game.teams[team]->addToStaticAbilitiesLists(building);
             game.teams[team]->startPosX=4+offset;game.teams[team]->startPosY=4+offset;
             game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
             if(populatedProvider) {
                 auto* provider=game.addBuilding(10+offset,4+offset,completed,team,3,3);
-                REQUIRE(provider);provider->resources[WHEAT]=32;
+                REQUIRE(provider);provider->materials[WHEAT]=32;
                 game.teams[team]->addToStaticAbilitiesLists(provider);
             }
             for(int i=0;i<12;++i)world.addUnit(i<10?WORKER:WARRIOR,4+offset+i,12+offset,team);
@@ -206,7 +206,7 @@ TEST_CASE("Nicowar and Econo keep independent weighted material objectives and s
             // Stock pools need only wood. Add a second ingredient to exercise
             // the existing wheat preference with a genuinely mixed recipe.
             if(pool) for(auto& variant:snapshot["variants"])
-                if(variant["key"]=="swimmingpool.0.site") variant["semantics"]["constructionCost"]["wheat"]=1;
+                if(variant["key"]=="swimmingpool.0.site") variant["semantics"]["constructionCost"]["food"]=1;
         });
         auto& game=fixture.world.game;
         for(int y=0;y<64;++y)for(int x=0;x<64;++x) game.map.setNoResource(x,y,0);
@@ -226,10 +226,10 @@ TEST_CASE("Nicowar and Econo keep independent weighted material objectives and s
         std::shared_ptr<AISharedRuntime::Construction::MinimumDistance> stoneClearance;
         for(const auto& constraint:runtime.building_orders.front()->constraints) {
             auto* gradient=constraint->get_gradient_info();if(!gradient || gradient->sources.size()!=1) continue;
-            auto resource=std::dynamic_pointer_cast<AISharedRuntime::Gradients::Entities::Resource>(gradient->sources.front());
+            auto resource=std::dynamic_pointer_cast<AISharedRuntime::Gradients::Entities::MaterialSource>(gradient->sources.front());
             if(!resource) continue;
-            if(auto objective=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimizedDistance>(constraint)) objectives.emplace(resource->resource_type,objective);
-            if(resource->resource_type==STONE) if(auto clearance=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimumDistance>(constraint)) stoneClearance=clearance;
+            if(auto objective=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimizedDistance>(constraint)) objectives.emplace(resource->material,objective);
+            if(resource->material==STONE) if(auto clearance=std::dynamic_pointer_cast<AISharedRuntime::Construction::MinimumDistance>(constraint)) stoneClearance=clearance;
         }
         REQUIRE(objectives.contains(WOOD));REQUIRE(objectives.contains(pool?WHEAT:STONE));
         CHECK(objectives.size()==2);
@@ -261,8 +261,8 @@ TEST_CASE("shared runtime retirement distinguishes attraction and feeding and pr
         }
         if(variant==2) {
             flag["semantics"]["market"]["suppliesDirectStock"]=true;
-            flag["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
-            flag["properties"]["maxResource"][WOOD]=8;
+            flag["semantics"]["market"]["suppliesDirectStockMaterials"]={"wood"};
+            flag["properties"]["maxMaterial"][WOOD]=8;
             food["semantics"]["feeding"]["cost"]=nlohmann::json::object();
         }
         game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
@@ -418,7 +418,7 @@ TEST_CASE("Nicowar resolves one aggregate production demand per colony managemen
         NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");
         ai.war_preparation=true;ai.growth_phase=true;ai.starving_recovery=false;
         for(auto it=runtime.br.begin();it!=runtime.br.end();++it) {
-            AISharedRuntime::Management::AddResourceTracker tracker(16,AISharedRuntime::Management::RecurringInputStock,it->first);tracker.modify(runtime);
+            AISharedRuntime::Management::AddMaterialTracker tracker(16,AISharedRuntime::Management::RecurringInputStock,it->first);tracker.modify(runtime);
         }
         ai.manage_buildings(runtime);
         int creates=0;for(const auto& order:runtime.orders) creates+=order->getOrderType()==ORDER_CREATE;
@@ -773,7 +773,7 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
     for(bool swimming:{false,true}) {
         CAPTURE(swimming);
         ai.canSwim=swimming;
-        auto* gradient=game.map.getResourceGradient(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
+        auto* gradient=game.map.getMaterialGradient(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
         for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
         ai.copyWheatGradient(copied.data());
         for(std::size_t i=0;i<copied.size();++i) {
@@ -782,4 +782,52 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
         }
     }
 }
+TEST_CASE("AI source selectors discover renamed multi-material deposits and independent depletion")
+{
+    glob2test::HeadlessGlobals globals;
+    CatalogWorld fixture(AI::MAXIMA);
+    auto& map=fixture.world.game.map;
+    auto source=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+    source["key"]="test:mixed-crop";
+    source["yields"]["food"]["initial"]=2;
+    source["yields"]["paper"]=source["yields"]["food"];
+    source["properties"]["persistsWhenEmpty"]=true;
+    map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",nlohmann::json::array({source})}}.dump());
+    const auto identity=map.resourceRegistry().find("test:mixed-crop");
+    REQUIRE(identity.has_value());
+    REQUIRE(resourceIndex(*identity)!=materialIndex(MaterialId::Food));
+    map.setResource(40,40,resourceIndex(*identity),2);
+    struct TestMaterialSource : AISharedRuntime::Gradients::Entities::MaterialSource {
+        using MaterialSource::MaterialSource;
+        using MaterialSource::is_entity;
+        using MaterialSource::can_change;
+    };
+    struct MaterialSet : AISharedRuntime::Gradients::Entities::MaterialSources {
+        using MaterialSources::MaterialSources;
+        using MaterialSources::is_entity;
+    };
+    TestMaterialSource food(materialIndex(MaterialId::Food)),paper(materialIndex(MaterialId::Paper));
+    MaterialSet either(materialBit(MaterialId::Food)|materialBit(MaterialId::Paper));
+    CHECK(food.is_entity(&map,40,40)); CHECK(paper.is_entity(&map,40,40));
+    CHECK(either.is_entity(&map,40,40)); CHECK(food.can_change());
+    struct GroundObstacle : AISharedRuntime::Gradients::Entities::ResourceGroundObstacle {
+        using ResourceGroundObstacle::is_entity;
+        using ResourceGroundObstacle::can_change;
+    };
+    struct BuildingObstacle : AISharedRuntime::Gradients::Entities::ResourceBuildingObstacle {
+        using ResourceBuildingObstacle::is_entity;
+        using ResourceBuildingObstacle::can_change;
+    };
+    GroundObstacle ground;
+    BuildingObstacle building;
+    CHECK(ground.is_entity(&map,40,40)==map.resourceBlocksGround(map.coordToIndex(40,40)));
+    CHECK(building.is_entity(&map,40,40)==map.resourceBlocksBuilding(map.coordToIndex(40,40)));
+    CHECK(ground.can_change()); CHECK(building.can_change());
+    CHECK_FALSE(ground.is_entity(&map,41,40));
+    CHECK_FALSE(building.is_entity(&map,41,40));
+    map.setMaterialAmount(map.coordToIndex(40,40),materialIndex(MaterialId::Food),0);
+    CHECK_FALSE(food.is_entity(&map,40,40)); CHECK(paper.is_entity(&map,40,40));
+    CHECK(either.is_entity(&map,40,40));
+}
+
 }

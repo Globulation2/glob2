@@ -19,6 +19,7 @@
 //
 // Reordering these entries would reinterpret persisted IDs in supported saves.
 
+#include "Material.h"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -73,7 +74,7 @@ void BuildingsTypes::initLegacy()
 	imported.catalogKey_ = "stock";
 	imported.startingBuildingKey_ = "swarm.0.finished";
 	imported.experiments_.push_back({"markets-v2", "Markets V2",
-		"Workers fetch shared market stock; upgrades add wheat and wood, then all resources."});
+		"Workers fetch shared market stock; upgrades add food and wood, then all materials."});
 	for (const TablePart& part : g_tableParts)
 		for (std::size_t i = 0; i < part.count; ++i)
 		{
@@ -124,18 +125,18 @@ void BuildingsTypes::initLegacy()
 		bt.presentation.skinSlot = bt.type == "swarm" && !bt.isBuildingSite ? "swarm" : "";
 		if (bt.crossConnectMultiImage) bt.presentation.connectionGroup = bt.key;
 		BuildingSemantics& p = bt.semantics;
-		p.replenishResourceMask=0;
-		for (int r=0; r<MAX_RESOURCES; ++r) if (bt.maxResource[r]>0) p.replenishResourceMask|=1u<<r;
-		p.market.suppliesStockMask=p.market.suppliesDirectStockMask=p.replenishResourceMask;
-		p.market.fetchesStockMask=p.market.fetchesDirectStockMask=p.replenishResourceMask;
+		p.replenishMaterialMask=0;
+		for (int r=0; r<MaterialCount; ++r) if (bt.maxMaterial[r]>0) p.replenishMaterialMask|=1u<<r;
+		p.market.suppliesStockMask=p.market.suppliesDirectStockMask=p.replenishMaterialMask;
+		p.market.fetchesStockMask=p.market.fetchesDirectStockMask=p.replenishMaterialMask;
 		p.requiredWorkerLevel = bt.level;
 		p.assignmentLimit = bt.maxUnitWorking ? 20 : 0;
 		p.regenerationPerTick = bt.unitProductionTime ? 1 : 0;
 		p.repairable = !bt.isBuildingSite && !bt.previousKey.empty();
-		if (bt.isBuildingSite) std::copy_n(bt.maxResource, MAX_NB_RESOURCES, p.constructionCost.begin());
+		if (bt.isBuildingSite) std::copy_n(bt.maxMaterial, MAX_NB_RESOURCES, p.constructionCost.begin());
 		if (p.repairable)
 			for (const auto& site : *imported.entries_)
-				if (site.key == bt.previousKey) std::copy_n(site.maxResource, MAX_NB_RESOURCES, p.repairCost.begin());
+				if (site.key == bt.previousKey) std::copy_n(site.maxMaterial, MAX_NB_RESOURCES, p.repairCost.begin());
 		p.placeable = bt.previousKey.empty();
 		p.instantPlacement = p.relocatable = bt.isVirtual;
 		p.occupiesGround = !bt.isVirtual;
@@ -146,7 +147,7 @@ void BuildingsTypes::initLegacy()
 		p.feeding.duration = bt.timeToFeedUnit;
 		if (bt.canFeedUnit)
 		{
-			p.feeding.cost[WHEAT] = 1;
+			p.feeding.cost[materialIndex(MaterialId::Food)] = 1;
 			p.feeding.partial = BuildingPartialService::ProportionalFullCost;
 			p.feeding.holdAdmissionUntilExit = true;
 			p.feeding.optionalFruitMask = (1u << HAPPINESS_COUNT) - 1;
@@ -168,7 +169,7 @@ void BuildingsTypes::initLegacy()
 		{
 			recipe.enabled = bt.unitProductionTime != 0;
 			recipe.duration = bt.unitProductionTime;
-			if (recipe.enabled) recipe.cost[WHEAT] = bt.resourceForOneUnit;
+			if (recipe.enabled) recipe.cost[materialIndex(MaterialId::Food)] = bt.resourceForOneUnit;
 		}
 		p.market.sharedStock = bt.useTeamResources;
 		p.market.interTeamFruitExchange = bt.canExchange;
@@ -378,7 +379,7 @@ void BuildingsTypes::compileRuntimeTraits()
         for (int unit=0; unit<NB_UNIT_TYPE; ++unit) if (b.zonable[unit]) hot.attractionMask|=1u<<unit;
         hot.suppliesStockMask=b.runtimeSuppliesStockMask; hot.suppliesDirectStockMask=b.runtimeSuppliesDirectStockMask;
         hot.fetchesStockMask=b.runtimeFetchesStockMask; hot.fetchesDirectStockMask=b.runtimeFetchesDirectStockMask;
-        hot.replenishResourceMask=s.replenishResourceMask; hot.productionEnabledMask=s.production.enabledUnitMask;
+        hot.replenishMaterialMask=s.replenishMaterialMask; hot.productionEnabledMask=s.production.enabledUnitMask;
         if (s.production.scheduling==BuildingProductionScheduling::WeightedCommittedJob) hot.flags|=BuildingRuntimeTraits::CommittedProduction;
     }
 }

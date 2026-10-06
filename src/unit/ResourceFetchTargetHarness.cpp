@@ -65,7 +65,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 
 	// Task assignment: ascend the resource gradient once, same call as
 	// Unit.cpp/UnitDisplacement.cpp.
-	game.map.resourceAvailableUpdate(teamNumber, WHEAT, swimClass, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
+	game.map.materialAvailableUpdate(teamNumber, WHEAT, swimClass, unit->posX, unit->posY, &unit->targetX, &unit->targetY, NULL);
 	require(unit->targetX == nearX && unit->targetY == nearY, "initial target is the nearer wheat tile");
 	require(game.map.getGradient(teamNumber, WHEAT, swimClass, unit->targetX, unit->targetY) == GRADIENT_AT_GOAL,
 		"initial target is the gradient's goal");
@@ -83,7 +83,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 
 	// Simulate the periodic rebuild every cached gradient gets from
 	// Map::syncStep once per its round-robin turn.
-	game.map.updateResourcesGradient(teamNumber, WHEAT, swimClass);
+	game.map.updateMaterialGradient(teamNumber, WHEAT, swimClass);
 	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) != GRADIENT_AT_GOAL,
 		"the rebuilt gradient no longer marks the depleted tile as the goal");
 
@@ -125,7 +125,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(innType >= 0, "inn type exists");
 	Building* inn = game.addBuilding(5, 5, innType, 0);
 	require(inn != nullptr, "inn placed");
-	require(game.map.resourceSupplyModes(inn, WHEAT) == 0, "stock permission without a supplier uses natural routing");
+	require(game.map.materialSupplyModes(inn, WHEAT) == 0, "stock permission without a supplier uses natural routing");
 	game.map.setBuilding(5, 5, inn->type->width, inn->type->height, inn->gid);
 
 	const int unitX = 16, unitY = 16;
@@ -147,7 +147,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	unit->validTarget = true;
 	const int swimClass = unit->swimClass();
 
-	require(game.map.getGlobalGradientDestination(game.map.getResourceGradient(teamNumber, WHEAT, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
+	require(game.map.getGlobalGradientDestination(game.map.getMaterialGradient(teamNumber, WHEAT, swimClass), unit->posX, unit->posY, &unit->targetX, &unit->targetY),
 		"sanity: ascending the plain gradient reaches an exact goal");
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"sanity: the plain gradient's nearest tile is the one close to the unit, not the building");
@@ -167,7 +167,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	// The near-building tile gets fully harvested by someone else. Neither
 	// the resource gradient nor the round-trip field notice by themselves.
 	game.map.replaceResource(nearBuildingX, nearBuildingY, Resource{});
-	game.map.updateResourcesGradient(teamNumber, WHEAT, swimClass);
+	game.map.updateMaterialGradient(teamNumber, WHEAT, swimClass);
 	game.map.updateRoundTripGradient(inn, WHEAT, swimClass);
 
 	// Next action: only the near-unit tile is left on either gradient: the
@@ -176,17 +176,17 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(unit->targetX == nearUnitX && unit->targetY == nearUnitY,
 		"target is refreshed to the only remaining wheat tile");
 
-	require(game.map.resourceRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
-	const auto* natural=game.map.getResourceGradient(teamNumber,WHEAT,swimClass);
+	require(game.map.materialRoutingCacheBytes() == 0, "ordinary natural fetch allocates no supplier cache");
+	const auto* natural=game.map.getMaterialGradient(teamNumber,WHEAT,swimClass);
 	const int marketType=game.buildingsTypes.getTypeNum("market",0,false);
 	auto* market=game.addBuilding(24,24,marketType,0);
 	require(market!=nullptr, "fruit-only market placed");
-	market->resources[CHERRY]=1;
+	market->materials[CHERRY]=1;
 	require(!team->directStockSuppliers.empty(), "fruit-only market is a direct supplier");
-	require(game.map.resourceSupplyModes(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
-	require(game.map.getResourceGradient(teamNumber,WHEAT,swimClass,true,inn)==natural,
+	require(game.map.materialSupplyModes(inn,WHEAT)==0, "fruit-only supplier cannot alter wheat routing");
+	require(game.map.getMaterialGradient(teamNumber,WHEAT,swimClass,true,inn)==natural,
 		"fruit-only supplier retains the original natural wheat field");
-	require(game.map.resourceRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
+	require(game.map.materialRoutingCacheBytes()==0, "impossible wheat supplier creates no cached field");
 	std::puts("PASS resource-fetch target tracks the round-trip gradient and refreshes when it is rebuilt");
 }
 }

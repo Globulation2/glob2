@@ -14,7 +14,6 @@
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
 #include "MapRenderState.h"
-#include "RessourceType.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
@@ -361,8 +360,7 @@ TEST_SUITE("TerrainPresentation")
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
-		const auto *resource = globals->resourcesTypes.get(WHEAT);
-		const int tint[] = {resource->minimapR, resource->minimapG, resource->minimapB};
+		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
 		for (int y = 0; y < 16*samples; ++y)
 			for (int x = 0; x < 16*samples; ++x)
 			{

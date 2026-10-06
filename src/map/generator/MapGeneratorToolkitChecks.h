@@ -1444,10 +1444,10 @@ inline void arenaChecks()
 	assert(game.teams[0]->turrets.size() == towerCount);
 	// Supplying a starting tower is a finite initial stock, not a new refill
 	// rule. Existing calls remain empty; the opt-in uses the actual type's cap.
-	assert(game.teams[0]->turrets.front()->resources[STONE] == 0);
+	assert(game.teams[0]->turrets.front()->materials[STONE] == 0);
 	assert(placeTower(game, 0, 0, 5, 8, 4, allowed, true, {}, true) >= 0);
 	const auto supplied = game.teams[0]->turrets.back();
-	assert(supplied->resources[STONE] == supplied->type->maxResource[STONE]);
+	assert(supplied->materials[STONE] == supplied->type->maxMaterial[STONE]);
 	assert(supplied->desiredMaxUnitWorking == 0);
 	// A stocked starter inn registers feeding service immediately but does not
 	// receive fruit. Its entire footprint must obey the same placement mask.
@@ -1455,9 +1455,9 @@ inline void arenaChecks()
 	const int innSite = placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, innGround, {WHEAT});
 	assert(innSite >= 0 && !game.teams[0]->canFeedUnit.empty());
 	const auto inn = game.teams[0]->canFeedUnit.front();
-	assert(inn->resources[WHEAT] == inn->type->maxResource[WHEAT]);
-	assert(inn->resources[CHERRY] == 0 && inn->resources[ORANGE] == 0 &&
-		   inn->resources[PRUNE] == 0);
+	assert(inn->materials[WHEAT] == inn->type->maxMaterial[WHEAT]);
+	assert(inn->materials[CHERRY] == 0 && inn->materials[ORANGE] == 0 &&
+		   inn->materials[PRUNE] == 0);
 	assert(placeStartingBuilding(game, 0, "inn", 0, 18, 18, 3, none, {WHEAT}) == -1);
 
 	// seaEntry finds the one grass gap in a walled coast.

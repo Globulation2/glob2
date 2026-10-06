@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <PerformanceTelemetry.h>
 #include "AICastor.h"
 #include "Game.h"
@@ -29,7 +30,7 @@ void AICastor::computeObstacleUnitMap()
 		const auto& c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleUnitMap[i]=0;
-		else if (c.resource.type!=NO_RES_TYPE)
+		else if (map->resourceBlocksGround(i))
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
@@ -55,7 +56,7 @@ void AICastor::computeObstacleBuildingMap()
 			obstacleBuildingMap[i]=0;
 		else  if (!map->terrainPropertiesAt(i).buildable)
 			obstacleBuildingMap[i]=0;
-		else if (c.resource.type!=NO_RES_TYPE)
+		else if (map->resourceBlocksBuilding(i))
 			obstacleBuildingMap[i]=0;
 		else
 			obstacleBuildingMap[i]=1;
@@ -483,7 +484,7 @@ void AICastor::computeNotGrassMap()
 	{
 		// Habitat replaces the historical >16 sprite test, including its
 		// accidental treatment of transition sprite 16 as a wheat tile.
-		if (!(map->terrainPropertiesAt(i).allowedResources & (1u<<WHEAT)))
+		if (!(map->terrainSupportsMaterialAt(i%map->getW(),i/map->getW(),materialIndex(MaterialId::Food))))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -532,14 +533,14 @@ Uint8 castorWheatGradient(Uint16 g)
 
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	return castorWheatGradient(map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
+	return castorWheatGradient(map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
 }
 
 void AICastor::copyWheatGradient(Uint8* destination)
 {
 	const size_t size=map->w*map->h;
 	if (!size) return;
-	const auto* gradient=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0);
+	const auto* gradient=map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0);
 	for (size_t i=0; i<size; ++i)
 		destination[i]=castorWheatGradient(gradient[i]);
 }
@@ -555,7 +556,7 @@ void AICastor::computeWheatGrowthMap()
 	size_t size=w*h;
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
-	const auto* gradient=size ? map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
+	const auto* gradient=size ? map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
 	for (size_t i=0; i<size; i++)
 		if (castorWheatGradient(gradient[i])==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);

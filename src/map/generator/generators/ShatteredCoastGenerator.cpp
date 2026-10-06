@@ -877,7 +877,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 	for (int r = 0; r < 4; r++)
 		if (maxAmount < context.request.resourceAmounts[r])
 			maxAmount = context.request.resourceAmounts[r];
-	context.telemetry.measure("shattered-coast.resources.smoothing-rounds", maxAmount * 3);
+	context.telemetry.measure("shattered-coast.materials.smoothing-rounds", maxAmount * 3);
 	map.smoothResources(maxAmount * 3);
 }
 

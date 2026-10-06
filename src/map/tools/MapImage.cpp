@@ -581,8 +581,9 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 		if (type == NO_RES)
 			continue;
 		auto resource = map.getResource(x, y);
-		resource.type = Uint8(type);
-		const auto *resourceType = globalContainer->resourcesTypes.get(type);
+		resource.type = Uint16(type);
+		const auto& properties = map.resourceProperties(type);
+		const auto& yield = map.resourceRegistry().yields(static_cast<ResourceId>(type))[materialIndex(properties.primaryMaterial)];
 		// Match normal authored deposits: valid amounts are 1..sizesCount-1.
 		// Dense patch interiors start mature; fringes include younger deposits.
 		int neighbors = 0;
@@ -590,12 +591,11 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 			for (int dx = -1; dx <= 1; ++dx)
 				if ((dx || dy) && resources[wrapCoord(y + dy, h) * w + wrapCoord(x + dx, w)] == type)
 					++neighbors;
-		const int maximum = std::max(1, resourceType->sizesCount - 1);
+		const int maximum = std::max(1, int(yield.capacity) - 1);
 		const int minimum =
-			(type == WOOD || type == WHEAT) && neighbors >= 5 ? std::min(2, maximum) : 1;
-		resource.amount = Uint8(minimum + context.bounded("map-image-amounts", maximum - minimum + 1));
-		resource.variety = Uint8(context.bounded(
-			"map-image-resources", globalContainer->resourcesTypes.get(type)->varietiesCount));
+			properties.ecology == ResourceEcology::Land && properties.spreadRate && neighbors >= 5 ? std::min(2, maximum) : 1;
+		resource.amount = Uint32(minimum + context.bounded("map-image-amounts", maximum - minimum + 1));
+		resource.variety = 0;
 		map.replaceResource(x, y, resource);
 	}
 }

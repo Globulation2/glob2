@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <list>
 #include <math.h>
 #include <stdlib.h>
@@ -36,7 +37,7 @@ void Building::updateBuildingSite(void)
 		if (!unitsInside.empty()) return;
 		const int completedTypeNum=getConstructionCompletionTypeNum();
 		BuildingType* completed=owner->game->buildingsTypes.get(completedTypeNum);
-		if (!canTransferResourcesTo(completed)) return;
+		if (!canTransferMaterialsTo(completed)) return;
 		const int completedX=(posX-type->decLeft+completed->decLeft)&owner->map->getMaskW();
 		const int completedY=(posY-type->decTop+completed->decTop)&owner->map->getMaskH();
 		if (completed->semantics.occupiesGround && !owner->map->isFreeForBuilding(completedX,completedY,completed->width,completed->height,gid)) return;
@@ -58,10 +59,10 @@ void Building::updateBuildingSite(void)
 		if (instantComplete) releaseConstructionReservations();
 		else
 		{
-			consumeReservedResources(constructionReserved, constructionResultState == REPAIR ? -1 : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADE : GameplayMeasurements::CONSTRUCTION);
+			consumeReservedMaterials(constructionReserved, constructionResultState == REPAIR ? -1 : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADE : GameplayMeasurements::CONSTRUCTION);
 			constructionReserved.fill(0);
 		}
-		const bool zeroCost = constructionBudget == BuildingResourceCost{};
+		const bool zeroCost = constructionBudget == BuildingMaterialCost{};
 		constructionBudget.fill(0);
 		const BuildingType* originType=constructionOriginTypeNum>=0 ? owner->game->buildingsTypes.get(constructionOriginTypeNum) : nullptr;
 		constructionOriginTypeNum=-1;
@@ -84,7 +85,7 @@ void Building::updateBuildingSite(void)
 		owner->prestige+=type->prestige;
 
 		//Update the pointer resources to the newly changed type
-		transferResourcesPointer(wasShared);
+		transferMaterialsPointer(wasShared);
 
 
 		//now that building is complete clear the workers
@@ -146,8 +147,8 @@ void Building::updateUnitsWorking(void)
 			// First choice: free a unit who has a not needed resource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
-				int r=(*it)->carriedResource;
-				if (r>=0 && !neededResource(r))
+				int r=(*it)->carriedMaterial;
+				if (r>=0 && !neededMaterial(r))
 				{
 					fu=(*it);
 					fu->standardRandomActivity();
@@ -164,7 +165,7 @@ void Building::updateUnitsWorking(void)
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->carriedResource;
+					int r=(*it)->carriedMaterial;
 					if (r<0)
 					{
 						int tx = posX;
@@ -242,7 +243,7 @@ void Building::updateUnitsHarvesting(void)
 
 void Building::update(void)
 {
-	computeWishedResources(wishedResources);
+	computeWishedMaterials(wishedMaterials);
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
@@ -267,12 +268,12 @@ void Building::setMapDiscovered(void)
 	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 }
 
-void Building::getResourceCountToRepair(int resources[MAX_RESOURCES])
+void Building::getMaterialCountToRepair(int materials[MaterialCount])
 {
 	assert(!type->isBuildingSite);
 	if (!type->semantics.repairable || type->prevLevel < 0)
 	{
-		std::fill(resources, resources + MAX_RESOURCES, 0);
+		std::fill(materials, materials + MaterialCount, 0);
 		return;
 	}
 	int repairLevelTypeNum=type->prevLevel;
@@ -280,7 +281,7 @@ void Building::getResourceCountToRepair(int resources[MAX_RESOURCES])
 	assert(repairBt);
 	Sint64 fDestructionRatio=(Sint64(hp)<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 	Sint32 fTotErr=0;
-	for (int i=0; i<MAX_RESOURCES; i++)
+	for (int i=0; i<MaterialCount; i++)
 	{
 		Sint64 fVal=fDestructionRatio*type->semantics.repairCost[i];
 		int iVal=(fVal>>FIXED_POINT_SHIFT_16);
@@ -290,7 +291,7 @@ void Building::getResourceCountToRepair(int resources[MAX_RESOURCES])
 			fTotErr-=(int)FIXED_POINT_ONE;
 			iVal++;
 		}
-		resources[i]=type->semantics.repairCost[i]-iVal;
+		materials[i]=type->semantics.repairCost[i]-iVal;
 	}
 }
 
@@ -311,7 +312,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		return false;
 
 	BuildingType *targetBt=owner->game->buildingsTypes.get(targetLevelTypeNum);
-	if (!canTransferResourcesTo(targetBt)) return false;
+	if (!canTransferMaterialsTo(targetBt)) return false;
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 
@@ -359,7 +360,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		owner->prestige+=type->prestige;
 
 		//Update the pointer resources to the newly changed type
-		transferResourcesPointer(wasShared);
+		transferMaterialsPointer(wasShared);
 		fundConstructionFromInventory();
 
 		buildingState=ALIVE;
@@ -485,11 +486,11 @@ int Building::desiredNumberOfWorkers(void)
 	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed resource,
 	//thus if no resources are needed, then no units will be working here.
 	int neededResourcesSum = 0;
-	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
+	for (size_t ri = 0; ri < MaterialCount; ri++)
 	{
-		int neededResources = (resourceDeliveryNeed(ri) + type->multiplierResource[ri] - 1) / type->multiplierResource[ri];
-		if (neededResources > 0)
-			neededResourcesSum += neededResources;
+		int neededMaterials = (materialDeliveryNeed(ri) + type->materialMultiplier[ri] - 1) / type->materialMultiplier[ri];
+		if (neededMaterials > 0)
+			neededResourcesSum += neededMaterials;
 	}
 	int user_num = std::min(maxUnitWorking, type->semantics.assignmentLimit);
 	int max_considering_resources = (WISHED_RESOURCE_NUM * neededResourcesSum) / WISHED_RESOURCE_DEN;

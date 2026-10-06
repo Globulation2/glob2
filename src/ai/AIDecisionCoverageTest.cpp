@@ -42,7 +42,7 @@ struct World
             auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
             for (auto* building : {swarm,inn})
             {
-                building->resources[WHEAT]=depleted ? 0 : building->type->maxResource[WHEAT];
+                building->materials[WHEAT]=depleted ? 0 : building->type->maxMaterial[WHEAT];
                 building->update();
             }
             for (int unit=0; unit<12; ++unit)
@@ -258,7 +258,7 @@ TEST_SUITE("AIDecisionCoverage")
             World fixture(AI::ECONO,true,713);
             auto& game=fixture.world.game;
             auto* swarm=fixture.startingSwarm;
-            swarm->resources[WHEAT]=wheat;
+            swarm->materials[WHEAT]=wheat;
             AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
             MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
             bool deletedInn=false;
@@ -279,7 +279,7 @@ TEST_SUITE("AIDecisionCoverage")
             bool checkedTracker=false;
             for (int id : runtime.get_starting_buildings())
             {
-                auto tracker=runtime.get_resource_tracker(id);
+                auto tracker=runtime.get_material_tracker(id);
                 if (tracker && runtime.get_building_register().get_building(id)->gid==swarm->gid)
                 {
                     CHECK(tracker->get_age()>2500);

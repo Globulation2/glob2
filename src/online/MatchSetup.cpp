@@ -1,3 +1,4 @@
+#include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
@@ -22,6 +23,7 @@
 #include "ExperimentalFeatures.h"
 #include "GameHeader.h"
 #include "MapHeader.h"
+#include "ResourceRegistry.h"
 #include "Sha256.h"
 #include "WinningConditions.h"
 
@@ -307,11 +309,27 @@ const std::vector<std::string>& MatchSetup::aiIds()
 MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 {
 	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"},
-	             {"pauseLimit", "buildingCatalog"});
+	             {"pauseLimit", "buildingCatalog", "resourceExperiments"});
 	if (!value["schemaVersion"].is_number_integer() || value["schemaVersion"].get<std::int64_t>() != SCHEMA_VERSION)
 		schemaError("/schemaVersion", "must be " + std::to_string(SCHEMA_VERSION));
 	MatchSetup setup;
 	setup.simVersion = SimVersion::fromJson(value["simVersion"], "/simVersion");
+	if (value.contains("resourceExperiments"))
+	{
+		const auto& definitions = value["resourceExperiments"];
+		if (!definitions.is_array() || definitions.size() > 64) schemaError("/resourceExperiments", "must be a bounded array");
+		for (unsigned i = 0; i < definitions.size(); ++i)
+		{
+			const auto path = "/resourceExperiments/" + std::to_string(i);
+			const auto& definition = definitions[i];
+			strictObject(definition, path, {"key", "label", "help"});
+			CatalogExperimentDefinition entry{string(definition["key"], path + "/key"),
+				string(definition["label"], path + "/label"), string(definition["help"], path + "/help")};
+			if (entry.key.size() > 128 || entry.label.empty() || entry.label.size() > 512 || entry.help.empty() || entry.help.size() > 4096)
+				schemaError(path, "resource experiment metadata exceeds limits");
+			setup.resourceExperiments.push_back(std::move(entry));
+		}
+	}
 	if (value.contains("buildingCatalog"))
 	{
 		const auto &catalog = value["buildingCatalog"];
@@ -438,6 +456,13 @@ void MatchSetup::validateSemantics() const
 	}
 	else if (!buildingCatalogHash.empty())
 		semanticError("/buildingCatalog", "a catalog hash requires its snapshot");
+	try { validateCatalogExperiments(resourceExperiments); }
+	catch (const std::exception& error) { semanticError("/resourceExperiments", error.what()); }
+	for (const auto& definition : resourceExperiments) catalogKeys.push_back(definition.key);
+	std::set<std::string> combinedKeys(catalogKeys.begin(), catalogKeys.end());
+	for (const auto& definition : experimentDefinitions()) combinedKeys.insert(definition.key);
+	if (combinedKeys.size() > ExperimentSet::MAX_STORED)
+		semanticError("/resourceExperiments", "combined catalogs declare too many experiments");
 	for (std::size_t i = 0; i < experiments.size(); ++i)
 		if (!parseExperimentKey(experiments[i]) &&
 			std::find(catalogKeys.begin(), catalogKeys.end(), experiments[i]) == catalogKeys.end())
@@ -540,6 +565,12 @@ json MatchSetup::toJson() const
 	                {"peacefulMode", r.peacefulMode},
 	                {"buildingHpLevel", r.buildingHpLevel}};
 	out["experiments"] = experiments;
+	if (!resourceExperiments.empty())
+	{
+		out["resourceExperiments"] = json::array();
+		for (const auto& definition : resourceExperiments)
+			out["resourceExperiments"].push_back({{"key", definition.key}, {"label", definition.label}, {"help", definition.help}});
+	}
 	if (pauseLimit)
 		out["pauseLimit"] = {{"pauses", pauseLimit->pauses}, {"seconds", pauseLimit->seconds}};
 	return out;
@@ -618,10 +649,17 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	header.setPeacefulModeEnabled(rules.peacefulMode);
 	header.setBuildingHpLevel(static_cast<Uint8>(rules.buildingHpLevel));
 	if (!buildingCatalogSnapshot.empty()) header.setBuildingCatalogSnapshot(buildingCatalogSnapshot);
-	ExperimentSet experimentSet = ExperimentSet::fromKeys(experiments, nullptr, header.buildingExperimentKeys());
+	const auto& mapExperiments = mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES
+		? ResourceRegistry::legacy()->experiments() : mapHeader.resourceExperimentDefinitions;
+	if (!resourceExperiments.empty() && resourceExperiments != mapExperiments)
+		semanticError("/resourceExperiments", "does not match the map's embedded resource catalog");
+	header.setResourceExperiments(mapExperiments);
+	ExperimentSet experimentSet = ExperimentSet::fromKeys(experiments, nullptr, header.catalogExperimentKeys());
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id) && !experimentSet.has(definition.id))
 			semanticError("/experiments", "missing map-required terrain experiment " + std::string(definition.key));
+	for (const auto& key : mapHeader.requiredResourceExperiments.keys())
+		if (!experimentSet.has(key)) semanticError("/experiments", "missing map-required resource experiment " + key);
 	header.setExperiments(experimentSet);
 	return header;
 }
@@ -632,6 +670,8 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	MatchSetup setup;
 	setup.simVersion = simVersion;
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+	setup.resourceExperiments = mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? header.resourceExperiments() : mapHeader.resourceExperimentDefinitions;
+	header.setResourceExperiments(setup.resourceExperiments);
 	if (!setup.buildingCatalogSnapshot.empty())
 	{
 		BuildingsTypes catalog;
@@ -705,6 +745,7 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	r.buildingHpLevel = header.getBuildingHpLevel();
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
+	for (const auto& key : mapHeader.requiredResourceExperiments.keys()) header.getExperiments().set(key, true, header.catalogExperimentKeys());
 	setup.experiments = header.getExperiments().keys();
 	setup.validateSemantics();
 	return setup;

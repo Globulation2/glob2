@@ -79,7 +79,7 @@ class RuntimeContinuationTest
         auto& first=runtime(source,0).get_gradient_manager();
         auto& second=runtime(source,1).get_gradient_manager();
         REQUIRE((&first!=&second));
-        first.get_gradient(info(new Entities::Resource(WHEAT)));
+        first.get_gradient(info(new Entities::MaterialSource(WHEAT)));
         first.queue_gradient(info(new Entities::Water));
         REQUIRE(second.gradients.empty());
         for(int i=0;i<2;++i)
@@ -160,7 +160,7 @@ class RuntimeContinuationTest
         const int completed=game.buildingsTypes.get(site)->nextLevel;
         auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
         snapshot["variants"][site]["semantics"]["constructionCost"]={{"stone",5}};
-        auto& storage=snapshot["variants"][site]["properties"]["maxResource"];
+        auto& storage=snapshot["variants"][site]["properties"]["maxMaterial"];
         for(auto& value:storage) value=0;
         storage[WOOD]=9;
         snapshot["variants"][completed]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
@@ -210,7 +210,7 @@ class RuntimeContinuationTest
 public:
     static void recurringInputsAndProviderLookup()
     {
-        using AISharedRuntime::Management::ResourceTracker;
+        using AISharedRuntime::Management::MaterialTracker;
         using AISharedRuntime::Management::RecurringInputStock;
         using AISharedRuntime::BuildingDemand::Feed;
         using AISharedRuntime::BuildingDemand::ProduceWorker;
@@ -224,13 +224,13 @@ public:
             auto& variant=catalog["variants"][completed];
             auto& semantics=variant["semantics"];
             semantics["feeding"]["enabled"]=paid;
-            semantics["feeding"]["cost"]={{"wheat",2},{"orange",1}};
+            semantics["feeding"]["cost"]={{"food",2},{"oranges",1}};
             semantics["production"]["scheduling"]="weighted_committed_job";
             semantics["production"]["recipes"]={
-                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"wheat",3},{"prune",1}}}}},
+                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"food",3},{"prunes",1}}}}},
                 {"explorer",{{"enabled",false},{"duration",0},{"cost",{{"wood",1}}}}},
                 {"warrior",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
-            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxResource"][resource]=50;
+            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxMaterial"][resource]=50;
             game.buildingsTypes.loadSnapshotJson(catalog.dump());game.configureBuildingCatalog();
             // Parse the authored costs so all masks have the same validated
             // provenance as a real match; do not mutate cold descriptors.
@@ -241,9 +241,9 @@ public:
             auto* ordinary=game.addBuilding(12,4,completed,0);
             auto* construction=game.addBuilding(20,4,site,0);
             REQUIRE(recurring);REQUIRE(ordinary);REQUIRE(construction);
-            recurring->resources[WHEAT]=7;recurring->resources[ORANGE]=5;
-            recurring->resources[PRUNE]=11;recurring->resources[WOOD]=13;
-            ordinary->resources[WOOD]=17;
+            recurring->materials[WHEAT]=7;recurring->materials[ORANGE]=5;
+            recurring->materials[PRUNE]=11;recurring->materials[WOOD]=13;
+            ordinary->materials[WOOD]=17;
             auto& controller=runtime(game,0);
             controller.getOrder(); // initialize the register through its normal path
             auto& registry=controller.get_building_register();
@@ -264,17 +264,17 @@ public:
             REQUIRE(registry.is_building_pending(pending));
             CHECK(registry.get_building(pending)==nullptr);
             CHECK_FALSE(registry.provides(pending,Feed));
-            controller.add_resource_tracker(new ResourceTracker(controller,0,1,RecurringInputStock),0);
-            controller.add_resource_tracker(new ResourceTracker(controller,1,1,WOOD),1);
-            controller.add_resource_tracker(new ResourceTracker(controller,pending,1,RecurringInputStock),pending);
-            auto retained=controller.get_resource_tracker(0);
+            controller.add_material_tracker(new MaterialTracker(controller,0,1,RecurringInputStock),0);
+            controller.add_material_tracker(new MaterialTracker(controller,1,1,WOOD),1);
+            controller.add_material_tracker(new MaterialTracker(controller,pending,1,RecurringInputStock),pending);
+            auto retained=controller.get_material_tracker(0);
             for(int tick=0;tick<AISharedRuntime::AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS;++tick) controller.getOrder();
             // Wheat is shared by feeding and production and counted once.
             // Disabled explorer wood is excluded; prune exercises the highest
             // supported bit. The always-enabled free warrior adds no inputs.
             CHECK(retained->get_total_level()==(paid ? 23 : 0));
-            CHECK(controller.get_resource_tracker(1)->get_total_level()==17);
-            CHECK(controller.get_resource_tracker(pending)->get_total_level()==0);
+            CHECK(controller.get_material_tracker(1)->get_total_level()==17);
+            CHECK(controller.get_material_tracker(pending)->get_total_level()==0);
             REQUIRE(game.removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
             // The register still holds its observation until the next tick;
             // a disappeared live slot must safely return null immediately.
@@ -282,7 +282,7 @@ public:
             CHECK(registry.get_building(0)==nullptr);
             CHECK_FALSE(registry.provides(0,Feed));
             controller.getOrder();
-            CHECK_FALSE(controller.get_resource_tracker(0));
+            CHECK_FALSE(controller.get_material_tracker(0));
             CHECK(retained->get_total_level()==(paid ? 23 : 0));
         }
     }
@@ -295,14 +295,20 @@ public:
             map.setResource(3,4,WHEAT,5);
             GradientManager original(&map),restored(&map);
             const auto wheat=info(text ? static_cast<Entities::Entity*>(new Entities::AnyResource)
-                                       : static_cast<Entities::Entity*>(new Entities::Resource(WHEAT)));
+                                       : static_cast<Entities::Entity*>(new Entities::MaterialSource(WHEAT)));
             const auto water=info(new Entities::Water);
             auto avoidsIrrigation=info(new Entities::Position(0,0));
             avoidsIrrigation.add_obstacle(new Entities::Water);
             original.get_gradient(wheat);
             original.get_gradient(avoidsIrrigation);
-            const auto resources=info(new Entities::ResourceSet((1u<<WHEAT)|(1u<<WOOD)));
+            const auto resources=info(new Entities::MaterialSources((1u<<WHEAT)|(1u<<WOOD)));
             original.get_gradient(resources);
+            auto groundObstacles=info(new Entities::Position(0,0));
+            groundObstacles.add_obstacle(new Entities::ResourceGroundObstacle);
+            original.get_gradient(groundObstacles);
+            auto buildingObstacles=info(new Entities::Position(1,1));
+            buildingObstacles.add_obstacle(new Entities::ResourceBuildingObstacle);
+            original.get_gradient(buildingObstacles);
             // Save a stale field, an uncomputed queued field and duplicate
             // queue entries. Reload must retain their age/order, not rebuild.
             original.ticks_since_update[0]=151;

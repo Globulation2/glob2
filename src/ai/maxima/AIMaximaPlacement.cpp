@@ -1,3 +1,4 @@
+#include "Material.h"
 #include "field/PriorityTraversal.h"
 #include "field/UniformTraversal.h"
 #include "FileFormatVersions.h"
@@ -164,7 +165,7 @@ Campus::Campus()
 	  fallbackWaterTier(false) {}
 BuildingLevelProfile::BuildingLevelProfile()
 	: level(0), engineType(-1), serviceThroughput(0), durability(0), capability(0)
-{ std::fill(constructionResources, constructionResources+8, 0); }
+{ std::fill(constructionResources, constructionResources+MaterialCount, 0); }
 BuildingProfile::BuildingProfile() : buildingType(-1) {}
 const BuildingLevelProfile* BuildingProfile::atLevel(int requested) const
 {
@@ -204,11 +205,11 @@ WorldBuilding::WorldBuilding()
 	: id(-1), gid(-1), buildingType(-1), level(0), centerX(0), centerY(0),
 	  hp(0), hpMax(0), age(0), site(false), upgrading(false) {}
 WorldState::WorldState() : width(0), height(0), tick(0), swimmingBuilders(0)
-{ std::fill(accessibleSupplies, accessibleSupplies+8, 0); }
+{ std::fill(accessibleSupplies, accessibleSupplies+MaterialCount, 0); }
 void WorldState::reset(int w, int h)
 {
 	width=w; height=h; tick=0; swimmingBuilders=0;
-	std::fill(accessibleSupplies, accessibleSupplies+8, 0);
+	std::fill(accessibleSupplies, accessibleSupplies+MaterialCount, 0);
 	feedingColonies.clear();
 	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear(); invalidateProfileIndex();
 }
@@ -280,8 +281,8 @@ uint32_t WorldState::computeSignature() const
 		const WorldTile& t=tiles[i];
 		uint32_t flags=(t.discovered?1u:0u)|(t.buildable?2u:0u)|(t.swimmable?4u:0u)
 			|(t.growthInhibiting?8u:0u)|(t.permanentResource?16u:0u)
-			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)|(t.woodReserve?256u:0u)|(t.walkable?512u:0u)|(t.fertilitySource?1024u:0u);
-		hashValue(result, flags); hashValue(result, uint32_t(t.resourceType+1));
+			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)|(t.woodReserve?256u:0u)|(t.walkable?512u:0u)|(t.fertilitySource?1024u:0u)|(t.resourceBlocksGround?2048u:0u);
+		hashValue(result, flags); hashValue(result, uint32_t(t.resourceType+1)); hashValue(result,t.sources());
 	}
 	for(size_t i=0; i<buildings.size(); ++i)
 	{
@@ -439,7 +440,7 @@ void Planner::reset()
 	waterMaskCache.clear();waterDistanceCache.clear();
 	footprintDistanceCache.clear();footprintDistanceCacheSignature=0;
 	resourceSourceCache.clear();
-	for(int resource=0;resource<8;++resource)
+	for(int resource=0;resource<MaterialCount;++resource)
 	{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
 	foodInput=AIMaximaFoodLedger::Input();
@@ -786,22 +787,17 @@ void Planner::prepareResourceSources(const WorldState& world) const
 {
     const int size=world.width*world.height;
     bool changed=int(resourceSourceCache.size())!=size;
-    for(int i=0;i<size&&!changed;++i) {
-        const auto& tile=world.tiles[i];
-        const int type=!tile.discovered?-1:tile.foodOpportunity>0?1:
-            tile.resourceType>=0&&tile.resourceType<8&&tile.resourceType!=1?tile.resourceType:-1;
-        changed=resourceSourceCache[i]!=type;
-    }
+    const auto sourceMask=[](const WorldTile& tile) -> MaterialMask {
+        if(!tile.discovered) return 0;
+        MaterialMask result=tile.sources();
+        if(tile.foodOpportunity>0) result|=materialBit(MaterialId::Food);
+        return result;
+    };
+    for(int i=0;i<size&&!changed;++i) changed=resourceSourceCache[i]!=sourceMask(world.tiles[i]);
     if(!changed)return;
-    resourceSourceCache.assign(size,-1);
-    for(int i=0;i<size;++i) {
-        const auto& tile=world.tiles[i];
-        if(!tile.discovered)continue;
-        if(tile.foodOpportunity>0)resourceSourceCache[i]=1;
-        else if(tile.resourceType>=0&&tile.resourceType<8&&tile.resourceType!=1)
-            resourceSourceCache[i]=int8_t(tile.resourceType);
-    }
-    for(int resource=0;resource<8;++resource) {
+    resourceSourceCache.resize(size);
+    for(int i=0;i<size;++i) resourceSourceCache[i]=sourceMask(world.tiles[i]);
+    for(int resource=0;resource<MaterialCount;++resource) {
         resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;
     }
 }
@@ -992,14 +988,14 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 int Planner::resourceDistanceAt(const WorldState& world,int resourceType,
 	int index) const
 {
-	if(resourceType<0||resourceType>=8)return INT_MAX;
+	if(resourceType<0||resourceType>=MaterialCount)return INT_MAX;
 	if(!resourceDistanceCacheValid[resourceType])
 	{
 		const int size=world.width*world.height;
 		DistanceField& distances=resourceDistanceCache[resourceType];
 		distances.assign(size,INT_MAX);
 		auto& queue=distanceFrontiers[0];queue.clear();
-		for(int i=0;i<size;++i)if(resourceSourceCache[i]==resourceType)
+		for(int i=0;i<size;++i)if((resourceSourceCache[i] & (1u<<resourceType))!=0)
 		{distances[i]=0;queue.push_back(i);}
 		field::expandDistances(distances,queue,{world.width,world.height},field::Cardinal,INT_MAX);
 		resourceDistanceCacheValid[resourceType]=true;
@@ -1014,7 +1010,7 @@ bool Planner::requiredSourcePresent(const WorldState& world,
 	for(size_t i=0; i<world.tiles.size(); ++i)
 		if(world.tiles[i].discovered
 		   && (intent.requiredResourceType==1 ? world.tiles[i].foodOpportunity>0
-			: world.tiles[i].resourceType==intent.requiredResourceType)) return true;
+			: (world.tiles[i].sources() & (1u<<intent.requiredResourceType))!=0)) return true;
 	return false;
 }
 
@@ -1045,7 +1041,7 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 		const WorldTile& tile=world.tiles[index];
 		if(distance[index]>=0 || !tile.discovered || !tile.foodTraversable
 		   || tile.occupied || !tile.canTravel(world.swimmingBuilders>0)
-		   || (tile.resourceType>=0 && tile.resourceType!=1)) return;
+		   || (tile.resourceBlocksGround && !(tile.sources() & materialBit(MaterialId::Food)))) return;
 		// A hypothetical building must not offer a shortcut through its footprint.
 		if(world.normalizeX(px-x-footprint.left)<footprint.width
 		   && world.normalizeY(py-y-footprint.top)<footprint.height)return;
@@ -1146,11 +1142,11 @@ int Planner::foodDemandFor(int buildingType, int level) const
 	return v ? v->operatingResources[CornResourceType] : 0;
 }
 
-std::array<int,8> Planner::operatingTrips(const WorldState& world,int x,int y,
-    const std::array<int,8>& independent,const std::array<int,8>& production) const
+std::array<int,MaterialCount> Planner::operatingTrips(const WorldState& world,int x,int y,
+    const std::array<int,MaterialCount>& independent,const std::array<int,MaterialCount>& production) const
 {
-    std::array<int,8> trips{};
-    for(int r=0;r<8;++r)if(independent[r]>0 || production[r]>0) {
+    std::array<int,MaterialCount> trips{};
+    for(int r=0;r<MaterialCount;++r)if(independent[r]>0 || production[r]>0) {
         int distance=resourceDistanceAt(world,r,world.index(x,y));
         if(distance==INT_MAX)distance=placementPolicy.foodSupplyRadius+placementPolicy.foodUnreachablePenaltyTiles;
         trips[r]=int(std::min<long long>(INT_MAX,std::max(1LL,
@@ -1199,7 +1195,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		// through, anything else solid may not.
 		foodInput.traversable[i]=(tile.discovered&&tile.foodTraversable
 			&&!tile.occupied&&tile.canTravel(world.swimmingBuilders>0)
-			&&(tile.resourceType<0||tile.resourceType==CornResourceType))?1:0;
+			&&(!tile.resourceBlocksGround || (tile.sources() & materialBit(MaterialId::Food))))?1:0;
 	}
 	// An authorized upgrade already owns its larger demand: it claims at the
 	// level it is becoming, or the ledger would hand that wheat to someone else
@@ -1290,7 +1286,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     for(size_t i=0;i<profiles.size();++i) {
         const auto* profile=profiles[i];if(!profile)continue;
         const auto* building=buildings[i];
-        std::array<int,8> independent{},production{};
+        std::array<int,MaterialCount> independent{},production{};
         int feedingPackets=0;
         const long long feeding=world.feedingColonies.empty()?profile->feedingRate:meals[i];
         const bool livePlan=building && !building->site && building->level==profile->level && building->plannedCarriers>=0;
@@ -1298,8 +1294,8 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
             production=AIMaxima::productionPacketCeiling(profile->productionRecipes,building->productionRatios);
             production[CornResourceType]=int(std::min<long long>(INT_MAX,
                 static_cast<long long>(production[CornResourceType])*profile->productionDemandPercent/100));
-        } else std::copy_n(profile->productionResources,8,production.begin());
-        for(int r=0;r<8;++r) {
+        } else std::copy_n(profile->productionResources,MaterialCount,production.begin());
+        for(int r=0;r<MaterialCount;++r) {
             const long long mealCost=profile->feedingRate>0?
                 (static_cast<long long>(profile->feedingResources[r])*feeding+profile->feedingRate-1)/profile->feedingRate:0;
             // Explicit independent components avoid subtracting saturated sums.
@@ -1401,7 +1397,7 @@ Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world
 	{
 		const BuildingLevelProfile* rebuilt=profile?profile->atLevel(level):NULL;
 		if(!rebuilt)continue;
-		for(int r=0;r<8;++r)
+		for(int r=0;r<MaterialCount;++r)
 		{
 			const int units=rebuilt->constructionResources[r];
 			if(units<=0)continue;
@@ -1469,14 +1465,14 @@ int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAc
     if(!variant)return 0;
     const int replaced=action.replacesBuildingId>=0?action.replacesBuildingId:action.type==UpgradeBuilding?action.buildingId:-1;
     const int excludeAction=actionMap.count(action.id)?action.id:-1;
-    std::array<int,8> independent{},production{};
+    std::array<int,MaterialCount> independent{},production{};
     int colony=-1,feedingTransferLimit=0;
     if(world.feedingColonies.empty()) {
         if(!foodLedgerPrepared || foodLedgerExcludedAction!=excludeAction || foodLedgerExcludedBuilding!=replaced)
             prepareFoodLedger(world,excludeAction,replaced);
         activeFoodCandidate=nullptr;
-        std::copy_n(variant->productionResources,8,production.begin());
-        for(int r=0;r<8;++r)independent[r]=variant->initialCarriers<0?
+        std::copy_n(variant->productionResources,MaterialCount,production.begin());
+        for(int r=0;r<MaterialCount;++r)independent[r]=variant->initialCarriers<0?
             std::max(0,variant->operatingResources[r]-variant->productionResources[r]):
             int(std::min<long long>(INT_MAX,static_cast<long long>(variant->independentResources[r])+variant->feedingResources[r]));
     } else {
@@ -2355,12 +2351,12 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		return best==INT_MAX?0:clamp100(100-best*placementPolicy.resourceDistanceWeight);
 	};
 	int materialType=-1,materialNeed=0;
-	if(target)for(int resource=0;resource<8;++resource)
+	if(target)for(int resource=0;resource<MaterialCount;++resource)
 		if(target->constructionResources[resource]>materialNeed)
 		{materialNeed=target->constructionResources[resource];materialType=resource;}
 	const int materialQuality=materialType>=0?resourceQuality(materialType):0;
 	int operatingQuality=0,operatingKinds=0;
-	if(target)for(int resource=0;resource<8;++resource)if(target->operatingResources[resource]>0){operatingQuality+=resourceQuality(resource);++operatingKinds;}
+	if(target)for(int resource=0;resource<MaterialCount;++resource)if(target->operatingResources[resource]>0){operatingQuality+=resourceQuality(resource);++operatingKinds;}
 	if(serves(action.buildingType,configuredInnType,action.targetLevel))
 	{
 		int fruitQuality=0;
@@ -2532,7 +2528,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if(target)
 	{
 		int scarcity=0,needed=0;
-		for(int r=0;r<8;++r)if(target->constructionResources[r]>0)
+		for(int r=0;r<MaterialCount;++r)if(target->constructionResources[r]>0)
 		{needed+=target->constructionResources[r];scarcity+=std::max(0,target->constructionResources[r]-world.accessibleSupplies[r]);}
 		u.resourceScarcity=needed?clamp100(scarcity*100/needed):0;
 	}
@@ -2541,7 +2537,7 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	if((action.type==UpgradeBuilding||action.type==RepairBuilding)&&from)
 	{
 		int constructionWork=1;
-		if(target)for(int resource=0;resource<8;++resource)
+		if(target)for(int resource=0;resource<MaterialCount;++resource)
 			constructionWork+=target->constructionResources[resource];
 		u.serviceDowntime=clamp100(static_cast<long long>(from->serviceThroughput)*constructionWork
 			/std::max(1,action.workers*placementPolicy.downtimeWorkerScale));
@@ -2601,7 +2597,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	// on live demand, mobility, resources and utility, so use a separate key.
 	uint32_t signature=2166136261u;
 	hashValue(signature,world.swimmingBuilders);
-	for(int r=0;r<8;++r)hashValue(signature,world.accessibleSupplies[r]);
+	for(int r=0;r<MaterialCount;++r)hashValue(signature,world.accessibleSupplies[r]);
     for(const auto& colony:world.feedingColonies) {
         hashValue(signature,colony.x);hashValue(signature,colony.y);
         for(int unit=0;unit<3;++unit)hashValue(signature,colony.demand[unit]);
@@ -2632,7 +2628,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 			hashValue(signature,level.operatingAssignmentLimit);hashValue(signature,level.initialCarriers);hashValue(signature,level.productionDemandPercent);
             for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.ticks[unit]);
             hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
-            for(int r=0;r<8;++r) {
+            for(int r=0;r<MaterialCount;++r) {
                 hashValue(signature,level.constructionResources[r]);
                 hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);hashValue(signature,level.productionResources[r]);hashValue(signature,level.independentResources[r]);
                 hashValue(signature,level.productionRecipes.packetSize[r]);for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.costs[unit][r]);
@@ -3645,9 +3641,24 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("waterDistanceCache",waterDistanceCache);
 	a("footprintDistanceCache",footprintDistanceCache);
 	a("footprintDistanceCacheSignature",footprintDistanceCacheSignature);
-	a("resourceSourceCache",resourceSourceCache);
-	a("resourceDistanceCache",resourceDistanceCache);
-	a("resourceDistanceCacheValid",resourceDistanceCacheValid);
+    if(a.version()>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES) {
+        a("resourceSourceCache",resourceSourceCache);
+        a("resourceDistanceCache",resourceDistanceCache);
+        a("resourceDistanceCacheValid",resourceDistanceCacheValid);
+    } else {
+        std::vector<int8_t> oldSources; a("resourceSourceCache",oldSources);
+        resourceSourceCache.clear(); resourceSourceCache.reserve(oldSources.size());
+        for(int source:oldSources) {
+            if(source < -1 || source>=8) throw std::runtime_error("Invalid legacy material source");
+            resourceSourceCache.push_back(source<0 ? 0 : MaterialMask(1u<<source));
+        }
+        DistanceField oldDistances[8]; bool oldValid[8]{};
+        a("resourceDistanceCache",oldDistances);a("resourceDistanceCacheValid",oldValid);
+        for(unsigned m=0;m<MaterialCount;++m) {
+            resourceDistanceCache[m]=m<8 ? std::move(oldDistances[m]) : DistanceField{};
+            resourceDistanceCacheValid[m]=m<8 && oldValid[m];
+        }
+    }
 	a("maximumFarmCapacityCache",maximumFarmCapacityCache);
 	a("maximumFoodOpportunityCache",maximumFoodOpportunityCache);
 	a.template legacyVector<uint64_t>("foodOpportunitySourceCache",foodOpportunitySourceCache,
@@ -3790,7 +3801,7 @@ bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 	waterMaskCache.clear();waterDistanceCache.clear();
 	footprintDistanceCache.clear();footprintDistanceCacheSignature=0;
 	resourceSourceCache.clear();
-	for(int resource=0;resource<8;++resource)
+	for(int resource=0;resource<MaterialCount;++resource)
 	{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();

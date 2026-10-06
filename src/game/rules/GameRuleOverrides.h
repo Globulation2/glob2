@@ -46,10 +46,10 @@ inline void applyGameRule(GameHeader& header, const std::string& item)
 	};
 	// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
 	for (const auto& definition : registeredExperimentDefinitions())
-		rules.push_back({definition.key, 1, [key = definition.key](GameHeader& h, int v) { h.getExperiments().set(key, v != 0, h.buildingExperimentKeys()); }});
-	for (const auto& key : header.buildingExperimentKeys())
+		rules.push_back({definition.key, 1, [key = definition.key](GameHeader& h, int v) { h.getExperiments().set(key, v != 0, h.catalogExperimentKeys()); }});
+	for (const auto& key : header.catalogExperimentKeys())
 		if (!knownExperimentKey(key))
-			rules.push_back({key, 1, [key](GameHeader& h, int v) { h.getExperiments().set(key, v != 0, h.buildingExperimentKeys()); }});
+			rules.push_back({key, 1, [key](GameHeader& h, int v) { h.getExperiments().set(key, v != 0, h.catalogExperimentKeys()); }});
 	// Keep validation here identical for the legacy driver and structured CLI.
 	// In particular, reject trailing junk and overflow before narrowing to int.
 	const size_t equals=item.find('=');

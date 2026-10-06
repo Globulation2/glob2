@@ -25,7 +25,8 @@
 bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
                     Uint32 teamMask, Uint16 ignoreGid) const
 {
-	if (c.noResource && isResource(x, y))
+	if (c.noResource && (c.requireBuildable ? resourceBlocksBuilding(coordToIndex(x,y))
+		: resourceBlocksGround(coordToIndex(x,y))))
 		return false;
 	Uint16 buid = getBuilding(x, y);
 	if (buid != NOGBID && buid != ignoreGid)
@@ -141,14 +142,14 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit) const
 	return std::nullopt;
 }
 
-std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) const
+std::optional<Offset> Map::doesUnitTouchMaterialSource(Unit *unit, MaterialId material) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isMaterialTakeable(x+tdx, y+tdy, material) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
@@ -178,7 +179,7 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 {
 	const int teamNumber=unit->owner->teamNumber;
 	const Building* consumer=unit->attachedBuilding;
-	const unsigned modes=resourceSupplyModes(consumer,resourceType);
+	const unsigned modes=materialSupplyModes(consumer,resourceType);
 	const bool overlays=(modes&2) || game->buildingsTypes.usesOverlaySuppliers();
 	if (overlays && gradientRuntime->supplierLocationsDirty)
 	{
@@ -229,11 +230,11 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 	return best;
 }
 
-std::optional<Offset> Map::doesPosTouchResource(int x, int y, int resourceType) const
+std::optional<Offset> Map::doesPosTouchMaterialSource(int x, int y, MaterialId material) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isResourceTakeable(x+tdx, y+tdy, resourceType))
+			if (isMaterialTakeable(x+tdx, y+tdy, material))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }

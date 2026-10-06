@@ -15,7 +15,6 @@
 #include "ai/cortex/CortexQuery.h"
 #include "GameRuleOverrides.h"
 #include "Order.h"
-#include "RessourceType.h"
 #include "ReplayReader.h"
 #include "Version.h"
 #include <FileManager.h>
@@ -38,16 +37,16 @@ void populate(glob2test::HeadlessGame& w)
         auto* swarm=w.addBuilding("swarm",x+3,3,0,team);
         auto* inn=w.addBuilding("inn",x+10,3,0,team);
         for(auto* b:{swarm,inn})
-        { b->resources[WHEAT]=b->type->maxResource[WHEAT]; b->update(); }
+        { b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update(); }
         for(int i=0;i<32;++i) w.addUnit(WORKER,x+2+i%20,12+i/20,team);
         for(int i=0;i<10;++i) w.addUnit(WARRIOR,x+3+i,15,team);
         w.game.teams[team]->startPosX=x+3; w.game.teams[team]->startPosY=3;
         w.game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
         for(int y=20;y<28;++y) for(int xx=x+3;xx<x+29;++xx)
-            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,y), globalContainer->resourcesTypes.get(WHEAT)->sizesCount);}
+            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,y), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(WHEAT))[materialIndex(MaterialId::Food)].capacity);}
         for(int xx=x+3;xx<x+29;++xx) {
-            w.game.map.setResource(xx,30,WOOD,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,30), globalContainer->resourcesTypes.get(WOOD)->sizesCount);
-            w.game.map.setResource(xx,31,STONE,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,31), globalContainer->resourcesTypes.get(STONE)->sizesCount);
+            w.game.map.setResource(xx,30,WOOD,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,30), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(WOOD))[materialIndex(MaterialId::Wood)].capacity);
+            w.game.map.setResource(xx,31,STONE,0);w.game.map.setResourceAmount(w.game.map.coordToIndex(xx,31), w.game.map.resourceRegistry().yields(static_cast<ResourceId>(STONE))[materialIndex(MaterialId::Stone)].capacity);
         }
         w.game.teams[team]->stats.step(w.game.teams[team]);
     }
@@ -252,7 +251,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         auto* school=w.addBuilding("school",3,35,1);school->maxUnitWorking=5;w.addBuilding("racetrack",10,35);
         w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,25,12,0,2);
         if(variant==2) {
-            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->resources[WHEAT]=0;b->update();}
+            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->materials[WHEAT]=0;b->update();}
             for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.setNoResource(x,y,0);
         }
         g.teams[0]->stats.step(g.teams[0]);g.players[0]->makeItAI(id);g.setWaitingOnMask(0);

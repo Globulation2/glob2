@@ -155,7 +155,7 @@ std::vector<int> computeComponents(const Map &map, bool water, int &numComponent
 	std::vector<unsigned char> kind(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			kind[size_t(y) * w + x] = water ? (map.terrainPropertiesAt(x,y).allowedResources & (1u<<ALGA)) != 0
+			kind[size_t(y) * w + x] = water ? map.terrainSupportsResourceAt(x,y,ALGA)
 				: map.terrainPropertiesAt(x,y).walkable;
 	const std::vector<int> component = connectedRegions(kind, w, h, true, GridNeighbors::Eight);
 	numComponents = 0;
@@ -810,9 +810,12 @@ std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &a
 			++front.edges;
 			if (front.nearestStep < 0 || access.steps[i] < front.nearestStep)
 				front.nearestStep = access.steps[i];
-			// Fertility describes wheat/wood propagation, not stone or fruit renewal.
-			front.renewableEdges +=
-				fertility && (type == WHEAT || type == WOOD) && fertility->at(x, y) > 0;
+			// Renewal belongs to the deposit's compiled ecology and stocks.
+            bool renewable=false;
+            if (fertility) for (unsigned material=0;material<MaterialCount;++material)
+                renewable |= map.materialGrowthRateAt(map.coordToIndex(x,y),material)>0
+                    || map.materialExpansionRateAt(map.coordToIndex(x,y),material)>0;
+            front.renewableEdges += renewable;
 		}
 	}
 	return result;

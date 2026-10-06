@@ -188,15 +188,16 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 	const int colLeftX = panelLeftX + 4 + (RIGHT_MENU_WIDTH - 128) / 2;
 	// Preserve the familiar resource positions while allowing every construction
 	// input. Storage capacity is independent of the construction recipe.
-	constexpr int resources[] = {WOOD, ALGA, STONE, WHEAT, PAPYRUS, CHERRY, ORANGE, PRUNE};
-	for (size_t i=0; i<std::size(resources); ++i)
+	constexpr unsigned materials[] = {0,4,3,1,2,5,6,7,8,9,10,11};
+	for (size_t i=0; i<std::size(materials); ++i)
 	{
-		const int resource=resources[i];
+		const int resource=materials[i];
 		const int cost=bt->semantics.constructionCost[resource];
 		if (resource>=HAPPINESS_BASE && cost==0) continue;
+		if (!drawnScene().materialVisible(resource)) continue;
 		globalContainer->gfx->drawString(colLeftX+int(i%2)*64, buildingInfoStart+6+int(i/2)*11,
 			globalContainer->littleFont,
-			FormattableString("%0: %1").arg(getResourceName(resource)).arg(cost).c_str());
+			FormattableString("%0: %1").arg(getMaterialName(resource)).arg(cost).c_str());
 	}
 }
 

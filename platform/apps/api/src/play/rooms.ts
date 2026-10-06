@@ -13,6 +13,7 @@ import type { Account, Database } from '@glob2/db';
 import { Type, type Static } from 'typebox';
 import {
   BuildingCatalog,
+  ResourceExperimentDefinitions,
   MatchRules,
   RoomMapSelection,
   STANDARD_RULES,
@@ -128,6 +129,8 @@ export const RoomSettings = Type.Object({
   rules: MatchRules,
   experiments: Type.Array(Type.String()),
   buildingCatalog: Type.Optional(BuildingCatalog),
+  resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
+  requiredResourceExperiments: Type.Optional(Type.Array(Type.String())),
   /** The quick match this room is the rematch of (match.rematch). */
   rematchOf: Type.Optional(Type.String()),
 });
@@ -145,6 +148,8 @@ function readRoomSettings(stored: unknown): RoomSettings {
 
 export interface MapResolution {
   buildingCatalog?: BuildingCatalog;
+  resourceExperiments?: ResourceExperimentDefinitions;
+  requiredResourceExperiments?: string[];
   selection: RoomMapSelection;
   status: 'ready' | 'pending' | 'failed';
   problem?: string;
@@ -320,6 +325,8 @@ export class RoomService {
       })),
       rules: settings.rules,
       experiments: settings.experiments,
+      resourceExperiments: settings.resourceExperiments,
+      requiredResourceExperiments: settings.requiredResourceExperiments,
       ...(settings.buildingCatalog ? { buildingCatalog: settings.buildingCatalog } : {}),
       members: members.map((m) => ({
         accountId: m.account_id,
@@ -527,7 +534,13 @@ export class RoomService {
       let query = this.db
         .selectFrom('map_versions as v')
         .innerJoin('maps as m', 'm.id', 'v.map_id')
-        .select(['v.team_count', 'm.id', 'v.building_catalog'])
+        .select([
+          'v.team_count',
+          'm.id',
+          'v.building_catalog',
+          'v.resource_experiments',
+          'v.required_resource_experiments',
+        ])
         .where('v.hash', '=', selection.hash)
         .where('v.validation', '=', 'valid')
         // Files saved by a newer engine than the room's cannot load.
@@ -548,6 +561,8 @@ export class RoomService {
         selection,
         status: 'ready',
         teamCount: row.team_count,
+        resourceExperiments: row.resource_experiments,
+        requiredResourceExperiments: row.required_resource_experiments,
         ...(row.building_catalog
           ? { buildingCatalog: row.building_catalog as BuildingCatalog }
           : {}),
@@ -556,7 +571,15 @@ export class RoomService {
     if (selection.kind === 'upload') {
       const row = await this.db
         .selectFrom('map_uploads')
-        .select(['status', 'team_count', 'failure', 'job_id', 'building_catalog'])
+        .select([
+          'status',
+          'team_count',
+          'failure',
+          'job_id',
+          'building_catalog',
+          'resource_experiments',
+          'required_resource_experiments',
+        ])
         .where('blob_sha256', '=', selection.hash)
         .where('format', '=', selection.format)
         .where('sim_version', '=', simVersion)
@@ -583,6 +606,8 @@ export class RoomService {
             selection,
             status: 'ready',
             ...(teamCount ? { teamCount } : {}),
+            resourceExperiments: row.resource_experiments,
+            requiredResourceExperiments: row.required_resource_experiments,
             ...(row.building_catalog
               ? { buildingCatalog: row.building_catalog as BuildingCatalog }
               : {}),
@@ -599,6 +624,8 @@ export class RoomService {
     if (state.status === 'ready') {
       return {
         selection: { ...withoutHash, hash: state.mapHash },
+        resourceExperiments: state.resourceExperiments,
+        requiredResourceExperiments: state.requiredResourceExperiments,
         ...(state.buildingCatalog ? { buildingCatalog: state.buildingCatalog } : {}),
         status: 'ready',
         teamCount: teams,
@@ -670,6 +697,16 @@ export class RoomService {
       map: resolution.selection,
       mapStatus: resolution.status,
     };
+    // Map changes remove declarations and requirements from the previous map.
+    const previousKeys = new Set((settings.resourceExperiments ?? []).map((entry) => entry.key));
+    next.resourceExperiments = resolution.resourceExperiments ?? [];
+    next.requiredResourceExperiments = resolution.requiredResourceExperiments ?? [];
+    next.experiments = [
+      ...new Set([
+        ...settings.experiments.filter((key) => !previousKeys.has(key)),
+        ...next.requiredResourceExperiments,
+      ]),
+    ];
     delete next.buildingCatalog;
     if (resolution.buildingCatalog) next.buildingCatalog = resolution.buildingCatalog;
     delete next.mapProblem;
@@ -823,6 +860,11 @@ export class RoomService {
     };
     if (resolution) {
       settings.map = resolution.selection;
+      settings.resourceExperiments = resolution.resourceExperiments ?? [];
+      settings.requiredResourceExperiments = resolution.requiredResourceExperiments ?? [];
+      settings.experiments = [
+        ...new Set([...settings.experiments, ...settings.requiredResourceExperiments]),
+      ];
       if (resolution.buildingCatalog) settings.buildingCatalog = resolution.buildingCatalog;
       settings.mapStatus = resolution.status;
       if (resolution.problem) settings.mapProblem = resolution.problem;
@@ -1209,7 +1251,12 @@ export class RoomService {
         clearReady = true;
       }
       if (changes.experiments) {
-        settings = { ...settings, experiments: changes.experiments };
+        settings = {
+          ...settings,
+          experiments: [
+            ...new Set([...changes.experiments, ...(settings.requiredResourceExperiments ?? [])]),
+          ],
+        };
         clearReady = true;
       }
       await this.writeSettings(trx, roomId, settings);
@@ -1480,6 +1527,7 @@ export class RoomService {
         seats: roomMatchSeats(seats, names),
         rules: settings.rules,
         experiments: settings.experiments,
+        resourceExperiments: settings.resourceExperiments,
         ...(settings.buildingCatalog ? { buildingCatalog: settings.buildingCatalog } : {}),
       };
       const probes = await this.db

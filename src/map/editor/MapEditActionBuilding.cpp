@@ -89,9 +89,10 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			addBuildingEditRow(buildingWarriorRatioLabel,buildingWarriorRatioScrollBox,spec.production.recipes[WARRIOR].enabled);
 			for (int resource=0; resource<MAX_RESOURCES; ++resource)
 			{
-				buildingResourceLabels[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
-				buildingResourceControls[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
-				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxResource[resource]>0);
+				buildingResourceLabels[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
+				buildingResourceControls[resource]->setValues(&b->materials[resource],&b->type->maxMaterial[resource]);
+				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxMaterial[resource]>0 &&
+					(resource < int(MaterialId::Gold) || game.map.hasMaterialSource(resource)));
 			}
 			addBuildingEditRow(buildingBulletsLabel,buildingBulletsScrollBox,b->type->maxBullets>0);
 			addBuildingEditRow(buildingMinimumLevelLabel,buildingMinimumLevelScrollBox,b->type->zonable[WARRIOR]);

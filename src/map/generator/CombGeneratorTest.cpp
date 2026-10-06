@@ -246,13 +246,13 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	game.teams[0]->allies &= ~game.teams[1]->me;
 	game.teams[0]->enemies |= game.teams[1]->me;
 	tower->bullets = 0;
-	tower->resources[STONE] = 0;
+	tower->materials[STONE] = 0;
 	for (unsigned tick = 0; tick < 256; ++tick)
 		tower->turretStep(tick);
 	require(tower->bullets == 0, "unfed tower cannot shoot");
-	tower->resources[STONE] = 1;
+	tower->materials[STONE] = 1;
 	tower->turretStep(256);
-	require(tower->resources[STONE] == 0 &&
+	require(tower->materials[STONE] == 0 &&
 				tower->bullets == tower->type->multiplierStoneToBullets - 1,
 			"test stock becomes ammunition and a cross-channel shot");
 	const auto path =
@@ -274,7 +274,7 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	{
 		// A second probe starts empty and hires trained workers through normal
 		// building updates. Only native quarry harvests can supply further fire.
-		tower->resources[STONE] = 0;
+		tower->materials[STONE] = 0;
 		tower->bullets = 0;
 		tower->maxUnitWorking = 3;
 		tower->update();

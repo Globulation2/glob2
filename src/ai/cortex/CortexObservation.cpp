@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
 #include "CortexPlacementGeo.h"
@@ -85,7 +86,7 @@ namespace Cortex
 			// game==NULL (no-map test path): can't measure, so fall back to counting it.
 			if (!bt->isBuildingSite && b->buildingState == Building::ALIVE && bt->semantics.feeding.enabled)
 			{
-				const bool innHasWheat = bt->semantics.feeding.cost[WHEAT] == 0 || (game == NULL)
+				const bool innHasWheat = bt->semantics.feeding.cost[materialIndex(MaterialId::Food)] == 0 || (game == NULL)
 					|| Cortex::countSurvivingWheatWithin(game->map,
 					                                    b->posX, b->posY,
 					                                    bt->width, bt->height,
@@ -123,7 +124,7 @@ namespace Cortex
 				//      game/entities/BuildingType.h:76,80,79
 				// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 				// C++: nearestWheatDist: Chebyshev to nearest WHEAT tile, ai/cortex/CortexPlacement
-				// NOTE: b->resources[WHEAT] is safe — for buildings with local (not
+				// NOTE: b->materials[WHEAT] is safe — for buildings with local (not
 				// global) resources it points to localResources; for global-resource
 				// buildings it points to Team::teamResources. The swarm is always a
 				// local-resource building, so this is the building's own wheat stock.
@@ -135,15 +136,15 @@ namespace Cortex
 					int input = -1;
                     for (const auto& recipe : bt->semantics.production.recipes)
                         if (recipe.enabled && input < 0) input = primaryResource(recipe.cost);
-                    t.wheat = input >= 0 ? b->resources[input] : CORTEX_SWARM_WHEAT_REM_HI;
-                    t.maxWheat = input >= 0 ? bt->maxResource[input] : CORTEX_SWARM_WHEAT_REM_HI;
+                    t.wheat = input >= 0 ? b->materials[input] : CORTEX_SWARM_WHEAT_REM_HI;
+                    t.maxWheat = input >= 0 ? bt->maxMaterial[input] : CORTEX_SWARM_WHEAT_REM_HI;
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
 					// Only call nearestWheatDist when game is available — the Map
 					// reference is owned by Game and the building scan is NOT guarded
 					// by (game != NULL). When game is absent, leave -1 (no result).
-					t.nearestWheatDist = input != WHEAT ? 0 : (game != NULL)
+					t.nearestWheatDist = input != materialIndex(MaterialId::Food) ? 0 : (game != NULL)
 						? Cortex::nearestWheatDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
@@ -152,7 +153,7 @@ namespace Cortex
 					// non-forbidden WHEAT within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the
 					// footprint, so it tracks the field draining/being checkerboarded over
 					// time, not just the spot the swarm was built on.
-					t.harvestableWheatNearby = input != WHEAT ? -1 : (game != NULL)
+					t.harvestableWheatNearby = input != materialIndex(MaterialId::Food) ? -1 : (game != NULL)
 						? Cortex::countHarvestableWheatWithin(game->map, team->me,
 						                                     b->posX, b->posY,
 						                                     bt->width, bt->height,
@@ -186,12 +187,12 @@ namespace Cortex
 					t.valid           = 1;
 					t.gid             = b->gid;
 					const int input = primaryResource(bt->semantics.feeding.cost);
-                    t.wheat = input >= 0 ? b->resources[input] : 1;
-                    t.maxWheat = input >= 0 ? bt->maxResource[input] : 1;
+                    t.wheat = input >= 0 ? b->materials[input] : 1;
+                    t.maxWheat = input >= 0 ? bt->maxMaterial[input] : 1;
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
-					t.nearestWheatDist = input != WHEAT ? 0 : (game != NULL)
+					t.nearestWheatDist = input != materialIndex(MaterialId::Food) ? 0 : (game != NULL)
 						? Cortex::nearestWheatDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
@@ -235,8 +236,8 @@ namespace Cortex
 					t.restockTripsNeeded = 0;
                     for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource)
                         if (bt->semantics.feeding.cost[resource] > 0) {
-                            const int deficit = std::max(0, bt->maxResource[resource] - b->resources[resource]);
-                            const int delivered = std::max(1, bt->multiplierResource[resource]);
+                            const int deficit = std::max(0, bt->maxMaterial[resource] - b->materials[resource]);
+                            const int delivered = std::max(1, bt->materialMultiplier[resource]);
                             t.restockTripsNeeded += (deficit + delivered - 1) / delivered;
                         }
 					t.priority        = b->priority; // C++: building/Building.h:516
@@ -299,7 +300,7 @@ namespace Cortex
 			// (building/Misc.cpp:178), so the trips left for resource r are
 			// ceil((maxResource[r] - resources[r]) / multiplierResource[r]); the
 			// sum over the basic resource types bounds how many workers can usefuly
-			// build it. b->resources is the site's own (local) build stock.
+			// build it. b->materials is the site's own (local) build stock.
 			// C++: BuildingType::isBuildingSite game/entities/BuildingType.h:92,
 			//      maxResource/multiplierResource :76,78; Building::resources :538.
 			if (bt->isBuildingSite && b->buildingState == Building::ALIVE
@@ -308,10 +309,10 @@ namespace Cortex
 				int deliveriesLeft = 0;
 				for (int r = 0; r < MAX_RESOURCES; r++)
 				{
-					const int mult = bt->multiplierResource[r];
+					const int mult = bt->materialMultiplier[r];
 					if (mult <= 0)
 						continue;
-					const int rem = bt->maxResource[r] - b->resources[r];
+					const int rem = bt->maxMaterial[r] - b->materials[r];
 					if (rem > 0)
 						deliveriesLeft += (rem + mult - 1) / mult; // ceil to whole trips.
 				}

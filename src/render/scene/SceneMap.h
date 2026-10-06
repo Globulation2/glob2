@@ -5,6 +5,7 @@
 #include "TerrainPresentation.h"
 #include "TerrainProperties.h"
 #include "Ressource.h"
+#include "ResourceRegistry.h"
 
 #include <SDL3/SDL_stdinc.h>
 
@@ -23,9 +24,18 @@ class TerrainRegistry;
 class SceneMap
 {
 	std::shared_ptr<const TerrainRegistry> registry;
+	std::shared_ptr<const ResourceRegistry> resourceDefinitions;
+	std::vector<std::uint32_t> multiStockIndices;
+	std::vector<std::array<Uint16, MaterialCount>> multiStocks;
+	MaterialMask presentMaterials = 0;
 
   public:
+	Uint32 tick = 0;
 	SceneMap();
+	MaterialMask materialPresence() const { return presentMaterials; }
+	Uint16 materialAmountAt(size_t index, unsigned material) const;
+	const ResourceRegistry& resourceRegistry() const { return *resourceDefinitions; }
+	std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceDefinitions; }
 	const TerrainRegistry &terrainRegistry() const { return *registry; }
 	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const { return registry; }
 	const TerrainPresentation &terrainPresentation(TerrainType type) const;

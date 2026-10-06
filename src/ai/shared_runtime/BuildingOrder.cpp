@@ -35,7 +35,7 @@ unsigned BuildingOrder::input_resource_mask(Runtime& runtime) const
   bool consumes=(spec.feeding.enabled && spec.feeding.cost[resource]>0) || (spec.healing.enabled && spec.healing.cost[resource]>0);
   for(const auto& recipe:spec.production.recipes) consumes|=recipe.enabled && recipe.cost[resource]>0;
   for(const auto& training:spec.training) consumes|=training.enabled && training.cost[resource]>0;
-  consumes|=completed->shootingRange>0 && spec.ammunitionResource==resource && spec.ammunitionCost>0;
+  consumes|=completed->shootingRange>0 && spec.ammunitionMaterial==resource && spec.ammunitionCost>0;
   if(consumes) recurring|=1u<<resource;
   if(placement->semantics.constructionCost[resource]>0) construction|=1u<<resource;
  }
@@ -49,7 +49,7 @@ void BuildingOrder::add_input_distance_constraints(Runtime& runtime,int defaultW
     for(int resource=0;resource<MAX_NB_RESOURCES;++resource) if(inputs&(1u<<resource)) {
         int weight=defaultWeight;
         for(const auto& [selected,preference]:resourceWeights) if(selected==resource) weight=preference;
-        GradientInfo gradient;gradient.add_source(new Entities::Resource(resource));
+        GradientInfo gradient;gradient.add_source(new Entities::MaterialSource(resource));
         add_constraint(new MinimizedDistance(gradient,weight));
         if(maximumDistance>=0) add_constraint(new MaximumDistance(gradient,maximumDistance));
     }

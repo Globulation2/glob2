@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <list>
 #include <math.h>
 #include <stdlib.h>
@@ -135,7 +136,7 @@ void Building::kill(int diagnosticRemoval)
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
-			if (resources[r]>0)
+			if (materials[r]>0)
 				owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	
 	updateUnitsHarvesting();
@@ -220,47 +221,47 @@ void Building::removeUnitFromInside(Unit* unit)
 
 
 
-void Building::updateResourcesPointer()
+void Building::updateMaterialsPointer()
 {
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r = 0; r < MAX_NB_RESOURCES; ++r)
 			owner->map->dirtyMarketGradients(owner->teamNumber, r);
 	if(!type->useTeamResources)
 	{
-		resources=localResource;
+		materials=localMaterials;
 	}
 	else
 	{
-		resources=owner->teamResources;
+		materials=owner->teamMaterials;
 	}
 }
 
 
 
-void Building::addResourceIntoBuilding(int resourceType)
+void Building::addMaterialIntoBuilding(int resourceType)
 {
-	deliverResourcePacket(resourceType,{});
+	deliverMaterialPacket(resourceType,{});
 }
 
-ResourceDeliveryResult Building::deliverResourcePacket(int resourceType, ResourcePacket packet)
+MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, MaterialPacket packet)
 {
 	if (packet.denominator==0 || packet.denominator>1000000 || packet.numerator>packet.denominator)
-		throw std::runtime_error("Invalid resource packet");
-	const Uint64 multiplier=type->multiplierResource[resourceType];
+		throw std::runtime_error("Invalid material packet");
+	const Uint64 multiplier=type->materialMultiplier[resourceType];
 	const Sint32 converted=Uint64(packet.numerator)*multiplier/packet.denominator;
-	const int before = resources[resourceType];
-	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableResource(resourceType)<=0)
+	const int before = materials[resourceType];
+	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableMaterial(resourceType)<=0)
 		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
 	// A shared pool may already exceed this recipient's own acceptance limit.
 	// Reject excess delivery without deleting inventory owned by other consumers.
-	resources[resourceType] += std::min({resourceDeliveryNeed(resourceType),converted,std::numeric_limits<Sint32>::max()-before});
-	const int accepted = std::max(0, resources[resourceType] - before);
+	materials[resourceType] += std::min({materialDeliveryNeed(resourceType),converted,std::numeric_limits<Sint32>::max()-before});
+	const int accepted = std::max(0, materials[resourceType] - before);
 	int funded=0;
 	if (type->isBuildingSite)
 	{
-		BuildingResourceCost funding{};
-		funding[resourceType]=std::min(accepted,constructionResourceNeed(resourceType));
-		if (reserveResources(funding)) { funded=funding[resourceType]; constructionReserved[resourceType]+=funded; }
+		BuildingMaterialCost funding{};
+		funding[resourceType]=std::min(accepted,constructionMaterialNeed(resourceType));
+		if (reserveMaterials(funding)) { funded=funding[resourceType]; constructionReserved[resourceType]+=funded; }
 	}
 	owner->stats.measurements.delivered[resourceType] += accepted;
 	if (type->canExchange)
@@ -268,7 +269,7 @@ ResourceDeliveryResult Building::deliverResourcePacket(int resourceType, Resourc
 	if (constructionResultState == REPAIR)
 		owner->stats.measurements.repairDelivered[resourceType] += accepted;
 	applyConstructionHealth(funded);
-	ResourceDeliveryResult result; result.acceptedStock=accepted;
+	MaterialDeliveryResult result; result.acceptedStock=accepted;
 	result.discardedNumerator=Uint64(packet.numerator)*multiplier-Uint64(accepted)*packet.denominator;
 	result.discardedDenominator=Uint64(packet.denominator)*multiplier;
 	const auto divisor=std::gcd(result.discardedNumerator,result.discardedDenominator);
@@ -280,23 +281,23 @@ ResourceDeliveryResult Building::deliverResourcePacket(int resourceType, Resourc
 
 
 
-void Building::removeResourceFromBuilding(int resourceType)
+void Building::removeMaterialFromBuilding(int resourceType)
 {
-	withdrawResourcePacket(resourceType);
+	withdrawMaterialPacket(resourceType);
 }
 
-ResourcePacket Building::withdrawResourcePacket(int resourceType)
+MaterialPacket Building::withdrawMaterialPacket(int resourceType)
 {
-	const int before = resources[resourceType];
-	resources[resourceType]-=std::min(availableResource(resourceType), type->multiplierResource[resourceType]);
-	resources[resourceType]= std::max(resources[resourceType], 0);
-	owner->stats.measurements.withdrawn[resourceType] += before - resources[resourceType];
+	const int before = materials[resourceType];
+	materials[resourceType]-=std::min(availableMaterial(resourceType), type->materialMultiplier[resourceType]);
+	materials[resourceType]= std::max(materials[resourceType], 0);
+	owner->stats.measurements.withdrawn[resourceType] += before - materials[resourceType];
 	if (type->canExchange)
-		owner->stats.measurements.transferredOut[resourceType] += before - resources[resourceType];
-	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableResource(resourceType)<=0)
+		owner->stats.measurements.transferredOut[resourceType] += before - materials[resourceType];
+	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamResources) && availableMaterial(resourceType)<=0)
 		owner->map->dirtyMarketGradients(owner->teamNumber, resourceType);
 	updateCallLists();
-	const Uint32 amount=before-resources[resourceType], denomination=type->multiplierResource[resourceType];
+	const Uint32 amount=before-materials[resourceType], denomination=type->materialMultiplier[resourceType];
 	const Uint32 divisor=std::gcd(amount,denomination);
 	return {amount/divisor,denomination/divisor};
 }
@@ -465,8 +466,8 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 	else
 	{
 		const auto& cost = type->semantics.feeding.cost;
-		if (!reserveResources(cost)) throw std::runtime_error("Insufficient meal resources");
-		consumeReservedResources(cost, GameplayMeasurements::MEAL);
+		if (!reserveMaterials(cost)) throw std::runtime_error("Insufficient meal materials");
+		consumeReservedMaterials(cost, GameplayMeasurements::MEAL);
 	}
 	++owner->stats.measurements.meals;
 	Uint32 fruitMask=0;
@@ -474,10 +475,10 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 	for (int i=0; i<HAPPINESS_COUNT; i++)
 	{
 		int resId=i+HAPPINESS_BASE;
-		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableResource(resId) > 0)
+		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableMaterial(resId) > 0)
 		{
-			resources[resId]--;
-			if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableResource(resId)==0)
+			materials[resId]--;
+			if ((type->useTeamResources || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableMaterial(resId)==0)
 				owner->map->dirtyMarketGradients(owner->teamNumber,resId);
 			++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
@@ -496,7 +497,7 @@ int Building::availableHappynessLevel()
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPINESS_COUNT; i++)
-		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableResource(i + HAPPINESS_BASE) > inside)
+		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableMaterial(i + HAPPINESS_BASE) > inside)
 			happyness++;
 	return happyness;
 }
@@ -604,8 +605,8 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [13]
 
-	for (int i=0; i<MAX_RESOURCES; i++)
-		cs^=localResource[i];
+	for (int i=0; i<MaterialCount; i++)
+		cs^=localMaterials[i];
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [14]
 	cs=(cs<<31)|(cs>>1);

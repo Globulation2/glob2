@@ -1,3 +1,4 @@
+#include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -215,14 +216,14 @@ std::shared_ptr<Order>AICastor::controlFood()
 									   shared_ptr<Order>());
 
  const auto& semantics = b->type->semantics;
- bool usesWheat = semantics.feeding.enabled && semantics.feeding.cost[WHEAT] > 0;
+ bool usesWheat = semantics.feeding.enabled && semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0;
  bool otherService = semantics.healing.enabled || b->type->shootingRange > 0;
  for (const auto& training : semantics.training) otherService |= training.enabled;
  for (int resource=0; resource<MAX_NB_RESOURCES; ++resource) {
-  if (semantics.feeding.enabled && resource != WHEAT && semantics.feeding.cost[resource] > 0) otherService=true;
+  if (semantics.feeding.enabled && resource != materialIndex(MaterialId::Food) && semantics.feeding.cost[resource] > 0) otherService=true;
   for (const auto& recipe : semantics.production.recipes) if (recipe.enabled) {
-   usesWheat |= recipe.cost[WHEAT] > 0;
-   otherService |= resource != WHEAT && recipe.cost[resource] > 0;
+   usesWheat |= recipe.cost[materialIndex(MaterialId::Food)] > 0;
+   otherService |= resource != materialIndex(MaterialId::Food) && recipe.cost[resource] > 0;
   }
  }
  if (!usesWheat || otherService) return {};

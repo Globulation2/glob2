@@ -86,12 +86,13 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		if (movement == MOV_HARVESTING)
 		{
 			const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+            const auto clearedStocks=map->materialStocksAt(map->coordToIndex(posX+dx,posY+dy));
 			recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
 							   GameplayMeasurements::CLEARING);
 			map->decResource(posX + dx, posY + dy);
-			if (clearedBefore.type < MAX_NB_RESOURCES &&
-				clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
-				++owner->stats.measurements.cleared[clearedBefore.type];
+			if (clearedBefore != map->getResource(posX + dx, posY + dy))
+                for(unsigned material=0;material<MaterialCount;++material)
+                    owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAt(map->coordToIndex(posX+dx,posY+dy),material);
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		const bool farmAreas = map->farmAreasEnabled();
@@ -383,12 +384,13 @@ void Unit::handleMovementClearingResources()
 	if (movement==MOV_HARVESTING)
 	{
 		const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+            const auto clearedStocks=map->materialStocksAt(map->coordToIndex(posX+dx,posY+dy));
 		recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
 						   GameplayMeasurements::CLEARING);
 		map->decResource(posX + dx, posY + dy);
-		if (clearedBefore.type < MAX_NB_RESOURCES &&
-			clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
-			++owner->stats.measurements.cleared[clearedBefore.type];
+		if (clearedBefore != map->getResource(posX + dx, posY + dy))
+            for(unsigned material=0;material<MaterialCount;++material)
+                owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAt(map->coordToIndex(posX+dx,posY+dy),material);
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 
@@ -401,7 +403,7 @@ void Unit::handleMovementClearingResources()
 		{
 			int x=posX+tdx;
 			int y=posY+tdy;
-			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isResourceTakeable(x, y, attachedBuilding->clearingResources) && !(owner->map->isForbidden(x, y, owner->me)))
+			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterials) && !(owner->map->isForbidden(x, y, owner->me)))
 			{
 				dx=tdx;
 				dy=tdy;
@@ -580,7 +582,7 @@ void Unit::handleMovementGoingToResource()
 	int swim=swimClass();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
+	if (map->pathfindMaterial(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -596,7 +598,7 @@ void Unit::handleMovementGoingToResource()
 		// itself only when it actually goes stale.
 		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
+			? roundTrip : map->getMaterialGradient(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

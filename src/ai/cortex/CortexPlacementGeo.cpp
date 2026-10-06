@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "CortexPlacementGeo.h"
 
 #include "CortexTypes.h"
@@ -250,7 +251,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					return true;
 			}
 		return false;
@@ -268,7 +269,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == WHEAT)
+				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					count++;
 			}
 		return count;
@@ -295,7 +296,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != WHEAT)
+				if (!map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -320,7 +321,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != WHEAT)
+				if (!map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
 					continue;
 				if (map.isForbidden(nx, ny, teamMask))
 					continue;

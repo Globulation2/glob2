@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "shared_runtime/Runtime.h"
 #include "GlobalContainer.h"
 
@@ -79,7 +80,7 @@ bool MapInfo::is_discovered(int x, int y)
 
 bool MapInfo::is_resource(int x, int y, int type)
 {
-	return runtime.player->map->isResourceTakeable(x, y, type);
+	return runtime.player->map->isMaterialTakeable(x, y, type);
 }
 
 
@@ -107,14 +108,12 @@ bool MapInfo::is_sand(int x, int y)
 
 bool MapInfo::is_resource_habitat(int x, int y, int resource)
 {
-	const auto& terrain=runtime.player->map->terrainPropertiesAt(x,y);
-	if(resource<0 || resource>=MAX_RESOURCES || !(terrain.allowedResources & (1u<<resource))) return false;
-	return globalContainer->resourcesTypes.get(resource)->shrinkable || terrain.nonGrowingResources;
+	return runtime.player->map->terrainSupportsMaterialAt(x,y,resource);
 }
 
 bool MapInfo::is_crop_habitat(int x, int y)
 {
-	return runtime.player->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);
+	return runtime.player->map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food));
 }
 
 bool MapInfo::is_grass(int x, int y)

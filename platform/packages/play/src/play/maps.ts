@@ -8,6 +8,7 @@ import { contentKey, submitEngineJob, type JobQueue, type MapPoolEntry } from '@
 import type { Database } from '@glob2/db';
 import {
   parseSimVersionKey,
+  type ResourceExperimentDefinitions,
   type BuildingCatalog,
   type GeneratorDescriptor,
 } from '@glob2/protocol';
@@ -51,6 +52,8 @@ export type GeneratedMapState =
       teamCount: number | null;
       jobId: string | null;
       buildingCatalog?: BuildingCatalog;
+      resourceExperiments: ResourceExperimentDefinitions;
+      requiredResourceExperiments: string[];
     }
   | { status: 'failed'; failure: string; jobId: string | null };
 
@@ -61,12 +64,16 @@ function stateOf(row: {
   failure: string | null;
   job_id: string | null;
   building_catalog: unknown;
+  resource_experiments: ResourceExperimentDefinitions;
+  required_resource_experiments: string[];
 }): GeneratedMapState {
   if (row.status === 'ready' && row.map_hash) {
     return {
       status: 'ready',
       mapHash: row.map_hash,
       teamCount: row.team_count,
+      resourceExperiments: row.resource_experiments,
+      requiredResourceExperiments: row.required_resource_experiments,
       jobId: row.job_id,
       ...(row.building_catalog ? { buildingCatalog: row.building_catalog as BuildingCatalog } : {}),
     };
@@ -84,7 +91,16 @@ export async function generatedMapState(
 ): Promise<GeneratedMapState | undefined> {
   const row = await db
     .selectFrom('generated_maps')
-    .select(['status', 'map_hash', 'team_count', 'failure', 'job_id', 'building_catalog'])
+    .select([
+      'status',
+      'map_hash',
+      'team_count',
+      'failure',
+      'job_id',
+      'building_catalog',
+      'resource_experiments',
+      'required_resource_experiments',
+    ])
     .where('descriptor_hash', '=', descriptorHash(generator))
     .where('sim_version', '=', simVersion)
     .executeTakeFirst();
@@ -251,6 +267,10 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           width: result.map.width,
           height: result.map.height,
           team_count: result.map.teamCount,
+          resource_experiments: JSON.stringify(result.map.resourceExperiments ?? []),
+          required_resource_experiments: JSON.stringify(
+            result.map.requiredResourceExperiments ?? [],
+          ),
           building_catalog: result.map.buildingCatalog
             ? JSON.stringify(result.map.buildingCatalog)
             : null,
@@ -294,6 +314,10 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           width: result.map.width,
           height: result.map.height,
           team_count: result.map.teamCount,
+          resource_experiments: JSON.stringify(result.map.resourceExperiments ?? []),
+          required_resource_experiments: JSON.stringify(
+            result.map.requiredResourceExperiments ?? [],
+          ),
           building_catalog: result.map.buildingCatalog
             ? JSON.stringify(result.map.buildingCatalog)
             : null,

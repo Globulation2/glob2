@@ -107,7 +107,7 @@ public:
 	AlgaeGrowth(const Map& map, const Torus&) : map(map), field(map.resourceGrowthField()) {}
 	double at(int i) const
 	{
-		if (!(map.terrainPropertiesAt(i).allowedResources & (1u<<ALGA))) return 0;
+		if (!map.terrainSupportsResourceAt(i % map.getW(),i / map.getW(),ALGA)) return 0;
 		return double(field.rate(i,ALGA))/Fertility::kRateScale;
 	}
 private:
@@ -219,9 +219,10 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 {
 	const int width = map.getW();
 	// The stock lottery may choose any of these deposits after the center.
-	constexpr unsigned stockMask=(1u<<STONE)|(1u<<WHEAT)|(1u<<CHERRY)|(1u<<ORANGE)|(1u<<PRUNE);
+	constexpr int stockTypes[]={STONE,WHEAT,CHERRY,ORANGE,PRUNE};
 	const auto acceptsStock=[&](int x,int y) {
-		return (map.terrainPropertiesAt(x,y).allowedResources & stockMask)==stockMask;
+		for (int resource : stockTypes) if (!map.terrainSupportsResourceAt(x,y,resource)) return false;
+        return true;
 	};
 	for (const Island &island : islands)
 	{

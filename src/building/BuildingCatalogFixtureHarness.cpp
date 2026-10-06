@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Material.h"
 #include "EngineFixtures.h"
 #include "BuildingType.h"
 #include <BinaryStream.h>
@@ -23,7 +24,7 @@ Building* place(glob2test::HeadlessGame& world, const char* key, int x, int y)
     if (building->type->semantics.occupiesGround)
         world.game.map.setBuilding(x, y, building->type->width, building->type->height, building->gid);
     world.team->addToStaticAbilitiesLists(building);
-    for (int resource=0; resource<MAX_RESOURCES; ++resource) building->resources[resource]=64;
+    for (int resource=0; resource<MaterialCount; ++resource) building->materials[resource]=64;
     return building;
 }
 std::vector<Uint32> components(Game& game)
@@ -46,11 +47,11 @@ void invariants(Game& game)
             auto* building=game.teams[team]->myBuildings[id];
             if (!building) continue;
             CHECK(building->unitsInside.size() <= std::size_t(building->maxUnitInside));
-            for (int resource=0; resource<MAX_RESOURCES; ++resource)
+            for (int resource=0; resource<MaterialCount; ++resource)
             {
-                CHECK(building->resources[resource] >= 0);
-                CHECK(building->reservedResources[resource] >= 0);
-                CHECK(building->reservedResources[resource] <= building->resources[resource]);
+                CHECK(building->materials[resource] >= 0);
+                CHECK(building->reservedMaterials[resource] >= 0);
+                CHECK(building->reservedMaterials[resource] <= building->materials[resource]);
             }
         }
 }
@@ -86,7 +87,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         place(world, "signal", 30, 30);
         place(world, "warehouse", 40, 40);
         for (int unit=0; unit<9; ++unit) world.addUnit(unit % NB_UNIT_TYPE, 4+unit, 14);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource)
+        for (int resource=0; resource<MaterialCount; ++resource)
             for (int n=0; n<4; ++n) world.game.map.setResource(5+resource*4, 22+n, resource, 5);
         world.team->createLists();
         world.game.setWaitingOnMask(0);
@@ -169,20 +170,20 @@ TEST_CASE("retained split recipes conserve every charged resource through cancel
         for (int tick=0; tick<300; ++tick)
         {
             forge->swarmStep();
-            for (int resource=0; resource<MAX_RESOURCES; ++resource)
+            for (int resource=0; resource<MaterialCount; ++resource)
             {
                 int spent=0;
                 for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
                     spent += world.team->stats.measurements.births[unit] *
                         forge->type->semantics.production.recipes[unit].cost[resource];
-                CHECK(forge->resources[resource] + spent == 64);
-                CHECK(forge->availableResource(resource) >= 0);
+                CHECK(forge->materials[resource] + spent == 64);
+                CHECK(forge->availableMaterial(resource) >= 0);
             }
             if (tick % 53 == 0)
             {
                 forge->cancelProduction();
-                for (int resource=0; resource<MAX_RESOURCES; ++resource)
-                    CHECK(forge->availableResource(resource) == forge->resources[resource]);
+                for (int resource=0; resource<MaterialCount; ++resource)
+                    CHECK(forge->availableMaterial(resource) == forge->materials[resource]);
             }
         }
         for (int unit=0; unit<NB_UNIT_TYPE; ++unit)

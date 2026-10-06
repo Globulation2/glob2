@@ -18,6 +18,7 @@
 #include "Player.h"
 #include "AIJavaScript.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -205,7 +206,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 						   .set("id", unsigned(clearing->gid))
 						   .set("generation", clearing->scriptIdentity);
 	Value switches = Value::array();
-	for (int i = 0; i < BASIC_COUNT; ++i)
+	for (int i = 0; i < BASIC_COUNT - 1; ++i)
 		switches.items.emplace_back(true);
 	auto clearingOrder = Value::object()
 							 .set("type", "clearingResources")
@@ -221,6 +222,7 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 		denied = true;
 	}
 	GLOB2_REQUIRE(denied, "JavaScript contract");
+	switches.items.emplace_back(true); // Five legacy material switches remain accepted.
 	switches.items[STONE] = Value(false);
 	clearingOrder.set("resources", switches);
 	game.players[0] = new Player(0, "local", game.teams[0], BasePlayer::P_LOCAL);
@@ -258,8 +260,8 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 		game.addBuilding(18, 4, globals.buildingsTypes.getTypeNum("market", 0, false), 0);
 	REQUIRE(market);
 	execute(describe("exchange", market).set("receiveMask", 3).set("sendMask", 4));
-	CHECK(market->receiveResourceMask == 3);
-	CHECK(market->sendResourceMask == 4);
+	CHECK(market->receiveMaterialMask == 3);
+	CHECK(market->sendMaterialMask == 4);
 	execute(describe("range", clearing).set("range", 9));
 	CHECK(clearing->unitStayRange == 9);
 	auto *war = game.addBuilding(25, 20, globals.buildingsTypes.getTypeNum("warflag", 0, false), 0);
@@ -323,8 +325,8 @@ TEST_CASE("JavaScript orders execute and survive save load" *
 	GLOB2_REQUIRE(clearingLoaded.game.load(&clearingIn), "JavaScript contract");
 	auto *restoredFlag =
 		clearingLoaded.game.teams[0]->myBuildings[Building::GIDtoID(clearing->gid)];
-	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearingResources[STONE] &&
-					  restoredFlag->clearingResources[WOOD],
+	GLOB2_REQUIRE(restoredFlag && !restoredFlag->clearingMaterials[STONE] &&
+					  restoredFlag->clearingMaterials[WOOD],
 				  "JavaScript contract");
 }
 TEST_CASE("JavaScript scenario effects commit atomically and resume" *
@@ -1433,6 +1435,96 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         CHECK(state.get("internal").number==1);CHECK(state.get("frozen").number==1);
         CHECK(state.get("unchanged").number==1);
     }
+}
+
+TEST_CASE("JavaScript material metadata and remembered multi-yield sources survive both stream formats" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    auto definition = nlohmann::json::parse(world.game.map.resourceRegistry().serialize())["resources"][1];
+    definition["key"] = "test:mixed-crop";
+    definition["yields"] = {{"food", {{"capacity", 60000}, {"initial", 2}}},
+                             {"paper", {{"capacity", 50000}, {"initial", 3}}}};
+    world.game.map.installResourceDefinitions(nlohmann::json{{"schemaVersion", 1}, {"resources", nlohmann::json::array({definition})}}.dump());
+    const auto resource = *world.game.map.resourceRegistry().find("test:mixed-crop");
+    world.game.map.replaceResource(5,5,Resource{Uint16(resourceIndex(resource)),0,5,0});
+    const auto index = world.game.map.coordToIndex(5,5);
+    world.game.map.setMaterialAmount(index, MaterialId::Food, 50000);
+    world.game.map.setMaterialAmount(index, MaterialId::Paper, 40000);
+    world.game.map.setMapDiscovered(5,5,world.game.teams[0]->me);
+    Observations fair(world.game,0);
+    fair.observe();
+    world.game.map.switchFogOfWar();
+    world.game.map.switchFogOfWar();
+    ++world.game.stepCounter;
+    world.game.map.setMaterialAmount(index, MaterialId::Food, 1);
+    CHECK(fair.materialStock(5,5,MaterialId::Food) == 50000);
+    CHECK(fair.materialStock(5,5,MaterialId::Paper) == 40000);
+
+    for (bool text : {false, true})
+    {
+        auto* memory = new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output;
+        if (text) output = std::make_unique<TextOutputStream>(memory);
+        else output = std::make_unique<BinaryOutputStream>(memory);
+        fair.save(output.get()); output->flush();
+        const auto bytes = memory->takeContents();
+        auto* inputMemory = new MemoryStreamBackend(bytes.data(), bytes.size());
+        inputMemory->seekFromStart(0);
+        std::unique_ptr<InputStream> input;
+        if (text) input = std::make_unique<TextInputStream>(inputMemory);
+        else input = std::make_unique<BinaryInputStream>(inputMemory);
+        Observations loaded(world.game,0);
+        loaded.load(input.get());
+        CHECK(loaded.materialStock(5,5,MaterialId::Food) == 50000);
+        CHECK(loaded.materialStock(5,5,MaterialId::Paper) == 40000);
+        const auto tile = loaded.query("tile", {5,5});
+        CHECK(tile.get("resource").get("amount").number == 90000);
+        CHECK(tile.get("materialStocks").items[materialIndex(MaterialId::Paper)].number == 40000);
+        Spatial spatial(world.game,0,loaded);
+        const auto summary = spatial.query("summary", {Value::object().set("x",5).set("y",5).set("material","food")}, {});
+        CHECK(summary.get("amount").number == 50000);
+    }
+
+    Observations full(world.game,-1);
+    for (unsigned profile : {1u,2u}) for (bool commander : {false,true})
+    {
+        Host host; host.profile=profile; host.commander=commander;
+        host.width=host.height=16; host.team=-1; host.random=[] {return 0u;};
+        host.query=[&](const auto& name,const auto& args,const QueryBudget& budget) {return full.query(name,args,budget);};
+        auto result=makeRuntime()->invoke(
+            "export function step(ctx,s){const r=ctx.game.resourceTypes(),m=ctx.game.materialTypes();"
+            "s.count=m.length;s.food=m[1].key;s.custom=r.some(x=>x.key==='test:mixed-crop');"
+            "s.frozen=Object.isFrozen(r)&&Object.isFrozen(r[0].yields)&&Object.isFrozen(m);}",
+            Value::object(),false,host);
+        CHECK(result.state.get("count").number == 12);
+        CHECK(result.state.get("food").text == "food");
+        CHECK(result.state.get("custom").number == 1);
+        CHECK(result.state.get("frozen").number == 1);
+    }
+}
+
+TEST_CASE("JavaScript legacy empty resource memories discard unused stock bytes" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world;
+    auto* memory = new MemoryStreamBackend;
+    BinaryOutputStream output(memory);
+    output.writeEnterSection("scriptObservations");
+    output.writeUint32(0,"tick"); output.writeUint32(1,"count");
+    output.writeEnterSection(0);
+    output.writeUint32(0,"index"); output.writeUint32(0,"tick");
+    output.writeUint16(0,"terrain"); output.writeUint16(0,"fertility");
+    output.writeUint8(255,"type"); output.writeUint8(1,"variety"); output.writeUint8(3,"amount");
+    output.writeUint16(GRASS,"terrainType");
+    output.writeLeaveSection(); output.writeLeaveSection(); output.flush();
+    auto bytes = memory->takeContents();
+    BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
+    Observations restored(world.game,0);
+    CHECK_NOTHROW(restored.load(&input,FILE_FORMAT_VERSION_RUNTIME_RESOURCES-1));
+    CHECK(restored.materialStock(0,0,MaterialId::Food) == 0);
+    CHECK(restored.cell(0,0).resource == NO_RES_TYPE);
 }
 
 TEST_CASE("JavaScript custom building descriptors and orders follow services" * doctest::test_suite("JavaScriptIntegration"))

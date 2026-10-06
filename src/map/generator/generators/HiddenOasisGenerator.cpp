@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiddenOasisGenerator.h"
+#include "ResourceSemantics.h"
 #include "Biomes.h"
 #include "Building.h"
 #include "Contact.h"
@@ -1717,7 +1718,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> basinGround;
 	for (int i = 0; i < n; ++i)
 	{
-		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && map.getResource(i % t.w, i / t.w).type != STONE;
+		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !permanentResourceBarrier(map, i);
 		if (L.basin[i] && ground[i])
 			basinGround.push_back(i);
 	}
@@ -1778,7 +1779,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const std::vector<unsigned char> nearLedge = dilate(t, ledges, kFrontReach);
 		for (int i = 0; i < n; ++i)
 			if (nearLedge[i] && !ledges[i] && !L.massif[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable &&
-				map.getResource(i % t.w, i / t.w).type != STONE)
+				!permanentResourceBarrier(map, i, true))
 				return "Ground outside the plateau at " + at(i) + " is within a tower's reach of a ledge.";
 	}
 

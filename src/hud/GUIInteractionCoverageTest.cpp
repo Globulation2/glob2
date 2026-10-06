@@ -66,7 +66,7 @@ TEST_SUITE("GUIInteractionCoverage")
             auto& spec=catalog["variants"][typeId];auto& properties=spec["properties"];auto& semantics=spec["semantics"];
             spec["previous"]="";spec["next"]="";semantics["repairable"]=false;
             semantics["assignmentLimit"]=0;spec["presentation"]["defaultAssigned"]=0;
-            properties["armor"]=0;properties["maxResource"]=std::vector<int>(15,0);properties["maxUnitInside"]=3;
+            properties["armor"]=0;properties["maxMaterial"]=std::vector<int>(15,0);properties["maxUnitInside"]=3;
             const int feed=instant?0:10,heal=instant?0:100,training=instant?0:250;
             semantics["feeding"]={{"enabled",true},{"duration",feed},{"cost",nlohmann::json::object()}};
             semantics["healing"]={{"enabled",true},{"duration",heal},{"cost",nlohmann::json::object()}};
@@ -136,6 +136,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            gui.extractScene(gui.frameScene);
             gui.drawChoiceInfoPanel("inn"); gfx->nextFrame();
             auto* frame=gfx->completedFrame(); REQUIRE(frame);
             Uint64 hash=1469598103934665603ull;
@@ -144,7 +145,7 @@ TEST_SUITE("GUIInteractionCoverage")
             return hash;
         };
         const auto original=render();
-        site->maxResource[WOOD]+=17;
+        site->maxMaterial[WOOD]+=17;
         CHECK(render()==original);
         site->semantics.constructionCost[WOOD]+=17;
         const auto changedCost=render(); CHECK(changedCost!=original);
@@ -152,7 +153,15 @@ TEST_SUITE("GUIInteractionCoverage")
         {
             const auto before=render();
             site->semantics.constructionCost[resource]=resource+1;
-            CHECK(render()!=before);
+            if (resource<8) CHECK(render()!=before);
+            else
+            {
+                CHECK(render()==before); // A configured cost alone must not expose absent materials.
+                world.team->teamMaterials[resource]=1;
+                CHECK(render()!=before); // Stored stock counts as presence without a natural deposit.
+                site->semantics.constructionCost[resource]=0;
+                CHECK(render()==before); // Present but unused inputs stay hidden.
+            }
         }
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fruit-costs.bmp").string().c_str()));
     }
@@ -169,14 +178,14 @@ TEST_SUITE("GUIInteractionCoverage")
         auto& from=catalog["variants"][current];
         from["properties"]["defaultUnitStayRange"]=0;from["properties"]["maxUnitStayRange"]=16;
         from["properties"]["zonable"]={1,1,1};
-        from["properties"]["maxResource"][STONE]=15;
-        for(int r=HAPPINESS_BASE;r<MAX_RESOURCES;++r)from["properties"]["maxResource"][r]=20;
+        from["properties"]["maxMaterial"][STONE]=15;
+        for(int r=HAPPINESS_BASE;r<MAX_RESOURCES;++r)from["properties"]["maxMaterial"][r]=20;
         from["semantics"]["market"]["interTeamFruitExchange"]=true;
         const int producer=world.game.buildingsTypes.getFinishedTypeNum("swarm");
         from["semantics"]["production"]=catalog["variants"][producer]["semantics"]["production"];
         from["semantics"]["repairCost"]={{"wood",8},{"orange",13},{"prune",17}};
         auto& to=catalog["variants"][next];to["properties"]["hpMax"]=1379;
-        to["properties"]["maxResource"][WOOD]=7;to["properties"]["maxResource"][STONE]=0;
+        to["properties"]["maxMaterial"][WOOD]=7;to["properties"]["maxMaterial"][STONE]=0;
         catalog["variants"][nextSite]["semantics"]["constructionCost"]={{"wood",8},{"cherry",23},{"orange",29},{"prune",31}};
         world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
         auto* building=world.game.addBuilding(8,8,current,0);REQUIRE(building);
@@ -256,9 +265,14 @@ TEST_SUITE("GUIInteractionCoverage")
         // New and removed storage capacities and fruit costs must remain
         // reachable while the pointer stays on the fixed upgrade button.
         auto* target=world.game.buildingsTypes.get(next);
-        target->maxResource[WOOD]=9;render();CHECK(frameHash()!=original);
-        const auto changedWood=frameHash();target->maxResource[STONE]=3;render();CHECK(frameHash()!=changedWood);
-        target->maxResource[STONE]=0;target->maxResource[WOOD]=7;render();
+        const auto gold=materialIndex(MaterialId::Gold);
+        const auto priorGold=target->maxMaterial[gold];
+        target->maxMaterial[gold]=19;render();CHECK(frameHash()==original);
+        worker->carriedMaterial=gold;render();CHECK(frameHash()!=original);
+        worker->carriedMaterial=-1;target->maxMaterial[gold]=priorGold;render();CHECK(frameHash()==original);
+        target->maxMaterial[WOOD]=9;render();CHECK(frameHash()!=original);
+        const auto changedWood=frameHash();target->maxMaterial[STONE]=3;render();CHECK(frameHash()!=changedWood);
+        target->maxMaterial[STONE]=0;target->maxMaterial[WOOD]=7;render();
         CHECK(headerIsBlank());
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-upgrade-costs.bmp").string().c_str()));
         auto* site=world.game.buildingsTypes.get(nextSite);
@@ -342,7 +356,7 @@ TEST_SUITE("GUIInteractionCoverage")
                 const auto healthy=renderPanel(gui);
                 CHECK(world.checksum()==before);
                 unit->hp=1; unit->hungry=0;
-                if (type==WORKER) unit->carriedResource=WHEAT;
+                if (type==WORKER) unit->carriedMaterial=WHEAT;
                 if (type==WARRIOR) world.game.gameHeader.setGlassCannonLevel(1);
                 const auto damagedState=world.checksum();
                 const auto damaged=renderPanel(gui);

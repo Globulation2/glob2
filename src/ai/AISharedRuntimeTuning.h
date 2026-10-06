@@ -253,7 +253,7 @@ namespace AISharedRuntime
 
 	// ---- Resource tracker sampling ------------------------------------------
 
-	/// Sampling cadence for ResourceTracker — samples building resources
+	/// Sampling cadence for MaterialTracker — samples building materials
 	/// every THIS many ticks. (Management.cpp:346.)
 	static constexpr int AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS = 10;
 

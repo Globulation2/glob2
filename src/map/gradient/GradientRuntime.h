@@ -27,7 +27,7 @@ struct GradientRuntime
 			std::vector<std::size_t> positions, seeds;
 		} crowding;
 	};
-	struct ResourceField
+	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;
 		Uint64 sourceRevision=0, recency=0;
@@ -37,13 +37,15 @@ struct GradientRuntime
 		unsigned modes=0;
 		std::list<Uint64>::iterator lru;
 	};
-	std::map<Uint64,ResourceField> resourceFields;
-	std::list<Uint64> resourceLru;
+	std::map<Uint64,MaterialField> materialFields;
+	std::list<Uint64> materialLru;
 	std::array<std::array<Uint64,MAX_RESOURCES>,Team::MAX_COUNT> stockRevision{};
-	Uint64 resourceCacheClock=0, resourceCacheBudget=64ull*1024*1024;
+	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
 	GradientPipeline pipeline;
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
+	// Shared inert field for materials with no natural or supplier source.
+	std::vector<Uint16> absentMaterialField;
 };

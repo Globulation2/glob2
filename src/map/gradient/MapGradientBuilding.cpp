@@ -57,7 +57,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 			const Tile& tile=tiles[i];
 			if (tile.building!=NOGBID)
 				gradient[i]=tile.building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-			else if ((tile.forbidden&teamMask) || tile.resource.type!=NO_RES_TYPE ||
+			else if ((tile.forbidden&teamMask) || resourceBlocksGround(i) ||
 			         immobileUnits[i]!=IMMOBILE_UNIT_NONE || (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable)))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
@@ -102,7 +102,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 					if (yi2+(xi*xi)<=r2)
 					{
 						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(tiles[addr].resource.type < BASIC_COUNT && building->clearingResources[tiles[addr].resource.type])
+						if(tiles[addr].resource.type != NO_RES_TYPE && resourceProperties(tiles[addr].resource.type).clearable &&
+						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterials))
 						{
 							if(gradient[addr] == GRADIENT_UNREACHABLE)
 								gradient[addr] = GRADIENT_AT_GOAL;
@@ -121,7 +122,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 				{
 					if (c.forbidden&teamMask)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
+					else if (resourceBlocksGround(wyx) && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					else if(immobileUnits[wyx] != IMMOBILE_UNIT_NONE)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
@@ -185,9 +186,9 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
 	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const unsigned modes=resourceSupplyModes(building,resourceType);
+	const unsigned modes=materialSupplyModes(building,resourceType);
 	const bool withMarkets=modes!=0;
-	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
+	const Uint16 *toResource=getMaterialGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the
 	// unit harvests, to the building. A stocked market's tile is a goal as

@@ -1,3 +1,4 @@
+#include "render/ResourceSprites.h"
 #include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
@@ -736,12 +737,20 @@ std::optional<GameGUITouch::ResourceInfo> GameGUITouch::resourceInfo() const
 	if (!inspectingResource()) return {};
 	const auto &r = gui.drawnScene().map.getResource(size_t(gui.selectionResource()));
 	if (r.type == NO_RES_TYPE) return {};
-	const auto *type = globalContainer->resourcesTypes.get(r.type);
+	const auto id = static_cast<ResourceId>(r.type);
+	const auto& catalog = gui.drawnScene().map.resourceRegistry();
 	ResourceInfo info;
-	info.name = getResourceName(r.type);
-	info.sprite = type->gfxId + r.variety * type->sizesCount + r.amount - (type->eternal ? 0 : 1);
-	if (type->granular)
-		info.amount = std::to_string(r.amount) + "/" + std::to_string(type->sizesCount);
+	info.resource = r.type;
+	info.name = getResourceDisplayName(catalog.presentation(id).name);
+	info.sprite = catalog.presentation(id).frame(r.amount, 0, 0);
+	for (unsigned m=0; m<MaterialCount; ++m)
+	{
+		const auto& yield = catalog.yields(id)[m];
+		if (!yield.capacity) continue;
+		if (!info.amount.empty()) info.amount += "\n";
+		info.amount += getMaterialName(m) + ": " + (yield.consumption == ResourceConsumption::Infinite ? std::string("∞") :
+			std::to_string(gui.drawnScene().map.materialAmountAt(size_t(gui.selectionResource()),m))+"/"+std::to_string(yield.capacity));
+	}
 	return info;
 }
 
@@ -767,7 +776,10 @@ void GameGUITouch::drawResourceInfo()
 	drawPointLabel({panel.x + 8 * unit, panel.y, panel.w - 56 * unit, 48 * unit}, info->name, .9);
 	drawPointLabel(readOnlyCloseRect(), "×");
 	const ViewRect icon{panel.x + 16 * unit, panel.y + 52 * unit, 48 * unit, 48 * unit};
-	auto *sprite = globalContainer->resources;
+	auto *sprite = ResourceSprites::resolve(gui.drawnScene().map.frozenResourceRegistry()).sprites[info->resource];
+	if (sprite && info->sprite < sprite->getFrameCount() &&
+        sprite->getW(info->sprite) > 0 && sprite->getH(info->sprite) > 0)
+    {
 	const double factor = std::min(icon.w / sprite->getW(info->sprite), icon.h / sprite->getH(info->sprite));
 	SDL_Rect clip{int(panel.x), int(panel.y), int(panel.w), int(panel.h)};
 	gfx->setUITransform(factor, icon.x + (icon.w - sprite->getW(info->sprite) * factor) / 2,
@@ -775,6 +787,12 @@ void GameGUITouch::drawResourceInfo()
 	gfx->drawSprite(0, 0, sprite, info->sprite);
 	gfx->setUITransform();
 	gfx->setClipRect();
+    }
+    else
+    {
+        gfx->drawFilledRect(int(icon.x), int(icon.y), int(icon.w), int(icon.h), 255, 0, 255);
+        gfx->drawFilledRect(int(icon.x + icon.w/4), int(icon.y + icon.h/4), int(icon.w/2), int(icon.h/2), 0, 0, 0);
+    }
 	if (!info->amount.empty())
 		drawPointLabel({icon.x + icon.w + 8 * unit, icon.y, panel.w - 88 * unit, icon.h}, info->amount);
 }
@@ -812,8 +830,8 @@ std::vector<std::string> GameGUITouch::unitInfoRows() const
 	value("[current speed]", std::to_string(u.speed));
 	if (u.performance[ARMOR]) value("[armor]", std::to_string(u.realArmor));
 	if (u.performance[HARVEST]) {
-		if (u.carriedResource < 0) rows.push_back(strings->getString("[don't carry anything]"));
-		else value("[carry]", getResourceName(u.carriedResource));
+		if (u.carriedMaterial < 0) rows.push_back(strings->getString("[don't carry anything]"));
+		else value("[carry]", getMaterialName(u.carriedMaterial));
 	}
 	const std::pair<int, const char *> abilities[] = {{WALK,"[Walk]"}, {SWIM,"[Swim]"}, {BUILD,"[Build]"},
 		{HARVEST,"[Harvest]"}, {ATTACK_SPEED,"[At. speed]"}, {ATTACK_STRENGTH,"[At. strength]"},

@@ -66,6 +66,26 @@ def save_header(path):
             length = struct.unpack_from('>I', data, game_header)[0]
             game_header += 4 + length
             assert game_header <= len(data), 'truncated terrain experiment key'
+    if minor >= 138:
+        # Resource experiment declarations precede their required enabled keys.
+        # Metadata is bounded by the native catalog transport contract.
+        count = struct.unpack_from('>I', data, game_header)[0]
+        game_header += 4
+        assert count <= 64, 'invalid resource experiment declaration count'
+        for _ in range(count):
+            for limit in (128, 512, 4096):
+                length = struct.unpack_from('>I', data, game_header)[0]
+                assert 0 < length <= limit, 'invalid resource experiment metadata length'
+                game_header += 4 + length
+                assert game_header <= len(data), 'truncated resource experiment metadata'
+        count = struct.unpack_from('>I', data, game_header)[0]
+        game_header += 4
+        assert count <= 64, 'invalid required resource experiment count'
+        for _ in range(count):
+            length = struct.unpack_from('>I', data, game_header)[0]
+            assert 0 < length <= 128, 'invalid required resource experiment key length'
+            game_header += 4 + length
+            assert game_header <= len(data), 'truncated resource experiment key'
     game_header += 20 * teams
     players = struct.unpack_from('>I', data, game_header + 5)[0]
     assert 0 < teams <= 32 and 0 < players <= 32

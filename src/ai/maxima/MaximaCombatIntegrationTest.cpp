@@ -1302,8 +1302,8 @@ static void retirementPreservesIndependentTraining()
         }
         if(service==2) {
             variant["semantics"]["market"]["suppliesDirectStock"]=true;
-            variant["semantics"]["market"]["suppliesDirectStockResources"]={"wood"};
-            variant["properties"]["maxResource"][WOOD]=8;
+            variant["semantics"]["market"]["suppliesDirectStockMaterials"]={"wood"};
+            variant["properties"]["maxMaterial"][WOOD]=8;
         }
         f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
         f.game.configureBuildingCatalog();

@@ -306,3 +306,67 @@ for (const variant of ['serial', 'threaded']) {
     expect(result.xml).toContain('retained seeded compositions preserve full simulation continuation');
   });
 }
+
+// Pure registry contracts and frozen custom-resource simulations use the same
+// native source and committed per-tick/RNG trace in both Wasm runtimes. Catalog
+// poisoning cases require separate native processes and are deliberately absent.
+for (const variant of ['serial', 'threaded']) {
+  for (const selection of [
+    {name:'registry', suite:'ResourceRegistry', cases:'*'},
+    {name:'composition', suite:'RuntimeResources', cases:'frozen seeded resource compositions*'},
+  ]) {
+    test(`WebAssembly preserves runtime resource ${selection.name} contracts (${variant})`, async ({page}, info) => {
+      test.setTimeout(300000);
+      const root=path.resolve(__dirname,'../..');
+      const output=path.join(root,'artifacts/browser-determinism/resources',variant,info.project.name,selection.name);
+      fs.mkdirSync(output,{recursive:true});
+      const progress=[];
+      page.on('console',message=>progress.push(message.text()));
+      await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
+        var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+          locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
+          print:m=>console.log(String(m)),printErr:m=>console.error(String(m)),
+          preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';
+            ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
+          async onRuntimeInitialized(){
+            const result={files:{}};
+            try {result.exit=(await Module.start(['--test-suite=${selection.suite}',
+              '--test-case=${selection.cases}','--reporters=junit','--out=/evidence/tests.xml']))??0;}
+            catch(error){result.error=String(error);}
+            function collect(directory){for(const name of FS.readdir(directory)){
+              if(name==='.'||name==='..'||name==='profile')continue;
+              const file=directory+'/'+name;
+              if(FS.isDir(FS.stat(file).mode)){collect(file);continue;}
+              if(name.endsWith('.xml')||name.endsWith('.json')||name.endsWith('.trace'))
+                result.files[file.substring('/evidence/'.length)]=FS.readFile(file,{encoding:'utf8'});
+            }}
+            collect('/evidence');window.resourceResult=result;
+          }};
+      </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);
+      try {await page.waitForFunction(()=>window.resourceResult!==undefined,null,{timeout:280000});}
+      finally {fs.writeFileSync(path.join(output,'run.log'),progress.join('\n'));}
+      const result=await page.evaluate(()=>window.resourceResult);
+      for(const [relative,contents] of Object.entries(result.files)){
+        const destination=path.join(output,relative);
+        fs.mkdirSync(path.dirname(destination),{recursive:true});fs.writeFileSync(destination,contents);
+      }
+      const source=JSON.parse(require('node:child_process').execFileSync('python3',
+        [path.join(root,'test/build_provenance.py')],{cwd:root,encoding:'utf8'}));
+      const producer=JSON.parse(result.files['cases/build-provenance.json']);
+      for(const key of ['revision','dirty','sourceTreeSha256'])expect(producer[key]).toEqual(source[key]);
+      fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({source,producer,variant,
+        selection,browser:info.project.name,browserVersion:page.context().browser().version(),
+        exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
+      expect(result.error).toBeUndefined();expect(result.exit).toBe(0);
+      expect(result.files['tests.xml']).toMatch(/failures="0"/);
+      expect(result.files['tests.xml']).toMatch(/errors="0"/);
+      if(selection.name==='composition'){
+        const traces=Object.entries(result.files).filter(([name])=>name.endsWith('/seeded-compositions.trace'));
+        expect(traces).toHaveLength(1);
+        const committed=fs.readFileSync(path.join(root,'test/fixtures/resources/seeded-compositions.trace'),'utf8');
+        expect(traces[0][1].replace(/\r\n/g,'\n')).toEqual(committed.replace(/\r\n/g,'\n'));
+        expect(traces[0][1].trim().split('\n')).toHaveLength(150);
+      } else expect(result.files['tests.xml']).toContain('stock catalog separates map identities');
+    });
+  }
+}

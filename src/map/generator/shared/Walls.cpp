@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Walls.h"
 #include "Map.h"
+#include "ResourceSemantics.h"
 #include "Sketch.h"
 #include "TerrainType.h"
 #include "Topology.h"
@@ -68,8 +69,7 @@ std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
 	std::vector<unsigned char> stone(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		if (!wallable[i] || (!map.terrainPropertiesAt(i).nonGrowingResources ||
-			!(map.terrainPropertiesAt(i).allowedResources & (1u << STONE))))
+		if (!wallable[i] || !map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
 			continue;
 		for (int dy = -1; dy <= 1 && !stone[i]; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -146,8 +146,7 @@ DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<un
 	{
 		if (!wall[i])
 			continue;
-		if (map.terrainPropertiesAt(i).nonGrowingResources &&
-			(map.terrainPropertiesAt(i).allowedResources & (1u << STONE)))
+		if (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
 			result.stone[i] = 1;
 		else if (result.gaps++ == 0)
 			result.firstGap = i;
@@ -173,7 +172,7 @@ std::array<int, 2> colonyLeak(const Map &map, const Torus &t, int teams,
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
 		open[i] = !shut[i] && map.terrainPropertiesAt(i).walkable &&
-				  !(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
+				  !permanentResourceBarrier(map, i);
 	const std::vector<std::vector<int>> units = unitTilesByTeam(map, teams);
 	for (int k = 0; k < teams; ++k)
 	{
@@ -191,12 +190,12 @@ int pieceLeak(const Map &map, const Torus &t, const std::vector<int> &piece,
 			  const std::vector<unsigned char> &shut)
 {
 	const int n = t.w * t.h;
-	// Crops, fruit and buildings go in time, so only water and stone part two pieces for good.
+	// Removable deposits and buildings do not permanently separate the pieces.
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
 		open[i] =
 			!shut[i] && map.terrainPropertiesAt(i).walkable &&
-			!(map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE);
+			!permanentResourceBarrier(map, i);
 	int pieces = 0;
 	for (int p : piece)
 		pieces = std::max(pieces, p + 1);
@@ -365,9 +364,9 @@ std::string wallStanding(const Map &map, const Torus &t, const std::vector<unsig
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		const bool stone = map.isResource(x, y) && map.getResource(x, y).type == STONE;
+		const bool stone = permanentResourceBarrier(map, i);
 		if (wall[i] && !stone)
-			return std::string("A ") + what + " has lost its stone at (" + std::to_string(x) + ", " +
+			return std::string("A ") + what + " has lost its permanent barrier at (" + std::to_string(x) + ", " +
 				   std::to_string(y) + ").";
 		if (doors[i] && stone)
 			return std::string("A ") + what + "'s gate is walled up at (" + std::to_string(x) +

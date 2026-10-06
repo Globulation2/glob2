@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GauntletGenerator.h"
+#include "ResourceSemantics.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
@@ -416,7 +417,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	const auto sites = buildAnchors(t, permanentBuilding);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.wall[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (L.wall[i] && !permanentResourceBarrier(map, i))
 			return "A Gauntlet wall is missing at " + std::to_string(i % t.w) + ":" +
 				   std::to_string(i / t.w);
 		if (L.frontOf[i] >= 0 && (!open[i] || growth.steps[i] >= 0))
@@ -489,7 +490,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		// Include water: swimmers must not bypass the sealed lake or outside coast.
-		permanent[i] = map.getResource(i % t.w, i / t.w).type != STONE && growth.steps[i] < 0;
+		permanent[i] = !permanentResourceBarrier(map, i) && growth.steps[i] < 0;
 		if (L.homeOf[i] >= 0 && L.radius[i] < L.g.rim - 9)
 			labels[i] = L.homeOf[i];
 		else if (L.courtOf[i] >= 0)
@@ -502,7 +503,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	}
 	auto possible = permanent;
 	for (int i = 0; i < t.size(); ++i)
-		possible[i] = map.getResource(i % t.w, i / t.w).type != STONE;
+		possible[i] = !permanentResourceBarrier(map, i);
 	const auto possibleGraph = checkGatePartition(t, possible, labels, gates);
 	if (possibleGraph.leakTile >= 0)
 		return "A removable obstruction hides an unintended arena route.";

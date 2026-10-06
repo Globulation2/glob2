@@ -69,6 +69,32 @@ TEST_CASE("version one preferences import only into frozen stock catalog")
     CHECK(saved.find("defaultFlagRadius[")==std::string::npos);
     CHECK(saved.find("version=2")!=std::string::npos);
 }
+TEST_CASE("version two pre-material stock fingerprints retain preferences without crossing catalog identities")
+{
+    glob2test::HeadlessGlobals globals;
+    const auto path=glob2test::profileDir()/"material-migration-preferences.txt";
+    constexpr auto old="6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54";
+    BuildingsTypes stock; stock.initLegacy();
+    const auto fingerprint=stock.fingerprint();
+    {
+        std::ofstream file(path);
+        file << "version=2\nbuildingAssignment." << old << "/inn.0.finished=11\n"
+             << "buildingAssignment." << old << "/inn.1.site=13\n"
+             << "buildingAssignment." << fingerprint << "/inn.1.site=7\n"
+             << "buildingRadius." << old << "/warflag.0.finished=9\n"
+             << "buildingAssignment.custom/inn.0.finished=15\n";
+    }
+    Settings settings; settings.load(path.filename().string());
+    CHECK(settings.buildingAssignment(fingerprint,*stock.getByType("inn",0,false))==11);
+    CHECK(settings.buildingAssignment(fingerprint,*stock.getByType("inn",1,true))==7);
+    const auto& flag=*stock.getByType("warflag",0,false);
+    CHECK(settings.buildingRadius(fingerprint,flag)==std::min(9,flag.maxUnitStayRange));
+    CHECK(settings.buildingAssignment("custom",*stock.getByType("inn",0,false))==15);
+    CHECK(settings.buildingAssignment("unrelated",*stock.getByType("inn",0,false))==stock.getByType("inn",0,false)->presentation.defaultAssigned);
+    REQUIRE(settings.save(path.filename().string()));
+    Settings restored;restored.load(path.filename().string());
+    CHECK(restored.buildingAssignment(fingerprint,*stock.getByType("inn",0,false))==11);
+}
 TEST_CASE("per game assignment loads reject duplicate stable and legacy identities")
 {
     glob2test::HeadlessGlobals globals;

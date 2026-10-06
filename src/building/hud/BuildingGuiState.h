@@ -45,7 +45,7 @@ struct BuildingGuiState
 	/// OrderModifyClearingFlag payload also carries the whole array). Cleared
 	/// by reconcileBuildingGuiState on ORDER_MODIFY_CLEARING_FLAG (non-local /
 	/// replay).
-	std::optional<std::array<bool, BASIC_COUNT>> pendingClearingResources;
+	std::optional<std::array<bool, MaterialCount>> pendingClearingResources;
 
 	/// Pending min-level-to-flag (warflag / explorationflag). Cleared by
 	/// reconcileBuildingGuiState on ORDER_MODIFY_MIN_LEVEL_TO_FLAG (non-local /
@@ -97,7 +97,7 @@ template <class B> Sint32 displayedUnitStayRange(const BuildingGuiStateMap& m, c
 template <class B> Sint32 displayedPriority(const BuildingGuiStateMap& m, const B& b)
 { auto* s = pendingStateOf(m, b); return (s && s->pendingPriority) ? *s->pendingPriority : b.priority; }
 template <class B> bool displayedClearingResource(const BuildingGuiStateMap& m, const B& b, int i)
-{ auto* s = pendingStateOf(m, b); return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : b.clearingResources[i]; }
+{ auto* s = pendingStateOf(m, b); return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : b.clearingMaterials[i]; }
 template <class B> Sint32 displayedMinLevelToFlag(const BuildingGuiStateMap& m, const B& b)
 { auto* s = pendingStateOf(m, b); return (s && s->pendingMinLevelToFlag) ? *s->pendingMinLevelToFlag : b.minLevelToFlag; }
 template <class B> Sint32 displayedMinWorkerLevelToFlag(const BuildingGuiStateMap& m,const B& b)

@@ -12,13 +12,13 @@ void serviceCatalog(Game& game, bool shared = false)
     auto catalog = nlohmann::json::parse(game.buildingsTypes.snapshotJson());
     auto& b = catalog["variants"][3];
     b["properties"]["maxUnitInside"] = 3;
-    b["properties"]["maxResource"][WOOD] = 20;
+    b["properties"]["maxMaterial"][WOOD] = 20;
     b["semantics"]["market"]["sharedStock"] = shared;
-    b["semantics"]["feeding"]["cost"] = {{"wheat", 2}};
+    b["semantics"]["feeding"]["cost"] = {{"food", 2}};
     b["semantics"]["feeding"]["holdAdmissionUntilExit"] = false;
     b["semantics"]["healing"] = {
         {"enabled", true}, {"unitMask", 1u << WORKER}, {"duration", 4},
-        {"cost", {{"wood", 3}, {"wheat", 1}}}};
+        {"cost", {{"wood", 3}, {"food", 1}}}};
     game.buildingsTypes.loadSnapshotJson(catalog.dump());
     game.configureBuildingCatalog();
 }
@@ -39,7 +39,7 @@ TEST_CASE("mixed visits share capacity and inventory and settle once")
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     serviceCatalog(world.game);
     Building* b = world.addBuilding("inn",8,8);
-    b->resources[WHEAT]=3; b->resources[WOOD]=3;
+    b->materials[WHEAT]=3; b->materials[WOOD]=3;
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     Unit* next=world.addUnit(WORKER);
@@ -47,17 +47,17 @@ TEST_CASE("mixed visits share capacity and inventory and settle once")
     CHECK_FALSE(b->canOfferService(excluded,HEAL));
     admit(b,eater,FEED);
     admit(b,patient,HEAL);
-    CHECK(b->availableResource(WHEAT)==0);
-    CHECK(b->availableResource(WOOD)==0);
+    CHECK(b->availableMaterial(WHEAT)==0);
+    CHECK(b->availableMaterial(WOOD)==0);
     CHECK_FALSE(b->canOfferService(next,FEED));
     b->settleService(patient);
     b->settleService(patient);
-    CHECK(b->resources[WOOD]==0);
-    CHECK(b->resources[WHEAT]==2);
+    CHECK(b->materials[WOOD]==0);
+    CHECK(b->materials[WHEAT]==2);
     b->removeUnitFromInside(eater);
     eater->standardRandomActivity();
-    CHECK(b->availableResource(WHEAT)==2);
-    CHECK(b->resources[WHEAT]==2);
+    CHECK(b->availableMaterial(WHEAT)==2);
+    CHECK(b->materials[WHEAT]==2);
     CHECK(b->canOfferService(next,FEED));
 }
 
@@ -68,7 +68,7 @@ TEST_CASE("shared inventory cannot be committed twice by separate buildings")
     serviceCatalog(world.game,true);
     Building* a=world.addBuilding("inn",4,4);
     Building* b=world.addBuilding("inn",12,12);
-    world.team->teamResources[WHEAT]=2;
+    world.team->teamMaterials[WHEAT]=2;
     Unit* first=world.addUnit(WORKER);
     Unit* second=world.addUnit(WORKER);
     admit(a,first,FEED);
@@ -78,8 +78,8 @@ TEST_CASE("shared inventory cannot be committed twice by separate buildings")
     CHECK(b->canOfferService(second,FEED));
     admit(b,second,FEED);
     b->settleService(second);
-    CHECK(world.team->teamResources[WHEAT]==0);
-    CHECK(world.team->reservedTeamResources[WHEAT]==0);
+    CHECK(world.team->teamMaterials[WHEAT]==0);
+    CHECK(world.team->reservedTeamMaterials[WHEAT]==0);
 }
 
 TEST_CASE("completed feeding admission buffer ignores unrelated mixed services")
@@ -91,7 +91,7 @@ TEST_CASE("completed feeding admission buffer ignores unrelated mixed services")
     catalog["variants"][3]["semantics"]["feeding"]["holdAdmissionUntilExit"]=true;
     world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8);
-    b->resources[WHEAT]=5; b->resources[WOOD]=3;
+    b->materials[WHEAT]=5; b->materials[WOOD]=3;
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     Unit* next=world.addUnit(WORKER);
@@ -109,7 +109,7 @@ TEST_CASE("pending mixed visits restore reservations and cancellation releases o
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     serviceCatalog(world.game,true);
     Building* b=world.addBuilding("inn",8,8);
-    b->resources[WHEAT]=10; b->resources[WOOD]=6;
+    b->materials[WHEAT]=10; b->materials[WOOD]=6;
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     admit(b,eater,FEED); admit(b,patient,HEAL);
@@ -122,14 +122,14 @@ TEST_CASE("pending mixed visits restore reservations and cancellation releases o
     REQUIRE(copy.game.load(&input));
     Building* restored=copy.game.teams[0]->myBuildings[Building::GIDtoID(b->gid)];
     REQUIRE(restored);
-    CHECK(restored->availableResource(WHEAT)==7);
-    CHECK(restored->availableResource(WOOD)==3);
+    CHECK(restored->availableMaterial(WHEAT)==7);
+    CHECK(restored->availableMaterial(WOOD)==3);
     CHECK(restored->unitsInside.size()==2);
     restored->kill();
-    CHECK(restored->owner->reservedTeamResources[WHEAT]==0);
-    CHECK(restored->owner->reservedTeamResources[WOOD]==0);
-    CHECK(restored->resources[WHEAT]==10);
-    CHECK(restored->resources[WOOD]==6);
+    CHECK(restored->owner->reservedTeamMaterials[WHEAT]==0);
+    CHECK(restored->owner->reservedTeamMaterials[WOOD]==0);
+    CHECK(restored->materials[WHEAT]==10);
+    CHECK(restored->materials[WOOD]==6);
 }
 
 TEST_CASE("construction eligibility and work speed are independently trainable")
@@ -156,10 +156,10 @@ TEST_CASE("shared delivery never discards inventory above a recipient capacity")
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     serviceCatalog(world.game,true);
     Building* b=world.addBuilding("inn",8,8);
-    b->resources[WHEAT]=b->type->maxResource[WHEAT]+7;
-    const int before=b->resources[WHEAT];
-    b->addResourceIntoBuilding(WHEAT);
-    CHECK(b->resources[WHEAT]==before);
+    b->materials[WHEAT]=b->type->maxMaterial[WHEAT]+7;
+    const int before=b->materials[WHEAT];
+    b->addMaterialIntoBuilding(WHEAT);
+    CHECK(b->materials[WHEAT]==before);
 }
 
 TEST_CASE("parallel training waits for the slowest requested course")
@@ -188,7 +188,7 @@ TEST_CASE("save loading rejects a reservation detached from its visitor list")
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     serviceCatalog(world.game);
     Building* b=world.addBuilding("inn",8,8);
-    b->resources[WHEAT]=10;
+    b->materials[WHEAT]=10;
     Unit* eater=world.addUnit(WORKER);
     admit(b,eater,FEED);
     b->unitsInside.clear();
@@ -353,7 +353,7 @@ TEST_CASE("stock tiny deficit healing completes without storing a post exit spee
     Unit* patient=world.addUnit(WORKER,7,8);
     patient->hp=patient->performance[HP]-1;
     for (int resource=0;resource<MAX_NB_RESOURCES;++resource)
-        hospital->resources[resource]=hospital->type->semantics.healing.cost[resource];
+        hospital->materials[resource]=hospital->type->semantics.healing.cost[resource];
     admit(hospital,patient,HEAL);
     patient->displacement=Unit::DIS_ENTERING_BUILDING;
     patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;

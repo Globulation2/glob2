@@ -27,19 +27,19 @@ std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers
 	return stepsFrom(t, tileMask(t, workers), groundUnitTiles(map));
 }
 
-bool neighbourHolds(const Map &map, int x, int y, bool (*kind)(int))
+bool neighbourHolds(const Map &map, int x, int y, MaterialMask materials)
 {
 	for (int dy = -1; dy <= 1; ++dy)
 		for (int dx = -1; dx <= 1; ++dx)
 			if ((dx || dy) &&
-				kind(map.getResource(map.normalizeX(x + dx), map.normalizeY(y + dy)).type))
+				(map.materialMaskAt(map.coordToIndex(x + dx, y + dy)) & materials))
 				return true;
 	return false;
 }
-bool isWheat(int type) { return type == WHEAT; }
-bool isWood(int type) { return type == WOOD; }
-bool isStone(int type) { return type == STONE; }
-bool isFruit(int type) { return type >= CHERRY && type <= PRUNE; }
+constexpr auto isWheat = materialBit(MaterialId::Food);
+constexpr auto isWood = materialBit(MaterialId::Wood);
+constexpr auto isStone = materialBit(MaterialId::Stone);
+constexpr MaterialMask isFruit = materialBit(MaterialId::Cherries) | materialBit(MaterialId::Oranges) | materialBit(MaterialId::Prunes);
 
 /// Wheat that is a race: this colony reaches it, and some rival reaches it within the slack.
 int nearestContestedWheat(const Map &map, const std::vector<std::vector<int>> &fields, int team)
@@ -49,7 +49,7 @@ int nearestContestedWheat(const Map &map, const std::vector<std::vector<int>> &f
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			if (map.getResource(x, y).type != WHEAT)
+			if (!map.materialAmountAt(map.coordToIndex(x, y), MaterialId::Food))
 				continue;
 			int mine = -1, rival = -1;
 			for (int other = 0; other < int(fields.size()); ++other)
@@ -131,7 +131,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 	std::vector<unsigned char> fedGround(w * h, 0);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			if (map.getResource(x, y).type == WHEAT)
+			if (map.materialAmountAt(map.coordToIndex(x, y), MaterialId::Food) > 0)
 				for (int dy = -kFeedingReach; dy <= kFeedingReach; ++dy)
 					for (int dx = -kFeedingReach; dx <= kFeedingReach; ++dx)
 						fedGround[map.normalizeY(y + dy) * w + map.normalizeX(x + dx)] = 1;
@@ -152,7 +152,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 			if (d < 0)
 				continue;
 			const int x = p % w, y = p / w;
-			if (d <= scale.catchmentSteps && (map.terrainPropertiesAt(p).allowedResources & (1u<<WHEAT)) && map.canResourcesGrow(x,y) &&
+			if (d <= scale.catchmentSteps && map.terrainSupportsMaterialAt(x, y, MaterialId::Food) && map.canResourcesGrow(x,y) &&
 				fertility.at(x, y) > 0)
 			{
 				const double chance = double(fertility.at(x, y)) / Fertility::kScale;
@@ -178,8 +178,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 					for (int dy = -1; dy <= kInnSize && !fed; ++dy)
 						for (int dx = -1; dx <= kInnSize && !fed; ++dx)
 							fed = (dx < 0 || dy < 0 || dx >= kInnSize || dy >= kInnSize) &&
-								  map.getResource(map.normalizeX(x + dx), map.normalizeY(y + dy))
-										  .type == WHEAT;
+								  map.materialAmountAt(map.coordToIndex(x + dx, y + dy), MaterialId::Food) > 0;
 					if (fed)
 					{
 						++colony.innNextToWheatSites;

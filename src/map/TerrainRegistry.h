@@ -65,6 +65,13 @@ class TerrainRegistry
 		return savedPresentations_[id];
 	}
 	const std::string &key(TerrainType id) const { return keys_[id]; }
+	// Absent means capability-based habitats. An engaged empty list permits no
+	// deposits. Legacy numeric authoring masks are resolved to stable keys on load.
+	const std::optional<std::vector<std::string>>& resourceKeys(TerrainType id) const
+	{
+		assert(valid(id));
+		return resourceKeys_[id];
+	}
 	TerrainType appearance(TerrainType id) const { return appearances_[id]; }
 	const Movement &movement(unsigned swim) const { return movement_[swim]; }
 	unsigned airCost(TerrainType id) const { return airCosts_[id]; }
@@ -96,6 +103,7 @@ class TerrainRegistry
 	static SavedPresentation savedPreset(TerrainType appearance);
 	std::vector<SavedPresentation> savedPresentations_;
 	std::vector<std::string> keys_, names_;
+	std::vector<std::optional<std::vector<std::string>>> resourceKeys_;
 	std::vector<TerrainType> appearances_;
 	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
 	std::vector<unsigned> airCosts_;

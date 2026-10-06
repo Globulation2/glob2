@@ -212,7 +212,7 @@ MapEdit::MapEdit()
 	buildingPicture = new BuildingPicture(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+2+decX, 203, 56, 46), "building editor", "building editor picture", "", NULL);
 	buildingHPLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 252, 128, 16), "building editor", "building editor hp label", "", "[hp]", NULL, static_cast<Sint32*>(NULL));
 	buildingHPScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 268, 128, 16), "building editor", "building editor hp scroll box", "update building", NULL, static_cast<Sint32*>(NULL));
-	static const char* resourceLabels[MAX_RESOURCES]={"[Wood]","[Wheat]","[Papyrus]","[Stone]","[Alga]","[Cherry]","[Orange]","[Prune]"};
+	static const char* resourceLabels[MAX_RESOURCES]={"[Wood]","[Food]","[Paper]","[Stone]","[Algae]","[Cherries]","[Oranges]","[Prunes]","[Gold]","[Metal]","[Glass]","[Fabric]"};
 	for (int resource=0; resource<MAX_RESOURCES; ++resource)
 	{
 		const auto name="building resource "+std::to_string(resource);

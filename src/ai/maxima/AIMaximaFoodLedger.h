@@ -21,6 +21,7 @@
 #ifndef AI_MAXIMA_FOOD_LEDGER_H
 #define AI_MAXIMA_FOOD_LEDGER_H
 
+#include "Material.h"
 #include <stdint.h>
 #include <array>
 #include <vector>
@@ -52,7 +53,7 @@ struct OperatingPlan
 {
     int carriers=-1;
     int fixedTicks=1,ticksPerTile=0;
-    std::array<int,8> independent{},production{},trips{};
+    std::array<int,MaterialCount> independent{},production{},trips{};
 };
 struct OperatingQuery
 {

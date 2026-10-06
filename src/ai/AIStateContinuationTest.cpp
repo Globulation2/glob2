@@ -38,7 +38,7 @@ struct World
             auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
             for (auto* building : {swarm,inn})
             {
-                building->resources[WHEAT]=depleted ? 0 : building->type->maxResource[WHEAT];
+                building->materials[WHEAT]=depleted ? 0 : building->type->maxMaterial[WHEAT];
                 building->update();
                 // These fixtures materialize finished providers directly; real
                 // games register static capabilities when construction completes.

@@ -14,7 +14,7 @@
         "hpInit": 1,
         "hpMax": 200,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           3,
           0,
           0,
@@ -40,7 +40,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -72,16 +72,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood"
           ]
         },
@@ -116,7 +116,7 @@
           "wood": 3
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood"
         ]
       },
@@ -145,7 +145,7 @@
         "height": 2,
         "hpInit": 200,
         "hpMax": 200,
-        "maxResource": [
+        "maxMaterial": [
           0,
           10,
           0,
@@ -172,11 +172,11 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": true,
           "cost": {
-            "wheat": 1
+            "food": 1
           },
           "duration": 24,
           "enabled": true,
@@ -206,29 +206,29 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": true,
-          "suppliesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -262,11 +262,11 @@
         "repairCost": {
           "wood": 3
         },
-        "replenishResources": [
-          "wheat",
-          "cherry",
-          "orange",
-          "prune"
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {
@@ -296,7 +296,7 @@
         "hpMax": 500,
         "isBuildingSite": 1,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           8,
           0,
           0,
@@ -322,7 +322,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -354,16 +354,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood"
           ]
         },
@@ -398,7 +398,7 @@
           "wood": 8
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood"
         ]
       },
@@ -429,7 +429,7 @@
         "hpInit": 500,
         "hpMax": 500,
         "level": 1,
-        "maxResource": [
+        "maxMaterial": [
           0,
           30,
           0,
@@ -456,11 +456,11 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": true,
           "cost": {
-            "wheat": 1
+            "food": 1
           },
           "duration": 15,
           "enabled": true,
@@ -490,29 +490,29 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": true,
-          "suppliesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -546,11 +546,11 @@
         "repairCost": {
           "wood": 8
         },
-        "replenishResources": [
-          "wheat",
-          "cherry",
-          "orange",
-          "prune"
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {
@@ -581,7 +581,7 @@
         "hpMax": 700,
         "isBuildingSite": 1,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           7,
           0,
           0,
@@ -607,7 +607,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -639,19 +639,19 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "wood",
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "wood",
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "wood",
             "stone"
           ]
@@ -688,7 +688,7 @@
           "stone": 5
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "wood",
           "stone"
         ]
@@ -719,7 +719,7 @@
         "hpInit": 700,
         "hpMax": 700,
         "level": 2,
-        "maxResource": [
+        "maxMaterial": [
           0,
           50,
           0,
@@ -746,11 +746,11 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": true,
           "cost": {
-            "wheat": 1
+            "food": 1
           },
           "duration": 9,
           "enabled": true,
@@ -780,29 +780,29 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": true,
-          "suppliesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "suppliesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "suppliesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ],
-          "fetchesDirectStockResources": [
-            "wheat",
-            "cherry",
-            "orange",
-            "prune"
+          "fetchesDirectStockMaterials": [
+            "food",
+            "cherries",
+            "oranges",
+            "prunes"
           ]
         },
         "occupiesGround": true,
@@ -837,11 +837,11 @@
           "wood": 7,
           "stone": 5
         },
-        "replenishResources": [
-          "wheat",
-          "cherry",
-          "orange",
-          "prune"
+        "replenishMaterials": [
+          "food",
+          "cherries",
+          "oranges",
+          "prunes"
         ]
       },
       "presentation": {

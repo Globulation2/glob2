@@ -173,7 +173,7 @@ class GameGUITouch
 	void drawStats();
 	void drawBuildPalette();
 	bool inspectingResource() const;
-	struct ResourceInfo { std::string name, amount; int sprite = 0; };
+	struct ResourceInfo { std::string name, amount; int sprite = 0; unsigned resource = 0; };
 	std::optional<ResourceInfo> resourceInfo() const;
 	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;

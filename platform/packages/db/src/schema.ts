@@ -3,6 +3,7 @@
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
 import type {
+  ResourceExperimentDefinitions,
   MusicMetadata,
   MusicRelease,
   MusicTrack,
@@ -249,6 +250,8 @@ export interface MapsTable {
 
 export interface MapVersionsTable {
   building_catalog: NullableJson<JsonValue>;
+  resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
+  required_resource_experiments: DefaultedJson<string[]>;
   id: Generated<string>;
   map_id: string;
   hash: string;
@@ -389,6 +392,8 @@ export interface MatchesTable {
 
 export interface MapUploadsTable {
   building_catalog: NullableJson<JsonValue>;
+  resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
+  required_resource_experiments: DefaultedJson<string[]>;
   id: Generated<string>;
   owner_account_id: string;
   blob_sha256: string;
@@ -410,6 +415,8 @@ export interface MapUploadsTable {
 
 export interface GeneratedMapsTable {
   building_catalog: NullableJson<JsonValue>;
+  resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
+  required_resource_experiments: DefaultedJson<string[]>;
   descriptor_hash: string;
   sim_version: string;
   descriptor: Json<JsonValue>;

@@ -203,7 +203,8 @@ void testBinaryHeaderFormsAndLegacy()
 			experimentBytes=section->getPosition();
 		}
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
-		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes;
+        const size_t resourceExperimentBytes=4; // Empty declaration count (version138).
+		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;
 		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
@@ -218,7 +219,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes-catalogBytes;
+			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes;
 			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);

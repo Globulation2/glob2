@@ -12,11 +12,11 @@
 
 // Resource pathfinding for units (pathfindResource, pathfindRandom)
 
-bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
+bool Map::pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MAX_RESOURCES);
-	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, target);
+	const Uint16 *gradient=getMaterialGradient(teamNumber, resourceType, swimClass, withMarkets, target);
 	size_t hereIndex=coordToIndex(x, y);
 	Uint16 here=gradient[hereIndex];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);

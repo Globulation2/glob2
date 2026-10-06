@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Material.h"
 #include "BuildingType.h"
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -63,7 +64,7 @@ inline int buildingProjectileStatsHeight(const BuildingType& type)
 inline bool buildingFeedingUnfunded(const BuildingType& type, const Sint32* stock)
 {
     if (!type.semantics.feeding.enabled) return false;
-    for (int resource=0; resource<MAX_RESOURCES; ++resource)
+    for (int resource=0; resource<MaterialCount; ++resource)
         if (stock[resource] < type.semantics.feeding.cost[resource]) return true;
     return false;
 }
@@ -73,9 +74,9 @@ inline bool buildingFeedingUnfunded(const BuildingType& type, const Sint32* stoc
 inline int buildingResourceBarResource(const BuildingType& type, const Sint32* stock)
 {
     int selected=-1, selectedCost=1;
-    const auto consider=[&](const BuildingResourceCost& cost) {
-        for (int resource=0; resource<MAX_RESOURCES; ++resource)
-            if (cost[resource]>0 && type.maxResource[resource]>0 &&
+    const auto consider=[&](const BuildingMaterialCost& cost) {
+        for (int resource=0; resource<MaterialCount; ++resource)
+            if (cost[resource]>0 && type.maxMaterial[resource]>0 &&
                 (selected<0 || Sint64(stock[resource])*selectedCost < Sint64(stock[selected])*cost[resource]))
             { selected=resource; selectedCost=cost[resource]; }
     };

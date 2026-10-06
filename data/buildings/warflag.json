@@ -25,7 +25,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -57,10 +57,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": false,
         "placeable": true,
@@ -91,7 +91,7 @@
         "assignmentLimit": 20,
         "constructionCost": {},
         "repairCost": {},
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "warflag",

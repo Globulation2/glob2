@@ -68,8 +68,8 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 		LOAD_CASE(CNotSpecificBuildingType, LacksBuildingCapability)
 		LOAD_CASE(CBuildingLevel,           BuildingLevel)
 		LOAD_CASE(CUpgradable,              Upgradable)
-		LOAD_CASE(CResourceTrackerAmount,  ResourceTrackerAmount)
-		LOAD_CASE(CResourceTrackerAge,     ResourceTrackerAge)
+		LOAD_CASE(CMaterialTrackerAmount,  MaterialTrackerAmount)
+		LOAD_CASE(CMaterialTrackerAge,     MaterialTrackerAge)
 	}
 	stream->readLeaveSection();
 	if (!condition) throw std::runtime_error("Unknown saved AI object type");

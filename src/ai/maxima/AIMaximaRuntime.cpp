@@ -1,3 +1,4 @@
+#include "Material.h"
 #include "AIStateSerialization.h"
 #include "field/UniformTraversal.h"
 #include "FileFormatVersions.h"
@@ -86,8 +87,9 @@ Entity* Entity::load(GAGCore::InputStream* stream)
 			const bool includeConstruction=stream->readUint8("include_construction");
 			return new AnyTeamBuilding(team, includeConstruction);
 		}
-		case EResource: return new Resource(stream->readSint32("resource_type"));
+		case EMaterialSource: return new MaterialSource(stream->readSint32("resource_type"));
 		case EAnyResource: return new AnyResource;
+        case EResourceGroundObstacle: return new ResourceGroundObstacle;
 		case EWater: return new Water;
 		case EUnwalkable: return new Unwalkable;
 		case EPosition:
@@ -154,18 +156,25 @@ bool AnyTeamBuilding::equals(const Entity& other) const
 void AnyTeamBuilding::save(GAGCore::OutputStream* stream) const
 {stream->writeUint8(type(),"type");stream->writeSint32(team,"team");stream->writeUint8(includeConstruction,"include_construction");}
 
-Resource::Resource(int resourceType) : resourceType(resourceType) {}
-bool Resource::matches(Player* player,int x,int y) const
-{ return player->map->isResourceTakeable(x,y,resourceType); }
-bool Resource::equals(const Entity& other) const
+MaterialSource::MaterialSource(int material) : material(material) {}
+bool MaterialSource::matches(Player* player,int x,int y) const
+{ return player->map->isMaterialTakeable(x,y,material); }
+bool MaterialSource::equals(const Entity& other) const
 {
-	const Resource* rhs=dynamic_cast<const Resource*>(&other);
-	return rhs && rhs->resourceType==resourceType;
+	const MaterialSource* rhs=dynamic_cast<const MaterialSource*>(&other);
+	return rhs && rhs->material==material;
 }
-bool Resource::can_change() const
-{ return resourceType==WOOD || resourceType==WHEAT || resourceType==ALGA; }
-void Resource::save(GAGCore::OutputStream* stream) const
-{stream->writeUint8(type(),"type");stream->writeSint32(resourceType,"resource_type");}
+bool MaterialSource::can_change() const
+{ return true; }
+void MaterialSource::save(GAGCore::OutputStream* stream) const
+{stream->writeUint8(type(),"type");stream->writeSint32(material,"resource_type");}
+
+bool ResourceGroundObstacle::matches(Player* player, int x, int y) const
+{ return player->map->resourceBlocksGround(player->map->coordToIndex(x,y)); }
+bool ResourceGroundObstacle::equals(const Entity& other) const
+{ return dynamic_cast<const ResourceGroundObstacle*>(&other)!=nullptr; }
+void ResourceGroundObstacle::save(GAGCore::OutputStream* stream) const
+{ stream->writeUint8(type(),"type"); }
 
 bool AnyResource::matches(Player* player,int x,int y) const
 { return player->map->isResource(x,y); }
@@ -554,41 +563,41 @@ namespace Management
 using Conditions::Condition;
 using Conditions::Result;
 using Conditions::Ready;
-ResourceTracker::ResourceTracker(Context& context,int id,int length,int resource)
-	: context(context),record(length,0),position(0),timer(0),buildingId(id),resource(resource) {}
-void ResourceTracker::tick()
+MaterialTracker::MaterialTracker(Context& context,int id,int length,int material)
+	: context(context),record(length,0),position(0),timer(0),buildingId(id),material(material) {}
+void MaterialTracker::tick()
 {
 	++timer;if(timer%10)return;
 	const auto* building=context.get_building_register().get_building(buildingId);
 	if(!building||record.empty())return;
 	int stock=0;
-	if(resource==RecurringInputStock)
+	if(material==RecurringInputStock)
 	{
 		const auto& semantics=building->type->semantics;
 		for(int r=0;r<MAX_NB_RESOURCES;++r)
 		{
 			bool used=(semantics.feeding.enabled&&semantics.feeding.cost[r]>0)
 				||(semantics.healing.enabled&&semantics.healing.cost[r]>0)
-				||(building->type->shootingRange>0&&semantics.ammunitionResource==r&&semantics.ammunitionCost>0);
+				||(building->type->shootingRange>0&&semantics.ammunitionMaterial==r&&semantics.ammunitionCost>0);
 			for(const auto& recipe:semantics.production.recipes) used|=recipe.enabled&&recipe.cost[r]>0;
 			for(const auto& training:semantics.training) used|=training.enabled&&training.cost[r]>0;
-			if(used)stock+=building->resources[r];
+			if(used)stock+=building->materials[r];
 		}
 	}
-	else stock=building->resources[resource];
+	else stock=building->materials[material];
 	record[position]=stock;position=(position+1)%record.size();
 }
-int ResourceTracker::get_total_level() const
+int MaterialTracker::get_total_level() const
 {int total=0;for(size_t i=0;i<record.size();++i)total+=record[i];return total;}
-void ResourceTracker::save(GAGCore::OutputStream* stream) const
+void MaterialTracker::save(GAGCore::OutputStream* stream) const
 {
-	stream->writeUint32(buildingId,"building_id");stream->writeSint32(resource,"resource");stream->writeUint32(position,"position");stream->writeSint32(timer,"timer");stream->writeUint32(record.size(),"size");for(size_t i=0;i<record.size();++i){stream->writeEnterSection(i);stream->writeSint32(record[i],"value");stream->writeLeaveSection();}
+	stream->writeUint32(buildingId,"building_id");stream->writeSint32(material,"resource");stream->writeUint32(position,"position");stream->writeSint32(timer,"timer");stream->writeUint32(record.size(),"size");for(size_t i=0;i<record.size();++i){stream->writeEnterSection(i);stream->writeSint32(record[i],"value");stream->writeLeaveSection();}
 }
-ResourceTracker* ResourceTracker::load(Context& context,GAGCore::InputStream* stream)
+MaterialTracker* MaterialTracker::load(Context& context,GAGCore::InputStream* stream)
 {
-	const int id=stream->readUint32("building_id");const int resource=stream->readSint32("resource");const Uint32 position=stream->readUint32("position");const int timer=stream->readSint32("timer");const Uint32 size=stream->readCount("size");
-	if(resource<0 || resource>ResourceTracker::RecurringInputStock || !size || position>=size)throw std::runtime_error("Invalid saved resource tracker");
-	std::unique_ptr<ResourceTracker> tracker(new ResourceTracker(context,id,size,resource));tracker->position=size?position%size:0;tracker->timer=timer;
+	const int id=stream->readUint32("building_id");const int material=stream->readSint32("resource");const Uint32 position=stream->readUint32("position");const int timer=stream->readSint32("timer");const Uint32 size=stream->readCount("size");
+	if(material<0 || material>MaterialTracker::RecurringInputStock || !size || position>=size)throw std::runtime_error("Invalid saved resource tracker");
+	std::unique_ptr<MaterialTracker> tracker(new MaterialTracker(context,id,size,material));tracker->position=size?position%size:0;tracker->timer=timer;
 	for(Uint32 i=0;i<size;++i){stream->readEnterSection(i);tracker->record[i]=stream->readSint32("value");stream->readLeaveSection();}return tracker.release();
 }
 
@@ -609,7 +618,7 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream,Sint32 versi
 		case 0:{const int workers=stream->readSint32("workers");const int id=stream->readSint32("id");order.reset(new AssignWorkers(workers,id));break;}
 		case 1:{const int worker=stream->readSint32("worker");const int explorer=stream->readSint32("explorer");const int warrior=stream->readSint32("warrior");order.reset(new ChangeSwarm(worker,explorer,warrior,stream->readSint32("id")));break;}
 		case 2:order.reset(new DestroyBuilding(stream->readSint32("id")));break;
-		case 3:{const int length=stream->readSint32("length");const int resource=stream->readSint32("resource");if(length<=0 || length>1048576 || resource<0 || resource>ResourceTracker::RecurringInputStock)throw std::runtime_error("Invalid resource tracker order");order.reset(new AddResourceTracker(length,resource,stream->readSint32("id")));break;}
+		case 3:{const int length=stream->readSint32("length");const int material=stream->readSint32("resource");if(length<=0 || length>1048576 || material<0 || material>MaterialTracker::RecurringInputStock)throw std::runtime_error("Invalid resource tracker order");order.reset(new AddMaterialTracker(length,material,stream->readSint32("id")));break;}
 		case 4:{const int size=stream->readSint32("value");order.reset(new ChangeFlagSize(size,stream->readSint32("id")));break;}
 		case 5:{const int level=stream->readSint32("value");const int id=stream->readSint32("id");const int targetRole=versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? stream->readSint32("target_role") : -1;if(targetRole < -1 || targetRole > 1)throw std::runtime_error("Invalid saved attraction requirement");order.reset(new ChangeFlagMinimumLevel(level,id,targetRole));break;}
 		case 6:{const int x=stream->readSint32("x");const int y=stream->readSint32("y");order.reset(new ChangeFlagPosition(x,y,stream->readSint32("id")));break;}
@@ -653,10 +662,10 @@ void RetireAttraction::modify(Context& c)
 	else c.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
 }
 void RetireAttraction::save_payload(GAGCore::OutputStream* s) const {s->writeSint32(id,"id");s->writeUint8(unitMask,"unitMask");}
-AddResourceTracker::AddResourceTracker(int length,int resource,int id):length(length),resource(resource),id(id){}
-Result AddResourceTracker::wait(Context& c) const{return wait_for_building(c,id);}
-void AddResourceTracker::modify(Context& c){c.add_resource_tracker(new ResourceTracker(c,id,length,resource),id);}
-void AddResourceTracker::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(length,"length");s->writeSint32(resource,"resource");s->writeSint32(id,"id");}
+AddMaterialTracker::AddMaterialTracker(int length,int material,int id):length(length),material(material),id(id){}
+Result AddMaterialTracker::wait(Context& c) const{return wait_for_building(c,id);}
+void AddMaterialTracker::modify(Context& c){c.add_material_tracker(new MaterialTracker(c,id,length,material),id);}
+void AddMaterialTracker::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(length,"length");s->writeSint32(material,"resource");s->writeSint32(id,"id");}
 ChangeFlagSize::ChangeFlagSize(int size,int id):size(size),id(id){}
 Result ChangeFlagSize::wait(Context& c) const{return wait_for_building(c,id);}
 void ChangeFlagSize::modify(Context& c){::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderModifyFlag(b->gid,std::clamp(size,0,b->type->maxUnitStayRange))));}
@@ -1121,10 +1130,10 @@ bool MapInfo::is_forbidden_area(int x,int y)const{return context.player->map->is
 bool MapInfo::is_guard_area(int x,int y)const{return context.player->map->isGuardArea(x,y,context.player->team->me);}
 bool MapInfo::is_clearing_area(int x,int y)const{return context.player->map->isClearArea(x,y,context.player->team->me);}
 bool MapInfo::is_discovered(int x,int y)const{return context.player->map->isMapDiscovered(x,y,context.player->team->me);}
-bool MapInfo::is_resource(int x,int y,int type)const{return context.player->map->isResourceTakeable(x,y,type);}
+bool MapInfo::is_resource(int x,int y,int type)const{return context.player->map->isMaterialTakeable(x,y,type);}
 bool MapInfo::is_resource(int x,int y)const{return context.player->map->isResource(x,y);}
 bool MapInfo::is_walkable(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).walkable;}
-bool MapInfo::is_crop_habitat(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);}
+bool MapInfo::is_crop_habitat(int x,int y)const{return context.player->map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food));}
 bool MapInfo::is_water(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).swimmable;}
 bool MapInfo::is_sand(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0;}
 bool MapInfo::is_grass(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).buildable;}
@@ -1143,7 +1152,7 @@ void Context::initialize()
 }
 void Context::detect_fruit()
 {
-	fruitOnMap=false;for(int x=0;x<player->map->getW()&&!fruitOnMap;++x)for(int y=0;y<player->map->getH();++y)if(player->map->isResourceTakeable(x,y,CHERRY)||player->map->isResourceTakeable(x,y,ORANGE)||player->map->isResourceTakeable(x,y,PRUNE)){fruitOnMap=true;break;}
+	fruitOnMap=false;for(int x=0;x<player->map->getW()&&!fruitOnMap;++x)for(int y=0;y<player->map->getH();++y)if(player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Cherries))||player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Oranges))||player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Prunes))){fruitOnMap=true;break;}
 }
 unsigned Context::add_building_order(Construction::BuildingOrder* order)
 {
@@ -1202,11 +1211,11 @@ void Context::cancel_or_destroy_building(int id,unsigned retiringUnitMask)
 		add_management_order(new Management::RetireAttraction(id,retiringUnitMask));
 }
 
-std::vector<int> Context::resource_flags(int resource) const
+std::vector<int> Context::material_source_flags(int material) const
 {
 	std::set<int> ids;
 	Gradients::GradientInfo source;
-	source.add_source(new Gradients::Entities::Resource(resource));
+	source.add_source(new Gradients::Entities::MaterialSource(material));
 	for(size_t i=0; i<buildingOrders.size(); ++i)
 	{
 		const Construction::BuildingOrder& order=*buildingOrders[i];
@@ -1235,7 +1244,7 @@ std::vector<int> Context::resource_flags(int resource) const
 			if(group==1 && !flag) continue;
 			const int x=flag ? flag->posX : record.x;
 			const int y=flag ? flag->posY : record.y;
-			if(x>=0 && y>=0 && player->map->getResource(x,y).type==resource)
+			if(x>=0 && y>=0 && player->map->isMaterialTakeable(x,y,material))
 				ids.insert(i->first);
 		}
 	return std::vector<int>(ids.begin(), ids.end());
@@ -1284,15 +1293,15 @@ void Context::add_management_order(Management::ManagementOrder *order)
 	telemetry.count(AITrace::AI7::runtime_management_queued);
 	managementOrders.push_back(shared_ptr<Management::ManagementOrder>(order));
 }
-void Context::add_resource_tracker(Management::ResourceTracker* tracker,int id){trackers[id]=shared_ptr<Management::ResourceTracker>(tracker);}
-shared_ptr<Management::ResourceTracker> Context::get_resource_tracker(int id)
-{std::map<int,shared_ptr<Management::ResourceTracker> >::iterator i=trackers.find(id);return i==trackers.end()?shared_ptr<Management::ResourceTracker>():i->second;}
+void Context::add_material_tracker(Management::MaterialTracker* tracker,int id){trackers[id]=shared_ptr<Management::MaterialTracker>(tracker);}
+shared_ptr<Management::MaterialTracker> Context::get_material_tracker(int id)
+{std::map<int,shared_ptr<Management::MaterialTracker> >::iterator i=trackers.find(id);return i==trackers.end()?shared_ptr<Management::MaterialTracker>():i->second;}
 TeamStat& Context::get_team_stats(){return *player->team->stats.getLatestStat();}
 void Context::dispatch_event(const RuntimeEvent& event){if(activeAI)activeAI->handle_event(*this,event);}
 
 void Context::update_trackers()
 {
-	for(std::map<int,shared_ptr<Management::ResourceTracker> >::iterator i=trackers.begin();i!=trackers.end();)
+	for(std::map<int,shared_ptr<Management::MaterialTracker> >::iterator i=trackers.begin();i!=trackers.end();)
 	{if(!buildings.is_building_found(i->first)&&!buildings.is_building_pending(i->first)){trackers.erase(i++);continue;}if(buildings.is_building_found(i->first))i->second->tick();++i;}
 }
 void Context::update_management_orders()
@@ -1456,7 +1465,7 @@ void Context::save(GAGCore::OutputStream* stream) const
 	buildings.save(stream);
 	stream->writeEnterSection("building_orders");stream->writeUint32(buildingOrders.size(),"size");for(size_t i=0;i<buildingOrders.size();++i){stream->writeEnterSection(i);buildingOrders[i]->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
 	stream->writeEnterSection("management_orders");stream->writeUint32(managementOrders.size(),"size");for(size_t i=0;i<managementOrders.size();++i){stream->writeEnterSection(i);managementOrders[i]->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
-	stream->writeEnterSection("trackers");stream->writeUint32(trackers.size(),"size");n=0;for(std::map<int,shared_ptr<Management::ResourceTracker> >::const_iterator i=trackers.begin();i!=trackers.end();++i,++n){stream->writeEnterSection(n);stream->writeSint32(i->first,"id");i->second->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
+	stream->writeEnterSection("trackers");stream->writeUint32(trackers.size(),"size");n=0;for(std::map<int,shared_ptr<Management::MaterialTracker> >::const_iterator i=trackers.begin();i!=trackers.end();++i,++n){stream->writeEnterSection(n);stream->writeSint32(i->first,"id");i->second->save(stream);stream->writeLeaveSection();}stream->writeLeaveSection();
     stream->writeEnterSection("retiredAttractions");stream->writeUint32(retiredAttractions.size(),"size");
     Uint32 retiredIndex=0;
     for(const auto& [id,mask]:retiredAttractions) {stream->writeEnterSection(retiredIndex++);stream->writeSint32(id,"id");stream->writeUint8(mask,"unitMask");stream->writeLeaveSection();}
@@ -1536,7 +1545,7 @@ bool Context::load(GAGCore::InputStream* stream,Sint32 versionMinor)
 			throw std::runtime_error("Invalid saved Maxima placement variant");
 		order->queue_gradients(gradients);buildingOrders.push_back(order);}stream->readLeaveSection();}stream->readLeaveSection();
 	managementOrders.clear();stream->readEnterSection("management_orders");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);shared_ptr<Management::ManagementOrder> order(Management::ManagementOrder::load(stream,versionMinor));if(order)managementOrders.push_back(order);stream->readLeaveSection();}stream->readLeaveSection();
-	trackers.clear();stream->readEnterSection("trackers");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int id=stream->readSint32("id");trackers[id]=shared_ptr<Management::ResourceTracker>(Management::ResourceTracker::load(*this,stream));stream->readLeaveSection();}stream->readLeaveSection();
+	trackers.clear();stream->readEnterSection("trackers");size=stream->readCount("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int id=stream->readSint32("id");trackers[id]=shared_ptr<Management::MaterialTracker>(Management::MaterialTracker::load(*this,stream));stream->readLeaveSection();}stream->readLeaveSection();
     retiredAttractions.clear();
     if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
         stream->readEnterSection("retiredAttractions");const auto count=stream->readCount("size");

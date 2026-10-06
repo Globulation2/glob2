@@ -1212,14 +1212,14 @@ void TeamStats::beginMeasurementSnapshot(Team *team)
 		std::fill(std::begin(row), std::end(row), 0);
 	measurements.hungry = measurements.critical = measurements.feeding = measurements.healing = 0;
 	for (int r = 0; r < MAX_NB_RESOURCES; ++r)
-		measurements.stock[r] = std::max(0, team->teamResources[r]);
+		measurements.stock[r] = std::max(0, team->teamMaterials[r]);
 }
 void TeamStats::observeMeasurementUnit(Unit *u)
 {
 	if (u && !u->isDead)
 	{
-		if (u->carriedResource >= 0 && u->carriedResource < MAX_NB_RESOURCES)
-			++measurements.carried[u->carriedResource];
+		if (u->carriedMaterial >= 0 && u->carriedMaterial < MAX_NB_RESOURCES)
+			++measurements.carried[u->carriedMaterial];
 		if (u->isUnitHungry())
 		{
 			++measurements.hungry;
@@ -1246,7 +1246,7 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 			++measurements.buildings[b->type->shortTypeNum][b->getLongLevel()];
 		if (!b->type->useTeamResources)
 			for (int r = 0; r < MAX_NB_RESOURCES; ++r)
-				measurements.stock[r] += std::max(0, b->resources[r]);
+				measurements.stock[r] += std::max(0, b->materials[r]);
 	}
 }
 GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)

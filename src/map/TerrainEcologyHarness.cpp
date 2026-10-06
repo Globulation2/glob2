@@ -2,6 +2,7 @@
 // Real production growth versus the frozen pre-terrain-refactor routine. The
 // reference exists only in this opt-in test executable, never in the game.
 #include "EngineFixtures.h"
+#include "LegacyResourceTypes.h"
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "Toolkit.h"
@@ -17,6 +18,8 @@
 
 namespace
 {
+constexpr int LegacyResourceCount = 8;
+const LegacyResourcesTypes legacyResourceTypes;
 // Frozen mutation rule as well as frozen probes: candidate habitat enforcement
 // must not silently alter the baseline for unusual legacy resource placements.
 void baselineIncrement(Map& map,int x,int y,int resource,int variety)
@@ -31,7 +34,7 @@ void baselineIncrement(Map& map,int x,int y,int resource,int variety)
         return;
     }
     if(r.type!=resource) return;
-    const auto* type=globalContainer->resourcesTypes.get(r.type);
+    const auto* type=legacyResourceTypes.get(r.type);
     if(!type->shrinkable) return;
     if(r.amount<type->sizesCount)++r.amount;else --r.amount;
     map.replaceResource(x,y,r);
@@ -67,7 +70,7 @@ void baselineGrowth(Map& map)
                     map.recordNaturalGrowth(x,y,type,type,amount);
                 }
             }
-            else if(globalContainer->resourcesTypes.get(r.type)->expendable)
+            else if(legacyResourceTypes.get(r.type)->expendable)
             {
                 int mx,my; Unit::dxDyFromDirection(syncRand()&7,&mx,&my);
                 if(map.getTile(x+mx,y+my).canResourcesGrow)
@@ -133,9 +136,9 @@ TEST_CASE("saved-map growth calibration [benchmark][slow]")
                     auto& map=game.map;
                     auto& measures=game.teams[0]->stats.measurements;
                     for(auto& band:measures.growthGlobal) std::fill(std::begin(band),std::end(band),0);
-                    std::array<std::uint64_t,MAX_RESOURCES> harvested{},initial{};
+                    std::array<std::uint64_t,LegacyResourceCount> harvested{},initial{};
                     for(int i=0;i<map.getW()*map.getH();++i)
-                    {const auto& r=map.getResource(i);if(r.type<MAX_RESOURCES)initial[r.type]+=r.amount;}
+                    {const auto& r=map.getResource(i);if(r.type<LegacyResourceCount)initial[r.type]+=r.amount;}
                     const auto start=std::chrono::steady_clock::now();
                     for(int tick=1;tick<=ticks;++tick)
                     {
@@ -147,14 +150,14 @@ TEST_CASE("saved-map growth calibration [benchmark][slow]")
                             for(int i=0;i<map.getW()*map.getH();++i)
                             {
                                 const auto& r=map.getResource(i);
-                                if(r.type<MAX_RESOURCES && r.type!=STONE && r.amount>1)
+                                if(r.type<LegacyResourceCount && r.type!=STONE && r.amount>1)
                                 {map.setResourceAmount(i,r.amount-1);++harvested[r.type];}
                             }
                         if(tick!=1024 && tick!=4096 && tick!=16384 && tick!=65536 && tick!=ticks)continue;
-                        std::array<std::uint64_t,MAX_RESOURCES> stock{},occupied{},added{},removed{},newTiles{};
+                        std::array<std::uint64_t,LegacyResourceCount> stock{},occupied{},added{},removed{},newTiles{};
                         for(int i=0;i<map.getW()*map.getH();++i)
-                        {const auto& r=map.getResource(i);if(r.type<MAX_RESOURCES){stock[r.type]+=r.amount;++occupied[r.type];}}
-                        for(int r=0;r<MAX_RESOURCES;++r)
+                        {const auto& r=map.getResource(i);if(r.type<LegacyResourceCount){stock[r.type]+=r.amount;++occupied[r.type];}}
+                        for(int r=0;r<LegacyResourceCount;++r)
                         {newTiles[r]=measures.growthGlobal[0][r];added[r]=measures.growthGlobal[1][r];removed[r]=measures.growthGlobal[2][r];
                          CHECK(initial[r]+added[r]==stock[r]+removed[r]+harvested[r]);}
                         output<<"{\"map\":"<<std::quoted(mapFile)<<",\"seed\":"<<seed
@@ -173,7 +176,7 @@ TEST_CASE("saved-map growth calibration [benchmark][slow]")
 
 TEST_SUITE("TerrainEcology")
 {
-TEST_CASE("four growth opportunities preserve stack updates and measured conservation")
+TEST_CASE("four growth opportunities preserve capped stacks and measured conservation")
 {
     glob2test::HeadlessGlobals globals;
     struct Outcome
@@ -187,7 +190,7 @@ TEST_CASE("four growth opportunities preserve stack updates and measured conserv
         auto& game=world.game;
         auto& map=game.map;
         auto resource=map.getResource(12,12);
-        resource.type=type;resource.amount=globalContainer->resourcesTypes.get(type)->sizesCount;
+        resource.type=type;resource.amount=legacyResourceTypes.get(type)->sizesCount;
         resource.variety=0;
         map.replaceResource(12,12,resource);
         const int initial=resource.amount;
@@ -202,8 +205,12 @@ TEST_CASE("four growth opportunities preserve stack updates and measured conserv
         for(int i=0;i<3;++i)result.values[i+1]=growth[i][type];
         result.nextRandom=syncRand();
         CHECK(initial+result.values[2]==result.values[0]+result.values[3]);
-        CHECK(result.values[2]>0);
-        CHECK(result.values[3]>0);
+        // The resource refactor deliberately removes the historical
+        // full-stack oscillation. Full nonspreaders stay full; spreaders can
+        // add stock elsewhere. The opt-in baseline above retains the old rule.
+        if (map.resourceProperties(type).spreadRate) CHECK(result.values[2]>0);
+        else CHECK(result.values[2]==0);
+        CHECK(result.values[3]==0);
         return result;
     };
     for(int type:{PAPYRUS,CHERRY,WOOD})

@@ -114,6 +114,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	mapHeader.reset();
 	gameHeader.reset();
 	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	configureBuildingCatalog();
 
 	clearGame();
@@ -186,6 +187,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		&& resolvedHeader.getBuildingCatalogSnapshot() != buildingsTypes.snapshotJson())
 		throw std::runtime_error("Game setup building catalog does not match the map catalog");
 	resolvedHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	resolvedHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 	{
 		if (saveAI && gameHeader.getBasePlayer(p).type >= BasePlayer::P_AI)
@@ -251,7 +253,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
 		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 			for (int r=0; r<MAX_NB_RESOURCES; ++r)
-				teams[i]->teamResources[r] = stockpile;
+				teams[i]->teamMaterials[r] = stockpile;
 	}
 
 	for (int p=0; p<Team::MAX_COUNT; ++p)
@@ -281,6 +283,8 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		}
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id)) resolvedHeader.getExperiments().set(definition.id);
+	for (const auto& key : map.requiredResourceExperiments().keys())
+		resolvedHeader.getExperiments().set(key, true, resolvedHeader.catalogExperimentKeys());
 	gameHeader = resolvedHeader;
 	configureBuildingCatalog();
 	anyPlayerWaited=false;

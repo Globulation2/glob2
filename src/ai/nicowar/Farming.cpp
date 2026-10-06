@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "Material.h"
 #include "AITelemetryFields.h"
 #include "Game.h"
 #include "AINicowar.h"
@@ -45,8 +46,8 @@ void NewNicowar::update_farming(Runtime& runtime)
 				const int wood_dist = AI_NICOWAR_FARM_WOOD_WATER_DIST;
 				const int wheat_dist = AI_NICOWAR_FARM_WHEAT_WATER_DIST;
 
-				bool is_wood = mi.is_resource(x, y, WOOD);
-				bool is_wheat = mi.is_resource(x, y, WHEAT);
+				bool is_wood = mi.is_resource(x, y, materialIndex(MaterialId::Wood));
+				bool is_wheat = mi.is_resource(x, y, materialIndex(MaterialId::Food));
 
 				bool is_in_wheat_zone = water_gradient.within_dist(x, y, wheat_dist);
 				bool is_in_wood_zone = water_gradient.within_dist(x, y, wood_dist);
@@ -65,19 +66,19 @@ void NewNicowar::update_farming(Runtime& runtime)
 				//Expand the farm horizontally
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==0 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1))
 				{
-					if(is_wood && mi.is_resource(x-1, y, WOOD) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_resource_habitat(x+1,y,WOOD))
+					if(is_wood && mi.is_resource(x-1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_resource_habitat(x+1,y,materialIndex(MaterialId::Wood)))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x-1, y, WHEAT) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_crop_habitat(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_crop_habitat(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_resource(x+1, y, WOOD) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_resource_habitat(x-1,y,WOOD))
+					else if(is_wood && mi.is_resource(x+1, y, materialIndex(MaterialId::Wood)) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_resource_habitat(x-1,y,materialIndex(MaterialId::Wood)))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x+1, y, WHEAT) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_crop_habitat(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, materialIndex(MaterialId::Food)) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_crop_habitat(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -86,19 +87,19 @@ void NewNicowar::update_farming(Runtime& runtime)
 				//Expand the farm vertically
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==0))
 				{
-					if(is_wood && mi.is_resource(x, y-1, WOOD) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_resource_habitat(x,y+1,WOOD))
+					if(is_wood && mi.is_resource(x, y-1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_resource_habitat(x,y+1,materialIndex(MaterialId::Wood)))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y-1, WHEAT) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_crop_habitat(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_crop_habitat(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_resource(x, y+1, WOOD) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_resource_habitat(x,y-1,WOOD))
+					else if(is_wood && mi.is_resource(x, y+1, materialIndex(MaterialId::Wood)) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_resource_habitat(x,y-1,materialIndex(MaterialId::Wood)))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y+1, WHEAT) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_crop_habitat(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, materialIndex(MaterialId::Food)) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_crop_habitat(x,y-1))
 					{
 						farm_spot = true;
 					}
@@ -106,11 +107,11 @@ void NewNicowar::update_farming(Runtime& runtime)
 
 				// Preserve the existing wood-clearing rules.
 				bool clear_wood = is_wood &&
-					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, WHEAT) ||
-					 mi.is_resource(x+1, y, WHEAT) || mi.is_resource(x, y-1, WHEAT) ||
-					 mi.is_resource(x, y+1, WHEAT) || mi.is_resource(x-1, y-1, WHEAT) ||
-					 mi.is_resource(x-1, y+1, WHEAT) || mi.is_resource(x+1, y-1, WHEAT) ||
-					 mi.is_resource(x+1, y+1, WHEAT));
+					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, materialIndex(MaterialId::Food)) ||
+					 mi.is_resource(x+1, y, materialIndex(MaterialId::Food)) || mi.is_resource(x, y-1, materialIndex(MaterialId::Food)) ||
+					 mi.is_resource(x, y+1, materialIndex(MaterialId::Food)) || mi.is_resource(x-1, y-1, materialIndex(MaterialId::Food)) ||
+					 mi.is_resource(x-1, y+1, materialIndex(MaterialId::Food)) || mi.is_resource(x+1, y-1, materialIndex(MaterialId::Food)) ||
+					 mi.is_resource(x+1, y+1, materialIndex(MaterialId::Food)));
 				bool clearing_area = mi.is_clearing_area(x,y);
 				if(clear_wood && !clearing_area)
 					mo_clearing->add_location(x, y);
@@ -137,7 +138,7 @@ void NewNicowar::update_farming(Runtime& runtime)
 					farm_spot = false;
 				}
 
-				if(farm_spot && !mi.is_resource_habitat(x,y,is_wood ? WOOD : WHEAT))
+				if(farm_spot && !mi.is_resource_habitat(x,y,is_wood ? materialIndex(MaterialId::Wood) : materialIndex(MaterialId::Food)))
 				{
 					farm_spot = false;
 				}
@@ -191,7 +192,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 		bo_cherry->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraint around the location of fruit
 		AISharedRuntime::Gradients::GradientInfo gi_cherry;
-		gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::Resource(CHERRY));
+		gi_cherry.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Cherries)));
 		//You want to be on top of the cherry trees
 		bo_cherry->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_cherry, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders
@@ -208,7 +209,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 		bo_orange->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraints around the location of fruit
 		AISharedRuntime::Gradients::GradientInfo gi_orange;
-		gi_orange.add_source(new AISharedRuntime::Gradients::Entities::Resource(ORANGE));
+		gi_orange.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Oranges)));
 		//You want to be on top of the orange trees
 		bo_orange->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_orange, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		unsigned int id_orange=runtime.add_building_order(bo_orange);
@@ -221,7 +222,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 		//You want the closest fruit to your settlement possible
 		bo_prune->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		AISharedRuntime::Gradients::GradientInfo gi_prune;
-		gi_prune.add_source(new AISharedRuntime::Gradients::Entities::Resource(PRUNE));
+		gi_prune.add_source(new AISharedRuntime::Gradients::Entities::MaterialSource(materialIndex(MaterialId::Prunes)));
 		//You want to be on top of the prune trees
 		bo_prune->add_constraint(new AISharedRuntime::Construction::MaximumDistance(gi_prune, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders

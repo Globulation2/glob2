@@ -1,4 +1,5 @@
 #include "EngineFixtures.h"
+#include <nlohmann/json.hpp>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
 #include "Game.h"
@@ -31,15 +32,15 @@ struct Fixture {
 };
 }
 namespace {
-void fruitIsNeverAClearingTarget() {
+void clearingUsesMaterialSwitchesAndResourceProperties() {
     Fixture f;
     auto* flag=f.building(20,20,0,"clearingflag");
     flag->unitStayRange=6;
-    // Fruit IDs 5..7 used to index beyond the five clearing switches into
-    // alignment padding. Vary only that padding to reproduce different heap
-    // histories (including a fresh load) without changing any game state.
+    // Vary actual alignment padding after the fixed material switches. This
+    // reproduces different heap histories without corrupting active switches,
+    // including the newly-supported high material bits.
     auto* bytes=reinterpret_cast<unsigned char*>(flag);
-    const auto begin=reinterpret_cast<unsigned char*>(flag->clearingResources)-bytes+BASIC_COUNT;
+    const auto begin=reinterpret_cast<unsigned char*>(flag->clearingMaterials)-bytes+MaterialCount;
     const auto end=reinterpret_cast<unsigned char*>(&flag->minLevelToFlag)-bytes;
     REQUIRE(end>=begin);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
@@ -47,15 +48,17 @@ void fruitIsNeverAClearingTarget() {
         f.game.map.buildingGradient(flag,swim,BuildingRoute::Clearing);
         for(unsigned char padding:{0,1}) {
             std::fill(bytes+begin,bytes+end,padding);
-            for(int resource:{WOOD,WHEAT,PAPYRUS,STONE,ALGA,CHERRY,ORANGE,PRUNE,NO_RES_TYPE}) {
+            for(unsigned resource=0;resource<=MaterialCount;++resource) {
+                const auto type=resource==MaterialCount ? NO_RES_TYPE : resource;
                 auto tile=f.game.map.getResource(21,20);
-                tile.type=resource;tile.amount=resource==NO_RES_TYPE?0:1;
+                tile.type=type;tile.amount=type==NO_RES_TYPE?0:1;
                 f.game.map.replaceResource(21,20,tile);
                 for(bool enabled:{false,true}) {
-                    if(resource<BASIC_COUNT)flag->clearingResources[resource]=enabled;
+                    std::fill_n(flag->clearingMaterials,MaterialCount,false);
+                    if(resource<MaterialCount)flag->clearingMaterials[resource]=enabled;
                     f.game.map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
                     f.game.map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
-                    const bool expected=resource<BASIC_COUNT && enabled;
+                    const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourceProperties(type).clearable;
                     REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
                 }
             }
@@ -67,9 +70,56 @@ void fruitIsNeverAClearingTarget() {
 
 TEST_SUITE("ClearingFlagGradient")
 {
-	TEST_CASE("basic switches; all fruit; empty tiles; padding independence and swimming variants")
+	TEST_CASE("material switches; declarative clearing; empty tiles; padding independence and swimming variants")
 	{
 		glob2test::HeadlessGlobals globals;
-	    fruitIsNeverAClearingTarget();
+	    clearingUsesMaterialSwitchesAndResourceProperties();
 	}
+}
+
+TEST_SUITE("ClearingFlagGradient")
+{
+TEST_CASE("passable clearing sources respect forbidden paint buildings and immobile units")
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture fixture;
+    auto& map=fixture.game.map;
+    auto* flag=fixture.building(20,20,0,"clearingflag");
+    auto* obstacle=fixture.building(30,30,0);
+    flag->unitStayRange=6;
+    std::fill_n(flag->clearingMaterials,MaterialCount,false);
+    flag->clearingMaterials[materialIndex(MaterialId::Fabric)]=true;
+    using Json=nlohmann::json;
+    const auto cottonId=*map.resourceRegistry().find("cotton");
+    auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][resourceIndex(cottonId)];
+    definition["key"]="test-passable-fabric";
+    definition["properties"]["blocksGround"]=false;
+    definition["properties"]["clearable"]=true;
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+    const auto id=*map.resourceRegistry().find("test-passable-fabric");
+    REQUIRE_FALSE(map.resourceRegistry().properties(id).blocksGround);
+    REQUIRE(map.resourceRegistry().properties(id).clearable);
+    const auto index=map.coordToIndex(21,20);
+    map.replaceResource(index,Resource{static_cast<Uint16>(resourceIndex(id)),0,1,0});
+    for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
+    {
+        const auto verify=[&](Uint16 expected) {
+            map.buildingGradient(flag,swim,BuildingRoute::Clearing);
+            map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
+            map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
+            CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==expected);
+        };
+        verify(GRADIENT_AT_GOAL);
+        map.addForbidden(21,20,0);
+        verify(GRADIENT_FORBIDDEN);
+        map.removeForbidden(21,20,0);
+        map.setBuilding(21,20,1,1,obstacle->gid);
+        verify(GRADIENT_FORBIDDEN);
+        map.setBuilding(21,20,1,1,NOGBID);
+        map.markImmobileUnit(21,20,0);
+        verify(GRADIENT_FORBIDDEN);
+        map.clearImmobileUnit(21,20);
+        verify(GRADIENT_AT_GOAL);
+    }
+}
 }

@@ -13,7 +13,7 @@
         "hpMax": 180,
         "hueImage": 1,
         "isBuildingSite": 1,
-        "maxResource": [
+        "maxMaterial": [
           0,
           0,
           0,
@@ -39,7 +39,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -71,16 +71,16 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [
+          "suppliesStockMaterials": [
             "stone"
           ],
-          "suppliesDirectStockResources": [
+          "suppliesDirectStockMaterials": [
             "stone"
           ],
-          "fetchesStockResources": [
+          "fetchesStockMaterials": [
             "stone"
           ],
-          "fetchesDirectStockResources": [
+          "fetchesDirectStockMaterials": [
             "stone"
           ]
         },
@@ -115,7 +115,7 @@
           "stone": 1
         },
         "repairCost": {},
-        "replenishResources": [
+        "replenishMaterials": [
           "stone"
         ]
       },
@@ -152,7 +152,7 @@
       "semantics": {
         "admittedUnitMask": 7,
         "ammunitionCost": 1,
-        "ammunitionResource": 3,
+        "ammunitionMaterial": 3,
         "feeding": {
           "convertsUnits": false,
           "cost": {},
@@ -184,10 +184,10 @@
           "suppliesStockExperiment": "markets-v2",
           "suppliesDirectStock": false,
           "fetchesDirectStock": false,
-          "suppliesStockResources": [],
-          "suppliesDirectStockResources": [],
-          "fetchesStockResources": [],
-          "fetchesDirectStockResources": []
+          "suppliesStockMaterials": [],
+          "suppliesDirectStockMaterials": [],
+          "fetchesStockMaterials": [],
+          "fetchesDirectStockMaterials": []
         },
         "occupiesGround": true,
         "placeable": false,
@@ -220,7 +220,7 @@
         "repairCost": {
           "stone": 1
         },
-        "replenishResources": []
+        "replenishMaterials": []
       },
       "presentation": {
         "displayName": "stonewall",

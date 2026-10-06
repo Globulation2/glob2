@@ -424,13 +424,13 @@ void NewNicowar::initialize(Runtime& runtime)
 	{
 		if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
+			ManagementOrder* mo_tracker=new AddMaterialTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}
 		if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
+			ManagementOrder* mo_tracker=new AddMaterialTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include <PerformanceTelemetry.h>
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
@@ -257,9 +258,9 @@ namespace Cortex
 			// This is an existence query; row order follows the map storage.
 			for (int y = 0; y < h && obs.fruitOnMap == 0; y++)
 				for (int x = 0; x < w; x++)
-					if (map.isResourceTakeable(x, y, CHERRY)
-					 || map.isResourceTakeable(x, y, ORANGE)
-					 || map.isResourceTakeable(x, y, PRUNE))
+					if (map.isMaterialTakeable(x, y, materialIndex(MaterialId::Cherries))
+					 || map.isMaterialTakeable(x, y, materialIndex(MaterialId::Oranges))
+					 || map.isMaterialTakeable(x, y, materialIndex(MaterialId::Prunes)))
 					{
 						obs.fruitOnMap = 1;
 						break;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
 #include "TerrainPresentation.h"
+#include "ResourceRegistry.h"
 #include "Game.h"
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
@@ -12,7 +13,6 @@
 #include "Topology.h"
 #include "FairnessModel.h"
 #include <chrono>
-#include "RessourceType.h"
 #include "Unit.h"
 #include "Building.h"
 #include "Version.h"
@@ -152,7 +152,7 @@ std::string pretty(const std::string &json)
 using J = Json;
 using namespace MapGeneration;
 const std::array<const char *, MAX_RESOURCES> resourceNames = {
-	"wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune"};
+	"wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune", "gold", "metal", "glass", "fabric"};
 J distance(int n)
 {
 	return n < 0 ? J() : J(n);
@@ -242,7 +242,7 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 		std::vector<std::pair<std::string, J>> resources;
 		for (int r = 0; r < MAX_RESOURCES; ++r)
 		{
-			const auto &a = c.resources[r];
+			const auto &a = c.materials[r];
 			resources.push_back({resourceNames[r],
 				J::object({{"nearest_gather_distance", distance(a.nearestDistance)},
 						   {"catchment_deposit_tiles", a.catchmentDeposits},
@@ -303,10 +303,10 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 		localRoom.push_back(c.catchmentBuildable);
 		localFertile.push_back(c.catchmentFertileGrass);
 		localExclusive.push_back(c.exclusiveCatchmentTiles);
-		wheatSupply.push_back(c.resources[WHEAT].catchmentAmount);
-		woodSupply.push_back(c.resources[WOOD].catchmentAmount);
-		exclusiveWheat.push_back(c.resources[WHEAT].exclusiveCatchmentAmount);
-		exclusiveWood.push_back(c.resources[WOOD].exclusiveCatchmentAmount);
+		wheatSupply.push_back(c.materials[WHEAT].catchmentAmount);
+		woodSupply.push_back(c.materials[WOOD].catchmentAmount);
+		exclusiveWheat.push_back(c.materials[WHEAT].exclusiveCatchmentAmount);
+		exclusiveWood.push_back(c.materials[WOOD].exclusiveCatchmentAmount);
 		if (c.rivalDistance >= 0)
 			nearestRival.push_back(c.rivalDistance);
 	}
@@ -556,7 +556,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 				}
 			}
 			const auto &r = map.getResource(p);
-			if (r.type >= MAX_RESOURCES || !r.amount)
+			if (!map.materialMaskAt(p))
 				continue;
 			int approach = -1;
 			for (int dy = -1; dy <= 1; ++dy)
@@ -570,14 +570,14 @@ J movementReport(const Game &game, const StepCosts &costs,
 				}
 			if (approach < 0)
 				continue;
-			++resourceTiles[r.type];
-			resourceAmounts[r.type] += r.amount;
-			if (nearest[r.type] < 0 || approach + 1 < nearest[r.type])
-				nearest[r.type] = approach + 1;
-			if (approach <= 24)
+			for (unsigned m = 0; m < MaterialCount; ++m)
 			{
-				++nearbyTiles[r.type];
-				nearbyAmounts[r.type] += r.amount;
+				if (!(map.materialMaskAt(p) & (1u << m))) continue;
+				const auto amount = map.materialAmountAt(p, m);
+				++resourceTiles[m];
+				resourceAmounts[m] += amount;
+				if (nearest[m] < 0 || approach + 1 < nearest[m]) nearest[m] = approach + 1;
+				if (approach <= 24) { ++nearbyTiles[m]; nearbyAmounts[m] += amount; }
 			}
 		}
 		std::vector<std::pair<std::string, J>> resources;
@@ -637,11 +637,11 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	const Torus t(map);
 	std::vector<int> terrain(map.terrainRegistry().size());
 	std::array<int, 4> underlying{};
-	std::array<int, MAX_RESOURCES> resourceTiles{}, harvestable{};
-	std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{};
+	std::vector<int> resourceTiles(map.resourceRegistry().size()), harvestable(map.resourceRegistry().size());
+	std::vector<std::int64_t> resourceAmounts(map.resourceRegistry().size());
 	int resourceOccupied = 0, unknownResources = 0, buildingTiles = 0, noGrowth = 0;
 	std::vector<unsigned char> water(t.size()), land(t.size());
-	std::vector<double> resourceAmountValues[MAX_RESOURCES];
+	std::vector<std::vector<double>> resourceAmountValues(map.resourceRegistry().size());
 	const auto fertility = Fertility::forMap(map);
 	const auto potential = Fertility::forMap(map, false);
 	std::vector<double> fertilityAll, fertilityGrass, potentialGrass;
@@ -660,7 +660,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		{
 			++resourceOccupied;
 		}
-		if (r.type < MAX_RESOURCES)
+		if (map.resourceRegistry().valid(r.type))
 		{
 			++resourceTiles[r.type];
 			resourceAmounts[r.type] += r.amount;
@@ -688,21 +688,20 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	terrainJson.push_back({"unknown",coverage(0,t.size())});
 	for (int i = 0; i < 4; ++i)
 		underlyingJson.push_back({underlyingNames[i], coverage(underlying[i], t.size())});
-	const ResourcesTypes resourceTypes;
-	for (int r = 0; r < MAX_RESOURCES; ++r)
+	for (unsigned r = 0; r < map.resourceRegistry().size(); ++r)
 	{
 		std::vector<unsigned char> mask(t.size());
 		for (int p = 0; p < t.size(); ++p)
 			mask[p] = map.getResource(p).type == r;
 		resources.push_back(
-			{resourceNames[r],
+			{r < 8 ? std::string(resourceNames[r]) : map.resourceRegistry().key(static_cast<ResourceId>(r)),
 			 J::object({{"coverage", coverage(resourceTiles[r], t.size())},
 						{"percent_of_resource_tiles",
 						 resourceOccupied ? J(100.0 * resourceTiles[r] / resourceOccupied) : J()},
 						{"stored_amount", resourceAmounts[r]},
 						{"harvestable_tiles", harvestable[r]},
-						{"eternal", bool(resourceTypes.get(r)->eternal)},
-						{"clearable", bool(resourceTypes.get(r)->clearable)},
+						{"eternal", map.resourceRegistry().yields(static_cast<ResourceId>(r))[materialIndex(map.resourceProperties(r).primaryMaterial)].consumption == ResourceConsumption::Infinite},
+						{"clearable", map.resourceProperties(r).clearable},
 						{"amount_per_deposit", distribution(resourceAmountValues[r])},
 						{"patches", components(map, mask, GridNeighbors::Eight)}})});
 	}
@@ -758,6 +757,11 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	lap(&MapReportTimings::swimming);
 	J clearing = movementReport(game, StepCosts::chopping(), anchors);
 	lap(&MapReportTimings::clearing);
+	std::vector<J> resourceExperiments, requiredResourceExperiments;
+	for (const auto& experiment : map.resourceRegistry().experiments())
+		resourceExperiments.push_back(J::object({{"key", experiment.key}, {"label", experiment.label}, {"help", experiment.help}}));
+	for (const auto& key : map.requiredResourceExperiments().keys())
+		requiredResourceExperiments.emplace_back(key);
 	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
@@ -775,6 +779,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 									   {"saved_game", game.mapHeader.getIsSavedGame()},
 									   {"buildingCatalog", J::object({{"snapshot", game.buildingsTypes.snapshotJson()},
 																	 {"hash", game.buildingsTypes.fingerprint()}})},
+									   {"resourceExperiments", J::array(resourceExperiments)},
+									   {"requiredResourceExperiments", J::array(requiredResourceExperiments)},
 									   {"format_version_minor", game.mapHeader.getVersionMinor()},
 									   {"tick", game.stepCounter},
 									   {"game_seed", game.gameHeader.getRandomSeed()},

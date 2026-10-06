@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "Material.h"
 #include <algorithm>
 #include "Unit.h"
 #include <BinaryStream.h>
@@ -132,18 +133,18 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	experienceLevel = stream->readSint32("experienceLevel");
 
 	destinationPurpose = stream->readSint32("destinationPurpose");
-	carriedResource = stream->readSint32("carriedRessource");
+	carriedMaterial = stream->readSint32("carriedRessource");
 	carriedPacket={};
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG)
 	{
 		carriedPacket.numerator=stream->readUint32("carriedNumerator");
 		carriedPacket.denominator=stream->readUint32("carriedDenominator");
 		if (!carriedPacket.numerator || !carriedPacket.denominator || carriedPacket.denominator>1000000 || carriedPacket.numerator>carriedPacket.denominator)
-			throw std::runtime_error("Invalid carried resource packet");
+			throw std::runtime_error("Invalid carried material packet");
 	}
-	if (carriedResource < -1 || carriedResource >= MAX_RESOURCES || destinationPurpose < -1 || destinationPurpose > FEED)
-		throw std::runtime_error("Invalid unit resource or destination");
-	if ((activity == ACT_FILLING && (destinationPurpose < 0 || destinationPurpose >= MAX_RESOURCES)) ||
+	if (carriedMaterial < -1 || carriedMaterial >= int(MaterialCount) || destinationPurpose < -1 || destinationPurpose > FEED)
+		throw std::runtime_error("Invalid unit material or destination");
+	if ((activity == ACT_FILLING && (destinationPurpose < 0 || destinationPurpose >= MaterialCount)) ||
 		(activity == ACT_UPGRADING && destinationPurpose < 0))
 		throw std::runtime_error("Invalid unit activity destination");
 
@@ -248,7 +249,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(experienceLevel, "experienceLevel");
 
 	stream->writeSint32(destinationPurpose, "destinationPurpose");
-	stream->writeSint32(carriedResource, "carriedRessource");
+	stream->writeSint32(carriedMaterial, "carriedRessource");
 	stream->writeUint32(carriedPacket.numerator,"carriedNumerator");
 	stream->writeUint32(carriedPacket.denominator,"carriedDenominator");
 	stream->writeSint32(jobTimer, "jobTimer");
@@ -451,11 +452,11 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=destinationPurpose;
 	if (checkSumsVector)
 		checkSumsVector->push_back(destinationPurpose);// [31]
-	cs^=carriedResource;
+	cs^=carriedMaterial;
 	cs=rotl1(cs); cs^=carriedPacket.numerator;
 	cs=rotl1(cs); cs^=carriedPacket.denominator;
 	if (checkSumsVector)
-		checkSumsVector->push_back(carriedResource);// [33]
+		checkSumsVector->push_back(carriedMaterial);// [33]
 
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [34]

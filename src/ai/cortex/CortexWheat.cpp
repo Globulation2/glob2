@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "Material.h"
 #include "field/UniformTraversal.h"
 #include "CortexWheat.h"
 
@@ -42,7 +43,7 @@ namespace Cortex
 
 		bool isWheat(Map& map, int x, int y)
 		{
-			return map.getResource(x, y).type == WHEAT;
+			return map.isMaterialTakeable(x, y, materialIndex(MaterialId::Food));
 		}
 	} // namespace
 
@@ -333,7 +334,7 @@ namespace Cortex
 			if (b->posX > bbMaxX) bbMaxX = b->posX;
 			if (b->posY < bbMinY) bbMinY = b->posY;
 			if (b->posY > bbMaxY) bbMaxY = b->posY;
-			if (b->type && b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[WHEAT] > 0)
+			if (b->type && b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[materialIndex(MaterialId::Food)] > 0)
 				seeds.push_back(static_cast<int>(map.coordToIndex(b->posX, b->posY)));
 		}
 

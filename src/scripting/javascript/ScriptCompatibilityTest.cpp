@@ -128,15 +128,15 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	CHECK_THROWS_AS(load(missing), std::runtime_error);
 }
 
-TEST_CASE("Building catalog simulation change rejects released replays and enforces acceptance boundaries" *
+TEST_CASE("Resource catalog simulation change rejects released replays and enforces acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
-	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
-	CHECK(NET_PROTOCOL_VERSION == 57);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_RUNTIME_RESOURCES);
+	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_RUNTIME_RESOURCES);
+	CHECK(NET_PROTOCOL_VERSION == 58);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
