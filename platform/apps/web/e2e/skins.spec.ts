@@ -3,23 +3,12 @@ import { expect, test, type Page } from '@playwright/test';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 test.use({ video: 'on' });
 
-async function saveDialog(page: Page) {
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
-  return page.getByRole('dialog', { name: 'Save your skin' });
-}
-async function close(page: Page) {
-  await page
-    .getByRole('dialog')
-    .getByRole('button', { name: /^Close / })
-    .click();
-}
 async function saved(page: Page) {
-  const dialog = await saveDialog(page);
-  await dialog.getByRole('button', { name: 'Save on this device' }).click();
-  await close(page);
+  await expect(page.getByLabel('Skin name')).toBeEnabled();
+  await page.evaluate('window.dispatchEvent(new Event("pagehide"))');
   return page.evaluate(() => {
     const key = Object.keys(localStorage).find(
-      (k) => k.startsWith('glob2-skin-draft-v2:') && !k.endsWith(':recovery'),
+      (k) => k.startsWith('glob2-skin-draft-v2:') && k.endsWith(':recovery'),
     );
     return key
       ? (JSON.parse(localStorage.getItem(key) ?? 'null') as {
@@ -39,12 +28,12 @@ async function fill(page: Page, name = 'Solid') {
 }
 async function publish(page: Page) {
   const response = page.waitForResponse(
-    (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
+    (r) => r.url().endsWith('/use') && r.request().method() === 'POST',
   );
-  await page.getByRole('button', { name: 'Publish', exact: true }).click();
+  await page.getByRole('button', { name: 'Use in game', exact: true }).click();
   const result = await response;
   expect(result.status()).toBe(200);
-  return (await result.json()) as {
+  return (await result.json()).version as {
     id: string;
     skinId: string;
     textureSha256: string;
@@ -53,7 +42,7 @@ async function publish(page: Page) {
   };
 }
 
-test('account drafts restore across devices and refuse stale saves', async ({
+test('designs save automatically across devices and resolve stale edits without overwriting', async ({
   browser,
   page,
   request,
@@ -61,54 +50,46 @@ test('account drafts restore across devices and refuse stale saves', async ({
 }) => {
   if (!baseURL) throw new Error('A test server URL is required.');
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  const suffix = test.info().project.name;
   const cookie = { name: 'glob2_session', value: seed.userSession, url: baseURL };
   await page.context().addCookies([cookie]);
   await page.goto('/skins');
-  let dialog = await saveDialog(page);
-  await dialog.getByRole('button', { name: 'Restore from account' }).click();
-  await expect(dialog.getByRole('status')).toContainText(/No account draft|Account draft restored/);
-  await close(page);
-  await page.getByLabel('Skin name').fill('Across devices');
+  await page.getByRole('button', { name: 'New skin', exact: true }).click();
+  await page.getByLabel('Skin name').fill(`Across devices ${suffix}`);
   await fill(page);
-  const paint = await saved(page);
-  await page.getByRole('button', { name: 'Shop', exact: true }).click();
-  await close(page);
-  expect(await saved(page)).toEqual(paint);
-  dialog = await saveDialog(page);
-  await dialog.getByRole('button', { name: 'Save to account' }).click();
-  await expect(dialog.getByRole('status')).toContainText('Draft saved to your account.');
+  await expect(page.locator('.skin-save-status')).toHaveText('Saved');
+  expect(await page.getByRole('button', { name: 'Save', exact: true }).count()).toBe(0);
   const second = await browser.newContext({ baseURL });
   try {
     await second.addCookies([cookie]);
     const device = await second.newPage();
     await device.goto('/skins');
-    const other = await saveDialog(device);
-    await other.getByRole('button', { name: 'Restore from account' }).click();
-    await expect(other.getByRole('status')).toContainText('Account draft restored.');
-    await close(device);
-    await expect(device.getByLabel('Skin name')).toHaveValue('Across devices');
-    // Restoring the account draft retains its optimistic-concurrency revision;
-    // the painted document remains identical to the original device checkpoint.
-    expect(await saved(device)).toEqual({ ...paint, draftRevision: expect.any(String) });
-    await device.getByLabel('Skin name').fill('Newer draft');
-    await saveDialog(device);
-    await other.getByRole('button', { name: 'Save to account' }).click();
-    await expect(other.getByRole('status')).toContainText('Draft saved to your account.');
-    await dialog.getByRole('button', { name: 'Save to account' }).click();
-    await expect(dialog.getByRole('status')).toContainText('Your account draft changed.');
-    await dialog.getByRole('button', { name: 'Save on this device' }).click();
-    await dialog.getByRole('button', { name: 'Restore from account' }).click();
-    await expect(page.getByLabel('Skin name')).toHaveValue('Newer draft');
-    await page.waitForTimeout(900); // Recovery must not overwrite the manual checkpoint.
-    await dialog.getByRole('button', { name: 'Restore from this device' }).click();
-    await expect(page.getByLabel('Skin name')).toHaveValue('Across devices');
+    await device
+      .getByRole('button', { name: `Edit Across devices ${suffix}`, exact: true })
+      .click();
+    await expect(device.getByLabel('Skin name')).toHaveValue(`Across devices ${suffix}`);
+    await device.getByLabel('Skin name').fill(`Newer draft ${suffix}`);
+    await expect(device.locator('.skin-save-status')).toHaveText('Saved');
+    await page.getByLabel('Skin name').fill(`My local work ${suffix}`);
+    const conflict = page.getByRole('dialog', { name: 'Account changes', exact: true });
+    await expect(conflict).toBeVisible();
+    await conflict.getByRole('button', { name: 'Keep mine as a new skin' }).click();
+    await expect(conflict).toHaveCount(0);
+    await expect(page.getByLabel('Skin name')).toHaveValue(`My local work ${suffix} copy`);
+    await page.getByRole('button', { name: 'Back to My skins' }).click();
+    await expect(
+      page.getByRole('button', { name: `Edit Newer draft ${suffix}`, exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: `Edit My local work ${suffix} copy`, exact: true }),
+    ).toBeVisible();
   } finally {
     await second.close();
   }
 });
 
-test.describe('paint-to-publish demonstration', () => {
-  test('publishes immutable angled skins, reopens and equips them independently', async ({
+test.describe('paint-to-game demonstration', () => {
+  test('uses immutable angled snapshots while showing one card per editable design', async ({
     page,
     request,
     baseURL,
@@ -119,6 +100,7 @@ test.describe('paint-to-publish demonstration', () => {
       .context()
       .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
     await page.goto('/skins');
+    await page.getByRole('button', { name: 'New skin', exact: true }).click();
     await page.getByLabel('Skin name').fill(`Studio ${test.info().project.name}`);
     const worker = page.getByLabel('Paint directly on the 3D worker model');
     await expect(worker).toHaveAttribute('data-frame', '0');
@@ -143,11 +125,12 @@ test.describe('paint-to-publish demonstration', () => {
     const texture = await (
       await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)
     ).body();
-    await page.getByRole('button', { name: 'My skins', exact: true }).click();
-    let card = page.locator(`[data-version-id="${original.id}"]`);
-    await card.getByRole('button', { name: 'Equip', exact: true }).click();
-    await expect(card.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible();
-    await card.getByRole('button', { name: 'Edit this version' }).click();
+    await page.getByRole('button', { name: 'Back to My skins' }).click();
+    let card = page.locator(`[data-skin-id="${original.skinId}"]`);
+    await expect(card.getByRole('button', { name: 'In use', exact: true })).toBeVisible();
+    await card
+      .getByRole('button', { name: `Edit Studio ${test.info().project.name}`, exact: true })
+      .click();
     await expect(page.getByText('Final game view · 127°', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Material', exact: true }).click();
     await page.getByRole('radio', { name: 'Matte', exact: true }).click();
@@ -160,10 +143,11 @@ test.describe('paint-to-publish demonstration', () => {
     expect(
       await (await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)).body(),
     ).toEqual(texture);
-    await page.getByRole('button', { name: 'My skins', exact: true }).click();
-    card = page.locator(`[data-version-id="${original.id}"]`);
-    await expect(card.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible();
-    await close(page);
+    await page.getByRole('button', { name: 'Back to My skins' }).click();
+    card = page.locator(`[data-skin-id="${original.skinId}"]`);
+    await expect(card).toHaveCount(1);
+    await expect(card.getByRole('button', { name: 'In use', exact: true })).toBeVisible();
+    await expect(page.getByText('Preparing your model…', { exact: true })).toHaveCount(0);
     await page.screenshot({ path: test.info().outputPath('studio-published.png') });
   });
 });
@@ -369,12 +353,6 @@ test('painting degrades safely without WebGL2', async ({ page }) => {
   });
   await page.goto('/skins');
   await expect(page.getByRole('alert')).toContainText('Painting needs WebGL 2');
-  await page.getByRole('button', { name: 'My skins', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'My skins' })).toBeVisible();
-  await close(page);
-  await page.getByRole('button', { name: 'Shop', exact: true }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await close(page);
   await expect(page.getByRole('button', { name: 'Retry 3D canvas' })).toBeVisible();
   expect(await page.getByLabel('Paint texture').count()).toBe(0);
 });
@@ -625,4 +603,138 @@ test('trackpad pinch zooms only the inspection view and preserves final framing'
   await page.evaluate('new Promise(resolve => requestAnimationFrame(resolve))');
   expect(await image()).toBe(fixed);
   await expect(page.getByRole('button', { name: 'Undo', exact: true })).toBeDisabled();
+});
+
+test('collection duplicates designs and deletes the active skin with confirmation', async ({
+  page,
+  request,
+  baseURL,
+}, info) => {
+  if (!baseURL) throw new Error('A test server URL is required.');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  await page.goto('/skins');
+  await page.getByRole('button', { name: 'New skin', exact: true }).click();
+  const name = `Collection ${info.project.name}`;
+  await page.getByLabel('Skin name').fill(name);
+  const original = await publish(page);
+  await page.getByRole('button', { name: 'Back to My skins' }).click();
+  let card = page.locator(`[data-skin-id="${original.skinId}"]`);
+  await card.getByLabel(`More actions for ${name}`).click();
+  await card.getByRole('button', { name: 'Duplicate', exact: true }).click();
+  await expect(page.getByLabel('Skin name')).toHaveValue(`${name} copy`);
+  await page.getByRole('button', { name: 'Back to My skins' }).click();
+  await expect(page.getByRole('button', { name: `Edit ${name} copy`, exact: true })).toBeVisible();
+  card = page.locator(`[data-skin-id="${original.skinId}"]`);
+  await card.getByLabel(`More actions for ${name}`).click();
+  await card.getByRole('button', { name: 'Delete', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Delete skin?', exact: true });
+  await expect(dialog).toContainText('Your next match will use the default colony.');
+  await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(card).toBeVisible();
+  await card.getByRole('button', { name: 'Delete', exact: true }).click();
+  await dialog.getByRole('button', { name: 'Delete skin', exact: true }).click();
+  await expect(card).toHaveCount(0);
+  await expect(
+    page
+      .locator('article')
+      .filter({ has: page.getByRole('heading', { name: 'Default colony', exact: true }) })
+      .getByRole('button', { name: 'In use', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('Preparing your model…', { exact: true })).toHaveCount(0);
+  await page.getByRole('heading', { name: 'My skins', exact: true }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: info.outputPath('collection-light.png') });
+  await page.getByTestId('theme-toggle').click(); // System → light.
+  await page.getByTestId('theme-toggle').click(); // Light → dark.
+  await page.getByRole('heading', { name: 'My skins', exact: true }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: info.outputPath('collection-dark.png') });
+});
+
+test('pending offline edits recover and save automatically when the connection returns', async ({
+  page,
+  request,
+  baseURL,
+}, info) => {
+  if (!baseURL) throw new Error('A test server URL is required.');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  await page.goto('/skins');
+  await page.getByRole('button', { name: 'New skin', exact: true }).click();
+  const name = `Recovery ${info.project.name}`;
+  await page.getByLabel('Skin name').fill(name);
+  await expect(page.locator('.skin-save-status')).toHaveText('Saved');
+  await page.route('**/api/v1/skins/designs/*', async (route) => {
+    if (route.request().method() === 'PUT') await route.abort();
+    else await route.continue();
+  });
+  await page.getByLabel('Skin name').fill(`${name} pending`);
+  await expect(page.locator('.skin-save-status')).toContainText('Could not save');
+  await page.reload();
+  await page.getByRole('button', { name: `Edit ${name}`, exact: true }).click();
+  await expect(page.getByLabel('Skin name')).toHaveValue(`${name} pending`);
+  await page.unroute('**/api/v1/skins/designs/*');
+  await expect(page.locator('.skin-save-status')).toHaveText('Saved', { timeout: 15000 });
+  await page.getByRole('button', { name: 'Back to My skins' }).click();
+  await expect(
+    page.getByRole('button', { name: `Edit ${name} pending`, exact: true }),
+  ).toBeVisible();
+});
+
+test('signing in carries a trial design into the account automatically', async ({
+  page,
+  request,
+  baseURL,
+}, info) => {
+  if (!baseURL) throw new Error('A test server URL is required.');
+  await page.goto('/skins');
+  const name = `Trial ${info.project.name}`;
+  await page.getByLabel('Skin name').fill(name);
+  await fill(page);
+  await saved(page);
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  await page.reload();
+  await expect(page.getByLabel('Skin name')).toHaveValue(name);
+  await expect(page.locator('.skin-save-status')).toHaveText('Saved', { timeout: 20000 });
+  await page.getByRole('button', { name: 'Back to My skins' }).click();
+  await expect(page.getByRole('button', { name: `Edit ${name}`, exact: true })).toBeVisible();
+});
+
+test('large collections keep previews bounded and every design reachable', async ({
+  page,
+  request,
+  baseURL,
+}, info) => {
+  if (!baseURL) throw new Error('A test server URL is required.');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  for (let i = 0; i < 8; i++) {
+    const response = await page.request.post('/api/v1/skins/designs', {
+      headers: { origin: baseURL },
+      data: { id: globalThis.crypto.randomUUID(), name: `Paged ${info.project.name} ${i}` },
+    });
+    expect(response.ok()).toBe(true);
+  }
+  await page.goto('/skins');
+  await expect(page.locator('.skin-thumbnail')).toHaveCount(7);
+  const pages = page.getByRole('navigation', { name: 'Skin collection pages' });
+  await expect(pages).toBeVisible();
+  await expect(pages.getByRole('button', { name: 'Previous' })).toBeDisabled();
+  await pages.getByRole('button', { name: 'Next' }).click();
+  await expect(
+    page.getByRole('button', { name: `Edit Paged ${info.project.name} 0`, exact: true }),
+  ).toBeVisible();
+  expect(await page.locator('.skin-thumbnail').count()).toBeLessThanOrEqual(7);
+  await pages.getByRole('button', { name: 'Previous' }).click();
+  await expect(
+    page.getByRole('button', { name: `Edit Paged ${info.project.name} 7`, exact: true }),
+  ).toBeVisible();
 });

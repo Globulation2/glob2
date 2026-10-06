@@ -4,8 +4,10 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { Skins } from '../src/pages/Skins.tsx';
 vi.mock('../src/state.tsx', () => ({
   useSession: () => ({ account: null }),
-  useLoad: () => ({ status: 'ready', data: { items: [] }, reload: vi.fn() }),
+  useLoad: () => ({ status: 'ready', data: null, reload: vi.fn() }),
 }));
+// Rendering is mocked here; browser tests verify the actual material shader.
+vi.mock('../src/skins/materialShader.ts', () => ({ SKIN_MATERIAL_GLSL: '' }));
 vi.mock('../src/skins/Store.tsx', () => ({ SkinStore: () => <p>Skin store content</p> }));
 vi.mock('../src/skins/MeshPreview.tsx', () => ({
   MeshPreview: ({ camera }: { camera: { zoom: number } }) => (
@@ -49,7 +51,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
   window.history.replaceState(null, '', '/skins');
 });
-it('preserves the document, model and tool when opening and closing shop', async () => {
+it('preserves the document, model and tool when opening and closing paint copying', async () => {
   const { container } = render(<Skins />);
   await waitFor(() =>
     expect((screen.getByLabelText('Skin name') as HTMLInputElement).disabled).toBe(false),
@@ -59,10 +61,10 @@ it('preserves the document, model and tool when opening and closing shop', async
   fireEvent.change(name, { target: { value: 'My painted colony' } });
   fireEvent.click(screen.getByRole('button', { name: 'Warrior' }));
   fireEvent.click(screen.getByRole('button', { name: 'Eraser' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Shop' }));
-  expect(screen.getByText('Skin store content')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Copy paint to other models…' }));
+  expect(screen.getByText(/Copies the warrior texture and materials/)).toBeTruthy();
   expect(screen.getByRole('dialog')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Close Skin shop' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Close Copy paint to all models' }));
   expect(screen.queryByRole('dialog')).toBeNull();
   expect(screen.getByLabelText('Skin name')).toBe(name);
   expect((name as HTMLInputElement).value).toBe('My painted colony');

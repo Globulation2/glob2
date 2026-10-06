@@ -281,7 +281,7 @@
 }
 .skin-tools {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1.45fr 1fr 1fr;
   gap: 2px;
   padding: 9px 6px;
 }
@@ -1246,4 +1246,127 @@
   .skin-stage > .skin-viewport {
     bottom: 288px;
   }
+}
+
+/* Collection is a destination, rather than a modal over unfinished work. */
+.skin-collection {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 32px;
+  overflow-y: auto;
+}
+.skin-collection-header,
+.skin-collection-header > div:last-child,
+.skin-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.skin-collection h1 {
+  margin: 4px 0 8px;
+}
+.skin-card-state {
+  min-height: 24px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.skin-card-open {
+  display: block !important;
+  width: 100%;
+  padding: 0 !important;
+  text-align: left;
+  border: 0 !important;
+  background: transparent !important;
+}
+.skin-card-open h3 {
+  color: var(--ink);
+}
+.skin-default-preview {
+  display: grid;
+  place-items: center;
+}
+.skin-default-preview img {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+}
+.skin-card-actions details {
+  position: relative;
+}
+.skin-card-actions summary,
+.skin-toolbox-menu summary {
+  cursor: pointer;
+  padding: 8px;
+}
+.skin-card-actions details[open] {
+  background: var(--surface);
+  border-radius: 8px;
+}
+.skin-card-actions details button {
+  display: block;
+  width: 100%;
+}
+.skin-toolbox-menu {
+  margin-left: auto;
+}
+.skin-toolbox-menu button {
+  font-size: 12px;
+}
+.skin-buildings .skin-color-field {
+  margin-top: 8px;
+}
+.skin-buildings small {
+  display: block;
+  white-space: normal;
+}
+@media (max-width: 700px) {
+  .skin-collection {
+    padding: 20px 12px;
+  }
+  .skin-collection-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .skin-collection .skin-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .skin-collection .skin-thumbnail {
+    height: 140px;
+  }
+  .skin-card-actions {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 420px) {
+  .skin-collection .skin-library-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skin-card-actions summary,
+.skin-toolbox-menu summary {
+  list-style: none;
+}
+.skin-card-actions summary::-webkit-details-marker,
+.skin-toolbox-menu summary::-webkit-details-marker {
+  display: none;
+}
+.skin-conflict-notice {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+}
+.skin-artwork-note {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.skin-artwork-note summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding-block: 12px;
 }

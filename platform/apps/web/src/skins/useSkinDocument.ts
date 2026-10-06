@@ -1,9 +1,8 @@
-import { skinAssetUrl } from './assetUrls.ts';
 /* Canvas contexts are checked by paintCanvas; dimensions are fixed. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
-import type { ColonySkinVersion, SkinDraft, SwarmMeshId } from '@glob2/protocol';
-import { request } from '../api.ts';
+import type { ColonySkinVersion, SkinDesign, SwarmMeshId } from '@glob2/protocol';
+import { ApiError, request } from '../api.ts';
 import { ATLAS_SIZE, decodeMaterials, encodeMaterials } from './atlas.ts';
 import { isSwarmMesh } from './swarmShapes.ts';
 export type SkinData = {
@@ -84,10 +83,17 @@ export function useSkinDocument(accountId: string | undefined) {
         'Your draft changed while the design was loading. Your changes were kept; try opening the design again.',
       );
   }
+  const dirty = useRef(false),
+    activated = useRef(!accountId),
+    conflicted = useRef(false);
+  const saving = useRef<Promise<void> | null>(null);
+  const creation = useRef<{ id: string; name: string; sourceSkinId?: string } | null>(null);
+  const [conflict, setConflict] = useState(false);
   const storageKey = `${KEY}:${accountId ?? 'local'}`;
   function refresh() {
     documentGeneration.current++;
-    setStatus('Saving…');
+    dirty.current = true;
+    setStatus(accountId ? 'Saving…' : 'Sign in to save');
     setData({ ...current.current });
     setCounts([undo.current.length, redo.current.length]);
     canvas
@@ -157,21 +163,28 @@ export function useSkinDocument(accountId: string | undefined) {
           swarmViewAngle: d.swarmViewAngle,
           skinId: d.skinId,
           draftRevision: draftRevision.current,
+          dirty: dirty.current,
           image: canvas.toDataURL('image/png'),
           material: encodeMaterials(d.materials),
         }),
       );
-      setStatus('Saved on this device');
+      if (d.skinId)
+        localStorage.setItem(
+          `${storageKey}:${d.skinId}`,
+          localStorage.getItem(manual ? storageKey : `${storageKey}:recovery`)!,
+        );
       return true;
     } catch {
-      setStatus('Could not save on this device');
+      setMessage('Browser recovery is unavailable. Keep this page open until changes are saved.');
       return false;
     }
   }
   async function restoreLocal(initial = false, isCurrent = () => alive.current) {
     const generation = documentGeneration.current;
     const raw = initial
-      ? (localStorage.getItem(`${storageKey}:recovery`) ?? localStorage.getItem(storageKey))
+      ? (localStorage.getItem(`${storageKey}:recovery`) ??
+        localStorage.getItem(storageKey) ??
+        (accountId ? localStorage.getItem(`${KEY}:local:recovery`) : null))
       : localStorage.getItem(storageKey);
     if (!raw) return;
     const d = JSON.parse(raw) as {
@@ -181,6 +194,7 @@ export function useSkinDocument(accountId: string | undefined) {
       swarmViewAngle?: number;
       skinId?: string;
       draftRevision?: string | null;
+      dirty?: boolean;
       image: string;
       material: string;
     };
@@ -219,6 +233,7 @@ export function useSkinDocument(accountId: string | undefined) {
         draftRevision.current = d.draftRevision;
       current.current = data;
       refresh();
+      dirty.current = d.dirty ?? true;
     } else replace(data);
   }
   useEffect(() => {
@@ -227,7 +242,7 @@ export function useSkinDocument(accountId: string | undefined) {
     void Promise.resolve()
       .then(() => restoreLocal(true, () => !cancelled && alive.current))
       .then(() => {
-        if (!cancelled) setStatus('Ready');
+        if (!cancelled) setStatus(accountId ? 'Choose a skin' : 'Sign in to save');
       })
       .catch((e: unknown) => {
         if (!cancelled) {
@@ -238,6 +253,7 @@ export function useSkinDocument(accountId: string | undefined) {
       .finally(() => {
         if (!cancelled) {
           setHydrated(true);
+          saveLocal();
         }
       });
     return () => {
@@ -249,7 +265,11 @@ export function useSkinDocument(accountId: string | undefined) {
   }, []);
   useEffect(() => {
     if (!hydrated || !revision) return;
-    const timer = window.setTimeout(() => saveLocal(), 700);
+    const timer = window.setTimeout(() => {
+      saveLocal();
+      if (accountId && activated.current && dirty.current && !conflicted.current)
+        void flush().catch(() => undefined);
+    }, 1500);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [revision, hydrated]);
@@ -276,118 +296,240 @@ export function useSkinDocument(accountId: string | undefined) {
     setMessage('');
     try {
       await operation();
+      return true;
     } catch (e) {
+      if (e instanceof ApiError && e.status === 409) {
+        conflicted.current = true;
+        setConflict(true);
+        setStatus('Account changes need review');
+      }
       if (alive.current)
         setMessage(e instanceof Error ? e.message : 'The operation could not finish.');
+      return false;
     } finally {
       operationPending.current = false;
       if (alive.current) setBusy(false);
     }
   }
-  async function accountDraft(save: boolean) {
-    await run(async () => {
-      const generation = documentGeneration.current;
-      const d = current.current;
-      if (save) {
-        const result = await request<{ revision: string }>('PUT', '/api/v1/skins/draft', {
-          body: {
-            revision: draftRevision.current,
-            name: d.name,
-            ...(d.skinId ? { skinId: d.skinId } : {}),
-            buildingColor: parseInt(d.building.slice(1), 16),
-            swarmMesh: d.swarmMesh,
-            swarmViewAngle: d.swarmViewAngle,
-            ...encoded(),
-          },
-        });
-        if (alive.current) {
-          draftRevision.current = result.revision;
-          saveLocal();
-          setMessage(
-            documentGeneration.current === generation
-              ? 'Draft saved to your account.'
-              : 'Draft version saved to your account. Your newer changes remain on this device.',
-          );
-        }
-      } else {
-        const { draft } = await request<{ draft: SkinDraft | null }>('GET', '/api/v1/skins/draft');
-        if (!draft) {
-          if (alive.current) {
-            draftRevision.current = null;
-            setMessage('No account draft yet.');
-          }
-          return;
-        }
-        const [colour, materials] = await Promise.all([
-          readColour(`data:image/webp;base64,${draft.imageBase64}`),
-          decodeMaterials(`data:image/webp;base64,${draft.materialBase64}`),
-        ]);
-        if (alive.current) {
-          requireUnchanged(generation);
-          replace({
-            name: draft.name,
-            building: `#${draft.buildingColor.toString(16).padStart(6, '0')}`,
-            swarmMesh: draft.swarmMesh,
-            swarmViewAngle: draft.swarmViewAngle ?? 0,
-            ...(draft.skinId ? { skinId: draft.skinId } : {}),
-            colour,
-            materials,
-          });
-          draftRevision.current = draft.revision;
-          setMessage('Account draft restored.');
-        }
-      }
-    });
+  function payload() {
+    const d = current.current;
+    return {
+      revision: draftRevision.current,
+      name: d.name.trim() || 'Untitled skin',
+      buildingColor: parseInt(d.building.slice(1), 16),
+      swarmMesh: d.swarmMesh,
+      swarmViewAngle: d.swarmViewAngle,
+      ...encoded(),
+    };
   }
-  async function openDesign(skin: Skin) {
-    await run(async () => {
-      const generation = documentGeneration.current;
-      const [colour, materials] = await Promise.all([
-        readColour(skinAssetUrl(skin, 'texture')),
-        decodeMaterials(skinAssetUrl(skin, 'material')),
-      ]);
-      if (alive.current) {
-        requireUnchanged(generation);
-        replace({
-          colour,
-          materials,
-          name: skin.kind === 'custom' ? skin.name : `${skin.name} remix`,
-          building: `#${skin.buildingColor.toString(16).padStart(6, '0')}`,
-          swarmMesh: skin.swarmMesh,
-          swarmViewAngle: skin.swarmViewAngle ?? 0,
-          ...(skin.kind === 'custom' ? { skinId: skin.skinId } : {}),
+  async function flush(): Promise<void> {
+    finish();
+    if (!accountId || !activated.current) {
+      saveLocal();
+      return;
+    }
+    if (conflicted.current) throw new Error('Resolve the account changes before saving.');
+    if (saving.current) {
+      await saving.current;
+      return flush();
+    }
+    if (!dirty.current) return;
+    const id = current.current.skinId;
+    if (!id) return;
+    const generation = documentGeneration.current;
+    const submitted = payload();
+    setStatus('Saving…');
+    const operation = (async () => {
+      try {
+        const result = await request<{ revision: string }>('PUT', `/api/v1/skins/designs/${id}`, {
+          body: submitted,
         });
-      }
-    });
-  }
-  async function publish(onPublished: () => void) {
-    await run(async () => {
-      const generation = documentGeneration.current;
-      const d = current.current;
-      const version = await request<ColonySkinVersion>('POST', '/api/v1/skins/publish', {
-        body: {
-          name: d.name,
-          ...(d.skinId ? { skinId: d.skinId } : {}),
-          buildingColor: parseInt(d.building.slice(1), 16),
-          swarmMesh: d.swarmMesh,
-          swarmViewAngle: d.swarmViewAngle,
-          ...encoded(),
-        },
-      });
-      if (alive.current) {
-        if (documentGeneration.current === generation) {
-          edit({ skinId: version.skinId });
-          setMessage('Published. Open My skins to equip this version.');
+        draftRevision.current = result.revision;
+        dirty.current = documentGeneration.current !== generation;
+        setStatus(dirty.current ? 'Saving…' : 'Saved');
+        saveLocal();
+      } catch (e) {
+        if (e instanceof ApiError && e.status === 409) {
+          conflicted.current = true;
+          setConflict(true);
+          setStatus('Account changes need review');
         } else {
-          setMessage(
-            'Published the submitted version. Your newer draft changes were kept; open My skins to view the published version.',
-          );
+          setStatus(navigator.onLine ? 'Could not save · retrying' : 'Offline · changes pending');
         }
-        onPublished();
+        saveLocal();
+        throw e;
       }
+    })();
+    saving.current = operation;
+    try {
+      await operation;
+    } finally {
+      saving.current = null;
+    }
+    if (dirty.current) await flush();
+  }
+  useEffect(() => {
+    const retry = () => {
+      if (accountId && activated.current && dirty.current && !conflicted.current)
+        void flush().catch(() => undefined);
+    };
+    window.addEventListener('online', retry);
+    const timer = window.setInterval(retry, 10000);
+    return () => {
+      window.removeEventListener('online', retry);
+      window.clearInterval(timer);
+    };
+    // Reads the latest document and serialized save through refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountId]);
+  async function loadDesign(design: SkinDesign, allowRecovery = true) {
+    const generation = documentGeneration.current;
+    const [colour, materials] = await Promise.all([
+      readColour(`data:image/webp;base64,${design.imageBase64}`),
+      decodeMaterials(`data:image/webp;base64,${design.materialBase64}`),
+    ]);
+    if (!alive.current) return;
+    requireUnchanged(generation);
+    current.current = {
+      name: design.name,
+      building: `#${design.buildingColor.toString(16).padStart(6, '0')}`,
+      swarmMesh: design.swarmMesh,
+      swarmViewAngle: design.swarmViewAngle ?? 0,
+      skinId: design.skinId,
+      colour,
+      materials,
+    };
+    undo.current = [];
+    redo.current = [];
+    pending.current = null;
+    draftRevision.current = design.revision;
+    conflicted.current = false;
+    setConflict(false);
+    refresh();
+    dirty.current = false;
+    activated.current = true;
+    setStatus('Saved');
+    if (allowRecovery) {
+      const raw = localStorage.getItem(`${storageKey}:${design.skinId}`);
+      if (raw) {
+        const recovery = JSON.parse(raw) as {
+          dirty?: boolean;
+          draftRevision?: string;
+          image: string;
+          material: string;
+        } & SkinData;
+        if (recovery.dirty) {
+          const [localColour, localMaterials] = await Promise.all([
+            readColour(recovery.image),
+            decodeMaterials(recovery.material),
+          ]);
+          current.current = {
+            ...current.current,
+            name: recovery.name,
+            building: recovery.building,
+            swarmMesh: recovery.swarmMesh,
+            swarmViewAngle: recovery.swarmViewAngle,
+            colour: localColour,
+            materials: localMaterials,
+          };
+          refresh();
+          draftRevision.current = recovery.draftRevision ?? null;
+          if (recovery.draftRevision !== design.revision) {
+            conflicted.current = true;
+            setConflict(true);
+            setStatus('Account changes need review');
+          }
+        }
+      }
+    }
+    saveLocal();
+  }
+  async function openDesign(design: SkinDesign, discardRecovery = false) {
+    return run(async () => {
+      if (saving.current) await saving.current.catch(() => undefined);
+      saveLocal();
+      await loadDesign(design, !discardRecovery);
     });
+  }
+  async function newDesign(name = 'My colony', sourceSkinId?: string, keepCurrent = false) {
+    let result: SkinDesign | undefined;
+    await run(async () => {
+      if (saving.current) await saving.current.catch(() => undefined);
+      saveLocal();
+      const working = keepCurrent ? cloneSkin(current.current) : null;
+      const { design } = await request<{ design: SkinDesign }>('POST', '/api/v1/skins/designs', {
+        body:
+          creation.current?.name === name && creation.current.sourceSkinId === sourceSkinId
+            ? creation.current
+            : (creation.current = {
+                id: crypto.randomUUID(),
+                name,
+                ...(sourceSkinId ? { sourceSkinId } : {}),
+              }),
+      });
+      creation.current = null;
+      await loadDesign(design, false);
+      if (working) {
+        replace({ ...working, skinId: design.skinId });
+        await flush();
+        localStorage.removeItem(`${KEY}:local:recovery`);
+      }
+      result = design;
+    });
+    return result;
+  }
+  async function keepAsCopy() {
+    await run(async () => {
+      const local = cloneSkin(current.current);
+      const { design } = await request<{ design: SkinDesign }>('POST', '/api/v1/skins/designs', {
+        body: { id: crypto.randomUUID(), name: `${local.name.slice(0, 59)} copy` },
+      });
+      draftRevision.current = design.revision;
+      current.current = { ...local, skinId: design.skinId, name: design.name };
+      conflicted.current = false;
+      setConflict(false);
+      activated.current = true;
+      refresh();
+      await flush();
+      if (local.skinId) localStorage.removeItem(`${storageKey}:${local.skinId}`);
+      setMessage('Your changes were saved as a new skin.');
+    });
+  }
+  async function useInGame(onApplied: () => void) {
+    return run(async () => {
+      await flush();
+      const id = current.current.skinId;
+      if (!id) return;
+      await request('POST', `/api/v1/skins/designs/${id}/use`, {
+        body: { revision: draftRevision.current },
+      });
+      setMessage('Used for your next match.');
+      onApplied();
+    });
+  }
+  function forgetDesign(id: string) {
+    try {
+      localStorage.removeItem(`${storageKey}:${id}`);
+      if (current.current.skinId === id) localStorage.removeItem(`${storageKey}:recovery`);
+    } catch {
+      /* Account deletion succeeded even if browser storage is unavailable. */
+    }
+    if (current.current.skinId === id) {
+      current.current = cloneSkin(initial);
+      undo.current = [];
+      redo.current = [];
+      pending.current = null;
+      activated.current = false;
+      conflicted.current = false;
+      setConflict(false);
+      draftRevision.current = null;
+      refresh();
+      dirty.current = false;
+      setStatus('Choose a skin');
+    }
   }
   return {
+    forgetDesign,
     data,
     canvas,
     revision,
@@ -395,6 +537,7 @@ export function useSkinDocument(accountId: string | undefined) {
     hydrated,
     busy,
     message,
+    conflict,
     setMessage,
     paint,
     finish,
@@ -404,10 +547,12 @@ export function useSkinDocument(accountId: string | undefined) {
     canUndo: (counts[0] ?? 0) > 0,
     canRedo: (counts[1] ?? 0) > 0,
     saveLocal: () => saveLocal(),
-    saveCheckpoint: () => saveLocal(true),
-    restoreLocal: () => run(() => restoreLocal()),
-    accountDraft,
+    flush,
     openDesign,
-    publish,
+    newDesign,
+    keepAsCopy,
+    useInGame,
+    hasChanges: dirty.current,
+    savedRevision: draftRevision.current,
   };
 }

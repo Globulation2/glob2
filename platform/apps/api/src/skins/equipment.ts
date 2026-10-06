@@ -33,10 +33,11 @@ export async function authorizedSkin(
       's.owner_account_id',
       's.entitlement',
       's.disabled_at',
+      's.archived_at',
     ])
     .where('v.id', '=', versionId)
     .executeTakeFirst();
-  if (!version || version.disabled_at)
+  if (!version || version.disabled_at || version.archived_at)
     throw apiError('not_found', 'This colony skin is unavailable.');
   if (version.owner_account_id && version.owner_account_id !== accountId) {
     throw apiError('forbidden', 'This custom skin belongs to another account.');
