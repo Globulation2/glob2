@@ -1,0 +1,74 @@
+{
+  "review_revision": "3c40a8ab023e7f098022716978a0b733113e03ee",
+  "base": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "platform": "macOS arm64, Apple Clang 21",
+  "status": "Debugging evidence; performance gate fails initial smoke. Subsequent uncommitted optimizations are excluded.",
+  "completed": {
+    "broad_native": {
+      "runner_passed": 907,
+      "runner_failed": 1,
+      "runner_skipped": 148,
+      "junit_cases": 1897,
+      "failure": "ImageAssets 16-bit RGBA fixture; independently reproduced clean current master"
+    },
+    "tsan": {
+      "passed": 66,
+      "skipped": 1,
+      "junit_cases": 67,
+      "coverage": "All project C++ plus vendored QuickJS and numeric C code; external system libraries uninstrumented",
+      "timeout_seconds": 600
+    },
+    "headless_equivalence": {
+      "worker_counts": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "checks": [
+        "per-tick traces",
+        "replay bytes",
+        "final saves",
+        "Runtime/Castor/Numbi save continuation"
+      ]
+    },
+    "performance_smoke": {
+      "warmup_rounds": 1,
+      "measured_pairs": 1,
+      "fixtures": 10,
+      "acceptance_eligible": false,
+      "result": "Substantial zero-delay regressions; qualifying ten-pair full-match gate not run"
+    }
+  },
+  "commands": {
+    "release_build": "scons -j8 release=1 server=0 engine-tests unit-tests build/darwin/client/release/src/glob2",
+    "tsan_build": "scons --build artifacts/async-ai/tsan-build -j8 release=0 server=0 CC='/usr/bin/clang -fsanitize=thread' CXXFLAGS='-g -std=gnu++20 -fsanitize=thread -O1' LINKFLAGS='-fsanitize=thread' engine-tests",
+    "headless": "python3 test/check_parallel_compute.py build/darwin/client/release/src/glob2 --output artifacts/async-ai/controller-scratch-compute-equivalence"
+  },
+  "limitations": [
+    "No matching Linux/Windows traces or browser verification",
+    "No qualifying paired zero-delay full-match measurements",
+    "No completed gameplay delay experiments",
+    "Later source optimizations require fresh validation"
+  ],
+  "sha256": {
+    "post-conversion-native.log": "5317a7417f053188c5e7d11ce4f744877112455a61a1dd63a45cd9f0fde45b34",
+    "post-conversion-native.xml": "f673fca9cff29e8d65e64cd98d76f74134058cbda85e19d926ffc53da7645c2e",
+    "full-runtime-tsan.log": "926c5d94900f382e933430a25b4d957988102666ef307631073cbac5663535f1",
+    "full-runtime-tsan.xml": "7ca9794223f7461d438db56f127cce86e1ab56e8fe24c8d50d9d84aae86f701f",
+    "controller-scratch-compute-equivalence.log": "78d4147bb83e16703759453bd18e0c77fb5a5e356e74b5b6afc0e5fa175120ad",
+    "tsan-c-runtime-build.log": "2cb249cfa269a6eadbe496066584c351bf234c70a1d55730c7d59b4c32301de2",
+    "review-update/release/build-provenance.json": "e7199164a0dac1e35a9aa84cb7debb7df4831ba2f3fda16cd656c995027ac469",
+    "review-update/tsan/build-provenance.json": "7de5653dcf2ec514432332b966cce0b025c499f6f306f7b8b728960abda3c824",
+    "performance/candidate-build-23.json": "8b6e4f8c1aab5100b701d745724772b79d5d64ee37b4e768f2e1deed6b38d600",
+    "performance/baseline-current/build-metadata.json": "0e353e556737d88750f12ab5015f6f45f03063d52e78c325eaebc14806a2e177",
+    "performance/smoke-build-23-v3/metadata.json": "7990ed3bc60a4f4cdceda9a69ec035a6f4b7eaba385f3b88c715ec96e8cddaff",
+    "performance/smoke-build-23-v3/measurements.jsonl": "c59de638858bc4e2fc5fa25efbd7119c1efb8b4c63494d4caa8368088af12174",
+    "performance/smoke-build-23-v3/summary.json": "89486d94967653a226bbd6878b1543becd6811f86b4d439be05dec77d519ace4",
+    "performance/profile-mixed-build-23-run/sample.txt": "c9f8fe604f53b03af9285ae506763ff6c840e82d9823630a9e4ce8525d5f68e5",
+    "performance/profile-mixed-build-23-run/command.json": "c956a0b4d2d8eea58edeb01e3f38b4029cc8eab5a4014bf10937061c4a115962",
+    "performance/profile-mixed-build-23-run/result.json": "8a2fd8c27fb2dc8af2d3415ec14f9642cfce4a3c7241ba6c0aca22a42af73a1a",
+    "performance/run-ai-paired.py": "16e06c0159f101a28198dd400391d80387683dc9ebe22f63fc8ae45e350bd846"
+  },
+  "archive_sha256": "6c4955ce412688b5eb6373e7ea21208475043ced504660d3d3adc28f46021030"
+}
