@@ -345,7 +345,9 @@ export class Matchmaker {
       const engineVersion = parseSimVersionKey(simVersion);
       const rulesIdentity =
         needAis && engineVersion
-          ? simVersionKey((await currentCatalogRulesVersions(this.db, [engineVersion]))[0]!)
+          ? simVersionKey(
+              (await currentCatalogRulesVersions(this.db, [engineVersion]))[0] ?? engineVersion,
+            )
           : simVersion;
       const ais = needAis
         ? (await aiLadderRatings(this.db, queue.aiPool, rulesIdentity, queue.id)).map((r) => ({
@@ -611,7 +613,9 @@ export class Matchmaker {
           pending = (async () => {
             const engineVersion = parseSimVersionKey(row.sim_version);
             const rulesIdentity = engineVersion
-              ? simVersionKey((await currentCatalogRulesVersions(this.db, [engineVersion]))[0]!)
+              ? simVersionKey(
+                  (await currentCatalogRulesVersions(this.db, [engineVersion]))[0] ?? engineVersion,
+                )
               : row.sim_version;
             return aiLadderRatings(this.db, queue.aiPool, rulesIdentity, queue.id);
           })();
