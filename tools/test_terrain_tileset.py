@@ -4,8 +4,19 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from terrain_tileset import ROOT, validate, compile_tileset, pixel_fingerprint, seamless_sources, data_path
+from terrain_tileset import (ROOT, BINDINGS, LEGACY_BINDINGS, validate, compile_tileset, pixel_fingerprint,
+                             seamless_sources, data_path, required_bindings, material_provenance)
 from PIL import Image
+
+
+def catalog_frame_count(document):
+    """Distinct source frames the catalog references (shared frames count once)."""
+    frames = set()
+    for m in document["materials"]:
+        for v in m["variants"]:
+            for phase in range(m.get("animation_frames", 1)):
+                frames.add(f"{m['sprite']}{v['frame'] + phase * m.get('animation_stride', 0)}.png")
+    return len(frames)
 
 
 class TerrainTileset(unittest.TestCase):
@@ -13,13 +24,39 @@ class TerrainTileset(unittest.TestCase):
         self.document = json.loads((ROOT / "data/terrain/tileset.json").read_text())
 
     def test_registered_materials_and_scalability(self):
-        self.assertEqual(len(validate(self.document)), 80)
-        for i in range(59):
+        expected = catalog_frame_count(self.document)
+        self.assertGreaterEqual(expected, 80)
+        self.assertEqual(len(validate(self.document)), expected)
+        for i in range(64 - len(self.document["materials"])):
             m = copy.deepcopy(self.document["materials"][2])
             m["key"] = f"fixture-{i}"
             self.document["materials"].append(m)
         self.assertEqual(len(self.document["materials"]), 64)
-        self.assertEqual(len(validate(self.document)), 80)
+        self.assertEqual(len(validate(self.document)), expected)
+
+    def test_required_bindings_cover_legacy_and_builtin_names(self):
+        names = json.loads((ROOT / "tools/terrain_builtin_names.json").read_text())
+        self.assertEqual(BINDINGS[:5], LEGACY_BINDINGS)
+        for name in names:
+            self.assertIn(name, BINDINGS)
+            self.assertIn(name, self.document["bindings"])
+        self.assertEqual(len(set(BINDINGS)), len(BINDINGS))
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(required_bindings(Path(tmp)), LEGACY_BINDINGS)
+        d = copy.deepcopy(self.document)
+        del d["bindings"][names[-1]]
+        with self.assertRaises((ValueError, KeyError)):
+            validate(d)
+
+    def test_material_provenance_is_per_material(self):
+        provenance = material_provenance(self.document)
+        self.assertEqual(set(provenance), {m["key"] for m in self.document["materials"]})
+        self.assertEqual(provenance["grass"]["method"], "existing")
+        for key, record in provenance.items():
+            if key in LEGACY_BINDINGS:
+                continue
+            self.assertEqual(record["method"], "procedural", key)
+            self.assertTrue((ROOT / record["source"]).is_file(), key)
 
     def test_invalid_catalogs(self):
         mutations = [
@@ -107,7 +144,7 @@ class TerrainTileset(unittest.TestCase):
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
         for material in self.document["materials"]:
             material.pop("seam", None)
-        self.assertEqual(len(validate(self.document)), 80)
+        self.assertEqual(len(validate(self.document)), catalog_frame_count(self.document))
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):
             validate(self.document)

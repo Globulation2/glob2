@@ -1225,6 +1225,39 @@ def catalog_fragment(results):
     }
 
 
+def merge_catalog(document, fragment):
+    """Replace or append the fragment's materials, bindings and pair treatments.
+
+    Everything else in the catalog (version, profiles, warp, existing
+    materials) is left untouched, so re-running after a recipe change only
+    moves the blocks that terrain_synth.py owns.
+    """
+    by_key = {m["key"]: i for i, m in enumerate(document["materials"])}
+    for block in fragment["materials"]:
+        if block["key"] in by_key:
+            document["materials"][by_key[block["key"]]] = block
+        else:
+            document["materials"].append(block)
+    document["bindings"].update(fragment["bindings"])
+    treatments = document.setdefault("pair_treatments", [])
+    existing = {tuple(sorted((p["a"], p["b"]))) for p in treatments}
+    for pair in fragment["pair_treatments"]:
+        key = tuple(sorted((pair["a"], pair["b"])))
+        if key not in existing:
+            treatments.append(pair)
+            existing.add(key)
+    return document
+
+
+def write_catalog(results, path):
+    sys.path.insert(0, str(ROOT / "tools"))
+    from terrain_profile_curves import dump_catalog  # noqa: E402
+
+    document = json.loads(path.read_text())
+    merge_catalog(document, catalog_fragment(results))
+    path.write_text(dump_catalog(document))
+
+
 def presentation_initialisers(results):
     lines = ["// TerrainPresentations colours: {minimap}, {overview}; derived by terrain_synth.py"]
     for name in BUILTIN_ORDER:
@@ -1400,6 +1433,8 @@ def main(argv=None):
     parser.add_argument("--check", action="store_true", help="re-synthesise and compare with committed frames")
     parser.add_argument("--contact-sheet", type=Path, help="write a review sheet PNG (no frames written)")
     parser.add_argument("--emit-catalog", action="store_true", help="print catalog blocks and colour initialisers")
+    parser.add_argument("--write-catalog", action="store_true",
+                        help="merge the material blocks, bindings and pair treatments into data/terrain/tileset.json")
     parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
     parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: CPUs)")
@@ -1437,7 +1472,7 @@ def main(argv=None):
         return
 
     results = synthesize(names, jobs)
-    modes = args.contact_sheet is not None or args.emit_catalog
+    modes = args.contact_sheet is not None or args.emit_catalog or args.write_catalog
     if args.contact_sheet is not None:
         args.contact_sheet.parent.mkdir(parents=True, exist_ok=True)
         contact_sheet(results, root).save(args.contact_sheet)
@@ -1445,6 +1480,9 @@ def main(argv=None):
     if args.emit_catalog:
         print(json.dumps(catalog_fragment(results), indent=2))
         print(presentation_initialisers(results))
+    if args.write_catalog:
+        write_catalog(results, root / "data/terrain/tileset.json")
+        print(f"Merged {len(results)} material blocks into data/terrain/tileset.json")
     if not modes or args.write:
         for name in names:
             hashes = write_material(name, results[name], root)
