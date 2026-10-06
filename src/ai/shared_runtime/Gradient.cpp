@@ -276,7 +276,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrain->properties(world.tile(x,y).terrain),gradient_info.terrainTravel))
+			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type),gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
@@ -285,7 +285,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
     {
 		field::expandTerrainTravel(
 			gradient, width, world.height, gradient_info.terrainTravel,
-			[&](std::size_t i) { return world.tiles[i].terrain; }, *world.terrain);
+			[&](std::size_t i) { return world.terrainAt(i).type; }, *world.terrain);
 		frontier.clear();
     }
     else expand_bfs(frontier);

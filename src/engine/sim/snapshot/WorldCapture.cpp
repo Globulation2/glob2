@@ -118,7 +118,8 @@ Handle capture(const Game& game,
 	auto* teams = teamsOwner ? teamsOwner.get() : &unusedTeams;
 	Rules unusedRules; auto rulesOwner = acquire(&Storage::rules, Component::Rules);
 	auto* rules = rulesOwner ? rulesOwner.get() : &unusedRules;
-	terrain->legacy.clear(); resources->cells.clear(); occupancy->cells.clear(); areas->cells.clear(); visibility->cells.clear();
+	// Map buffers keep their constructed range when reused. Overwrite selected
+	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
 	if (needs(requirements, Component::Teams)) { reserve(teams->values, game.mapHeader.getNumberOfTeams()); teams->values.resize(game.mapHeader.getNumberOfTeams()); }
 	result->tick = game.stepCounter;
@@ -159,21 +160,26 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Areas)) areas->farmEnabled = game.map.farmAreasEnabled();
 	const auto& sourceTiles = game.map.getTiles();
 	const auto immobile = game.map.immobileState();
-	if (needs(requirements, Component::Terrain)) reserve(terrain->legacy, sourceTiles.size());
-	if (needs(requirements, Component::Resources)) reserve(resources->cells, sourceTiles.size());
-	if (needs(requirements, Component::Occupancy)) reserve(occupancy->cells, sourceTiles.size());
-	if (needs(requirements, Component::Areas)) reserve(areas->cells, sourceTiles.size());
-	if (needs(requirements, Component::Visibility)) reserve(visibility->cells, sourceTiles.size());
-	for (std::size_t i = 0; (requirements & (bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy) | bit(Component::Areas) | bit(Component::Visibility))) && i < sourceTiles.size(); ++i)
+	const bool copyTerrain=needs(requirements,Component::Terrain), copyResources=needs(requirements,Component::Resources);
+	const bool copyOccupancy=needs(requirements,Component::Occupancy), copyAreas=needs(requirements,Component::Areas);
+	const bool copyVisibility=needs(requirements,Component::Visibility);
+	const auto sizeMapArray=[&](auto& array) { reserve(array,sourceTiles.size()); array.resize(sourceTiles.size()); };
+	if (copyTerrain) sizeMapArray(terrain->legacy);
+	if (copyResources) sizeMapArray(resources->cells);
+	if (copyOccupancy) sizeMapArray(occupancy->cells);
+	if (copyAreas) sizeMapArray(areas->cells);
+	if (copyVisibility) sizeMapArray(visibility->cells);
+	const auto terrainData=terrain->legacy.data(); const auto resourceData=resources->cells.data();
+	const auto occupancyData=occupancy->cells.data(); const auto areaData=areas->cells.data();
+	const auto visibilityData=visibility->cells.data();
+	for (std::size_t i = 0; (copyTerrain || copyResources || copyOccupancy || copyAreas || copyVisibility) && i < sourceTiles.size(); ++i)
 	{
 		const auto& tile = sourceTiles[i];
-		if (needs(requirements, Component::Terrain)) terrain->legacy.push_back(tile.terrain);
-		if (needs(requirements, Component::Resources)) resources->cells.push_back({tile.resource, tile.fertility,
-			tile.canResourcesGrow != 0});
-		if (needs(requirements, Component::Occupancy)) occupancy->cells.push_back({tile.building, tile.groundUnit,
-			tile.airUnit, immobile[i]});
-		if (needs(requirements, Component::Areas)) areas->cells.push_back({tile.forbidden, tile.guardArea, tile.clearArea, tile.farmArea});
-		if (needs(requirements, Component::Visibility)) visibility->cells.push_back({game.map.mapDiscovered[i], game.map.fogOfWar ? game.map.fogOfWar[i] : 0});
+		if (copyTerrain) terrainData[i]=tile.terrain;
+		if (copyResources) resourceData[i]={tile.resource,tile.fertility,tile.canResourcesGrow != 0};
+		if (copyOccupancy) occupancyData[i]={tile.building,tile.groundUnit,tile.airUnit,immobile[i]};
+		if (copyAreas) areaData[i]={tile.forbidden,tile.guardArea,tile.clearArea,tile.farmArea};
+		if (copyVisibility) visibilityData[i]={game.map.mapDiscovered[i],game.map.fogOfWar ? game.map.fogOfWar[i] : 0};
 	}
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{

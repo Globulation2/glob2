@@ -70,7 +70,7 @@ bool World::checkRoomForBuilding(int x,int y,const BuildingType* type,int team) 
     bool discovered=false;
     for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
     {
-        const auto tile=source.tile(x+dx,y+dy);
+        const auto tile=source.occupancyAt(source.tileIndex(x+dx,y+dy));
         if(!map.isHardSpaceForBuilding(x+dx,y+dy)||tile.groundUnit!=0xffff)return false;
         discovered|=map.isMapDiscovered(x+dx,y+dy,teams[team]->me);
     }

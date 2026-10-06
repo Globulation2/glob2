@@ -447,7 +447,11 @@ void Map::switchFogOfWar(void)
 void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 {
 	size_t index = coordToIndex(x, y);
-	++snapshotVisibility;
+	// The snapshot observes discovery and the active fog plane. Updating only
+	// the inactive plane becomes visible after switchFogOfWar invalidates it.
+	if ((mapDiscovered[index] & sharedVision) != sharedVision
+		|| (fogOfWar && (fogOfWar[index] & sharedVision) != sharedVision))
+		++snapshotVisibility;
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;

@@ -22,6 +22,20 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
 	return result;
 }
+bool Handle::canPaintFarmAt(std::size_t index) const
+{
+	checkTileIndex(index);
+	if (!resources || !terrain || !catalogs || !growth) return false;
+	const auto& cell = resources->cells.at(index);
+	const auto& properties = terrain->registry->properties(terrain->identity->at(index));
+	const auto type = cell.resource.type;
+	const int crop = properties.farmCrop;
+	return cell.mayGrow && properties.resourcesGrow
+		&& (type == NO_RES_TYPE || type == WHEAT || type == WOOD || type == ALGA)
+		&& crop >= 0 && crop < MAX_NB_RESOURCES
+		&& terrainSupportsResource(properties, crop, catalogs->shrinkable[crop])
+		&& growth->rate(index, crop) != 0;
+}
 TileView Handle::tileAt(std::size_t index) const
 {
 	if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index");
@@ -30,16 +44,7 @@ TileView Handle::tileAt(std::size_t index) const
 	if (resources) { const auto& c = resources->cells.at(index); result.resource = c.resource; result.fertility = c.fertility; result.resourcesMayGrow = c.mayGrow; }
 	// Derived ecology is read from frozen inputs on demand. Extraction never
 	// invokes a growth-cache query (or takes its lock) once per map cell.
-	if (resources && terrain && catalogs && growth) {
-		const auto& properties = terrain->registry->properties(result.terrain);
-		const auto type = result.resource.type;
-		const int crop = properties.farmCrop;
-		result.canPaintFarm = result.resourcesMayGrow && properties.resourcesGrow
-			&& (type == NO_RES_TYPE || type == WHEAT || type == WOOD || type == ALGA)
-			&& crop >= 0 && crop < MAX_NB_RESOURCES
-			&& terrainSupportsResource(properties, crop, catalogs->shrinkable[crop])
-			&& growth->rate(index, crop) != 0;
-	}
+	result.canPaintFarm = canPaintFarmAt(index);
 	if (occupancy) { const auto& c = occupancy->cells.at(index); result.building = c.building; result.groundUnit = c.groundUnit; result.airUnit = c.airUnit; result.immobileUnit = c.immobileUnit; }
 	if (areas) { const auto& c = areas->cells.at(index); result.forbidden = c.forbidden; result.guard = c.guard; result.clear = c.clear; result.farm = c.farm; }
 	if (visibility) { const auto& c = visibility->cells.at(index); result.discovered = c.discovered; result.visible = c.visible; }

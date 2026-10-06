@@ -5,6 +5,8 @@
 #include "Building.h"
 #include "Unit.h"
 #include "Team.h"
+#include "ai/observation/AIWorldView.h"
+#include <limits>
 #include <span>
 #include <atomic>
 #include <thread>
@@ -12,6 +14,59 @@
 
 TEST_SUITE("WorldSnapshot")
 {
+	TEST_CASE("narrow component queries preserve combined tile values and projection defaults")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+		fixture.game.map.setResource(20, 20, WHEAT, 1);
+		fixture.game.map.addForbidden(20, 20, 0);
+		SimulationSnapshot::Store store;
+		const auto captured=store.captureBoundary(fixture.game,SimulationSnapshot::All);
+		using namespace SimulationSnapshot;
+		for (Requirements mask : {All, Requirements(0), bit(Component::Terrain), bit(Component::Resources),
+			bit(Component::Occupancy), bit(Component::Areas), bit(Component::Visibility)})
+		{
+			const auto view=captured.project(mask);
+			for (std::size_t i=0;i<1024;++i)
+			{
+				const auto full=view.tileAt(i); const auto terrain=view.terrainAt(i);
+				const auto resource=view.resourceAt(i); const auto occupancy=view.occupancyAt(i);
+				const auto areas=view.areasAt(i); const auto visibility=view.visibilityAt(i);
+				CHECK(terrain.type==full.terrain); CHECK(terrain.legacy==full.legacyTerrain);
+				CHECK(resource.resource.getUint32()==full.resource.getUint32()); CHECK(resource.fertility==full.fertility);
+				CHECK(resource.mayGrow==full.resourcesMayGrow); CHECK(view.canPaintFarmAt(i)==full.canPaintFarm);
+				CHECK(occupancy.building==full.building); CHECK(occupancy.groundUnit==full.groundUnit);
+				CHECK(occupancy.airUnit==full.airUnit); CHECK(occupancy.immobileUnit==full.immobileUnit);
+				CHECK(areas.forbidden==full.forbidden); CHECK(areas.guard==full.guard);
+				CHECK(areas.clear==full.clear); CHECK(areas.farm==full.farm);
+				CHECK(visibility.discovered==full.discovered); CHECK(visibility.visible==full.visible);
+			}
+			CHECK_THROWS_AS(view.terrainAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.resourceAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.occupancyAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.areasAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.visibilityAt(1024),std::out_of_range);
+			CHECK_THROWS_AS(view.canPaintFarmAt(1024),std::out_of_range);
+		}
+	}
+	TEST_CASE("coordinate wrapping preserves signed edges for power of two and general dimensions")
+	{
+		const std::array coordinates{std::numeric_limits<int>::min(),-4097,-33,-1,0,1,33,std::numeric_limits<int>::max()};
+		const auto expected=[](int coordinate,int size){const auto value=coordinate%size;return value<0?value+size:value;};
+		for (int width : {1,2,32,12})
+		{
+			SimulationSnapshot::Handle lease; lease.width=width; lease.height=7;
+			AIEngine::AIWorldView view(std::move(lease));
+			for (int x : coordinates) for (int y : coordinates)
+			{
+				CHECK(view.normalizeX(x)==expected(x,width)); CHECK(view.normalizeY(y)==expected(y,7));
+				CHECK(view.tileIndex(x,y)==std::size_t(expected(y,7))*width+expected(x,width));
+			}
+		}
+		SimulationSnapshot::Handle empty;
+		AIEngine::AIWorldView view(std::move(empty));
+		CHECK_THROWS_AS(view.normalizeX(0),std::logic_error); CHECK_THROWS_AS(view.normalizeY(0),std::logic_error);
+	}
 	TEST_CASE("component leases and weak control blocks outlive the owning store")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -124,6 +179,47 @@ TEST_SUITE("WorldSnapshot")
 		game.map.addForbidden(5, 5, 0);
 		auto areaChanged = SimulationSnapshot::capture(game, catalog, SimulationSnapshot::All, &changed);
 		CHECK(areaChanged.areas != changed.areas); CHECK(areaChanged.resources == changed.resources);
+	}
+	TEST_CASE("no-op map writes reuse components while changed values remain isolated")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+		auto& game=fixture.game; auto& map=game.map;
+		const auto index=map.coordToIndex(20,20);
+		map.setResource(20,20,WHEAT,1); map.setResourcesGrow(20,20,1);
+		map.setMapDiscovered(20,20,1u);
+		SimulationSnapshot::Store store;
+		const auto next=[&] { ++game.stepCounter; return store.captureBoundary(game,SimulationSnapshot::All); };
+		const auto original=next();
+		map.setGroundUnit(20,20,map.getGroundUnit(20,20));
+		map.setAirUnit(20,20,map.getAirUnit(20,20));
+		map.setResourceAmount(index,map.getResource(index).amount);
+		map.setFertility(20,20,map.getTile(index).fertility);
+		map.setResourcesGrow(20,20,2); // Preserve the raw byte, with the same captured boolean.
+		auto& inactive=map.fogOfWar==map.fogOfWarA.data()?map.fogOfWarB:map.fogOfWarA;
+		inactive[index]=0; // Fixture setup: this plane is not exposed by the snapshot.
+		map.setMapDiscovered(20,20,1u);
+		const auto unchanged=next();
+		CHECK(unchanged.resources==original.resources); CHECK(unchanged.occupancy==original.occupancy);
+		CHECK(unchanged.visibility==original.visibility);
+		CHECK(map.getTile(index).canResourcesGrow==2); CHECK((inactive[index]&1u)==1u);
+		map.setResourceAmount(index,Uint8(map.getResource(index).amount+1));
+		map.setFertility(20,20,Uint16(map.getTile(index).fertility+1));
+		map.setResourcesGrow(20,20,0);
+		map.setGroundUnit(20,20,7); map.setAirUnit(20,20,8);
+		map.setMapDiscovered(20,20,2u);
+		const auto changed=next();
+		CHECK(changed.resources!=original.resources); CHECK(changed.occupancy!=original.occupancy);
+		CHECK(changed.visibility!=original.visibility);
+		CHECK(original.resourceAt(index).mayGrow); CHECK_FALSE(changed.resourceAt(index).mayGrow);
+		CHECK(original.occupancyAt(index).groundUnit==NOGUID); CHECK(changed.occupancyAt(index).groundUnit==7);
+		CHECK(changed.occupancyAt(index).airUnit==8);
+		CHECK((original.visibilityAt(index).visible&2u)==0); CHECK((changed.visibilityAt(index).visible&2u)==2u);
+		map.switchFogOfWar();
+		const auto switched=next();
+		CHECK(switched.visibility!=changed.visibility);
+		CHECK(switched.visibilityAt(index).visible==map.fogOfWar[index]);
+		CHECK(switched.resources==changed.resources); CHECK(switched.occupancy==changed.occupancy);
 	}
 	TEST_CASE("capture requirements exclude arrays that no scheduled consumer requests")
 	{

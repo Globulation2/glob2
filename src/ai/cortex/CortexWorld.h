@@ -99,34 +99,37 @@ struct WorldMap
         int dx=std::abs(normalizeX(x)-normalizeX(xx)),dy=std::abs(normalizeY(y)-normalizeY(yy));
         return std::max(std::min(dx,getW()-dx),std::min(dy,getH()-dy));
     }
-    auto getResource(int x,int y) const { return source.tile(x,y).resource; }
-    auto getBuilding(int x,int y) const { return source.tile(x,y).building; }
+    auto getResource(int x,int y) const { return source.resourceAt(source.tileIndex(x,y)).resource; }
+    auto getBuilding(int x,int y) const { return source.occupancyAt(source.tileIndex(x,y)).building; }
     bool isResource(int x,int y) const { return getResource(x,y).type!=NO_RES_TYPE; }
     bool isResourceTakeable(int x,int y,int resource) const
     { const auto r=getResource(x,y); return r.type==resource && r.amount>0; }
-    bool isFOWDiscovered(int x,int y,Uint32 mask) const { return source.tile(x,y).visible & mask; }
-    bool isMapDiscovered(int x,int y,Uint32 mask) const { return source.tile(x,y).discovered & mask; }
-    bool isForbidden(int x,int y,Uint32 mask) const { return source.tile(x,y).forbidden & mask; }
-    bool isFarmArea(int x,int y,Uint32 mask) const { return source.tile(x,y).farm & mask; }
-    bool canPaintFarmArea(int x,int y) const { return source.tile(x,y).canPaintFarm; }
+    bool isFOWDiscovered(int x,int y,Uint32 mask) const { return source.visibilityAt(source.tileIndex(x,y)).visible & mask; }
+    bool isMapDiscovered(int x,int y,Uint32 mask) const { return source.visibilityAt(source.tileIndex(x,y)).discovered & mask; }
+    bool isForbidden(int x,int y,Uint32 mask) const { return source.areasAt(source.tileIndex(x,y)).forbidden & mask; }
+    bool isFarmArea(int x,int y,Uint32 mask) const { return source.areasAt(source.tileIndex(x,y)).farm & mask; }
+    bool canPaintFarmArea(int x,int y) const { return source.canPaintFarmAt(source.tileIndex(x,y)); }
     bool farmAreasEnabled() const { return source.farmAreasEnabled; }
     const TerrainProperties& terrainPropertiesAt(int x,int y) const
-    { return source.terrain->properties(source.tile(x,y).terrain); }
+    { return source.terrain->properties(source.terrainAt(source.tileIndex(x,y)).type); }
     bool isHardSpaceForGroundUnit(int x,int y,bool swim,Uint32 mask) const
     {
-        const auto t=source.tile(x,y);const auto& p=terrainPropertiesAt(x,y);
-        return t.resource.type==NO_RES_TYPE && t.building==0xffff && !(t.forbidden&mask)
+        const auto index=source.tileIndex(x,y);
+        const auto r=source.resourceAt(index); const auto o=source.occupancyAt(index);
+        const auto& p=source.terrain->properties(source.terrainAt(index).type);
+        return r.resource.type==NO_RES_TYPE && o.building==0xffff && !(source.areasAt(index).forbidden&mask)
             && (p.walkable || (swim&&p.swimmable));
     }
     bool isFreeForGroundUnitNoForbidden(int x,int y,bool swim) const
-    { return isHardSpaceForGroundUnit(x,y,swim,0) && source.tile(x,y).groundUnit==0xffff; }
+    { return isHardSpaceForGroundUnit(x,y,swim,0) && source.occupancyAt(source.tileIndex(x,y)).groundUnit==0xffff; }
     bool isHardSpaceForBuilding(int x,int y,int width=1,int height=1,Uint16 ignore=0xffff) const
     {
         for(int dy=0;dy<height;++dy)for(int dx=0;dx<width;++dx)
         {
-            const auto t=source.tile(x+dx,y+dy);
-            if(t.resource.type!=NO_RES_TYPE || (t.building!=0xffff&&t.building!=ignore)
-                || !terrainPropertiesAt(x+dx,y+dy).buildable)return false;
+            const auto index=source.tileIndex(x+dx,y+dy);
+            const auto r=source.resourceAt(index); const auto o=source.occupancyAt(index);
+            if(r.resource.type!=NO_RES_TYPE || (o.building!=0xffff&&o.building!=ignore)
+                || !source.terrain->properties(source.terrainAt(index).type).buildable)return false;
         }
         return true;
     }

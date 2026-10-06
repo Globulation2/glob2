@@ -101,37 +101,52 @@ struct Map
 {
     const AIEngine::AIWorldView* world=nullptr;
     int wMask=0,hMask=0;
-    std::size_t coordToIndex(int x,int y) const {return normalizeY(y)*getW()+normalizeX(x);}
+    std::size_t coordToIndex(int x,int y) const {return world->tileIndex(x,y);}
     Uint64 terrainGeneration() const {return world->terrainRevision;}
     bool hasAirTerrainConstraints() const {return world->airTerrainConstraints;}
     bool hasTerrainMovementModifiers() const {return world->terrainMovementModifiers;}
-    TerrainType terrainTypeAt(std::size_t i) const {return world->tiles[i].terrain;}
+    TerrainType terrainTypeAt(std::size_t i) const {return world->terrainAt(i).type;}
     const TerrainRegistry& terrainRegistry() const {return *world->terrain;}
     const TerrainProperties& terrainPropertiesAt(std::size_t i) const {return terrainRegistry().properties(terrainTypeAt(i));}
     const Fertility::GrowthCache& resourceGrowthField() const {return *world->growth;}
-    bool canResourcesGrow(int x,int y) const {return getTile(x,y).resourcesMayGrow;}
-    bool isFOWDiscovered(int x,int y,Uint32 team) const {return (getTile(x,y).visible&team)!=0;}
+    bool canResourcesGrow(int x,int y) const {return world->resourceAt(coordToIndex(x,y)).mayGrow;}
+    bool isFOWDiscovered(int x,int y,Uint32 team) const {return (world->visibilityAt(coordToIndex(x,y)).visible&team)!=0;}
     int warpDistMax(int x,int y,int a,int b) const {int dx=std::abs(normalizeX(x)-normalizeX(a)),dy=std::abs(normalizeY(y)-normalizeY(b));return std::max(std::min(dx,getW()-dx),std::min(dy,getH()-dy));}
-    bool isHardSpaceForBuilding(int x,int y,int w=1,int h=1,Uint16 ignore=NOGBID) const {for(int dy=0;dy<h;++dy)for(int dx=0;dx<w;++dx){const auto t=getTile(x+dx,y+dy);if(t.resource.type!=NO_RES_TYPE || (t.building!=NOGBID && t.building!=ignore) || !terrainPropertiesAt(x+dx,y+dy).buildable)return false;}return true;}
+    bool isHardSpaceForBuilding(int x,int y,int w=1,int h=1,Uint16 ignore=NOGBID) const {for(int dy=0;dy<h;++dy)for(int dx=0;dx<w;++dx){const auto i=coordToIndex(x+dx,y+dy);const auto r=world->resourceAt(i);const auto o=world->occupancyAt(i);if(r.resource.type!=NO_RES_TYPE || (o.building!=NOGBID && o.building!=ignore) || !terrainPropertiesAt(i).buildable)return false;}return true;}
     int getW() const {return world->width;}
     int getH() const {return world->height;}
     int normalizeX(int x) const {return world->normalizeX(x);}
     int normalizeY(int y) const {return world->normalizeY(y);}
     int warpDistSquare(int x1,int y1,int x2,int y2) const {return world->distanceSquared(x1,y1,x2,y2);}
     AIEngine::TileView getTile(int x,int y) const {return world->tile(x,y);}
-    auto getResource(int x,int y) const {return getTile(x,y).resource;}
-    Uint16 getBuilding(int x,int y) const {return getTile(x,y).building;}
-    Uint16 getGroundUnit(int x,int y) const {return getTile(x,y).groundUnit;}
+    // Component-only projection for compound spatial queries. canPaintFarm stays
+    // false; use canPaintFarmArea/getTile when derived farm eligibility is needed.
+    AIEngine::TileView getSpatialTile(int x,int y) const
+    {
+        const auto i=coordToIndex(x,y);
+        const auto t=world->terrainAt(i);const auto r=world->resourceAt(i);
+        const auto o=world->occupancyAt(i);const auto a=world->areasAt(i);const auto v=world->visibilityAt(i);
+        AIEngine::TileView result;
+        result.terrain=t.type;result.legacyTerrain=t.legacy;
+        result.resource=r.resource;result.fertility=r.fertility;result.resourcesMayGrow=r.mayGrow;
+        result.building=o.building;result.groundUnit=o.groundUnit;result.airUnit=o.airUnit;result.immobileUnit=o.immobileUnit;
+        result.forbidden=a.forbidden;result.guard=a.guard;result.clear=a.clear;result.farm=a.farm;
+        result.discovered=v.discovered;result.visible=v.visible;
+        return result;
+    }
+    auto getResource(int x,int y) const {return world->resourceAt(coordToIndex(x,y)).resource;}
+    Uint16 getBuilding(int x,int y) const {return world->occupancyAt(coordToIndex(x,y)).building;}
+    Uint16 getGroundUnit(int x,int y) const {return world->occupancyAt(coordToIndex(x,y)).groundUnit;}
     bool isResource(int x,int y) const {return getResource(x,y).type!=NO_RES_TYPE;}
     bool isResourceTakeable(int x,int y,int type) const {const auto r=getResource(x,y);return r.type==type && r.amount>0;}
-    bool isForbidden(int x,int y,Uint32 team) const {return (getTile(x,y).forbidden&team)!=0;}
-    bool isGuardArea(int x,int y,Uint32 team) const {return (getTile(x,y).guard&team)!=0;}
-    bool isClearArea(int x,int y,Uint32 team) const {return (getTile(x,y).clear&team)!=0;}
-    bool isFarmArea(int x,int y,Uint32 team) const {return (getTile(x,y).farm&team)!=0;}
-    bool isMapDiscovered(int x,int y,Uint32 team) const {return (getTile(x,y).discovered&team)!=0;}
+    bool isForbidden(int x,int y,Uint32 team) const {return (world->areasAt(coordToIndex(x,y)).forbidden&team)!=0;}
+    bool isGuardArea(int x,int y,Uint32 team) const {return (world->areasAt(coordToIndex(x,y)).guard&team)!=0;}
+    bool isClearArea(int x,int y,Uint32 team) const {return (world->areasAt(coordToIndex(x,y)).clear&team)!=0;}
+    bool isFarmArea(int x,int y,Uint32 team) const {return (world->areasAt(coordToIndex(x,y)).farm&team)!=0;}
+    bool isMapDiscovered(int x,int y,Uint32 team) const {return (world->visibilityAt(coordToIndex(x,y)).discovered&team)!=0;}
     bool farmAreasEnabled() const {return world->farmAreasEnabled;}
-    bool canPaintFarmArea(int x,int y) const {return getTile(x,y).canPaintFarm;}
-    const TerrainProperties& terrainPropertiesAt(int x,int y) const {return world->terrain->properties(getTile(x,y).terrain);}
+    bool canPaintFarmArea(int x,int y) const {return world->canPaintFarmAt(coordToIndex(x,y));}
+    const TerrainProperties& terrainPropertiesAt(int x,int y) const {return world->terrain->properties(world->terrainAt(coordToIndex(x,y)).type);}
 };
 struct MapHeader
 {
@@ -210,9 +225,10 @@ struct World
         }
         bool discovered=false;
         for(int dy=0;dy<type->height;++dy) for(int dx=0;dx<type->width;++dx) {
-            const auto tile=map.getTile(x+dx,y+dy);
-            if(tile.resource.type!=NO_RES_TYPE || tile.building!=NOGBID || tile.groundUnit!=NOGUID || !map.terrainPropertiesAt(x+dx,y+dy).buildable) return false;
-            discovered|=(tile.discovered&teams[team]->me)!=0;
+            const auto i=map.coordToIndex(x+dx,y+dy);
+            const auto r=map.world->resourceAt(i);const auto o=map.world->occupancyAt(i);
+            if(r.resource.type!=NO_RES_TYPE || o.building!=NOGBID || o.groundUnit!=NOGUID || !map.terrainPropertiesAt(i).buildable) return false;
+            discovered|=(map.world->visibilityAt(i).discovered&teams[team]->me)!=0;
         }
         return !checkFow || discovered;
     }

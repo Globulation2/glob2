@@ -109,15 +109,15 @@ void Entities::ResourceSet::save(GAGCore::OutputStream* stream)
 
 bool Entities::Resource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
-    const auto& resource=world.tile(x,y).resource;
+    const auto& resource=world.resourceAt(world.tileIndex(x,y)).resource;
     return resource.type==resource_type && resource.amount>0;
 }
 bool Entities::AnyResource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
-{ return world.tile(x,y).resource.type!=NO_RES_TYPE; }
+{ return world.resourceAt(world.tileIndex(x,y)).resource.type!=NO_RES_TYPE; }
 bool Entities::ResourceSet::is_entity(const AIEngine::AIWorldView& world,int x,int y)
 {
-    if(!mask) return world.terrain->properties(world.tile(x,y).terrain).walkable;
-    const auto& resource=world.tile(x,y).resource;
+    if(!mask) return world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type).walkable;
+    const auto& resource=world.resourceAt(world.tileIndex(x,y)).resource;
     return resource.type>=0 && resource.type<MAX_NB_RESOURCES
         && (mask&(1u<<resource.type)) && resource.amount>0;
 }

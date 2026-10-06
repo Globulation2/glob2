@@ -70,8 +70,25 @@ public:
 	const BuildingView* buildingAtSlot(Uint16 gid) const;
 	const UnitView* unitAtSlot(Uint16 gid) const;
 	TileView tile(int x, int y) const;
-	int normalizeX(int x) const;
-	int normalizeY(int y) const;
+	std::size_t tileIndex(int x, int y) const
+	{ return std::size_t(normalizeY(y)) * width + normalizeX(x); }
+	auto terrainAt(std::size_t index) const { return lease.terrainAt(index); }
+	auto resourceAt(std::size_t index) const { return lease.resourceAt(index); }
+	auto occupancyAt(std::size_t index) const { return lease.occupancyAt(index); }
+	auto areasAt(std::size_t index) const { return lease.areasAt(index); }
+	auto visibilityAt(std::size_t index) const { return lease.visibilityAt(index); }
+	bool canPaintFarmAt(std::size_t index) const { return lease.canPaintFarmAt(index); }
+	int normalizeX(int x) const { return wrap(x, width); }
+	int normalizeY(int y) const { return wrap(y, height); }
 	int distanceSquared(int x1, int y1, int x2, int y2) const;
+private:
+	static int wrap(int coordinate, int size)
+	{
+		if (size <= 0) throw std::logic_error("AI observation has no map dimensions");
+		if ((size & (size - 1)) == 0) return unsigned(coordinate) & unsigned(size - 1);
+		if (unsigned(coordinate) < unsigned(size)) return coordinate;
+		const int value = coordinate % size;
+		return value < 0 ? value + size : value;
+	}
 };
 } // namespace AIEngine

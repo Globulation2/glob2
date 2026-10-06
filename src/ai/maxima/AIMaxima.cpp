@@ -246,7 +246,7 @@ namespace
 			for(int x=0; x<width; ++x)
 			{
 				const int index=y*width+x;
-				const auto tile=map->getTile(x, y);
+				const auto tile=map->getSpatialTile(x, y);
 				const bool clear=map->isMapDiscovered(x, y, player->team->me)
 					&& !(tile.forbidden&player->team->me)
 					&& tile.building==NOGBID
@@ -270,7 +270,7 @@ namespace
 			for(int x=0; x<width; ++x)
 			{
 				const int index=y*width+x;
-				const auto tile=map->getTile(x, y);
+				const auto tile=map->getSpatialTile(x, y);
 				if(!localTiles[index]
 				   || !map->isMapDiscovered(x, y, player->team->me)
 				   || tile.resource.amount<=0
@@ -4362,7 +4362,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
-		WorldTile& tile=world.tiles[index];const auto cell=map->getTile(x,y);
+		WorldTile& tile=world.tiles[index];const auto cell=map->getSpatialTile(x,y);
 		tile.discovered=map->isMapDiscovered(x,y,runtime.readPlayer()->team->allies);
 		// Terrain is immutable during a match. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
@@ -5939,7 +5939,7 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 	for(int y=0;y<field.height;++y)for(int x=0;x<field.width;++x)
 	{
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
-		const auto cell=map->getTile(x,y);
+		const auto cell=map->getSpatialTile(x,y);
 		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
 			&& !(cell.forbidden&runtime.readPlayer()->team->me)
 			&& (map->terrainPropertiesAt(x,y).walkable || (budget.can_swim && map->terrainPropertiesAt(x,y).swimmable));

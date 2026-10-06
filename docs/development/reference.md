@@ -25,6 +25,15 @@ inputs when necessary, rather than retaining the whole world. New snapshot field
 belong to the engine component that owns their source data; add capture and query
 coverage when extending them.
 
+Capture sizes selected map arrays once and overwrites their contiguous records in
+one traversal. Warm buffers retain constructed ranges and capacity; the extraction
+loop does not grow a vector per cell. Mutation generations advance when exposed
+values change, including active visibility, rather than on repeated identical writes.
+Use narrow component queries for scalar map reads. Combined tile queries preserve
+all fields, including farm eligibility, which remains an explicit derived query
+when only that value is needed. Keep capture and derived-query costs separate in
+profiles before adding more elaborate copying mechanisms.
+
 Snapshot component pools synchronize final lease release and subsequent buffer
 reuse through the same mutex. A reference count establishes that readers have
 finished; this release/acquire barrier also orders their accesses before the owner

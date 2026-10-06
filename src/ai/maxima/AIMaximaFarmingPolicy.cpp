@@ -149,7 +149,7 @@ namespace
 		const int w=map->getW();
 		const int h=map->getH();
 		const int index=y*w+x;
-		const auto cell=map->getTile(x, y);
+		const auto cell=map->getSpatialTile(x, y);
 		const bool seed_lattice=Farming::isInteriorSeed(x, y);
 		const bool expansion_lattice=Farming::isExpansionCell(x, y);
 		const Uint32 fertility=fertility_cache.at(x, y);
@@ -182,7 +182,7 @@ namespace
 				for(int dx=-1; dx<=1; ++dx)
 				{
 					if(!dx && !dy) continue;
-					const auto neighbor=map->getTile(x+dx, y+dy);
+					const auto neighbor=map->getSpatialTile(x+dx, y+dy);
 					const bool eligible=is_empty_growth_cell(neighbor, map->terrainPropertiesAt(x+dx,y+dy))
 						&& fertility_cache.at(x+dx, y+dy)>=minimum_fertility
 						&& (resource_type!=WHEAT
@@ -528,7 +528,7 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 		field::traverse(queue,{w,h},field::Surrounding,
 			[&](int index) {
 				const int x=index%w,y=index/w;
-				const auto current=map->getTile(x,y);
+				const auto current=map->getSpatialTile(x,y);
 				const bool current_farm_area=after_harvest
 					&& index<int(applied_farm_protection_mask.size())
 					&& applied_farm_protection_mask[index];
@@ -540,7 +540,7 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 				return field::Visit::Expand;
 			},[&](int,int px,int py) {
 				const int nx=map->normalizeX(px),ny=map->normalizeY(py),next=ny*w+nx;
-				const auto tile=map->getTile(nx,ny);
+				const auto tile=map->getSpatialTile(nx,ny);
 				const bool farm_area=after_harvest
 					&& next<int(applied_farm_protection_mask.size())
 					&& applied_farm_protection_mask[next];
@@ -636,7 +636,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	std::vector<int> resource_burden(size, 0);
 	for(int index=0; index<size; ++index)
 	{
-		const auto cell=map->getTile(index%w, index/w);
+		const auto cell=map->getSpatialTile(index%w, index/w);
 		grandfathered_resource[index]=!applied_maintenance_clearing_mask[index]
 			&& (cell.resource.type==WHEAT || cell.resource.type==WOOD);
 		resource_burden[index]=std::max(1, int(cell.resource.amount));
@@ -685,7 +685,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			std::sort(circulation.begin(),circulation.end());
 			circulation.erase(std::unique(circulation.begin(),circulation.end()),circulation.end());
 			circulation.erase(std::remove_if(circulation.begin(),circulation.end(),
-				[&](int index){const auto cell=map->getTile(index%w,index/w);
+				[&](int index){const auto cell=map->getSpatialTile(index%w,index/w);
 					return memberMask[index]||cell.building!=NOGBID||!map->terrainPropertiesAt(index).walkable
 						||!map->isMapDiscovered(index%w,index/w,runtime.readPlayer()->team->allies)
 						||(cell.resource.type!=NO_RES_TYPE
@@ -698,7 +698,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 				// grandfather those destructive clearing obligations into this plan.
 				for(int index:contract.footprintTiles)if(!memberMask[index])
 				{
-					const int resource=map->getTile(index%w,index/w).resource.type;
+					const int resource=map->getResource(index%w,index/w).type;
 					preserved[index]=resource==WHEAT||resource==WOOD;
 				}
 				for(const auto& member:members)
@@ -727,7 +727,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	{
 		const int x=index%w;
 		const int y=index/w;
-		const auto cell=map->getTile(x, y);
+		const auto cell=map->getSpatialTile(x, y);
 		const bool discovered=map->isMapDiscovered(x, y,
 			runtime.readPlayer()->team->me);
 		if(wheat_invasion_clearing_required(runtime, index,
@@ -780,7 +780,7 @@ void Maxima::apply_maintenance_clearing_plan(Context& runtime,
 		const int y=index/w;
 		const bool discovered=map->isMapDiscovered(x, y,
 			runtime.readPlayer()->team->me);
-		const bool building_footprint=map->getTile(x, y).building!=NOGBID;
+		const bool building_footprint=map->getBuilding(x, y)!=NOGBID;
 		const bool contract_desired=plan.circulation[index]
 			&& !building_footprint && discovered;
 		const bool desired=!building_footprint
@@ -912,7 +912,7 @@ int Maxima::available_expansion_neighbors(Context& runtime, int x, int y) const
 		for(int dx=-1; dx<=1; ++dx)
 		{
 			if(!dx && !dy) continue;
-			const auto cell=map->getTile(x+dx, y+dy);
+			const auto cell=map->getSpatialTile(x+dx, y+dy);
 			if((map->terrainPropertiesAt(x+dx,y+dy).allowedResources & (1u<<WHEAT)) && map->canResourcesGrow(x+dx,y+dy)
 			   && cell.resource.type==NO_RES_TYPE && cell.building==NOGBID
 			   && cell.groundUnit==NOGUID && cell.airUnit==NOGUID)
@@ -931,7 +931,7 @@ int Maxima::growth_absorbing_neighbors(Context& runtime, int x, int y) const
 		for(int dx=-1; dx<=1; ++dx)
 		{
 			if(!dx && !dy) continue;
-			const auto cell=map->getTile(x+dx, y+dy);
+			const auto cell=map->getSpatialTile(x+dx, y+dy);
 			if(!(map->terrainPropertiesAt(x+dx,y+dy).allowedResources & (1u<<WHEAT)) || !map->canResourcesGrow(x+dx,y+dy)
 			   || cell.building!=NOGBID) continue;
 			// Growth either seeds empty ground or tops up a partly harvested
@@ -1007,7 +1007,7 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 	const auto reachable=worker_reachable_circulation(runtime,true);
 	auto eligible=[&](int i)
 	{
-		const auto cell=map->getTile(i%w,i/w);
+		const auto cell=map->getSpatialTile(i%w,i/w);
 		return managed[i] && (map->terrainPropertiesAt(i).allowedResources & (1u<<WOOD)) && cell.resourcesMayGrow
 			&& cell.building==NOGBID && !has_hard_farming_contract(i)
 			&& map->isMapDiscovered(i%w,i/w,runtime.readPlayer()->team->me)
@@ -1079,7 +1079,7 @@ bool Maxima::wheat_invasion_clearing_required(Context& runtime, int index,
 	return budget.farming_enabled && budget.farming_maintenance_clearing_enabled
 		&& budget.farming_wheat_invasion_clearing_enabled
 		&& map->isMapDiscovered(x, y, runtime.readPlayer()->team->me)
-		&& map->getTile(x, y).resource.type==WOOD
+		&& map->getResource(x, y).type==WOOD
 		&& !wood_reserve.cells[index]
 		&& Farming::hasAdjacentProtectedWheat(protected_wheat, w, h, x, y);
 }
@@ -1108,7 +1108,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
-			const auto resource=map->getTile(x, y);
+			const auto resource=map->getSpatialTile(x, y);
 			Uint8 bit=0;
 			if(resource.resource.amount>0)
 			{
@@ -1127,7 +1127,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		for(int x=0; x<w; ++x)
 		{
 			const int index=y*w+x;
-			const auto cell=map->getTile(x, y);
+			const auto cell=map->getSpatialTile(x, y);
 			const bool wheat=cell.resource.type==WHEAT
 				&& cell.resource.amount>0;
 			const bool wood=cell.resource.type==WOOD
@@ -1201,7 +1201,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 	std::vector<Uint8> visited(w*h,0);
 	for(int start=0;start<w*h;++start)
 	{
-		const int resource=map->getTile(start%w,start/w).resource.type;
+		const int resource=map->getResource(start%w,start/w).type;
 		if(visited[start] || (resource!=WHEAT && resource!=WOOD)) continue;
 		std::vector<int> component(1,start);
 		visited[start]=1;
@@ -1210,7 +1210,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		field::traverse(component,{w,h},field::Surrounding,
 			[&](int index) {
 				const int x=index%w,y=index/w;
-				const auto cell=map->getTile(x,y);
+				const auto cell=map->getSpatialTile(x,y);
 				if(cell.resource.amount>0)
 				{
 					protected_live|=plan.forbidden[index]!=0;
@@ -1230,7 +1230,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 				const int nx=map->normalizeX(px), ny=map->normalizeY(py);
 				const int next=ny*w+nx;
 				if(!visited[next]
-				   && map->getTile(nx,ny).resource.type==resource)
+				   && map->getResource(nx,ny).type==resource)
 				{
 					visited[next]=1;
 					component.push_back(next);

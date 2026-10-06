@@ -85,7 +85,23 @@ struct Handle
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};
 	Handle project(Requirements requested) const;
+	// Scalar readers touch only their requested immutable component. Defaults
+	// match a combined tile whose corresponding component was not captured.
+	TerrainCell terrainAt(std::size_t index) const
+	{ checkTileIndex(index); return terrain ? TerrainCell{terrain->identity->at(index), terrain->legacy.at(index)} : TerrainCell{}; }
+	ResourceCell resourceAt(std::size_t index) const
+	{ checkTileIndex(index); return resources ? resources->cells.at(index) : ResourceCell{}; }
+	OccupancyCell occupancyAt(std::size_t index) const
+	{ checkTileIndex(index); return occupancy ? occupancy->cells.at(index) : OccupancyCell{}; }
+	AreaCell areasAt(std::size_t index) const
+	{ checkTileIndex(index); return areas ? areas->cells.at(index) : AreaCell{}; }
+	VisibilityCell visibilityAt(std::size_t index) const
+	{ checkTileIndex(index); return visibility ? visibility->cells.at(index) : VisibilityCell{}; }
+	bool canPaintFarmAt(std::size_t index) const;
 	TileView tileAt(std::size_t index) const;
+private:
+	void checkTileIndex(std::size_t index) const
+	{ if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index"); }
 };
 
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game);

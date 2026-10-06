@@ -48,13 +48,13 @@ bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::UnitV
 {
 	return team < 0 || u.team == team ||
 		   (u.insideTimeout >= 0 &&
-			((world.tile(u.x, u.y).visible & world.teams[team].mask) ||
-			 (world.tile(u.x - u.dx, u.y - u.dy).visible & world.teams[team].mask)));
+			((world.visibilityAt(world.tileIndex(u.x, u.y)).visible & world.teams[team].mask) ||
+			 (world.visibilityAt(world.tileIndex(u.x - u.dx, u.y - u.dy)).visible & world.teams[team].mask)));
 }
 bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::BuildingView &b)
 {
 	return team < 0 || b.team == team ||
-		   (!world.catalog->at(b.type).isCloaked && (world.tile(b.x, b.y).visible & world.teams[team].mask));
+		   (!world.catalog->at(b.type).isCloaked && (world.visibilityAt(world.tileIndex(b.x, b.y)).visible & world.teams[team].mask));
 }
 int arg(const std::vector<Value> &a, size_t i, int lo, int hi)
 {
@@ -183,33 +183,35 @@ void Observations::observe()
 	if (team < 0 || lastTick == world().tick)
 		return;
 	const unsigned mask = world().teams[team].mask;
-	for (int y = 0; y < world().height; ++y)
-		for (int x = 0; x < world().width; ++x)
-			if ((world().tile(x,y).visible & mask))
-			{
-				const auto &t = world().tile(x, y);
-				const auto &r = t.resource;
-				remember(unsigned((world().normalizeY(y) * world().width + world().normalizeX(x)))) = {
-					world().tick, t.legacyTerrain, t.fertility, world().tile(x,y).terrain, r.type, r.variety, r.amount, true};
-			}
+    for (std::size_t index = 0; index < std::size_t(world().width) * world().height; ++index)
+        if (world().visibilityAt(index).visible & mask)
+        {
+            const auto terrain = world().terrainAt(index);
+            const auto cell = world().resourceAt(index);
+            const auto& r = cell.resource;
+            remember(unsigned(index)) = {world().tick, terrain.legacy, cell.fertility,
+                terrain.type, r.type, r.variety, r.amount, true};
+        }
 	lastTick = world().tick;
 }
 Value Observations::tile(int x, int y) const
 {
 	x &= world().width - 1;
 	y &= world().height - 1;
-	const bool current = team < 0 || (world().tile(x,y).visible & world().teams[team].mask);
+    const auto index = world().tileIndex(x, y);
+	const bool current = team < 0 || (world().visibilityAt(index).visible & world().teams[team].mask);
 	Value v = Value::object().set("x", x).set("y", y).set("visible", current);
 	RememberedTile t;
 	if (current)
 	{
-		const auto &c = world().tile(x, y);
-		t = {world().tick, c.legacyTerrain, c.fertility, world().tile(x,y).terrain,
+		const auto c = world().resourceAt(index);
+        const auto terrain = world().terrainAt(index);
+		t = {world().tick, terrain.legacy, c.fertility, terrain.type,
 			 c.resource.type, c.resource.variety, c.resource.amount};
 	}
 	else
 	{
-		auto *previous = lookup(unsigned((world().normalizeY(y) * world().width + world().normalizeX(x))));
+		auto *previous = lookup(unsigned(index));
 		if (!previous)
 			return v.set("explored", false);
 		t = *previous;
@@ -226,7 +228,7 @@ Value Observations::tile(int x, int y) const
 		v.set("fertility", int(t.fertility));
 	if (current)
 	{
-		const auto &c = world().tile(x, y);
+		const auto c = world().occupancyAt(index);
 		auto unitId = [&](unsigned id)
 		{
 			if (id >= Unit::MAX_COUNT * Team::MAX_COUNT)
@@ -252,10 +254,10 @@ Value Observations::tile(int x, int y) const
 	}
 	if (team >= 0)
 	{
-		v.set("forbidden", bool(world().tile(x,y).forbidden & world().teams[team].mask));
+		v.set("forbidden", bool(world().areasAt(index).forbidden & world().teams[team].mask));
 		// Only present where the team painted a farm (the farm-areas experiment), so
 		// tile records in games without it are unchanged.
-		if (world().farmAreasEnabled && (world().tile(x,y).farm & world().teams[team].mask))
+		if (world().farmAreasEnabled && (world().areasAt(index).farm & world().teams[team].mask))
 			v.set("farmArea", true);
 	}
 	return v;
@@ -619,24 +621,27 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 	x &= world().width - 1;
 	y &= world().height - 1;
 	Cell out;
-	out.visible = team < 0 || (world().tile(x,y).visible & world().teams[team].mask);
+    const auto index = world().tileIndex(x, y);
+	out.visible = team < 0 || (world().visibilityAt(index).visible & world().teams[team].mask);
 	if (out.visible)
 	{
-		const auto &tile = world().tile(x, y);
+		const auto tile = world().resourceAt(index);
+        const auto terrain = world().terrainAt(index);
+        const auto occupancy = world().occupancyAt(index);
 		out.known = true;
 		out.tick = world().tick;
-		out.terrain = tile.legacyTerrain;
-		out.terrainType = world().tile(x,y).terrain;
+		out.terrain = terrain.legacy;
+		out.terrainType = terrain.type;
 		out.fertility = tile.fertility;
 		out.resource = tile.resource.type;
 		out.amount = tile.resource.amount;
-		if (tile.building != 65535)
+		if (occupancy.building != 65535)
 		{
-			const auto &b = world().buildingAtSlot(tile.building);
+			const auto &b = world().buildingAtSlot(occupancy.building);
 			out.building = b && visible(world(), team, *b);
 		}
 	}
-	else if (const auto *old = lookup((world().normalizeY(y) * world().width + world().normalizeX(x))))
+	else if (const auto *old = lookup(unsigned(index)))
 	{
 		out.known = true;
 		out.tick = old->tick;
@@ -647,7 +652,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 		out.amount = old->amount;
 	}
 	if (team >= 0 && out.known)
-		out.forbidden = (world().tile(x, y).forbidden & world().teams[team].mask) != 0;
+		out.forbidden = (world().areasAt(index).forbidden & world().teams[team].mask) != 0;
 	return out;
 }
 

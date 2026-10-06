@@ -516,9 +516,28 @@ public:
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
 	void replaceResource(size_t index, const Resource &resource);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
-	void setResourceAmount(size_t index, Uint8 amount) { tiles[index].resource.amount = amount; ++snapshotResources; }
-	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; ++snapshotResources; }
-	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; ++snapshotResources; }
+	void setResourceAmount(size_t index, Uint8 amount)
+	{
+		auto &stored = tiles[index].resource.amount;
+		const bool changed = stored != amount;
+		stored = amount;
+		if (changed) ++snapshotResources;
+	}
+	void setFertility(int x, int y, Uint16 value)
+	{
+		auto &stored = tiles[coordToIndex(x, y)].fertility;
+		const bool changed = stored != value;
+		stored = value;
+		if (changed) ++snapshotResources;
+	}
+	void setResourcesGrow(int x, int y, Uint8 value)
+	{
+		auto &stored = tiles[coordToIndex(x, y)].canResourcesGrow;
+		// The immutable resource component exposes this byte as a boolean.
+		const bool changed = (stored != 0) != (value != 0);
+		stored = value;
+		if (changed) ++snapshotResources;
+	}
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
@@ -743,8 +762,20 @@ public:
 	Uint16 getAirUnit(int x, int y) const { return tiles[coordToIndex(x, y)].airUnit; }
 	Uint16 getBuilding(int x, int y) const { return tiles[coordToIndex(x, y)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; ++snapshotOccupancy; }
-	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; ++snapshotOccupancy; }
+	void setGroundUnit(int x, int y, Uint16 guid)
+	{
+		auto &stored = tiles[coordToIndex(x, y)].groundUnit;
+		const bool changed = stored != guid;
+		stored = guid;
+		if (changed) ++snapshotOccupancy;
+	}
+	void setAirUnit(int x, int y, Uint16 guid)
+	{
+		auto &stored = tiles[coordToIndex(x, y)].airUnit;
+		const bool changed = stored != guid;
+		stored = guid;
+		if (changed) ++snapshotOccupancy;
+	}
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid);
 
 	//! Return the sector index of the sector containing tile (x,y). The

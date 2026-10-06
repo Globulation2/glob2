@@ -39,16 +39,16 @@ public:
  int getW() const { return world.width; }
  int getH() const { return world.height; }
  TileView getTile(int x,int y) const { return world.tile(x,y); }
- Uint16 getBuilding(int x,int y) const { return world.tile(x,y).building; }
- const TerrainProperties& terrainPropertiesAt(int x,int y) const { return world.terrain->properties(world.tile(x,y).terrain); }
- bool isMapDiscovered(int x,int y,Uint32 mask) const { return world.tile(x,y).discovered&mask; }
- bool isFOWDiscovered(int x,int y,Uint32 mask) const { return world.tile(x,y).visible&mask; }
- bool isForbidden(int x,int y,Uint32 mask) const { return world.tile(x,y).forbidden&mask; }
- bool isGuardArea(int x,int y,Uint32 mask) const { return world.tile(x,y).guard&mask; }
- bool isClearArea(int x,int y,Uint32 mask) const { return world.tile(x,y).clear&mask; }
- bool isFarmArea(int x,int y,Uint32 mask) const { return world.tile(x,y).farm&mask; }
+ Uint16 getBuilding(int x,int y) const { return world.occupancyAt(world.tileIndex(x,y)).building; }
+ const TerrainProperties& terrainPropertiesAt(int x,int y) const { return world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type); }
+ bool isMapDiscovered(int x,int y,Uint32 mask) const { return world.visibilityAt(world.tileIndex(x,y)).discovered&mask; }
+ bool isFOWDiscovered(int x,int y,Uint32 mask) const { return world.visibilityAt(world.tileIndex(x,y)).visible&mask; }
+ bool isForbidden(int x,int y,Uint32 mask) const { return world.areasAt(world.tileIndex(x,y)).forbidden&mask; }
+ bool isGuardArea(int x,int y,Uint32 mask) const { return world.areasAt(world.tileIndex(x,y)).guard&mask; }
+ bool isClearArea(int x,int y,Uint32 mask) const { return world.areasAt(world.tileIndex(x,y)).clear&mask; }
+ bool isFarmArea(int x,int y,Uint32 mask) const { return world.areasAt(world.tileIndex(x,y)).farm&mask; }
  bool farmAreasEnabled() const { return world.farmAreasEnabled; }
- bool canPaintFarmArea(int x,int y) const { return world.tile(x,y).canPaintFarm; }
+ bool canPaintFarmArea(int x,int y) const { return world.canPaintFarmAt(world.tileIndex(x,y)); }
  bool isHardSpaceForBuilding(int x,int y,int width=1,int height=1,Uint16 ignore=0xffff) const
  { return isFreeForBuilding(x,y,width,height,true,ignore); }
  void updateGlobalGradient(Uint8* values) const
@@ -67,7 +67,7 @@ public:
  {
   static constexpr int directions[8][2]={{0,-1},{1,0},{0,1},{-1,0},{-1,-1},{1,-1},{1,1},{-1,1}};
   int vx=world.normalizeX(x),vy=world.normalizeY(y);
-  const auto at=[&](int a,int b){return values[world.normalizeY(b)*world.width+world.normalizeX(a)];};
+  const auto at=[&](int a,int b){return values[world.tileIndex(a,b)];};
   T strongest=at(vx,vy);
   bool exact=false;
   while(true) {
@@ -114,13 +114,13 @@ public:
   return result;
  }
  bool isResourceTakeable(int x,int y,int resource) const
- { const auto& r=world.tile(x,y).resource; return r.type==resource && r.amount>0; }
+ { const auto r=world.resourceAt(world.tileIndex(x,y)).resource; return r.type==resource && r.amount>0; }
  bool isFreeForBuilding(int x,int y,int width=1,int height=1,bool hard=false,Uint16 ignore=0xffff) const
  {
   for(int dy=0;dy<height;++dy) for(int dx=0;dx<width;++dx) {
-   const auto& tile=world.tile(x+dx,y+dy);
-   if(tile.resource.type!=NO_RES_TYPE || (tile.building!=0xffff && tile.building!=ignore)
-     || (!hard && tile.groundUnit!=0xffff) || !world.terrain->properties(tile.terrain).buildable) return false;
+   const auto i=world.tileIndex(x+dx,y+dy);const auto r=world.resourceAt(i);const auto o=world.occupancyAt(i);
+   if(r.resource.type!=NO_RES_TYPE || (o.building!=0xffff && o.building!=ignore)
+     || (!hard && o.groundUnit!=0xffff) || !world.terrain->properties(world.terrainAt(i).type).buildable) return false;
   }
   return true;
  }
@@ -141,7 +141,7 @@ public:
   }
   if(!isFreeForBuilding(x,y,k.width,k.height)) return false;
   for(int dy=0;dy<k.height;++dy) for(int dx=0;dx<k.width;++dx)
-   if(world.tile(x+dx,y+dy).discovered & world.teams[owner].mask) return true;
+   if(world.visibilityAt(world.tileIndex(x+dx,y+dy)).discovered & world.teams[owner].mask) return true;
   return false;
  }
  bool hardSpaceForUpgrade(const Building& b) const
@@ -186,19 +186,20 @@ public:
    values.resize(world.tiles.size());
    bool modified=false;
    for(size_t i=0;i<values.size();++i) {
-    const auto& tile=world.tiles[i]; const auto& terrain=world.terrain->properties(tile.terrain);
+    const auto terrainCell=world.terrainAt(i);const auto resourceCell=world.resourceAt(i);const auto occupancy=world.occupancyAt(i);
+    const auto& terrain=world.terrain->properties(terrainCell.type);
     modified |= terrain.groundSpeedQ8!=256;
     Uint16 value=GRADIENT_FORBIDDEN;
-    if(!(tile.forbidden & mask) && tile.immobileUnit==255) {
-     if(tile.resource.type==NO_RES_TYPE && tile.building==0xffff)
+    if(!(world.areasAt(i).forbidden & mask) && occupancy.immobileUnit==255) {
+     if(resourceCell.resource.type==NO_RES_TYPE && occupancy.building==0xffff)
       value=(terrain.walkable || (swim && terrain.swimmable))?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
-     else if(tile.resource.type==resource && (!world.resourceVisibleToBeCollected[resource] || (tile.visible & mask)))
+     else if(resourceCell.resource.type==resource && (!world.resourceVisibleToBeCollected[resource] || (world.visibilityAt(i).visible & mask)))
       value=GRADIENT_AT_GOAL;
     }
     values[i]=value;
    }
    gradient_kernel::propagateTerrainField(values.data(),swim,gradient_kernel::COST_LIMIT,{world.width,world.height},scratch,
-    [&](size_t i){return world.tiles[i].terrain;},modified,*world.terrain,256);
+    [&](size_t i){return world.terrainAt(i).type;},modified,*world.terrain,256);
     initialization.values=std::move(buffer);
    }
    if(enrollments && enrollmentsReported.insert(key).second)
@@ -210,7 +211,7 @@ public:
  bool resourceAvailableUpdate(int owner,int resource,int swim,int x,int y,int* rx,int* ry,int* distance)
  {
   const auto gradient=resourceGradient(owner,resource,swim);
-  const auto index=[&](int px,int py){return size_t(world.normalizeY(py))*world.width+world.normalizeX(px);};
+  const auto index=[&](int px,int py){return world.tileIndex(px,py);};
   Uint16 best=gradient[index(x,y)];
   const bool found=best>GRADIENT_UNREACHABLE;
   if(found && distance) *distance=gradientTiles(best);
@@ -249,7 +250,7 @@ public:
     for(int radius=1;radius<=32;++radius) for(int dx=-radius;dx<=radius;++dx) for(int dy=-radius;dy<=radius;++dy) {
      if(std::abs(dx)!=radius && std::abs(dy)!=radius) continue;
      const int x=world.normalizeX(anchor->x+dx),y=world.normalizeY(anchor->y+dy);
-     if(!(world.tile(x,y).discovered & world.teams[team].allies) || !checkRoomForBuilding(x,y,type,team)) continue;
+     if(!(world.visibilityAt(world.tileIndex(x,y)).discovered & world.teams[team].allies) || !checkRoomForBuilding(x,y,type,team)) continue;
      return createOrder(team,x,y,type,workers,futureWorkers);
     }
    }
