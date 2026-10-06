@@ -531,3 +531,78 @@ TEST_CASE("candidate ledger snapshots omit only final economic bounds" * doctest
           ledger.residualUpperBound(input,full,1,8,0,0,1,1,true));
     query.clear();CHECK(ledger.residualUpperBound(input,query,1,8,0,0,1,1,true)==0);
 }
+
+namespace
+{
+Input producerAllocationInput()
+{
+	Input input=makeInput(64,64);
+	input.yield[input.index(8,8)]=1000;
+	input.consumers.push_back(makeConsumer(1,InnConsumer,7,8,800));
+	auto producer=makeConsumer(2,SwarmConsumer,8,7,500);
+	producer.productionDemand=500;
+	input.consumers.push_back(producer);
+	return input;
+}
+}
+
+TEST_CASE("feeding priority does not make a reachable producer unviable" * doctest::test_suite("Maxima.FoodLedger"))
+{
+	const Input input=producerAllocationInput();
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	const auto* allocation=result.consumer(2);
+	REQUIRE(allocation);
+	CHECK(allocation->claimedProduction==200);
+	CHECK(allocation->coveragePercent==40);
+	CHECK(allocation->uncontestedCoveragePercent==100);
+	CHECK(allocation->retirementCoveragePercent()==100);
+	CHECK(result.totalClaimed==1000); // Viability is not additional funding.
+}
+
+TEST_CASE("unreachable production remains a retirement candidate" * doctest::test_suite("Maxima.FoodLedger"))
+{
+	Input input=producerAllocationInput();
+	input.consumers[1].centerX=40;
+	input.consumers[1].centerY=40;
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	REQUIRE(result.consumer(2));
+	CHECK(result.consumer(2)->uncontestedCoveragePercent==0);
+	CHECK(result.consumer(2)->retirementCoveragePercent()==0);
+}
+
+TEST_CASE("services without production retain allocation-based coverage" * doctest::test_suite("Maxima.FoodLedger"))
+{
+	Input input=producerAllocationInput();
+	input.consumers[1]=makeConsumer(2,InnConsumer,8,7,500);
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	REQUIRE(result.consumer(2));
+	CHECK(result.consumer(2)->retirementCoveragePercent()==40);
+	CHECK(result.totalClaimed==1000);
+}
+
+TEST_CASE("mixed services use production viability without double funding" * doctest::test_suite("Maxima.FoodLedger"))
+{
+	Input input=producerAllocationInput();
+	input.consumers[1].kind=InnConsumer;
+	input.consumers[1].productionDemand=200;
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	REQUIRE(result.consumer(2));
+	CHECK(result.consumer(2)->claimedProduction==0);
+	CHECK(result.consumer(2)->coveragePercent==40);
+	CHECK(result.consumer(2)->retirementCoveragePercent()==100);
+	CHECK(result.totalClaimed==1000);
+}
+
+TEST_CASE("zero-demand viability needs no wheat" * doctest::test_suite("Maxima.FoodLedger"))
+{
+	Input input=producerAllocationInput();
+	input.consumers[1].demand=0;
+	input.consumers[1].productionDemand=0;
+	Ledger ledger;Result result;ledger.evaluate(input,result);
+	const auto* allocation=result.consumer(2);
+	REQUIRE(allocation);
+	CHECK(allocation->claimed==0);
+	CHECK(allocation->uncontestedCoveragePercent>=100);
+	CHECK(allocation->retirementCoveragePercent()==allocation->coveragePercent);
+	CHECK(result.totalClaimed==800);
+}

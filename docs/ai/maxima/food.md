@@ -107,11 +107,14 @@ The existing birth controller chooses production targets; exact local feasibilit
 gates ordinary creation and upgrades, including revalidation before issuing the
 order. Colony settlement retains its separate new-land rule, because its farms
 do not yet have protected supply. Pending projects already claim in the ledger.
-The `food.target_capping_enabled` heuristic also caps producer targets by covered
-existing worker producers plus residual supply divided by the candidate's
-runtime-derived peak recipe cost. Wheat-free worker production is not constrained
-by this wheat count. The heuristic retains the existing conservative growth
-reservation; local feasibility remains necessary for every ordinary site.
+The `food.target_capping_enabled` heuristic also caps producer targets by existing
+worker producers with sufficient uncontested reachable supply, plus residual
+supply divided by the candidate's runtime-derived peak recipe cost. Existing
+capacity does not disappear from this count merely because feeding takes priority
+in the current allocation; ordinary new sites still need their actual local claim
+funded. Wheat-free worker production is not constrained
+by this wheat count. The existing growth reservation remains in place; local
+feasibility is necessary for every ordinary site.
 Birth funding sums their claimed
 production-only packet rates and reachable residual crop yield, then converts
 that rate to acreage using the configured regrowth period. Independent hybrid
@@ -135,8 +138,22 @@ guaranteed static population limit.
 
 ## Retirement and relocation
 
-A building persistently below its coverage threshold can be retired after a
-confirmation period. Recovery clears the timer. Retirement requires a safe
+Retirement distinguishes allocation from site viability. For a building with a
+production demand, the coverage signal compares its operating demand with all
+recurring supply it can reach, before competing providers claim it. A temporary
+production shortfall caused by feeding precedence is not evidence that demolishing
+that producer will help. A site that cannot reach sufficient supply even without
+competition can still be retired. Non-producing services retain their actual
+allocation-based coverage signal.
+
+This uncontested supply is a decision signal, never another resource budget.
+Production funding, candidate feasibility and resource conservation still use
+actual claims and residual supply. It is computed during the existing route-quality
+walk without another traversal or catalog scan. Telemetry reports `coverage`,
+`uncontested_coverage` and `retirement_coverage` separately.
+
+A building persistently below its retirement coverage threshold can be retired
+after a confirmation period. Recovery clears the timer. Retirement requires a safe
 colony, elapsed cooldown, another building of the same kind, and enough reliable
 feeding throughput for every admitted recipient class. The capacity check tests
 all seven subsets of the three unit classes against shared provider rates, so
@@ -161,3 +178,23 @@ planner relationships so a later attempt can start independently.
 The `food.*` parameters control supply and demand rates, margins, quality bands,
 coverage thresholds, confirmation periods, cooldowns, carrier costs and relocation
 payback. See [configuration](configuration.md) for the complete schema.
+
+## Comparing strategy changes
+
+Separate a policy change from a rules-engine migration. On one engine revision,
+compare the policy variants with identical maps, seeds, opponents and swapped
+starting positions. Across engine revisions, include an unchanged passive
+controller as well: changes to another AI can affect Maxima's access to resources
+even in peaceful games. Keep those controls separate from competitive matches.
+
+Choose the objective before tuning: preserving historical decisions and improving
+competitive strength are different goals. For strength tuning, use competitive
+outcomes as the primary measure and development timings to diagnose trade-offs.
+
+Freeze a candidate before the held-out seeds. Measure population trajectories,
+final population, starvation and competitive outcomes separately, and retain failed
+runs. Treat a seed/map pair as a statistical unit rather than treating each tick
+as an independent observation. Report uncertainty and map-specific variation;
+a similar mean or a few extra wins do not demonstrate equivalent strength or an
+optimal strategy. Keep temporary results and reproduction commands in ignored
+review evidence, as described in the repository contribution instructions.
