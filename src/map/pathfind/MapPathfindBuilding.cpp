@@ -116,7 +116,27 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 }
 
 
+void Map::finishRoundTripGradient(Building *building, int resourceType, int swimClass) const
+{
+	if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->finish("round_trip_full_api");
+}
+
 const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
+{
+	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	if (field) finishRoundTripGradient(building, resourceType, swimClass);
+	return field;
+}
+
+const Uint16 *Map::roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell)
+{
+	const auto *field = prepareRoundTripGradient(building, resourceType, swimClass);
+	if (field)
+		if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(cell, "round_trip_query");
+	return field;
+}
+
+const Uint16 *Map::prepareRoundTripGradient(Building *building, int resourceType, int swimClass)
 {
 	if (!prepareBuildingGradient(building, swimClass))
 		return NULL;
@@ -146,6 +166,7 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 	if (!resourceAvailable(building->owner->teamNumber, resourceType, swimClass, x, y))
 		return false;
 	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
+	if (auto &search = building->roundTripGradientSearch[resourceType][swimClass]) search->resolve(coordToIndex(x, y), "hiring_round_trip");
 	Uint16 g=gradient[coordToIndex(x, y)];
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
@@ -194,7 +215,9 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 
 void Map::advanceHiringGradients(Building *building)
 {
-	if (!computeEnabled(ComputeHiring)) return;
+	// Scheduled bundles own background preparation. The legacy frontier prepass
+	// must not speculatively resume their published searches as well.
+	if (buildingPipelineEnabled() || !computeEnabled(ComputeHiring)) return;
 	++hiringPrepasses;
 	// Most callers have at most one active class. Avoid a full unit scan when
 	// there cannot be an independent pair of searches to advance.

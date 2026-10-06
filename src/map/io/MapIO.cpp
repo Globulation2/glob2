@@ -525,6 +525,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				for (int r=0; r<MAX_NB_RESOURCES; ++r)
 				{
 					stream->writeEnterSection(r);
+					finishRoundTripGradient(building, r, sw);
 					saveGradient(stream, building->roundTripGradient[r][sw], size);
 					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
 					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
@@ -667,6 +668,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int r=0; r<MAX_NB_RESOURCES; ++r)
 					{
 						stream->readEnterSection(r);
+						building->roundTripGradientSearch[r][sw].reset();
 						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
 						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
 						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
@@ -736,7 +738,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 void Map::saveBuildingRefreshes(GAGCore::OutputStream *stream) const
 {
 	auto &scheduler = gradientRuntime->buildings;
-	scheduler.finish();
+	scheduler.finish(true);
 	stream->writeEnterSection("buildingGradientPipeline");
 	stream->writeUint32(scheduler.requests.size(), "requests");
 	unsigned index = 0;
@@ -861,7 +863,9 @@ void Map::loadBuildingRefreshes(GAGCore::InputStream *stream, Sint32 versionMino
 				++children;
 		const bool spilled = !job->reservedBytes && !job->snapshotBytes;
 		if (!spilled && (job->reservedBytes != size * sizeof(Uint16) * (1 + 2 * children) ||
-						 job->snapshotBytes != size * sizeof(building_gradient::Cell)))
+						 (job->snapshotBytes != size * sizeof(building_gradient::Cell) &&
+					 (versionMinor < FILE_FORMAT_VERSION_PARTIAL_BUILDING_GRADIENTS ||
+					  job->snapshotBytes != size * (sizeof(building_gradient::Cell) + sizeof(TerrainType))))))
 			throw std::runtime_error("Invalid building refresh memory reservation");
 		if (spilled)
 		{

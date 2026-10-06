@@ -5560,3 +5560,11 @@ Adds ice to the map editor. Ground units move at half speed and lose one health 
 Road terrain
 [experiment road-terrain help]
 Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.
+[experiment building-gradient-hybrid]
+Demand-based building gradients
+[experiment building-gradient-hybrid help]
+Keep lightly staffed building routes lazy and synchronous. Schedule background refreshes when at least four assigned workers use the same movement class. Requires scheduled building gradients.
+[experiment building-gradient-partial]
+Partial background building gradients
+[experiment building-gradient-partial help]
+Background route refreshes resolve captured worker positions and retain frozen frontiers for later lazy queries. Requires scheduled building gradients.

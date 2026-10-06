@@ -84,8 +84,11 @@ void Map::beginGradientDecision(const char *kind, int gid, int uid)
 								fresh.resourceState;
 						for (int r = 0; r < MAX_NB_RESOURCES; ++r)
 							if (!fresh.trips[r].empty())
+							{
+								recycleBuildingGradientSearch(std::move(target->roundTripGradientSearch[r][sw]));
 								std::copy(fresh.trips[r].begin(), fresh.trips[r].end(),
 										  target->roundTripGradient[r][sw]);
+							}
 					}
 			impact->counterfactualApplied = true;
 			impact->outcome(game->stepCounter, "counterfactual", gid, uid, -1, 0, 0, 0, false);
@@ -136,6 +139,22 @@ int Map::freshBuildingClearingState(Building *b, int sw)
 	freshBuildingDecisionField(b, sw, -1);
 	return gradientRuntime->impact->oracle.at({b->gid, sw}).resourceState;
 }
+const Uint16 *Map::publishedBuildingDecisionField(Building *building, int swim, int resource,
+	std::vector<Uint16> &scratch) const
+{
+	const auto *field = resource < 0 ? building->globalGradient[swim] : building->roundTripGradient[resource][swim];
+	const auto &search = resource < 0 ? building->globalGradientSearch[swim] : building->roundTripGradientSearch[resource][swim];
+	if (!field || !search || search->complete()) return field;
+	if (gradientRuntime->impact)
+	{
+		auto &snapshot = gradientRuntime->impact->publishedFields[{building->gid, swim, resource}];
+		if (snapshot.empty()) snapshot = search->completePrivateSnapshot();
+		return snapshot.data();
+	}
+	scratch = search->completePrivateSnapshot();
+	return scratch.data();
+}
+
 bool Map::buildingDecisionDistance(Building *b, int sw, int resource, int x, int y, int *distance,
 								   bool fresh, bool publishedOnly)
 {
@@ -148,22 +167,7 @@ bool Map::buildingDecisionDistance(Building *b, int sw, int resource, int x, int
 	if (!field || (resource < 0 && !fresh && b->locked[buildingAccessIndex(sw)]))
 		return false;
 	std::vector<Uint16> privatePublished;
-	if (!fresh && resource < 0 && b->globalGradientSearch[sw] &&
-		!b->globalGradientSearch[sw]->complete())
-	{
-		if (gradientRuntime->impact)
-		{
-			auto &snapshot = gradientRuntime->impact->publishedWalking[{b->gid, sw}];
-			if (snapshot.empty())
-				snapshot = b->globalGradientSearch[sw]->completePrivateSnapshot();
-			field = snapshot.data();
-		}
-		else
-		{
-			privatePublished = b->globalGradientSearch[sw]->completePrivateSnapshot();
-			field = privatePublished.data();
-		}
-	}
+	if (!fresh) field = publishedBuildingDecisionField(b, sw, resource, privatePublished);
 	if (resource >= 0)
 	{
 		const auto *parent = resourcesGradient[b->owner->teamNumber][resource][sw];
@@ -362,8 +366,9 @@ void Map::auditResourceDestination(Unit *unit, int liveResource, Building *liveM
 			return -1;
 		if (market)
 			return int(coordToIndex(market->getMidX(), market->getMidY()));
+		std::vector<Uint16> scratch;
 		const Uint16 *field = fresh ? freshBuildingDecisionField(b, sw, resource)
-									: b->roundTripGradient[resource][sw];
+			: publishedBuildingDecisionField(b, sw, resource, scratch);
 		if (!field || field[coordToIndex(unit->posX, unit->posY)] <= GRADIENT_UNREACHABLE)
 			field = resourcesGradient[b->owner->teamNumber][resource][sw];
 		if (!field)

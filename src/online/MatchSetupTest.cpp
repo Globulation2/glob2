@@ -407,6 +407,12 @@ TEST_SUITE("MatchSetup")
 		{
 			json known = document;
 			known["experiments"] = {definition.key};
+			if (definition.id == ExperimentId::BuildingGradientHybrid ||
+				definition.id == ExperimentId::BuildingGradientPartial)
+			{
+				CHECK_THROWS_AS(MatchSetup::parse(known.dump()), MatchSetupError);
+				known["experiments"].push_back("building-gradient-pipeline");
+			}
 			CHECK_NOTHROW(MatchSetup::parse(known.dump()));
 		}
 

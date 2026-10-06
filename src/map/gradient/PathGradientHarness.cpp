@@ -487,3 +487,53 @@ TEST_CASE("strategic terrain distances retain wide costs until publishing tile e
                 2+(expected[i]+GRADIENT_STEP-1)/GRADIENT_STEP);
     }
 }
+
+TEST_CASE("frozen walking and unequal round-trip seeds resume after frontier transfer [pathfinding]")
+{
+    std::mt19937 random(19783);
+    for (int trial = 0; trial < 140; ++trial)
+    {
+        constexpr int width = 32, height = 32;
+        const auto count = std::size_t(width) * height;
+        const int swim = trial % SWIM_CLASS_COUNT;
+        const bool modified = trial % 3 != 0;
+        const int limit = trial % 5 == 0 ? 250 : CostLimit;
+        auto costs = std::make_shared<std::vector<TerrainType>>(count);
+        std::vector<Uint16> seeds(count, Unreached), legacyTerrain(count, 0);
+        for (std::size_t i = 0; i < count; ++i)
+        {
+            (*costs)[i] = modified ? static_cast<TerrainType>(random() % TERRAIN_COUNT) : (random() % 3 ? GRASS : WATER);
+            legacyTerrain[i] = (*costs)[i] == WATER ? 256 : 0;
+            if (random() % 5 == 0) seeds[i] = Blocked;
+            if (random() % 73 == 0) seeds[i] = Goal - (trial % 2 ? random() % 1500 : 0);
+        }
+        seeds[0] = Goal;
+        const auto expected = oracle(seeds, legacyTerrain, width, height, swim, limit, modified ? costs.get() : nullptr);
+        auto actual = seeds;
+        BuildingGradientSearch privateSearch;
+        privateSearch.beginFrozen(width, height, actual.data(), swim, costs, modified, limit);
+        for (std::size_t cell : {std::size_t(1), std::size_t(17), std::size_t(35)})
+        {
+            privateSearch.resolve(cell);
+            REQUIRE(actual[cell] == expected[cell]);
+        }
+        const auto cutoff = privateSearch.settledCost();
+        auto transferred = actual;
+        BuildingGradientSearch resumed;
+        if (cutoff >= 0)
+        {
+            resumed.beginFrozen(width, height, transferred.data(), swim, costs, modified, limit, cutoff);
+            for (std::size_t i = 0; i < count; i += 31)
+            {
+                resumed.resolve(i);
+                REQUIRE(transferred[i] == expected[i]);
+            }
+            const auto fullPrivate = resumed.completePrivateSnapshot();
+            REQUIRE(fullPrivate == expected);
+            resumed.finish();
+        }
+        REQUIRE(transferred == expected);
+        privateSearch.finish();
+        REQUIRE(actual == expected);
+    }
+}

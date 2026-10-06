@@ -42,6 +42,8 @@ enum class ExperimentId : Uint8
 	IceTerrain = 2,
 	RoadTerrain = 3,
 	BuildingGradientPipeline = 4,
+	BuildingGradientHybrid = 5,
+	BuildingGradientPartial = 6,
 	Count
 };
 

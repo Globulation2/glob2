@@ -47,6 +47,7 @@ class BuildingGradientResultStorage
 	building_gradient::Result result;
 	void spillResult(const std::shared_ptr<BuildingGradientSpool> &storage)
 	{
+		result.materialize();
 		storage->seek(storage->end);
 		const auto start = storage->end;
 		auto field = [&](auto &values)

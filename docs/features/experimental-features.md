@@ -43,8 +43,9 @@ set. Adding the field changed the header's wire
 format and introduced network protocol 47. Terrain format 134 adds required
 experiments to `MapHeader`; protocol 55 and replay floor 134 separate that terrain
 simulation from earlier clients. Scheduled building gradients add saved scheduling
-state in format 135 and require protocol 56. Current replay acceptance starts at
-138 because scripts can observe the new saved rule even when the experiment is
+state in format 135. The demand and partial experiments require format 139 and
+protocol 57. Current replay acceptance starts at 139 because scripts can observe
+the experiment configuration even when an experiment is
 disabled. The supported save floor remains 58.
 
 Saves, replays and the wire carry each enabled experiment's **key** (a stable
@@ -74,6 +75,8 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | --- | --- | --- |
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
 | `building-gradient-pipeline` | Scheduled building gradients | Refreshes cached building routes on private immutable snapshots, then publishes them after a fixed delay. First construction remains synchronous. Scheduling and measurement details: [performance telemetry](../development/performance-telemetry.md#scheduled-building-gradient-experiment). |
+| `building-gradient-hybrid` | Demand-based building gradients | With the pipeline enabled, keep fewer than four assigned workers per movement class synchronous and lazy. Classification uses saved simulation state; pending deadlines do not change when staffing changes. |
+| `building-gradient-partial` | Partial background building gradients | With the pipeline enabled, resolve captured worker positions in the background, then resume private frozen frontiers on demand after publication. Walking parents needed by round trips still finish first. |
 | `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
 | `ice-terrain` | Ice terrain | Enables the ice editor brush. Ice halves ground movement speed and costs an exposed ground unit one HP per 32 ticks; flying units are unaffected. Ice supports neither buildings nor resources. |
 | `road-terrain` | Road terrain | Enables the road editor brush. Roads double ground movement speed, permit buildings, and support no resources. Flying units are unaffected. |

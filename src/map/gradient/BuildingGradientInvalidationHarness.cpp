@@ -581,6 +581,149 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		idleFieldStorageIsReusedWithoutStaleRoutes();
 	}
+	TEST_CASE("disabling instrumentation preserves queue admission, saved jobs and fixed publication")
+	{
+		glob2test::HeadlessGlobals globals;
+		std::string reference;
+		for (unsigned workers : {0u, 2u})
+			for (bool measured : {true, false})
+			{
+				World world;
+				auto &game = world.game;
+				auto &map = game.map;
+				auto *b = world.place(24, 24);
+				map.buildingGradient(b, 0);
+				game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+				map.configureGradientPipeline(workers, 8);
+				map.configureBuildingGradientInstrumentation(measured);
+				game.stepCounter = 200;
+				map.getTile(10, 10).forbidden |= world.team->me;
+				map.bumpTopologyGeneration();
+				require(map.requestBuildingRefresh(b, 0), "request admitted without diagnostic state");
+				map.submitBuildingRefreshes();
+				const auto status = map.buildingRefreshStatus();
+				require(status.pending == 1 && status.bytes > 0, "admission accounting always active");
+				require(measured ? status.jobs == 1 : status.jobs == 0, "instrumentation toggle controls counters");
+				game.stepCounter = 202;
+				auto *bytes = new GAGCore::MemoryStreamBackend();
+				GAGCore::BinaryOutputStream out(bytes);
+				map.saveBuildingRefreshes(&out);
+				out.flush();
+				const auto data = bytes->takeContents();
+				const std::string snapshot(data.data(), data.size());
+				if (reference.empty()) reference = snapshot;
+				else require(snapshot == reference, "saved private jobs independent of instrumentation and workers");
+				GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(data.data(), data.size()));
+				in.seekFromStart(0);
+				map.loadBuildingRefreshes(&in, VERSION_MINOR);
+				map.publishBuildingRefreshes();
+				require(map.buildingRefreshStatus().pending == 1, "save does not publish early");
+				game.stepCounter = 204;
+				map.publishBuildingRefreshes();
+				require(map.buildingRefreshStatus().pending == 0 &&
+							b->lastGlobalGradientUpdateStepCounter[0] == 200 &&
+							b->globalGradient[0][map.coordToIndex(10, 10)] == GRADIENT_FORBIDDEN,
+						"restored field publishes at the same deadline");
+			}
+	}
+
+	TEST_CASE("staffing hybrid retains lazy cold buildings and pending hot deadlines")
+	{
+		glob2test::HeadlessGlobals globals;
+		World world;
+		auto &map = world.game.map;
+		auto *b = world.place(24, 24);
+		map.buildingGradient(b, 0);
+		world.game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+		world.game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientHybrid);
+		map.configureGradientPipeline(2, 8);
+		map.configureCompute(4, Map::ComputeHiring);
+		map.advanceHiringGradients(b);
+		require(map.hiringPrepasses == 0, "scheduled pipeline excludes the legacy frontier prepass");
+		world.game.stepCounter = 200;
+		require(!map.requestBuildingRefresh(b, 0), "unused building remains synchronous");
+		for (int i = 0; i < 4; ++i)
+		{
+			auto *unit = world.game.addUnit(10 + i, 10, 0, WORKER, 0, 0, 0, 0);
+			require(unit && unit->swimClass() == 0, "ground worker created");
+			b->unitsWorking.push_back(unit);
+			if (i < 3) require(!map.requestBuildingRefresh(b, 0), "low staffing remains lazy");
+		}
+		require(map.requestBuildingRefresh(b, 0), "four matching workers admit a background refresh");
+		map.submitBuildingRefreshes();
+		b->unitsWorking.clear();
+		require(map.requestBuildingRefresh(b, 0), "pending deadline survives falling demand");
+		world.game.stepCounter = 204;
+		map.publishBuildingRefreshes();
+		require(b->lastGlobalGradientUpdateStepCounter[0] == 200 && !map.buildingRefreshStatus().pending,
+			"hot refresh retains captured age and deadline");
+		require(!map.requestBuildingRefresh(b, 0), "cold building returns to the lazy path after publication");
+	}
+
+	TEST_CASE("partial scheduled fields preserve eager values through publication and save phases")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned workers : {0u, 1u, 2u, 4u, 8u})
+			for (int phase : {-1, 0, 1, 2, 3, 4})
+			{
+				World world;
+				auto &game = world.game;
+				auto &map = game.map;
+				auto *b = world.place(24, 24);
+				map.getTile(8, 8).resource.type = WOOD;
+				map.getTile(8, 8).resource.amount = 10;
+				map.setCellTerrain(18, 18, ROAD);
+				map.buildingGradient(b, 0);
+				map.roundTripGradient(b, WOOD, 0);
+				game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+				game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPartial);
+				map.configureGradientPipeline(workers, 8);
+				map.configureBuildingGradientImpact("partial-oracle");
+				game.stepCounter = 200;
+				map.getTile(10, 10).forbidden |= world.team->me;
+				map.bumpTopologyGeneration();
+				map.beginGradientDecision("movement", b->gid, -1);
+				const auto cells = std::size_t(map.getW()) * map.getH();
+				const auto *walking = map.freshBuildingDecisionField(b, 0, -1);
+				const auto *trip = map.freshBuildingDecisionField(b, 0, WOOD);
+				const std::vector<Uint16> expectedWalking(walking, walking + cells), expectedTrip(trip, trip + cells);
+				require(map.requestBuildingRefresh(b, 0), "partial bundle admitted");
+				map.submitBuildingRefreshes();
+				// Later map costs must never leak into either paused search.
+				map.setCellTerrain(18, 18, WATER);
+				if (phase >= 0)
+				{
+					game.stepCounter = 200 + phase;
+					if (phase == 4) map.publishBuildingRefreshes();
+					auto *bytes = new GAGCore::MemoryStreamBackend();
+					GAGCore::BinaryOutputStream out(bytes);
+					map.saveBuildingRefreshes(&out);
+					out.flush();
+					const auto data = bytes->takeContents();
+					GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(data.data(), data.size()));
+					in.seekFromStart(0);
+					map.loadBuildingRefreshes(&in, VERSION_MINOR);
+				}
+				game.stepCounter = 204;
+				map.publishBuildingRefreshes();
+				require(b->lastGlobalGradientUpdateStepCounter[0] == 200 && b->roundTripGradientStep[WOOD][0] == 200,
+					"save retains both captured ages");
+				for (std::size_t cell = 0; cell < cells; cell += 19)
+				{
+					int distance = 0;
+					map.buildingAvailable(b, 0, int(cell % map.getW()), int(cell / map.getW()), &distance);
+					require(b->globalGradient[0][cell] == expectedWalking[cell], "resumed walking query matches eager snapshot");
+					require(map.roundTripGradientAt(b, WOOD, 0, cell)[cell] == expectedTrip[cell], "resumed round-trip query matches eager snapshot");
+				}
+				map.finishRoundTripGradient(b, WOOD, 0);
+				require(expectedTrip == std::vector<Uint16>(b->roundTripGradient[WOOD][0], b->roundTripGradient[WOOD][0] + cells),
+					"materialized round-trip field matches eager oracle");
+				if (phase == -1) require(b->roundTripGradientSearch[WOOD][0] != nullptr, "no-demand bundle publishes a paused round-trip frontier");
+				b->freeGradients();
+				require(!b->roundTripGradientSearch[WOOD][0], "storage teardown clears round-trip search ownership");
+			}
+	}
+
 	TEST_CASE("scheduled building bundles publish at fixed deadlines across worker counts")
 	{
 		glob2test::HeadlessGlobals globals;

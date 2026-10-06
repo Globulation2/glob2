@@ -206,3 +206,6 @@ static constexpr int FILE_FORMAT_VERSION_PLACEMENT_WOOD_RESERVES = 137;
 
 //! Resolved Maxima food, staffing and tactical budget between planning passes.
 static constexpr int FILE_FORMAT_VERSION_MAXIMA_DIRECTOR_BUDGET = 138;
+
+//! Partial background fields and deterministic staff-based strategy experiments.
+static constexpr int FILE_FORMAT_VERSION_PARTIAL_BUILDING_GRADIENTS = 139;

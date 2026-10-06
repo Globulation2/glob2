@@ -19,6 +19,8 @@ struct BuildingGradientScheduler
 		AsyncGradientExecutor::Handle task;
 		std::uint64_t buildNs = 0, buildCpuNs = 0;
 		bool metricsCollected = false;
+		std::vector<std::size_t> targets;
+		bool partial = false;
 		std::size_t reservedBytes = 0, snapshotBytes = 0;
 	};
 	struct Metrics
@@ -29,6 +31,7 @@ struct BuildingGradientScheduler
 					  walkingFields = 0, tripFields = 0, buildNs = 0, buildCpuNs = 0, waitNs = 0,
 					  maxBytes = 0, maxPending = 0;
 	} metrics;
+	bool measure = true; // Local diagnostics only; never saved or simulation-affecting.
 	static constexpr std::size_t BYTE_LIMIT = 64 * 1024 * 1024;
 	std::map<Key, std::uint32_t> requests;
 	std::map<Key, std::shared_ptr<Job>> pending;
@@ -51,18 +54,19 @@ struct BuildingGradientScheduler
 	}
 	void account(Job &job)
 	{
-		if (!job.metricsCollected)
+		if (measure && !job.metricsCollected)
 		{
 			metrics.buildNs += job.buildNs;
 			metrics.buildCpuNs += job.buildCpuNs;
 			job.metricsCollected = true;
 		}
 	}
-	void finish()
+	void finish(bool materialize = false)
 	{
 		for (auto &entry : pending)
 		{
 			executor->wait(entry.second->task);
+			if (materialize) entry.second->result.materialize();
 			account(*entry.second);
 		}
 	}

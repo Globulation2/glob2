@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 138
+#define VERSION_MINOR 139
+// version 139 adds saved staffing and partial building-gradient experiments.
 // version 138 preserves the resolved Maxima food, staffing and tactical budget.
 // version 137 preserves wood reservations in frozen Maxima placement snapshots.
 // version 136 saves independent building-gradient access metadata per swim class.
@@ -171,7 +172,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 56
+#define NET_PROTOCOL_VERSION 57
+// Protocol 57 identifies the staffing and partial building-gradient rules.
 // Protocol 56 carries the saved building-gradient publication delay.
 // Protocol 55 introduces canonical terrain properties.
 // protocol 54 transfers the format-132 AI continuation fields.

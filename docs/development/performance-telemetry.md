@@ -338,6 +338,28 @@ together: immobile blockers and caller-visible state can change within a phase.
 
 ### Scheduled building-gradient experiment
 
+Two additional saved, opt-in policies require `building-gradient-pipeline`:
+`building-gradient-hybrid` admits a background refresh only when at least four
+living assigned workers use that movement class. Cold destinations retain the
+existing synchronous lazy behavior. A change in staffing never moves a pending
+publication deadline. This classifier uses simulation state, not timing or the
+number of available cores.
+
+`building-gradient-partial` resolves captured worker positions, target tiles and
+adjacent steps privately, then publishes the field and its first unsettled cost
+layer. Simulation queries resume against the captured immutable terrain costs.
+Round-trip searches support unequal starting costs and retain their propagation
+cap. Walking parents with allocated round-trip children still finish completely
+before those children are seeded. Unexplored cells are never read as unreachable:
+point-query adapters settle their inputs, full-field APIs finish their searches,
+and audits complete detached copies. Overflow spooling and saving materialize
+private results without advancing their publication deadlines.
+
+These are separate policies and can be combined. Both remain off by default;
+their performance must be measured against the original pipeline and the lazy
+baseline using the same executable and workload.
+Retained methodology and results: [building-gradient hybrid experiments](building-gradient-hybrid-results.md).
+
 `building-gradient-pipeline` is off by default. Eligible cached walking or
 round-trip refreshes request a coherent building/swim bundle. At the end of tick
 T, the Map captures passability, destination metadata and the currently published
@@ -477,3 +499,14 @@ independent sample count. Small cohorts can leave wide intervals: an inconclusiv
 average neither establishes a regression nor demonstrates the desired safety margin.
 Retained first-discrepancy cases explain mechanisms, rather than estimate average
 population effects.
+
+### Building-gradient instrumentation control
+
+Headless `--building-gradient-instrumentation off` disables building-scheduler
+clock/CPU measurements, diagnostic counters and diagnostic peak-queue scans. It is
+local execution configuration: admission accounting and fixed publication deadlines
+remain active. Omit building-gradient timing, event and impact telemetry in this
+mode; conflicting combinations are rejected. Default `on` preserves existing
+measurement behavior. To isolate overhead, pair on/off runs of the same binary
+and configuration, and separately compare pipeline-on/off with instrumentation
+disabled. Verify matching simulation traces before drawing performance conclusions.

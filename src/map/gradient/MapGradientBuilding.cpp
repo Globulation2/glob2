@@ -86,6 +86,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	BuildingGradientDiagnostics::Scope evidence(
 		buildingGradientDiagnostics(), building->gid, swimClass, "round_trip", "construct",
 		topologyGeneration, building->gradientGeneration[swimClass]);
+	recycleBuildingGradientSearch(std::move(building->roundTripGradientSearch[resourceType][swimClass]));
 	// Only construction needs the parent in full; reading a cached round-trip
 	// field must not force a newly refreshed walking field to finish.
 	finishBuildingGradient(building, swimClass, "round_trip");

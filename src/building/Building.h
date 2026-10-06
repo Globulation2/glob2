@@ -575,6 +575,7 @@ public:
 	//! by freeIdleGradients when unused for a while. Their last rebuild and last
 	//! use, in steps.
 	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	std::unique_ptr<BuildingGradientSearch> roundTripGradientSearch[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only

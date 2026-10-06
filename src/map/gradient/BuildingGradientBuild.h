@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "field/TerrainGradient.h"
+#include "BuildingGradientSearch.h"
 #include "MapInternal.h"
 #include "Ressource.h"
 #include <array>
@@ -22,6 +23,7 @@ struct Terrain
 	std::uint32_t generation = 0;
 	bool modifiedCosts = false;
 	std::vector<Cell> cells;
+	std::shared_ptr<const std::vector<TerrainType>> costs;
 	std::size_t index(int x, int y) const
 	{
 		return ((y & (height - 1)) * width) + (x & (width - 1));
@@ -40,6 +42,26 @@ struct Result
 	std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> trips;
 	bool locked = false;
 	std::uint8_t resourceState = 0;
+	// A cutoff is the first unsettled cost layer, -1 denotes a complete field.
+	int walkingCutoff = -1, width = 0, height = 0, swim = 0;
+	std::array<int, MAX_NB_RESOURCES> tripCutoff{}, tripLimit{};
+	std::shared_ptr<const std::vector<TerrainType>> costs;
+	bool modifiedCosts = false;
+	Result() { tripCutoff.fill(-1); }
+	void materialize()
+	{
+		auto finish = [&](auto &values, int &cutoff, int limit)
+		{
+			if (cutoff < 0) return;
+			BuildingGradientSearch search;
+			search.beginFrozen(width, height, values.data(), swim, costs, modifiedCosts, limit, cutoff);
+			search.finish("private_materialize");
+			cutoff = -1;
+		};
+		finish(walking, walkingCutoff, gradient_kernel::COST_LIMIT);
+		for (int r = 0; r < MAX_NB_RESOURCES; ++r) finish(trips[r], tripCutoff[r], tripLimit[r]);
+		costs.reset();
+	}
 };
 template <class CellAt>
 inline std::uint8_t paintGoals(const Terrain &map, const Destination &b, std::uint16_t *field,
@@ -125,9 +147,11 @@ inline int seedTrip(const Terrain &map, const std::uint16_t *parent, const std::
 // All inputs are immutable; this kernel has no Map, Building, RNG or telemetry access.
 inline Result build(const Terrain &map, const Destination &b,
 					const std::array<std::vector<std::uint16_t>, MAX_NB_RESOURCES> &resources,
-					GradientWorkspace &scratch)
+					GradientWorkspace &scratch, const std::vector<std::size_t> *targets = nullptr)
 {
 	Result result;
+	result.width = map.width; result.height = map.height; result.swim = b.swim;
+	result.modifiedCosts = map.modifiedCosts; result.costs = targets ? map.costs : nullptr;
 	auto &field = result.walking;
 	field.assign(map.cells.size(), GRADIENT_UNREACHABLE);
 	result.resourceState =
@@ -138,8 +162,21 @@ inline Result build(const Terrain &map, const Destination &b,
 	const field::Grid geometry{map.width, map.height};
 	auto terrainAt = [&](std::size_t i) { return map.cells[i].terrain; };
 	if (!result.locked)
-		gradient_kernel::propagateTerrainField(field.data(), b.swim, gradient_kernel::COST_LIMIT, geometry,
-										scratch, terrainAt, map.modifiedCosts);
+	{
+		if (targets)
+		{
+			BuildingGradientSearch search;
+			search.beginFrozen(map.width, map.height, field.data(), b.swim, map.costs,
+				map.modifiedCosts, gradient_kernel::COST_LIMIT);
+			bool children = false;
+			for (const auto &parent : resources) children |= !parent.empty();
+			if (children) search.finish("round_trip_parent");
+			else for (auto cell : *targets) search.resolve(cell, "captured_demand");
+			result.walkingCutoff = search.settledCost();
+		}
+		else gradient_kernel::propagateTerrainField(field.data(), b.swim, gradient_kernel::COST_LIMIT,
+			geometry, scratch, terrainAt, map.modifiedCosts);
+	}
 	for (int r = 0; r < MAX_NB_RESOURCES; ++r)
 		if (!resources[r].empty())
 		{
@@ -147,7 +184,17 @@ inline Result build(const Terrain &map, const Destination &b,
 			trip.resize(field.size());
 			const auto &parent = resources[r];
 			const auto limit = seedTrip(map, parent.data(), field.data(), trip.data());
-			gradient_kernel::propagateTerrainField(trip.data(), b.swim, limit, geometry, scratch, terrainAt, map.modifiedCosts);
+			result.tripLimit[r] = limit;
+			if (targets)
+			{
+				BuildingGradientSearch search;
+				search.beginFrozen(map.width, map.height, trip.data(), b.swim, map.costs,
+					map.modifiedCosts, limit);
+				for (auto cell : *targets) search.resolve(cell, "captured_demand");
+				result.tripCutoff[r] = search.settledCost();
+			}
+			else gradient_kernel::propagateTerrainField(trip.data(), b.swim, limit, geometry,
+				scratch, terrainAt, map.modifiedCosts);
 		}
 	return result;
 }

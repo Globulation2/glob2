@@ -38,7 +38,7 @@ struct BuildingGradientImpact
 	bool counterfactualApplied = false;
 	std::shared_ptr<building_gradient::Terrain> terrain;
 	std::map<std::pair<int, int>, building_gradient::Result> oracle;
-	std::map<std::pair<int, int>, std::vector<std::uint16_t>> publishedWalking;
+	std::map<std::tuple<int, int, int>, std::vector<std::uint16_t>> publishedFields;
 	std::map<std::tuple<int, int, int>, std::vector<std::uint16_t>> resourceOracle;
 	GradientWorkspace scratch;
 	explicit BuildingGradientImpact(const std::string &prefix)
@@ -64,7 +64,7 @@ struct BuildingGradientImpact
 		unit = uid;
 		++index;
 		oracle.clear();
-		publishedWalking.clear();
+		publishedFields.clear();
 		resourceOracle.clear();
 		terrain.reset();
 	}

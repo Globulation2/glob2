@@ -415,9 +415,10 @@ experiment-off behavior and load with an empty building queue; the minimum save
 version remains 58. Pending results, remaining deadlines, lifetime identities,
 admission reservations and dirty notifications after capture survive a save.
 Saving waits for private work without publishing it. Replay acceptance starts at
-138 because scripts can observe the new saved rule even when the experiment is
-disabled. The format ceiling rejects future headers. Network protocol 56 requires peers that understand the new header and
-queue state. Simulation revision 15 identifies the new rules.
+139 because scripts can observe the saved experiment configuration even when the
+experiments are disabled. The format ceiling rejects future headers. Network
+protocol 57 requires peers that understand the new configuration and queue state.
+Simulation revision 16 identifies the new rules.
 Format 136 retains independent access metadata for every building swim-cost class;
 older saves restore their legacy shared metadata before the experiment is enabled.
 Format 137 also preserves wood-reservation flags in Maxima's frozen placement
@@ -426,6 +427,13 @@ candidate eligibility and the tick when the AI issues its selected order.
 Format 138 preserves the remaining resolved food, staffing and tactical director
 budget. Those values remain authoritative between planning passes; reconstructing
 constructor defaults after load could defer food retirement or change staffing.
+Format 139 adds `building-gradient-hybrid` and `building-gradient-partial`.
+Both require the scheduled pipeline and remain off by default. Live partial
+searches finish against their frozen costs when saved; their complete fields use
+the existing serialized representation. Saving never changes captured ages or
+publication deadlines. Local worker count and instrumentation settings are not
+simulation rules. The scheduled pipeline excludes the earlier hiring-frontier
+prepass; its hiring eligibility filter remains active.
 
 For checkpoint experiments, `--fork-rule building-gradient-pipeline=1
 --fork-rule buildingGradientDelay=4` explicitly derives a new game from a save.

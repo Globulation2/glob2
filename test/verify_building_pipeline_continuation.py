@@ -46,14 +46,18 @@ def main():
     parser.add_argument('--start-tick', required=True, type=int)
     parser.add_argument('--ticks', type=int, default=64)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--policy', choices=('eager', 'staffing', 'partial', 'combined'), default='eager')
     args = parser.parse_args()
     binary, fixture, output = args.binary.resolve(), args.checkpoint.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     evidence = []
     for delay in (2, 4, 8):
-        common = ['--ticks', str(args.start_tick + args.ticks), '--compute-experiments', 'hiring', '--compute-threads', '4', '--telemetry', 'checksums', '--replay', 'true']
+        common = ['--ticks', str(args.start_tick + args.ticks), '--compute-experiments', 'none', '--compute-threads', '4', '--telemetry', 'checksums', '--replay', 'true']
         base = output / f'd{delay}-uninterrupted'
-        row = execute(binary, ['--load-game', str(fixture), '--gradient-workers', '4', '--fork-rule', 'building-gradient-pipeline=1', '--fork-rule', f'buildingGradientDelay={delay}', '--save', 'every:1', *common], base)
+        policy = ['--fork-rule', 'building-gradient-pipeline=1',
+                  '--fork-rule', f'building-gradient-hybrid={int(args.policy in ("staffing", "combined"))}',
+                  '--fork-rule', f'building-gradient-partial={int(args.policy in ("partial", "combined"))}']
+        row = execute(binary, ['--load-game', str(fixture), '--gradient-workers', '4', *policy, '--fork-rule', f'buildingGradientDelay={delay}', '--save', 'every:1', *common], base)
         expected = trace(base / 'game.replay.checksums')
         for phase in range(1, delay + 1):
             checkpoint = base / f'checkpoint-{args.start_tick + phase}.game.gz'
@@ -73,7 +77,7 @@ def main():
             tick = int(path.name.split('-')[1].split('.')[0])
             if tick > args.start_tick + delay:
                 path.unlink()
-    (output / 'continuations.json').write_text(json.dumps({'binary_sha256': digest(binary), 'fixture_sha256': digest(fixture), 'checks': evidence}, indent=2) + '\n')
+    (output / 'continuations.json').write_text(json.dumps({'binary_sha256': digest(binary), 'fixture_sha256': digest(fixture), 'policy': args.policy, 'checks': evidence}, indent=2) + '\n')
 
 
 if __name__ == '__main__':

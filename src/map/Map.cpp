@@ -315,6 +315,11 @@ void Map::configureBuildingGradientDiagnostics(const std::string &prefix)
 	gradientRuntime->buildingDiagnostics = std::make_unique<BuildingGradientDiagnostics>(prefix);
 }
 
+void Map::configureBuildingGradientInstrumentation(bool enabled)
+{
+	gradientRuntime->buildings.measure = enabled;
+}
+
 void Map::configureBuildingGradientTiming(const std::string &path)
 {
 	gradientRuntime->timingPath = path;

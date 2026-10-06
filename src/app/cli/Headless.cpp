@@ -268,6 +268,9 @@ struct HeadlessRunner
 		}
 		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
+		const auto gradientInstrumentation = one(options, "--building-gradient-instrumentation", "on");
+		if (gradientInstrumentation != "on" && gradientInstrumentation != "off")
+			throw std::invalid_argument("Expected --building-gradient-instrumentation on|off");
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
 		globalContainer=&globals;
 		globals.runNoX=true;
@@ -425,12 +428,18 @@ struct HeadlessRunner
 			for (const auto &rule : many(options, "--fork-rule"))
 			{
 				const auto name = rule.substr(0, rule.find('='));
-				if (name != "buildingGradientDelay" && name != "building-gradient-pipeline")
+				if (name != "buildingGradientDelay" && name != "building-gradient-pipeline" &&
+					name != "building-gradient-hybrid" && name != "building-gradient-partial")
 					throw std::invalid_argument(
 						"--fork-rule supports only building gradient publication rules");
 				applyGameRule(engine.gui.game.gameHeader, rule);
 			}
 		}
+		const auto &gradientExperiments = engine.gui.game.gameHeader.getExperiments();
+		if ((gradientExperiments.has(ExperimentId::BuildingGradientHybrid) ||
+			 gradientExperiments.has(ExperimentId::BuildingGradientPartial)) &&
+			!gradientExperiments.has(ExperimentId::BuildingGradientPipeline))
+			throw std::invalid_argument("Hybrid and partial building gradients require building-gradient-pipeline");
 		if(options.count("--map-script"))
 		{
 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
@@ -470,6 +479,11 @@ struct HeadlessRunner
 		}
 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
 		const auto telemetryModes = many(options, "--telemetry");
+		engine.gui.game.map.configureBuildingGradientInstrumentation(gradientInstrumentation == "on");
+		if (gradientInstrumentation == "off")
+			for (const auto &mode : telemetryModes)
+				if (mode == "building-gradients" || mode == "building-gradient-timing" || mode == "building-gradient-impact")
+					throw std::invalid_argument("Building gradient instrumentation off requires building telemetry disabled");
 		if (std::find(telemetryModes.begin(), telemetryModes.end(), "building-gradients") !=
 			telemetryModes.end())
 			engine.gui.game.map.configureBuildingGradientDiagnostics(
@@ -707,6 +721,7 @@ int runHeadlessCommand(int argc,char **argv)
 												"--gradient-workers",
 												"--gradient-delay",
 												"--gradient-counterfactual",
+												"--building-gradient-instrumentation",
 												"--save",
 												"--telemetry",
 												"--replay",

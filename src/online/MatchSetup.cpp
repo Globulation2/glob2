@@ -387,6 +387,9 @@ MatchSetup MatchSetup::fromJsonSchemaOnly(const json &value)
 
 void MatchSetup::validateSemantics() const
 {
+	const auto has = [&](const char *key) { return std::find(experiments.begin(), experiments.end(), key) != experiments.end(); };
+	if ((has("building-gradient-hybrid") || has("building-gradient-partial")) && !has("building-gradient-pipeline"))
+		semanticError("/experiments", "hybrid and partial gradients require building-gradient-pipeline");
 	if (rules.buildingGradientDelay != 2 && rules.buildingGradientDelay != 4 &&
 		rules.buildingGradientDelay != 8)
 		semanticError("/rules/buildingGradientDelay", "must be 2, 4 or 8");

@@ -124,6 +124,7 @@ public:
 	void configureBuildingGradientDiagnostics(const std::string &prefix);
 	BuildingGradientDiagnostics *buildingGradientDiagnostics() const;
 	void configureBuildingGradientTiming(const std::string &path);
+	void configureBuildingGradientInstrumentation(bool enabled);
 	void finishBuildingGradientTiming();
 	void beginBuildingGradientTick();
 	void endBuildingGradientTick();
@@ -159,6 +160,7 @@ public:
 	};
 	BuildingRefreshStatus buildingRefreshStatus() const;
 	void configureBuildingGradientImpact(const std::string &prefix);
+	const Uint16 *publishedBuildingDecisionField(Building *building, int swim, int resource, std::vector<Uint16> &scratch) const;
 	bool buildingGradientImpactEnabled() const;
 	void configureGradientCounterfactual(std::uint64_t tick, std::uint64_t event);
 	void beginGradientDecision(const char *kind, int gid, int uid);
@@ -924,6 +926,9 @@ public:
 	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
 	//! building cannot be reached.
 	const Uint16 *roundTripGradient(Building *building, int resourceType, int swimClass);
+	const Uint16 *prepareRoundTripGradient(Building *building, int resourceType, int swimClass);
+	const Uint16 *roundTripGradientAt(Building *building, int resourceType, int swimClass, std::size_t cell);
+	void finishRoundTripGradient(Building *building, int resourceType, int swimClass) const;
 	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
 	//! building, read from a round-trip gradient a fetcher's walk has already built. False
 	//! when there is none or no such trip; the caller then scores by the plain distances.

@@ -187,6 +187,7 @@ void Building::resetRoundTripGradients()
 			if (roundTripGradient[r][i])
 				if (auto *d = owner->game->map.buildingGradientDiagnostics())
 					d->count("invalidate", "round_trip", gid, i);
+			recycleBuildingGradientSearch(std::move(roundTripGradientSearch[r][i]));
 			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
 			roundTripGradient[r][i] = NULL;
 			roundTripGradientStep[r][i] = 0;
@@ -217,6 +218,7 @@ void Building::freeIdleGradients()
 				owner->game->map.invalidateBuildingRefresh(this, c);
 				if (auto *d = owner->game->map.buildingGradientDiagnostics())
 					d->count("evict", "round_trip", gid, c);
+				recycleBuildingGradientSearch(std::move(roundTripGradientSearch[r][c]));
 				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
 				roundTripGradient[r][c] = NULL;
 			}
@@ -239,6 +241,7 @@ void Building::freeGradients()
 		gradientGeneration[i] = 0;
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
+			roundTripGradientSearch[r][i].reset();
 			delete[] roundTripGradient[r][i];
 			roundTripGradient[r][i] = NULL;
 			roundTripGradientStep[r][i] = 0;
@@ -679,4 +682,3 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 	stream->writeLeaveSection();
 }
-

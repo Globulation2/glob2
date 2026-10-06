@@ -612,9 +612,11 @@ void Unit::handleMovementGoingToResource()
 		// the stored target has stopped being a peak of that same gradient;
 		// isGradientPeak is a cheap check to run every action, the ascent
 		// itself only when it actually goes stale.
-		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
+		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradientAt(attachedBuilding, destinationPurpose, swim, map->coordToIndex(posX, posY)) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
 			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim);
+		if (gradient == roundTrip)
+			map->roundTripGradientAt(attachedBuilding, destinationPurpose, swim, map->coordToIndex(targetX, targetY));
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

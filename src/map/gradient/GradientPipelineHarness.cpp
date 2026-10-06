@@ -17,6 +17,7 @@ TEST_SUITE("GradientPipeline")
 		building_gradient::Terrain terrain;
 		terrain.width = terrain.height = 8;
 		terrain.cells.assign(64, {0, 65535, 255, 255, 0, GRASS});
+		terrain.costs = std::make_shared<const std::vector<TerrainType>>(64, GRASS);
 		building_gradient::Destination destination;
 		destination.x = destination.y = 3;
 		destination.virtualBuilding = true;
@@ -29,6 +30,7 @@ TEST_SUITE("GradientPipeline")
 		const auto expected = building_gradient::build(terrain, destination, parents, scratch);
 		for (unsigned workers : {0, 1, 2, 4, 8})
 			for (bool fail : {false, true})
+				for (bool partial : {false, true})
 			{
 				AsyncGradientExecutor executor;
 				unsigned created = 0;
@@ -46,12 +48,15 @@ TEST_SUITE("GradientPipeline")
 										   });
 								   });
 				building_gradient::Result actual;
+				const std::vector<std::size_t> targets{1, 7};
 				auto task = executor.submit(
 					[&](auto &workspace)
 					{
-						actual = building_gradient::build(terrain, destination, parents, workspace);
+						actual = building_gradient::build(terrain, destination, parents, workspace,
+							partial ? &targets : nullptr);
 					});
 				executor.wait(task);
+				actual.materialize();
 				REQUIRE(actual.walking == expected.walking);
 				REQUIRE(actual.trips == expected.trips);
 				REQUIRE(actual.locked == expected.locked);

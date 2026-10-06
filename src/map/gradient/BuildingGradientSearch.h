@@ -6,14 +6,16 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+#include <utility>
 
 #include "field/GradientBucket.h"
+#include "field/GradientCosts.h"
 #include "map/TerrainType.h"
 
 class Map;
 class BuildingGradientDiagnostics;
 
-// Resumable version of the building field's zero-cost, multi-source Dijkstra.
+// Resumable multi-source Dijkstra over caller-owned fields and frozen costs.
 // Obstacles/goals are already frozen in the initialized gradient. Weighted swim
 // classes additionally retain water costs, so a pause never mixes map snapshots.
 // Callers must resolve a cell before reading it; completion preserves the old
@@ -24,7 +26,9 @@ class BuildingGradientSearch
 	std::shared_ptr<const std::vector<TerrainType>> terrain;
 	bool modifiedCosts = false;
 	std::uint16_t *gradient = nullptr;
-	std::size_t cells = 0, pending = 0;
+	std::size_t cells = 0, pending = 0, nextSeed = 0;
+	std::vector<std::pair<int, std::uint32_t>> deferredSeeds;
+	int costLimit = gradient_kernel::COST_LIMIT;
 	int currentCost = 0, swimClass = 0;
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
@@ -35,13 +39,21 @@ class BuildingGradientSearch
 
   public:
 	void begin(const Map &map, std::uint16_t *seeded, int swim, int gid = -1);
+	// Worker-safe entry point: caller owns the field; all costs are immutable.
+	// Supports nonzero resource/round-trip seeds as well as walking fields.
+	void beginFrozen(int width, int height, std::uint16_t *seeded, int swim,
+		std::shared_ptr<const std::vector<TerrainType>> costs, bool modified, int limit, int settled = 0);
+	// Transfer a completed or paused private search to the simulation thread.
+	// Queue entries are indices, so moving the field does not invalidate them.
+	void attach(const Map &map, std::uint16_t *field, int gid, std::uint32_t generation);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target, const char *caller = "query");
 	void finish(const char *caller = "full_api") { resolve(cells, caller); }
-	bool complete() const { return pending == 0; }
+	bool complete() const { return pending == 0 && nextSeed == deferredSeeds.size(); }
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }
+	int settledCost() const { return complete() ? -1 : currentCost; }
 	std::size_t retainedBytes() const;
 	// Complete a detached copy with the original frozen costs. No live fields,
 	// ages, call lists or diagnostic collectors are touched.

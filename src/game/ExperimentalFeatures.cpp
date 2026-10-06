@@ -27,6 +27,14 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Scheduled building gradients",
 		 "Refresh building routes in the background and publish them on a fixed later tick. Units "
 		 "use the previous routes while a refresh is pending."},
+		{ExperimentId::BuildingGradientHybrid, "building-gradient-hybrid",
+		 "Demand-based building gradients",
+		 "Keep lightly staffed building routes lazy and synchronous. Schedule background refreshes "
+		 "when at least four assigned workers use the same movement class. Requires scheduled building gradients."},
+		{ExperimentId::BuildingGradientPartial, "building-gradient-partial",
+		 "Partial background building gradients",
+		 "Background route refreshes resolve captured worker positions and retain frozen frontiers "
+		 "for later lazy queries. Requires scheduled building gradients."},
 	};
 	return definitions;
 }
