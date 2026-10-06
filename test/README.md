@@ -1460,6 +1460,11 @@ Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
 build/test logs, JUnit, compiler/tool versions, source revision, selection,
 profiles, full coverage JSON, weighted implementation summaries and HTML.
+CI gives the instrumented suite a 90-minute job budget while retaining the
+900-second per-case timeout. It passes `--stream-logs` so command progress and
+diagnostics remain visible in the job log even when artifact upload cannot finish.
+Local runs keep file-only output unless this option is requested.
+
 CI passes `--discard-merged-profiles` to remove redundant raw profiles only after
 the binary's tests, profile merge, JSON export and HTML generation succeed. The
 merged profile and all reports and test evidence remain; failed runs retain raw
