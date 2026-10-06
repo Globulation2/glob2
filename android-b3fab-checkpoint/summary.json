@@ -1,0 +1,66 @@
+{
+  "revision": "b3fab1a48a9ac6ec74a6985e60a839eea54da346",
+  "status": "passed",
+  "timing_valid": false,
+  "architecture": "x86_64",
+  "platform": "Android API35 emulator; native API24 shell binaries",
+  "unitCases": 36,
+  "engineCases": 98,
+  "engineSuites": {
+    "AICustomCatalog": 16,
+    "AIRules": 3,
+    "CortexGeometry": 4,
+    "Maxima.Economy": 1,
+    "Maxima.FarmingIntegration": 21,
+    "RuntimeContinuation": 1,
+    "SharedWorkerLifecycle": 3,
+    "SimulationReadPhase": 1,
+    "FarmAreas": 17,
+    "TerrainResources": 1,
+    "RuntimeResources": 25,
+    "ClearingFlagGradient": 3,
+    "JavaScriptCompatibility": 1,
+    "TeamStatsSave": 1
+  },
+  "unitFailures": 0,
+  "engineFailures": 0,
+  "payloadFiles": 8137,
+  "sourceFiles": 16021,
+  "sourceAndPayloadUnchanged": true,
+  "stockTrace": {
+    "ticks": 1500,
+    "matches_native": true,
+    "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4",
+    "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/native-b3fab-determinism/native.replay.checksums"
+  },
+  "matchTrace": {
+    "matches_native": true,
+    "sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38",
+    "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/native-b3fab-determinism/verify-match.checksums.txt",
+    "verdict": "verified"
+  },
+  "composition": {
+    "equal": true,
+    "trace": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/android-b3fab1a48/cases/artifacts/resource-case-086/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+    "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/android-source/test/fixtures/resources/seeded-compositions.trace",
+    "sha256": "0c2b5b0ae134187198c1a9a3a43b3474192cf05f605b0922b70f6f3fa9f47ab2",
+    "rows": 150
+  },
+  "compilerVersion": "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "cleanup": {
+    "originalEmulatorState": "off",
+    "restoredEmulatorState": "off",
+    "portsClosed": {
+      "5580": true,
+      "5581": true,
+      "15037": true
+    }
+  },
+  "omissions": [
+    "No physical ARM device execution; hosted ARM APK builds are separate.",
+    "No APK Java/UI/audio/display/lifecycle coverage from native shell tests.",
+    "Focused engine suites/cases; not entire native suite."
+  ],
+  "caseInventory": "cases/results.json",
+  "unitInventory": "registry/result.xml"
+}
