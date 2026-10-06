@@ -260,7 +260,7 @@ std::uint64_t colonySignature(const Game &game, int team)
 								   std::int64_t(b->typeNum), std::int64_t(b->posX),
 								   std::int64_t(b->posY), std::int64_t(b->hp)})
 				hash = fnv(hash, std::uint64_t(v));
-	for (unsigned r = 0; r < MAX_NB_RESOURCES; ++r)
+	for (unsigned r = 0; r < MaterialSlotCount; ++r)
 		hash = fnv(hash, colony->teamMaterials[r]);
 	return hash;
 }

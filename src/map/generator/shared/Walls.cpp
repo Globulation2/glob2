@@ -69,7 +69,7 @@ std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
 	std::vector<unsigned char> stone(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		if (!wallable[i] || !map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
+		if (!wallable[i] || !map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
 			continue;
 		for (int dy = -1; dy <= 1 && !stone[i]; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -146,7 +146,7 @@ DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<un
 	{
 		if (!wall[i])
 			continue;
-		if (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
+		if (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
 			result.stone[i] = 1;
 		else if (result.gaps++ == 0)
 			result.firstGap = i;

@@ -1219,7 +1219,7 @@ class GameGUITouchHarness
                         if (!expectedAmount.empty()) expectedAmount += "\n";
                         expectedAmount += getMaterialName(material) + ": " +
                             (yield.consumption == ResourceConsumption::Infinite ? std::string("∞") :
-                             std::to_string(gui.game.map.materialAmountAt(gui.game.map.coordToIndex(tx,ty),material)) + "/" + std::to_string(yield.capacity));
+                             std::to_string(gui.game.map.materialAmountAtSlot(gui.game.map.coordToIndex(tx,ty),material)) + "/" + std::to_string(yield.capacity));
                     }
                     require(info && info->name == getResourceDisplayName(catalog.presentation(id).name) && info->amount == expectedAmount,
                         "Resource inspection shows registry name and all material stocks");
@@ -3329,7 +3329,7 @@ class GameGUITouchHarness
 		gui.drawAll(0);
 		require(gui.touch->unitAt({center.x+64,center.y},30) == nearby, "Exact unit beats neighbouring halo");
 		// A neighbouring resource is a direct target, not empty halo ground.
-		map.setResource(41, 40, WHEAT, 0);
+		map.setResourceByIndex(41, 40, WHEAT, 0);
 		map.setMapDiscovered(41, 40, gui.localTeam->me);
 		gui.touch->select({center.x + 28, center.y});
 		require(gui.selectionMode == GameGUI::RESOURCE_SELECTION,
@@ -3371,7 +3371,7 @@ class GameGUITouchHarness
 				gui.touch->dismissMapPanels();
 				if (invalidated)
 				{
-					map.setResource(41, 40, WHEAT, 0);
+					map.setResourceByIndex(41, 40, WHEAT, 0);
 					gui.touch->select({center.x + 28, center.y});
 					gui.drawAll(0);
 					map.setNoResource(41, 40, 1);
@@ -3399,7 +3399,7 @@ class GameGUITouchHarness
 			}
 		gui.touch->dismissMapPanels();
 		globalContainer->replaying = true;
-		map.setResource(41, 40, WHEAT, 0);
+		map.setResourceByIndex(41, 40, WHEAT, 0);
 		for (int inspector = 0; inspector < 3; ++inspector)
 		{
 			gui.touch->dismissMapPanels();

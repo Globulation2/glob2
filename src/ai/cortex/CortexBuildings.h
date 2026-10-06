@@ -48,7 +48,7 @@ inline bool servesRole(const Game& game, const BuildingType& type, int role)
 inline int primaryResource(const BuildingMaterialCost& cost)
 {
  int selected = -1;
- for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+ for (int r = 0; r < MaterialSlotCount; ++r)
   if (cost[r] > 0 && (selected < 0 || cost[r] > cost[selected])) selected = r;
  return selected;
 }

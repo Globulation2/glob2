@@ -29,7 +29,7 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
         // Re-read the source after each attempt: growth can change its amount.
         const Resource& resource=map.getResource(x,y);
         if(resource.type==NO_RES_TYPE) break;
-        const auto& properties=map.resourceProperties(resource.type);
+        const auto& properties=map.resourcePropertiesByIndex(resource.type);
         const bool growsHere=!properties.stockDependentGrowth || resource.amount <= syncRand()%properties.stockBranchDivisor;
         if(growsHere)
         {
@@ -37,7 +37,7 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
             {
                 const int type=resource.type;
                 const auto stocks=map.materialStocksAt(map.coordToIndex(x,y));
-                if (map.incResource(x,y,type,resource.variety))
+                if (map.incResourceByIndex(x,y,type,resource.variety))
                     map.recordNaturalGrowth(x,y,type,type,stocks);
             }
         }
@@ -54,7 +54,7 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
                     const auto& before=map.getResource(nx,ny);
                     const int oldType=before.type,type=resource.type;
                     const auto stocks=map.materialStocksAt(map.coordToIndex(nx,ny));
-                    if (map.incResource(nx,ny,type,resource.variety))
+                    if (map.incResourceByIndex(nx,ny,type,resource.variety))
                         map.recordNaturalGrowth(nx,ny,type,oldType,stocks);
                 }
             }
@@ -183,7 +183,7 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,int oldAm
 {
     std::array<Uint16,MaterialCount> stocks{};
     if (oldType!=NO_RES_TYPE && resourceRegistry().valid(unsigned(oldType)))
-        stocks[materialIndex(resourceProperties(oldType).primaryMaterial)]=oldAmount;
+        stocks[materialIndex(resourcePropertiesByIndex(oldType).primaryMaterial)]=oldAmount;
     recordNaturalGrowth(x,y,resourceType,oldType,stocks);
 }
 
@@ -196,8 +196,8 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
     const auto stocks=materialStocksAt(index);
     if (growthCoverage.size()!=size) rebuildGrowthCoverage();
     const auto packed=growthCoverage[index];
-    MaterialMask changedMaterials=resourceProperties(resourceType).materialMask;
-    if (oldType!=NO_RES_TYPE) changedMaterials|=resourceProperties(oldType).materialMask;
+    MaterialMask changedMaterials=resourcePropertiesByIndex(resourceType).materialMask;
+    if (oldType!=NO_RES_TYPE) changedMaterials|=resourcePropertiesByIndex(oldType).materialMask;
     for (unsigned mask=changedMaterials;mask;mask&=mask-1)
     {
         const auto material=std::countr_zero(mask);
@@ -350,9 +350,9 @@ void Map::syncStep(Uint32 stepCounter)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
+			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (hasMaterialSource(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
+					if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
 					{
 						if (gradientRuntime->pipeline.enabled()) dispatch(&materialGradients[t][r][s], s, [&](Uint16 *field) { seedMaterialGradient(t, r, s, field); });
 						else updateMaterialGradient(t, r, s);
@@ -362,7 +362,7 @@ void Map::syncStep(Uint32 stepCounter)
 		// Market fields participate in the same fixed-tick pipeline and round robin.
 		// A stock transition also requests an early refresh.
 		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
+			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 					if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
@@ -395,7 +395,7 @@ void Map::syncStep(Uint32 stepCounter)
 				
 
 		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
+			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 				{
 					gradientUpdated[t][r][s]=false;

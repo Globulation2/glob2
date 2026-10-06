@@ -258,9 +258,9 @@ namespace Cortex
 			// This is an existence query; row order follows the map storage.
 			for (int y = 0; y < h && obs.fruitOnMap == 0; y++)
 				for (int x = 0; x < w; x++)
-					if (map.isMaterialTakeable(x, y, materialIndex(MaterialId::Cherries))
-					 || map.isMaterialTakeable(x, y, materialIndex(MaterialId::Oranges))
-					 || map.isMaterialTakeable(x, y, materialIndex(MaterialId::Prunes)))
+					if (map.isMaterialTakeable(x, y,MaterialId::Cherries)
+					 || map.isMaterialTakeable(x, y,MaterialId::Oranges)
+					 || map.isMaterialTakeable(x, y,MaterialId::Prunes))
 					{
 						obs.fruitOnMap = 1;
 						break;

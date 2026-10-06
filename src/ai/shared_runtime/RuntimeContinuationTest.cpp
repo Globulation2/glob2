@@ -292,7 +292,7 @@ public:
         Map& map=game.map;
         for(bool text:{false,true})
         {
-            map.setResource(3,4,WHEAT,5);
+            map.setResourceByIndex(3,4,WHEAT,5);
             GradientManager original(&map),restored(&map);
             const auto wheat=info(text ? static_cast<Entities::Entity*>(new Entities::AnyResource)
                                        : static_cast<Entities::Entity*>(new Entities::MaterialSource(WHEAT)));

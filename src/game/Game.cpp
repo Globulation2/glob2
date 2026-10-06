@@ -88,7 +88,7 @@ void Game::configureBuildingCatalog()
 			if (routingChanged)
 			{
 				team->dirtyGlobalGradient();
-				for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(team->teamNumber,resource);
+				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
 }
@@ -252,7 +252,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		static constexpr Sint32 stockpileAmount[] = {0, 50, 150, 300};
 		const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
 		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 				teams[i]->teamMaterials[r] = stockpile;
 	}
 

@@ -809,13 +809,13 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int type = L.wheat[i] ? WHEAT : L.wood[i] ? WOOD : -1;
-		if (type < 0 || !map.terrainSupportsResourceAt(i % t.w, i / t.w, type))
+		if (type < 0 || !map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, type))
 			continue;
 		const int amount = type == WHEAT ? wheatAmount : woodAmount;
 		const int density =
 			L.reserved[i] ? std::min(100, 50 + amount / 6) : std::min(100, amount / 3);
 		if (int(context.bounded("fractal-farm-stock", 100)) < density)
-			map.setResource(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
 	}
 	for (Home h : L.homes)
 	{
@@ -825,7 +825,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		// deliberately retained at zero stone amount, like the renewable food and wood.
 		for (int y = L.quarryY; y < L.quarryY + 3; ++y)
 			for (int x = L.quarryX; x < L.quarryX + 2; ++x)
-				map.setResource(t.x(h.x + x), t.y(h.y + y), STONE, 1);
+				map.setResourceByIndex(t.x(h.x + x), t.y(h.y + y), STONE, 1);
 	}
 	// Ambient deposits stay in designated objective courts. This prevents high resource
 	// sliders from turning the map's open land lanes into transient resource walls.
@@ -845,7 +845,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		// Full at the default amount: at a third, a court holding forty tiles of fruit across a
 		// whole map was not a prize anyone crosses a bridge for.
 		if (int(context.bounded("fractal-objectives", 100)) < context.request.option("fruit-amount"))
-			map.setResource(x, y, type, 1);
+			map.setResourceByIndex(x, y, type, 1);
 	}
 	// Spots of wheat along the shore of the water the design names — Hilbert's river,
 	// Gardens' central lake — so the banks of the map's centrepiece carry food of their own.
@@ -868,7 +868,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				for (int dx = -1; clear && dx <= 1; ++dx)
 				{
 					const int x = t.x(cx + dx), y = t.y(cy + dy), j = t.at(x, y);
-					clear = map.terrainSupportsResourceAt(x, y, WHEAT) && clearGround(map, x, y) && !claimed(L, j);
+					clear = map.terrainSupportsResourceAtByIndex(x, y, WHEAT) && clearGround(map, x, y) && !claimed(L, j);
 				}
 			if (!clear)
 				continue;
@@ -887,7 +887,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 					if (int(context.bounded("fractal-shore-wheat", 100)) >=
 						context.request.option("wheat-amount"))
 						continue;
-					map.setResource(x, y, WHEAT, 1);
+					map.setResourceByIndex(x, y, WHEAT, 1);
 					++planted;
 				}
 		context.telemetry.measure("fractal.shore-wheat.spots", int(centres.size()));
@@ -929,7 +929,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			continue;
 		if (int(context.bounded("fractal-ambient", 100)) >= context.request.option("wood-amount"))
 			continue;
-		map.setResource(x, y, WOOD, 1);
+		map.setResourceByIndex(x, y, WOOD, 1);
 		++ambientTiles;
 	}
 	context.telemetry.measure("fractal.ambient.deposit-tiles", ambientTiles);
@@ -947,7 +947,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			for (int x = 4; x < t.w; x += 8)
 			{
 				const int i = t.at(x, y);
-				if (claimed(L, i) || !clearGround(map, x, y) || !map.terrainSupportsResourceAt(x, y, STONE))
+				if (claimed(L, i) || !clearGround(map, x, y) || !map.terrainSupportsResourceAtByIndex(x, y, STONE))
 					continue;
 				int score = INT_MAX;
 				for (Home h : L.homes)
@@ -975,12 +975,12 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				if (dx * dx + dy * dy > 20)
 					continue;
 				const int x = t.x(cx + dx), y = t.y(cy + dy), i = t.at(x, y);
-				if (claimed(L, i) || !map.terrainSupportsResourceAt(x, y, STONE) || !clearGround(map, x, y))
+				if (claimed(L, i) || !map.terrainSupportsResourceAtByIndex(x, y, STONE) || !clearGround(map, x, y))
 					continue;
 				if (int(context.bounded("fractal-quarries", 100)) >=
 					context.request.option("stone-amount"))
 					continue;
-				map.setResource(x, y, STONE, 1);
+				map.setResourceByIndex(x, y, STONE, 1);
 				++quarryStone;
 			}
 	}

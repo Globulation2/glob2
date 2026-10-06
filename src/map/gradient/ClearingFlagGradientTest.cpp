@@ -58,8 +58,8 @@ void clearingUsesMaterialSwitchesAndResourceProperties() {
                     flag->clearingMaterials[material]=enabled;
                     f.game.map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
                     f.game.map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
-                    const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourceProperties(type).clearable
-                        && (f.game.map.resourceProperties(type).materialMask & materialBit(static_cast<MaterialId>(material)));
+                    const bool expected=type!=NO_RES_TYPE && enabled && f.game.map.resourcePropertiesByIndex(type).clearable
+                        && (f.game.map.resourcePropertiesByIndex(type).materialMask & materialBit(static_cast<MaterialId>(material)));
                     REQUIRE((flag->globalGradient[slot][21+20*64]==GRADIENT_AT_GOAL)==expected);
                 }
             }

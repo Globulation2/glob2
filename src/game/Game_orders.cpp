@@ -360,7 +360,7 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{
 			map.invalidateSupplierLocations();
-			for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(b->owner->teamNumber, resource);
+			for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(b->owner->teamNumber, resource);
 		}
 
 		if (b->type->zonableForbidden)

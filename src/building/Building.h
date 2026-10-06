@@ -164,7 +164,7 @@ class Building : public BuildingUtils
 	 * calls neededResource(int res) for all possible resources.
 	 * @param array of needs that will be filled by this function
 	 */
-	void neededMaterials(int needs[MAX_NB_RESOURCES]);
+	void neededMaterials(int needs[MaterialSlotCount]);
 	/**
 	 * @param res The resource type
 	 * @return count of resources needed of type res. In case of higher multiplicity
@@ -174,7 +174,7 @@ class Building : public BuildingUtils
 	int neededMaterial(int res);
 	///Wished resources are any resources that are needed, and not being carried by a unit already.
 	///Fills `needs[]` with the result; pass `wishedResources` to refresh the cached member.
-	void computeWishedMaterials(int needs[MAX_NB_RESOURCES]);
+	void computeWishedMaterials(int needs[MaterialSlotCount]);
 	int totalWishedMaterial();
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
@@ -537,7 +537,7 @@ private:
 	/// for by deliveries that landed plus units on their way. Counted in
 	/// deliveries, not resource units: one delivery adds
 	/// multiplierResource[r] to resources[r].
-	void fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_NB_RESOURCES]) const;
+	void fetchApportionment(int targets[MaterialSlotCount], int served[MaterialSlotCount]) const;
 
 	/// Whether another fetcher should be sent for r: the building has physical
 	/// room for one more delivery and the deliveries already subscribed do not
@@ -632,7 +632,7 @@ public:
 	/// in the event that the building type designates using global resources instead of local resources, the resources pointer
 	/// will be changed to point to the global resources Team::teamResources instead of localResources.
 	Sint32* materials;
-	Sint32 wishedMaterials[MAX_NB_RESOURCES];
+	Sint32 wishedMaterials[MaterialSlotCount];
 
 	// quality parameters
 	Sint32 hp; // (Uint16)
@@ -680,9 +680,9 @@ public:
 	//! NULL until a unit fetching that resource for this building asks for one, freed again
 	//! by freeIdleGradients when unused for a while. Their last rebuild and last
 	//! use, in steps.
-	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint16 *roundTripGradient[MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientStep[MaterialSlotCount][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientUsedStep[MaterialSlotCount][SWIM_CLASS_COUNT];
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
 	//! buildings with fetchers need one, and each is a full map of Uint16.
 	void freeIdleGradients();
@@ -760,7 +760,7 @@ private:
 	Uint8 callListState;
 
 	// Building specific (private):
-	Sint32 localMaterials[MAX_NB_RESOURCES];
+	Sint32 localMaterials[MaterialSlotCount];
 
 	// swarm building parameters (private):
 	Sint32 totalRatio;

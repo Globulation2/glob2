@@ -42,7 +42,7 @@ namespace
 {
 void setYoungResource(Map& map, int x, int y, int type)
 {
-    map.setResource(x,y,type,1);
+    map.setResourceByIndex(x,y,type,1);
     map.setResourceAmount(map.coordToIndex(x,y), 1);
 }
 
@@ -100,7 +100,7 @@ void coastalWheatCrossesFertilityDips()
     {
         Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
         for(int y=0;y<64;++y)map.setCellTerrain(10,y,WATER);
-        map.setResource(11,20,resource,5);
+        map.setResourceByIndex(11,20,resource,5);
         ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
         ai.budget.farming_wheat_fertility_min=65536;
         ai.budget.farming_minimum_wood_fertility=65536;
@@ -361,15 +361,15 @@ void woodReserveSurvivesWheatPincer()
             REQUIRE(!map.isClearArea(seed%64,seed/64,f.player.team->me));
             // The seed can keep producing harvestable wood despite wheat on
             // either flank and an otherwise universal wood firebreak.
-            REQUIRE(map.incResource(outlet%64,outlet/64,WOOD,0));
+            REQUIRE(map.incResourceByIndex(outlet%64,outlet/64,WOOD,0));
             update();
             REQUIRE(!map.isClearArea(outlet%64,outlet/64,f.player.team->me));
             REQUIRE(!map.isForbidden(outlet%64,outlet/64,f.player.team->me));
-            while(map.isMaterialTakeable(outlet%64,outlet/64,WOOD))
+            while(map.isMaterialTakeableSlot(outlet%64,outlet/64,WOOD))
                 map.decResource(outlet%64,outlet/64);
         }
         // Competing wheat in the outlet remains harvestable, never a new seed.
-        REQUIRE(map.incResource(outlet%64,outlet/64,WHEAT,0));
+        REQUIRE(map.incResourceByIndex(outlet%64,outlet/64,WHEAT,0));
         update();REQUIRE(!ai.wheat_farm_protection_mask[outlet]);
         const auto before=ai.select_wood_reserve(ai.context).cells;
         ai.applied_farm_protection_mask.clear();
@@ -513,7 +513,7 @@ void firebreakManagementRadius()
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     REQUIRE(home);
-    for(int y:{21,22,63})map.setResource(11,y,WOOD,5);
+    for(int y:{21,22,63})map.setResourceByIndex(11,y,WOOD,5);
     ai.budget.farming_enabled=true;
     ai.budget.farming_maintenance_clearing_enabled=true;
     ai.budget.farming_wood_firebreak_enabled=true;
@@ -592,7 +592,7 @@ void archipelagoHarvestDoesNotSealWheat()
             int wheat=0,open=0;
             for(int y=patch?103:95;y<=(patch?106:99);++y)
                 for(int x=patch?55:48;x<=(patch?61:53);++x)
-                    if(game.map.isMaterialTakeable(x,y,WHEAT)) {
+                    if(game.map.isMaterialTakeableSlot(x,y,WHEAT)) {
                         ++wheat;open+=!ai.farm_protection_mask[y*128+x];
                     }
             REQUIRE((wheat>0 && open>0));
@@ -618,7 +618,7 @@ void seedStabilityAcrossMaps()
         ai.update_farming(ai.context);
         std::vector<int> seeds;
         for(int y=1;y<h;y+=2)for(int x=1;x<w;x+=2)
-            if(game.map.isMaterialTakeable(x,y,WHEAT)&&ai.farm_protection_mask[y*w+x])
+            if(game.map.isMaterialTakeableSlot(x,y,WHEAT)&&ai.farm_protection_mask[y*w+x])
                 seeds.push_back(y*w+x);
         REQUIRE(!seeds.empty());
         // Adversarial harvest: remove every available wheat tile each round.
@@ -626,7 +626,7 @@ void seedStabilityAcrossMaps()
         // exercise the exact feedback loop that destroyed Holiday's left farm.
         for(int round=0;round<12;++round) {
             for(int y=0;y<h;++y)for(int x=0;x<w;++x)
-                if(game.map.isMaterialTakeable(x,y,WHEAT)&&!ai.farm_protection_mask[y*w+x])
+                if(game.map.isMaterialTakeableSlot(x,y,WHEAT)&&!ai.farm_protection_mask[y*w+x])
                     game.map.setNoResource(x,y,1);
             for(int seed:seeds) {
                 int x=game.map.normalizeX(seed%w+(round%3)-1);
@@ -637,7 +637,7 @@ void seedStabilityAcrossMaps()
             }
             ai.timer+=64;ai.update_farming(ai.context);
             for(int seed:seeds) {
-                REQUIRE(game.map.isMaterialTakeable(seed%w,seed/w,WHEAT));
+                REQUIRE(game.map.isMaterialTakeableSlot(seed%w,seed/w,WHEAT));
                 REQUIRE(ai.farm_protection_mask[seed]);
             }
         }

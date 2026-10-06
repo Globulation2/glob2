@@ -118,8 +118,8 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 		if (!b->type->semantics.market.interTeamFruitExchange)
 			throw std::runtime_error("Building does not support resource exchange");
 		return std::make_shared<OrderModifyExchange>(
-			gid, number("receiveMask", 0, (1 << MAX_NB_RESOURCES) - 1),
-			number("sendMask", 0, (1 << MAX_NB_RESOURCES) - 1));
+			gid, number("receiveMask", 0, (1 << MaterialSlotCount) - 1),
+			number("sendMask", 0, (1 << MaterialSlotCount) - 1));
 	}
 	if (!(b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR]))
 		throw std::runtime_error("Flag order requires a flag");

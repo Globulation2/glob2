@@ -80,7 +80,7 @@ bool MapInfo::is_discovered(int x, int y)
 
 bool MapInfo::is_resource(int x, int y, int type)
 {
-	return runtime.player->map->isMaterialTakeable(x, y, type);
+	return runtime.player->map->isMaterialTakeableSlot(x, y, type);
 }
 
 
@@ -108,12 +108,12 @@ bool MapInfo::is_sand(int x, int y)
 
 bool MapInfo::is_resource_habitat(int x, int y, int resource)
 {
-	return runtime.player->map->terrainSupportsMaterialAt(x,y,resource);
+	return runtime.player->map->terrainSupportsMaterialAtSlot(x,y,resource);
 }
 
 bool MapInfo::is_crop_habitat(int x, int y)
 {
-	return runtime.player->map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food));
+	return runtime.player->map->terrainSupportsMaterialAt(x,y,MaterialId::Food);
 }
 
 bool MapInfo::is_grass(int x, int y)

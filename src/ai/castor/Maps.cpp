@@ -484,7 +484,7 @@ void AICastor::computeNotGrassMap()
 	{
 		// Habitat replaces the historical >16 sprite test, including its
 		// accidental treatment of transition sprite 16 as a wheat tile.
-		if (!(map->terrainSupportsMaterialAt(i%map->getW(),i/map->getW(),materialIndex(MaterialId::Food))))
+		if (!(map->terrainSupportsMaterialAt(i%map->getW(),i/map->getW(),MaterialId::Food)))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -533,14 +533,14 @@ Uint8 castorWheatGradient(Uint16 g)
 
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	return castorWheatGradient(map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
+	return castorWheatGradient(map->getMaterialGradient(team->teamNumber,MaterialId::Food, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
 }
 
 void AICastor::copyWheatGradient(Uint8* destination)
 {
 	const size_t size=map->w*map->h;
 	if (!size) return;
-	const auto* gradient=map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0);
+	const auto* gradient=map->getMaterialGradient(team->teamNumber,MaterialId::Food, canSwim ? Map::SWIM_CLASS_EVEN : 0);
 	for (size_t i=0; i<size; ++i)
 		destination[i]=castorWheatGradient(gradient[i]);
 }
@@ -556,7 +556,7 @@ void AICastor::computeWheatGrowthMap()
 	size_t size=w*h;
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
-	const auto* gradient=size ? map->getMaterialGradient(team->teamNumber, materialIndex(MaterialId::Food), canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
+	const auto* gradient=size ? map->getMaterialGradient(team->teamNumber,MaterialId::Food, canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
 	for (size_t i=0; i<size; i++)
 		if (castorWheatGradient(gradient[i])==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);

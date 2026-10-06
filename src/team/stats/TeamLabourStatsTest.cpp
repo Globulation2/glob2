@@ -348,7 +348,7 @@ TEST_SUITE("TeamStatsSave")
 			world.addUnit(i < 4 ? WORKER : WARRIOR, 12 + i, 20);
 		for (int y = 30; y < 34; ++y)
 			for (int x = 10; x < 20; ++x)
-				world.game.map.setResource(x, y, WHEAT, 1);
+				world.game.map.setResourceByIndex(x, y, WHEAT, 1);
 		world.step(1100);
 		const auto &stats = world.team->stats;
 		REQUIRE(stats.measurementHistory.size() >= 2);

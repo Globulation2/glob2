@@ -24,7 +24,7 @@ inline bool foodTileAccessible(Map* map,int x,int y,Uint32 teamMask,
     return map->isMapDiscovered(x,y,teamMask)
         && (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
         && tile.building==NOGBID
-        && (!map->resourceBlocksGround(index) || map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food)))
+        && (!map->resourceBlocksGround(index) || map->isMaterialTakeable(x,y,MaterialId::Food))
         && (map->terrainPropertiesAt(x,y).walkable || (canSwim && map->terrainPropertiesAt(x,y).swimmable));
 }
 
@@ -104,11 +104,11 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
                 if(steps>stop)return field::Visit::Stop;
                 const int x=index%width,y=index/width;
                 const auto& tile=map->getTile(x,y);
-                if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food)) && tile.resource.amount>0)
+                if(map->isMaterialTakeable(x,y,MaterialId::Food) && tile.resource.amount>0)
                 {
                     if(stop==std::numeric_limits<int>::max())stop=steps+localRadius;
                     capacity+=(effectiveWheatRegrowth(map,AIResourceSources::renewableRate(*map,map->coordToIndex(x,y),materialIndex(MaterialId::Food)))
-                        +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),materialIndex(MaterialId::Food)),stockHorizonTicks))*localRadius
+                        +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),MaterialId::Food),stockHorizonTicks))*localRadius
                         /std::max(localRadius,steps);
                 }
                 return field::Visit::Expand;
@@ -134,11 +134,11 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
             const int x=index%width,y=index/width,steps=distance[index];
             if(steps>stop)return field::Visit::Stop;
             const Tile& tile=map->getTile(x,y);
-            if(map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food))&&map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food))&&tile.resource.amount>0)
+            if(map->terrainSupportsMaterialAt(x,y,MaterialId::Food)&&map->isMaterialTakeable(x,y,MaterialId::Food)&&tile.resource.amount>0)
             {
                 if(stop==size)stop=std::min(size,steps+localRadius);
                 capacity+=(effectiveWheatRegrowth(map,AIResourceSources::renewableRate(*map,map->coordToIndex(x,y),materialIndex(MaterialId::Food)))
-                    +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),materialIndex(MaterialId::Food)),stockHorizonTicks))*localRadius
+                    +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),MaterialId::Food),stockHorizonTicks))*localRadius
                     /std::max(localRadius,steps);
             }
             return steps>=stop?field::Visit::Skip:field::Visit::Expand;
@@ -162,10 +162,10 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
                 if(steps>radius)return field::Visit::Stop;
                 const int x=index%width,y=index/width;
                 const auto& tile=map->getTile(x,y);
-                if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food)) && tile.resource.amount>0
+                if(map->isMaterialTakeable(x,y,MaterialId::Food) && tile.resource.amount>0
                     && (!shared_tiles || shared_tiles->insert(index).second))
                     capacity+=effectiveWheatRegrowth(map,AIResourceSources::renewableRate(*map,map->coordToIndex(x,y),materialIndex(MaterialId::Food)))
-                        +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),materialIndex(MaterialId::Food)),stockHorizonTicks);
+                        +wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),MaterialId::Food),stockHorizonTicks);
                 return field::Visit::Expand;
             });
         return capacity;
@@ -195,9 +195,9 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 		[&](int index) {
 			const int x=index%width,y=index/width;
 			const Tile& tile=map->getTile(x,y);
-			if(map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food))&&map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food))&&tile.resource.amount>0
+			if(map->terrainSupportsMaterialAt(x,y,MaterialId::Food)&&map->isMaterialTakeable(x,y,MaterialId::Food)&&tile.resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
-				capacity+=effectiveWheatRegrowth(map,AIResourceSources::renewableRate(*map,map->coordToIndex(x,y),materialIndex(MaterialId::Food)))+wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),materialIndex(MaterialId::Food)),stockHorizonTicks);
+				capacity+=effectiveWheatRegrowth(map,AIResourceSources::renewableRate(*map,map->coordToIndex(x,y),materialIndex(MaterialId::Food)))+wheatStockFertilityEquivalent(map->materialAmountAt(map->coordToIndex(x,y),MaterialId::Food),stockHorizonTicks);
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int px,int py) {
 			const int nx=map->normalizeX(px),ny=map->normalizeY(py),adjacent=ny*width+nx;

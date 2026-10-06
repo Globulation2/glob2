@@ -1073,7 +1073,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		!cut.empty())
 		return cut;
 	return startingAccessFailure(game.map, teams,
-								 {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}});
+								 {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}});
 }
 } // namespace
 

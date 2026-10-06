@@ -79,7 +79,7 @@ static void checkContinuation(int checkpoint)
         for (int x = 0; x < 32; ++x) game.map.clearImmobileUnit(x, y);
     for (int x = 12; x < 15; ++x)
     {
-        game.map.setResource(x, 12, WOOD, 1);
+        game.map.setResourceByIndex(x, 12, WOOD, 1);
         game.map.setAreaMask(game.map.coordToIndex(x, 12), &Tile::clearArea, game.teams[0]->me);
     }
     auto* first = game.addUnit(7, 12, 0, WORKER, 0, 0, 0, 0);

@@ -94,8 +94,8 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(36, 36);
 		bed.market->materials[CHERRY] = 10;
 		int dist = 0;
-		require(bed.game.map.materialAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
-		require(!bed.game.map.materialAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->destinationPurpose == CHERRY, "inn hires the worker for cherries held by the market");
 		require(bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "walking the fetch gradient");
@@ -141,7 +141,7 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		// Cherries two tiles from the worker beat the market.
 		Bed bed(36, 36);
 		bed.market->materials[CHERRY] = 10;
-		require(bed.game.map.incResource(34, 36, CHERRY, 0), "seed a cherry tile near the worker");
+		require(bed.game.map.incResourceByIndex(34, 36, CHERRY, 0), "seed a cherry tile near the worker");
 		bed.hire();
 		require(bed.inn->unitsWorking.size() == 1 && bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "hired for cherries");
 		require(bed.unit->targetX == 34 && bed.unit->targetY == 36, "the nearer tile is the goal, not the market");
@@ -152,10 +152,10 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(36, 36);
 		bed.market->materials[CHERRY] = 1;
 		int dist = 0;
-		require(bed.game.map.materialAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "stocked market is a goal");
+		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "stocked market is a goal");
 		bed.market->removeMaterialFromBuilding(CHERRY);
 		bed.game.map.updateMaterialGradient(0, CHERRY, bed.unit->swimClass(), true);
-		require(!bed.game.map.materialAvailable(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
+		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
 		bed.hire();
 		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] >= 1, "nobody hired, counted as no fruit reachable");
 		std::puts("market fetch: an empty market is no source");
@@ -167,13 +167,13 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		require(bed.game.buildingsTypes.getTypeNum("market", 1, false) >= 0 && bed.game.buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
 		bed.market->materials[WOOD] = 20;
 		int dist = 0;
-		require(!bed.game.map.materialAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
+		require(!bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
 		int top = bed.game.buildingsTypes.getTypeNum("market", 2, false);
         auto* supplier=bed.game.addBuilding(50,50,top,0);
         REQUIRE(supplier);
         bed.game.map.setBuilding(50,50,supplier->type->width,supplier->type->height,supplier->gid);
 		bed.game.map.updateMaterialGradient(0, WOOD, bed.unit->swimClass(), true);
-		require(bed.game.map.materialAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
+		require(bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
 		std::puts("market levels: only a level that takes the resource hands it out");
 	}
 	std::puts("PASS stocked markets are goals of the fetch gradients");
@@ -230,7 +230,7 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 		{
 			bed->game.gameHeader.setResourceGrowthDisabled(true);
 			bed->market->materials[CHERRY]=10;
-			bed->game.map.getMaterialGradient(0,CHERRY,0,true);
+			bed->game.map.getMaterialGradientSlot(0,CHERRY,0,true);
 		}
 		source.game.map.configureGradientPipeline(2,3);
 		// Capture each queue phase, including a market job's publication deadline.

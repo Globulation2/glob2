@@ -23,7 +23,7 @@ void scalarResource(Map &m, int team, int resource, int swim, Uint16 *out, bool 
         const auto& c=m.tiles[i];
         if ((c.forbidden&mask) || m.immobileUnits[i]!=IMMOBILE_UNIT_NONE)
             out[i]=GRADIENT_FORBIDDEN;
-        else if (m.materialAmountAt(i,resource)>0 && (!m.resourceVisibleToHarvest(i) || (m.fogOfWar[i]&mask)))
+        else if (m.materialAmountAtSlot(i,resource)>0 && (!m.resourceVisibleToHarvest(i) || (m.fogOfWar[i]&mask)))
             out[i]=GRADIENT_AT_GOAL;
         else if (m.resourceBlocksGround(i)) out[i]=GRADIENT_FORBIDDEN;
         else if (c.building!=NOGBID)
@@ -221,7 +221,7 @@ TEST_SUITE("GradientPreparation")
 		auto &cache = m.gradientRuntime->resourceSeeds;
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		auto compare = [&](int phase) {
-			for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+			for (int resource = 0; resource < MaterialCount; ++resource)
 			{
 				const int team = phase % Team::MAX_COUNT, swim = phase % SWIM_CLASS_COUNT;
 				CAPTURE(team);
@@ -252,8 +252,8 @@ TEST_SUITE("GradientPreparation")
 			case 3: m.markImmobileUnit(x, y, 0); break;
 			case 4: m.addForbidden(x, y, phase % Team::MAX_COUNT); break;
 			case 5: m.replaceResource(index, Resource{WOOD, 0, 1, 0}); m.decResource(x, y); break;
-			case 6: m.setCellTerrain(index, GRASS); m.incResource(x, y, WHEAT, 0); break;
-			case 7: m.setResource(x, y, WHEAT, 0); m.setNoResource(x, y, 0); break;
+			case 6: m.setCellTerrain(index, GRASS); m.incResourceByIndex(x, y, WHEAT, 0); break;
+			case 7: m.setResourceByIndex(x, y, WHEAT, 0); m.setNoResource(x, y, 0); break;
 			case 8: m.clearImmobileUnit(x, y); m.removeForbidden(x, y, phase % Team::MAX_COUNT); break;
 			case 9:
 			{
@@ -277,7 +277,7 @@ TEST_SUITE("GradientPreparation")
 		compare(0);
 		m.decResource(11, 11);
 		compare(0);
-		m.incResource(11, 11, WHEAT, 0);
+		m.incResourceByIndex(11, 11, WHEAT, 0);
 		compare(0);
 		m.setNoResource(11, 11, 0);
 		compare(0);
@@ -479,13 +479,13 @@ TEST_SUITE("GradientPreparation")
 		std::vector<std::vector<Uint16>> outputs(16, std::vector<Uint16>(m.size));
 		m.configureCompute(4, Map::ComputeInitialize);
 		m.computeExecutor().run(outputs.size(), [&](size_t job) {
-			m.seedMaterialGradient(job % 2, job % MAX_RESOURCES, job % SWIM_CLASS_COUNT,
+			m.seedMaterialGradient(job % 2, job % MaterialCount, job % SWIM_CLASS_COUNT,
 				outputs[job].data(), false);
 		});
 		for (size_t job = 0; job < outputs.size(); ++job)
 		{
 			CAPTURE(job);
-			scalarResource(m, job % 2, job % MAX_RESOURCES, job % SWIM_CLASS_COUNT, expected.data(), false);
+			scalarResource(m, job % 2, job % MaterialCount, job % SWIM_CLASS_COUNT, expected.data(), false);
 			requireSameField(m, "concurrent preparation", outputs[job], expected);
 		}
 	}
@@ -513,7 +513,7 @@ TEST_SUITE("GradientPreparation")
 		{
 			for (int pass = 0; pass < 24; ++pass)
 			{
-				const int swim = pass % SWIM_CLASS_COUNT, resource = pass % MAX_RESOURCES;
+				const int swim = pass % SWIM_CLASS_COUNT, resource = pass % MaterialCount;
 				scalarResource(m, 0, resource, swim, expected.data(), false);
 				m.seedMaterialGradient(0, resource, swim, actual.data(), false);
 				requireSameField(m, "custom cached terrain", actual, expected);
@@ -606,7 +606,7 @@ TEST_SUITE("GradientPreparation")
 				world.game.configureBuildingCatalog();
 				m.fogOfWar = phase & 1 ? m.fogOfWarB.data() : m.fogOfWarA.data();
 				world.game.teams[0]->allies = phase & 1 ? 3 : 1;
-				for (int r=0; r<MAX_RESOURCES; ++r)
+				for (int r=0; r<MaterialCount; ++r)
 				{
 					market0->materials[r] = phase & 1 ? 0 : 10;
 					market1->materials[r] = phase & 1 ? 10 : 0;
@@ -618,7 +618,7 @@ TEST_SUITE("GradientPreparation")
 					CAPTURE(phase);
 					CAPTURE(team);
 					CAPTURE(swim);
-					for (int resource=0; resource<MAX_RESOURCES; ++resource)
+					for (int resource=0; resource<MaterialCount; ++resource)
 					for (bool markets : {false, true})
 					{
 						CAPTURE(resource);
@@ -670,7 +670,7 @@ TEST_SUITE("GradientPreparation")
 		{
 			CAPTURE(team);
 			CAPTURE(swim);
-			for (int resource=0; resource<MAX_RESOURCES; ++resource)
+			for (int resource=0; resource<MaterialCount; ++resource)
 			{
 				CAPTURE(resource);
 				scalarResource(m, team, resource, swim, expected.data(), false);
@@ -696,7 +696,7 @@ TEST_SUITE("GradientPreparation")
 			m.setCellTerrain(0, terrain);
 			auto &cell = m.tiles[0];
 			cell.resource.type = terrainProperties(terrain).farmMaterial;
-			REQUIRE(m.resourceProperties(cell.resource.type).clearable);
+			REQUIRE(m.resourcePropertiesByIndex(cell.resource.type).clearable);
 			cell.farmArea = teamMask;
 			cell.building = 42;
 			m.immobileUnits[0] = 0;
@@ -731,7 +731,7 @@ TEST_SUITE("GradientPreparation")
 			CAPTURE(phase);
 			if (phase == 8)
 				m.setSize(7, 7, WATER);
-			m.setResource(20, 20, phase % MAX_RESOURCES, 0);
+			m.setResourceByIndex(20, 20, phase % MaterialCount, 0);
 			if (phase & 1)
 				m.replaceResource(20, 20, Resource{});
 			m.setBuilding(21, 20, 1, 1, phase & 1 ? NOGBID : 42);
@@ -761,7 +761,7 @@ TEST_SUITE("GradientPreparation")
 		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=2, .clearImmobile=true, .header=true});
 		auto &m = world.game.map;
 		for (int resource=0; resource<3; ++resource)
-			m.setResource(20 + resource, 20, resource, 0);
+			m.setResourceByIndex(20 + resource, 20, resource, 0);
 		std::vector<Uint16> warmup(m.size);
 		for (int i = 0; i < 16; ++i) m.seedMaterialGradient(0, WHEAT, 0, warmup.data(), false);
 		REQUIRE(m.gradientRuntime->resourceSeeds.valid);
@@ -778,7 +778,7 @@ TEST_SUITE("GradientPreparation")
 			m.configureCompute(4, Map::ComputeAI);
 			std::vector<Uint16 *> requests(8);
 			m.computeExecutor().run(requests.size(), [&](size_t j) {
-				requests[j] = m.getMaterialGradient(0, resource, 0);
+				requests[j] = m.getMaterialGradientSlot(0, resource, 0);
 			});
 			REQUIRE(requests[0] != nullptr);
 			for (size_t j=1; j<requests.size(); ++j)
@@ -808,8 +808,8 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({source,hidden})}}.dump());
     const auto first=resourceIndex(*map.resourceRegistry().find("mixed-visible"));
     const auto second=resourceIndex(*map.resourceRegistry().find("mixed-always"));
-    REQUIRE(map.incResource(10,10,first,0));
-    REQUIRE(map.incResource(11,10,second,0));
+    REQUIRE(map.incResourceByIndex(10,10,first,0));
+    REQUIRE(map.incResourceByIndex(11,10,second,0));
     const auto a=map.coordToIndex(10,10), b=map.coordToIndex(11,10);
     map.fogOfWar[a]=map.fogOfWar[b]=0;
     std::vector<Uint16> direct(map.size),cached(map.size);
@@ -825,12 +825,12 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     map.fogOfWar[a]=Team::teamNumberToMask(0);
     compare(int(MaterialId::Wood));
     CHECK(cached[a]==GRADIENT_AT_GOAL);
-    map.setMaterialAmount(a,int(MaterialId::Wood),0);
+    map.setMaterialAmount(a,MaterialId::Wood,0);
     compare(int(MaterialId::Wood));
     CHECK(cached[a]==GRADIENT_UNREACHABLE);
     compare(int(MaterialId::Food));
     CHECK(cached[a]==GRADIENT_AT_GOAL);
-    map.setMaterialAmount(a,int(MaterialId::Food),0);
+    map.setMaterialAmount(a,MaterialId::Food,0);
     compare(int(MaterialId::Food));
     CHECK(cached[a]==GRADIENT_UNREACHABLE);
     REQUIRE(map.growResourceStock(a));
@@ -876,12 +876,12 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     candidate.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",additions}}.dump());
     for (Map* map:{&original,&candidate})
     {
-        REQUIRE(map->incResource(8,8,WHEAT,0));
+        REQUIRE(map->incResourceByIndex(8,8,WHEAT,0));
         map->configureGradientPipeline(1,3);
         for (unsigned material=0;material<MaterialCount;++material)
             for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
             {
-                REQUIRE(map->getMaterialGradient(0,material,swim)!=nullptr);
+                REQUIRE(map->getMaterialGradientSlot(0,material,swim)!=nullptr);
                 CHECK((map->materialGradients[0][material][swim]!=nullptr)==(material==materialIndex(MaterialId::Food)));
             }
     }

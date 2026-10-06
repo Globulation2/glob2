@@ -196,7 +196,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
                     {
                         const auto id = TerrainSelector::resourceType(terrainType, game.map.resourceRegistry());
                         if (game.map.resourceRegistry().valid(id) && game.map.isResourceAllowed(x, y, int(resourceIndex(id))))
-                            game.map.setResource(x, y, int(resourceIndex(id)), 1);
+                            game.map.setResourceByIndex(x, y, int(resourceIndex(id)), 1);
                         continue;
                     }
                     if (terrainType >= TerrainSelector::RegisteredBegin && TerrainSelector::isBaseTerrain(terrainType))

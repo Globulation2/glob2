@@ -35,7 +35,7 @@ template<class Function> void visit(const Bits &bits, Function function)
 struct ResourceSeedCache::Storage
 {
 	std::array<std::vector<Uint16>, 2> base;
-	std::array<Bits, MAX_RESOURCES> resources;
+	std::array<Bits, MaterialCount> resources;
 	Bits buildings;
 	std::array<Bits, Team::MAX_COUNT> forbidden;
 	// Effective natural goal type: occupied resource cells have no goal bit.

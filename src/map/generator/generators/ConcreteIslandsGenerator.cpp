@@ -179,7 +179,7 @@ static bool generate(Game &game, GenerationContext &context)
 			int total_height = heights[y * game.map.getW() + x];
 			if (total_height <= algaeDepth)
 			{
-				game.map.setResource(x, y, ALGA, 1);
+				game.map.setResourceByIndex(x, y, ALGA, 1);
 			}
 		}
 	}
@@ -235,7 +235,7 @@ static bool generate(Game &game, GenerationContext &context)
 			chooseRandomPoints(game.map, context, points, fruit_n);
 			for (unsigned int j = 0; j < points.size(); ++j)
 			{
-				game.map.setResource(points[j].x, points[j].y,
+				game.map.setResourceByIndex(points[j].x, points[j].y,
 									 CHERRY + context.stream("layout")() % 3, 1);
 			}
 		}

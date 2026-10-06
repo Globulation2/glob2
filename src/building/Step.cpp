@@ -117,7 +117,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	int distResource = 0;
-	if(!owner->map->materialAvailable(owner->teamNumber, wantedResource, unit->swimClass(),
+	if(!owner->map->materialAvailableSlot(owner->teamNumber, wantedResource, unit->swimClass(),
 	                                  unit->posX, unit->posY, &distResource, fetchesFromMarkets(), this))
 	{
 		if(wantedResource<HAPPINESS_BASE || wantedResource>=HAPPINESS_BASE+HAPPINESS_COUNT)
@@ -142,7 +142,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	// distance. Building a field here instead would cost one per resource of
 	// every hiring building, nearly all of them never fetched.
 	int roundTrip = 0;
-	if(!owner->map->roundTripDistance(this, wantedResource, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
+	if(!owner->map->roundTripDistanceSlot(this, wantedResource, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
 		roundTrip = distResource + std::max(distBuilding, distResource);
 	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
@@ -178,9 +178,9 @@ int Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidates
 }
 
 
-void Building::fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_NB_RESOURCES]) const
+void Building::fetchApportionment(int targets[MaterialSlotCount], int served[MaterialSlotCount]) const
 {
-	for(int r=0; r<MAX_NB_RESOURCES; ++r)
+	for(int r=0; r<MaterialSlotCount; ++r)
 	{
 		int multiplier = type->materialMultiplier[r];
 		targets[r] = (materialDeliveryTarget(r)+multiplier-1)/multiplier;
@@ -190,7 +190,7 @@ void Building::fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_
 	for(std::list<Unit *>::const_iterator ui=unitsWorking.begin(); ui!=unitsWorking.end(); ++ui)
 	{
 		int purpose = (*ui)->destinationPurpose;
-		if(purpose>=0 && purpose<MAX_NB_RESOURCES)
+		if(purpose>=0 && purpose<MaterialSlotCount)
 			served[purpose]++;
 	}
 }
@@ -305,8 +305,8 @@ bool Building::subscribeToBringResourcesStep(bool borrowUnused)
 	for (const Unit* unit : unitsWorking) delivering += unit->activity == Unit::ACT_FILLING;
 	if ((Sint32)unitsWorking.size()<desiredMaxUnitWorking && (borrowUnused || delivering<workRoleTarget(-1)))
 	{
-		int targets[MAX_NB_RESOURCES];
-		int served[MAX_NB_RESOURCES];
+		int targets[MaterialSlotCount];
+		int served[MaterialSlotCount];
 		fetchApportionment(targets, served);
 
 		BringResourcesSelection sel;
@@ -325,8 +325,8 @@ bool Building::subscribeToBringResourcesStep(bool borrowUnused)
 		// unit can actually be hired for it.
 		if (sel.choosen==NULL)
 		{
-			int order[MAX_NB_RESOURCES];
-			int wanted = FetchApportionment::rank(targets, served, MAX_NB_RESOURCES, order);
+			int order[MaterialSlotCount];
+			int wanted = FetchApportionment::rank(targets, served, MaterialSlotCount, order);
 			for(int i=0; i<wanted && sel.choosen==NULL; ++i)
 			{
 				int r = order[i];

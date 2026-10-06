@@ -18,9 +18,9 @@ inline bool permanentResourceBarrier(const Map& map, size_t index, bool forBuild
         const auto& yield=map.resourceRegistry().yields(id)[material];
         if (!yield.capacity) continue;
         if ((yield.consumption==ResourceConsumption::All || yield.destroysDeposit)
-            && (map.materialAmountAt(index,material) || yield.growthRate)) return false;
+            && (map.materialAmountAtSlot(index,material) || yield.growthRate)) return false;
         infinite |= yield.consumption==ResourceConsumption::Infinite
-            && (map.materialAmountAt(index,material) || yield.growthRate);
+            && (map.materialAmountAtSlot(index,material) || yield.growthRate);
     }
     return properties.persistsWhenEmpty || infinite;
 }

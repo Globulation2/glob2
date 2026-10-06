@@ -74,17 +74,17 @@ void Map::smoothResources(int times)
 			for (int x=0; x<w; x++)
 			{
 				Resource &r=tiles[coordToIndex(x, y)].resource;
-				if (r.type==NO_RES_TYPE || !resourceProperties(r.type).smoothPlacement)
+				if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).smoothPlacement)
 					continue;
 				if (!(syncRand()&4))
 					continue;
 				const auto& definition = resourceRegistry().yields(static_cast<ResourceId>(r.type));
-				const auto material = resourceProperties(r.type).primaryMaterial;
+				const auto material = resourcePropertiesByIndex(r.type).primaryMaterial;
 				const auto& yield = definition[materialIndex(material)];
 				if (int(r.amount)-RESOURCE_INITIAL_AMOUNT<=int(syncRand()&3))
 				{
 					if (r.amount<yield.capacity)
-						setMaterialAmount(coordToIndex(x,y), materialIndex(material), r.amount+1);
+						setMaterialAmountSlot(coordToIndex(x,y), materialIndex(material), r.amount+1);
 				}
 				else
 				{

@@ -49,7 +49,7 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 			if (map.isResourceAllowed(x, y, resourceType) &&
 				(existingType == NO_RES_TYPE || existingType == resourceType))
 			{
-				map.setResource(x, y, resourceType, 1);
+				map.setResourceByIndex(x, y, resourceType, 1);
 				++placed;
 			}
 		}
@@ -60,7 +60,7 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 {
 	if (percent == 100)
 	{
-		map.setResource(x, y, resourceType, size);
+		map.setResourceByIndex(x, y, resourceType, size);
 		return;
 	}
 	const int half = size >> 1;
@@ -87,7 +87,7 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 		chosen[size_t(order[size_t(k)])] = 1;
 	for (int i = 0; i < int(chosen.size()); ++i)
 		if (chosen[size_t(i)])
-			map.setResource(map.normalizeX(x + i / side - reach),
+			map.setResourceByIndex(map.normalizeX(x + i / side - reach),
 							map.normalizeY(y + i % side - reach), resourceType, 1);
 }
 
@@ -155,7 +155,7 @@ std::vector<int> computeComponents(const Map &map, bool water, int &numComponent
 	std::vector<unsigned char> kind(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			kind[size_t(y) * w + x] = water ? map.terrainSupportsResourceAt(x,y,ALGA)
+			kind[size_t(y) * w + x] = water ? map.terrainSupportsResourceAtByIndex(x,y,ALGA)
 				: map.terrainPropertiesAt(x,y).walkable;
 	const std::vector<int> component = connectedRegions(kind, w, h, true, GridNeighbors::Eight);
 	numComponents = 0;
@@ -214,7 +214,7 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 		}
 		for (size_t i = 0; i < compCandidates.size(); ++i)
 			if (level[c][i] <= threshold)
-				map.setResource(compCandidates[i].x, compCandidates[i].y, resourceType, 1);
+				map.setResourceByIndex(compCandidates[i].x, compCandidates[i].y, resourceType, 1);
 	}
 }
 
@@ -325,9 +325,9 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 						  std::max(0, int((std::int64_t(woodTarget) * std::int64_t(region.size())) /
 										  totalTarget)));
 		for (int i = 0; i < wheatWanted; ++i)
-			map.setResource(region[order[i]].x, region[order[i]].y, WHEAT, 1);
+			map.setResourceByIndex(region[order[i]].x, region[order[i]].y, WHEAT, 1);
 		for (int i = wheatWanted; i < wheatWanted + woodWanted; ++i)
-			map.setResource(region[order[i]].x, region[order[i]].y, WOOD, 1);
+			map.setResourceByIndex(region[order[i]].x, region[order[i]].y, WOOD, 1);
 	}
 }
 } // namespace
@@ -404,7 +404,7 @@ void fillInResource(Map &map, GenerationContext &context, std::vector<MapGenerat
 		throw GenerationFailure("Invalid resource patch size");
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
-		map.setResource(points[n].x, points[n].y, resourceType,
+		map.setResourceByIndex(points[n].x, points[n].y, resourceType,
 						1 + context.stream("regions")() % maxFillSize);
 	}
 }
@@ -813,8 +813,8 @@ std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &a
 			// Renewal belongs to the deposit's compiled ecology and stocks.
             bool renewable=false;
             if (fertility) for (unsigned material=0;material<MaterialCount;++material)
-                renewable |= map.materialGrowthRateAt(map.coordToIndex(x,y),material)>0
-                    || map.materialExpansionRateAt(map.coordToIndex(x,y),material)>0;
+                renewable |= map.materialGrowthRateAtSlot(map.coordToIndex(x,y),material)>0
+                    || map.materialExpansionRateAtSlot(map.coordToIndex(x,y),material)>0;
             front.renewableEdges += renewable;
 		}
 	}

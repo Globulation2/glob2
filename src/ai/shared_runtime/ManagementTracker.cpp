@@ -92,7 +92,7 @@ bool MaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint32 
 	if (rawTimer > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
 		rawLength > static_cast<Uint32>(std::numeric_limits<int>::max()) ||
-		rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MAX_RESOURCES-1) || position >= record.size() || rawLength != record.size())
+		rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MaterialCount-1) || position >= record.size() || rawLength != record.size())
 		throw std::runtime_error("Invalid saved resource tracker");
 	timer=static_cast<int>(rawTimer);
 	building_id=static_cast<int>(rawBuildingId);
@@ -157,7 +157,7 @@ bool AddMaterialTracker::load(GAGCore::InputStream *stream, Player *player, Sint
 	const Uint32 rawBuildingId=stream->readUint32("building_id");
 	const Uint32 rawMaterial=stream->readUint32("ressource");
 	if (rawLength == 0 || rawLength > 1048576 ||
-		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MAX_RESOURCES-1))
+		rawBuildingId > static_cast<Uint32>(std::numeric_limits<int>::max()) || rawMaterial > (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? RecurringInputStock : MaterialCount-1))
 		throw std::runtime_error("Invalid resource tracker order");
 	length=static_cast<int>(rawLength);
 	building_id=static_cast<int>(rawBuildingId);

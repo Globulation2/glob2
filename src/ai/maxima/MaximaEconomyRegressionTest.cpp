@@ -84,7 +84,7 @@ struct Fixture
     }
     void supply(int x,int y)
     {
-        game.map.setResource(x+6,y+1,WHEAT,1);
+        game.map.setResourceByIndex(x+6,y+1,WHEAT,1);
         game.map.setCellTerrain(x+6,y+3,WATER);
     }
     int population() const
@@ -241,7 +241,7 @@ void growingFoodFundsCapacity()
     const int food=ai.environment.accessible_corn;
     const int workers=ai.budget.swarm_workers;
     for(int y=12;y<=20;++y) for(int x=12;x<=20;++x)
-        if(f.game.map.isGrass(x,y)) f.game.map.setResource(x,y,WHEAT,1);
+        if(f.game.map.isGrass(x,y)) f.game.map.setResourceByIndex(x,y,WHEAT,1);
     ai.update_environment_model(c); ai.build_policy_bids(); ai.arbitrate_policy_bids();
     REQUIRE(ai.environment.accessible_corn>food);
     REQUIRE(ai.budget.swarm_workers>workers);
@@ -263,7 +263,7 @@ void distantWheatFundsRecovery()
     swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
     REQUIRE(ai.budget.swarm_workers==0);
-    f.game.map.setResource(36,11,WHEAT,1);
+    f.game.map.setResourceByIndex(36,11,WHEAT,1);
     // A full water barrier (including the wrap edge) cuts off nonswimmers.
     for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.setCellTerrain(x,y,WATER);
     ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
@@ -333,7 +333,7 @@ void nearbyCornDeterminesStaffing()
     world=ai.collect_development_world(c);
     REQUIRE(world.tile(16,11).foodOpportunity==0);
     REQUIRE(world.tile(16,11).farmCapacity==0);
-    f.game.map.setResource(16,11,WHEAT,1);
+    f.game.map.setResourceByIndex(16,11,WHEAT,1);
     ai.budget.staffing_new_swarm_workers=1;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
@@ -377,10 +377,10 @@ void cornPileInteriorIsSupply()
     ai.budget.swarm_supply_radius=10;
     const long long before=ai.nearby_farm_capacity(c,0);
     for(int y=9;y<=11;++y) for(int x=37;x<=39;++x)
-        f.game.map.setResource(x,y,WHEAT,1);
+        f.game.map.setResourceByIndex(x,y,WHEAT,1);
     const long long planted=ai.nearby_farm_capacity(c,0);
     REQUIRE(planted>before);
-    f.game.map.setResource(38,10,STONE,1);
+    f.game.map.setResourceByIndex(38,10,STONE,1);
     const long long withoutCenter=ai.nearby_farm_capacity(c,0);
     REQUIRE(withoutCenter<planted);
     f.game.map.setNoResource(38,10,1);
@@ -644,7 +644,7 @@ void completionReallocatesColony()
     c.orders.clear(); c.buildings.tick(); f.applyStaffing();
     // The construction site carries the workers the placement action asked for.
     REQUIRE(fresh->maxUnitWorking==2);
-    for(int resource=0;resource<MAX_RESOURCES;++resource)
+    for(int resource=0;resource<MaterialCount;++resource)
         fresh->materials[resource]=fresh->type->maxMaterial[resource];
     fresh->updateBuildingSite();
     REQUIRE(fresh->maxUnitWorking==1);
@@ -1054,7 +1054,7 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
         for(int tick=0;tick<warmup+window;++tick) {
             for(int cell=0;cell<8;++cell) {
                 const int x=16+distance+cell%2,y=16+cell/2;
-                if(!world.game.map.getTile(x,y).resource.amount)world.game.map.setResource(x,y,WHEAT,1);
+                if(!world.game.map.getTile(x,y).resource.amount)world.game.map.setResourceByIndex(x,y,WHEAT,1);
             }
             world.step();
             if(controller && tick%256==0) {
@@ -1397,7 +1397,7 @@ TEST_CASE("feeding packet denominations preserve large stock rates and profile c
     Fixture f;auto snapshot=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
     const int id=f.game.buildingsTypes.getFinishedTypeNum("inn");
     snapshot["variants"][id]["properties"]["maxMaterial"][WHEAT]=1000000;
-    snapshot["variants"][id]["properties"]["materialMultiplier"]=std::vector<int>(MAX_NB_RESOURCES,1);
+    snapshot["variants"][id]["properties"]["materialMultiplier"]=std::vector<int>(MaterialSlotCount,1);
     snapshot["variants"][id]["properties"]["materialMultiplier"][WHEAT]=1000000;
     snapshot["variants"][id]["semantics"]["feeding"]["cost"]={{"food",1000000}};
     f.game.buildingsTypes.loadSnapshotJson(snapshot.dump());f.game.configureBuildingCatalog();

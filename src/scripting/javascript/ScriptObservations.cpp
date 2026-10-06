@@ -128,9 +128,9 @@ Value Observations::building(const Building &b) const
 			.set("requireBombing", b.explorersRequireBombing)
 			.set("workerMinimumLevel", b.minWorkerLevelToFlag)
 			.set("materials", numbers(b.materials, MaterialCount))
-			.set("resources", numbers(b.materials, MAX_NB_RESOURCES))
+			.set("resources", numbers(b.materials, MaterialSlotCount))
 			.set("wishedMaterials", numbers(b.wishedMaterials, MaterialCount))
-			.set("wishedResources", numbers(b.wishedMaterials, MAX_NB_RESOURCES))
+			.set("wishedResources", numbers(b.wishedMaterials, MaterialSlotCount))
 			.set("production", numbers(b.ratio, NB_UNIT_TYPE))
 			.set("productionTimeout", b.productionTimeout)
 			.set("receiveMask", b.receiveMaterialMask)
@@ -140,6 +140,8 @@ Value Observations::building(const Building &b) const
 		for (int i = 0; i < BASIC_COUNT; ++i)
 			a.items.emplace_back(b.clearingMaterials[i]);
 		v.set("clearingResources", a);
+        for (unsigned i=BASIC_COUNT;i<MaterialCount;++i) a.items.emplace_back(b.clearingMaterials[i]);
+        v.set("clearingMaterials", a);
 	}
 	return v;
 }
@@ -177,7 +179,7 @@ void Observations::observe()
 				remember(unsigned(game.map.coordToIndex(x, y))) = {
 					game.stepCounter, t.terrain, t.fertility, game.map.terrainTypeAt(x,y), r.type, r.variety, r.amount, true};
 				const auto index = unsigned(game.map.coordToIndex(x,y));
-				if (r.type != NO_RES_TYPE && std::popcount(game.map.resourceProperties(r.type).materialMask) > 1)
+				if (r.type != NO_RES_TYPE && std::popcount(game.map.resourcePropertiesByIndex(r.type).materialMask) > 1)
 					rememberedStocks[index] = game.map.materialStocksAt(index);
 				else rememberedStocks.erase(index);
 			}
@@ -217,9 +219,9 @@ Value Observations::tile(int x, int y) const
 	for (unsigned m=0; m<MaterialCount; ++m)
 	{
 		unsigned amount = 0;
-		if (current) amount = game.map.materialAmountAt(at,m);
+		if (current) amount = game.map.materialAmountAtSlot(at,m);
 		else if (rememberedStock != rememberedStocks.end()) amount = rememberedStock->second[m];
-		else if (t.type != NO_RES_TYPE && materialIndex(game.map.resourceProperties(t.type).primaryMaterial)==m) amount=t.amount;
+		else if (t.type != NO_RES_TYPE && materialIndex(game.map.resourcePropertiesByIndex(t.type).primaryMaterial)==m) amount=t.amount;
 		stock.items.emplace_back(amount);
 	}
 	v.set("materialStocks", stock);
@@ -332,8 +334,9 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
     {
 		// Registry definitions reveal no tile state. Cache per immutable registry;
 		// callers receive detached, read-only JS snapshots in both profiles.
-		charge(game.map.terrainRegistry().size() * 48);
-		if (terrainDefinitionRegistry != game.map.frozenTerrainRegistry())
+		charge(game.map.terrainRegistry().size() * (48 + game.map.resourceRegistry().size()));
+		if (terrainDefinitionRegistry != game.map.frozenTerrainRegistry() ||
+            terrainResourceDefinitionRegistry != game.map.frozenResourceRegistry())
 		{
 			terrainDefinitions = [&]
 			{
@@ -345,8 +348,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					const auto &presentation = game.map.terrainPresentation(type);
 					const auto experiment = terrainExperiment(type);
 					Value resources = Value::array();
-					for (unsigned resource = 0; resource < MAX_NB_RESOURCES; ++resource)
-						if (p.allowedResources & (1u << resource))
+					for (unsigned resource = 0; resource < game.map.resourceRegistry().size(); ++resource)
+						if (game.map.terrainSupportsResourceType(type, static_cast<ResourceId>(resource)))
 							resources.items.emplace_back(resource);
 					result.items.push_back(
 						Value::object()
@@ -379,6 +382,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 				return result;
 			}();
 			terrainDefinitionRegistry = game.map.frozenTerrainRegistry();
+            terrainResourceDefinitionRegistry = game.map.frozenResourceRegistry();
 		}
 		return terrainDefinitions;
 	}
@@ -392,19 +396,19 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		{
 			if (!game.isBuildingTypeAvailable(i)) continue;
 			const auto &b = *game.buildingsTypes.get(i);
-			charge(256 + NB_ABILITY * (MAX_NB_RESOURCES + 8), b.type.size() + b.key.size());
+			charge(256 + NB_ABILITY * (MaterialSlotCount + 8), b.type.size() + b.key.size());
             auto service = [&](const BuildingServiceSpec& spec) {
                 return Value::object().set("enabled", spec.enabled).set("unitMask", spec.unitMask)
-                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES));
+                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MaterialSlotCount));
             };
             Value training = Value::array(), production = Value::array();
             for (const auto& spec : b.semantics.training)
                 training.items.push_back(Value::object().set("enabled", spec.enabled).set("unitMask", spec.unitMask)
                     .set("targetLevel", spec.targetLevel).set("constructionLevel", spec.constructionLevel)
-                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES)));
+                    .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MaterialSlotCount)));
             for (const auto& spec : b.semantics.production.recipes)
                 production.items.push_back(Value::object().set("enabled", spec.enabled).set("duration", spec.duration)
-                    .set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES)));
+                    .set("cost", numbers(spec.cost.data(), MaterialSlotCount)));
 			a.items.push_back(
 				Value::object()
 					.set("id", i)
@@ -434,7 +438,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					.set("maxHp", b.hpMax)
 					.set("maxWorkers", b.semantics.assignmentLimit).set("usesWorkers", bool(b.maxUnitWorking))
 					.set("materialCapacity", numbers(b.maxMaterial, MaterialCount))
-					.set("resourceCapacity", numbers(b.maxMaterial, MAX_NB_RESOURCES)));
+					.set("resourceCapacity", numbers(b.maxMaterial, MaterialSlotCount)));
 		}
 		return a;
 	}
@@ -449,7 +453,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 			if (team < 0 || team == t)
 				v.set("allies", tm.allies)
 					.set("materials", numbers(tm.teamMaterials, MaterialCount))
-					.set("resources", numbers(tm.teamMaterials, MAX_NB_RESOURCES));
+					.set("resources", numbers(tm.teamMaterials, MaterialSlotCount));
 			a.items.push_back(v);
 		}
 		return a;
@@ -669,7 +673,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		if(t.type!=NO_RES_TYPE && !game.map.resourceRegistry().valid(t.type)) throw std::runtime_error("Invalid remembered resource");
 		const auto multiStock = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint8("multiStock") : 0;
 		if (multiStock > 1) throw std::runtime_error("Invalid remembered stock representation");
-		const auto* properties = t.type == NO_RES_TYPE ? nullptr : &game.map.resourceProperties(t.type);
+		const auto* properties = t.type == NO_RES_TYPE ? nullptr : &game.map.resourcePropertiesByIndex(t.type);
 		if (version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
 			bool(multiStock) != bool(properties && std::popcount(properties->materialMask) > 1))
 			throw std::runtime_error("Remembered stock representation does not match resource yields");
@@ -716,7 +720,7 @@ unsigned Script::Observations::materialStock(int x, int y, MaterialId material) 
 	if (!old || old->type == NO_RES_TYPE) return 0;
 	const auto stocks = rememberedStocks.find(index);
 	if (stocks != rememberedStocks.end()) return stocks->second[materialIndex(material)];
-	return game.map.resourceProperties(old->type).primaryMaterial == material ? old->amount : 0;
+	return game.map.resourcePropertiesByIndex(old->type).primaryMaterial == material ? old->amount : 0;
 }
 
 Script::Observations::Cell Script::Observations::cell(int x, int y) const

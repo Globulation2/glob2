@@ -34,7 +34,7 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
         auto* supplier=world.addBuilding("market",24,24,1);
         supplier->materials[WHEAT]=supplier->type->maxMaterial[WHEAT];
         for(int y=2;y<width;y+=13) for(int x=2;x<width;x+=11)
-            if(map.getBuilding(x,y)==NOGBID) map.setResource(x,y,WHEAT,5);
+            if(map.getBuilding(x,y)==NOGBID) map.setResourceByIndex(x,y,WHEAT,5);
         std::vector<Uint16> resource(size);
         const int iterations=std::max(8,1048576/size);
         for(int swim : {0,3}) for(int kind=0;kind<5;++kind)
@@ -79,7 +79,7 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
                 {
                     const int row=std::string(name)=="swarm" ? 0 : std::string(name)=="inn" ? 1 : std::string(name)=="hospital" ? 2 : 3;
                     auto* building=world.addBuilding(name,offset+4+column*12,4+row*9,0,team);
-                    for(int resource=0;resource<MAX_RESOURCES;++resource)
+                    for(int resource=0;resource<MaterialCount;++resource)
                         building->materials[resource]=building->type->maxMaterial[resource];
                 }
             for(int unit=0;unit<96;++unit)
@@ -87,9 +87,9 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
                     offset+3+unit%24,44+unit/24,team);
             world.game.teams[team]->createLists();
         }
-        for(int resource=0;resource<MAX_RESOURCES;++resource)
+        for(int resource=0;resource<MaterialCount;++resource)
             for(int y=75;y<100;++y) for(int x=4+resource*15;x<13+resource*15;++x)
-                world.game.map.setResource(x,y,resource,5);
+                world.game.map.setResourceByIndex(x,y,resource,5);
         world.game.setWaitingOnMask(0);
         // Optional diagnostics are separate from accepted timing runs. Report
         // real birth/death boundaries when comparing evolving workloads.
@@ -129,7 +129,7 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
                 if(auto* building=world.game.teams[team]->myBuildings[id])
                 {
                     ++buildings;health+=building->hp;
-                    for(int resource=0;resource<MAX_RESOURCES;++resource) stored+=building->materials[resource];
+                    for(int resource=0;resource<MaterialCount;++resource) stored+=building->materials[resource];
                 }
         }
         std::printf("building_sim,%d,4096,%lld,%d,%d,%lld,%lld\n",repeat,
@@ -155,7 +155,7 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
         auto* supplier=world.addBuilding("market",24,24,1);
         supplier->materials[WHEAT]=supplier->type->maxMaterial[WHEAT];
         for(int y=2;y<width;y+=13) for(int x=2;x<width;x+=11)
-            if(map.getBuilding(x,y)==NOGBID) map.setResource(x,y,WHEAT,5);
+            if(map.getBuilding(x,y)==NOGBID) map.setResourceByIndex(x,y,WHEAT,5);
         const int iterations=std::max(8,1048576/size);
         for(int swim : {0,3})
         {

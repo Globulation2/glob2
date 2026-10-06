@@ -739,7 +739,7 @@ void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, Bui
     else if (damageRows)
         metric(-1,Toolkit::getStringTable()->getString("[damage]"),target->semantics.projectileDamage[0]);
     metric(rows.range,Toolkit::getStringTable()->getString("[range]"),damageRows ? target->shootingRange : 0);
-    for (int resource=0;resource<MAX_RESOURCES;++resource)
+    for (int resource=0;resource<MaterialCount;++resource)
         if (drawnScene().materialVisible(resource))
             metric(rows.resource[resource],getMaterialName(resource),target->maxMaterial[resource]);
     metric(rows.bullets,Toolkit::getStringTable()->getString("[Bullets]"),target->maxBullets);

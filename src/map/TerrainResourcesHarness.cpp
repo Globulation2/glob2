@@ -8,6 +8,8 @@
 #include "IntBuildingType.h"
 #include "Map.h"
 #include "generator/shared/ResourceSemantics.h"
+#include "generator/shared/BalancedStarts.h"
+#include "generator/shared/Pipeline.h"
 #include "Race.h"
 #include "Unit.h"
 
@@ -17,6 +19,29 @@
 #include <locale>
 #include "online/Sha256.h"
 #include <vector>
+
+namespace
+{
+#define CHECK_MAP_ID_ARGUMENT(Name, Expected, Other, ...) \
+    template<class Id> concept Name = requires(Map& map, Id id) { __VA_ARGS__; }; \
+    static_assert(Name<Expected> && !Name<Other> && !Name<int> && !Name<decltype(Resource{}.type)>)
+CHECK_MAP_ID_ARGUMENT(MaterialAmountArgument,MaterialId,ResourceId,map.materialAmountAt(0,id));
+CHECK_MAP_ID_ARGUMENT(MaterialPresenceArgument,MaterialId,ResourceId,map.hasMaterialSource(id));
+CHECK_MAP_ID_ARGUMENT(MaterialSetArgument,MaterialId,ResourceId,map.setMaterialAmount(0,id,1));
+CHECK_MAP_ID_ARGUMENT(MaterialTakeableArgument,MaterialId,ResourceId,map.isMaterialTakeable(0,0,id));
+CHECK_MAP_ID_ARGUMENT(HarvestArgument,MaterialId,ResourceId,map.takeHarvest(0,0,0,0,id,1));
+CHECK_MAP_ID_ARGUMENT(MaterialHabitatArgument,MaterialId,ResourceId,map.terrainSupportsMaterialAt(0,0,id));
+CHECK_MAP_ID_ARGUMENT(MaterialGrowthArgument,MaterialId,ResourceId,map.materialGrowthRateAt(0,id));
+CHECK_MAP_ID_ARGUMENT(MaterialExpansionArgument,MaterialId,ResourceId,map.materialExpansionRateAt(0,id));
+CHECK_MAP_ID_ARGUMENT(MaterialGradientArgument,MaterialId,ResourceId,map.getMaterialGradient(0,id,0));
+CHECK_MAP_ID_ARGUMENT(MaterialAvailabilityArgument,MaterialId,ResourceId,map.materialAvailable(0,id,0,0,0));
+CHECK_MAP_ID_ARGUMENT(MaterialDistanceArgument,MaterialId,ResourceId,map.materialAvailable(0,id,0,0,0,static_cast<int*>(nullptr)));
+CHECK_MAP_ID_ARGUMENT(ResourceIncrementArgument,ResourceId,MaterialId,map.incResource(0,0,id,0));
+CHECK_MAP_ID_ARGUMENT(ResourceSetArgument,ResourceId,MaterialId,map.setResource(0,0,id,0));
+CHECK_MAP_ID_ARGUMENT(ResourcePropertiesArgument,ResourceId,MaterialId,map.resourceProperties(id));
+CHECK_MAP_ID_ARGUMENT(ResourceHabitatArgument,ResourceId,MaterialId,map.terrainSupportsResourceAt(0,0,id));
+#undef CHECK_MAP_ID_ARGUMENT
+}
 
 TEST_SUITE("TerrainResources")
 {
@@ -224,15 +249,15 @@ TEST_CASE("material harvesting consumes stock and never invents a delivery")
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(4,4,GRASS);
-    REQUIRE(map.incResource(8,8,WHEAT,0));
+    REQUIRE(map.incResourceByIndex(8,8,WHEAT,0));
     const auto tile=map.coordToIndex(8,8);
     CHECK(map.hasMaterialSource(MaterialId::Food));
-    REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Food),1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
     CHECK(map.getResource(tile).type==NO_RES_TYPE);
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Food));
-    CHECK_FALSE(map.takeHarvest(7,8,1,0,int(MaterialId::Food),1));
-    REQUIRE(map.incResource(8,8,STONE,0));
-    for (int n=0;n<12;++n) REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Stone),1));
+    CHECK_FALSE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
+    REQUIRE(map.incResourceByIndex(8,8,STONE,0));
+    for (int n=0;n<12;++n) REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Stone,1));
     CHECK(map.materialAmountAt(tile,MaterialId::Stone)==1);
 }
 
@@ -241,18 +266,18 @@ TEST_CASE("growth at capacity stays capped and persistent fruit depletes")
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(4,4,GRASS);
-    REQUIRE(map.incResource(8,8,WHEAT,0));
+    REQUIRE(map.incResourceByIndex(8,8,WHEAT,0));
     const auto tile=map.coordToIndex(8,8);
     map.setResourceAmount(tile,5);
     CHECK_FALSE(map.growResourceStock(tile));
     CHECK(map.getResource(tile).amount==5);
     map.replaceResource(tile,Resource{});
-    REQUIRE(map.incResource(8,8,CHERRY,0));
-    REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Cherries),1));
+    REQUIRE(map.incResourceByIndex(8,8,CHERRY,0));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Cherries,1));
     CHECK(map.getResource(tile).type==CHERRY);
     CHECK(map.materialAmountAt(tile,MaterialId::Cherries)==0);
-    CHECK_FALSE(map.isMaterialTakeable(8,8,CHERRY));
-    CHECK_FALSE(map.takeHarvest(7,8,1,0,int(MaterialId::Cherries),1));
+    CHECK_FALSE(map.isMaterialTakeableSlot(8,8,CHERRY));
+    CHECK_FALSE(map.takeHarvest(7,8,1,0,MaterialId::Cherries,1));
     REQUIRE(map.growResourceStock(tile));
     CHECK(map.materialAmountAt(tile,MaterialId::Cherries)==1);
 }
@@ -271,7 +296,7 @@ TEST_CASE("custom compound deposit has independent material stock and destructiv
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
     const auto id=map.resourceRegistry().find("compound-test");
     REQUIRE(id.has_value());
-    REQUIRE(map.incResource(8,8,resourceIndex(*id),0));
+    REQUIRE(map.incResourceByIndex(8,8,resourceIndex(*id),0));
     const auto tile=map.coordToIndex(8,8);
     CHECK(map.materialAmountAt(tile,MaterialId::Food)==1);
     CHECK(map.materialAmountAt(tile,MaterialId::Wood)==3);
@@ -279,7 +304,7 @@ TEST_CASE("custom compound deposit has independent material stock and destructiv
     CHECK_FALSE(map.resourceBlocksGround(tile));
     CHECK(map.resourceBlocksAir(tile));
     CHECK_FALSE(map.isFreeForAirUnit(8,8));
-    REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Food),1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
     CHECK(map.materialAmountAt(tile,MaterialId::Wood)==3);
     CHECK(map.getResource(tile).amount==3);
     map.setMaterialAmount(tile,MaterialId::Wood,2);
@@ -299,7 +324,7 @@ TEST_CASE("custom compound deposit has independent material stock and destructiv
     map.replaceResource(tile,map.getResource(tile));
     CHECK(map.materialAmountAt(tile,MaterialId::Food)==1);
     CHECK(map.materialAmountAt(tile,MaterialId::Wood)==3);
-    REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Wood),1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Wood,1));
     CHECK(map.getResource(tile).type==NO_RES_TYPE);
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Wood));
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Food));
@@ -330,10 +355,10 @@ TEST_CASE("resource identities above byte range preserve compound stocks through
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",definitions}}.dump());
     const auto id=*map.resourceRegistry().find("fixture-resource-1259");
     REQUIRE(resourceIndex(id)>255);
-    REQUIRE(map.incResource(12,12,resourceIndex(id),0));
+    REQUIRE(map.incResourceByIndex(12,12,resourceIndex(id),0));
     const auto at=map.coordToIndex(12,12);
-    map.setMaterialAmount(at,int(MaterialId::Food),0);
-    map.setMaterialAmount(at,int(MaterialId::Wood),4);
+    map.setMaterialAmount(at,MaterialId::Food,0);
+    map.setMaterialAmount(at,MaterialId::Wood,4);
     CHECK(map.getResource(at).amount==4);
     auto* bytes=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
@@ -362,13 +387,13 @@ TEST_CASE("last finite source extinction and persistent source regrowth update m
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(4,4,GRASS);
-    REQUIRE(map.incResource(8,8,WHEAT,0));
+    REQUIRE(map.incResourceByIndex(8,8,WHEAT,0));
     const auto at=map.coordToIndex(8,8);
-    map.setMaterialAmount(at,int(MaterialId::Food),0);
+    map.setMaterialAmount(at,MaterialId::Food,0);
     CHECK(map.getResource(at).type==NO_RES_TYPE);
     CHECK_FALSE(map.hasMaterialSource(MaterialId::Food));
-    REQUIRE(map.incResource(8,8,CHERRY,0));
-    map.setMaterialAmount(at,int(MaterialId::Cherries),0);
+    REQUIRE(map.incResourceByIndex(8,8,CHERRY,0));
+    map.setMaterialAmount(at,MaterialId::Cherries,0);
     CHECK(map.hasMaterialSource(MaterialId::Cherries));
     CHECK(map.materialMaskAt(at)==0);
     REQUIRE(map.growResourceStock(at));
@@ -380,6 +405,56 @@ TEST_CASE("last finite source extinction and persistent source regrowth update m
 
 TEST_SUITE("RuntimeResources")
 {
+TEST_CASE("shared starting supply checks accept material sources above resource id 255")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    auto& game=fixture.game;
+    auto& map=game.map;
+    using Json=nlohmann::json;
+    const auto builtins=Json::parse(map.resourceRegistry().serialize())["resources"];
+    Json definitions=Json::array();
+    for (unsigned i=0;i<300;++i)
+    {
+        auto spec=builtins[WHEAT];
+        spec["key"]="source-"+std::to_string(i);
+        definitions.push_back(spec);
+    }
+    auto food=builtins[WHEAT]; food["key"]="zzz-food";
+    auto wood=builtins[WOOD]; wood["key"]="zzz-wood";
+    definitions.push_back(food); definitions.push_back(wood);
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",definitions}}.dump());
+    const auto foodId=*map.resourceRegistry().find("zzz-food");
+    const auto woodId=*map.resourceRegistry().find("zzz-wood");
+    REQUIRE(resourceIndex(foodId)>255); REQUIRE(resourceIndex(woodId)>255);
+    for(int y : {8,24}) for(int x : {8,24})
+    {
+        REQUIRE(map.incResource(x,y,ResourceId(WHEAT),0));
+        REQUIRE(map.incResource(x+2,y,ResourceId(WOOD),0));
+    }
+    GenerationRequest request; request.nbTeams=2; request.nbWorkers=4;
+    GenerationContext builtinContext(request), customContext(request);
+    REQUIRE(MapGeneration::chooseBalancedStarts(game,builtinContext,64));
+    for(int y : {8,24}) for(int x : {8,24})
+    {
+        map.replaceResource(x,y,Resource{}); map.replaceResource(x+2,y,Resource{});
+        REQUIRE(map.incResource(x,y,foodId,0));
+        REQUIRE(map.incResource(x+2,y,woodId,0));
+    }
+    REQUIRE(MapGeneration::chooseBalancedStarts(game,customContext,64));
+    CHECK(customContext.bootX==builtinContext.bootX);
+    CHECK(customContext.bootY==builtinContext.bootY);
+    fixture.addUnit(WORKER,7,8);
+    const std::vector<MapGeneration::MaterialAccessRule> rules={{MaterialId::Food,4,"food"},{MaterialId::Wood,4,"wood"}};
+    CHECK(MapGeneration::startingAccessFailure(map,1,rules,0).empty());
+    CHECK_FALSE(MapGeneration::startingAccessFailure(map,1,{{MaterialId::Gold,4,"gold"}},0).empty());
+    map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,0);
+    CHECK_FALSE(MapGeneration::startingAccessFailure(map,1,rules,0).empty());
+    // A secondary yield also satisfies supply; identity and primary yield do not.
+    wood["yields"]["food"]={{"capacity",3},{"initial",2},{"consumption","one"}};
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({wood})}}.dump());
+    CHECK(MapGeneration::startingAccessFailure(map,1,rules,0).empty());
+}
 TEST_CASE("fixed property ablations preserve harvest growth clearing and movement invariants")
 {
     glob2test::HeadlessGlobals globals;
@@ -411,7 +486,7 @@ TEST_CASE("fixed property ablations preserve harvest growth clearing and movemen
         resource["yields"]["wood"]={{"capacity",capacity+1},{"initial",2},{"growthRate",(bits&128)?196608:0},{"consumption","one"}};
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({resource})}}.dump());
         const auto id=resourceIndex(*map.resourceRegistry().find("ablation"));
-        REQUIRE(map.incResource(8,8,id,0));
+        REQUIRE(map.incResourceByIndex(8,8,id,0));
         const auto index=map.coordToIndex(8,8);
         CHECK(map.resourceBlocksGround(index)==bool(bits&1));
         CHECK(map.resourceBlocksAir(index)==bool(bits&2));
@@ -424,11 +499,11 @@ TEST_CASE("fixed property ablations preserve harvest growth clearing and movemen
         CHECK(MapGeneration::permanentResourceBarrier(map,index)==permanent);
         resource["properties"]["clearable"]=true;
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({resource})}}.dump());
-        REQUIRE(map.takeHarvest(7,8,1,0,int(MaterialId::Food),1));
+        REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
         if (std::string_view(consume)=="all")
         {
             CHECK(map.getResource(index).type==NO_RES_TYPE);
-            CHECK_FALSE(map.takeHarvest(7,8,1,0,int(MaterialId::Wood),1));
+            CHECK_FALSE(map.takeHarvest(7,8,1,0,MaterialId::Wood,1));
             continue;
         }
         CHECK(map.materialAmountAt(index,MaterialId::Food)==(std::string_view(consume)=="infinite" ? 1 : 0));
@@ -455,9 +530,9 @@ TEST_CASE("editor catalog replacement preserves materials across layouts and rej
     glob2test::HeadlessGlobals globals;
     Map map;
     map.setSize(4,4,GRASS);
-    REQUIRE(map.incResource(8,8,WHEAT,0));
+    REQUIRE(map.incResourceByIndex(8,8,WHEAT,0));
     const auto index=map.coordToIndex(8,8);
-    map.setMaterialAmount(index,int(MaterialId::Food),4);
+    map.setMaterialAmount(index,MaterialId::Food,4);
     using Json=nlohmann::json;
     auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][1];
     const auto install=[&](const Json& definition) {
@@ -492,12 +567,12 @@ TEST_CASE("redefined builtin resource follows declarative habitat and terrain wh
     spec["properties"]["habitatMask"]=ResourceAquatic;
     spec["properties"]["ecology"]="shore";
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
-    CHECK_FALSE(map.terrainSupportsResourceAt(8,8,WHEAT));
+    CHECK_FALSE(map.terrainSupportsResourceAtByIndex(8,8,WHEAT));
     map.setCellTerrain(8,8,WATER);
-    CHECK(map.terrainSupportsResourceAt(8,8,WHEAT));
+    CHECK(map.terrainSupportsResourceAtByIndex(8,8,WHEAT));
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:whitelist","name":"Whitelist","base":"grass","appearance":"grass","properties":{},"allowedResourceKeys":["wheat"]}]})");
     map.setCellTerrain(9,8,*map.terrainRegistry().find("fixture:whitelist"));
-    CHECK_FALSE(map.terrainSupportsResourceAt(9,8,WHEAT));
+    CHECK_FALSE(map.terrainSupportsResourceAtByIndex(9,8,WHEAT));
     const auto oldRegistry=map.frozenTerrainRegistry();
     const auto checksum=map.checkSum(true);
     CHECK_THROWS(map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:invalid-whitelist","name":"Invalid","base":"grass","appearance":"grass","properties":{},"allowedResourceKeys":["missing-resource"]}]})"));
@@ -526,12 +601,102 @@ TEST_CASE("destructive resources cannot bridge pooled farms even without reserve
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
         const auto id=*map.resourceRegistry().find("destructive-farm");
         REQUIRE(map.incResource(9,8,id,0));
-        REQUIRE(map.incResource(10,8,WHEAT,0));
+        REQUIRE(map.incResourceByIndex(10,8,WHEAT,0));
         map.setMaterialAmount(map.coordToIndex(10,8),MaterialId::Food,5);
         map.addFarmArea(9,8,0);
         map.addFarmArea(10,8,0);
-        CHECK_FALSE(map.pickFarmHarvestTile(8,8,int(MaterialId::Food),1).has_value());
+        CHECK_FALSE(map.pickFarmHarvestTileSlot(8,8,int(MaterialId::Food),1).has_value());
         CHECK(map.materialAmountAt(map.coordToIndex(9,8),MaterialId::Food)==1);
+    }
+}
+TEST_CASE("infinite farm stocks remain harvestable at their seed reserve")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.header=true; options.loadDefaultRace=true;
+    options.experiments.set(ExperimentId::FarmAreas,true);
+    glob2test::HeadlessGame fixture(options);
+    auto& map=fixture.game.map;
+    using Json=nlohmann::json;
+    auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+    spec["key"]="infinite-farm";
+    spec["yields"]["food"]["initial"]=1;
+    spec["yields"]["food"]["seedReserve"]=1;
+    spec["yields"]["food"]["consumption"]="infinite";
+    spec["yields"]["food"]["destroysDeposit"]=false;
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+    const auto id=*map.resourceRegistry().find("infinite-farm");
+    REQUIRE(map.incResource(9,8,id,0));
+    map.addFarmArea(9,8,0);
+    for (unsigned harvest=0;harvest<4;++harvest)
+    {
+        CHECK(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.materialAmountAt(map.coordToIndex(9,8),MaterialId::Food)==1);
+    }
+}
+
+TEST_CASE("farm harvest uses the touched material policy before pooling neighboring stock")
+{
+    glob2test::HeadlessGlobals globals;
+    using Json=nlohmann::json;
+    for (bool all : {false,true})
+    {
+        glob2test::GameOptions options;
+        options.header=true; options.loadDefaultRace=true;
+        options.experiments.set(ExperimentId::FarmAreas,true);
+        glob2test::HeadlessGame fixture(options);
+        auto& map=fixture.game.map;
+        auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+        spec["key"]="mixed-farm-harvest";
+        spec["yields"]["food"]["initial"]=1;
+        spec["yields"]["food"]["seedReserve"]=1;
+        spec["yields"]["gold"]={{"capacity",4},{"initial",3},
+            {"consumption",all ? "all" : "one"},{"destroysDeposit",!all}};
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+        const auto id=*map.resourceRegistry().find("mixed-farm-harvest");
+        REQUIRE(map.incResource(9,8,id,0));
+        map.addFarmArea(9,8,0);
+        const auto target=map.coordToIndex(9,8);
+        // The same mixed deposit must still withhold its renewable food seed.
+        CHECK_FALSE(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.materialAmountAt(target,MaterialId::Food)==1);
+        REQUIRE(map.takeHarvest(8,8,1,0,MaterialId::Gold,1));
+        CHECK(map.getResource(target).type==NO_RES_TYPE);
+
+        spec["yields"].erase("gold");
+        spec["yields"]["food"]["consumption"]=all ? "all" : "one";
+        spec["yields"]["food"]["destroysDeposit"]=!all;
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+        REQUIRE(map.incResource(9,8,id,0));
+        REQUIRE(map.incResourceByIndex(8,9,WHEAT,0));
+        const auto neighbor=map.coordToIndex(8,9);
+        map.setMaterialAmount(neighbor,MaterialId::Food,5);
+        map.addFarmArea(8,9,0);
+        // A nearby poolable crop must not replace the explicitly touched target.
+        REQUIRE(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.getResource(target).type==NO_RES_TYPE);
+        CHECK(map.materialAmountAt(neighbor,MaterialId::Food)==5);
+        // A vanished target cannot redirect an already-started harvest.
+        CHECK_FALSE(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.materialAmountAt(neighbor,MaterialId::Food)==5);
+
+        spec["properties"]["farmable"]=false;
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+        REQUIRE(map.incResource(9,8,id,0));
+        REQUIRE(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.getResource(target).type==NO_RES_TYPE);
+        CHECK(map.materialAmountAt(neighbor,MaterialId::Food)==5);
+
+        spec["properties"]["farmable"]=true;
+        spec["yields"]["food"]["consumption"]="one";
+        spec["yields"]["food"]["destroysDeposit"]=false;
+        spec["yields"]["gold"]={{"capacity",4},{"initial",3},{"consumption","one"}};
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+        REQUIRE(map.incResource(9,8,id,0));
+        map.setMaterialAmount(target,MaterialId::Food,0);
+        CHECK_FALSE(map.takeHarvest(8,8,1,0,MaterialId::Food,1));
+        CHECK(map.materialAmountAt(target,MaterialId::Gold)==3);
+        CHECK(map.materialAmountAt(neighbor,MaterialId::Food)==5);
     }
 }
 }
@@ -562,7 +727,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     header.setNumberOfPlayers(1);
     header.getBasePlayer(0) = BasePlayer(0,"test",0,BasePlayer::P_LOCAL);
     original.game.setGameHeader(header,true);
-    REQUIRE(original.game.map.incResource(6,6,resourceIndex(*original.game.map.resourceRegistry().find("wheat")),0));
+    REQUIRE(original.game.map.incResourceByIndex(6,6,resourceIndex(*original.game.map.resourceRegistry().find("wheat")),0));
     auto* bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
     original.game.save(&output,false,"Embedded resources without installed defaults");
@@ -718,7 +883,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
             if(n%4==0) map.setCellTerrain(x+1,y,SAND);
             const auto id=*map.resourceRegistry().find("fixture:composition-"+std::to_string(n));
             REQUIRE(map.incResource(x,y,id,0));
-            if(map.resourceProperties(resourceIndex(id)).farmable) map.addFarmArea(x,y,0);
+            if(map.resourcePropertiesByIndex(resourceIndex(id)).farmable) map.addFarmArea(x,y,0);
         }
         const auto invariant=[](Map& current) {
             std::array<std::uint64_t,MaterialCount> totals{};
@@ -740,8 +905,8 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
                 if(deposit.type==NO_RES_TYPE) REQUIRE(sum==0);
                 else
                 {
-                    REQUIRE(current.terrainSupportsResourceAt(x,y,deposit.type));
-                    const auto& p=current.resourceProperties(deposit.type);
+                    REQUIRE(current.terrainSupportsResourceAtByIndex(x,y,deposit.type));
+                    const auto& p=current.resourcePropertiesByIndex(deposit.type);
                     REQUIRE(current.resourceBlocksGround(index)==p.blocksGround);
                     REQUIRE(current.resourceBlocksAir(index)==p.blocksAir);
                     REQUIRE(current.resourceBlocksBuilding(index)==p.blocksBuilding);
@@ -783,7 +948,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
             }
             else if(tick%4==2)
             {
-                const auto selected=current.pickFarmHarvestTile(x-1,y,materialIndex(MaterialId::Food),1);
+                const auto selected=current.pickFarmHarvestTileSlot(x-1,y,materialIndex(MaterialId::Food),1);
                 if(selected)
                 {
                     const auto& deposit=current.getResource(*selected);
@@ -803,7 +968,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
                 std::uint64_t removed=0;
                 for(unsigned m=0;m<MaterialCount;++m) { REQUIRE(after[m]<=before[m]); removed+=before[m]-after[m]; }
                 if(deposit.type!=NO_RES_TYPE)
-                    CHECK(removed==(current.resourceProperties(deposit.type).clearConsumption==ResourceConsumption::All ? deposit.amount : std::min<Uint32>(1,deposit.amount)));
+                    CHECK(removed==(current.resourcePropertiesByIndex(deposit.type).clearConsumption==ResourceConsumption::All ? deposit.amount : std::min<Uint32>(1,deposit.amount)));
                 else CHECK(removed==0);
             }
             else if(tick%4==3) current.growResourceStock(index);

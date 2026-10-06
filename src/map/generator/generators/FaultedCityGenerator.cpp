@@ -466,7 +466,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	writeUndermap(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k) game.addTeam();
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i]) map.setResource(i % t.w, i / t.w, STONE, 1);
+		if (L.wall[i]) map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	const auto fertility = Fertility::forMap(map, false);
 	std::vector<int> starterOwner(L.plots.size(), -1);
 	for (int site : sites)
@@ -524,13 +524,13 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			!L.wall[i] && clearGround(map, i % t.w, i / t.w))
 		{
 			const auto draw = c.bounded("faulted-city-ambient", 12000);
-			if (draw < unsigned(o.stone)) { map.setResource(i % t.w, i / t.w, STONE, 1); ++stones; }
+			if (draw < unsigned(o.stone)) { map.setResourceByIndex(i % t.w, i / t.w, STONE, 1); ++stones; }
 
 		}
 	for (int i = 0; i < t.size(); ++i)
 		if (L.crop[i] >= CHERRY && !L.junction[i] && clearGround(map, i % t.w, i / t.w) &&
 			c.bounded("faulted-city-fruit", 300) < unsigned(o.fruit))
-		{ map.setResource(i % t.w, i / t.w, L.crop[i], 1); ++fruits; }
+		{ map.setResourceByIndex(i % t.w, i / t.w, L.crop[i], 1); ++fruits; }
 	seedAlgae(map, c, t, "faulted-city-algae", o.algae, AlgaeBand::anyWater());
 	if (const auto routes = colonyRoutes(map, L, c.request.nbTeams); !routes.empty())
 	{ c.telemetry.choice("faulted-city.rejected-check", "routes"); c.detail = routes; return false; }
@@ -652,7 +652,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			return "A city fault is obstructed.";
 	}
 	if (const auto access = startingAccessFailure(game.map, c.request.nbTeams,
-		{{WHEAT, 12, "wheat"}, {WOOD, 24, "wood"}, {STONE, 32, "stone"}}, 48); !access.empty()) return access;
+		{{MaterialId::Food, 12, "food"}, {MaterialId::Wood, 24, "wood"}, {MaterialId::Stone, 32, "stone"}}, 48); !access.empty()) return access;
 	if (const auto routes = colonyRoutes(game.map, L, c.request.nbTeams); !routes.empty()) return routes;
 	if (const auto food = colonyFood(game.map, L, c.request.nbTeams); !food.empty()) return food;
 	if (const auto room = colonyRoom(game.map, L, c.request.nbTeams); !room.empty()) return room;

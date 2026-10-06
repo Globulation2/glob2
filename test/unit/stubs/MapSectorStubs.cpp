@@ -37,5 +37,5 @@ void Map::updateForbiddenGradient(int, int) { std::abort(); }
 #include "Building.h"
 Sint32 Building::availableMaterial(int) const { std::abort(); }
 
-unsigned Map::materialSupplyModes(const Building*, int) const { std::abort(); }
-bool Map::stockSupplierEligible(const Building*, const Building*, int, unsigned) const { std::abort(); }
+unsigned Map::materialSupplyModesSlot(const Building*, int) const { std::abort(); }
+bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsigned) const { std::abort(); }

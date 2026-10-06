@@ -128,7 +128,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	unitConversionGained = stream->readSint32("unitConversionGained");
 
 	stream->readEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
+	for (unsigned int i=0; i<MaterialSlotCount; ++i)
 	{
 		stream->readEnterSection(i);
 		teamMaterials[i] = stream->readUint32("teamRessources");
@@ -246,7 +246,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 				throw std::runtime_error("Saved unit reservation has no building service visit");
 	}
 
-	std::fill_n(reservedTeamMaterials, MAX_NB_RESOURCES, 0);
+	std::fill_n(reservedTeamMaterials, MaterialSlotCount, 0);
 	stockSuppliers.clear();
 	directStockSuppliers.clear();
 	combatFlags.clear();
@@ -348,7 +348,7 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(unitConversionGained, "unitConversionGained");
 
 	stream->writeEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
+	for (unsigned int i=0; i<MaterialSlotCount; ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint32(teamMaterials[i], "teamRessources");

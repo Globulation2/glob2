@@ -26,7 +26,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			roundTripGradient[r][i]=NULL;
 	}
 	freeGradients();
@@ -90,7 +90,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	explorersRequireBombing=false;
 
 	// building specific :
-	for(int i=0; i<MAX_NB_RESOURCES; i++)
+	for(int i=0; i<MaterialSlotCount; i++)
 	{
 		localMaterials[i]=0;
 		wishedMaterials[i]=0;
@@ -130,7 +130,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			roundTripGradient[r][i]=NULL;
 	}
 	freeGradients();
@@ -189,7 +189,7 @@ void Building::resetRoundTripGradients()
 {
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 		{
 			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
 			roundTripGradient[r][i] = NULL;
@@ -215,7 +215,7 @@ void Building::freeIdleGradients()
 	}
 	for (int c=0; c<SWIM_CLASS_COUNT; c++)
 	{
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
 			{
 				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
@@ -238,7 +238,7 @@ void Building::freeGradients()
 	}
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 		{
 			delete[] roundTripGradient[r][i];
 			roundTripGradient[r][i] = NULL;
@@ -324,7 +324,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (minLevelToFlag < 0 || minLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid flag level");
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESOURCES; i++)
+	for (int i=0; i<MaterialSlotCount; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
@@ -418,7 +418,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		repairHealthGranted = stream->readSint32("repairHealthGranted");
 		if (repairInitialDeficit<0 || repairInitialDeficit>getEffectiveMaxHp() || repairHealthGranted<0 || repairHealthGranted>repairInitialDeficit)
 			throw std::runtime_error("Invalid saved repair progress");
-		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+		for (int r=0; r<MaterialSlotCount; ++r)
 		{
 			constructionBudget[r] = stream->readSint32(("constructionBudget["+std::to_string(r)+"]").c_str());
 			constructionReserved[r] = stream->readSint32(("constructionReserved["+std::to_string(r)+"]").c_str());
@@ -437,7 +437,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		{
 			constructionBudget = type->semantics.constructionCost;
 			if (constructionResultState == REPAIR) repairInitialDeficit=std::max(0,getEffectiveMaxHp()-hp);
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 				if (constructionResultState == REPAIR)
 				{
 					constructionBudget[r] = std::max(0, constructionBudget[r]-localMaterials[r]);
@@ -511,7 +511,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(minLevelToFlag, "minLevelToFlag");
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESOURCES; i++)
+	for (int i=0; i<MaterialSlotCount; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
@@ -557,7 +557,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(constructionOriginTypeNum, "constructionOriginTypeNum");
 	stream->writeSint32(repairInitialDeficit, "repairInitialDeficit");
 	stream->writeSint32(repairHealthGranted, "repairHealthGranted");
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 	{
 		stream->writeSint32(constructionBudget[r], ("constructionBudget["+std::to_string(r)+"]").c_str());
 		stream->writeSint32(constructionReserved[r], ("constructionReserved["+std::to_string(r)+"]").c_str());
@@ -672,7 +672,7 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 			inUpgrade[i] = readListState("inUpgrade");
 			stream->readLeaveSection();
 		}
-		for (int i=0; i<MAX_NB_RESOURCES; ++i)
+		for (int i=0; i<MaterialSlotCount; ++i)
 		{
 			stream->readEnterSection(i);
 			wishedMaterials[i] = stream->readSint32("wishedResource");
@@ -754,7 +754,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		stream->writeUint8(inUpgrade[i], "inUpgrade");
 		stream->writeLeaveSection();
 	}
-	for (int i=0; i<MAX_NB_RESOURCES; ++i)
+	for (int i=0; i<MaterialSlotCount; ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeSint32(wishedMaterials[i], "wishedResource");

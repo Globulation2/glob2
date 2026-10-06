@@ -149,7 +149,7 @@ TEST_SUITE("GUIInteractionCoverage")
         CHECK(render()==original);
         site->semantics.constructionCost[WOOD]+=17;
         const auto changedCost=render(); CHECK(changedCost!=original);
-        for (int resource=HAPPINESS_BASE; resource<MAX_RESOURCES; ++resource)
+        for (int resource=HAPPINESS_BASE; resource<MaterialCount; ++resource)
         {
             const auto before=render();
             site->semantics.constructionCost[resource]=resource+1;
@@ -181,7 +181,7 @@ TEST_SUITE("GUIInteractionCoverage")
         from["properties"]["defaultUnitStayRange"]=0;from["properties"]["maxUnitStayRange"]=16;
         from["properties"]["zonable"]={1,1,1};
         from["properties"]["maxMaterial"][STONE]=15;
-        for(int r=HAPPINESS_BASE;r<MAX_RESOURCES;++r)from["properties"]["maxMaterial"][r]=20;
+        for(int r=HAPPINESS_BASE;r<MaterialCount;++r)from["properties"]["maxMaterial"][r]=20;
         from["semantics"]["market"]["interTeamFruitExchange"]=true;
         const int producer=world.game.buildingsTypes.getFinishedTypeNum("swarm");
         from["semantics"]["production"]=catalog["variants"][producer]["semantics"]["production"];

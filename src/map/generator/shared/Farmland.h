@@ -322,7 +322,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	std::vector<int> rowRoom;
 	for (int i = 0; i < t.size(); ++i)
 		if (farm.row[i] >= 0 && farm.row[i] % 2 == 0 && fromWater[i] >= 0 && !farm.plot[i] &&
-			eligible(i) && map.terrainSupportsResourceAt(i % t.w,i / t.w,WHEAT))
+			eligible(i) && map.terrainSupportsResourceAtByIndex(i % t.w,i / t.w,WHEAT))
 		{
 			crops.push_back({fromWater[i], i});
 			if (farm.row[i] >= int(rowRoom.size()))
@@ -340,7 +340,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 		const int i = entry.second;
 		if (woods < wood && farm.row[i] == woodRow)
 		{
-			map.setResource(i % t.w, i / t.w, WOOD, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 			++woods;
 			++planted;
 		}
@@ -352,7 +352,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 			break;
 		if (map.isResource(i % t.w, i / t.w))
 			continue;
-		map.setResource(i % t.w, i / t.w, WHEAT, 1);
+		map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 		++wheats;
 		++planted;
 	}

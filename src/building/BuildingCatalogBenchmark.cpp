@@ -99,12 +99,12 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
         {
             // A revision models depletion/replenishment. Warm passes use the
             // same tick so age expiry does not obscure working-set effects.
-            if(phase==0 || phase==2) map.dirtyMarketGradients(0,WOOD);
+            if(phase==0 || phase==2) map.dirtyMarketGradientsSlot(0,WOOD);
             if(phase==2) consumers.front()->materials[WOOD]=0;
             Uint64 digest=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
-                const auto* field=map.getMaterialGradient(0,WOOD,0,false,consumer);
+                const auto* field=map.getMaterialGradientSlot(0,WOOD,0,false,consumer);
                 digest+=field[map.coordToIndex(consumer->posX,consumer->posY)];
             }
             const auto duration=elapsed(start);

@@ -264,7 +264,7 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
-		if (resource < 0 || resource >= MAX_RESOURCES)
+		if (resource < 0 || resource >= MaterialCount)
 			return -1;
 	const int site = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (site < 0)

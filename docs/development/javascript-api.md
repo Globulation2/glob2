@@ -196,7 +196,8 @@ family; their presence does not imply that an order is supported.
 | `productionTimeout` | Swarm production countdown in ticks |
 | `receiveMask`, `sendMask` | Market resource-ID bitmasks |
 | `bullets` | Stored tower ammunition |
-| `clearingResources` | Five booleans indexed wood/wheat/papyrus/stone/alga |
+| `clearingMaterials` | Twelve booleans indexed by fixed material ID |
+| `clearingResources` | Legacy first five material booleans |
 
 ### Building type record
 
@@ -320,7 +321,7 @@ Each entry has `id`, stable `name`, `experiment` (a required experiment key or
 | `groundSpeedQ8`, `airSpeedQ8`, `growthQ8` | Multipliers: `256` is normal, `128` half, `512` double |
 | `groundHealthQ8`, `airHealthQ8` | Signed HP per exposed tick, divided by `256`; negative damages |
 | `fertilityQ8`, `inhibitionQ8`, `shoreSupportQ8` | Nearby contribution, inhibition, and aquatic shoreline support in Q8 units |
-| `allowedResources` | Array of resource IDs that the terrain supports |
+| `allowedResources` | Runtime resource IDs permitted by compiled habitat rules and explicit terrain whitelists; refreshed when either catalog changes |
 | `farmMaterial` | Preferred renewable farming material key, or `null` for none |
 
 The array is ID-indexed and includes internal shoreline profiles and experimental
@@ -399,7 +400,8 @@ generation. A returned entity record is acceptable as that reference.
 | `requireBombing` | Explorer-attracting `building`, `requireBombing`: boolean |
 | `workerMinimumLevel` | Worker-attracting `building`, `workerMinimumLevel`: `0..3` |
 | `moveFlag` | Virtual `building`, canonical `x`, `y` |
-| `clearingResources` | Clearing-flag `building`, `resources`: exactly five booleans; index `3` (stone) must be false |
+| `clearingMaterials` | Clearing-flag `building`, `materials`: twelve material booleans; resource clearability still controls actual clearing |
+| `clearingResources` | Legacy clearing order: `building`, `resources` accepts five or twelve material booleans |
 | `forbidden`, `guardArea`, `clearArea`, `farmArea` | Canonical `x`, `y`; `width`, `height`: `1..256`; `mode`: add `1` or remove `2`; `mask`: exactly `width * height` booleans in row-major order |
 
 Creation accepts level-zero construction sites or virtual flags. The engine

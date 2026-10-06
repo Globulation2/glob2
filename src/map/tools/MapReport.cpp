@@ -151,7 +151,7 @@ std::string pretty(const std::string &json)
 }
 using J = Json;
 using namespace MapGeneration;
-const std::array<const char *, MAX_RESOURCES> resourceNames = {
+const std::array<const char *, MaterialCount> resourceNames = {
 	"wood", "wheat", "papyrus", "stone", "algae", "cherry", "orange", "prune", "gold", "metal", "glass", "fabric"};
 J distance(int n)
 {
@@ -240,7 +240,7 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 	{
 		const auto &c = report.colonies[i];
 		std::vector<std::pair<std::string, J>> resources;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 		{
 			const auto &a = c.materials[r];
 			resources.push_back({resourceNames[r],
@@ -256,7 +256,7 @@ J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 		for (const auto &band : c.distanceBands)
 		{
 			std::vector<std::pair<std::string, J>> bandResources;
-			for (int r = 0; r < MAX_RESOURCES; ++r)
+			for (int r = 0; r < MaterialCount; ++r)
 				bandResources.push_back({resourceNames[r],
 					J::object({{"deposit_tiles", band.depositTiles[r]},
 							   {"stored_amount", band.storedAmount[r]},
@@ -538,8 +538,8 @@ J movementReport(const Game &game, const StepCosts &costs,
 		}
 		rows.push_back(J::array(row));
 		int reached = 0, catchment = 0, sites = 0, closeSites = 0;
-		std::array<int, MAX_RESOURCES> nearest, resourceTiles{}, nearbyTiles{};
-		std::array<std::int64_t, MAX_RESOURCES> resourceAmounts{}, nearbyAmounts{};
+		std::array<int, MaterialCount> nearest, resourceTiles{}, nearbyTiles{};
+		std::array<std::int64_t, MaterialCount> resourceAmounts{}, nearbyAmounts{};
 		nearest.fill(-1);
 		for (int p = 0; p < t.size(); ++p)
 		{
@@ -573,7 +573,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 			for (unsigned m = 0; m < MaterialCount; ++m)
 			{
 				if (!(map.materialMaskAt(p) & (1u << m))) continue;
-				const auto amount = map.materialAmountAt(p, m);
+				const auto amount = map.materialAmountAtSlot(p, m);
 				++resourceTiles[m];
 				resourceAmounts[m] += amount;
 				if (nearest[m] < 0 || approach + 1 < nearest[m]) nearest[m] = approach + 1;
@@ -581,7 +581,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 			}
 		}
 		std::vector<std::pair<std::string, J>> resources;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			resources.push_back(
 				{resourceNames[r], J::object({{"nearest_gather_cost", distance(nearest[r])},
 											  {"reachable_deposit_tiles", resourceTiles[r]},
@@ -700,8 +700,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						 resourceOccupied ? J(100.0 * resourceTiles[r] / resourceOccupied) : J()},
 						{"stored_amount", resourceAmounts[r]},
 						{"harvestable_tiles", harvestable[r]},
-						{"eternal", map.resourceRegistry().yields(static_cast<ResourceId>(r))[materialIndex(map.resourceProperties(r).primaryMaterial)].consumption == ResourceConsumption::Infinite},
-						{"clearable", map.resourceProperties(r).clearable},
+						{"eternal", map.resourceRegistry().yields(static_cast<ResourceId>(r))[materialIndex(map.resourcePropertiesByIndex(r).primaryMaterial)].consumption == ResourceConsumption::Infinite},
+						{"clearable", map.resourcePropertiesByIndex(r).clearable},
 						{"amount_per_deposit", distribution(resourceAmountValues[r])},
 						{"patches", components(map, mask, GridNeighbors::Eight)}})});
 	}

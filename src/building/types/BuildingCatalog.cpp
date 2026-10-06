@@ -616,7 +616,7 @@ void BuildingsTypes::resolveAndValidate()
         range(b.defaultUnitStayRange, 0, 1024, b.key + ".defaultUnitStayRange");
         range(b.maxUnitStayRange, b.defaultUnitStayRange, 1024, b.key + ".maxUnitStayRange");
         range(b.insideSpeed, 1, 256, b.key + ".insideSpeed");
-        for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+        for (int r = 0; r < MaterialSlotCount; ++r)
         {
             range(b.maxMaterial[r], 0, r < MaterialCount ? 1000000 : 0, b.key + ".maxMaterial");
             range(b.materialMultiplier[r], 1, 1000000, b.key + ".materialMultiplier");
@@ -624,13 +624,13 @@ void BuildingsTypes::resolveAndValidate()
         auto& s = b.semantics;
         const auto compileCost = [&](auto& recipe) {
             recipe.costMask = 0;
-            for (int r = 0; r < MAX_NB_RESOURCES; ++r)
+            for (int r = 0; r < MaterialSlotCount; ++r)
             {
                 range(recipe.cost[r], 0, r < MaterialCount ? 1000000 : 0, b.key + ".cost");
                 if (recipe.cost[r]) recipe.costMask |= std::uint16_t(1u << r);
             }
         };
-        for (int r=0; r<MAX_NB_RESOURCES; ++r)
+        for (int r=0; r<MaterialSlotCount; ++r)
         {
             range(s.constructionCost[r], 0, r<MaterialCount ? 1000000 : 0, b.key + ".constructionCost");
             range(s.repairCost[r], 0, r<MaterialCount ? 1000000 : 0, b.key + ".repairCost");

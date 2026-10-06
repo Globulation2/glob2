@@ -62,7 +62,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 
 	// One patch of wood, a walk away from a unit standing at the site.
 	const int woodX = siteX + 9, woodY = siteY;
-	require(game.map.incResource(woodX, woodY, WOOD, 0), "seed the wood tile");
+	require(game.map.incResourceByIndex(woodX, woodY, WOOD, 0), "seed the wood tile");
 
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
@@ -77,14 +77,14 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.materialAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
 
 	// The round-trip field only exists once somebody has fetched this resource
 	// for this building, which is when the two lengths can be confused.
-	require(game.map.roundTripGradient(site, WOOD, swimClass) != NULL, "the round-trip field builds");
+	require(game.map.roundTripGradientSlot(site, WOOD, swimClass) != NULL, "the round-trip field builds");
 	int roundTrip = 0;
-	require(game.map.roundTripDistance(site, WOOD, swimClass, unit->posX, unit->posY, &roundTrip),
+	require(game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &roundTrip),
 		"the round trip is known here");
 	std::printf("distBuilding=%d distResource=%d roundTrip=%d\n", distBuilding, distResource, roundTrip);
 	require(roundTrip - distBuilding > distResource,
@@ -125,7 +125,7 @@ static void theFallbackScoresAWholeRoundTrip()
 	team->myBuildings[0] = site;
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
-	require(game.map.incResource(siteX + 9, siteY, WOOD, 0), "seed the wood tile");
+	require(game.map.incResourceByIndex(siteX + 9, siteY, WOOD, 0), "seed the wood tile");
 
 	// Standing at the building, so the walk out and the carry home are close to
 	// the same length and the whole job is close to twice the walk.
@@ -144,9 +144,9 @@ static void theFallbackScoresAWholeRoundTrip()
 	int distBuilding = 0, distResource = 0, unused = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.materialAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
 		"the wood is reachable");
-	require(!game.map.roundTripDistance(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
+	require(!game.map.roundTripDistanceSlot(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
 		"no round-trip field exists for a building nothing has fetched for");
 	require(distBuilding < distResource, "the unit is nearer the site than the wood");
 

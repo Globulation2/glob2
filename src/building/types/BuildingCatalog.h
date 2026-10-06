@@ -15,7 +15,7 @@ struct BuildingCatalogExperiment
 
 // Costs are integer units of the existing resource kinds, in their wire order.
 // Admission reservations and shared inventories belong to game state, not here.
-using BuildingMaterialCost = std::array<Sint32, MAX_NB_RESOURCES>;
+using BuildingMaterialCost = std::array<Sint32, MaterialSlotCount>;
 
 constexpr unsigned BUILDING_ALL_UNIT_TYPES = (1u << NB_UNIT_TYPE) - 1;
 

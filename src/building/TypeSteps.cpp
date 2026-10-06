@@ -176,7 +176,7 @@ void Building::convertStoneToBullet()
 		materials[resource] -= cost;
 		owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
-		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradients(owner->teamNumber, resource);
+		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
 	}
 }

@@ -44,8 +44,8 @@ TEST_SUITE("CortexActionCoverage")
         // cell later; it must not replace the first path's greater wheat depth.
         for(int x=8;x<=11;++x)map.setTerrain(x,7,GRASS);
         for(int x:{6,7,10,12}) {
-            map.setResource(x,8,WHEAT,1);
-            REQUIRE(map.isMaterialTakeable(x,8, WHEAT));
+            map.setResourceByIndex(x,8,WHEAT,1);
+            REQUIRE(map.isMaterialTakeableSlot(x,8, WHEAT));
         }
         auto index=[&](int x,int y){return static_cast<int>(map.coordToIndex(x,y));};
         const int seed=index(2,8); // Its land exit ring ends at x=5.
@@ -90,8 +90,8 @@ TEST_SUITE("CortexActionCoverage")
         // This scan's territory does not wrap, even when it touches the seam.
         for(int x=0;x<=3;++x)map.setTerrain(x,20,GRASS);
         map.setTerrain(31,20,GRASS);
-        map.setResource(31,20,WHEAT,1);
-        REQUIRE(map.isMaterialTakeable(31,20, WHEAT));
+        map.setResourceByIndex(31,20,WHEAT,1);
+        REQUIRE(map.isMaterialTakeableSlot(31,20, WHEAT));
         const auto edge=scan({index(0,20)},31,true);
         CHECK(edge.depthOf[index(31,20)]==-1);
         CHECK(edge.desired.empty());
@@ -271,7 +271,7 @@ TEST_SUITE("CortexActionCoverage")
         // No ground footprint can be built: valid producer placement must use
         // the engine's overlay occupancy path rather than a fabricated slot.
         for(int y=0;y<world.game.map.getH();++y)
-            for(int x=0;x<world.game.map.getW();++x)world.game.map.setResource(x,y,STONE,1);
+            for(int x=0;x<world.game.map.getW();++x)world.game.map.setResourceByIndex(x,y,STONE,1);
         AICortex ai(world.game.players[0]);
         Cortex::CortexPolicy policy;
         for(int unit=0;unit<3;++unit) {
@@ -339,11 +339,11 @@ TEST_SUITE("CortexActionCoverage")
         const int first=world.game.buildingsTypes.getPlaceableTypeNum("inn");
         const int second=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
         const int finished=world.game.buildingsTypes.get(second)->nextLevel;
-        snapshot["variants"][first]["properties"]["maxMaterial"]=std::vector<int>(MAX_NB_RESOURCES,0);
+        snapshot["variants"][first]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
         snapshot["variants"][first]["semantics"]["constructionCost"]={{"wood",50}};
         snapshot["variants"][finished]["semantics"]["feeding"]["enabled"]=true;
         snapshot["variants"][finished]["semantics"]["feeding"]["unitMask"]=7;
-        snapshot["variants"][second]["properties"]["maxMaterial"]=std::vector<int>(MAX_NB_RESOURCES,0);
+        snapshot["variants"][second]["properties"]["maxMaterial"]=std::vector<int>(MaterialSlotCount,0);
         snapshot["variants"][second]["properties"]["maxMaterial"][WHEAT]=100;
         snapshot["variants"][second]["semantics"]["constructionCost"]={{"wood",1}};
         world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();

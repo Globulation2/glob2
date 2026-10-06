@@ -551,7 +551,7 @@ namespace Management
 	class MaterialTracker
 	{
 	public:
-		static constexpr int RecurringInputStock = MAX_RESOURCES;
+		static constexpr int RecurringInputStock = MaterialCount;
 		MaterialTracker(Context&, int id, int length, int material);
 		int get_total_level() const;
 		int get_age() const { return timer; }

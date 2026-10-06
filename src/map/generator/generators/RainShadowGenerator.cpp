@@ -366,7 +366,7 @@ bool generate(Game &game, GenerationContext &context)
 	// which is why the pools keep kFootGap from the stone and the sand lies on the far side.
 	for (int i = 0; i < n; ++i)
 		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 
 	context.stage = "rain shadow colonies";
 	if (!settleRoundColonies(game, context, "rain-starts", L.homeOf, L.homes, L.homeRadius))
@@ -430,7 +430,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return lost;
 	// Every designed ridge tile that could hold stone does: the ridges are the map's walls.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
+		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
 			map.getResource(i % t.w, i / t.w).type != STONE)
 			return "A ridge has lost its stone at (" + std::to_string(i % t.w) + ", " +
 				   std::to_string(i / t.w) + ").";

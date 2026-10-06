@@ -345,7 +345,7 @@ static void measurementScenarios()
 		for (int distance : {8,9})
 		{
 			const int x = b->posX + b->type->width - 1 + distance;
-			require(w.game.map.incResource(x,8,WHEAT,0), "fixture resource seeded");
+			require(w.game.map.incResourceByIndex(x,8,WHEAT,0), "fixture resource seeded");
 			w.game.map.recordNaturalGrowth(x,8,WHEAT,NO_RES_TYPE,0);
 		}
 		require(stats.measurements.growthGlobal[0][WHEAT] == 2 &&
@@ -362,7 +362,7 @@ static void measurementScenarios()
 		for (Game *g : {&w.game, &loaded->game})
 		{
 			g->map.rebuildGrowthCoverage();
-			require(g->map.incResource(nextX,8,WHEAT,0), "continuation resource seeded");
+			require(g->map.incResourceByIndex(nextX,8,WHEAT,0), "continuation resource seeded");
 			g->map.recordNaturalGrowth(nextX,8,WHEAT,NO_RES_TYPE,0);
 		}
 		require(stats.measurements == loaded->game.teams[0]->stats.measurements,
@@ -482,7 +482,7 @@ static void measurementScenarios()
 		auto *worker = w.unit();
 		auto *inn = w.building("inn");
 		auto &m = w.game.teams[0]->stats.measurements;
-		w.game.map.incResource(21, 20, WHEAT, 0);
+		w.game.map.incResourceByIndex(21, 20, WHEAT, 0);
 		worker->attachedBuilding = inn;
 		worker->setTargetBuilding(inn);
 		worker->activity = Unit::ACT_FILLING;
@@ -496,7 +496,7 @@ static void measurementScenarios()
 				"harvest completion counts a load");
 		worker->standardRandomActivity();
 		worker->carriedMaterial = -1;
-		w.game.map.incResource(21, 20, WOOD, 0);
+		w.game.map.incResourceByIndex(21, 20, WOOD, 0);
 		worker->movement = Unit::MOV_HARVESTING;
 		worker->medical = Unit::MED_FREE;
 		const int resourceType = w.game.map.getResource(21, 20).type;
@@ -590,7 +590,7 @@ static void measurementScenarios()
 			u->hungry = 0;
 		else if (cause == Measurements::CLEARING)
 		{
-			w.game.map.incResource(21, 20, WOOD, 0);
+			w.game.map.incResourceByIndex(21, 20, WOOD, 0);
 			u->dx = 1;
 			u->dy = 0;
 			u->movement = Unit::MOV_HARVESTING;
@@ -642,7 +642,7 @@ static void measurementScenarios()
 																		   : Building::REPAIR;
         // Seed a fully paid construction ledger. Storage capacity is independent
         // of the construction budget; repair deliveries are reserved as they arrive.
-        for (int r = 0; r < MAX_RESOURCES; ++r) site->materials[r]=site->constructionBudget[r];
+        for (int r = 0; r < MaterialCount; ++r) site->materials[r]=site->constructionBudget[r];
         require(site->reserveMaterials(site->constructionBudget),"fixture construction resources reserve");
         site->constructionReserved=site->constructionBudget;
 		int level = site->type->level, shortType = site->type->shortTypeNum;
@@ -785,7 +785,7 @@ static void measurementScenarios()
 		b->update();
 		const auto &m = w.game.teams[0]->stats.measurements;
 		require(!b->type->isBuildingSite, "instant site completes");
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			require(m.consumed[Measurements::CONSTRUCTION][r] == 0,
 					"instant construction consumes no undelivered resources");
 	}
@@ -1472,7 +1472,7 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   }
   REQUIRE(site->type->isBuildingSite);
   REQUIRE(site->constructionResultState==kind);
-  for(int resource=0;resource<MAX_RESOURCES;++resource)site->materials[resource]=site->constructionBudget[resource];
+  for(int resource=0;resource<MaterialCount;++resource)site->materials[resource]=site->constructionBudget[resource];
   REQUIRE(site->reserveMaterials(site->constructionBudget));
   site->constructionReserved=site->constructionBudget;
   site->update(); site->update();

@@ -166,7 +166,7 @@ bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) cons
 	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
 	// The stock is the team's shared pool; only a market whose level takes the
 	// resource at all hands it out.
-	return stockSupplierEligible(b,nullptr,resourceType,1);
+	return stockSupplierEligibleSlot(b,nullptr,resourceType,1);
 }
 
 void Map::invalidateSupplierLocations()
@@ -175,11 +175,11 @@ void Map::invalidateSupplierLocations()
 	for (auto& team : gradientRuntime->stockRevision) for (auto& revision : team) ++revision;
 }
 
-Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
+Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 {
 	const int teamNumber=unit->owner->teamNumber;
 	const Building* consumer=unit->attachedBuilding;
-	const unsigned modes=materialSupplyModes(consumer,resourceType);
+	const unsigned modes=materialSupplyModesSlot(consumer,resourceType);
 	const bool overlays=(modes&2) || game->buildingsTypes.usesOverlaySuppliers();
 	if (overlays && gradientRuntime->supplierLocationsDirty)
 	{
@@ -207,7 +207,7 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 	const auto consider = [&](Uint16 gid) {
 		if (gid==NOGBID || Building::GIDtoTeam(gid)!=teamNumber) return;
 		Building* supplier=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
-		if (!stockSupplierEligible(supplier,consumer,resourceType,modes)) return;
+		if (!stockSupplierEligibleSlot(supplier,consumer,resourceType,modes)) return;
 		if (!best || supplier->type->semantics.market.pickupPenalty < best->type->semantics.market.pickupPenalty ||
 			(supplier->type->semantics.market.pickupPenalty == best->type->semantics.market.pickupPenalty && supplier->gid<best->gid)) best=supplier;
 	};
@@ -219,7 +219,7 @@ Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
 			{
 				if (isStockedMarketTile(gid,teamNumber,resourceType)) {
 					Building* candidate=game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
-					if (stockSupplierEligible(candidate,consumer,resourceType,1)) return candidate;
+					if (stockSupplierEligibleSlot(candidate,consumer,resourceType,1)) return candidate;
 				}
 				continue;
 			}

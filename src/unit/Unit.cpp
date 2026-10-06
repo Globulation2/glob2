@@ -219,7 +219,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction)
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->materialAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets(), attachedBuilding);
+						owner->map->materialAvailableUpdateSlot(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL, attachedBuilding->fetchesFromMarkets(), attachedBuilding);
 						validTarget=true;
 					}
 				}

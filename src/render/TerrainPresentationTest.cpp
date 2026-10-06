@@ -363,7 +363,7 @@ TEST_SUITE("TerrainPresentation")
 						  y * customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
-		map.setResource(9, 9, WHEAT, 1);
+		map.setResourceByIndex(9, 9, WHEAT, 1);
 		scene.extract(map);
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());

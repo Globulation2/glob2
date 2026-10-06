@@ -208,7 +208,7 @@ TEST_CASE("four growth opportunities preserve capped stacks and measured conserv
         // The resource refactor deliberately removes the historical
         // full-stack oscillation. Full nonspreaders stay full; spreaders can
         // add stock elsewhere. The opt-in baseline above retains the old rule.
-        if (map.resourceProperties(type).spreadRate) CHECK(result.values[2]>0);
+        if (map.resourcePropertiesByIndex(type).spreadRate) CHECK(result.values[2]>0);
         else CHECK(result.values[2]==0);
         CHECK(result.values[3]==0);
         return result;
@@ -231,7 +231,7 @@ TEST_CASE("empty and prohibited resource cells do not acquire bonus growth")
     resource.type=WHEAT;resource.amount=1;resource.variety=0;
     map.replaceResource(12,12,resource);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(12,12),WHEAT)==0);
-    CHECK_FALSE(map.incResource(12,12,WHEAT,0));
+    CHECK_FALSE(map.incResourceByIndex(12,12,WHEAT,0));
     CHECK(map.getResource(12,12).amount==1);
 }
 }

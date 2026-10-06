@@ -72,9 +72,9 @@ TEST_SUITE("NicowarFarming")
 			Fixture f;
 			auto& map = f.game.map;
 			for (int y=0; y<64; ++y) map.setCellTerrain(0,y,WATER);
-			for (int x : {5, 6, 7, 9, 10}) map.setResource(x, 9, WOOD, 0);
-			map.setResource(4, 9, WHEAT, 0);
-			map.setResource(5, 20, WOOD, 0);
+			for (int x : {5, 6, 7, 9, 10}) map.setResourceByIndex(x, 9, WOOD, 0);
+			map.setResourceByIndex(4, 9, WHEAT, 0);
+			map.setResourceByIndex(5, 20, WOOD, 0);
 			map.addForbidden(7, 9, 0);
 			f.update();
 			require(f.clearing(5,9), "wheat adjacency overrides wood zone");
@@ -82,8 +82,8 @@ TEST_SUITE("NicowarFarming")
 			require(f.clearing(6,9) && f.clearing(7,9) && f.clearing(9,9), "wood cleared throughout wheat-only band");
 			require(!f.clearing(10,9), "unrelated wood beyond wheat zone survives");
 			require(!map.isForbidden(7,9,1), "clearing target loses farming protection");
-			map.setResource(7,9,WHEAT,0);
-			map.setResource(5,9,WHEAT,0);
+			map.setResourceByIndex(7,9,WHEAT,0);
+			map.setResourceByIndex(5,9,WHEAT,0);
 			map.setNoResource(9,9,0);
 			f.update();
 			require(!f.clearing(5,9) && map.isForbidden(5,9,1), "replacement wheat protected inside wood zone");
@@ -96,14 +96,14 @@ TEST_SUITE("NicowarFarming")
 			const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
 			for (int i=0; i<8; ++i)
 			{
-				map.setResource(20,6+7*i,WOOD,0);
-				map.setResource(20+directions[i][0],6+7*i+directions[i][1],WHEAT,0);
+				map.setResourceByIndex(20,6+7*i,WOOD,0);
+				map.setResourceByIndex(20+directions[i][0],6+7*i+directions[i][1],WHEAT,0);
 			}
-			map.setResource(50,50,WOOD,0); map.setResource(51,50,WHEAT,0);
-			map.setResource(40,40,WOOD,0); map.setResource(41,41,WHEAT,0);
-			map.setResource(63,20,WOOD,0); map.setResource(0,20,WHEAT,0);
-			map.setResource(20,63,WOOD,0); map.setResource(20,0,WHEAT,0);
-			map.setResource(63,63,WOOD,0); map.setResource(0,0,WHEAT,0);
+			map.setResourceByIndex(50,50,WOOD,0); map.setResourceByIndex(51,50,WHEAT,0);
+			map.setResourceByIndex(40,40,WOOD,0); map.setResourceByIndex(41,41,WHEAT,0);
+			map.setResourceByIndex(63,20,WOOD,0); map.setResourceByIndex(0,20,WHEAT,0);
+			map.setResourceByIndex(20,63,WOOD,0); map.setResourceByIndex(20,0,WHEAT,0);
+			map.setResourceByIndex(63,63,WOOD,0); map.setResourceByIndex(0,0,WHEAT,0);
 			f.update();
 			for (int i=0; i<8; ++i) require(f.clearing(20,6+7*i), "eight-way wheat adjacency");
 			require(!f.clearing(50,50), "undiscovered wood is not targeted");
@@ -126,10 +126,10 @@ TEST_SUITE("NicowarFarming")
 		Fixture f(true), baseline;
 		auto setup=[](Map& map) {
 			for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.setUMatPos(x, y, WATER, 1);
-			for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WHEAT, 0);
-			map.setResource(11, 11, WOOD, 0);
+			for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResourceByIndex(x, y, WHEAT, 0);
+			map.setResourceByIndex(11, 11, WOOD, 0);
 			map.addForbidden(9, 11, 0);
-			for (int y=30; y<34; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WOOD, 0);
+			for (int y=30; y<34; ++y) for (int x=9; x<13; ++x) map.setResourceByIndex(x, y, WOOD, 0);
 		};
 		auto& map=f.game.map;
 		setup(map); setup(baseline.game.map);

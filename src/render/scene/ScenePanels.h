@@ -40,7 +40,7 @@ struct SceneBuildingPanel
 	Sint32 minWorkerLevelToFlag=0;
 	Sint32 maxUnitWorking = 0, desiredMaxUnitWorking = 0, priority = 0, unitStayRange = 0, minLevelToFlag = 0;
 	bool clearingMaterials[MaterialCount] = {};
-	Sint32 materials[MAX_RESOURCES] = {};
+	Sint32 materials[MaterialCount] = {};
 	Sint32 bullets = 0, productionTimeout = 0, productionDuration = 0;
 	Sint32 ratio[NB_UNIT_TYPE] = {};
 	std::array<Uint32, SceneSelectedBuilding::FailReasons> unitsFailingRequirements{};
@@ -53,7 +53,7 @@ struct SceneBuildingPanel
 	//! Queries answered during extraction.
 	bool hardSpaceForRepair = false, hardSpaceForUpgrade = false;
 	bool showLevel = false;
-	int repairCost[MAX_RESOURCES] = {};
+	int repairCost[MaterialCount] = {};
 	int buildingHpMultiplier = 1;
 };
 

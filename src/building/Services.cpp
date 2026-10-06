@@ -16,9 +16,9 @@ Sint32 Building::availableMaterial(int resource) const
 
 bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
 {
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 		if (cost[r] > availableMaterial(r)) return false;
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 	{
 		reservedMaterials[r] += cost[r];
 		if (type->useTeamMaterials)
@@ -33,14 +33,14 @@ bool Building::reserveMaterials(const BuildingMaterialCost& cost)
 {
 	if (!restoreMaterialsReservation(cost)) return false;
 	if (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-		for (int r=0; r<MAX_NB_RESOURCES; ++r)
-			if (cost[r] && availableMaterial(r)==0) owner->map->dirtyMarketGradients(owner->teamNumber, r);
+		for (int r=0; r<MaterialSlotCount; ++r)
+			if (cost[r] && availableMaterial(r)==0) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 	return true;
 }
 
 void Building::releaseMaterials(const BuildingMaterialCost& cost)
 {
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 	{
 		const int before=availableMaterial(r);
 		assert(reservedMaterials[r] >= cost[r]);
@@ -51,7 +51,7 @@ void Building::releaseMaterials(const BuildingMaterialCost& cost)
 			owner->reservedTeamMaterials[r] -= cost[r];
 		}
 		if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && cost[r] && before==0)
-			owner->map->dirtyMarketGradients(owner->teamNumber,r);
+			owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
 	}
 }
 
@@ -59,7 +59,7 @@ void Building::consumeReservedMaterials(const BuildingMaterialCost& cost, int di
 {
 	// Settling simultaneously removes stock and its reservation. Availability
 	// does not change, so no resource-gradient invalidation is needed.
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 	{
 		assert(materials[r] >= cost[r] && reservedMaterials[r] >= cost[r]);
 		materials[r] -= cost[r];
@@ -85,7 +85,7 @@ BuildingMaterialCost Building::serviceCost(const Unit* unit, int purpose) const
 	{
 		const auto& training = type->semantics.training[a];
 		if (!unit->needsTraining(training, a)) continue;
-		for (int r=0; r<MAX_NB_RESOURCES; ++r) result[r] += training.cost[r];
+		for (int r=0; r<MaterialSlotCount; ++r) result[r] += training.cost[r];
 	}
 	return result;
 }
@@ -126,7 +126,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 		bundleCost = serviceCost(unit, purpose);
 		cost = &bundleCost;
 		mask = 0;
-		for (int r=0; r<MAX_NB_RESOURCES; ++r) if (bundleCost[r]) mask |= 1u << r;
+		for (int r=0; r<MaterialSlotCount; ++r) if (bundleCost[r]) mask |= 1u << r;
 	}
 	else { cost = &spec.training[purpose].cost; mask = spec.training[purpose].costMask; }
 	for (; mask; mask &= mask - 1)

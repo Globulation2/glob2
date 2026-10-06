@@ -20,7 +20,7 @@ TEST_SUITE("SceneExtract")
         type.semantics.feeding.enabled=true;
         type.semantics.feeding.cost[ALGA]=2;
         type.maxMaterial[ALGA]=20;
-        Sint32 stock[MAX_RESOURCES]{}; stock[ALGA]=2;
+        Sint32 stock[MaterialCount]{}; stock[ALGA]=2;
         CHECK_FALSE(buildingFeedingUnfunded(type,stock));
         CHECK(buildingResourceBarResource(type,stock)==ALGA);
         stock[ALGA]=1;

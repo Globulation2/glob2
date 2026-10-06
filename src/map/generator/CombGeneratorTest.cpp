@@ -106,7 +106,7 @@ void contracts()
 			}
 		}
 	require(stray >= 0, "unseeded construction ground exists");
-	second.game.map.setResource(stray % 256, stray / 256, WHEAT, 1);
+	second.game.map.setResourceByIndex(stray % 256, stray / 256, WHEAT, 1);
 	require(second.game.map.getResource(stray % 256, stray / 256).type == WHEAT,
 			"stray crop planted");
 	GenerationContext strayContext(r);

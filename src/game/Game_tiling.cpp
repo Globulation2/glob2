@@ -22,7 +22,7 @@ namespace
 		int priority, unitStayRange, minLevelToFlag, minWorkerLevelToFlag;
 		bool explorersRequireBombing;
 		Uint32 receiveMaterialMask, sendMaterialMask;
-		Sint32 materials[MAX_NB_RESOURCES];
+		Sint32 materials[MaterialSlotCount];
 		Sint32 ratio[NB_UNIT_TYPE];
 		bool clearingMaterials[MaterialCount];
 		Building::ConstructionResultState constructionResultState;
@@ -123,7 +123,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			bt.repairInitialDeficit=b->repairInitialDeficit; bt.repairHealthGranted=b->repairHealthGranted;
 			bt.constructionBudget=b->constructionBudget;
 			bt.constructionReserved=b->constructionReserved;
-			for (int r = 0; r < MAX_NB_RESOURCES; r++)
+			for (int r = 0; r < MaterialSlotCount; r++)
 				bt.materials[r] = b->materials[r];
 			for (int u = 0; u < NB_UNIT_TYPE; u++)
 				bt.ratio[u] = b->ratio[u];
@@ -242,7 +242,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					b->sendMaterialMask = bt.sendMaterialMask;
 					b->priority = bt.priority;
 					b->unitStayRange = bt.unitStayRange;
-					for (int r = 0; r < MAX_NB_RESOURCES; r++)
+					for (int r = 0; r < MaterialSlotCount; r++)
 						b->materials[r] = bt.materials[r];
 					b->constructionResultState=bt.constructionResultState;
 					b->constructionOriginTypeNum=bt.constructionOriginTypeNum;

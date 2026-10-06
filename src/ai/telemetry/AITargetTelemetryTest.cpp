@@ -54,7 +54,7 @@ struct World
 				world.addUnit(unit < 8 ? WORKER : WARRIOR, 4 + ox + unit, 12 + oy, team);
 			for (int y = 18 + oy; y < 24 + oy; ++y)
 				for (int x = 4 + ox; x < 20 + ox; ++x)
-					world.game.map.setResource(x, y, WHEAT, 1);
+					world.game.map.setResourceByIndex(x, y, WHEAT, 1);
 		}
 		world.game.map.setMapDiscovered();
 		for (int team = 0; team < teams; ++team)

@@ -11,7 +11,7 @@ namespace MapGeneration
 {
 ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
 {
-	if (type < 0 || type >= MAX_NB_RESOURCES || maximumAmount <= 0)
+	if (type < 0 || type >= MaterialSlotCount || maximumAmount <= 0)
 		throw GenerationFailure("Resource stock cap requires a valid type and a positive amount");
 	ResourceStock stock;
 	for (int i = 0; i < map.getW() * map.getH(); ++i)
@@ -53,7 +53,7 @@ int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles,
 			  [&](int a, int b) { return depth[a] != depth[b] ? depth[a] > depth[b] : a < b; });
 	const int count = std::min(wanted, int(candidates.size()));
 	for (int k = 0; k < count; ++k)
-		map.setResource(candidates[k] % t.w, candidates[k] / t.w, type, 1);
+		map.setResourceByIndex(candidates[k] % t.w, candidates[k] / t.w, type, 1);
 	return count;
 }
 
@@ -107,7 +107,7 @@ public:
 	AlgaeGrowth(const Map& map, const Torus&) : map(map), field(map.resourceGrowthField()) {}
 	double at(int i) const
 	{
-		if (!map.terrainSupportsResourceAt(i % map.getW(),i / map.getW(),ALGA)) return 0;
+		if (!map.terrainSupportsResourceAtByIndex(i % map.getW(),i / map.getW(),ALGA)) return 0;
 		return double(field.rate(i,ALGA))/Fertility::kRateScale;
 	}
 private:
@@ -221,7 +221,7 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 	// The stock lottery may choose any of these deposits after the center.
 	constexpr int stockTypes[]={STONE,WHEAT,CHERRY,ORANGE,PRUNE};
 	const auto acceptsStock=[&](int x,int y) {
-		for (int resource : stockTypes) if (!map.terrainSupportsResourceAt(x,y,resource)) return false;
+		for (int resource : stockTypes) if (!map.terrainSupportsResourceAtByIndex(x,y,resource)) return false;
         return true;
 	};
 	for (const Island &island : islands)

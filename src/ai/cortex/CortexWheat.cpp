@@ -43,7 +43,7 @@ namespace Cortex
 
 		bool isWheat(Map& map, int x, int y)
 		{
-			return map.isMaterialTakeable(x, y, materialIndex(MaterialId::Food));
+			return map.isMaterialTakeable(x, y,MaterialId::Food);
 		}
 	} // namespace
 

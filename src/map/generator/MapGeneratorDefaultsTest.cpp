@@ -485,7 +485,7 @@ class MapGeneratorDefaultsTest
 											   y - world.map.getH() / 2.) - outer) < 1.5 &&
 							world.map.getResource(x, y).type != STONE)
 						{
-							world.map.setResource(x, y, STONE, 1);
+							world.map.setResourceByIndex(x, y, STONE, 1);
 							++changed;
 						}
 			}
@@ -850,14 +850,14 @@ TEST_SUITE("MapGeneratorDefaults")
 		map.setCellTerrain(9, 8, ICE);
 		map.setCellTerrain(10, 8, WATER);
 		CHECK(map.terrainPropertiesAt(8, 8).buildable);
-		CHECK_FALSE(map.terrainSupportsResourceAt(8, 8, WHEAT));
-		CHECK_FALSE(map.terrainSupportsResourceAt(9, 8, STONE));
-		CHECK(map.terrainSupportsResourceAt(10, 8, ALGA));
-		CHECK_FALSE(map.terrainSupportsResourceAt(10, 8, WHEAT));
-		map.setResource(7, 8, WHEAT, 1);
-		CHECK(map.terrainSupportsResourceAt(7, 8, WOOD));
-		CHECK_FALSE(map.terrainSupportsResourceAt(7, 8, -1));
-		CHECK_FALSE(map.terrainSupportsResourceAt(7, 8, 99));
+		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(8, 8, WHEAT));
+		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(9, 8, STONE));
+		CHECK(map.terrainSupportsResourceAtByIndex(10, 8, ALGA));
+		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(10, 8, WHEAT));
+		map.setResourceByIndex(7, 8, WHEAT, 1);
+		CHECK(map.terrainSupportsResourceAtByIndex(7, 8, WOOD));
+		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(7, 8, -1));
+		CHECK_FALSE(map.terrainSupportsResourceAtByIndex(7, 8, 99));
 		auto custom = terrainProperties(GRASS);
 		custom.resourcesGrow = false;
 		CHECK(terrainSupportsResource(custom, WHEAT, true));

@@ -52,7 +52,7 @@ struct SceneBuilding
 	BuildingType *lastUpgradeType = nullptr;
 	Sint32 typeNum = 0, shortTypeNum = 0, posX = 0, posY = 0, hp = 0, effectiveMaxHp = 0;
 	Sint32 maxUnitInside = 0, unitsInside = 0, maxUnitWorking = 0, unitsWorking = 0;
-	Sint32 materials[MAX_RESOURCES] = {};
+	Sint32 materials[MaterialCount] = {};
 	Sint32 bullets = 0, unitStayRange = 0;
 	Uint8 connectionMask=0;
 	Uint32 seenByMask = 0;

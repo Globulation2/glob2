@@ -1019,14 +1019,14 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (bluffs.stone[i])
 		{
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 			protectedStone[i] = 1;
 			++wallTiles;
 		}
 	for (int i = 0; i < n; ++i)
-		if (L.hummocks[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) && !map.isResource(i % t.w, i / t.w))
+		if (L.hummocks[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) && !map.isResource(i % t.w, i / t.w))
 		{
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 			protectedStone[i] = 1;
 			++hummocks;
 		}
@@ -1063,12 +1063,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> grass(size_t(n), 0), notGrass(size_t(n), 0), swarms(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		grass[i] = (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE));
+		grass[i] = (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE));
 		notGrass[i] = !grass[i];
 	}
 	for (int team = 0; team < teams; ++team)

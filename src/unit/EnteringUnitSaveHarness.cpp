@@ -64,7 +64,7 @@ TEST_SUITE("EnteringUnitSave")
 	                unit->activity = Unit::ACT_UPGRADING;
 	                unit->destinationPurpose = FEED;
 	                const auto& meal=inn->type->semantics.feeding.cost;
-	                for (int resource=0;resource<MAX_NB_RESOURCES;++resource) inn->materials[resource]=meal[resource];
+	                for (int resource=0;resource<MaterialSlotCount;++resource) inn->materials[resource]=meal[resource];
 	                inn->reserveService(unit);
 	                inn->unitsInside.push_back(unit);
 	                unit->displacement = Unit::DIS_ENTERING_BUILDING;

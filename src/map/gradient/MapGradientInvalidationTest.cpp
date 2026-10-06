@@ -76,8 +76,8 @@ TEST_SUITE("MapGradientInvalidation")
 	  for(int team=0;team<2;++team)for(const char* kind:{"inn","warflag","explorationflag","clearingflag"}){
 	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->clearingMaterials[WHEAT]=b->clearingMaterials[WOOD]=true;bs.push_back(b);
 	  }
-	  if(resource!=NO_RES_TYPE)m.setResource(20,20,resource,1);
-	  m.setResource(25,24,WHEAT,1);m.addGuardArea(26,26,0);if(selected)m.addClearArea(20,20,0);
+	  if(resource!=NO_RES_TYPE)m.setResourceByIndex(20,20,resource,1);
+	  m.setResourceByIndex(25,24,WHEAT,1);m.addGuardArea(26,26,0);if(selected)m.addClearArea(20,20,0);
 	  if(!add){m.addForbidden(20,20,0);if(mixed)m.addForbidden(21,20,0);}
 	  for(auto* b:bs){m.buildingGradient(b,swim);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);}
 	  m.getForbiddenGradient(0,swim);m.getGuardAreasGradient(0,swim);m.getClearAreasGradient(0,swim);
@@ -89,11 +89,11 @@ TEST_SUITE("MapGradientInvalidation")
 	  area(&Map::getClearAreasGradient,static_cast<void(Map::*)(int,int)>(&Map::updateClearAreasGradient));
 	 }
 	 // Already-stale walking fields must not be blessed current by an unrelated order.
-	 {Fixture f(1);player(f);auto& m=f.game.map;auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);m.setResource(20,20,WHEAT,1);m.buildingGradient(b,0);auto old=b->gradientGeneration[0];m.addForbidden(30,30,1);REQUIRE(old!=m.topologyGeneration);edit(f,20,20,true);REQUIRE(b->gradientGeneration[0]==old);}
+	 {Fixture f(1);player(f);auto& m=f.game.map;auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);m.setResourceByIndex(20,20,WHEAT,1);m.buildingGradient(b,0);auto old=b->gradientGeneration[0];m.addForbidden(30,30,1);REQUIRE(old!=m.topologyGeneration);edit(f,20,20,true);REQUIRE(b->gradientGeneration[0]==old);}
 	 // Irrelevant orders preserve a paused search, its frozen field and dirty status.
 	 {Fixture f(1);player(f);auto& m=f.game.map;
 	  auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
-	  m.setResource(20,20,WHEAT,1);m.buildingGradient(b,0);m.updateGlobalGradient(b,0);
+	  m.setResourceByIndex(20,20,WHEAT,1);m.buildingGradient(b,0);m.updateGlobalGradient(b,0);
 	  auto* search=b->globalGradientSearch[0].get();REQUIRE(search);
 	  auto* field=b->globalGradient[0];std::vector<Uint16> snapshot(field,field+4096);
 	  const bool dirty=b->dirtyGradient[0];edit(f,20,20,true);
@@ -103,11 +103,11 @@ TEST_SUITE("MapGradientInvalidation")
 	  REQUIRE((m.topologyGeneration==generation && b->globalGradientSearch[0].get()==search));
 	 }
 	 // Record a pre-existing stale escape field that an incidental forbidden edit used to refresh.
-	 {Fixture f(1);player(f);auto& m=f.game.map;f.game.gameHeader.setResourceGrowthDisabled(true);m.setResource(20,20,WHEAT,1);m.setResource(21,20,WHEAT,1);m.addForbidden(20,20,0);m.addForbidden(21,20,0);m.getForbiddenGradient(0,0);m.replaceResource(21,20, Resource{});edit(f,20,20,false);auto* g=m.getForbiddenGradient(0,0);auto stale=g[m.coordToIndex(21,20)];const int bound=8*f.game.mapHeader.getNumberOfTeams()*SWIM_CLASS_COUNT; for(int i=0;i<=bound;++i)m.syncStep(i); auto fresh=g[m.coordToIndex(21,20)];std::cout<<"ESCAPE_STALENESS stale="<<stale<<" fresh="<<fresh<<"\n";REQUIRE(stale!=fresh);}
+	 {Fixture f(1);player(f);auto& m=f.game.map;f.game.gameHeader.setResourceGrowthDisabled(true);m.setResourceByIndex(20,20,WHEAT,1);m.setResourceByIndex(21,20,WHEAT,1);m.addForbidden(20,20,0);m.addForbidden(21,20,0);m.getForbiddenGradient(0,0);m.replaceResource(21,20, Resource{});edit(f,20,20,false);auto* g=m.getForbiddenGradient(0,0);auto stale=g[m.coordToIndex(21,20)];const int bound=8*f.game.mapHeader.getNumberOfTeams()*SWIM_CLASS_COUNT; for(int i=0;i<=bound;++i)m.syncStep(i); auto fresh=g[m.coordToIndex(21,20)];std::cout<<"ESCAPE_STALENESS stale="<<stale<<" fresh="<<fresh<<"\n";REQUIRE(stale!=fresh);}
 	 // A worker in the middle of a ring cannot use a freshly depleted exit until refresh.
 	 {Fixture f(1);player(f);auto& m=f.game.map;m.addForbidden(20,20,0);
-	 for(int y=19;y<=21;++y)for(int x=19;x<=21;++x)if(x!=20||y!=20)m.setResource(x,y,WHEAT,1);
-	 m.setResource(25,25,WHEAT,1);m.getForbiddenGradient(0,0);m.replaceResource(21,20, Resource{});m.setResourcesGrow(21,20, false);edit(f,25,25,true);
+	 for(int y=19;y<=21;++y)for(int x=19;x<=21;++x)if(x!=20||y!=20)m.setResourceByIndex(x,y,WHEAT,1);
+	 m.setResourceByIndex(25,25,WHEAT,1);m.getForbiddenGradient(0,0);m.replaceResource(21,20, Resource{});m.setResourcesGrow(21,20, false);edit(f,25,25,true);
 	 int dx=0,dy=0;bool before=m.pathfindForbidden(nullptr,0,0,20,20,&dx,&dy);REQUIRE(!before);
 	 const int bound=8*f.game.mapHeader.getNumberOfTeams()*SWIM_CLASS_COUNT;
 	 for(int tick=1;tick<=bound;++tick)m.syncStep(tick);
@@ -119,14 +119,14 @@ TEST_SUITE("MapGradientInvalidation")
 	 for(int mutation=0;mutation<12;++mutation)for(int swim=0;swim<SWIM_CLASS_COUNT;++swim){
 	  Fixture f(1);player(f);f.game.gameHeader.setResourceGrowthDisabled(true);auto& m=f.game.map;
 	  for(int y=16;y<25;++y)for(int x=16;x<25;++x)m.addForbidden(x,y,0);
-	  m.setResource(20,20,WHEAT,1);m.setResourceAmount(m.coordToIndex(20,20), 3);
+	  m.setResourceByIndex(20,20,WHEAT,1);m.setResourceAmount(m.coordToIndex(20,20), 3);
 	  if(mutation==4)m.markImmobileUnit(21,20,0);
 	  if(mutation==6)m.setBuilding(21,20,1,1,42);
 	  if(mutation==8)m.setTerrain(21,20,256);
 	  auto* g=m.getForbiddenGradient(0,swim);std::vector<Uint16> old(g,g+4096);
 	  switch(mutation){
 	   case 0:m.setResourceAmount(m.coordToIndex(20,20), 1);m.decResource(20,20);break;
-	   case 1:m.incResource(21,20,WHEAT,0);break;
+	   case 1:m.incResourceByIndex(21,20,WHEAT,0);break;
 	   case 2:m.decResource(20,20);break; // quantity3->2 leaves blocking unchanged
 	   case 3:m.markImmobileUnit(21,20,0);break;
 	   case 4:m.clearImmobileUnit(21,20);break;
@@ -153,7 +153,7 @@ TEST_SUITE("MapGradientInvalidation")
 	 {Fixture f(3);player(f);f.game.gameHeader.setResourceGrowthDisabled(true);auto& m=f.game.map;
 	  for(int y=17;y<=23;++y)for(int x=17;x<=23;++x){
 	   for(int team=0;team<4;++team)m.addForbidden(x,y,team);
-	   if(x==17||x==23||y==17||y==23)m.setResource(x,y,WHEAT,1);
+	   if(x==17||x==23||y==17||y==23)m.setResourceByIndex(x,y,WHEAT,1);
 	  }
 	  for(int team=0;team<4;++team)for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)m.getForbiddenGradient(team,swim);
 	  auto before=propagations();int lookups=0;

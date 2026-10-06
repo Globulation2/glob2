@@ -52,7 +52,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 				if (multiStockIndices.empty()) multiStockIndices.assign(size, UINT32_MAX);
 				multiStockIndices[i] = multiStocks.size();
 				auto& stock = multiStocks.emplace_back();
-				for (unsigned m = 0; m < MaterialCount; ++m) stock[m] = map.materialAmountAt(i, m);
+				for (unsigned m = 0; m < MaterialCount; ++m) stock[m] = map.materialAmountAtSlot(i, m);
 			}
 		}
 		resourcesGrow[i] = tile.canResourcesGrow;

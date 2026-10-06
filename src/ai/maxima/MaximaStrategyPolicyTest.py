@@ -174,7 +174,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "world.accessibleSupplies[materialIndex(MaterialId::Algae)]=accessible_algae_units;", self.maxima
         )
         self.assertIn(
-            "result.accessibleAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));", self.maxima
+            "result.accessibleAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);", self.maxima
         )
         self.assertIn(
             "walking[index]=clear && map->terrainPropertiesAt(index).walkable;", self.maxima

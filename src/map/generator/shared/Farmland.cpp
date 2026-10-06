@@ -242,7 +242,7 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 	for (int k = 0; k < count; ++k)
 	{
 		const int i = ranked[k].second;
-		map.setResource(i % t.w, i / t.w, resource, 1);
+		map.setResourceByIndex(i % t.w, i / t.w, resource, 1);
 	}
 	return count;
 }
@@ -266,14 +266,14 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 				return "A spreading crop was planted outside its contained plot.";
 			continue;
 		}
-		if (!map.terrainSupportsResourceAt(x,y,WHEAT))
+		if (!map.terrainSupportsResourceAtByIndex(x,y,WHEAT))
 			return "Contained plot " + std::to_string(plotOf[i]) + " lost grass at (" +
 				   std::to_string(x) + ", " + std::to_string(y) + ").";
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int j = t.at(x + dx, y + dy);
-				if (map.terrainSupportsResourceAt(j % t.w,j / t.w,WHEAT) && plotOf[j] != plotOf[i])
+				if (map.terrainSupportsResourceAtByIndex(j % t.w,j / t.w,WHEAT) && plotOf[j] != plotOf[i])
 					return "A contained plot has a grass growth connection across its margin.";
 			}
 	}
@@ -848,7 +848,7 @@ int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char>
 			const auto open = [&](int dx, int dy)
 			{
 				const int j = t.at(x + dx, y + dy);
-				return map.terrainSupportsResourceAt(j % t.w,j / t.w,WHEAT) && !map.isResource(j % t.w, j / t.w) &&
+				return map.terrainSupportsResourceAtByIndex(j % t.w,j / t.w,WHEAT) && !map.isResource(j % t.w, j / t.w) &&
 					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
 			};
 			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))

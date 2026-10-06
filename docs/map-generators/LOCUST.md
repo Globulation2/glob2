@@ -201,7 +201,7 @@ that adjudication noisy; read the per-start economy instead. The defaults are un
   does not disable growth; callers must establish dryness separately. Locust capped its wheat
   at one harvest with it until revision 4 and now sets three to five per tile itself; the
   primitive stays for a finite crop that wants a cap.
-- `startingAccessFailure`: read-only supply and room validator. Callers supply resource types,
+- `startingAccessFailure`: read-only supply and room validator. Callers supply `MaterialId` values through `MaterialAccessRule`,
   names and travel budgets; it supports stone or fruit targets as well as wheat and wood. It
   floods from actual workers with the engine's non-swimmer predicate and reports the first
   unmet rule with colony and observed distance/site count. It never plants a repair resource.

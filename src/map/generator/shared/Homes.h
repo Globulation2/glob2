@@ -366,7 +366,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 			{
 				const int i = t.at(sx + dx, sy + dy);
 				const int type = map.getResource(i % t.w, i / t.w).type;
-				if (nearby(i) && ambient[i] && type != NO_RES_TYPE && !map.materialAmountAt(i, MaterialId::Food) && map.resourceProperties(type).clearable)
+				if (nearby(i) && ambient[i] && type != NO_RES_TYPE && !map.materialAmountAt(i, MaterialId::Food) && map.resourcePropertiesByIndex(type).clearable)
 					standing.push_back({dx * dx + dy * dy, i});
 			}
 		std::sort(standing.begin(), standing.end());

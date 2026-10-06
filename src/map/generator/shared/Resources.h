@@ -50,7 +50,7 @@ int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center, int
 int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &,
 							  int resourceType, int radius,
 							  const std::vector<unsigned char> *allowed = nullptr);
-// Map::setResource(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
+// Map::setResourceByIndex(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
 void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
 void scatterResources(Game &, GenerationContext &, const ResourceDensities &);

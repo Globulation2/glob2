@@ -283,8 +283,8 @@ bool generate(Game &game, GenerationContext &c)
 	layBeaches(terrain, t);
 	writeUndermap(map, terrain);
 	for (int i = 0; i < n; ++i)
-		if (L.wall[i] && map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE))
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+		if (L.wall[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	c.stage = "gauntlet colonies";
 	const auto home = [&](int k)
 	{
@@ -407,8 +407,8 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		const int type = map.getResource(i % t.w, i / t.w).type;
 		cropSeeds[i] = type == WHEAT || type == WOOD;
 		cropGround[i] = (map.canResourcesGrow(i % t.w, i / t.w) &&
-			(map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) && type != STONE;
+			(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) && type != STONE;
 	}
 	const auto growth = floodFrom(t, cropSeeds, cropGround);
 	auto permanentBuilding = buildableTiles(map);

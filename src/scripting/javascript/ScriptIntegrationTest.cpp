@@ -993,7 +993,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	auto initial = answers(before);
 	game.map.setFertility(22, 22, 65535);
 	game.map.setCellTerrain(22, 22,WATER);
-	game.map.setResource(21, 21, WHEAT, 1);
+	game.map.setResourceByIndex(21, 21, WHEAT, 1);
 	enemy->hp = 999;
 	world.addUnit(WARRIOR, 24, 24, 1);
 	Observations after(game, 0);
@@ -1589,4 +1589,63 @@ TEST_CASE("JavaScript managed controls use capabilities and independent bombing 
     CHECK(building->unitStayRange==8);CHECK(building->minWorkerLevelToFlag==1);
     ++world.game.stepCounter;observations.observe();services.begin();
     for(const auto& receipt:services.actions().items)CHECK(receipt.get("status").text=="completed");
+}
+
+TEST_CASE("JavaScript terrain resource permissions follow both catalogs and charge full enumeration" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
+    auto& map=world.game.map;
+    Observations observations(world.game,-1);
+    const auto old=observations.query("terrainTypes",{});
+    auto definition=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][0];
+    definition["key"]="test:script-habitat";
+    definition["properties"]["habitatMask"]=1;
+    definition["properties"]["requiresGrowthTerrain"]=false;
+    definition["properties"]["requiresPermanentDepositsTerrain"]=false;
+    auto install=[&] {map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},
+        {"resources",nlohmann::json::array({definition})}}.dump());};
+    install();
+    const auto resource=*map.resourceRegistry().find("test:script-habitat");
+    REQUIRE(resourceIndex(resource)>=MaterialCount);
+    size_t charged=0;
+    const auto current=observations.query("terrainTypes",{},[&](size_t nodes,size_t){charged+=nodes;});
+    CHECK(charged==map.terrainRegistry().size()*(48+map.resourceRegistry().size()));
+    auto allows=[&](const Value& catalog,TerrainType terrain) {
+        const auto& ids=catalog.items[terrain].get("allowedResources").items;
+        return std::any_of(ids.begin(),ids.end(),[&](const Value& value){return value.number==resourceIndex(resource);});
+    };
+    CHECK_FALSE(allows(old,GRASS));
+    CHECK(allows(current,GRASS));CHECK_FALSE(allows(current,WATER));
+    definition["properties"]["habitatMask"]=2;
+    install();
+    const auto changed=observations.query("terrainTypes",{});
+    CHECK_FALSE(allows(changed,GRASS));CHECK(allows(changed,WATER));
+    // Existing detached snapshots remain unchanged after resource-only imports.
+    CHECK(allows(current,GRASS));
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:script-whitelist","name":"Script whitelist","base":"water","appearance":"water","properties":{},"allowedResourceKeys":["test:script-habitat"]}]})");
+    const auto terrain=*map.terrainRegistry().find("test:script-whitelist");
+    const auto whitelist=observations.query("terrainTypes",{});
+    REQUIRE(whitelist.items[terrain].get("allowedResources").items.size()==1);
+    CHECK(allows(whitelist,terrain));
+    for(unsigned terrain=0;terrain<changed.items.size();++terrain)
+        CHECK(allows(changed,static_cast<TerrainType>(terrain))==map.terrainSupportsResourceType(static_cast<TerrainType>(terrain),resource));
+    CHECK_THROWS(observations.query("terrainTypes",{},[](size_t,size_t){throw std::runtime_error("query budget");}));
+}
+
+TEST_CASE("JavaScript building clearing materials retain full fixed slots and legacy view" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* building=world.game.addBuilding(5,5,world.game.buildingsTypes.getFinishedTypeNum("inn"),0);
+    REQUIRE(building);
+    for(unsigned m=0;m<MaterialCount;++m) building->clearingMaterials[m]=(m%2)!=0;
+    Observations observations(world.game,-1);
+    const auto buildings=observations.query("buildings",{});
+    REQUIRE(buildings.items.size()==1);
+    const auto& descriptor=buildings.items.front();
+    REQUIRE(descriptor.get("clearingResources").items.size()==BASIC_COUNT);
+    REQUIRE(descriptor.get("clearingMaterials").items.size()==MaterialCount);
+    for(unsigned m=0;m<MaterialCount;++m)
+        CHECK(descriptor.get("clearingMaterials").items[m].number==((m%2)!=0));
 }

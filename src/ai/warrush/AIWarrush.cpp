@@ -344,7 +344,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 			else if (b->constructionResultState == Building::NO_CONSTRUCTION
     && [&]() {
      bool consumes = false;
-     for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource) {
+     for (int resource = 0; resource < MaterialSlotCount; ++resource) {
       bool required = b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[resource] > 0;
       for (const auto& recipe : b->type->semantics.production.recipes)
        required |= recipe.enabled && recipe.cost[resource] > 0;
@@ -628,7 +628,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			const bool wheat_spot = x%2==y%2 && map->isMaterialTakeable(x, y, materialIndex(MaterialId::Food))
+			const bool wheat_spot = x%2==y%2 && map->isMaterialTakeable(x, y,MaterialId::Food)
 				&& map->isMapDiscovered(x, y, team->me)
 				&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
 			if(farms && map->isMapDiscovered(x, y, team->me))
@@ -641,11 +641,11 @@ std::shared_ptr<Order> AIWarrush::farm()
 					farm_del_acc.applyBrush(BrushApplication(x, y, 0), map);
 				// The farm replaces forbidden paint on wheat.
 				if(map->isForbidden(x, y, team->me)
-				   && map->isMaterialTakeable(x, y, materialIndex(MaterialId::Food)))
+				   && map->isMaterialTakeable(x, y,MaterialId::Food))
 					del_acc.applyBrush(BrushApplication(x, y, 0), map);
 			}
 
-			if((!map->isMaterialTakeable(x, y, materialIndex(MaterialId::Wood)) && !map->isMaterialTakeable(x, y, materialIndex(MaterialId::Food))))
+			if((!map->isMaterialTakeable(x, y,MaterialId::Wood) && !map->isMaterialTakeable(x, y,MaterialId::Food)))
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -656,9 +656,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isForbidden (x,y + 1,team->me)
 						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
-						&& !map->isMaterialTakeable(x, y, materialIndex(MaterialId::Cherries))
-						&& !map->isMaterialTakeable(x, y, materialIndex(MaterialId::Oranges))
-						&& !map->isMaterialTakeable(x, y, materialIndex(MaterialId::Prunes))
+						&& !map->isMaterialTakeable(x, y,MaterialId::Cherries)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Oranges)
+						&& !map->isMaterialTakeable(x, y,MaterialId::Prunes)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -672,7 +672,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 			
 			//we never clear anything but wood
-			if(!map->isMaterialTakeable(x, y, materialIndex(MaterialId::Wood)))
+			if(!map->isMaterialTakeable(x, y,MaterialId::Wood))
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
@@ -681,7 +681,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 
 			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isMaterialTakeable(x, y, materialIndex(MaterialId::Wood)))
+			if(map->isMaterialTakeable(x, y,MaterialId::Wood))
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -689,7 +689,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isMaterialTakeable(x+xmod, y+ymod, materialIndex(MaterialId::Food))
+							if(map->isMaterialTakeable(x+xmod, y+ymod,MaterialId::Food)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -706,7 +706,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isMaterialTakeable(x, y, materialIndex(MaterialId::Wood)))
+				if(map->isMaterialTakeable(x, y,MaterialId::Wood))
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
@@ -720,9 +720,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isMaterialTakeable(x, y, materialIndex(MaterialId::Cherries))
-					|| map->isMaterialTakeable(x, y, materialIndex(MaterialId::Oranges))
-					|| map->isMaterialTakeable(x, y, materialIndex(MaterialId::Prunes))	)
+				(	map->isMaterialTakeable(x, y,MaterialId::Cherries)
+					|| map->isMaterialTakeable(x, y,MaterialId::Oranges)
+					|| map->isMaterialTakeable(x, y,MaterialId::Prunes)	)
 				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
@@ -840,7 +840,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		for(int y=0;y<map->h;y++)
 		{
 			Tile c=map->getTile(x,y);
-			if (map->isMaterialTakeable(x,y,resource_type))
+			if (map->isMaterialTakeableSlot(x,y,resource_type))
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
@@ -894,8 +894,8 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 	buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
 
  // Prefer the dominant recurring input, falling back to construction cost.
- std::array<int, MAX_NB_RESOURCES> demand{};
- for (int r = 0; r < MAX_NB_RESOURCES; ++r) {
+ std::array<int, MaterialSlotCount> demand{};
+ for (int r = 0; r < MaterialSlotCount; ++r) {
   demand[r] += complete->semantics.feeding.enabled ? complete->semantics.feeding.cost[r] : 0;
   demand[r] += complete->semantics.healing.enabled ? complete->semantics.healing.cost[r] : 0;
   for (const auto& recipe : complete->semantics.production.recipes)

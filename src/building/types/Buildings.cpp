@@ -133,10 +133,10 @@ void BuildingsTypes::initLegacy()
 		p.assignmentLimit = bt.maxUnitWorking ? 20 : 0;
 		p.regenerationPerTick = bt.unitProductionTime ? 1 : 0;
 		p.repairable = !bt.isBuildingSite && !bt.previousKey.empty();
-		if (bt.isBuildingSite) std::copy_n(bt.maxMaterial, MAX_NB_RESOURCES, p.constructionCost.begin());
+		if (bt.isBuildingSite) std::copy_n(bt.maxMaterial, MaterialSlotCount, p.constructionCost.begin());
 		if (p.repairable)
 			for (const auto& site : *imported.entries_)
-				if (site.key == bt.previousKey) std::copy_n(site.maxMaterial, MAX_NB_RESOURCES, p.repairCost.begin());
+				if (site.key == bt.previousKey) std::copy_n(site.maxMaterial, MaterialSlotCount, p.repairCost.begin());
 		p.placeable = bt.previousKey.empty();
 		p.instantPlacement = p.relocatable = bt.isVirtual;
 		p.occupiesGround = !bt.isVirtual;

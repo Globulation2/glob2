@@ -158,7 +158,7 @@ void AnyTeamBuilding::save(GAGCore::OutputStream* stream) const
 
 MaterialSource::MaterialSource(int material) : material(material) {}
 bool MaterialSource::matches(Player* player,int x,int y) const
-{ return player->map->isMaterialTakeable(x,y,material); }
+{ return player->map->isMaterialTakeableSlot(x,y,material); }
 bool MaterialSource::equals(const Entity& other) const
 {
 	const MaterialSource* rhs=dynamic_cast<const MaterialSource*>(&other);
@@ -574,7 +574,7 @@ void MaterialTracker::tick()
 	if(material==RecurringInputStock)
 	{
 		const auto& semantics=building->type->semantics;
-		for(int r=0;r<MAX_NB_RESOURCES;++r)
+		for(int r=0;r<MaterialSlotCount;++r)
 		{
 			bool used=(semantics.feeding.enabled&&semantics.feeding.cost[r]>0)
 				||(semantics.healing.enabled&&semantics.healing.cost[r]>0)
@@ -1130,10 +1130,10 @@ bool MapInfo::is_forbidden_area(int x,int y)const{return context.player->map->is
 bool MapInfo::is_guard_area(int x,int y)const{return context.player->map->isGuardArea(x,y,context.player->team->me);}
 bool MapInfo::is_clearing_area(int x,int y)const{return context.player->map->isClearArea(x,y,context.player->team->me);}
 bool MapInfo::is_discovered(int x,int y)const{return context.player->map->isMapDiscovered(x,y,context.player->team->me);}
-bool MapInfo::is_resource(int x,int y,int type)const{return context.player->map->isMaterialTakeable(x,y,type);}
+bool MapInfo::is_resource(int x,int y,int type)const{return context.player->map->isMaterialTakeableSlot(x,y,type);}
 bool MapInfo::is_resource(int x,int y)const{return context.player->map->isResource(x,y);}
 bool MapInfo::is_walkable(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).walkable;}
-bool MapInfo::is_crop_habitat(int x,int y)const{return context.player->map->terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food));}
+bool MapInfo::is_crop_habitat(int x,int y)const{return context.player->map->terrainSupportsMaterialAt(x,y,MaterialId::Food);}
 bool MapInfo::is_water(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).swimmable;}
 bool MapInfo::is_sand(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).inhibitionQ8 != 0;}
 bool MapInfo::is_grass(int x,int y)const{return context.player->map->terrainPropertiesAt(x,y).buildable;}
@@ -1152,7 +1152,7 @@ void Context::initialize()
 }
 void Context::detect_fruit()
 {
-	fruitOnMap=false;for(int x=0;x<player->map->getW()&&!fruitOnMap;++x)for(int y=0;y<player->map->getH();++y)if(player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Cherries))||player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Oranges))||player->map->isMaterialTakeable(x,y,materialIndex(MaterialId::Prunes))){fruitOnMap=true;break;}
+	fruitOnMap=false;for(int x=0;x<player->map->getW()&&!fruitOnMap;++x)for(int y=0;y<player->map->getH();++y)if(player->map->isMaterialTakeable(x,y,MaterialId::Cherries)||player->map->isMaterialTakeable(x,y,MaterialId::Oranges)||player->map->isMaterialTakeable(x,y,MaterialId::Prunes)){fruitOnMap=true;break;}
 }
 unsigned Context::add_building_order(Construction::BuildingOrder* order)
 {
@@ -1244,7 +1244,7 @@ std::vector<int> Context::material_source_flags(int material) const
 			if(group==1 && !flag) continue;
 			const int x=flag ? flag->posX : record.x;
 			const int y=flag ? flag->posY : record.y;
-			if(x>=0 && y>=0 && player->map->isMaterialTakeable(x,y,material))
+			if(x>=0 && y>=0 && player->map->isMaterialTakeableSlot(x,y,material))
 				ids.insert(i->first);
 		}
 	return std::vector<int>(ids.begin(), ids.end());

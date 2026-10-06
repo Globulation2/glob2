@@ -571,7 +571,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
 					          << " wheat=" << bb->materials[materialIndex(MaterialId::Food)] << "/" << bb->type->maxMaterial[materialIndex(MaterialId::Food)]
-					          << " wheatAvail=" << (g->map.materialAvailable(tm->teamNumber, materialIndex(MaterialId::Food), 0, bb->posX, bb->posY) ? 1 : 0)
+					          << " wheatAvail=" << (g->map.materialAvailable(tm->teamNumber,MaterialId::Food, 0, bb->posX, bb->posY) ? 1 : 0)
 					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, materialIndex(MaterialId::Food), 0, bb->posX, bb->posY)
 					          << "\n";
 				}

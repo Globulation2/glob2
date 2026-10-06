@@ -88,7 +88,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         place(world, "warehouse", 40, 40);
         for (int unit=0; unit<9; ++unit) world.addUnit(unit % NB_UNIT_TYPE, 4+unit, 14);
         for (int resource=0; resource<MaterialCount; ++resource)
-            for (int n=0; n<4; ++n) world.game.map.setResource(5+resource*4, 22+n, resource, 5);
+            for (int n=0; n<4; ++n) world.game.map.setResourceByIndex(5+resource*4, 22+n, resource, 5);
         world.team->createLists();
         world.game.setWaitingOnMask(0);
         for (int tick=0; tick<257; ++tick) world.step();

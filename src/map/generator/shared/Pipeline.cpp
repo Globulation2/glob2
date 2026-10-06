@@ -17,7 +17,7 @@ std::string denseColonySizeFailure(const GenerationRequest &request)
 }
 
 std::string startingAccessFailure(const Map &map, int teams,
-								  const std::vector<ResourceAccessRule> &rules, int minimumSites,
+								  const std::vector<MaterialAccessRule> &rules, int minimumSites,
 								  int buildingRange)
 {
 	if (teams < 1 || teams > Team::MAX_COUNT || minimumSites < 0 || buildingRange < 0)
@@ -25,8 +25,8 @@ std::string startingAccessFailure(const Map &map, int teams,
 	int range = buildingRange;
 	for (const auto &rule : rules)
 	{
-		if (rule.type < 0 || rule.type >= MAX_NB_RESOURCES || rule.range < 1 || !rule.name)
-			throw GenerationFailure("Invalid starting-access resource rule");
+		if (!validMaterial(materialIndex(rule.material)) || rule.range < 1 || !rule.name)
+			throw GenerationFailure("Invalid starting-access material rule");
 		range = std::max(range, rule.range);
 	}
 	const Torus t(map);
@@ -54,7 +54,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 					if (!resource.amount)
 						continue;
 					for (size_t r = 0; r < rules.size(); ++r)
-						if (resource.type == rules[r].type &&
+						if (map.materialAmountAt(map.coordToIndex(x+dx,y+dy),rules[r].material)>0 &&
 							(distances[r] < 0 || distance + 1 < distances[r]))
 							distances[r] = distance + 1;
 				}
@@ -75,7 +75,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 std::string startingFloorFailure(const Map &map, int teams, int wheatRange, int woodRange)
 {
 	return startingAccessFailure(map, teams,
-								 {{WHEAT, wheatRange, "wheat"}, {WOOD, woodRange, "wood"}});
+								 {{MaterialId::Food, wheatRange, "food"}, {MaterialId::Wood, woodRange, "wood"}});
 }
 
 bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceAmounts &amounts,

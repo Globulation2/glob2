@@ -353,7 +353,7 @@ std::uint32_t GrowthCache::rate(std::size_t index,int resourceType) const
     if (resourceType<0 || !owner->resourceRegistry().valid(unsigned(resourceType)) ||
         !owner->terrainPropertiesAt(index).resourcesGrow ||
         !owner->terrainSupportsResourceAt(index,static_cast<ResourceId>(resourceType))) return 0;
-    const auto& p=owner->resourceProperties(resourceType);
+    const auto& p=owner->resourcePropertiesByIndex(resourceType);
     std::uint64_t value=0;
     switch (p.ecology)
     {
@@ -392,7 +392,7 @@ namespace
 		std::queue<std::pair<int, int>> frontier;
 		for (int y = 0; y < h; ++y)
 			for (int x = 0; x < w; ++x)
-				if (map.isMaterialTakeable(x,y,int(MaterialId::Food)) || map.isMaterialTakeable(x,y,int(MaterialId::Wood)))
+				if (map.isMaterialTakeable(x,y,MaterialId::Food) || map.isMaterialTakeable(x,y,MaterialId::Wood))
 				{
 					reached[size_t(y) * w + x] = 1;
 					frontier.emplace(x, y);
@@ -408,7 +408,7 @@ namespace
 						continue;
 					const int nx = map.normalizeX(px + dx), ny = map.normalizeY(py + dy);
 					std::uint8_t& cell = reached[size_t(ny) * w + nx];
-					if (!cell && map.terrainSupportsMaterialAt(nx,ny,int(MaterialId::Food)))
+					if (!cell && map.terrainSupportsMaterialAt(nx,ny,MaterialId::Food))
 					{
 						cell = 1;
 						frontier.emplace(nx, ny);
@@ -427,7 +427,7 @@ Field forMap(const Map& map, bool gateOnReachableDeposits)
 	{
 		auto keep=depositReach(map);
 		for (std::size_t i=0; i<keep.size(); ++i)
-			if (!map.terrainSupportsMaterialAt(int(i%w),int(i/w),int(MaterialId::Food))) keep[i]=0;
+			if (!map.terrainSupportsMaterialAt(int(i%w),int(i/w),MaterialId::Food)) keep[i]=0;
 		field.gate(keep);
 	}
 	return field;

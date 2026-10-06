@@ -43,7 +43,7 @@ struct World
                 world.addUnit(unit<8 ? WORKER : WARRIOR,4+offset+unit,12+offset,team);
             if (!depleted)
                 for (int y=18+offset; y<24+offset; ++y)
-                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResource(x,y,WHEAT,1);
+                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
         }
         world.game.map.setMapDiscovered();
         world.game.teams[0]->stats.step(world.game.teams[0]);

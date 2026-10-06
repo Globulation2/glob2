@@ -92,7 +92,7 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 			map->decResource(posX + dx, posY + dy);
 			if (clearedBefore != map->getResource(posX + dx, posY + dy))
                 for(unsigned material=0;material<MaterialCount;++material)
-                    owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAt(map->coordToIndex(posX+dx,posY+dy),material);
+                    owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAtSlot(map->coordToIndex(posX+dx,posY+dy),material);
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		const bool farmAreas = map->farmAreasEnabled();
@@ -390,7 +390,7 @@ void Unit::handleMovementClearingResources()
 		map->decResource(posX + dx, posY + dy);
 		if (clearedBefore != map->getResource(posX + dx, posY + dy))
             for(unsigned material=0;material<MaterialCount;++material)
-                owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAt(map->coordToIndex(posX+dx,posY+dy),material);
+                owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAtSlot(map->coordToIndex(posX+dx,posY+dy),material);
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 
@@ -596,9 +596,9 @@ void Unit::handleMovementGoingToResource()
 		// the stored target has stopped being a peak of that same gradient;
 		// isGradientPeak is a cheap check to run every action, the ascent
 		// itself only when it actually goes stale.
-		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
+		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradientSlot(attachedBuilding, destinationPurpose, swim) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getMaterialGradient(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
+			? roundTrip : map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

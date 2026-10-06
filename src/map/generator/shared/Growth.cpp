@@ -13,7 +13,7 @@ namespace
 bool spreadingCrop(const Map& map, int type)
 {
     if (type==NO_RES_TYPE) return false;
-    const auto& properties=map.resourceProperties(type);
+    const auto& properties=map.resourcePropertiesByIndex(type);
     return properties.spreadRate && (properties.materialMask &
         (materialBit(MaterialId::Food)|materialBit(MaterialId::Wood)));
 }

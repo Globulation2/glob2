@@ -1048,7 +1048,7 @@ void sowPaddies(Map &map, const Layout &L, Sown sown, Keep keep)
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.paddyOf[i] >= 0 && sown(L.paddyOf[i]) && keep(i) && map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-			map.setResource(i % t.w, i / t.w, WHEAT, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -1073,7 +1073,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (L.tower[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
 		{
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 			++towers;
 		}
 	context.telemetry.measure("karst.tower.tiles", towers);
@@ -1122,7 +1122,7 @@ bool generate(Game &game, GenerationContext &context)
 			continue;
 		const double chance = fromTower[i] <= 5 ? woodShare * 0.6 : woodShare * L.thicket[i] / 255.0;
 		if (woods[i] < chance * 65536)
-			map.setResource(x, y, WOOD, 1);
+			map.setResourceByIndex(x, y, WOOD, 1);
 	}
 
 	// Lake fields: the same patches of wheat, three tiles square, round every lake, by offset.
@@ -1137,7 +1137,7 @@ bool generate(Game &game, GenerationContext &context)
 						if (std::hypot(dx, dy) <= L.lakeRadius * 1.9 + 11 && (hash % 1000) < lakeShare * 1000 &&
 							p >= 0 && p < L.paddies && L.lakeField[p] && open(i) &&
 							map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-							map.setResource(i % t.w, i / t.w, WHEAT, 1);
+							map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 					});
 
 	// Orchards anywhere on open ground off the bowls, paddies and towers.
@@ -1173,15 +1173,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		if (L.paddyOf[i] < 0 || !(map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))))
+		if (L.paddyOf[i] < 0 || !(map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(x, y, WOOD))))
 			continue;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int m = t.at(x + dx, y + dy);
-				if ((map.canResourcesGrow(m % t.w, m / t.w) && (map.terrainSupportsResourceAt(m % t.w, m / t.w, WHEAT) ||
-					map.terrainSupportsResourceAt(m % t.w, m / t.w, WOOD))) && L.paddyOf[m] != L.paddyOf[i])
+				if ((map.canResourcesGrow(m % t.w, m / t.w) && (map.terrainSupportsResourceAtByIndex(m % t.w, m / t.w, WHEAT) ||
+					map.terrainSupportsResourceAtByIndex(m % t.w, m / t.w, WOOD))) && L.paddyOf[m] != L.paddyOf[i])
 					return "A paddy's bund is broken at " + at(x, y) + ": its crops could spread out.";
 			}
 	}

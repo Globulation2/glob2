@@ -352,7 +352,7 @@ TEST_CASE("stock tiny deficit healing completes without storing a post exit spee
     Building* hospital=world.addBuilding("hospital",8,8);
     Unit* patient=world.addUnit(WORKER,7,8);
     patient->hp=patient->performance[HP]-1;
-    for (int resource=0;resource<MAX_NB_RESOURCES;++resource)
+    for (int resource=0;resource<MaterialSlotCount;++resource)
         hospital->materials[resource]=hospital->type->semantics.healing.cost[resource];
     admit(hospital,patient,HEAL);
     patient->displacement=Unit::DIS_ENTERING_BUILDING;

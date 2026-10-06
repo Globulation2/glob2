@@ -13,7 +13,7 @@ Entities::MaterialSource::MaterialSource(int material) : material(material)
 
 bool Entities::MaterialSource::is_entity(Map* map, int posx, int posy)
 {
-	return map->isMaterialTakeable(posx, posy, material);
+	return map->isMaterialTakeableSlot(posx, posy, material);
 }
 
 bool Entities::MaterialSource::operator==(const Entity& rhs) const

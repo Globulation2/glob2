@@ -55,7 +55,7 @@ void Unit::handleDisplacement(void)
 				{
 					// The gradient led here to a stocked market of ours: take the
 					// resource at its door and carry it home.
-					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
+					if (Building *market = owner->map->touchedStockedMarketSlot(this, destinationPurpose))
 					{
 						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
 						setTargetBuilding(attachedBuilding);
@@ -187,7 +187,7 @@ void Unit::handleDisplacement(void)
 						///Find a resource that the building wants and a location to get it from
 						///The location may be a market, or the harvesting the resource from the
 						///map.
-						int needs[MAX_NB_RESOURCES];
+						int needs[MaterialSlotCount];
 						attachedBuilding->computeWishedMaterials(needs);
 						int teamNumber=owner->teamNumber;
 						int timeLeft = numberOfStepsLeftUntilHungry();
@@ -202,9 +202,9 @@ void Unit::handleDisplacement(void)
 								const int need=needs[r];
 								if (need<=0) continue;
 								int distance;
-								bool available=map->roundTripDistance(attachedBuilding,r,swimClass(),posX,posY,&distance);
+								bool available=map->roundTripDistanceSlot(attachedBuilding,r,swimClass(),posX,posY,&distance);
 								if (available) distance=(distance+1)/2;
-								else available=map->materialAvailable(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								else available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
@@ -226,7 +226,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->materialAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
+									else if (map->materialAvailableUpdateSlot(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;

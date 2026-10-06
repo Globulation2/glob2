@@ -710,8 +710,8 @@ private:
 	///@{
 	BuildingInfoTitle* buildingInfoTitle;
 	BuildingPicture* buildingPicture;
-	std::array<FractionValueText*, MAX_RESOURCES> buildingResourceLabels{};
-	std::array<ValueScrollBox*, MAX_RESOURCES> buildingResourceControls{};
+	std::array<FractionValueText*, MaterialCount> buildingResourceLabels{};
+	std::array<ValueScrollBox*, MaterialCount> buildingResourceControls{};
 	std::vector<std::pair<FractionValueText*,ValueScrollBox*>> buildingEditRows;
 	int buildingEditFirstRow=0;
 	Sint32 buildingBombingRequirement=0;

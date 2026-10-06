@@ -49,7 +49,7 @@ struct World
                 world.addUnit(unit<8 ? WORKER : WARRIOR,4+offset+unit,12+offset,team);
             if (!depleted)
                 for (int y=18+offset; y<24+offset; ++y)
-                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResource(x,y,WHEAT,1);
+                    for (int x=4+offset; x<20+offset; ++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
             if (farmAreas)
             {
                 // A lake south of the field, and a second field with its own lake
@@ -59,7 +59,7 @@ struct World
                 for (int y=0+offset; y<15+offset; ++y)
                     for (int x=24+offset; x<30+offset; ++x) world.game.map.setUMatPos(x,y,WATER,1);
                 for (int y=1+offset; y<10+offset; ++y)
-                    for (int x=16+offset; x<22+offset; ++x) world.game.map.setResource(x,y,WHEAT,1);
+                    for (int x=16+offset; x<22+offset; ++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
             }
         }
         world.game.map.setMapDiscovered();

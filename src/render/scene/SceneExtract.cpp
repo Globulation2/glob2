@@ -85,7 +85,7 @@ namespace
 		s.unitsInside = Sint32(b.unitsInside.size());
 		s.maxUnitWorking = b.maxUnitWorking;
 		s.unitsWorking = Sint32(b.unitsWorking.size());
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			s.materials[r] = b.materials[r];
 		s.bullets = b.bullets;
 		s.unitStayRange = b.unitStayRange;
@@ -325,7 +325,7 @@ namespace
 			bp.explorersRequireBombing=b->explorersRequireBombing;
 			for (int r = 0; r < BASIC_COUNT; ++r)
 				bp.clearingMaterials[r] = b->clearingMaterials[r];
-			for (int r = 0; r < MAX_RESOURCES; ++r)
+			for (int r = 0; r < MaterialCount; ++r)
 				bp.materials[r] = b->materials[r];
 			bp.bullets = b->bullets;
 			bp.productionTimeout = b->productionTimeout;

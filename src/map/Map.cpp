@@ -52,7 +52,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int r=0; r<MaterialSlotCount; r++)
 			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
 				materialGradients[t][r][s] = NULL;
@@ -316,7 +316,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 	}
 	if (arraysBuilt && marketsV2Enabled())
 		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+			for (int resource = 0; resource < MaterialCount; ++resource)
 				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 				{
 					gradientRuntime->pipeline.invalidate(
@@ -426,7 +426,7 @@ void Map::finishTerrainEdit()
 				gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
 				gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
 				guardGradientUpdated[team][swim] = clearGradientUpdated[team][swim] = false;
-				for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+				for (int resource = 0; resource < MaterialCount; ++resource)
 				{
 					gradientRuntime->pipeline.invalidate(&materialGradients[team][resource][swim]);
 					gradientUpdated[team][resource][swim] = false;
@@ -549,7 +549,7 @@ void Map::clear()
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
-		for (int r=0; r<MAX_RESOURCES; ++r)
+		for (int r=0; r<MaterialCount; ++r)
 			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 			{
 				delete[] materialGradients[t][r][swim];
@@ -597,7 +597,7 @@ void Map::clear()
 	displayedTeam = NO_DISPLAYED_TEAM;
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_RESOURCES; r++)
+		for (int r=0; r<MaterialCount; r++)
 			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 				gradientUpdated[t][r][s]=false;
 }

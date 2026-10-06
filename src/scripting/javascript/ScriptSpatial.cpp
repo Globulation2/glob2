@@ -144,7 +144,7 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 		for (std::size_t i = 0; i < cells.size(); ++i)
 			if (cells[i].known && cells[i].resource == type &&
 				(!harvestable || (!cells[i].forbidden && cells[i].amount > 0 &&
-				 (!game.map.resourceProperties(type).visibleToHarvest || cells[i].visible))))
+				 (!game.map.resourcePropertiesByIndex(type).visibleToHarvest || cells[i].visible))))
 				out[i] = text(selector, "weight", "count") == "amount" ? cells[i].amount : 1;
 	}
 	if (selector.get("material").kind != Value::Null)
@@ -156,7 +156,7 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 		{
 			const auto& cell = cells[i];
 			if (!cell.known || cell.resource == NO_RES_TYPE || (harvestable &&
-				(cell.forbidden || (game.map.resourceProperties(cell.resource).visibleToHarvest && !cell.visible)))) continue;
+				(cell.forbidden || (game.map.resourcePropertiesByIndex(cell.resource).visibleToHarvest && !cell.visible)))) continue;
 			const auto amount = observations.materialStock(i % width, i / width, material);
 			if (amount) out[i] = amountWeight ? amount : 1;
 		}
@@ -448,7 +448,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 				const auto stock = material ? observations.materialStock(b.x + dx, b.y + dy, *material) : c.amount;
 				if ((type < 0 ? c.resource != NO_RES_TYPE : c.resource == type) && (!material || stock) &&
 					(!harvestable || (!c.forbidden && stock > 0 &&
-					 (!game.map.resourceProperties(c.resource).visibleToHarvest || c.visible))))
+					 (!game.map.resourcePropertiesByIndex(c.resource).visibleToHarvest || c.visible))))
 				{
 					++tiles;
 					amount += stock;
@@ -757,7 +757,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
 							 (!c.visible || !game.map.terrainProperties(c.terrainType).buildable ||
-							  (c.resource != NO_RES_TYPE && game.map.resourceProperties(c.resource).blocksBuilding))))
+							  (c.resource != NO_RES_TYPE && game.map.resourcePropertiesByIndex(c.resource).blocksBuilding))))
 						{
 							valid = false;
 							break;

@@ -403,7 +403,7 @@ static void fruitStrategyRegressions()
     ai.budget.fruit_active=true;ai.budget.fruit_units_per_flag=1;
     ai.budget.fruit_flag_radius=3;
     game.map.setMapDiscovered();
-    game.map.setResource(24,10,CHERRY,1);
+    game.map.setResourceByIndex(24,10,CHERRY,1);
     c.initialize();
     int innId=-1;
     for(const auto& entry:c.buildings.found())
@@ -1030,7 +1030,7 @@ static void innCompletionStaffingRegressions()
     c.orders.clear();
     // Finish through the engine so its one-worker post-construction default
     // is in place before the completion callback runs.
-    for(int resource=0;resource<MAX_RESOURCES;++resource)
+    for(int resource=0;resource<MaterialCount;++resource)
         inn->materials[resource]=inn->type->maxMaterial[resource];
     inn->updateBuildingSite();
     REQUIRE(inn->constructionResultState==Building::NO_CONSTRUCTION);
@@ -1086,7 +1086,7 @@ static void placementMaintenanceRegressions()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         {
             game.map.setMapDiscovered(x,y,player.team->me);
-            if(x<20||x>=24||y<20||y>=24)game.map.setResource(x,y,WOOD,1);
+            if(x<20||x>=24||y<20||y>=24)game.map.setResourceByIndex(x,y,WOOD,1);
         }
         game.map.setNoResource(17,21,0);
         REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
@@ -1167,7 +1167,7 @@ static void placementMaintenanceRegressions()
         }
         REQUIRE(ai.development_planner.campuses().size()==1);
         const auto& reservation=ai.development_planner.reservations().begin()->second;
-        for(int index:reservation.circulationTiles)game.map.setResource(index%64,index/64,WOOD,1);
+        for(int index:reservation.circulationTiles)game.map.setResourceByIndex(index%64,index/64,WOOD,1);
         ai.budget.farming_enabled=true;ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_resource_preserving_circulation_enabled=true;
         ai.budget.farming_wood_firebreak_enabled=false;
@@ -1210,7 +1210,7 @@ static void upgradeClearingRegressions()
         std::vector<int> expansion;
         for(int index:contract.footprintTiles)if(game.map.getBuilding(index%64,index/64)==NOGBID)
         {
-            game.map.setResource(index%64,index/64,WOOD,1);
+            game.map.setResourceByIndex(index%64,index/64,WOOD,1);
             expansion.push_back(index);
         }
         REQUIRE(expansion.size()==20);
@@ -1275,7 +1275,7 @@ static void rejectedPlacementUpgradeRegressions()
     auto dispatched=c.getOrder(ai);
     REQUIRE(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
     REQUIRE(c.buildings.is_building_upgrading(id));
-    game.map.setResource(19,19,WOOD,1);
+    game.map.setResourceByIndex(19,19,WOOD,1);
     building->launchConstruction(1,0);
     REQUIRE(building->constructionResultState==Building::NO_CONSTRUCTION);
     c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
@@ -1310,7 +1310,7 @@ static void explorerSwarmStaffingRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int position:{30,50})
     {
-        game.map.setResource(position+6,position+1,WHEAT,1);
+        game.map.setResourceByIndex(position+6,position+1,WHEAT,1);
         game.map.setCellTerrain(position+6,position+3,WATER);
     }
     // Swarm 0 runs empty; swarms 1 and 2 stay full. Staffing is each swarm's
@@ -1396,7 +1396,7 @@ static void completedSwarmBudgetRegressions()
             ai.strategy.economy.swarm_pressure_sensitivity,ai.strategy.economy.swarm_workers_per_building).workers);
     };
     verify(1);
-    for(int resource=0;resource<MAX_RESOURCES;++resource) site->materials[resource]=site->type->maxMaterial[resource];
+    for(int resource=0;resource<MaterialCount;++resource) site->materials[resource]=site->type->maxMaterial[resource];
     site->updateBuildingSite(); verify(2);
     // Repair changes available producers, not the colony-wide labor budget.
     complete->hp/=2; complete->launchConstruction(1,1);
@@ -1414,10 +1414,10 @@ static void economicResourceAccessRegressions()
     for(int y=0;y<64;++y)
     { game.map.setCellTerrain(0,y,WATER); game.map.setCellTerrain(16,y,WATER); }
     for(int y=0;y<64;++y) for(int x=0;x<64;++x) game.map.setMapDiscovered(x,y,player.team->me);
-    game.map.setResource(13,20,WHEAT,1);
-    game.map.setResource(19,11,WHEAT,1);
-    game.map.setResource(19,12,WOOD,1);
-    game.map.setResource(19,13,STONE,1);
+    game.map.setResourceByIndex(13,20,WHEAT,1);
+    game.map.setResourceByIndex(19,11,WHEAT,1);
+    game.map.setResourceByIndex(19,12,WOOD,1);
+    game.map.setResourceByIndex(19,13,STONE,1);
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     ai.snapshot.population=1; ai.snapshot.workers=1;
     // Food now reports whole fertility-equivalent tiles, not deposit counts.
@@ -1441,10 +1441,10 @@ static void economicResourceAccessRegressions()
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
     // Sharing connectivity must preserve algae's unit counts and shore access.
-    game.map.setResource(16,24,ALGA,1);
+    game.map.setResourceByIndex(16,24,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(16,24), 4);
     for(int y=18;y<=21;++y) for(int x=20;x<=23;++x) game.map.setCellTerrain(x,y,WATER);
-    game.map.setResource(21,19,ALGA,1);
+    game.map.setResourceByIndex(21,19,ALGA,1);
     game.map.setResourceAmount(game.map.coordToIndex(21,19), 3);
     ai.update_environment_model(c);
     REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
@@ -1790,7 +1790,7 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     auto* inn=game.addBuilding(2,2,innType,0);REQUIRE(inn);
     const int sx=inn->posX+inn->type->width,sy=inn->posY;
     for(int dx=0;dx<=4;++dx)map.setCellTerrain(sx+dx,sy,GRASS);
-    map.setResource(sx+4,sy,WHEAT,1);
+    map.setResourceByIndex(sx+4,sy,WHEAT,1);
     AIMaxima::Farming::ExactFertilityCache fertility;
     fertility.rebuild(32,32,std::vector<uint8_t>(1024),std::vector<uint8_t>(1024));
     auto capacity=[&](int radius) {

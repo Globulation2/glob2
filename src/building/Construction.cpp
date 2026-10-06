@@ -44,12 +44,12 @@ void Building::fundConstructionFromInventory()
 {
 	if (!type->isBuildingSite || constructionResultState == REPAIR) return;
 	BuildingMaterialCost newlyReserved{};
-	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	for (int r=0; r<MaterialSlotCount; ++r)
 		newlyReserved[r] = std::min(constructionMaterialNeed(r), availableMaterial(r));
 	if (reserveMaterials(newlyReserved))
 	{
 		int funded=0;
-		for (int r=0; r<MAX_NB_RESOURCES; ++r) { constructionReserved[r] += newlyReserved[r]; funded+=newlyReserved[r]; }
+		for (int r=0; r<MaterialSlotCount; ++r) { constructionReserved[r] += newlyReserved[r]; funded+=newlyReserved[r]; }
 		applyConstructionHealth(funded);
 	}
 }
@@ -75,7 +75,7 @@ void Building::applyConstructionHealth(int funded, bool finishRepair)
 	if (constructionResultState == REPAIR)
 	{
 		Sint64 total=0, paid=0;
-		for (int r=0; r<MAX_NB_RESOURCES; ++r) { total+=constructionBudget[r]; paid+=constructionReserved[r]; }
+		for (int r=0; r<MaterialSlotCount; ++r) { total+=constructionBudget[r]; paid+=constructionReserved[r]; }
 		const int earned = !total || finishRepair ? repairInitialDeficit : Sint64(repairInitialDeficit)*paid/total;
 		hp=std::min<Sint64>(getEffectiveMaxHp(),Sint64(hp)+std::max(0,earned-repairHealthGranted));
 		repairHealthGranted=earned;
@@ -93,7 +93,7 @@ void Building::releaseConstructionReservations()
 bool Building::canTransferMaterialsTo(const BuildingType* destination) const
 {
 	if (!type->useTeamMaterials && destination->useTeamMaterials)
-		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+		for (int r=0; r<MaterialSlotCount; ++r)
 			if (Sint64(owner->teamMaterials[r])+localMaterials[r]>std::numeric_limits<Sint32>::max()) return false;
 	return true;
 }
@@ -103,19 +103,19 @@ void Building::transferMaterialsPointer(bool wasShared)
 	// Team stock belongs to the team after a building stops using it. Local
 	// stock entering a shared pool is transferred once, without a hidden copy.
 	if (!wasShared && type->useTeamMaterials)
-		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+		for (int r=0; r<MaterialSlotCount; ++r)
 		{
 			assert(Sint64(owner->teamMaterials[r])+localMaterials[r]<=std::numeric_limits<Sint32>::max());
 			owner->teamMaterials[r] += localMaterials[r];
 			localMaterials[r] = 0;
-			owner->map->dirtyMarketGradients(owner->teamNumber,r);
+			owner->map->dirtyMarketGradientsSlot(owner->teamNumber,r);
 		}
 	updateMaterialsPointer();
 }
 
 bool Building::isMaterialFull(void)
 {
-	for (int i=0; i<MAX_NB_RESOURCES; i++)
+	for (int i=0; i<MaterialSlotCount; i++)
 	{
 		if (materialDeliveryNeed(i)>0)
 			return false;
@@ -142,16 +142,16 @@ int Building::neededMaterial(void)
 	return minType;
 }
 
-void Building::neededMaterials(int needs[MAX_NB_RESOURCES])
+void Building::neededMaterials(int needs[MaterialSlotCount])
 {
-	for (int ri=0; ri<MAX_NB_RESOURCES; ri++)
+	for (int ri=0; ri<MaterialSlotCount; ri++)
 		needs[ri]=Building::neededMaterial(ri);
 }
 
-void Building::computeWishedMaterials(int needs[MAX_NB_RESOURCES])
+void Building::computeWishedMaterials(int needs[MaterialSlotCount])
 {
 	 // we balance the system with Units working on it:
-	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
+	for (int ri = 0; ri < MaterialSlotCount; ri++)
 	{
 		const int missing=materialDeliveryNeed(ri);
 		const int deliveries=(missing+type->materialMultiplier[ri]-1)/type->materialMultiplier[ri];
@@ -160,7 +160,7 @@ void Building::computeWishedMaterials(int needs[MAX_NB_RESOURCES])
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurpose < MAX_NB_RESOURCES);
+			assert((*ui)->destinationPurpose < MaterialSlotCount);
 			needs[(*ui)->destinationPurpose]--;
 		}
 }
@@ -175,7 +175,7 @@ int Building::neededMaterial(int r)
 int Building::totalWishedMaterial()
 {
 	int sum=0;
-	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
+	for (int ri = 0; ri < MaterialSlotCount; ri++)
 		sum += wishedMaterials[ri];
 	return sum;
 }
@@ -247,7 +247,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -365,7 +365,7 @@ void Building::launchDelete(void)
 		owner->directStockSuppliers.remove(this);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-			for (int r=0; r<MAX_NB_RESOURCES; ++r) owner->map->dirtyMarketGradients(owner->teamNumber, r);
+			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
 		maxUnitInside=0;
@@ -383,7 +383,7 @@ void Building::cancelDelete(void)
 	buildingState=ALIVE;
 	owner->addToStaticAbilitiesLists(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
-		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradients(owner->teamNumber,resource);
+		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resource);
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();

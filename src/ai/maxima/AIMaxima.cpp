@@ -280,8 +280,8 @@ namespace
 				   || tile.resource.amount<=0
 )
 					continue;
-				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)))
-					result.knownAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
+				if(map->isMaterialTakeable(x,y,MaterialId::Algae))
+					result.knownAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);
                 if(map->resourceVisibleToHarvest(index) && !(map->fogOfWar[index]&player->team->me))
                     continue;
 				if(tile.forbidden&player->team->me)
@@ -299,27 +299,27 @@ namespace
 							swimmingReach=swimmingReach
 								|| swimmingDistance[neighbor]!=PREEMPTIVE_UNREACHABLE;
 						}
-				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)) && walkingReach)
-					result.walkingAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
-				if(map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae)) && swimmingReach)
-					result.swimmingAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
+				if(map->isMaterialTakeable(x,y,MaterialId::Algae) && walkingReach)
+					result.walkingAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);
+				if(map->isMaterialTakeable(x,y,MaterialId::Algae) && swimmingReach)
+					result.swimmingAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);
 				if(walkingReach || swimmingReach)
 				{
-                    result.accessibleCornTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Food));
-                    result.accessibleWoodTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Wood));
-                    result.accessibleStoneTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Stone));
-                    result.accessibleAlgaeTiles+=map->isMaterialTakeable(x,y,materialIndex(MaterialId::Algae));
-                    result.accessibleAlgaeUnits+=map->materialAmountAt(index,materialIndex(MaterialId::Algae));
+                    result.accessibleCornTiles+=map->isMaterialTakeable(x,y,MaterialId::Food);
+                    result.accessibleWoodTiles+=map->isMaterialTakeable(x,y,MaterialId::Wood);
+                    result.accessibleStoneTiles+=map->isMaterialTakeable(x,y,MaterialId::Stone);
+                    result.accessibleAlgaeTiles+=map->isMaterialTakeable(x,y,MaterialId::Algae);
+                    result.accessibleAlgaeUnits+=map->materialAmountAt(index,MaterialId::Algae);
                     MaterialMask materials=map->materialMaskAt(index)&requestedMaterials;
                     while(materials) {
                         const unsigned material=std::countr_zero(materials);
                         materials&=MaterialMask(materials-1);
-                        if(!map->isMaterialTakeable(x,y,material)) continue;
+                        if(!map->isMaterialTakeableSlot(x,y,material)) continue;
                         result.reachableMaterials[index]|=MaterialMask(1u<<material);
                         const auto& yield=map->resourceRegistry().yields(static_cast<ResourceId>(tile.resource.type))[material];
                         const int units=yield.consumption==ResourceConsumption::Infinite ? INT_MAX
                             : yield.consumption==ResourceConsumption::All || yield.destroysDeposit ? 1
-                            : map->materialAmountAt(index,material);
+                            : map->materialAmountAtSlot(index,material);
                         result.accessibleMaterialUnits[material]=int(std::min<long long>(INT_MAX,
                             static_cast<long long>(result.accessibleMaterialUnits[material])+units));
                     }
@@ -1520,7 +1520,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 				   || unit->carriedMaterial==materialIndex(MaterialId::Algae))
 					economic_value=strategy.raiding.material_resource_value;
 				else if(unit->carriedMaterial>=HAPPINESS_BASE
-				   && unit->carriedMaterial<MAX_RESOURCES)
+				   && unit->carriedMaterial<MaterialCount)
 					economic_value=strategy.raiding.fruit_resource_value;
 				tactics.observeWorker(Tactics::WorkerSighting(unit->gid, *team,
 					unit->posX, unit->posY, timer,
@@ -3038,7 +3038,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 		// Once provisioned, remember startup so a later pause cannot block expansion.
 		if(building && !operating_colonies.count(action.id))
 		{
-			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=building->materials[r]>=recipe.cost[r];ready|=stocked;}
+			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MaterialSlotCount;++r)stocked&=building->materials[r]>=recipe.cost[r];ready|=stocked;}
 			if(ready)
 			{
 				operating_colonies.insert(action.id);
@@ -4340,7 +4340,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
     MaterialMask requestedMaterials=0;
     for(const auto& profile:world.profiles) for(const auto& level:profile.levels)
         for(unsigned material=0;material<MaterialCount;++material)
-        if(level.available && !(legacySupply&(1u<<material)) && map->hasMaterialSource(material)
+        if(level.available && !(legacySupply&(1u<<material)) && map->hasMaterialSourceSlot(material)
             && (level.constructionMaterials[material]>0 || level.operatingMaterials[material]>0))
             requestedMaterials|=MaterialMask(1u<<material);
     ResourceAccessObservation additionalAccess;
@@ -4372,7 +4372,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			&&Building::GIDtoTeam(cell.building)==runtime.player->team->teamNumber;
 		if(cell.resource.type!=NO_RES_TYPE)
 		{
-			const auto& properties=map->resourceProperties(cell.resource.type);
+			const auto& properties=map->resourcePropertiesByIndex(cell.resource.type);
             const bool harvestVisible=!properties.visibleToHarvest || (map->fogOfWar[index]&runtime.player->team->me);
             tile.materialSources=harvestVisible ? map->materialMaskAt(index) : 0;
             if(harvestVisible && requestedMaterials) tile.materialSources=MaterialMask((tile.materialSources&~requestedMaterials)
@@ -4380,7 +4380,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
             tile.materialType=tile.materialSources & materialBit(MaterialId::Food) ? int(materialIndex(MaterialId::Food))
                 : tile.materialSources & materialBit(properties.primaryMaterial) ? int(materialIndex(properties.primaryMaterial))
                 : tile.materialSources ? int(std::countr_zero(tile.materialSources)) : -1;
-            tile.materialAmount=map->materialAmountAt(index,tile.materialType);
+            tile.materialAmount=map->materialAmountAtSlot(index,tile.materialType);
             tile.permanentResource=!properties.clearable && properties.blocksBuilding;
             tile.clearableResource=properties.clearable && properties.blocksBuilding;
             tile.resourceBlocksGround=properties.blocksGround;
@@ -4403,7 +4403,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		{
 			expansionNeighbors=available_expansion_neighbors(runtime,x,y);
 			tile.farmCapacity=Uint32(std::min<std::uint64_t>(std::numeric_limits<Uint32>::max(),
-                map->materialExpansionRateAt(index,tile.materialType)*expansionNeighbors/24));
+                map->materialExpansionRateAtSlot(index,tile.materialType)*expansionNeighbors/24));
 		}
 		if(tile.discovered && !tile.occupied
 		   && tile.materialType==materialIndex(MaterialId::Food) && tile.materialAmount>0)

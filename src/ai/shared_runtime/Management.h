@@ -25,7 +25,7 @@ namespace AISharedRuntime
 	///This namespace stores anything related to managing you're buildings, flags and areas.
 	namespace Management
 	{
- inline constexpr int RecurringInputStock=MAX_RESOURCES;
+ inline constexpr int RecurringInputStock=MaterialCount;
 
 		enum ManagementOrderType
 		{

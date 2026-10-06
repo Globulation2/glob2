@@ -102,8 +102,8 @@ struct CatalogWorld
                 game.teams[team]->addToStaticAbilitiesLists(provider);
             }
             for(int i=0;i<12;++i)world.addUnit(i<10?WORKER:WARRIOR,4+offset+i,12+offset,team);
-            for(int y=18;y<24;++y)for(int x=8;x<24;++x)game.map.setResource(x+offset,y+offset,WHEAT,1);
-            for(int x=24;x<29;++x)for(int y=18;y<24;++y)game.map.setResource(x+offset,y+offset,WOOD,5);
+            for(int y=18;y<24;++y)for(int x=8;x<24;++x)game.map.setResourceByIndex(x+offset,y+offset,WHEAT,1);
+            for(int x=24;x<29;++x)for(int y=18;y<24;++y)game.map.setResourceByIndex(x+offset,y+offset,WOOD,5);
             for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) game.teams[team]->stats.step(game.teams[team]);
         }
         // Nicowar's existing siting policy requires a finite distance from water.
@@ -210,7 +210,7 @@ TEST_CASE("Nicowar and Econo keep independent weighted material objectives and s
         });
         auto& game=fixture.world.game;
         for(int y=0;y<64;++y)for(int x=0;x<64;++x) game.map.setNoResource(x,y,0);
-        game.map.setResource(4,20,WOOD,5);game.map.setResource(28,20,STONE,5);game.map.setResource(28,40,WHEAT,5);
+        game.map.setResourceByIndex(4,20,WOOD,5);game.map.setResourceByIndex(28,20,STONE,5);game.map.setResourceByIndex(28,40,WHEAT,5);
         auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
         runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
         if(controller==AI::NICOWAR) {
@@ -386,7 +386,7 @@ TEST_CASE("production placement falls back from an obstructed preferred footprin
     REQUIRE(game.addBuilding(4,4,anchor,0,4,4));world.addUnit(WORKER,8,4);
     for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) world.team->stats.step(world.team);
     for(int y=0;y<32;++y)for(int x=0;x<32;++x)
-        if(!((x>=4 && x<8 && y>=4 && y<8) || (x>=14 && x<16 && y>=14 && y<16) || (y==8 && x>=8 && x<=14) || (x==14 && y>=8 && y<14))) game.map.setResource(x,y,STONE,1);
+        if(!((x>=4 && x<8 && y>=4 && y<8) || (x>=14 && x<16 && y>=14 && y<16) || (y==8 && x>=8 && x<=14) || (x==14 && y>=8 && y<14))) game.map.setResourceByIndex(x,y,STONE,1);
     const auto& candidates=game.buildingCapabilities().placementsByCost(Intent::ProduceExplorer);
     REQUIRE(candidates.size()==2);CHECK(candidates.front().placementType==large);
     for(int repeat=0;repeat<2;++repeat) {
@@ -773,7 +773,7 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
     for(bool swimming:{false,true}) {
         CAPTURE(swimming);
         ai.canSwim=swimming;
-        auto* gradient=game.map.getMaterialGradient(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
+        auto* gradient=game.map.getMaterialGradientSlot(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
         for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
         ai.copyWheatGradient(copied.data());
         for(std::size_t i=0;i<copied.size();++i) {
@@ -796,7 +796,7 @@ TEST_CASE("AI source selectors discover renamed multi-material deposits and inde
     const auto identity=map.resourceRegistry().find("test:mixed-crop");
     REQUIRE(identity.has_value());
     REQUIRE(resourceIndex(*identity)!=materialIndex(MaterialId::Food));
-    map.setResource(40,40,resourceIndex(*identity),2);
+    map.setResourceByIndex(40,40,resourceIndex(*identity),2);
     struct TestMaterialSource : AISharedRuntime::Gradients::Entities::MaterialSource {
         using MaterialSource::MaterialSource;
         using MaterialSource::is_entity;
@@ -826,7 +826,7 @@ TEST_CASE("AI source selectors discover renamed multi-material deposits and inde
     map.replaceResource(41,40,Resource{}); // CatalogWorld has generated deposits here.
     CHECK_FALSE(ground.is_entity(&map,41,40));
     CHECK_FALSE(building.is_entity(&map,41,40));
-    map.setMaterialAmount(map.coordToIndex(40,40),materialIndex(MaterialId::Food),0);
+    map.setMaterialAmount(map.coordToIndex(40,40),MaterialId::Food,0);
     CHECK_FALSE(food.is_entity(&map,40,40)); CHECK(paper.is_entity(&map,40,40));
     CHECK(either.is_entity(&map,40,40));
 }

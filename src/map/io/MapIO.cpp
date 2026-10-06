@@ -233,7 +233,7 @@ try
             if (!resourceRegistry().valid(r.type)) throw std::ios_base::failure("Unknown saved resource");
             Uint32 maximum=0;
             for (const auto& y:resourceRegistry().yields(static_cast<ResourceId>(r.type))) maximum+=y.capacity;
-            if (r.amount>maximum || (!r.amount && !resourceProperties(r.type).persistsWhenEmpty)) throw std::ios_base::failure("Invalid saved resource stock");
+            if (r.amount>maximum || (!r.amount && !resourcePropertiesByIndex(r.type).persistsWhenEmpty)) throw std::ios_base::failure("Invalid saved resource stock");
         }
 		if (!packed) tiles[i].groundUnit = stream->readUint16("groundUnit");
 		if (!packed) tiles[i].airUnit = stream->readUint16("airUnit");
@@ -260,7 +260,7 @@ try
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         for (const auto& tile:tiles)
-            if (tile.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourceProperties(tile.resource.type).materialMask)) savedMultiTotals.push_back(tile.resource.amount);
+            if (tile.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(tile.resource.type).materialMask)) savedMultiTotals.push_back(tile.resource.amount);
     rebuildResourceHabitats();
     rebuildResourceState();
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
@@ -288,7 +288,7 @@ try
             refreshResourceTotal(i);
             if (tiles[i].resource.amount!=savedMultiTotals[resourceStockIndices[i]-1]) throw std::ios_base::failure("Inconsistent resource total stock");
             materialStockChanged(i,before);
-            if (!tiles[i].resource.amount && !resourceProperties(tiles[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
+            if (!tiles[i].resource.amount && !resourcePropertiesByIndex(tiles[i].resource.type).persistsWhenEmpty) throw std::ios_base::failure("Empty finite resource");
             stream->readLeaveSection();
         }
         stream->readLeaveSection();
@@ -527,7 +527,7 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 	assert(numberOfTeam>0);
 	
 	int t=oldNumberOfTeam;
-	for (int r=0; r<MAX_RESOURCES; r++)
+	for (int r=0; r<MaterialCount; r++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
 		{
 			assert(materialGradients[t][r][s]==NULL);
@@ -558,7 +558,7 @@ void Map::removeTeam(void)
 	gradientRuntime->stockRevision[t]={};
 	for (int s=0; s<SWIM_CLASS_COUNT; s++)
 	{
-		for (int r=0; r<MAX_RESOURCES; r++)
+		for (int r=0; r<MaterialCount; r++)
 		{
 			delete[] materialGradients[t][r][s];
 			materialGradients[t][r][s]=NULL;
@@ -666,7 +666,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		{
 			stream->writeEnterSection(sw);
 			stream->writeEnterSection("resources");
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->writeEnterSection(r);
 				saveGradient(stream, materialGradients[t][r][sw], size);
@@ -718,7 +718,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
-				for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				for (int r=0; r<MaterialSlotCount; ++r)
 				{
 					stream->writeEnterSection(r);
 					saveGradient(stream, building->roundTripGradient[r][sw], size);
@@ -772,14 +772,14 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	gradientRuntime->pipeline.visitPendingSnapshots([&](const GradientPipeline::PendingSnapshot &snapshot) {
 		int destination=-1;
 		for (int t=0; t<game->teamsCount(); ++t)
-			for (int kind=0; kind<2*MAX_NB_RESOURCES+2; ++kind)
+			for (int kind=0; kind<2*MaterialSlotCount+2; ++kind)
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
-					auto *slot=kind<MAX_NB_RESOURCES ? &materialGradients[t][kind][sw]
-						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw]
-						: kind==MAX_NB_RESOURCES+1 ? &clearAreasGradient[t][sw] : &marketMaterialGradients[t][kind-MAX_NB_RESOURCES-2][sw];
-					if (slot==snapshot.slot) destination=kind<MAX_NB_RESOURCES+2
-						? (t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw
-						: Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT+(t*MAX_NB_RESOURCES+kind-MAX_NB_RESOURCES-2)*SWIM_CLASS_COUNT+sw;
+					auto *slot=kind<MaterialSlotCount ? &materialGradients[t][kind][sw]
+						: kind==MaterialSlotCount ? &guardAreasGradient[t][sw]
+						: kind==MaterialSlotCount+1 ? &clearAreasGradient[t][sw] : &marketMaterialGradients[t][kind-MaterialSlotCount-2][sw];
+					if (slot==snapshot.slot) destination=kind<MaterialSlotCount+2
+						? (t*(MaterialSlotCount+2)+kind)*SWIM_CLASS_COUNT+sw
+						: Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT+(t*MaterialSlotCount+kind-MaterialSlotCount-2)*SWIM_CLASS_COUNT+sw;
 				}
 		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
 		stream->writeEnterSection(index++);
@@ -838,7 +838,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		{
 			stream->readEnterSection(sw);
 			stream->readEnterSection("resources");
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				stream->readEnterSection(r);
 				loadGradient(stream, materialGradients[t][r][sw], size, packed);
@@ -896,7 +896,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				{
 					stream->readEnterSection(sw);
 					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
-					for (int r=0; r<MAX_NB_RESOURCES; ++r)
+					for (int r=0; r<MaterialSlotCount; ++r)
 					{
 						stream->readEnterSection(r);
 						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
@@ -957,16 +957,16 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			stream->readEnterSection(index);
 			const unsigned destination=stream->readUint16("destination");
 			const unsigned sw=destination%SWIM_CLASS_COUNT;
-			const unsigned marketBase=Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT;
+			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT;
 			const bool market=destination>=marketBase;
 			if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
 			const unsigned encoded=market ? destination-marketBase : destination;
-			const unsigned kinds=market ? MAX_NB_RESOURCES : MAX_NB_RESOURCES+2;
+			const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
 			const unsigned kind=(encoded/SWIM_CLASS_COUNT)%kinds;
 			const unsigned team=encoded/(SWIM_CLASS_COUNT*kinds);
 			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
-			auto *slot=market ? &marketMaterialGradients[team][kind][sw] : kind<MAX_NB_RESOURCES ? &materialGradients[team][kind][sw]
-				: kind==MAX_NB_RESOURCES ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
+			auto *slot=market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
+				: kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
 			Uint16 *field=nullptr;
@@ -993,7 +993,7 @@ void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
     stream->writeEnterSection("revisions");
     for (int team=0; team<Team::MAX_COUNT; ++team) {
         stream->writeEnterSection(team);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource) {
+        for (int resource=0; resource<MaterialCount; ++resource) {
             stream->writeEnterSection(resource); write64(cache.stockRevision[team][resource],"revision"); stream->writeLeaveSection();
         }
         stream->writeLeaveSection();
@@ -1050,14 +1050,14 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         entry.builtStep=stream->readUint32("builtStep"); entry.sourceRevision=read64("sourceRevision"); entry.recency=read64("recency");
         entry.team=stream->readUint8("team"); entry.resource=stream->readUint8("resource");
         entry.swim=stream->readUint8("swim"); entry.modes=stream->readUint8("modes");
-        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MAX_RESOURCES || entry.swim>=SWIM_CLASS_COUNT
+        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=SWIM_CLASS_COUNT
             || entry.consumer < -1 || entry.consumer>=Team::MAX_COUNT*Building::MAX_COUNT
             || (entry.consumer>=0 && Building::GIDtoTeam(entry.consumer)!=entry.team)
             || entry.type < -1 || entry.type>=int(game->buildingsTypes.size())
             || !entry.recency || entry.recency<=prior || entry.recency>clock)
             throw std::runtime_error("Invalid resource routing cache entry");
         prior=entry.recency;
-        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MAX_RESOURCES+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
+        const Uint64 key=((((Uint64(entry.consumer+1)*Team::MAX_COUNT+entry.team)*MaterialCount+entry.resource)*SWIM_CLASS_COUNT+entry.swim)*4)+entry.modes;
         if (cache.materialFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
         Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);
         if (!field) throw std::runtime_error("Missing resource routing cache field");

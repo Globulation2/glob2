@@ -15,8 +15,8 @@ inline std::uint64_t renewableRate(const Map& map,std::size_t index,int material
     const auto& yield=map.resourceRegistry().yields(static_cast<ResourceId>(resource.type))[material];
     if(!yield.capacity) return 0;
     if(yield.consumption==ResourceConsumption::Infinite) return ResourceRateScale;
-    return map.materialGrowthRateAt(index,material)+map.materialExpansionRateAt(index,material);
+    return map.materialGrowthRateAtSlot(index,material)+map.materialExpansionRateAtSlot(index,material);
 }
 inline bool produces(const Map& map,std::size_t index,int material)
-{ return map.materialAmountAt(index,material)>0; }
+{ return map.materialAmountAtSlot(index,material)>0; }
 }

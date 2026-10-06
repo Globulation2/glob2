@@ -39,7 +39,7 @@ struct GradientRuntime
 	};
 	std::map<Uint64,MaterialField> materialFields;
 	std::list<Uint64> materialLru;
-	std::array<std::array<Uint64,MAX_RESOURCES>,Team::MAX_COUNT> stockRevision{};
+	std::array<std::array<Uint64,MaterialCount>,Team::MAX_COUNT> stockRevision{};
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
 	GradientPipeline pipeline;

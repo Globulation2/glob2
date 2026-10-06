@@ -50,7 +50,7 @@ std::vector<Band> perUnitType(std::function<double(const M &, int)> value)
 
 std::vector<Band> perMaterial(std::function<double(const M &, int)> value)
 {
-	const char *keys[MAX_RESOURCES] = {"[Wood]", "[Food]", "[Paper]", "[Stone]", "[Algae]", "[Cherries]", "[Oranges]", "[Prunes]", "[Gold]", "[Metal]", "[Glass]", "[Fabric]"};
+	const char *keys[MaterialCount] = {"[Wood]", "[Food]", "[Paper]", "[Stone]", "[Algae]", "[Cherries]", "[Oranges]", "[Prunes]", "[Gold]", "[Metal]", "[Glass]", "[Fabric]"};
 	std::vector<Band> bands;
 	for (int material = 0; material < int(MaterialCount); ++material)
 		bands.push_back({keys[material], [value, material](const M &m) { return value(m, material); }, false, material});

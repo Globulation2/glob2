@@ -15,6 +15,9 @@ enum class MaterialId : std::uint8_t
     Gold, Metal, Glass, Fabric
 };
 inline constexpr unsigned MaterialCount = 12;
+// Preserve the historical inventory/wire width. The final three slots are
+// reserved storage, not additional materials or runtime map-resource identities.
+inline constexpr int MaterialSlotCount = 15;
 using MaterialMask = std::uint16_t;
 inline constexpr MaterialMask AllMaterials = (MaterialMask{1} << MaterialCount) - 1;
 constexpr unsigned materialIndex(MaterialId material) { return static_cast<unsigned>(material); }

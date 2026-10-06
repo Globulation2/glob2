@@ -32,8 +32,6 @@ struct Resource
 static_assert(sizeof(Resource) == 8);
 
 
-#define MAX_NB_RESOURCES 15
-#define MAX_RESOURCES MaterialCount
 #define NO_RES -1
 #define WOOD 0
 #define WHEAT 1

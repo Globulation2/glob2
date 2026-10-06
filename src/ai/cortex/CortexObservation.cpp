@@ -234,7 +234,7 @@ namespace Cortex
 					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxResource/multiplierResource
 					// game/entities/BuildingType.h:76,78.
 					t.restockTripsNeeded = 0;
-                    for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource)
+                    for (int resource = 0; resource < MaterialSlotCount; ++resource)
                         if (bt->semantics.feeding.cost[resource] > 0) {
                             const int deficit = std::max(0, bt->maxMaterial[resource] - b->materials[resource]);
                             const int delivered = std::max(1, bt->materialMultiplier[resource]);
@@ -307,7 +307,7 @@ namespace Cortex
 			 && obs.siteCount < CORTEX_MAX_TRACKED_SITES)
 			{
 				int deliveriesLeft = 0;
-				for (int r = 0; r < MAX_RESOURCES; r++)
+				for (int r = 0; r < MaterialCount; r++)
 				{
 					const int mult = bt->materialMultiplier[r];
 					if (mult <= 0)

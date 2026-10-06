@@ -74,8 +74,8 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertIn("contract.footprintTiles", maintenance)
         self.assertIn("contract.circulationTiles", maintenance)
         self.assertIn("selectResourcePreservingCirculation", maintenance)
-        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),materialIndex(MaterialId::Food))>0)", maintenance)
-        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),materialIndex(MaterialId::Wood))>0)", maintenance)
+        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Food)>0)", maintenance)
+        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)", maintenance)
         self.assertIn("!applied_maintenance_clearing_mask[index]", maintenance)
         self.assertIn('"\\treservation_resources_preserved="', maintenance)
         self.assertIn('"\\treservation_fallback_entrances="', maintenance)
@@ -105,7 +105,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
             ):
         ]
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
-        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),materialIndex(MaterialId::Wood))>0)", maintenance)
+        self.assertIn("(map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)", maintenance)
         self.assertIn("wheat_invasion_clearing_required", maintenance)
         self.assertIn("plan.circulation[index]=1", maintenance)
         self.assertIn('"\\twheat_invasion_wood="', maintenance)
@@ -119,7 +119,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         maintenance = maintenance[:maintenance.index("void Maxima::initialize_farming_cache")]
         self.assertIn("Farming::fertilityWithinPercentBand", maintenance)
         self.assertIn("plan.firebreak[index]=wants_firebreak", maintenance)
-        self.assertIn("&& (map->materialAmountAt(size_t(&cell-map->getTiles().data()),materialIndex(MaterialId::Wood))>0)", maintenance)
+        self.assertIn("&& (map->materialAmountAt(size_t(&cell-map->getTiles().data()),MaterialId::Wood)>0)", maintenance)
         self.assertIn("if(contract_desired && map->isForbidden", maintenance)
         self.assertIn("farming.wood_firebreak_fertility_min_percent = 5", self.base_strategy)
         self.assertIn("farming.wood_firebreak_fertility_max_percent = 14", self.base_strategy)

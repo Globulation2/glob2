@@ -106,7 +106,7 @@ void GameGUI::drawValueAlignedRight(int y, int v)
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
 
-void GameGUI::drawCosts(const int materials[MAX_RESOURCES], Font *font, int& ypos)
+void GameGUI::drawCosts(const int materials[MaterialCount], Font *font, int& ypos)
 {
 	int shown=0;
 	for (unsigned i=0; i<MaterialCount; i++)

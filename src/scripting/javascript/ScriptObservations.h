@@ -33,6 +33,7 @@ class Observations
 	Game &game;
 	mutable std::shared_ptr<const TerrainRegistry> terrainDefinitionRegistry;
 	mutable Value terrainDefinitions;
+	mutable std::shared_ptr<const ResourceRegistry> terrainResourceDefinitionRegistry;
 	mutable std::shared_ptr<const ResourceRegistry> resourceDefinitionRegistry;
 	mutable Value resourceDefinitions;
 	int team;

@@ -119,7 +119,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 						const int x = p % w, y = p / w;
 						++band.reachedTiles;
 						band.buildableTiles += map.isFreeForBuilding(x, y);
-						if (map.terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food)))
+						if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))
 						{
 							++band.grassTiles;
 							band.fertileGrassTiles += fertility.at(x, y) > 0;
@@ -130,7 +130,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			const int x = p % w, y = p / w;
 			++colony.catchmentTiles;
 			colony.meanFertility += fertility.at(x, y);
-			if (map.terrainSupportsMaterialAt(x,y,materialIndex(MaterialId::Food)))
+			if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))
 			{
 				++colony.catchmentGrass;
 				colony.catchmentFertileGrass += fertility.at(x, y) > 0;
@@ -166,7 +166,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				const int reach = nearest + 1;
                 for (unsigned material=0; material<MaterialCount; ++material)
                 {
-                    const auto amount=map.materialAmountAt(y*w+x,material);
+                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
                     if (!amount) continue;
 				auto &access = colony.materials[material];
 				if (access.nearestDistance < 0 || reach < access.nearestDistance)
@@ -301,7 +301,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 					continue;
                 for (unsigned material=0; material<MaterialCount; ++material)
                 {
-                    const auto amount=map.materialAmountAt(y*w+x,material);
+                    const auto amount=map.materialAmountAtSlot(y*w+x,material);
                     if (!amount) continue;
 				auto &access = report.colonies[team].materials[material];
 				for (auto &band : report.colonies[team].distanceBands)

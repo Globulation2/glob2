@@ -582,7 +582,7 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 			continue;
 		auto resource = map.getResource(x, y);
 		resource.type = Uint16(type);
-		const auto& properties = map.resourceProperties(type);
+		const auto& properties = map.resourcePropertiesByIndex(type);
 		const auto& yield = map.resourceRegistry().yields(static_cast<ResourceId>(type))[materialIndex(properties.primaryMaterial)];
 		// Match normal authored deposits: valid amounts are 1..sizesCount-1.
 		// Dense patch interiors start mature; fringes include younger deposits.

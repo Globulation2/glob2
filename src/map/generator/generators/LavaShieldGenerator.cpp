@@ -555,8 +555,8 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 				for (int i = 0; i < t.size(); ++i)
 					existingPassage[i] =
 						!(game.map.canResourcesGrow(i % t.w, i / t.w) &&
-							(game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) ||
-							game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD))) &&
+							(game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
+							game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) &&
 						game.map.isHardSpaceForGroundUnit(i % t.w, i / t.w, false, 0);
 			}
 			width = 1;
@@ -584,7 +584,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	Map &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.rock[i])
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		game.addTeam();
@@ -717,13 +717,13 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 			if (radius > L.lakeRadius + 7 && radius < L.rootRadius + 3 &&
 				context.bounded("lava-prizes", 1000) < unsigned(scaledCount(450, o.fruit)))
 			{
-				map.setResource(i % t.w, i / t.w, CHERRY + context.bounded("lava-prizes", 3), 1);
+				map.setResourceByIndex(i % t.w, i / t.w, CHERRY + context.bounded("lava-prizes", 3), 1);
 				++fruitPlaced;
 			}
 			else if (radius > L.rootRadius &&
 					 context.bounded("lava-prizes", 10000) < unsigned(scaledCount(30, o.stone)))
 			{
-				map.setResource(i % t.w, i / t.w, STONE, 1);
+				map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 				++stonePlaced;
 			}
 		}
@@ -820,7 +820,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const int x = i % L.t.w, y = i / L.t.w;
 		if (lake[i] && !game.map.isWater(x, y))
 			return "Lava shield lost part of its crater or ocean.";
-		if (L.rock[i] && (game.map.getResource(x, y).type != STONE || !game.map.terrainSupportsResourceAt(x, y, STONE)))
+		if (L.rock[i] && (game.map.getResource(x, y).type != STONE || !game.map.terrainSupportsResourceAtByIndex(x, y, STONE)))
 			return "Lava shield lost structural stone or placed it on illegal terrain.";
 		if (L.rim[i] && !game.map.isHardSpaceForGroundUnit(x, y, false, 0))
 			return "Lava shield's reserved crater circuit is blocked.";

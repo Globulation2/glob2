@@ -258,7 +258,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 		for (int i = 0; i < 3; ++i)
 			inn->materials[kinds[i]] =
 				i < varieties ? std::min(10, inn->type->maxMaterial[kinds[i]]) : 0;
-		for (int r = 0; r < MAX_RESOURCES; ++r)
+		for (int r = 0; r < MaterialCount; ++r)
 			require(inn->materials[r] <= inn->type->maxMaterial[r], "stock fits inn capacity");
 		// Public building ticks honor its normal conversion cooldown.
 		for (int i = 0; i < 256; ++i)

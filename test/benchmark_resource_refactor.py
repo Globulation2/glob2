@@ -36,6 +36,23 @@ def interval(values):
     return [math.exp(means[100]), math.exp(means[3899])]
 
 
+def aggregate_interval(scenario_logs):
+    """Equal-weight fixed scenarios, independently resampling paired repeats.
+
+    Scenario-major execution gives repeat indices no shared timing-block meaning.
+    Sort each stratum so harmless input permutations also preserve the seeded
+    Monte Carlo result exactly.
+    """
+    strata = sorted(sorted(values) for values in scenario_logs)
+    if not strata or any(not values for values in strata):
+        raise ValueError('aggregate requires nonempty scenario samples')
+    rng = random.Random(714031)
+    means = sorted(statistics.mean(statistics.mean(rng.choices(values, k=len(values)))
+                                   for values in strata) for _ in range(4000))
+    return dict(ratio=math.exp(statistics.mean(statistics.mean(values) for values in strata)),
+                ci95=[math.exp(means[100]), math.exp(means[3899])])
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('before', type=Path)
@@ -77,7 +94,7 @@ def main():
         runtime_environment={key: os.environ.get(key) for key in
             ('LD_LIBRARY_PATH', 'SDL_VIDEODRIVER', 'SDL_AUDIODRIVER', 'GLOB2_PERF_DISABLE')},
         data_roots={k: {'path': str(root), 'files': {str(path.relative_to(root)): digest(path)
-            for path in sorted((root/'data').rglob('*')) if path.is_file() and path.suffix in ('.json', '.txt')}}
+            for path in sorted((root/'data').rglob('*')) if path.is_file() and path.suffix in ('.json', '.txt', '.js')}}
             for k, root in roots.items()},
         manifest=manifest, repeats=args.repeats), indent=2)+'\n')
     pairs = {}
@@ -118,9 +135,9 @@ def main():
                 baseline_median=statistics.median(row['baseline'][metric] for row in samples),
                 candidate_median=statistics.median(row['candidate'][metric] for row in samples))
     # Each scenario receives equal weight; all early/middle/late controls are included.
-    aggregate_logs = [statistics.mean(math.log(pairs[name][r]['candidate']['simulation_cpu_s']/pairs[name][r]['baseline']['simulation_cpu_s'])
-                      for name in pairs) for r in range(args.repeats)]
-    aggregate = dict(ratio=math.exp(statistics.mean(aggregate_logs)), ci95=interval(aggregate_logs))
+    aggregate_logs = [[math.log(row['candidate']['simulation_cpu_s']/row['baseline']['simulation_cpu_s'])
+                       for row in samples] for samples in pairs.values()]
+    aggregate = aggregate_interval(aggregate_logs)
     credible_regression = aggregate['ci95'][0] > 1.02 or any(s['simulation_cpu_s']['ci95'][0] > 1.05 for s in summary.values())
     within_limits = aggregate['ci95'][1] <= 1.02 and all(s['simulation_cpu_s']['ci95'][1] <= 1.05 for s in summary.values())
     result = dict(scenarios=summary, aggregate_cpu=aggregate,

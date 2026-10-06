@@ -67,8 +67,8 @@ TEST_CASE("large eight-team sparse material and runtime catalog stress [benchmar
         bool placedWideId=false;
         for(size_t index:deposits) placedWideId|=map.getResource(index%map.getW(),index/map.getW()).type>255;
         CHECK(placedWideId==(definitions>255));
-        REQUIRE(map.hasMaterialSource(materialIndex(MaterialId::Food)));
-        REQUIRE_FALSE(map.hasMaterialSource(materialIndex(MaterialId::Wood)));
+        REQUIRE(map.hasMaterialSource(MaterialId::Food));
+        REQUIRE_FALSE(map.hasMaterialSource(MaterialId::Wood));
         if(definitions>255) CHECK(map.resourceRegistry().size()>255);
         Json row={{"width",map.getW()},{"teams",8},{"definitions",definitions},
             {"multi_material",multi},{"deposits",deposits.size()},

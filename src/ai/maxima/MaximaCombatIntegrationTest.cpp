@@ -1037,7 +1037,7 @@ static void sealedTargetOpensRoute()
         for(int i=0;i<12;++i) f.warrior(6+i,6)->performance[SWIM]=0;
         // A ring of wood seals the target: neither walkers nor swimmers can pass.
         if(sealed) for(int y=27;y<=37;++y) for(int x=32;x<=42;++x)
-            if(x==32||x==42||y==27||y==37) f.game.map.setResource(x,y,WOOD,1);
+            if(x==32||x==42||y==27||y==37) f.game.map.setResourceByIndex(x,y,WOOD,1);
         auto& a=*f.ai; auto& c=a.context;
         c.initialize(); f.remember(survivor);
         a.strategy.tactics.dig_out_enabled=true;

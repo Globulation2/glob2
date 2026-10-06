@@ -25,11 +25,11 @@ TEST_SUITE("AIRecoveryCoverage")
         auto empty=Cortex::assessSwim(player,true);
         CHECK(empty.landReach>0); CHECK(empty.waterReach>empty.landReach);
         CHECK(empty.algaeDiscovered==0); CHECK(empty.algaeReachable==0);
-        w.game.map.setResource(20,16,ALGA,1);
+        w.game.map.setResourceByIndex(20,16,ALGA,1);
         w.game.map.setMapDiscovered();
         auto distant=Cortex::assessSwim(player,true);
         CHECK(distant.algaeDiscovered==1); CHECK(distant.algaeReachable==0);
-        w.game.map.setResource(12,6,ALGA,1);
+        w.game.map.setResourceByIndex(12,6,ALGA,1);
         auto shore=Cortex::assessSwim(player,false);
         CHECK(shore.algaeDiscovered==1); CHECK(shore.algaeReachable==1);
         CHECK(shore.landReach==empty.landReach); CHECK(shore.waterReach==0);
@@ -59,7 +59,7 @@ TEST_SUITE("AIRecoveryCoverage")
         glob2test::HeadlessGame w(glob2test::GameOptions{
             .teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         w.addBuilding("inn",2,2);
-        for (int y=7;y<13;++y) for (int x=7;x<13;++x) w.game.map.setResource(x,y,WHEAT,1);
+        for (int y=7;y<13;++y) for (int x=7;x<13;++x) w.game.map.setResourceByIndex(x,y,WHEAT,1);
         w.game.map.setMapDiscovered();
         std::fill(w.game.map.fogOfWar,w.game.map.fogOfWar+32*32,~Uint32(0));
         w.game.map.addForbidden(8,8,1);
@@ -87,7 +87,7 @@ TEST_SUITE("AIRecoveryCoverage")
         w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
         w.addBuilding("inn",4,4);
         for(int y=14; y<18; ++y) for(int x=7; x<13; ++x) w.game.map.setTerrain(x,y,256);
-        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.setResource(x,y,WHEAT,1);
+        for(int y=7; y<13; ++y) for(int x=7; x<13; ++x) w.game.map.setResourceByIndex(x,y,WHEAT,1);
         w.game.map.setMapDiscovered();
         std::fill(w.game.map.fogOfWar,w.game.map.fogOfWar+32*32,~Uint32(0));
         // A save from the prototype contains both wheat parities and its ring.

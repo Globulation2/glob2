@@ -335,7 +335,7 @@ bool Building::tryToBuildingSiteRoom(void)
 			repairInitialDeficit=std::max(0,getEffectiveMaxHp()-hp);
 			const Sint64 ratio=(Sint64(hp)<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 			Sint32 remainder=0;
-			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int r=0; r<MaterialSlotCount; ++r)
 			{
 				const Sint64 value=ratio*type->semantics.repairCost[r];
 				int healthy=value>>FIXED_POINT_SHIFT_16;

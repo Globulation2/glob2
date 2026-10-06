@@ -251,7 +251,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
+				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
 					return true;
 			}
 		return false;
@@ -269,7 +269,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
+				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
 					count++;
 			}
 		return count;
@@ -296,7 +296,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (!map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
+				if (!map.isMaterialTakeable(nx, ny,MaterialId::Food))
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -321,7 +321,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (!map.isMaterialTakeable(nx, ny, materialIndex(MaterialId::Food)))
+				if (!map.isMaterialTakeable(nx, ny,MaterialId::Food))
 					continue;
 				if (map.isForbidden(nx, ny, teamMask))
 					continue;

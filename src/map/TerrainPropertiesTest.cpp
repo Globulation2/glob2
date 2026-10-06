@@ -123,8 +123,8 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
         for (int x=8;x<12;++x) map.setCellTerrain(x,8,TRAIL);
     }
     CHECK(escape[map.coordToIndex(8,8)] > old);
-    map.setResource(15,15,WHEAT,1);
-    map.getMaterialGradient(0,WHEAT,0);
+    map.setResourceByIndex(15,15,WHEAT,1);
+    map.getMaterialGradientSlot(0,WHEAT,0);
     map.configureGradientPipeline(0,2);
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
@@ -508,8 +508,8 @@ TEST_SUITE("TerrainRuntime")
 							map.setCellTerrain(x, y, water);
 				}
 				CHECK(map.hasTerrainMovementModifiers() == (speed != 256));
-				map.setResource(20, 20, WHEAT, 1);
-				map.getMaterialGradient(0, WHEAT, 6);
+				map.setResourceByIndex(20, 20, WHEAT, 1);
+				map.getMaterialGradientSlot(0, WHEAT, 6);
 				std::vector<Uint16> expected(1024);
 				map.seedMaterialGradient(0, WHEAT, 6, expected.data());
 				map.propagateGradient(expected.data(), 6);
@@ -631,8 +631,8 @@ TEST_SUITE("TerrainRuntime")
 		REQUIRE(worker);
 		for (int i = 0; i < 7; ++i)
 			worker->applyTerrainHealth();
-		map.setResource(15, 15, WHEAT, 1);
-		map.getMaterialGradient(0, WHEAT, 6);
+		map.setResourceByIndex(15, 15, WHEAT, 1);
+		map.getMaterialGradientSlot(0, WHEAT, 6);
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
 		map.gradientRuntime->pipeline.submit(&map.materialGradients[0][WHEAT][6], 6,

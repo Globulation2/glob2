@@ -82,7 +82,7 @@ TEST_SUITE("EditorActionCoverage")
         cursor(editor,4,4); editor.performAction("select map building");
         REQUIRE(editor.selectedBuildingGID==building->gid);
         CHECK(editor.buildingAssignedScrollBox->maximumValue()==40);
-        for (int resource=0; resource<MAX_RESOURCES; ++resource)
+        for (int resource=0; resource<MaterialCount; ++resource)
         {
             CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
             editor.buildingResourceControls[resource]->setValue(resource+1);

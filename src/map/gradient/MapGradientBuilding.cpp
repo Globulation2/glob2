@@ -102,7 +102,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 					if (yi2+(xi*xi)<=r2)
 					{
 						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(tiles[addr].resource.type != NO_RES_TYPE && resourceProperties(tiles[addr].resource.type).clearable &&
+						if(tiles[addr].resource.type != NO_RES_TYPE && resourcePropertiesByIndex(tiles[addr].resource.type).clearable &&
 						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterials))
 						{
 							if(gradient[addr] == GRADIENT_UNREACHABLE)
@@ -175,7 +175,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 }
 
 
-void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
+void Map::updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(RoundTripGradient);
 	// Only construction needs the parent in full; reading a cached round-trip
@@ -186,9 +186,9 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
 	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const unsigned modes=materialSupplyModes(building,resourceType);
+	const unsigned modes=materialSupplyModesSlot(building,resourceType);
 	const bool withMarkets=modes!=0;
-	const Uint16 *toResource=getMaterialGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
+	const Uint16 *toResource=getMaterialGradientSlot(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the
 	// unit harvests, to the building. A stocked market's tile is a goal as
@@ -230,7 +230,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	}
 	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
 		visitSuppliers([&](const Building* supplier) {
-			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligible(supplier,building,resourceType,modes)) return;
+			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligibleSlot(supplier,building,resourceType,modes)) return;
 			for (int y=0; y<supplier->type->height; ++y)
 				for (int x=0; x<supplier->type->width; ++x)
 				{

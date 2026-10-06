@@ -11,6 +11,11 @@ The fixed material order is `wood`, `food`, `paper`, `stone`, `algae`, `cherries
 engine and save adapters. Adding a material requires an engine change. Resource
 identities are separate, map-local 16-bit IDs resolved from stable catalog keys.
 
+C++ map APIs use distinct `MaterialId` and `ResourceId` arguments. Integer-indexed
+material kernels use explicit `Slot` names; resource-index adapters use `ByIndex`
+names. Use the typed operations at domain boundaries and the indexed helpers for
+validated compact loops or legacy input adapters; a deposit ID is never a material slot.
+
 The installed definitions are `data/resources/registry.json`. Existing deposits
 are trees, wheat, papyrus, rocks, algae and cherry, orange and prune trees. Gold
 ore, iron ore, sand and cotton are supplied as an optional editor experiment;

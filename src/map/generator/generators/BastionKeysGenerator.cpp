@@ -476,7 +476,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i])
-			game.map.setResource(i % t.w, i / t.w, STONE, 1);
+			game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 	context.stage = "bastion keys colonies";
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
@@ -499,9 +499,9 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		int planted = 0;
 		for (int i : L.landingFields[f])
-			if (planted < 24 && fertility.values()[i] > 0 && game.map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT))
+			if (planted < 24 && fertility.values()[i] > 0 && game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT))
 			{
-				game.map.setResource(i % t.w, i / t.w, WHEAT, 1);
+				game.map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
 				++planted;
 			}
 		context.telemetry.measure("bastion-keys.landing.wheat", planted, int(f));
@@ -564,7 +564,7 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				if (planted >= wanted)
 					break;
-				game.map.setResource(i % t.w, i / t.w, key.kind == 1 ? CHERRY + planted % 3 : STONE,
+				game.map.setResourceByIndex(i % t.w, i / t.w, key.kind == 1 ? CHERRY + planted % 3 : STONE,
 									 1);
 				++planted;
 			}
@@ -604,7 +604,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return error;
 	if (const auto error = startingAccessFailure(
 			game.map, context.request.nbTeams,
-			{{WHEAT, 28, "plantation wheat"}, {WOOD, 36, "plantation timber"}}, 64, 24);
+			{{MaterialId::Food, 28, "plantation food"}, {MaterialId::Wood, 36, "plantation timber"}}, 64, 24);
 		!error.empty())
 		return error;
 	// Even cleared estates must be islands: crops and buildings cannot disguise a land

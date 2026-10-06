@@ -474,7 +474,7 @@ bool generate(Game &game, GenerationContext &context)
 		const Style style = Style(L.styles[plot]);
 		const int resource = style == kWheat ? WHEAT : style == kWood ? WOOD :
 			style == kFruit ? CHERRY + plot % 3 : STONE;
-		if (map.terrainSupportsResourceAt(i % t.w, i / t.w, resource))
+		if (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, resource))
 			plotTiles[plot].push_back(i);
 	}
 	std::array<int, 4> planted{};
@@ -495,7 +495,7 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(tiles.size()),
 									   home ? share : int(scaledCount(share, style == kWheat ? o.wheat : o.wood)));
 			for (int j = 0; j < count; ++j)
-				map.setResource(tiles[j] % t.w, tiles[j] / t.w, style == kWheat ? WHEAT : WOOD, 1);
+				map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, style == kWheat ? WHEAT : WOOD, 1);
 			planted[style] += count;
 		}
 		else if (style == kFruit)
@@ -503,12 +503,12 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(tiles.size()), home ? kFruitTiles : int(scaledCount(kFruitTiles, o.fruit)));
 			const int fruit = CHERRY + int(p % 3);
 			for (int j = 0; j < count; ++j)
-				map.setResource(tiles[j] % t.w, tiles[j] / t.w, fruit, 1);
+				map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, fruit, 1);
 			planted[kFruit] += count;
 		}
 		else if (int(context.bounded("allotments-sheds", 100)) < kShedPercent && (home || scaledCount(1, o.stone) > 0))
 		{
-			map.setResource(tiles.back() % t.w, tiles.back() / t.w, STONE, 1);
+			map.setResourceByIndex(tiles.back() % t.w, tiles.back() / t.w, STONE, 1);
 			++planted[kBare];
 		}
 	}
@@ -525,10 +525,10 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<int> ground;
 		for (int i = 0; i < n; ++i)
 			if (L.cellOf[i] == c && L.kind[i] == parcel.kind && L.homeOf[i] < 0 &&
-				(parcel.kind == kWoodlot ? map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) : (map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-					map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
-					map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
-					map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE))) && clearGround(map, i % t.w, i / t.w) &&
+				(parcel.kind == kWoodlot ? map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) : (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
+					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
+					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE))) && clearGround(map, i % t.w, i / t.w) &&
 					!reserved[i])
 				ground.push_back(i);
 		if (ground.empty())
@@ -540,7 +540,7 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(ground.size()),
 									   int(scaledCount(int(ground.size()) * kWoodlotCoverPercent / 100, o.wood)));
 			for (int j = 0; j < count; ++j)
-				map.setResource(ground[j] % t.w, ground[j] / t.w, WOOD, 1);
+				map.setResourceByIndex(ground[j] % t.w, ground[j] / t.w, WOOD, 1);
 		}
 		else if (parcel.kind == kCommons)
 		{
@@ -582,8 +582,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto open = [&](int i)
 	{
 		const int x = i % t.w, y = i / t.w;
-		return (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAt(x, y, WHEAT) ||
-			map.terrainSupportsResourceAt(x, y, WOOD))) && !permanentResourceBarrier(map, i);
+		return (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 	};
 	for (int i = 0; i < n; ++i)
 		if (L.plotOf[i] >= 0 && open(i))
@@ -617,7 +617,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (const ColonyWalk walk = walkFromFirstColony(map, teams, "the lanes", "along the lanes");
 		!walk.error.empty())
 		return walk.error;
-	return startingAccessFailure(map, teams, {{WHEAT, 24, "wheat"}, {WOOD, 32, "wood"}}, 16, 24);
+	return startingAccessFailure(map, teams, {{MaterialId::Food, 24, "food"}, {MaterialId::Wood, 32, "wood"}}, 16, 24);
 }
 } // namespace
 

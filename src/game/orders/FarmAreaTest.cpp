@@ -91,7 +91,7 @@ namespace
 	//! A worker at (x,y) finishing a harvest against the tile at (x+dx,y+dy).
 	bool harvest(Map& map, int x, int y, int dx, int dy, int resource = WHEAT)
 	{
-		return map.takeHarvest(x, y, dx, dy, resource, TEAM_MASK);
+		return map.takeHarvestMaterialSlot(x, y, dx, dy, resource, TEAM_MASK);
 	}
 
 	// Paint or erase a farm area with the order a player's brush sends.

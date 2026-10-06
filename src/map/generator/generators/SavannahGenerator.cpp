@@ -370,7 +370,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const int i = L.t.at(x, y);
 		return !L.reserved[i] && L.plotOf[i] < 0 && fertility.at(L.t.x(x), L.t.y(y)) == 0 &&
-			   game.map.terrainSupportsResourceAt(L.t.x(x), L.t.y(y), WOOD) && clearGround(game.map, L.t.x(x), L.t.y(y));
+			   game.map.terrainSupportsResourceAtByIndex(L.t.x(x), L.t.y(y), WOOD) && clearGround(game.map, L.t.x(x), L.t.y(y));
 	};
 	for (size_t k = 0; k < L.plainTrees.size() && clumps < wantedClumps; ++k)
 	{
@@ -378,7 +378,7 @@ bool generate(Game &game, GenerationContext &context)
 		const int x = i % L.t.w, y = i / L.t.w;
 		if (!dryGrass(x, y))
 			continue;
-		game.map.setResource(x, y, WOOD, 1);
+		game.map.setResourceByIndex(x, y, WOOD, 1);
 		++trees;
 		++clumps;
 		const int extra = int(k % 3);
@@ -386,7 +386,7 @@ bool generate(Game &game, GenerationContext &context)
 		for (int e = 0; e < extra; ++e)
 			if (dryGrass(x + dx[e], y + dy[e]))
 			{
-				game.map.setResource(L.t.x(x + dx[e]), L.t.y(y + dy[e]), WOOD, 1);
+				game.map.setResourceByIndex(L.t.x(x + dx[e]), L.t.y(y + dy[e]), WOOD, 1);
 				++trees;
 			}
 	}

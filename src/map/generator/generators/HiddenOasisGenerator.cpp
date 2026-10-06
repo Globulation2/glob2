@@ -1329,7 +1329,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if ((L.rock[i] || L.buttes[i]) && clearGround(map, i % t.w, i / t.w))
 		{
-			map.setResource(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
 			stone[i] = 1;
 		}
 	for (int i = 0; i < n; ++i)
@@ -1353,12 +1353,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> country(n, 0), ambientClear(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		country[i] = !nearMassif[i] && !L.buttes[i] && (map.terrainSupportsResourceAt(i % t.w, i / t.w, WHEAT) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, WOOD) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAt(i % t.w, i / t.w, PRUNE));
+		country[i] = !nearMassif[i] && !L.buttes[i] && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE));
 		ambientClear[i] = reserved[i] || L.noFields[i] || nearMouth[i] || L.washes[i];
 	}
 	const std::vector<unsigned char> none(n, 0);
@@ -1390,7 +1390,7 @@ bool generate(Game &game, GenerationContext &context)
 			if (!country[i] || ambientClear[i] || watered.at(x, y) != 0 || !clearGround(map, x, y) ||
 				!map.isResourceAllowed(x, y, WOOD))
 				continue;
-			map.setResource(x, y, WOOD, 1);
+			map.setResourceByIndex(x, y, WOOD, 1);
 			++planted;
 		}
 		context.telemetry.measure("hidden-oasis.scrub.planted", planted);
@@ -1487,7 +1487,7 @@ bool generate(Game &game, GenerationContext &context)
 			return false;
 		}
 		for (int k = 0; k < o.algae; ++k)
-			map.setResource(water[k] % t.w, water[k] / t.w, ALGA, 1);
+			map.setResourceByIndex(water[k] % t.w, water[k] / t.w, ALGA, 1);
 		context.telemetry.measure("hidden-oasis.algae.tiles", o.algae);
 		// The forward base's room: the basin's free 3x3 footprints (an inn, a tower and a school fit one).
 		int room = 0;

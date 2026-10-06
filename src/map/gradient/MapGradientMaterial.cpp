@@ -16,16 +16,16 @@
 #include "SeedTerrain.h"
 #include <type_traits>
 
-Uint16 *Map::getMaterialGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
+Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int swimClass, bool withMarkets, const Building* consumer)
 {
 	if (consumer)
 	{
-		const unsigned modes=materialSupplyModes(consumer,resourceType);
+		const unsigned modes=materialSupplyModesSlot(consumer,resourceType);
 		withMarkets=modes&1;
 		const unsigned supplied=((modes&1) ? consumer->runtime->suppliesStockMask : 0)
 			| ((modes&2) ? consumer->runtime->suppliesDirectStockMask : 0);
 		const bool excludesSelf=consumer->runtime->has(BuildingRuntimeTraits::SharedStock) || (supplied&(1u<<resourceType));
-		if ((modes&2) || (withMarkets && excludesSelf)) return cachedMaterialGradient(consumer,resourceType,swimClass,modes);
+		if ((modes&2) || (withMarkets && excludesSelf)) return cachedMaterialGradientSlot(consumer,resourceType,swimClass,modes);
 	}
 	withMarkets = withMarkets && marketsV2Enabled();
 	// Keep colonies without markets on the original field and refresh schedule.
@@ -33,7 +33,7 @@ Uint16 *Map::getMaterialGradient(int teamNumber, int resourceType, int swimClass
 	// AI workers may request the same lazy field concurrently. Cover both
 	// allocation and pipeline invalidation before publishing the pointer.
 	std::lock_guard<std::mutex> lock(materialGradientMutex);
-	if (!withMarkets && !hasMaterialSource(resourceType))
+	if (!withMarkets && !hasMaterialSourceSlot(resourceType))
 	{
 		auto& empty = gradientRuntime->absentMaterialField;
 		if (empty.size() != size) empty.assign(size, GRADIENT_UNREACHABLE);
@@ -84,7 +84,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 	};
 	supplierSeeds.fill(GRADIENT_FORBIDDEN);
 	visitSuppliers([&](const Building* supplier) {
-		if (stockSupplierEligible(supplier,consumer,resourceType,modes))
+		if (stockSupplierEligibleSlot(supplier,consumer,resourceType,modes))
 			supplierSeeds[Building::GIDtoID(supplier->gid)] = std::max<int>(GRADIENT_UNREACHABLE + 1,
 				GRADIENT_AT_GOAL - supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP);
 	});
@@ -156,9 +156,9 @@ void Map::seedMaterialGradientDirect(int teamNumber, Uint8 resourceType, int swi
 	});
 }
 
-void Map::dirtyMarketGradients(int teamNumber, int resourceType)
+void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 {
-	if (resourceType<MAX_RESOURCES) ++gradientRuntime->stockRevision[teamNumber][resourceType];
+	if (resourceType<MaterialCount) ++gradientRuntime->stockRevision[teamNumber][resourceType];
 	if (!marketsV2Enabled()) return;
 	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
 		{
@@ -168,7 +168,7 @@ void Map::dirtyMarketGradients(int teamNumber, int resourceType)
 }
 
 
-bool Map::stockSupplierEligible(const Building* supplier, const Building* consumer, int resource, unsigned modes) const
+bool Map::stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const
 {
     return supplier && supplier!=consumer && (!consumer || supplier->materials!=consumer->materials)
         && supplier->buildingState==Building::ALIVE
@@ -176,7 +176,7 @@ bool Map::stockSupplierEligible(const Building* supplier, const Building* consum
         && supplier->availableMaterial(resource)>0;
 }
 
-Uint16* Map::cachedMaterialGradient(const Building* consumer, int resource, int swim, unsigned modes)
+Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, int swim, unsigned modes)
 {
     std::lock_guard<std::mutex> lock(materialGradientMutex);
     auto& runtime=*gradientRuntime;
@@ -184,7 +184,7 @@ Uint16* Map::cachedMaterialGradient(const Building* consumer, int resource, int 
     const bool privateField=consumer->runtime->has(BuildingRuntimeTraits::SharedStock) ||
         ((((modes&1) ? consumer->runtime->suppliesStockMask : 0) | ((modes&2) ? consumer->runtime->suppliesDirectStockMask : 0))&(1u<<resource));
     const int excluded=privateField ? consumer->gid : -1;
-    const Uint64 key=((((Uint64(excluded+1)*Team::MAX_COUNT+team)*MAX_RESOURCES+resource)*SWIM_CLASS_COUNT+swim)*4)+modes;
+    const Uint64 key=((((Uint64(excluded+1)*Team::MAX_COUNT+team)*MaterialCount+resource)*SWIM_CLASS_COUNT+swim)*4)+modes;
     auto found=runtime.materialFields.find(key);
     if (found==runtime.materialFields.end())
     {
@@ -233,7 +233,7 @@ Uint64 Map::materialRoutingCacheBytes() const
     return Uint64(gradientRuntime->materialFields.size())*size*sizeof(Uint16);
 }
 
-unsigned Map::materialSupplyModes(const Building* consumer, int resource) const
+unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) const
 {
     if (!consumer) return 1;
     const unsigned bit=1u<<resource;

@@ -87,7 +87,7 @@ TEST_CASE("completed blocked job retains its budget and zero duration remains a 
     world.team->addToStaticAbilitiesLists(b);
     REQUIRE(std::find(world.team->swarms.begin(), world.team->swarms.end(), b) != world.team->swarms.end());
     for (int y=7; y<=12; ++y) for (int x=7; x<=12; ++x)
-        if (x==7 || x==12 || y==7 || y==12) world.game.map.setResource(x,y,STONE,1);
+        if (x==7 || x==12 || y==7 || y==12) world.game.map.setResourceByIndex(x,y,STONE,1);
     for (int tick=0; tick<5; ++tick) b->swarmStep();
     CHECK(b->productionUnit == WORKER);
     CHECK(b->productionTimeout == -1);
@@ -180,7 +180,7 @@ TEST_CASE("hybrid attraction and service routes remain independent across save c
     b->maxUnitWorking=10;
     for (int resource=0; resource<MaterialCount; ++resource) b->materials[resource]=b->type->maxMaterial[resource];
     b->update();
-    world.game.map.setResource(12,8,WOOD,1);
+    world.game.map.setResourceByIndex(12,8,WOOD,1);
     Unit* worker=world.addUnit(WORKER,6,8);
     Unit* explorer=world.addUnit(EXPLORER,6,9);
     Unit* warrior=world.addUnit(WARRIOR,6,10);
@@ -229,7 +229,7 @@ TEST_CASE("stock suppliers route independently of fruit exchange with configured
     b->materials[WHEAT]=5;
     CHECK_FALSE(b->type->canExchange);
     REQUIRE(world.team->stockSuppliers.size()==1);
-    const Uint16* field=world.game.map.getMaterialGradient(0,WHEAT,0,true);
+    const Uint16* field=world.game.map.getMaterialGradientSlot(0,WHEAT,0,true);
     CHECK(field[world.game.map.coordToIndex(8,8)]==GRADIENT_AT_GOAL-11*GRADIENT_STEP);
 }
 
@@ -250,10 +250,10 @@ TEST_CASE("overlay services and suppliers share a footprint without occupying gr
     CHECK(world.game.map.getBuilding(8,8)==NOGBID);
     CHECK(world.game.map.doesPosTouchBuilding(7,8,b->gid).has_value());
     CHECK_FALSE(world.game.map.doesPosTouchBuilding(3,3,b->gid).has_value());
-    const Uint16* field=world.game.map.getMaterialGradient(0,WHEAT,0,true);
+    const Uint16* field=world.game.map.getMaterialGradientSlot(0,WHEAT,0,true);
     CHECK(field[world.game.map.coordToIndex(8,8)]==GRADIENT_AT_GOAL-7*GRADIENT_STEP);
     Unit* worker=world.addUnit(WORKER,7,8);
-    CHECK(world.game.map.touchedStockedMarket(worker,WHEAT)==b);
+    CHECK(world.game.map.touchedStockedMarketSlot(worker,WHEAT)==b);
 }
 
 TEST_CASE("combined attraction profiles independently require warrior level and explorer bombing")
@@ -652,14 +652,14 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     CHECK(receiver->deliverMaterialPacket(WHEAT,{}).acceptedStock==0);
     CHECK(receiver->materialDeliveryNeed(WOOD)==20);
     int distance=0;
-    CHECK(world.game.map.materialAvailable(0,WOOD,0,19,20,&distance,false,receiver));
-    CHECK_FALSE(world.game.map.materialAvailable(0,WHEAT,0,19,20,&distance,false,receiver));
+    CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,&distance,false,receiver));
+    CHECK_FALSE(world.game.map.materialAvailableSlot(0,WHEAT,0,19,20,&distance,false,receiver));
     Unit* worker=world.addUnit(WORKER,7,8);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
     REQUIRE(receiver->subscribeToBringResourcesStep());
     CHECK(worker->attachedBuilding==receiver);
-    CHECK(world.game.map.touchedStockedMarket(worker,WOOD)==supplier);
-    CHECK(world.game.map.touchedStockedMarket(worker,WHEAT)==nullptr);
+    CHECK(world.game.map.touchedStockedMarketSlot(worker,WOOD)==supplier);
+    CHECK(world.game.map.touchedStockedMarketSlot(worker,WHEAT)==nullptr);
     worker->standardRandomActivity();
 }
 
@@ -682,15 +682,15 @@ TEST_CASE("bounded supply cache excludes the recipient and its shared inventory 
     Building* shared=world.addBuilding("hospital",20,20);
     receiver->materials[WOOD]=receiver->materials[WHEAT]=10;
     int distance=0;
-    CHECK_FALSE(world.game.map.materialAvailable(0,WOOD,0,7,8,&distance,false,receiver));
+    CHECK_FALSE(world.game.map.materialAvailableSlot(0,WOOD,0,7,8,&distance,false,receiver));
     CHECK(receiver->materials==shared->materials);
     Building* local=world.addBuilding("swarm",30,30);
     local->materials[WOOD]=local->materials[WHEAT]=10;
-    world.game.map.dirtyMarketGradients(0,WOOD); world.game.map.dirtyMarketGradients(0,WHEAT);
+    world.game.map.dirtyMarketGradientsSlot(0,WOOD); world.game.map.dirtyMarketGradientsSlot(0,WHEAT);
     const Uint64 oneField=Uint64(world.game.map.getW())*world.game.map.getH()*sizeof(Uint16);
     world.game.map.setMaterialRoutingCacheBudget(oneField);
-    CHECK(world.game.map.materialAvailable(0,WOOD,0,7,8,&distance,false,receiver));
-    CHECK(world.game.map.materialAvailable(0,WHEAT,0,7,8,&distance,false,receiver));
+    CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,7,8,&distance,false,receiver));
+    CHECK(world.game.map.materialAvailableSlot(0,WHEAT,0,7,8,&distance,false,receiver));
     CHECK(world.game.map.materialRoutingCacheBytes()==oneField);
     glob2test::HeadlessGame copy({.loadDefaultRace=true});
     REQUIRE(loadProductionGame(copy.game,saveProductionGame(world.game,false),false));
@@ -698,8 +698,8 @@ TEST_CASE("bounded supply cache excludes the recipient and its shared inventory 
     REQUIRE(copied);
     CHECK(copy.game.map.materialRoutingCacheBytes()==oneField);
     for (int resource : {WOOD,WHEAT,WOOD}) {
-        const Uint16* expected=world.game.map.getMaterialGradient(0,resource,0,false,receiver);
-        const Uint16* actual=copy.game.map.getMaterialGradient(0,resource,0,false,copied);
+        const Uint16* expected=world.game.map.getMaterialGradientSlot(0,resource,0,false,receiver);
+        const Uint16* actual=copy.game.map.getMaterialGradientSlot(0,resource,0,false,copied);
         CHECK(std::equal(expected,expected+world.game.map.getW()*world.game.map.getH(),actual));
         CHECK(world.game.map.checkSum(true)==copy.game.map.checkSum(true));
         CHECK(copy.game.map.materialRoutingCacheBytes()==oneField);
@@ -725,17 +725,17 @@ TEST_CASE("combined stock routes include both provider modes and track direct ov
     Building* a=world.addBuilding("inn",8,8); Building* b=world.addBuilding("hospital",20,20);
     Building* sink=world.addBuilding("swarm",30,30); a->materials[WOOD]=b->materials[WOOD]=5;
     auto& map=world.game.map;
-    CHECK(map.materialSupplyModes(sink,WOOD)==3);
-    const Uint16* field=map.getMaterialGradient(0,WOOD,0,false,sink);
+    CHECK(map.materialSupplyModesSlot(sink,WOOD)==3);
+    const Uint16* field=map.getMaterialGradientSlot(0,WOOD,0,false,sink);
     const Uint16 aGoal=GRADIENT_AT_GOAL-a->type->semantics.market.pickupPenalty*GRADIENT_STEP;
     const Uint16 bGoal=GRADIENT_AT_GOAL-b->type->semantics.market.pickupPenalty*GRADIENT_STEP;
     CHECK(field[map.coordToIndex(8,8)]==aGoal); CHECK(field[map.coordToIndex(20,20)]==bGoal);
     Unit* worker=world.addUnit(WORKER,19,20); worker->attachedBuilding=sink;
-    CHECK(map.touchedStockedMarket(worker,WOOD)==b); // warms sparse overlay index
+    CHECK(map.touchedStockedMarketSlot(worker,WOOD)==b); // warms sparse overlay index
     auto move=std::make_shared<OrderMoveFlag>(b->gid,24,24,false); move->sender=0;
     world.game.executeOrder(move,0);
-    CHECK(b->posX==24); CHECK(map.touchedStockedMarket(worker,WOOD)==nullptr);
-    field=map.getMaterialGradient(0,WOOD,0,false,sink);
+    CHECK(b->posX==24); CHECK(map.touchedStockedMarketSlot(worker,WOOD)==nullptr);
+    field=map.getMaterialGradientSlot(0,WOOD,0,false,sink);
     CHECK(field[map.coordToIndex(24,24)]==bGoal); CHECK(field[map.coordToIndex(20,20)]<bGoal);
     worker->attachedBuilding=nullptr;
 }
@@ -757,10 +757,10 @@ TEST_CASE("shared ammunition consumption invalidates stock advertised by another
     Building* source=world.addBuilding("inn",8,8); Building* gun=world.addBuilding("hospital",20,20);
     Building* receiver=world.addBuilding("swarm",30,30); source->materials[STONE]=1;
     int distance=0;
-    REQUIRE(world.game.map.materialAvailable(0,STONE,0,29,30,&distance,false,receiver));
+    REQUIRE(world.game.map.materialAvailableSlot(0,STONE,0,29,30,&distance,false,receiver));
     gun->turretStep(0);
     CHECK(source->materials[STONE]==0);
-    CHECK_FALSE(world.game.map.materialAvailable(0,STONE,0,29,30,&distance,false,receiver));
+    CHECK_FALSE(world.game.map.materialAvailableSlot(0,STONE,0,29,30,&distance,false,receiver));
 }
 
 TEST_CASE("production transitions initialize new recipes and restore canceled preferences")
@@ -850,7 +850,7 @@ TEST_CASE("late choice advances the common timer and selects ratios only at comp
     b->swarmStep(); CHECK(b->productionTimeout==3);
     b->materials[WHEAT]=1;
     for (int y=7;y<=12;++y) for (int x=7;x<=12;++x)
-        if (x==7 || x==12 || y==7 || y==12) world.game.map.setResource(x,y,STONE,1);
+        if (x==7 || x==12 || y==7 || y==12) world.game.map.setResourceByIndex(x,y,STONE,1);
     for (int tick=0;tick<4;++tick) b->swarmStep();
     CHECK(b->productionTimeout<0); CHECK(world.team->stats.measurements.births[WARRIOR]==0);
     b->ratio[WARRIOR]=0; b->swarmStep();
@@ -881,27 +881,27 @@ TEST_CASE("sole supplier demolition and cancellation preserve routing across sav
         Building* receiver=world.addBuilding("hospital",20,20);
         supplier->materials[WOOD]=10;
         const unsigned mode=direct ? 2 : 1;
-        CHECK(world.game.map.materialSupplyModes(receiver,WOOD)==mode);
-        REQUIRE(world.game.map.materialAvailable(0,WOOD,0,19,20,false,receiver));
+        CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==mode);
+        REQUIRE(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         supplier->launchDelete();
         REQUIRE(supplier->buildingState==Building::WAITING_FOR_DESTRUCTION);
         CHECK(world.team->stockSuppliers.empty()); CHECK(world.team->directStockSuppliers.empty());
-        CHECK(world.game.map.materialSupplyModes(receiver,WOOD)==0);
-        CHECK_FALSE(world.game.map.materialAvailable(0,WOOD,0,19,20,false,receiver));
+        CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==0);
+        CHECK_FALSE(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         glob2test::HeadlessGame restored({.loadDefaultRace=true});
         REQUIRE(loadProductionGame(restored.game,saveProductionGame(world.game,false),false));
         auto* copiedSupplier=restored.game.teams[0]->myBuildings[Building::GIDtoID(supplier->gid)];
         auto* copiedReceiver=restored.game.teams[0]->myBuildings[Building::GIDtoID(receiver->gid)];
         REQUIRE(copiedSupplier); REQUIRE(copiedReceiver);
         CHECK(restored.game.teams[0]->stockSuppliers.empty()); CHECK(restored.game.teams[0]->directStockSuppliers.empty());
-        CHECK(restored.game.map.materialSupplyModes(copiedReceiver,WOOD)==0);
-        CHECK_FALSE(restored.game.map.materialAvailable(0,WOOD,0,19,20,false,copiedReceiver));
+        CHECK(restored.game.map.materialSupplyModesSlot(copiedReceiver,WOOD)==0);
+        CHECK_FALSE(restored.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,copiedReceiver));
         CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));
         supplier->cancelDelete(); copiedSupplier->cancelDelete();
-        CHECK(world.game.map.materialSupplyModes(receiver,WOOD)==mode);
-        CHECK(restored.game.map.materialSupplyModes(copiedReceiver,WOOD)==mode);
-        CHECK(world.game.map.materialAvailable(0,WOOD,0,19,20,false,receiver));
-        CHECK(restored.game.map.materialAvailable(0,WOOD,0,19,20,false,copiedReceiver));
+        CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==mode);
+        CHECK(restored.game.map.materialSupplyModesSlot(copiedReceiver,WOOD)==mode);
+        CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
+        CHECK(restored.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,copiedReceiver));
         CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));
     }
 }

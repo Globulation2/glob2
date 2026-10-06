@@ -186,12 +186,12 @@ namespace
 			return false;
 		if (u->carriedMaterial >= 0)
 			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
-		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
+		if (map->roundTripDistanceSlot(b, resource, swimClass, u->posX, u->posY, cost))
 			return true;
 		// No round-trip field for this class yet: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
-			|| !map->materialAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
+			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -242,7 +242,7 @@ namespace
 		{
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->materialAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
 		}
 		u->validTarget = true;
 	}
