@@ -205,8 +205,8 @@ class GameGUITouchHarness
 		const auto icon = touch.rows[1].rect; // inn, using the real palette hit area
 		const GAGCore::ViewPoint source{icon.x + icon.w / 2, icon.y + icon.h / 2};
 		const int type =
-			globalContainer->buildingsTypes.getTypeNum("inn", editor.buildingLevel, false);
-		auto *building = globalContainer->buildingsTypes.get(type);
+			editor.game.buildingsTypes.getTypeNum("inn", editor.buildingLevel, false);
+		auto *building = editor.game.buildingsTypes.get(type);
 		// The bundled map may open over sea; put a known legal footprint in
 		// view before exercising the gesture, without changing map contents.
 		bool room = false;
@@ -1872,9 +1872,9 @@ class GameGUITouchHarness
 			gui.touch->cancel();
 		}
 		gui.touch->panelOpen = false;
-		const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		const int type = gui.game.buildingsTypes.getTypeNum("inn", 0, false);
 		auto *building =
-			new Building(0, 0, 2, type, gui.localTeam, &globalContainer->buildingsTypes, 1, 1);
+			new Building(0, 0, 2, type, gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 		gui.localTeam->myBuildings[2] = building;
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
@@ -1885,7 +1885,9 @@ class GameGUITouchHarness
 				gui.drawAll(0);
 				gfx->nextFrame();
 				const auto p = gui.touch->dialActionPoint(kind, value, side);
-				require(p.x >= 0, "Building action must be on the dial");
+				require(p.x >= 0, ("Building action must be on the dial: kind " +
+					std::to_string(kind) + " value " + std::to_string(value) +
+					" side " + std::to_string(side)).c_str());
 				return p;
 			}
 			for (int attempt = 0; attempt < 30; ++attempt)
@@ -1921,8 +1923,8 @@ class GameGUITouchHarness
 			tap(p.x, p.y);
 		};
 		auto *rangeFlag =
-			new Building(0, 0, 3, globalContainer->buildingsTypes.getTypeNum("warflag", 0, false),
-						 gui.localTeam, &globalContainer->buildingsTypes, 1, 1);
+			new Building(0, 0, 3, gui.game.buildingsTypes.getTypeNum("warflag", 0, false),
+						 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 		gui.localTeam->myBuildings[3] = rangeFlag;
 		{
 			const auto savedCamera = gui.camera;
@@ -2282,8 +2284,8 @@ class GameGUITouchHarness
 		auto fixture = [&](const char *name, int slot)
 		{
 			auto *b =
-				new Building(0, 0, slot, globalContainer->buildingsTypes.getTypeNum(name, 0, false),
-							 gui.localTeam, &globalContainer->buildingsTypes, 1, 1);
+				new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, false),
+							 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 			gui.localTeam->myBuildings[slot] = b;
 			return b;
 		};
@@ -3300,7 +3302,7 @@ class GameGUITouchHarness
 		gui.drawAll(0);
 		// Replacing a read-only card with a building is not navigation back to
 		// a toolbox. Its explicit close must leave the map unobstructed too.
-		const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		const int innType = gui.game.buildingsTypes.getTypeNum("inn", 0, false);
 		auto *inspected = gui.game.addBuilding(44, 40, innType, 0);
 		require(inspected, "Read-only transition fixture has a building");
 		const auto buildingPoint = gui.camera.worldToScreen(
@@ -3445,7 +3447,7 @@ class GameGUITouchHarness
 			now += 16;
 		};
 		auto &gameMap = gui.game.map;
-		const int warflag = globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
+		const int warflag = gui.game.buildingsTypes.getTypeNum("warflag", 0, false);
 		for (const auto &[width, height] : {std::pair{390, 844}, std::pair{844, 390}})
 		{
 			resizeWindow(width, height);
