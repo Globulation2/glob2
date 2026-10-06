@@ -1,0 +1,12 @@
+{
+  "tested_commit": "a1e2c59a392ef7523656fda2747c8d34ccdd65f7",
+  "integrated_base": "7e54a3fc581d22d32e7b97a6aee76dbfeae58e9f",
+  "fetched_master": "73c192619e8687baeb4fcd03f5878b6a62fa0620",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "binary_sha256": {
+    "build/linux/client/release/test/glob2-engine-tests": "27d203dd1db19518ff46271651704142622748fa7a5ca13386811ee7872fd9f1",
+    "build/emscripten/client/release/index.wasm": "fd40dc154846752f350af6c53ffa3e2267cae4bf05aa9b1f6e482be841203ef8",
+    "build/emscripten/client/release/threaded/index.wasm": "f45d8985788e64ba48ce79012214e66dc672af4bf30d7d91d17c65e5025b7956"
+  }
+}

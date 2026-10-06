@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="2" errors="0" skipped="0"><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="zoomed-out GPU terrain retains pages across frames and wrapped views [display] [artifacts]" time="8.1999" status="run">
+      <failure message="false" type="CHECK">
+src/render/TerrainPresentationTest.cpp:660:
+CHECK( admitted ) is NOT correct!
+  values: CHECK( false )
+  logged: flags := 32
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/render/TerrainPresentationTest.cpp:660:
+CHECK( admitted ) is NOT correct!
+  values: CHECK( false )
+  logged: flags := 1
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

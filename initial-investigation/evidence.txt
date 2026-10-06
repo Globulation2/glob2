@@ -1,0 +1,23 @@
+Terrain crossfade cache validation
+
+Baseline: 410ce0ff82d14c94463d2840d2591da0bf373210
+Final base: e7fa74db7dc48935c6b4c9369fd1a2a74349db52 plus local patch (hashes in environment.json).
+
+256x256 map; 1152x896 drawable; zoom 0.25; fractional translation (0.375, 0.625); 145x113 tile bounds; camera (249,250); fixed presentation phase 19; deterministic water/grass/ice stripes; one cold and five warm terrain-only draws
+
+Renderer       Before cold   After cold   Before warm   After warm
+opengl            605.70 ms   1008.40 ms     442.40 ms      3.73 ms
+portable          513.33 ms    562.39 ms     466.36 ms      0.83 ms
+
+After: 80 cached pages, 74,453,120 accounted bytes, zero warm rebuilds.
+Warm values average five frames. These are terrain-only diagnostics on a busy host, not game/browser FPS.
+OpenGL includes glFinish; portable includes command flush without GPU completion.
+First-frame composition remains costly. Reduced pages mildly soften distant texture grain.
+
+Native: 15 terrain tests passed, including alpha filtering, wrap reuse, edits, streaming equivalence, close-up restoration, HiDPI and unchanged simulation checksum.
+Browser: Chromium WebGL2 serial and threaded builds; zoom-out/back smoke checks, no JS or GL errors. Software-backed SwiftShader; not hardware performance qualification.
+
+Exact commands, build provenance, executable/Wasm hashes: environment.json.
+Native final test log: final-tests.log; JUnit: final.xml.
+Browser scripts/logs/JSON and before/after captures are beside this file.
+HiDPI: Chromium serial WebGL2 at 2304x1792 backing pixels (2x), explicit 29%, 26%, 24%, 22%, 20% zoom sweep and return to 100%; no JS/GL errors. Captures in browser-serial-dpr2-crossfade/.

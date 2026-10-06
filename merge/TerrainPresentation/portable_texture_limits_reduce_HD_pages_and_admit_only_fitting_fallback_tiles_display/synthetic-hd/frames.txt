@@ -1,0 +1,17 @@
+GLOB2_HIGHRES 1
+terrain0 32 32 4 grass.webp -
+terrain1 32 32 4 grass.webp -
+terrain2 32 32 4 grass.webp -
+terrain3 32 32 4 grass.webp -
+terrain4 32 32 4 grass.webp -
+terrain5 32 32 4 grass.webp -
+terrain6 32 32 4 grass.webp -
+terrain7 32 32 4 grass.webp -
+terrain8 32 32 4 grass.webp -
+terrain9 32 32 4 grass.webp -
+terrain10 32 32 4 grass.webp -
+terrain11 32 32 4 grass.webp -
+terrain12 32 32 4 grass.webp -
+terrain13 32 32 4 grass.webp -
+terrain14 32 32 4 grass.webp -
+terrain15 32 32 4 grass.webp -
