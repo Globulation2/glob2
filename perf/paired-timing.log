@@ -1,0 +1,25 @@
+baseline  rep  0 cpu 18.172s wall 15.310s
+candidate rep  0 cpu 18.812s wall 16.154s
+candidate rep  1 cpu 18.727s wall 15.692s
+baseline  rep  1 cpu 18.034s wall 15.224s
+baseline  rep  2 cpu 17.813s wall 15.031s
+candidate rep  2 cpu 18.739s wall 15.760s
+candidate rep  3 cpu 17.653s wall 14.574s
+baseline  rep  3 cpu 18.527s wall 15.462s
+candidate rep  4 cpu 18.394s wall 15.280s
+baseline  rep  4 cpu 17.382s wall 14.610s
+candidate rep  5 cpu 18.068s wall 15.105s
+baseline  rep  5 cpu 18.521s wall 15.706s
+baseline  rep  6 cpu 18.361s wall 15.593s
+candidate rep  6 cpu 18.015s wall 14.989s
+candidate rep  7 cpu 18.779s wall 16.161s
+baseline  rep  7 cpu 16.803s wall 14.314s
+candidate rep  8 cpu 17.747s wall 14.985s
+baseline  rep  8 cpu 17.385s wall 14.665s
+candidate rep  9 cpu 18.483s wall 15.284s
+baseline  rep  9 cpu 17.719s wall 15.107s
+candidate rep 10 cpu 17.643s wall 14.787s
+baseline  rep 10 cpu 17.298s wall 14.533s
+cpu: baseline median 17.766s  candidate median 18.231s  ratio 1.0261  (min/max baseline 16.803/18.527, candidate 17.643/18.779)
+wall: baseline median 15.069s  candidate median 15.192s  ratio 1.0082  (min/max baseline 14.314/15.706, candidate 14.574/16.161)
+checksums identical across repeats: {'baseline': True, 'candidate': True}
