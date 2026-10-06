@@ -107,6 +107,10 @@ Infinite yields cannot destroy their deposit. `placementMaximum` optionally
 selects the upper bound for randomized single-yield map placement; zero uses
 `initial`. It must not exceed capacity or be lower than initial stock.
 
+Clearing statistics count successful clearing operations, not removed stock units.
+Each operation is attributed once to the deposit's configured primary material,
+including removal of an empty persistent deposit.
+
 Terrain definitions can specify `allowedResourceKeys` as an explicit stable-key
 allowlist, including an empty list to prohibit all resources; `null` selects
 capability-based habitats. Old numeric terrain resource masks are converted to
