@@ -31,3 +31,9 @@ void GameAnimations::resize(int) {}
 #include "Map.h"
 #include <cstdlib>
 void Map::updateForbiddenGradient(int, int) { std::abort(); }
+
+// ResourceSeedCache is linked for Map's real cache lifecycle and mutation hooks.
+// Lightweight unit fixtures do not seed engine resource fields or access markets;
+// these require Game/Team/Building state and are covered by engine fixtures.
+bool Map::marketsV2Enabled() const { std::abort(); }
+bool Map::isStockedMarketTile(Uint16, int, int) const { std::abort(); }
