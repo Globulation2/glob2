@@ -1,0 +1,39 @@
+{
+  "archives": [
+    {
+      "archive": "resource-corpus-land-and-eight-team.tar.gz",
+      "sha256": "771417bec9ad9287b9eb436e3fb8752b064bcb8feca1affe592a60362c45c3bd",
+      "bytes": 23972475,
+      "files": 58,
+      "payload_bytes": 26100244
+    },
+    {
+      "archive": "resource-corpus-water-two.tar.gz",
+      "sha256": "2928e900a889e54b4e01688b10e606014b890e21d136205acc1ba83abc2c7b01",
+      "bytes": 13984103,
+      "files": 26,
+      "payload_bytes": 14329898
+    },
+    {
+      "archive": "resource-corpus-water-four.tar.gz",
+      "sha256": "da2db6ba1492159bc06f46e3e854a9748fd77062797ae76ff30f5afe0b9d2f1e",
+      "bytes": 29712750,
+      "files": 26,
+      "payload_bytes": 30459499
+    },
+    {
+      "archive": "resource-corpus-companion.tar.gz",
+      "sha256": "5648f77824eb99557865ae887a0bbd9641d2f0770ae4ac2067e05fad9bf58f45",
+      "bytes": 3948656,
+      "purpose": "Portable manifests, binder, original provenance, commands, scripts, config inventories; no duplicate catalogs"
+    }
+  ],
+  "runtime_modified_snapshots": {
+    "generation-baseline": 0,
+    "pure-ee3": 0,
+    "approved-ee3": 0,
+    "candidate": 0
+  },
+  "total_archive_bytes": 71617984,
+  "verification": "All fixture archives unchanged; companion repacked and integrity verified. Binder validates exact runtime file inventory in documented data JSON/TXT/JS scope, and copied checkout tests reject an extra uppercase .JSON and missing file before any output."
+}

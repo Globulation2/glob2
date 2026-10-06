@@ -22,6 +22,16 @@ Native stock trace: `5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3
 Official match trace: `c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38`.
 Composition trace: `0c2b5b0ae134187198c1a9a3a43b3474192cf05f605b0922b70f6f3fa9f47ab2`.
 
+## Portable inputs and dependencies
+
+The frozen corpus is supplied in `resource-corpus-land-and-eight-team.tar.gz`, `resource-corpus-water-two.tar.gz`, `resource-corpus-water-four.tar.gz` and `resource-corpus-companion.tar.gz`. Together they preserve all 110 distinct saves used by 98 legacy performance windows, three eight-team windows and 42 completion-tournament scenarios. See `resource-corpus-archives.json` for sizes and hashes. Extract all four together, then run the companion's `bind_paths.py` to verify fixtures and create manifests for the chosen local paths. Optional checkout validation rejects changed, added or missing runtime catalogs within its documented extension scope. Original manifests, generation/checkpoint commands, control patches and provenance remain bundled.
+
+`evidence-window-preflights-ee3-9a54d4bf2.tar.gz` contains 202 terminal window records and six shortened-prefix validations. One wrapper exit 143 was recovered with unchanged inputs; its cause remains unknown and original partial evidence is retained. All preflight timing is explicitly invalid for performance inference. Validated common lengths are 5,120 ticks for mixed-land late, 7,680 for Maxima-water late and 6,144 for the small mixed control's middle window. Other windows retain their original lengths.
+
+The accepted timing runner is at source revision `bcecdf6ab`, adding before/after input verification and accurate metric descriptions without changing production code. Its eight Python tests pass (`benchmark-harness-bcecdf6ab-tests.log`). Use this runner revision with the recorded frozen binaries/data roots; the preflight helper remains preserved separately.
+
+`sdl-reproducibility-evidence.zip` records pinned source archives, exact patches, CMake configurations, compiler/link commands, package inventories and fresh-prefix rebuild instructions. The retained SDL build matches the tested installed library after CMake's documented RUNPATH replacement. The original complete system environment/header snapshot was not recorded, so source/configuration are reconstructible but a clean bit-identical rebuild has not been performed.
+
 **Still pending:** refreshed paired tournaments and quiet-host performance acceptance. No performance or gameplay-equivalence claim is made. macOS/iOS/physical ARM execution and human gameplay review remain unverified. Keep the PR draft. Earlier results below are historical and do not substitute for this integrated candidate.
 
 `sha256.json` authenticates every top-level evidence bundle and summary. Archives omit executables and dependency caches. Local absolute paths identify the recorded environment; substitute equivalent paths when reproducing from the tested commits.

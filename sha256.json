@@ -1,13 +1,21 @@
 {
   "android-de4-validation-evidence.zip": "64fe8c8390b350bb3ad4e680cf03785e72c0dd2e4883596876a7a09c7c792d1c",
   "android-de4-validation-summary.json": "8e5874d67f0a8eeb6c63a91c3136afa5da13805933595f2a0c6fca84996cec32",
+  "benchmark-harness-bcecdf6ab-tests.log": "e642f0f9edf1f583174fc6e28056435a17ffe748431857af77f825ad69ef2a52",
   "browser-a1-validation-summary.json": "3eb89a337ecd477e76bab7392e72c8b7834206a8a935251033937f56e5d93169",
   "browser-parity-a1-evidence.zip": "d9ba3e935f72be6b5c93dc8018b15fbbc3aa839acc951d8cb12184991ad7faaf",
   "browser-validation.zip": "ce1b1c8cdf11191da0ba3951cae2db33b880ff79431304705cb9c82dacc6af3a",
   "environment.json": "3ba228e79ecafe0ae0a6a81c310ffe4e5d209ad6c961f2c14033c1694500b2d0",
+  "evidence-window-preflights-ee3-9a54d4bf2.tar.gz": "bddda0e76f2f124371cb80b8cd96aa8306e5340f6a8daef65b56ebc4f4ecffce",
   "native-a1-validation-evidence.zip": "bf1627c9162c0c900ec8f8275839ee03fd866a072edbe627ee553def7664e996",
   "native-a1-validation-summary.json": "7e73f9cb82b31c313c83fab2be058650d10c48dd4f6c4d0591da6659c730798c",
   "native-validation.zip": "41ae4f8f54acfa3b4bee8c211ab5bd9a188ad0fd5bf34154c01a2aec202f9c95",
+  "resource-corpus-archives.json": "226fc33eba3e7d23cb92cf9827af03cbefb91c9d83b1ed8e36d6ac9890f25869",
+  "resource-corpus-companion.tar.gz": "5648f77824eb99557865ae887a0bbd9641d2f0770ae4ac2067e05fad9bf58f45",
+  "resource-corpus-land-and-eight-team.tar.gz": "771417bec9ad9287b9eb436e3fb8752b064bcb8feca1affe592a60362c45c3bd",
+  "resource-corpus-water-four.tar.gz": "da2db6ba1492159bc06f46e3e854a9748fd77062797ae76ff30f5afe0b9d2f1e",
+  "resource-corpus-water-two.tar.gz": "2928e900a889e54b4e01688b10e606014b890e21d136205acc1ba83abc2c7b01",
+  "sdl-reproducibility-evidence.zip": "eb1bf989f2a613f64ec1d0d455f78b1503a924e184dd2c86c8f159dd1dae4230",
   "windows-de4-validation-evidence.zip": "115ac2cff0573f5f2846c10e83f970ea88edb58e39ee9f8f18b3e2266bda3e4b",
   "windows-de4-validation-summary.json": "9558518888e7bf3356cdf1268dcf8646cd3095e011bf5d34c690cb63b3540cdc"
 }
