@@ -1,0 +1,18 @@
+{
+  "browser-fixture-repair/gcc13-run.log": "045ddc4fb7f6703290db6002ce5c97d0a55671e123e4efedddfe4621d23dfc9f",
+  "browser-fixture-repair/replay-generation.log": "767af3e424bb1ad46718e10494f32665f749742f1ca2e02af217b431b02f608a",
+  "browser-fixture-repair/studio-initial-harness-path-failure.log": "e7d0b6ce3f6d334753c0c38a235ad2e1cd9d50cadfec1c63d5275e754daf292e",
+  "browser-fixture-repair/studio-browser-tests.log": "27a7c5ad093177b2d4ea4ce5e109fa259f0246a945ac00eea3f441f4ce84dc6b",
+  "browser-fixture-repair/replay-browser-tests.log": "50f06ee3916919aa931b442fe28c7c91b391d413869f1d4a53af645e7acc1b11",
+  "browser-fixture-repair/replay-webgl-tests.log": "34cb3bb08aa068ced8a2db9a839ae8a54e08eb552a80782f3d78d73d8b9cf676",
+  "ai-studio/chromium-serial/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "ai-studio/chromium-threaded/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "ai-studio/firefox-serial/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "ai-studio/firefox-threaded/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "ai-studio/webkit-serial/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "ai-studio/webkit-threaded/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "browser-fixture-repair/gcc13-result/game.replay.checksums": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "browser-fixture-repair/gcc13-result/initial.game.gz": "b55d396aed8c09450cc98c223973ba73a06ba43ea15a4d41d43628ee2746667d",
+  "browser-fixture-repair/gcc13-result/final.game.gz": "59ed5b636b96765c7cc34df50564a421e6b6f860032a8d63e491d5f567b21874",
+  "browser-fixture-repair/cross-replay.replay": "09361d09d02d3368966f3714a0f370897efb0c8508fd9cf065d94ff23dca8ccd"
+}

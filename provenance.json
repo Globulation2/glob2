@@ -1,0 +1,23 @@
+{
+  "prSha": "a72e69e7156516c402a1ceb3f5f25eeb749aa085",
+  "base": "c63c75f7f46e459c07b9d820cbec77abf78f8121",
+  "nativeProducer": "5f090cbefb569f501d3709cd1389773c0a59e545",
+  "nativeArtifact": 11403028929,
+  "webProducer": "ac938788cdfd289f4dfd6757eeb765409b32eef3",
+  "webArtifact": 11408550318,
+  "host": "Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux",
+  "runtimeSha256": {
+    "index.js": "faf9a0b99aa5d51194039a8a782838b2a3891c3cf282d2b2bb5c3b095e35eea4",
+    "index.wasm": "85375469a9df91e8a5e0a0fce31a05e833de77d5cdd4eeba0d44e55eab684e27",
+    "threaded/index.js": "65f6b846a304bb8d41ca65039c91fe256f9a13ec6c06e730dc7b0d9299674a9d",
+    "threaded/index.wasm": "83b40b33734a01036e3e42b868d34f7319fb74f61394b2dbd3011af0c91e211c"
+  },
+  "traceSha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "traceBytes": 1849612,
+  "matchedBrowserTraces": 6,
+  "browserTestCounts": {
+    "studio": 6,
+    "replaySoftware": 6,
+    "replayWebGL2Chromium": 1
+  }
+}
