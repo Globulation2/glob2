@@ -13,13 +13,22 @@ yield = fertility / 65536 / food.growth_period_ticks
 
 Full resource stacks, buildings and unsuitable terrain cannot absorb growth.
 Transient units do not affect this standing estimate. Immutable profiles describe
-mechanical recipe and shared-seat ceilings. Production demand is the recipe cost
-divided by its complete job duration; it is not permanently throttled to a new
-building's initial carrier request at a generic maximum route length. Existing
-staffing feedback allocates actual workers, and placement prices local hauling.
-A separate planned hauling estimate bounds usable feeding throughput and shares
-one carrier allowance across all resource-consuming services on that building.
-Free services consume no hauling allowance.
+mechanical recipe and shared-seat ceilings. A production ceiling is the weighted
+recipe cost divided by complete job duration, including the completion tick.
+The operating farm claim is separate: it reserves the production the requested
+carriers can supply at the provider's local resource distances. Feeding, healing,
+training and ammunition spend the shared carrier budget first; discretionary
+production uses the remainder. Those independent services retain their recurring
+claims during a shortage. Free services consume no hauling allowance.
+
+Completed providers use their requested staffing after the controller's shared
+producer allowance, and their active output ratios. Empty stores and temporarily
+absent workers do not erase demand. New providers and upgrade targets use the
+strategy's initial staffing request, clamped to the target's assignment limit;
+a presentation default is only a fallback where the strategy has no request.
+A separate planned hauling estimate bounds usable feeding throughput. Neither
+that forecast nor the operating farm claim changes the mechanical capability
+ceiling used to compare recipes.
 
 A nominal production mix gives each permitted output equal job weight and uses
 the sum of complete job durations. Training forecasts separate recipient classes
@@ -63,7 +72,11 @@ buildings.
 Adding or replacing a feeder redistributes the same colony budget before farm
 coverage is checked. Candidate ledgers are prepared once per colony and candidate
 profile before scanning positions; spatial queries select immutable cached
-results. Profile and colony demand state is included in planner continuation.
+results. Resource distance fields are prepared before that scan; each candidate
+position adjusts production against its local trip costs with eight bounded
+resource queries. Missing resource sources receive the configured unreachable
+route penalty. Profile, requested staffing, output ratios and colony demand state
+are included in planner signatures and continuation.
 
 Claimants rank by supply-weighted route-distance quality band, then level,
 completion status and building ID. Quality is evaluated independently of other

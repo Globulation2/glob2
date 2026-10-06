@@ -221,6 +221,7 @@ void Ledger::evaluate(const Input& input, Result& result) const
 		value.key=consumer.key;value.level=consumer.level;value.kind=consumer.kind;
 		value.colony=consumer.colony;value.retirable=consumer.retirable;
 		value.demand=std::max(0,consumer.demand);
+        value.productionDemand=std::clamp(consumer.productionDemand,0,value.demand);
 		result.totalDemand+=value.demand;
 		long long remaining=value.demand;
 		long long weighted=0,filled=0;

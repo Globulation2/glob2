@@ -9,6 +9,7 @@
 #ifndef AI_MAXIMA_PLACEMENT_H
 #define AI_MAXIMA_PLACEMENT_H
 
+#include "AIMaximaOperatingDemand.h"
 #include "field/Frontier.h"
 #include "AIMaximaFoodLedger.h"
 #include "AIMaximaBuildingRoles.h"
@@ -187,6 +188,11 @@ struct BuildingLevelProfile
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
     int feedingResources[8]{};
+    int operatingAssignmentLimit=1024;
+    int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
+    int productionDemandPercent=100;
+    AIMaxima::ProductionRecipeModel productionRecipes;
+    int independentResources[8]{};
     int productionResources[8]{}; // mechanical production-only packet ceiling // component already included in operatingResources
 	int seats=0;
 	int assignmentLimit=20;
@@ -247,6 +253,8 @@ struct WorldTile
 struct WorldBuilding
 {
 	WorldBuilding();
+    int plannedCarriers=-1;
+    int productionRatios[3]{1,1,1};
 	int id;
 	int gid;
 	int buildingType;
@@ -662,6 +670,7 @@ private:
 	bool waterTierPasses(const WorldState& world,
 		const std::vector<int>& parcel, int minimumDistance) const;
 	void prepareWaterDistanceCache(const WorldState& world) const;
+	void prepareResourceSources(const WorldState& world) const;
 	void prepareScoringCaches(const WorldState& world) const;
 	int resourceDistanceAt(const WorldState& world,int resourceType,
 		int index) const;
@@ -676,7 +685,7 @@ private:
 		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
     int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
     void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
-    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0; };
+    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0; std::array<int,8> independent{},production{}; };
     mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
     mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
     mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
@@ -705,6 +714,9 @@ private:
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
+    mutable std::array<int,8> foodCandidateIndependent{},foodCandidateProduction{};
+    std::array<int,8> operatingTrips(const WorldState& world,int x,int y,
+        const std::array<int,8>& independent,const std::array<int,8>& production) const;
 	/// Consumer results of the last ledger that excluded nothing, so an
 	/// appraisal can read the old building's standing while the prepared
 	/// ledger already excludes it.

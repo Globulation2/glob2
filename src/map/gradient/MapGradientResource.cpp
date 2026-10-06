@@ -56,37 +56,41 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 
 void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, bool withMarkets, const Building* consumer, unsigned modes)
 {
-	if (!modes && withMarkets && marketsV2Enabled()) modes=1;
-	withMarkets=modes!=0;
 	assert(gradient);
+	if (modes || (withMarkets && marketsV2Enabled()))
+		return seedResourcesGradientWithSuppliers(teamNumber, resourceType, swimClass, gradient, consumer, modes ? modes : 1);
+	// Keep supplier storage and traversal out of natural-only preparation,
+	// including the frequent warmed-cache path.
+	if (!gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, nullptr))
+		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, nullptr);
+}
 
-	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	assert(globalContainer);
+void Map::seedResourcesGradientWithSuppliers(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Building* consumer, unsigned modes)
+{
 	// Compile supplier eligibility and cost once; the map-sized loop only reads
 	// compact instance-indexed values, never the building catalog.
 	std::array<Uint16, Building::MAX_COUNT> supplierSeeds;
+	const Team& team=*game->teams[teamNumber];
 	const auto visitSuppliers=[&](auto visit) {
-		if (modes&1) for (const Building* supplier : game->teams[teamNumber]->stockSuppliers) visit(supplier);
-		if (modes&2) for (const Building* supplier : game->teams[teamNumber]->directStockSuppliers)
+		if (modes&1) for (const Building* supplier : team.stockSuppliers) visit(supplier);
+		if (modes&2) for (const Building* supplier : team.directStockSuppliers)
 			if (!(modes&1) || !(supplier->runtime->suppliesStockMask&(1u<<resourceType))) visit(supplier);
 	};
-	if (withMarkets)
-	{
-		supplierSeeds.fill(GRADIENT_FORBIDDEN);
-		visitSuppliers([&](const Building* supplier) {
-			if (stockSupplierEligible(supplier,consumer,resourceType,modes))
-				supplierSeeds[Building::GIDtoID(supplier->gid)] = std::max<int>(GRADIENT_UNREACHABLE + 1,
-					GRADIENT_AT_GOAL - supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP);
-		});
-	}
-	const Uint16* seeds = withMarkets ? supplierSeeds.data() : nullptr;
-	if (!gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, seeds))
-		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, seeds);
-	const Tile *tile = tiles.data();
-	const Uint8 *immobile = immobileUnits;
+	supplierSeeds.fill(GRADIENT_FORBIDDEN);
+	visitSuppliers([&](const Building* supplier) {
+		if (stockSupplierEligible(supplier,consumer,resourceType,modes))
+			supplierSeeds[Building::GIDtoID(supplier->gid)] = std::max<int>(GRADIENT_UNREACHABLE + 1,
+				GRADIENT_AT_GOAL - supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP);
+	});
+	if (!gradientRuntime->resourceSeeds.trySeed(*this, teamNumber, resourceType, swimClass, gradient, supplierSeeds.data()))
+		seedResourcesGradientDirect(teamNumber, resourceType, swimClass, gradient, supplierSeeds.data());
 	// Overlay providers have no tile occupancy entry. Seed their small
-	// footprints after the cell loop, retaining the stock-catalog fast path.
-	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
+	// footprints after either cached or direct preparation.
+	if ((modes&2) || game->buildingsTypes.usesOverlaySuppliers())
+	{
+		const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+		const Tile *tile = tiles.data();
+		const Uint8 *immobile = immobileUnits;
 		visitSuppliers([&](const Building* supplier) {
 			const Uint16 seed = supplierSeeds[Building::GIDtoID(supplier->gid)];
 			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || seed <= GRADIENT_UNREACHABLE) return;
@@ -98,6 +102,7 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
+	}
 }
 
 void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, const Uint16 *supplierSeeds)
@@ -107,6 +112,7 @@ void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int sw
 	const bool canSwim = swimClass > 0;
 
 	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	const unsigned teamBuildingBase=unsigned(teamNumber)*Building::MAX_COUNT;
 	assert(globalContainer);
 	// Only fogged resources of a type that must be seen to be collected are hidden.
 	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
@@ -130,8 +136,10 @@ void Map::seedResourcesGradientDirect(int teamNumber, Uint8 resourceType, int sw
 								value = terrainAt(i).open;
 							else if constexpr (decltype(marketsTag)::value)
 							{
-								if (Building::GIDtoTeam(c.building) == teamNumber)
-									value = supplierSeeds[Building::GIDtoID(c.building)];
+								// GIDs are contiguous per team. Unsigned subtraction
+								// rejects foreign and invalid IDs before indexing.
+								const unsigned localId=unsigned(c.building)-teamBuildingBase;
+								if (localId<Building::MAX_COUNT) value=supplierSeeds[localId];
 							}
 						}
 						else if (c.resource.type == resourceType)

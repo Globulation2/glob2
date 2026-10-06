@@ -28,6 +28,7 @@ struct FeedingEstimate
     long long haulingWorkerTicks=0; // fixed point Scale workers
     long long projectileRate=0; // fixed point Scale shots/tick
     std::array<int,8> resources{}; // stock units, not carried packets
+    std::array<int,8> independentResourcePackets{}; // other independent services
     std::array<int,8> productionResourcePackets{}; // independent production component
     std::array<int,8> feedingResourcePackets{}; // feeding component of recurring packets
     std::array<int,8> resourcePackets{}; // natural-source/hauling denominations
@@ -151,7 +152,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         return quotient;
     };
     FeedingEstimate result;
-    std::array<long long,8> feedingStock{},productionStock{},totalStock{};
+    std::array<long long,8> feedingStock{},productionStock{},independentStock{},totalStock{};
     for(int i=0;i<flowCount;++i) {
         auto f=flows[i];
         const bool usesCarrier=std::any_of(f.cost.begin(),f.cost.end(),[](int n){return n>0;});
@@ -167,6 +168,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             totalStock[resource]+=demand;
             if(f.roles&roleBit(Feeding))feedingStock[resource]+=demand;
             if(f.productionClass>=0)productionStock[resource]+=demand;
+            if(f.productionClass<0 && !(f.roles&roleBit(Feeding)))independentStock[resource]+=demand;
             result.resources[resource]=int(std::min<long long>(INT_MAX,static_cast<long long>(result.resources[resource])+demand));
             result.haulingWorkerTicks=sum(result.haulingWorkerTicks,hauling(demand,resource));
         }
@@ -174,6 +176,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     for(int resource=0;resource<8;++resource)
         {
         result.resourcePackets[resource]=int(std::min<long long>(INT_MAX,totalStock[resource]/std::max(1,type.multiplierResource[resource])));
+        result.independentResourcePackets[resource]=int(std::min<long long>(INT_MAX,independentStock[resource]/std::max(1,type.multiplierResource[resource])));
         result.productionResourcePackets[resource]=int(std::min<long long>(INT_MAX,productionStock[resource]/std::max(1,type.multiplierResource[resource])));
         result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.multiplierResource[resource])));
     }

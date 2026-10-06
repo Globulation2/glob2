@@ -287,6 +287,8 @@ uint32_t WorldState::computeSignature() const
 	{
 		const WorldBuilding& b=buildings[i];
 		hashValue(result, uint32_t(b.id)); hashValue(result, uint32_t(b.buildingType));
+        hashValue(result,uint32_t(b.plannedCarriers));
+        for(int ratio:b.productionRatios)hashValue(result,uint32_t(ratio));
 		hashValue(result, uint32_t(index(b.centerX,b.centerY)));
 	}
     for(const auto& colony:feedingColonies) {
@@ -780,8 +782,33 @@ void Planner::prepareWaterDistanceCache(const WorldState& world) const
 	field::expandDistances(waterDistanceCache,queue,{world.width,world.height},field::Cardinal,INT_MAX);
 }
 
+void Planner::prepareResourceSources(const WorldState& world) const
+{
+    const int size=world.width*world.height;
+    bool changed=int(resourceSourceCache.size())!=size;
+    for(int i=0;i<size&&!changed;++i) {
+        const auto& tile=world.tiles[i];
+        const int type=!tile.discovered?-1:tile.foodOpportunity>0?1:
+            tile.resourceType>=0&&tile.resourceType<8&&tile.resourceType!=1?tile.resourceType:-1;
+        changed=resourceSourceCache[i]!=type;
+    }
+    if(!changed)return;
+    resourceSourceCache.assign(size,-1);
+    for(int i=0;i<size;++i) {
+        const auto& tile=world.tiles[i];
+        if(!tile.discovered)continue;
+        if(tile.foodOpportunity>0)resourceSourceCache[i]=1;
+        else if(tile.resourceType>=0&&tile.resourceType<8&&tile.resourceType!=1)
+            resourceSourceCache[i]=int8_t(tile.resourceType);
+    }
+    for(int resource=0;resource<8;++resource) {
+        resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;
+    }
+}
+
 void Planner::prepareScoringCaches(const WorldState& world) const
 {
+    prepareResourceSources(world);
 	prepareColonyClaims(world);
 	prepareFoodLedger(world);
 	const int size=world.width*world.height;
@@ -888,7 +915,6 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 		field::expandDistances(footprintDistanceCache,footprintQueue,{world.width,world.height},field::Cardinal,INT_MAX);
 		footprintDistanceCacheSignature=footprintSignature;
 	}
-	bool changed=int(resourceSourceCache.size())!=size;
 	bool foodChanged=int(foodOpportunitySourceCache.size())!=size
 		||foodHaloRadiusCache!=placementPolicy.foodZoneRadius;
 	bool threatProtectionChanged=
@@ -897,10 +923,6 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 	for(int i=0;i<size;++i)
 	{
 		const WorldTile& tile=world.tiles[i];
-		const int type=!tile.discovered ? -1 : (tile.foodOpportunity>0 ? 1
-			: (tile.resourceType>=0 && tile.resourceType<8 && tile.resourceType!=1
-				? tile.resourceType : -1));
-		if(!changed&&resourceSourceCache[i]!=type)changed=true;
 		if(!foodChanged&&foodOpportunitySourceCache[i]!=tile.foodOpportunity)
 			foodChanged=true;
 		if(!threatProtectionChanged
@@ -911,20 +933,6 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 			tile.farmCapacity);
 		maximumFoodOpportunityCache=std::max<uint64_t>(maximumFoodOpportunityCache,
 			tile.foodOpportunity);
-	}
-	if(changed)
-	{
-		resourceSourceCache.assign(size,-1);
-		for(int i=0;i<size;++i)
-		{
-			const WorldTile& tile=world.tiles[i];
-			if(!tile.discovered)continue;
-			if(tile.foodOpportunity>0)resourceSourceCache[i]=1;
-			else if(tile.resourceType>=0&&tile.resourceType<8&&tile.resourceType!=1)
-				resourceSourceCache[i]=int8_t(tile.resourceType);
-		}
-		for(int resource=0;resource<8;++resource)
-		{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
 	}
 	if(foodChanged)
 	{
@@ -1138,6 +1146,19 @@ int Planner::foodDemandFor(int buildingType, int level) const
 	return v ? v->operatingResources[CornResourceType] : 0;
 }
 
+std::array<int,8> Planner::operatingTrips(const WorldState& world,int x,int y,
+    const std::array<int,8>& independent,const std::array<int,8>& production) const
+{
+    std::array<int,8> trips{};
+    for(int r=0;r<8;++r)if(independent[r]>0 || production[r]>0) {
+        int distance=resourceDistanceAt(world,r,world.index(x,y));
+        if(distance==INT_MAX)distance=placementPolicy.foodSupplyRadius+placementPolicy.foodUnreachablePenaltyTiles;
+        trips[r]=int(std::min<long long>(INT_MAX,std::max(1LL,
+            static_cast<long long>(placementPolicy.carrierFixedTicksPerTrip)+2LL*placementPolicy.carrierTicksPerTile*distance)));
+    }
+    return trips;
+}
+
 void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 	int excludeBuilding,int candidateType,int candidateLevel,int candidateColony) const
 {
@@ -1152,7 +1173,10 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     foodCandidateType=candidateType;foodCandidateLevel=candidateLevel;foodCandidateColony=candidateColony;foodCandidateDemand=0;
     std::vector<const BuildingLevelProfile*> profiles;
     std::vector<int> colonies;
+    std::vector<const WorldBuilding*> buildings;
+    foodCandidateIndependent={};foodCandidateProduction={};
 	if(!placementPolicy.foodLedgerEnabled)return;
+    if(candidateType<0)prepareResourceSources(world);
 	const int size=world.width*world.height;
 	if(size<=0)return;
 	foodInput.width=world.width;foodInput.height=world.height;
@@ -1214,7 +1238,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		consumer.colony=colonyBuilding.count(building.id)>0;
 		consumer.retirable=!building.site && shape->foodRetirable && (shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding) || shape->roles==AIMaximaBuildings::roleBit(AIMaximaBuildings::Production));
 		foodInput.consumers.push_back(consumer);
-        profiles.push_back(shape);colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));
+        profiles.push_back(shape);colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));buildings.push_back(&building);
 	}
 	// Planned inns and swarms claim as soon as their parcel is reserved, so a
 	// second one cannot be placed against wheat the first already needs.
@@ -1244,30 +1268,55 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
 		foodInput.consumers.push_back(consumer);
         const auto* profile=world.profile(action.buildingType);
         profiles.push_back(profile?profile->atLevel(1):nullptr);
-        colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));
+        colonies.push_back(world.feedingColonyAt(consumer.centerX,consumer.centerY));buildings.push_back(nullptr);
 	}
     const auto* candidateProfile=world.profile(candidateType);
     const auto* candidate=candidateProfile?candidateProfile->atLevel(candidateLevel):nullptr;
-    if(candidate) {profiles.push_back(candidate);colonies.push_back(candidateColony);}
-    if(!world.feedingColonies.empty()) {
-        std::vector<std::array<int,3>> demand;
-        for(const auto& colony:world.feedingColonies)demand.push_back({colony.demand[0],colony.demand[1],colony.demand[2]});
-        std::vector<AIMaxima::FeedingProvider> providers;
-        for(size_t i=0;i<profiles.size();++i) {
-            const auto* p=profiles[i];
-            providers.push_back({colonies[i],p?p->feedingRate:0,p?p->feedingMask:0});
+    if(candidate) {profiles.push_back(candidate);colonies.push_back(candidateColony);buildings.push_back(nullptr);}
+    std::vector<std::array<int,3>> demand;
+    for(const auto& colony:world.feedingColonies)demand.push_back({colony.demand[0],colony.demand[1],colony.demand[2]});
+    std::vector<AIMaxima::FeedingProvider> providers;
+    for(size_t i=0;i<profiles.size();++i) {
+        const auto* profile=profiles[i];
+        providers.push_back({colonies[i],profile?profile->feedingRate:0,profile?profile->feedingMask:0});
+    }
+    const auto meals=AIMaxima::allocateFeedingDemand(demand,providers);
+    for(size_t i=0;i<profiles.size();++i) {
+        const auto* profile=profiles[i];if(!profile)continue;
+        const auto* building=buildings[i];
+        std::array<int,8> independent{},production{};
+        const long long feeding=world.feedingColonies.empty()?profile->feedingRate:meals[i];
+        const bool livePlan=building && !building->site && building->level==profile->level && building->plannedCarriers>=0;
+        if(livePlan) {
+            production=AIMaxima::productionPacketCeiling(profile->productionRecipes,building->productionRatios);
+            production[CornResourceType]=int(std::min<long long>(INT_MAX,
+                static_cast<long long>(production[CornResourceType])*profile->productionDemandPercent/100));
+        } else std::copy_n(profile->productionResources,8,production.begin());
+        for(int r=0;r<8;++r) {
+            const long long mealCost=profile->feedingRate>0?
+                (static_cast<long long>(profile->feedingResources[r])*feeding+profile->feedingRate-1)/profile->feedingRate:0;
+            // Explicit independent components avoid subtracting saturated sums.
+            // Unknown planner-only profiles retain their historical projection.
+            const int other=profile->initialCarriers<0?
+                std::max(0,profile->operatingResources[r]-profile->feedingResources[r]-profile->productionResources[r]):profile->independentResources[r];
+            independent[r]=int(std::min<long long>(INT_MAX,other+mealCost));
         }
-        const auto meals=AIMaxima::allocateFeedingDemand(demand,providers);
-        for(size_t i=0;i<profiles.size();++i) {
-            const auto* p=profiles[i];if(!p)continue;
-            const long long independent=std::max(0,p->operatingResources[CornResourceType]-p->feedingResources[CornResourceType]);
-            const long long feeding=p->feedingRate>0
-                ? (static_cast<long long>(p->feedingResources[CornResourceType])*meals[i]+p->feedingRate-1)/p->feedingRate : 0;
-            const int amount=int(std::min<long long>(INT_MAX,independent+feeding));
-            if(i<foodInput.consumers.size())foodInput.consumers[i].demand=amount;
-            else foodCandidateDemand=amount;
+        const int requested=livePlan?building->plannedCarriers:profile->initialCarriers;
+        const int carriers=requested<0?-1:std::min(requested,profile->operatingAssignmentLimit);
+        const bool real=i<foodInput.consumers.size();
+        const bool located=candidateColony>=0 && size_t(candidateColony)<world.feedingColonies.size();
+        const int x=real?foodInput.consumers[i].centerX:located?world.feedingColonies[candidateColony].x:0;
+        const int y=real?foodInput.consumers[i].centerY:located?world.feedingColonies[candidateColony].y:0;
+        // Initializing distance fields happens here, outside all candidate loops.
+        const auto claim=AIMaxima::operatingClaim(independent,production,carriers,operatingTrips(world,x,y,independent,production));
+        if(real) {
+            foodInput.consumers[i].demand=claim.total[CornResourceType];
+            foodInput.consumers[i].productionDemand=claim.production[CornResourceType];
+        } else {
+            foodCandidateDemand=claim.total[CornResourceType];
+            foodCandidateIndependent=independent;foodCandidateProduction=production;
         }
-    } else if(candidate)foodCandidateDemand=candidate->operatingResources[CornResourceType];
+    }
 	foodLedger.evaluate(foodInput,foodResult);
 	if(excludeBuilding<0 && candidateType<0)
 	{
@@ -1390,6 +1439,8 @@ void Planner::prepareFeedingCandidateSet(const WorldState& world,int type,int le
         prepareFoodLedger(world,excludedAction,excludedBuilding,type,level,int(colony));
         candidateFoodLedgers[colony].result=std::move(foodResult);
         candidateFoodLedgers[colony].demand=foodCandidateDemand;
+        candidateFoodLedgers[colony].independent=foodCandidateIndependent;
+        candidateFoodLedgers[colony].production=foodCandidateProduction;
     }
     foodResult=std::move(baseline);foodInput.consumers=std::move(baselineConsumers);
     foodLedgerExcludedAction=excludedAction;foodLedgerExcludedBuilding=excludedBuilding;
@@ -1410,7 +1461,12 @@ int Planner::prepareFeedingCandidate(const WorldState& world,const DevelopmentAc
     const int replaced=action.replacesBuildingId>=0?action.replacesBuildingId:action.type==UpgradeBuilding?action.buildingId:-1;
     const int excludeAction=actionMap.count(action.id)?action.id:-1;
     prepareFeedingCandidateSet(world,action.buildingType,level,excludeAction,replaced);
-    activeFoodCandidate=&candidateFoodLedgers[colony];foodCandidateDemand=activeFoodCandidate->demand;
+    activeFoodCandidate=&candidateFoodLedgers[colony];
+    const auto* profile=configuredProfile(action.buildingType);
+    const auto* variant=profile?profile->atLevel(level):nullptr;
+    const auto claim=AIMaxima::operatingClaim(activeFoodCandidate->independent,activeFoodCandidate->production,
+        variant?variant->initialCarriers:-1,operatingTrips(world,action.centerX,action.centerY,activeFoodCandidate->independent,activeFoodCandidate->production));
+    foodCandidateDemand=claim.total[CornResourceType];
     return foodCandidateDemand;
 }
 
@@ -2543,6 +2599,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	for(const WorldBuilding& building:world.buildings)
 	{
 		hashValue(signature,building.level);hashValue(signature,building.site);
+        hashValue(signature,building.plannedCarriers);for(int ratio:building.productionRatios)hashValue(signature,ratio);
 		hashValue(signature,building.upgrading);hashValue(signature,building.hp);
 		hashValue(signature,building.hpMax);
 	}
@@ -2553,10 +2610,13 @@ void Planner::prepareRetrySignature(const WorldState& world)
 		{
 			hashValue(signature,level.level);hashValue(signature,level.serviceThroughput);
 			hashValue(signature,level.capability);
-			hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
+			hashValue(signature,level.operatingAssignmentLimit);hashValue(signature,level.initialCarriers);hashValue(signature,level.productionDemandPercent);
+            for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.ticks[unit]);
+            hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
             for(int r=0;r<8;++r) {
                 hashValue(signature,level.constructionResources[r]);
-                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);hashValue(signature,level.productionResources[r]);
+                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);hashValue(signature,level.productionResources[r]);hashValue(signature,level.independentResources[r]);
+                hashValue(signature,level.productionRecipes.packetSize[r]);for(int unit=0;unit<3;++unit)hashValue(signature,level.productionRecipes.costs[unit][r]);
             }
 		}
 	}

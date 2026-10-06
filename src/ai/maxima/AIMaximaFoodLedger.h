@@ -56,8 +56,9 @@ struct ConsumerInput
 	int key;
 	ConsumerKind kind;
 	ConsumerStage stage;
-	/// Full-capacity consumption in micro-wheat per tick.
+	/// Recurring operating claim in micro-wheat packets per tick.
 	int demand;
+    int productionDemand=0; // component of demand from planned production
 	/// Demand level, used only to break quality ties between claimers.
 	int level;
 	int centerX;
@@ -94,6 +95,7 @@ struct ConsumerResult
 	bool colony;
 	bool retirable;
 	int demand;
+    int productionDemand=0; // component of demand from planned production
 	/// Supply this claimer actually took, capped by its demand.
 	int claimed;
 	/// claimed plus the unclaimed supply it could still reach. An upgrade is

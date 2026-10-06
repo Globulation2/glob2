@@ -56,6 +56,16 @@ namespace
 {
 	const int PREEMPTIVE_UNREACHABLE=-1;
 
+    int initialCarrierRequest(const BuildingType& type,const MaximaStrategy& strategy)
+    {
+        int requested=-1;
+        if(type.semantics.production.enabledUnitMask)requested=strategy.staffing.new_swarm_workers;
+        if(type.maxUnitInside>0)requested=std::max(requested,strategy.staffing.new_inn_workers);
+        if(type.shootingRange>0 && type.shootRhythm>0)requested=std::max(requested,strategy.staffing.completed_tower_workers);
+        if(requested<0)requested=type.presentation.defaultAssigned<0?2:type.presentation.defaultAssigned;
+        return std::clamp(requested,0,std::min(type.semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+    }
+
     FeedingEstimate operatingEstimate(const BuildingType& type,const MaximaStrategy& strategy,const GameHeader& rules,bool constrainHauling=true)
     {
         FeedingPlan plan;
@@ -63,15 +73,11 @@ namespace
         // The same physical staffing request supports every active recipe.
         // The feedback controller may later adjust it; temporary shortfalls are
         // represented by coverage, not by inventing demand for another building.
-        int requested=0;
-        if(type.semantics.production.enabledUnitMask)requested=strategy.staffing.new_swarm_workers;
-        if(type.maxUnitInside>0)requested=std::max(requested,strategy.staffing.new_inn_workers);
-        if(type.shootingRange>0 && type.shootRhythm>0)requested=std::max(requested,strategy.staffing.completed_tower_workers);
         plan.feeding=!rules.isHungerDisabled();
         plan.training=!rules.isUnitUpgradesDisabled() && strategy.upgrades.enabled;
         plan.projectiles=!rules.isPeacefulModeEnabled();
         if(rules.isPeacefulModeEnabled())plan.productionMask&=~(1u<<WARRIOR);
-        plan.carriers=std::min({requested,type.semantics.assignmentLimit,strategy.staffing.control_maximum_workers});
+        plan.carriers=initialCarrierRequest(type,strategy);
         plan.oneWayTravelTicks=strategy.farming.management_radius*strategy.food.carrier_ticks_per_tile;
         plan.handlingTicks=strategy.food.carrier_fixed_ticks_per_trip;
         return estimateFeeding(type,plan);
@@ -4052,13 +4058,27 @@ Maxima::collect_building_profiles() const
    v.foodRetirable=std::none_of(semantic.training.begin(),semantic.training.end(),[](const auto& t){return t.enabled;})
        && !(complete->shootingRange>0 && complete->shootRhythm>0
            && (semantic.projectileBuildingDamage>0 || std::any_of(semantic.projectileDamage.begin(),semantic.projectileDamage.end(),[](int n){return n>0;})));
+   v.operatingAssignmentLimit=complete->semantics.assignmentLimit;
+   v.initialCarriers=initialCarrierRequest(*complete,strategy);
+   v.productionDemandPercent=strategy.food.swarm_demand_percent;
+   for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled &&
+       !(unit==WARRIOR && game.gameHeader.isPeacefulModeEnabled())) {
+       v.productionRecipes.ticks[unit]=semantic.production.recipes[unit].duration+1;
+       std::copy_n(semantic.production.recipes[unit].cost.begin(),8,v.productionRecipes.costs[unit]);
+   }
+   std::copy_n(complete->multiplierResource,8,v.productionRecipes.packetSize);
    const auto& operation=operations[completeID];
    std::copy(operation.resourcePackets.begin(),operation.resourcePackets.end(),v.operatingResources);
    v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
    v.feedingMask=semantic.feeding.unitMask&semantic.admittedUnitMask;
    std::copy(operation.feedingResourcePackets.begin(),operation.feedingResourcePackets.end(),v.feedingResources);
-   std::copy(operation.productionResourcePackets.begin(),operation.productionResourcePackets.end(),v.productionResources);
-   const int otherWheat=std::max(0,v.operatingResources[WHEAT]-v.feedingResources[WHEAT]-v.productionResources[WHEAT]);
+   const int nominalRatios[3]={1,1,1};
+   const auto production=AIMaxima::productionPacketCeiling(v.productionRecipes,nominalRatios);
+   std::copy(production.begin(),production.end(),v.productionResources);
+   std::copy(operation.independentResourcePackets.begin(),operation.independentResourcePackets.end(),v.independentResources);
+   for(int r=0;r<8;++r)v.operatingResources[r]=int(std::min<long long>(INT_MAX,
+       static_cast<long long>(v.independentResources[r])+v.feedingResources[r]+v.productionResources[r]));
+   const int otherWheat=v.independentResources[WHEAT];
    v.feedingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.feedingResources[WHEAT])*strategy.food.inn_demand_percent/100));
    v.productionResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionResources[WHEAT])*strategy.food.swarm_demand_percent/100));
    v.operatingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingResources[WHEAT]+v.productionResources[WHEAT]));
@@ -4426,6 +4446,17 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		value.hp=building->hp;value.hpMax=building->getEffectiveMaxHp();
 		value.age=i->second.age;value.site=building->type->isBuildingSite;
 		value.upgrading=runtime.get_building_register().is_building_upgrading(i->first);
+        const auto* operating=profile_variant(value.buildingType,value.level);
+        value.plannedCarriers=operating?operating->initialCarriers:0;
+        if(!value.site) {
+            const auto request=staffing_control.find(value.id);
+            if(request!=staffing_control.end())value.plannedCarriers=request->second.request;
+            const auto allowed=swarm_allowance.find(value.id);
+            if(allowed!=swarm_allowance.end())value.plannedCarriers=std::min(value.plannedCarriers,allowed->second);
+            value.plannedCarriers=std::clamp(value.plannedCarriers,0,
+                std::min(building->type->semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+            std::copy_n(building->ratio,3,value.productionRatios);
+        }
 		world.buildings.push_back(value);
 		const int radius=strategy.placement.building_protection_radius;
 		for(int dy=-radius;dy<=radius;++dy)
@@ -4446,6 +4477,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const WorldBuilding& building=world.buildings[i];
 		add_preemptive_hash(worldSignature,Uint32(building.id));
 		add_preemptive_hash(worldSignature,Uint32(building.buildingType));
+        add_preemptive_hash(worldSignature,Uint32(building.plannedCarriers));
+        for(int ratio:building.productionRatios)add_preemptive_hash(worldSignature,Uint32(ratio));
 		add_preemptive_hash(worldSignature,Uint32(world.index(
 			building.centerX,building.centerY)));
 	}
@@ -5148,7 +5181,7 @@ void Maxima::update_food_retirement(Context& runtime,
         }
         const bool workerProducer=definition && (definition->productionUnitMask&(1u<<WORKER));
         if(workerProducer && value.demand>0)
-            productionClaim+=std::min<long long>(value.claimed,value.claimed*definition->productionResources[WHEAT]/value.demand);
+            productionClaim+=std::min<long long>(value.claimed,static_cast<long long>(value.claimed)*value.productionDemand/value.demand);
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)
 		{

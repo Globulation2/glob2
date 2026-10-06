@@ -92,6 +92,7 @@ class Map
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedResourcesGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
+	void seedResourcesGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;

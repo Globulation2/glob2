@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <array>
 #include <vector>
 
 namespace
@@ -123,7 +124,7 @@ TEST_SUITE("GradientPreparation")
 	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
 	{
 		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
 		auto& game=world.game; auto& m=game.map;
 		auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
 		const char* names[]={"inn","hospital","racetrack","swimmingpool"};
@@ -148,6 +149,8 @@ TEST_SUITE("GradientPreparation")
 		auto* shared=world.addBuilding(names[2],32,8);
 		auto* consumer=world.addBuilding(names[3],44,8);
 		REQUIRE(unified); REQUIRE(direct); REQUIRE(shared); REQUIRE(consumer);
+		auto* foreign=world.addBuilding(names[0],56,8,0,1); REQUIRE(foreign);
+		foreign->resources[WHEAT]=10;
 		unified->resources[WHEAT]=10; direct->resources[WHEAT]=10; shared->resources[WHEAT]=10;
 		auto& cache=m.gradientRuntime->resourceSeeds;
 		std::vector<Uint16> expected(m.size), actual(m.size);
@@ -161,6 +164,7 @@ TEST_SUITE("GradientPreparation")
 		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_AT_GOAL-3*GRADIENT_STEP);
 		CHECK(actual[m.coordToIndex(32,8)]==GRADIENT_FORBIDDEN);
 		CHECK(actual[m.coordToIndex(44,8)]==GRADIENT_FORBIDDEN);
+		CHECK(actual[m.coordToIndex(56,8)]==GRADIENT_FORBIDDEN);
 		// Live stock changes must not wait for template invalidation.
 		direct->resources[WHEAT]=0;
 		m.seedResourcesGradient(0,WHEAT,0,actual.data(),true,consumer,3);
@@ -181,6 +185,40 @@ TEST_SUITE("GradientPreparation")
 		CHECK(actual[m.coordToIndex(20,8)]==GRADIENT_AT_GOAL-3*GRADIENT_STEP);
 	}
 
+
+	TEST_CASE("supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.wDec=7, .hDec=7, .teams=Team::MAX_COUNT,
+			.discovered=true, .clearImmobile=true, .header=true});
+		auto& m=world.game.map;
+		const int lastTeam=Team::MAX_COUNT-1;
+		const std::array<Uint16,6> gids={Building::GIDfrom(0,0),
+			Building::GIDfrom(Building::MAX_COUNT-1,0), Building::GIDfrom(0,lastTeam),
+			Building::GIDfrom(Building::MAX_COUNT-1,lastTeam), Uint16(NOGBID-1), NOGBID};
+		for (size_t i=0;i<gids.size();++i) m.setBuilding(4+int(i),4,1,1,gids[i]);
+		std::array<Uint16,Building::MAX_COUNT> seeds{};
+		seeds[0]=GRADIENT_AT_GOAL-2*GRADIENT_STEP;
+		seeds.back()=GRADIENT_AT_GOAL-4*GRADIENT_STEP;
+		std::vector<Uint16> direct(m.size),cached(m.size);
+		for (int team:{0,lastTeam})
+		{
+			CAPTURE(team);
+			m.seedResourcesGradientDirect(team,WHEAT,0,direct.data(),seeds.data());
+			for (int request=0;request<32;++request)
+				m.gradientRuntime->resourceSeeds.trySeed(m,team,WHEAT,0,cached.data(),seeds.data());
+			REQUIRE(m.gradientRuntime->resourceSeeds.valid);
+			requireSameField(m,"supplier GID bounds",cached,direct);
+			const int ownOffset=team==0 ? 0 : 2;
+			const int otherOffset=team==0 ? 2 : 0;
+			CHECK(cached[m.coordToIndex(4+ownOffset,4)]==seeds[0]);
+			CHECK(cached[m.coordToIndex(5+ownOffset,4)]==seeds.back());
+			CHECK(cached[m.coordToIndex(4+otherOffset,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(5+otherOffset,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(8,4)]==GRADIENT_FORBIDDEN);
+			CHECK(cached[m.coordToIndex(9,4)]==GRADIENT_UNREACHABLE);
+		}
+	}
 
 	TEST_CASE("resource cache tracks cell writes and falls back through mutation bursts")
 	{

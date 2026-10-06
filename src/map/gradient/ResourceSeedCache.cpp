@@ -202,12 +202,16 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 			output[index] = GRADIENT_AT_GOAL;
 	});
 	if (supplierSeeds)
+	{
+		const unsigned teamBuildingBase=unsigned(team)*Building::MAX_COUNT;
 		visit(s.buildings, [&](std::size_t index) {
 			const auto &cell = map.tiles[index];
+			const unsigned localId=unsigned(cell.building)-teamBuildingBase;
 			if (cell.resource.type == NO_RES_TYPE && map.immobileUnits[index] == IMMOBILE_UNIT_NONE &&
-				Building::GIDtoTeam(cell.building) == team)
-				output[index] = supplierSeeds[Building::GIDtoID(cell.building)];
+				localId<Building::MAX_COUNT)
+				output[index] = supplierSeeds[localId];
 		});
+	}
 	visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
 	return true;
 }

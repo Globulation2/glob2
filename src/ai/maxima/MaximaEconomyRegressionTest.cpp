@@ -1631,3 +1631,114 @@ TEST_CASE("aggregate feeding demand escapes a crop count cap during service shor
         CHECK(ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns==requested);
     }
 }
+
+TEST_CASE("operating production claims preserve weighted recipe costs and shared carrier work" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaxima;
+    ProductionRecipeModel recipes;
+    recipes.ticks[WORKER]=1000001;recipes.costs[WORKER][WHEAT]=1000;
+    int ratios[3]{1,0,0};
+    CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==999);
+    recipes.packetSize[WHEAT]=10;
+    CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==99);
+    recipes.packetSize[WHEAT]=1;recipes.ticks[WORKER]=151;recipes.costs[WORKER][WHEAT]=5;
+    recipes.ticks[EXPLORER]=301;recipes.costs[EXPLORER][WHEAT]=7;
+    ratios[WORKER]=3;ratios[EXPLORER]=1;
+    CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==22000000/754);
+    ratios[WORKER]=ratios[EXPLORER]=0;
+    CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==0);
+    recipes.ticks[WARRIOR]=1000001;recipes.costs[WARRIOR][WHEAT]=1000000;
+    ratios[WARRIOR]=32767;
+    CHECK(productionPacketCeiling(recipes,ratios)[WHEAT]==999999);
+
+    std::array<int,8> independent{},production{},trips{};
+    independent[WHEAT]=3000;independent[WOOD]=4000;production[WHEAT]=10000;trips.fill(300);
+    const auto shared=operatingClaim(independent,production,3,trips);
+    CHECK(shared.production[WHEAT]==3000);CHECK(shared.total[WHEAT]==6000);CHECK(shared.total[WOOD]==4000);
+    const auto shortStaffed=operatingClaim(independent,production,1,trips);
+    CHECK(shortStaffed.production[WHEAT]==0);CHECK(shortStaffed.total[WHEAT]==3000);CHECK(shortStaffed.total[WOOD]==4000);
+    trips.fill(100);CHECK(operatingClaim(independent,production,3,trips).production[WHEAT]==10000);
+    production[WHEAT]=0;production[WOOD]=10000;
+    CHECK(operatingClaim(independent,production,3,trips).production[WHEAT]==0);
+    independent[WHEAT]=INT_MAX;trips.fill(INT_MAX);
+    const auto saturated=operatingClaim(independent,production,1024,trips);
+    CHECK(saturated.total[WHEAT]==INT_MAX);CHECK(saturated.total[WOOD]==4000);
+    CHECK(saturated.production[WOOD]==0);
+}
+
+TEST_CASE("production ledger uses requested staffing ratios and target stage with continuation" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(32,32);
+    for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.foodTraversable=tile.buildable=true;
+    world.tile(8,8).foodOpportunity=1;world.tile(8,8).protectedYield=1000000;
+    BuildingProfile profile;profile.buildingType=0;
+    BuildingLevelProfile stage;stage.level=1;stage.footprint=Footprint(0,0,1,1);
+    stage.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
+    stage.initialCarriers=8;stage.operatingAssignmentLimit=20;
+    stage.productionRecipes.ticks[WORKER]=151;stage.productionRecipes.costs[WORKER][WHEAT]=5;
+    stage.productionResources[WHEAT]=5000000/151;
+    stage.independentResources[WHEAT]=1000;
+    stage.operatingResources[WHEAT]=stage.productionResources[WHEAT]+1000;
+    profile.levels.push_back(stage);world.profiles.push_back(profile);
+    WorldBuilding building;building.id=building.gid=1;building.buildingType=0;building.level=1;
+    building.centerX=8;building.centerY=8;building.plannedCarriers=2;
+    building.productionRatios[WORKER]=1;building.productionRatios[EXPLORER]=building.productionRatios[WARRIOR]=0;
+    world.buildings.push_back(building);
+    Planner planner;planner.mutablePolicy().foodLedgerEnabled=true;
+    planner.mutablePolicy().carrierFixedTicksPerTrip=100;
+    planner.mutablePolicy().carrierTicksPerTile=10;
+    const auto configure=[&](Planner& target,const WorldState& state) {
+        target.configure(state.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+            AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    };
+    configure(planner,world);
+    const auto low=planner.evaluateFoodLedger(world).consumer(1)->demand;
+    CHECK(low==20000);
+    const auto oldSignature=world.computeSignature();
+    world.buildings[0].plannedCarriers=8;
+    CHECK(world.computeSignature()!=oldSignature);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingResources[WHEAT]);
+    world.buildings[0].centerX=24;
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand<stage.operatingResources[WHEAT]);
+    world.buildings[0].productionRatios[WORKER]=0;
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==1000);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->productionDemand==0);
+
+    // A target newly enabling production and staffing cannot inherit the old
+    // stage's zero request and disabled ratio. Its future plan reserves work.
+    world.buildings[0].centerX=8;world.buildings[0].plannedCarriers=0;
+    world.profiles[0].levels[0].operatingAssignmentLimit=0;
+    stage.level=2;world.profiles[0].levels.push_back(stage);configure(planner,world);
+    DevelopmentAction upgrade;upgrade.id=1;upgrade.buildingId=1;upgrade.buildingType=0;
+    upgrade.type=UpgradeBuilding;upgrade.targetLevel=2;upgrade.state=ParcelReserved;
+    planner.actionMap[1]=upgrade;
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->demand==stage.operatingResources[WHEAT]);
+    CHECK(planner.evaluateFoodLedger(world).consumer(1)->productionDemand==stage.productionResources[WHEAT]);
+
+    auto* bytes=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(bytes);
+    AIMaximaContinuation::Writer writer(&output,true);writer("world",world);
+    const std::string saved(bytes->getBuffer(),bytes->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));input.seekFromStart(0);
+    WorldState restored;AIMaximaContinuation::Reader reader(&input,true);reader("world",restored);
+    CHECK(restored.computeSignature()==world.computeSignature());
+    CHECK(restored.buildings[0].plannedCarriers==0);CHECK(restored.buildings[0].productionRatios[WORKER]==0);
+    Planner resumed;resumed.mutablePolicy()=planner.policy();configure(resumed,restored);resumed.actionMap[1]=upgrade;
+    CHECK(resumed.evaluateFoodLedger(restored).consumer(1)->demand==planner.evaluateFoodLedger(world).consumer(1)->demand);
+}
+
+TEST_CASE("production observation keeps planned work despite temporarily absent carriers" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;Fixture f;auto* producer=f.swarm(8,8,0);auto& ai=*f.ai;
+    ai.context.initialize();ai.ensure_strategy();int id=-1;
+    for(const auto& entry:ai.context.get_building_register().found())
+        if(ai.context.get_building_register().get_building(entry.first)==producer)id=entry.first;
+    REQUIRE(id>=0);
+    ai.staffing_control[id].request=8;ai.swarm_allowance[id]=5;
+    Sint32 ratios[3]{3,0,1};auto order=std::make_shared<OrderModifySwarm>(producer->gid,ratios);
+    order->sender=0;f.game.executeOrder(order,0);
+    const auto world=ai.collect_development_world(ai.context);
+    REQUIRE(world.building(id));CHECK(world.building(id)->plannedCarriers==5);
+    CHECK(world.building(id)->productionRatios[WORKER]==3);CHECK(world.building(id)->productionRatios[EXPLORER]==0);
+    CHECK(world.building(id)->productionRatios[WARRIOR]==1);CHECK(producer->unitsWorking.empty());
+}
