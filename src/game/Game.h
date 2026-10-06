@@ -144,6 +144,8 @@ struct DeferredGameSHA1
 	void apply(GAGCore::ChunkedBuffer& contents) const;
 };
 
+namespace SimulationSnapshot { class Store; }
+
 class Game
 {
 	friend class PointBarRenderTest;
@@ -225,6 +227,8 @@ public:
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	// Returns whether the existing executor admitted the command, including queued construction.
 	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
+	// Simulation-owner component cache shared by AI and gradient consumers.
+	std::shared_ptr<SimulationSnapshot::Store> snapshotStore();
 	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
 		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {});
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
@@ -238,6 +242,7 @@ public:
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
+	std::shared_ptr<SimulationSnapshot::Store> worldSnapshots;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

@@ -207,7 +207,7 @@ void testBinaryHeaderFormsAndLegacy()
 		}
 		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
         const size_t resourceExperimentBytes=4; // Empty declaration count (version140).
-		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes;
+		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes+resourceExperimentBytes+1;
         // Version 143 inserted delay after int32 latency and uint8 rate,
         // before the existing payload. Older forms need that byte removed,
         // not a shorter tail; player-info-only records never contain it.
@@ -228,7 +228,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes;
+			const size_t v101Size=historical.size()-ruleBytes-experimentBytes-catalogBytes-resourceExperimentBytes-1;
 			auto *v101Bytes=new MemoryStreamBackend(historical.data(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -302,6 +302,36 @@ TEST_SUITE("GameHeaderTextSaveLoad")
 	TEST_CASE("FullRoundTrip") { testFullRoundTrip(); }
 	TEST_CASE("PlayerInfoRoundTrip") { testPlayerInfoRoundTrip(); }
 	TEST_CASE("BinaryHeaderFormsAndLegacy") { testBinaryHeaderFormsAndLegacy(); }
+	TEST_CASE(
+		"scheduled building configuration survives both header forms and rejects invalid delays")
+	{
+		for (unsigned delay : {2, 4, 8})
+			for (int form : {0, 1})
+			{
+				GameHeader original;
+				original.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+				original.setBuildingGradientDelay(delay);
+				auto *bytes = new MemoryStreamBackend;
+				BinaryOutputStream out(bytes);
+				if (form == 0)
+					original.save(&out);
+				else
+					original.saveWithoutPlayerInfo(&out);
+				out.flush();
+				auto data = bytes->takeContents();
+				BinaryInputStream in(new MemoryStreamBackend(std::move(data)));
+				GameHeader loaded;
+				REQUIRE((form == 0 ? loaded.load(&in, VERSION_MINOR)
+								   : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR)));
+				CHECK(loaded.hasExperiment(ExperimentId::BuildingGradientPipeline));
+				CHECK(loaded.getBuildingGradientDelay() == delay);
+			}
+		GameHeader header;
+		CHECK_FALSE(header.hasExperiment(ExperimentId::BuildingGradientPipeline));
+		CHECK(header.getBuildingGradientDelay() == 4);
+		for (unsigned delay : {0, 1, 3, 5, 6, 7, 9, 255})
+			CHECK_THROWS_AS(header.setBuildingGradientDelay(delay), std::invalid_argument);
+	}
 }
 
 TEST_CASE("AI order delay round trips at both boundaries and rejects invalid saved bytes" *

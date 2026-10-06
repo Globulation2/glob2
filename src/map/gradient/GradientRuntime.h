@@ -4,6 +4,9 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
+#include "BuildingGradientScheduler.h"
+#include "BuildingGradientImpact.h"
+#include "BuildingGradientDiagnostics.h"
 #include "ResourceSeedCache.h"
 #include "TerrainSafetyCache.h"
 #include "field/GradientWorkspace.h"
@@ -44,7 +47,28 @@ struct GradientRuntime
 	std::array<std::array<Uint64,MaterialCount>,Team::MAX_COUNT> stockRevision{};
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
-	GradientPipeline pipeline;
+	// Injection lets the engine share execution with other immutable consumers;
+	// publication and continuation stay with the Map's gradient schedulers.
+	explicit GradientRuntime(std::shared_ptr<AsyncGradientExecutor> executor =
+								 std::make_shared<AsyncGradientExecutor>())
+		: async(std::move(executor))
+	{
+	}
+	std::shared_ptr<AsyncGradientExecutor> async;
+	GradientPipeline pipeline{async};
+	BuildingGradientScheduler buildings{async};
+	bool buildingAccessByClass = false;
+	std::unique_ptr<BuildingGradientDiagnostics> buildingDiagnostics;
+	std::unique_ptr<BuildingGradientImpact> impact;
+	struct TickTiming
+	{
+		std::uint32_t tick;
+		std::uint64_t elapsedNs, waitNs, bytes, pending;
+	};
+	std::string timingPath;
+	std::uint64_t timingStart = 0, timingWaitStart = 0;
+	std::vector<TickTiming> timings;
+
 	// One simulation-owned reservation, consumed once during the observation phase.
 	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.
 	struct Preparation {

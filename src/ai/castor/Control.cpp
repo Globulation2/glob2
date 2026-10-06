@@ -32,7 +32,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 {
 	telemetry.count(AITrace::AI2::AICastor_controlSwarms_calls);
 	Sint32 warriorGoal=observation->rules.peaceful ? 0 : warLevel;
-	
+
 	int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
 		unitSum[i]=0;
@@ -51,7 +51,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 		if (b && requestedWorkers(*b) && queries->kind(*b).resolvedType.canFeedUnit)
 			foodSum+=queries->kind(*b).resolvedType.maxUnitInside;
 	}
-	
+
 	int unitSumAll=unitSum[0]+unitSum[1]+unitSum[2];
 
 	foodWarning=((unitSumAll+AI_CASTOR_FOODWARN_OFFSET)>=(foodSum<<1));
@@ -100,7 +100,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_controlSwarms_result,
 									   shared_ptr<Order>());
 	}
-	
+
 	size_t size=observation->width*observation->height;
 	int discovered=0;
 	int seeable=0;
@@ -171,7 +171,7 @@ std::shared_ptr<Order>AICastor::expandFood()
 	int bw=(&queries->kind(typeNum).resolvedType)->width;
 	int bh=(&queries->kind(typeNum).resolvedType)->height;
 
-	
+
 	computeCanSwim();
 	computeObstacleBuildingMap();
 	computeSpaceForBuildingMap(std::max(bw,bh));
@@ -195,7 +195,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	int wMask=(observation->width-1);
 	int hMask=(observation->height-1);
 	int wDec=std::countr_zero(unsigned(observation->width));
-	
+
 	int bi=(controlFoodTimer++)&(Building::MAX_COUNT-1);
 	const auto myBuildings=observation->buildingSlots(observedTeam->number);
 	const AIEngine::BuildingView *b=myBuildings[bi];
@@ -229,7 +229,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 	int by=b->posY;
 	int bw=queries->kind(*b).resolvedType.width;
 	int bh=queries->kind(*b).resolvedType.height;
-	
+
 	Uint8 worstCare=0;
 	for (int xi=bx-1; xi<bx+bw; xi++)
 	{
@@ -251,7 +251,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 		if (worstCare<wheatCare)
 			worstCare=wheatCare;
 	}
-	
+
 	// Sparse wheat normally needs a recovery pause. With no regrowth, waiting
 	// cannot improve this catchment; keep harvesting its remaining finite stock.
 	if (!observation->rules.resourceGrowthDisabled && worstCare>AI_CASTOR_WHEATCARE_STOP_THRESHOLD)
@@ -387,7 +387,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 	for (int li=(level+1); li<NB_UNIT_LEVELS; li++)
 		for (int si=0; si<2; si++)
 			sumOver+=buildingLevels[demand][si][li];
-	
+
 	int upgradeAmountGoal=strategy.build[demand].baseUpgrade;
 	for (int ai=1; ai<=upgradeLevelGoal; ai++)
 		upgradeAmountGoal+=strategy.build[demand].newUpgrade;
@@ -452,7 +452,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
+				if (b==NULL || ((b->seenByMask&me)==0) || b->accessLocked(canSwim))
 					continue;
 				int level=strategicStage(*observation,*b);
 				if (bestLevel<level)
@@ -472,7 +472,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim] || strategicStage(*observation,*b)<bestLevel)
+				if (b==NULL || ((b->seenByMask&me)==0) || b->accessLocked(canSwim) || strategicStage(*observation,*b)<bestLevel)
 					continue;
 				if (provides(*b, TrainAttack) || provides(*b, TrainConstruction))
 					score+=AI_CASTOR_STRIKE_TEAM_SCORE_HIGH;
@@ -490,11 +490,11 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	}
 
 	// We choose the best buildings to attack:
-	
+
 	int wMask=(observation->width-1);
 	int hMask=(observation->height-1);
 	int wDec=std::countr_zero(unsigned(observation->width));
-	
+
 	Uint32 bestScore=0;
 	const AIEngine::BuildingView *bestBuilding=NULL;
 	const AIEngine::TeamView *enemyTeam=teamAt(strikeTeam);
@@ -503,7 +503,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		const AIEngine::BuildingView *b=enemyBuildings[bi];
-		if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
+		if (b==NULL || ((b->seenByMask&me)==0) || b->accessLocked(canSwim))
 			continue;
 		int x=b->posX;
 		int y=b->posY;
@@ -521,7 +521,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			bestBuilding=b;
 		}
 	}
-	
+
 	std::list<const AIEngine::BuildingView *> rallyBuildings;
  for (auto* candidate : observation->buildingSlots(observedTeam->number))
   if (candidate && provides(*candidate,AttractWarriors)) rallyBuildings.push_back(candidate);
@@ -599,6 +599,3 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
 								   shared_ptr<Order>());
 }
-
-
-

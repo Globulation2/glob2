@@ -59,8 +59,14 @@ struct BuildingStateRecord
 	Uint32 receiveMaterialMask, sendMaterialMask;
 	Sint32 bullets;
 	Uint32 seenByMask;
-	// Footprint, clearing and combat access, each without/with swimming.
-	bool locked[6];
+	// Cached access layout is explicit in the canonical record. Older/off
+	// caches use six semantic slots; scheduled fields distinguish swim classes.
+	bool gradientAccessByClass = false;
+	bool locked[3 * SWIM_CLASS_COUNT];
+	bool accessLocked(bool canSwim, unsigned route=0) const {
+		return locked[gradientAccessByClass ? route*SWIM_CLASS_COUNT+(canSwim ? 4 : 0)
+		                                  : route*2+unsigned(canSwim)];
+	}
 	bool operator==(const BuildingStateRecord&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<BuildingStateRecord>);

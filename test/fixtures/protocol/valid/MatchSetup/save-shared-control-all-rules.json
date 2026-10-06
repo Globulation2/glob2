@@ -69,7 +69,8 @@
     "unitsFearless": true,
     "permadeathDisabled": true,
     "peacefulMode": true,
-    "buildingHpLevel": 1
+    "buildingHpLevel": 1,
+    "buildingGradientDelay": 8
   },
   "experiments": [
     "guard-area-balancing"

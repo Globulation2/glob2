@@ -5604,6 +5604,18 @@ IJzererts
 Zand
 [Cotton]
 Katoen
+[experiment building-gradient-pipeline]
+
+[experiment building-gradient-pipeline help]
+
+[experiment building-gradient-hybrid]
+
+[experiment building-gradient-hybrid help]
+
+[experiment building-gradient-partial]
+
+[experiment building-gradient-partial help]
+
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten
 [boulders]

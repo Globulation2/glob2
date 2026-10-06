@@ -220,3 +220,7 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
+// Scheduled building bundles and their saved delay/access metadata.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 144;
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ACCESS_CLASSES = 144;
+static constexpr int FILE_FORMAT_VERSION_PARTIAL_BUILDING_GRADIENTS = 144;

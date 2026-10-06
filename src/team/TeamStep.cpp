@@ -342,6 +342,7 @@ void Team::syncStep(void)
 	int nbUsefulUnits = 0;
 	int nbUsefulUnitsAlone = 0;
 	bool hasFedOrFeedingUnit = false;
+	map->buildingGradientPhase("units");
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
@@ -373,6 +374,7 @@ void Team::syncStep(void)
 	}
 
 	unitTime.stop();
+	map->buildingGradientPhase("buildings");
 	PerformanceTelemetry::Scope buildingTime(PerformanceTelemetry::Id::Buildings);
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end();)
@@ -446,10 +448,12 @@ void Team::syncStep(void)
 			++it;
 	}
 
+	map->buildingGradientPhase("hiring");
 	updateAllBuildingTasks();
 	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
 		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);
 
+	map->buildingGradientPhase("buildings");
 	bool isEnoughFoodInSwarm=false;
 
 	for (int i=0; i<Building::MAX_COUNT; ++i)
@@ -482,6 +486,7 @@ void Team::syncStep(void)
 	}
 
 	buildingTime.stop();
+	map->buildingGradientPhase("statistics");
 	stats.step(this);
 	updateEvents();
 }

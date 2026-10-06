@@ -13,6 +13,8 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingType.h"
+#include <fstream>
 #include <algorithm>
 
 #include "render/GameAnimations.h"
@@ -49,7 +51,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	game=NULL;
 
 	arraysBuilt=false;
-	
+
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MaterialSlotCount; r++)
@@ -72,11 +74,11 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 		}
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
-	
+
 	undermap=NULL;
 	sectors=NULL;
 	listedAddr=NULL;
-	
+
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		clearingAreaClaims[t] = NULL;
 	w=0;
@@ -92,7 +94,7 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	
 
 	areaNames.resize(9);
-	
+
 	fertilityMaximum = 0;
 }
 
@@ -509,6 +511,103 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
+BuildingGradientDiagnostics *Map::buildingGradientDiagnostics() const
+{
+	return gradientRuntime->buildingDiagnostics.get();
+}
+
+void Map::configureBuildingGradientDiagnostics(const std::string &prefix)
+{
+	gradientRuntime->buildingDiagnostics = std::make_unique<BuildingGradientDiagnostics>(prefix);
+}
+
+void Map::configureBuildingGradientInstrumentation(bool enabled)
+{
+	gradientRuntime->buildings.measure = enabled;
+}
+
+void Map::configureBuildingGradientTiming(const std::string &path)
+{
+	gradientRuntime->timingPath = path;
+	gradientRuntime->timings.clear();
+}
+void Map::finishBuildingGradientTiming()
+{
+	if (gradientRuntime->timingPath.empty())
+		return;
+	std::ofstream out(gradientRuntime->timingPath);
+	if (!out)
+		throw std::runtime_error("cannot open building gradient timing telemetry");
+	out << "tick,tick_ns,deadline_wait_ns,queue_bytes,queue_depth\n";
+	for (const auto &row : gradientRuntime->timings)
+		out << row.tick << ',' << row.elapsedNs << ',' << row.waitNs << ',' << row.bytes << ','
+			<< row.pending << '\n';
+}
+void Map::beginBuildingGradientTick()
+{
+	if (!gradientRuntime->timingPath.empty())
+	{
+		gradientRuntime->timingStart = BuildingGradientDiagnostics::now();
+		gradientRuntime->timingWaitStart = gradientRuntime->buildings.metrics.waitNs;
+	}
+	if (gradientRuntime->impact)
+		gradientRuntime->impact->lastTickNs = BuildingGradientDiagnostics::now();
+	if (auto *d = buildingGradientDiagnostics())
+	{
+		unsigned bs = 0, vs = 0, us = 0, fs = 0, pending = 0;
+		for (int t = 0; t < game->mapHeader.getNumberOfTeams(); ++t)
+		{
+			const Team *team = game->teams[t];
+			for (int i = 0; i < Unit::MAX_COUNT; ++i)
+				if (team->myUnits[i])
+					++us;
+			for (int i = 0; i < Building::MAX_COUNT; ++i)
+				if (const auto *b = team->myBuildings[i])
+				{
+					++bs;
+					if (b->type->isVirtual)
+						++vs;
+					for (int s = 0; s < BUILDING_GRADIENT_COUNT; ++s)
+					{
+						if (b->globalGradient[s])
+							++fs;
+						if (b->globalGradientSearch[s] && !b->globalGradientSearch[s]->complete())
+							++pending;
+					}
+				}
+		}
+		d->begin(game->stepCounter, topologyGeneration, bs, vs, us, fs, pending);
+	}
+}
+
+void Map::endBuildingGradientTick()
+{
+	if (!gradientRuntime->timingPath.empty())
+	{
+		auto &runtime = *gradientRuntime;
+		runtime.timings.push_back({game->stepCounter,
+								   BuildingGradientDiagnostics::now() - runtime.timingStart,
+								   runtime.buildings.metrics.waitNs - runtime.timingWaitStart,
+								   runtime.buildings.bytes(), runtime.buildings.pending.size()});
+	}
+	if (gradientRuntime->impact)
+		observeGradientImpact();
+	if (auto *d = buildingGradientDiagnostics())
+		d->end(topologyGeneration);
+}
+
+void Map::buildingGradientPhase(const char *phase)
+{
+	if (auto *d = buildingGradientDiagnostics())
+		d->setPhase(phase);
+}
+
+void Map::flushBuildingGradientDiagnostics()
+{
+	if (auto *d = buildingGradientDiagnostics())
+		d->flush();
+}
+
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
 	preparePendingGradient();
@@ -522,6 +621,7 @@ void Map::clear()
 	markAllChanges();
 	clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();
+	if (gradientRuntime) { gradientRuntime->buildings.reset(); gradientRuntime->buildingAccessByClass=false; }
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
@@ -648,7 +748,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	fogOfWarA.assign(size, 0);
 	fogOfWarB.assign(size, 0);
 	fogOfWar = &fogOfWarA[0];
-	
+
 	displayedForbiddenView.resize(size, false);
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
@@ -670,10 +770,10 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	adjustTerrainFeatures(GRASS, true);
 
 	mapDiscovered.assign(size, 0);
-	
+
 	undermap=new Uint8[size];
 	memset(undermap, terrainType <= GRASS ? terrainType : GRASS, size);
-	
+
 	listedAddr = new Uint8*[size];
 
 	//numberOfTeam=0, then resourcesGradient[][][] is empty. This is done by clear();

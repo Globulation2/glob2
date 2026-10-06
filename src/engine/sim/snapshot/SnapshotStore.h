@@ -28,7 +28,7 @@ public:
 	Store() { if (const char* value = std::getenv("GLOB2_SNAPSHOT_VERIFY")) storage.verify = *value && *value != '0'; }
 	void reset() { const bool verify = storage.verify; latest.reset(); catalog.reset(); catalogConfigurationRevision = 0; storage = {}; storage.verify = verify; metrics = {}; memoryPeaks = {}; }
 	void setVerification(bool on) { storage.verify = on; }
-	Handle captureBoundary(const Game& game, Requirements required);
+	Handle captureBoundary(const Game& game, Requirements required, bool freshBoundary = false);
 	MemoryMetrics memoryMetrics() const;
 };
 } // namespace SimulationSnapshot

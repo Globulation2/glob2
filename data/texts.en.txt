@@ -5750,3 +5750,15 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
+[experiment building-gradient-pipeline]
+Scheduled building gradients
+[experiment building-gradient-pipeline help]
+Refresh building routes in the background and publish them on a fixed later tick. Units use the previous routes while a refresh is pending.
+[experiment building-gradient-hybrid]
+Demand-based building gradients
+[experiment building-gradient-hybrid help]
+Keep lightly staffed building routes lazy and synchronous. Schedule background refreshes when at least four assigned workers use the same movement class. Requires scheduled building gradients.
+[experiment building-gradient-partial]
+Partial background building gradients
+[experiment building-gradient-partial help]
+Background route refreshes resolve captured worker positions and retain frozen frontiers for later lazy queries. Requires scheduled building gradients.

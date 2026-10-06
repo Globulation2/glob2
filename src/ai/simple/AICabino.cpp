@@ -2004,7 +2004,7 @@ bool PrioritizedBuildingAttack::attack()
 		const AIEngine::BuildingView* b = ai.game->buildingSlots(enemy()->number)[i];
 		if(b)
 		{
-			if(!b->locked[1])
+			if(!b->accessLocked(true))
 			{
     if(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround) {
      unsigned pos=0;

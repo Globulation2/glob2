@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "field/GradientWorkspace.h"
+#include "AsyncGradientExecutor.h"
 #include "map/TerrainType.h"
 #include "map/TerrainRegistry.h"
 #include "sim/snapshot/WorldSnapshot.h"
@@ -40,6 +41,7 @@ public:
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
+ AsyncGradientExecutor::Handle task;
 		std::exception_ptr error;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
@@ -65,16 +67,11 @@ public:
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
-	std::deque<Job *> ready;
-	std::vector<std::thread> workers;
-	std::mutex mutex;
-	std::condition_variable wake, completed;
-	bool quit = false;
+	std::shared_ptr<AsyncGradientExecutor> executor;
 	unsigned delay = 0;
 	std::uint64_t tick = 0, lastSubmission = 0;
 	std::size_t cells = 0;
 	Work work;
-	GradientWorkspace serialWorkspace;
 	std::atomic<std::uint64_t> activeNs{0};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -94,53 +91,30 @@ private:
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.terrainLease.reset();
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
-		{ std::lock_guard<std::mutex> lock(mutex); job.done = true; }
-		completed.notify_one();
+		job.done = true;
 	}
 	void wait(Job &job) {
 		const auto start = Clock::now();
-		std::unique_lock<std::mutex> lock(mutex);
-		completed.wait(lock, [&] { return job.done; });
+		executor->wait(job.task);
 		metrics.waitNs += ns(start);
 	}
 public:
+ explicit GradientPipeline(std::shared_ptr<AsyncGradientExecutor> pool=std::make_shared<AsyncGradientExecutor>()) : executor(std::move(pool)) {}
 	~GradientPipeline() { reset(); }
 	bool enabled() const { return delay != 0; }
-	unsigned workerCount() const { return workers.size(); }
+	unsigned workerCount() const { return executor->workerCount(); }
 	unsigned delayTicks() const { return delay; }
 	std::uint64_t activeElapsedNs() const { return activeNs.load(std::memory_order_relaxed); }
 	void finish() { for (auto &job : pending) { wait(*job); if(job->error) std::rethrow_exception(job->error); } }
-	void reset() noexcept {
-		{ std::lock_guard<std::mutex> lock(mutex); quit = true; }
-		wake.notify_all();
-		for (auto &thread : workers) thread.join();
-		workers.clear(); ready.clear(); pending.clear(); spare.clear();
-		delay = 0; tick = 0; lastSubmission = 0; quit = false;
-	}
-	void configure(unsigned count, unsigned ticks, std::size_t size, Work callback,
-		Factory factory = [](std::function<void()> f) { return GAGCore::ThreadSupport::launch(std::move(f)); }) {
-		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
-		if constexpr (GAGCore::ThreadSupport::available)
-		{
-			try {
-				workers.reserve(count);
-				for (unsigned n=0; n<count; ++n) workers.push_back(factory([this] {
-					GradientWorkspace scratch;
-					for (;;) {
-						Job *job;
-						{
-							std::unique_lock<std::mutex> lock(mutex);
-							wake.wait(lock, [&] { return quit || !ready.empty(); });
-							if (ready.empty()) return;
-							job = ready.front(); ready.pop_front();
-						}
-						execute(*job, scratch);
-					}
-				}));
-			} catch (...) { reset(); } // Same publication schedule with serial execution.
-		}
-		delay = ticks;
-	}
+ void reset() noexcept {
+  for(auto &job:pending) try { executor->wait(job->task); } catch(...) {}
+  pending.clear(); spare.clear(); delay=0; tick=0; lastSubmission=0;
+ }
+ void configure(unsigned count,unsigned ticks,std::size_t size,Work callback,
+  Factory factory=[](std::function<void()> f){return GAGCore::ThreadSupport::launch(std::move(f));}) {
+  reset(); metrics={}; activeNs=0; cells=size; work=std::move(callback);
+  executor->configure(count,std::move(factory)); delay=ticks;
+ }
 	// Saving completes private work without changing publication deadlines.
 	template<class Visitor> void visitPendingSnapshots(Visitor visitor) {
 		finish();
@@ -195,7 +169,7 @@ public:
 		if (spare.empty()) { job = std::make_unique<Job>(); job->data.reset(new std::uint16_t[cells]); }
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
-		job->done=false; job->superseded=false; job->error=nullptr;
+		job->done=false; job->superseded=false; job->error=nullptr; job->task.reset();
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;
@@ -210,14 +184,12 @@ public:
 		try {
 			seed(*ptr);
             metrics.preparationNs += ns(preparationStart); inputsPrepared=true;
-			if (workers.empty()) execute(*ptr, serialWorkspace);
-			else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
+			ptr->task=executor->submit([this,ptr](GradientWorkspace &scratch){execute(*ptr,scratch);});
 		}
 		catch (...) {
-            if (!inputsPrepared) metrics.preparationNs += ns(preparationStart);
+			if (!inputsPrepared) metrics.preparationNs += ns(preparationStart);
 			ptr->water.reset(); ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset(); ptr->terrainLease.reset();
-			{ std::lock_guard<std::mutex> lock(mutex); ptr->error=std::current_exception(); ptr->done=true; }
-			completed.notify_one();
+			ptr->error=std::current_exception(); ptr->done=true;
 			throw;
 		}
 	}

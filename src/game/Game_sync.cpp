@@ -228,7 +228,9 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		Uint64 startTick=SDL_GetTicks();
 
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
+		map.beginBuildingGradientTick();
 		map.advanceGradientPipeline();
+		map.publishBuildingRefreshes();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -282,6 +284,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		Uint64 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
+		map.submitBuildingRefreshes();
+		map.endBuildingGradientTick();
 		stepCounter++;
 		// All world mutations, including script/fog/project tail work, are done.
 		// Selection stays ordered; only private preparation can join AI decisions.

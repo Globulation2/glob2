@@ -15,6 +15,22 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 
+Unit::FetchDecision Unit::evaluateFetchDecision(const int *needs,int timeLeft,bool fresh)
+{
+ FetchDecision decision; Map *map=owner->map; decision.score=map->getW()+map->getW();
+ for(int r=0;r<MAX_RESOURCES;++r) {
+  const int need=needs[r]; if(need<=0) continue;
+  int distance=0;
+  bool available=map->buildingDecisionDistance(attachedBuilding,swimClass(),r,posX,posY,&distance,fresh,false,BuildingRoute::Footprint);
+  if(available) distance=(distance+1)/2;
+  else available=map->resourceDecisionDistance(owner->teamNumber,r,swimClass(),posX,posY,&distance,fresh,false,attachedBuilding);
+  if(!available || (distance<<1)>=timeLeft) continue;
+  const int value=distance/need;
+  if(value<decision.score) { decision.resource=r; decision.score=value; }
+ }
+ return decision;
+}
+
 void Unit::handleDisplacement(void)
 {
 	switch (activity)
@@ -58,6 +74,7 @@ void Unit::handleDisplacement(void)
 					if (Building *market = owner->map->touchedStockedMarketSlot(this, destinationPurpose))
 					{
 						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
+						owner->map->gradientOutcome("market_acquired",this,attachedBuilding,destinationPurpose,0,0,0,false,market);
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
 						validTarget=true;
@@ -92,6 +109,7 @@ void Unit::handleDisplacement(void)
 					// we got the resource.
 					receiveCarriedMaterial(destinationPurpose,{});
 					++owner->stats.measurements.harvested[carriedMaterial];
+					owner->map->gradientOutcome("harvested",this,attachedBuilding,carriedMaterial);
 
 					setTargetBuilding(attachedBuilding);
 					if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
@@ -150,6 +168,7 @@ void Unit::handleDisplacement(void)
 					if (targetBuilding->availableMaterial(destinationPurpose)>0)
 					{
 						receiveCarriedMaterial(destinationPurpose,targetBuilding->withdrawMaterialPacket(destinationPurpose));
+						owner->map->gradientOutcome("market_acquired",this,attachedBuilding,destinationPurpose,0,0,0,false,targetBuilding);
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -164,7 +183,8 @@ void Unit::handleDisplacement(void)
 				else if ((carriedMaterial>=0) && (targetBuilding->materialDeliveryNeed(carriedMaterial)>0))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving material (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->materials[carriedMaterial]);
+						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->materials[carriedMaterial]);
+					owner->map->gradientOutcome("delivered",this,targetBuilding,carriedMaterial);
 					targetBuilding->deliverMaterialPacket(carriedMaterial,carriedPacket);
 					carriedMaterial=UNIT_CARRIED_RESOURCE_NONE;
 					carriedPacket={};
@@ -193,22 +213,15 @@ void Unit::handleDisplacement(void)
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
-							int bestResource=-1;
-							int minValue=owner->map->getW()+owner->map->getW();
-
-							Map* map=owner->map;
-							for (int r=0; r<MaterialCount; ++r)
-							{
-								const int need=needs[r];
-								if (need<=0) continue;
-								int distance;
-								bool available=map->roundTripDistanceSlot(attachedBuilding,r,swimClass(),posX,posY,&distance);
-								if (available) distance=(distance+1)/2;
-								else available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
-								if (!available || (distance<<1)>=timeLeft) continue;
-								const int value=distance/need;
-								if (value<minValue) { bestResource=r; minValue=value; }
-							}
+							Map *map=owner->map;
+ if(map->buildingGradientImpactEnabled()) map->beginGradientDecision("resource_type",attachedBuilding->gid,gid);
+ const auto decision=evaluateFetchDecision(needs,timeLeft,false);
+ const int bestResource=decision.resource, minValue=decision.score;
+ if(map->buildingGradientImpactEnabled()) {
+  const auto fresh=evaluateFetchDecision(needs,timeLeft,true);
+  map->recordGradientDecision(attachedBuilding,swimClass(),bestResource,fresh.resource,bestResource,fresh.resource,minValue,fresh.score);
+  map->auditResourceDestination(this,bestResource,nullptr,fresh.resource,nullptr);
+ }
 
 							if (verbose)
 								printf("guid=(%d) bestResource=%d, minValue=%d\n", gid, bestResource, minValue);

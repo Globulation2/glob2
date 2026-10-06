@@ -143,7 +143,7 @@ Game options:
 | `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
-| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
+| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, [building-gradients](../development/performance-telemetry.md#building-gradient-work-within-a-tick); default none |
 | `--profile NAME` | Optional isolated profile name |
 
 GUI autosaving defaults off for tournament/headless runs, independently of the

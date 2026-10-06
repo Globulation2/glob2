@@ -295,8 +295,8 @@ TEST_SUITE("ExperimentalFeatures")
             // experiment/catalog/resource-experiment tails nor the format-143 delay
             // byte following the common gameLatency/orderRate prefix.
             const std::string sectionBytes = bytesOf(original.getExperiments());
-            REQUIRE(bytes.size() > sectionBytes.size()+2*sizeof(Uint32)+sizeof(Uint8));
-            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-2*sizeof(Uint32));
+            REQUIRE(bytes.size() > sectionBytes.size()+2*sizeof(Uint32)+2*sizeof(Uint8));
+            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-2*sizeof(Uint32)-sizeof(Uint8));
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();
             auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);

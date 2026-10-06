@@ -33,6 +33,23 @@ describe('sim versions', () => {
 });
 
 describe('MatchSetup', () => {
+  it('accepts supported building delays and legacy omitted values', () => {
+    for (const delay of [2, 4, 8]) {
+      expect(() =>
+        parse(MatchSetup, {
+          ...SETUP_SAVE_SHARED,
+          rules: { ...SETUP_SAVE_SHARED.rules, buildingGradientDelay: delay },
+        }),
+      ).not.toThrow();
+    }
+    const rules = { ...SETUP_SAVE_SHARED.rules };
+    delete rules.buildingGradientDelay;
+    expect(() => parse(MatchSetup, { ...SETUP_SAVE_SHARED, rules })).not.toThrow();
+    expect(() =>
+      parse(MatchSetup, { ...SETUP_SAVE_SHARED, rules: { ...rules, buildingGradientDelay: 3 } }),
+    ).toThrow(ProtocolValidationError);
+  });
+
   it('parses a valid setup and reports no problems', () => {
     const setup = parse(MatchSetup, JSON.parse(JSON.stringify(SETUP_SAVE_SHARED)));
     expect(matchSetupProblems(setup)).toEqual([]);

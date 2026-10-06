@@ -17,7 +17,8 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 {
 	static const std::vector<ExperimentDefinition> definitions = {
 		{ExperimentId::GuardAreaBalancing, "guard-area-balancing", "Guard-area balancing",
-		 "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others."},
+		 "Free warriors spread between painted guard areas instead of all taking the nearest one: "
+		 "a bigger area gets more of them, and an over-full area thins out into the others."},
 		{ExperimentId::FarmAreas, "farm-areas", "Farm areas",
 		 "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."},
 		{ExperimentId::IceTerrain, "ice-terrain", "Ice terrain",
@@ -44,6 +45,18 @@ const std::vector<ExperimentDefinition> &experimentDefinitions()
 		 "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields."},
 		{ExperimentId::VoidTerrain, "void-terrain", "Void terrain",
 		 "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge."},
+		{ExperimentId::BuildingGradientPipeline, "building-gradient-pipeline",
+		 "Scheduled building gradients",
+		 "Refresh building routes in the background and publish them on a fixed later tick. Units "
+		 "use the previous routes while a refresh is pending."},
+		{ExperimentId::BuildingGradientHybrid, "building-gradient-hybrid",
+		 "Demand-based building gradients",
+		 "Keep lightly staffed building routes lazy and synchronous. Schedule background refreshes "
+		 "when at least four assigned workers use the same movement class. Requires scheduled building gradients."},
+		{ExperimentId::BuildingGradientPartial, "building-gradient-partial",
+		 "Partial background building gradients",
+		 "Background route refreshes resolve captured worker positions and retain frozen frontiers "
+		 "for later lazy queries. Requires scheduled building gradients."},
 	};
 	return definitions;
 }

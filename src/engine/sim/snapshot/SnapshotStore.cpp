@@ -4,11 +4,13 @@
 #include <algorithm>
 namespace SimulationSnapshot
 {
-Handle Store::captureBoundary(const Game& game, Requirements required)
+Handle Store::captureBoundary(const Game& game, Requirements required, bool freshBoundary)
 {
 	const auto requested = required;
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
-	if (latest && latest->tick == game.stepCounter) {
+	// A second owner boundary within the same logical tick may follow mutation.
+	// Force recapture there while retaining generation-based component reuse.
+	if (!freshBoundary && latest && latest->tick == game.stepCounter) {
 		if ((required & latest->requirements) == required) return latest->project(requested);
 		required |= latest->requirements;
 	}

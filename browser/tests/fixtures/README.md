@@ -35,10 +35,10 @@ an isolated output directory and profile:
 GLOB2_USER_DATA_DIR="$PWD/artifacts/studio-reference/profile" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_CHECKSUM_SIDECAR=1 \
 ./build/linux/client/release/src/glob2 --run-game \
-  --map-file platform/apps/engine-agent/fixtures/ais/two.map.gz --game-seed 19 \
-  --player javascript --ai-script 0:examples/javascript/studio-starter.js \
+  --map-file "$PWD/platform/apps/engine-agent/fixtures/ais/two.map.gz" --game-seed 19 \
+  --player javascript --ai-script "0:$PWD/examples/javascript/studio-starter.js" \
   --player numbi --ticks 1024 --replay true --telemetry checksums \
-  --save initial --save final --output-dir artifacts/studio-reference/result
+  --save initial --save final --output-dir "$PWD/artifacts/studio-reference/result"
 sha256sum examples/javascript/studio-starter.js \
   platform/apps/engine-agent/fixtures/ais/two.map.gz \
   artifacts/studio-reference/result/game.replay.checksums
