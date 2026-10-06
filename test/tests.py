@@ -347,6 +347,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/Map.cpp',
     '#src/map/MapCells.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
+    '#src/resource/Resources.cpp',
     '#src/map/MapQuery.cpp',
     '#src/map/MapTerrain.cpp',
     '#src/map/editor/MapEditKeyActions.cpp',
