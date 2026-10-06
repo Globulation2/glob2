@@ -6,6 +6,7 @@
 
 #include "CortexPlacementGeo.h"
 #include "CortexFoodAvailability.h"
+#include "CortexHardSpaceView.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "CortexBuildings.h"
@@ -141,6 +142,7 @@ namespace Cortex
 
 		const PlacementGeometry geometry(team, map);
 		const FoodAvailabilityView food(map);
+		HardSpaceView hardSpace(map);
 
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
@@ -212,7 +214,7 @@ namespace Cortex
 				// building, so a resulting OrderCreate will not be rejected. We gate
 				// on the GROWN footprint (gx, gy, ew x eh) so the spot also has room
 				// for the eventual upgrades; the placed footprint is a subset of it.
-				if (occupiesGround ? !map.isHardSpaceForBuilding(gx, gy, ew, eh)
+				if (occupiesGround ? !hardSpace.rectangle(gx, gy, ew, eh)
                     : !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
 					continue;
 

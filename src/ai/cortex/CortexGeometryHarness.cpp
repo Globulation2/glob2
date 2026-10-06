@@ -7,6 +7,7 @@
 #include "CortexBuildings.h"
 #include "CortexPlacement.h"
 #include "CortexFoodAvailability.h"
+#include "CortexHardSpaceView.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cstdio>
@@ -198,5 +199,51 @@ TEST_CASE("placement food snapshot matches toroidal scalar distances on thin map
         compare();
         map.setResource(0,0,*food,0);
         compare(); // Aliased neighbors and tied sources do not change distance.
+    }
+}
+
+TEST_CASE("lazy placement hard space matches canonical rectangles and refreshes per pass" * doctest::test_suite("CortexGeometry"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(const auto dimensions:std::vector<std::pair<int,int>>{{0,0},{0,3},{3,0},{4,3}}) {
+        Game game(nullptr);auto& map=game.map;
+        map.setSize(dimensions.first,dimensions.second,GRASS);map.setGame(&game);
+        auto definitions=nlohmann::json::parse(map.resourceRegistry().serialize());
+        auto entry=definitions["resources"][0];entry.erase("requiredExperiment");
+        entry["key"]="test:ground-only";
+        entry["properties"]={{"blocksGround",true},{"blocksBuilding",false},{"persistsWhenEmpty",true}};
+        definitions["resources"].push_back(entry);
+        entry["key"]="test:building-only";
+        entry["properties"]["blocksGround"]=false;entry["properties"]["blocksBuilding"]=true;
+        definitions["resources"].push_back(entry);map.installResourceDefinitions(definitions.dump());
+        const auto ground=map.resourceRegistry().find("test:ground-only");
+        const auto building=map.resourceRegistry().find("test:building-only");
+        REQUIRE(ground.has_value());REQUIRE(building.has_value());
+        const auto compare=[&] {
+            Cortex::HardSpaceView view(map);
+            for(int y=-2;y<map.getH()+2;++y) for(int x=-2;x<map.getW()+2;++x)
+                for(int w:{0,1,3,19}) for(int h:{0,1,4,11})
+                    CHECK(view.rectangle(x,y,w,h)==map.isHardSpaceForBuilding(x,y,w,h));
+        };
+        compare();
+        map.setResource(0,0,*ground,0);map.setGroundUnit(0,0,0);
+        map.setAreaMask(map.coordToIndex(0,0),&Tile::forbidden,~Uint32(0));
+        {Cortex::HardSpaceView view(map);CHECK(view.at(0,0));} // Units, fog and paint ignored.
+        compare();
+        map.setResource(0,0,*building,0);
+        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));}
+        compare();
+        // Restore the authored ground-blocking resource before adding occupancy;
+        // the placement API correctly rejects it while the earlier unit remains.
+        map.setGroundUnit(0,0,NOGUID);
+        map.setResource(0,0,*ground,0);map.setBuilding(0,0,1,1,0);
+        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));} // No ignored occupant.
+        compare();
+        map.setBuilding(0,0,1,1,NOGBID);map.setCellTerrain(0,0,WATER);
+        {Cortex::HardSpaceView view(map);CHECK_FALSE(view.at(0,0));}
+        compare();
+        map.setCellTerrain(0,0,GRASS);
+        {Cortex::HardSpaceView view(map);CHECK(view.at(0,0));} // A fresh pass sees mutations.
+        compare();
     }
 }
