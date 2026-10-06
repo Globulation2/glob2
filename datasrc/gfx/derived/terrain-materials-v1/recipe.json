@@ -1,0 +1,1824 @@
+{
+  "version": 1,
+  "settings": {
+    "seed": 22032,
+    "smoothing": 0.8,
+    "connected_grain": 11,
+    "fine_grain": 5,
+    "original_pull": 0.65,
+    "max_block_color_drift": 2
+  },
+  "materials": {
+    "grass": {
+      "frame": 0,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass.png",
+      "sha256": "9c2b503e0c705b2e35d01bbcc36d5731d815fa8e538f89b7a30a67f33598eee0",
+      "native_sha256": "e09287e14a0919daee3260bf304aac6d2d459d936b6b4a74e21f5fc8a7cc4a41"
+    },
+    "sand": {
+      "frame": 128,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand.png",
+      "sha256": "a6bc27edfb75b1ea069c2d175298e0b5f1be1c5ea4ee4d69fde0e07a6eceb9b8",
+      "native_sha256": "f798c542c408147c8f0a82c9bf257b8214f3cf6b8544ad0bdebcf8a65de90c2c"
+    }
+  },
+  "historical_revision": "410ce0ff8",
+  "mask_origin": {
+    "grass_sand": "Recovered least-squares grass weights from the approved shared grass/sand composites; clipped to [0,1], snapped within 0.015 of endpoints, quantized to 8-bit. Historical sources are replaced; retained hashes identify that input selection.",
+    "sand_water": "Exact alpha channels of the approved sand/water composites, preserving the shoreline silhouette."
+  },
+  "masks": [
+    {
+      "frame": 16,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain16.png",
+      "sha256": "70ed365bef1354d5a037204af6e14f0f59d2bf96a96cff56c08900ab8d0f6fa0",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain16.png",
+      "historical_sha256": "06831a7d3775393a0d36b01cb34f1682983e36a2238029cf1a021ab4bf70e91e",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 17,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain17.png",
+      "sha256": "d8858f4239dec73da45ee53a400714d0c765471d40850a65662ea942711e6527",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain17.png",
+      "historical_sha256": "77d156a7881c9f749d2f038435b299226d04024e8e161fec9e15f9a8c375f8c7",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 18,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain18.png",
+      "sha256": "5d21e1afb4794094bdd9335f11263244c31b29cf124a97991ccaf9d273ded067",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain18.png",
+      "historical_sha256": "465a05362ec2218c8a927182e780d2a0376ca10bea1d673e70754e46b7e4db16",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 19,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain19.png",
+      "sha256": "c11b78da41fe7a79f2e5e0e73e5a7068140e07ee2528988524d8fd1a91113799",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain19.png",
+      "historical_sha256": "6f8b97abf9eb13bd53b7c7fa7c1c9ad1ba05e530bf401089f4b6af2130ee8576",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 20,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain20.png",
+      "sha256": "1636cc41b8e8f45f199354026ffb6d36bafcc9dc5a67b62a2c94282b2f1fc90d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain20.png",
+      "historical_sha256": "255506731000256a1cb00afe1756ad73ff88dde5b7c625d8e6e0a852ce20532e",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 21,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain21.png",
+      "sha256": "edaaf5c94ffd794c0036997402232002145d1575c070db17c98b9aea72e9e306",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain21.png",
+      "historical_sha256": "b31a81520637a955d4d132c4c3152c4561eea9ab589f0d8194528796eab99baf",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 22,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain22.png",
+      "sha256": "c51863ceb86db08375bded29efd09fd0ab9259fb81c794f29b844f38cd25cb28",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain22.png",
+      "historical_sha256": "5826b65e961335796dd0b8030743910ea7f1b202d34b08f1c2fdb68b319888d8",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 23,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain23.png",
+      "sha256": "dad0c52d664a470b66743e197a5113be2d953619abb4aacbfc305ff6a9fde641",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain23.png",
+      "historical_sha256": "e5862f9c18e5d55c11da1954a91754de026d04b4dbb8e5f6cde853d623858b1e",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 24,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain24.png",
+      "sha256": "b01c8ebfa16f5039cbb0c1a8047eeeff6b4c9eb0a16675a6859c16a7a8c8e7a3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain24.png",
+      "historical_sha256": "28130d9d7dccd964eb60e3dbaff23c277e4418888f31868311ba898d7d74799f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 25,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain25.png",
+      "sha256": "1a9eb3ee35d0eede8a5416d00811c490a542b5de5346e6be38c896327ae9f867",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain25.png",
+      "historical_sha256": "2b5deb82563b328950bcf03244b338ba0420808a0d1dfd4afb4d9bef396a2713",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 26,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain26.png",
+      "sha256": "56dae16effbbff96b255d35309d2a21941eb00244cac5fdb94b4724900c4186a",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain26.png",
+      "historical_sha256": "b4d480c56839b21b53cbea0afa8c485d16c3d4988750706e652aec4424c48d39",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 27,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain27.png",
+      "sha256": "31ff3ea3bd2c6c1d5d7ccb5fbfeaf8317e7377194e5ecc62bb7b76d63f146456",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain27.png",
+      "historical_sha256": "696cabb2e7705cfec01eb1f0e0f81a5594f28472606a4b9dcbd82096c543b226",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 28,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain28.png",
+      "sha256": "427a2f7f02949055a744f7306d7f0a2d1a345e1b5d28a616a92ef48a71c5cdfd",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain28.png",
+      "historical_sha256": "929fa9536d3b87751295303253201bf52b9e5116eb5de384465c9ddd8877a3a9",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 29,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain29.png",
+      "sha256": "28c8fd4d7f92224a5a127df9ab9b14571dcae196c55bb42f3ef608a4ab009c92",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain29.png",
+      "historical_sha256": "428366ddb266ab94c0fbf4898207c9b5649c7ee207286eb4ca1a345e4bf679c1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 30,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain30.png",
+      "sha256": "4aae59521ad032c15c0246d87aa01f385a1cba732cb3f39d6d00bc920725f6d1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain30.png",
+      "historical_sha256": "0d4f30407a3ff143ac7ff6731de642c1eb6326b0aa20b96f2fad7d592a9c241c",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 31,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain31.png",
+      "sha256": "4b5eb6359425ece7e4848e517cd6ad4d2a734b81664cfc9bd51e0c0afff7a0ad",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain31.png",
+      "historical_sha256": "ec7359459506538830b6dce229c900b79a58a15267dcbbd69cf0f4781b753099",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 32,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain32.png",
+      "sha256": "6e7f9655b15001f1f693327919caab4af858ac4455019f368d045330977d6666",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain32.png",
+      "historical_sha256": "a658adde6b049be49a37c22d3d6365fd4d5e03b9221a3054b4cd6b46700440c8",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 33,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain33.png",
+      "sha256": "b673dd16944cf3376bfcc071cc25d5139f604451de3bbfbe86a13a41fa44f02b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain33.png",
+      "historical_sha256": "ceaedbf2e83c7fc6e8446bb104373e8a8fcffbd6bf9c49c580fd77bb90f539c8",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 34,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain34.png",
+      "sha256": "c6d9d779b368a17acf7eb08a6985b758054bf771f9a719c1c1789bd3aa95f408",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain34.png",
+      "historical_sha256": "24e891721a87140df6041811fe646ceed5f9567c054ad21e5c7f14326d802862",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 35,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain35.png",
+      "sha256": "348d1c8ec61f45058e283df05771cac6b53805785f8801fd04f9ecf3e9bfdeba",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain35.png",
+      "historical_sha256": "b4fec4f156e531131b2d324901a433953256709527eb9f4509d05064746d15fa",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 36,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain36.png",
+      "sha256": "d5adda6e377fc93e3785dba5b5c269d6d8b7263d96cb35c75ef9ab1cc0f2c05b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain36.png",
+      "historical_sha256": "693be3b6d4a0240b5c7b04276ef5596f911631b64316e2ef7d02b0f252232997",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 37,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain37.png",
+      "sha256": "92d368d5b79b186ec8dc29a71911aaa360230a6bd5082f0194b0888a0dfd0e13",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain37.png",
+      "historical_sha256": "ec790213dd7065f6aef9762153c6bfbb78aa341075465397e1d3df7c19f2fdb3",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 38,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain38.png",
+      "sha256": "81e265aaeb3743ee695e9185a56bdf77df7ee182e68ba283d1eb492f36a48151",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain38.png",
+      "historical_sha256": "1a6d15473f6b2b628fdd1ec47feb33d4d38dc8b39aae57a51cfcfe9cd750e73a",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 39,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain39.png",
+      "sha256": "40c268396d681006ff9f09bae06e68b4e79b6b4105de0e76c3b0e7b23222eacb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain39.png",
+      "historical_sha256": "9bd3fa87a46f17e266552eff68d1e710c9dec9fcb9596477661858e0137586ea",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 40,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain40.png",
+      "sha256": "7729cf7d4515e5c5acd5717119382288e4ff1dd22da39e8d3642a10c4aee6fcf",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain40.png",
+      "historical_sha256": "3641786f8a981ca8c35bac1cbae76eab31258f00f7acac5185911c15101baf81",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 41,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain41.png",
+      "sha256": "db57bef6c02a4a7437ac09795009548975f01cf3a2dd1a5e7992667f53910324",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain41.png",
+      "historical_sha256": "6398f21b716285ed58808f57b3fa41ef61de96cd44a13ebef322a3c0a28e3b31",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 42,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain42.png",
+      "sha256": "f777c135d997e32eb41b7dcf45c70acdc8aaa4fbe2e58b0028d9283cbd9eef28",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain42.png",
+      "historical_sha256": "fbdf7df913f70de8cdb7884f8f8e8cbc30f9a0af84241812b0bd3d0e5b190463",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 43,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain43.png",
+      "sha256": "79dddb2d22b8dd25f1d654579d398b619040be3921d5617975243d1d62dc094b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain43.png",
+      "historical_sha256": "ef6b4ba6df41e89b2e6ac78358d044a8be2c641b7058d0fa091d0cb1afd29bd5",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 44,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain44.png",
+      "sha256": "410651684069025fd49df6df64dec32a8652487fbb8729333f41eeb83d9480b4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain44.png",
+      "historical_sha256": "1578900a0a6a1e117e6d14b09d6b29ed8bcf9a28d3f732e25795343a345e8505",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 45,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain45.png",
+      "sha256": "cceaee5a9afab1e96d3de16a571599fb8c2fb65e3610c24b63a582c71ce28b21",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain45.png",
+      "historical_sha256": "678760832a76026ff054845e8f0c7284719a2a27fe8e2fe39aac3ed03a26742d",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 46,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain46.png",
+      "sha256": "b10e94991406905c414448853290f66246afccd6327caf4bc4ca5e15f97a4f3d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain46.png",
+      "historical_sha256": "20890a46f1374d6ef7f3b50dbc77814e463e633ba87124e138342625b075f64d",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 47,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain47.png",
+      "sha256": "8903e4d1b7726aa6ab15c63d6eed68f07955be57df137e9e74a0218aab44c7de",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain47.png",
+      "historical_sha256": "864c795e1e793806aace78d5e450a74e4784e7563439669d011759919c9eeec1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 48,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain48.png",
+      "sha256": "618eb64de2d441da2c29bb669ff365238d1965277c818ebbedd75a050b28f10b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain48.png",
+      "historical_sha256": "47b8cd1f927aaa752d9277019cb1c155e2ef5a88f24d2b09a859e5ab1d5afbea",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 49,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain49.png",
+      "sha256": "957ba2ceb8346f921afbc8145d842bec929ad7462779b78cd6c26260a591a425",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain49.png",
+      "historical_sha256": "fdaaf2a2617839a6715b502bab11fdc3199fcc8f2fe15dbc20764d7a926c5bf7",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 50,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain50.png",
+      "sha256": "65e02ea3386646c31709145e65d427eb14b5a7a37df46934a62ebace4fff45cd",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain50.png",
+      "historical_sha256": "5420135b31a02ecd9ff7708d49f782191facb33f3cede5ae644997b2fa464684",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 51,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain51.png",
+      "sha256": "e97fc614ef50b6be777caa4a3fba9efe4e7579d58119070165455493183d2d8f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain51.png",
+      "historical_sha256": "88fad36eacf8ce2060944817b30ada23a0789ee1389f3d8dedf97d9e6572e3c3",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 52,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain52.png",
+      "sha256": "30197b0e6d84774ab6428fabd3dd2fc6e8caa5292d4cf4e4805d0f66ca5ad3dc",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain52.png",
+      "historical_sha256": "37fcfa19cf333deafb6e7ad2c4f8a8e95ce8649ee85d1c02b8f7c329054161bb",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 53,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain53.png",
+      "sha256": "e745706a5032a95e94056ce39940c46447f09c2e7e4bdada5d8f85af88aa618c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain53.png",
+      "historical_sha256": "6bf8f28b724727841ad078503b1403d5b7ee59adfd0b29f067bc0971cdcc5da0",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 54,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain54.png",
+      "sha256": "7fbdafa072a28187f7e1f3c5fa1103be8a6602d95715eecf473bb73a332e0e5c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain54.png",
+      "historical_sha256": "081b14339495bee27cab15268e51af8367a1162d4e5086d555fdc13b72d5ec91",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 55,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain55.png",
+      "sha256": "4f144ac656cfa480b7eb110a480907455fbc8cda65e75126ecba6b0c50faa9a4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain55.png",
+      "historical_sha256": "e3573e10df423e98c935ae49144e9473a844f8b8c73d115fd35307759e678284",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 56,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain56.png",
+      "sha256": "b4712ab2ea429f92c2fdd735a66b3b3afe5583964d43c9b513c8470a0abb37eb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain56.png",
+      "historical_sha256": "3e9e1c04160ab3274438842742cb4525eef015ea31b3b937690c9d1664c5fd95",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 57,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain57.png",
+      "sha256": "65ee45027ed1da3e3086fc6f28a2ad0083d7a1cabdc3bdc7680582ca4f331a71",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain57.png",
+      "historical_sha256": "96b353cc9f46dc87ee903fc5bc57c68134a167acfe86fc6c3faaa535c136fd29",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 58,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain58.png",
+      "sha256": "0172ac562e04f5a37bd4f0fa63c5af966b4564b4e771b0198e604daf6c1b2099",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain58.png",
+      "historical_sha256": "f899c73e75a978689c66b818c16a188428a9ce47852d5051ed5727f41c5e431f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 59,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain59.png",
+      "sha256": "f42dd60184b1652624a422ddb92616c2e3cef9472ba0731fd01aee4f38ca7d1f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain59.png",
+      "historical_sha256": "57dad189e347bdb142c01c668a14d583080a6ada3eb11fc44ad3e529b2067a35",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 60,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain60.png",
+      "sha256": "9dec00bb0e4453d5f1bb1edc96b13ee693514247598c909d79c64d9702fac162",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain60.png",
+      "historical_sha256": "0ab814fa3d675119c27a200fe3665735046bbf2c33c69a6187ee387a225e736c",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 61,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain61.png",
+      "sha256": "6ed24dfc64badd0be738378f440d758c14d99c57bb90ba9fd0e6794c080a99ed",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain61.png",
+      "historical_sha256": "3fcbcbc3882d74e0dc5fd19c87e7eef76cdfe30491b4d3d6d8eeed39fc49ffde",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 62,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain62.png",
+      "sha256": "b81f9ea8dce6d409aeca3fa2f08a5231197174efe961645bddfd1026e48be511",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain62.png",
+      "historical_sha256": "ed1bac71250cb99d999ece4d5bcf1b1b24b30bae6ee547c43bb1caef68a63201",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 63,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain63.png",
+      "sha256": "7d78df394aadd3420d6520f785bef590cca1456ee95c2f117331d9f0beb85030",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain63.png",
+      "historical_sha256": "95d2dc5b44080c31abcf4a63972ab2d8e914c8f9807241e280aa699fbe37773f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 64,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain64.png",
+      "sha256": "a1c9748bc8af48d1af4788d961105d4074964ff502e38757ce2e8e8367ff2ccb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain64.png",
+      "historical_sha256": "b4358e902fb3e5bdaef4de2708d028c5df63ca4bab48090f6c2c16661558d529",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 65,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain65.png",
+      "sha256": "283abe436106dd2f56f44d3ba9f9ea26986c89361abc8b8f7e934cb435444574",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain65.png",
+      "historical_sha256": "a115b8a34b19582bec74e6dde52748f989cf2ec0eeb0a1f34f5d8bfeb1e4b2f1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 66,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain66.png",
+      "sha256": "bd604d0e3ce6615b2fed8732e9c53c969cf0dac55d46d44198de3ea3b2731958",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain66.png",
+      "historical_sha256": "64d9468ea33c9d2553ae4742e3c3750a9fe6e735d42810d87827025704b23d00",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 67,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain67.png",
+      "sha256": "e57c7c2f1100524c1f204ed4114b559bf4af83c4bbbd4e131be51a17dbd56bd9",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain67.png",
+      "historical_sha256": "0b1cecfb49fd2d605c3684066d046e648d09dd0cce5bc39e8135df97483a3ecc",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 68,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain68.png",
+      "sha256": "13671f989ef7bad1c9c8add30f4308f9e4a5ba5fe18035d18ad9ca415f8ddbb7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain68.png",
+      "historical_sha256": "88e8b3c13762f5036799e731ece51263021ed82a0b0f78839c17683faa4cd7e2",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 69,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain69.png",
+      "sha256": "5e02afe9ed44300f32e4db2378065c96c5fa6ba3d62ee218963bd986939b4e48",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain69.png",
+      "historical_sha256": "ada547200d8dbfe845dc6333daead70b7d5e921476810ba874e5513a650a997b",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 70,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain70.png",
+      "sha256": "7e2fcedf1c2df8d2237925bc0847b36e4767f0029ce689014e4855fa6955276d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain70.png",
+      "historical_sha256": "9da4234a1799a1244b357aeaf9739d984f1a165be06ff194d7e668461a45bdf3",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 71,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain71.png",
+      "sha256": "43fbef3cbe58c1d7cfc23525d41d9449cd3b6588cab319507b46b2bc2c1a941f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain71.png",
+      "historical_sha256": "cf1633ea150bf5c7d33fe438ab9601fa062ad9be8a6d5abcc78b5650f0465b79",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 72,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain72.png",
+      "sha256": "7fe6e8915154c88a5094f7b1f0c75555f9798d41435a9ecf32eb533521528bb1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain72.png",
+      "historical_sha256": "5ca4f3fb48bb121c7d0d8ac1bec6b89f78f6125dffe900e82fbcd403e5c81358",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 73,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain73.png",
+      "sha256": "91d7da2c62dd9185a7714a3a23900b89bff7ecbe266eb747c70aae4b1dfb4aa1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain73.png",
+      "historical_sha256": "91bbdcc2110c29ed51a3084159da1b3f7ac1e57e461b1b70a0c7a0a046742e29",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 74,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain74.png",
+      "sha256": "ba1ab00fadbc5296d3be7b566b10ef36cde245201ee2e7296f8aef068eb71c1c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain74.png",
+      "historical_sha256": "a1df55a375fbf694898d2ff621117fab6a0be7a2e640235778c04361a370af0b",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 75,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain75.png",
+      "sha256": "a7bd65c2d7b020a86510776720fb58d1a34108db8add069266bc310b83977b88",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain75.png",
+      "historical_sha256": "73ff35ddc1fa85f5aba61361ac9a7a8f57b962f4091f9e2bbf4229c72c94c699",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 76,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain76.png",
+      "sha256": "917557b2b8d8efe76ebd0b490345ed962dbedc85c9c703b8325cf76d34dacba1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain76.png",
+      "historical_sha256": "062179b21ddf11eb2b63b1d23e2b1370235fe40aa70f231e1e2a5e3381de569f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 77,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain77.png",
+      "sha256": "2e36a5a4147c867c3207fe1ee159a73f3119a0149b029191a674cd392635b9a2",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain77.png",
+      "historical_sha256": "e83c2281b3efc6375107d3e50a9a49b9a824486551dcd51832bd46d62fa2417c",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 78,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain78.png",
+      "sha256": "b61e17f3ff42f36c4f9614e950f1f5d6d1decca64aa87132e6bb53d9106501ae",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain78.png",
+      "historical_sha256": "cdb3d82841acf2d087f7ac9e2251b067cade65d6a3bb831dc4f757dc2bd5d5db",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 79,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain79.png",
+      "sha256": "884c5ceb85ad47354142df555e67c98e8c51e2e28f84f7c8716406866e14e29f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain79.png",
+      "historical_sha256": "4d34926182288e7c7951cdb86492febcd33a3bf3923bde0c5201555654beb861",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 80,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain80.png",
+      "sha256": "b420c142ad0ea7874d342aa7ae7d71a459a05e0892f2c00df52e5fce4e3a1011",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain80.png",
+      "historical_sha256": "77edf956d3e7c949d9161cd76644d2ae5937b62c7368fb7617cd57a46278df26",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 81,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain81.png",
+      "sha256": "501d5b478f0d17ce96c7e41cb1e5e4fa0b7f29b1e4f8849e50c3d9e107c965b0",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain81.png",
+      "historical_sha256": "916f188ff0342d70ca121f082e86621dcf94728f3b80d0d9913025edfef42225",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 82,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain82.png",
+      "sha256": "d5e9249df128d8511e785bd4391e6b76c5539024e202f589d8e1dff09f1d1457",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain82.png",
+      "historical_sha256": "632d6817c87c83caffdc8f5a2ebba5813202a6c0860643132191eaef84586c7b",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 83,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain83.png",
+      "sha256": "c142aed0faf733ad7fe2718f63421c9320ed9a00df292a984b40eb534a5d7cee",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain83.png",
+      "historical_sha256": "aa0177351fb39f80603b7c935f777fb492f9dd3dd177e7392a7e9376bef3c2dd",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 84,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain84.png",
+      "sha256": "b970970ac03aabb3fb652f9b07ba11659ab3883f87c12d637ec51a32d3b9826c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain84.png",
+      "historical_sha256": "2d4e048e3fc8972805cd9d32fc5f1def4aa9724ce58eee8e595eee6cdb1dc2d6",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 85,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain85.png",
+      "sha256": "03671ad98f6b0fcda40dfd9b4df0f9e654f013d122ecda5410eae60fdf363e3b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain85.png",
+      "historical_sha256": "bda7a1396740abfe1fa4c7ec974f2b410681318517a873c7ce11f23536f9f47d",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 86,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain86.png",
+      "sha256": "207d8343f61eadbbc572692961f4620228519b7c8a507ae6b8dc1d6792e2c192",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain86.png",
+      "historical_sha256": "ac0d6af7983a5f370989e8a7e4d9eb5a7432c7ef7f84edf33d9c732bc504cfd9",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 87,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain87.png",
+      "sha256": "93680108370138be723e6c0727bc62cc2bf1f8cad49c5a9971ba6b09dc6b8bc6",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain87.png",
+      "historical_sha256": "4c24b380dced8308d71e6c88d43185a916e07cd01e4309cb704020046bf5e58e",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 88,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain88.png",
+      "sha256": "cb9ff9a371bd851886644795714cfe813707617f453eb53b734ee07316348b35",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain88.png",
+      "historical_sha256": "b4b894f16f45d778e0355f4c5212eaab5a5ab8761441b07acc11da2a682a0042",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 89,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain89.png",
+      "sha256": "ca111e3ea5854096516dab73d3885b74de3bc74506db61728d5d241df77577bd",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain89.png",
+      "historical_sha256": "e8a0635bf3d7b48184ebbcecb7c2a8b73cf2e0fd0726616bb2d8918d87fe8fb1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 90,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain90.png",
+      "sha256": "38f0365a05bc961855c624f460d48fdea86b6af50915b56ada0610f17a0b4517",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain90.png",
+      "historical_sha256": "34e956a48c5400a2fd3adb63ee72591e1350f5ac5077de2e53a2fb7a80aba3ff",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 91,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain91.png",
+      "sha256": "c4a716314df6a48d8a20fcdb33f3f16d04c92f2706510f87bf2da3baa9d86c52",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain91.png",
+      "historical_sha256": "44a07591daa9b2f57f9a15739314b8623ce3082c2a0e4857f683568d6320e202",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 92,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain92.png",
+      "sha256": "1ff1ceceed1f21b764db054f09b271b134a0780ecf7897db9da3f1886b63dbf3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain92.png",
+      "historical_sha256": "e30c6ae49bcb4b1dc234436e0c6df8750f1fc788b6e8bdfd25cb30156d74c02f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 93,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain93.png",
+      "sha256": "e4414926c9284646ef832b28f5e3563af588db36a422b84bf9414018a232e21b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain93.png",
+      "historical_sha256": "d9bb1c9105371eb9d9403029a3e897216584657c5b90cefd4430995655b5db35",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 94,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain94.png",
+      "sha256": "db2d00284c2c068f4f98d4918a289677c24cde1bcaa06e112a524e0ecfdc77bd",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain94.png",
+      "historical_sha256": "131092d048556c0832657b1504dd4aaa7b6ec4bf0e621b9cfa9bc8e387dccbdc",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 95,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain95.png",
+      "sha256": "31a11d56e79d2b94e286cad64dec12233ece71ea3cbf22d785ff057a2a4d2b25",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain95.png",
+      "historical_sha256": "6d2ca41b932b1b14834e97d1249f01e4e464936de2f3b35d9413579bd4006ad1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 96,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain96.png",
+      "sha256": "7db69e0a3237e0a7124fb8fedcf2b085ed1a15bd0066819b39eeab68e1ce9371",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain96.png",
+      "historical_sha256": "9b364700de4567e3158456ee747113ebd97906e53559d57bdf9fde9d53472707",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 97,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain97.png",
+      "sha256": "3773a3c4a77ef115335eef539e8ce98500172655f26399e9e2a155dd4f0579da",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain97.png",
+      "historical_sha256": "626cec2ea7dc43ee7b24fc8918e8ac2e766595f278976bbee44e47eaa310deb6",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 98,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain98.png",
+      "sha256": "d7760170be1dd601624d1c38a2e3b12341be2b0e7b3a37a3a6e9ac50b910623e",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain98.png",
+      "historical_sha256": "c85fb966510cb4a14da52d0aa7a69cc9b40a4f17c035523c861a238882add4ef",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 99,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain99.png",
+      "sha256": "1fe7014d246b535f6e1fd0ff021d788bb1db2cf5f8ef6967c3f0291764713ab4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain99.png",
+      "historical_sha256": "a12cca295c135b025317ffebc3e0b84f22d89ad7b7482bd76d15c8128b19cb9b",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 100,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain100.png",
+      "sha256": "1c92f39082ce1ac438ce05f82b63ada8b97841aeb2350415e51aca9884be06a4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain100.png",
+      "historical_sha256": "ca589083dbfc052f53eda17e3b7282c698f20ac3d2f0569bea7d4cdcb18fd4f0",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 101,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain101.png",
+      "sha256": "baa24f38facb8b827ef27ee0e058e651b11a5b893db4bc56d0d2fc47156b169d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain101.png",
+      "historical_sha256": "892bfde623ed20871b1aefd199c90805c033f5a06c56dfe54f780f9bdeac2797",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 102,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain102.png",
+      "sha256": "ffab874a72d3d809cbe00090fb97a18eba3cbab024f1be5cc38a6dcde88a9194",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain102.png",
+      "historical_sha256": "fdf8e669cc8b6ecb0e374c69cc44f460d6119baff36349d215f58de5fd6293c1",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 103,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain103.png",
+      "sha256": "1282634a58450be34239bfa71862a2355fd1c00703f308c98bceee25b5b74850",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain103.png",
+      "historical_sha256": "583920ba637416151b6f0ac6f45d62ec217cc4dae7efa5c0cc9d2f01949ed707",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 104,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain104.png",
+      "sha256": "c431a93090ec896be752f0b1ddd28ea792bc813c2a66e23c86da29d8d7d59c46",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain104.png",
+      "historical_sha256": "773753da1e9490a0c9c412adf8b647218965dfee2a7d8a63f6343de5a318ee96",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 105,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain105.png",
+      "sha256": "079d37ed8c5be989693795158af6bb6ccd9e58c9820cb6d9e445659264b78ba7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain105.png",
+      "historical_sha256": "a768666f47c49513a7420a20f273375537c3a1f6d1780ee8679e50c8fecb0d3d",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 106,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain106.png",
+      "sha256": "be9c9e36ec9a3ae0e8666061f7e66fe53d0292c60457d30c9b2e454b1f22cc7e",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain106.png",
+      "historical_sha256": "cc6459c600441735fe394116bc519b52983d7b465a4e9ca24a5f1c17c33b68d2",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 107,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain107.png",
+      "sha256": "5b3ad12548eb2de1c3219b7778a5b741d6c5ea9a336415a6e747e8511187928d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain107.png",
+      "historical_sha256": "e3468cfbb475cfd12339c9fa8db1d54bd38a708c513405c12340604d409a29ae",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 108,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain108.png",
+      "sha256": "cf9f3dd89920ef13e92e05ec57a9ec5af4e46465bdf362bd3e1c22863882afbf",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain108.png",
+      "historical_sha256": "73b707e6b2fa0a94ea41f9f6c1b696a71fd8ad9480c04dff28b4f30c8dd1f61d",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 109,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain109.png",
+      "sha256": "4072d9a07ee064e229c437dd42816ceac0cc6ca311804bb79e751f717eceb44f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain109.png",
+      "historical_sha256": "72a81770e4c91d747e4a998d3280b72685420b336d5eacf6b60cea2df9c33648",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 110,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain110.png",
+      "sha256": "3423ce25aeecd92a33ba8dae1ce7d95b072b2e11524067a3f19197e00b36fd9d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain110.png",
+      "historical_sha256": "f20f2580acd0e6fc36899e15ba54089cb793bed6a66c663e04c11169848fea66",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 111,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain111.png",
+      "sha256": "906aa907956788f95919d83e06276ea262f98e85ed4451449f0bd97bbee28d14",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain111.png",
+      "historical_sha256": "c2c0fd04d8d085131de19c36d519960026af45b381bb13f2eea8e4a6637d0a13",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 112,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain112.png",
+      "sha256": "38174a4268f3d16de67a34ce21f73ff024e6d1a690e13b4758b1f117c8fd6a72",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain112.png",
+      "historical_sha256": "6c1a740c19703ec6bb2df2594a16ed62940c95c2d13efa4421d5a3a0371555b0",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 113,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain113.png",
+      "sha256": "a7e5db0b8731df331fecf0dc538c734cd35eac5bfa90ef7efe783621efcc4207",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain113.png",
+      "historical_sha256": "a424453eae6cd056e7c82f919b90595ee532a77ea31944b7c5edf0ae4fb77d88",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 114,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain114.png",
+      "sha256": "7da993111f10de857e3552277d189215f857f3cdcc84965415ce4f6f15d056c7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain114.png",
+      "historical_sha256": "0b54d68bb731c810ad2861ebd14e71c993abcc0c0b4f5d33cb7ebafd07a62605",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 115,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain115.png",
+      "sha256": "f199995b9101ebac553da6c72a3925aded863f07abfea8503ec8c673495f4e14",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain115.png",
+      "historical_sha256": "0018efb02ed0a64958ec837c989ed12166fcf3f499aba2e037f66238349007eb",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 116,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain116.png",
+      "sha256": "980f21598fdcdddaef901b47fce5d41e5f2b0f8d083883958cd96c72f348ce20",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain116.png",
+      "historical_sha256": "cf238c9e417e4c78c10771bd0b89c0b25ee29d984badcc1538085db779e82146",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 117,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain117.png",
+      "sha256": "b4520fea69d674bacd8a54251d0265abc1b3d1b83f5384ae7b9a7d0987ca705e",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain117.png",
+      "historical_sha256": "4dc97276bb23fcd0cd48d1d2ecf261948f515bd1fbba5cda85e8cc20a9b3f669",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 118,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain118.png",
+      "sha256": "918c844d92f2afc67a004b06f8108d3bf291b3e49ce4669b1664df057de96948",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain118.png",
+      "historical_sha256": "e278afc32ee0fc2037ba399a506248104104fab6d106d19bca1b62be68ae6904",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 119,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain119.png",
+      "sha256": "8e57bb2f3a3687cb853d53eedfc04b1103088c5e829767e7ed4b9049b84579af",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain119.png",
+      "historical_sha256": "13d2b7f424fe126cbaf03dcc7d49492cec363fa35e16356d3ab61c64d4c30963",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 120,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain120.png",
+      "sha256": "99ac208a7cabad8fa2201fa16d943e940ff2a0186cd14d1d875d32c019e85d50",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain120.png",
+      "historical_sha256": "318d19b8c9e7a15fca2cbeceede63964cf1143d95016ac71f2944754f91fa45c",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 121,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain121.png",
+      "sha256": "1d10505a8ab94897e06a40e01204a62134117594371c8145e310e379694b7145",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain121.png",
+      "historical_sha256": "596d8db31a9218e91cf5465c9d9df8d2ed08b8f536ea097d67b99c3044e17b1f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 122,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain122.png",
+      "sha256": "8902fac3947b2395ef7419ea1598a28486877ad961afb3fe038c64eef1c176a4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain122.png",
+      "historical_sha256": "1dbb06f1981980bbf6696073c599c9b1ee307b794c6ec3d394a19c1428795fe2",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 123,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain123.png",
+      "sha256": "2ce023975d8224a134075c3e2e8ee3d86a3f7c104dc60fb89d627fab9b82a40a",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain123.png",
+      "historical_sha256": "846d97d82e5f7e094a4f7c8a70685a205e5f015a65251c2942427291a24931e8",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 124,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain124.png",
+      "sha256": "19ebd592044111ecd9d3cef2ead1156e885d2b5d66a6dcc170c18a1c109c694b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain124.png",
+      "historical_sha256": "0de877eb59b890e7d7b833ee399bc34e58878f9feb7eb3e900890db36f746761",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 125,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain125.png",
+      "sha256": "a9a139086a325d4ff2422d67812b4f7d5d6f8ca6538d1be86403648e799d8e76",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain125.png",
+      "historical_sha256": "04496910bcd723ea9b5c838dbfcaee8063a9e1711e221adad98875faa200e84f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 126,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain126.png",
+      "sha256": "37c1471843518e22ce82cea71d4dff47eb8c1313c2e4dee2a1255fa9f021412b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain126.png",
+      "historical_sha256": "098be699a509c48a4b2719f05bfb68f998bcbbafdd0b5d527bfa1627b4ea219c",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 127,
+      "path": "datasrc/gfx/derived/terrain-materials-v1/grass-sand-masks/terrain127.png",
+      "sha256": "b97b814785a3bc90283ad40b7a18210c28b4fd61692d0c9ef108b235238e1e19",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain127.png",
+      "historical_sha256": "43f5561be80910442845ac104ee8cf782b02ebfc21ce379af4026c077458af9f",
+      "family": "grass-sand"
+    },
+    {
+      "frame": 144,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain144.png",
+      "sha256": "ed28594290b17a80cd716a4b2040c680109168568cc5d9284b0c239a8c25d1c7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain144.png",
+      "historical_sha256": "feca54f1c11ee158ada4245224b5bdf787a0d4ebaa6e138be7d115f5684d6b71"
+    },
+    {
+      "frame": 145,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain145.png",
+      "sha256": "2403d8a4579df9f9d41679a79fc9f9e8ac255cf259712db0fc90f967ff7609ec",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain145.png",
+      "historical_sha256": "6ffe44ced42a62caa45e34196ef3a2590e3201dedc62e4dacd56fbf6bbd7cfe6"
+    },
+    {
+      "frame": 146,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain146.png",
+      "sha256": "06e7432476faa319319539db86c64ce45bca1e734db8290ed3364f9d4f516fe7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain146.png",
+      "historical_sha256": "4bcb88da1834efbca7bd8367397757fbb163f7d43ada28e881b2255e1ea0a53c"
+    },
+    {
+      "frame": 147,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain147.png",
+      "sha256": "277e6c6ec7d287abf24e107387bea97e3dbfb6ec9af2b0d8213c1b4c46919f35",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain147.png",
+      "historical_sha256": "1d95c01c5deef05a95068ae742bef7e69870fbb334ee98b4d6fd0f037dec4d8a"
+    },
+    {
+      "frame": 148,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain148.png",
+      "sha256": "a8dd473cf319ae0ee646cebfd69cf5da6159a1720d5664f9bf20091031f5c046",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain148.png",
+      "historical_sha256": "e142d82674448b1cf66447b244260c5e765012ffa4e8084690a53fdf6cf7fc96"
+    },
+    {
+      "frame": 149,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain149.png",
+      "sha256": "9901bd2fefef5d3b71a390b0eea77f5daa98cbd198a11476d5f233c8685de6e8",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain149.png",
+      "historical_sha256": "713b040796894b3c708dc35187493ef34f3c157de733be8933c1c37b35ca81c9"
+    },
+    {
+      "frame": 150,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain150.png",
+      "sha256": "116acab97520fff51038e81d00c35f49946cac846440f1e9c23fb1c105ea4f48",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain150.png",
+      "historical_sha256": "049bd3053b7cb61ece871d65d0264886bd3ff54253bf10c8a881b5734bc4661c"
+    },
+    {
+      "frame": 151,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain151.png",
+      "sha256": "55612a7e6b4497e5a7c779ed1d0b4739fb0d1fed294190d3d081d6837d6d1245",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain151.png",
+      "historical_sha256": "20e9e31a78fe23d024861622e745d3574ea6337220e8e06ec18066703548789f"
+    },
+    {
+      "frame": 152,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain152.png",
+      "sha256": "b98e60352e81c92d8b58467aa7ecdcf088147180c9fac21803bb5cce6e212825",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain152.png",
+      "historical_sha256": "d89d8466c77ddfe58ec76c849fedc3fe6fbece74c7fa9dab25d2bf586450bef9"
+    },
+    {
+      "frame": 153,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain153.png",
+      "sha256": "3a106e652a90bcf548f6375d595804f9b404bc9a9a08d35b2bd47d38b95b8846",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain153.png",
+      "historical_sha256": "be448ff8d930db7631f0b2fa6a547c536d603be88e671454af8b52258d41f934"
+    },
+    {
+      "frame": 154,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain154.png",
+      "sha256": "1c012c904357c5bf9374f8abcf11949b00603de7b64b27345f4759af499d4e55",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain154.png",
+      "historical_sha256": "a8503a411e2f2ca963438d519f852698db44b7a02327f06d993d6ab55004c7b1"
+    },
+    {
+      "frame": 155,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain155.png",
+      "sha256": "e58cc79eeb34986ee735472f5f72f284a3b85ec493d259ded9e912cb11b00a25",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain155.png",
+      "historical_sha256": "45e50a0b60fff7e24d1acc2553774d28323265779826335815d4041a6a3980be"
+    },
+    {
+      "frame": 156,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain156.png",
+      "sha256": "22c2e7e2f8cbff0ed767953f44ba369582043bdccb8243580ee30d1f3bbff531",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain156.png",
+      "historical_sha256": "9299ed0355f86bffdbcd506f519a61c7a2b762d24f16d820f26207bafcc9b713"
+    },
+    {
+      "frame": 157,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain157.png",
+      "sha256": "1c3bee76b2bf533a324bf22b7d6917dc23f38b5f68860a95288036c0b022ca8b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain157.png",
+      "historical_sha256": "a33322856ef01926ae77b58c9fd6d45302805c85c5a6b6ae84a50160ea684930"
+    },
+    {
+      "frame": 158,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain158.png",
+      "sha256": "4fb5ffbd606597bcb8fd280bf9cf51f276ae1931c5a9f8d76aefcb6e8f6fea21",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain158.png",
+      "historical_sha256": "f6e8514b71e4e242d648490013c47c00cd441115f5688bb037fb5d63338e394c"
+    },
+    {
+      "frame": 159,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain159.png",
+      "sha256": "0fcc43b000ba39d3546c18032256466029e6df868a107750dfff9bf912d0db96",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain159.png",
+      "historical_sha256": "b0a55749b669b21ef7e62312f008c91f8bd1ed05e3a7250829853cfa940eab42"
+    },
+    {
+      "frame": 160,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain160.png",
+      "sha256": "98b0b56a09506596673fc395a0386e2e11d0e771e0829031c1044c68680e3a96",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain160.png",
+      "historical_sha256": "1a48f009db1299b84d19cb78fe1a18b16a9da7ae351cb79b6af297daccba025b"
+    },
+    {
+      "frame": 161,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain161.png",
+      "sha256": "2bf82a435d792c3780dc496f54a80ea11a7b3429defe6ecf9df34e709d7c64de",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain161.png",
+      "historical_sha256": "a2870d9912bedb99b949295265cf925dae2ac586a4a5886cbbd9819e56225cb3"
+    },
+    {
+      "frame": 162,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain162.png",
+      "sha256": "4e85359f11eeb52990daa1a837d6caf4cd0444bae63b26c720ab2eb4953b1452",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain162.png",
+      "historical_sha256": "15f1c8c4f82b12de6046325e02bb7eec1fba0fc195b367039c90e515234cc24e"
+    },
+    {
+      "frame": 163,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain163.png",
+      "sha256": "38902d2fff2637e7269185d75cf15c3fc013a32d141fa8afc1576ed12ed23299",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain163.png",
+      "historical_sha256": "aebed85a6ffef2cda5194420052b676dcd0a38f56caac19d1d5a27733edb124a"
+    },
+    {
+      "frame": 164,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain164.png",
+      "sha256": "c8512a6a187528e6ab8f0492b0a2a0428dc539f710098c7931f37481d5c2cdcc",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain164.png",
+      "historical_sha256": "968345df868a70c52d2d84c2e1d3f0a7cd7e82b8de2335be9b1c62433056611f"
+    },
+    {
+      "frame": 165,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain165.png",
+      "sha256": "15dab5d8c6829c6a8acc6b1e9c99fd8939deb9c901622e44f90bc8ef7f28e9ed",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain165.png",
+      "historical_sha256": "0660d4d6c0bb0b5d1ae37e8c4e575a224011553da576bc4a0729cbfdb89c2b57"
+    },
+    {
+      "frame": 166,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain166.png",
+      "sha256": "811e70e13cb21bb4b0590c3e55c87efccb9892a09d248039fcab4645ac0ff99c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain166.png",
+      "historical_sha256": "7a5e441ab9db44dd2be39a0b622140e509e81044834c14d58c0365685de0ce75"
+    },
+    {
+      "frame": 167,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain167.png",
+      "sha256": "de06199162143f460f323d540dd657d8cffbe262916ae8fbfb6d5d5c36bf4cf7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain167.png",
+      "historical_sha256": "ad0e32d299b23138c9c79ee0e17b3f55a843f79dae0431aabafc77922bebc256"
+    },
+    {
+      "frame": 168,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain168.png",
+      "sha256": "7a60439fb304439adcbd5bcff93b37857148d1b76b76dc9317e84a85c9b04cc4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain168.png",
+      "historical_sha256": "9dcca8fa1d6ff773da53c7a7499147d62eb47b72a0e79f2cdd80848c36b41dad"
+    },
+    {
+      "frame": 169,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain169.png",
+      "sha256": "fa1562899f6a9f6a44ac062b9519cae2b067dd95a5eabb002a0db4f8b2aab612",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain169.png",
+      "historical_sha256": "a267ef19814e438979492092167d4469952945eb881c98465e3d3d3e7fae243d"
+    },
+    {
+      "frame": 170,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain170.png",
+      "sha256": "f5e57ccb02d473b16beebdfd89a56bb0e2b6497f25b7b58a7e03c972cc51ebe7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain170.png",
+      "historical_sha256": "f8994917bedec80ab2a8fc1f60b7847c9fb5a34bc7c3b34c88a8717b184fb6be"
+    },
+    {
+      "frame": 171,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain171.png",
+      "sha256": "90c0193b2546c7594467af2763f34ce17c9861311d5936864919793cb0f0ff84",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain171.png",
+      "historical_sha256": "a5e951d57c60c4ebff3defd7909c62c770087574add94003e17d97c888eeb5e5"
+    },
+    {
+      "frame": 172,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain172.png",
+      "sha256": "b9176a422bffa2f7971e4f58b5211bd374171a01b31a126c18f7c8f0e3afd271",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain172.png",
+      "historical_sha256": "f1a0b5719d3509a9762dd0c6f6c7c107b1f2dc22d26182f2ac6c4b3b5489c74a"
+    },
+    {
+      "frame": 173,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain173.png",
+      "sha256": "0c441f01277b965546330bd425cfb225efeb97fe9379fe68f76e497aeb27431d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain173.png",
+      "historical_sha256": "0b9d2a0724b04fb902a7502140cc5f681230df2ebab07bea2de0079a35a90fee"
+    },
+    {
+      "frame": 174,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain174.png",
+      "sha256": "06e128b762b993c7288d406cef6d2315e3c4cff7157be9998b397fcc1e966c64",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain174.png",
+      "historical_sha256": "0ffd3b9459570c42449abe2c9da468b9ffbf57b6090b7a4434be039ed6e9f1f8"
+    },
+    {
+      "frame": 175,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain175.png",
+      "sha256": "fa66911d274df90c8b2ab051301936686441b2503d7028e367195a474ca57435",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain175.png",
+      "historical_sha256": "2a5a3763ea6d7f18a3fb7bde9f9360851526a59b9974fb2105d7d7a24b6bda63"
+    },
+    {
+      "frame": 176,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain176.png",
+      "sha256": "4711421dddd9837ad56933bba80b91c30709a5675a9536fabf6b13ef7c7bf818",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain176.png",
+      "historical_sha256": "647a96336865de1c9718aae1c2dc3b7c564fbb0edbf54d8bdb29a7675f5c101d"
+    },
+    {
+      "frame": 177,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain177.png",
+      "sha256": "b72b59948be35b1daac35509065544e105b6373ddbe2fef42dff6d343ae188b5",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain177.png",
+      "historical_sha256": "c8eba9b8bc4347bc738d8edc0ae6e5463350bce7d0b7e8567e66c75419cb5ba4"
+    },
+    {
+      "frame": 178,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain178.png",
+      "sha256": "f1513b261ba780c216991b41f0b4c94f28306ebc7f59824dd9377fa81ed80d85",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain178.png",
+      "historical_sha256": "50e5f2f740f772043ed00fbaf41f0d383294414debdfa2821cfa95487d4cd2c0"
+    },
+    {
+      "frame": 179,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain179.png",
+      "sha256": "1500fdc438263a6e6c03e58c527f2ff3a262c6adcde8f0388a09d8c5c6dd7fa7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain179.png",
+      "historical_sha256": "8ab107e4f76addf9deb3668fd9e4cd1fecac42da133768c319f9442dc4267f3f"
+    },
+    {
+      "frame": 180,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain180.png",
+      "sha256": "dbe3cd6184003f0ccde292e96433f8bf04256bd59666d94042fd5d5ad9a3d1fb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain180.png",
+      "historical_sha256": "f7fccc53e7d249c6038de4b4c5bc977ce7e5fc184345e4197973227cc8ffa1fc"
+    },
+    {
+      "frame": 181,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain181.png",
+      "sha256": "85cc30ba6ba1806cc90d5401650e622f104295ab0b00bebb5a8618d8431b9a99",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain181.png",
+      "historical_sha256": "efa06e9d7b0e7a4c81b0c63d46c9846bfee0d421623899dac2ab416102ecf47c"
+    },
+    {
+      "frame": 182,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain182.png",
+      "sha256": "2d936e6e4cee27a6674e12f12c16b46dfbf124242fc393d5da12e17fdda5e586",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain182.png",
+      "historical_sha256": "0a4280c7e1b48c7b0641de20e8c7da427a36908134b225c9593ea2157ba2c714"
+    },
+    {
+      "frame": 183,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain183.png",
+      "sha256": "15dfd9123327a525bd09b856266a776adbe59a5faf16d175a71bec92ab9a9ecb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain183.png",
+      "historical_sha256": "8570d530e915fd86c13a452ba8a982de41ee8e80f90da7b1a9d83a5bbdfc004a"
+    },
+    {
+      "frame": 184,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain184.png",
+      "sha256": "b9f8bca16f5bc874ecef4aef1ad76a9e05c5e863430a94c5b81f1c92433241ae",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain184.png",
+      "historical_sha256": "dcb9c3ca6c64ecbce715f07492bce41996640000f8a207cf0cef69b194f57172"
+    },
+    {
+      "frame": 185,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain185.png",
+      "sha256": "239fb0d4e984749d4f241b9b5e3130cb12bab26d2a888e14ee49f79386f71456",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain185.png",
+      "historical_sha256": "5e90c837d9ea6ae815e53e8b0f87070ee0caf6f76268d4717026d329dd3f9bdb"
+    },
+    {
+      "frame": 186,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain186.png",
+      "sha256": "b3139ede38cf060f3a3f5cf3a21c499357c7098a9c7d8ee29597978331fa9587",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain186.png",
+      "historical_sha256": "cf2c798926364b1914bbe9760fc5e0bde0477af415aef3989e63a446f45f5ab5"
+    },
+    {
+      "frame": 187,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain187.png",
+      "sha256": "42a785b24faddba06d02140cd99f266226b6579c2898ca11787a2da69d57483c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain187.png",
+      "historical_sha256": "31d8d064cdeec6a31e7c0741ffb27534327947f1b3c07f7d61e605ba5b64e461"
+    },
+    {
+      "frame": 188,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain188.png",
+      "sha256": "a242a3a6e1332651f7070a0d1dd1e109ff793f646c8e3f408900a9beabc2c26f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain188.png",
+      "historical_sha256": "c48c78411096f9e381b33f8bcc442b4a15385dd3becd5f97f22dda618867a058"
+    },
+    {
+      "frame": 189,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain189.png",
+      "sha256": "89a14730a10a1b7872366a1b62289e143246abd454a3efa9694ee159754a6582",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain189.png",
+      "historical_sha256": "842c12fb476fcfeebfa452859d237bacfc353dbaba360695c1670f94d1df4e8a"
+    },
+    {
+      "frame": 190,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain190.png",
+      "sha256": "a22eefccb71ba480dd9c9ec92e2ae059b51733c3329c59ebdc0605e3a965fff1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain190.png",
+      "historical_sha256": "f9e16f59d1f96bdd67fef35dbc49f5e5e4e379c0b2c3c493b983aa09b9634023"
+    },
+    {
+      "frame": 191,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain191.png",
+      "sha256": "72ae33bfde19b7922a1da04a32d21f1aed94f25827112eecaee4b2f8c53aa679",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain191.png",
+      "historical_sha256": "fb324f12bcd803be000d7a038efaf4fc71f532a25e6c0b86801ad7f67b8000b6"
+    },
+    {
+      "frame": 192,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain192.png",
+      "sha256": "d373468bf7883a8370c961b1dfbe72dfb6ffe972cc48f784426e83f9a3375626",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain192.png",
+      "historical_sha256": "bbd46a0f32d99b18e5f1bc51b90d33c3252ec5d0d3b2b3afcbfb9a5ea3a23ba0"
+    },
+    {
+      "frame": 193,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain193.png",
+      "sha256": "cc86d1914ddc602dd81ffae8e951356b972173281ed915189cb13fbb7c1ee6c4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain193.png",
+      "historical_sha256": "2c4c2c2289483db79dd73bf880095dab5f27d1fdd495d83af13582d277e6bb82"
+    },
+    {
+      "frame": 194,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain194.png",
+      "sha256": "80d8d16f6620448eb29a9c05685c7fb1c4c46a965d85f9dc6e7227673d6518cb",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain194.png",
+      "historical_sha256": "4a2a3184a2e84a61385b267a391d69157c65ba119f9031ab3c051d62470291b8"
+    },
+    {
+      "frame": 195,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain195.png",
+      "sha256": "392e5025d8ed9b7c0dc8c208052cf7e8a04d24a7b59090c43e36b9ba816fe7c3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain195.png",
+      "historical_sha256": "ff6a802c2b2b61059352e172199a563014cc9d4ce60202cd29969722be55cb9f"
+    },
+    {
+      "frame": 196,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain196.png",
+      "sha256": "d2aa628cb2b30a725ba7374b0ecfcbfbb3f525889a206a9c0fdd5cc7499f7b80",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain196.png",
+      "historical_sha256": "8e43725cc319fd1668b8c73850cf6fb90fcab5b302a2c8ca5270d4fb122332d9"
+    },
+    {
+      "frame": 197,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain197.png",
+      "sha256": "a94b1dba6ae8e34dc37ad90562480b5fbe91ee68dc8682a5939a04172416acd3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain197.png",
+      "historical_sha256": "0227a6dffbc7b2170e552e141f29d2c8bc2e27786fc4b61be7852763e3d5ff9a"
+    },
+    {
+      "frame": 198,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain198.png",
+      "sha256": "61ad1ef6595e123fcf399a335241a5d10b7ba005f7b77074a5f5f4862790cd30",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain198.png",
+      "historical_sha256": "c4ab53dfb09ba51717417892caee4d2f0bba2ed127db89b1578b4e64fd1bca7e"
+    },
+    {
+      "frame": 199,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain199.png",
+      "sha256": "c183468e3c5ca970a613f776aa95446feb88ae002c566152270a00d920415f8b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain199.png",
+      "historical_sha256": "da9d8b480d639fb81725ed8f52768c5f8cf98bfacaccf4ea0fb078d3196d3314"
+    },
+    {
+      "frame": 200,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain200.png",
+      "sha256": "e4ca582cf5cc068f8474d1f8bcbcffec9d7c58dc4918b7b58391ea60a6d2e357",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain200.png",
+      "historical_sha256": "38a03f682181e75716262fce54a1c71b9309fa7323ce2c8de2500d9c560d27ea"
+    },
+    {
+      "frame": 201,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain201.png",
+      "sha256": "b01979e5cba606858e9de11ef192ff06f81a07627ee2e7f4ac562781e2e9cf3b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain201.png",
+      "historical_sha256": "6498fdee083687b04175d9bf99f90c777acba0424d6730f17c5d310e455d899a"
+    },
+    {
+      "frame": 202,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain202.png",
+      "sha256": "2ea50b9d6cc4d6ab8cca29d378cc64117c1a35ecf78b40c3c4fcff5fd7a2ecbf",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain202.png",
+      "historical_sha256": "2fa994a18cfcd6c7e88ff263cf47a9b5ca909c8a9e54195086ce18f3031680be"
+    },
+    {
+      "frame": 203,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain203.png",
+      "sha256": "ff3f204351237daa60dd505ed501145e56ae412391e650d2f599ad6dfc147779",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain203.png",
+      "historical_sha256": "d1bf2404ed90a03660013df3f51aa7343948a5dac287da248801ab25037f8ada"
+    },
+    {
+      "frame": 204,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain204.png",
+      "sha256": "040295f288cdbae2721804c94b0e940e793835295da44fa596f11457dad13bb3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain204.png",
+      "historical_sha256": "d3a1b4e9db7eee2d9cf4c4d6ac64047de2951e45e416019776a26c4ea5d5f0dc"
+    },
+    {
+      "frame": 205,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain205.png",
+      "sha256": "6d183f1ad022ba26f46f7c994c4a500ba7cbfe62c41e0c311ec5cd279df2a131",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain205.png",
+      "historical_sha256": "58159003eccbd9bc95ee034e91d2a5d3b1c978036e9549d8e10e48a58176fea6"
+    },
+    {
+      "frame": 206,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain206.png",
+      "sha256": "67db20b97b88bb188d83e1a0ece4b2e9a62584026ba40f0bdab21f5eb361ea8b",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain206.png",
+      "historical_sha256": "682ba139771d7e953bf8e735bcbba754f997d88382b1a3ffa4fa15f560e41cf2"
+    },
+    {
+      "frame": 207,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain207.png",
+      "sha256": "d42384eaa54eafbd9d78b3f809e879b049ddbcc906fe3fa50dc3fd40e43d8502",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain207.png",
+      "historical_sha256": "0158c52eeac334da0d26c650281363a1db7d5d3b738dd904fa7e2059e22f99ba"
+    },
+    {
+      "frame": 208,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain208.png",
+      "sha256": "58c025c63a92e98e20340c31a11f561358484fa7067735d806bf8aaf7a5b4099",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain208.png",
+      "historical_sha256": "c2790a3c5f3dd220e3937a90bc9f25c7d0b74cc57ea45ae3c4ae309151446bea"
+    },
+    {
+      "frame": 209,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain209.png",
+      "sha256": "c1e572421fea493e02879d7d0750d001fcf0aab91e1e238f56efee859d4fa9ca",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain209.png",
+      "historical_sha256": "01988237bb316322b92c7ec8f46850ee06e6472229a84f184b4c8db16dc253d7"
+    },
+    {
+      "frame": 210,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain210.png",
+      "sha256": "c1780ad3afc4151960cb293703f82e85f7e86eed7d181b8ad1a8af178d890293",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain210.png",
+      "historical_sha256": "27667959eb59eb036414f3f20978b23cb55da39ca3cf170fed1beebff4c2f4c7"
+    },
+    {
+      "frame": 211,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain211.png",
+      "sha256": "8e4db6aac8558f334c8eb807462e8870e8b9e58edab42593c54cad6d87163070",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain211.png",
+      "historical_sha256": "c2f6524d5e9fdded8de4eff0b27360572962c8675f8651d0f4e31064bb786028"
+    },
+    {
+      "frame": 212,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain212.png",
+      "sha256": "b673308f9cf42602ac6dc8ba1a50dd7f2a01a2d32b95149ef575ba290360bfe2",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain212.png",
+      "historical_sha256": "a27547f58f6f50e510e6af97c03911ecea4a9eeb1ea318ccd4e7b4050428a216"
+    },
+    {
+      "frame": 213,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain213.png",
+      "sha256": "1a153ef07f5e66cae669f8acc794cd674a3fa38854bd54897e04c60f7d5c58ae",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain213.png",
+      "historical_sha256": "f048edf73b9fc328ee6461a876c1549e626e188dc514360e4eff9e1b767731e7"
+    },
+    {
+      "frame": 214,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain214.png",
+      "sha256": "ea234835de4035cd80862cf31bea31abc079a4b15099f974243f1388a075f64e",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain214.png",
+      "historical_sha256": "577835b7c24a73b4a90ef27d1497996810fac170b2d3bb3fca81d7d02f50023e"
+    },
+    {
+      "frame": 215,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain215.png",
+      "sha256": "a922768c8bef7f90453f146235bdd5b3e9a8abb53db7b7a1696345acc3d24df6",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain215.png",
+      "historical_sha256": "92e1ae051907157e45d3456fc4894e99863ce9b1b6125152ae20b22412cbb20f"
+    },
+    {
+      "frame": 216,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain216.png",
+      "sha256": "9ec1e84e300985a76abea0350a326c54ee9da08c919a553b6aa4673df1d05955",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain216.png",
+      "historical_sha256": "384ad8c70288f8eb189226caa79f7187c0852572e5d2fbeadb1d2b8cd7f5e6c8"
+    },
+    {
+      "frame": 217,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain217.png",
+      "sha256": "c0b61bafd271ad3bcccccf2c51e27281eb3032957afac2f19bf773ce05d830e7",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain217.png",
+      "historical_sha256": "592796270b7cc9fb6784d03ed62e1e0eb1229ea7dd7a32ed64a8ee1e36efc40d"
+    },
+    {
+      "frame": 218,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain218.png",
+      "sha256": "fec21b2687bb76f387df510d83f150da1d045573059b9f31049f72d710f7aadc",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain218.png",
+      "historical_sha256": "6e366287aa22a7c29f88d4ad80dc159200e14a5f423c8e41123473dd7a924be5"
+    },
+    {
+      "frame": 219,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain219.png",
+      "sha256": "d4ff06d62de5640810b1990da1e031cb52dc6e9777cf45aa1381b940c15aa24e",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain219.png",
+      "historical_sha256": "0e98458eff392f28ecac0c27627e7228fb72a172844955d3cbfa92515c36c18f"
+    },
+    {
+      "frame": 220,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain220.png",
+      "sha256": "5487cb9c3145d7f6fcd2b2172939a2dc31e9aaab878e85e166d443d1b72e5432",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain220.png",
+      "historical_sha256": "bf2169d2a7a48b23195cbd06f93442ea7e85930946143b44d1ce5d96710bb537"
+    },
+    {
+      "frame": 221,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain221.png",
+      "sha256": "3457067ed805e30263b35266071cfddbf0c16a5f78e058203015871093e01445",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain221.png",
+      "historical_sha256": "cc27756ff36bc6078219135e1a501ab32771752abfed4a4f079181b0c767fbe6"
+    },
+    {
+      "frame": 222,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain222.png",
+      "sha256": "70f5bdf38f9ba914cdfd8e183c5a3d5a3f9dfc7717dad9bcbf299d002a4e37b0",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain222.png",
+      "historical_sha256": "3186688bc017394ce0c1f10e1464d7cc84c48f3c555a36c701a6cb412081e9ac"
+    },
+    {
+      "frame": 223,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain223.png",
+      "sha256": "e826bff9c78a1ef4be5c3302c912f4f2f0775669d053dfb7d6a2701d7b8ffed8",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain223.png",
+      "historical_sha256": "0ae5ea0481b9a185fa3383fa67a750b5e8e78f0ee3600cf4ab503a82466896f9"
+    },
+    {
+      "frame": 224,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain224.png",
+      "sha256": "6205a67449db3084e3eaa4a3c2b9b3339ceebd7db72c0469b05abfc61ba72bf0",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain224.png",
+      "historical_sha256": "922f6bd99f19d0dd169cb1385657b3c6fdc5932419481869ba156ee1218f3eef"
+    },
+    {
+      "frame": 225,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain225.png",
+      "sha256": "36d4b089e674c6b913088133bcdf23c7f8962ec3ebc728f4510098c300604bf5",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain225.png",
+      "historical_sha256": "3c6b54d7306b7838e66817835420f13ad5b51e7f2e16dcfe0973b37c935f832d"
+    },
+    {
+      "frame": 226,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain226.png",
+      "sha256": "44ac9a689e67502c8538e913c6f7686227a48e534772a9140b682ac95128903f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain226.png",
+      "historical_sha256": "d7ab3f3ff957648aa982d5a42be3e3d641b564d97876dbff364f5c2e5a964a68"
+    },
+    {
+      "frame": 227,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain227.png",
+      "sha256": "fee017cdc8cf17201cc3be6cc1d6f3e9c65b13aa29cf820ccf42de0eb699bf90",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain227.png",
+      "historical_sha256": "82a8c5e1d848da3b8855673f0363af7dd0d2f1a2ec23e4c7da18320ce7a8d4c2"
+    },
+    {
+      "frame": 228,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain228.png",
+      "sha256": "00b8cbb263cd0cfb8be5d5c1f144ed700a6e8dd005647c7a46ed549fa6f4043d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain228.png",
+      "historical_sha256": "0882b97d50feb90fa27e1661cb9bb6e07bb0b03a19ff6b69a3d003f4261ab0f5"
+    },
+    {
+      "frame": 229,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain229.png",
+      "sha256": "99c9d9636cde8212e80b180eb1f65c518ab5bfc807da05b6e1aa88b21c9ebfe1",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain229.png",
+      "historical_sha256": "56b483955004c687f9634239f33920d28a149eb239f595b750c52d8719fc7890"
+    },
+    {
+      "frame": 230,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain230.png",
+      "sha256": "e32ede154662eb4483fe2894d38ce82e0a48d6af5b7a1d76d7a1082463da308f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain230.png",
+      "historical_sha256": "4faef297d8ed06d97f6192097a1d74878d141fbd0396f3999edb8b9eff27a97b"
+    },
+    {
+      "frame": 231,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain231.png",
+      "sha256": "6ef470dbf2a2c6d5bf9b75b71c4e828826ce07f9eb32309770ba4dc9c6ad4815",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain231.png",
+      "historical_sha256": "720eb7467f025f9e6b4ccdaba2ac97b74025b7a221cd446d6f95089ad9926687"
+    },
+    {
+      "frame": 232,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain232.png",
+      "sha256": "65588879462d665475b77182aaa6436be032448f218c26c45d5d34df06dfd095",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain232.png",
+      "historical_sha256": "9813b9c4cef6f11d93d74506dadce20eb9ba08117d045e7813a222a3c4444683"
+    },
+    {
+      "frame": 233,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain233.png",
+      "sha256": "a5abef0e1fd044aa3415f456635e559145b74b2dde25e5d149f11ab3cc1a85c4",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain233.png",
+      "historical_sha256": "98146e7e0d9d09459abaacd80510dedfad07c5390c476cd5e1d4cfe00d0b82cb"
+    },
+    {
+      "frame": 234,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain234.png",
+      "sha256": "a325cb8f4a7345fde7145406de3efc49968ab09ec82f7c93522ebb2aabb1f57a",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain234.png",
+      "historical_sha256": "753108422157ddd524798f2bc6aaa9ca03f571bc27bd8d5ebdbbb8522aab8515"
+    },
+    {
+      "frame": 235,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain235.png",
+      "sha256": "61365cf2c9da36219d5e4c8182420f96556103f943cd2e660d4e055d53e79fb3",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain235.png",
+      "historical_sha256": "7556ad42fd67babeda1be8828f4770955cf7ba37c030d21da5f27f748898730f"
+    },
+    {
+      "frame": 236,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain236.png",
+      "sha256": "fe58ca895b85b2cab5efea88d1c4df24f4df5f50552a20e53debaf7293f0ae07",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain236.png",
+      "historical_sha256": "bbb63638094b28282f2033b2415b6f88145ec0923034257cc73dc909f0fb0a72"
+    },
+    {
+      "frame": 237,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain237.png",
+      "sha256": "04135b22c1c75fbb37c2a65021653cd93e5cdff6e5000e2fe19f40c54dc802f9",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain237.png",
+      "historical_sha256": "f4c7cdd1440ccc0aee2f7ec56604c654835385db668836d2baa35717c59e0043"
+    },
+    {
+      "frame": 238,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain238.png",
+      "sha256": "544b4e46d9d1ea0e8686991861b94ecd59c1fc1b7300c6906c2e9b6e0a804711",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain238.png",
+      "historical_sha256": "aabbef4e082d638253b33f1cbcf43f05440d109ab8c0284cffd29179ffc263f3"
+    },
+    {
+      "frame": 239,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain239.png",
+      "sha256": "df4d850e0d86ee6a18745c32d595b71cf750812af630ec6834118adf028e8247",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain239.png",
+      "historical_sha256": "fdfc7c16b2a5a312bce92a1b322a00013478a04d335dc642c1568a8646af28af"
+    },
+    {
+      "frame": 240,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain240.png",
+      "sha256": "b4012f8e2975f11a4eb8b02c52fbc9cc3ca9e3a9bcc4e573096fab626d59ba89",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain240.png",
+      "historical_sha256": "47b4246edc36367787c14c68a820c02386c0ffad38aaaf71fa1dce882a4c2d46"
+    },
+    {
+      "frame": 241,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain241.png",
+      "sha256": "5ed98ee84028665037b7507887fc6989885e20a6a8825868803e989bf6bda7f6",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain241.png",
+      "historical_sha256": "e108f2d0ad1def4cc31357fe6cb690f9bbda0d12ddd2166fd89159dd4a2b3a87"
+    },
+    {
+      "frame": 242,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain242.png",
+      "sha256": "e2ea3b7a346ec25f1350a29a5e873d67d01b886efe330359b1939d7a76ff5418",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain242.png",
+      "historical_sha256": "c18172dfa205681f2ecee9d4c1cd3f6a20fb903c485ea28bb9d4c906c9421a99"
+    },
+    {
+      "frame": 243,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain243.png",
+      "sha256": "45f8365c7091d4b106142d9a20eaa3f5a50f9c4ddd3dddacd78c1f4b87956192",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain243.png",
+      "historical_sha256": "7459aadf11e081ec36063d453680580afcbf09105d973ce892837dfc9f7b5afd"
+    },
+    {
+      "frame": 244,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain244.png",
+      "sha256": "de7314ee5dbc333357f43a3379fa47cd175649e8c02971f4fb85538879080e00",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain244.png",
+      "historical_sha256": "eefe67de570ae487d20490b8a19c171a084c36dbe5e51b28ac6c8ef86f3ad563"
+    },
+    {
+      "frame": 245,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain245.png",
+      "sha256": "f08b5cb856308211e614388627d92a75072a5d6806eb8d7274e6376e45b265cd",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain245.png",
+      "historical_sha256": "334141ecf1992350d6963975f7af125890e784b718ca94deb4fc7ec2aa3d05b3"
+    },
+    {
+      "frame": 246,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain246.png",
+      "sha256": "f800d92a072590a60c4802b45aedb061a8cfff284f68be4fe3c8cc10458e1d7f",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain246.png",
+      "historical_sha256": "e9432b9f019998f1502823e0bcc0460f865380269e5e64a3f729706f21facd5d"
+    },
+    {
+      "frame": 247,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain247.png",
+      "sha256": "c66f8cb63c754d32ddff619f7b4452e0b95b40ca43f22a50726c031b4aa34af8",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain247.png",
+      "historical_sha256": "a00ca6bac8283b6834f6b94efa76f09452de1c1a61817a36bd7119665cf97d2f"
+    },
+    {
+      "frame": 248,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain248.png",
+      "sha256": "91f5cf316ddf3a788a3865ef32a234308a224a089a7ef903a1b869373d289ec8",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain248.png",
+      "historical_sha256": "637a3a5549cd76b4ec6f8c294a439f04679191dd5bda1039f6dbfd996ad24ea0"
+    },
+    {
+      "frame": 249,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain249.png",
+      "sha256": "85c287e498b4138ba136e4cdf88e252f2881525ffe083c741eb6ad819a32a8e8",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain249.png",
+      "historical_sha256": "1fc9c928e4fc2dff44e83c4549e5cbca102f8e8dedbb2f6523e79ec4fcafeb45"
+    },
+    {
+      "frame": 250,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain250.png",
+      "sha256": "b12bf89276b7339828e25370a71957fb070ec9862900e12be95a03124842180d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain250.png",
+      "historical_sha256": "6aab4ae0e8aee9d0abdbcb5c78ea20cb432bbf7ab540e3bc91116c06b0bccbda"
+    },
+    {
+      "frame": 251,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain251.png",
+      "sha256": "0df4f1c9c7164619bc2d00f7a180e4abfc02948b8072a30f32aed9412afe2442",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain251.png",
+      "historical_sha256": "de363beecaaf79ac52306015951b6d157397671d5cbe3e61d358d9d90491b027"
+    },
+    {
+      "frame": 252,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain252.png",
+      "sha256": "2a11d07c8866b979ce1e1060546af3e1acad392c88aa8df459fd031e78736c9c",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain252.png",
+      "historical_sha256": "1195465c0e218a1e4fadaa6879dfa2ea6ca1a1c2dd891d521616e092bc8fb77c"
+    },
+    {
+      "frame": 253,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain253.png",
+      "sha256": "776be263c5821790c9c4e3369d1a16c37158d03c1cae8175b32bbe7b05357eef",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain253.png",
+      "historical_sha256": "7924ff052c41a5484e4c5caadda10df55aefee2b192de6559bb71c9d742e2245"
+    },
+    {
+      "frame": 254,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain254.png",
+      "sha256": "cdd1f7c0933d59e4e7a4f4d3698dee31f19fbaf6f906c16dd214c62f9235d60d",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain254.png",
+      "historical_sha256": "75a69ffc9e29659a7cf94a8196cba64fc9f18ce0ce113534893503b661631dac"
+    },
+    {
+      "frame": 255,
+      "family": "sand-water",
+      "path": "datasrc/gfx/derived/terrain-materials-v1/sand-water-masks/terrain255.png",
+      "sha256": "c36e95943616520c3ec2247aa2ce8693288f82bb9c49a2dba1cee346dd533232",
+      "historical_source": "datasrc/gfx/production/ai-materials/terrain255.png",
+      "historical_sha256": "19131103c06d4450782a2aa9ff771dcac619ff35514e660bb755d57da67cbf06"
+    }
+  ]
+}
