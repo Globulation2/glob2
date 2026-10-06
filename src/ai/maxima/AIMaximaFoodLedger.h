@@ -122,6 +122,9 @@ struct ConsumerResult
 	/// judged against this, because its own claim is released and retaken.
 	long long available;
 	int coveragePercent;
+	/// Coverage by reachable recurring supply before competing claims, capped
+	/// at full demand. This describes site viability, not spendable funding.
+	int uncontestedCoveragePercent = 0;
 	int availablePercent;
 	/// Supply-weighted mean route distance to the wheat covering full demand,
 	/// ignoring every other claimer, in hundredths of a tile.
@@ -129,6 +132,13 @@ struct ConsumerResult
 	int qualityBand;
 	/// Final position in the interleaved claim order.
 	int order;
+
+	int retirementCoveragePercent() const
+	{
+		// Feeding priority can leave a viable producer temporarily unfunded.
+		// Services without production still use their actual allocation.
+		return productionDemand > 0 ? uncontestedCoveragePercent : coveragePercent;
+	}
 };
 
 struct Input

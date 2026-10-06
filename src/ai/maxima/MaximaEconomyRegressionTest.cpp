@@ -1932,3 +1932,69 @@ TEST_CASE("custom construction supply counts reachable mixed yields and shore ac
     CHECK((world.tile(21,20).sources()&materialBit(MaterialId::Food))!=0);
     CHECK(world.tile(21,20).materialAmount==4);
 }
+
+TEST_CASE("food allocation does not retire reachable production but exhausted sites remain retirable" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;
+    // Register real providers for the runtime's pending-deletion checks. The
+    // synthetic profiles below isolate allocation from the stock recipe rates.
+    f.swarm(8,8);f.swarm(24,24);
+    REQUIRE(f.game.addBuilding(40,40,f.game.buildingsTypes.getTypeNum("inn",0,false),0));
+    auto& ai=*f.ai;ai.ensure_strategy();ai.context.initialize();
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(64,64);
+    for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.foodTraversable=tile.buildable=true;
+    world.tile(8,8).protectedYield=1000;
+    BuildingProfile producer;producer.buildingType=0;
+    BuildingLevelProfile level;level.level=1;level.engineType=0;level.completedType=1;
+    level.footprint=Footprint(0,0,1,1);
+    level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
+    level.productionUnitMask=1u<<WORKER;
+    level.productionMaterials[materialIndex(MaterialId::Food)]=level.operatingMaterials[materialIndex(MaterialId::Food)]=500;
+    producer.levels.push_back(level);world.profiles.push_back(producer);
+    BuildingProfile feeder;feeder.buildingType=2;
+    BuildingLevelProfile feedingLevel=level;
+    feedingLevel.engineType=2;feedingLevel.completedType=3;
+    feedingLevel.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+    feedingLevel.productionUnitMask=0;feedingLevel.productionMaterials[materialIndex(MaterialId::Food)]=0;
+    feedingLevel.feedingMask=7;feedingLevel.feedingRate=800;
+    feedingLevel.feedingMaterials[materialIndex(MaterialId::Food)]=feedingLevel.operatingMaterials[materialIndex(MaterialId::Food)]=800;
+    feeder.levels.push_back(feedingLevel);world.profiles.push_back(feeder);
+    for(int id=0;id<3;++id) {
+        WorldBuilding building;building.id=building.gid=id;
+        building.buildingType=id==2?2:0;building.level=1;
+        building.centerX=7+id;building.centerY=7;
+        world.buildings.push_back(building);
+    }
+    ai.development_building_profiles=world.profiles;ai.development_profiles_initialized=true;
+    ai.development_profile_index.assign(f.game.buildingsTypes.size(),-1);
+    ai.development_profile_index[0]=0;ai.development_profile_index[2]=1;
+    ai.development_feeding_visit_rate.assign(f.game.buildingsTypes.size(),800);
+    ai.development_planner.mutablePolicy().foodLedgerEnabled=true;
+    ai.development_planner.mutablePolicy().foodSwarmDemand=500;
+    const auto configure=[&] {
+        ai.development_planner.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+            AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,
+            AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    };
+    configure();
+    ai.budget.food_ledger_enabled=ai.budget.food_retirement_enabled=true;
+    ai.budget.recovery_active=false;ai.timer=7000;ai.relocation_target_building=-1;
+    ai.food_burden_since[0]=ai.food_burden_since[1]=1000;
+    ai.update_food_retirement(ai.context,world);
+    CHECK(ai.food_supported_swarms==2);
+    CHECK(ai.food_birth_crop_rate==200); // Still uses the funded share, not both sites' potential.
+    CHECK(ai.food_burden_since.count(0)==0);
+    CHECK(ai.food_burden_since.count(1)==0);
+    for(const auto& order:ai.context.managementOrders)
+        CHECK(dynamic_cast<Management::DestroyBuilding*>(order.get())==nullptr);
+
+    world.buildings[1].centerX=world.buildings[1].centerY=40;
+    configure();
+    ai.food_burden_since[1]=1000;
+    ai.update_food_retirement(ai.context,world);
+    CHECK(ai.food_supported_swarms==1);
+    CHECK(ai.food_retirement_issued.count(1)==1);
+    CHECK(ai.food_retirement_issued.count(0)==0);
+}
