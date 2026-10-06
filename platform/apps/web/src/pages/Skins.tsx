@@ -230,7 +230,7 @@ function SkinStudio() {
           </button>
         </nav>
       </header>
-      <main className="skin-stage" aria-label="Skin designer">
+      <section className="skin-stage" aria-label="Skin designer">
         <MeshPreview
           {...common}
           camera={finalView ? { ...DEFAULT_CAMERA, game: true, angle: finalAngle } : camera}
@@ -626,7 +626,7 @@ function SkinStudio() {
             </button>
           </div>
         )}
-      </main>
+      </section>
       {dialog === 'patterns' && (
         <PatternDialog
           data={d}

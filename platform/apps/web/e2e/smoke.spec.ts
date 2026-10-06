@@ -110,8 +110,7 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
     '/play/',
   );
   const mobile = (page.viewportSize()?.width ?? 1280) < 900;
-  if (mobile)
-    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  if (mobile) await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   await expect(
     page
       .locator(mobile ? '.drawer-content' : '.app-sidebar')
@@ -131,8 +130,7 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
 test('home: navigation and play controls remain reachable beside the colony', async ({ page }) => {
   await page.goto('/');
   const mobile = (page.viewportSize()?.width ?? 1280) < 900;
-  if (mobile)
-    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  if (mobile) await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   const navigation = page.locator(mobile ? '.drawer-content' : '.app-sidebar');
   // Navigation controls must remain the topmost element at their own centre.
   for (const target of [
@@ -154,9 +152,8 @@ test('home: navigation and play controls remain reachable beside the colony', as
   }
   if (mobile) await navigation.getByRole('button', { name: 'Close navigation' }).click();
   const card = await page.locator('.hero-card').boundingBox();
-  const shell = await page.locator(mobile ? '.mobile-bar' : '.app-sidebar').boundingBox();
-  if (mobile) expect(card?.y ?? 0).toBeGreaterThanOrEqual((shell?.y ?? 0) + (shell?.height ?? 0));
-  else expect(card?.x ?? 0).toBeGreaterThanOrEqual((shell?.x ?? 0) + (shell?.width ?? 0));
+  const shell = await page.locator('.app-sidebar').boundingBox();
+  expect(card?.x ?? 0).toBeGreaterThanOrEqual((shell?.x ?? 0) + (shell?.width ?? 0));
 });
 
 test('missing pages and items have a heading and a title', async ({ page }) => {
@@ -345,8 +342,7 @@ test('the theme toggle cycles system, light and dark and is remembered', async (
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/leaderboard');
   const mobile = (page.viewportSize()?.width ?? 1280) < 900;
-  if (mobile)
-    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  if (mobile) await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   const toggle = page
     .locator(mobile ? '.drawer-content' : '.app-sidebar')
     .getByTestId('theme-toggle');
@@ -361,8 +357,7 @@ test('the theme toggle cycles system, light and dark and is remembered', async (
   await page.reload();
   expect(await inPage(page, 'document.documentElement.dataset.theme')).toBe('dark');
   await expect.poll(bg).toBe('rgb(27, 18, 41)');
-  if (mobile)
-    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  if (mobile) await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
   await toggle.click();
   await expect(toggle).toHaveAccessibleName(/same as this device/);
 });

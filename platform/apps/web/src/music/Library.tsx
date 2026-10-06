@@ -115,6 +115,9 @@ export function MusicLibrary() {
           <h1>Music for your colony</h1>
           <p>Three moods. One shared rhythm. Find your next soundtrack.</p>
         </div>
+        <Link to="/music-studio" className="button">
+          Build in AI Music Studio
+        </Link>
         <Link to="/music/new" className="button">
           Share music
         </Link>
