@@ -13,6 +13,7 @@ import {
   simVersionKey,
   type EngineJobKind,
   type GeneratorDescriptor,
+  type ResourceExperimentDefinitions,
   type SimVersion,
 } from '@glob2/protocol';
 import { verifyJwt } from '@glob2/protocol/node';
@@ -88,7 +89,7 @@ export class FakeEngine {
   private running = false;
   /** Generation fails while set. */
   failGeneration = false;
-  resourceExperiments: import('@glob2/protocol').ResourceExperimentDefinitions = [];
+  resourceExperiments: ResourceExperimentDefinitions = [];
   requiredResourceExperiments: string[] = [];
   readonly ran: { kind: EngineJobKind; jobId: string }[] = [];
 

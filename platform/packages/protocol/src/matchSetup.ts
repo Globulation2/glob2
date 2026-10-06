@@ -385,7 +385,10 @@ export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
     }
   }
   if (known.size > 64)
-    problems.push({ path: '/resourceExperiments', message: 'combined catalogs declare too many experiments' });
+    problems.push({
+      path: '/resourceExperiments',
+      message: 'combined catalogs declare too many experiments',
+    });
   setup.experiments.forEach((key, index) => {
     if (!known.has(key))
       problems.push({ path: `/experiments/${index}`, message: `unknown experiment "${key}"` });

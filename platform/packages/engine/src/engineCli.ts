@@ -19,7 +19,11 @@ import type {
   SimVersion,
   TeamTimelinePoint,
 } from '@glob2/protocol';
-import { MAX_TIMELINE_SAMPLES, buildingCatalogExperimentKeys, resourceExperimentKeys } from '@glob2/protocol';
+import {
+  MAX_TIMELINE_SAMPLES,
+  buildingCatalogExperimentKeys,
+  resourceExperimentKeys,
+} from '@glob2/protocol';
 import { checkBuildingCatalogHash } from '@glob2/protocol/node';
 
 /** A failure caused by the job's input: deterministic, so it is reported, not retried. */
@@ -281,7 +285,9 @@ export function parseGenerationResult(text: string): GenerationOutcome {
       teamCount: map.teamCount,
       ...(map.buildingCatalog ? { buildingCatalog: map.buildingCatalog } : {}),
       ...(map.resourceExperiments ? { resourceExperiments: map.resourceExperiments } : {}),
-      ...(map.requiredResourceExperiments ? { requiredResourceExperiments: map.requiredResourceExperiments } : {}),
+      ...(map.requiredResourceExperiments
+        ? { requiredResourceExperiments: map.requiredResourceExperiments }
+        : {}),
     },
   };
   const quality = doc['quality'];
@@ -360,9 +366,12 @@ function parseReportMap(report: Json): ReportMap {
   if (map['requiredResourceExperiments'] !== undefined) {
     const required = map['requiredResourceExperiments'];
     const allowed = new Set(resourceExperimentKeys(resourceExperiments ?? []));
-    if (!Array.isArray(required) || required.length > 64 ||
-        required.some((key: unknown) => typeof key !== 'string' || !allowed.has(key)) ||
-        new Set(required).size !== required.length)
+    if (
+      !Array.isArray(required) ||
+      required.length > 64 ||
+      required.some((key: unknown) => typeof key !== 'string' || !allowed.has(key)) ||
+      new Set(required).size !== required.length
+    )
       throw new EngineOutputError('invalid required resource experiments');
     requiredResourceExperiments = required as string[];
   }
