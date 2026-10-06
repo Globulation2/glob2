@@ -1,3 +1,9 @@
+## 46ae traversal validation and second CPU gate failure
+
+The `native-46ae-summary.json` identifies production revision, base and frozen binary SHA. `native-46ae-focused.zip` retains 227 passing native cases, build logs, current stock/match traces and their inputs. `native-46ae-performance.zip` retains all rows from the stopped 16-scenario campaign, the 8,192-tick exact traversal comparison, and three-arm late Maxima/Cortex profiles. Every decompressed member was checked against its SHA inventory. Executables and dependencies are excluded.
+
+The earlier middle-case CPU regression is resolved at this checkpoint (ratio 0.86627), but `land-2-1002-maxima-late` fails the individual limit: ratio 1.0814559548, 95% interval [1.0632548343, 1.1014234432]. Inputs remained unchanged; the partial next case is retained. No corpus aggregate or final acceptance is claimed. Diagnostic instructions and profiles guide further optimization and do not replace the CPU gate. Final platform, gameplay and stress acceptance remain outstanding.
+
 ## Native 4ca checkpoint and credible CPU regression
 
 `native-4ca-summary.json` identifies source revisions, exact CLI identity and limitations. The current CLI at 4ca3b6eb6 is byte-identical to da80dbaac; the intervening merge only refreshes the browser replay fixture. No embedded Git revision label is claimed.

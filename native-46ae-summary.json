@@ -1,0 +1,39 @@
+{
+  "source_revision": "46ae98cc039979ac2f9a49e7a63ecb383c3838f1",
+  "base_revision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "candidate_cli_sha256": "14d4067eaa98cdd15bad74acec73a24bff8276324b241bf5ff500194f454da6e",
+  "native": {
+    "focused": {
+      "cases": 227,
+      "passed": 227,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "performance_acceptance": false,
+  "performance_status": "Full98 campaign stopped after16completed scenarios. land-2-1002-maxima-late ratio1.0814559548 CI[1.0632548343,1.1014234432] exceeds individual5%CPU limit. Allrows includingpartialnextcase retained. Inputs unchanged. Noaggregate acceptance.",
+  "limitations": [
+    "Later7be browser test changes do not alter this production engine.",
+    "No embedded Git binary label claimed; SHA identifies frozen executable.",
+    "Executables and dependencies excluded.",
+    "Raw profiles/instruction counts are diagnostic, not acceptance CPU.",
+    "Final platform/gameplay/corpus/stress acceptance incomplete."
+  ],
+  "archives": [
+    {
+      "path": "native-46ae-focused.zip",
+      "bytes": 51933207,
+      "sha256": "9474c6067b0497237014d3c19e2eee3a8402d3c7f004c92d3750019023277d3a",
+      "files": 239,
+      "verification": "Every decompressed member SHA256 matches retained source bytes."
+    },
+    {
+      "path": "native-46ae-performance.zip",
+      "bytes": 49986874,
+      "sha256": "48cd8dac5eb9f815b3a40b4e327d7d837256f2ba98df07107a40ae3683f19db3",
+      "files": 2225,
+      "verification": "Every decompressed member SHA256 matches retained source bytes."
+    }
+  ]
+}
