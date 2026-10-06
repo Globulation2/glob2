@@ -63,12 +63,18 @@ the reviewed candidate selection.
 
 ## Terrain and water
 
-The committed final tiles contain shared generated materials, subdued contrast,
-rugged compatible corner transitions and periodic water. Do not run independent
+The committed final tiles contain shared original-based grass and sand,
+retained rugged corner transitions and periodic water. Do not run independent
 sprite inference over these tiles: it would break their shared boundaries.
+Grass and sand now use the original-based refinement recipe in
+`tools/artwork/terrain_materials.py`, including retained transition masks and
+canonical edges at every mip. Its source material and tuning controls are kept
+in `datasrc/gfx/derived/terrain-materials-v1`; see the
+[HD artwork guide](../../../docs/assets/high-resolution/README.md).
 `tools/artwork/validate_runtime.py` checks 91,136 directed terrain joins and water
 edges at each mip. The approved final material tiles and atlas mips are the
-reproducible production input; discarded prompts/trials are not restored.
+reproducible production input; historical generated-water prompts and trials
+are not restored.
 
 ## Validate a reviewed selection
 

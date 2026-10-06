@@ -9,10 +9,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.artwork.package_runtime import AI, MATERIALS, require
+from tools.artwork.package_runtime import AI, MATERIALS, ORIGINAL_MATERIALS, require
 OUTPUT = ROOT / 'docs/assets/high-resolution/ASSET-PROVENANCE.md'
 CATEGORIES = {recipe: 'AI upscale with constrained finishing' for recipe in AI}
 CATEGORIES.update({recipe: 'Generated material with deterministic tiling' for recipe in MATERIALS})
+CATEGORIES.update({recipe: 'Original-based terrain with deterministic grain and tiling'
+                   for recipe in ORIGINAL_MATERIALS})
 CATEGORIES['soft mask resampling'] = 'Non-AI mask resampling'
 
 def render():
@@ -52,6 +54,7 @@ def render():
              'Native canvas dimensions include transparent padding. '
              '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI. “Hand-authored vector” frames are drawn by hand as SVG for glob2 (`datasrc/gfx/authored`) and rendered with librsvg by `tools/artwork/render_authored.py`, without AI or recolouring.', '',
              'Generated terrain combines selected generated materials with deterministic masks and edge correction. '
+             'Grass and sand are reconstructed from the classic pixels with seeded grain and a soft color constraint, without AI; transitions retain the previous border masks and shoreline alpha. '
              'Mask resampling adds no invented texture detail. Unit animation textures are rendered from the original Blender rigs.', '',
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
