@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
+#include "MapImage.h"
 #include <string>
 #include <cstdio>
 #include <exception>
@@ -17,6 +18,7 @@
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
+#include <nlohmann/json.hpp>
 
 GlobalContainer *globalContainer = nullptr;
 
@@ -96,6 +98,26 @@ int main(int argc, char **argv)
 		}
 		{
 			Game game(nullptr);
+			game.map.setSize(6, 6, GRASS);
+			game.map.setGame(&game);
+			teams(game, 0, 63);
+			auto catalog = nlohmann::json::parse(game.map.resourceRegistry().serialize());
+			auto mixed = catalog["resources"][0];
+			mixed["key"] = "wood"; // Deliberately collides with the legacy trees alias.
+			mixed["properties"]["primaryMaterial"] = "food";
+			mixed["yields"]["food"] = mixed["yields"]["wood"];
+			mixed["yields"]["food"]["initial"] = 2;
+			mixed["yields"]["wood"]["initial"] = 3;
+			catalog["resources"] = nlohmann::json::array({mixed});
+			game.map.installResourceDefinitions(catalog.dump());
+			const auto id = *game.map.resourceRegistry().find("wood");
+			game.map.replaceResource(5, 5, {static_cast<Uint16>(resourceIndex(id)), 0, 5, 0});
+			game.map.setMaterialAmount(5 + 5 * game.map.getW(), MaterialId::Food, 2);
+			game.map.setMaterialAmount(5 + 5 * game.map.getW(), MaterialId::Wood, 3);
+			emit(game, std::filesystem::path(argv[1]) / "compound.json");
+		}
+		{
+			Game game(nullptr);
 			game.map.setSize(6, 6, WATER);
 			game.map.setGame(&game);
 			for (int x : {1, 3})
@@ -132,6 +154,36 @@ int main(int argc, char **argv)
 			std::ofstream out(std::filesystem::path(argv[1]) / "failure.json");
 			out << describeGenerationFailure(request, result);
 			require(bool(out), "Cannot write failure fixture");
+		}
+		{
+			Game source(nullptr);
+			source.map.setSize(6, 6, GRASS);
+			source.addTeam();
+			source.teams[0]->startPosSet = 1;
+			source.teams[0]->startPosX = source.teams[0]->startPosY = 32;
+			for (int y = 0; y < 64; ++y)
+				for (int x = 0; x < 64; ++x)
+					if ((x < 12 && y >= 8 && y < 16) || (x >= 52 && y >= 11 && y < 19))
+						source.map.replaceResource(x, y, {WOOD, 0, 3, 0});
+			const auto path = std::filesystem::path(argv[1]) / "configured-seams.png";
+			exportMapImage(source, path.string());
+			for (bool spreading : {true, false})
+			{
+				Game imported(nullptr);
+				auto catalog = nlohmann::json::parse(imported.map.resourceRegistry().serialize());
+				if (!spreading)
+				{
+					catalog["resources"][0]["properties"]["spreadRate"] = 0;
+					imported.map.installResourceDefinitions(catalog.dump());
+				}
+				GenerationRequest request;
+				request.wDec = request.hDec = 6;
+				MapImageImportReport report;
+				importMapImage(imported, path.string(), request, 1, report, 8);
+				require(!report.resourceSeamFallback, "Configured seam repair unexpectedly rolled back");
+				require(spreading ? report.seamResourceChanges > 0 : report.seamResourceChanges == 0,
+					"Image seam eligibility ignored configured spreading");
+			}
 		}
 		for (int variant = 0; variant < 4; ++variant)
 		{

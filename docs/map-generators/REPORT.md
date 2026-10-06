@@ -123,17 +123,31 @@ corners and therefore include border classes. This grid is a legacy editor
 representation; authored ice/Trail cells override its gameplay and appearance.
 
 `resources.occupied` counts all resource-bearing tiles, including unknown types.
-`unknown_type_tiles` counts resource IDs outside 0–7, excluding the no-resource
-sentinel. `resources.types` always includes `wood`, `wheat`, `papyrus`, `stone`,
-`algae`, `cherry`, `orange`, and `prune` (IDs 0–7 respectively):
+`unknown_type_tiles` counts IDs absent from the map's embedded resource registry,
+excluding the no-resource sentinel. `resources.definitions` is keyed by canonical
+resource authoring key (for example `trees`, `rocks`, or a custom catalog key).
+`resources.types` retains version-2 legacy keys for existing study tools:
+`wood`, `wheat`, `papyrus`, `stone`, `algae`, `cherry`, `orange`, and `prune`.
+`resources.legacy_type_aliases` explicitly maps each changed key to its canonical
+key. Other resources use their authoring keys. If a custom key collides with an
+alias, the built-in uses its canonical key instead; no definition is overwritten.
+
+Colony movement, quality catchments, and distance bands expose `materials`, keyed
+by `wood`, `food`, `paper`, `stone`, `algae`, `cherries`, `oranges`, `prunes`, `gold`,
+`metal`, `glass`, and `fabric`. These aggregate all sources yielding the requested
+material, including secondary yields. Their older `resources` objects remain
+compatibility aliases (`wheat` means food, `papyrus` means paper, and singular fruit
+names mean their plural material names). Historical quality-model field names
+such as `wheat_distance` retain their version-2 meaning as food access. New
+consumers should use canonical fields; these additions preserve schema version 2.
 
 | Per-resource field | Meaning |
 | --- | --- |
 | `coverage` | Tiles storing this resource type, including any zero-amount deposits. |
 | `percent_of_resource_tiles` | Percentage of `resources.occupied.tiles`; `null` if no resources exist. |
-| `stored_amount` | Sum of the resource tiles' stored amount fields. This is current inventory, not estimated lifetime production. |
+| `stored_amount` | Sum of all material stocks in the resource tiles. This is current inventory, not estimated lifetime production. |
 | `harvestable_tiles` | Deposits with positive stored amount. |
-| `eternal`, `clearable` | Flags from the engine's resource-type registry. Eternal stone/fruit deposits must not be interpreted as finite stockpiles. |
+| `eternal`, `clearable` | `eternal` describes the primary material's infinite-consumption policy; mixed deposits may also have finite secondary stocks. `clearable` is the configured clearing property. |
 | `amount_per_deposit` | Distribution of stored amounts, one sample per occupied tile of this type, including zeros. |
 | `patches` | Eight-connected components of this resource's occupied tiles. |
 
@@ -242,7 +256,7 @@ more games may select them:
 | `catchment_growth_enabled_grass_tiles` | Pure grass with `canResourcesGrow` true in the catchment; positive fertility and growth permission are separate conditions. |
 | `exclusive_nearest_tiles`, `tied_nearest_tiles` | Walkable tiles uniquely closest to this colony, or tied for closest, across the entire map. Tied tiles count for every tied colony. |
 | `exclusive_catchment_tiles`, `tied_catchment_tiles` | The same nearest-colony shares limited to this colony's walking catchment. These estimate private and contested nearby expansion ground, not ownership or future control. |
-| `resources.<type>.nearest_gather_distance` | Closest neighboring ground tile plus one step for each of the eight known resource types; `null` if inaccessible. |
+| `resources.<type>.nearest_gather_distance` | Closest neighboring ground tile plus one step for each material (legacy aliases); `null` if inaccessible. |
 | `resources.<type>.catchment_deposit_tiles`, `catchment_stored_amount` | Distinct accessible deposits and their current stored amount, approached from a tile in the catchment. Zero-amount deposits count as tiles. Eternal deposits' stored amount is not lifetime supply. |
 | `resources.<type>.exclusive_catchment_deposit_tiles`, `exclusive_catchment_stored_amount` | Nearby deposits and stored stock this colony can approach strictly sooner than any rival. |
 | `resources.<type>.tied_catchment_deposit_tiles`, `tied_catchment_stored_amount` | Nearby deposits and stock for which the closest approach ties with at least one rival. A tie counts for each tied colony. |
@@ -252,7 +266,7 @@ Each colony also has `distance_bands[]` at fixed walking radii of **12, 24, and 
 steps**. Unlike the generator-specific `scale.catchment_steps`, these are stable
 across generators. Each band repeats `reached_tiles`, `grass_tiles`,
 `buildable_tiles`, `fertile_grass_tiles`, `exclusive_nearest_tiles`, and
-`tied_nearest_tiles` at that radius. Its eight `resources.<type>` entries repeat
+`tied_nearest_tiles` at that radius. Its `materials.<material>` entries (also exposed through legacy `resources.<type>` aliases) repeat
 accessible `deposit_tiles` and `stored_amount`, plus the exclusive and tied subsets
 of each. A deposit enters a band when the closest neighboring walking tile is
 within the radius; a deposit can be in a player's accessible stock without being
