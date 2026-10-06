@@ -8,7 +8,7 @@
 // A map hidden by a moderator is shown only to its owner and to moderators,
 // and rooms cannot choose it. Moderators and administrators see every map.
 // Invisible maps answer 404, never 403, so their existence does not leak.
-import { sql, type Kysely } from 'kysely';
+import { sql, type Kysely, type Selectable } from 'kysely';
 import type { Account, Database } from '@glob2/db';
 import type { MapInfo, MapVersionInfo, PublicAccount } from '@glob2/protocol';
 import { STORED_GENERATOR, readStored, storedSimVersion } from '@glob2/play';
@@ -71,10 +71,8 @@ export type MapRow = {
 };
 
 export type VersionRow = {
-  building_catalog: import('kysely').Selectable<Database['map_versions']>['building_catalog'];
-  resource_experiments: import('kysely').Selectable<
-    Database['map_versions']
-  >['resource_experiments'];
+  building_catalog: Selectable<Database['map_versions']>['building_catalog'];
+  resource_experiments: Selectable<Database['map_versions']>['resource_experiments'];
   required_resource_experiments: string[];
   id: string;
   map_id: string;
