@@ -1,0 +1,24 @@
+{
+  "testedCommit": "b8f6f799ed89582f63f858fac2979a7585080a25",
+  "baseCommit": "410ce0ff82d14c94463d2840d2591da0bf373210",
+  "integration": "PR head; base unchanged",
+  "os": "macOS 26.6.2 (25G83)",
+  "architecture": "arm64",
+  "compiler": "Apple clang 21.0.0 (clang-2100.3.34.2)",
+  "build": "GLOB2_SDL3_PREFIX=/Users/bradley/.codex/glob2-native-sdl scons -j6 release=1 engine-tests",
+  "test": "python3 test/run_tests.py --binary engine --filter 'TerrainPresentation/overview palette*' --filter 'TerrainPresentation/whole-cell layers*' --filter 'TerrainMaterials/*coverage*' --filter 'TerrainMaterials/*shared edges*' --junit artifacts/overview-alignment/tests.xml",
+  "results": {
+    "buildExit": 0,
+    "testExit": 0,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "omissions": [
+    "browser",
+    "Windows",
+    "Android",
+    "performance benchmarking",
+    "simulation/save/replay tests: presentation-only change"
+  ]
+}
