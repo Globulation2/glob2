@@ -22,6 +22,7 @@
 #define AI_MAXIMA_FOOD_LEDGER_H
 
 #include <stdint.h>
+#include <array>
 #include <vector>
 
 namespace AIMaximaFoodLedger
@@ -45,6 +46,20 @@ enum ConsumerStage
 	ReservedStage
 };
 
+// A cold operating forecast. Negative carriers preserves planner-only legacy
+// fixtures; real providers always supply a bounded requested allowance.
+struct OperatingPlan
+{
+    int carriers=-1;
+    int fixedTicks=1,ticksPerTile=0;
+    std::array<int,8> independent{},production{},trips{};
+};
+struct OperatingQuery
+{
+    int demand=0,productionDemand=0,quality=0;
+    long long residual=0;
+};
+
 /// One inn or swarm that eats wheat, including planned ones. Colony swarms are
 /// ordinary claimers: they compete for the same wheat, they simply keep their
 /// own placement rules and are exempt from retirement while establishing.
@@ -59,6 +74,7 @@ struct ConsumerInput
 	/// Recurring operating claim in micro-wheat packets per tick.
 	int demand;
     int productionDemand=0; // component of demand from planned production
+    OperatingPlan operating;
 	/// Demand level, used only to break quality ties between claimers.
 	int level;
 	int centerX;
@@ -162,6 +178,10 @@ class Ledger
 public:
 	Ledger();
 	void evaluate(const Input& input, Result& result) const;
+    /// Combines the existing exact residual walk with uncontested supply work.
+    /// The result can be reused by the candidate's feasibility and score calls.
+    OperatingQuery operatingQuery(const Input& input,const Result& result,
+        const ConsumerInput& candidate,int marginPercent) const;
 
 	/// Unclaimed supply a building with this footprint could reach, stopping
 	/// once `cap` is met so a satisfied candidate never walks its whole radius.
@@ -198,7 +218,12 @@ private:
 		int width, int height, std::vector<ReachCell>& reach,
 		const std::vector<uint32_t>* residual = nullptr, long long cap = 0) const;
 	void prepareResidualSums(const Input& input, Result& result) const;
-	mutable std::vector<int> distanceScratch;
+	void prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,
+        const OperatingPlan& plan) const;
+    long long wheatWork(long long quantity) const;
+    mutable std::vector<long long> workSupply,workQuantity,workPrefix;
+    mutable int workFixed=1,workStep=0,workTail=1;
+    mutable std::vector<int> distanceScratch;
 	mutable std::vector<uint32_t> distanceGeneration;
 	mutable uint32_t generation;
 	mutable std::vector<ReachCell> reachScratch;

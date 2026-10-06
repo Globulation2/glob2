@@ -67,4 +67,42 @@ inline OperatingClaim operatingClaim(const std::array<int,8>& independent,
     }
     return result;
 }
+// The curve prices a combined wheat flow: independent services cannot reuse
+// the same cheap source packets that production has already spent.
+template<class WheatWork>
+inline OperatingClaim operatingClaimWithWheatWork(const std::array<int,8>& independent,
+    const std::array<int,8>& production,int carriers,const std::array<int,8>& trips,WheatWork wheatWork)
+{
+    constexpr int wheat=1;
+    constexpr long long scale=AIMaximaFoodLedger::RateScale,limit=LLONG_MAX/4;
+    constexpr long long fractionScale=INT_MAX;
+    if(carriers<0)return operatingClaim(independent,production,carriers,trips);
+    long long other=0,producing=0;
+    for(int r=0;r<8;++r)if(r!=wheat) {
+        other=std::min(limit,other+static_cast<long long>(std::max(0,independent[r]))*std::max(1,trips[r]));
+        producing=std::min(limit,producing+static_cast<long long>(std::max(0,production[r]))*std::max(1,trips[r]));
+    }
+    const auto scaledUp=[](long long value,long long fraction) {
+        return (value/fractionScale)*fraction+((value%fractionScale)*fraction+fractionScale-1)/fractionScale;
+    };
+    const long long budget=scale*std::clamp(carriers,0,1024);
+    const auto work=[&](int fraction) {
+        const long long q=std::max(0,independent[wheat])+static_cast<long long>(std::max(0,production[wheat]))*fraction/fractionScale;
+        return std::min(limit,std::min(limit,other+scaledUp(producing,fraction))+wheatWork(q));
+    };
+    int low=0,high=int(fractionScale);
+    // At most31 iterations; prefix queries never rescan cells. INT_MAX
+    // precision can represent one rate unit even for saturated recipes.
+    while(low<high) {
+        const int middle=low+int((static_cast<long long>(high)-low+1)/2);
+        if(work(middle)<=budget)low=middle;else high=middle-1;
+    }
+    OperatingClaim result;
+    for(int r=0;r<8;++r) {
+        result.production[r]=int(static_cast<long long>(std::max(0,production[r]))*low/fractionScale);
+        result.total[r]=int(std::min<long long>(INT_MAX,static_cast<long long>(std::max(0,independent[r]))+result.production[r]));
+    }
+    return result;
+}
+
 }

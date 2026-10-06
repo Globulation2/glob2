@@ -715,6 +715,10 @@ private:
 	mutable bool foodLedgerPrepared;
     mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
     mutable std::array<int,8> foodCandidateIndependent{},foodCandidateProduction{};
+    mutable bool foodQueryValid=false;
+    mutable unsigned foodQueryEpoch=0;
+    mutable std::array<int,12> foodQueryKey{};
+    mutable AIMaximaFoodLedger::OperatingQuery foodQuery;
     std::array<int,8> operatingTrips(const WorldState& world,int x,int y,
         const std::array<int,8>& independent,const std::array<int,8>& production) const;
 	/// Consumer results of the last ledger that excluded nothing, so an

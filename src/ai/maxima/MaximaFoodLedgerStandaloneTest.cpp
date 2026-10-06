@@ -1,7 +1,9 @@
 #include "Glob2Test.h"
 #include "AIMaximaFoodLedger.h"
+#include "AIMaximaOperatingDemand.h"
 
 #include <algorithm>
+#include <climits>
 #include <cstring>
 #include <ctime>
 #include <iostream>
@@ -353,4 +355,55 @@ TEST_SUITE("Maxima.FoodLedger")
 	TEST_CASE("prepared bounds match wrapped oracle") { preparedBoundsMatchWrappedOracle(); }
 	TEST_CASE("equal total changes refresh the snapshot") { equalTotalChangesRefreshTheSnapshot(); }
 	TEST_CASE("timing benchmark [benchmark][slow]") { benchmark(); }
+}
+
+TEST_CASE("operating claims price the shared reachable supply curve without contested feedback" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput(64,64);input.policy.supplyRadius=12;input.policy.unreachablePenaltyTiles=8;
+    input.yield[input.index(9,8)]=1000;input.yield[input.index(18,8)]=40000;
+    auto consumer=makeConsumer(1,SwarmConsumer,8,8,11000);
+    consumer.operating.carriers=2;consumer.operating.fixedTicks=100;consumer.operating.ticksPerTile=50;
+    consumer.operating.independent[1]=1000;consumer.operating.production[1]=10000;
+    consumer.operating.trips.fill(300);
+    Ledger ledger;Result result;input.consumers.push_back(consumer);ledger.evaluate(input,result);
+    REQUIRE(result.consumer(1));
+    CHECK(result.consumer(1)->demand==2900);CHECK(result.consumer(1)->productionDemand==1900);
+    CHECK(result.consumer(1)->coveragePercent==100);
+    input.consumers.clear();ledger.evaluate(input,result);
+    const auto query=ledger.operatingQuery(input,result,consumer,120);
+    CHECK(query.demand==2900);CHECK(query.productionDemand==1900);
+    // Another claimant changes availability, never the uncontested work curve.
+    input.consumers.push_back(makeConsumer(2,InnConsumer,8,8,41000));ledger.evaluate(input,result);
+    const auto contested=ledger.operatingQuery(input,result,consumer,120);
+    CHECK(contested.demand==query.demand);CHECK(contested.residual==0);
+    input.consumers.clear();consumer.operating.independent[0]=4000;
+    input.consumers.push_back(consumer);ledger.evaluate(input,result);
+    CHECK(result.consumer(1)->productionDemand==700);CHECK(result.consumer(1)->demand==1700);
+}
+
+TEST_CASE("operating supply tails retain positive demand and zero coverage for unreachable producers" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput();input.policy.supplyRadius=12;input.policy.unreachablePenaltyTiles=8;
+    auto consumer=makeConsumer(1,SwarmConsumer,8,8,10000);
+    consumer.operating.carriers=2;consumer.operating.fixedTicks=100;consumer.operating.ticksPerTile=50;
+    consumer.operating.production[1]=10000;consumer.operating.trips.fill(300);
+    input.consumers.push_back(consumer);Ledger ledger;Result result;ledger.evaluate(input,result);
+    REQUIRE(result.consumer(1));CHECK(result.consumer(1)->demand==952);
+    CHECK(result.consumer(1)->claimed==0);CHECK(result.consumer(1)->coveragePercent==0);
+    input.consumers[0].operating.independent[1]=1000;ledger.evaluate(input,result);
+    CHECK(result.consumer(1)->demand==1000);CHECK(result.consumer(1)->productionDemand==0);
+    CHECK(result.consumer(1)->coveragePercent==0);
+    auto& plan=input.consumers[0].operating;plan.carriers=1024;
+    plan.independent[1]=plan.production[1]=INT_MAX;
+    plan.fixedTicks=INT_MAX;plan.ticksPerTile=INT_MAX;ledger.evaluate(input,result);
+    CHECK(result.consumer(1)->demand==INT_MAX);CHECK(result.consumer(1)->productionDemand==0);
+}
+
+TEST_CASE("operating fractions preserve positive rates beneath a saturated recipe ceiling" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    std::array<int,8> independent{},production{},trips{};
+    production[1]=INT_MAX;trips.fill(1000);
+    const auto result=AIMaxima::operatingClaimWithWheatWork(independent,production,1,trips,
+        [](long long q){return q*1000;});
+    CHECK(result.production[1]==1000);CHECK(result.total[1]==1000);
 }

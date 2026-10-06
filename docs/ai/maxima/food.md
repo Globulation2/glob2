@@ -16,7 +16,12 @@ Transient units do not affect this standing estimate. Immutable profiles describ
 mechanical recipe and shared-seat ceilings. A production ceiling is the weighted
 recipe cost divided by complete job duration, including the completion tick.
 The operating farm claim is separate: it reserves the production the requested
-carriers can supply at the provider's local resource distances. Feeding, healing,
+carriers can supply along the provider's sustained supply routes. The existing
+harvesting reach walk yields a cumulative packet/work curve, independent of
+other buildings' claims. Independent wheat demand and production consume that
+same curve once; a nearby low-yield cell cannot price the entire recurring flow
+at its distance. Demand beyond reachable yield receives the existing unreachable
+route penalty, so an isolated producer retains positive demand and poor coverage. Feeding, healing,
 training and ammunition spend the shared carrier budget first; discretionary
 production uses the remainder. Those independent services retain their recurring
 claims during a shortage. Free services consume no hauling allowance.
@@ -72,10 +77,11 @@ buildings.
 Adding or replacing a feeder redistributes the same colony budget before farm
 coverage is checked. Candidate ledgers are prepared once per colony and candidate
 profile before scanning positions; spatial queries select immutable cached
-results. Resource distance fields are prepared before that scan; each candidate
-position adjusts production against its local trip costs with eight bounded
-resource queries. Missing resource sources receive the configured unreachable
-route penalty. Profile, requested staffing, output ratios and colony demand state
+results. Each candidate's existing exact residual walk also gathers its
+uncontested supply curve. Feasibility, scoring and relocation reuse that query;
+there is no additional route walk or catalog scan. Cumulative prefixes support
+bounded arithmetic queries while solving the common production fraction. Other
+resources use the existing prepared distance fields and unreachable penalty. Profile, requested staffing, output ratios and colony demand state
 are included in planner signatures and continuation.
 
 Claimants rank by supply-weighted route-distance quality band, then level,
@@ -91,8 +97,14 @@ own settlement rule. Upgrades release and retake their building's claim at the
 new level. A summed-area upper bound rejects impossible candidates before the
 exact route search.
 
-Production targets are capped by supplied worker-producing buildings plus capacity
-reachable from the best available site. Birth funding sums their claimed
+The existing birth controller chooses production targets; exact local feasibility
+gates ordinary creation and upgrades, including revalidation before issuing the
+order. Colony settlement retains its separate new-land rule, because its farms
+do not yet have protected supply. Pending projects already claim in the ledger.
+A quotient of residual supply by a peak recipe cost does not cap target counts.
+The historical `food.target_capping_enabled` key remains accepted but no longer
+controls a coarse count cap. The saved `food_supported_swarms` observation counts
+covered existing worker producers, not hypothetical new sites. Birth funding sums their claimed
 production-only packet rates and reachable residual crop yield, then converts
 that rate to acreage using the configured regrowth period. Independent hybrid
 feeding or training costs and buildings without worker production do not create

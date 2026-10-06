@@ -4,6 +4,8 @@
 
 #include "field/UniformTraversal.h"
 #include "AIMaximaFoodLedger.h"
+#include "AIMaximaOperatingDemand.h"
+#include <climits>
 
 #include <algorithm>
 
@@ -196,6 +198,64 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 		},[&](const ReachCell& current,int px,int py){visit(px,py,current.distance+1);});
 }
 
+void Ledger::prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,const OperatingPlan& plan) const
+{
+    const int size=std::max(0,input.policy.supplyRadius)+1;
+    workSupply.assign(size,0);workQuantity.assign(size,0);workPrefix.assign(size,0);
+    workFixed=std::max(1,plan.fixedTicks);workStep=std::max(0,plan.ticksPerTile);
+    workTail=int(std::min<long long>(INT_MAX,workFixed+2LL*workStep*
+        (std::max(0,input.policy.supplyRadius)+std::max(0,input.policy.unreachablePenaltyTiles))));
+    constexpr long long maximum=2LL*INT_MAX,limit=LLONG_MAX/4;
+    for(const auto& cell:reach)if(cell.distance<size)
+        workSupply[cell.distance]=std::min(maximum,workSupply[cell.distance]+input.yield[cell.index]);
+    long long quantity=0,work=0;
+    for(int d=0;d<size;++d) {
+        const long long take=std::min(maximum-quantity,workSupply[d]);
+        const long long trip=std::min<long long>(INT_MAX,workFixed+2LL*workStep*d);
+        work=std::min(limit,work+std::min(limit,take*trip));quantity+=take;
+        workQuantity[d]=quantity;workPrefix[d]=work;
+    }
+}
+
+long long Ledger::wheatWork(long long quantity) const
+{
+    if(quantity<=0)return 0;
+    constexpr long long limit=LLONG_MAX/4;
+    const auto at=std::lower_bound(workQuantity.begin(),workQuantity.end(),quantity);
+    const size_t index=size_t(at-workQuantity.begin());
+    const long long previous=index?workQuantity[index-1]:0;
+    const long long previousWork=index?workPrefix[index-1]:0;
+    const long long trip=at==workQuantity.end()?workTail:
+        std::min<long long>(INT_MAX,workFixed+2LL*workStep*index);
+    return std::min(limit,previousWork+std::min(limit,(quantity-previous)*trip));
+}
+
+OperatingQuery Ledger::operatingQuery(const Input& input,const Result& result,
+    const ConsumerInput& candidate,int marginPercent) const
+{
+    const auto& plan=candidate.operating;
+    // The old residual walk already visited this footprint. Gather both the
+    // uncontested work curve and contested residual in that single traversal.
+    const long long mechanical=std::min<long long>(INT_MAX,
+        static_cast<long long>(plan.independent[1])+plan.production[1]);
+    const long long cap=std::max(1LL,mechanical*std::max(200,marginPercent)/100);
+    walk(input,candidate.centerX,candidate.centerY,candidate.left,candidate.top,
+        candidate.width,candidate.height,reachScratch,&result.residual,cap);
+    prepareWorkCurve(input,reachScratch,plan);
+    const auto claim=AIMaxima::operatingClaimWithWheatWork(plan.independent,plan.production,
+        plan.carriers,plan.trips,[&](long long q){return wheatWork(q);});
+    OperatingQuery query;query.demand=claim.total[1];query.productionDemand=claim.production[1];
+    long long needed=query.demand,weighted=0;
+    for(const auto& cell:reachScratch) {
+        query.residual+=result.residual[cell.index];
+        const long long take=std::min<long long>(needed,result.residual[cell.index]);
+        weighted+=take*cell.distance;needed-=take;
+    }
+    weighted+=needed*(input.policy.supplyRadius+input.policy.unreachablePenaltyTiles);
+    query.quality=query.demand?int(weighted*qualityScale/query.demand):0;
+    return query;
+}
+
 void Ledger::evaluate(const Input& input, Result& result) const
 {
 	result.clear();
@@ -203,6 +263,9 @@ void Ledger::evaluate(const Input& input, Result& result) const
 	if(size<=0||int(input.yield.size())!=size
 	   ||int(input.traversable.size())!=size)return;
 	result.residual=input.yield;
+    // Allocate the bounded work buffers cold, even with no current consumers.
+    workSupply.resize(std::max(0,input.policy.supplyRadius)+1);
+    workQuantity.resize(workSupply.size());workPrefix.resize(workSupply.size());
 	for(int i=0;i<size;++i)
 		result.totalSupply+=input.yield[i];
 
@@ -222,6 +285,13 @@ void Ledger::evaluate(const Input& input, Result& result) const
 		value.colony=consumer.colony;value.retirable=consumer.retirable;
 		value.demand=std::max(0,consumer.demand);
         value.productionDemand=std::clamp(consumer.productionDemand,0,value.demand);
+        if(consumer.operating.carriers>=0) {
+            prepareWorkCurve(input,reachByConsumer[i],consumer.operating);
+            const auto claim=AIMaxima::operatingClaimWithWheatWork(consumer.operating.independent,
+                consumer.operating.production,consumer.operating.carriers,consumer.operating.trips,
+                [&](long long q){return wheatWork(q);});
+            value.demand=claim.total[1];value.productionDemand=claim.production[1];
+        }
 		result.totalDemand+=value.demand;
 		long long remaining=value.demand;
 		long long weighted=0,filled=0;

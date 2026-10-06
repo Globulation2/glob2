@@ -1671,7 +1671,7 @@ TEST_CASE("production ledger uses requested staffing ratios and target stage wit
     using namespace AIMaximaPlacement;
     WorldState world;world.reset(32,32);
     for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.foodTraversable=tile.buildable=true;
-    world.tile(8,8).foodOpportunity=1;world.tile(8,8).protectedYield=1000000;
+    world.tile(9,8).foodOpportunity=1;world.tile(9,8).protectedYield=1000000;
     BuildingProfile profile;profile.buildingType=0;
     BuildingLevelProfile stage;stage.level=1;stage.footprint=Footprint(0,0,1,1);
     stage.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
@@ -1730,6 +1730,9 @@ TEST_CASE("production ledger uses requested staffing ratios and target stage wit
 TEST_CASE("production observation keeps planned work despite temporarily absent carriers" * doctest::test_suite("Maxima.Economy"))
 {
     glob2test::HeadlessGlobals globals;Fixture f;auto* producer=f.swarm(8,8,0);auto& ai=*f.ai;
+    GameHeader header;header.setNumberOfPlayers(1);
+    header.getBasePlayer(0)=BasePlayer(0,"operating plan test",0,BasePlayer::P_LOCAL);
+    f.game.setGameHeader(header,true);
     ai.context.initialize();ai.ensure_strategy();int id=-1;
     for(const auto& entry:ai.context.get_building_register().found())
         if(ai.context.get_building_register().get_building(entry.first)==producer)id=entry.first;
@@ -1741,4 +1744,57 @@ TEST_CASE("production observation keeps planned work despite temporarily absent 
     REQUIRE(world.building(id));CHECK(world.building(id)->plannedCarriers==5);
     CHECK(world.building(id)->productionRatios[WORKER]==3);CHECK(world.building(id)->productionRatios[EXPLORER]==0);
     CHECK(world.building(id)->productionRatios[WARRIOR]==1);CHECK(producer->unitsWorking.empty());
+}
+
+TEST_CASE("producer candidates retain local feasibility after coarse target caps are removed" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(32,32);
+    BuildingProfile profile;profile.buildingType=0;
+    for(int stage=1;stage<=3;++stage) {
+        BuildingLevelProfile level;level.level=stage;level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
+        profile.levels.push_back(level);
+    }
+    world.profiles.push_back(profile);
+    for(auto& tile:world.tiles)tile.discovered=true;
+    for(auto& tile:world.tiles){tile.walkable=tile.buildable=tile.foodTraversable=true;tile.swimmable=false;}
+    auto& producer=world.profiles[0];
+    for(auto& level:producer.levels) {
+        level.footprint=Footprint(0,0,1,1);level.initialCarriers=2;level.operatingAssignmentLimit=20;
+        level.productionResources[1]=10000;level.operatingResources[1]=10000;
+        level.productionRecipes.ticks[0]=100;level.productionRecipes.costs[0][1]=1;
+    }
+    world.tile(9,8).foodOpportunity=1;world.tile(9,8).protectedYield=1000;
+    world.tile(18,8).foodOpportunity=1;world.tile(18,8).protectedYield=4000;
+    WorldBuilding existing;existing.id=10;existing.buildingType=0;existing.level=1;
+    existing.centerX=8;existing.centerY=8;existing.hp=existing.hpMax=100;existing.plannedCarriers=0;
+    world.buildings.push_back(existing);
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    planner.mutablePolicy().foodLedgerEnabled=true;planner.mutablePolicy().foodSupplyRadius=12;
+    planner.mutablePolicy().carrierFixedTicksPerTrip=100;planner.mutablePolicy().carrierTicksPerTile=50;
+    planner.configure(world.profiles,1,2,6,5,7);planner.adoptStartingBuildings(world);
+    DevelopmentAction candidate;candidate.type=BuildStandalone;candidate.buildingType=0;candidate.targetLevel=1;
+    candidate.centerX=8;candidate.centerY=8;candidate.initialFootprint=Footprint(0,0,1,1);
+    RejectionReason reason=RejectedFoodCapacity;
+    // Five thousand supply cannot cover peak ten thousand, but can cover this
+    // explicitly staffed partial producer (2900 packets plus placement margin).
+    CHECK(planner.foodCandidatePasses(world,nullptr,candidate,reason));
+    CHECK(planner.foodCandidateDemand==2900);
+    CHECK(planner.foodLocationQuality(world,candidate)>0);
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    auto* output=new GAGCore::BinaryOutputStream(backend);planner.save(output);backend->seekFromStart(0);
+    auto* inputBackend=new GAGCore::MemoryStreamBackend(*backend);delete output;
+    GAGCore::BinaryInputStream input(inputBackend);Planner restored;
+    restored.mutablePolicy()=planner.policy();restored.configure(world.profiles,1,2,6,5,7);
+    REQUIRE(restored.load(&input,VERSION_MINOR));
+    CHECK_FALSE(restored.foodQueryValid);
+    CHECK(restored.foodCandidatePasses(world,nullptr,candidate,reason));
+    CHECK(restored.foodCandidateDemand==planner.foodCandidateDemand);
+    world.tile(9,8).protectedYield=world.tile(18,8).protectedYield=0;
+    planner.evaluateFoodLedger(world);
+    CHECK_FALSE(planner.foodCandidatePasses(world,nullptr,candidate,reason));CHECK(reason==RejectedFoodCapacity);
+    // A previously selected upgrade must recheck food at the issue boundary.
+    DevelopmentAction upgrade=candidate;upgrade.type=UpgradeBuilding;upgrade.buildingId=10;
+    upgrade.fromLevel=1;upgrade.targetLevel=2;
+    CHECK_FALSE(planner.revalidate(world,upgrade,&reason,true));CHECK(reason==RejectedFoodCapacity);
 }
