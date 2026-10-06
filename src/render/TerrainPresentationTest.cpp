@@ -13,6 +13,8 @@
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
+#include "MapRenderState.h"
+#include "RessourceType.h"
 #include "MapThumbnail.h"
 #include "MapImage.h"
 #include "GenerationRequest.h"
@@ -301,6 +303,100 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
+	TEST_CASE("overview palette follows detailed shore coverage across both wrapped axes [display] [artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512});
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				map.setUMTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
+		map.regenerateMap(0, 0, 16, 16);
+		map.setCellTerrain(10, 10, ICE);
+		SceneMap scene;
+		scene.extract(map);
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
+		GAGCore::DrawableSurface overview(16*samples, 16*samples);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+			{
+				const auto recipe = compositor.describe(scene, x, y);
+				compositor.composeOverview(recipe, overview.getSDLSurface(), x*samples, y*samples);
+				const TerrainVisual::PreparedCoverage coverage(compositor.catalog(), recipe);
+				for (int sy = 0; sy < samples; ++sy)
+					for (int sx = 0; sx < samples; ++sx)
+					{
+						CAPTURE(x); CAPTURE(y); CAPTURE(sx); CAPTURE(sy);
+						const auto mask = coverage.at((sx*32/samples + 16/samples)*256,
+													 (sy*32/samples + 16/samples)*256);
+						unsigned expected[3]{};
+						for (int i = 0; i < 4; ++i)
+							for (int k = 0; k < 3; ++k)
+								expected[k] += mask.weight[i] * compositor.catalog().materials[mask.material[i]].preview[k];
+						const auto *row = reinterpret_cast<const Uint32 *>(
+							static_cast<const Uint8 *>(overview.getSDLSurface()->pixels) +
+							(y*samples+sy)*overview.getSDLSurface()->pitch);
+						const auto pixel = row[x*samples+sx];
+						CHECK((pixel >> 24) == 255);
+						for (int k = 0; k < 3; ++k)
+							CHECK(((pixel >> (16-8*k)) & 255) == (expected[k]+32768)/65536);
+					}
+			}
+		// Custom saved whole-cell palettes still override their appearance colour.
+		auto custom = compositor.describe(scene, 10, 10);
+		custom.samples.fill(compositor.catalog().bindings.at("ice"));
+		const std::array<unsigned char, 3> customColor{17, 31, 47};
+		GAGCore::DrawableSurface customOverview(samples, samples);
+		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customColor);
+		for (int y = 0; y < samples; ++y)
+			for (int x = 0; x < samples; ++x)
+				CHECK(reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(customOverview.getSDLSurface()->pixels) +
+					  y*customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
+		MapRenderState render;
+		render.detail.terrainOverview = .5f;
+		map.setResource(9, 9, WHEAT, 1);
+		scene.extract(map);
+		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
+		REQUIRE(render.overview->getW() == overview.getW());
+		REQUIRE(render.overview->getH() == overview.getH());
+		const auto *resource = globals->resourcesTypes.get(WHEAT);
+		const int tint[] = {resource->minimapR, resource->minimapG, resource->minimapB};
+		for (int y = 0; y < 16*samples; ++y)
+			for (int x = 0; x < 16*samples; ++x)
+			{
+				const auto pixelAt = [&](auto &image)
+				{
+					auto *surface = image.getSDLSurface();
+					return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) + y*surface->pitch)[x];
+				};
+				const auto ground = pixelAt(overview), actual = pixelAt(*render.overview);
+				if (x/samples == 9 && y/samples == 9)
+					for (int k = 0; k < 3; ++k)
+						CHECK(((actual >> (16-8*k)) & 255) == (((ground >> (16-8*k)) & 255) + 3*tint[k])/4);
+				else
+					CHECK(actual == ground);
+			}
+		// Preserve review evidence of the same coastline in both looks and mid-fade.
+		GAGCore::DrawableSurface enlarged(512, 512);
+		REQUIRE(SDL_BlitSurfaceScaled(overview.getSDLSurface(), nullptr, enlarged.getSDLSurface(), nullptr, SDL_SCALEMODE_NEAREST));
+		const auto evidence = glob2test::artifactDir() / "overview-alignment";
+		std::filesystem::create_directories(evidence);
+		CHECK(IMG_SavePNG(enlarged.getSDLSurface(), (evidence / "overview.png").string().c_str()));
+		Game::drawMapWater(512, 512, 0, 0, 0);
+		Game::drawMapTerrain(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		Game::drawMapResources(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		if (globals->gfx->renderer) globals->gfx->renderer->flush();
+		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(), (evidence / "detailed.png").string().c_str()));
+		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		if (globals->gfx->renderer) globals->gfx->renderer->flush();
+		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(), (evidence / "crossfade.png").string().c_str()));
+	}
+
+
 	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
 	{
 		glob2test::HeadlessGlobals globals;

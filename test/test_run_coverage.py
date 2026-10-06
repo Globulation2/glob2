@@ -1,5 +1,8 @@
 """Coverage accounting regressions; no compiler or LLVM installation required."""
 import importlib.util
+import contextlib
+import io
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -16,6 +19,42 @@ def entry(path, count, covered):
 
 
 class CoverageSummaryTests(unittest.TestCase):
+    def test_streaming_retains_output_and_reports_nonzero_exit_before_upload(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            released = directory / 'released'
+
+            class LiveOutput(io.StringIO):
+                def write(self, text):
+                    if text.strip() == 'ready':
+                        released.touch()
+                    return super().write(text)
+
+            output = LiveOutput()
+            command = [sys.executable, '-c',
+                       "import pathlib, sys, time; print('ready'); "
+                       "p=pathlib.Path(sys.argv[1]); deadline=time.monotonic()+5; "
+                       "exec('while not p.exists() and time.monotonic()<deadline: time.sleep(.01)'); "
+                       "print('diagnostic', file=sys.stderr); sys.exit(7 if p.exists() else 9)",
+                       str(released)]
+            with contextlib.redirect_stdout(output):
+                status = coverage.run_logged(command, directory / 'run.log', stream_logs=True)
+            self.assertEqual(status, 7)
+            self.assertEqual((directory / 'run.log').read_text(), 'ready\ndiagnostic\n')
+            self.assertIn('exit=7', output.getvalue())
+            self.assertIn('diagnostic', output.getvalue())
+
+    def test_default_logging_retains_output_without_console_streaming(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            log = Path(temporary) / 'run.log'
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                status = coverage.run_logged([sys.executable, '-c',
+                                              "print('retained'); raise SystemExit(3)"], log)
+            self.assertEqual(status, 3)
+            self.assertEqual(log.read_text(), 'retained\n')
+            self.assertEqual(output.getvalue(), '')
+
     def test_failed_report_retains_all_raw_profiles(self):
         with tempfile.TemporaryDirectory() as temporary:
             profiles = [Path(temporary) / 'first.profraw', Path(temporary) / 'second.profraw']

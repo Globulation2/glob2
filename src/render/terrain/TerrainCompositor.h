@@ -31,6 +31,10 @@ class Compositor
 	void prepare(bool hd, int time);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale) const;
+	// Subtile palette samples share the detailed renderer's material partition.
+	static constexpr int OverviewSamples = 4;
+	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y,
+						 const std::array<unsigned char, 3> *cellColor = nullptr) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;

@@ -1460,11 +1460,13 @@ it is saved, checksummed or read by the simulation.
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
   The outline stroke stops thickening at two points.
-- In the cross-fade `Game::drawMapOverview` fades in one flat colour per tile
-  (terrain, or the resource's minimap colour over it); in the overview it replaces
-  the water, terrain and resource passes. It is one image, a pixel per visible tile,
-  stretched over the map in a single draw: as per-tile translucent fills it cost
-  more than the terrain it covered during the cross-fade.
+- In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
+  from the detailed compositor's material coverage, including legacy corner shores
+  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  during the fade; resource minimap colours tint their gameplay cells over that
+  ground. In the overview this replaces the water, terrain and resource passes.
+  The reusable image stretches over the map in a single draw, avoiding thousands
+  of translucent fills.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the

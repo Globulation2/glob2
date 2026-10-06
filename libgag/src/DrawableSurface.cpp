@@ -177,8 +177,14 @@ namespace GAGCore
 				int w = getMinPowerOfTwo(sdlsurface->w);
 				int h = getMinPowerOfTwo(sdlsurface->h);
 				glState.allocatedTextureBytes-=gpuBytes;gpuBytes=w*h*4;glState.allocatedTextureBytes+=gpuBytes;
+#ifdef GLOB2_WEBGL2
+                // WebGL zero-initializes storage for a null pixels argument.
+                // Avoid a second texture-sized allocation in the bounded Wasm heap.
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+#else
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
+#endif
 
 				texMultX = 1.0f / static_cast<float>(w);
 				texMultY = 1.0f / static_cast<float>(h);
