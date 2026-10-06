@@ -85,8 +85,13 @@ and retry. For example:
 }
 ```
 
-Both `base` and `appearance` name a shipped preset: `water`, `sand`, `grass`, `ice`
-or `road` (the compatibility key for Trail). The base supplies all simulation
+Both `base` and `appearance` name a paintable built-in terrain by its external name:
+the classic `water`, `sand`, `grass`, `ice` and `road` (the compatibility key for
+Trail) plus every terrain-catalogue type (`boulders`, `hedge`, `thicket`, `ridge_rock`,
+`outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
+`scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
+`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`). The legacy shore
+profiles are not presets. The base supplies all simulation
 defaults; appearance selects a shipped material and resolved preview colors independently.
 Detailed artwork and natural boundaries use the shared [material catalog](../assets/terrain-materials.md);
 custom types sharing an appearance resolve to the same material. Every

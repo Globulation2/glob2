@@ -658,6 +658,9 @@ TEST_SUITE("TerrainMaterials")
 		invalid = j;
 		invalid["bindings"]["ice"] = "absent";
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
+		invalid = j;
+		invalid["bindings"].erase("mud"); // Every paintable built-in needs a material.
+		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		const std::vector<std::pair<nlohmann::json::json_pointer, nlohmann::json>> malformed = {
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), true},
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 127},

@@ -43,6 +43,17 @@ enum class ExperimentId : Uint8
 	IceTerrain = 2,
 	TrailTerrain = 3, // Legacy serialized key: road-terrain.
 	MarketsV2 = 4,
+	// Terrain catalogue groups (src/map/TerrainGroup.h): one switch per mechanic,
+	// shared by every visual variant in the group.
+	ObstacleTerrain = 5,
+	RidgeTerrain = 6,
+	BarrenTerrain = 7,
+	RoughTerrain = 8,
+	PathTerrain = 9,
+	LavaTerrain = 10,
+	FertileTerrain = 11,
+	DeepWaterTerrain = 12,
+	VoidTerrain = 13,
 	Count
 };
 

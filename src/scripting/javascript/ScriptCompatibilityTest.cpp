@@ -134,15 +134,17 @@ TEST_CASE("Building catalog simulation change rejects released replays and enfor
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
+	// The terrain catalogue (138) remaps older IDs on load, so the replay floor
+	// stays at the building-catalog simulation change.
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
-	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
+	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_TERRAIN_CATALOGUE);
 	CHECK(NET_PROTOCOL_VERSION == 57);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, VERSION_MINOR, VERSION_MINOR + 1};
+	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_BUILDING_CATALOG, VERSION_MINOR, VERSION_MINOR + 1};
 	for (Uint16 version : versions)
 	{
 		CAPTURE(version);

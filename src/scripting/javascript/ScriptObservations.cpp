@@ -291,6 +291,9 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 						Value::object()
 							.set("id", id)
 							.set("name", presentation.name)
+							.set("group", id < TERRAIN_COUNT
+											 ? Value(terrainGroupDefinition(terrainGroup(type)).key)
+											 : Value())
 							.set("experiment", experiment
 												   ? Value(experimentDefinition(*experiment).key)
 												   : Value())

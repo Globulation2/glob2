@@ -574,7 +574,15 @@ TEST_SUITE("GradientPreparation")
 		REQUIRE(world.addUnit(WARRIOR, 33, 33, 1));
 		// Cartesian product, including deliberately overlapping goals/blockers.
 		size_t i = 0;
+		// One terrain per distinct property profile keeps the product inside the map;
+		// group members share a profile and therefore the same seed policy.
 		for (unsigned terrain=0; terrain<TERRAIN_COUNT; ++terrain)
+		{
+			bool firstOfProfile = true;
+			for (unsigned earlier=0; earlier<terrain; ++earlier)
+				if (m.terrainRegistry().propertyIndex(static_cast<TerrainType>(earlier)) == m.terrainRegistry().propertyIndex(static_cast<TerrainType>(terrain)))
+					firstOfProfile = false;
+			if (!firstOfProfile) continue;
 		for (int resource=0; resource<=MAX_RESOURCES; ++resource)
 		for (unsigned forbidden=0; forbidden<4; ++forbidden)
 		for (unsigned immobile=0; immobile<2; ++immobile)
@@ -594,6 +602,7 @@ TEST_SUITE("GradientPreparation")
 			c.guardArea = area;
 			m.fogOfWarA[i] = fog;
 			m.fogOfWarB[i] = fog ^ 3;
+		}
 		}
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		for (unsigned threads : {1, 2, 4})

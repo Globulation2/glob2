@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainMaterials.h"
+#include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cstdlib>
@@ -214,12 +215,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		}
 		c.materials.push_back(std::move(v));
 	}
-	const char *names[] = {"water", "sand", "grass", "ice", "road"};
 	require(j.at("bindings").is_object(), "bindings must be an object");
 	for (const auto &[key, value] : j.at("bindings").items())
 		c.bindings.emplace(key, c.find(value));
-	for (const auto *name : names)
-		require(c.bindings.contains(name), "missing terrain binding");
+	// Every paintable built-in terrain needs a material; legacy shores resolve
+	// through their corner materials.
+	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
+		if (terrainPaintable(TerrainType(type)))
+			require(c.bindings.contains(terrainPresentation(TerrainType(type)).name),
+					"missing terrain binding");
 	require(c.materials[c.bindings.at("water")].ocean, "water binding must use ocean backdrop");
 	std::set<std::pair<MaterialId, MaterialId>> pairs;
 	const auto treatments = j.value("pair_treatments", nlohmann::json::array());

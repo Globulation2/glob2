@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 137
+#define VERSION_MINOR 138
+// version 138 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
 // version 137 embeds building catalogs and independent capability state.
 // version 136 embeds immutable terrain registries before map tile identities.
 // version 135 adds optional market resource gradients and their scheduling state.

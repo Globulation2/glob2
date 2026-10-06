@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "BuildingType.h"
+#include "ExperimentalFeatures.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -285,9 +286,11 @@ TEST_CASE("experiment metadata obeys the same contract before startup and transp
     rejected({{"key","new-building"},{"label",""},{"help","Help"}});
     rejected({{"key","new-building"},{"label","Label"},{"help",""}});
     auto catalog=nlohmann::json::parse(original);
-    for(int i=0;i<59;++i) catalog["experiments"].push_back({{"key","feature-"+std::to_string(i)}, {"label","Label"},{"help","Help"}});
+    // Catalog experiments share the 64-entry budget with the built-in ones.
+    const int room=int(ExperimentSet::MAX_STORED-ExperimentSet::COUNT);
+    for(int i=0;i<room;++i) catalog["experiments"].push_back({{"key","feature-"+std::to_string(i)}, {"label","Label"},{"help","Help"}});
     CHECK_NOTHROW(registry.loadSnapshotJson(catalog.dump()));
-    catalog["experiments"].push_back({{"key","feature-59"},{"label","Label"},{"help","Help"}});
+    catalog["experiments"].push_back({{"key","feature-"+std::to_string(room)},{"label","Label"},{"help","Help"}});
     CHECK_THROWS(registry.loadSnapshotJson(catalog.dump()));
 }
 TEST_CASE("expanded canonical snapshots must fit transport before catalog publication")
