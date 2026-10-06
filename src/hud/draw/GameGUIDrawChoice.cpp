@@ -61,7 +61,8 @@ bool GameGUI::scrollBuildingChoices(double delta)
     if (mouseX<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH) return false;
     if (selectionMode==BUILDING_SELECTION)
     {
-        if (mouseY<YPOS_BASE_BUILDING || mouseY>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4) return false;
+        const bool overPreview=drawnScene().panels.building.valid && hoveredBuildingPreview(drawnScene().panels.building)!=BuildingPreview::None;
+        if (!overPreview && (mouseY<YPOS_BASE_BUILDING || mouseY>=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4)) return false;
         buildingInfoScroll=std::clamp(buildingInfoScroll+(delta>0 ? -32 : delta<0 ? 32 : 0),0,buildingInfoScrollMaximum);
         return true;
     }

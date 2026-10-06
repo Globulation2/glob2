@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
+#include "GameGUIInternal.h"
+#include <nlohmann/json.hpp>
 #include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "GameGUIDialog.h"
@@ -63,6 +65,127 @@ TEST_SUITE("GUIInteractionCoverage")
             CHECK(render()!=before);
         }
         REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"construction-fruit-costs.bmp").string().c_str()));
+    }
+
+    TEST_CASE("mixed upgrade preview tracks actual rows scroll and recipe inputs [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1024,.height=768});
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
+        const int current=world.game.buildingsTypes.getTypeNum("inn",0,false);
+        const int nextSite=world.game.buildingsTypes.get(current)->nextLevel;
+        const int next=world.game.buildingsTypes.get(nextSite)->nextLevel;
+        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& from=catalog["variants"][current];
+        from["properties"]["defaultUnitStayRange"]=0;from["properties"]["maxUnitStayRange"]=16;
+        from["properties"]["zonable"]={1,1,1};
+        from["properties"]["maxResource"][STONE]=15;
+        for(int r=HAPPINESS_BASE;r<MAX_RESOURCES;++r)from["properties"]["maxResource"][r]=20;
+        from["semantics"]["market"]["interTeamFruitExchange"]=true;
+        const int producer=world.game.buildingsTypes.getFinishedTypeNum("swarm");
+        from["semantics"]["production"]=catalog["variants"][producer]["semantics"]["production"];
+        from["semantics"]["repairCost"]={{"wood",8},{"orange",13},{"prune",17}};
+        auto& to=catalog["variants"][next];to["properties"]["hpMax"]=1379;
+        to["properties"]["maxResource"][WOOD]=7;to["properties"]["maxResource"][STONE]=0;
+        catalog["variants"][nextSite]["semantics"]["constructionCost"]={{"wood",8},{"cherry",23},{"orange",29},{"prune",31}};
+        world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
+        auto* building=world.game.addBuilding(8,8,current,0);REQUIRE(building);
+        auto* worker=world.addUnit(WORKER,4,4);worker->constructionLevel=3;
+        gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+        auto* gfx=globalContainer->gfx;
+        const auto render=[&](bool extract=true) {
+            const auto before=world.checksum();
+            gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
+            if(extract)gui.extractScene(gui.frameScene);
+            gui.drawBuildingInfos();gfx->nextFrame();
+            CHECK(world.checksum()==before);REQUIRE(gfx->completedFrame());
+        };
+        const auto crop=[&](int y) {
+            const auto* frame=gfx->completedFrame();const int bytes=SDL_BYTESPERPIXEL(frame->format);
+            const auto* pixels=static_cast<const Uint8*>(frame->pixels);
+            std::vector<Uint8> result;
+            for(int row=y;row<y+12;++row)
+                result.insert(result.end(),pixels+row*frame->pitch+(frame->w-40)*bytes,pixels+row*frame->pitch+frame->w*bytes);
+            return result;
+        };
+        const auto frameHash=[&]() {
+            const auto* frame=gfx->completedFrame();const auto* pixels=static_cast<const Uint8*>(frame->pixels);
+            Uint64 result=1469598103934665603ull;
+            for(int i=0;i<frame->h*frame->pitch;++i)result=(result^pixels[i])*1099511628211ull;
+            return result;
+        };
+        render();
+        // A physical attractor with a zero initial radius still has counts and
+        // range controls. Its extra header moves controls, not HP/inside rows.
+        const int controlY=YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_ICON+YOFFSET_B_SEP+buildingExtraHeaderHeight(*building->type);
+        const int assigned=building->maxUnitWorking;
+        gui.handleMenuClickBuildingSelection(RIGHT_MENU_OFFSET+119,controlY+YOFFSET_TEXT_BAR+8,SDL_BUTTON_LEFT);
+        REQUIRE(gui.orderQueue.size()==1);CHECK(gui.displayedMaxUnitWorking(*building)==assigned+1);
+        gui.orderQueue.clear();
+        const int rangeY=controlY+2*(YOFFSET_BAR+YOFFSET_B_SEP)+YOFFSET_B_SEP;
+        gui.handleMenuClickBuildingSelection(RIGHT_MENU_OFFSET+119,rangeY+YOFFSET_TEXT_BAR+8,SDL_BUTTON_LEFT);
+        REQUIRE(gui.orderQueue.size()==1);CHECK(gui.displayedUnitStayRange(*building)==1);gui.orderQueue.clear();
+        gui.mouseX=gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+64;
+        gui.mouseY=gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET+8;
+        render();REQUIRE(gui.hoveredBuildingPreview(gui.frameScene.panels.building)==GameGUI::BuildingPreview::Upgrade);
+        REQUIRE(gui.buildingInfoScrollMaximum>=32);
+        const auto hpAtTop=crop(YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_TEXT_LINE);
+        REQUIRE(gui.scrollBuildingChoices(-1));render();CHECK(gui.buildingInfoScroll==32);
+        CHECK(crop(YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_TEXT_LINE-32)==hpAtTop);
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-upgrade-scrolled.bmp").string().c_str()));
+        while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));
+        render();
+        // Click the visible worker recipe after the attraction controls,
+        // service progress, exchange stock and ordinary storage rows.
+        const int flagRows=(YOFFSET_B_SEP+(1+BASIC_COUNT-1)*YOFFSET_TEXT_PARA)
+            +2*(YOFFSET_B_SEP+(1+NB_UNIT_LEVELS)*YOFFSET_TEXT_PARA)
+            +(YOFFSET_B_SEP+(1+EXPLORATION_FLAG_OPTION_COUNT)*YOFFSET_TEXT_PARA);
+        const int productionY=rangeY+YOFFSET_BAR+YOFFSET_B_SEP+flagRows+YOFFSET_INFOS
+            +YOFFSET_PROGRESS_BAR+YOFFSET_B_SEP+(1+HAPPINESS_COUNT)*YOFFSET_TEXT_PARA
+            +2*YOFFSET_RESOURCE_LINE+YOFFSET_RESOURCE_SECTION_PAD+YOFFSET_SWARM_PROGRESS_BAR;
+        const int visibleRecipeY=productionY-gui.buildingInfoScroll+8;
+        REQUIRE(visibleRecipeY>=YPOS_BASE_BUILDING);
+        REQUIRE(visibleRecipeY<gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET-4);
+        const int ratio=gui.displayedRatio(*building)[WORKER];
+        gui.handleMenuClickBuildingSelection(RIGHT_MENU_OFFSET+119,visibleRecipeY,SDL_BUTTON_LEFT);
+        REQUIRE(gui.orderQueue.size()==1);
+        CHECK(gui.displayedRatio(*building)[WORKER]==ratio+1);gui.orderQueue.clear();
+        render();const auto original=frameHash();
+        // New and removed storage capacities and fruit costs must remain
+        // reachable while the pointer stays on the fixed upgrade button.
+        auto* target=world.game.buildingsTypes.get(next);
+        target->maxResource[WOOD]=9;render();CHECK(frameHash()!=original);
+        const auto changedWood=frameHash();target->maxResource[STONE]=3;render();CHECK(frameHash()!=changedWood);
+        target->maxResource[STONE]=0;target->maxResource[WOOD]=7;render();
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-upgrade-costs.bmp").string().c_str()));
+        auto* site=world.game.buildingsTypes.get(nextSite);
+        const auto beforeFruit=frameHash();site->semantics.constructionCost[PRUNE]+=5;render();CHECK(frameHash()!=beforeFruit);
+        building->hp/=2;render();
+        REQUIRE(gui.hoveredBuildingPreview(gui.frameScene.panels.building)==GameGUI::BuildingPreview::Repair);
+        while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));
+        render();REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"mixed-repair-costs.bmp").string().c_str()));
+        // A retained frame must resolve upgrade IDs through its own catalog,
+        // even after the game installs a differently ordered catalog.
+        building->hp=building->type->hpMax;render();
+        while(gui.buildingInfoScroll<gui.buildingInfoScrollMaximum)REQUIRE(gui.scrollBuildingChoices(-1));
+        render();const auto retainedHash=frameHash();
+        {
+            // Restore the original storage, including existing entity pointers,
+            // even if a rendering assertion exits this fixture early.
+            struct RestoreCatalog
+            {
+                BuildingsTypes& destination;
+                BuildingsTypes saved;
+                ~RestoreCatalog() { destination=std::move(saved); }
+            } restore{world.game.buildingsTypes,std::move(world.game.buildingsTypes)};
+            std::reverse(catalog["variants"].begin(),catalog["variants"].end());
+            for(size_t id=0;id<catalog["variants"].size();++id)catalog["variants"][id]["id"]=id;
+            world.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+            REQUIRE(world.game.buildingsTypes.findByKey(building->type->key)!=current);
+            render(false);CHECK(frameHash()==retainedHash);
+        }
+        gui.clearSelection();
     }
 
     TEST_CASE("custom mixed building panels render without mutating simulation [display][artifacts]")

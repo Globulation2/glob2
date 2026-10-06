@@ -190,6 +190,15 @@ stock preferences. A changed catalog starts from its authored defaults. Version
 1 preferences import their historical family/level slots through the frozen
 stock catalog; current preferences and per-game overrides use stable keys.
 
+The desktop building panel records metric row positions while drawing. Upgrade
+values reuse those positions inside the scrollable body; newly introduced
+metrics and construction costs appear after the current controls. Repair costs
+use the same body area. The mouse wheel remains active over a hovered upgrade
+or repair button, so long previews stay accessible. Physical attraction buildings
+put their attraction counts below the HP/inside header; drawing and click handling
+share the additional height. A zero initial attraction radius still exposes the
+range control when the configured maximum permits adjustment.
+
 ### Map scrolling preferences
 
 Settings > Controls has independent edge scrolling toggles for fullscreen and

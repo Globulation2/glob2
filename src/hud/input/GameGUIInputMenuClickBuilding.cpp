@@ -106,6 +106,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	my+=buildingInfoScroll;
 	int ypos = YPOS_BASE_BUILDING +  YOFFSET_NAME + YOFFSET_ICON + YOFFSET_B_SEP;
 	BuildingType *buildingType = selBuild->type;
+	ypos += buildingExtraHeaderHeight(*buildingType);
 	int lmx = mx - RIGHT_MENU_OFFSET; // local mx
 
 	// working bar
@@ -154,7 +155,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	}
 
 	// flag range bar
-	if (buildingType->defaultUnitStayRange)
+	if (buildingType->maxUnitStayRange>0 && (buildingType->zonable[WORKER] || buildingType->zonable[EXPLORER] || buildingType->zonable[WARRIOR]))
 	{
 		if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
 			&& (my>ypos+YOFFSET_TEXT_BAR)
@@ -259,6 +260,8 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	if (buildingType->maxUnitInside)
 		ypos += YOFFSET_INFOS;
 	ypos += buildingProjectileStatsHeight(*buildingType);
+	if ((selBuild->owner->allies&Team::teamNumberToMask(localTeamNo)) && buildingServiceProgressTimeout(*buildingType))
+		ypos += YOFFSET_PROGRESS_BAR;
 	ypos += YOFFSET_B_SEP;
 
 	//Exchange building
@@ -307,9 +310,13 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		}
 	}
 	*/
+	// Match visible exchange rows even though its old toggle controls are disabled.
+	if (buildingType->canExchange && (selBuild->owner->sharedVisionExchange&Team::teamNumberToMask(localTeamNo)))
+		ypos += (1+HAPPINESS_COUNT)*YOFFSET_TEXT_PARA;
 	// resources in
 	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
 	{
+		if (buildingType->canExchange && i>=BASIC_COUNT) continue;
 		if (buildingType->maxResource[i])
 		{
 			ypos += 11;

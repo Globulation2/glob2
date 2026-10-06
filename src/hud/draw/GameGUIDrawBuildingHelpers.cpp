@@ -1,4 +1,3 @@
-#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -9,6 +8,7 @@
 #include <Toolkit.h>
 
 #include "BuildingFailureDisplay.h"
+#include "BuildingPresentation.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
@@ -98,10 +98,11 @@ void GameGUI::drawBuildingIcon(const SceneBuildingPanel* selBuild, BuildingType*
 	globalContainer->gfx->finishDrawingSprite(miniSprite, 255);
 }
 
-void GameGUI::drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos)
+void GameGUI::drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows)
 {
 	if (!buildingType->hpMax)
 		return;
+	rows.hp=ypos+YOFFSET_TEXT_LINE;
 
 	Uint8 r, g, b;
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
@@ -118,13 +119,14 @@ void GameGUI::drawBuildingHP(const SceneBuildingPanel* selBuild, BuildingType* b
 	globalContainer->littleFont->popStyle();
 }
 
-void GameGUI::drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos)
+void GameGUI::drawBuildingInsideStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos, BuildingPreviewRows& rows)
 {
 	if (!buildingType->maxUnitInside)
 		return;
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
+	rows.inside=ypos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE;
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 185, 195, 21));
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_PARA+YOFFSET_TEXT_LINE, globalContainer->littleFont, Toolkit::getStringTable()->getString("[inside]"));
 	globalContainer->littleFont->popStyle();
@@ -148,7 +150,7 @@ void GameGUI::drawBuildingInsideStats(const SceneBuildingPanel* selBuild, Buildi
 
 void GameGUI::drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int ypos)
 {
-	if (!buildingType->defaultUnitStayRange)
+	if (!(buildingType->zonable[WORKER] || buildingType->zonable[EXPLORER] || buildingType->zonable[WARRIOR]))
 		return;
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
@@ -260,7 +262,7 @@ void GameGUI::drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, B
 
 void GameGUI::drawBuildingRangeControls(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
 {
-	if (!buildingType->defaultUnitStayRange)
+	if (buildingType->maxUnitStayRange<=0 || !(buildingType->zonable[WORKER] || buildingType->zonable[EXPLORER] || buildingType->zonable[WARRIOR]))
 		return;
 
 	if ((selBuild->owner.allies)&(Team::teamNumberToMask(localTeamNo)))
@@ -279,11 +281,12 @@ void GameGUI::drawBuildingRangeControls(const SceneBuildingPanel* selBuild, Buil
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 }
 
-void GameGUI::drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
+void GameGUI::drawBuildingCombatStats(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows)
 {
 	(void)selBuild;
 	if (buildingType->armor)
 	{
+		rows.armor=ypos;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[armor]")).arg(buildingType->armor).c_str());
 		ypos+=YOFFSET_TEXT_LINE;
 	}
@@ -292,8 +295,11 @@ void GameGUI::drawBuildingCombatStats(const SceneBuildingPanel* selBuild, Buildi
 	const int damageRows=buildingProjectileDamageRows(*buildingType);
 	if (damageRows)
 	{
+		rows.damageRows=damageRows;
+		rows.range=ypos+1+damageRows*11;
 		for (int row=0; row<damageRows; ++row)
 		{
+			rows.damage[row]=ypos+1+row*11;
 			const std::string label=damageRows==1 ? Toolkit::getStringTable()->getString("[damage]") : getUnitName(row);
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+1+row*11, globalContainer->littleFont,
 				FormattableString("%0 : %1").arg(label).arg(buildingType->semantics.projectileDamage[row]).c_str());
@@ -303,7 +309,7 @@ void GameGUI::drawBuildingCombatStats(const SceneBuildingPanel* selBuild, Buildi
 	}
 }
 
-void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
+void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows)
 {
 	if (!buildingType->canExchange)
 		return;
@@ -317,6 +323,7 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 	ypos += YOFFSET_TEXT_PARA;
 	for (unsigned i=0; i<HAPPINESS_COUNT; i++)
 	{
+		rows.resource[i+HAPPINESS_BASE]=ypos;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1/%2)").arg(getResourceName(i+HAPPINESS_BASE)).arg(selBuild->resources[i+HAPPINESS_BASE]).arg(buildingType->maxResource[i+HAPPINESS_BASE]).c_str());
 
 		/*
@@ -342,7 +349,7 @@ void GameGUI::drawBuildingExchange(const SceneBuildingPanel* selBuild, BuildingT
 	}
 }
 
-void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos)
+void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, BuildingType* buildingType, int& ypos, BuildingPreviewRows& rows)
 {
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
@@ -354,12 +361,14 @@ void GameGUI::drawBuildingResources(const SceneBuildingPanel* selBuild, Building
 			continue;
 		if (buildingType->maxResource[i])
 		{
+			rows.resource[i]=ypos;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1/%2").arg(getResourceName(i)).arg(selBuild->resources[i]).arg(buildingType->maxResource[i]).c_str());
 			ypos += YOFFSET_RESOURCE_LINE;
 		}
 	}
 	if (buildingType->maxBullets)
 	{
+		rows.bullets=ypos;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1/%2").arg(Toolkit::getStringTable()->getString("[Bullets]")).arg(selBuild->bullets).arg(buildingType->maxBullets).c_str());
 		ypos += YOFFSET_RESOURCE_LINE;
 	}
@@ -473,7 +482,26 @@ void GameGUI::drawBuildingFailureReasons(const SceneBuildingPanel* selBuild, Bui
 	}
 }
 
-void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec)
+GameGUI::BuildingPreview GameGUI::hoveredBuildingPreview(const SceneBuildingPanel& building) const
+{
+    if (!building.valid || building.owner.teamNumber!=drawnScene().panels.local.teamNumber
+        || !(building.owner.allies&Team::teamNumberToMask(localTeamNo))
+        || building.constructionResultState!=Building::NO_CONSTRUCTION
+        || building.buildingState!=Building::ALIVE || building.type->isBuildingSite)
+        return BuildingPreview::None;
+    const int x=globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET;
+    const int y=globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET;
+    if (mouseX<=x+12 || mouseX>=globalContainer->gfx->getW()-12
+        || mouseY<=y || mouseY>=y+BOTTOM_BUTTON_HEIGHT)
+        return BuildingPreview::None;
+    if (building.hp<building.effectiveMaxHp)
+        return building.type->semantics.repairable && building.hardSpaceForRepair
+            ? BuildingPreview::Repair : BuildingPreview::None;
+    return building.type->nextLevel>=0 && building.hardSpaceForUpgrade
+        ? BuildingPreview::Upgrade : BuildingPreview::None;
+}
+
+void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, BuildingType* buildingType)
 {
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
@@ -501,15 +529,6 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 			if (selBuild->type->semantics.repairable && selBuild->hardSpaceForRepair)
 			{
 				drawBlueButton(btnX, primaryY, "[repair]");
-				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12
-					&& mouseY>primaryY && mouseY<primaryY+BOTTOM_BUTTON_HEIGHT )
-					{
-						globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-						int resources[MAX_RESOURCES];
-						std::copy(selBuild->repairCost, selBuild->repairCost + MAX_RESOURCES, resources);
-						drawCosts(resources, globalContainer->littleFont);
-						globalContainer->littleFont->popStyle();
-					}
 			}
 		}
 		else if (buildingType->nextLevel!=-1)
@@ -518,13 +537,6 @@ void GameGUI::drawBuildingActionButtons(const SceneBuildingPanel* selBuild, Buil
 			if (selBuild->hardSpaceForUpgrade)
 			{
 				drawBlueButton(btnX, primaryY, "[upgrade]");
-				if ( mouseX>btnX+12 && mouseX<globalContainer->gfx->getW()-12
-					&& mouseY>primaryY && mouseY<primaryY+BOTTOM_BUTTON_HEIGHT )
-					{
-						globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 200, 200, 255));
-						drawBuildingUpgradePreview(selBuild, buildingType, unitInsideBarYDec);
-						globalContainer->littleFont->popStyle();
-					}
 			}
 		}
 	}
@@ -545,16 +557,7 @@ void GameGUI::drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, Bui
 	if (!((selBuild->owner.allies) & (Team::teamNumberToMask(localTeamNo))))
 		return;
 
-	// we select food buildings, heal buildings, and upgrade buildings:
-	int maxTimeTo=0;
-	if (buildingType->timeToFeedUnit)
-		maxTimeTo=buildingType->timeToFeedUnit;
-	else if (buildingType->timeToHealUnit)
-		maxTimeTo=buildingType->timeToHealUnit;
-	else
-		for (int i=0; i<NB_ABILITY; i++)
-			if (buildingType->upgradeTime[i])
-				maxTimeTo=std::max(maxTimeTo, buildingType->upgradeTime[i]);
+	const int maxTimeTo=buildingServiceProgressTimeout(*buildingType);
 	int dec = (RIGHT_MENU_RIGHT_OFFSET-128);
 	if (maxTimeTo)
 	{
@@ -695,60 +698,51 @@ void GameGUI::drawBuildingFlagControls(const SceneBuildingPanel* selBuild, Build
 	}
 }
 
-void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec)
+void GameGUI::drawBuildingUpgradePreview(const SceneBuildingPanel* selBuild, BuildingType* buildingType,
+    const BuildingPreviewRows& rows, int& ypos)
 {
-	// We draw the resources cost.
-	int typeNum=buildingType->nextLevel;
-	BuildingType *bt=game.buildingsTypes.get(typeNum);
-	drawCosts(bt->semantics.constructionCost.data(), globalContainer->littleFont);
-
-	// We draw the new abilities:
-	int blueYpos = YPOS_BASE_BUILDING + YOFFSET_NAME;
-
-	bt=game.buildingsTypes.get(bt->nextLevel);
-
-	if (bt->hpMax)
-		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE,
-			bt->hpMax * selBuild->buildingHpMultiplier);
-	if (bt->maxUnitInside)
-		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
-	blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;
-
-	if (buildingType->maxUnitWorking)
-		blueYpos += YOFFSET_BAR+YOFFSET_B_SEP;
-
-	if (bt->armor)
-	{
-		if (!buildingType->armor)
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, blueYpos-1, globalContainer->littleFont, Toolkit::getStringTable()->getString("[armor]"));
-		drawValueAlignedRight(blueYpos-1, bt->armor);
-		blueYpos+=YOFFSET_TEXT_LINE;
-	}
-	if (buildingType->maxUnitInside)
-		blueYpos += YOFFSET_INFOS;
-	if (const int rows=buildingProjectileDamageRows(*bt))
-	{
-		for (int row=0; row<rows; ++row)
-			drawValueAlignedRight(blueYpos+1+row*11, bt->semantics.projectileDamage[row]);
-		drawValueAlignedRight(blueYpos+1+rows*11, bt->shootingRange);
-		blueYpos += buildingProjectileStatsHeight(*bt);
-	}
-	blueYpos += unitInsideBarYDec;
-	blueYpos += YOFFSET_B_SEP;
-
-	unsigned j = 0;
-	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
-	{
-		if (buildingType->maxResource[i])
-		{
-			drawValueAlignedRight(blueYpos+(j*11), bt->maxResource[i]);
-			j++;
-		}
-	}
-
-	if (bt->maxBullets)
-	{
-		drawValueAlignedRight(blueYpos+(j*11), bt->maxBullets);
-		j++;
-	}
+    // Dense IDs belong to the published Scene's retained catalog. A newer
+    // simulation catalog must not change the meaning of an older frame.
+    const auto& types=drawnScene().buildingTypes;
+    if (!types || buildingType->nextLevel<0 || size_t(buildingType->nextLevel)>=types->size()) return;
+    const auto* site=&(*types)[buildingType->nextLevel];
+    if (site->nextLevel<0 || size_t(site->nextLevel)>=types->size()) return;
+    const auto* target=&(*types)[site->nextLevel];
+    // Existing rows receive the target value at the exact coordinate recorded
+    // by their draw helper. Target-only metrics use labeled appendix rows, so
+    // none of the current controls or their click regions move on hover.
+    bool heading=false;
+    const auto beginAppendix=[&]() {
+        if (heading) return;
+        ypos+=YOFFSET_B_SEP;
+        globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4,
+            ypos,globalContainer->littleFont,Toolkit::getStringTable()->getString("[upgrade]"));
+        ypos+=YOFFSET_TEXT_PARA;heading=true;
+    };
+    const auto metric=[&](int row,const std::string& label,int value) {
+        if (row>=0) { drawValueAlignedRight(row,value);return; }
+        if (!value) return;
+        beginAppendix();
+        globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4,
+            ypos,globalContainer->littleFont,label);
+        drawValueAlignedRight(ypos,value);ypos+=YOFFSET_RESOURCE_LINE;
+    };
+    metric(rows.hp,Toolkit::getStringTable()->getString("[hp]"),target->hpMax*selBuild->buildingHpMultiplier);
+    metric(rows.inside,Toolkit::getStringTable()->getString("[inside]"),target->maxUnitInside);
+    metric(rows.armor,Toolkit::getStringTable()->getString("[armor]"),target->armor);
+    const int damageRows=buildingProjectileDamageRows(*target);
+    if (rows.damageRows==1 && damageRows<=1)
+        metric(rows.damage[0],Toolkit::getStringTable()->getString("[damage]"),damageRows ? target->semantics.projectileDamage[0] : 0);
+    else if (rows.damageRows==NB_UNIT_TYPE || damageRows==NB_UNIT_TYPE)
+        for (int unit=0;unit<NB_UNIT_TYPE;++unit)
+            metric(rows.damageRows==NB_UNIT_TYPE ? rows.damage[unit] : -1,getUnitName(unit),
+                damageRows ? target->semantics.projectileDamage[unit] : 0);
+    else if (damageRows)
+        metric(-1,Toolkit::getStringTable()->getString("[damage]"),target->semantics.projectileDamage[0]);
+    metric(rows.range,Toolkit::getStringTable()->getString("[range]"),damageRows ? target->shootingRange : 0);
+    for (int resource=0;resource<MAX_RESOURCES;++resource)
+        metric(rows.resource[resource],getResourceName(resource),target->maxResource[resource]);
+    metric(rows.bullets,Toolkit::getStringTable()->getString("[Bullets]"),target->maxBullets);
+    beginAppendix();
+    drawCosts(site->semantics.constructionCost.data(),globalContainer->littleFont,ypos);
 }

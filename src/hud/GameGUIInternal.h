@@ -12,6 +12,7 @@
 #include <GraphicContext.h>
 
 #include "GlobalContainer.h"
+#include "BuildingPresentation.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -48,6 +49,11 @@ using namespace GAGGUI;
 // (GameGUIDrawMiscPanels.cpp) and the click path (GameGUIInputMenuClick.cpp) so
 // they cannot drift apart.
 constexpr int ZONE_STRIP_HEIGHT = 40;
+
+inline int buildingExtraHeaderHeight(const BuildingType& type)
+{
+    return buildingHasSeparateAttractionHeader(type) ? YOFFSET_ICON+YOFFSET_B_SEP : 0;
+}
 
 // Per-row pitches inside the building info panel resource/swarm sections.
 #define YOFFSET_RESOURCE_LINE 11

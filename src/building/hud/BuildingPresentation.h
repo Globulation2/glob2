@@ -12,6 +12,25 @@ inline std::string buildingDisplayName(const BuildingType& type)
     return strings->doesStringExist(key) ? strings->getString(key) : name;
 }
 
+// A mixed physical attractor needs its own counts below the HP/inside header.
+// Ordinary buildings and flags retain their established header positions.
+inline bool buildingHasSeparateAttractionHeader(const BuildingType& type)
+{
+    return (type.zonable[WORKER] || type.zonable[EXPLORER] || type.zonable[WARRIOR])
+        && (type.hpMax>0 || type.maxUnitInside>0);
+}
+
+// Shared presence/timeout for the existing inside-service progress row.
+inline int buildingServiceProgressTimeout(const BuildingType& type)
+{
+    if (type.timeToFeedUnit) return type.timeToFeedUnit;
+    if (type.timeToHealUnit) return type.timeToHealUnit;
+    int duration=0;
+    for (int ability=0;ability<NB_ABILITY;++ability)
+        duration=std::max(duration,type.upgradeTime[ability]);
+    return duration;
+}
+
 // Uniform damage retains the compact stock display. Mixed damage gets one row
 // per unit class, shared by drawing and hit testing so later controls stay aligned.
 inline int buildingProjectileDamageRows(const BuildingType& type)

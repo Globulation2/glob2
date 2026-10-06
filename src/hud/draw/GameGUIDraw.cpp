@@ -106,15 +106,16 @@ void GameGUI::drawValueAlignedRight(int y, int v)
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
 
-void GameGUI::drawCosts(const int resources[MAX_RESOURCES], Font *font)
+void GameGUI::drawCosts(const int resources[MAX_RESOURCES], Font *font, int& ypos)
 {
 	for (int i=0; i<MAX_RESOURCES; i++)
 	{
 		int y = i>>1;
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(i&0x1)*64, 256+172-42+y*12,
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(i&0x1)*64, ypos+y*12,
 			font,
 			FormattableString("%0: %1").arg(getResourceName(i)).arg(resources[i]).c_str());
 	}
+	ypos += ((MAX_RESOURCES+1)/2)*12;
 }
 
 void GameGUI::drawCheckButton(int x, int y, std::string caption, bool isSet)
