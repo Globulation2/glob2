@@ -35,15 +35,33 @@
 #endif
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include <optional>
+#include "render/terrain/TerrainCompositor.h"
 
 class TorusRenderIntegrationTest
 {
 public:
-static void tiledCapture()
+static void tiledCapture(bool hd = false)
 {
 #ifdef HAVE_OPENGL
+    std::optional<glob2test::ScopedEnvironment> hdPath;
+    if (hd)
+    {
+        const auto directory = glob2test::artifactDir() / "synthetic-terrain-hd";
+        std::filesystem::create_directories(directory);
+        std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/terrain-hd-solid.webp",
+            directory / "grass.webp", std::filesystem::copy_options::overwrite_existing);
+        std::ofstream frames(directory / "frames.txt");
+        frames << "GLOB2_HIGHRES 1\n";
+        for (int variant = 0; variant < 16; ++variant)
+            frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+        frames.close();
+        hdPath.emplace("GLOB2_EXPERIMENT_TEXTURE_DIR", directory.string().c_str());
+    }
     glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true,
         .width = 1120, .height = 720, .screenFlags = Uint32(GraphicContext::USEGPU)});
+    if (hd) Sprite::setHighResolution(true);
     Game game(nullptr);
     makeTorusMapFixture(game, 64, 64);
     REQUIRE(game.addUnit(29, 29, 0, EXPLORER, 0, 128, 1, 1));
@@ -64,6 +82,7 @@ static void tiledCapture()
     int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
     const unsigned options = Game::DRAW_AREA;
     REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    if (hd) REQUIRE(globalContainer->terrainCompositor().scale() == 4);
     REQUIRE(view.tiles.size() == 9);
     REQUIRE(view.pixelsPerCell == 32);
     REQUIRE(view.standaloneRender.animationTime == 1);
@@ -845,6 +864,7 @@ static void run(bool gpu, int width, int height)
 TEST_SUITE("TorusRender")
 {
     TEST_CASE("native tiled capture pixels and allocation fallback [display]") { TorusRenderIntegrationTest::tiledCapture(); }
+    TEST_CASE("HD tiled capture interiors and gutters match whole-map pixels [display]") { TorusRenderIntegrationTest::tiledCapture(true); }
 	TEST_CASE("game rendering; picking and cache changes in software rendering [writes-preferences]") { TorusRenderIntegrationTest::run(false, 1120, 720); }
 	TEST_CASE("game rendering; picking and cache changes in OpenGL [display][writes-preferences]") { TorusRenderIntegrationTest::run(true, 1120, 720); }
 	TEST_CASE("game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]")

@@ -635,6 +635,38 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(fixture.checksum() == checksum);
 			}
 	}
+	TEST_CASE("tiled capture keeps whole-map density and warm pages at narrow edges [display]")
+	{
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
+											highResolutionFixture().string().c_str());
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 256, .height = 256,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		GAGCore::Sprite::setHighResolution(true);
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		// An independently sized strip fits HD pages, unlike its whole capture.
+		SoftwareTerrainCache independent;
+		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0,
+									  fixture.team->me, true));
+		CHECK(globals->terrainCompositor().scale() == 4);
+		CHECK(independent.resolution == 2);
+		SoftwareTerrainCache tiled;
+		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0,
+								fixture.team->me, true, 0, true));
+		CHECK(tiled.resolution == 1);
+		const auto rebuilds = tiled.cacheRebuilds();
+		for (const auto &strip : {SDL_Rect{0, 0, 7, 64}, SDL_Rect{0, 0, 64, 7}})
+		{
+			REQUIRE(tiled.prepare(scene, *globals->terrain, strip.x, strip.y,
+									  strip.x + strip.w - 1, strip.y + strip.h - 1, 0, 0,
+									  fixture.team->me, true, 0, true));
+			CHECK(tiled.resolution == 1);
+			CHECK(tiled.cacheRebuilds() == rebuilds);
+			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget);
+		}
+	}
 	TEST_CASE(
 		"portable texture limits reduce HD pages and admit only fitting fallback tiles [display]")
 	{

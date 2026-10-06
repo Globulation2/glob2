@@ -52,6 +52,17 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	return {resolution, budget, pageFits,
 			pageFits && visiblePages * pageStorage(resolution, gpu) <= budget};
 }
+SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right, int bottom,
+							  int vx, int vy, int preferredResolution, bool tiledCapture)
+{
+	// A narrow atlas edge must not select HD pages after its wider neighbor
+	// selected native pages. That changes seams and repeatedly clears the cache.
+	// Select density from the complete capture, then admit each bounded tile.
+	if (tiledCapture)
+		preferredResolution = samplingPlan(map, 0, 0, map.getW() - 1, map.getH() - 1,
+									  0, 0, preferredResolution).resolution;
+	return samplingPlan(map, left, top, right, bottom, vx, vy, preferredResolution);
+}
 void drawEmergencyTiles(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 						int vy, Uint32 visibleTeams, bool wholeMap, int preferredResolution)
 {
@@ -129,15 +140,15 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time)
+								   bool wholeMap, int time, bool tiledCapture)
 {
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
-							   wholeMap, time, 0);
+							   wholeMap, time, 0, tiledCapture);
 }
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
-											   int preferredResolution)
+											   int preferredResolution, bool tiledCapture)
 {
 	if (registry.get() != &map.terrainRegistry())
 	{
@@ -156,8 +167,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(nextGPU, time);
 	const auto plan =
-		samplingPlan(map, left, top, right, bottom, vx, vy,
-					 preferredResolution > 0 ? preferredResolution : compositor.scale());
+		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
+						 preferredResolution > 0 ? preferredResolution : compositor.scale(), tiledCapture);
 	if (!plan.viewFits)
 	{
 		chunks.clear(); // Release cache storage before the caller streams pages.
@@ -351,13 +362,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sprite, int left,
 										int top, int right, int bottom, int vx, int vy,
 										Uint32 visibleTeams, bool wholeMap, int time,
-										FallbackMode mode)
+										FallbackMode mode, bool tiledCapture)
 {
 	auto &compositor = globalContainer->terrainCompositor();
 	const bool gpu = globalContainer->gfx->getOptionFlags() &
 					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(gpu, time);
-	const auto plan = samplingPlan(map, left, top, right, bottom, vx, vy, compositor.scale());
+	const auto plan = viewSamplingPlan(map, left, top, right, bottom, vx, vy,
+										   compositor.scale(), tiledCapture);
 	if (mode == FallbackMode::EmergencyTiles || !plan.pageFits)
 	{
 		drawEmergencyTiles(map, left, top, right, bottom, vx, vy, visibleTeams, wholeMap,

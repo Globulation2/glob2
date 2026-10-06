@@ -348,7 +348,8 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 		softwareTerrainCache &&
 		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
-									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time);
+									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP, time,
+									  frame.options & DRAW_TILED_CAPTURE);
 	bool coveredWater = false;
 	try
 	{
