@@ -531,3 +531,34 @@ TEST_CASE("candidate ledger snapshots omit only final economic bounds" * doctest
           ledger.residualUpperBound(input,full,1,8,0,0,1,1,true));
     query.clear();CHECK(ledger.residualUpperBound(input,query,1,8,0,0,1,1,true)==0);
 }
+
+TEST_CASE("producer viability is independent of service allocation and still detects unreachable supply" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput(64,64);
+    input.yield[input.index(8,8)]=1000;
+    input.consumers.push_back(makeConsumer(1,InnConsumer,7,8,800));
+    auto producer=makeConsumer(2,SwarmConsumer,8,7,500);
+    producer.productionDemand=500;
+    input.consumers.push_back(producer);
+    Ledger ledger;Result result;
+    ledger.evaluate(input,result);
+    const auto* allocation=result.consumer(2);
+    REQUIRE(allocation);
+    CHECK(allocation->claimedProduction==200);
+    CHECK(allocation->coveragePercent==40);
+    CHECK(allocation->uncontestedCoveragePercent==100);
+    CHECK(allocation->retirementCoveragePercent()==100);
+    CHECK(result.totalClaimed==1000); // Opportunity is not additional funding.
+
+    input.consumers[1].centerX=40;
+    input.consumers[1].centerY=40;
+    ledger.evaluate(input,result);
+    CHECK(result.consumer(2)->uncontestedCoveragePercent==0);
+    CHECK(result.consumer(2)->retirementCoveragePercent()==0);
+
+    // Non-producing services keep their allocation-based shortage signal.
+    input.consumers[1]=makeConsumer(2,InnConsumer,8,7,500);
+    ledger.evaluate(input,result);
+    CHECK(result.consumer(2)->retirementCoveragePercent()==40);
+    CHECK(result.totalClaimed==1000);
+}

@@ -338,6 +338,10 @@ void Ledger::evaluate(const Input& input, Result& result, EvaluationMode mode) c
 			const long long take=std::min<long long>(remaining,input.yield[cell.index]);
 			weighted+=take*cell.distance;filled+=take;remaining-=take;
 		}
+        // The same reach walk already measured supply without competition.
+        // Keep its feasibility separate from the later policy allocation.
+        value.uncontestedCoveragePercent = value.demand > 0
+            ? int(filled * percentScale / value.demand) : maximumReportedPercent;
 		// Demand a site cannot reach at all is charged beyond the supply radius,
 		// so an unreachable position ranks behind every reachable one.
 		const long long penaltyDistance=input.policy.supplyRadius

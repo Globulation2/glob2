@@ -205,7 +205,12 @@ Switches the online and LAN tests use:
 resource-growth attribution, full-array enemy iteration, indexed text alliances,
 dense-map request boundaries, malformed script-generation counts, and
 deterministic sixteen-team save/load continuation. `Maxima.Economy` covers counted opponents,
-legacy twelve-record loading and malformed counts. Replay and network boundaries
+legacy twelve-record loading and malformed counts. Its producer-retirement case
+also distinguishes a feeding-priority allocation shortfall from an unreachable
+site, checks that viable capacity is retained, and verifies unchanged birth
+funding. `Maxima.FoodLedger` checks that the corresponding uncontested coverage
+signal never doubles resource claims and that non-producing services retain their
+allocation-based signal. Replay and network boundaries
 remain covered by `JavaScriptCompatibility` and `TeamStatsSave`.
 
 `fixtures/team-limit/pre-v127-maxima.game.gz` is an actual format-126 tick-zero
