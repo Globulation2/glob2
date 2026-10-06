@@ -1,0 +1,45 @@
+{
+  "tested_head": "6a56ad443fbe3939b23e43b74296e06b0ffb7509",
+  "base": "7d61a3c18ce558775c793924782d8747f022c637",
+  "fetched_master": "c13d2702910fae20da5dc69a2fb0a147e482bd27",
+  "architecture": "x86_64",
+  "toolchain": "Ubuntu clang version 18.1.8 (20ubuntu8)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin\n",
+  "dependency_lock": {
+    "webp": {
+      "version": "1.6.0",
+      "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+      "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+      "archive": "libwebp-1.6.0.tar.gz"
+    },
+    "SDL": {
+      "version": "3.4.16",
+      "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz",
+      "sha256": "7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68",
+      "archive": "SDL3-3.4.16.tar.gz"
+    },
+    "SDL_image": {
+      "version": "3.4.6",
+      "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz",
+      "sha256": "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01",
+      "archive": "SDL3_image-3.4.6.tar.gz"
+    },
+    "SDL_ttf": {
+      "version": "3.2.2",
+      "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+      "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+      "archive": "SDL3_ttf-3.2.2.tar.gz"
+    },
+    "SDL_net": {
+      "version": "3.2.0",
+      "url": "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz",
+      "sha256": "098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41",
+      "archive": "SDL3_net-3.2.0.tar.gz"
+    }
+  },
+  "sdl_patches": {
+    "fix-freebsd.patch": "b48ed962d22873d896f1f09800b3a781428a8425d912631a477f8669408b9d15",
+    "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+    "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab",
+    "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee"
+  }
+}
