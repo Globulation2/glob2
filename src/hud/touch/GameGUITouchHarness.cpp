@@ -688,9 +688,12 @@ class GameGUITouchHarness
 					("Navigation or preview emitted a tool order (harness line " + std::to_string(line) + ")")
 						.c_str());
 		};
+		const int innType = gui.game.buildingsTypes.getPlaceableTypeNum("inn");
+		require(innType >= 0, "The stock catalog must expose a placeable inn");
+		const std::string innChoice = gui.game.buildingsTypes.get(innType)->key;
 		tap(760, 208);
 		require(gui.selectionMode == GameGUI::TOOL_SELECTION &&
-					gui.toolManager.getBuildingName() == "inn",
+					gui.toolManager.getBuildingName() == innChoice,
 				"A tool must be selectable from its real sidebar hit area without mouse hover");
 		noOrder();
 		gui.clearSelection();
@@ -1704,14 +1707,16 @@ class GameGUITouchHarness
 					"Panel scrolling must not pan the world");
 			noOrder();
 			const auto inn =
-				std::find(gui.buildingsChoiceName.begin(), gui.buildingsChoiceName.end(), "inn") -
+				std::find(gui.buildingsChoiceName.begin(), gui.buildingsChoiceName.end(), innChoice) -
 				gui.buildingsChoiceName.begin();
+			require(inn < static_cast<decltype(inn)>(gui.buildingsChoiceName.size()),
+					"The touch palette must contain the catalog's placeable inn");
 			gui.touch->panelScroll = 0;
 			gui.touch->clampScroll();
 			const auto palette = gui.touch->paletteItemRect(inn);
 			tap(palette.x + palette.w / 2, palette.y + palette.h / 2);
 			require(gui.selectionMode == GameGUI::TOOL_SELECTION &&
-						gui.toolManager.getBuildingName() == "inn",
+						gui.toolManager.getBuildingName() == innChoice,
 					"Labeled touch palette must select the same building after rotation");
 			noOrder();
 			gui.clearSelection();
