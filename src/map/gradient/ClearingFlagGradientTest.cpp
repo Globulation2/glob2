@@ -8,6 +8,7 @@
 #include "../src/map/MapInternal.h"
 #include "../src/building/Building.h"
 #include "BuildingType.h"
+#include "Unit.h"
 #include "../src/building/IntBuildingType.h"
 #include <algorithm>
 
@@ -123,4 +124,57 @@ TEST_CASE("passable clearing sources respect forbidden paint buildings and immob
         verify(GRADIENT_AT_GOAL);
     }
 }
+}
+
+TEST_CASE("empty persistent deposits remain clearing flag goals and worker targets" * doctest::test_suite("ClearingFlagGradient"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (const bool blocksGround : {false,true})
+    {
+        CAPTURE(blocksGround);
+        Fixture f;
+        auto& map=f.game.map;
+        auto* flag=f.building(20,20,0,"clearingflag");
+        flag->unitStayRange=6;
+        std::fill_n(flag->clearingMaterials,MaterialCount,false);
+        using Json=nlohmann::json;
+        auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][0];
+        definition["key"]="empty-clearable-gold";
+        definition["properties"]["primaryMaterial"]="gold";
+        definition["properties"]["blocksGround"]=blocksGround;
+        definition["properties"]["persistsWhenEmpty"]=true;
+        definition["properties"]["clearable"]=true;
+        definition["yields"]={{"gold",{{"capacity",2},{"initial",1},{"consumption","one"}}}};
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("empty-clearable-gold");
+        for (const int y : {21,22})
+        {
+            map.setResource(21,y,id,0);
+            map.setMaterialAmount(map.coordToIndex(21,y),MaterialId::Gold,0);
+        }
+        const auto index=map.coordToIndex(21,21);
+        REQUIRE(map.getResource(index).type!=NO_RES_TYPE);
+        REQUIRE(map.materialMaskAt(index)==0);
+        CHECK_FALSE(map.isClearableResourceForMaterials(21,21,flag->clearingMaterials));
+        flag->clearingMaterials[materialIndex(MaterialId::Gold)]=true;
+        REQUIRE(map.isClearableResourceForMaterials(21,21,flag->clearingMaterials));
+        for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
+        {
+            map.buildingGradient(flag,swim,BuildingRoute::Clearing);
+            map.updateGlobalGradient(flag,swim,BuildingRoute::Clearing);
+            map.finishBuildingGradient(flag,swim,BuildingRoute::Clearing);
+            CHECK(flag->globalGradient[flag->routeSlot(swim,BuildingRoute::Clearing)][index]==GRADIENT_AT_GOAL);
+        }
+        auto* worker=f.game.addUnit(20,21,0,WORKER,0,0,0,0);
+        REQUIRE(worker);
+        worker->attachedBuilding=flag;
+        worker->movement=Unit::MOV_RANDOM_GROUND;
+        worker->handleMovementClearingResources();
+        REQUIRE(worker->movement==Unit::MOV_HARVESTING);
+        CHECK(worker->dx==1);
+        CHECK(worker->dy==0);
+        worker->handleMovementClearingResources();
+        CHECK(map.getResource(index).type==NO_RES_TYPE);
+        CHECK(f.game.teams[0]->stats.measurements.cleared[materialIndex(MaterialId::Gold)]==1);
+    }
 }

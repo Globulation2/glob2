@@ -652,7 +652,9 @@ public:
         const auto index=coordToIndex(x,y);
         const auto& r=tiles[index].resource;
         if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).clearable) return false;
-        const auto mask=materialMaskAt(index);
+        // Clearing targets the configured deposit, including empty persistent
+        // obstacles; harvested-stock availability is irrelevant to removal.
+        const auto mask=resourcePropertiesByIndex(r.type).materialMask;
         for (unsigned m=0;m<MaterialCount;++m) if (materials[m] && (mask&(1u<<m))) return true;
         return false;
     }
