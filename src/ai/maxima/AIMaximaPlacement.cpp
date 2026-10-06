@@ -1031,32 +1031,65 @@ int Planner::nearestCompletedBuildingDistance(const WorldState& world,
 }
 
 // Match production's food reach: eight-neighbor paths from the building edge,
-// bounded by the same supply radius. Only actual discovered corn contributes.
+// bounded by the same supply radius. Only discovered Food sources contribute.
 std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 	const Footprint& footprint) const
 {
 	std::vector<int> distance(world.tiles.size(),-1), queue, food;
-	const auto visit=[&](int px,int py,int depth) {
-		const int index=world.index(px,py);
-		const WorldTile& tile=world.tiles[index];
-		if(distance[index]>=0 || !tile.discovered || !tile.foodTraversable
-		   || tile.occupied || !tile.canTravel(world.swimmingBuilders>0)
-		   || (tile.resourceBlocksGround && !(tile.sources() & materialBit(MaterialId::Food)))) return;
-		// A hypothetical building must not offer a shortcut through its footprint.
-		if(world.normalizeX(px-x-footprint.left)<footprint.width
-		   && world.normalizeY(py-y-footprint.top)<footprint.height)return;
-		distance[index]=depth;queue.push_back(index);
-	};
-	for(int dy=-1;dy<=footprint.height;++dy)
-		for(int dx=-1;dx<=footprint.width;++dx)
-			if(dx==-1||dy==-1||dx==footprint.width||dy==footprint.height)
-				visit(x+footprint.left+dx,y+footprint.top+dy,0);
-	field::traverse(queue,{world.width,world.height},field::Surrounding,
-		[&](int index) {
-			if(world.tiles[index].foodOpportunity>0)food.push_back(index);
+	const field::Grid grid(world.width,world.height);
+	const int width=world.width, height=world.height;
+	const int maskX=grid.maskX(), maskY=grid.maskY(), cellMask=int(grid.cells())-1;
+	const int widthShift=maskX>=0 ? grid.widthShift() : 0;
+	const int footprintX=grid.wrapX(x+footprint.left), footprintY=grid.wrapY(y+footprint.top);
+	const bool swimming=world.swimmingBuilders>0;
+	// Select toroidal addressing once per search. Admission and FIFO/stencil
+	// order remain identical, including aliased neighbors on one-cell-wide maps.
+	const auto run=[&](auto masked) {
+		const auto visit=[&](int index,int depth) {
+			const WorldTile& tile=world.tiles[index];
+			if(distance[index]>=0 || !tile.discovered || !tile.foodTraversable
+			   || tile.occupied || !tile.canTravel(swimming)
+			   || (tile.resourceBlocksGround && !(tile.sources() & materialBit(MaterialId::Food)))) return;
+			int relativeX,relativeY;
+			if constexpr(decltype(masked)::value)
+			{
+				relativeX=((index&maskX)-footprintX)&maskX;
+				relativeY=((index>>widthShift)-footprintY)&maskY;
+			}
+			else
+			{
+				relativeX=index%width-footprintX;
+				relativeY=index/width-footprintY;
+				if(relativeX<0) relativeX+=width;
+				if(relativeY<0) relativeY+=height;
+			}
+			// A hypothetical building must not offer a shortcut through its footprint.
+			if(relativeX<footprint.width && relativeY<footprint.height) return;
+			distance[index]=depth;queue.push_back(index);
+		};
+		for(int dy=-1;dy<=footprint.height;++dy)
+			for(int dx=-1;dx<=footprint.width;++dx)
+				if(dx==-1||dy==-1||dx==footprint.width||dy==footprint.height)
+					visit(grid.index(x+footprint.left+dx,y+footprint.top+dy),0);
+		field::breadthFirst(queue,[&](int index) {
+			if(world.tiles[index].foodOpportunity>0) food.push_back(index);
 			return distance[index]>=placementPolicy.colonySupplyRadius
 				?field::Visit::Skip:field::Visit::Expand;
-		},[&](int index,int px,int py) { visit(px,py,distance[index]+1); });
+		},[&](int index) {
+			const int depth=distance[index]+1;
+			if constexpr(decltype(masked)::value)
+			{
+				const int column=index&maskX, row=index&~maskX;
+				for(const auto offset:field::Surrounding)
+					visit(((row+offset.y*width)&cellMask)+((column+offset.x)&maskX),depth);
+			}
+			else
+				grid.neighborIndices(index,field::Surrounding,[&](int next) { visit(next,depth); });
+			return field::Visit::Expand;
+		});
+	};
+	if(grid.powerOfTwo()) run(std::true_type{});
+	else run(std::false_type{});
 	return food;
 }
 

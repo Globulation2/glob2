@@ -1998,3 +1998,65 @@ TEST_CASE("food allocation does not retire reachable production but exhausted si
     CHECK(ai.food_retirement_issued.count(1)==1);
     CHECK(ai.food_retirement_issued.count(0)==0);
 }
+
+TEST_CASE("Colony food traversal preserves ordered scalar reachability" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    // Deliberately keep the pre-optimization coordinate traversal as an oracle.
+    // Compare vectors, not sets: FIFO order affects deterministic food claims.
+    const auto scalar=[](const WorldState& world,int x,int y,const Footprint& footprint,int radius) {
+        std::vector<int> distance(world.tiles.size(),-1),queue,food;
+        const auto visit=[&](int px,int py,int depth) {
+            const int index=world.index(px,py);
+            const auto& tile=world.tiles[index];
+            if(distance[index]>=0 || !tile.discovered || !tile.foodTraversable
+                || tile.occupied || !tile.canTravel(world.swimmingBuilders>0)
+                || (tile.resourceBlocksGround && !(tile.sources()&materialBit(MaterialId::Food)))) return;
+            if(world.normalizeX(px-x-footprint.left)<footprint.width
+                && world.normalizeY(py-y-footprint.top)<footprint.height) return;
+            distance[index]=depth;queue.push_back(index);
+        };
+        for(int dy=-1;dy<=footprint.height;++dy)
+            for(int dx=-1;dx<=footprint.width;++dx)
+                if(dx==-1||dy==-1||dx==footprint.width||dy==footprint.height)
+                    visit(x+footprint.left+dx,y+footprint.top+dy,0);
+        for(size_t head=0;head<queue.size();++head) {
+            const int index=queue[head];
+            if(world.tiles[index].foodOpportunity>0) food.push_back(index);
+            if(distance[index]>=radius) continue;
+            const int px=index%world.width,py=index/world.width;
+            for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+                if(dx||dy) visit(px+dx,py+dy,distance[index]+1);
+        }
+        return food;
+    };
+    for(const auto dimensions:std::vector<std::pair<int,int>>{{16,8},{13,9},{1,8},{8,1},{1,7},{7,1},{1,1}})
+    for(bool swimming:{false,true}) for(bool obstacles:{false,true}) for(bool extraStorage:{false,true})
+    {
+        WorldState world;world.reset(dimensions.first,dimensions.second);
+        if(extraStorage) world.tiles.resize(world.tiles.size()+3);
+        world.swimmingBuilders=swimming?1:0;
+        for(size_t i=0;i<world.tiles.size();++i) {
+            auto& tile=world.tiles[i];tile.discovered=true;tile.foodTraversable=true;
+            tile.foodOpportunity=1;tile.materialType=materialIndex(MaterialId::Wood);
+            tile.materialSources=materialBit(MaterialId::Wood)|materialBit(MaterialId::Food);
+            if(obstacles) {
+                tile.discovered=i%17!=3;tile.foodTraversable=i%19!=4;tile.occupied=i%23==5;
+                tile.swimmable=i%7==2;tile.walkable=!tile.swimmable;
+                tile.resourceBlocksGround=i%3==1;
+                if(i%5==0) tile.materialSources=materialBit(MaterialId::Wood);
+                if(i%11==0) { tile.materialSources=0;tile.materialType=materialIndex(MaterialId::Food); }
+                if(i%4==0) tile.foodOpportunity=0;
+            }
+        }
+        Planner planner;
+        for(int radius:{0,1,3,30}) for(const Footprint footprint:{Footprint(0,0,1,1),Footprint(-1,-2,3,2)})
+        for(const auto anchor:std::vector<std::pair<int,int>>{{0,0},{world.width-1,world.height-1},{-2*world.width-1,3*world.height+2}}) {
+            planner.mutablePolicy().colonySupplyRadius=radius;
+            CAPTURE(dimensions.first);CAPTURE(dimensions.second);CAPTURE(swimming);CAPTURE(obstacles);
+            CAPTURE(radius);CAPTURE(anchor.first);CAPTURE(anchor.second);CAPTURE(extraStorage);
+            CHECK(planner.colonyFoodTiles(world,anchor.first,anchor.second,footprint)
+                ==scalar(world,anchor.first,anchor.second,footprint,radius));
+        }
+    }
+}
