@@ -1,0 +1,112 @@
+{
+  "candy": {
+    "contrast": 0.173,
+    "coverage": 0.089,
+    "luminance": 0.418
+  },
+  "carbon": {
+    "contrast": 0.087,
+    "coverage": 0.089,
+    "luminance": 0.167
+  },
+  "cartoon": {
+    "contrast": 0.224,
+    "coverage": 0.089,
+    "luminance": 0.339
+  },
+  "chrome": {
+    "contrast": 0.206,
+    "coverage": 0.089,
+    "luminance": 0.419
+  },
+  "cloud": {
+    "contrast": 0.11,
+    "coverage": 0.103,
+    "luminance": 0.472
+  },
+  "crystal": {
+    "contrast": 0.18,
+    "coverage": 0.089,
+    "luminance": 0.569
+  },
+  "glossy": {
+    "contrast": 0.184,
+    "coverage": 0.089,
+    "luminance": 0.404
+  },
+  "goo": {
+    "contrast": 0.132,
+    "coverage": 0.089,
+    "luminance": 0.467
+  },
+  "hairy": {
+    "contrast": 0.117,
+    "coverage": 0.119,
+    "luminance": 0.458
+  },
+  "hammered": {
+    "contrast": 0.166,
+    "coverage": 0.089,
+    "luminance": 0.336
+  },
+  "honeycomb": {
+    "contrast": 0.192,
+    "coverage": 0.089,
+    "luminance": 0.37
+  },
+  "ice": {
+    "contrast": 0.183,
+    "coverage": 0.089,
+    "luminance": 0.435
+  },
+  "lava": {
+    "contrast": 0.273,
+    "coverage": 0.089,
+    "luminance": 0.252
+  },
+  "leather": {
+    "contrast": 0.174,
+    "coverage": 0.089,
+    "luminance": 0.398
+  },
+  "matte": {
+    "contrast": 0.145,
+    "coverage": 0.089,
+    "luminance": 0.418
+  },
+  "metallic": {
+    "contrast": 0.155,
+    "coverage": 0.089,
+    "luminance": 0.32
+  },
+  "scales": {
+    "contrast": 0.171,
+    "coverage": 0.089,
+    "luminance": 0.358
+  },
+  "slime": {
+    "contrast": 0.124,
+    "coverage": 0.089,
+    "luminance": 0.543
+  },
+  "stone": {
+    "contrast": 0.163,
+    "coverage": 0.089,
+    "luminance": 0.327
+  },
+  "velvet": {
+    "contrast": 0.12,
+    "coverage": 0.089,
+    "luminance": 0.316
+  },
+  "wood": {
+    "contrast": 0.169,
+    "coverage": 0.089,
+    "luminance": 0.332
+  },
+  "woven": {
+    "contrast": 0.175,
+    "coverage": 0.089,
+    "luminance": 0.39
+  }
+}
