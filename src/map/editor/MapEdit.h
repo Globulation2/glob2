@@ -827,9 +827,6 @@ private:
 	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
 	bool importingResources = false;
 	void importResourceFile(const std::string& filename);
-	// Group filter the palette reopens with (TerrainPaletteDialog::AllGroups, a
-	// TerrainGroup index or TerrainPaletteDialog::CustomGroup).
-	int paletteGroup = -1;
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 

@@ -480,7 +480,7 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.terrainType==TerrainSelector::Wheat);
     }
 
-	TEST_CASE("catalogue groups get side-panel selectors that open a filtered terrain palette [display][artifacts]")
+	TEST_CASE("catalogue groups get side-panel selectors that open the palette at their section [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
 			.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
@@ -499,12 +499,16 @@ TEST_SUITE("EditorActionCoverage")
 		editor.performAction("select road");
 		obstacles->activate();
 		REQUIRE(editor.terrainPalette);
+		CHECK(editor.terrainPalette->focusedGroup()==int(TerrainGroup::Obstacles));
 		SDL_Event poll{}; poll.type=SDL_EVENT_USER;
 		auto &host = editor.terrainPalette->host();
 		host.layoutIfNeeded();
+		// Every enabled brush is listed in its group's section; disabled groups are absent.
 		CHECK(host.bounds("terrain/hedge").w > 0);
 		CHECK(host.bounds("terrain/boulders").w > 0);
-		CHECK_THROWS(host.bounds("terrain/ice"));
+		CHECK(host.bounds("terrain/ice").w > 0);
+		CHECK(host.bounds("terrain/water").w > 0);
+		CHECK(host.bounds("terrain/road").w > 0);
 		CHECK_THROWS(host.bounds("terrain/mud")); // rough-terrain is off
 		editor.draw(SDL_GetTicks());
 		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-palette-obstacles.bmp");
@@ -517,36 +521,26 @@ TEST_SUITE("EditorActionCoverage")
 		editor.delegateMenu(poll);
 		CHECK_FALSE(editor.terrainPalette);
 		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
-		CHECK(editor.paletteGroup==int(TerrainGroup::Obstacles));
 		editor.draw(SDL_GetTicks()); // the group selector shows the active hedge brush
 		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-side-panel-groups.bmp");
 		globals->gfx->nextFrame();
 		cursor(editor,12,12);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
 		CHECK(editor.game.map.terrainTypeAt(12,12)==HEDGE);
-		// The menu's plain palette action reopens the remembered group; "all" lists every enabled type.
+		// The menu action opens at the top with the active brush highlighted.
 		editor.performAction("open terrain palette");
 		REQUIRE(editor.terrainPalette);
+		CHECK(editor.terrainPalette->focusedGroup()==-1);
 		editor.terrainPalette->host().layoutIfNeeded();
 		CHECK(editor.terrainPalette->host().bounds("terrain/thicket").w > 0);
-		CHECK_THROWS(editor.terrainPalette->host().bounds("terrain/ice"));
+		CHECK(editor.terrainPalette->host().bounds("terrain/ice").w > 0);
 		editor.terrainPalette->finish(-1);
 		editor.delegateMenu(poll);
 		CHECK_FALSE(editor.terrainPalette);
-		editor.performAction("open terrain palette all");
-		REQUIRE(editor.terrainPalette);
-		editor.terrainPalette->host().layoutIfNeeded();
-		CHECK(editor.terrainPalette->host().bounds("terrain/ice").w > 0);
-		CHECK(editor.terrainPalette->host().bounds("terrain/road").w > 0);
-		CHECK(editor.terrainPalette->host().bounds("terrain/boulders").w > 0);
-		CHECK_THROWS(editor.terrainPalette->host().bounds("terrain/mud"));
-		editor.terrainPalette->finish(-1);
-		editor.delegateMenu(poll);
-		CHECK(editor.paletteGroup==TerrainPaletteDialog::AllGroups);
-		// Unknown group keys fall back to every group. Opening the palette clears the
-		// brush like the other dialogs, and cancelling leaves nothing selected.
+		// Unknown group keys open unfocused. Opening the palette clears the brush
+		// like the other dialogs, and cancelling leaves nothing selected.
 		editor.performAction("open terrain palette nonsense");
 		REQUIRE(editor.terrainPalette);
-		CHECK(editor.terrainPalette->selectedGroup()==TerrainPaletteDialog::AllGroups);
+		CHECK(editor.terrainPalette->focusedGroup()==-1);
 		editor.terrainPalette->finish(-1);
 		editor.delegateMenu(poll);
 		CHECK(editor.terrainType==TerrainSelector::NoTerrain);

@@ -5716,7 +5716,33 @@ Adds deep and dark water to the map editor. Swimmers cross them more slowly, no 
 Void terrain
 [experiment void-terrain help]
 Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge.
-[terrain group all]
-All groups
 [terrain group custom]
 Custom
+[terrain group classic]
+Classic ground
+[terrain rule walkable]
+Walkable
+[terrain rule swimmable]
+Swimmable
+[terrain rule impassable]
+Impassable
+[terrain rule no flying]
+No flying
+[terrain rule buildable]
+Buildable
+[terrain rule speed %0]
+Speed %0%
+[terrain rule crops grow]
+Crops grow
+[terrain rule irrigates]
+Irrigates nearby land
+[terrain rule stops nearby growth]
+Stops nearby growth
+[terrain rule blocks shots]
+Blocks shots
+[terrain rule hurts walkers]
+Hurts walkers
+[terrain rule hurts fliers]
+Hurts fliers
+[terrain palette hint]
+Pick a brush. Groups share one set of rules; their members differ only in look.

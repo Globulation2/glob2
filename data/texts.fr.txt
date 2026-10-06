@@ -5716,7 +5716,33 @@ Tirer à nouveau l’apparence du terrain
 
 [experiment void-terrain help]
 
-[terrain group all]
-
 [terrain group custom]
+
+[terrain group classic]
+
+[terrain rule walkable]
+
+[terrain rule swimmable]
+
+[terrain rule impassable]
+
+[terrain rule no flying]
+
+[terrain rule buildable]
+
+[terrain rule speed %0]
+
+[terrain rule crops grow]
+
+[terrain rule irrigates]
+
+[terrain rule stops nearby growth]
+
+[terrain rule blocks shots]
+
+[terrain rule hurts walkers]
+
+[terrain rule hurts fliers]
+
+[terrain palette hint]
 
