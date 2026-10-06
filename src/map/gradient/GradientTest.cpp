@@ -50,6 +50,7 @@ namespace
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
+			// Test-only private access bootstraps this partial map.
 			tiles.assign(size, Tile());
             importLegacyTerrain();
 		}
@@ -154,7 +155,7 @@ namespace
 			else
 				sweep([&](int i) { return isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP; });
 		}
-		void putGroundUnit(int x, int y) { tiles[coordToIndex(x, y)].groundUnit = 0; }
+		void putGroundUnit(int x, int y) { setGroundUnit(x, y, 0); }
 	};
 
 	// Shortest wrapped axis distance on a torus of extent n.

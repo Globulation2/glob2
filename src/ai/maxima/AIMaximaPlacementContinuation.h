@@ -17,10 +17,29 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
 	a("level",value.level);
 	a("engineType",value.engineType);
 	a("footprint",value.footprint);
-	a("constructionResources",value.constructionResources);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) a("constructionResources",value.constructionResources);
+	else { int old[5]{};for(int i=0;i<5;++i)old[i]=value.constructionResources[i];a("constructionResources",old);for(int i=0;i<5;++i)value.constructionResources[i]=old[i]; }
 	a("serviceThroughput",value.serviceThroughput);
 	a("durability",value.durability);
 	a("capability",value.capability);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+	 a("completedType",value.completedType);a("roles",value.roles);a("serviceRates",value.serviceRates);
+	 a("productionUnitMask",value.productionUnitMask);a("productionRates",value.productionRates);
+     a("operatingAssignmentLimit",value.operatingAssignmentLimit);a("initialCarriers",value.initialCarriers);a("productionDemandPercent",value.productionDemandPercent);
+     a("productionTicks",value.productionRecipes.ticks);a("productionCosts",value.productionRecipes.costs);a("productionPacketSize",value.productionRecipes.packetSize);
+     if(value.operatingAssignmentLimit<0 || value.operatingAssignmentLimit>1024 || value.initialCarriers < -1 || value.initialCarriers>1024 || value.productionDemandPercent<0 || value.productionDemandPercent>10000)throw std::runtime_error("Invalid saved production operating plan");
+     for(int unit=0;unit<3;++unit) {
+         if(value.productionRecipes.ticks[unit]<0 || value.productionRecipes.ticks[unit]>1000001)throw std::runtime_error("Invalid saved production clock");
+         for(int r=0;r<8;++r)if(value.productionRecipes.costs[unit][r]<0 || value.productionRecipes.costs[unit][r]>1000000)throw std::runtime_error("Invalid saved production cost");
+     }
+     for(int r=0;r<8;++r)if(value.productionRecipes.packetSize[r]<=0 || value.productionRecipes.packetSize[r]>1000000)throw std::runtime_error("Invalid saved packet size");
+	 a("operatingResources",value.operatingResources);
+     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);a("feedingResources",value.feedingResources);a("productionResources",value.productionResources);a("independentResources",value.independentResources);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
+     if(value.feedingRate<0 || value.feedingMask>7)throw std::runtime_error("Invalid saved feeding profile");
+     for(int r=0;r<8;++r)if(value.independentResources[r]<0 || value.independentResources[r]>value.operatingResources[r] || value.feedingResources[r]<0 || value.feedingResources[r]>value.operatingResources[r] || value.productionResources[r]<0 || value.productionResources[r]>value.operatingResources[r])
+         throw std::runtime_error("Invalid saved feeding resource component");
+	}
 }
 
 template<class A> void fields(A& a, BuildingProfile& value)
@@ -79,6 +98,17 @@ template<class A> void fields(A& a, WorldBuilding& value)
 	a("age",value.age);
 	a("site",value.site);
 	a("upgrading",value.upgrading);
+    if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+        a("plannedCarriers",value.plannedCarriers);a("productionRatios",value.productionRatios);
+        if(value.plannedCarriers < -1 || value.plannedCarriers>1024)throw std::runtime_error("Invalid saved provider staffing");
+        for(int ratio:value.productionRatios)if(ratio<0 || ratio>32767)throw std::runtime_error("Invalid saved production ratio");
+    }
+}
+
+template<class A> void fields(A& a, FeedingColony& value)
+{
+    a("x",value.x);a("y",value.y);a("demand",value.demand);
+    for(int unit=0;unit<3;++unit)if(value.demand[unit]<0)throw std::runtime_error("Invalid saved meal demand");
 }
 
 template<class A> void fields(A& a, WorldState& value)
@@ -87,10 +117,17 @@ template<class A> void fields(A& a, WorldState& value)
 	a("height",value.height);
 	a("tick",value.tick);
 	a("swimmingBuilders",value.swimmingBuilders);
-	a("accessibleSupplies",value.accessibleSupplies);
+	if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) a("accessibleSupplies",value.accessibleSupplies);
+	else { int old[5]{};for(int i=0;i<5;++i)old[i]=value.accessibleSupplies[i];a("accessibleSupplies",old);for(int i=0;i<5;++i)value.accessibleSupplies[i]=old[i]; }
 	a("tiles",value.tiles);
 	a("buildings",value.buildings);
 	a("profiles",value.profiles);
+    if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+        a("feedingColonies",value.feedingColonies);
+        for(const auto& colony:value.feedingColonies)if(colony.x<0 || colony.x>=value.width || colony.y<0 || colony.y>=value.height)
+            throw std::runtime_error("Invalid saved feeding colony");
+    }
+	value.invalidateProfileIndex();
 }
 
 template<class A> void fields(A& a, DevelopmentIntent& value)

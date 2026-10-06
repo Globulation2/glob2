@@ -7,6 +7,7 @@
 	\brief SGSL story stepping: runs the statements of one Story against the game
 */
 
+#include <algorithm>
 #include <iostream>
 #include <optional>
 #include <string>
@@ -142,8 +143,13 @@ void Story::summonFlag(Game *game)
 	int unitCount = line[++lineSelector].value;
 	int team = line[++lineSelector].value;
 
-	int typeNum = globalContainer->buildingsTypes.getTypeNum("warflag", 0, false);
-
+	// summonFlag is an authored SGSL alias, resolved against this game's IDs.
+	const int typeNum = game->buildingsTypes.getTypeNum("warflag", 0, false);
+	if (typeNum < 0 || !game->buildingsTypes.get(typeNum)->runtimeAvailable)
+	{
+		std::cerr << "SGSL : Could not summon flag " << flagName << " : catalog has no available warflag alias !" << std::endl;
+		return;
+	}
 	Building *b = game->addBuilding(x, y, typeNum, team);
 
 	// addBuilding returns NULL when the team already holds
@@ -152,9 +158,10 @@ void Story::summonFlag(Game *game)
 	// does for its own error case.
 	if (b)
 	{
-		b->unitStayRange = r;
-		b->maxUnitWorking = unitCount;
-		b->maxUnitWorkingPreferred = unitCount;
+		b->unitStayRange = std::clamp(r, 0, int(b->type->maxUnitStayRange));
+		b->maxUnitWorking = std::clamp(unitCount, 0, b->type->semantics.assignmentLimit);
+		b->maxUnitWorkingPreferred = b->maxUnitWorking;
+		b->owner->addToStaticAbilitiesLists(b);
 		b->update();
 
 		mapscript->flags[flagName] = b;

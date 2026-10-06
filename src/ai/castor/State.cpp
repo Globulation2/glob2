@@ -7,6 +7,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
+#include <algorithm>
 
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
@@ -97,24 +98,34 @@ void AICastor::computeNeedSwim()
 void AICastor::computeBuildingSum()
 {
 	telemetry.count(AITrace::AI2::AICastor_computeBuildingSum_calls);
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<AICastor::DemandCount; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				buildingLevels[bi][si][li]=0;
 	
+	const auto& capabilities=game->buildingCapabilities();
 	Building **myBuildings=team->myBuildings;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
 		if (b)
 		{
-			if (b->buildingState==Building::WAITING_FOR_CONSTRUCTION && b->constructionResultState==Building::UPGRADE)
-				buildingLevels[b->type->shortTypeNum][1][b->type->level+1]++;
-			else
-				buildingLevels[b->type->shortTypeNum][b->type->isBuildingSite][b->type->level]++;
+   const bool upgrading = b->buildingState==Building::WAITING_FOR_CONSTRUCTION && b->constructionResultState==Building::UPGRADE;
+   int completed = b->type->isBuildingSite ? b->type->nextLevel : b->typeNum;
+   if (upgrading && b->type->nextLevel >= 0) {
+    const auto* next = game->buildingsTypes.get(b->type->nextLevel);
+    completed = next->isBuildingSite ? next->nextLevel : b->type->nextLevel;
+   }
+   if (completed < 0) continue;
+   const int stage=std::clamp(capabilities.lineagePosition(completed)-1,0,NB_UNIT_LEVELS-1);
+   const auto mask=capabilities.intentMask(completed);
+   for (int demand=0; demand<DemandCount; ++demand)
+    if (mask & (std::uint64_t{1} << static_cast<unsigned>(demandIntents[demand])))
+     buildingLevels[demand][upgrading || b->type->isBuildingSite][stage]++;
+
 		}
 	}
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<AICastor::DemandCount; bi++)
 		for (int si=0; si<2; si++)
 		{
 			int sum=0;
@@ -123,7 +134,7 @@ void AICastor::computeBuildingSum()
 			buildingSum[bi][si]=sum;
 		}
 
-	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
+	for (int bi=0; bi<AICastor::DemandCount; bi++)
 		for (int si=0; si<2; si++)
 			for (int li=0; li<NB_UNIT_LEVELS; li++)
 				if (buildingLevels[bi][si][li]>0)
@@ -147,7 +158,7 @@ void AICastor::computeWarLevel()
 	int sum=0;
 	for (int si=0; si<2; si++)
 		for (int li=strategy.warLevelTrigger; li<NB_UNIT_LEVELS; li++)
-			sum+=buildingLevels[IntBuildingType::ATTACK_BUILDING][si][li];
+			sum+=buildingLevels[AICastor::TrainAttack][si][li];
 	if (sum>AI_CASTOR_WARLEVEL_BUILDINGS_HIGH)
 		warLevelTriggerLevel=AI_CASTOR_WAR_LEVEL_HIGH;
 	else if (sum>0)

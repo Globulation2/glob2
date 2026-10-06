@@ -371,15 +371,15 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets)
+bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets, const Building* consumer)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets);
+	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets)
+bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets, const Building* consumer)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets);
+	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	if (g>GRADIENT_UNREACHABLE)
 	{
 		*dist = gradientTiles(g);
@@ -389,17 +389,17 @@ bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int
 		return false;
 }
 
-bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets)
+bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets, const Building* consumer)
 {
 	// distance and availability
 	bool result;
 	if (dist)
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, dist, withMarkets);
+		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, dist, withMarkets, consumer);
 	else
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, withMarkets);
+		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 		
 	// target position
-	const Uint16 *gradient = getResourceGradient(teamNumber, resourceType, swimClass, withMarkets);
+	const Uint16 *gradient = getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, consumer);
 	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
 
 	return result;

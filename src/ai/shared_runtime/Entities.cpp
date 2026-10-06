@@ -19,6 +19,7 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 		case Entities::EBuilding:        entity.reset(new Entities::Building); break;
 		case Entities::EAnyTeamBuilding: entity.reset(new Entities::AnyTeamBuilding); break;
 		case Entities::EAnyBuilding:     entity.reset(new Entities::AnyBuilding); break;
+		case Entities::EResourceSet: entity.reset(new Entities::ResourceSet); break;
 		case Entities::EResource:       entity.reset(new Entities::Resource); break;
 		case Entities::EAnyResource:    entity.reset(new Entities::AnyResource); break;
 		case Entities::EUnwalkable:      entity.reset(new Entities::Unwalkable); break;

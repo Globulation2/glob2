@@ -23,7 +23,7 @@ namespace
 struct World
 {
 	glob2test::HeadlessGame world;
-	explicit World(AI::ImplementationID id, int enemies = 1, Uint32 seed = 713)
+	explicit World(AI::ImplementationID id, int enemies = 1, Uint32 seed = 713, int warriors = 4)
 		: world(glob2test::GameOptions{.wDec = 6, .hDec = 6, .teams = 1 + enemies, .discovered = true,
 									   .clearImmobile = true, .loadDefaultRace = true})
 	{
@@ -50,7 +50,7 @@ struct World
 				// Seen by everyone, so Cortex may rank enemy buildings as targets.
 				b->seenByMask = ~0u;
 			}
-			for (int unit = 0; unit < 12; ++unit)
+			for (int unit = 0; unit < 8 + warriors; ++unit)
 				world.addUnit(unit < 8 ? WORKER : WARRIOR, 4 + ox + unit, 12 + oy, team);
 			for (int y = 18 + oy; y < 24 + oy; ++y)
 				for (int x = 4 + ox; x < 20 + ox; ++x)
@@ -221,7 +221,9 @@ TEST_SUITE("AITargetTelemetrySave")
 			CAPTURE(name);
 			// Two copies of one saved state; without a series every telemetry write
 			// is a no-op, so the detached copy is the reference run.
-			World world(f.id);
+            // Exercise targeting without depending on births or a famine to
+            // reach Cortex's existing eight-warrior normal offense threshold.
+            World world(f.id,1,713,f.id==AI::CORTEX?8:4);
 			const auto bytes = saved(world.game());
 			auto collectedGame = loaded(bytes), detachedGame = loaded(bytes);
 			Game &collected = collectedGame->game, &detached = detachedGame->game;
@@ -231,6 +233,10 @@ TEST_SUITE("AITargetTelemetrySave")
 			int firstTarget = -1;
 			for (int t = 0; t < 6000; ++t)
 			{
+				// Exercise the targeting/telemetry boundary with visible enemies;
+				// reaching them through a particular scouting strategy is separate.
+				for (Game* game : {&collected, &detached})
+					game->map.setMapDiscovered(32, 0, 32, 32, game->teams[0]->me);
 				tick(collected);
 				tick(detached);
 				REQUIRE(state(collected) == state(detached));

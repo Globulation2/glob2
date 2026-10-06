@@ -6,6 +6,8 @@
 #include "BuildingType.h"
 #include "AIImplementation.h"
 #include "AINumbiTuning.h"
+#include "BuildingCapabilities.h"
+#include <array>
 
 class Game;
 class Map;
@@ -45,23 +47,21 @@ private:
 	int criticalWarriors;
 	int criticalTime;
 	int attackTimer;
-	// [POSSIBLE BUG M7] Sized AI_NUMBI_LEGACY_NB_BUILDING (=15) for save-format
-	// compatibility; comment originally read "BuildingType::NB_BUILDING=15 with
-	// lover versions". Today IntBuildingType::NB_BUILDING is smaller, but the
-	// loops below still index by NB_BUILDING — preserved verbatim.
-	int mainBuilding[AI_NUMBI_LEGACY_NB_BUILDING];
+	using Intent = AIPlanning::BuildingIntent;
+	std::array<int, static_cast<unsigned>(Intent::Count)> mainBuilding{};
+	int selectBuilding(Intent intent);
+	bool provides(const Building& building, Intent intent) const;
 	void init(Player *player);
 	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);
 	std::shared_ptr<Order>swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors);
-	void nextMainBuilding(const int buildingType);
-	int nbFreeAround(const int buildingType, int posX, int posY, int width, int height);
-	bool parseBuildingType(const int buildingType);
+	void nextMainBuilding(Intent intent);
+	int nbFreeAround( int posX, int posY, int width, int height);
 	void squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);
-	bool findNewEmplacement(const int buildingType, int *posX, int *posY);
+	bool findNewEmplacement(Intent intent, int typeNum, int *posX, int *posY);
 	std::shared_ptr<Order>mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested);
-	std::shared_ptr<Order>adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
+	std::shared_ptr<Order>adjustBuildings(const int numbers, const int numbersInc, const int workers, Intent intent);
 	std::shared_ptr<Order>checkoutExpands(const int numbers, const int workers);
 	std::shared_ptr<Order>mayUpgrade(const int ptrigger, const int ntrigger);
 };

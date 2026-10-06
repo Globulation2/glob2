@@ -143,6 +143,9 @@ static void destroyedInnExpelsEveryone()
 		u->hungry = 0;
 	units[3]->displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
 	inn->resources[WHEAT] = 10;
+	// Recreate admission commitments for unpaid visits. The blocked exiting
+	// visitor already settled its meal and must not be charged again.
+	for (int i : {0,1,2,4}) inn->reserveService(units[i]);
 	require(world.game.integrity(), "scenario setup is consistent");
 
 	const Uint16 innGid = inn->gid;

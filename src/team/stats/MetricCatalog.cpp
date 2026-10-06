@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MetricCatalog.h"
 #include "MetricSeries.h"
+#include "BuildingType.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -30,15 +31,6 @@ double deathsBy(const M &m, int cause)
 	double sum = 0;
 	for (const auto &row : m.deaths)
 		sum += double(row[cause]);
-	return sum;
-}
-
-//! Finished buildings of a type: the odd "long levels" (TeamStat.h).
-double finished(const M &m, int type)
-{
-	double sum = 0;
-	for (int level = 1; level < NB_BUILDING_LONG_LEVELS; level += 2)
-		sum += double(m.buildings[type][level]);
 	return sum;
 }
 
@@ -270,7 +262,7 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "spending", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.consumed); }});
 		const char *keys[M::PURPOSES] = {"[stat band meals]", "[stat band new units]", "[stat band ammunition]",
-										 "[stat band construction]", "[stat band upgrades]"};
+										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]"};
 		for (int purpose = 0; purpose < M::PURPOSES; ++purpose)
 			m.bands.push_back({keys[purpose], [purpose](const M &s) { return total(s.consumed[purpose]); }});
 		m.composition = true;
@@ -290,42 +282,30 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "buildings", .group = Group::Buildings, .unitKey = "[stat unit buildings]",
 						 .sampled = EndOfGameStat::TYPE_BUILDINGS});
 		m.splitKey = "[stat view by building]";
-		// Eight bands at most, so each keeps its own colour: the rarer types share one.
-		const std::pair<const char *, int> types[] = {
-			{"[swarm]", IntBuildingType::SWARM_BUILDING},	{"[inn]", IntBuildingType::FOOD_BUILDING},
-			{"[hospital]", IntBuildingType::HEAL_BUILDING}, {"[barracks]", IntBuildingType::ATTACK_BUILDING},
-			{"[school]", IntBuildingType::SCIENCE_BUILDING}, {"[defencetower]", IntBuildingType::DEFENSE_BUILDING},
-			{"[stonewall]", IntBuildingType::STONE_WALL}};
-		for (const auto &[key, type] : types)
-			m.bands.push_back({key, [type](const M &s) { return finished(s, type); }});
-		m.bands.push_back({"[stat band other]", [](const M &s)
-						   {
-							   return finished(s, IntBuildingType::WALKSPEED_BUILDING) + finished(s, IntBuildingType::SWIMSPEED_BUILDING) +
-									  finished(s, IntBuildingType::MARKET_BUILDING);
-						   }});
+
 		m.shareable = true;
 	}
 	{
 		Metric &m = add({.id = "construction", .group = Group::Buildings, .kind = Metric::Counter, .unitKey = "[stat unit buildings]",
-						 .value = [](const M &s) { return total(s.completed); }});
+						 .value = [](const M &s) { if(s.variants.empty()) return total(s.completed); double sum=0; for(const auto& v:s.variants) sum+=total(v.completed); return sum; }});
 		m.rare = true;
 		m.splitKey = "[stat view by work]";
 		const char *keys[M::COMPLETIONS] = {"[stat band built]", "[stat band upgraded]", "[stat band repaired]"};
 		for (int kind = 0; kind < M::COMPLETIONS; ++kind)
-			m.bands.push_back({keys[kind], [kind](const M &s) { return total(s.completed[kind]); }});
+			m.bands.push_back({keys[kind], [kind](const M &s) { if(s.variants.empty()) return total(s.completed[kind]); double sum=0; for(const auto& v:s.variants) sum+=v.completed[kind]; return sum; }});
 	}
 	{
 		Metric &m = add({.id = "buildings lost", .group = Group::Buildings, .kind = Metric::Counter, .unitKey = "[stat unit buildings]",
-						 .value = [](const M &s) { return total(s.removed); }});
+						 .value = [](const M &s) { if(s.variants.empty()) return total(s.removed); double sum=0; for(const auto& v:s.variants) sum+=total(v.removed); return sum; }});
 		m.rare = true;
 		m.splitKey = "[stat view by cause]";
 		const char *keys[M::REMOVALS] = {"[stat band destroyed]", "[stat band demolished]", "[stat band other]"};
 		for (int kind = 0; kind < M::REMOVALS; ++kind)
-			m.bands.push_back({keys[kind], [kind](const M &s) { return total(s.removed[kind]); }});
+			m.bands.push_back({keys[kind], [kind](const M &s) { if(s.variants.empty()) return total(s.removed[kind]); double sum=0; for(const auto& v:s.variants) sum+=v.removed[kind]; return sum; }});
 	}
 	{
 		Metric &m = add({.id = "blocked buildings", .group = Group::Buildings, .unitKey = "[stat unit buildings]",
-						 .value = [](const M &s) { return total(s.trappedBuildings[1][0]); }});
+						 .value = [](const M &s) { if(s.variants.empty()) return total(s.trappedBuildings[1][0]); double sum=0; for(const auto& v:s.variants) sum+=v.trapped[1][0]; return sum; }});
 		m.extended = true;
 	}
 
@@ -615,7 +595,10 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 	if (view.split)
 	{
 		for (const auto &band : metric.bands)
+        {
 			chart.bandKeys.push_back(band.labelKey);
+            chart.bandLabelLiteral.push_back(band.literalLabel);
+        }
 		if (metric.remainderKey)
 			chart.bandKeys.push_back(metric.remainderKey);
 	}
@@ -674,6 +657,24 @@ const std::vector<Metric> &catalog()
 {
 	static const std::vector<Metric> metrics = build();
 	return metrics;
+}
+
+std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings)
+{
+    auto metrics=catalog();
+    auto& metric=metrics[findMetric("buildings")];
+    for (size_t id=0; id<buildings.size(); ++id)
+    {
+        const auto& type=*buildings.get(id);
+        if (type.isBuildingSite || !type.semantics.occupiesGround) continue;
+        // The key disambiguates same-name stages and survives translation changes.
+        const std::string label=type.presentation.displayName.empty() ? type.key :
+            type.presentation.displayName+" ("+type.key+")";
+        metric.bands.push_back({label,[id](const M& sample) {
+            return id<sample.variants.size() ? double(sample.variants[id].count) : 0.;
+        },true});
+    }
+    return metrics;
 }
 
 int findMetric(const std::string &id)

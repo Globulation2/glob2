@@ -5,13 +5,14 @@
 #include <iostream>
 #include "GlobalContainer.h"
 #include "FileManager.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "Version.h"
 #include "shared_runtime/Runtime.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
+#include <nlohmann/json.hpp>
 
 // SDL compiler flags may rename main even when SDL_MAIN_HANDLED is set.
 using namespace AISharedRuntime::Gradients;
@@ -108,6 +109,68 @@ class RuntimeContinuationTest
         legacyCopy->update();
         REQUIRE(save(first,false)==originalFirst);
     }
+    static void completedTransitionsReleaseWaits()
+    {
+        Game game(nullptr);
+        const int initial=game.buildingsTypes.getTypeNum("inn",0,false);
+        const int site=game.buildingsTypes.get(initial)->nextLevel;
+        REQUIRE(site>=0);
+        const int destination=game.buildingsTypes.get(site)->nextLevel;
+        REQUIRE(destination>=0);
+        auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        snapshot["variants"][initial]["properties"]["level"]=3;
+        snapshot["variants"][site]["properties"]["level"]=0;
+        snapshot["variants"][destination]["properties"]["level"]=0;
+        // These are key-only variants: presentation levels need not form a
+        // unique legacy family/level tuple.
+        for(auto& variant:snapshot["variants"]) variant["properties"]["type"]="";
+        game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+        setup(game);
+        auto* building=game.addBuilding(4,4,initial,0);
+        REQUIRE(building);
+        auto& registry=runtime(game,0).get_building_register();
+        registry.initiate();
+        REQUIRE(registry.get_building(0)==building);
+        registry.set_upgrading(0);
+        CHECK(registry.is_building_upgrading(0));
+        AISharedRuntime::Conditions::ParticularBuilding firstStage(new AISharedRuntime::Conditions::BuildingLevel(1),0);
+        AISharedRuntime::Conditions::ParticularBuilding nextStage(new AISharedRuntime::Conditions::BeingUpgradedTo(2),0);
+        CHECK(bool(firstStage.passes(runtime(game,0))));
+        CHECK(bool(nextStage.passes(runtime(game,0))));
+        // A short transition may complete between the controller's observations.
+        building->bindType(destination);
+        registry.tick();
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        CHECK(registry.get_type(0)==destination);
+        CHECK(registry.get_level(0)==2);
+        AISharedRuntime::Conditions::ParticularBuilding secondStage(new AISharedRuntime::Conditions::BuildingLevel(2),0);
+        CHECK(bool(secondStage.passes(runtime(game,0))));
+        REQUIRE(building->isUpgradeAvailable());
+        registry.set_upgrading(0);
+        CHECK(registry.is_building_upgrading(0));
+        // An instant repair retains this variant and its next upgrade edge.
+        registry.tick();
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        CHECK(registry.get_type(0)==destination);
+    }
+    static void placementInputsUseConstructionPrice()
+    {
+        Game game(nullptr);
+        const int site=game.buildingsTypes.getTypeNum("inn",0,true);
+        const int completed=game.buildingsTypes.get(site)->nextLevel;
+        auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        snapshot["variants"][site]["semantics"]["constructionCost"]={{"stone",5}};
+        auto& storage=snapshot["variants"][site]["properties"]["maxResource"];
+        for(auto& value:storage) value=0;
+        storage[WOOD]=9;
+        snapshot["variants"][completed]["semantics"]["feeding"]["cost"]=nlohmann::json::object();
+        game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
+        CHECK(game.buildingsTypes.get(completed)->semantics.feeding.costMask==0);
+        setup(game);
+        auto& controller=runtime(game,0);MersenneTwister random(713);controller.setRandomEngine(random);
+        AISharedRuntime::Construction::BuildingOrder order(controller,AISharedRuntime::BuildingDemand::Feed,2);
+        CHECK(order.input_resource_mask(controller)==(1u<<STONE));
+    }
     static void terrainTravelContinuation()
     {
         {
@@ -145,6 +208,84 @@ class RuntimeContinuationTest
     }
 
 public:
+    static void recurringInputsAndProviderLookup()
+    {
+        using AISharedRuntime::Management::ResourceTracker;
+        using AISharedRuntime::Management::RecurringInputStock;
+        using AISharedRuntime::BuildingDemand::Feed;
+        using AISharedRuntime::BuildingDemand::ProduceWorker;
+        for(bool paid:{false,true})
+        {
+            CAPTURE(paid);
+            Game game(nullptr);
+            const int completed=game.buildingsTypes.getTypeNum("inn",0,false);
+            const int site=game.buildingsTypes.getTypeNum("inn",0,true);
+            auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            auto& variant=catalog["variants"][completed];
+            auto& semantics=variant["semantics"];
+            semantics["feeding"]["enabled"]=paid;
+            semantics["feeding"]["cost"]={{"wheat",2},{"orange",1}};
+            semantics["production"]["scheduling"]="weighted_committed_job";
+            semantics["production"]["recipes"]={
+                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"wheat",3},{"prune",1}}}}},
+                {"explorer",{{"enabled",false},{"duration",0},{"cost",{{"wood",1}}}}},
+                {"warrior",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
+            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxResource"][resource]=50;
+            game.buildingsTypes.loadSnapshotJson(catalog.dump());game.configureBuildingCatalog();
+            // Parse the authored costs so all masks have the same validated
+            // provenance as a real match; do not mutate cold descriptors.
+            CHECK(game.buildingsTypes.get(completed)->semantics.production.recipes[WORKER].costMask
+                ==((1u<<WHEAT)|(1u<<PRUNE)));
+            setup(game);
+            auto* recurring=game.addBuilding(4,4,completed,0);
+            auto* ordinary=game.addBuilding(12,4,completed,0);
+            auto* construction=game.addBuilding(20,4,site,0);
+            REQUIRE(recurring);REQUIRE(ordinary);REQUIRE(construction);
+            recurring->resources[WHEAT]=7;recurring->resources[ORANGE]=5;
+            recurring->resources[PRUNE]=11;recurring->resources[WOOD]=13;
+            ordinary->resources[WOOD]=17;
+            auto& controller=runtime(game,0);
+            controller.getOrder(); // initialize the register through its normal path
+            auto& registry=controller.get_building_register();
+            REQUIRE(registry.get_building(0)==recurring);
+            REQUIRE(registry.get_building(1)==ordinary);
+            REQUIRE(registry.get_building(2)==construction);
+            CHECK(registry.provides(0,Feed)==paid);
+            CHECK(registry.provides(0,ProduceWorker)==paid);
+            CHECK(registry.provides(2,Feed)==paid); // site resolves completion
+            CHECK(registry.provides(2,ProduceWorker)==paid);
+            CHECK(registry.provides(0,int(AIPlanning::BuildingIntent::ProduceWarrior)));
+            CHECK_FALSE(registry.provides(0,int(AIPlanning::BuildingIntent::ProduceExplorer)));
+            CHECK_FALSE(registry.provides(0,-1));
+            CHECK_FALSE(registry.provides(0,AISharedRuntime::BuildingDemand::Count));
+            CHECK(registry.get_building(1000000)==nullptr);
+            CHECK_FALSE(registry.provides(1000000,Feed));
+            const int pending=registry.register_building();
+            REQUIRE(registry.is_building_pending(pending));
+            CHECK(registry.get_building(pending)==nullptr);
+            CHECK_FALSE(registry.provides(pending,Feed));
+            controller.add_resource_tracker(new ResourceTracker(controller,0,1,RecurringInputStock),0);
+            controller.add_resource_tracker(new ResourceTracker(controller,1,1,WOOD),1);
+            controller.add_resource_tracker(new ResourceTracker(controller,pending,1,RecurringInputStock),pending);
+            auto retained=controller.get_resource_tracker(0);
+            for(int tick=0;tick<AISharedRuntime::AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS;++tick) controller.getOrder();
+            // Wheat is shared by feeding and production and counted once.
+            // Disabled explorer wood is excluded; prune exercises the highest
+            // supported bit. The always-enabled free warrior adds no inputs.
+            CHECK(retained->get_total_level()==(paid ? 23 : 0));
+            CHECK(controller.get_resource_tracker(1)->get_total_level()==17);
+            CHECK(controller.get_resource_tracker(pending)->get_total_level()==0);
+            REQUIRE(game.removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
+            // The register still holds its observation until the next tick;
+            // a disappeared live slot must safely return null immediately.
+            REQUIRE(registry.is_building_found(0));
+            CHECK(registry.get_building(0)==nullptr);
+            CHECK_FALSE(registry.provides(0,Feed));
+            controller.getOrder();
+            CHECK_FALSE(controller.get_resource_tracker(0));
+            CHECK(retained->get_total_level()==(paid ? 23 : 0));
+        }
+    }
     static void run()
     {
         Game game(nullptr);game.map.setSize(5,5,GRASS);game.map.setGame(&game);
@@ -160,6 +301,8 @@ public:
             avoidsIrrigation.add_obstacle(new Entities::Water);
             original.get_gradient(wheat);
             original.get_gradient(avoidsIrrigation);
+            const auto resources=info(new Entities::ResourceSet((1u<<WHEAT)|(1u<<WOOD)));
+            original.get_gradient(resources);
             // Save a stale field, an uncomputed queued field and duplicate
             // queue entries. Reload must retain their age/order, not rebuild.
             original.ticks_since_update[0]=151;
@@ -187,6 +330,8 @@ public:
             REQUIRE(!load(badQueue,save(original,text),text));
         }
         independentManagers();
+        completedTransitionsReleaseWaits();
+        placementInputsUseConstructionPrice();
         terrainTravelContinuation();
         std::cout<<"Runtime gradient continuation: independent managers, binary/text fields, stale ages, queued work and invalid indices PASS\n";
     }
@@ -250,4 +395,11 @@ TEST_CASE("position entities retain historical binary and text payloads" *
         CHECK(restored.matches(7,13));CHECK_FALSE(restored.matches(7,0));
         CHECK(input->readUint32("sentinel")==0xabc123);
     }
+}
+
+TEST_CASE("recurring input tracking and provider lookup preserve composite membership" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    RuntimeContinuationTest::recurringInputsAndProviderLookup();
 }

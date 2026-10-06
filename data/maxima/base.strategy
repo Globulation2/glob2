@@ -5,7 +5,9 @@
 # validated promotions. Schema descriptions and impact tiers explain behavioral
 # effect; hard and recommended search bounds define validation and exploration.
 
-# Capacity model: expected service throughput used when computing food headroom.
+# Legacy capacity keys retained for saved strategy/configuration compatibility.
+# Capability planning derives service and resource throughput from the catalog;
+# these former tier estimates are no longer used for live decisions.
 model.inn_capacity_level1 = 19
 model.inn_capacity_level2 = 25
 model.inn_capacity_level3 = 34
@@ -631,12 +633,13 @@ farming.urgent_space_threshold = 35
 
 # Food ledger: protected farm capacity claimed by inns and swarms. Supply counts
 # only protected wheat cells that currently carry wheat, because that is the
-# capacity a settlement keeps at equilibrium. ticks_per_meal is measured from
-# real games rather than derived, because hunger drains per unit action and not
-# per tick; see docs/ai/maxima/food.md. growth_period_ticks is still derived
+# capacity a settlement keeps at equilibrium. ticks_per_meal is a retained legacy
+# empirical setting; live demand now uses saved recipient hunger/action clocks.
+# See docs/ai/maxima/food.md. growth_period_ticks is still derived
 # from the growth rule alone and remains worth calibrating.
 food.enabled = true
 food.retirement_enabled = true
+# Bound producer targets by covered providers and residual peak-recipe supply.
 food.target_capping_enabled = true
 food.growth_period_ticks = 186
 food.ticks_per_meal = 11759

@@ -9,6 +9,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <BinaryStream.h>
+#include <algorithm>
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
@@ -65,8 +66,13 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
 void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
 {
     if (!map.getIsSavedGame())
-        {
-        header.setExperiments(globalContainer->settings.experiments);
+    {
+        ExperimentSet enabled;
+        const auto& allowed = header.buildingExperimentKeys();
+        for (const auto& key : globalContainer->settings.experiments.keys())
+            if (parseExperimentKey(key) || std::find(allowed.begin(), allowed.end(), key) != allowed.end())
+                enabled.set(key, true, allowed);
+        header.setExperiments(enabled);
         for (const auto& definition : experimentDefinitions())
             if (map.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
     }
@@ -136,7 +142,31 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     state.networkKind = start.networkKind;
     state.relayId = start.relayId;
     state.relayRegion = start.relayRegion;
-    state.map = loadMapHeader(start.mapFile);
+    GameHeader embedded;
+    if (!openGameInput(start.mapFile, state.map, embedded))
+    {
+        initializationDiagnostic = "Cannot read the match map headers";
+        co_return false;
+    }
+    // Old schema-1 setups omitted catalog identity. They can only mean the
+    // frozen stock rules; a custom map must explicitly bind its catalog so
+    // clients, match verification and ratings all identify the same rules.
+    std::string authoritative = embedded.getBuildingCatalogSnapshot();
+    std::string requested = start.setup.buildingCatalogSnapshot;
+    if (authoritative.empty() || requested.empty())
+    {
+        BuildingsTypes legacy; legacy.initLegacy();
+        const auto stock = legacy.snapshotJson();
+        if (authoritative.empty()) authoritative = stock;
+        if (requested.empty()) requested = stock;
+    }
+    if (authoritative != requested)
+    {
+        initializationDiagnostic = start.setup.buildingCatalogSnapshot.empty()
+            ? "The match setup omits the custom building catalog embedded in this map"
+            : "The match setup building catalog does not match the map's embedded catalog";
+        co_return false;
+    }
     try { state.header = start.setup.toGameHeader(state.map); }
     catch (const Online::MatchSetupError& error)
     {
@@ -346,6 +376,7 @@ void Engine::createRandomGame()
 	}
 
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
+	game.setBuildingCatalogSnapshot(loadGameHeader(map.getFileName()).getBuildingCatalogSnapshot());
 	// Mirror the syncRand seed (captured at runTestGames entry) into the
 	// GameHeader so a saved .game file reloads with the same syncRand
 	// state. GameHeader's ctor defaults seed to time(NULL) at header-

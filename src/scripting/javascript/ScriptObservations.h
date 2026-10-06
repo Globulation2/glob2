@@ -60,6 +60,7 @@ class Observations
 	{
 		int team, type, x, y, hp, attack;
 		bool isVirtual;
+		int buildingType = -1;
 	};
 	// The native spatial view shares the script visibility predicate, without
 	// allocating complete JavaScript records for every unit in a density query.

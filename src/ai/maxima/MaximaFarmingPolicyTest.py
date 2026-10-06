@@ -48,7 +48,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         conversion = conversion[:conversion.index("void Maxima::update_maintenance_clearing_areas")]
         self.assertIn("clearing_resources[WOOD]=true", conversion)
         self.assertNotIn("clearing_resources[WHEAT]=true", conversion)
-        self.assertIn("IntBuildingType::CLEARING_FLAG, 0", conversion)
+        self.assertIn("AIMaximaBuildings::WorkerAttraction, 0", conversion)
         self.assertIn("AssignWorkers(\n\t\t\t\tstrategy.staffing.clearing_workers", conversion)
         self.assertIn("if(wood<2 || reserve_overlap)", conversion)
 

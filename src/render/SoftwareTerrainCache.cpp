@@ -9,16 +9,20 @@
 #include <stdexcept>
 namespace
 {
+constexpr int NativeTilePixels =
+	SoftwareTerrainCache::ChunkPixels / SoftwareTerrainCache::ChunkTiles;
 int chunkOf(int tile)
 {
 	return int(std::floor(double(tile) / SoftwareTerrainCache::ChunkTiles));
 }
 std::size_t pageStorage(int scale, bool gpu, int downsample = 1)
 {
+	// Retain the fixed recipe/run allowance at every density. GPU accounting
+	// also reserves texture and mip storage alongside the CPU surface.
 	const std::size_t pixels = SoftwareTerrainCache::ChunkPixels * scale / downsample;
 	return SoftwareTerrainCache::ChunkStorageBytes -
-		SoftwareTerrainCache::ChunkPixels * SoftwareTerrainCache::ChunkPixels * 4 +
-		pixels * pixels * 4 * (gpu ? 3 : 1);
+		   SoftwareTerrainCache::ChunkPixels * SoftwareTerrainCache::ChunkPixels * 4 +
+		   pixels * pixels * 4 * (gpu ? 3 : 1);
 }
 struct SamplingPlan
 {
@@ -63,7 +67,7 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 		const double outputScale = std::max({1.0, double(target.getDrawableW()) / target.getW(),
 											 double(target.getDrawableH()) / target.getH()});
 		const double density = target.mapTransformScale() * outputScale;
-		while (downsample < 32 && density <= std::sqrt(2.0) / (downsample * 2) &&
+		while (downsample < NativeTilePixels && density <= std::sqrt(2.0) / (downsample * 2) &&
 			   visiblePages * pageStorage(resolution, gpu, downsample) > budget)
 			downsample *= 2;
 	}
@@ -76,17 +80,20 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 
 // Box-filter composed coverage in premultiplied space, then retain straight
 // alpha for the ordinary surface upload. Transparent ocean must not darken land.
+// Both surfaces are ARGB8888; the power-of-two divisor divides one native tile.
+// Filtering each tile independently preserves exact tile-aligned page crops.
 void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int divisor)
 {
-	const int size = 32 / divisor, count = divisor * divisor;
+	const int size = NativeTilePixels / divisor, count = divisor * divisor;
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x)
 		{
 			unsigned alpha = 0, rgb[3] = {};
 			for (int dy = 0; dy < divisor; ++dy)
 			{
-				const auto *row = reinterpret_cast<const Uint32 *>(
-					static_cast<const Uint8 *>(source->pixels) + (y * divisor + dy) * source->pitch);
+				const auto *row =
+					reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(source->pixels) +
+													 (y * divisor + dy) * source->pitch);
 				for (int dx = 0; dx < divisor; ++dx)
 				{
 					const Uint32 p = row[x * divisor + dx];
@@ -99,10 +106,27 @@ void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int di
 			Uint32 pixel = ((alpha + count / 2) / count) << 24;
 			for (int k = 0; k < 3; ++k)
 				pixel |= (alpha ? (rgb[k] + alpha / 2) / alpha : 0) << (k * 8);
-			auto *row = reinterpret_cast<Uint32 *>(
-				static_cast<Uint8 *>(target->pixels) + (oy + y) * target->pitch);
+			auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+												   (oy + y) * target->pitch);
 			row[ox + x] = pixel;
 		}
+}
+SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right, int bottom, int vx,
+							  int vy, int preferredResolution, bool tiledCapture,
+							  int preferredDownsample = 0)
+{
+	// A narrow atlas edge must not select HD pages after its wider neighbor
+	// selected native pages. That changes seams and repeatedly clears the cache.
+	// Select density from the complete capture, then admit each bounded tile.
+	if (tiledCapture)
+	{
+		const auto capture =
+			samplingPlan(map, 0, 0, map.getW() - 1, map.getH() - 1, 0, 0, preferredResolution);
+		preferredResolution = capture.resolution;
+		preferredDownsample = capture.downsample;
+	}
+	return samplingPlan(map, left, top, right, bottom, vx, vy, preferredResolution,
+						preferredDownsample);
 }
 void drawEmergencyTiles(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 						int vy, Uint32 visibleTeams, bool wholeMap, int preferredResolution)
@@ -181,15 +205,16 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time)
+								   bool wholeMap, int time, bool tiledCapture)
 {
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
-							   wholeMap, time, 0);
+							   wholeMap, time, 0, tiledCapture);
 }
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
-											   int preferredResolution, int preferredDownsample)
+											   int preferredResolution, bool tiledCapture,
+											   int preferredDownsample)
 {
 	if (registry.get() != &map.terrainRegistry())
 	{
@@ -208,9 +233,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(nextGPU, time);
 	const auto plan =
-		samplingPlan(map, left, top, right, bottom, vx, vy,
-					 preferredResolution > 0 ? preferredResolution : compositor.scale(),
-					 preferredDownsample);
+		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
+						 preferredResolution > 0 ? preferredResolution : compositor.scale(),
+						 tiledCapture, preferredDownsample);
 	if (!plan.viewFits)
 	{
 		chunks.clear(); // Release cache storage before the caller streams pages.
@@ -230,7 +255,10 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	const auto storage = pageStorage(resolution, gpu, downsample);
 	try
 	{
-		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> scratch(nullptr, SDL_DestroySurface);
+		// Allocate scratch pixels only when a reduced tile actually changes. Warm
+		// frames reuse pages without allocating or recomposing native pixels.
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> scratch(nullptr,
+																			SDL_DestroySurface);
 		for (int cy = y0; cy <= y1; ++cy)
 			for (int cx = x0; cx <= x1; ++cx)
 			{
@@ -317,8 +345,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						SDL_DestroySurface);
 					if (!pixels)
 						throw std::bad_alloc();
-					fresh->image =
-						std::make_unique<TerrainVisual::Surface>(pixels.get(), resolution > 1 || downsample > 1);
+					fresh->image = std::make_unique<TerrainVisual::Surface>(
+						pixels.get(), resolution > 1 || downsample > 1);
 					pixels.release(); // Keep ownership if the drawable allocation fails.
 					entry = fresh.get();
 					chunks.push_back(std::move(fresh));
@@ -355,7 +383,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								{
 									if (!scratch)
 									{
-										scratch.reset(SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888));
+										scratch.reset(SDL_CreateSurface(NativeTilePixels,
+																		NativeTilePixels,
+																		SDL_PIXELFORMAT_ARGB8888));
 										if (!scratch)
 											throw std::bad_alloc();
 									}
@@ -421,13 +451,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sprite, int left,
 										int top, int right, int bottom, int vx, int vy,
 										Uint32 visibleTeams, bool wholeMap, int time,
-										FallbackMode mode)
+										FallbackMode mode, bool tiledCapture)
 {
 	auto &compositor = globalContainer->terrainCompositor();
 	const bool gpu = globalContainer->gfx->getOptionFlags() &
 					 (GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU);
 	compositor.prepare(gpu, time);
-	const auto plan = samplingPlan(map, left, top, right, bottom, vx, vy, compositor.scale());
+	const auto plan =
+		viewSamplingPlan(map, left, top, right, bottom, vx, vy, compositor.scale(), tiledCapture);
 	if (mode == FallbackMode::EmergencyTiles || !plan.pageFits)
 	{
 		drawEmergencyTiles(map, left, top, right, bottom, vx, vy, visibleTeams, wholeMap,
@@ -447,7 +478,8 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 			// software run sampling and GPU mip neighborhoods match the cache.
 			SoftwareTerrainCache page;
 			if (page.prepareAtResolution(map, sprite, pageLeft, pageTop, pageRight, pageBottom, vx,
-										 vy, visibleTeams, wholeMap, time, plan.resolution, plan.downsample))
+										 vy, visibleTeams, wholeMap, time, plan.resolution, false,
+										 plan.downsample))
 				page.draw(*globalContainer->gfx);
 			else
 				drawEmergencyTiles(map, pageLeft, pageTop, pageRight, pageBottom, vx, vy,
@@ -462,12 +494,11 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 		{
 			SDL_Rect area{copy.x, copy.y, ChunkPixels, ChunkPixels}, visible;
 			if (SDL_GetRectIntersection(&area, &paintBounds, &visible))
-				target.drawSurface(visible.x, visible.y, visible.w, visible.h,
-								   copy.chunk->image.get(),
-								   (visible.x - area.x) * resolution / downsample,
-								   (visible.y - area.y) * resolution / downsample,
-								   visible.w * resolution / downsample,
-								   visible.h * resolution / downsample);
+				target.drawSurface(
+					visible.x, visible.y, visible.w, visible.h, copy.chunk->image.get(),
+					(visible.x - area.x) * resolution / downsample,
+					(visible.y - area.y) * resolution / downsample,
+					visible.w * resolution / downsample, visible.h * resolution / downsample);
 			continue;
 		}
 		for (const auto &run : copy.chunk->opaqueRuns)
@@ -526,4 +557,9 @@ std::vector<SDL_Rect> SoftwareTerrainCache::waterRegions(SDL_Rect bounds) const
 			remaining = std::move(next);
 		}
 	return remaining;
+}
+
+std::size_t SoftwareTerrainCache::bytes() const
+{
+	return chunks.size() * pageStorage(resolution, gpu, downsample);
 }

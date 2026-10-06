@@ -17,6 +17,7 @@
 #include "UnitType.h"
 #include "Utilities.h"
 #include <SDL3/SDL.h>
+#include <algorithm>
 
 void MapEdit::draw(Uint64 frameTick)
 {
@@ -131,10 +132,9 @@ void MapEdit::drawBuildingSelectionOnMap()
 	if (selectionName!="")
 	{
 		// we get the type of building
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(selectionName, buildingLevel, false);
-		if(!isUpgradable(IntBuildingType::shortNumberFromType(selectionName)))
-			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
-		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+		int typeNum=buildingSelectionType(selectionName);
+		if (typeNum<0) return;
+		BuildingType *bt = game.buildingsTypes.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
 
 		// we translate dimensions and situation
@@ -178,7 +178,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 				else
 					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 
-				BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
+				BuildingType *upgradedType=game.buildingsTypes.getLastLevel(typeNum);
 				int upgradedMapX, upgradedMapY;
 				bool isUpgradedRoom = game.checkHardRoomForBuilding(tempX, tempY, upgradedType, &upgradedMapX, &upgradedMapY);
 				int upgradedRectX=((upgradedMapX-viewportX)&(game.map.wMask))<<5;
@@ -199,22 +199,96 @@ void MapEdit::drawBuildingSelectionOnMap()
 
 
 
-bool MapEdit::isUpgradable(int buildingLevel)
+int MapEdit::buildingSelectionType(const std::string& key)
 {
-	if(buildingLevel==IntBuildingType::SWARM_BUILDING)
-		return false;
-	if(buildingLevel==IntBuildingType::EXPLORATION_FLAG)
-		return false;
-	if(buildingLevel==IntBuildingType::WAR_FLAG)
-		return false;
-	if(buildingLevel==IntBuildingType::CLEARING_FLAG)
-		return false;
-	if(buildingLevel==IntBuildingType::STONE_WALL)
-		return false;
-	if(buildingLevel==IntBuildingType::MARKET_BUILDING)
-		return game.gameHeader.hasExperiment(ExperimentId::MarketsV2);
-	return true;
+    int id=game.buildingsTypes.getFinishedTypeNum(key);
+    if (!game.isBuildingTypeAvailable(id)) return -1;
+    for (int depth=0; depth<buildingLevel; ++depth)
+    {
+        const auto* current=game.buildingsTypes.get(id);
+        int next=current->nextLevel;
+        if (!game.isBuildingTypeAvailable(next)) break;
+        while (game.buildingsTypes.get(next)->isBuildingSite)
+        {
+            next=game.buildingsTypes.get(next)->nextLevel;
+            if (!game.isBuildingTypeAvailable(next)) return id;
+        }
+        id=next;
+    }
+    return id;
 }
+
+void MapEdit::layoutBuildingSelectors()
+{
+    if (buildingLevelNextPage) buildingLevelNextPage->enabled=panelMode==AddBuildings && buildingLevelCount>3;
+    auto layout=[&](auto& list,int& firstRow,int columns,int rows,int top,int pitch,bool active) {
+        const int totalRows=(static_cast<int>(list.size())+columns-1)/columns;
+        firstRow=std::clamp(firstRow,0,std::max(0,totalRows-rows));
+        for (size_t index=0; index<list.size(); ++index)
+        {
+            const int row=static_cast<int>(index)/columns-firstRow;
+            list[index]->area.y=top+row*pitch;
+            list[index]->enabled=active && row>=0 && row<rows;
+        }
+    };
+    const int rows=std::max(1,(globalContainer->gfx->getH()-42-TeamColorSelector::HEIGHT-166)/46);
+    layout(buildingSelectors,buildingSelectorRow,2,rows,166,46,panelMode==AddBuildings);
+    layout(flagSelectors,flagSelectorRow,3,1,167,40,panelMode==AddFlagsAndZones);
+}
+
+bool MapEdit::scrollBuildingSelectors(double delta)
+{
+    if (mouseX<globalContainer->gfx->getW()-menuWidth() || mouseY<166) return false;
+    if (panelMode==BuildingEditor && mouseY>=252)
+    {
+        buildingEditFirstRow+=delta>0 ? -1 : delta<0 ? 1 : 0;
+        layoutBuildingEditRows(); return true;
+    }
+    if (panelMode==AddBuildings) buildingSelectorRow+=delta>0 ? -1 : delta<0 ? 1 : 0;
+    else if (panelMode==AddFlagsAndZones && mouseY<207) flagSelectorRow+=delta>0 ? -1 : delta<0 ? 1 : 0;
+    else return false;
+    layoutBuildingSelectors();
+    return true;
+}
+
+void MapEdit::rebuildBuildingSelectors()
+{
+    for (auto* list : {&buildingSelectors,&flagSelectors})
+    {
+        for (auto* widget : *list)
+        {
+            mew.erase(std::remove(mew.begin(),mew.end(),widget),mew.end());
+            delete widget;
+        }
+        list->clear();
+    }
+    buildingLevelCount=1;
+    const int left=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+    for (size_t id=0; id<game.buildingsTypes.size(); ++id)
+    {
+        const auto* type=game.buildingsTypes.get(id);
+        if (!type->runtimeAvailable || !type->semantics.placeable) continue;
+        int depth=0;
+        int variant=game.buildingsTypes.getFinishedTypeNum(type->key);
+        while (game.isBuildingTypeAvailable(variant))
+        {
+            const auto* stage=game.buildingsTypes.get(variant);
+            if (!stage->isBuildingSite) ++depth;
+            variant=stage->nextLevel;
+        }
+        buildingLevelCount=std::max(buildingLevelCount,depth);
+        const bool overlay=!type->semantics.occupiesGround;
+        auto& list=overlay ? flagSelectors : buildingSelectors;
+        const int index=static_cast<int>(list.size());
+        const int x=left+(overlay ? 5+42*(index%3) : 12+64*(index%2));
+        const int y=overlay ? 167+40*(index/3) : 166+46*(index/2);
+        auto* widget=new BuildingSelectorWidget(*this,widgetRectangle(x,y,overlay?32:40,overlay?32:40),
+            overlay ? "flag view" : "building view",type->key,"set place building selection "+type->key,type->key,!overlay);
+        list.push_back(widget);
+        addWidget(widget);
+    }
+}
+
 
 
 

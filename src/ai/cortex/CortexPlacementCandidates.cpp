@@ -6,7 +6,7 @@
 #include "CortexPlacementGeo.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "Utilities.h"
 #include "building/Building.h"
 #include "BuildingType.h"
@@ -98,7 +98,7 @@ namespace Cortex
 
 	static int placeCandidatesImpl(Game* game, Team* team, int buildingType, int level,
 	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
-	                               const ForwardBias* forward)
+	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		// wheatDist is initialised to -1 (no wheat in reach) matching the
@@ -116,18 +116,17 @@ namespace Cortex
 		if (game == NULL || team == NULL)
 			return 0;
 
-		if (buildingType < 0 || buildingType >= IntBuildingType::NB_BUILDING)
-			return 0;
-
-		// Resolve the building footprint. We place the construction SITE (the
-		// same as the GUI/Runtime build path), so request isBuildingSite == true.
-		// Flags (virtual buildings) have no site type and are not placed by this
-		// helper — they occupy no ground, so isHardSpaceForBuilding is the wrong
-		// gate for them. Bail out if there is no real building footprint here.
-		const std::string& typeName = IntBuildingType::reverseConversionMap[buildingType];
-		BuildingType* bt = globalContainer->buildingsTypes.getByType(typeName, level, true);
-		if (bt == NULL || bt->isVirtual)
-			return 0;
+		(void)level; // The catalog chooses a placeable variant for this strategic role.
+        AIPlanning::BuildingCandidate choice;
+        if (placementType < 0) choice = selectBuilding(*game, *team, buildingType, WORKER, maxWorkerQualification);
+        if (placementType >= 0) {
+            choice.placementType = placementType;
+            choice.completedType = game->buildingsTypes.getFinishedTypeNum(game->buildingsTypes.get(placementType)->key);
+        }
+        if (choice.placementType < 0) return 0;
+        BuildingType* bt = game->buildingsTypes.get(choice.placementType);
+        const BuildingType* completed = game->buildingsTypes.get(choice.completedType);
+        const bool occupiesGround = bt->semantics.occupiesGround;
 
 		const int w = bt->width;
 		const int h = bt->height;
@@ -143,14 +142,11 @@ namespace Cortex
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
-		// Determine up front whether this building type is wheat-fed (swarm or
-		// inn). SWARM_BUILDING == CORTEX_BUILD_SWARM == 0;
-		// FOOD_BUILDING == CORTEX_BUILD_FOOD == 1.
-		// C++: IntBuildingType enum (building/IntBuildingType.h:14-15).
-		const bool isWheatFed = (buildingType == IntBuildingType::SWARM_BUILDING ||
-		                         buildingType == IntBuildingType::FOOD_BUILDING);
-		const bool isSwarm    = (buildingType == IntBuildingType::SWARM_BUILDING);
-		const bool isInn      = (buildingType == IntBuildingType::FOOD_BUILDING);
+		const bool isSwarm = completed->semantics.production.enabledUnitMask != 0;
+        const bool isInn = completed->semantics.feeding.enabled;
+        bool isWheatFed = isInn && completed->semantics.feeding.cost[WHEAT] > 0;
+        for (const auto& recipe : completed->semantics.production.recipes)
+            isWheatFed |= recipe.enabled && recipe.cost[WHEAT] > 0;
 
 		// Effective footprint used for space reservation. Some buildings grow on
 		// upgrade and must reserve room for the final size at placement time, or the
@@ -163,11 +159,7 @@ namespace Cortex
 		//     it matches the old grownFootprint. Other types reserve what we place.
 		int gox = 0, goy = 0;
 		int ew = w, eh = h;
-		const bool reserveGrown = isInn
-			|| buildingType == IntBuildingType::WALKSPEED_BUILDING
-			|| buildingType == IntBuildingType::SWIMSPEED_BUILDING;
-		if (reserveGrown)
-			grownFootprintBox(bt, gox, goy, ew, eh);
+		grownFootprintBox(game->buildingsTypes, bt, gox, goy, ew, eh);
 
 		// Non-food buildings must stay close to an existing building edge;
 		// forward bases and empty colonies are exempt. Precompute that gate once
@@ -217,7 +209,8 @@ namespace Cortex
 				// building, so a resulting OrderCreate will not be rejected. We gate
 				// on the GROWN footprint (gx, gy, ew x eh) so the spot also has room
 				// for the eventual upgrades; the placed footprint is a subset of it.
-				if (!map.isHardSpaceForBuilding(gx, gy, ew, eh))
+				if (occupiesGround ? !map.isHardSpaceForBuilding(gx, gy, ew, eh)
+                    : !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
 					continue;
 
 				// FORWARD-BASE: require an IMMEDIATE construction site, not a deferred
@@ -235,7 +228,7 @@ namespace Cortex
 				// reservation gated above still holds. Only the forward path needs this: the
 				// near-colony path tolerates a one-tick buildProject because it does not use
 				// the same site-position latch.
-				if (forward != NULL && !map.isFreeForBuilding(x, y, w, h))
+				if (forward != NULL && !game->checkRoomForBuilding(x, y, bt, team->teamNumber))
 					continue;
 
 				// Geography rejects for wheat-fed buildings.
@@ -277,7 +270,7 @@ namespace Cortex
 				// it must hug the wheat far more tightly than an inn does. anyWheatWithin
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
-				if (isSwarm && !anyWheatWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+				if (isSwarm && isWheatFed && !anyWheatWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
 					continue;
 
 				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
@@ -289,7 +282,7 @@ namespace Cortex
 				// never blocks the lane its haulers use to reach the field. countSurviving
 				// WheatWithin scans the box expanded by `dist`, so dist == 1 means "wheat
 				// touching or one tile off the grown edge".
-				if (isInn &&
+				if (isInn && isWheatFed &&
 				    countSurvivingWheatWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
 				        < 1)
 					continue;
@@ -301,7 +294,7 @@ namespace Cortex
 				// reject in that case (first swarm goes wherever wheat exists).
 				if (isSwarm)
 				{
-					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::SWARM_BUILDING);
+					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, CORTEX_BUILD_SWARM);
 					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
 						continue;
 				}
@@ -312,7 +305,7 @@ namespace Cortex
 				// no inn exists yet; the first inn places freely.
 				if (isInn)
 				{
-					const int innDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::FOOD_BUILDING);
+					const int innDist = geometry.distanceToNearestBuildingType(x, y, CORTEX_BUILD_FOOD);
 					if (innDist >= 0 && innDist < CORTEX_INN_MIN_SPACING)
 						continue;
 				}
@@ -321,7 +314,7 @@ namespace Cortex
 				// sit close to wheat. Every other building type is pushed back beyond
 				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
 				// paths into the field. AI-design rule, no engine analogue.
-				if (!isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+				if (occupiesGround && !isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
@@ -330,7 +323,7 @@ namespace Cortex
 				// wheat behind it. Measured against the GROWN (ew x eh) footprint.
 				// innOccupiedSides counts sides already occupied by existing buildings
 				// (no hypothetical candidate here — the inn IS the candidate).
-				if (isInn &&
+				if (occupiesGround && isInn &&
 				    innOccupiedSides(map, gx, gy, ew, eh, -1, -1, 0, 0) >
 				        CORTEX_INN_MAX_TOUCH_SIDES)
 					continue;
@@ -340,7 +333,7 @@ namespace Cortex
 				// existing inns. The candidate is offered at its grown footprint
 				// (ew x eh) so an inn's expansion tiles are accounted for. Keeps the
 				// rule symmetric regardless of build order.
-				if (geometry.candidateCrowdsInn(gx, gy, ew, eh))
+				if (occupiesGround && geometry.candidateCrowdsInn(gx, gy, ew, eh))
 					continue;
 
 				// RESERVED-EXPANSION CLEARANCE: do not place into the expansion tiles an
@@ -350,7 +343,7 @@ namespace Cortex
 				// they will expand into and block the upgrade. We test the candidate's
 				// own GROWN box (gx, gy, ew x eh) against each existing growable type's
 				// reserved box, so neither side's future expansion collides.
-				if (geometry.candidateOverlapsReservedExpansion(gx, gy, ew, eh))
+				if (occupiesGround && geometry.candidateOverlapsReservedExpansion(gx, gy, ew, eh))
 					continue;
 
 				const int distToColony = geometry.distanceToNearestBuilding(x, y);
@@ -409,15 +402,15 @@ namespace Cortex
 	}
 
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES])
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType, int maxWorkerQualification)
 	{
-		return placeCandidatesImpl(game, team, buildingType, level, out, NULL);
+		return placeCandidatesImpl(game, team, buildingType, level, out, NULL, placementType, maxWorkerQualification);
 	}
 
 	int placeForwardCandidate(Game* game, Team* team, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
-	                          BuildCandidate& out)
+	                          BuildCandidate& out, int maxWorkerQualification)
 	{
 		// Same scan, same legality gates (a forward inn still needs harvestable
 		// wheat at the front), restricted to the target-distance window and with
@@ -439,7 +432,7 @@ namespace Cortex
 		bias.maxTargetDist = maxTargetDist;
 
 		BuildCandidate slots[CORTEX_BUILD_CANDIDATES];
-		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias);
+		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
 		if (n <= 0)
 			return 0;
 		out = slots[0];

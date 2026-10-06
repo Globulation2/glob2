@@ -72,10 +72,10 @@ void BuildingSelectorWidget::draw()
 {
 	std::string &type = building_type;
 
-	BuildingType *bt = globalContainer->buildingsTypes.getByType(type.c_str(), me.buildingLevel, false);
-	if(bt==NULL || !me.isUpgradable(IntBuildingType::shortNumberFromType(type)))
-		bt = globalContainer->buildingsTypes.getByType(type.c_str(), 0, false);
-	assert(bt);
+	const int id=me.buildingSelectionType(type);
+	if (id<0) return;
+	BuildingType *bt=me.game.buildingsTypes.get(id);
+	if (!bt) return;
 
 	int imgid = bt->miniSpriteImage;
 	int x, y;
@@ -138,8 +138,8 @@ void TeamColorSelector::draw()
 
 
 
-SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum)
-	: MapEditorWidget(me, area, group, name, action), level(level), levelNum(levelNum)
+SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum, bool catalogPages)
+	: MapEditorWidget(me, area, group, name, action), level(level), levelNum(levelNum), catalogPages(catalogPages)
 {
 
 }
@@ -148,7 +148,23 @@ SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& are
 
 void SingleLevelSelector::draw()
 {
-	globalContainer->gfx->drawSprite(area.x, area.y, me.menu, 30+level-1, (level-1)==levelNum ? 128 : 255);
+	const int value=level+(catalogPages ? (levelNum/3)*3 : 0);
+	if (catalogPages && value>me.buildingLevelCount) return;
+	if (value<=4)
+		globalContainer->gfx->drawSprite(area.x,area.y,me.menu,30+value-1,(value-1)==levelNum ? 128 : 255);
+	else
+	{
+		globalContainer->gfx->drawRect(area.x,area.y,32,32,128,128,128);
+		globalContainer->gfx->drawString(area.x+4,area.y+8,globalContainer->littleFont,std::to_string(value));
+	}
+}
+
+void SingleLevelSelector::handleClick(int x,int y)
+{
+	if (!catalogPages) { MapEditorWidget::handleClick(x,y); return; }
+	const int value=level+(levelNum/3)*3;
+	if (value<=me.buildingLevelCount)
+		me.performAction("switch to building level "+std::to_string(value));
 }
 
 

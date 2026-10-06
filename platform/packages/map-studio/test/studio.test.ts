@@ -400,3 +400,121 @@ it('recovers thread creation with a supplied UUID without changing another proje
   );
   expect((await studio.get(owner.account, id)).title).toBe('A new river');
 });
+
+it('atomically completes a turn and reserves exactly one linked build across concurrent retries', async () => {
+  const { account, thread } = await fixture(1);
+  const input = { id: randomUUID(), text: 'Create wooded islands', settings };
+  await Promise.all(
+    Array.from({ length: 5 }, () => studio.submit(account, thread, 'chat', input, 'v1', 60, true)),
+  );
+  const row = (await studio.request(input.id))!;
+  expect(await studio.credits.balance(account)).toEqual({ balance: 1, reserved: 0, available: 1 });
+  await expect(
+    studio.submit(
+      account,
+      thread,
+      'chat',
+      { ...input, settings: { ...settings, players: 3 } },
+      'v1',
+      60,
+      true,
+    ),
+  ).rejects.toThrow('retry identifier');
+  await expect(
+    studio.submit(account, thread, 'chat', { id: input.id, text: input.text }, 'v1'),
+  ).rejects.toThrow('retry identifier');
+  const result = {
+    text: 'Building wooded islands.',
+    brief: 'Wooded islands with room to grow.',
+    action: 'build' as const,
+  };
+  await Promise.all(Array.from({ length: 5 }, () => studio.finish(row, result)));
+  const snapshot = await studio.get(account, thread);
+  const builds = snapshot.requests.filter((r) => r.kind === 'generate');
+  expect(builds).toHaveLength(1);
+  expect(builds[0]).toMatchObject({
+    id: row.checkpoints['generationId'],
+    status: 'queued',
+    input: { sourceTurnId: input.id, settings },
+  });
+  expect(snapshot.messages.filter((m) => m.role === 'assistant')).toHaveLength(1);
+  expect(snapshot.brief).toBe(result.brief);
+  expect(await studio.credits.balance(account)).toEqual({ balance: 1, reserved: 1, available: 0 });
+  const build = (await studio.request(builds[0]!.id))!;
+  expect(build.input.brief).toBe(result.brief);
+  expect(build.input.messages.at(-1)).toEqual({ role: 'assistant', text: result.text });
+  await studio.finish(build, undefined, 'Invalid starts');
+  expect(await studio.credits.balance(account)).toEqual({ balance: 1, reserved: 0, available: 1 });
+});
+
+it('does not generate for discussion turns or retroactively authorize legacy chat', async () => {
+  for (const turn of [true, false]) {
+    const { account, thread } = await fixture();
+    const input = { id: randomUUID(), text: 'Could islands work?', ...(turn ? { settings } : {}) };
+    await studio.submit(account, thread, 'chat', input, 'v1', 60, turn);
+    await studio.finish((await studio.request(input.id))!, {
+      text: 'Yes, with accessible resources.',
+      brief: 'Island ideas',
+      action: turn ? 'discuss' : 'build',
+    });
+    expect((await studio.get(account, thread)).requests).toHaveLength(1);
+    expect((await studio.credits.balance(account)).reserved).toBe(0);
+  }
+});
+
+it('rolls back the reply, brief, events and credit when enqueue fails, then safely retries completion', async () => {
+  const other = await fixture();
+  const collision = randomUUID();
+  await studio.submit(other.account, other.thread, 'generate', { id: collision, settings }, 'v1');
+  await studio.finish((await studio.request(collision))!, undefined, 'Fixture');
+  const { account, thread } = await fixture();
+  const id = randomUUID();
+  await studio.submit(
+    account,
+    thread,
+    'chat',
+    { id, text: 'Build islands', settings },
+    'v1',
+    60,
+    true,
+  );
+  const original = (await studio.request(id))!;
+  await sql`UPDATE studio_requests SET checkpoints=checkpoints || ${JSON.stringify({ generationId: collision })}::jsonb WHERE id=${id}`.execute(
+    database.db,
+  );
+  const result = { text: 'Building islands', brief: 'Islands', action: 'build' as const };
+  const before = await studio.get(account, thread);
+  await expect(studio.finish((await studio.request(id))!, result)).rejects.toThrow();
+  expect(await studio.get(account, thread)).toEqual(before);
+  expect((await studio.credits.balance(account)).reserved).toBe(0);
+  await sql`UPDATE studio_requests SET checkpoints=${JSON.stringify(original.checkpoints)}::jsonb WHERE id=${id}`.execute(
+    database.db,
+  );
+  await studio.finish(original, result);
+  expect((await studio.get(account, thread)).requests).toHaveLength(2);
+  expect((await studio.credits.balance(account)).reserved).toBe(1);
+});
+
+it('rechecks credit availability and worker lease at turn completion', async () => {
+  const { account, thread } = await fixture(1);
+  const id = randomUUID();
+  await studio.submit(
+    account,
+    thread,
+    'chat',
+    { id, text: 'Build a river', settings },
+    'v1',
+    60,
+    true,
+  );
+  const row = (await studio.request(id))!;
+  const result = { text: 'Building a river', brief: 'River', action: 'build' as const };
+  await studio.credits.adjust(account, randomUUID(), -1, 'grant');
+  await expect(studio.finish(row, result)).rejects.toThrow('available map credit');
+  expect((await studio.get(account, thread)).requests).toHaveLength(1);
+  await studio.credits.adjust(account, randomUUID(), 1, 'grant');
+  await sql`UPDATE studio_requests SET lease=${randomUUID()} WHERE id=${id}`.execute(database.db);
+  await expect(studio.finish(row, result)).rejects.toThrow('lease expired');
+  await studio.finish((await studio.request(id))!, result);
+  expect((await studio.credits.balance(account)).reserved).toBe(1);
+});

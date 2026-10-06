@@ -29,6 +29,8 @@ protected:
 
 		unsigned char stream[2] = {0xFF, 0xFF};
 		src.serialize(stream);
+		CHECK_EQ(stream[0], 0xA1);
+		CHECK_EQ(stream[1], 0x11);
 
 		Utilities::BitArray dst;
 		dst.deserialize(stream, bitCount);
@@ -51,4 +53,20 @@ TEST_SUITE("BitArray")
 {
 	TEST_CASE_FIXTURE(BitArrayTest, "RoundTripOddBitLength") { testRoundTripOddBitLength(); }
 	TEST_CASE_FIXTURE(BitArrayTest, "ByteLengthIsCeilOfBits") { testByteLengthIsCeilOfBits(); }
+
+	TEST_CASE("empty bit arrays serialize and reset without a buffer")
+	{
+		Utilities::BitArray empty(0);
+		empty.serialize(nullptr);
+		empty.deserialize(nullptr, 0);
+		CHECK_EQ(empty.getByteLength(), 0);
+		CHECK_EQ(empty.getBitLength(), 0);
+
+		Utilities::BitArray populated(9);
+		populated.set(8, true);
+		populated.deserialize(nullptr, 0);
+		CHECK_EQ(populated.getByteLength(), 0);
+		CHECK_EQ(populated.getBitLength(), 0);
+		populated.serialize(nullptr);
+	}
 }

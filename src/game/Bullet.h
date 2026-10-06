@@ -8,6 +8,8 @@
 #define SHOOTING_COOLDOWN_MAGNITUDE 10
 
 #include <GAGSys.h>
+#include <array>
+#include "UnitConsts.h"
 
 namespace GAGCore
 {
@@ -28,10 +30,12 @@ public:
   Sint32 speedX, speedY;  //!< pixel precision speed.
   Sint32 ticksInitial;
   Sint32 ticksLeft;
-  Sint32 shootDamage;
+  Sint32 shootDamage; // building damage; legacy scalar retained on the wire
+  std::array<Sint32, NB_UNIT_TYPE> unitDamage{}; // launch-time damage, independent of source lifetime
   Sint32 targetX, targetY;
   Sint32 revealX, revealY, revealW, revealH; //!< area of source of the bullet
 public:
 	void step(void);
+	Uint32 checkSum() const;
 };
 

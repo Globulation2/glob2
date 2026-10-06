@@ -189,3 +189,124 @@ it.each([
     expect(JSON.stringify(events.rows)).not.toContain('/private/');
   },
 );
+
+it.each([
+  { text: 'Create a ring of islands', action: 'build' },
+  { text: 'Make the routes wider', action: 'build' },
+  { text: 'Would islands work?', action: 'discuss' },
+  { text: 'Let us brainstorm possible layouts', action: 'discuss' },
+  { text: 'Make it different somehow', action: 'discuss' },
+])(
+  'persists the structured decision for "$text" without running image generation from chat',
+  async ({ text, action }) => {
+    const account = (
+      await database.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: randomUUID().slice(0, 24) })
+        .returning('id')
+        .executeTakeFirstOrThrow()
+    ).id;
+    await studio.credits.adjust(account, randomUUID(), 1, 'grant');
+    const thread = (await studio.create(account, 'Turn')).id;
+    const id = randomUUID();
+    const settings = { width: 128, height: 256, players: 2 } as const;
+    await studio.submit(account, thread, 'chat', { id, text, settings }, 'test-v1', 60, true);
+    provider.text.mockResolvedValueOnce({
+      text: JSON.stringify({ reply: 'Designer response', brief: 'Updated design', action }),
+      usage: {},
+    });
+    const imagesBefore = provider.image.mock.calls.length;
+    await sql`UPDATE studio_requests SET lease=${randomUUID()},status='processing' WHERE id=${id}`.execute(
+      database.db,
+    );
+    await pipeline.run((await studio.request(id))!);
+    expect(provider.text.mock.lastCall?.[1]).toContain(
+      'Only the latest player message can authorize work',
+    );
+    expect(provider.text.mock.lastCall?.[2]).toMatchObject({
+      required: ['reply', 'brief', 'action'],
+      properties: { action: { enum: ['discuss', 'build'] } },
+    });
+    expect(provider.image.mock.calls).toHaveLength(imagesBefore);
+    expect(
+      (await studio.get(account, thread)).requests.filter((r) => r.kind === 'generate'),
+    ).toHaveLength(action === 'build' ? 1 : 0);
+    expect((await studio.credits.balance(account)).reserved).toBe(action === 'build' ? 1 : 0);
+  },
+);
+
+it.each([undefined, 'generate', ['build'], 1])(
+  'rejects invalid turn decisions: %j',
+  async (action) => {
+    const account = (
+      await database.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: randomUUID().slice(0, 24) })
+        .returning('id')
+        .executeTakeFirstOrThrow()
+    ).id;
+    await studio.credits.adjust(account, randomUUID(), 1, 'grant');
+    const thread = (await studio.create(account, 'Invalid decision')).id;
+    const id = randomUUID();
+    await studio.submit(
+      account,
+      thread,
+      'chat',
+      { id, text: 'Build islands', settings: { width: 128, height: 128, players: 2 } },
+      'test-v1',
+      60,
+      true,
+    );
+    provider.text.mockResolvedValueOnce({
+      text: JSON.stringify({ reply: 'Reply', brief: 'Brief', action }),
+      usage: {},
+    });
+    await sql`UPDATE studio_requests SET lease=${randomUUID()},status='processing' WHERE id=${id}`.execute(
+      database.db,
+    );
+    await expect(pipeline.run((await studio.request(id))!)).rejects.toThrow('invalid brief');
+    expect((await studio.get(account, thread)).requests).toHaveLength(1);
+    expect((await studio.credits.balance(account)).reserved).toBe(0);
+  },
+);
+
+it('reuses a journaled decision after a crash before turn completion', async () => {
+  const account = (
+    await database.db
+      .insertInto('accounts')
+      .values({ kind: 'registered', display_name: randomUUID().slice(0, 24) })
+      .returning('id')
+      .executeTakeFirstOrThrow()
+  ).id;
+  await studio.credits.adjust(account, randomUUID(), 1, 'grant');
+  const thread = (await studio.create(account, 'Recovery')).id;
+  const id = randomUUID();
+  await studio.submit(
+    account,
+    thread,
+    'chat',
+    { id, text: 'Create islands', settings: { width: 128, height: 128, players: 2 } },
+    'test-v1',
+    60,
+    true,
+  );
+  await sql`UPDATE studio_requests SET lease=${randomUUID()},status='processing' WHERE id=${id}`.execute(
+    database.db,
+  );
+  provider.text.mockResolvedValueOnce({
+    text: JSON.stringify({ reply: 'Building islands', brief: 'Islands', action: 'build' }),
+    usage: {},
+  });
+  const count = provider.text.mock.calls.length;
+  const finish = vi
+    .spyOn(studio, 'finish')
+    .mockRejectedValueOnce(new Error('Simulated worker crash'));
+  await expect(pipeline.run((await studio.request(id))!)).rejects.toThrow('Simulated worker crash');
+  await pipeline.run((await studio.request(id))!);
+  finish.mockRestore();
+  expect(provider.text.mock.calls).toHaveLength(count + 1);
+  expect(
+    (await studio.get(account, thread)).requests.filter((r) => r.kind === 'generate'),
+  ).toHaveLength(1);
+  expect((await studio.credits.balance(account)).reserved).toBe(1);
+});

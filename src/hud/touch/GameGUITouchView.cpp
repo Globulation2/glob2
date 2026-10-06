@@ -1,3 +1,4 @@
+#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
 #include <algorithm>
@@ -549,7 +550,7 @@ void GameGUITouch::drawAllocation()
 	gfx->drawSprite(0, 0, sprite, frame);
 	gfx->setUITransform();
 	gfx->setClipRect();
-	const std::string name = Toolkit::getStringTable()->getString("[" + type->type + "]");
+	const std::string name = buildingDisplayName(*type);
 	drawPointLabel(
 		{rect.x + (compact ? 40 : 60) * unit, rect.y,
 		 std::max(0.0, rect.w - (compact ? 88 : 108) * unit), rect.h},

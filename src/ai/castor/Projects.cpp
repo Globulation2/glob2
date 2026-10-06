@@ -4,7 +4,8 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
-#include "AIRules.h"
+#include <algorithm>
+#include <span>
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -20,16 +21,16 @@ bool AICastor::addProject(Project *project)
 	telemetry.count(AITrace::AI2::AICastor_addProject_calls);
 	// Reject the project before adding its critical wait and workforce reservation.
 	// An unavailable bootstrap project must not hold every later expansion hostage.
-	if (!AIRules::usefulBuilding(game->gameHeader, project->shortTypeNum)
-		|| (game->gameHeader.isHungerDisabled() && project->shortTypeNum==IntBuildingType::FOOD_BUILDING)
-		|| buildingSum[project->shortTypeNum][0]>=project->amount)
+	if (buildingSum[project->demand][0]>=project->amount
+		|| (game->gameHeader.isHungerDisabled() && project->demand==AICastor::FeedUnits)
+		|| !demandAvailable(project->demand))
 	{
 		delete project;
 		return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
 									  AITrace::AI2::AICastor_addProject_true, false);
 	}
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
-		if (project->shortTypeNum==(*pi)->shortTypeNum)
+		if (project->demand==(*pi)->demand)
 		{
 			if (project->amount<=(*pi)->amount)
 			{
@@ -58,9 +59,9 @@ void AICastor::addProjects()
 
 	buildsAmount=-1;
 	
-	if (!game->gameHeader.isHungerDisabled() && buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
+	if (!game->gameHeader.isHungerDisabled() && buildingSum[AICastor::FeedUnits][0]==0)
 	{
-		Project *project=new Project(IntBuildingType::FOOD_BUILDING, "boot");
+		Project *project=new Project(AICastor::FeedUnits, "boot");
 
 		project->successWait=strategy.successWait;
 		project->critical=true;
@@ -78,9 +79,9 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[IntBuildingType::SWARM_BUILDING][0]+buildingSum[IntBuildingType::SWARM_BUILDING][1]==0)
+	if (buildingSum[AICastor::ProduceWorkers][0]+buildingSum[AICastor::ProduceWorkers][1]==0)
 	{
-		Project *project=new Project(IntBuildingType::SWARM_BUILDING, "boot");
+		Project *project=new Project(AICastor::ProduceWorkers, "boot");
 
 		project->successWait=strategy.successWait;
 		project->critical=true;
@@ -98,7 +99,7 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}
-	if (buildingSum[IntBuildingType::SWIMSPEED_BUILDING][0]+buildingSum[IntBuildingType::SWIMSPEED_BUILDING][1]==0)
+	if (buildingSum[AICastor::TrainSwimming][0]+buildingSum[AICastor::TrainSwimming][1]==0)
 	{
 		if (timer>computeNeedSwimTimer)
 		{
@@ -107,7 +108,7 @@ void AICastor::addProjects()
 		}
 		if (needSwim)
 		{
-			Project *project=new Project(IntBuildingType::SWIMSPEED_BUILDING, AI_CASTOR_BOOT_SWIM_AMOUNT, AI_CASTOR_BOOT_SWIM_MAIN_WORKERS, "boot");
+			Project *project=new Project(AICastor::TrainSwimming, AI_CASTOR_BOOT_SWIM_AMOUNT, AI_CASTOR_BOOT_SWIM_MAIN_WORKERS, "boot");
 			project->successWait=strategy.successWait;
 			project->critical=true;
 			project->priority=AI_CASTOR_PROJECT_PRIORITY_CRITICAL;
@@ -115,9 +116,9 @@ void AICastor::addProjects()
 				return;
 		}
 	}
-	if (buildingSum[IntBuildingType::ATTACK_BUILDING][0]+buildingSum[IntBuildingType::ATTACK_BUILDING][1]==0)
+	if (buildingSum[AICastor::TrainAttack][0]+buildingSum[AICastor::TrainAttack][1]==0)
 	{
-		Project *project=new Project(IntBuildingType::ATTACK_BUILDING, AI_CASTOR_BOOT_ATTACK_AMOUNT, AI_CASTOR_BOOT_ATTACK_MAIN_WORKERS, "boot");
+		Project *project=new Project(AICastor::TrainAttack, AI_CASTOR_BOOT_ATTACK_AMOUNT, AI_CASTOR_BOOT_ATTACK_MAIN_WORKERS, "boot");
 		project->successWait=strategy.successWait;
 		project->critical=true;
 		if (addProject(project))
@@ -135,13 +136,13 @@ void AICastor::addProjects()
 			if (bpi==strategy.build[bi].baseOrder)
 				if (buildingSum[bi][0]+buildingSum[bi][1]<strategy.build[bi].base)
 				{
-					if (bi==IntBuildingType::SWARM_BUILDING
+					if (bi==AICastor::ProduceWorkers
 						&& (foodWarning
 							|| foodLockStats[1]>foodLockStats[0]
 							|| starvingWarning
 							|| starvingWarningStats[1]>starvingWarningStats[0]))
 						continue;
-					Project *project=new Project((IntBuildingType::Number)bi,
+					Project *project=new Project((int)bi,
 						strategy.build[bi].base, strategy.build[bi].baseWorkers, "base");
 					project->successWait=strategy.successWait;
 					project->finalWorkers=strategy.build[bi].finalWorkers;
@@ -155,8 +156,8 @@ void AICastor::addProjects()
 		int upgradeSum=0;
 		for (int li=AI_CASTOR_FIRST_UPGRADE_LEVEL; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
-		if (!game->gameHeader.isUnitUpgradesDisabled() && AIRules::usefulBuilding(game->gameHeader, bi)
-			&& upgradeSum<strategy.build[bi].baseUpgrade)
+		if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<strategy.build[bi].baseUpgrade
+			&& demandAvailable(bi))
 			return;
 	}
 	buildsAmount=2;
@@ -182,13 +183,13 @@ void AICastor::addProjects()
 				if (bi==strategy.build[bpi].newOrder)
 					if (buildingSum[bi][0]+buildingSum[bi][1]<amountGoal[bi])
 					{
-						if (bi==IntBuildingType::SWARM_BUILDING
+						if (bi==AICastor::ProduceWorkers
 							&& (foodWarning
 								|| foodLockStats[1]>foodLockStats[0]
 								|| starvingWarning
 								|| starvingWarningStats[1]>starvingWarningStats[0]))
 							continue;
-						Project *project=new Project((IntBuildingType::Number)bi,
+						Project *project=new Project((int)bi,
 							amountGoal[bi], strategy.build[bi].newWorkers+(agi-AI_CASTOR_TIER_WORKERS_SCALE_BIAS), "loop");
 						project->successWait=strategy.successWait;
 						project->finalWorkers=strategy.build[bi].finalWorkers;
@@ -204,8 +205,8 @@ void AICastor::addProjects()
 			int upgradeSum=0;
 			for (int li=agi; li<NB_UNIT_LEVELS; li++)
 				upgradeSum+=buildingLevels[bi][0][li];
-			if (!game->gameHeader.isUnitUpgradesDisabled() && AIRules::usefulBuilding(game->gameHeader, bi)
-				&& upgradeSum<upgradeGoal[bi])
+			if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<upgradeGoal[bi]
+				&& demandAvailable(bi))
 				return;
 		}
 
@@ -216,10 +217,10 @@ void AICastor::addProjects()
 std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	telemetry.count(AITrace::AI2::AICastor_continueProject_calls);
-	if (!AIRules::usefulBuilding(game->gameHeader, project->shortTypeNum)
-		|| (game->gameHeader.isHungerDisabled() && project->shortTypeNum==IntBuildingType::FOOD_BUILDING))
+	if (!demandAvailable(project->demand)
+		|| (game->gameHeader.isHungerDisabled() && project->demand==AICastor::FeedUnits))
 	{ project->finished=true; return {}; }
-	telemetry.set(AITrace::AI2::project_shortTypeNum, project->shortTypeNum);
+	telemetry.set(AITrace::AI2::project_shortTypeNum, project->demand);
 	telemetry.set(AITrace::AI2::project_amount, project->amount);
 	telemetry.set(AITrace::AI2::project_subPhase, project->subPhase);
 	telemetry.set(AITrace::AI2::project_priority, project->priority);
@@ -235,7 +236,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		return telemetry.returnedOrder(AITrace::AI2::AICastor_continueProject_result,
 									   shared_ptr<Order>());
 
-	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
+	if (foodLock && !project->critical && project->demand==AICastor::ProduceWorkers)
 	{
 		if (starvingWarning)
 			project->timer=timer+AI_CASTOR_SWARM_STARVE_BACKOFF; // 5min28s
@@ -260,14 +261,15 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		}
 		// find any good building place
 		
-		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(project->shortTypeNum), 0, true);
-		int bw=globalContainer->buildingsTypes.get(typeNum)->width;
-		int bh=globalContainer->buildingsTypes.get(typeNum)->height;
-		assert(bw==bh);
+		Sint32 typeNum=selectBuilding(project->demand);
+  if (typeNum < 0) { project->finished=true; return {}; }
+		int bw=game->buildingsTypes.get(typeNum)->width;
+		int bh=game->buildingsTypes.get(typeNum)->height;
+
 		
 		computeCanSwim();
 		computeObstacleBuildingMap();
-		computeSpaceForBuildingMap(bw);
+		computeSpaceForBuildingMap(std::max(bw,bh));
 		computeBuildingNeighbourMap(bw, bh);
 		computeObstacleUnitMap();
 		computeWheatGrowthMap();
@@ -304,8 +306,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// do we have enough building sites ?
 
-		int real=buildingSum[project->shortTypeNum][0];
-		int site=buildingSum[project->shortTypeNum][1];
+		int real=buildingSum[project->demand][0];
+		int site=buildingSum[project->demand][1];
 		int sum=real+site;
 
 		if (real>=project->amount)
@@ -355,69 +357,69 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			Building *b=myBuildings[i];
 			if (b)
 			{
-				if (b->type->shortTypeNum==project->shortTypeNum)
+				if (provides(*b, project->demand))
 				{
 					if (b->type->isBuildingSite)
 					{
 						// a main building site
-						if (mainWorkers>=0 && b->maxUnitWorking!=mainWorkers)
+						if (mainWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,mainWorkers))
 						{
-							b->maxUnitWorking=mainWorkers;
+							b->maxUnitWorking=desiredWorkers(*b,mainWorkers);
 							b->update();
 							project->timer=timer;
 							return telemetry.returnedOrder(
 								AITrace::AI2::AICastor_continueProject_result,
-								shared_ptr<Order>(new OrderModifyBuilding(b->gid, mainWorkers)));
+								shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,mainWorkers))));
 						}
 					}
 					else
 					{
 						// a main building
-						if (finalWorkers>=0 && b->maxUnitWorking!=finalWorkers)
+						if (finalWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,finalWorkers))
 						{
-							b->maxUnitWorking=finalWorkers;
+							b->maxUnitWorking=desiredWorkers(*b,finalWorkers);
 							b->update();
 							project->timer=timer;
 							return telemetry.returnedOrder(
 								AITrace::AI2::AICastor_continueProject_result,
-								shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers)));
+								shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,finalWorkers))));
 						}
 					}
 				}
-				else if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
-					|| b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+				else if (provides(*b, AICastor::ProduceWorkers)
+					|| provides(*b, AICastor::FeedUnits))
 				{
 					// food buildings
-					if (project->foodWorkers>=0 && b->maxUnitWorking!=project->foodWorkers)
+					if (project->foodWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,project->foodWorkers))
 					{
-						b->maxUnitWorking=project->foodWorkers;
+						b->maxUnitWorking=desiredWorkers(*b,project->foodWorkers);
 						b->update();
 						project->timer=timer;
 						return telemetry.returnedOrder(
 							AITrace::AI2::AICastor_continueProject_result,
 							shared_ptr<Order>(
-								new OrderModifyBuilding(b->gid, project->foodWorkers)));
+								new OrderModifyBuilding(b->gid, desiredWorkers(*b,project->foodWorkers))));
 					}
 				}
 				else if (b->type->maxUnitWorking!=0)
 				{
 					// others buildings:
-					if (project->otherWorkers>=0 && b->maxUnitWorking!=project->otherWorkers)
+					if (project->otherWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,project->otherWorkers))
 					{
-						b->maxUnitWorking=project->otherWorkers;
+						b->maxUnitWorking=desiredWorkers(*b,project->otherWorkers);
 						b->update();
 						project->timer=timer;
 						return telemetry.returnedOrder(
 							AITrace::AI2::AICastor_continueProject_result,
 							shared_ptr<Order>(
-								new OrderModifyBuilding(b->gid, project->otherWorkers)));
+								new OrderModifyBuilding(b->gid, desiredWorkers(*b,project->otherWorkers))));
 					}
 				}
 			}
 		}
 		
-		int real=buildingSum[project->shortTypeNum][0];
-		int site=buildingSum[project->shortTypeNum][1];
+		int real=buildingSum[project->demand][0];
+		int site=buildingSum[project->demand][1];
 		int sum=real+site;
 		
 		//printf("(%s) (all maxUnitWorking set)\n", project->debugName);
@@ -457,7 +459,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
 				Building *b=myBuildings[i];
-				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking<project->mainWorkers)
+				if (b && provides(*b, project->demand) && b->maxUnitWorking<desiredWorkers(*b,project->mainWorkers))
 				{
 					b->maxUnitWorking++;
 					b->update();
@@ -469,8 +471,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			}
 		}
 		
-		int real=buildingSum[project->shortTypeNum][0];
-		int site=buildingSum[project->shortTypeNum][1];
+		int real=buildingSum[project->demand][0];
+		int site=buildingSum[project->demand][1];
 		int sum=real+site;
 		
 		if (real>=project->amount)
@@ -500,19 +502,19 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
 				Building *b=myBuildings[i];
-				if (b && b->type->shortTypeNum==project->shortTypeNum && b->maxUnitWorking!=finalWorkers)
+				if (b && provides(*b, project->demand) && b->maxUnitWorking!=desiredWorkers(*b,finalWorkers))
 				{
-					assert(b->type->maxUnitWorking!=0);
-					b->maxUnitWorking=finalWorkers;
+
+					b->maxUnitWorking=desiredWorkers(*b,finalWorkers);
 					b->update();
 					project->timer=timer;
 					return telemetry.returnedOrder(
 						AITrace::AI2::AICastor_continueProject_result,
-						shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers)));
+						shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,finalWorkers))));
 				}
 			}
 		}
-		if (buildingSum[project->shortTypeNum][1]==0)
+		if (buildingSum[project->demand][1]==0)
 		{
 			project->finished=true;
 		}

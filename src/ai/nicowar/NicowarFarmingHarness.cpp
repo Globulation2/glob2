@@ -4,7 +4,7 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Building.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "FileManager.h"
 #include "Player.h"
 #include "../src/ai/shared_runtime/Tribool.h"

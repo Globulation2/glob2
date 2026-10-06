@@ -9,8 +9,10 @@
 #ifndef AI_MAXIMA_PLACEMENT_H
 #define AI_MAXIMA_PLACEMENT_H
 
+#include "AIMaximaOperatingDemand.h"
 #include "field/Frontier.h"
 #include "AIMaximaFoodLedger.h"
+#include "AIMaximaBuildingRoles.h"
 #include "AIMaximaDistanceField.h"
 #include <memory>
 
@@ -142,6 +144,7 @@ struct DevelopmentTemplate
 {
 	DevelopmentTemplate();
 	TemplateId id;
+	TemplateId style;
 	int buildingType;
 	std::vector<PlannedSlot> slots;
 	Footprint parcel;
@@ -175,7 +178,28 @@ struct BuildingLevelProfile
 	int level;
 	int engineType;
 	Footprint footprint;
-	int constructionResources[5];
+	int constructionResources[8];
+	int completedType=-1;
+	unsigned roles=0;
+	int serviceRates[AIMaximaBuildings::RoleCount]{};
+	unsigned productionUnitMask=0;
+	int productionRates[3]{};
+	int operatingResources[8]{}; // recurring carried packets, FoodLedger::RateScale per tick
+	int feedingRate=0; // visits per tick, FoodLedger::RateScale
+    unsigned feedingMask=0;
+    int feedingResources[8]{};
+    int operatingAssignmentLimit=1024;
+    int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
+    int productionDemandPercent=100;
+    AIMaxima::ProductionRecipeModel productionRecipes;
+    int independentResources[8]{};
+    int productionResources[8]{}; // mechanical production-only packet ceiling // component already included in operatingResources
+	int seats=0;
+	int assignmentLimit=20;
+	int requiredWorkerLevel=0;
+	bool foodRetirable=true; // false for independent services outside bounded policy roles
+	bool repairable=true;
+	bool available=true;
 	int serviceThroughput;
 	int durability;
 	int capability;
@@ -188,6 +212,7 @@ struct BuildingProfile
 	std::vector<BuildingLevelProfile> levels;
 	const BuildingLevelProfile* atLevel(int level) const;
 	int maximumLevel() const;
+	Footprint envelope(int throughLevel) const;
 };
 
 struct WorldTile
@@ -228,6 +253,8 @@ struct WorldTile
 struct WorldBuilding
 {
 	WorldBuilding();
+    int plannedCarriers=-1;
+    int productionRatios[3]{1,1,1};
 	int id;
 	int gid;
 	int buildingType;
@@ -241,6 +268,12 @@ struct WorldBuilding
 	bool upgrading;
 };
 
+struct FeedingColony
+{
+    int x=0,y=0;
+    int demand[3]{}; // recipient-class meals/tick, FoodLedger::RateScale
+};
+
 struct WorldState
 {
 	WorldState();
@@ -252,6 +285,7 @@ struct WorldState
 	const WorldTile& tile(int x, int y) const;
 	WorldTile& tile(int x, int y);
 	const BuildingProfile* profile(int buildingType) const;
+	void invalidateProfileIndex() const;
 	const WorldBuilding* building(int id) const;
 	uint32_t computeSignature() const;
 
@@ -259,10 +293,18 @@ struct WorldState
 	int height;
 	int tick;
 	int swimmingBuilders;
-	int accessibleSupplies[5];
+	int accessibleSupplies[8];
+    std::vector<FeedingColony> feedingColonies;
+    int feedingColonyAt(int x,int y) const;
 	std::vector<WorldTile> tiles;
 	std::vector<WorldBuilding> buildings;
 	std::vector<BuildingProfile> profiles;
+private:
+	// Derived per-snapshot lookup. Copying a world changes profiles.data(), so
+	// copied caches rebuild before use; deserialization invalidates explicitly.
+	mutable const BuildingProfile* indexedProfiles=nullptr;
+	mutable size_t indexedProfileCount=0;
+	mutable std::vector<int> profileIndexes;
 };
 
 struct DevelopmentIntent
@@ -556,6 +598,8 @@ public:
 	const std::map<int, Reservation>& reservations() const { return reservationMap; }
 	const std::map<int, DevelopmentAction>& actions() const { return actionMap; }
 	int committedBuildingCount(const WorldState& world, int buildingType) const;
+	int committedRoleCount(const WorldState& world,int role,unsigned productionMask=0) const;
+	int activeRoleBuildCount(int role,DevelopmentPurpose purpose) const;
 	int activeBuildCount(int buildingType, DevelopmentPurpose purpose) const;
 	/// True once a Relocation intent for this building has been scanned to the
 	/// end without a single acceptable site, so the executor can stop offering
@@ -610,6 +654,7 @@ private:
 	void clearIncrementalSelection();
 	void buildTemplates();
 	const BuildingProfile* configuredProfile(int type) const;
+	bool serves(int type,int role,int level=1) const;
 	const DevelopmentTemplate* findTemplate(TemplateId id) const;
 	std::vector<int> footprintTiles(const WorldState& world, int centerX,
 		int centerY, const Footprint& footprint) const;
@@ -625,6 +670,7 @@ private:
 	bool waterTierPasses(const WorldState& world,
 		const std::vector<int>& parcel, int minimumDistance) const;
 	void prepareWaterDistanceCache(const WorldState& world) const;
+	void prepareResourceSources(const WorldState& world) const;
 	void prepareScoringCaches(const WorldState& world) const;
 	int resourceDistanceAt(const WorldState& world,int resourceType,
 		int index) const;
@@ -636,7 +682,15 @@ private:
 	/// retained between passes, so destruction, upgrades and farm changes need
 	/// no incremental bookkeeping.
 	void prepareFoodLedger(const WorldState& world, int excludeAction=-1,
-		int excludeBuilding=-1) const;
+		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
+    int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
+    void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
+    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0,feeding=0; std::array<int,8> independent{},production{}; };
+    mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
+    mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
+    mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
+    mutable const CandidateFoodLedger* activeFoodCandidate=nullptr;
+    const AIMaximaFoodLedger::Result& selectedFoodResult() const { return activeFoodCandidate?activeFoodCandidate->result:foodResult; }
 	bool relocationCandidatePasses(const WorldState& world,
 		const DevelopmentIntent& intent, const DevelopmentAction& action,
 		RejectionReason& reason) const;
@@ -656,9 +710,19 @@ private:
 	mutable AIMaximaFoodLedger::Ledger foodLedger;
 	mutable AIMaximaFoodLedger::Input foodInput;
 	mutable AIMaximaFoodLedger::Result foodResult;
+    mutable AIMaximaFoodLedger::Result foodServiceBaseline; // only immutable service layer and funded total
+    mutable int foodCandidateFeeding=0;
 	mutable int foodLedgerExcludedAction;
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
+    mutable int foodCandidateType=-1,foodCandidateLevel=1,foodCandidateColony=-1,foodCandidateDemand=0;
+    mutable std::array<int,8> foodCandidateIndependent{},foodCandidateProduction{};
+    mutable bool foodQueryValid=false;
+    mutable unsigned foodQueryEpoch=0;
+    mutable std::array<int,12> foodQueryKey{};
+    mutable AIMaximaFoodLedger::OperatingQuery foodQuery;
+    std::array<int,8> operatingTrips(const WorldState& world,int x,int y,
+        const std::array<int,8>& independent,const std::array<int,8>& production) const;
 	/// Consumer results of the last ledger that excluded nothing, so an
 	/// appraisal can read the old building's standing while the prepared
 	/// ledger already excludes it.
@@ -735,6 +799,8 @@ private:
 	PlacementPolicy placementPolicy;
 	PlacementDiagnostics lastDiagnostics;
 	std::vector<BuildingProfile> configuredProfiles;
+    std::vector<uint8_t> foodManagedTypes;
+	std::vector<int> profileIndexes;
 	std::vector<DevelopmentTemplate> templateList;
 	std::vector<Campus> campusList;
 	std::vector<StandaloneContract> standaloneList;

@@ -3,6 +3,7 @@
 
 #include "LanProtocol.h"
 
+#include <algorithm>
 #include <chrono>
 #include <random>
 #include <stdexcept>
@@ -124,6 +125,8 @@ void LanLink::close()
 	outboxBytes = 0;
 	frames.clear();
 	reader.clear();
+	pendingJson.clear();
+	pendingJsonTotal = 0;
 }
 
 std::string LanLink::error() const
@@ -142,15 +145,38 @@ bool LanLink::send(const std::vector<std::uint8_t>& payload)
 {
 	if (failed)
 		return false;
-	if (payload.empty() || payload.size() > MAX_FRAME_BYTES || outboxBytes + payload.size() + 2 > MAX_OUTBOX_BYTES)
+	const bool fragmented = !payload.empty() && payload[0] == MSG_ROOM_JSON && payload.size() > MAX_FRAME_BYTES;
+	const std::size_t chunks = fragmented ? (payload.size() + MAP_CHUNK_BYTES - 1) / MAP_CHUNK_BYTES : 1;
+	const std::size_t wireBytes = payload.size() + chunks * (fragmented ? 11 : 2);
+	if (payload.empty() || payload.size() > (fragmented ? MAX_JSON_BYTES + 5 : MAX_FRAME_BYTES) ||
+	    wireBytes > MAX_OUTBOX_BYTES - outboxBytes)
 	{
-		failure = payload.size() > MAX_FRAME_BYTES ? "LAN frame too large" : "LAN output queue overflow";
+		failure = "LAN frame or output queue limit exceeded";
 		close();
 		return false;
 	}
-	std::vector<std::uint8_t> frame = NetFrame::encode(payload);
-	outboxBytes += frame.size();
-	outbox.push_back(std::move(frame));
+	for (std::size_t offset = 0; offset < payload.size();)
+	{
+		std::vector<std::uint8_t> part;
+		if (fragmented)
+		{
+			const std::size_t size = std::min(MAP_CHUNK_BYTES, payload.size() - offset);
+			part.reserve(9 + size);
+			part.push_back(MSG_JSON_CHUNK);
+			putU32(part, static_cast<std::uint32_t>(payload.size()));
+			putU32(part, static_cast<std::uint32_t>(offset));
+			part.insert(part.end(), payload.begin() + offset, payload.begin() + offset + size);
+			offset += size;
+		}
+		else
+		{
+			part = payload;
+			offset = payload.size();
+		}
+		auto frame = NetFrame::encode(part);
+		outboxBytes += frame.size();
+		outbox.push_back(std::move(frame));
+	}
 	flush();
 	return !failed;
 }
@@ -208,7 +234,41 @@ void LanLink::pump()
 				close();
 				return;
 			}
-			frames.push_back(std::move(payload));
+			if (payload[0] == MSG_JSON_CHUNK)
+			{
+				const auto total = payload.size() >= 9 ? getU32(payload.data() + 1) : 0;
+				const auto offset = payload.size() >= 9 ? getU32(payload.data() + 5) : 0;
+				if (payload.size() <= 9 || payload.size() > MAP_CHUNK_BYTES + 9 ||
+				    total <= MAX_FRAME_BYTES || total > MAX_JSON_BYTES + 5 || offset != pendingJson.size() ||
+				    (pendingJsonTotal && total != pendingJsonTotal) || offset > total || payload.size() - 9 > total - offset)
+				{
+					failure = "Invalid LAN JSON fragment";
+					close();
+					return;
+				}
+				pendingJsonTotal = total;
+				pendingJson.insert(pendingJson.end(), payload.begin() + 9, payload.end());
+				if (pendingJson.size() == total)
+				{
+					if (pendingJson[0] != MSG_ROOM_JSON || getU32(pendingJson.data() + 1) != total - 5)
+					{
+						failure = "Invalid assembled LAN JSON frame";
+						close();
+						return;
+					}
+					frames.push_back(std::move(pendingJson));
+					pendingJson.clear();
+					pendingJsonTotal = 0;
+				}
+			}
+			else if (pendingJsonTotal)
+			{
+				failure = "Interleaved LAN JSON fragments";
+				close();
+				return;
+			}
+			else
+				frames.push_back(std::move(payload));
 		}
 	}
 }

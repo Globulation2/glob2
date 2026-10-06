@@ -10,15 +10,16 @@ function step(ctx) {
   const buildings = ctx.game.buildings({team: ctx.myTeam, offset, limit: 50});
   offset = buildings.length === 50 ? offset + 50 : 0;
   const rules = ctx.game.rules();
-  // Training-only buildings cannot help when upgrades are disabled. Keep
-  // hospitals, swarms and construction staffed: their work is still useful.
   const types = ctx.game.buildingTypes();
   const workersFor = b => {
     const type = types.find(t => t.id === b.type);
-    const trainingOnly = type && ['school', 'racetrack', 'swimmingpool'].includes(type.name);
-    return rules.noUpgrades && trainingOnly && !type.site ? 0 : 2;
+    if (!type) return 0;
+    const hasTraining = type.training.some(service => service.enabled);
+    const hasOtherWork = type.site || type.capabilities.some(capability => !capability.startsWith('train'));
+    const disabledTrainingOnly = rules.noUpgrades && hasTraining && !hasOtherWork;
+    return disabledTrainingOnly ? 0 : Math.min(2, type.maxWorkers);
   };
-  const building = buildings.find(b => !b.virtual && b.workers !== workersFor(b));
+  const building = buildings.find(b => b.workers !== workersFor(b));
   if (building) {
     return {type: 'workers', building, workers: workersFor(building)};
   }

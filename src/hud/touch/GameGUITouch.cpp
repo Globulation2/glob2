@@ -1718,6 +1718,7 @@ void GameGUITouch::menuAction(int action)
 	case 3:
 		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
 		{
+			statsCatalog = Stats::catalogForBuildings(gui.game.buildingsTypes);
 			statsOpen = true; // The compact statistics sheet.
 			break;
 		}

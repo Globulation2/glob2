@@ -10,6 +10,8 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <algorithm>
+#include <set>
 #include <nlohmann/json.hpp>
 
 #include "MatchSetup.h"
@@ -130,7 +132,8 @@ const std::vector<std::string>& simDataFiles()
 {
 	// Byte-wise sorted. A unit test checks this list against the directories the
 	// engine loads, so a new strategy or script file cannot silently escape the hash.
-	static const std::vector<std::string> files = {
+	static const std::vector<std::string> files = [] {
+		std::vector<std::string> files = {
 		"data/maxima/2v2.strategy",
 		"data/maxima/base.strategy",
 		"data/maxima/duel.strategy",
@@ -143,7 +146,27 @@ const std::vector<std::string>& simDataFiles()
 		"data/usl/Language/Runtime/Classes.usl",
 		"data/usl/Language/Runtime/Control.usl",
 		"data/usl/Language/Runtime/If.usl",
-	};
+		};
+		const std::string manifestPath = "data/buildings/manifest.json";
+		std::string manifestText;
+		if (!readVirtualFile(manifestPath, manifestText))
+			throw std::runtime_error("Cannot read default building catalog for simulation identity");
+		const auto manifest = nlohmann::json::parse(manifestText);
+		if (!manifest.contains("files") || !manifest.at("files").is_array())
+			throw std::runtime_error("Default building catalog lacks files array");
+		files.push_back(manifestPath);
+		std::set<std::string> seen;
+		for (const auto& value : manifest.at("files"))
+		{
+			const auto name = value.get<std::string>();
+			if (name.empty() || name.find_first_of("/\\:") != std::string::npos || name == "." || name == ".." ||
+				!seen.insert(name).second)
+				throw std::runtime_error("Invalid default building catalog filename");
+			files.push_back("data/buildings/" + name);
+		}
+		std::sort(files.begin(), files.end());
+		return files;
+	}();
 	return files;
 }
 
@@ -198,6 +221,20 @@ SimVersion currentSimVersion()
 	version.netProtocol = NET_PROTOCOL_VERSION;
 	version.dataHash = simDataHash();
 	return version;
+}
+
+SimVersion catalogRulesVersion(const SimVersion& engine, const std::string& catalogHash)
+{
+	if (catalogHash.empty()) return engine;
+	if (!lowercaseHex64(catalogHash)) throw std::invalid_argument("Invalid building catalog hash");
+	Sha256 hash;
+	hash.update("glob2-building-rules-v1\n");
+	hash.update(engine.key());
+	hash.update("\n");
+	hash.update(catalogHash);
+	SimVersion rules = engine;
+	rules.dataHash = toHex(hash.finish());
+	return rules;
 }
 
 SimVersion SimVersion::local()

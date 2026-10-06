@@ -55,14 +55,18 @@ class SoftwareTerrainCache
   private:
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime, int preferredResolution, int preferredDownsample = 0);
+							 int animationTime, int preferredResolution, bool tiledCapture = false,
+							 int preferredDownsample = 0);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};
+	// Composition scale and subsequent page reduction are separate: reduction
+	// filters the native material result, never its individual source textures.
+	// Only GPU pages reduce; at most one of these factors can exceed one.
 	int resolution = 1;
-	int downsample = 1; //!< GPU page reduction after native composition; software stays at 1.
+	int downsample = 1;
 	bool gpu = false;
 
   public:
@@ -77,18 +81,15 @@ class SoftwareTerrainCache
 	// page alive. EmergencyTiles is explicit for diagnostics and severe limits.
 	static void drawUncached(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages);
+							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages,
+							 bool tiledCapture = false);
 	bool enabled = true;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
-				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);
+				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
+				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
-	std::size_t bytes() const
-	{
-		const std::size_t pixels = ChunkPixels * resolution / downsample;
-		return chunks.size() * (ChunkStorageBytes - ChunkPixels * ChunkPixels * 4 +
-								pixels * pixels * 4 * (gpu ? 3 : 1));
-	}
+	std::size_t bytes() const;
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 };

@@ -5,6 +5,7 @@ import gzip
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
@@ -141,6 +142,54 @@ class CliSmoke(unittest.TestCase):
         self.assertTrue(list(output.glob('map-r*.map.gz')))
         self.assertGreater((output/'terrain.txt').stat().st_size,100)
         self.assertIsInstance(json.loads((output/'artifacts.json').read_text()),dict)
+
+    def test_experimental_catalog_survives_generated_map_and_saved_continuation(self):
+        # Exercise the production argument forwarding with a nonnumeric path
+        # containing spaces, then remove it so reloads must use embedded rules.
+        catalog_dir = self.root / 'custom building catalog'
+        shutil.copytree(ROOT / 'data/buildings', catalog_dir)
+        example = ROOT / 'test/fixtures/building-catalog/authoring'
+        shutil.copy2(example / 'field-kitchen.json', catalog_dir)
+        manifest_path = catalog_dir / 'manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['catalogKey'] = 'cli-field-kitchens'
+        manifest['files'].append('field-kitchen.json')
+        manifest['experiments'].extend(json.loads((example / 'manifest.json').read_text())['experiments'])
+        manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
+
+        output = self.root / 'generated-game'
+        self.command('--run-game', '--building-catalog', manifest_path,
+                     '--generator', '15', '--map-seed', '42',
+                     '--param', 'teams=2', '--param', 'width=7', '--param', 'height=7',
+                     '--game-seed', '713', '--player', 'castor', '--player', 'cortex',
+                     '--experiment', 'field-kitchens', '--ticks', '64',
+                     '--compute-threads', '1', '--telemetry', 'checksums', '--replay', 'true',
+                     '--save', 'every:32', '--save', 'final', '--output-dir', output)
+        report = json.loads((output / 'result.json').read_text())
+        self.assertEqual(report['status'], 'completed')
+        self.assertEqual(report['ticks'], 64)
+        self.assertEqual(report['resolved']['experiments'], ['field-kitchens'])
+        original = complete_ticks((output / 'game.replay.checksums').read_bytes())
+        self.assertEqual(len(original), 64)
+        maps = list((output / 'generated').glob('map-r*.map.gz'))
+        self.assertEqual(len(maps), 1)
+        shutil.rmtree(catalog_dir)
+
+        # Stock startup does not declare field-kitchens. Accepting the requested
+        # gate here proves the generated map retained its catalog metadata.
+        from_map = self.root / 'embedded-map'
+        reopened = self.game(from_map, maps[0], extra=('--experiment', 'field-kitchens'))
+        self.assertEqual(reopened, original)
+        self.assertEqual(json.loads((from_map / 'result.json').read_text())['resolved']['experiments'],
+                         ['field-kitchens'])
+
+        # A save additionally retains its enabled selection without a CLI gate.
+        from_save = self.root / 'embedded-save'
+        resumed = self.game(from_save, output / 'checkpoint-32.game.gz', saved=True)
+        self.assertEqual(len(resumed), 32)
+        self.assertEqual(resumed, {tick: record for tick, record in original.items() if tick in resumed})
+        self.assertEqual(json.loads((from_save / 'result.json').read_text())['resolved']['experiments'],
+                         ['field-kitchens'])
 
     def test_headless_workers_and_saved_continuation_match_complete_tick_records(self):
         source=self.generated()

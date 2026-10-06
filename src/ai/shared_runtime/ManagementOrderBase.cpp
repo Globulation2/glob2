@@ -3,6 +3,7 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Order.h"
+#include <algorithm>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
@@ -85,7 +86,16 @@ AssignWorkers::AssignWorkers(int number_of_workers, int building_id) : number_of
 
 void AssignWorkers::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderModifyBuilding(runtime.get_building_register().get_building(building_id)->gid, number_of_workers)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ int requested=number_of_workers;
+ const auto& spec=building->type->semantics;
+ int services=spec.feeding.enabled+spec.healing.enabled+(building->type->shootingRange>0);
+ services+=std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& recipe){return recipe.enabled;});
+ services+=std::any_of(spec.training.begin(),spec.training.end(),[](const auto& training){return training.enabled;});
+ services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock;
+ services+=building->type->zonable[WORKER] || building->type->zonable[WARRIOR] || building->type->zonable[EXPLORER];
+ if(services>1 && !building->type->isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
+ runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,building->type->semantics.assignmentLimit)));
 }
 
 
@@ -132,7 +142,10 @@ void ChangeSwarm::modify(Runtime& runtime)
 	ratio[0]=worker_ratio;
 	ratio[1]=explorer_ratio;
 	ratio[2]=warrior_ratio;
-	runtime.push_order(shared_ptr<Order>(new OrderModifySwarm(runtime.get_building_register().get_building(building_id)->gid, ratio)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ for(int unit=0;unit<NB_UNIT_TYPE;++unit)
+  if(!building->type->semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.player->game->gameHeader.isPeacefulModeEnabled())) ratio[unit]=0;
+ runtime.push_order(std::make_shared<OrderModifySwarm>(building->gid,ratio));
 }
 
 
@@ -181,7 +194,45 @@ DestroyBuilding::DestroyBuilding(int building_id) : building_id(building_id)
 
 void DestroyBuilding::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderDelete(runtime.get_building_register().get_building(building_id)->gid)));
+    if(auto* building=runtime.get_building_register().get_building(building_id))
+        runtime.push_order(std::make_shared<OrderDelete>(building->gid));
+}
+
+void RetireAttraction::modify(Runtime& runtime)
+{
+    auto* building=runtime.get_building_register().get_building(building_id);
+    if(!building) return;
+    const unsigned completedMask=runtime.complete_attraction_retirement(building_id,retiringUnitMask);
+    const auto& spec=building->type->semantics;
+    if(AIPlanning::hasIndependentAttractionUse(*building->type,completedMask)) return;
+    if(spec.instantPlacement && !spec.occupiesGround) DestroyBuilding::modify(runtime);
+    else runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,0));
+}
+
+bool RetireAttraction::load(GAGCore::InputStream* stream,Player* player,Sint32 versionMinor)
+{
+    if(!DestroyBuilding::load(stream,player,versionMinor)) return false;
+    retiringUnitMask=stream->readUint8("retiringUnitMask");
+    return retiringUnitMask && !(retiringUnitMask&~((1u<<NB_UNIT_TYPE)-1));
+}
+
+void RetireAttraction::save(GAGCore::OutputStream* stream)
+{
+    DestroyBuilding::save(stream);
+    stream->writeUint8(retiringUnitMask,"retiringUnitMask");
+}
+
+void RetireFeeding::modify(Runtime& runtime)
+{
+    auto* building=runtime.get_building_register().get_building(building_id);
+    if(!building) return;
+    const auto& index=runtime.player->game->buildingCapabilities();
+    constexpr auto feeding=AIPlanning::BuildingIntent::Feed;
+    // A free feeding service cannot be starved of input, and a mixed provider
+    // must remain available to its other strategic consumers.
+    if(!index.matches(building->typeNum,feeding) || !building->type->semantics.feeding.costMask
+        || (index.intentMask(building->typeNum)&~(std::uint64_t(1)<<static_cast<unsigned>(feeding)))) return;
+    DestroyBuilding::modify(runtime);
 }
 
 

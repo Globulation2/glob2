@@ -1401,8 +1401,8 @@ bool independentExits(const Torus &t, const std::vector<unsigned char> &permanen
 }
 
 // A worker may leave a hypothetical building site before construction. The
-// existing swarm's reachable gathering faces anchor future city circulation.
-std::vector<int> swarmEntrances(const Game &game, int team, const Torus &t,
+// configured starting building's reachable faces anchor future city circulation.
+std::vector<int> colonyEntrances(const Game &game, int team, const Torus &t,
 								const std::vector<unsigned char> &walk,
 								const std::vector<int> &reached)
 {
@@ -1410,7 +1410,7 @@ std::vector<int> swarmEntrances(const Game &game, int team, const Torus &t,
 	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 	{
 		const auto *b = game.teams[team]->myBuildings[slot];
-		if (!b || b->type->type != "swarm")
+		if (!b || b->typeNum != game.buildingsTypes.getStartingBuildingTypeNum())
 			continue;
 		const auto add = [&](int x, int y)
 		{
@@ -1480,7 +1480,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		auto room = nearbyBuildingGrid(t, eligible, walk, grid, units[0], reached);
 		if (!room.failure.empty() && j == homes[0])
 			room = arrangeBuildingGrid(t, eligible, walk, grid,
-									   swarmEntrances(game, 0, t, walk, reached));
+									   colonyEntrances(game, 0, t, walk, reached));
 		forward[j] = room.failure.empty() && room.footprints.size() >= 3;
 	}
 	std::vector<std::vector<int>> distances;
@@ -1518,7 +1518,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		auto arrangement = nearbyBuildingGrid(t, eligible, walk, grid, units[k], distances.back());
 		if (!arrangement.failure.empty())
 			arrangement = arrangeBuildingGrid(t, eligible, walk, grid,
-											  swarmEntrances(game, k, t, walk, distances.back()));
+											  colonyEntrances(game, k, t, walk, distances.back()));
 		if (!arrangement.failure.empty() || arrangement.footprints.size() < 6)
 			return "A home cannot fit six buildings with access lanes.";
 		for (int exit : g.exits)

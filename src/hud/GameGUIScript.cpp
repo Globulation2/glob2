@@ -10,7 +10,7 @@ void GameGUI::enableBuildingsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i])
+		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
 			buildingsChoiceState[i] = true;
 	}
 }
@@ -19,7 +19,7 @@ void GameGUI::disableBuildingsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i])
+		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
 			buildingsChoiceState[i] = false;
 	}
 }
@@ -28,7 +28,7 @@ bool GameGUI::isBuildingEnabled(const std::string &name)
 {
 	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
-		if (name == buildingsChoiceName[i])
+		if (name == buildingsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(buildingsChoiceName[i]))->type)
 			return buildingsChoiceState[i];
 	}
 	return false;
@@ -38,7 +38,7 @@ void GameGUI::enableFlagsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i])
+		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
 			flagsChoiceState[i] = true;
 	}
 }
@@ -47,7 +47,7 @@ void GameGUI::disableFlagsChoice(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i])
+		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
 			flagsChoiceState[i] = false;
 	}
 }
@@ -56,7 +56,7 @@ bool GameGUI::isFlagEnabled(const std::string &name)
 {
 	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
-		if (name == flagsChoiceName[i])
+		if (name == flagsChoiceName[i] || name == game.buildingsTypes.get(game.buildingsTypes.findByKey(flagsChoiceName[i]))->type)
 			return flagsChoiceState[i];
 	}
 	return false;

@@ -186,7 +186,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 
 
 		//The main order for the exploration flag on cherry
-		BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
+		BuildingOrder* bo_cherry = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
 		bo_cherry->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraint around the location of fruit
@@ -203,7 +203,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 
 
 		//The main order for the exploration flag in orange
-		BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
+		BuildingOrder* bo_orange = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
 		bo_orange->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		//Constraints around the location of fruit
@@ -217,7 +217,7 @@ void NewNicowar::update_fruit_flags(AISharedRuntime::Runtime& runtime)
 		runtime.add_management_order(mo_completion_orange);
 
 		//The main order for the exploration flag on prunes
-		BuildingOrder* bo_prune = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
+		BuildingOrder* bo_prune = new BuildingOrder(runtime, BuildingDemand::AttractExplorers, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
 		bo_prune->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		AISharedRuntime::Gradients::GradientInfo gi_prune;

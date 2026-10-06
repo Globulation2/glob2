@@ -4,6 +4,7 @@
 #include "Order.h"
 #include "OrderValidation.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "render/scene/Scene.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
@@ -50,7 +51,8 @@ bool load(Game &game, const std::string &bytes, bool text)
 
 TEST_SUITE("MarketsV2")
 {
-// This case also compiles against pre-integration master to generate the baseline.
+// Historical checksums remain a separate migration comparison. Current runs also
+// verify delivery and save continuation under both routing configurations.
 std::string marketTrace(bool enabled, bool report=false)
 {
 	glob2test::HeadlessGlobals globals;
@@ -62,6 +64,7 @@ std::string marketTrace(bool enabled, bool report=false)
 		auto &g = world.game;
 #if VERSION_MINOR >= 135
 		g.gameHeader.getExperiments().set(ExperimentId::MarketsV2, enabled);
+        g.configureBuildingCatalog();
 #else
 		(void)enabled;
 #endif
@@ -71,6 +74,11 @@ std::string marketTrace(bool enabled, bool report=false)
 		auto *market = world.addBuilding("market", 20, 20);
 		auto *second = world.addBuilding("market", 40, 40, 0, 1);
 		REQUIRE(inn); REQUIRE(market); REQUIRE(second);
+        CHECK(market->type->runtimeSuppliesStock==enabled);
+        CHECK(market->type->runtimeSuppliesDirectStock);
+        CHECK(inn->type->runtimeFetchesDirectStock);
+        CHECK((market->type->runtimeSuppliesDirectStockMask & (1u<<CHERRY))!=0);
+        CHECK((inn->type->runtimeFetchesDirectStockMask & (1u<<CHERRY))!=0);
 		g.teams[0]->sharedVisionExchange |= g.teams[1]->me;
 		g.teams[1]->sharedVisionExchange |= g.teams[0]->me;
 		g.teams[0]->sharedVisionOther = g.teams[0]->sharedVisionExchange;
@@ -82,7 +90,6 @@ std::string marketTrace(bool enabled, bool report=false)
 		g.map.setResource(5, 10, WHEAT, 0);
 		for (int i=0; i<6; ++i) world.addUnit(WORKER, 4+i, 4, 0, 1);
 		inn->updateCallLists();
-		int exchangeTicks = 0;
 		for (int tick=0; tick<1500; ++tick)
 		{
 			// Identical scripted deliveries on both builds exercise stock transitions.
@@ -92,7 +99,6 @@ std::string marketTrace(bool enabled, bool report=false)
 			{
 				auto *u = world.team->myUnits[i];
 				u->hungry = Unit::HUNGRY_MAX; u->medical = Unit::MED_FREE;
-				exchangeTicks += u->ownExchangeBuilding != nullptr;
 			}
 			world.step();
 			Uint32 hash=2166136261u;
@@ -103,15 +109,18 @@ std::string marketTrace(bool enabled, bool report=false)
 				const auto state=simulation(g);
 				const auto bytes=save(g,pipeline);
 				if (!glob2test::artifactDir().empty()) glob2test::writeFile(glob2test::artifactDir()/(pipeline ? "midgame.txt" : "midgame.bin"),bytes);
-				const auto marketId=market->gid, secondId=second->gid;
+				const auto marketId=market->gid, secondId=second->gid, innId=inn->gid;
 				REQUIRE(load(g,bytes,pipeline));
 				CHECK(simulation(g)==state);
 				world.team=g.teams[0];
 				market=world.team->myBuildings[Building::GIDtoID(marketId)];
+                inn=world.team->myBuildings[Building::GIDtoID(innId)];
 				second=g.teams[1]->myBuildings[Building::GIDtoID(secondId)];
 			}
 		}
-		if (!enabled) CHECK(exchangeTicks > 0);
+        // There are no natural cherry tiles. This checks actual market-to-inn
+        // delivery; ownExchangeBuilding is retained only for old saved journeys.
+        CHECK(inn->resources[CHERRY] > 0);
 		CHECK(market->resources[CHERRY] < 100);
 #if VERSION_MINOR >= 135
 		std::size_t fields=0;
@@ -221,7 +230,10 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 	CHECK(market->constructionResultState==Building::NO_CONSTRUCTION);
 	const auto &scene=glob2test::sceneOf(g, Game::ViewState{.selectedBuilding=market});
 	CHECK_FALSE(scene.panels.building.hardSpaceForUpgrade);
-	CHECK_FALSE(scene.panels.building.showLevel);
+    CHECK(scene.panels.building.showLevel);
+    // Presentation is explicit even when upgrades are experiment-gated.
+    market->type->presentation.showLevel=false;
+    CHECK_FALSE(glob2test::sceneOf(g,Game::ViewState{.selectedBuilding=market}).panels.building.showLevel);
 }
 
 TEST_CASE("each market level accepts only its resources across all swim classes")

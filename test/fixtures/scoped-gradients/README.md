@@ -6,8 +6,11 @@ version-120 traces were removed with the test-suite cleanup and remain in git hi
 (commit `508942f08`, PR #390).
 
 `test/check_telemetry_simulation.py` checks the `*.terrain.checksums.gz` traces
-across CI platforms. These are the current terrain-property simulation baselines;
-the version-123 traces remain unchanged as historical evidence. Canonical terrain
+across CI platforms. These are the current simulation baselines, retained under
+their terrain-era filenames. Simulation revision 20 expands unit and building
+checksums for capability-driven production, construction, repair and service state;
+these references include those fields from the unchanged legacy save inputs.
+The version-123 traces remain unchanged as historical evidence. Canonical terrain
 IDs participate in map checksums and property-based ecology can change subsequent
 simulation behavior. The checker retains all original legacy save inputs and
 compares complete sidecars, including the aggregate checksum and every team/entity

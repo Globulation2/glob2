@@ -10,6 +10,9 @@
 #include "EngineFixtures.h"
 
 #include <memory>
+#include <map>
+#include <functional>
+#include <nlohmann/json.hpp>
 #include <random>
 #include <vector>
 
@@ -53,8 +56,15 @@ struct Fixture
 	Building* ownFlag = nullptr;
 	Building* foreignFlag = nullptr;
 
-	Fixture()
+	Fixture(std::function<void(nlohmann::json&)> configure = {})
 	{
+        if(configure)
+        {
+            auto catalog=nlohmann::json::parse(game.game.buildingsTypes.snapshotJson());
+            configure(catalog);
+            game.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+            game.game.configureBuildingCatalog();
+        }
 		game.gui.localPlayer = 0;
 		game.gui.localTeamNo = 0;
 		ownInn = game.addBuilding("inn", 4, 4, 0, 0);
@@ -80,7 +90,7 @@ struct Fixture
 
 void expect(OrderValidation::Result r, Verdict verdict, Reason reason = Reason::None)
 {
-	INFO(OrderValidation::name(r.verdict) << " / " << OrderValidation::name(r.reason));
+	INFO(std::string(OrderValidation::name(r.verdict)) << " / " << std::string(OrderValidation::name(r.reason)));
 	CHECK(r.verdict == verdict);
 	if (verdict != Verdict::Accepted)
 		CHECK(r.reason == reason);
@@ -105,24 +115,72 @@ Utilities::BitArray fullMask(int w, int h)
 
 TEST_SUITE("OrderValidation")
 {
+	GLOB2_TEST_CASE("unsupported capability orders are rejected while deleted entities remain harmless", "[orders]")
+	{
+		Fixture f;
+		const auto inn=f.ownInn->gid;
+		const auto missing=Building::GIDfrom(900,0);
+		Sint32 ratios[NB_UNIT_TYPE]={1,0,0};
+		bool clearing[BASIC_COUNT]={true,false,false,false,false};
+		Building* hospital=f.game.addBuilding("hospital",20,20);
+		expect(f.check(OrderModifyBuilding(hospital->gid,0)),Verdict::Accepted);
+		expect(f.check(OrderModifyBuilding(hospital->gid,1)),Verdict::Rejected,Reason::OutOfRange);
+		hospital->maxUnitWorking=2; // retained staff from an older state may be released
+		auto release=std::make_shared<OrderModifyBuilding>(hospital->gid,0); release->sender=0;
+		f.game.game.executeOrder(release,0);
+		CHECK(hospital->maxUnitWorking==0);
+		expect(f.check(OrderModifySwarm(inn,ratios)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifyFlag(inn,0)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifyClearingFlag(inn,clearing)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifyMinLevelToFlag(inn,0,1)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifyMinLevelToFlag(f.ownFlag->gid,1,1)),Verdict::Rejected,Reason::BadState);
+		expect(f.check(OrderModifySwarm(missing,ratios)),Verdict::Accepted);
+		expect(f.check(OrderModifyFlag(missing,0)),Verdict::Accepted);
+		expect(f.check(OrderModifyClearingFlag(missing,clearing)),Verdict::Accepted);
+		expect(f.check(OrderModifyMinLevelToFlag(missing,1,1)),Verdict::Accepted);
+	}
+
+	GLOB2_TEST_CASE("catalog stage limits independently bound construction and completed staffing", "[orders]")
+	{
+        Fixture f([](nlohmann::json& catalog) {
+            const std::map<std::string,int> caps={{"inn.0.site",30},{"inn.0.finished",40},
+                {"inn.1.site",3},{"inn.1.finished",7}};
+            for(auto& variant : catalog["variants"])
+                if(auto cap=caps.find(variant["key"].get<std::string>());cap!=caps.end())
+                {
+                    variant["semantics"]["assignmentLimit"]=cap->second;
+                    variant["presentation"]["defaultAssigned"]=std::min(2,cap->second);
+                }
+        });
+        const int root=f.game.game.buildingsTypes.getTypeNum("inn",0,true);
+        CHECK(f.ownInn->runtime->assignmentLimit==40);
+		expect(f.check(OrderCreate(0,20,20,root,30,40)),Verdict::Accepted);
+		expect(f.check(OrderCreate(0,20,20,root,31,40)),Verdict::Rejected,Reason::OutOfRange);
+		expect(f.check(OrderCreate(0,20,20,root,30,41)),Verdict::Rejected,Reason::OutOfRange);
+		expect(f.check(OrderConstruction(f.ownInn->gid,3,7)),Verdict::Accepted);
+		expect(f.check(OrderConstruction(f.ownInn->gid,4,7)),Verdict::Rejected,Reason::OutOfRange);
+		expect(f.check(OrderConstruction(f.ownInn->gid,3,8)),Verdict::Rejected,Reason::OutOfRange);
+		expect(f.check(OrderModifyBuilding(f.ownInn->gid,40)),Verdict::Accepted);
+	}
+
 	GLOB2_TEST_CASE("orders a client builds for its own team and buildings pass", "[orders]")
 	{
 		Fixture f;
 		const Uint16 inn = f.ownInn->gid, flag = f.ownFlag->gid;
 		expect(f.check(OrderCreate(0, 20, 20, Fixture::type("inn", true), 3, 5)), Verdict::Accepted);
 		expect(f.check(OrderCreate(0, 20, 20, Fixture::type("warflag", false), 10, 10, 8)), Verdict::Accepted);
-		expect(f.check(OrderCreate(0, 20, 20, Fixture::type("explorationflag", false), 2, 2, 255)), Verdict::Accepted);
+		expect(f.check(OrderCreate(0, 20, 20, Fixture::type("explorationflag", false), 2, 2, 20)), Verdict::Accepted);
 		// Non-flags travel with a radius of 0 from the GUI (or none); it is ignored.
 		expect(f.check(OrderCreate(0, 20, 20, Fixture::type("swarm", true), 1, 1, 0)), Verdict::Accepted);
 		expect(f.check(OrderDelete(inn)), Verdict::Accepted);
-		expect(f.check(OrderModifyBuilding(inn, MAX_BUILDING_WORKER_REQUEST)), Verdict::Accepted);
+		expect(f.check(OrderModifyBuilding(inn, f.ownInn->type->semantics.assignmentLimit)), Verdict::Accepted);
 		expect(f.check(OrderChangePriority(inn, -1)), Verdict::Accepted);
 		expect(f.check(OrderConstruction(inn, 4, 6)), Verdict::Accepted);
 		expect(f.check(OrderModifyFlag(flag, f.ownFlag->type->maxUnitStayRange)), Verdict::Accepted);
 		expect(f.check(OrderModifyMinLevelToFlag(flag, 3)), Verdict::Accepted);
 		expect(f.check(OrderMoveFlag(flag, 63, 0, true)), Verdict::Accepted);
 		Sint32 ratio[NB_UNIT_TYPE] = {16, 0, 3};
-		expect(f.check(OrderModifySwarm(inn, ratio)), Verdict::Accepted);
+		expect(f.check(OrderModifySwarm(inn, ratio)), Verdict::Rejected, Reason::BadState);
 		expect(f.check(OrderAlterForbidden(0, BrushTool::MODE_ADD, 60, 60, 8, 8, fullMask(8, 8))), Verdict::Accepted);
 		expect(f.check(OrderAlterClearArea(0, BrushTool::MODE_DEL, 0, 0, 2, 2, fullMask(2, 2))), Verdict::Accepted);
 		expect(f.check(SetAllianceOrder(0, 1, 2, 1, 1, 1)), Verdict::Accepted);
@@ -186,7 +244,7 @@ TEST_SUITE("OrderValidation")
 		       Reason::OutOfRange);
 		expect(f.check(OrderCreate(0, 1, 1, Fixture::type("warflag", false), 1, 1, -2)), Verdict::Rejected,
 		       Reason::OutOfRange);
-		expect(f.check(OrderModifyBuilding(inn, MAX_BUILDING_WORKER_REQUEST + 1)), Verdict::Rejected, Reason::OutOfRange);
+		expect(f.check(OrderModifyBuilding(inn, f.ownInn->type->semantics.assignmentLimit + 1)), Verdict::Rejected, Reason::OutOfRange);
 		expect(f.check(OrderConstruction(inn, 0xffffffffu, 1)), Verdict::Rejected, Reason::OutOfRange);
 		expect(f.check(OrderChangePriority(inn, 2)), Verdict::Rejected, Reason::OutOfRange);
 		Sint32 ratio[NB_UNIT_TYPE] = {1, -1, 1};

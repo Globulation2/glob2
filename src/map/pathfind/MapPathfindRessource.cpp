@@ -16,7 +16,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, in
 {
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MAX_RESOURCES);
-	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass, withMarkets);
+	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass, withMarkets, target);
 	size_t hereIndex=coordToIndex(x, y);
 	Uint16 here=gradient[hereIndex];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);

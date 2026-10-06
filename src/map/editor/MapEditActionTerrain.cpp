@@ -9,6 +9,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include <SDL3/SDL.h>
+#include <charconv>
 
 void MapEdit::beginZonePlacement(BrushType type)
 {
@@ -55,8 +56,9 @@ void MapEdit::resetPlacementTracking()
 bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, float relMouseY)
 {
     if (action.starts_with("select "))
-		for (unsigned id = 0; id < game.map.terrainRegistry().size(); ++id)
-		{
+    {
+        for (unsigned id=0; id<game.map.terrainRegistry().size(); ++id)
+        {
             const auto type = static_cast<::TerrainType>(id);
 			const auto &presentation = game.map.terrainPresentation(type);
 			if (presentation.editorSelectable && action == std::string("select ")+presentation.name)
@@ -65,20 +67,20 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
                 return true;
             }
         }
+    }
 	if(action.substr(0, 29)=="set place building selection ")
 	{
 		performAction("unselect");
 		std::string type=action.substr(29, action.size()-29);
+		if (game.buildingsTypes.getFinishedTypeNum(type)<0) return false;
 		selectionName=type;
 		selectionMode=PlaceBuilding;
 	}
 	else if(action=="place building")
 	{
-		int typeNum=globalContainer->buildingsTypes.getTypeNum(selectionName, buildingLevel, false);
-		if(!isUpgradable(IntBuildingType::shortNumberFromType(selectionName)))
-			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
+		int typeNum=buildingSelectionType(selectionName);
 		if (!game.isBuildingTypeAvailable(typeNum)) return false;
-		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
+		BuildingType *bt = game.buildingsTypes.get(typeNum);
 		int tempX, tempY, x, y;
 		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 
@@ -88,7 +90,7 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 				game.addBuilding(x, y, typeNum, team, 1, 0);
 			else
 				game.addBuilding(x, y, typeNum, team, 0, 0);
-			if (selectionName=="swarm")
+			if (typeNum==game.buildingsTypes.getStartingBuildingTypeNum())
 			{
 				if (game.teams[team]->startPosSet<Team::START_POS_FROM_SWARM)
 				{
@@ -110,17 +112,18 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 			hasMapBeenModified = true;
 		}
 	}
-	else if(action=="switch to building level 1")
+	else if(action=="next building level page")
 	{
-		buildingLevel=0;
+		const int next=(buildingLevel/3+1)*3;
+		buildingLevel=next<buildingLevelCount ? next : 0;
 	}
-	else if(action=="switch to building level 2")
+	else if(action.starts_with("switch to building level "))
 	{
-		buildingLevel=1;
-	}
-	else if(action=="switch to building level 3")
-	{
-		buildingLevel=2;
+		const auto text=std::string_view(action).substr(25);
+		int value=0;
+		const auto result=std::from_chars(text.data(),text.data()+text.size(),value);
+		if (result.ec==std::errc{} && result.ptr==text.data()+text.size() && value>=1 && value<=buildingLevelCount)
+			buildingLevel=value-1;
 	}
 	else if(action=="select forbidden zone")
 	{

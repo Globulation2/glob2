@@ -1,3 +1,4 @@
+#include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -6,7 +7,7 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
-#include "GlobalContainer.h"
+#include <algorithm>
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -25,9 +26,15 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	telemetry.count(AITrace::AI2::AICastor_findGoodBuilding_calls);
 	int w=map->w;
 	int h=map->h;
-	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
-	int bh=globalContainer->buildingsTypes.get(typeNum)->height;
-	assert(bw==bh);
+	const auto* placement = game->buildingsTypes.get(typeNum);
+ const auto* completed = placement->isBuildingSite ? game->buildingsTypes.get(placement->nextLevel) : placement;
+ food = completed->semantics.feeding.enabled && completed->semantics.feeding.cost[WHEAT] > 0;
+ for (const auto& recipe : completed->semantics.production.recipes)
+  food |= recipe.enabled && recipe.cost[WHEAT] > 0;
+ defense = game->buildingCapabilities().matches(placement->isBuildingSite ? placement->nextLevel : typeNum, AIPlanning::BuildingIntent::ProjectileDefense);
+ int bw=placement->width;
+	int bh=game->buildingsTypes.get(typeNum)->height;
+
 	//int hDec=map->hDec;
 	int wDec=map->wDec;
 	int wMask=map->wMask;
@@ -84,8 +91,8 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 		{
 			size_t corner0=(x|(y<<wDec));
 			size_t corner1=(((x+bw-1)&wMask)|(y<<wDec));
-			size_t corner2=(x|(((y+bw-1)&hMask)<<wDec));
-			size_t corner3=(((x+bw-1)&wMask)|(((y+bw-1)&hMask)<<wDec));
+			size_t corner2=(x|(((y+bh-1)&hMask)<<wDec));
+			size_t corner3=(((x+bw-1)&wMask)|(((y+bh-1)&hMask)<<wDec));
 			
 			if (critical
 				&& (mapDiscovered[corner0]&me)==0
@@ -95,7 +102,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 				continue;
 			
 			Uint8 space=spaceForBuildingMap[corner0];
-			if (space<bw)
+			if (placement->semantics.occupiesGround && space<std::max(bw,bh))
 				continue;
 			
 			Sint32 work=workAbilityMap[corner0]+workAbilityMap[corner1]+workAbilityMap[corner2]+workAbilityMap[corner3];
@@ -138,7 +145,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			else
 				score=(AI_CASTOR_SCORE_NORMAL_BIAS+work-(wheatGrowth<<AI_CASTOR_SCORE_NORMAL_GROWTH_SHIFT)-enemyRange)*(AI_CASTOR_SCORE_NORMAL_NEIGHBOUR_BIAS+(directNeighboursCount<<AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT)+farNeighboursCount);
 
-			if (bestScore<score)
+			if (bestScore<score && game->checkRoomForBuilding(x,y,placement,team->teamNumber))
 			{
 				bestScore=score;
 				bestIndex=corner0;
@@ -155,7 +162,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
 		return telemetry.returnedOrder(
 			AITrace::AI2::AICastor_findGoodBuilding_result,
-			shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1)));
+			AIRules::createOrder(*game, team->teamNumber, x, y, typeNum, 1, 1));
 	}
 
 	return telemetry.returnedOrder(AITrace::AI2::AICastor_findGoodBuilding_result,

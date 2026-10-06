@@ -14,12 +14,12 @@ export function step(ctx) {
   decisions++;
   const types = ctx.game.buildingTypes();
   for (const building of ctx.game.buildings({ team: ctx.myTeam, limit: 50 })) {
-    if (building.virtual) continue;
     const type = types.find((t) => t.id === building.type);
-    const trainingOnly =
-      type && ["school", "racetrack", "swimmingpool"].includes(type.name);
-    building.workers =
-      ctx.game.rules().noUpgrades && trainingOnly && !type.site ? 0 : 2;
+    if (!type) continue;
+    const hasTraining = type.training.some(service => service.enabled);
+    const hasOtherWork = type.site || type.capabilities.some(capability => !capability.startsWith("train"));
+    const disabledTrainingOnly = ctx.game.rules().noUpgrades && hasTraining && !hasOtherWork;
+    building.workers = disabledTrainingOnly ? 0 : Math.min(2, type.maxWorkers);
   }
   ctx.telemetry.set(
     "decisions",

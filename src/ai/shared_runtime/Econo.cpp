@@ -3,7 +3,7 @@
 
 #include "AITelemetryFields.h"
 #include "shared_runtime/Runtime.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -98,7 +98,7 @@ void Econo::tick_initial_setup(Runtime& runtime)
 		BuildingSearch bs(runtime);
 		for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 		{
-			if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+			if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 			{
 				ManagementOrder* mo_completion=new AssignWorkers(AI_SHARED_RUNTIME_RTI_INITIAL_SWARM_WORKERS, *i);
 				runtime.add_management_order(mo_completion);
@@ -107,12 +107,12 @@ void Econo::tick_initial_setup(Runtime& runtime)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				runtime.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, WHEAT, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
 				runtime.add_management_order(mo_tracker);
 			}
-			if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+			if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 			{
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, WHEAT, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, *i);
 				runtime.add_management_order(mo_tracker);
 			}
 		}
@@ -125,7 +125,7 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 	if(message=="construct inn")
 	{
 		//The main order for the inn
-		BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
+		BuildingOrder* bo = new BuildingOrder(runtime, BuildingDemand::Feed, 2);
 
 		//Constraints around the location of wheat
 		AISharedRuntime::Gradients::GradientInfo gi_wheat;
@@ -169,7 +169,7 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		runtime.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, WHEAT, id);
+		ManagementOrder* mo_tracker=new AddResourceTracker(AI_SHARED_RUNTIME_RTI_TRACKER_LENGTH, RecurringInputStock, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		runtime.add_management_order(mo_tracker);
 	}
