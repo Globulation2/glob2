@@ -27,6 +27,9 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"snapshot_peak_allocated_buffers",memory.peakAllocatedBuffers},{"snapshot_peak_reusable_buffers",memory.peakReusableBuffers},{"snapshot_peak_leased_buffers",memory.peakLeasedBuffers},
   {"snapshot_peak_retained_bytes",memory.peakRetainedBytes},{"snapshot_peak_capacity_bytes",memory.peakCapacityBytes},
   {"snapshot_peak_leased_bytes",memory.peakLeasedBytes},
+  {"snapshot_lease_control_upstream_allocations",memory.leaseControlUpstreamAllocations},
+  {"snapshot_lease_control_retained_bytes",memory.leaseControlRetainedBytes},
+  {"snapshot_peak_lease_control_retained_bytes",memory.peakLeaseControlRetainedBytes},
   {"deadline_misses",scheduling.deadlineMisses},{"deadline_wait_ns",scheduling.deadlineWaitNs},{"maximum_pending",scheduling.maximumPending}};
 }
 void Game::observeUnpolledAI() {

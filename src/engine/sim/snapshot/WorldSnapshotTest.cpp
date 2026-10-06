@@ -160,11 +160,18 @@ TEST_SUITE("WorldSnapshot")
 		};
 		for (int i = 0; i < 6; ++i) mutateAndCapture();
 		const auto warmedAllocations = store.metrics.allocations;
+		const auto warmedLeaseMemory = store.memoryMetrics();
+		REQUIRE(warmedLeaseMemory.leaseControlUpstreamAllocations > 0);
+		REQUIRE(warmedLeaseMemory.leaseControlRetainedBytes > 0);
 		const auto copied = store.metrics.bytesCopied;
 		for (int i = 0; i < 24; ++i) {
 			auto snapshot = mutateAndCapture();
 			CHECK(snapshot.entities->buildings.front().priority == int(game.stepCounter));
 			CHECK(store.metrics.allocations == warmedAllocations);
+			const auto memory = store.memoryMetrics();
+			CHECK(memory.leaseControlUpstreamAllocations == warmedLeaseMemory.leaseControlUpstreamAllocations);
+			CHECK(memory.leaseControlRetainedBytes == warmedLeaseMemory.leaseControlRetainedBytes);
+			CHECK(memory.peakLeaseControlRetainedBytes == warmedLeaseMemory.peakLeaseControlRetainedBytes);
 		}
 		CHECK(store.metrics.bytesCopied > copied);
 	}
@@ -277,6 +284,10 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(released.leasedBytes < retained.leasedBytes);
 		CHECK(released.peakLeasedBytes == retained.peakLeasedBytes);
 		CHECK(released.peakRetainedBytes == retained.retainedBytes);
+		CHECK(released.leaseControlUpstreamAllocations == retained.leaseControlUpstreamAllocations);
+		CHECK(released.leaseControlRetainedBytes == retained.leaseControlRetainedBytes);
+		CHECK(released.peakLeaseControlRetainedBytes == retained.peakLeaseControlRetainedBytes);
+		CHECK(released.peakLeaseControlRetainedBytes >= released.leaseControlRetainedBytes);
 	}
 	TEST_CASE("same tick component expansion preserves narrow leases and captures arrays once")
 	{

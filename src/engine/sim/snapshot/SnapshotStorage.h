@@ -94,13 +94,16 @@ public:
 // Leases include the latest owner snapshot and references from pooled components.
 // Bytes include pool objects and enumerated vector capacities, deduplicating shared
 // catalog/terrain payloads. Registry/configuration heaps, strings, map nodes,
-// allocator overhead and shared_ptr control blocks are outside this accounting.
+// allocator overhead and shared_ptr control blocks are outside payload accounting.
+// Lease control counters separately measure memory-resource upstream calls/bytes;
+// initial LeaseState allocation and its implementation-private heaps are excluded.
 struct MemoryMetrics
 {
 	Uint64 allocatedBuffers = 0, reusableBuffers = 0, leasedBuffers = 0;
 	Uint64 retainedBytes = 0, capacityBytes = 0, leasedBytes = 0;
 	Uint64 peakAllocatedBuffers = 0, peakReusableBuffers = 0, peakLeasedBuffers = 0;
 	Uint64 peakRetainedBytes = 0, peakCapacityBytes = 0, peakLeasedBytes = 0;
+	Uint64 leaseControlUpstreamAllocations = 0, leaseControlRetainedBytes = 0, peakLeaseControlRetainedBytes = 0;
 };
 struct Storage
 {
@@ -134,6 +137,9 @@ inline MemoryMetrics Storage::memoryMetrics() const
 		shared.at(sharedCount++) = {owner.get(), sizeof(*owner), vectorBytes(*owner), leased};
 	};
 	const auto account = [&]<class T>(const BufferPool<T>& pool, auto payload) {
+		// Each component/plane pool owns a distinct control-block allocator.
+		result.leaseControlUpstreamAllocations += pool.leaseUpstreamAllocations();
+		result.leaseControlRetainedBytes += pool.leaseRetainedBytes();
 		pool.inspect([&](const T& buffer, bool leased) {
 			++result.allocatedBuffers;
 			if (leased) ++result.leasedBuffers; else ++result.reusableBuffers;

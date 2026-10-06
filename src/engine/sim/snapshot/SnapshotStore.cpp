@@ -73,12 +73,14 @@ MemoryMetrics Store::memoryMetrics() const
 	memoryPeaks.peakRetainedBytes = std::max(memoryPeaks.peakRetainedBytes, value.retainedBytes);
 	memoryPeaks.peakCapacityBytes = std::max(memoryPeaks.peakCapacityBytes, value.capacityBytes);
 	memoryPeaks.peakLeasedBytes = std::max(memoryPeaks.peakLeasedBytes, value.leasedBytes);
+	memoryPeaks.peakLeaseControlRetainedBytes = std::max(memoryPeaks.peakLeaseControlRetainedBytes, value.leaseControlRetainedBytes);
 	value.peakAllocatedBuffers = memoryPeaks.peakAllocatedBuffers;
 	value.peakReusableBuffers = memoryPeaks.peakReusableBuffers;
 	value.peakLeasedBuffers = memoryPeaks.peakLeasedBuffers;
 	value.peakRetainedBytes = memoryPeaks.peakRetainedBytes;
 	value.peakCapacityBytes = memoryPeaks.peakCapacityBytes;
 	value.peakLeasedBytes = memoryPeaks.peakLeasedBytes;
+	value.peakLeaseControlRetainedBytes = memoryPeaks.peakLeaseControlRetainedBytes;
 	return value;
 }
 } // namespace SimulationSnapshot
