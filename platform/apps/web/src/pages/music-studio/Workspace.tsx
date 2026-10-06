@@ -2,7 +2,9 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { MusicRelease, MusicStudioSettings, MusicStudioProgress } from '@glob2/protocol';
 import { request } from '../../api.ts';
 import { MusicPlayer } from '../../music/Player.tsx';
-import { MusicCheckDetails } from '../../music/Validation.tsx';
+import { Cover } from '../../music/Cover.tsx';
+import type { PlaybackSettings, PlaybackSnapshot } from '../../music/useMusicPlayback.ts';
+import { MusicValidation, MusicCheckDetails } from '../../music/Validation.tsx';
 import { useDeliveryCelebration } from '../studio/useDeliveryCelebration.ts';
 import { MUSIC_IDEAS } from '../MusicStudioLanding.tsx';
 import { ROOT, type Thread, type Wallet, type Delivered } from './types.ts';
@@ -35,6 +37,16 @@ export function MusicWorkspace(p: Props) {
   const [compare, setCompare] = useState(''),
     [preview, setPreview] = useState<{ requestId: string; url: string }>();
   const [initialPosition, setInitialPosition] = useState(0);
+  const [initialSettings, setInitialSettings] = useState<PlaybackSettings>({});
+  const [comparisonChoice, setComparisonChoice] = useState('');
+  const [alignmentNote, setAlignmentNote] = useState('');
+  const playback = useRef<PlaybackSnapshot>({
+    position: 0,
+    mood: 0,
+    volume: 0.8,
+    muted: false,
+    playing: false,
+  });
   const [cancelling, setCancelling] = useState(false);
   const position = useRef(0),
     previousFrames = useRef(0),
@@ -86,6 +98,15 @@ export function MusicWorkspace(p: Props) {
     })
       .then((value) => {
         if (abort.signal.aborted) return;
+        const aligned =
+          value.frames === previousFrames.current &&
+          !!value.timelineId &&
+          value.timelineId === previousTimeline.current;
+        setAlignmentNote(
+          previousFrames.current && !aligned
+            ? 'This version has a different or unverified musical timeline. Playback starts from the beginning.'
+            : '',
+        );
         if (
           value.frames !== previousFrames.current ||
           !value.timelineId ||
@@ -95,6 +116,11 @@ export function MusicWorkspace(p: Props) {
         previousTimeline.current = value.timelineId;
         previousFrames.current = value.frames;
         setInitialPosition(position.current);
+        setInitialSettings({
+          ...playback.current,
+          position: position.current,
+          playing: playback.current.playing && !document.hidden,
+        });
         setPreview(undefined);
         setRelease(value);
       })
@@ -184,7 +210,7 @@ export function MusicWorkspace(p: Props) {
           >
             {p.parent && (
               <p>
-                Revising version {versions.findIndex((v) => v.id === p.parent) + 1}{' '}
+                Revising version {generations.findIndex((v) => v.id === p.parent) + 1}{' '}
                 <button type="button" onClick={() => p.revise(undefined)}>
                   Start fresh
                 </button>
@@ -303,15 +329,16 @@ export function MusicWorkspace(p: Props) {
               onClick={() => {
                 setFollow(true);
                 setCompare('');
+                setComparisonChoice('');
                 setPreview(undefined);
               }}
             >
-              Follow live
+              {follow && !compare ? 'Following latest generation' : 'Follow latest generation'}
             </button>
           </header>
-          {!!generations.length && (
+          {!!versions.length && (
             <nav className="mu-versions" aria-label="Music revisions">
-              {generations.map((v, i) => (
+              {versions.map((v) => (
                 <button
                   key={v.id}
                   aria-pressed={current?.id === v.id}
@@ -319,10 +346,11 @@ export function MusicWorkspace(p: Props) {
                     setSelected(v.id);
                     setFollow(false);
                     setCompare('');
+                    setComparisonChoice('');
                     setPreview(undefined);
                   }}
                 >
-                  V{i + 1} <small>{v.status}</small>
+                  V{generations.indexOf(v) + 1} <small>{v.status}</small>
                 </button>
               ))}
             </nav>
@@ -341,21 +369,16 @@ export function MusicWorkspace(p: Props) {
               </div>
             </div>
           )}
-          {shown && (
-            <ol className="mu-stages" aria-label="Generation stages">
-              {shown.stages.map((stage) => (
-                <li key={stage.id} data-status={stage.status}>
-                  <span>
-                    {stage.status === 'complete' ? '✓' : stage.status === 'running' ? '◉' : '○'}
-                  </span>
-                  <div>
-                    <strong>{stage.label}</strong>
-                    <small>{stage.detail ?? stage.status}</small>
-                  </div>
-                </li>
-              ))}
-            </ol>
+          {shown && !playable && (
+            <p className="mu-generation-status" role="status">
+              <span aria-hidden="true">◉</span>{' '}
+              {shown.stages.find((stage) => stage.status === 'running')?.label ??
+                (inspected?.status === 'failed'
+                  ? 'Generation needs attention'
+                  : 'Preparing your soundtrack…')}
+            </p>
           )}
+          {displayed && !playable && !error && <p role="status">Loading this version…</p>}
           {active?.kind === 'generate' && inspectedId === active.id && (
             <button
               disabled={cancelling || ['dispatched', 'uncertain'].includes(active.status)}
@@ -366,30 +389,81 @@ export function MusicWorkspace(p: Props) {
           )}
           {playable && !previewUrl && (
             <>
-              <div className="mu-audition-header">
-                <h3>{compare ? 'Comparing saved version' : 'Ready to listen'}</h3>
-                <select
-                  aria-label="Compare revision"
-                  value={compare}
-                  onChange={(e) => {
-                    setCompare(e.target.value);
-                    setPreview(undefined);
-                  }}
-                >
-                  <option value="">Selected version</option>
-                  {versions
-                    .filter((v) => v.id !== current?.id)
-                    .map((v) => (
-                      <option key={v.id} value={v.id}>
-                        Compare V{generations.findIndex((g) => g.id === v.id) + 1}
-                      </option>
-                    ))}
-                </select>
+              <div className="mu-delivery-identity">
+                <Cover release={playable} />
+                <div>
+                  <span className="music-eyebrow">✓ COMPOSITION COMPLETE</span>
+                  <h3>{playable.metadata.title ?? 'Ready to listen'}</h3>
+                  <p>
+                    {playable.metadata.description ?? 'Your colony’s soundtrack, in three moods.'}
+                  </p>
+                </div>
               </div>
+              {versions.length > 1 && (
+                <div className="mu-comparison">
+                  <label>
+                    Compare with
+                    <select
+                      aria-label="Compare revision"
+                      value={comparisonChoice}
+                      onChange={(e) => {
+                        setSelected(current?.id ?? '');
+                        setFollow(false);
+                        setComparisonChoice(e.target.value);
+                        setCompare(e.target.value);
+                        setPreview(undefined);
+                      }}
+                    >
+                      <option value="">Choose a version</option>
+                      {versions
+                        .filter((v) => v.id !== current?.id)
+                        .map((v) => (
+                          <option key={v.id} value={v.id}>
+                            Version {generations.indexOf(v) + 1}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <div className="seg" aria-label="Audible comparison version">
+                    <button
+                      aria-pressed={!compare}
+                      onClick={() => {
+                        setCompare('');
+                        setPreview(undefined);
+                      }}
+                    >
+                      A · V{current ? generations.indexOf(current) + 1 : '—'}
+                    </button>
+                    <button
+                      aria-pressed={!!compare}
+                      disabled={!comparisonChoice}
+                      onClick={() => {
+                        setCompare(comparisonChoice);
+                        setPreview(undefined);
+                      }}
+                    >
+                      B
+                      {comparisonChoice
+                        ? ` · V${generations.findIndex((v) => v.id === comparisonChoice) + 1}`
+                        : ''}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {alignmentNote && (
+                <p className="mu-alignment-note" role="status">
+                  {alignmentNote}
+                </p>
+              )}
               <MusicPlayer
                 key={playable.id}
                 release={playable}
                 initialPosition={initialPosition}
+                initialSettings={initialSettings}
+                onSnapshot={(snapshot) => {
+                  playback.current = snapshot;
+                  position.current = snapshot.position;
+                }}
                 onPosition={(value) => {
                   position.current = value;
                 }}
@@ -407,7 +481,6 @@ export function MusicWorkspace(p: Props) {
                 >
                   Revise this version
                 </button>
-                <span>License: {playable.metadata.license}</span>
                 <button
                   disabled={p.busy || playable.status === 'published'}
                   onClick={() => {
@@ -421,28 +494,9 @@ export function MusicWorkspace(p: Props) {
                 {playable.status === 'published'
                   ? 'This version is public.'
                   : 'Saved privately. Publishing shares only this version.'}{' '}
-                AI composition is disclosed.
+                {playable.metadata.license} · AI composition is disclosed.
               </p>
             </>
-          )}
-          {shown && !!shown.artifacts.length && (
-            <details className="mu-artifacts">
-              <summary>Candidate previews & reports</summary>
-              {shown.artifacts.map((a) =>
-                a.kind === 'preview' ? (
-                  <button
-                    key={a.id}
-                    onClick={() => setPreview({ requestId: shown.requestId, url: a.url })}
-                  >
-                    {a.label}
-                  </button>
-                ) : (
-                  <a key={a.id} href={a.url} target="_blank" rel="noreferrer">
-                    {a.label}
-                  </a>
-                ),
-              )}
-            </details>
           )}
           {previewUrl && (
             <div className="mu-candidate">
@@ -451,27 +505,99 @@ export function MusicWorkspace(p: Props) {
               <button onClick={() => setPreview(undefined)}>Return to final set</button>
             </div>
           )}
-          {shown && !!shown.notes.length && (
-            <details className="mu-notes">
-              <summary>Composer’s progress</summary>
-              {shown.notes.map((n, i) => (
-                <p key={i}>
-                  <small>Candidate {n.attempt}</small> {n.text}
-                </p>
-              ))}
+          {shown?.checks.length || playable?.validation || playable?.warnings?.length ? (
+            <MusicValidation
+              checks={playable?.validation ?? shown?.checks ?? []}
+              warnings={playable?.warnings ?? []}
+              latestAttempts
+            />
+          ) : null}
+          {!!generations.length && (
+            <details className="mu-history">
+              <summary>
+                Generation history{' '}
+                <span>
+                  {generations.length} {generations.length === 1 ? 'version' : 'versions'}
+                </span>
+              </summary>
+              <nav className="mu-history-versions" aria-label="All generation attempts">
+                {generations.map((v, i) => (
+                  <button
+                    key={v.id}
+                    aria-pressed={inspectedId === v.id}
+                    onClick={() => {
+                      setSelected(v.id);
+                      setFollow(false);
+                      setCompare('');
+                      setComparisonChoice('');
+                      setPreview(undefined);
+                    }}
+                  >
+                    V{i + 1} · {v.status}
+                  </button>
+                ))}
+              </nav>
+              {shown && (
+                <>
+                  <ol className="mu-stages" aria-label="Generation stages">
+                    {shown.stages.map((stage) => (
+                      <li key={stage.id} data-status={stage.status}>
+                        <span aria-hidden="true">
+                          {stage.status === 'complete'
+                            ? '✓'
+                            : stage.status === 'running'
+                              ? '◉'
+                              : stage.status === 'failed'
+                                ? '×'
+                                : '○'}
+                        </span>
+                        <div>
+                          <strong>{stage.label}</strong>
+                          <small>{stage.detail ?? stage.status}</small>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  {!!shown.artifacts.length && (
+                    <details className="mu-artifacts">
+                      <summary>Candidate previews &amp; reports</summary>
+                      {shown.artifacts.map((a) =>
+                        a.kind === 'preview' ? (
+                          <button
+                            key={a.id}
+                            onClick={() => setPreview({ requestId: shown.requestId, url: a.url })}
+                          >
+                            {a.label}
+                          </button>
+                        ) : (
+                          <a key={a.id} href={a.url} target="_blank" rel="noreferrer">
+                            {a.label}
+                          </a>
+                        ),
+                      )}
+                    </details>
+                  )}
+                  {!!shown.notes.length && (
+                    <details className="mu-notes">
+                      <summary>Composer’s progress</summary>
+                      {shown.notes.map((n, i) => (
+                        <p key={i}>
+                          <small>Candidate {n.attempt}</small> {n.text}
+                        </p>
+                      ))}
+                    </details>
+                  )}
+                  {!!shown.checks.length && (
+                    <details className="mu-attempt-checks">
+                      <summary>All candidate measurements</summary>
+                      {shown.checks.map((c) => (
+                        <MusicCheckDetails key={c.id} check={c} showAttempt />
+                      ))}
+                    </details>
+                  )}
+                </>
+              )}
             </details>
-          )}
-          {shown && !!shown.checks.length && (
-            <section className="mu-checks">
-              <h3>Validation, in detail</h3>
-              <p>
-                These checks catch measurable defects. Your ears decide whether the music feels
-                right.
-              </p>
-              {shown.checks.map((c) => (
-                <MusicCheckDetails key={c.id} check={c} showAttempt />
-              ))}
-            </section>
           )}
         </section>
       </div>

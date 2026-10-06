@@ -302,7 +302,7 @@ numbers and CRCs without changing audio packets, pre-skip or end granules. Every
 final tagged file is fully decoded again to check frame counts. Waveform peaks,
 loop-seam and decoded-peak advice accompany the exact downloadable preview.
 Cover images are re-encoded as 512 × 512 JPEGs, at most 256 KiB; an omitted cover
-uses the music-note placeholder.
+uses a deterministic terrain illustration seeded by its release identity.
 
 ### Portable file contract, version 1
 
@@ -338,6 +338,25 @@ a 0–10 second test fade, continuous blend and an eight-second mood sequence.
 Gameplay uses the same decoder read/seek helpers and computes the original fade
 curve instead of retaining a lookup table. Preview suspends background music and
 restores it when its screen closes.
+
+The website player allows mood selection and seeking before its first explicit
+Play action. A shared transport pairs three waveform lanes with one accessible
+playhead, volume and mute. Guided game-transition previews cycle moods every
+eight seconds of playback using game fade timing; custom fades, manual blends
+and percentage weights live under **Advanced mixing**. Selecting a mood or
+changing a custom setting exits guided preview. Pausing or hiding the page stops
+the sequence; returning to the page does not restart audio.
+
+Song pages summarize **Audio quality checks** with readable listening guidance
+for warnings and failures, and keep passing results and measurements under
+**Show technical results**. The studio summarizes the latest candidate per check
+category and retains all attempts, previews and reports in **Generation history**.
+Missing, skipped, waived and incomplete results are never counted as passes.
+Completed versions promote listening, revision, downloads and explicit
+publication. Comparing versions retains mood and volume; playback position is
+retained only when both musical timeline identities and frame counts match.
+A new delivery follows automatically only while **Following latest generation**
+is selected; manually selected history is not interrupted.
 
 `python3 tools/music/build_web.py` builds the website decoder with the pinned
 Opus dependencies and Emscripten SDK. The website owns the decoder in a worker,
