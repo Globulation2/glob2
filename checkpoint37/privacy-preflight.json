@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scanned_files": 35628,
+  "checks": [
+    "github_token",
+    "private_key",
+    "aws_access_key",
+    "openai_key",
+    "authenticated_url"
+  ],
+  "findings": [],
+  "scope": "Curated validation files only; filename and category recorded, no matched values. Human-readable selections are an explicit allowlist. No environment dump or browser storage is published."
+}

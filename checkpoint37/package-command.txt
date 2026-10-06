@@ -1,0 +1,2 @@
+tar -C artifacts/building-capabilities --transform='s,^review-evidence,building-capabilities-evidence,' -cf - review-evidence | zstd -T4 -9 --long=27 -o artifacts/building-capabilities/review-evidence.tar.zst
+zstd -t artifacts/building-capabilities/review-evidence.tar.zst

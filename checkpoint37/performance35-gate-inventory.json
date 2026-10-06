@@ -1,0 +1,717 @@
+[
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=0,swim=0",
+    "pairs": 42,
+    "baseline_median": 2506.205078125,
+    "candidate_median": 2525.4619140625,
+    "paired_median_ratio": 1.0085812432773205,
+    "bootstrap95": [
+      1.0047514133019417,
+      1.142627270344204
+    ],
+    "gate": "inconclusive"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=1,swim=0",
+    "pairs": 42,
+    "baseline_median": 3597.375,
+    "candidate_median": 3513.4150390625,
+    "paired_median_ratio": 0.9765769780411726,
+    "bootstrap95": [
+      0.9733893720483373,
+      0.980392028596258
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=2,swim=0",
+    "pairs": 42,
+    "baseline_median": 3683.00830078125,
+    "candidate_median": 3611.3876953125,
+    "paired_median_ratio": 0.9798535188974975,
+    "bootstrap95": [
+      0.9757694837217894,
+      0.9816138997258506
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=3,swim=0",
+    "pairs": 42,
+    "baseline_median": 1412.05615234375,
+    "candidate_median": 1604.43310546875,
+    "paired_median_ratio": 1.1342201485563368,
+    "bootstrap95": [
+      1.1311143114539801,
+      1.1388663717678984
+    ],
+    "gate": "repeatable_above_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=4,swim=0",
+    "pairs": 42,
+    "baseline_median": 3029.638671875,
+    "candidate_median": 1961.857421875,
+    "paired_median_ratio": 0.6477442069977626,
+    "bootstrap95": [
+      0.6464785727046624,
+      0.6496550073780342
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=0,swim=3",
+    "pairs": 42,
+    "baseline_median": 2568.2451171875,
+    "candidate_median": 2536.4189453125,
+    "paired_median_ratio": 0.9888390431038628,
+    "bootstrap95": [
+      0.9838343861321124,
+      0.9902633654063908
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=1,swim=3",
+    "pairs": 42,
+    "baseline_median": 3594.81591796875,
+    "candidate_median": 3509.10302734375,
+    "paired_median_ratio": 0.9752474731241755,
+    "bootstrap95": [
+      0.9719047033628985,
+      0.9802199227241477
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=2,swim=3",
+    "pairs": 42,
+    "baseline_median": 3679.5810546875,
+    "candidate_median": 3617.57470703125,
+    "paired_median_ratio": 0.9832334074507459,
+    "bootstrap95": [
+      0.980463456068779,
+      0.9888188365072734
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=3,swim=3",
+    "pairs": 42,
+    "baseline_median": 1411.04541015625,
+    "candidate_median": 1606.6884765625,
+    "paired_median_ratio": 1.1369235265015676,
+    "bootstrap95": [
+      1.134467582214306,
+      1.1394767220395354
+    ],
+    "gate": "repeatable_above_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=32,kind=4,swim=3",
+    "pairs": 42,
+    "baseline_median": 3034.9658203125,
+    "candidate_median": 1966.6767578125,
+    "paired_median_ratio": 0.6474777754650796,
+    "bootstrap95": [
+      0.6467761375172558,
+      0.6495921817195323
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=0,swim=0",
+    "pairs": 42,
+    "baseline_median": 37971.46875,
+    "candidate_median": 37956.078125,
+    "paired_median_ratio": 0.9990265856281013,
+    "bootstrap95": [
+      0.9970895868657279,
+      1.0017501836861094
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=1,swim=0",
+    "pairs": 42,
+    "baseline_median": 50717.25,
+    "candidate_median": 49259.9140625,
+    "paired_median_ratio": 0.9710722443939475,
+    "bootstrap95": [
+      0.9692995414825551,
+      0.9737918449732441
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=2,swim=0",
+    "pairs": 42,
+    "baseline_median": 50283.96875,
+    "candidate_median": 48899.765625,
+    "paired_median_ratio": 0.9728493640505589,
+    "bootstrap95": [
+      0.9698139462579467,
+      0.9756076672399479
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=3,swim=0",
+    "pairs": 42,
+    "baseline_median": 4522.78125,
+    "candidate_median": 4582.859375,
+    "paired_median_ratio": 1.011230034964714,
+    "bootstrap95": [
+      1.0100935584845088,
+      1.01497439860883
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=4,swim=0",
+    "pairs": 42,
+    "baseline_median": 5181.453125,
+    "candidate_median": 4874.421875,
+    "paired_median_ratio": 0.9394908909852342,
+    "bootstrap95": [
+      0.9320534481526159,
+      0.9429803071614162
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=0,swim=3",
+    "pairs": 42,
+    "baseline_median": 38285.453125,
+    "candidate_median": 38025.375,
+    "paired_median_ratio": 0.9944020822920053,
+    "bootstrap95": [
+      0.9923141043226721,
+      0.9968728372213365
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=1,swim=3",
+    "pairs": 42,
+    "baseline_median": 50729.984375,
+    "candidate_median": 49253.125,
+    "paired_median_ratio": 0.9706838266957967,
+    "bootstrap95": [
+      0.9687102017957339,
+      0.9745228182353116
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=2,swim=3",
+    "pairs": 42,
+    "baseline_median": 50380.296875,
+    "candidate_median": 48924.6875,
+    "paired_median_ratio": 0.9714428751077104,
+    "bootstrap95": [
+      0.9696106992452931,
+      0.973390977266937
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=3,swim=3",
+    "pairs": 42,
+    "baseline_median": 4530.59375,
+    "candidate_median": 4581.0703125,
+    "paired_median_ratio": 1.0104315050339745,
+    "bootstrap95": [
+      1.003492854551773,
+      1.0127942152205804
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=128,kind=4,swim=3",
+    "pairs": 42,
+    "baseline_median": 5185.203125,
+    "candidate_median": 4871.609375,
+    "paired_median_ratio": 0.9385057019855905,
+    "bootstrap95": [
+      0.935441217257208,
+      0.9411414582415294
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=0,swim=0",
+    "pairs": 42,
+    "baseline_median": 1280588.0,
+    "candidate_median": 1275399.3125,
+    "paired_median_ratio": 0.9982904590940053,
+    "bootstrap95": [
+      0.9901146330467767,
+      1.0131782995257488
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=1,swim=0",
+    "pairs": 42,
+    "baseline_median": 1370917.5,
+    "candidate_median": 1350815.6875,
+    "paired_median_ratio": 0.9925706809632169,
+    "bootstrap95": [
+      0.9829829801924993,
+      1.0052802931313671
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=2,swim=0",
+    "pairs": 42,
+    "baseline_median": 1361533.6875,
+    "candidate_median": 1349822.5625,
+    "paired_median_ratio": 0.9904724961893805,
+    "bootstrap95": [
+      0.9828821587897468,
+      0.9960704828028821
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=3,swim=0",
+    "pairs": 42,
+    "baseline_median": 71682.0625,
+    "candidate_median": 72805.75,
+    "paired_median_ratio": 1.0150092676336453,
+    "bootstrap95": [
+      1.0102198487698035,
+      1.0199288456858056
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=4,swim=0",
+    "pairs": 42,
+    "baseline_median": 79906.9375,
+    "candidate_median": 75430.75,
+    "paired_median_ratio": 0.9433111705738,
+    "bootstrap95": [
+      0.938237621718336,
+      0.9462203848693526
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=0,swim=3",
+    "pairs": 42,
+    "baseline_median": 1278539.3125,
+    "candidate_median": 1269458.6875,
+    "paired_median_ratio": 0.9932834311618528,
+    "bootstrap95": [
+      0.9755122271921405,
+      1.0052154767972648
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=1,swim=3",
+    "pairs": 42,
+    "baseline_median": 1357232.0,
+    "candidate_median": 1357581.25,
+    "paired_median_ratio": 1.0002816377419306,
+    "bootstrap95": [
+      0.9950346059355287,
+      1.0116851637220274
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=2,swim=3",
+    "pairs": 42,
+    "baseline_median": 1359851.875,
+    "candidate_median": 1348846.3125,
+    "paired_median_ratio": 0.9916510765383424,
+    "bootstrap95": [
+      0.9856443695477841,
+      1.0037371800934323
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=3,swim=3",
+    "pairs": 42,
+    "baseline_median": 71605.8125,
+    "candidate_median": 72420.875,
+    "paired_median_ratio": 1.0093617835796727,
+    "bootstrap95": [
+      1.003626982342937,
+      1.0131115821516583
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-kernels35",
+    "group": "width=512,kind=4,swim=3",
+    "pairs": 42,
+    "baseline_median": 80000.75,
+    "candidate_median": 75475.125,
+    "paired_median_ratio": 0.9418854717248386,
+    "bootstrap95": [
+      0.9375541324118017,
+      0.9440233790872077
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-simulation35",
+    "group": "stock_simulation_ns",
+    "pairs": 11,
+    "baseline_median": 770201849,
+    "candidate_median": 703408407,
+    "paired_median_ratio": 0.942857095027931,
+    "bootstrap95": [
+      0.9038430646274865,
+      0.94838983559384
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-early",
+    "group": "numbi-castor_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 594410343,
+    "candidate_median": 430845619,
+    "paired_median_ratio": 0.726498538249423,
+    "bootstrap95": [
+      0.720143738374276,
+      0.7316258006944129
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-early",
+    "group": "warrush-econo_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 519415885,
+    "candidate_median": 486792677,
+    "paired_median_ratio": 0.9373821711286323,
+    "bootstrap95": [
+      0.9274189971783607,
+      0.9428277608403659
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-early",
+    "group": "nicowar-cabino_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 484499588,
+    "candidate_median": 465418257,
+    "paired_median_ratio": 0.960508718220588,
+    "bootstrap95": [
+      0.9473046738673744,
+      0.9707770026944811
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-early",
+    "group": "maxima-cortex_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 795031569,
+    "candidate_median": 705391237,
+    "paired_median_ratio": 0.8835380980741062,
+    "bootstrap95": [
+      0.8806294582547016,
+      0.8991146867831261
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-dense",
+    "group": "numbi-castor_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 1235912442,
+    "candidate_median": 931979864,
+    "paired_median_ratio": 0.7519604946769415,
+    "bootstrap95": [
+      0.7451131110072312,
+      0.7674618482398934
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-dense",
+    "group": "warrush-econo_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 1586968027,
+    "candidate_median": 1502296995,
+    "paired_median_ratio": 0.9486797728487844,
+    "bootstrap95": [
+      0.9418868471626696,
+      0.9629712882096078
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-dense",
+    "group": "nicowar-cabino_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 1377576130,
+    "candidate_median": 1307862921,
+    "paired_median_ratio": 0.9496873780761576,
+    "bootstrap95": [
+      0.9361140660305123,
+      0.9615018723343535
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-games35-dense",
+    "group": "maxima-cortex_cpu_ns",
+    "pairs": 31,
+    "baseline_median": 2234742903,
+    "candidate_median": 1946361071,
+    "paired_median_ratio": 0.8693576737391264,
+    "bootstrap95": [
+      0.8658396430340948,
+      0.8751348396575719
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "numbi_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 26352.1675,
+    "candidate_median": 1279.2155,
+    "paired_median_ratio": 0.04815479172598607,
+    "bootstrap95": [
+      0.047449872817229614,
+      0.04906412559778815
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "castor_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 2025.9486666666667,
+    "candidate_median": 2034.8891666666666,
+    "paired_median_ratio": 1.0103431535388698,
+    "bootstrap95": [
+      0.9774382433489859,
+      1.0149586712134528
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "warrush_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 6914.247333333334,
+    "candidate_median": 5601.621833333334,
+    "paired_median_ratio": 0.8081582686411989,
+    "bootstrap95": [
+      0.7997563919134005,
+      0.831893701346694
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "econo_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 2445.4356666666667,
+    "candidate_median": 2145.8893333333335,
+    "paired_median_ratio": 0.8801393073506253,
+    "bootstrap95": [
+      0.8736872628770466,
+      0.8925282671297429
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "nicowar_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 3311.449833333333,
+    "candidate_median": 3392.675,
+    "paired_median_ratio": 1.0205898554800044,
+    "bootstrap95": [
+      0.9915530469688444,
+      1.0328038642699757
+    ],
+    "gate": "inconclusive"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "cabino_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 5117.2425,
+    "candidate_median": 5160.542166666667,
+    "paired_median_ratio": 1.0155925719939727,
+    "bootstrap95": [
+      0.9798306086399722,
+      1.0262072966875513
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "maxima_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 16425.007833333333,
+    "candidate_median": 14756.012,
+    "paired_median_ratio": 0.8986266481452949,
+    "bootstrap95": [
+      0.8907339056749524,
+      0.9038139142771183
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-early",
+    "group": "cortex_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 45363.82466666667,
+    "candidate_median": 36126.822166666665,
+    "paired_median_ratio": 0.7920794358657247,
+    "bootstrap95": [
+      0.7800539414622274,
+      0.8021084256076494
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "numbi_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 25299.247333333333,
+    "candidate_median": 760.6433333333333,
+    "paired_median_ratio": 0.030191852049802886,
+    "bootstrap95": [
+      0.029548464413383563,
+      0.03081581986945936
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "castor_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 1966.3973333333333,
+    "candidate_median": 2035.3930833333334,
+    "paired_median_ratio": 1.0414530237894253,
+    "bootstrap95": [
+      1.0176991386475975,
+      1.0512530870231012
+    ],
+    "gate": "inconclusive"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "warrush_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 9765.890583333334,
+    "candidate_median": 9158.419416666668,
+    "paired_median_ratio": 0.9493010225292048,
+    "bootstrap95": [
+      0.9322415349529365,
+      0.9505029680570068
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "econo_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 1993.3185833333334,
+    "candidate_median": 1961.90425,
+    "paired_median_ratio": 0.9807000528751265,
+    "bootstrap95": [
+      0.9678279499072413,
+      0.9917265482011852
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "nicowar_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 5178.1435,
+    "candidate_median": 4929.19,
+    "paired_median_ratio": 0.9549689961276663,
+    "bootstrap95": [
+      0.9497341620181791,
+      0.962690150056817
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "cabino_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 6047.681583333333,
+    "candidate_median": 5715.606916666667,
+    "paired_median_ratio": 0.9526944240961899,
+    "bootstrap95": [
+      0.9393441771248023,
+      0.9574896876499392
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "maxima_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 66699.14141666667,
+    "candidate_median": 38118.760083333334,
+    "paired_median_ratio": 0.5711081259258391,
+    "bootstrap95": [
+      0.5690647268295435,
+      0.5728266892041606
+    ],
+    "gate": "within_3_percent"
+  },
+  {
+    "cohort": "perf-ai35-dense",
+    "group": "cortex_ns_per_decision",
+    "pairs": 31,
+    "baseline_median": 37377.93008333333,
+    "candidate_median": 42329.90758333333,
+    "paired_median_ratio": 1.1362168174266325,
+    "bootstrap95": [
+      1.1292780522952135,
+      1.1429631146233465
+    ],
+    "gate": "repeatable_above_3_percent"
+  }
+]
