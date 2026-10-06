@@ -1,0 +1,25 @@
+{
+  "testedCommit": "460af82cc7769dd57faef88e7ede54745f9d6fc3",
+  "base": "ac938788cdfd289f4dfd6757eeb765409b32eef3",
+  "archiveBytes": 925070,
+  "sha256": "d36727c1b20632353bab86de24a496f28b42b5e6348da4fcc3ed9d9fbc61036c",
+  "logs": {
+    "capability-native-harness-build.log": "42641c92e978dff626d6a611d99e6c6307ffe9a1abf33f38619b10ba791164f8",
+    "capability-native-harness-final-build.log": "d62ffea7d5c1e2747e759c37dfb152227732590b23a6e8210e6203c7dc7e1b59",
+    "touch-catalog-final-build.log": "d392baafb0d0a59245422fa774ea29a1cdb0c208bf9cac1d58051d624f17016d",
+    "touch-role-final-build.log": "d392baafb0d0a59245422fa774ea29a1cdb0c208bf9cac1d58051d624f17016d",
+    "touch-repair-tests.log": "c0d819addefcf15954f3b984acbb7eef3dca773d6dc0a5e293c52bb2de823ab5",
+    "touch-repair-junit.xml": "ca50f18aabbe6ab152a630b976cbe7aeafe8e720518f8eaca4733d3167a4c0d9",
+    "touch-focused-tests.log": "7fdad8347504e8d30d05358295ecbd30a7586f6b5b54e450646df433053b36c5",
+    "touch-focused-junit.xml": "9b5f44c830d88c7dc500afd2d20f536f8a05b62f4772ebc9a409c1ccfc6996d5",
+    "touch-catalog-tests.log": "3e7fe25037f28a8cf7d40bea74fcb33c6ba79b8ef9efaa859c8cf1933e31e104",
+    "touch-catalog-junit.xml": "dba8aba2427136c2d71bd9263c9099c2982311a0278ae35398f288d5b08c077d",
+    "touch-role-tests.log": "a1bac1a0e105373b721c92ea8d015db6509d5937df9ca3c5586517d4055c37c6",
+    "touch-role-junit.xml": "2d277c484740727f7d530ddd73737eb1b9f0c95488e709aa68a86e17ca7e802d",
+    "touch-role-companion-tests.log": "5769a1b333583552f874147286f62785cf9f7e00fdedc8e0e7d588d0b4affff5",
+    "touch-role-companion-junit.xml": "25284b76f11e87cd5b2cbe2d150ca0f2c9c4f694a53453c12f0d20238a32c53c",
+    "touch-role-build-provenance.json": "ac1a18448fb0475d67ff0eb70e67f244df56894f27fed5d469ce4ff36c02509d",
+    "menu-repair-check-native.log": "290bb71f5755a2bac237f69764efa8b6afcaff25b0c12ff04dc96ab6bb16fbf1",
+    "menu-repair-navigation-native.log": "1b7861568334440f735ba2967d9754b5ae7408ae9039d4b01b52422b72354647"
+  }
+}
