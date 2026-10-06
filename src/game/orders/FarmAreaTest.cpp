@@ -296,16 +296,21 @@ TEST_SUITE("FarmAreas")
 		CHECK(wheatAt(map, 10, 10) == 5);
 	}
 
-	TEST_CASE("the target emptying during the animation is not a failure while the field is in reach")
+	TEST_CASE("a vanished harvest target requires retargeting before pooling the reachable field")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world(options(true));
 		Map& map = world.game.map;
 		paintFarm(map, 0, 0, 31, 31);
-		// (5,5) was aimed at and is now empty; (5,6) is in reach and joins the field.
+		// Revalidate the animated target before giving a material. A vanished
+		// target cannot silently consume a different deposit in the nearby field.
 		setWheat(map, 5, 6, 2);
 		setWheat(map, 6, 6, 4);
-		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK_FALSE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 5, 6) == 2);
+		CHECK(wheatAt(map, 6, 6) == 4);
+		// Retrying against a living target still pools the connected ripe crop.
+		REQUIRE(harvest(map, 4, 5, 1, 1));
 		CHECK(wheatAt(map, 6, 6) == 3);
 	}
 

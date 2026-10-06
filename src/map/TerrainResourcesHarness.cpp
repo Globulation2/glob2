@@ -955,9 +955,15 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
                     const auto& yield=current.resourceRegistry().yields(static_cast<ResourceId>(deposit.type))[materialIndex(MaterialId::Food)];
                     CHECK(yield.consumption!=ResourceConsumption::All);
                     CHECK_FALSE(yield.destroysDeposit);
-                    CHECK(current.materialAmountAt(*selected,MaterialId::Food)>yield.seedReserve);
+                    const auto selectedStock=current.materialAmountAt(*selected,MaterialId::Food);
+                    // Infinite stock is usable even below the configured reserve:
+                    // harvesting cannot deplete either the stock or the reserve.
+                    if(yield.consumption==ResourceConsumption::Infinite) CHECK(selectedStock>0);
+                    else CHECK(selectedStock>yield.seedReserve);
                     REQUIRE(current.takeHarvest(x-1,y,1,0,MaterialId::Food,1));
-                    CHECK(current.materialAmountAt(*selected,MaterialId::Food)>=yield.seedReserve);
+                    if(yield.consumption==ResourceConsumption::Infinite)
+                        CHECK(current.materialAmountAt(*selected,MaterialId::Food)==selectedStock);
+                    else CHECK(current.materialAmountAt(*selected,MaterialId::Food)>=yield.seedReserve);
                 }
             }
             else if(tick%8==7)
