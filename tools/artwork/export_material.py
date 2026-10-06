@@ -192,12 +192,12 @@ def animate_glow(name, tiles):
     dim = palette.get("glow", palette.get("ember"))
     bright = palette.get("glow_bright", palette.get("ember_core"))
     offsets = phase_offsets(name, tiles[0].width)
+    masks = [glow_mask(tile) for tile in tiles]
     phases = []
     for phase in range(GLOW_PHASES):
         t = phase / GLOW_PHASES
         frames = []
-        for tile in tiles:
-            mask = glow_mask(tile)
+        for tile, mask in zip(tiles, masks):
             out = tile.copy()
             pixels = out.load()
             size = tile.width
@@ -217,8 +217,26 @@ def animate_glow(name, tiles):
     return phases
 
 
+def require_phase_mode(name, animate):
+    """An animated recipe must be exported with --animate-glow, and vice versa.
+
+    Otherwise sixteen frames would be written while the catalog's
+    `animation_frames` still references stale frames 16..63 (or the reverse).
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import terrain_synth  # noqa: E402
+
+    recipe = terrain_synth.RECIPES.get(name)
+    phases = recipe.phases if recipe else 1
+    if phases > 1 and not animate:
+        raise ValueError(f"{name}: the recipe has {phases} phases; export it with --animate-glow")
+    if phases == 1 and animate:
+        raise ValueError(f"{name}: the recipe is not animated; drop --animate-glow")
+
+
 def export_frames(name, source, animate=False):
     """All frames in catalogue order (`variant + 16 * phase`), perimeter shared."""
+    require_phase_mode(name, animate)
     tiles = sheet_tiles(source)
     if not animate:
         return share_perimeter(tiles)
@@ -276,6 +294,7 @@ def provenance_document(name, source_path, frames, hashes, root, animate):
         ),
         "style_stats": style_stats(frames[:VARIANTS]),
         "pillow": PIL.__version__,
+        "platform": {"system": sys.platform, "machine": __import__("platform").machine()},
         "runtime_sha256": hashes,
     }
     if replaces:
@@ -308,6 +327,7 @@ def check(name, root=ROOT, animate=False):
             f"{name}: provenance method is {record.get('method')!r}, not an image-generator export")
     require(record.get("source_sha256") == sha256_file(source_path), f"{name}: material.png differs from provenance")
     animate = animate or record.get("method") == "hybrid"
+    require_phase_mode(name, animate)
     frames = export_frames(name, source, animate)
     expected = [f"{FRAME_PREFIX}{name}{i}.png" for i in range(len(frames))]
     require(list(record.get("runtime_sha256", {})) == expected, f"{name}: provenance frame list differs")

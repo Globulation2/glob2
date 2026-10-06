@@ -23,7 +23,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import terrain_synth  # noqa: E402
-from export_material import FRAME_PREFIX, sha256_file  # noqa: E402
+from export_material import FRAME_PREFIX, GLOW_PHASES, sha256_file  # noqa: E402
 from material_tiles import ROOT, TILE, pixel_sha256, style_stats  # noqa: E402
 
 # Image-generated art is not pulled through the style transform, so its band is
@@ -56,8 +56,11 @@ def validate(name, root=ROOT):
     method = record.get("method")
     require(method in ("procedural", "image-generator", "hybrid"), f"{name}: unknown provenance method {method!r}")
     phases = record.get("phases", 1)
+    require(phases == recipe.phases,
+            f"{name}: provenance phases {phases} differ from the recipe's {recipe.phases}; "
+            f"export animated materials with --animate-glow")
     if method == "procedural":
-        require(phases == recipe.phases, f"{name}: provenance phases {phases} differ from the recipe")
+        require(not recipe.placeholder_only, f"{name}: recipe is placeholder_only but provenance is procedural")
         require(record.get("generator_sha256") == terrain_synth.generator_hashes(),
                 f"{name}: generator hashes differ; re-run terrain_synth.py")
     else:
@@ -67,7 +70,7 @@ def validate(name, root=ROOT):
         for reference, digest in record.get("reference_sha256", {}).items():
             path = root / reference
             require(not path.is_file() or sha256_file(path) == digest, f"{name}: reference {reference} changed")
-        require(method == "image-generator" or phases == terrain_synth.VARIANTS // 4, f"{name}: hybrid exports need four phases")
+        require(method == "image-generator" or phases == GLOW_PHASES, f"{name}: hybrid exports need {GLOW_PHASES} phases")
 
     expected = [f"{FRAME_PREFIX}{name}{i}.png" for i in range(terrain_synth.VARIANTS * phases)]
     runtime = record.get("runtime_sha256", {})

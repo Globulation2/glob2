@@ -55,7 +55,7 @@ class TerrainTileset(unittest.TestCase):
         for key, record in provenance.items():
             if key in LEGACY_BINDINGS:
                 continue
-            self.assertEqual(record["method"], "procedural", key)
+            self.assertIn(record["method"], ("procedural", "image-generator", "hybrid"), key)
             self.assertTrue((ROOT / record["source"]).is_file(), key)
 
     def test_invalid_catalogs(self):

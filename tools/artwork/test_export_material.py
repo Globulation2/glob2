@@ -108,10 +108,22 @@ class ExportMaterial(unittest.TestCase):
             {"boulders", "hedge", "thicket", "lava", "ember_field", "flower_meadow", "outcrop"},
         )
 
-    def test_committed_procedural_materials_validate(self):
+    def test_committed_materials_validate(self):
         for name in terrain_synth.BUILTIN_ORDER:
             with self.subTest(material=name):
-                self.assertEqual(validate_material.validate(name)["method"], "procedural")
+                method = validate_material.validate(name)["method"]
+                if terrain_synth.RECIPES[name].placeholder_only:
+                    self.assertIn(method, ("image-generator", "hybrid"))
+                else:
+                    self.assertEqual(method, "procedural")
+
+    def test_animated_recipes_require_animate_glow(self):
+        self.prepare("lava")
+        with self.assertRaises(ValueError):
+            export_material.export("lava", self.root)
+        self.prepare("boulders")
+        with self.assertRaises(ValueError):
+            export_material.export("boulders", self.root, animate=True)
 
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ def required_bindings(root=ROOT):
     """The five legacy names plus every paintable built-in presentation name.
 
     tools/terrain_builtin_names.json lists the engine's paintable built-in
-    types; the engine's own test checks that list against its tables.
+    types; the engine's TerrainMaterials test compares this list with its tables.
     """
     names = list(LEGACY_BINDINGS)
     path = Path(root) / BUILTIN_NAMES.relative_to(ROOT)
