@@ -204,6 +204,35 @@
             "hash"
           ],
           "additionalProperties": false
+        },
+        "resourceExperiments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "help": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "label",
+              "help"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "requiredResourceExperiments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [

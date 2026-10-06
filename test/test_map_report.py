@@ -252,7 +252,7 @@ def main():
         assert grass['resources']['definitions']['trees'] == grass['resources']['types']['wood']
         assert grass['resources']['legacy_type_aliases']['wood'] == 'trees'
         assert grass['resources']['types']['wood']['stored_amount'] == 3
-        assert grass['resources']['types']['wheat']['stored_amount'] == 7
+        assert grass['resources']['types']['wheat']['stored_amount'] == 5
         assert grass['space']['buildable']['tiles'] == 4092
         assert grass['space']['build_sites_4x4'] == 4052
         assert grass['movement']['walking']['between_colonies'] == [[0,1],[1,0]]
