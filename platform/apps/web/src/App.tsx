@@ -257,7 +257,11 @@ function Layout() {
     (found?.route.pattern.startsWith('/map-studio') ?? false) ||
     (found?.route.pattern.startsWith('/music-studio') ?? false);
   const main = useRef<HTMLElement>(null);
-  const [collapsed, setCollapsed] = useState(false);
+  const mapWorkspace = found?.route.pattern.startsWith('/map-studio') ?? false;
+  const [navigationCollapsed, setNavigationCollapsed] = useState(false);
+  const [mapNavigationCollapsed, setMapNavigationCollapsed] = useState(true);
+  const collapsed = mapWorkspace ? mapNavigationCollapsed : navigationCollapsed;
+  const setCollapsed = mapWorkspace ? setMapNavigationCollapsed : setNavigationCollapsed;
   const drawer = useRef<HTMLDialogElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openNavigation = () => {
