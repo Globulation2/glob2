@@ -215,12 +215,14 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals({.display = true});
 		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
-		for (int i = 5; i < 64; ++i)
+		// Pad the shipped catalog to 64 materials with grass clones.
+		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
 			j["materials"].push_back(m);
 		}
+		REQUIRE(j["materials"].size() == 64);
 		TerrainVisual::Compositor compositor(TerrainVisual::Catalog::parse(j));
 		compositor.prepare(false, 0);
 		TerrainVisual::Recipe r;
@@ -693,7 +695,7 @@ TEST_SUITE("TerrainMaterials")
 		glob2test::HeadlessGlobals globals;
 		std::ifstream input(glob2test::sourceRoot() / "data/terrain/tileset.json");
 		auto j = nlohmann::json::parse(input);
-		for (int i = 0; i < 59; ++i)
+		for (auto i = j["materials"].size(); i < 64; ++i)
 		{
 			auto m = j["materials"][2];
 			m["key"] = "fixture-" + std::to_string(i);
