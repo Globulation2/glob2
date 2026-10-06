@@ -121,6 +121,15 @@ struct ConsumerResult
 	/// judged against this, because its own claim is released and retaken.
 	long long available;
 	int coveragePercent;
+    // Coverage by reachable recurring supply before any other provider claims
+    // it. This is a site's opportunity, never additional spendable funding.
+    int uncontestedCoveragePercent = 0;
+    int retirementCoveragePercent() const
+    {
+        // A discretionary producer can lose an allocation because other work
+        // has priority. That alone does not make its location a bad investment.
+        return productionDemand > 0 ? uncontestedCoveragePercent : coveragePercent;
+    }
 	int availablePercent;
 	/// Supply-weighted mean route distance to the wheat covering full demand,
 	/// ignoring every other claimer, in hundredths of a tile.
