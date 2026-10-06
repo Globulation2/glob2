@@ -43,6 +43,14 @@ struct GradientRuntime
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
 	GradientPipeline pipeline;
+	// One simulation-owned reservation, consumed once during the observation phase.
+	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.
+	struct Preparation {
+		enum class Kind { Materials, Markets, Guard, Clear };
+		GradientPipeline::Job *job = nullptr;
+		Kind kind = Kind::Materials;
+		int team = 0, material = 0, swim = 0;
+	} preparation;
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;

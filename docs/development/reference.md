@@ -939,7 +939,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   remains unchanged. Building format 137 adds the per-game building catalog; replay
-  floor 137 and network protocol 57 gate the current simulation and catalog transport.
+  floor 137 and network protocol 57 introduced those simulation/catalog gates.
+  The completed-tick observation phase introduced replay floor 139. Runtime resource
+  catalogs now require replay floor 140 and network protocol 59.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
@@ -978,9 +980,33 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-- Before parallelizing gradients, inspect scratch ownership and input lifetimes in
-  the current implementation; independent scratch, stable inputs and deterministic
-  publication are relevant checks.
+- The engine has a completed-tick observation phase. `Game::syncStep` first runs
+  all world mutations, including fog, projects and scripts, then selects/reserves
+  one periodic gradient job. Engine defers private seeding into its next
+  `ReadOnlyPhase` alongside AI decisions. This is the default architecture; the
+  compute mask and thread count select execution only, never observation timing.
+  Direct `Game::syncStep` callers complete preparation before returning unless
+  they explicitly request `PreparationCompletion::Deferred` and own its barrier.
+  Standalone `Map::syncStep` retains synchronous map-level preparation.
+- `ReadOnlyPhase` borrows groups of callbacks and runs them through one
+  `ComputeExecutor` barrier. World state must stay stable until every task leaves,
+  including on exceptions. Tasks may change their own controller/private results
+  and synchronized derived caches. Bind shared AI telemetry before dispatch;
+  publish orders afterwards in player order. Add further work only after auditing
+  scratch ownership, RNG use, input lifetime and every shared cache it touches.
+  Script observation and on-demand building gradients retain their existing
+  scheduling and are not automatically independent observation tasks.
+- Gradient selection, round-robin flags and queue membership stay on the simulation
+  owner. A typed reservation is visible to AI lazy invalidation before dispatch;
+  preparation writes only its private seeds and immutable terrain snapshots.
+  Propagation may then outlive the observation barrier, but publication remains
+  after its configured delay (eight ticks by default), before team stepping.
+  Worker count and completion time never
+  select publication time. Saves, compute/terrain reconfiguration and subsequent
+  mutations drain preparation; teardown discards its descriptor before resetting
+  the queue. Seed/dispatch failures mark the job completed with an error, preventing
+  a save or publication from waiting indefinitely. Inspect these contracts before
+  adding parallel work; sharing the executor alone does not establish safety.
 - Gradient field seeding lives in the area, building and resource source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
   `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes

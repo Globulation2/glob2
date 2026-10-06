@@ -17,8 +17,9 @@
 #include <ThreadSupport.h>
 #include <stdexcept>
 #include <vector>
+#include <utility>
 
-// Experimental fixed-tick publication. The simulation thread owns pending/free
+// Fixed-tick publication. The simulation thread owns pending/free
 // and all slot pointers; workers own only job data/water until done is signalled.
 // Exactly one submit per advance. Completion time never selects publication time.
 class GradientPipeline
@@ -165,7 +166,7 @@ public:
 		pending=std::move(savedPending); spare=std::move(savedSpare);
 		tick=savedTick; lastSubmission=savedSubmission; metrics=savedMetrics; activeNs=savedActive;
 	}
-	// Call before the teams step; seed at the original end-of-tick map boundary.
+	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick;
 		while (!pending.empty() && pending.front()->due <= tick) {
@@ -182,20 +183,35 @@ public:
 	void invalidate(std::uint16_t **slot) {
 		for (auto &job : pending) if (job->slot == slot) job->superseded = true;
 	}
-	template<class Seed> void submit(std::uint16_t **slot, int swim, Seed seed) {
+	Job *reserve(std::uint16_t **slot, int swim) {
 		if (!enabled() || tick == lastSubmission || pending.size() >= delay)
 			throw std::logic_error("gradient pipeline requires one submission per advanced tick");
-		lastSubmission = tick;
 		std::unique_ptr<Job> job;
 		if (spare.empty()) { job = std::make_unique<Job>(); job->data.reset(new std::uint16_t[cells]); }
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->done=false; job->superseded=false; job->error=nullptr;
-		seed(*job); // Snapshot all mutable inputs before dispatch.
 		auto *ptr=job.get(); pending.push_back(std::move(job));
+		lastSubmission = tick;
 		++metrics.jobs;
 		metrics.maxPending = std::max<std::uint64_t>(metrics.maxPending, pending.size());
-		if (workers.empty()) execute(*ptr, serialWorkspace);
-		else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
+		return ptr;
+	}
+	// The owner reserves before the read-only batch; only this job's private
+	// inputs are written during preparation. Queue membership stays unchanged.
+	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
+		try {
+			seed(*ptr);
+			if (workers.empty()) execute(*ptr, serialWorkspace);
+			else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
+		}
+		catch (...) {
+			{ std::lock_guard<std::mutex> lock(mutex); ptr->error=std::current_exception(); ptr->done=true; }
+			completed.notify_one();
+			throw;
+		}
+	}
+	template<class Seed> void submit(std::uint16_t **slot, int swim, Seed &&seed) {
+		prepare(reserve(slot, swim), std::forward<Seed>(seed));
 	}
 };

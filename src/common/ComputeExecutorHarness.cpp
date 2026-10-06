@@ -74,3 +74,34 @@ TEST_CASE("exclusive slots; nested batches; reuse; errors; barriers and reconfig
 	MESSAGE("PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration");
 }
 }
+
+#include "ReadOnlyPhase.h"
+TEST_SUITE("ReadOnlyPhase") {
+TEST_CASE("borrowed groups cover serial parallel empty and exception barriers") {
+    for (unsigned threads : {1, 4}) {
+        ComputeExecutor executor;
+        executor.configure(threads);
+        ReadOnlyPhase empty;
+        empty.run(executor);
+        std::array<unsigned, 9> results{};
+        auto first = [&](size_t i) { results[i] = 11; };
+        auto second = [&](size_t i) { results[i + 3] = 22; };
+        ReadOnlyPhase phase;
+        phase.add(3, first); phase.add(6, second);
+        phase.run(executor);
+        for (size_t i = 0; i < results.size(); ++i) CHECK(results[i] == (i < 3 ? 11 : 22));
+        std::atomic<unsigned> active{0};
+        auto fail = [&](size_t i) {
+            ++active;
+            std::this_thread::yield();
+            --active;
+            if (i == 0) throw std::runtime_error("observation failure");
+        };
+        ReadOnlyPhase failing;
+        failing.add(16, fail);
+        CHECK_THROWS_AS(failing.run(executor), std::runtime_error);
+        CHECK(active.load() == 0);
+        phase.run(executor); // Executor remains usable after the error barrier.
+    }
+}
+}

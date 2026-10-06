@@ -278,7 +278,7 @@ void Map::importTerrainDefinitions(std::string_view json)
 		++counts[terrainIds[i]];
 		propertyIndices[i] = next->propertyIndex(terrainIds[i]);
 	}
-	gradientRuntime->pipeline.finish();
+	finishGradientPipeline();
 	terrainRegistryValue = std::move(next);
 	invalidateResourceSeeds();
 	terrainPropertyIndices = std::move(propertyIndices);
@@ -498,6 +498,7 @@ void Map::clearGradientBufferPool()
 
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
+	preparePendingGradient();
 	compute.configure(threads);
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	computeExperiments = experiments;
@@ -509,6 +510,7 @@ void Map::clear()
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
+	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;

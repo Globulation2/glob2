@@ -135,7 +135,7 @@ the normal asset system; transferring a map does not download its sprite files.
 Missing custom artwork uses the visible magenta fallback. The generated foundation
 artwork and provenance are recorded in `datasrc/gfx/resources/manifest.json`.
 
-Save format 139 embeds resolved resource definitions, material stocks and required
+Save format 140 embeds resolved resource definitions, material stocks and required
 experiment metadata. Startup permits an unavailable or malformed default resource catalog so embedded
 maps can still load; creating a new map without a valid default catalog reports
 an error. Loading a current save uses its snapshot even when installed
@@ -175,7 +175,7 @@ cross these limits remain inconclusive and require more repetitions or investiga
 These measurements do not replace same-candidate per-tick determinism across worker
 counts and supported platforms, or exact save/load continuation.
 
-Older maps and saves (before format 139) resolve their numeric resource IDs against
+Older maps and saves (before format 140) resolve their numeric resource IDs against
 an immutable eight-resource import catalog compiled into the compatibility adapter.
 They never consult installed resource JSON. Installed defaults pin those historical
 keys to slots 0–7, regardless of authoring order; additional keys sort deterministically.

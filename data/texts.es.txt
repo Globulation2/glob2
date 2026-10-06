@@ -5604,3 +5604,5 @@ Iron ore
 Sand
 [Cotton]
 Cotton
+[Reroll terrain look]
+Volver a sortear el aspecto del terreno

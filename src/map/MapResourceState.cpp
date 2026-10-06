@@ -64,7 +64,7 @@ void Map::installResourceDefinitions(const std::string& json)
         for (unsigned mask=sources;mask;mask&=mask-1) ++counts[std::countr_zero(mask)];
         deposits[i]=r;
     }
-    gradientRuntime->pipeline.finish();
+    finishGradientPipeline();
     resourceRegistryValue=next;
     bumpStaticMaterialSourceGeneration();
     resourceHabitatProfiles=std::move(staged.resourceHabitatProfiles);
