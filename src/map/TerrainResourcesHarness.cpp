@@ -1091,6 +1091,10 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
     legacyBytes[minorOffset + 3] = 137;
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
     GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(), legacyBytes.size()));
+    // The copying MemoryStreamBackend constructor writes the bytes, leaving its
+    // cursor at the end. Rewind both complete game streams before loading.
+    input.seekFromStart(0);
+    legacyInput.seekFromStart(0);
     GameGUI restored(false), legacy(false);
     REQUIRE(restored.game.load(&input));
     REQUIRE(legacy.game.load(&legacyInput));
@@ -1134,6 +1138,12 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
             }
     }
     REQUIRE(pendingHarvests > 0);
+    REQUIRE(restored.game.mapHeader.getVersionMinor() == 138);
+    REQUIRE(legacy.game.mapHeader.getVersionMinor() == 137);
+    // MapHeader equality deliberately excludes file versions. Verify all other
+    // header metadata before normalizing that non-simulation checksum input.
+    REQUIRE(restored.game.mapHeader == legacy.game.mapHeader);
+    restored.game.mapHeader = legacy.game.mapHeader;
     // Full checksums include cached routing and pending unit state; terrain seed
     // is presentation-only and must not change continued simulation.
     for (unsigned tick = 0; tick < 32; ++tick)
