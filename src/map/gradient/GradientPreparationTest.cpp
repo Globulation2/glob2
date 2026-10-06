@@ -983,6 +983,7 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
         const auto id=*map.resourceRegistry().find("clearing-traits-"+std::to_string(1000+n));
         REQUIRE(resourceIndex(id)>255);
         const auto index=map.coordToIndex(8+n-264,8);
+        map.setCellTerrain(index,GRASS);
         map.setResource(8+n-264,8,id,0);
         // Empty persistent stocks remain clearable according to properties.
         map.tiles[index].resource.amount=0;
@@ -1001,6 +1002,16 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
             CHECK(actual[index]==(goal ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN));
             tile.building=NOGBID;map.immobileUnits[index]=IMMOBILE_UNIT_NONE;
             tile.clearArea=tile.farmArea=tile.forbidden=0;
+        }
+        // Reuse the high-ID definitions through both other area kernels.
+        map.tiles[index].guardArea=1;
+        for(int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+            scalarGuard(map,0,swim,expected.data());
+            map.seedGuardAreasGradient(0,swim,actual.data());
+            CHECK(actual==expected);
+            map.getForbiddenGradient(0,swim);
+            map.updateForbiddenGradient(0,swim);
+            CHECK(map.forbiddenGradient[0][swim][index]==((n&1) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
         }
     }
 }

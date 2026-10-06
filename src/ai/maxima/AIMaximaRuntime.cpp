@@ -278,12 +278,47 @@ void Gradient::recalculate(Player* player, field::Frontier& frontier)
 	sourceCount=0;
 	auto& queue=frontier;
 	queue.clear();
+    // Compile the profiled resource-obstruction predicate once per field.
+    // All other entities retain their original matcher; source and obstacle
+    // precedence, scan order, invalidation and serialization remain unchanged.
+    struct PreparedMatches
+    {
+        const std::vector<std::shared_ptr<Entities::Entity>>& original;
+        bool groundResources=false;
+        std::vector<const Entities::Entity*> other;
+        explicit PreparedMatches(const std::vector<std::shared_ptr<Entities::Entity>>& entities):original(entities)
+        {
+            for(const auto& entity:entities)
+                groundResources|=entity->type()==Entities::EResourceGroundObstacle;
+            if(!groundResources) return;
+            other.reserve(entities.size());
+            for(const auto& entity:entities)
+                if(entity->type()!=Entities::EResourceGroundObstacle) other.push_back(entity.get());
+        }
+        bool matches(Player* player,int x,int y,bool blocksGround) const
+        {
+            if(!groundResources)
+            {
+                for(const auto& entity:original) if(entity->matches(player,x,y)) return true;
+                return false;
+            }
+            if(blocksGround) return true;
+            for(const auto* entity:other) if(entity->matches(player,x,y)) return true;
+            return false;
+        }
+    };
+    const PreparedMatches sources(info.sources),obstacles(info.obstacles);
+    const auto* resourceProperties=map->resourceRegistry().propertyTable().data();
+    const auto& tiles=map->getTiles();
+    const bool needsGround=sources.groundResources || obstacles.groundResources;
 	for(int x=0;x<width;++x)
 		for(int y=0;y<height;++y)
 		{
 			const int at=y*width+x;
-			if(info.matches_source(player,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
-			else if(info.matches_obstacle(player,x,y) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),info.terrainTravel)) values[at]=ObstacleCell;
+			const auto resource=tiles[at].resource.type;
+            const bool blocked=needsGround && resource!=NO_RES_TYPE && resourceProperties[resource].blocksGround;
+			if(sources.matches(player,x,y,blocked)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
+			else if(obstacles.matches(player,x,y,blocked) || !field::terrainTravelAllowed(map->terrainPropertiesAt(x,y),info.terrainTravel)) values[at]=ObstacleCell;
 		}
 	if(info.terrainTravel!=field::TerrainTravel::Geometric &&
         (info.terrainTravel==field::TerrainTravel::Fly?map->hasAirTerrainConstraints():map->hasTerrainMovementModifiers()))

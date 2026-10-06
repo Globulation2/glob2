@@ -27,7 +27,7 @@ class RoundTripHungerGateHarness
 {
 public:
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
-		{ return building->considerUnitForResource(unit, resource, dist); }
+		{ return building->considerUnitForMaterial(unit, resource, dist); }
 };
 
 namespace
@@ -37,7 +37,7 @@ static void require(bool ok, const char* message)
 	GLOB2_REQUIRE(ok, message);
 }
 
-// considerUnitForResource is private; a friend fixture reaches it without
+// considerUnitForMaterial is private; a friend fixture reaches it without
 // exposing it to game callers, the way GameGUISelectionHarness does.
 
 static void aUnitIsJudgedOnTheWalkToTheResource()

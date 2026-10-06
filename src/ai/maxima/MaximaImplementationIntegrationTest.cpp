@@ -1811,3 +1811,53 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
     CHECK(capacity(8)>0);
     CHECK(distant()<neutral);
 }
+
+#include <nlohmann/json.hpp>
+#include "field/UniformTraversal.h"
+
+TEST_CASE("prepared resource obstacles match scalar entity gradients" * doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    Map map;map.setSize(4,4,GRASS);
+    Player player;player.map=&map;
+    using Json=nlohmann::json;
+    auto prototype=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    Json definitions=Json::array();
+    for(int n=0;n<260;++n)
+    {
+        auto definition=prototype;
+        definition["key"]="fixture:obstacle-"+std::to_string(1000+n);
+        definition["properties"]["blocksGround"]=bool(n&1);
+        definition["properties"]["persistsWhenEmpty"]=true;
+        definitions.push_back(std::move(definition));
+    }
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",definitions}}.dump());
+    for(int n=0;n<8;++n)
+    {
+        const auto id=map.resourceRegistry().find("fixture:obstacle-"+std::to_string(1252+n));REQUIRE(id);
+        REQUIRE(resourceIndex(*id)>255);
+        map.setResource(4+n,4,*id,0);
+        if(n%3==0) map.setResourceAmount(map.coordToIndex(4+n,4),0);
+    }
+    for(bool groundSource:{false,true})
+    {
+        Gradients::GradientInfo info;
+        info.add_source(new Gradients::Entities::Position(5,4)); // Source wins even on a blocker.
+        info.add_source(new Gradients::Entities::Position(0,0));
+        if(groundSource) info.add_source(new Gradients::Entities::ResourceGroundObstacle);
+        info.add_obstacle(new Gradients::Entities::ResourceGroundObstacle);
+        info.add_obstacle(new Gradients::Entities::Position(8,8));
+        info.add_obstacle(new Gradients::Entities::ResourceGroundObstacle); // OR duplicate.
+        std::vector<Sint16> expected(map.size,Gradients::UnreachableCell);
+        field::Frontier frontier;
+        for(int x=0;x<map.getW();++x) for(int y=0;y<map.getH();++y)
+        {
+            const int index=y*map.getW()+x;
+            if(info.matches_source(&player,x,y)) {expected[index]=Gradients::SourceCell;frontier.push_back(index);}
+            else if(info.matches_obstacle(&player,x,y)) expected[index]=Gradients::ObstacleCell;
+        }
+        field::expandDistances(expected,frontier,{map.getW(),map.getH()},field::Surrounding,Gradients::UnreachableCell);
+        Gradients::Gradient actual(info);actual.recalculate(&player,frontier);
+        CHECK(actual.values==expected);
+    }
+}

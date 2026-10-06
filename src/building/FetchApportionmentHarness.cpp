@@ -28,7 +28,7 @@ static void require(bool ok, const char* message)
 	GLOB2_REQUIRE(ok, message);
 }
 
-// subscribeToBringResourcesStep() is the hiring pass Team::updateAllBuildingTasks
+// subscribeToBringMaterialsStep() is the hiring pass Team::updateAllBuildingTasks
 // runs; a subclass reaches it the same way test/README.md's Map subclass pattern
 // reaches Map's predicates.
 struct TestBuilding : Building
@@ -36,7 +36,7 @@ struct TestBuilding : Building
 	TestBuilding(int x, int y, Uint16 gid, Sint32 typeNum, Team* team, BuildingsTypes* types,
 	             Sint32 unitWorking, Sint32 unitWorkingFuture)
 		: Building(x, y, gid, typeNum, team, types, unitWorking, unitWorkingFuture) {}
-	bool hireOne() { return subscribeToBringResourcesStep(); }
+	bool hireOne() { return subscribeToBringMaterialsStep(); }
 	void refreshCallLists() { updateCallLists(); }
 };
 

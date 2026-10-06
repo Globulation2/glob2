@@ -279,6 +279,7 @@ public:
 	void save(GAGCore::OutputStream*) const;
 	bool load(GAGCore::InputStream*,Sint32 versionMinor);
 private:
+    friend class Gradient;
 	std::vector<std::shared_ptr<Entities::Entity> > sources;
 	std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 };

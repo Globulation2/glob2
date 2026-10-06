@@ -59,6 +59,9 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	bool canSwim = swimClass > 0;
+	std::array<Uint8, ResourceRegistry::Capacity> blocksGround;
+	const auto& properties=resourceRegistry().propertyTable();
+	for(size_t id=0;id<properties.size();++id) blocksGround[id]=properties[id].blocksGround;
 
 	// Seed: free cells are goals, forbidden interiors are placeholders (promoted
 	// to GRADIENT_FORBIDDEN_BORDER in the second pass if they border a free cell),
@@ -67,7 +70,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
-		if (resourceBlocksGround(i))
+		if (c.resource.type!=NO_RES_TYPE && blocksGround[c.resource.type])
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -252,6 +255,12 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 {
 	assert(gradient);
 	bool canSwim = swimClass > 0;
+	// Populate only registered entries; empty cells never index this table.
+	// One byte per definition avoids repeated registry and wide-property loads.
+	std::array<Uint8, ResourceRegistry::Capacity> blocksGround;
+	const auto& properties=resourceRegistry().propertyTable();
+	for(size_t id=0;id<properties.size();++id) blocksGround[id]=properties[id].blocksGround;
+	const Uint32 allies=game->teams[teamNumber]->allies;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	std::atomic<size_t> painted{0};
@@ -264,9 +273,9 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (resourceBlocksGround(i))
+		else if (c.resource.type!=NO_RES_TYPE && blocksGround[c.resource.type])
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & (game->teams[teamNumber]->allies))
+		else if (c.building != NOGBID && (1<<Building::GIDtoTeam(c.building)) & allies)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
 			gradient[i] = GRADIENT_FORBIDDEN;

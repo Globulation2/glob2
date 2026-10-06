@@ -84,7 +84,7 @@ void Building::updateBuildingSite(void)
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
 
-		//Update the pointer resources to the newly changed type
+		//Update the materials pointer to the newly changed type
 		transferMaterialsPointer(wasShared);
 
 
@@ -105,8 +105,8 @@ void Building::updateBuildingSite(void)
 		maxUnitInside=type->maxUnitInside;
 
 		// An instant completion skipped the deliveries that would have raised
-		// hp (hpInc per resource for new/upgrade sites, a share of hpMax per
-		// resource for repairs), so grant the finished level's full hpInit
+		// hp (hpInc per material for new/upgrade sites, a share of hpMax per
+		// material for repairs), so grant the finished level's full hpInit
 		// (scaled by the fortress-buildings rule);
 		// otherwise a new building would finish at the site's 1 HP and a
 		// repair would finish no less damaged than it started.
@@ -144,7 +144,7 @@ void Building::updateUnitsWorking(void)
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
 
-			// First choice: free a unit who has a not needed resource..
+			// First choice: free a unit who has a material that is not needed..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
 				int r=(*it)->carriedMaterial;
@@ -159,7 +159,7 @@ void Building::updateUnitsWorking(void)
 				}
 			}
 			if(fu!=NULL) continue;
-			// Second choice: free a unit who has no resource..
+			// Second choice: free a unit who carries no material..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
@@ -227,7 +227,7 @@ void Building::updateUnitsHarvesting(void)
 		{
 			// cancel the task u were just doing
 		    u->attachedBuilding->removeUnitFromWorking(u);
-		    // cancel fetching resources here
+		    // cancel fetching materials here
 		    removeUnitFromHarvesting(u);
 		    // behave randomly
 		    u->standardRandomActivity();
@@ -359,7 +359,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		transitionProductionPreferences(previousType);
 		owner->prestige+=type->prestige;
 
-		//Update the pointer resources to the newly changed type
+		//Update the materials pointer to the newly changed type
 		transferMaterialsPointer(wasShared);
 		fundConstructionFromInventory();
 
@@ -478,23 +478,23 @@ bool Building::fullInside(void)
 int Building::desiredNumberOfWorkers(void)
 {
 	//If It's virtual, then this building is a flag and always gets
-	//full resources
+	//Full material inventory
 	if(type->zonable[WORKER] || type->zonable[EXPLORER] || type->zonable[WARRIOR])
 	{
 		return std::min(maxUnitWorking, type->semantics.assignmentLimit);
 	}
-	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed resource,
-	//thus if no resources are needed, then no units will be working here.
-	int neededResourcesSum = 0;
+	//Otherwise, this building gets what the user desires, up to a limit derived from the needed material deliveries,
+	//thus if no materials are needed, then no units will be working here.
+	int neededMaterialsSum = 0;
 	for (size_t ri = 0; ri < MaterialCount; ri++)
 	{
 		int neededMaterials = (materialDeliveryNeed(ri) + type->materialMultiplier[ri] - 1) / type->materialMultiplier[ri];
 		if (neededMaterials > 0)
-			neededResourcesSum += neededMaterials;
+			neededMaterialsSum += neededMaterials;
 	}
 	int user_num = std::min(maxUnitWorking, type->semantics.assignmentLimit);
-	int max_considering_resources = (WISHED_RESOURCE_NUM * neededResourcesSum) / WISHED_RESOURCE_DEN;
-	return std::min(user_num, max_considering_resources);
+	int max_considering_materials = (WISHED_MATERIAL_NUM * neededMaterialsSum) / WISHED_MATERIAL_DEN;
+	return std::min(user_num, max_considering_materials);
 }
 
 

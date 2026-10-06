@@ -126,7 +126,7 @@ bool Building::isMaterialFull(void)
 int Building::neededMaterial(void)
 {
 	Sint32 minProportion = MIN_PROPORTION_INIT;
-	int minType = RESOURCE_TYPE_NONE;
+	int minType = MATERIAL_TYPE_NONE;
 	int demanded[MaterialCount], count=0;
 	for (unsigned material=0; material<MaterialCount; ++material)
 		if (materialDeliveryTarget(material)>0) demanded[count++]=material;
@@ -155,7 +155,7 @@ void Building::computeWishedMaterials(int needs[MaterialSlotCount])
 	{
 		const int missing=materialDeliveryNeed(ri);
 		const int deliveries=(missing+type->materialMultiplier[ri]-1)/type->materialMultiplier[ri];
-		needs[ri]=(WISHED_RESOURCE_NUM*deliveries)/WISHED_RESOURCE_DEN;
+		needs[ri]=(WISHED_MATERIAL_NUM*deliveries)/WISHED_MATERIAL_DEN;
 	}
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
@@ -330,7 +330,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	owner->prestige+=type->prestige;
 	owner->addToStaticAbilitiesLists(this);
 
-	//Update the pointer resources to the newly changed type
+	//Update the materials pointer to the newly changed type
 	transferMaterialsPointer(wasShared);
 
 	posX=midPosX+type->decLeft;

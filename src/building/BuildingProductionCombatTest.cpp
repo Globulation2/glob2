@@ -656,7 +656,7 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,WHEAT,0,19,20,&distance,false,receiver));
     Unit* worker=world.addUnit(WORKER,7,8);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
-    REQUIRE(receiver->subscribeToBringResourcesStep());
+    REQUIRE(receiver->subscribeToBringMaterialsStep());
     CHECK(worker->attachedBuilding==receiver);
     CHECK(world.game.map.touchedStockedMarketSlot(worker,WOOD)==supplier);
     CHECK(world.game.map.touchedStockedMarketSlot(worker,WHEAT)==nullptr);

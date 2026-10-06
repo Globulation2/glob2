@@ -1126,8 +1126,14 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
     std::vector<Uint8> seedEligibility(w*h,0);
     for(int index=0;index<w*h;++index)
     {
-        if(is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Food))) seedEligibility[index]|=1;
-        if(is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Wood))) seedEligibility[index]|=2;
+        const auto& deposit=map->getTiles()[index].resource;
+        if(deposit.type==NO_RES_TYPE || !deposit.amount) continue;
+        const auto& properties=map->resourcePropertiesByIndex(deposit.type);
+        if(!properties.spreadRate) continue;
+        if((properties.materialMask&materialBit(MaterialId::Food))
+            && is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Food))) seedEligibility[index]|=1;
+        if((properties.materialMask&materialBit(MaterialId::Wood))
+            && is_spreading_seed(*map,index%w,index/w,materialIndex(MaterialId::Wood))) seedEligibility[index]|=2;
     }
     plan.wood_reserve=select_wood_reserve(runtime,&seedEligibility);
 	plan.wood_pressure=budget.farming_wood_pressure;
