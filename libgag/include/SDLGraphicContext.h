@@ -9,7 +9,9 @@
 #include "RenderFramePacer.h"
 #include "SkinAtlasCache.h"
 #include <AssetLoader.h>
+#include <array>
 #include <map>
+#include <utility>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -486,6 +488,8 @@ namespace GAGCore
             std::uint64_t meshIdentity = 0;
             unsigned frame = ~0u;
             bool attempted = false;
+            // Which atlas quadrants of a material map (identity, revision) hold fur.
+            std::map<std::pair<std::uint64_t, std::uint64_t>, std::array<bool, 4>> shellRegions;
         } skinResources;
         void destroySkinRenderer();
         unsigned unitShaderProgram = 0;

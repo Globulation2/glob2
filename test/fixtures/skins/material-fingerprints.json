@@ -1,0 +1,112 @@
+{
+  "candy": {
+    "contrast": 0.174,
+    "coverage": 0.089,
+    "luminance": 0.456
+  },
+  "carbon": {
+    "contrast": 0.131,
+    "coverage": 0.089,
+    "luminance": 0.242
+  },
+  "cartoon": {
+    "contrast": 0.198,
+    "coverage": 0.089,
+    "luminance": 0.41
+  },
+  "chrome": {
+    "contrast": 0.211,
+    "coverage": 0.089,
+    "luminance": 0.384
+  },
+  "cloud": {
+    "contrast": 0.137,
+    "coverage": 0.102,
+    "luminance": 0.423
+  },
+  "crystal": {
+    "contrast": 0.215,
+    "coverage": 0.089,
+    "luminance": 0.549
+  },
+  "glossy": {
+    "contrast": 0.213,
+    "coverage": 0.089,
+    "luminance": 0.409
+  },
+  "goo": {
+    "contrast": 0.155,
+    "coverage": 0.089,
+    "luminance": 0.484
+  },
+  "hairy": {
+    "contrast": 0.122,
+    "coverage": 0.117,
+    "luminance": 0.493
+  },
+  "hammered": {
+    "contrast": 0.197,
+    "coverage": 0.089,
+    "luminance": 0.348
+  },
+  "honeycomb": {
+    "contrast": 0.225,
+    "coverage": 0.089,
+    "luminance": 0.383
+  },
+  "ice": {
+    "contrast": 0.163,
+    "coverage": 0.089,
+    "luminance": 0.531
+  },
+  "lava": {
+    "contrast": 0.17,
+    "coverage": 0.089,
+    "luminance": 0.206
+  },
+  "leather": {
+    "contrast": 0.181,
+    "coverage": 0.089,
+    "luminance": 0.388
+  },
+  "matte": {
+    "contrast": 0.168,
+    "coverage": 0.089,
+    "luminance": 0.425
+  },
+  "metallic": {
+    "contrast": 0.188,
+    "coverage": 0.089,
+    "luminance": 0.335
+  },
+  "scales": {
+    "contrast": 0.208,
+    "coverage": 0.089,
+    "luminance": 0.374
+  },
+  "slime": {
+    "contrast": 0.146,
+    "coverage": 0.089,
+    "luminance": 0.571
+  },
+  "stone": {
+    "contrast": 0.197,
+    "coverage": 0.089,
+    "luminance": 0.348
+  },
+  "velvet": {
+    "contrast": 0.089,
+    "coverage": 0.089,
+    "luminance": 0.36
+  },
+  "wood": {
+    "contrast": 0.199,
+    "coverage": 0.089,
+    "luminance": 0.347
+  },
+  "woven": {
+    "contrast": 0.177,
+    "coverage": 0.089,
+    "luminance": 0.36
+  }
+}

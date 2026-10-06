@@ -37,12 +37,16 @@ enum SkinRegion : std::uint8_t { SkinRegionWorker = 0, SkinRegionWarrior = 1, Sk
 // exact identity ramp in every SDL_image build, so grey-ramp palettes use the
 // pixel index itself. Returns null when the file is missing or undecodable.
 std::unique_ptr<DrawableSurface> loadSkinMaterialMap(const std::string &path);
+// Whether a material id grows fur shells (libgag/shaders/skin-materials.json).
+bool skinMaterialShells(unsigned id);
+// Which quadrants of a 512x512 material map contain a fur material.
+std::array<bool, 4> skinShellRegions(DrawableSurface &material);
 struct SkinMeshRequest
 {
     const SkinMesh *mesh;
     unsigned frame;
     DrawableSurface *texture;  // colour atlas
-    DrawableSurface *material; // material ids (0 glossy, 1 matte, 2 metallic, 3 hairy)
+    DrawableSurface *material; // material ids, see libgag/shaders/skin-materials.json
     std::uint8_t region;       // SkinRegion: the atlas quadrant this mesh samples
 };
 }

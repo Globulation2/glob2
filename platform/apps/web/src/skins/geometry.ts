@@ -135,6 +135,23 @@ function inspectionFit(mesh: Mesh, view: ViewTransform) {
   fitCache.set(mesh, fit);
   return fit;
 }
+// NDC offset per unit of fur length under the current framing, so fur on the
+// studio canvas is as long as on the game's tile (clip space over 1.25).
+export function furScale(
+  mesh: Mesh,
+  view: ViewTransform,
+  camera: Camera,
+  aspect: number,
+): [number, number] {
+  let k = 1;
+  if (!camera.game) {
+    const m = view.modelToClip;
+    const game = Math.hypot(m[0]!, m[1]!, m[2]!) / 1.25;
+    const { radius } = inspectionFit(mesh, view);
+    k = (camera.zoom * 0.82) / radius / game;
+  }
+  return [k / Math.max(1, aspect), k * Math.min(1, aspect)];
+}
 export function projectPose(
   mesh: Mesh,
   view: ViewTransform,

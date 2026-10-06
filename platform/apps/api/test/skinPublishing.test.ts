@@ -4,6 +4,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
 import { registeredPlayer, type Player } from './playSupport.ts';
 import { colourAtlas, materialMap } from './skinImages.ts';
+import { SKIN_MATERIAL_COUNT } from '../src/skins/images.ts';
 let harness: Harness;
 let instance: Instance;
 let player: Player;
@@ -110,7 +111,8 @@ it('publishes canonical paint, retains old versions, equips and serves verified 
       ...payload,
       name: 'Renamed design',
       skinId: version.skinId,
-      materialBase64: (await materialMap({ id: () => 3 })).toString('base64'),
+      // The highest registered id: every catalogue entry publishes.
+      materialBase64: (await materialMap({ id: () => SKIN_MATERIAL_COUNT - 1 })).toString('base64'),
     },
   });
   expect(rematerialed.statusCode, rematerialed.body).toBe(200);
@@ -255,7 +257,11 @@ it('validates and canonicalizes material maps', async () => {
     });
   const rejected: [string, Buffer, RegExp][] = [
     ['non-grey', await materialMap({ pixel: { x: 10, y: 10, value: [1, 2, 1] } }), /grey/],
-    ['out of range', await materialMap({ pixel: { x: 300, y: 5, value: [4, 4, 4] } }), /ids/],
+    [
+      'out of range',
+      await materialMap({ pixel: { x: 300, y: 5, value: [255, 255, 255] } }),
+      /ids 0 to \d+/,
+    ],
     [
       'transparent',
       await materialMap({ channels: 4, pixel: { x: 0, y: 0, value: [0, 0, 0, 128] } }),
