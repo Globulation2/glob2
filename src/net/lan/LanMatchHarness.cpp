@@ -584,7 +584,7 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
-    GLOB2_TEST_CASE("custom catalog map transfer, client execution and verifier reject missing or different identities",
+    GLOB2_TEST_CASE("custom catalog transfer and execution enforce catalog identity",
                     "[network][artifacts]")
     {
         glob2test::HeadlessGlobals globals(harnessGlobals());
