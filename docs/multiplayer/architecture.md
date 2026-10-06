@@ -769,6 +769,9 @@ Administrators may also delete any map. Every moderation action is written to
 
 The workspace needs Node 22.18 or newer (TypeScript runs directly through Node's
 type stripping, so there is no build step except for the web app).
+`npm run typecheck` checks server code, the web app, and browser end-to-end tests
+in separate TypeScript projects; the latter includes DOM types for code evaluated
+in the browser without adding browser globals to server checks.
 
 ```sh
 cd platform
