@@ -1,11 +1,11 @@
 {
   "source": "examples/javascript/studio-starter.js",
-  "sourceSha256": "05250018bf65e479e56de794bece5b12eb6edc3be042bca21f575b4ba61172c3",
+  "sourceSha256": "f5f099760dc5085746c4112a3a91a3aad7075457895d44cfb5f8e949a7253d80",
   "map": "platform/apps/engine-agent/fixtures/ais/two.map.gz",
   "mapSha256": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
   "seed": 19,
   "opponent": "numbi",
   "ticks": 1024,
   "traceBytes": 1849612,
-  "traceSha256": "f01db26d35949e2685ce3a1544848342a4ba9ac5a2106e5f8ab330ba1852f422"
+  "traceSha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe"
 }
