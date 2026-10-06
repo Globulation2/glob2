@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "9950266f6755b1d445025568ab13cf3e15a66186bfb4e091fe215d961a5498df",
+    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "outcrop",
@@ -55,10 +55,6 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
-    "band": [
-      6.0,
-      16.0
-    ],
     "note": "placeholder until the image-generated outcrop lands"
   },
   "seed": "fnv1a32(\"outcrop:<variant>:<phase>\")",
@@ -71,23 +67,23 @@
   "preview": [
     106,
     108,
-    104
+    103
   ],
   "minimap": [
     106,
     108,
-    104
+    103
   ],
   "mean_color": [
     106,
     108,
-    104
+    103
   ],
   "style_stats": {
     "0": {
-      "luma": 107.3,
-      "std": 12.0,
-      "grain": 6.8,
+      "luma": 107.0,
+      "std": 12.6,
+      "grain": 7.1,
       "sat": 0.04,
       "alpha": 255.0
     }
@@ -146,22 +142,27 @@
   },
   "python": "3.14.4",
   "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
   "runtime_sha256": {
-    "data/gfx/terrain-outcrop0.png": "1c96049a0d6d226b08db0a003c118d471d330a476f11b7e582043a915ceff0ef",
-    "data/gfx/terrain-outcrop1.png": "2c751650c32cc2d466e0a48fd9475323026eb64692b5ec0165bdf8bad7c38342",
-    "data/gfx/terrain-outcrop2.png": "a7e1868ec7e0247a05f5961381f645a67f3fef8551a725cf0348d430743213e6",
-    "data/gfx/terrain-outcrop3.png": "17f0eac0442d24167a3d0dae6f638b8afe763ab44dd5593b00a0daf78cd4da49",
-    "data/gfx/terrain-outcrop4.png": "b9bbe70bebe0fd1b0f3237e6d9cfb0f68c11d79bd52cb7effc2c9e9d87d712ec",
-    "data/gfx/terrain-outcrop5.png": "328f61e93ecc445c06e3c4cccf03eaffe965c8f23e165209c93c34bdac308852",
-    "data/gfx/terrain-outcrop6.png": "bcb60b4e1616364d757708d938d3e1cdd6f92a62e94aded6ad57a0b660114bf0",
-    "data/gfx/terrain-outcrop7.png": "f87554ab52271fa1f7ef660aa38ebd31f13feaa99faedd6370221be30f799d7b",
-    "data/gfx/terrain-outcrop8.png": "9dfe0e1df25acf86c7a6846a6cc5ce88b79afdf5783ded7d8a2e33685adf981e",
-    "data/gfx/terrain-outcrop9.png": "3ab9310641337b52c4903b757b483ce50aff3f708e5439545da0694adfcb593f",
-    "data/gfx/terrain-outcrop10.png": "7348acd1bfb13f077c6c8943eb486c2d51ca7b0901683ff9eaf11c3264a8c246",
-    "data/gfx/terrain-outcrop11.png": "8c6c0a1369625dd7167681823b817c886bda3ccd955ec7a85f32808a97ed372b",
-    "data/gfx/terrain-outcrop12.png": "a5c040a0439b39188751a537ab5f4631f3a286425516f03f9c5a6fef33257d77",
-    "data/gfx/terrain-outcrop13.png": "c697cb788c88a4c77b2570f9fcc770b51494c5f2f054f1de9203a6f67cff3470",
-    "data/gfx/terrain-outcrop14.png": "ba386e70ea39fe7f9c2f35b33c9780f6d79ef00f809a788346fb7e6e845dc089",
-    "data/gfx/terrain-outcrop15.png": "015db2b997d3a55aa00ca366af1e47cd996a48fc9622bbc5558d058e1e1be8dc"
+    "data/gfx/terrain-outcrop0.png": "5b4a941a6729ab2f165e8b9bfda12beaaf545fca453741d7535d09c575b81407",
+    "data/gfx/terrain-outcrop1.png": "810e0044a6afacce4b6983d08418d770d8bd770cbdf34a4ca30a72657d790bd9",
+    "data/gfx/terrain-outcrop2.png": "70e207f672d331f1356391c9df2acb7b0ed2d7ae488ef94562ad5495d4c39b2e",
+    "data/gfx/terrain-outcrop3.png": "16e32929848683b5834e3122835445ef7fe0f74039d70e54b71c87f125dd5656",
+    "data/gfx/terrain-outcrop4.png": "0a6856523e32dcf5859b6f9f4bed4281257040ef17381d520bd9534c2df24601",
+    "data/gfx/terrain-outcrop5.png": "937906191063627d09488e07a40e3b28ff937d04f2fd332bfe403789970c2a42",
+    "data/gfx/terrain-outcrop6.png": "224948c7a7235955f062bbb4319b483001c6f5f6c7a5cc60790473e85d87a2a6",
+    "data/gfx/terrain-outcrop7.png": "a58bae8543096cf03512beb029db2363eb64f900b1386a9f46775474082ab46e",
+    "data/gfx/terrain-outcrop8.png": "e01fbf06088d12055e2447dc1db45a9c90961b2d89b23c3082fe5b3291ee9e75",
+    "data/gfx/terrain-outcrop9.png": "01851501afec6e883a4d2c5cb16b7207af7f62274cba11d95a57fd460974a988",
+    "data/gfx/terrain-outcrop10.png": "bad7657455c452d5c551e72dc73678e6d38ca7bb12c36af6f9817a9180613198",
+    "data/gfx/terrain-outcrop11.png": "b3377a566d41fc69ed53db9adea3ae29bf01b2329db28154b24bb3602f72ca14",
+    "data/gfx/terrain-outcrop12.png": "2d0d0e336d14e303b5069ced0637a9a953999b18dae7051e7187b781c7bed0aa",
+    "data/gfx/terrain-outcrop13.png": "470d020d7f3455a7ff925775ddb23be80095ff7b8dd3a76278441e02400df4a4",
+    "data/gfx/terrain-outcrop14.png": "413d24615355a9c87dcd04074bdb3d563fac7b8879f444cb20f65fc3bdc7afc6",
+    "data/gfx/terrain-outcrop15.png": "c0d80071ff43562d403befe358fc8221100e0cbcce8f92b31d56476266e6a7b9"
   }
 }

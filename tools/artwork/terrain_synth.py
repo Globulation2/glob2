@@ -9,6 +9,7 @@ Usage (with the pinned asset encoder interpreter, Pillow 12.2.0):
     "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
     "$ENC" tools/artwork/terrain_synth.py --check            # re-synthesise and compare
     "$ENC" tools/artwork/terrain_synth.py --emit-catalog     # print catalog blocks
+    "$ENC" tools/artwork/terrain_synth.py --write-catalog    # merge them into tileset.json
     "$ENC" tools/artwork/terrain_synth.py --hd               # 128x128 renders under artifacts/
 
 Every material is synthesised from scratch: periodic value noise, fractal sums,
@@ -19,11 +20,16 @@ trail, ice and water tiles are only measured for the style targets (luma mean an
 spread, neighbour grain, saturation) that keep the new art low-contrast and
 painterly beside them.
 
-Each material renders sixteen independent 128x128 variants, box-downsamples them
-to 32x32 and shares the perimeter across variants (tools/artwork/material_tiles.py)
-so any two variants join. Animated materials render four phases per variant; the
-frame layout is `variant + 16 * phase`. Outputs are `data/gfx/terrain-<name>N.png`
-and `datasrc/gfx/<name>/provenance.json`.
+Each material renders sixteen independent, periodic 128x128 variants,
+box-downsamples them to 32x32 and shares ring 0 of the perimeter across variants
+(tools/artwork/material_tiles.py) so any two variants join. Animated materials
+render four phases per variant; the frame layout is `variant + 16 * phase`.
+Outputs are `data/gfx/terrain-<name>N.png` and `datasrc/gfx/<name>/provenance.json`.
+
+Pixel-exact reproduction (`--check`) is pinned to the encoder interpreter on
+Linux x86-64: besides Pillow's resampling kernels, the renders depend on the C
+library's sin/atan2/hypot and on round() boundaries, so another platform may
+differ in a few low bits. The provenance records the platform.
 
 Pure Python 3 plus Pillow; no numpy.
 """
@@ -44,6 +50,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from material_tiles import (  # noqa: E402
     ROOT,
     SHEET,
@@ -51,7 +58,6 @@ from material_tiles import (  # noqa: E402
     TILE,
     color_distance,
     fnv1a32,
-    load_frames,
     luma,
     mean_color,
     pixel_sha256,
@@ -64,6 +70,7 @@ from material_tiles import (  # noqa: E402
     tiles_to_sheet,
     write_frames,
 )
+from terrain_tileset import BUILTIN_NAMES, LEGACY_BINDINGS  # noqa: E402
 
 PILLOW_VERSION = "12.2.0"
 N = SHEET  # render size; four render pixels per native pixel
@@ -72,23 +79,17 @@ FRAME_PREFIX = "data/gfx/terrain-"
 XS = [i % N for i in range(N * N)]
 YS = [i // N for i in range(N * N)]
 TAU = 2 * math.pi
-# Weight of a variant's own render against variant 0's: 0 in the outer two
-# native pixels, 1 from five native pixels inward. Every variant therefore
-# carries variant 0's border band, so any two variants (and the torus seam)
-# join without cutting stamped features, and the runtime's four-pixel blend
-# toward variant 0 (tools/terrain_tileset.py seamless_sources) is a no-op.
-BORDER_WEIGHTS = {}
-BAND = 16  # render pixels from an edge inside which stamped features are shared
+# Render pixels from an edge over which the perimeter treatment flattens the
+# low-frequency tone (BAND) and removes structure (EDGE); stamped features keep
+# at least STAMP_MARGIN from the edge so the structure-free zone never cuts
+# them. See `neutral_band`.
+BAND = 24
+EDGE = 9
+STAMP_MARGIN = 12
 
-
-def border_weight(inner=6.0, outer=16.0):
-    key = (inner, outer)
-    if key not in BORDER_WEIGHTS:
-        BORDER_WEIGHTS[key] = [
-            smoothstep(inner, outer, min(x + 0.5, y + 0.5, N - x - 0.5, N - y - 0.5))
-            for x, y in zip(XS, YS)
-        ]
-    return BORDER_WEIGHTS[key]
+LEGACY_NAMES = list(LEGACY_BINDINGS)
+# Catalogue order of the built-in types, from the engine's generated name list.
+BUILTIN_ORDER = [name for name in json.loads(BUILTIN_NAMES.read_text()) if name not in LEGACY_BINDINGS]
 
 
 # --------------------------------------------------------------------------
@@ -169,32 +170,69 @@ def sample(values, fx, fy):
     return top * (1 - ty) + bottom * ty
 
 
-def domain_warp(values, warp_x, warp_y, amount):
+def domain_warp(values, warp_x, warp_y, amount, amount_y=None):
     """Re-sample `values` displaced by two noise fields (±`amount` pixels)."""
+    amount_y = amount if amount_y is None else amount_y
     return [
-        sample(values, x + (wx - 0.5) * 2 * amount, y + (wy - 0.5) * 2 * amount)
+        sample(values, x + (wx - 0.5) * 2 * amount, y + (wy - 0.5) * 2 * amount_y)
         for x, y, wx, wy in zip(XS, YS, warp_x, warp_y)
     ]
 
 
-def _worley_from_points(points, metric):
+def box_blur(values, radius):
+    """Separable wrapping box blur, O(N^2) through running sums."""
+    size = 2 * radius + 1
+    rows = [0.0] * (N * N)
+    for y in range(N):
+        base = y * N
+        total = sum(values[base + (x % N)] for x in range(-radius, radius + 1))
+        for x in range(N):
+            rows[base + x] = total / size
+            total += values[base + (x + radius + 1) % N] - values[base + (x - radius) % N]
+    out = [0.0] * (N * N)
+    for x in range(N):
+        total = sum(rows[(y % N) * N + x] for y in range(-radius, radius + 1))
+        for y in range(N):
+            out[y * N + x] = total / size
+            total += rows[((y + radius + 1) % N) * N + x] - rows[((y - radius) % N) * N + x]
+    return out
+
+
+def _rotated_distance(dx, dy, rot, stretch):
+    c, sn = rot
+    u = dx * c + dy * sn
+    v = (-dx * sn + dy * c) * stretch
+    return max(abs(u), abs(v))
+
+
+def _worley_from_points(points, metric, rotations=None, stretch=1.0):
     """Nearest and second-nearest wrapped distance (in pixels) and nearest id."""
     f1 = [0.0] * (N * N)
     f2 = [0.0] * (N * N)
     ids = [0] * (N * N)
     half = N / 2
     chebyshev = metric == "chebyshev"
+    angular = metric == "angular"
     for i in range(N * N):
         x, y = XS[i], YS[i]
         best, second, best_id = 1e9, 1e9, 0
         for pid, (px, py) in enumerate(points):
-            dx = abs(px - x)
+            dx = px - x
             if dx > half:
-                dx = N - dx
-            dy = abs(py - y)
+                dx -= N
+            elif dx < -half:
+                dx += N
+            dy = py - y
             if dy > half:
-                dy = N - dy
-            d = max(dx, dy) if chebyshev else math.sqrt(dx * dx + dy * dy)
+                dy -= N
+            elif dy < -half:
+                dy += N
+            if angular:
+                d = _rotated_distance(dx, dy, rotations[pid], stretch)
+            elif chebyshev:
+                d = max(abs(dx), abs(dy))
+            else:
+                d = math.sqrt(dx * dx + dy * dy)
             if d < best:
                 second, best, best_id = best, d, pid
             elif d < second:
@@ -203,10 +241,20 @@ def _worley_from_points(points, metric):
     return f1, f2, ids
 
 
-def worley_points(rng, count, metric="euclid"):
-    """Worley cells from `count` free points; distances in units of the mean cell."""
+def worley_points(rng, count, metric="euclid", stretch=1.0):
+    """Worley cells from `count` free points; distances in units of the mean cell.
+
+    `angular` rotates a Chebyshev metric by a random angle per point (and
+    optionally stretches it), giving angular chips without a shared orientation.
+    """
     points = [(rng.random() * N, rng.random() * N) for _ in range(count)]
-    f1, f2, ids = _worley_from_points(points, metric)
+    rotations = None
+    if metric == "angular":
+        rotations = []
+        for _ in range(count):
+            angle = rng.random() * TAU
+            rotations.append((math.cos(angle), math.sin(angle)))
+    f1, f2, ids = _worley_from_points(points, metric, rotations, stretch)
     cell = N / math.sqrt(count)
     return [v / cell for v in f1], [v / cell for v in f2], ids, points
 
@@ -217,8 +265,7 @@ def worley(rng, cells, metric="euclid", jitter=1.0):
     Each pixel examines the nine surrounding cells with wrapped indices, so the
     field is periodic and the cost stays linear in the canvas size. Metrics:
     `euclid` (round cells), `chebyshev` (axis-aligned squares) and `angular`
-    (a Chebyshev metric rotated by a random angle per cell, so cells become
-    angular stones with no shared orientation).
+    (a Chebyshev metric rotated by a random angle per cell).
     """
     cells = max(1, int(cells))
     size = N / cells
@@ -251,8 +298,7 @@ def worley(rng, cells, metric="euclid", jitter=1.0):
                 dx = px[cy][cx] + wrap_x - x
                 dy = py[cy][cx] + wrap_y - y
                 if angular:
-                    c, sn = rot[cy][cx]
-                    d = max(abs(dx * c + dy * sn), abs(-dx * sn + dy * c))
+                    d = _rotated_distance(dx, dy, rot[cy][cx], 1.0)
                 elif chebyshev:
                     d = max(abs(dx), abs(dy))
                 else:
@@ -306,37 +352,17 @@ def disc_profile(cx, cy, radius, lumps=()):
     return height
 
 
-def scatter_discs(rng, count, radius_min, radius_max, softness=0.5):
-    """Random soft discs; returns the union mask and the list of (x, y, r)."""
+def scatter(ctx, count, radius_min, radius_max, softness=0.5):
+    """Random soft discs inside the tile, clear of the perimeter band.
+
+    Returns the union mask and (x, y, r, u) tuples, where `u` is a uniform
+    value for per-disc choices. Keeping stamps out of the band means the
+    neutral perimeter never cuts or ghosts a feature.
+    """
+    margin = STAMP_MARGIN + radius_max
     mask = [0.0] * (N * N)
     discs = []
     for _ in range(count):
-        cx, cy = rng.random() * N, rng.random() * N
-        radius = radius_min + rng.random() * (radius_max - radius_min)
-        stamp_disc(mask, cx, cy, radius, 1.0, softness)
-        discs.append((cx, cy, radius))
-    return mask, discs
-
-
-def scatter(ctx, count, radius_min, radius_max, softness=0.5):
-    """Random soft discs that respect the shared border band.
-
-    Discs that could touch the band come from the shared stream at reduced
-    density, so every variant shows the same few border features instead of
-    cut or ghosted ones; the rest come from the variant's own stream and stay
-    clear of the band. Returns the union mask and (x, y, r, u) tuples, where
-    `u` is a uniform value from the disc's stream for per-disc choices.
-    """
-    margin = BAND + radius_max
-    inside = max(0.0, (N - 2 * margin) / N) ** 2
-    mask = [0.0] * (N * N)
-    discs = []
-    shared = ctx.shared_rng
-    for _ in range(int(round(count * (1 - inside) * 0.15))):
-        cx, cy = ctx.band_point(margin)
-        radius = radius_min + shared.random() * (radius_max - radius_min)
-        discs.append((cx, cy, radius, shared.random()))
-    for _ in range(int(round(count * inside))):
         cx, cy = ctx.interior_point(margin)
         radius = radius_min + ctx.rng.random() * (radius_max - radius_min)
         discs.append((cx, cy, radius, ctx.rng.random()))
@@ -389,12 +415,15 @@ def mix(rgb, color_or_rgb, mask, strength=1.0):
     return out
 
 
-def tint(rgb, factor_r, factor_g, factor_b):
-    return [[c * f for c in channel] for channel, f in zip(rgb, (factor_r, factor_g, factor_b))]
-
-
-def scale_rgb(rgb, factors):
-    return [[c * f for c, f in zip(channel, factors)] for channel in rgb]
+def desaturate(rgb, amount):
+    """Pull colours toward their luma by `amount` (0..1)."""
+    out = [[], [], []]
+    for r, g, b in zip(*rgb):
+        grey = luma(r, g, b)
+        out[0].append(r + (grey - r) * amount)
+        out[1].append(g + (grey - g) * amount)
+        out[2].append(b + (grey - b) * amount)
+    return out
 
 
 def gradient_light(height, light=(-0.7, -0.7)):
@@ -411,13 +440,90 @@ def gradient_light(height, light=(-0.7, -0.7)):
 
 
 def shade(rgb, height, strength, light=(-0.7, -0.7)):
-    """Weak bevel: brighten slopes facing `light`, darken the others."""
+    """Bevel: brighten slopes facing `light`, darken the others."""
     g = gradient_light(height, light)
     return [[c * (1 - strength * v) for c, v in zip(channel, g)] for channel in rgb]
 
 
+def grain(rgb, rng, amount=0.12, cells=48):
+    """Fine per-pixel grain, as the native tiles have (about one native pixel)."""
+    fine = lattice_noise(rng, cells)
+    return [[c * (1 + amount * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
+
+
+def cell_jitter(rng, count, spread, hue=0.25):
+    """Per-cell brightness jitter with a small, hue-neutral colour drift."""
+    jitters = []
+    for _ in range(count):
+        value = 1 + (rng.random() - 0.5) * 2 * spread
+        warm = (rng.random() - 0.5) * 2 * spread * hue
+        jitters.append((value + warm, value, value - warm))
+    return jitters
+
+
+def apply_cell_jitter(rgb, ids, jitters):
+    return [
+        [c * jitters[i][k] for c, i in zip(channel, ids)] for k, channel in enumerate(rgb)
+    ]
+
+
 def alpha_from(values, low, high):
     return [low + (high - low) * clamp01(v) for v in values]
+
+
+# --------------------------------------------------------------------------
+# Perimeter, downsampling and style
+# --------------------------------------------------------------------------
+
+BAND_WEIGHTS = {}
+
+
+def band_weight(inner, outer):
+    """1 at the tile edge, falling to 0 between `inner` and `outer` render px."""
+    key = (inner, outer)
+    if key not in BAND_WEIGHTS:
+        BAND_WEIGHTS[key] = [
+            1 - smoothstep(float(inner), float(outer), min(x + 0.5, y + 0.5, N - x - 0.5, N - y - 0.5))
+            for x, y in zip(XS, YS)
+        ]
+    return BAND_WEIGHTS[key]
+
+
+def neutral_band(rgb, alpha, rng, radius=12):
+    """Make the perimeter band mean-toned and structure-free.
+
+    The runtime blends the outer four native pixels of every variant toward
+    variant 0's reflected pixels with weights 1, 3/4, 1/2, 1/4
+    (TerrainCompositor / `seamless_sources`), so whatever variant 0 carries
+    there is repeated on every tile. Two treatments keep that shared frame
+    invisible: over BAND render pixels the low-frequency luma (a box blur) is
+    pulled to the tile mean, so no light or dark blotch sits on an edge; over
+    the inner EDGE pixels the texture itself is replaced by the tile's mean
+    colour with fine grain, so no chip, gap or crack ends up as a repeated
+    motif. Alpha gets the same treatment so translucent materials stay even.
+    """
+    wide = band_weight(6, BAND)
+    tight = band_weight(2, EDGE)
+    count = len(rgb[0])
+    lum = [luma(r, g, b) for r, g, b in zip(*rgb)]
+    mean = sum(lum) / count
+    low = box_blur(lum, radius)
+    shift = [(mean - lo) * t for lo, t in zip(low, wide)]
+    rgb = [[c + s for c, s in zip(channel, shift)] for channel in rgb]
+    fine = lattice_noise(rng, 48)
+    out = []
+    for channel in rgb:
+        channel_mean = sum(channel) / count
+        out.append([
+            c + (channel_mean * (1 + 0.16 * (g - 0.5)) - c) * t for c, g, t in zip(channel, fine, tight)
+        ])
+    rgb = out
+    if alpha is not None:
+        mean_a = sum(alpha) / count
+        low_a = box_blur(alpha, radius)
+        alpha = [a + (mean_a - lo) * t for a, lo, t in zip(alpha, low_a, wide)]
+        alpha = [a + (mean_a - a) * t for a, t in zip(alpha, tight)]
+    return rgb, alpha
 
 
 def box_down_fields(rgb, alpha, factor=N // TILE):
@@ -452,8 +558,8 @@ def style_transform(rgb, target_luma, target_std, strength=1.0):
     """Affine luma correction pulling mean and spread toward the recipe targets.
 
     Returns (channel means, contrast factor, shift); `apply_style` applies the
-    same transform to every variant of a material so their shared border band
-    stays identical. Statistics only: nothing is read from existing art.
+    same transform to every variant of a material so they share one tone.
+    Statistics only: nothing is read from existing art.
     """
     count = len(rgb[0])
     lum = [luma(r, g, b) for r, g, b in zip(*rgb)]
@@ -469,17 +575,6 @@ def style_transform(rgb, target_luma, target_std, strength=1.0):
 def apply_style(rgb, transform):
     means, k, shift = transform
     return [[m + (c - m) * k + shift for c in channel] for channel, m in zip(rgb, means)]
-
-
-def blend_border(own, reference, alpha_own, alpha_ref, band=(6.0, 16.0)):
-    """Replace a variant's border band with variant 0's render (see border_weight)."""
-    w = border_weight(*band)
-    rgb = [[r + (o - r) * t for o, r, t in zip(oc, rc, w)] for oc, rc in zip(own, reference)]
-    if alpha_own is None and alpha_ref is None:
-        return rgb, None
-    alpha_own = alpha_own or [255.0] * (N * N)
-    alpha_ref = alpha_ref or [255.0] * (N * N)
-    return rgb, [r + (o - r) * t for o, r, t in zip(alpha_own, alpha_ref, w)]
 
 
 def fields_to_image(rgb, alpha, size):
@@ -521,7 +616,6 @@ class Recipe:
     preview: tuple = None
     minimap: tuple = None
     placeholder_only: bool = False
-    band: tuple = (6.0, 16.0)
     note: str = ""
 
     def describe(self):
@@ -548,28 +642,12 @@ class Ctx:
         self.name, self.variant, self.phase, self.phases = name, variant, phase, phases
         self.rng = random.Random(fnv1a32(f"{name}:{variant}:0"))
         self.phase_rng = random.Random(fnv1a32(f"{name}:{variant}:{phase}"))
-        # Features that may cross the shared border band are drawn from this
-        # stream, which is the same for every variant (see BORDER_WEIGHT).
-        self.shared_rng = random.Random(fnv1a32(f"{name}:0:0"))
         self.t = phase / phases
 
     def interior_point(self, margin):
         """A position at least `margin` render pixels from every edge."""
-        return margin + self.rng.random() * (N - 2 * margin), margin + self.rng.random() * (N - 2 * margin)
-
-    def band_point(self, margin):
-        """A shared position whose centre lies within `margin` of an edge."""
-        rng = self.shared_rng
-        along = rng.random() * N
-        depth = rng.random() * margin
-        side = rng.randrange(4)
-        if side == 0:
-            return along, depth
-        if side == 1:
-            return along, N - depth
-        if side == 2:
-            return depth, along
-        return N - depth, along
+        span = max(1.0, N - 2 * margin)
+        return margin + self.rng.random() * span, margin + self.rng.random() * span
 
 
 def ground(ctx, cells, octaves, anchors, warp=0.0, stretch=(0.02, 0.98), grit=0.12):
@@ -585,26 +663,17 @@ def ground(ctx, cells, octaves, anchors, warp=0.0, stretch=(0.02, 0.98), grit=0.
     return rgb, f
 
 
-def cell_jitter(rng, count, spread, hue=0.25):
-    """Per-cell brightness jitter with a small, hue-neutral colour drift."""
-    jitters = []
-    for _ in range(count):
-        value = 1 + (rng.random() - 0.5) * 2 * spread
-        warm = (rng.random() - 0.5) * 2 * spread * hue
-        jitters.append((value + warm, value, value - warm))
-    return jitters
+def soft_blobs(ctx, count, radius_min, radius_max, core=0.0):
+    """Blooms that survive the 4x downsample: 2-3 native px with a soft halo.
 
-
-def grain(rgb, rng, amount=0.12, cells=48):
-    """Fine per-pixel grain, as the native tiles have (about one native pixel)."""
-    fine = lattice_noise(rng, cells)
-    return [[c * (1 + amount * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
-
-
-def apply_cell_jitter(rgb, ids, jitters):
-    return [
-        [c * jitters[i][k] for c, i in zip(channel, ids)] for k, channel in enumerate(rgb)
-    ]
+    Returns (halo mask, core mask, discs); the core is a small darker centre.
+    """
+    halo, discs = scatter(ctx, count, radius_min, radius_max, softness=0.75)
+    cores = [0.0] * (N * N)
+    if core:
+        for cx, cy, _, _ in discs:
+            stamp_disc(cores, cx, cy, core, 1.0, 0.5)
+    return halo, cores, discs
 
 
 # Barren ground: muted warm neutrals, inhibits growth like sand but is not a shore.
@@ -616,7 +685,7 @@ def apply_cell_jitter(rgb, ids, jitters):
 def render_dirt(ctx):
     p = RECIPES["dirt"].palette
     rgb, _ = ground(ctx, 5, 4, (p["dark"], p["mid"], p["light"]), warp=10)
-    pebbles, _ = scatter(ctx, 70, 1.6, 2.6, softness=0.6)
+    pebbles, _ = scatter(ctx, 40, 1.6, 2.6, softness=0.6)
     rgb = mix(rgb, p["pebble"], pebbles, 0.8)
     return rgb, None
 
@@ -650,7 +719,7 @@ def render_gravel(ctx):
     rng = ctx.rng
     f1, f2, ids = worley(rng, 5)
     grit = fbm(rng, 10, 2)
-    # Pebbles about six native pixels across, each with its own tone.
+    # Rounded pebbles about six native pixels across, each with its own tone.
     tone = normalize([0.3 * (1 - a) + 0.7 * g for a, g in zip(f1, grit)])
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
     rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.11))
@@ -663,21 +732,24 @@ def render_gravel(ctx):
 
 @recipe(name="flower_meadow", group="barren", label="Flower meadow", profile="brush",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (44, 110, 40), "mid": (60, 126, 48), "light": (74, 138, 58),
-                 "flowers": [(232, 190, 210), (240, 224, 150), (200, 160, 220)]},
-        style=Style(luma=86, std=9, grain_max=9, match=0.7),
+        palette={"dark": (52, 122, 46), "mid": (70, 140, 56), "light": (88, 154, 68),
+                 "flowers": [(236, 196, 214), (244, 230, 158), (206, 168, 226), (240, 170, 160)],
+                 "centre": (120, 90, 60)},
+        style=Style(luma=94, std=9, grain_max=9, match=0.7),
         note="placeholder until the image-generated flower meadow lands")
 def render_flower_meadow(ctx):
     p = RECIPES["flower_meadow"].palette
     rng = ctx.rng
     rgb, _ = ground(ctx, 8, 3, (p["dark"], p["mid"], p["light"]))
-    _, blooms = scatter(ctx, 30, 3.0, 4.6)
-    for index, color in enumerate(p["flowers"]):
+    colors = rng.sample(p["flowers"], 2)
+    halo, cores, discs = soft_blobs(ctx, rng.randint(6, 10), 6.0, 8.0, core=2.0)
+    for index, color in enumerate(colors):
         mask = [0.0] * (N * N)
-        for cx, cy, radius, u in blooms:
-            if int(u * len(p["flowers"])) == index:
-                stamp_disc(mask, cx, cy, radius, 1.0, 0.45)
+        for cx, cy, radius, u in discs:
+            if int(u * 2) == index:
+                stamp_disc(mask, cx, cy, radius, 1.0, 0.75)
         rgb = mix(rgb, color, mask, 0.9)
+    rgb = mix(rgb, p["centre"], cores, 0.7)
     return rgb, None
 
 
@@ -685,13 +757,14 @@ def render_flower_meadow(ctx):
 
 @recipe(name="mud", group="rough", label="Mud", profile="soft",
         seam={"height": 1},
-        palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (140, 120, 100)},
+        palette={"dark": (62, 48, 36), "mid": (88, 70, 52), "light": (116, 96, 74), "sheen": (150, 132, 112)},
         style=Style(luma=76, std=8, grain_max=7))
 def render_mud(ctx):
     p = RECIPES["mud"].palette
     rgb, _ = ground(ctx, 4, 4, (p["dark"], p["mid"], p["light"]), warp=14)
-    sheen, _ = scatter_discs(ctx.rng, 4, 12, 20, softness=0.9)
-    rgb = mix(rgb, p["sheen"], sheen, 0.45)
+    # Two or three soft specular pools so the surface reads wet.
+    pools, _ = scatter(ctx, ctx.rng.randint(2, 3), 16, 24, softness=0.85)
+    rgb = mix(rgb, p["sheen"], pools, 0.4)
     return rgb, None
 
 
@@ -716,35 +789,38 @@ def render_marsh(ctx):
 
 
 @recipe(name="deep_snow", group="rough", label="Deep snow", profile="soft",
-        seam={"height": 2, "cast_q8": 32, "cast_width_q8": 448},
-        palette={"dark": (196, 206, 218), "mid": (222, 228, 236), "light": (240, 244, 248), "sparkle": (252, 252, 255)},
-        style=Style(luma=226, std=5, grain_max=5))
+        seam={"height": 3, "cast_q8": 48, "cast_width_q8": 512, "fringe": [196, 210, 232], "fringe_q8": 64,
+              "fringe_width_q8": 384},
+        palette={"dark": (144, 160, 206), "mid": (202, 206, 234), "light": (236, 236, 250), "sparkle": (252, 252, 255)},
+        style=Style(luma=202, std=7, grain_max=6))
 def render_deep_snow(ctx):
     p = RECIPES["deep_snow"].palette
-    rgb, _ = ground(ctx, 3, 2, (p["dark"], p["mid"], p["light"]))
-    sparkle, _ = scatter(ctx, 40, 0.9, 1.4, softness=0.3)
-    rgb = mix(rgb, p["sparkle"], sparkle, 1.0)
+    rgb, f = ground(ctx, 3, 3, (p["dark"], p["mid"], p["light"]), grit=0.05)
+    rgb = shade(rgb, f, 0.12, light=(-0.6, -0.8))
+    sparkle, _, _ = soft_blobs(ctx, 6, 3.0, 4.0)
+    rgb = mix(rgb, p["sparkle"], sparkle, 0.6)
     return rgb, None
 
 
 @recipe(name="scree", group="rough", label="Scree", profile="rock",
         seam={"height": 1},
-        palette={"dark": (92, 96, 104), "mid": (118, 122, 128), "light": (148, 152, 156)},
-        style=Style(luma=120, std=13, grain_max=12))
+        palette={"dark": (84, 86, 92), "mid": (118, 120, 124), "light": (152, 154, 156), "dirt": (62, 56, 50)},
+        style=Style(luma=118, std=14, grain_max=12))
 def render_scree(ctx):
     p = RECIPES["scree"].palette
     rng = ctx.rng
-    f1, f2, ids = worley(rng, 5, metric="angular", jitter=0.9)
-    wx, wy = fbm(rng, 6, 2), fbm(rng, 6, 2)
-    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, 4)
-    grit = fbm(rng, 12, 2)
-    # Flat angular stones in random orientations: per-stone tone, no shared
-    # light direction, dark gaps between them.
-    tone = normalize([0.35 * (1 - a) + 0.65 * g for a, g in zip(f1, grit)])
+    # Twelve to sixteen angular chips in random orientations, slightly
+    # stretched, with a hard bevel along their rims and dark dirt between them.
+    f1, f2, ids, _ = worley_points(rng, rng.randint(12, 16), metric="angular", stretch=1.35)
+    edge = [b - a for a, b in zip(f1, f2)]
+    grit = fbm(rng, 10, 2)
+    tone = normalize([0.25 * (1 - a) + 0.75 * g for a, g in zip(f1, grit)], 0.05, 0.95)
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.12))
-    gaps = band(edge, 0.05, 0.08)
-    rgb = mix(rgb, p["dark"], gaps, 0.6)
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 16, 0.14))
+    top = [smoothstep(0.08, 0.30, e) for e in edge]
+    rgb = shade(rgb, top, 0.45, light=(-0.7, -0.7))
+    gaps = band(edge, 0.06, 0.06)
+    rgb = mix(rgb, p["dirt"], gaps, 0.85)
     rgb = grain(rgb, rng, 0.08)
     return rgb, None
 
@@ -757,9 +833,20 @@ def render_scree(ctx):
         style=Style(luma=146, std=7, grain_max=6))
 def render_dirt_track(ctx):
     p = RECIPES["dirt_track"].palette
+    rng = ctx.rng
     rgb, _ = ground(ctx, 4, 3, (p["dark"], p["mid"], p["light"]), warp=8)
-    worn, _ = scatter_discs(ctx.rng, 4, 14, 24, softness=0.9)
+    worn, _ = scatter(ctx, 3, 14, 22, softness=0.9)
     rgb = mix(rgb, p["light"], worn, 0.5)
+    # Two faint parallel ruts across the tile (one direction, like the
+    # boardwalk planks), a few luma darker, wrapping in x.
+    centre = 40 + rng.random() * 16
+    wobble = fbm(rng, 2, 2)
+    ruts = []
+    for i in range(N * N):
+        y = YS[i] + (wobble[i] - 0.5) * 6
+        d = min(abs(y - centre), abs(y - centre - 32))
+        ruts.append(1 - smoothstep(2.0, 6.0, d))
+    rgb = [[c * (1 - 0.04 * r) for c, r in zip(channel, ruts)] for channel in rgb]
     return rgb, None
 
 
@@ -794,17 +881,18 @@ def render_boardwalk(ctx):
     return rgb, None
 
 
-# Fertile ground: dark saturated green, the new strategic resource.
+# Fertile ground: warm, saturated undertone; the new strategic resource.
 
 @recipe(name="loam", group="fertile", label="Loam", profile="soft",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (26, 32, 20), "mid": (44, 52, 30), "light": (64, 72, 42), "fleck": (90, 128, 56)},
-        style=Style(luma=48, std=8, grain_max=8))
+        palette={"dark": (52, 38, 24), "mid": (74, 58, 36), "light": (98, 80, 52), "fleck": (96, 108, 56)},
+        style=Style(luma=66, std=8, grain_max=8))
 def render_loam(ctx):
     p = RECIPES["loam"].palette
     rgb, _ = ground(ctx, 5, 4, (p["dark"], p["mid"], p["light"]), warp=8)
-    flecks, _ = scatter(ctx, 50, 2.2, 3.4, softness=0.5)
-    rgb = mix(rgb, p["fleck"], flecks, 0.85)
+    # Sparse soft green-brown flecks, about two native pixels.
+    flecks, _, _ = soft_blobs(ctx, 22, 4.0, 5.5)
+    rgb = mix(rgb, p["fleck"], flecks, 0.8)
     return rgb, None
 
 
@@ -827,49 +915,59 @@ def render_moss(ctx):
 
 @recipe(name="spring_meadow", group="fertile", label="Spring meadow", profile="brush",
         seam={"height": 2, "cast_q8": 56, "cast_width_q8": 512},
-        palette={"dark": (64, 118, 42), "mid": (92, 150, 58), "light": (130, 178, 84), "dot": (236, 226, 160)},
-        style=Style(luma=126, std=7, grain_max=7))
+        palette={"dark": (78, 118, 50), "mid": (104, 146, 66), "light": (134, 170, 90), "dot": (236, 228, 170)},
+        style=Style(luma=105, std=7, grain_max=7))
 def render_spring_meadow(ctx):
     p = RECIPES["spring_meadow"].palette
     rgb, _ = ground(ctx, 8, 3, (p["dark"], p["mid"], p["light"]))
-    dots, _ = scatter(ctx, 16, 2.4, 3.4, softness=0.5)
-    rgb = mix(rgb, p["dot"], dots, 0.85)
+    rgb = desaturate(rgb, 0.18)
+    dots, _, _ = soft_blobs(ctx, 10, 4.0, 5.5)
+    rgb = mix(rgb, p["dot"], dots, 0.7)
     return rgb, None
 
 
-# Deep water: translucent tints that darken the shared scrolling ocean.
+# Deep water: translucent tints of the ocean backdrop colour. The backdrop
+# (data/gfx/water0.png) averages to about (69, 52, 200): the tints keep that
+# hue with lower value and slightly lower saturation so they read as the same
+# liquid, deeper. Statistics only, no pixels read.
 
 @recipe(name="deep_water", group="deep_water", label="Deep water", profile="soft",
         seam={"height": 6, "cast_q8": 72, "cast_width_q8": 640},
-        palette={"tint": (10, 60, 160), "swell": (20, 76, 176), "caustic": (60, 120, 200), "alpha": (170, 200)},
-        style=Style(luma=52, std=6, grain_max=6, match=0.5), alpha_range=(160, 210),
-        preview=(26, 48, 140), minimap=(0, 28, 96))
+        palette={"tint": (53, 41, 128), "swell": (62, 50, 142), "thread": (120, 104, 210), "alpha": (150, 172)},
+        style=Style(luma=58, std=6, grain_max=6, match=0.5), alpha_range=(140, 185),
+        preview=(44, 34, 120), minimap=(24, 18, 84))
 def render_deep_water(ctx):
     p = RECIPES["deep_water"].palette
     rng = ctx.rng
     swell = fbm(rng, 4, 2)
     rgb = mix(flat(p["tint"]), p["swell"], swell, 0.6)
     alpha = alpha_from(normalize(fbm(rng, 4, 3)), *p["alpha"])
-    f1, f2, _ = worley(rng, 2)
-    edge = domain_warp([b - a for a, b in zip(f1, f2)], fbm(rng, 4, 2), fbm(rng, 4, 2), 10)
-    caustics = band(edge, 0.03, 0.05)
-    rgb = mix(rgb, p["caustic"], caustics, 0.2)
+    # Sparse soft broken highlight threads instead of a cell network.
+    threads = [0.0] * (N * N)
+    for _ in range(rng.randint(3, 5)):
+        length = 16 + rng.random() * 20
+        x, y = ctx.interior_point(STAMP_MARGIN + length / 2)
+        angle = (rng.random() - 0.5) * 1.2
+        stamp_stroke(threads, x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2,
+                     angle, length, 6.0 + rng.random() * 3)
+    threads = [t * (0.3 + 0.7 * s) for t, s in zip(threads, swell)]
+    rgb = mix(rgb, p["thread"], threads, 0.16)
     return rgb, alpha
 
 
 @recipe(name="dark_water", group="deep_water", label="Dark water", profile="soft",
         seam={"height": 7, "cast_q8": 80, "cast_width_q8": 704},
-        palette={"tint": (14, 38, 78), "murk": (20, 48, 92), "speck": (6, 14, 30), "alpha": (225, 240)},
-        style=Style(luma=34, std=4, grain_max=5, match=0.5), alpha_range=(215, 245),
-        preview=(16, 34, 84), minimap=(0, 20, 64))
+        palette={"tint": (38, 31, 87), "murk": (30, 24, 70), "speck": (18, 14, 44), "alpha": (202, 218)},
+        style=Style(luma=40, std=4, grain_max=5, match=0.5), alpha_range=(192, 228),
+        preview=(32, 26, 76), minimap=(16, 12, 52))
 def render_dark_water(ctx):
     p = RECIPES["dark_water"].palette
     rng = ctx.rng
-    murk = fbm(rng, 4, 3)
-    rgb = mix(flat(p["tint"]), p["murk"], murk, 0.5)
+    murk = normalize(fbm(rng, 3, 2))
+    rgb = mix(flat(p["tint"]), p["murk"], murk, 0.6)
     alpha = alpha_from(normalize(fbm(rng, 3, 2)), *p["alpha"])
-    specks, _ = scatter(ctx, 50, 0.9, 1.6, softness=0.4)
-    rgb = mix(rgb, p["speck"], specks, 0.8)
+    specks, _, _ = soft_blobs(ctx, 8, 3.0, 4.5)
+    rgb = mix(rgb, p["speck"], specks, 0.6)
     return rgb, alpha
 
 
@@ -877,18 +975,24 @@ def render_dark_water(ctx):
 
 @recipe(name="ridge_rock", group="ridges", label="Ridge", profile="rock",
         seam={"height": 4, "cast_q8": 72, "cast_width_q8": 768},
-        palette={"dark": (68, 74, 84), "mid": (98, 104, 112), "light": (128, 134, 140), "crack": (52, 56, 64)},
+        palette={"dark": (72, 72, 76), "mid": (104, 104, 106), "light": (138, 138, 136), "crack": (46, 46, 50)},
         style=Style(luma=102, std=12, grain_max=10))
 def render_ridge_rock(ctx):
     p = RECIPES["ridge_rock"].palette
     rng = ctx.rng
-    rgb, f = ground(ctx, 4, 4, (p["dark"], p["mid"], p["light"]), warp=14, grit=0.10)
-    f1, f2, _ = worley(rng, 3)
-    edge = domain_warp([b - a for a, b in zip(f1, f2)], fbm(rng, 4, 2), fbm(rng, 4, 2), 8)
-    cracks = band(edge, 0.05, 0.07)
-    height = [h * 0.7 + (1 - c) * 0.3 for h, c in zip(f, cracks)]
-    rgb = shade(rgb, height, 0.5, light=(-1.0, -0.6))
-    rgb = mix(rgb, p["crack"], cracks, 0.5)
+    # Stretched, broken strata: anisotropic noise warped along one axis.
+    strata = fbm(rng, 2, 3, cells_y=8, gain=0.4)
+    strata = domain_warp(strata, fbm(rng, 3, 2), fbm(rng, 3, 2), 12, 3)
+    base = fbm(rng, 5, 3)
+    h = normalize([0.75 * s + 0.25 * b for s, b in zip(strata, base)], 0.03, 0.97)
+    rgb = ramp(h, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = grain(rgb, rng, 0.08)
+    # Sparse cracks of varying width along the strata.
+    ridged = [abs(2 * v - 1) for v in domain_warp(fbm(rng, 2, 2, cells_y=5), fbm(rng, 3, 2), fbm(rng, 3, 2), 8, 3)]
+    widths = fbm(rng, 3, 2)
+    cracks = [1 - smoothstep(0.0, 0.05 + 0.10 * w, r) for r, w in zip(ridged, widths)]
+    rgb = shade(rgb, h, 0.7, light=(-1.0, -0.3))
+    rgb = mix(rgb, p["crack"], cracks, 0.6)
     return rgb, None
 
 
@@ -914,137 +1018,136 @@ def render_outcrop(ctx):
     gaps = band(edge, 0.03, 0.05)
     rgb = mix(rgb, p["dark"], gaps, 0.65)
     rgb = grain(rgb, rng, 0.10)
-    lichen, _ = scatter(ctx, 14, 2.6, 4.2, softness=0.6)
+    lichen, _ = scatter(ctx, 10, 2.6, 4.2, softness=0.6)
     lichen = [l * (1 - g) for l, g in zip(lichen, gaps)]
     rgb = mix(rgb, p["lichen"], lichen, 0.75)
     return rgb, None
 
 
-# Void: nothing crosses, nothing flies; near black with a rim from seam fringes.
+# Void: nothing crosses, nothing flies. The depth cue is a cast onto every
+# neighbour (rank above all other materials), since a hole this dark cannot
+# show a lip of its own.
 
 @recipe(name="void_hole", group="void", label="Hole", profile="crisp",
-        seam={"height": 0, "fringe": [54, 50, 66], "fringe_q8": 80, "fringe_width_q8": 384},
-        palette={"dark": (6, 6, 10), "mid": (10, 10, 14), "light": (14, 14, 20), "rim": (54, 50, 66)},
+        seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
+        palette={"dark": (6, 6, 10), "mid": (10, 10, 14), "light": (14, 14, 20)},
         style=Style(luma=10, std=2, grain_max=3),
         preview=(28, 24, 36), minimap=(16, 14, 22))
 def render_void_hole(ctx):
     p = RECIPES["void_hole"].palette
-    rgb, _ = ground(ctx, 3, 2, (p["dark"], p["mid"], p["light"]))
+    rgb, _ = ground(ctx, 3, 2, (p["dark"], p["mid"], p["light"]), grit=0.0)
     return rgb, None
 
 
 @recipe(name="chasm", group="void", label="Chasm", profile="rock",
-        seam={"height": 0, "fringe": [44, 34, 40], "fringe_q8": 64, "fringe_width_q8": 384},
-        palette={"dark": (14, 10, 16), "mid": (22, 16, 24), "light": (44, 34, 40)},
-        style=Style(luma=22, std=5, grain_max=5),
-        preview=(40, 30, 38), minimap=(30, 22, 28))
+        seam={"height": 8, "cast_q8": 96, "cast_width_q8": 512},
+        palette={"dark": (26, 20, 24), "mid": (46, 38, 42), "light": (74, 64, 66), "floor": (6, 4, 8)},
+        style=Style(luma=40, std=9, grain_max=8),
+        preview=(48, 38, 44), minimap=(30, 22, 28))
 def render_chasm(ctx):
     p = RECIPES["chasm"].palette
     rng = ctx.rng
-    # Diagonal rock streaks, bent by a low-frequency warp so they curve and
-    # break instead of running straight.
-    bend = fbm(rng, 3, 2)
-    strength = fbm(rng, 4, 2)
-    streaks = [
-        (1 - abs(math.sin(TAU * 2 * (x + y) / N + 9 * (b - 0.5)))) ** 2 * (0.3 + 0.7 * st)
-        for x, y, b, st in zip(XS, YS, bend, strength)
-    ]
+    # Rock walls as stretched strata lit hard from the left, with one or two
+    # near-black floor channels (elongated Worley lows) between them.
+    strata = domain_warp(fbm(rng, 2, 3, cells_y=6), fbm(rng, 3, 2), fbm(rng, 3, 2), 8, 3)
     base = fbm(rng, 4, 3)
-    tone = normalize([0.5 * st + 0.5 * bs for st, bs in zip(streaks, base)], 0.02, 0.995)
-    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    h = normalize([0.6 * s + 0.4 * b for s, b in zip(strata, base)], 0.03, 0.97)
+    rgb = ramp(h, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = shade(rgb, h, 0.7, light=(-1.0, 0.0))
     rgb = grain(rgb, rng, 0.08)
+    f1, _, ids, _ = worley_points(rng, 6, metric="angular", stretch=2.6)
+    deep = [1.0 if k < 2 else 0.0 for k in rng.sample(range(6), 6)]
+    floor = [(1 - smoothstep(0.18, 0.34, d)) * deep[i] for d, i in zip(f1, ids)]
+    rgb = mix(rgb, p["floor"], floor, 0.9)
     return rgb, None
 
 
-# Obstacles: dark, shadowed silhouettes; placeholders for image-generated art.
+# Obstacles: height cues (lit top, cast shadow); placeholders for image-generated art.
 
 @recipe(name="boulders", group="obstacles", label="Boulders", profile="rock",
-        seam={"height": 4, "cast_q8": 80, "cast_width_q8": 768},
-        palette={"ground_dark": (46, 48, 50), "ground": (58, 60, 62), "ground_light": (70, 72, 72),
-                 "rock_dark": (78, 80, 82), "rock_light": (112, 114, 112), "shadow": (26, 28, 30)},
-        style=Style(luma=74, std=14, grain_max=12, match=0.5), band=(8.0, 20.0),
+        seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
+        palette={"ground_dark": (112, 100, 84), "ground": (128, 114, 96), "ground_light": (144, 130, 110),
+                 "rock_dark": (84, 88, 92), "rock_light": (138, 142, 142), "shadow": (40, 36, 34)},
+        style=Style(luma=108, std=14, grain_max=12, match=0.5),
         note="placeholder until the image-generated boulders land")
 def render_boulders(ctx):
     p = RECIPES["boulders"].palette
     rng = ctx.rng
     f1, _, _ = worley(rng, 10)
     grit = fbm(rng, 12, 2)
-    tone = normalize([0.5 * (1 - a) + 0.5 * g for a, g in zip(f1, grit)])
+    tone = normalize([0.4 * (1 - a) + 0.6 * g for a, g in zip(f1, grit)])
     rgb = ramp(tone, [(0.0, p["ground_dark"]), (0.5, p["ground"]), (1.0, p["ground_light"])])
-    rgb = shade(rgb, [1 - v for v in f1], 0.15)
-    # Stones stay inside the tile, clear of the shared border band, so the band
-    # is gravel in every variant and no stone repeats along tile edges.
+    rgb = shade(rgb, [1 - v for v in f1], 0.12)
+    rgb = grain(rgb, rng, 0.08)
+    # Two or three large stones well inside the tile, each with a lit top-left
+    # face and a soft cast shadow toward the lower right.
     stones = []
-    for _ in range(rng.randint(5, 7)):
-        for _attempt in range(20):
-            r = 7 + rng.random() * 7
-            cx, cy = ctx.interior_point(18 + r)
-            if all(math.hypot(cx - ox, cy - oy) > (r + orr) * 0.85 for ox, oy, orr, _ in stones):
+    for _ in range(rng.randint(2, 3)):
+        for _attempt in range(30):
+            r = 10 + rng.random() * 6
+            cx, cy = ctx.interior_point(STAMP_MARGIN + r + 8)
+            if all(math.hypot(cx - ox, cy - oy) > (r + orr) * 1.1 for ox, oy, orr, _ in stones):
                 break
         lumps = [(2, 0.08 + rng.random() * 0.08, rng.random() * TAU),
                  (3, 0.05 + rng.random() * 0.07, rng.random() * TAU),
                  (5, 0.03 + rng.random() * 0.03, rng.random() * TAU)]
         stones.append((cx, cy, r, lumps))
     height = [0.0] * (N * N)
+    shadow = [0.0] * (N * N)
     for cx, cy, r, lumps in stones:
         dome = disc_profile(cx, cy, r, lumps)
         height = [max(a, b) for a, b in zip(height, dome)]
+        stamp_disc(shadow, cx + r * 0.45, cy + r * 0.55, r * 1.15, 1.0, 0.6)
     coverage = [smoothstep(0.0, 0.12, h) for h in height]
-    # Contact shadow: the stone outline shifted down-right, outside the stone.
-    shadow = [0.0] * (N * N)
-    for i in range(N * N):
-        x, y = XS[i], YS[i]
-        shadow[i] = coverage[((y - 5) % N) * N + (x - 4) % N] * (1 - coverage[i])
-    rgb = mix(rgb, p["shadow"], shadow, 0.7)
+    shadow = [s * (1 - c) for s, c in zip(shadow, coverage)]
+    rgb = mix(rgb, p["shadow"], shadow, 0.6)
     rock_tone = normalize([h * 0.6 + g * 0.4 for h, g in zip(height, grit)])
     rock = ramp(rock_tone, [(0.0, p["rock_dark"]), (1.0, p["rock_light"])])
-    rock = shade(rock, height, 0.55, light=(-0.8, -0.8))
+    rock = shade(rock, height, 0.6, light=(-0.8, -0.8))
     rock = grain(rock, rng, 0.10)
     rgb = mix(rgb, rock, coverage, 1.0)
     return rgb, None
 
 
 @recipe(name="hedge", group="obstacles", label="Hedge", profile="brush",
-        seam={"height": 4, "cast_q8": 80, "cast_width_q8": 768},
-        palette={"dark": (22, 50, 24), "mid": (34, 72, 34), "light": (56, 98, 46), "gap": (14, 34, 18)},
-        style=Style(luma=56, std=9, grain_max=9),
+        seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
+        palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
+        style=Style(luma=56, std=10, grain_max=9),
         note="placeholder until the image-generated hedge lands")
 def render_hedge(ctx):
     p = RECIPES["hedge"].palette
     rng = ctx.rng
-    f1, f2, _ = worley(rng, 6)
+    # Eight to ten large clumps per tile, a dark gap network between them and
+    # a strong top-left-lit bevel for height.
+    f1, f2, ids, _ = worley_points(rng, rng.randint(8, 10))
+    edge = [b - a for a, b in zip(f1, f2)]
     pillows = normalize([1 - v for v in f1])
-    leaves = fbm(rng, 12, 3)
-    h = normalize([0.55 * a + 0.45 * b for a, b in zip(pillows, leaves)])
+    leaves = fbm(rng, 10, 3)
+    h = normalize([0.6 * a + 0.4 * b for a, b in zip(pillows, leaves)])
     rgb = ramp(h, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = shade(rgb, h, 0.3)
-    gaps = band([b - a for a, b in zip(f1, f2)], 0.05, 0.08)
-    rgb = mix(rgb, p["gap"], gaps, 0.6)
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 10, 0.08))
+    rgb = shade(rgb, h, 0.5, light=(-0.8, -0.8))
+    gaps = band(edge, 0.08, 0.10)
+    rgb = mix(rgb, p["gap"], gaps, 0.7)
     rgb = grain(rgb, rng, 0.10)
     return rgb, None
 
 
 @recipe(name="thicket", group="obstacles", label="Thicket", profile="brush",
-        seam={"height": 4, "cast_q8": 80, "cast_width_q8": 768},
+        seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
-        style=Style(luma=65, std=11, grain_max=10, match=0.7), band=(8.0, 20.0),
+        style=Style(luma=65, std=11, grain_max=10, match=0.7),
         note="placeholder until the image-generated thicket lands")
 def render_thicket(ctx):
     p = RECIPES["thicket"].palette
     rng = ctx.rng
     rgb, _ = ground(ctx, 5, 3, (p["dark"], p["mid"], p["light"]), warp=10)
-    shared = ctx.shared_rng
-    for color, count, width in ((p["twig_dark"], 12, 5.5), (p["twig"], 9, 4.5)):
+    for color, count, width in ((p["twig_dark"], 14, 5.5), (p["twig"], 10, 4.5)):
         twigs = [0.0] * (N * N)
-        # Four twigs per colour cross the shared band identically in every variant.
-        for _ in range(4):
-            x, y = ctx.band_point(16)
-            stamp_stroke(twigs, x, y, shared.random() * TAU, 18 + shared.random() * 26,
-                         width + shared.random() * 1.5)
         for _ in range(count):
             length = 16 + rng.random() * 22
-            x, y = ctx.interior_point(22 + length / 2)
+            x, y = ctx.interior_point(STAMP_MARGIN + length * 0.3)
             angle = rng.random() * TAU
             stamp_stroke(twigs, x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2,
                          angle, length, width + rng.random() * 1.5)
@@ -1055,8 +1158,8 @@ def render_thicket(ctx):
 # Lava: warm, saturated, animated glow in channels between dark plates.
 
 @recipe(name="lava", group="lava", label="Lava", profile="fractured",
-        seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 96, "fringe_width_q8": 512},
-        palette={"crust_dark": (40, 22, 18), "crust": (54, 28, 22), "crust_warm": (96, 44, 26),
+        seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 128, "fringe_width_q8": 640},
+        palette={"crust_dark": (36, 18, 16), "crust": (50, 24, 20), "crust_warm": (96, 42, 26),
                  "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
         style=Style(luma=58, std=17, grain_max=13, match=0.8), phases=4, animation_ticks=8,
         preview=(168, 72, 30), minimap=(176, 68, 28),
@@ -1084,7 +1187,7 @@ def render_lava(ctx):
 
 
 @recipe(name="ember_field", group="lava", label="Ember field", profile="fractured",
-        seam={"height": 4, "fringe": [160, 80, 40], "fringe_q8": 64, "fringe_width_q8": 384},
+        seam={"height": 4, "fringe": [160, 80, 40], "fringe_q8": 96, "fringe_width_q8": 512},
         palette={"dark": (50, 28, 24), "mid": (60, 34, 28), "light": (80, 44, 32),
                  "ember_dim": (120, 50, 30), "ember": (230, 120, 40), "ember_core": (250, 200, 80)},
         style=Style(luma=48, std=10, grain_max=9, match=0.7), phases=4, animation_ticks=8,
@@ -1094,16 +1197,19 @@ def render_ember_field(ctx):
     p = RECIPES["ember_field"].palette
     rng = ctx.rng
     rgb, _ = ground(ctx, 5, 4, (p["dark"], p["mid"], p["light"]), warp=8)
-    f1, f2, _ = worley(rng, 5)
-    cracks = band([b - a for a, b in zip(f1, f2)], 0.04, 0.05)
-    rgb = mix(rgb, p["dark"], cracks, 0.5)
-    _, embers = scatter(ctx, 40, 2.4, 4.0)
+    # Cracks carrying a dim steady glow, sharing lava's DNA.
+    f1, f2, _ = worley(rng, 4)
+    edge = domain_warp([b - a for a, b in zip(f1, f2)], fbm(rng, 4, 2), fbm(rng, 4, 2), 6)
+    cracks = band(edge, 0.03, 0.04)
+    rgb = mix(rgb, p["ember_dim"], cracks, 0.35)
+    # Eight to twelve embers with a three-pixel soft halo, inside the tile.
+    _, _, embers = soft_blobs(ctx, rng.randint(8, 12), 3.5, 5.0)
     glow = [0.0] * (N * N)
     core = [0.0] * (N * N)
     for cx, cy, r, offset in embers:
         intensity = 0.35 + 0.65 * (0.5 + 0.5 * math.sin(TAU * (ctx.t + offset)))
-        stamp_disc(glow, cx, cy, r * 1.8, intensity * 0.6, 0.9)
-        stamp_disc(core, cx, cy, r, intensity, 0.5)
+        stamp_disc(glow, cx, cy, r * 2.6, intensity * 0.7, 0.9)
+        stamp_disc(core, cx, cy, r, intensity, 0.6)
     rgb = mix(rgb, p["ember_dim"], glow, 1.0)
     ember_color = [
         [a + (b - a) * c for c in core] for a, b in zip(p["ember"], p["ember_core"])
@@ -1112,13 +1218,6 @@ def render_ember_field(ctx):
     return rgb, None
 
 
-# Catalogue order of the built-in types, as the engine enum lists them.
-BUILTIN_ORDER = [
-    "boulders", "hedge", "thicket", "ridge_rock", "outcrop", "dirt", "clay", "gravel",
-    "flower_meadow", "mud", "marsh", "deep_snow", "scree", "dirt_track", "boardwalk", "lava",
-    "ember_field", "loam", "moss", "spring_meadow", "deep_water", "dark_water", "void_hole", "chasm",
-]
-LEGACY_NAMES = ["water", "sand", "grass", "ice", "road"]
 assert set(BUILTIN_ORDER) == set(RECIPES), "every built-in needs a recipe and vice versa"
 
 # Pair treatments (B5): boundary families chosen for specific contacts.
@@ -1137,7 +1236,7 @@ PAIR_TREATMENTS = (
     + [
         {"a": name, "b": other, "profile": "crisp"}
         for name in ("void_hole", "chasm")
-        for other in LEGACY_NAMES + [n for n in RECIPES if n not in ("void_hole", "chasm")]
+        for other in LEGACY_NAMES + [n for n in BUILTIN_ORDER if n not in ("void_hole", "chasm")]
     ]
 )
 
@@ -1150,32 +1249,30 @@ PAIR_TREATMENTS = (
 def render_fields(name, variant, phase):
     rec = RECIPES[name]
     ctx = Ctx(name, variant, phase, rec.phases)
-    return rec.render(ctx)
+    rgb, alpha = rec.render(ctx)
+    return neutral_band(rgb, alpha, random.Random(fnv1a32(f"{name}:{variant}:{phase}:band")))
 
 
 def render_phase(name, phase, hd=False):
     """Render the sixteen variants of one phase, before perimeter sharing.
 
-    Variant 0 is rendered first; its border band replaces every other variant's
-    and its 32-pixel statistics define the material's style transform.
+    Variant 0's 32-pixel statistics define the material's style transform,
+    which is applied to every variant.
     """
     rec = RECIPES[name]
-    ref_rgb, ref_alpha = render_fields(name, 0, phase)
-    small_rgb, _ = box_down_fields(ref_rgb, ref_alpha)
-    transform = style_transform(small_rgb, rec.style.luma, rec.style.std, rec.style.match)
     tiles = []
+    transform = None
     for variant in range(VARIANTS):
-        if variant == 0:
-            rgb, alpha = ref_rgb, ref_alpha
-        else:
-            rgb, alpha = render_fields(name, variant, phase)
-            rgb, alpha = blend_border(rgb, ref_rgb, alpha, ref_alpha, rec.band)
+        rgb, alpha = render_fields(name, variant, phase)
+        if transform is None:
+            small_rgb, _ = box_down_fields(rgb, alpha)
+            transform = style_transform(small_rgb, rec.style.luma, rec.style.std, rec.style.match)
         if hd:
             tiles.append(fields_to_image(apply_style(rgb, transform), alpha, N))
             continue
-        rgb, alpha = box_down_fields(rgb, alpha)
+        rgb, alpha_small = box_down_fields(rgb, alpha)
         rgb = apply_style(rgb, transform)
-        tiles.append(fields_to_image(rgb, alpha if ref_alpha is not None else None, TILE))
+        tiles.append(fields_to_image(rgb, alpha_small if alpha is not None else None, TILE))
     return tiles
 
 
@@ -1274,7 +1371,6 @@ def merge_catalog(document, fragment):
 
 
 def write_catalog(results, path):
-    sys.path.insert(0, str(ROOT / "tools"))
     from terrain_profile_curves import dump_catalog  # noqa: E402
 
     document = json.loads(path.read_text())
@@ -1300,6 +1396,16 @@ def generator_hashes():
     return {
         f"tools/artwork/{p.name}": hashlib.sha256(p.read_bytes()).hexdigest()
         for p in (here / "terrain_synth.py", here / "material_tiles.py")
+    }
+
+
+def platform_record():
+    """Where the frames were produced; libm and rounding can differ elsewhere."""
+    libc = platform.libc_ver()
+    return {
+        "system": sys.platform,
+        "machine": platform.machine(),
+        "libc": " ".join(part for part in libc if part) or None,
     }
 
 
@@ -1332,6 +1438,7 @@ def provenance_document(name, phases, hashes, root):
         },
         "python": platform.python_version(),
         "pillow": PIL.__version__,
+        "platform": platform_record(),
         "runtime_sha256": hashes,
     }
 
@@ -1346,6 +1453,12 @@ def write_material(name, phases, root):
     return hashes
 
 
+PLATFORM_NOTE = (
+    "pixel-exact reproduction is pinned to the encoder interpreter on Linux x86-64; "
+    "libm (sin/atan2/hypot) and round() boundaries can differ elsewhere"
+)
+
+
 def check_material(name, phases, root):
     """Compare a fresh synthesis with committed frames and provenance."""
     rec = RECIPES[name]
@@ -1357,11 +1470,16 @@ def check_material(name, phases, root):
         return [f"{name}: missing {provenance_path.relative_to(root)}"]
     provenance = json.loads(provenance_path.read_text())
     if provenance.get("method") != "procedural":
-        return [f"{name}: provenance method is {provenance.get('method')!r}; run with placeholder_only"]
+        return [f"{name}: provenance method is {provenance.get('method')!r}; mark the recipe placeholder_only"]
     recorded = provenance.get("runtime_sha256", {})
     expected_names = [f"{FRAME_PREFIX}{name}{i}.png" for i in range(VARIANTS * rec.phases)]
     if list(recorded) != expected_names:
         problems.append(f"{name}: provenance covers {len(recorded)} frames, expected {len(expected_names)}")
+    here = platform_record()
+    recorded_platform = provenance.get("platform")
+    platform_hint = "" if recorded_platform == here else (
+        f" (recorded on {recorded_platform}, checking on {here}; {PLATFORM_NOTE})"
+    )
     for i, relative in enumerate(expected_names):
         path = root / relative
         if not path.exists():
@@ -1370,7 +1488,7 @@ def check_material(name, phases, root):
         with Image.open(path) as image:
             committed = pixel_sha256(image)
         if committed != fresh[i]:
-            problems.append(f"{relative}: committed pixels differ from a fresh synthesis")
+            problems.append(f"{relative}: committed pixels differ from a fresh synthesis{platform_hint}")
         if recorded.get(relative) != committed:
             problems.append(f"{relative}: provenance hash differs from committed pixels")
     if provenance.get("generator_sha256") != generator_hashes():
@@ -1393,7 +1511,11 @@ def _font(size):
 
 
 def contact_sheet(results, root, columns=2):
-    """Every material: name and stats, 16 variants at 1x and 4x, a 2x2 random join."""
+    """Every material: name and stats, 16 variants at 1x and 4x, a 2x2 random join.
+
+    Tiles are shown after the runtime's own four-pixel border blend
+    (`runtime_blend`), so joins look as they do in the game.
+    """
     scale = 4
     blocks = []
     legacy = {key: reference_tiles(key, root) for key in STYLE_REFERENCES}
@@ -1401,7 +1523,6 @@ def contact_sheet(results, root, columns=2):
     entries += [(name, tiles, "legacy", False) for name, tiles in legacy.items()]
     font = _font(13)
     small = _font(11)
-    strip_w = VARIANTS * TILE
     grid_w = 8 * TILE * scale
     join_w = 2 * TILE * scale
     block_w = grid_w + 16 + join_w + 16
@@ -1426,8 +1547,8 @@ def contact_sheet(results, root, columns=2):
         picks = [tiles[rng.randrange(len(tiles))] for _ in range(4)]
         block.alpha_composite(tiles_to_sheet(picks, columns=2, scale=scale), (4 + grid_w + 16, y))
         if stats["alpha"] < 250:
-            # Translucent materials are shown over a flat ocean blue so the tint reads.
-            ocean = Image.new("RGBA", block.size, (24, 60, 120, 255))
+            # Translucent materials are shown over the ocean backdrop's mean colour.
+            ocean = Image.new("RGBA", block.size, (69, 52, 200, 255))
             ocean.alpha_composite(block)
             block = ocean
         blocks.append(block)
@@ -1459,7 +1580,7 @@ def main(argv=None):
     parser.add_argument("--emit-catalog", action="store_true", help="print catalog blocks and colour initialisers")
     parser.add_argument("--write-catalog", action="store_true",
                         help="merge the material blocks, bindings and pair treatments into data/terrain/tileset.json")
-    parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/")
+    parser.add_argument("--hd", action="store_true", help="write 128x128 renders under artifacts/terrain/hd/ (no frames written)")
     parser.add_argument("--write", action="store_true", help="also write frames when another mode is selected")
     parser.add_argument("--jobs", type=int, default=0, help="parallel render processes (default: CPUs)")
     parser.add_argument("--root", type=Path, default=ROOT, help="repository root to read and write")
@@ -1491,12 +1612,18 @@ def main(argv=None):
         if skipped:
             print("skipped placeholder-only recipes:", ", ".join(skipped))
         if problems:
+            print(f"NOTE {PLATFORM_NOTE}")
             raise SystemExit(1)
         print(f"PASS {len(checked)} procedural materials match their committed frames and provenance")
         return
 
+    # Review and catalog modes do not write frames unless --write is given;
+    # --hd alone is complete after the renders above.
+    modes = args.contact_sheet is not None or args.emit_catalog or args.write_catalog or args.hd
+    needs_native = args.contact_sheet is not None or args.emit_catalog or args.write_catalog or not modes or args.write
+    if not needs_native:
+        return
     results = synthesize(names, jobs)
-    modes = args.contact_sheet is not None or args.emit_catalog or args.write_catalog
     if args.contact_sheet is not None:
         args.contact_sheet.parent.mkdir(parents=True, exist_ok=True)
         contact_sheet(results, root).save(args.contact_sheet)

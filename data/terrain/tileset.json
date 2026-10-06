@@ -575,7 +575,7 @@
       "sprite": "data/gfx/terrain-boulders",
       "profile": "rock",
       "ocean": false,
-      "preview": [67, 69, 71],
+      "preview": [122, 111, 95],
       "variants": [
         {
           "frame": 0,
@@ -642,11 +642,11 @@
           "weight": 1
         }
       ],
-      "minimap": [67, 69, 71],
+      "minimap": [122, 111, 95],
       "seam": {
         "height": 4,
-        "cast_q8": 80,
-        "cast_width_q8": 768
+        "cast_q8": 88,
+        "cast_width_q8": 832
       }
     },
     {
@@ -654,7 +654,7 @@
       "sprite": "data/gfx/terrain-hedge",
       "profile": "brush",
       "ocean": false,
-      "preview": [35, 71, 34],
+      "preview": [36, 69, 35],
       "variants": [
         {
           "frame": 0,
@@ -721,11 +721,11 @@
           "weight": 1
         }
       ],
-      "minimap": [35, 71, 34],
+      "minimap": [36, 69, 35],
       "seam": {
         "height": 4,
-        "cast_q8": 80,
-        "cast_width_q8": 768
+        "cast_q8": 88,
+        "cast_width_q8": 832
       }
     },
     {
@@ -803,8 +803,8 @@
       "minimap": [61, 73, 36],
       "seam": {
         "height": 4,
-        "cast_q8": 80,
-        "cast_width_q8": 768
+        "cast_q8": 88,
+        "cast_width_q8": 832
       }
     },
     {
@@ -812,7 +812,7 @@
       "sprite": "data/gfx/terrain-ridge_rock",
       "profile": "rock",
       "ocean": false,
-      "preview": [96, 102, 109],
+      "preview": [100, 100, 102],
       "variants": [
         {
           "frame": 0,
@@ -879,7 +879,7 @@
           "weight": 1
         }
       ],
-      "minimap": [96, 102, 109],
+      "minimap": [100, 100, 102],
       "seam": {
         "height": 4,
         "cast_q8": 72,
@@ -891,7 +891,7 @@
       "sprite": "data/gfx/terrain-outcrop",
       "profile": "rock",
       "ocean": false,
-      "preview": [106, 108, 104],
+      "preview": [106, 108, 103],
       "variants": [
         {
           "frame": 0,
@@ -958,7 +958,7 @@
           "weight": 1
         }
       ],
-      "minimap": [106, 108, 104],
+      "minimap": [106, 108, 103],
       "seam": {
         "height": 4,
         "cast_q8": 72,
@@ -970,7 +970,7 @@
       "sprite": "data/gfx/terrain-dirt",
       "profile": "soft",
       "ocean": false,
-      "preview": [139, 113, 80],
+      "preview": [140, 113, 81],
       "variants": [
         {
           "frame": 0,
@@ -1037,7 +1037,7 @@
           "weight": 1
         }
       ],
-      "minimap": [139, 113, 80],
+      "minimap": [140, 113, 81],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -1049,7 +1049,7 @@
       "sprite": "data/gfx/terrain-clay",
       "profile": "soft",
       "ocean": false,
-      "preview": [161, 112, 79],
+      "preview": [161, 111, 78],
       "variants": [
         {
           "frame": 0,
@@ -1116,7 +1116,7 @@
           "weight": 1
         }
       ],
-      "minimap": [161, 112, 79],
+      "minimap": [161, 111, 78],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -1128,7 +1128,7 @@
       "sprite": "data/gfx/terrain-gravel",
       "profile": "rock",
       "ocean": false,
-      "preview": [134, 126, 115],
+      "preview": [133, 126, 115],
       "variants": [
         {
           "frame": 0,
@@ -1195,7 +1195,7 @@
           "weight": 1
         }
       ],
-      "minimap": [134, 126, 115],
+      "minimap": [133, 126, 115],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -1207,7 +1207,7 @@
       "sprite": "data/gfx/terrain-flower_meadow",
       "profile": "brush",
       "ocean": false,
-      "preview": [54, 117, 42],
+      "preview": [63, 128, 48],
       "variants": [
         {
           "frame": 0,
@@ -1274,7 +1274,7 @@
           "weight": 1
         }
       ],
-      "minimap": [54, 117, 42],
+      "minimap": [63, 128, 48],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -1363,7 +1363,7 @@
       "sprite": "data/gfx/terrain-marsh",
       "profile": "soft",
       "ocean": false,
-      "preview": [78, 95, 74],
+      "preview": [78, 95, 76],
       "variants": [
         {
           "frame": 0,
@@ -1430,7 +1430,7 @@
           "weight": 1
         }
       ],
-      "minimap": [78, 95, 74],
+      "minimap": [78, 95, 76],
       "seam": {
         "height": 1
       }
@@ -1440,7 +1440,7 @@
       "sprite": "data/gfx/terrain-deep_snow",
       "profile": "soft",
       "ocean": false,
-      "preview": [221, 228, 236],
+      "preview": [197, 203, 233],
       "variants": [
         {
           "frame": 0,
@@ -1507,11 +1507,14 @@
           "weight": 1
         }
       ],
-      "minimap": [221, 228, 236],
+      "minimap": [197, 203, 233],
       "seam": {
-        "height": 2,
-        "cast_q8": 32,
-        "cast_width_q8": 448
+        "height": 3,
+        "cast_q8": 48,
+        "cast_width_q8": 512,
+        "fringe": [196, 210, 232],
+        "fringe_q8": 64,
+        "fringe_width_q8": 384
       }
     },
     {
@@ -1519,7 +1522,7 @@
       "sprite": "data/gfx/terrain-scree",
       "profile": "rock",
       "ocean": false,
-      "preview": [117, 121, 127],
+      "preview": [115, 116, 118],
       "variants": [
         {
           "frame": 0,
@@ -1586,7 +1589,7 @@
           "weight": 1
         }
       ],
-      "minimap": [117, 121, 127],
+      "minimap": [115, 116, 118],
       "seam": {
         "height": 1
       }
@@ -1596,7 +1599,7 @@
       "sprite": "data/gfx/terrain-dirt_track",
       "profile": "sand",
       "ocean": false,
-      "preview": [170, 143, 105],
+      "preview": [169, 142, 105],
       "variants": [
         {
           "frame": 0,
@@ -1663,7 +1666,7 @@
           "weight": 1
         }
       ],
-      "minimap": [170, 143, 105],
+      "minimap": [169, 142, 105],
       "seam": {
         "height": 3,
         "cast_q8": 48,
@@ -1675,7 +1678,7 @@
       "sprite": "data/gfx/terrain-boardwalk",
       "profile": "crisp",
       "ocean": false,
-      "preview": [150, 129, 101],
+      "preview": [150, 129, 102],
       "variants": [
         {
           "frame": 0,
@@ -1742,7 +1745,7 @@
           "weight": 1
         }
       ],
-      "minimap": [150, 129, 101],
+      "minimap": [150, 129, 102],
       "seam": {
         "height": 3,
         "cast_q8": 48,
@@ -1828,8 +1831,8 @@
       "seam": {
         "height": 4,
         "fringe": [214, 110, 40],
-        "fringe_q8": 96,
-        "fringe_width_q8": 512
+        "fringe_q8": 128,
+        "fringe_width_q8": 640
       }
     },
     {
@@ -1911,8 +1914,8 @@
       "seam": {
         "height": 4,
         "fringe": [160, 80, 40],
-        "fringe_q8": 64,
-        "fringe_width_q8": 384
+        "fringe_q8": 96,
+        "fringe_width_q8": 512
       }
     },
     {
@@ -1920,7 +1923,7 @@
       "sprite": "data/gfx/terrain-loam",
       "profile": "soft",
       "ocean": false,
-      "preview": [44, 52, 30],
+      "preview": [78, 63, 41],
       "variants": [
         {
           "frame": 0,
@@ -1987,7 +1990,7 @@
           "weight": 1
         }
       ],
-      "minimap": [44, 52, 30],
+      "minimap": [78, 63, 41],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -1999,7 +2002,7 @@
       "sprite": "data/gfx/terrain-moss",
       "profile": "soft",
       "ocean": false,
-      "preview": [41, 86, 52],
+      "preview": [42, 86, 52],
       "variants": [
         {
           "frame": 0,
@@ -2066,7 +2069,7 @@
           "weight": 1
         }
       ],
-      "minimap": [41, 86, 52],
+      "minimap": [42, 86, 52],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -2078,7 +2081,7 @@
       "sprite": "data/gfx/terrain-spring_meadow",
       "profile": "brush",
       "ocean": false,
-      "preview": [99, 153, 64],
+      "preview": [90, 123, 59],
       "variants": [
         {
           "frame": 0,
@@ -2145,7 +2148,7 @@
           "weight": 1
         }
       ],
-      "minimap": [99, 153, 64],
+      "minimap": [90, 123, 59],
       "seam": {
         "height": 2,
         "cast_q8": 56,
@@ -2157,7 +2160,7 @@
       "sprite": "data/gfx/terrain-deep_water",
       "profile": "soft",
       "ocean": false,
-      "preview": [26, 48, 140],
+      "preview": [44, 34, 120],
       "variants": [
         {
           "frame": 0,
@@ -2224,7 +2227,7 @@
           "weight": 1
         }
       ],
-      "minimap": [0, 28, 96],
+      "minimap": [24, 18, 84],
       "seam": {
         "height": 6,
         "cast_q8": 72,
@@ -2236,7 +2239,7 @@
       "sprite": "data/gfx/terrain-dark_water",
       "profile": "soft",
       "ocean": false,
-      "preview": [16, 34, 84],
+      "preview": [32, 26, 76],
       "variants": [
         {
           "frame": 0,
@@ -2303,7 +2306,7 @@
           "weight": 1
         }
       ],
-      "minimap": [0, 20, 64],
+      "minimap": [16, 12, 52],
       "seam": {
         "height": 7,
         "cast_q8": 80,
@@ -2384,10 +2387,9 @@
       ],
       "minimap": [16, 14, 22],
       "seam": {
-        "height": 0,
-        "fringe": [54, 50, 66],
-        "fringe_q8": 80,
-        "fringe_width_q8": 384
+        "height": 8,
+        "cast_q8": 96,
+        "cast_width_q8": 512
       }
     },
     {
@@ -2395,7 +2397,7 @@
       "sprite": "data/gfx/terrain-chasm",
       "profile": "rock",
       "ocean": false,
-      "preview": [40, 30, 38],
+      "preview": [48, 38, 44],
       "variants": [
         {
           "frame": 0,
@@ -2464,10 +2466,9 @@
       ],
       "minimap": [30, 22, 28],
       "seam": {
-        "height": 0,
-        "fringe": [44, 34, 40],
-        "fringe_q8": 64,
-        "fringe_width_q8": 384
+        "height": 8,
+        "cast_q8": 96,
+        "cast_width_q8": 512
       }
     }
   ],

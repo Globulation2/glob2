@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "9950266f6755b1d445025568ab13cf3e15a66186bfb4e091fe215d961a5498df",
+    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "marsh",
@@ -53,10 +53,6 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
-    "band": [
-      6.0,
-      16.0
-    ],
     "note": ""
   },
   "seed": "fnv1a32(\"marsh:<variant>:<phase>\")",
@@ -69,25 +65,25 @@
   "preview": [
     78,
     95,
-    74
+    76
   ],
   "minimap": [
     78,
     95,
-    74
+    76
   ],
   "mean_color": [
     78,
     95,
-    74
+    76
   ],
   "style_stats": {
     "0": {
-      "luma": 87.0,
-      "std": 9.9,
-      "grain": 4.1,
-      "sat": 0.26,
-      "alpha": 248.2
+      "luma": 87.5,
+      "std": 11.0,
+      "grain": 4.8,
+      "sat": 0.27,
+      "alpha": 247.1
     }
   },
   "style_references": {
@@ -144,22 +140,27 @@
   },
   "python": "3.14.4",
   "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
   "runtime_sha256": {
-    "data/gfx/terrain-marsh0.png": "a3343f5af7ced5adbfcb1bc9f6bc6643e494908e0f71b9f251819487a5d57a83",
-    "data/gfx/terrain-marsh1.png": "6db15bdb6cd583fa5a6ae8977db99ce365e50d30900766f214dbc34295084df3",
-    "data/gfx/terrain-marsh2.png": "614cf0c5c5c6ea632971452d8c97c5ef13fff5cf7c968e01d8d7b827b313e3f2",
-    "data/gfx/terrain-marsh3.png": "ef305e9a2e17cf9c36a714f4c278f13c2d342988a91496ff22d9f3c097d61fe9",
-    "data/gfx/terrain-marsh4.png": "948c22b4d7793be86eee042706a775329e10b013a892ab35d8475bf95e1b7e0a",
-    "data/gfx/terrain-marsh5.png": "bbe61e52f0e7f15713b19379c0ebdbecd97c487dce0e0c705e7db174af949e1c",
-    "data/gfx/terrain-marsh6.png": "0790e062e3b5328559f30173b3bdb602be2bacb496502371c729b99765c41480",
-    "data/gfx/terrain-marsh7.png": "1c78a5973ddf1529b1715e146cd31e9d53824a626c024faaa99b5da3907e69b0",
-    "data/gfx/terrain-marsh8.png": "4f920ab79a939f733f6f80a5dc8a9cc9d0d618dac5dfab6830ab34461ca60b63",
-    "data/gfx/terrain-marsh9.png": "37fd8e780ca301f6f93bd62029d19597ef831c1895c414a9431b8b4dc1bb0cd7",
-    "data/gfx/terrain-marsh10.png": "ac76ad66c114f483d16416867636e7a61ce17d2451de2d19ae44ca77915547ee",
-    "data/gfx/terrain-marsh11.png": "fff9119d67110c451f6bc49a7363fdaafebf347668f3ca0d947762e814aff820",
-    "data/gfx/terrain-marsh12.png": "830fc875313d03a5a2a34e9c42da43d09dd432930f8fd943f6d9ec73ffbd15c8",
-    "data/gfx/terrain-marsh13.png": "4c1f90089f46c334aec0a7769df6b7f79ea562985ce964fb795fda46902aace5",
-    "data/gfx/terrain-marsh14.png": "4625cd44bc1f23095afbf81511c925dc135068519e9d1bcd6c9dd764eeada5a5",
-    "data/gfx/terrain-marsh15.png": "c442f474968ddcddec546bef526bbca89c2bf12f4cb9fcab2fec3d7750a91f30"
+    "data/gfx/terrain-marsh0.png": "d1cb5406ddf40629cd5b489ad594893ee1efc117d205a1c6ade8e0fe873d3ef9",
+    "data/gfx/terrain-marsh1.png": "e943fb3003ae30ac6f4bf27161a4dd7087080343252532cd3d8fb9c78766274a",
+    "data/gfx/terrain-marsh2.png": "46647526abf89113af6fd205ee4801593880501257005da22e954f208a919a7c",
+    "data/gfx/terrain-marsh3.png": "202c6e812023c761854c3eeb039df2b172a2bebcfd137f502ca59833117fa175",
+    "data/gfx/terrain-marsh4.png": "844ecbb6685b1656ad4691fd40fe653de2b7d8271531e89ee4fe9959babffcd2",
+    "data/gfx/terrain-marsh5.png": "cdccb0c0eb20e4a1ec6ba28c22a6d747671e44897c38121e975cd767ac725b04",
+    "data/gfx/terrain-marsh6.png": "9299f8ff3fbd67c1a0f2e57f917bea1ce65330b511545e51195caa651818f9a0",
+    "data/gfx/terrain-marsh7.png": "f580c10a8f3eefc34912f123700ff4396dbfbab215d558a888a6c54c59d79316",
+    "data/gfx/terrain-marsh8.png": "ce1e8250cf80931bc3c4de9a827864350abe3de85878bbae4013a7bb9079a96f",
+    "data/gfx/terrain-marsh9.png": "1d121fc400c8626fe22cbc26acdaad50fb6ab9879f8b1403bf22f33fc76b2e4a",
+    "data/gfx/terrain-marsh10.png": "aadede1f1edcd2306dcea2a221c4ac0334077d7d00b901b608a29f2172ca1619",
+    "data/gfx/terrain-marsh11.png": "cc19764998f72a4225e438f738797fc7cae3cc57fe27151d649cbaa2d09a75ed",
+    "data/gfx/terrain-marsh12.png": "ad45c7bdbc970c8de86dd653715701557b784a19dff557a83be49e68e604460f",
+    "data/gfx/terrain-marsh13.png": "fdbb84a1ad286f59f4a33cf67b9430b5e358cbabff9c835d8ff0b85e9449fb22",
+    "data/gfx/terrain-marsh14.png": "0ed2c9562d5ddb6de78a366890d1aff0772cf66cfc04db38b9535f50feae971b",
+    "data/gfx/terrain-marsh15.png": "0ecdae479fcf61a4c9cd14c3f08e862cecd24618b44d73abfdc6cdd440488f49"
   }
 }

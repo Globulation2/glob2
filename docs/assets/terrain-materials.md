@@ -143,17 +143,25 @@ ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
 Each recipe renders at 128×128, is area-averaged to 32×32 and pulled toward its
 luma targets by one affine transform computed from variant 0, so all variants of
-a material share one tone. Variant 0 also supplies the border band: every other
-variant's outer pixels are blended toward variant 0's render before downsampling,
-and stamped features that could touch that band (boulders, twigs, flowers,
-embers) are drawn from a stream shared by all variants, so any two variants join
-without cut or ghosted features and the runtime's own four-pixel blend toward
-variant 0 is a no-op. `share_perimeter` then copies ring 0 from tile 0 (opposite
-edges read the same coordinates, so a tile also joins itself across the torus
-seam) and blends ring 1. Group readability is part of the recipes: obstacles are
-dark and shadowed, hazards warm and saturated, fertile ground dark saturated
-green, barren ground muted warm neutrals, rough ground cool and desaturated,
-paths warm and light, void near black.
+a material share one tone. Joins work with the runtime's border preparation
+rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
+blend the outer four native pixels of every variant toward variant 0's
+*reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
+and 1/4, so whatever variant 0 carries on its perimeter is repeated on every
+tile. The synthesiser therefore keeps that perimeter neutral (`neutral_band`):
+over the outer six native pixels the low-frequency luma is flattened to the tile
+mean, and over the outer two the texture is replaced by the mean colour with fine
+grain, so the shared frame is featureless instead of a visible quilt. Stamped
+features (stones, twigs, blooms, embers) stay at least three native pixels from
+the edge so nothing is cut or ghosted. `share_perimeter` then copies ring 0 from
+tile 0 (opposite edges read the same coordinates, so a tile also joins itself
+across the torus seam) and blends ring 1. Materials with hard structure (hedge,
+scree, chasm) show this as a faint one-to-two pixel neutral seam at 4x zoom; that
+is the accepted cost of the runtime contract. Group readability is part of the
+recipes: obstacles are lit from the top left and cast onto grass, hazards warm
+and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
+barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
+and light, void near black with a cast onto every neighbour.
 
 Lava and ember field are animated: four phases per variant, frame
 `variant + 16 * phase` (frames 0–63), catalogued with `animation_frames 4`,
@@ -161,19 +169,26 @@ Lava and ember field are animated: four phases per variant, frame
 phases; only the glow ramp moves.
 
 Deep water and dark water are translucent RGBA tints (`ocean: false`, alpha
-about 185 and 230). Ocean materials have no texture of their own and every
-non-ocean material composites with straight alpha over the shared scrolling
-ocean, so a tint darkens that ocean and is animated for free; a per-material
-`backdrop` would need its own 32×32 frames and was rejected for that reason.
-Marsh pools use the same mechanism at alpha 215.
+about 160 and 210) derived from the ocean backdrop's mean colour
+(`data/gfx/water0.png`, about (69, 52, 200): same hue, lower value, slightly
+lower saturation), so they read as the same liquid, deeper. Ocean materials have
+no texture of their own and every non-ocean material composites with straight
+alpha over the shared scrolling ocean, so a tint darkens that ocean and is
+animated for free; a per-material `backdrop` would need its own 32×32 frames and
+was rejected for that reason. Marsh pools use the same mechanism at alpha 215.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
 generator hashes and Pillow 12.2.0, so any edit to `terrain_synth.py` or
 `material_tiles.py` is followed by a default run that refreshes the provenance
-(pixels that did not change produce byte-identical PNGs). Recipes swapped to
+(pixels that did not change produce byte-identical PNGs). Pixel-exact
+reproduction is pinned to the encoder interpreter on Linux x86-64: besides
+Pillow's kernels the renders depend on the C library's `sin`/`atan2`/`hypot` and
+on `round()` boundaries, so the provenance records the platform and a mismatch
+on another platform is reported with that note. Recipes swapped to
 image-generated art are marked `placeholder_only=True` and skipped by `--check`.
-`--hd` writes the 128×128 renders under `artifacts/terrain/hd/` for review only.
+`--hd` writes the 128×128 renders under `artifacts/terrain/hd/` for review only
+and writes no frames.
 Preview and minimap colours derive from the rendered mean unless a recipe
 overrides them for legibility (void, hazards, deep water).
 
@@ -191,10 +206,14 @@ and run `export_material.py --name <name>`: it area-averages the image to the
 128×128 sheet, cuts sixteen tiles, shares the perimeter and writes the frames
 with `method: "image-generator"` provenance (prompt, reference and source hashes,
 runtime pixel hashes, and a `replaces` record naming the procedural provenance it
-supersedes). For lava and ember field, `--animate-glow` keeps the generated crust
-and channel layout and applies the recipe's glow ramp to the warm pixels for four
-phases (`method: "hybrid"`). Then mark the recipe `placeholder_only=True` in
-`terrain_synth.py` and run `validate_material.py --name <name>`.
+supersedes). Lava and ember field must be exported with `--animate-glow`: it
+keeps the generated crust and channel layout and applies the recipe's glow ramp
+to the warm pixels for four phases (`method: "hybrid"`); exporting an animated
+recipe without it, or a static one with it, is refused so the catalog's
+`animation_frames` never points at stale frames. Then mark the recipe
+`placeholder_only=True` in `terrain_synth.py` and run
+`validate_material.py --name <name>`, which also checks that the recorded phase
+count matches the recipe for every method.
 
 ### Provenance layout
 
@@ -234,23 +253,24 @@ and gravel use `fractured`; void_hole and chasm against every other material use
 
 | Rank | Materials | Cast (`cast_q8` / `cast_width_q8`) and fringe |
 | --- | --- | --- |
+| 8 | void_hole, chasm | 96 / 512: the hole darkens every neighbour, the only depth cue a near-black texture can carry |
 | 7 | dark_water | 80 / 704 |
 | 6 | deep_water | 72 / 640, a drop-off lip on shallow water and shores |
 | 5 | water (existing) | 72 / 640 |
-| 4 | boulders, hedge, thicket | 80 / 768, a sense of height |
+| 4 | boulders, hedge, thicket | 88 / 832, a sense of height on the grass side |
 | 4 | ridge_rock, outcrop | 72 / 768 |
-| 4 | lava, ember_field | no cast; warm fringe `[214,110,40]` 96/512 and `[160,80,40]` 64/384 |
+| 4 | lava, ember_field | no cast; scorch fringe `[214,110,40]` 128/640 and `[160,80,40]` 96/512 |
 | 4 | ice (existing) | 64 / 640 with frost fringe |
 | 3 | road (existing), dirt_track, boardwalk | 48 / 512 |
+| 3 | deep_snow | 48 / 512 with cool fringe `[196,210,232]` 64/384, a rim on grass and sand |
 | 2 | grass (existing), loam, moss, spring_meadow, flower_meadow | 56 / 512 |
 | 2 | dirt, clay, gravel | 40 / 448 |
-| 2 | deep_snow | 32 / 448 |
 | 1 | sand (existing), mud, marsh, scree | no cast |
-| 0 | void_hole, chasm | no cast; rim fringe `[54,50,66]` 80/384 and `[44,34,40]` 64/384 |
 
-Casts stay within two to three pixels and under a third strength, as
+Casts stay within two to three pixels and near or under a third strength, as
 [Seams](#seams) requires. Equal ranks cast nothing, so barren ground beside grass
-takes no lip while every neighbour casts into a hole.
+takes no lip. A lighter inner lip inside a hole cannot be expressed by the seam
+model, which only tones neighbours; it would need an engine-side self-lip.
 
 ## Boundaries and masks
 

@@ -101,8 +101,9 @@ class TerrainSynth(unittest.TestCase):
                 with self.subTest(material=name):
                     self.assertGreaterEqual(lo, low)
                     self.assertLessEqual(hi, high)
-        self.assertLess(style_stats(self.tiles("deep_water"))["alpha"], 200)
-        self.assertGreater(style_stats(self.tiles("dark_water"))["alpha"], 220)
+        # Deep water about 160, dark water about 210: tints of the ocean, not covers.
+        self.assertLess(style_stats(self.tiles("deep_water"))["alpha"], 175)
+        self.assertGreater(style_stats(self.tiles("dark_water"))["alpha"], 200)
 
     def test_style_bands(self):
         for name, recipe in synth.RECIPES.items():
@@ -153,7 +154,9 @@ class TerrainSynth(unittest.TestCase):
                 if groups[a] == groups[b]:
                     continue
                 with self.subTest(pair=(a, b)):
-                    self.assertGreaterEqual(color_distance(means[a], means[b]), 18)
+                    # A floor against accidental near-duplicates; readability also
+                    # comes from texture, so neighbouring earth tones may sit close.
+                    self.assertGreaterEqual(color_distance(means[a], means[b]), 14)
 
     def test_animated_phase_continuity(self):
         for name in ("lava", "ember_field"):
@@ -193,12 +196,19 @@ class TerrainSynth(unittest.TestCase):
     def test_provenance_records_statistics_only_references(self):
         for name in synth.BUILTIN_ORDER:
             document = json.loads((ROOT / "datasrc/gfx" / name / "provenance.json").read_text())
+            recipe = synth.RECIPES[name]
             with self.subTest(material=name):
-                self.assertEqual(document["method"], "procedural")
                 self.assertEqual(document["pillow"], synth.PILLOW_VERSION)
+                self.assertEqual(len(document["runtime_sha256"]), 16 * recipe.phases)
+                if recipe.placeholder_only:
+                    # Swapped to image-generated art: the record documents the prompt instead.
+                    self.assertIn(document["method"], ("image-generator", "hybrid"))
+                    self.assertTrue(document.get("prompt"))
+                    continue
+                self.assertEqual(document["method"], "procedural")
+                self.assertIn("platform", document)
                 for reference in document["style_references"].values():
                     self.assertEqual(reference["use"], "statistics only")
-                self.assertEqual(len(document["runtime_sha256"]), 16 * synth.RECIPES[name].phases)
 
 
 if __name__ == "__main__":

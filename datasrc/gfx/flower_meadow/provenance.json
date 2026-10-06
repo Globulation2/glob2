@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "9950266f6755b1d445025568ab13cf3e15a66186bfb4e091fe215d961a5498df",
+    "tools/artwork/terrain_synth.py": "1bb28e32f1cf0ba3bba0976009220db8b2b8b0be9122698f18508995fa1bc5a8",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "flower_meadow",
@@ -20,40 +20,50 @@
     },
     "palette": {
       "dark": [
-        44,
-        110,
-        40
+        52,
+        122,
+        46
       ],
       "mid": [
-        60,
-        126,
-        48
+        70,
+        140,
+        56
       ],
       "light": [
-        74,
-        138,
-        58
+        88,
+        154,
+        68
       ],
       "flowers": [
         [
-          232,
-          190,
-          210
+          236,
+          196,
+          214
+        ],
+        [
+          244,
+          230,
+          158
+        ],
+        [
+          206,
+          168,
+          226
         ],
         [
           240,
-          224,
-          150
-        ],
-        [
-          200,
-          160,
-          220
+          170,
+          160
         ]
+      ],
+      "centre": [
+        120,
+        90,
+        60
       ]
     },
     "style": {
-      "luma": 86,
+      "luma": 94,
       "std": 9,
       "grain_max": 9,
       "match": 0.7
@@ -67,10 +77,6 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
-    "band": [
-      6.0,
-      16.0
-    ],
     "note": "placeholder until the image-generated flower meadow lands"
   },
   "seed": "fnv1a32(\"flower_meadow:<variant>:<phase>\")",
@@ -81,26 +87,26 @@
   "frame_layout": "variant + 16 * phase",
   "sprite": "data/gfx/terrain-flower_meadow",
   "preview": [
-    54,
-    117,
-    42
+    63,
+    128,
+    48
   ],
   "minimap": [
-    54,
-    117,
-    42
+    63,
+    128,
+    48
   ],
   "mean_color": [
-    54,
-    117,
-    42
+    63,
+    128,
+    48
   ],
   "style_stats": {
     "0": {
-      "luma": 89.6,
-      "std": 10.2,
+      "luma": 99.5,
+      "std": 10.6,
       "grain": 5.5,
-      "sat": 0.64,
+      "sat": 0.63,
       "alpha": 255.0
     }
   },
@@ -158,22 +164,27 @@
   },
   "python": "3.14.4",
   "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
   "runtime_sha256": {
-    "data/gfx/terrain-flower_meadow0.png": "6e0dd82a85376ebadbd733cfa520bb2deff8fb1a84e0d04460b857afd6028f52",
-    "data/gfx/terrain-flower_meadow1.png": "2210f11653f13d8f953d2ff0d5a475333129f547c701437fa9c0ac0ea1d4458d",
-    "data/gfx/terrain-flower_meadow2.png": "13f404bbf2024a09994a7fc67b57c26541d926129c8a7801da13036ddadfa3dc",
-    "data/gfx/terrain-flower_meadow3.png": "083af4341262aaa0bfd06a2be90431e04e14d181a8ddc1d9dc76ef7a39f515d7",
-    "data/gfx/terrain-flower_meadow4.png": "4a0318b03fa36ccddc05e9cba9a0a6c5248af458d6daa9d7ce010086d0f41001",
-    "data/gfx/terrain-flower_meadow5.png": "6d2a3bf74a4a1e139e968c1c07cb90265c94211b01899104029965306dba051f",
-    "data/gfx/terrain-flower_meadow6.png": "e01cb4e594565eaa31a6b46a2f3dbc4fd485765c08a70a63d8eba3f0e144c236",
-    "data/gfx/terrain-flower_meadow7.png": "5aef32d3a06b8511d5feafff4312a6d517f600d482f8ce0cae90945037f5a3c0",
-    "data/gfx/terrain-flower_meadow8.png": "a1368472aa45f3abd714c35b44b32c4b810baccecdf59e6d96138a1d94514099",
-    "data/gfx/terrain-flower_meadow9.png": "4866a90512df77c2a90ffdbce1dcd78e9e7515613578a9436013d0ebb7e660ca",
-    "data/gfx/terrain-flower_meadow10.png": "66bf4cdd85302ef133507b248ea8b9dddae651be459dc1bc96061dce44f23981",
-    "data/gfx/terrain-flower_meadow11.png": "b6debec9734912a82f474a893d83a80deb55d6271d471aaad90399d67bf2d7cf",
-    "data/gfx/terrain-flower_meadow12.png": "ea07f7b50c0caea5e88c94fba11050485331ab92554d981ea287d5c847e26802",
-    "data/gfx/terrain-flower_meadow13.png": "136edeeab1ae0845a8e4dd8a0707aa7a4bc7b37cc92120ab6272691f55038ddf",
-    "data/gfx/terrain-flower_meadow14.png": "d0b869469cc3e23c8c94fb44c9f62b09b5d87be5f0964af7c09aa8cf68d88bad",
-    "data/gfx/terrain-flower_meadow15.png": "daf2a83290aa972af1ed8cc5bf337646d77e5ea2746bb8834c72882b0dbba89c"
+    "data/gfx/terrain-flower_meadow0.png": "104e5aef71ae75e31f2a2ee44bf3c4081a57834bdd88a3936253081fa8170f57",
+    "data/gfx/terrain-flower_meadow1.png": "66370e6c8fc1dac1daec3f614e66f9db09415a599b21a2ec89eb2068286263e1",
+    "data/gfx/terrain-flower_meadow2.png": "7577ff26cfaa8e4663d57111990897a733d0bc601a50d93438ad3cdfe4a9c3f9",
+    "data/gfx/terrain-flower_meadow3.png": "638129ec6f7897041091c7c3c2c70bb26b167924db19f1ec039bf7508fed9a61",
+    "data/gfx/terrain-flower_meadow4.png": "af3d795557c236d7c569edca765af54020ee738ba14c32f12d7badfe38aaa6d1",
+    "data/gfx/terrain-flower_meadow5.png": "46523666bf8e744043471784dc204feeadd969a8294129cc712e4c4577ca8cff",
+    "data/gfx/terrain-flower_meadow6.png": "074a92dba7f0ad94838de7b21c9c68661c953dc4d0653c839d09af8f05ba16ca",
+    "data/gfx/terrain-flower_meadow7.png": "cd1b31b6f6d2080ed7ee7e396331e41fd838ec4328c5548c8d9b5c00e25edeba",
+    "data/gfx/terrain-flower_meadow8.png": "27a3ac20ac30cd0cebad70d8b7c9d414d315b287eda88925a63d26d2fcd91edb",
+    "data/gfx/terrain-flower_meadow9.png": "a4c5edcbc67fecd948646cefe54ff1322bbca5389626b7b46b59dfdb189a9ae5",
+    "data/gfx/terrain-flower_meadow10.png": "de0337752c3571ff1b781ddf7f65f66f080ad044c741e2959425bb309e25d6c3",
+    "data/gfx/terrain-flower_meadow11.png": "d79b8502a83fd4cec1803d9358e5bfc096b6165a611d5555d93aff42079f2fce",
+    "data/gfx/terrain-flower_meadow12.png": "0bb8d71ac0d13fe58cc398a83065b6d4e368789284aaa4a1f072f79263c0cb25",
+    "data/gfx/terrain-flower_meadow13.png": "476bd2e647f943109c6bc7b32c356ee90060ee75ff34a95c581b4b6173d020d4",
+    "data/gfx/terrain-flower_meadow14.png": "d16a3cc754926eb53cc0d45d9fe87ee499fa713b2bd964cc9009e770d4fc4ce6",
+    "data/gfx/terrain-flower_meadow15.png": "f9922c0c43b85815b1a27d931f997f391b346f63e70cf1a1176d493e37152f7d"
   }
 }
