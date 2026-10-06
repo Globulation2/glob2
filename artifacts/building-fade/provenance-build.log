@@ -1,0 +1,44 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library opusfile... (cached) yes
+Checking for C++ header file opusfile.h... (cached) yes
+Checking for C library opus... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Using Apple's OpenGL framework
+Using Apple's GLUT framework
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) yes
+Checking for C++ header file portaudio.h... (cached) yes
+         no portaudio
+         no portaudio - although portaudio was found to be installed, you have 
+         no portaudio - to explicitly activate it using: 
+         no portaudio - $ scons --portaudio=true
+         no portaudio - this may not work properly if the version of portaudio
+         no portaudio - is wrong. portaudio is used to allow communicating over VOIP
+         no portaudio
+         no portaudio - if you know of a solution to detect portaudio version
+         no portaudio - let us know at:
+         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668
+         no portaudio
+scons: done reading SConscript files.
+scons: Building targets ...
+Generating build/darwin/client/release/include/glob2/TestBuildProvenance.h
+scons: done building targets.

@@ -1,0 +1,484 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="48" errors="0" skipped="0"><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="building sprites fade out while icons fade in across rendering backends [display]" time="3.14593" status="run">
+      <failure message="125164 &lt;  125164" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125164 &lt;  125164 )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125164
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125164
+
+      </failure>
+      <failure message="125164 &lt;  125164" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125164 &lt;  125164 )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125164
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125164
+
+      </failure>
+      <failure message="125164 &lt;  125164" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125164 &lt;  125164 )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125164
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125164
+
+      </failure>
+      <failure message="125164 &lt;  125164" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125164 &lt;  125164 )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125164
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 0
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125164
+
+      </failure>
+      <failure message="480826 &lt;  480826" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 480826 &lt;  480826 )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 480826
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 480826
+
+      </failure>
+      <failure message="480826 &lt;  480826" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 480826 &lt;  480826 )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 480826
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 480826
+
+      </failure>
+      <failure message="480826 &lt;  480826" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 480826 &lt;  480826 )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 480826
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 480826
+
+      </failure>
+      <failure message="480826 &lt;  480826" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 480826 &lt;  480826 )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 480826
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 0
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 480826
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+
+      </failure>
+      <failure message="125482 &lt;  125482" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 125482 &lt;  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.84375 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.5 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.15625 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+
+      </failure>
+      <failure message="481379 &lt;  481379" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness &lt; previous ) is NOT correct!
+  values: CHECK( 481379 &lt;  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+
+      </failure>
+      <failure message="1 == Approx( 0.00725 )" type="CHECK">
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

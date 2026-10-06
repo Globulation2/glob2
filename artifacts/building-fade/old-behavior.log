@@ -1,0 +1,206 @@
+FAIL MapRenderResize/building sprites fade out while icons fade in across rendering backends [display] (3.2s)
+
+===== FAIL MapRenderResize/building sprites fade out while icons fade in across rendering backends [display] =====
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.00725 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 32
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.84375 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.5 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.15625 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.00725 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 32
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 125482 <  125482
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 125482 <  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.84375 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8.5
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 125482 <  125482
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 125482 <  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.5 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 8
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 125482 <  125482
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 125482 <  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.15625 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.5
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 125482 <  125482
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 125482 <  125482 )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.00725 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 1
+          type := 0x101f5230c
+          tilePoints := 7.1
+          brightness := 125482
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.84375 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.84375 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.5 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.5 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 8
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.15625 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.15625 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.5
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 481379 <  481379
+src/render/MapRenderResizeHarness.cpp:149:
+CHECK( brightness < previous ) is NOT correct!
+  values: CHECK( 481379 <  481379 )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+[failure] building sprites fade out while icons fade in across rendering backends [display]: 1 == Approx( 0.00725 )
+src/render/MapRenderResizeHarness.cpp:151:
+CHECK( ratio == doctest::Approx(view.render.detail.buildingSprite).epsilon(.04).scale(1) ) is NOT correct!
+  values: CHECK( 1 == Approx( 0.00725 ) )
+  logged: flags := 1
+          type := 0x101f52310
+          tilePoints := 7.1
+          brightness := 481379
+
+0 passed, 1 failed, 0 skipped (3.2s of test time)
+[run_tests] JUnit report: artifacts/building-fade/old-behavior.xml (1 cases)

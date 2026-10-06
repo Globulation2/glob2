@@ -1,0 +1,25 @@
+Local / VM verification
+Tested commit: 938ca60f82ff0d616fd7af2f4430a5bba746cd48
+Base revision: 08aa1c2a069f87839930edd794e4be3b1965a708. PR head rebased onto current master; no conflicts.
+Environment: macOS 26.6.2 arm64, Apple LLVM 21.0.0 (clang-2100.3.34.2).
+Dependencies: native SDL 3.4.16, SDL_net 3.2.0, SDL_ttf 3.2.2, SDL_image 3.4.6; source-build dependency prefix /Users/bradley/.codex/glob2-native-sdl. Artwork conversion: Pillow 12.2.0, WebP 1.6.0.
+Build: release=1, -O3, -g, -std=gnu++20. SCons-generated compile/link commands retained in merge-build.log and provenance-link.log. Completed objects with unchanged source/compiler/flags/dependencies were reused; 20 translation units affected by current master rendering header changes or this fix were rebuilt. Embedded provenance was regenerated for this clean commit using SCons, then TestMain and the binary were rebuilt. An earlier full unit build at 3908fe832 failed on pre-existing Map::tiles fixture access; master now includes the independent fix (#813). The complete unit binary was not rebuilt.
+
+Test commands:
+GLOB2_ASSET_DIR=/Users/bradley/.codex/worktrees/4c3b/glob2/artifacts/building-fade/runtime-fixture python3 test/run_tests.py --binary engine --filter 'MapRenderResize/building sprites fade out*' --filter 'PortableRenderer/*' --filter 'ColonySkinPreview/*' --filter 'UnitTeamColorCache/*' --filter 'UnitTeamShader/*' --jobs 2 --display-jobs 1 --verbose --junit artifacts/building-fade/merge-tests.xml
+c++ -std=c++20 -O2 -DDOCTEST_CONFIG_IMPLEMENT_WITH_MAIN -Itest/support -Isrc/render src/render/ZoomDetailTest.cpp -o artifacts/building-fade/zoom-detail-tests
+artifacts/building-fade/zoom-detail-tests
+
+Results: 10 engine rendering cases passed (exit 0, no skips); standalone ZoomDetail: 12 cases, 17,322 assertions passed (exit 0). Regression checks inn/swarm building brightness across the full transition on software, SDL portable and OpenGL, alongside complementary icon opacity. Retina framebuffer capture uses physical dimensions.
+Negative control: old-behavior.log and old-behavior.xml retain the pre-integration regression failure when spriteAlpha is forced to 255, reproducing the original cutoff. Source and binary were restored before all final verification.
+
+Artwork fixture reproduction (exact original frames, not optimized packaged assets):
+from pathlib import Path
+from PIL import Image
+out = Path('artifacts/building-fade/runtime-fixture/data/gfx')
+out.mkdir(parents=True, exist_ok=True)
+for source in Path('data/gfx').glob('*.png'):
+    with Image.open(source) as image:
+        image.save(out / (source.stem + '.webp'), format='WEBP', lossless=True, method=0, exact=True)
+
+Coverage rationale: presentation-only alpha changes, custom swarm alpha forwarding, renderer integration and existing hue/cache behavior. Simulation/save/replay/network code is unchanged; no sim revision bump is needed. Other operating systems, downloaded custom artwork, full unit suite, optimized asset export and runtime performance were not exercised. Hosted checks are cheap contracts; hosted engine verification was not requested. Author accepts this focused evidence for this revision under the repository's author-owned merge policy.
