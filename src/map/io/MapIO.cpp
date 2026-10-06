@@ -1112,7 +1112,7 @@ void Map::loadBuildingRefreshes(GAGCore::InputStream *stream, Sint32 versionMino
 				++children;
 		const bool spilled = !job->reservedBytes && !job->snapshotBytes;
 		if (!spilled && (job->reservedBytes != size * sizeof(Uint16) * (1 + 3 * children)+job->targetBytes ||
- job->snapshotBytes != size*(sizeof(building_gradient::Cell)+sizeof(TerrainType)+SWIM_CLASS_COUNT*sizeof(Uint8)+sizeof(Uint8))))
+ job->snapshotBytes != size*building_gradient::Terrain::snapshotBytesPerCell))
  throw std::runtime_error("Invalid building refresh memory reservation");
 		if (spilled)
 		{

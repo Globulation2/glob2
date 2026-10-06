@@ -2716,6 +2716,7 @@ void Maxima::build_policy_bids()
 
 void Maxima::arbitrate_policy_bids()
 {
+	auto ownerObservation=context.scopeOwnerObservation();
 	const auto& rules=context.readPlayer()->game->gameHeader;
 	// Capability gates precede arbitration: an impossible technology bid would
 	// otherwise win scarce labour and crowd out attainable economic projects.

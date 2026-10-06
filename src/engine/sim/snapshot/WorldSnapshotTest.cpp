@@ -23,6 +23,7 @@ TEST_SUITE("WorldSnapshot")
 		const auto required = bit(Component::Terrain) | bit(Component::Resources)
 			| bit(Component::Occupancy) | bit(Component::Areas);
 		fixture.game.map.setResource(20, 20, WHEAT, 1);
+		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 1);
 		const auto before = store->captureBoundary(fixture.game, required);
 		fixture.game.map.setResourceAmount(fixture.game.map.coordToIndex(20, 20), 7);
 		const auto after = store->captureBoundary(fixture.game, required, true);
@@ -35,6 +36,28 @@ TEST_SUITE("WorldSnapshot")
 		CHECK_FALSE(after.visibility);
 		CHECK_FALSE(after.teams);
 		CHECK(fixture.game.snapshotStore() == store);
+	}
+
+	TEST_CASE("AI building access projects route semantics from every live storage layout")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool pipeline : {false,true})
+		{
+			CAPTURE(pipeline);
+			glob2test::HeadlessGame fixture{glob2test::GameOptions{.loadDefaultRace=true,.header=true}};
+			auto* building=fixture.addBuilding("swarm",4,4);
+			if (pipeline) fixture.game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+			// Force the live layout before assigning distinguishable route values.
+			building->routeAccess(0,BuildingRoute::Footprint);
+			for (unsigned route=0;route<3;++route) for (unsigned swim=0;swim<2;++swim)
+				building->locked[building->routeAccess(swim ? Map::SWIM_CLASS_EVEN : 0,
+					static_cast<BuildingRoute>(route))]=bool((route+swim)%2);
+			SimulationSnapshot::Store store;
+			const auto captured=store.captureBoundary(fixture.game,SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+			REQUIRE(captured.entities->buildings.size()==1);
+			for (unsigned route=0;route<3;++route) for (unsigned swim=0;swim<2;++swim)
+				CHECK(captured.entities->buildings[0].locked[route*2+swim]==bool((route+swim)%2));
+		}
 	}
 
 	TEST_CASE("narrow component queries preserve combined tile values and projection defaults")

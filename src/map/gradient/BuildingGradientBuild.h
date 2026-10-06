@@ -26,6 +26,9 @@ struct Terrain
 	bool modifiedCosts = false;
 	std::vector<Cell> cells; // Standalone fixtures; live builds use projected components.
 	SimulationSnapshot::Handle snapshot;
+	static constexpr std::size_t snapshotBytesPerCell = sizeof(SimulationSnapshot::ResourceCell)
+		+ sizeof(SimulationSnapshot::OccupancyCell) + sizeof(SimulationSnapshot::AreaCell)
+		+ sizeof(Uint16) + sizeof(TerrainType) + SWIM_CLASS_COUNT*sizeof(Uint8) + sizeof(Uint8);
 	std::size_t cellCount() const { return snapshot.terrain ? std::size_t(width) * height : cells.size(); }
 	Cell cellAt(std::size_t i) const {
 		if (!snapshot.terrain) return cells[i];

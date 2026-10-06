@@ -180,6 +180,58 @@ TEST_CASE("save continuation retains controller caches receipts and future comma
         }
     }
 }
+TEST_CASE("pending AI commands and building refreshes preserve combined save continuation")
+{
+    glob2test::HeadlessGlobals globals;
+    for (unsigned aiDelay : {0u,4u,8u}) for (unsigned gradientDelay : {2u,4u,8u})
+    {
+        CAPTURE(aiDelay); CAPTURE(gradientDelay);
+        std::vector<Tick> reference;
+        for (unsigned workers : {0u,4u})
+        {
+            CAPTURE(workers);
+            setSyncRandSeed(0xA171);
+            glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=7,.hDec=7,.teams=9,
+                .loadDefaultRace=true,.header=true,.seed=0xA171});
+            auto& game=fixture.game;
+            populate(fixture,aiDelay,workers);
+            game.gameHeader.getExperiments().set(ExperimentId::BuildingGradientPipeline);
+            game.gameHeader.setBuildingGradientDelay(gradientDelay);
+            game.map.configureGradientPipeline(workers,8);
+            for (unsigned player : actors)
+            {
+                auto* building=game.teams[player]->myBuildings[0];
+                REQUIRE(building);
+                game.map.buildingGradient(building,0);
+                REQUIRE(game.map.requestBuildingRefresh(building,0));
+            }
+            std::string checkpoint;
+            for (unsigned tick=0;tick<ticks;++tick)
+            {
+                CAPTURE(tick);
+                auto actual=advance(game);
+                if (!workers) reference.push_back(actual);
+                else compare(actual,reference[tick]);
+                if (tick==0)
+                {
+                    REQUIRE(game.map.buildingRefreshStatus().pending>0);
+                    checkpoint=save(game);
+                    REQUIRE(game.map.buildingRefreshStatus().pending>0);
+                }
+            }
+            game.drainAI();
+            GameGUI restored(false);
+            load(restored.game,checkpoint,workers);
+            restored.game.map.configureGradientPipeline(workers,8);
+            for (unsigned tick=1;tick<ticks;++tick)
+            {
+                CAPTURE(tick);
+                compare(advance(restored.game),reference[tick]);
+            }
+            restored.game.drainAI();
+        }
+    }
+}
 TEST_CASE("pause and repeated boundary calls cannot execute a published command twice")
 {
     glob2test::HeadlessGlobals globals;

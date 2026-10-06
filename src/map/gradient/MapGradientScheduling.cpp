@@ -98,7 +98,7 @@ void Map::submitBuildingRefreshes()
 				++children;
 		const bool partial = game->gameHeader.hasExperiment(ExperimentId::BuildingGradientPartial);
 		const auto fieldBytes = size * sizeof(Uint16) * (1 + 3 * children),
-				   snapshotBytes = size * ((sizeof(SimulationSnapshot::ResourceCell) + sizeof(SimulationSnapshot::OccupancyCell) + sizeof(SimulationSnapshot::AreaCell) + sizeof(Uint16)) + sizeof(TerrainType) + SWIM_CLASS_COUNT*sizeof(Uint8) + sizeof(Uint8));
+				   snapshotBytes = size * building_gradient::Terrain::snapshotBytesPerCell;
 		bool snapshotReserved = false;
 		for (const auto &[destination, pending] : scheduler.pending)
 			if (pending->captured == game->stepCounter && pending->snapshotBytes)

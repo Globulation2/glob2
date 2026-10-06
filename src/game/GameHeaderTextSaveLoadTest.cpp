@@ -242,7 +242,7 @@ void testBinaryHeaderFormsAndLegacy()
             constexpr Uint32 sentinel=0x51A140;
             auto* v139Bytes=new MemoryStreamBackend;
             BinaryOutputStream legacyOut(v139Bytes);
-            legacyOut.write(historical.data(),historical.size(),"header");
+            legacyOut.write(historical.data(),historical.size()-1,"header");
             legacyOut.writeUint32(sentinel,"nextRecord");legacyOut.flush();
             v139Bytes->seekFromStart(0);
             BinaryInputStream v139(new MemoryStreamBackend(*v139Bytes));

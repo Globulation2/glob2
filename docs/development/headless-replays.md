@@ -429,8 +429,8 @@ online sim-version gates reject clients using the older boundary. See the
 
 Version 141 / simulation revision 24 adds the opt-in scheduled building-gradient
 rules and preserves the completed-tick resource preparation phase. The replay
-floor is 140 and network protocol is 59. Save loading retains the existing floor
-of 58; saves before 140 disable the building pipeline and have no pending building
+floor is 141 and network protocol is 60. Save loading retains the existing floor
+of 58; saves before 141 disable the building pipeline and have no pending building
 jobs. Saved pending results retain their fixed remaining publication deadlines.
 
 ### Probability-based early victory
@@ -451,7 +451,7 @@ the additional continuation fields.
 
 ### Scheduled building gradients
 
-Format 140 adds the saved `building-gradient-pipeline` experiment and its
+Format 141 adds the saved `building-gradient-pipeline` experiment and its
 `buildingGradientDelay` rule (2, 4 or 8 ticks; default 4). It also carries the
 `building-gradient-hybrid` and `building-gradient-partial` policies, independent
 access metadata for each route and swim class, completed private results and
@@ -460,8 +460,8 @@ and no pending building jobs; the minimum save version remains 58. Saving finish
 private work without publishing it early. Partial searches materialize using their
 original immutable terrain definitions and costs without changing cache ages.
 
-Replay acceptance starts at 140, network protocol is 59, and simulation revision
-22 identifies these rules. Earlier prototype formats on the draft branch are
+Replay acceptance starts at 141, network protocol is 60, and simulation revision
+24 identifies these rules. Earlier prototype formats on the draft branch are
 historical experiment binaries, not upstream save formats. Master's terrain and
 building catalog layouts remain unchanged. Worker count and instrumentation are
 local execution settings. The pipeline excludes the earlier hiring-frontier
