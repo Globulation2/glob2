@@ -619,7 +619,11 @@ dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/s
 then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
 suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
 `test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
-`artifacts/skins/materials/`) and review the sheets. Any shader edit changes the
+`artifacts/skins/materials/`) and review the sheets. While iterating on the
+GLSL, `tools/skins/material_spheres.mjs` (run from `platform/apps/web`) renders
+every material on a sphere through headless Chromium in seconds, and the
+`skins-materials.spec.ts` e2e captures each material on the worker at studio
+resolution. Any shader edit changes the
 sprite render revision and re-bakes every published skin. Focused validation
 uses the `SkinAuthorization`, `SkinDownloads`, `SkinSprites` and `SurfaceCoverage`
 unit suites plus the skin-render worker and API tests. To exercise the actual
