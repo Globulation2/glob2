@@ -18,6 +18,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "ai/BuildingCapabilities.h"
 #include <stdexcept>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -41,6 +42,7 @@
 #define BULLET_IMGID 0
 
 Game::Game(GameGUI *gui, MapEdit* edit):
+	buildingsTypes(globalContainer->buildingsTypes),
 	mapscript(this, gui)
 {
 	init(gui, edit);
@@ -50,6 +52,47 @@ Game::~Game()
 {
 	clearGame();
 }
+
+const AIPlanning::BuildingCapabilityIndex& Game::buildingCapabilities() const
+{
+    // Published during setup, before any AI workers may inspect the catalog.
+    assert(buildingCapabilityIndex);
+    return *buildingCapabilityIndex;
+}
+
+void Game::configureBuildingCatalog()
+{
+	const auto routingFlags=[](const BuildingType* type) {
+		return Uint8(type->runtimeSuppliesStock | (type->runtimeFetchesStock<<1) |
+			(type->runtimeSuppliesDirectStock<<2) | (type->runtimeFetchesDirectStock<<3));
+	};
+	std::vector<Uint8> previous;
+	previous.reserve(buildingsTypes.size());
+	for (size_t id=0; id<buildingsTypes.size(); ++id) previous.push_back(routingFlags(buildingsTypes.get(id)));
+	buildingsTypes.configureExperiments(gameHeader.getExperiments().keys());
+    buildingCapabilityIndex = std::make_unique<const AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
+	bool routingChanged=false;
+	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
+	if (routingChanged) map.invalidateSupplierLocations();
+	for (Team* team : teams)
+		if (team)
+		{
+			team->stockSuppliers.clear();
+			team->directStockSuppliers.clear();
+			for (int i=0; i<Building::MAX_COUNT; ++i)
+				if (Building* building=team->myBuildings[i]; building && building->buildingState==Building::ALIVE)
+				{
+					if (building->type->runtimeSuppliesStock) team->stockSuppliers.push_back(building);
+					if (building->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(building);
+				}
+			if (routingChanged)
+			{
+				team->dirtyGlobalGradient();
+				for (int resource=0; resource<MAX_RESOURCES; ++resource) map.dirtyMarketGradients(team->teamNumber,resource);
+			}
+		}
+}
+
 
 void Game::init(GameGUI *gui, MapEdit* edit)
 {
@@ -63,14 +106,16 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 
 	animations = std::make_unique<GameAnimations>(!globalContainer->runNoX, 0);
 
+	for (int i=0; i<Team::MAX_COUNT; ++i)
+	{
+		teams[i]=nullptr;
+		players[i]=nullptr;
+	}
 	mapHeader.reset();
 	gameHeader.reset();
+	gameHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+	configureBuildingCatalog();
 
-	for (int i=0; i<Team::MAX_COUNT; i++)
-	{
-		teams[i]=NULL;
-		players[i]=NULL;
-	}
 	clearGame();
 
 	stepCounter=0;
@@ -135,14 +180,21 @@ void Game::clearGame()
 // header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
+	const GameHeader previousHeader = gameHeader;
 	GameHeader resolvedHeader = newGameHeader;
+	if (!resolvedHeader.getBuildingCatalogSnapshot().empty()
+		&& resolvedHeader.getBuildingCatalogSnapshot() != buildingsTypes.snapshotJson())
+		throw std::runtime_error("Game setup building catalog does not match the map catalog");
+	resolvedHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 	{
 		if (saveAI && gameHeader.getBasePlayer(p).type >= BasePlayer::P_AI)
 			resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
 		else
-			gameHeader.setAIConfig(p, newGameHeader.getAIConfig(p));
+			resolvedHeader.setAIConfig(p, newGameHeader.getAIConfig(p));
 	}
+	gameHeader = resolvedHeader;
+	configureBuildingCatalog();
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
@@ -152,7 +204,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	for (int i=0; i<newGameHeader.getNumberOfPlayers(); i++)
 	{
 		//Don't change AI's
-		if(!saveAI || gameHeader.getBasePlayer(i).type < BasePlayer::P_AI)
+		if(!saveAI || previousHeader.getBasePlayer(i).type < BasePlayer::P_AI)
 		{
 			delete players[i];
 			players[i]=new Player();
@@ -167,7 +219,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 
 	// A loaded saved game already restored the live RNG. New maps and old
 	// saves retain the seed-based initialization used by earlier versions.
-	const bool gameSeedChanged = newGameHeader.getRandomSeed() != gameHeader.getRandomSeed();
+	const bool gameSeedChanged = newGameHeader.getRandomSeed() != previousHeader.getRandomSeed();
 	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
 		syncRandom.seed(newGameHeader.getRandomSeed());
 	if (gameSeedChanged)
@@ -193,7 +245,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	// headers agree, since both were just read from the same save) leaves
 	// the just-restored real resources untouched instead of clobbering
 	// them back down to the stockpile amount.
-	if (newGameHeader.getStockpileStartLevel() != gameHeader.getStockpileStartLevel())
+	if (newGameHeader.getStockpileStartLevel() != previousHeader.getStockpileStartLevel())
 	{
 		static constexpr Sint32 stockpileAmount[] = {0, 50, 150, 300};
 		const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
@@ -230,6 +282,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id)) resolvedHeader.getExperiments().set(definition.id);
 	gameHeader = resolvedHeader;
+	configureBuildingCatalog();
 	anyPlayerWaited=false;
 }
 

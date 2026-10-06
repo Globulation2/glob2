@@ -11,7 +11,9 @@
 #include "BuildingUtils.h"
 #include "MapInternal.h"
 #include "Ressource.h"
+#include "ResourcePacket.h"
 #include "UnitConsts.h"
+#include "BuildingCatalog.h"
 
 namespace GAGCore
 {
@@ -52,12 +54,19 @@ static constexpr int SWIM_VARIANT_COUNT = 2;
 /// once the can-swim path is reachable).
 static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
+enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automatic };
+inline constexpr int BUILDING_ROUTE_COUNT = 3;
+inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT;
+inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
+
 class Building : public BuildingUtils
 {
 	friend struct TeamStatsMeasurementFixture;
 
   public:
 	static const int MAX_COUNT=1024;
+	const BuildingRuntimeTraits* runtime=nullptr;
+	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.
@@ -90,9 +99,7 @@ class Building : public BuildingUtils
 	/// `shootingStep` cycles `0..SHOOTING_ANIMATION_FRAMES-1`.
 	static constexpr Uint32 SHOOTING_ANIMATION_FRAMES = 8;
 
-	/// Turret types are required to be `TURRET_SIZE × TURRET_SIZE`
-	/// tiles. Bullet-spawn math (e.g. `<<4` half-tile offsets) bakes
-	/// in this assumption.
+	/// Original square footprint, retained by legacy geometry test helpers.
 	static constexpr int TURRET_SIZE = 2;
 
 	///This is the buildings basic state of existence.
@@ -183,6 +190,8 @@ class Building : public BuildingUtils
 	///This function updates the call lists that the Building is on. A call list is a list
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
+	/// Synchronize cached membership after Team removes every service-list entry.
+	void resetServiceListState();
 	///When a building is waiting for room, this will make sure that the building is in the
 	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hard space, etc if
 	///resources grow into the space or a building is placed, it becomes impossible
@@ -202,7 +211,7 @@ class Building : public BuildingUtils
 	void setMapDiscovered(void);
 
 	///Gets the amount of resources for each type of resource that are needed to repair the building.
-	void getResourceCountToRepair(int resources[BASIC_COUNT]);
+	void getResourceCountToRepair(int resources[MAX_RESOURCES]);
 
 	///Attempts to find room for a building site. If room is found, the building site is established,
 	///and it returns true.
@@ -220,12 +229,11 @@ class Building : public BuildingUtils
 	///This function subscribes any building that needs resources carried to it with units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
-	bool subscribeToBringResourcesStep(void);
+	bool subscribeToBringResourcesStep(bool borrowUnused = false);
 	//! Whether the unit's type and level qualify it to work for this building.
-	bool canUnitWorkHere(Unit* unit);
-	/// Whether fetches for this building may take from the team's stocked
-	/// markets. Markets fetch for themselves from the map only, so stock never
-	/// circulates between markets.
+	bool canUnitWorkHere(Unit* unit, bool attraction = false);
+	/// Whether any configured resource uses routed team-stock fetching.
+	/// Consumer-aware Map queries apply per-resource gates and exclude own pools.
 	bool fetchesFromMarkets() const;
 	/// Game-aware upgrade availability; the static type table is shared by games.
 	bool isUpgradeAvailable() const;
@@ -235,7 +243,26 @@ class Building : public BuildingUtils
 	bool subscribeForFlagingStep();
 	/// Subscribes a unit to go inside the building.
 	void subscribeUnitForInside(Unit* unit);
-	/// This is a step for swarms. Swarms heal themselves and create new units
+	// Reservations protect shared stock from other services and production.
+	BuildingResourceCost reservedResources{};
+	Sint32 availableResource(int resource) const;
+	bool reserveResources(const BuildingResourceCost& cost);
+	bool restoreResourcesReservation(const BuildingResourceCost& cost);
+	void releaseResources(const BuildingResourceCost& cost);
+	void consumeReservedResources(const BuildingResourceCost& cost, int diagnosticUse);
+	BuildingResourceCost serviceCost(const Unit* unit, int purpose) const;
+	bool canOfferService(const Unit* unit, int purpose) const;
+	void reserveService(Unit* unit);
+	void releaseService(Unit* unit);
+	void settleService(Unit* unit);
+	void restoreServiceReservations();
+	int selectProductionRecipe() const;
+	bool canAffordProduction(int unitType) const;
+	void resetProduction();
+	void cancelProduction();
+	void restoreProductionReservations();
+	void regenerationStep();
+	/// One production phase. Services and shooting use independent phases.
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(Uint32 stepCounter);
@@ -269,6 +296,25 @@ class Building : public BuildingUtils
 
 	/// This function is called when a Unit places a resource into the building.
 	void addResourceIntoBuilding(int resourceType);
+	ResourceDeliveryResult deliverResourcePacket(int resourceType, ResourcePacket packet);
+	ResourcePacket withdrawResourcePacket(int resourceType);
+	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
+	int getConstructionCompletionTypeNum() const;
+	int constructionResourceNeed(int resource) const;
+	int resourceDeliveryNeed(int resource) const;
+	int resourceDeliveryTarget(int resource) const;
+	void fundConstructionFromInventory();
+	void restoreConstructionReservations();
+	void releaseConstructionReservations();
+	bool canTransferResourcesTo(const BuildingType* destination) const;
+	void transferResourcesPointer(bool wasShared);
+	BuildingResourceCost constructionBudget{}, constructionReserved{};
+	Sint32 constructionOriginTypeNum = -1;
+	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
+	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
+	Sint32 repairInitialDeficit = 0, repairHealthGranted = 0;
+	void applyConstructionHealth(int funded, bool finishRepair = false);
+	void cancelConstructionMaterials();
 
 	/// This function is called when a Unit takes a resource from a building, such as a market
 	void removeResourceFromBuilding(int resourceType);
@@ -297,7 +343,7 @@ class Building : public BuildingUtils
 	/// Eats one wheat and one of each of the available fruit from the building.
 	/// Return the number of different fruits in this building. If mask is non-null,
 	/// set masks value to the mask as well
-	Uint32 eatOnce(Uint32 *mask=NULL);
+	Uint32 eatOnce(Uint32 *mask=NULL, Unit* visitor=nullptr);
 
 	/// Returns the maximum happyness level that this building can provide, taking into account the
 	/// units that are already in it.
@@ -577,6 +623,8 @@ public:
 	Sint32 unitStayRange; // (Uint8)
 	bool clearingResources[BASIC_COUNT]; // true if the resource has to be cleared.
 	Sint32 minLevelToFlag;
+	Sint32 minWorkerLevelToFlag = 0;
+	bool explorersRequireBombing = false;
 
 	// Building specific :
 	/// Amount stocked, or used for building building. Local resources stores the resources this particular building contains
@@ -590,6 +638,8 @@ public:
 
 	// swarm building parameters
 	Sint32 productionTimeout;
+	bool siteCompletionPending = false;
+	Sint32 productionUnit = -1; // committed recipe; -1 is idle/late-choice
 	/// Authoritative per-unit-type swarm ratios — written only by
 	/// OrderModifySwarm via Game::executeModifySwarm. The per-viewer pending
 	/// value used while a slider drag is in flight lives in
@@ -610,21 +660,21 @@ public:
 	//! flag's resources), one per swim class, NULL until a unit of that class asks for it.
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
-	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+	Uint16 *globalGradient[BUILDING_GRADIENT_COUNT];
 	//! Retained propagation queues. Never serialized: saving completes
 	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
-	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
+	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[BUILDING_GRADIENT_COUNT];
 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
 	//! have elapsed since the last rebuild.
-	bool dirtyGradient[SWIM_CLASS_COUNT];
-	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	bool dirtyGradient[BUILDING_GRADIENT_COUNT];
+	Uint32 lastGlobalGradientUpdateStepCounter[BUILDING_GRADIENT_COUNT];
 	//! Map::topologyGeneration when each field was computed. Differs from the
 	//! map's current value exactly when the ground it was built against has moved.
-	Uint32 gradientGeneration[SWIM_CLASS_COUNT];
+	Uint32 gradientGeneration[BUILDING_GRADIENT_COUNT];
 	// These flags track physical access (cannot swim / can swim), not travel cost.
 	// All swimming classes share passability, but keep separate weighted fields.
 	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
-	Uint32 globalGradientUsedStep[SWIM_CLASS_COUNT];
+	Uint32 globalGradientUsedStep[BUILDING_GRADIENT_COUNT];
 	//! Round-trip gradients per resource type and swim class (see Map::roundTripGradient),
 	//! NULL until a unit fetching that resource for this building asks for one, freed again
 	//! by freeIdleGradients when unused for a while. Their last rebuild and last
@@ -635,7 +685,14 @@ public:
 	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
 	//! buildings with fetchers need one, and each is a full map of Uint16.
 	void freeIdleGradients();
-	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
+	BuildingRoute resolveRoute(BuildingRoute route) const;
+	int routeSlot(int swimClass, BuildingRoute route) const
+	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }
+	int routeAccess(int swimClass, BuildingRoute route) const
+	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass > 0); }
+	int workRoleTarget(int role) const; // -1 delivery, otherwise attracted unit class
+	bool subscribeWorkStep();
+	bool locked[BUILDING_ACCESS_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
 	// resource in range (set when its gradient is built). Stored value at each

@@ -274,7 +274,8 @@ void GameGUITouch::drawStats()
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
 		drawPointLabel(r, text, 1.3);
 	}
-	const auto &metrics = Stats::catalog();
+	if (statsCatalog.empty()) statsCatalog = Stats::catalogForBuildings(gui.game.buildingsTypes);
+	const auto &metrics = statsCatalog;
 	const Stats::Metric &metric = metrics[std::size_t(std::clamp(statsMetric, 0, int(metrics.size()) - 1))];
 	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
 	drawPointLabel(l.title, tr(Stats::groupKey(metric.group)) + " · " + TeamStatChart::title(metric), 1.0);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, api, request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useSession } from '../state.tsx';
@@ -52,9 +52,11 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
     settings,
     setSettings,
     parent,
+    fresh,
     setParent,
     draftKey: key,
   } = useStudioDraft(accountId, id);
+  const previousDelivery = useRef<string | undefined>(undefined);
   const payment = new URLSearchParams(window.location.search).get('payment');
   const checkoutBalance = Number(
     sessionStorage.getItem(`studio-checkout-balance:${accountId}`) ?? 0,
@@ -65,6 +67,30 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       .catch((e) => setError(errorMessage(e)));
   }, []);
   const { thread, setThread, connection, revision, celebrate } = useStudioStream(id, refreshWallet);
+  const latestDelivered = thread?.requests
+    .filter(
+      (r): r is Delivered =>
+        r.kind === 'generate' &&
+        r.status === 'ready' &&
+        !!r.map_id &&
+        !!r.map_hash &&
+        !!r.input.settings,
+    )
+    .at(-1);
+  useEffect(() => {
+    if (!latestDelivered) {
+      if (thread) previousDelivery.current = '';
+      return;
+    }
+    if (
+      (!fresh && !parent) ||
+      (previousDelivery.current !== undefined && previousDelivery.current !== latestDelivered.id)
+    ) {
+      setParent(latestDelivered.id);
+      setSettings(latestDelivered.input.settings);
+    }
+    previousDelivery.current = latestDelivered.id;
+  }, [thread, latestDelivered, fresh, parent, setParent, setSettings]);
   useEffect(() => {
     const abort = new AbortController();
     void Promise.all([
@@ -135,8 +161,13 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
     void action(async () => {
       if (id) {
         await submitPending({
-          path: `${ROOT}/threads/${id}/messages`,
-          body: { id: crypto.randomUUID(), text: draft.trim() },
+          path: `${ROOT}/threads/${id}/turns`,
+          body: {
+            id: crypto.randomUUID(),
+            text: draft.trim(),
+            settings,
+            ...(parent ? { parent } : {}),
+          },
         });
         return;
       }
@@ -170,8 +201,8 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       }
       const created = creation.id;
       const pending: Pending = {
-        path: `${ROOT}/threads/${created}/messages`,
-        body: { id: creation.messageId, text: creation.text },
+        path: `${ROOT}/threads/${created}/turns`,
+        body: { id: creation.messageId, text: creation.text, settings: creation.settings },
       };
       sessionStorage.setItem(`studio-draft:${accountId}:${created}`, creation.text);
       sessionStorage.setItem(`studio-pending:${accountId}:${created}`, JSON.stringify(pending));
@@ -195,15 +226,6 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
     // Submission belongs to this mounted project, not subsequent state changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  function generate() {
-    if (id)
-      void action(() =>
-        submitPending({
-          path: `${ROOT}/threads/${id}/generate`,
-          body: { id: crypto.randomUUID(), settings, ...(parent ? { parent } : {}) },
-        }),
-      );
-  }
   function buy(pack: string) {
     void action(async () => {
       if (id) sessionStorage.setItem(`studio-checkout:${accountId}`, id);
@@ -344,7 +366,6 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
           draft={draft}
           setDraft={setDraft}
           send={sendMessage}
-          generate={generate}
           settings={settings}
           changeSettings={(next) => {
             setSettings(next);

@@ -10,7 +10,7 @@
 #include "team/Team.h"
 #include "building/Building.h"
 #include "BuildingType.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "map/Map.h"
 #include "Ressource.h"
 
@@ -255,7 +255,7 @@ namespace Cortex
 				if (fallback == NULL)
 					fallback = b;
 				if (b->type != NULL
-				 && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+				 && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 				{
 					rx = b->posX;
 					ry = b->posY;

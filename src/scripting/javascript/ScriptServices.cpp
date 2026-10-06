@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptServices.h"
+#include "ScriptBuildingCapabilities.h"
 #include "ScriptSpatial.h"
 #include "ScriptOrders.h"
 #include "Game.h"
@@ -203,9 +204,7 @@ void Services::reconcile()
 				for (const auto &b : owned.items)
 					if (b.get("x").number == c.get("x").number &&
 						b.get("y").number == c.get("y").number &&
-						b.get("shortType").number ==
-							globalContainer->buildingsTypes.get(int(c.get("buildingType").number))
-								->shortTypeNum &&
+						buildingVariantDescendsFrom(game.buildingsTypes, int(c.get("buildingType").number), int(b.get("type").number)) &&
 						b.get("generation").number != r.get("previousGeneration").number)
 					{
 						building = b;

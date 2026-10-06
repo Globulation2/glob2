@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "ResourcePacket.h"
 #include <vector>
 #include <string>
 #include <optional>
@@ -21,6 +22,7 @@ class Team;
 class Race;
 class Building;
 struct TerrainProperties;
+struct BuildingTrainingSpec;
 
 namespace GAGCore
 {
@@ -46,7 +48,7 @@ public:
 	///This function is called by a Building that has subscribed this unit.
 	///If the unit has been subscribed for upgrading or for food, as opposed
 	///to being subscribed for work, inside is set to true.
-	void subscriptionSuccess(Building* building, bool inside);
+	void subscriptionSuccess(Building* building, bool inside, bool attraction = false);
 	void syncStep(void);
 	
 	void directionFromDxDy(void);
@@ -235,6 +237,7 @@ public:
 	Sint32 direction; // (Sint8). direction=8 is no direction.
 	Sint32 terrainHealthRemainder = 0; // signed Q8 HP, serialized for exact continuation
 	Sint32 insideTimeout; // (Sint16) (if < 0, is in a building, otherwise is out)
+	bool serviceResourcesReserved = false;
 	Sint32 speed;
 
 	// states
@@ -270,11 +273,11 @@ public:
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	Sint32 level[NB_ABILITY];
-	//! The worker's schooling level. Harvest and build are taught together by
-	//! the school and mean one thing in play, which building tier the worker
-	//! may raise, so they are kept equal and read through here.
-	Sint32 workerLevel() const { return level[BUILD]; }
-	//! Set both halves of the worker level, and their performance, together.
+	//! Construction eligibility is independent of work/harvest speed.
+	Sint32 constructionLevel = 0;
+	Sint32 workerLevel() const { return constructionLevel; }
+	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;
+	void applyTraining(const BuildingTrainingSpec& training, int ability);
 	//! Re-creates a freshly placed unit at `newLevel` in every ability, keeping its place,
 	//! identity and team (the lobby's Veteran/Fast start rule, before the map is saved).
 	void resetAtLevel(Sint32 newLevel);
@@ -291,6 +294,8 @@ public:
 	Building *ownExchangeBuilding;
 	Sint32 destinationPurpose;
 	int carriedResource;
+	ResourcePacket carriedPacket{};
+	void receiveCarriedResource(int resource, ResourcePacket packet);
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
@@ -324,4 +329,3 @@ public:
     void setTargetBuilding(Building * b);
 	bool verbose;
 };
-

@@ -11,8 +11,10 @@ import os
 from pathlib import Path
 import platform
 import shutil
+import shlex
 import subprocess
 import sys
+import time
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,30 @@ def tool(name):
     if found:
         return [found]
     raise RuntimeError(f'{name} is required (install the LLVM tools matching Clang)')
+
+
+def run_logged(command, log, *, cwd=ROOT, env=None, stream_logs=False):
+    """Keep the file log and optionally expose progress before artifact upload."""
+    started = time.monotonic()
+    if stream_logs:
+        print(f'Coverage command ({log}): {shlex.join(command)}', flush=True)
+    with log.open('w') as stream:
+        if stream_logs:
+            child_env = dict(os.environ if env is None else env)
+            child_env['PYTHONUNBUFFERED'] = '1'
+            with subprocess.Popen(command, cwd=cwd, env=child_env, stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT, text=True, errors='replace') as child:
+                for line in child.stdout:
+                    stream.write(line)
+                    stream.flush()
+                    print(line, end='', flush=True)
+                status = child.wait()
+        else:
+            status = subprocess.run(command, cwd=cwd, env=env, stdout=stream,
+                                    stderr=subprocess.STDOUT).returncode
+    if stream_logs:
+        print(f'Coverage command finished: exit={status}, elapsed={time.monotonic()-started:.1f}s, log={log}', flush=True)
+    return status
 
 
 def compact_profiles(profiles, successful):
@@ -115,6 +141,8 @@ def main():
     parser.add_argument('--fullscreen', action='store_true')
     parser.add_argument('--discard-merged-profiles', action='store_true',
                         help='discard raw profiles after successful tests, merge, export and HTML; retain failed-run inputs')
+    parser.add_argument('--stream-logs', action='store_true',
+                        help='also stream command output to CI logs before artifact upload')
     parser.add_argument('-j', '--jobs', type=int, default=4)
     args = parser.parse_args()
     default_build = 'native-coverage' if args.optimization == 0 else f'native-coverage-o{args.optimization}'
@@ -131,9 +159,7 @@ def main():
 
     def run(command, log, env=None):
         manifest['commands'].append(command)
-        with (output / log).open('w') as stream:
-            result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
-        return result.returncode
+        return run_logged(command, output / log, env=env, stream_logs=args.stream_logs)
 
     flags = f'-g -O{args.optimization} -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE'
     command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
@@ -188,6 +214,8 @@ def main():
             with (directory / 'coverage.json').open('w') as stream, warnings.open('w') as err:
                 command = tool(args.llvm_cov) + ['export', *covargs, '-skip-expansions']
                 manifest['commands'].append(command)
+                if args.stream_logs:
+                    print(f'Coverage JSON export ({kind}): {shlex.join(command)}', flush=True)
                 result = subprocess.run(command, cwd=ROOT, stdout=stream, stderr=err)
             if result.returncode or warnings.read_text().strip():
                 raise RuntimeError(f'{kind}: coverage diagnostics require investigation; see export.log')

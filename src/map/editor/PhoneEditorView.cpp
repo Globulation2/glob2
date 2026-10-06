@@ -1,3 +1,4 @@
+#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
 // Touch editor presentation. Reads existing selection/value bindings; all edits
@@ -59,17 +60,17 @@ void PhoneEditor::prepareInspector()
 	if (editor.panelMode == MapEdit::BuildingEditor)
 	{
 		add("[hp]", editor.buildingHPScrollBox);
-		add("[Wheat]", editor.buildingFoodQuantityScrollBox);
 		add("[assigned]", editor.buildingAssignedScrollBox);
 		add("[Worker Ratio]", editor.buildingWorkerRatioScrollBox);
 		add("[Explorer Ratio]", editor.buildingExplorerRatioScrollBox);
 		add("[Warrior Ratio]", editor.buildingWarriorRatioScrollBox);
-		add("[Cherry]", editor.buildingCherryScrollBox);
-		add("[Orange]", editor.buildingOrangeScrollBox);
-		add("[Prune]", editor.buildingPruneScrollBox);
-		add("[Stone]", editor.buildingStoneScrollBox);
 		add("[Bullets]", editor.buildingBulletsScrollBox);
 		add("[Minimum Level To Flag]", editor.buildingMinimumLevelScrollBox);
+		add("[Worker]",editor.buildingWorkerLevelScrollBox);
+		add("[ground attack]",editor.buildingBombingScrollBox);
+		for (int r=0; r<MAX_RESOURCES; ++r)
+			if (editor.buildingResourceControls[r]->enabled)
+				properties.push_back({editor.buildingResourceControls[r],getResourceName(r),{}});
 		add("[range]", editor.buildingRadiusScrollBox);
 	}
 	else
@@ -109,7 +110,7 @@ void PhoneEditor::drawInspector()
 			clearTool();
 			return;
 		}
-		title = translated(("[" + b->type->type + "]").c_str());
+		title = buildingDisplayName(*b->type);
 		detail = GAGCore::FormattableString(
 					 GAGCore::Toolkit::getStringTable()->getString("[Team %0 / Level %1]"))
 					 .arg(b->owner->teamNumber + 1)
@@ -223,11 +224,10 @@ void PhoneEditor::drawInteractionPreview()
 		int width = 1, height = 1;
 		if (editor.selectionMode == MapEdit::PlaceBuilding)
 		{
-			int type = globalContainer->buildingsTypes.getTypeNum(editor.selectionName,
-																  editor.buildingLevel, false);
-			if (!editor.isUpgradable(IntBuildingType::shortNumberFromType(editor.selectionName)))
-				type = globalContainer->buildingsTypes.getTypeNum(editor.selectionName, 0, false);
-			auto *b = globalContainer->buildingsTypes.get(type);
+			int type=editor.buildingSelectionType(editor.selectionName);
+			if (type<0) return;
+			auto *b=editor.game.buildingsTypes.get(type);
+			if (!b) return;
 			width = b->width;
 			height = b->height;
 			int x, y, bx, by;

@@ -107,7 +107,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 		if (selectionMode == BUILDING_SELECTION)
 		{
 			Building* selBuild=selectionBuilding();
-			if (selBuild && selectionPushed && (selBuild->type->isVirtual))
+			if (selBuild && selectionPushed && (selBuild->type->semantics.relocatable))
 				moveFlag(mx, my, false);
 		}
 		// Update tool

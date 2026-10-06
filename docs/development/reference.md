@@ -934,7 +934,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
-  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  remains unchanged. Building format 137 adds the per-game building catalog; replay
+  floor 137 and network protocol 57 gate the current simulation and catalog transport.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
@@ -1497,11 +1498,13 @@ it is saved, checksummed or read by the simulation.
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
   The outline stroke stops thickening at two points.
-- In the cross-fade `Game::drawMapOverview` fades in one flat colour per tile
-  (terrain, or the resource's minimap colour over it); in the overview it replaces
-  the water, terrain and resource passes. It is one image, a pixel per visible tile,
-  stretched over the map in a single draw: as per-tile translucent fills it cost
-  more than the terrain it covered during the cross-fade.
+- In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
+  from the detailed compositor's material coverage, including legacy corner shores
+  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  during the fade; resource minimap colours tint their gameplay cells over that
+  ground. In the overview this replaces the water, terrain and resource passes.
+  The reusable image stretches over the map in a single draw, avoiding thousands
+  of translucent fills.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
@@ -1522,7 +1525,11 @@ it is saved, checksummed or read by the simulation.
   player's ping.
 - The torus view draws its map texture through the same map transform at the
   camera's zoom (`TorusView::draw`), so it shows the same detail, overlay sizes and
-  overview as the 2D view at that zoom.
+  overview as the 2D view at that zoom. Its tiled atlas chooses terrain sampling
+  density from the complete map capture, then admits each bounded tile at that
+  density. Narrow edge tiles therefore reuse warm pages and keep the same shore
+  samples as their wider neighbors, including when HD sources exceed the cache
+  budget. Streaming fallback follows the same density choice.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling

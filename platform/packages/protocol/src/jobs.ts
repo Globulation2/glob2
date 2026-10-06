@@ -12,7 +12,7 @@ import { ValidateAiPayload, AiValidationReport } from './ais.ts';
 import { StudioSettings } from './mapStudio.ts';
 import { Type, type Static, type TSchema } from 'typebox';
 import { ErrorBody, Open, SeatIndex, Sha256Hex, Strict, TeamIndex, Uuid } from './common.ts';
-import { GeneratorDescriptor, MatchSetup } from './matchSetup.ts';
+import { BuildingCatalog, GeneratorDescriptor, MatchSetup } from './matchSetup.ts';
 import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
@@ -37,6 +37,7 @@ const MapFacts = Open({
   width: Type.Integer({ minimum: 1 }),
   height: Type.Integer({ minimum: 1 }),
   teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
+  buildingCatalog: Type.Optional(BuildingCatalog),
 });
 
 export const ImportAiMapPayload = Strict({
@@ -310,6 +311,7 @@ const JobKinds = Type.Array(JobKind, {
 });
 
 export const EngineAgentHeartbeat = Strict({
+  buildingCatalogHash: Type.Optional(Sha256Hex),
   agentId: EngineAgentId,
   simVersion: SimVersion,
   kinds: JobKinds,

@@ -1,5 +1,8 @@
+#include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
+#include <iostream>
 #include "TeamStat.h"
 #include "WinProbability.h"
 #include "WinningConditions.h"
@@ -14,6 +17,44 @@
 
 TEST_SUITE("WinProbability")
 {
+    TEST_CASE("combat facilities count concrete providers once, including explicit construction targets")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int admitted:{7,1,4}) {
+        CAPTURE(admitted);
+        glob2test::HeadlessGame world({.header=true});
+        auto& catalog=world.game.buildingsTypes;
+        const int finished=catalog.getFinishedTypeNum("barracks");
+        const int site=catalog.getPlaceableTypeNum("barracks");
+        const int passive=catalog.getFinishedTypeNum("stonewall");
+        auto snapshot=nlohmann::json::parse(catalog.snapshotJson());
+        snapshot["variants"][finished]["properties"]["shortTypeNum"]=11;
+        snapshot["variants"][passive]["properties"]["shortTypeNum"]=5;
+        snapshot["variants"][finished]["semantics"]["admittedUnitMask"]=admitted;
+        catalog.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
+        auto* stat=world.team->stats.getLatestStat();
+        stat->buildingCountByVariant.assign(catalog.size(),0);
+        stat->buildingCountByVariant[finished]=2;
+        stat->buildingCountByVariant[site]=3;
+        stat->buildingCountByVariant[passive]=7;
+        // Two combat services on each facility still describe one building.
+        std::vector<int> alliances;
+        auto slots=WinProbability::slotsOf(world.game,alliances);
+        REQUIRE(slots.size()==1);
+        CHECK(slots[0].barracks==((admitted&(1u<<WARRIOR))?5:0));
+        if(!(admitted&(1u<<WARRIOR)))continue;
+        world.game.stepCounter=512;
+        std::ostringstream log;
+        {
+            glob2test::ScopedEnvironment enabled("GLOB2_TEAM_TIMELINE","1");
+            struct Capture {std::streambuf* previous;~Capture(){std::cout.rdbuf(previous);}} capture{std::cout.rdbuf(log.rdbuf())};
+            world.team->stats.step(world.team);
+        }
+        CHECK(log.str().find(" barracks=5 ")!=std::string::npos);
+        CHECK(log.str().find(" variant_"+std::to_string(passive)+"=7")!=std::string::npos);
+        }
+    }
+
     TEST_CASE("equal alliances share chances and eliminated allies contribute nothing")
     {
         glob2test::HeadlessGlobals globals;

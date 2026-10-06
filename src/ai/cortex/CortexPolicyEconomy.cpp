@@ -157,6 +157,12 @@ namespace Cortex
 	// already-applied ratio emits no order.
 	ScoredAction CortexPolicy::scoreProductionControl(const CortexObservation& obs, const DecideFacts& f) const
 	{
+        // The capability binding can prove that every available output already
+        // has the requested on/off state. Preserve the strategy's original
+        // transition rules below; changing a positive weight is not a reason to
+        // preempt construction, and an unavailable recipe cannot be restarted.
+        if (obs.hasModelProjection && !obs.productionNeedsRetune)
+            return cortexDecline();
 		if (!f.panic)
 		{
 			// (a) (Re)start any swarm producing nothing — freshly built, or a halted
@@ -265,7 +271,7 @@ namespace Cortex
 	// feed loop — that precondition is GATE_BOOTSTRAP in decide()'s gate table.
 	ScoredAction CortexPolicy::scoreSwarmRecovery(const CortexObservation& obs, const DecideFacts& f) const
 	{
-		if (f.swarms == 0 && f.swarmSites == 0)
+		if ((obs.hasModelProjection && obs.productionMissingMask) || (f.swarms == 0 && f.swarmSites == 0))
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_SWARM);
 			if (slot >= 0)

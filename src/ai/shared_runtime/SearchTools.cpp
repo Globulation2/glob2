@@ -5,7 +5,7 @@
 #include "Building.h"
 #include <map>
 #include "BuildingType.h"
-#include "IntBuildingType.h"
+#include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "Utilities.h"
 
@@ -227,7 +227,7 @@ int SearchTools::is_flag(Runtime& runtime, int x, int y)
 		{
 			if(b->posX==x && b->posY==y)
 			{
-				if(b->type->shortTypeNum > (int)(IntBuildingType::DEFENSE_BUILDING) && b->type->shortTypeNum < (int)(IntBuildingType::STONE_WALL))
+				if(!b->type->semantics.occupiesGround)
 				{
 					return b->gid;
 				}
@@ -305,8 +305,8 @@ void enemy_building_iterator::set_to_next()
                              // Don't allow AIs to cheat!!!!!!
                              // || runtime->get_starting_buildings().find(b->gid)!=runtime->get_starting_buildings().end()
                              ) &&
-				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || b->type->shortTypeNum==building_type) &&
-				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || b->type->level==(level-AI_SHARED_RUNTIME_LEVEL_OFFSET_USER_TO_ENGINE)))
+				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || buildingProvides(*runtime->player->game,b->typeNum,building_type)) &&
+				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || runtime->player->game->buildingCapabilities().lineagePosition(b->typeNum)==level))
 			{
 				if(construction_site)
 				{

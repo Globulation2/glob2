@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for test/check_sim_revision.py on throwaway git repositories."""
 import importlib.util
+import json
 import shutil
 import subprocess
 import tempfile
@@ -93,6 +94,26 @@ class CheckSimRevisionTest(unittest.TestCase):
         self.set_revision(6)
         self.assertNotEqual(sim_version.sim_version_key(self.root), before)
         self.assertEqual(sim_version.sim_version_key(self.root).split('-')[:2], before.split('-')[:2])
+
+    def test_catalog_files_are_discovered_and_hashed(self):
+        directory = self.root / 'data/buildings'
+        directory.mkdir(parents=True)
+        manifest = directory / 'manifest.json'
+        manifest.write_text(json.dumps({'files': ['second.json', 'first.json']}))
+        (directory / 'first.json').write_text('{"variants":[]}')
+        (directory / 'second.json').write_text('{"variants":[]}')
+        files = sim_version.sim_data_files(self.root)
+        self.assertEqual(files, tuple(sorted(files)))
+        self.assertIn('data/buildings/first.json', files)
+        before = sim_version.data_hash(self.root)
+        (directory / 'first.json').write_text('{"variants":[1]}')
+        self.assertNotEqual(sim_version.data_hash(self.root), before)
+        self.commit('catalog')
+        head = self.git('rev-parse', 'HEAD').stdout.decode().strip()
+        self.assertEqual(checker.key_at(self.root, head, sim_version), sim_version.sim_version_key(self.root))
+        manifest.write_text(json.dumps({'files': ['../outside.json']}))
+        with self.assertRaises(ValueError):
+            sim_version.sim_data_files(self.root)
 
 
 if __name__ == '__main__':

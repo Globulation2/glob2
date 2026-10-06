@@ -123,6 +123,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                        'src/app/GlobalContainer.cpp', 'src/map/TerrainPresentation.h', 'data/terrain/tileset.json']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
         plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
+        plan_inputs += [str(p) for p in Path('data/buildings').rglob('*.json')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
@@ -184,11 +185,20 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
         tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
+                               '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
         for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp', '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
                 ('#src/map/gradient/PathGradientHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
+                '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
+                '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
+                ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:
             source, options = (entry, {}) if isinstance(entry, str) else entry
             local = tests.Clone()
@@ -208,7 +218,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
                                'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js', 'browser/canvas-size.js'])
         env.Depends(harness, assets)
-        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
+        tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'examples/javascript', 'games')
                                for p in Path(directory).rglob('*') if p.is_file()])
         tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('wasm', 'data')], harness)
         if threaded:

@@ -12,6 +12,7 @@
 #include <GraphicContext.h>
 
 #include "GlobalContainer.h"
+#include "BuildingPresentation.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -48,6 +49,11 @@ using namespace GAGGUI;
 // (GameGUIDrawMiscPanels.cpp) and the click path (GameGUIInputMenuClick.cpp) so
 // they cannot drift apart.
 constexpr int ZONE_STRIP_HEIGHT = 40;
+
+inline int buildingExtraHeaderHeight(const BuildingType& type)
+{
+    return buildingHasSeparateAttractionHeader(type) ? YOFFSET_ICON+YOFFSET_B_SEP : 0;
+}
 
 // Per-row pitches inside the building info panel resource/swarm sections.
 #define YOFFSET_RESOURCE_LINE 11
@@ -134,13 +140,8 @@ static_assert(zoneStripButtonAt(zoneStripButtonX(0, 4) + ZONE_STRIP_BUTTON_SIZE 
 	&& zoneStripButtonAt(zoneStripLeft(4) - 1, 4) == -1 && zoneStripButtonAt(RIGHT_MENU_WIDTH, 4) == -1,
 	"every four-button sprite pixel hits its own button");
 
-// The exploration flag reuses Building::minLevelToFlag as a two-option choice
-// of which explorers may answer the flag (see Building::canUnitWorkHere):
-//   ANY_EXPLORER (0)  — any explorer is accepted
-//   GROUND_ATTACK (1) — only explorers that can cast ground attack
-// The option list drawn in the building panel (and its click hit-test) has one
-// row per option, in this order. War flags use minLevelToFlag literally as a
-// minimum warrior level, so their list has NB_UNIT_LEVELS rows instead.
+// Explorer attraction has an independent bombing requirement. Ground attraction
+// retains a minimum training level, so a combined provider exposes both controls.
 constexpr int EXPLORATION_FLAG_OPTION_ANY_EXPLORER = 0;
 constexpr int EXPLORATION_FLAG_OPTION_GROUND_ATTACK = 1;
 constexpr int EXPLORATION_FLAG_OPTION_COUNT = 2;

@@ -237,17 +237,26 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
 	const int size = 32 * scale;
-	std::vector<const Texture *> selected(definitions.materials.size(), nullptr);
+	// Resolve immutable pixel storage once per tile, rather than through
+	// vector/array accessors for every channel of every instrumented pixel.
+	struct Source
+	{
+		const std::array<unsigned char, 4> *pixels = nullptr;
+		int size = 0;
+	};
+	std::vector<Source> selected(definitions.materials.size());
+	auto *sources = selected.data();
 	for (auto id : r.samples)
-		if (!selected[id] && !definitions.materials[id].ocean)
+		if (!sources[id].pixels && !definitions.materials[id].ocean)
 		{
-			selected[id] = &textures[id][definitions.variantIndex(id, r.x, r.y)];
+			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y)];
+			sources[id] = {texture.pixels.data(), texture.size};
 		}
 	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
 									 [&](auto id) { return id == r.samples[0]; });
 	if (uniform)
 	{
-		const auto *texture = selected[r.samples[0]];
+		const auto &texture = sources[r.samples[0]];
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -255,12 +264,12 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 						ox;
 			for (int x = 0; x < size; ++x)
 			{
-				if (!texture)
+				if (!texture.pixels)
 					row[x] = 0;
 				else
 				{
-					const auto &p = texture->pixels[(y * texture->size / size) * texture->size +
-													x * texture->size / size];
+					const auto *p = texture.pixels[(y * texture.size / size) * texture.size +
+													x * texture.size / size].data();
 					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
 							 (unsigned(p[1]) << 8) | p[2];
 				}
@@ -273,14 +282,16 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		for (int x = 0; x < size; ++x)
 		{
 			const auto mask = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			const auto *weights = mask.weight.data();
+			const auto *materials = mask.material.data();
 			std::uint64_t rgb[3] = {};
 			unsigned alpha = 0;
 			for (int i = 0; i < 4; ++i)
-				if (mask.weight[i] && selected[mask.material[i]])
+				if (weights[i] && sources[materials[i]].pixels)
 				{
-					const auto &t = *selected[mask.material[i]];
-					const auto &p = t.pixels[(y * t.size / size) * t.size + x * t.size / size];
-					const unsigned a = mask.weight[i] * p[3];
+					const auto &t = sources[materials[i]];
+					const auto *p = t.pixels[(y * t.size / size) * t.size + x * t.size / size].data();
+					const unsigned a = weights[i] * p[3];
 					alpha += a;
 					for (int k = 0; k < 3; ++k)
 						rgb[k] += std::uint64_t(p[k]) * a;
@@ -291,6 +302,40 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			const auto channel = [&](int k) { return unsigned(alpha ? rgb[k] / alpha : 0); };
 			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |
 				 channel(2);
+		}
+}
+void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
+								 const std::array<unsigned char, 3> *cellColor) const
+{
+	if (target->format != SDL_PIXELFORMAT_ARGB8888)
+		throw std::runtime_error("Terrain overview requires ARGB8888");
+	const auto packed = [](const auto &color)
+	{ return 0xFF000000u | (unsigned(color[0]) << 16) | (unsigned(color[1]) << 8) | color[2]; };
+	// Saved custom whole-cell aliases may carry their own overview palette.
+	const auto colorOf = [&](MaterialId id) -> const std::array<unsigned char, 3> &
+	{ return cellColor && id == r.samples[5] ? *cellColor : definitions.materials[id].preview; };
+	if (std::all_of(r.samples.begin(), r.samples.end(),
+					[&](auto id) { return id == r.samples[0]; }))
+	{
+		SDL_Rect area{ox, oy, OverviewSamples, OverviewSamples};
+		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.samples[0])));
+		return;
+	}
+	const PreparedCoverage prepared(definitions, r);
+	for (int y = 0; y < OverviewSamples; ++y)
+		for (int x = 0; x < OverviewSamples; ++x)
+		{
+			const auto mask = prepared.at((x * 8192 + 4096) / OverviewSamples,
+										 (y * 8192 + 4096) / OverviewSamples);
+			std::array<unsigned, 3> color{};
+			for (int i = 0; i < 4; ++i)
+				for (int k = 0; k < 3; ++k)
+					color[k] += mask.weight[i] * colorOf(mask.material[i])[k];
+			for (auto &channel : color)
+				channel = (channel + 32768) / 65536;
+			auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
+												 (oy + y) * target->pitch);
+			row[ox + x] = packed(color);
 		}
 }
 } // namespace TerrainVisual

@@ -34,7 +34,6 @@
 #include <algorithm>
 #include <new>
 #include "terrain/TerrainCompositor.h"
-#include "terrain/TerrainCatalogIO.h"
 #include "SoftwareTerrainCache.h"
 
 namespace
@@ -133,7 +132,9 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 
 	SoftwareTerrainCache::drawUncached(sceneMap, *globalContainer->terrain, left, top, right, bot,
 									   viewportX, viewportY, visibleTeams,
-									   drawOptions & DRAW_WHOLE_MAP, animationTime);
+									   drawOptions & DRAW_WHOLE_MAP, animationTime,
+									   SoftwareTerrainCache::FallbackMode::StreamPages,
+									   drawOptions & DRAW_TILED_CAPTURE);
 }
 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
@@ -189,41 +190,46 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	// Resolve palette bindings once per draw, including the two legacy shore colors.
-	const auto palette =
-		TerrainVisual::overviewPalette(globalContainer->terrainCompositor().catalog());
-	const auto colorOf = [&](int x, int y) -> Uint32
-	{
-		const auto type = sceneMap.presentationTypeAt(x + viewportX, y + viewportY);
-		const auto color = unsigned(type) < TERRAIN_COUNT
-							   ? palette[unsigned(type)]
-							   : sceneMap.terrainPresentation(type).overview;
-		int r = color.r, g = color.g, b = color.b;
-		const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
-		if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-			sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))
-		{
-			// A field of resources reads as its minimap colour over the ground it grows on.
-			const ResourceType *rt = globalContainer->resourcesTypes.get(resource.type);
-			r = (r + 3*rt->minimapR) / 4;
-			g = (g + 3*rt->minimapG) / 4;
-			b = (b + 3*rt->minimapB) / 4;
-		}
-		return Uint32(r) << 16 | Uint32(g) << 8 | Uint32(b);
-	};
-	// One pixel per tile, stretched over the map in a single draw: thousands of
-	// translucent rectangles a frame cost more than the terrain they cover.
+	auto &compositor = globalContainer->terrainCompositor();
+	constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overview)
-		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns, rows);
-	else if (render.overview->getW()!=columns || render.overview->getH()!=rows)
-		render.overview->setRes(columns, rows);
+		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
+	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
+		render.overview->setRes(columns*samples, rows*samples);
+	auto *pixels = render.overview->getSDLSurface();
+	// Sample the same corner/whole-cell partition as the textured terrain. A
+	// whole-tile corner hue moves legacy coasts half a tile during the fade.
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 		{
-			const Uint32 color = colorOf(x, y);
-			render.overview->drawPixel(x-left, y-top, Uint8(color >> 16), Uint8(color >> 8), Uint8(color), 255);
+			const int ox = (x-left)*samples, oy = (y-top)*samples;
+			const auto type = sceneMap.terrainTypeAt(x+viewportX, y+viewportY);
+			const auto color = sceneMap.terrainPresentation(type).overview;
+			const std::array<unsigned char, 3> cellColor{color.r, color.g, color.b};
+			compositor.composeOverview(compositor.describe(sceneMap, x+viewportX, y+viewportY),
+									   pixels, ox, oy, unsigned(type) < TERRAIN_COUNT ? nullptr : &cellColor);
+			const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
+			if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
+				sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))
+			{
+				// Resource fields retain their gameplay-cell position over the ground.
+				const ResourceType *rt = globalContainer->resourcesTypes.get(resource.type);
+				for (int py = oy; py < oy+samples; ++py)
+				{
+					auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + py*pixels->pitch);
+					for (int px = ox; px < ox+samples; ++px)
+					{
+						const auto color = row[px];
+						const unsigned r = (((color >> 16) & 255) + 3*rt->minimapR) / 4;
+						const unsigned g = (((color >> 8) & 255) + 3*rt->minimapG) / 4;
+						const unsigned b = ((color & 255) + 3*rt->minimapB) / 4;
+						row[px] = 0xFF000000u | (r << 16) | (g << 8) | b;
+					}
+				}
+			}
 		}
+	render.overview->markPixelsChanged();
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 

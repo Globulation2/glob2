@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "Unit.h"
+#include "UnitTiming.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -49,14 +50,13 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
-				else if (attachedBuilding->fetchesFromMarkets())
+				else if ((attachedBuilding->runtime->fetchesStockMask | attachedBuilding->runtime->fetchesDirectStockMask)&(1u<<destinationPurpose))
 				{
 					// The gradient led here to a stocked market of ours: take the
 					// resource at its door and carry it home.
 					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
 					{
-						market->removeResourceFromBuilding(destinationPurpose);
-						carriedResource=destinationPurpose;
+						receiveCarriedResource(destinationPurpose,market->withdrawResourcePacket(destinationPurpose));
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
 						validTarget=true;
@@ -89,7 +89,7 @@ void Unit::handleDisplacement(void)
 				else
 				{
 					// we got the resource.
-					carriedResource=destinationPurpose;
+					receiveCarriedResource(destinationPurpose,{});
 					++owner->stats.measurements.harvested[carriedResource];
 
 					setTargetBuilding(attachedBuilding);
@@ -129,22 +129,26 @@ void Unit::handleDisplacement(void)
 				{
 					assert(targetBuilding);
 					assert(ownExchangeBuilding);
-					assert(targetBuilding->type->canExchange);
-					assert(ownExchangeBuilding->type->canExchange);
+					if (!(targetBuilding->runtime->suppliesDirectStockMask&(1u<<destinationPurpose)) || !(attachedBuilding->runtime->fetchesDirectStockMask&(1u<<destinationPurpose))
+						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->resources == attachedBuilding->resources)
+					{
+						stopAttachedForBuilding(false);
+						break;
+					}
+					assert(targetBuilding->type->runtimeSuppliesDirectStock);
+					assert(ownExchangeBuilding->type->runtimeSuppliesDirectStock);
 					assert(owner==targetBuilding->owner);
 					assert(owner==ownExchangeBuilding->owner);
 
 					assert(attachedBuilding);
-					assert(attachedBuilding->type->canFeedUnit);
-					assert(destinationPurpose>=HAPPINESS_BASE);
+					assert(attachedBuilding->type->runtimeFetchesDirectStock);
+					assert(destinationPurpose>=0 && destinationPurpose<MAX_RESOURCES);
 
 					// Let's grab the right resource.
 
-					if (targetBuilding->resources[destinationPurpose]>0)
+					if (targetBuilding->availableResource(destinationPurpose)>0)
 					{
-						targetBuilding->removeResourceFromBuilding(destinationPurpose);
-						carriedResource=destinationPurpose;
-						++owner->stats.measurements.harvested[carriedResource];
+						receiveCarriedResource(destinationPurpose,targetBuilding->withdrawResourcePacket(destinationPurpose));
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -156,12 +160,13 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((carriedResource>=0) && (targetBuilding->resources[carriedResource]<targetBuilding->type->maxResource[carriedResource]))
+				else if ((carriedResource>=0) && (targetBuilding->resourceDeliveryNeed(carriedResource)>0))
 				{
 					if (verbose)
 						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
-					targetBuilding->addResourceIntoBuilding(carriedResource);
+					targetBuilding->deliverResourcePacket(carriedResource,carriedPacket);
 					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
+					carriedPacket={};
 				}
 
 				if (!loopMove && !exchangeReady)
@@ -189,53 +194,19 @@ void Unit::handleDisplacement(void)
 						{
 							int bestResource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
-							bool takeInExchangeBuilding=false;
-							Map* map=owner->map;
-							for (int r=0; r<MAX_NB_RESOURCES; r++)
-							{
-								int need=needs[r];
-								if (need>0)
-								{
-									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource, attachedBuilding->fetchesFromMarkets());
-									if (available)
-									{
-										if ((distToResource<<1)>=timeLeft)
-											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
-										int value=distToResource/need;
-										if (value<minValue)
-										{
-											bestResource=r;
-											minValue=value;
-											takeInExchangeBuilding=false;
-										}
-									}
-									if (!owner->game->gameHeader.hasExperiment(ExperimentId::MarketsV2) && attachedBuilding->type->canFeedUnit)
-										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
-											if ((*bi)->resources[r]>0)
-											{
-												int buildingDist;
-												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
-												{
-													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
-													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
-													int value=(buildingDist+5)/need;
-													if (value<minValue)
-													{
-														bestResource=r;
-														minValue=value;
 
-														ownExchangeBuilding=*bi;
-														setTargetBuilding(*bi);
-														takeInExchangeBuilding=true;
-													}
-												}
-											}
-								}
+							Map* map=owner->map;
+							for (int r=0; r<MAX_RESOURCES; ++r)
+							{
+								const int need=needs[r];
+								if (need<=0) continue;
+								int distance;
+								bool available=map->roundTripDistance(attachedBuilding,r,swimClass(),posX,posY,&distance);
+								if (available) distance=(distance+1)/2;
+								else available=map->resourceAvailable(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								if (!available || (distance<<1)>=timeLeft) continue;
+								const int value=distance/need;
+								if (value<minValue) { bestResource=r; minValue=value; }
 							}
 
 							if (verbose)
@@ -245,15 +216,6 @@ void Unit::handleDisplacement(void)
 							{
 								destinationPurpose=bestResource;
 								assert(activity==ACT_FILLING);
-								if (takeInExchangeBuilding)
-								{
-									displacement=DIS_GOING_TO_BUILDING;
-									targetX=targetBuilding->getMidX();
-									targetY=targetBuilding->getMidY();
-									targetBuilding->insertUnitToHarvesting(this);
-									validTarget=true;
-								}
-								else
 								{
 									int dummyDist;
 									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
@@ -263,7 +225,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets()))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
@@ -327,20 +289,48 @@ void Unit::handleDisplacement(void)
 
 				if (destinationPurpose==FEED)
 				{
-					insideTimeout=-attachedBuilding->type->timeToFeedUnit;
+					insideTimeout=-attachedBuilding->type->semantics.feeding.duration;
 					speed=attachedBuilding->type->insideSpeed;
 				}
 				else if (destinationPurpose==HEAL)
 				{
-					//insideTimeout=-(attachedBuilding->type->timeToHealUnit*(performance[HP]-hp))/performance[HP];
-					insideTimeout=-attachedBuilding->type->timeToHealUnit;
-					speed=(attachedBuilding->type->insideSpeed*performance[HP])/(performance[HP]-hp);
+					//insideTimeout=-(attachedBuilding->type->semantics.healing.duration*(performance[HP]-hp))/performance[HP];
+					insideTimeout=-attachedBuilding->type->semantics.healing.duration;
+					speed=(attachedBuilding->type->insideSpeed*performance[HP])/std::max(1, performance[HP]-hp);
 				}
 				else
 				{
-					int levelsToBeUpgraded=attachedBuilding->type->level+1-level[destinationPurpose];
-					insideTimeout=-attachedBuilding->type->upgradeTime[destinationPurpose];
-					speed=attachedBuilding->type->insideSpeed/levelsToBeUpgraded;
+					const auto& spec=attachedBuilding->type->semantics;
+					const auto trainingSpeed=[&](int ability) {
+						return std::max(1, attachedBuilding->type->insideSpeed/
+							std::max(1, spec.training[ability].targetLevel-level[ability]));
+					};
+					int duration=spec.training[destinationPurpose].duration;
+					speed=trainingSpeed(destinationPurpose);
+					const auto remainingTicks=[&](int courseDuration,int courseSpeed) {
+						const int advance=unitActionStepSpeed(courseSpeed,action,dx,dy,true);
+						const Sint64 remaining=(Sint64(courseDuration)+1)*UNIT_DELTA_QUANTUM-delta;
+						// Legacy saves may carry surplus phase, but syncStep still
+						// completes at most one inside action per tick.
+						return std::max(Sint64(courseDuration)+1,(remaining+advance-1)/advance);
+					};
+					Sint64 slowestTicks=remainingTicks(duration,speed);
+					// Entry phase and integer delta advances affect the final action.
+					// Keep the first course when their actual remaining ticks tie.
+					if (spec.trainingInParallel)
+						for (int ability=WALK; ability<NB_ABILITY; ++ability)
+							if (needsTraining(spec.training[ability],ability))
+							{
+								const int candidateSpeed=trainingSpeed(ability);
+								const Sint64 candidateTicks=remainingTicks(spec.training[ability].duration,candidateSpeed);
+								if (candidateTicks>slowestTicks)
+								{
+									duration=spec.training[ability].duration;
+									speed=candidateSpeed;
+									slowestTicks=candidateTicks;
+								}
+							}
+					insideTimeout=-duration;
 				}
 			}
 			else if (displacement==DIS_INSIDE)
@@ -359,11 +349,12 @@ void Unit::handleDisplacement(void)
 					if (destinationPurpose==FEED)
 					{
 						hungry=HUNGRY_MAX;
-						fruitCount=attachedBuilding->eatOnce(&fruitMask);
+						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						needToRecheckMedical=true;
 					}
 					else if (destinationPurpose==HEAL)
 					{
+						attachedBuilding->settleService(this);
 						++attachedBuilding->owner->stats.measurements.healingVisits;
 						attachedBuilding->owner->stats.measurements.hpRestored +=
 							std::max(0, performance[HP] - hp);
@@ -374,30 +365,19 @@ void Unit::handleDisplacement(void)
 					// New training visits are rejected by Team::findBestUpgrade.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
+						attachedBuilding->settleService(this);
 						Sint32 previousLevels[NB_ABILITY];
 						std::copy(level, level + NB_ABILITY, previousLevels);
-						if (attachedBuilding->type->upgradeInParallel)
+						if (attachedBuilding->type->semantics.trainingInParallel)
 						{
-							for (int ability = (int)WALK; ability < (int)ARMOR; ability++)
-								if (canLearn[ability] && attachedBuilding->type->upgrade[ability])
-								{
-									level[ability] = attachedBuilding->type->level + 1;
-									UnitType *ut = race->getUnitType(typeNum, level[ability]);
-									performance[ability] = ut->performance[ability];
-								}
-						}
-						else
-						{
-							assert(canLearn[destinationPurpose]);
-							if (destinationPurpose == BUILD || destinationPurpose == HARVEST)
-								setWorkerLevel(attachedBuilding->type->level + 1);
-							else
+							for (int ability = (int)WALK; ability < NB_ABILITY; ability++)
 							{
-								level[destinationPurpose] = attachedBuilding->type->level + 1;
-								UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
-								performance[destinationPurpose] = ut->performance[destinationPurpose];
+								const auto& training = attachedBuilding->type->semantics.training[ability];
+								if (needsTraining(training, ability)) applyTraining(training, ability);
 							}
 						}
+						else
+							applyTraining(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
 
 						for (int a = 0; a < NB_ABILITY; ++a)
 							owner->stats.measurements.abilityGains[typeNum][a] +=
@@ -492,7 +472,7 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
 				Building *b = t->myBuildings[j];
-				if((b)&&(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->type->shootingRange + 1)
+				if((b)&&(b->runtime->shootingRange>0)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->runtime->shootingRange + 1)
                     && b->hasClearShotTo(x,y)) return true;
 			}
 		}
@@ -508,9 +488,9 @@ void Unit::applyPartialInsideBenefit()
 		return;
 	int total;
 	if (destinationPurpose==FEED)
-		total=attachedBuilding->type->timeToFeedUnit;
+		total=attachedBuilding->type->semantics.feeding.duration;
 	else if (destinationPurpose==HEAL)
-		total=attachedBuilding->type->timeToHealUnit;
+		total=attachedBuilding->type->semantics.healing.duration;
 	else
 		return;
 	int elapsed=std::min(total, total+insideTimeout);
@@ -518,14 +498,15 @@ void Unit::applyPartialInsideBenefit()
 		return;
 	if (destinationPurpose==FEED)
 	{
-		if (attachedBuilding->resources[WHEAT]<=0)
-			return;
-		hungry+=((HUNGRY_MAX-hungry)*elapsed)/total;
-		fruitCount=attachedBuilding->eatOnce(&fruitMask);
+		if (attachedBuilding->type->semantics.feeding.partial == BuildingPartialService::None) return;
+		hungry+=(Sint64(HUNGRY_MAX-hungry)*elapsed)/total;
+		fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 	}
 	else
 	{
-		const int restored = ((performance[HP] - hp) * elapsed) / total;
+		if (attachedBuilding->type->semantics.healing.partial == BuildingPartialService::None) return;
+		attachedBuilding->settleService(this);
+		const int restored = (Sint64(performance[HP] - hp) * elapsed) / total;
 		attachedBuilding->owner->stats.measurements.hpRestored += std::max(0, restored);
 		hp += restored;
 	}

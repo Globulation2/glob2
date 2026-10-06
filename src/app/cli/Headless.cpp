@@ -147,6 +147,12 @@ uint64_t processCpuNs()
 #endif
 }
 void jsonArray(std::ostream& out, int value) { out << value; }
+void jsonArray(std::ostream& out, const std::vector<int>& values)
+{
+	out << '[';
+	for (size_t i=0; i<values.size(); ++i) { if(i) out << ','; out << values[i]; }
+	out << ']';
+}
 template<class T, size_t N> void jsonArray(std::ostream& out, const T (&values)[N])
 {
 	out << '[';
@@ -159,7 +165,7 @@ void standardStatistics(std::ostream& out, const TeamStat& stat)
 #define STAT(name) if(comma)out<<',';comma=true;out<<quote(#name)<<':';jsonArray(out,stat.name)
 	STAT(totalUnit); STAT(numberUnitPerType); STAT(totalFree); STAT(isFree);
 	STAT(totalNeeded); STAT(totalNeededPerLevel); STAT(totalBuilding);
-	STAT(numberBuildingPerType); STAT(numberBuildingPerTypePerLevel);
+	STAT(workersByConstructionLevel); STAT(buildingCountByVariant); STAT(numberBuildingPerType); STAT(numberBuildingPerTypePerLevel);
 	STAT(needFoodCritical); STAT(needFoodNoInns); STAT(needFood); STAT(needHeal); STAT(needNothing);
 	STAT(upgradeState); STAT(upgradeStatePerType); STAT(totalFood); STAT(totalFoodCapacity);
 	STAT(totalUnitFoodable); STAT(totalUnitFooded); STAT(totalHP); STAT(totalAttackPower);
@@ -268,7 +274,7 @@ struct HeadlessRunner
 		}
 		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
-		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
+		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
 		globals.runNoX=true;
 		globals.structuredHeadless=true;
@@ -317,6 +323,9 @@ struct HeadlessRunner
 		{
 			MapHeader map=Engine::loadMapHeader(mapFile);
 			GameHeader header;
+			// Catalog-declared experiment keys belong to the received map even
+			// when this installation has no matching authoring definitions.
+			header.setBuildingCatalogSnapshot(Engine::loadGameHeader(mapFile).getBuildingCatalogSnapshot());
 			const auto players=many(options,"--player");
 			if(players.empty() || players.size()!=size_t(map.getNumberOfTeams()) || players.size()>Team::MAX_COUNT)
 				throw std::invalid_argument("one --player AI is required per map team");
@@ -348,9 +357,8 @@ struct HeadlessRunner
 			// not apply here, only --experiment does.
 			for(const auto &key : many(options,"--experiment"))
 			{
-				const auto id=parseExperimentKey(key);
-				if(!id) throw std::invalid_argument("unknown experiment: " + key);
-				header.getExperiments().set(*id);
+				if(!knownExperimentKey(key, header.buildingExperimentKeys())) throw std::invalid_argument("unknown experiment: " + key);
+				header.getExperiments().set(key, true, header.buildingExperimentKeys());
 			}
 			// Added to the list in force rather than replacing it, so a real
 			// elimination or prestige win still ends the game first and only an
@@ -587,7 +595,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{
@@ -603,7 +611,7 @@ int runHeadlessCommand(int argc,char **argv)
 			char a[]="study",b[]="--catalog";char *args[]={a,b};runMapStudy(2,args);
 			std::cout << "}" << std::endl;return 0;
 		}
-		const std::set<std::string> common={"--output-dir","--profile"};
+		const std::set<std::string> common={"--output-dir","--profile","--building-catalog"};
 		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
@@ -628,10 +636,10 @@ int runHeadlessCommand(int argc,char **argv)
 			{
 				if(options.count("--map-file") || options.count("--load-game")) throw std::invalid_argument("generator conflicts with file input");
 				std::vector<std::string> generation={"glob2","--generate-map","--output-dir",(output/"generated").string(),"--write-map","true"};
-				for(const auto &key : {"--generator","--map-seed","--param","--candidates"})
+				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog"})
 				{
 					for(const auto &value : many(options,key)){generation.push_back(key);generation.push_back(value);}
-					options.erase(key);
+					if (std::string(key) != "--building-catalog") options.erase(key);
 				}
 				std::vector<char*> raw;for(auto &value:generation)raw.push_back(&value[0]);
 				const int generated=runHeadlessCommand(raw.size(),raw.data());
@@ -654,6 +662,7 @@ int runHeadlessCommand(int argc,char **argv)
 			if(!GeneratorRegistry::builtins().find(method))throw std::invalid_argument("unknown generator");
 			integer(one(options,"--map-seed"),0,UINT32_MAX);
 			std::vector<std::string> args={"study",std::to_string(method),one(options,"--map-seed"),one(options,"--profile","glob2-tournament"),"tuning","quality","result="+(output/"result.json").string()};
+			if (options.count("--building-catalog")) args.push_back("building-catalog="+one(options,"--building-catalog"));
 			std::set<std::string> seen;
 			for(const auto &param:many(options,"--param"))
 			{

@@ -10,6 +10,8 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <filesystem>
+#include "BuildingType.h"
+#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -33,6 +35,76 @@ void cursor(MapEdit& editor,int x,int y)
 
 TEST_SUITE("EditorActionCoverage")
 {
+    TEST_CASE("custom catalog editor exposes resources mixed controls and long upgrade paths [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+            .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        MapEdit editor; blank(editor);
+        auto snapshot=nlohmann::json::parse(editor.game.buildingsTypes.snapshotJson());
+        auto& variants=snapshot["variants"];
+        variants[3]["properties"]["zonable"]={1,1,1};
+        variants[3]["properties"]["defaultUnitStayRange"]=5;
+        variants[3]["properties"]["maxUnitStayRange"]=20;
+        variants[3]["properties"]["maxResource"]={30,30,30,30,30,30,30,30,0,0,0,0,0,0,0};
+        variants[3]["semantics"]["assignmentLimit"]=40;
+        variants[3]["semantics"]["production"]=variants[1]["semantics"]["production"];
+        int previous=7;
+        for (int depth=3; depth<5; ++depth)
+        {
+            auto site=variants[2], finished=variants[3];
+            const int siteId=variants.size(), finishedId=siteId+1;
+            const std::string family="fixture.refuge."+std::to_string(depth);
+            site["id"]=siteId; site["key"]=family+".site";
+            site["previous"]=variants[previous]["key"]; site["next"]=family+".finished";
+            site["properties"]["type"]=family; site["properties"]["level"]=0; // Presentation tier is independent of path depth.
+            site["semantics"]["placeable"]=false;
+            finished["id"]=finishedId; finished["key"]=family+".finished";
+            finished["previous"]=family+".site"; finished["next"]="";
+            finished["properties"]["type"]=family; finished["properties"]["level"]=0;
+            finished["semantics"]["placeable"]=false;
+            variants[previous]["next"]=site["key"];
+            variants.push_back(site); variants.push_back(finished); previous=finishedId;
+        }
+        const int overlayId=editor.game.buildingsTypes.getFinishedTypeNum("warflag");
+        variants[overlayId]["properties"]["width"]=2;
+        variants[overlayId]["properties"]["height"]=3;
+        editor.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        editor.game.configureBuildingCatalog(); editor.game.buildingsTypes.loadSprites();
+        editor.rebuildBuildingSelectors();
+        CHECK(editor.buildingLevelCount==5);
+        editor.performAction("next building level page");
+        CHECK(editor.buildingLevel==3);
+        editor.building_view_level2->handleClick(8,8);
+        CHECK(editor.buildingLevel==4);
+        CHECK(editor.buildingSelectionType("inn.0.finished")==previous);
+        editor.performAction("next building level page"); CHECK(editor.buildingLevel==0);
+        auto* building=editor.game.addBuilding(4,4,3,0); REQUIRE(building);
+        cursor(editor,4,4); editor.performAction("select map building");
+        REQUIRE(editor.selectedBuildingGID==building->gid);
+        CHECK(editor.buildingAssignedScrollBox->maximumValue()==40);
+        for (int resource=0; resource<MAX_RESOURCES; ++resource)
+        {
+            CHECK(editor.buildingResourceControls[resource]->maximumValue()==30);
+            editor.buildingResourceControls[resource]->setValue(resource+1);
+            CHECK(building->resources[resource]==resource+1);
+        }
+        editor.buildingEditFirstRow=100; editor.layoutBuildingEditRows();
+        CHECK(editor.buildingWorkerLevelScrollBox->enabled);
+        CHECK(editor.buildingBombingScrollBox->enabled);
+        editor.buildingWorkerLevelScrollBox->setValue(2);
+        editor.buildingMinimumLevelScrollBox->setValue(1);
+        editor.buildingBombingScrollBox->setValue(1);
+        CHECK(building->minWorkerLevelToFlag==2);
+        CHECK(building->minLevelToFlag==1);
+        CHECK(building->explorersRequireBombing);
+        editor.draw(SDL_GetTicks());
+        globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/editor-composite.bmp");
+        globals->gfx->nextFrame();
+        auto* overlay=editor.game.addBuilding(31,31,overlayId,0); REQUIRE(overlay);
+        cursor(editor,0,1); editor.performAction("select map building");
+        CHECK(editor.selectedBuildingGID==overlay->gid);
+    }
+
     TEST_CASE("editor selects and saves the sixteenth team [display][artifacts]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{

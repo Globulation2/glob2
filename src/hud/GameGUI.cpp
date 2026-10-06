@@ -37,7 +37,7 @@ using std::shared_ptr;
 using std::static_pointer_cast;
 
 GameGUI::GameGUI(bool persistPreferences)
-	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
+	: keyboardManager(GameGUIShortcuts), game(this), defaultAssign(game), toolManager(game, brush, defaultAssign, ghostManager),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
 	         (globalContainer->runNoX ? 0 : globalContainer->gfx->getW()), // width of the screen
@@ -162,25 +162,7 @@ void GameGUI::init()
 	panPushed=false;
 	mapPanPushed=false;
 
-	buildingsChoiceName.clear();
-	buildingsChoiceName.push_back("swarm");
-	buildingsChoiceName.push_back("inn");
-	buildingsChoiceName.push_back("hospital");
-	buildingsChoiceName.push_back("racetrack");
-	buildingsChoiceName.push_back("swimmingpool");
-	buildingsChoiceName.push_back("barracks");
-	buildingsChoiceName.push_back("school");
-	buildingsChoiceName.push_back("defencetower");
-	buildingsChoiceName.push_back("stonewall");
-	buildingsChoiceName.push_back("market");
-
-	buildingsChoiceState.assign(buildingsChoiceName.size(), true);
-
-	flagsChoiceName.clear();
-	flagsChoiceName.push_back("explorationflag");
-	flagsChoiceName.push_back("warflag");
-	flagsChoiceName.push_back("clearingflag");
-	flagsChoiceState.assign(flagsChoiceName.size(), true);
+	rebuildBuildingChoices();
 
 	hiddenGUIElements=0;
 
@@ -192,6 +174,30 @@ void GameGUI::init()
 	highlights.clear();
 
 	musicController.reset();
+}
+
+void GameGUI::rebuildBuildingChoices(bool preserve)
+{
+	buildingChoiceRow=flagChoiceRow=0;
+	std::map<std::string,bool> previous;
+	if (preserve)
+	{
+		for (size_t i=0; i<buildingsChoiceName.size(); ++i) previous[buildingsChoiceName[i]]=buildingsChoiceState[i];
+		for (size_t i=0; i<flagsChoiceName.size(); ++i) previous[flagsChoiceName[i]]=flagsChoiceState[i];
+	}
+	buildingsChoiceName.clear(); flagsChoiceName.clear();
+	for (size_t id=0; id<game.buildingsTypes.size(); ++id)
+	{
+		const auto* type=game.buildingsTypes.get(id);
+		if (!type->semantics.placeable || !type->runtimeAvailable) continue;
+		(type->isVirtual ? flagsChoiceName : buildingsChoiceName).push_back(type->key);
+	}
+	buildingsChoiceState.assign(buildingsChoiceName.size(),true);
+	flagsChoiceState.assign(flagsChoiceName.size(),true);
+	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
+		if (auto found=previous.find(buildingsChoiceName[i]); found!=previous.end()) buildingsChoiceState[i]=found->second;
+	for (size_t i=0; i<flagsChoiceName.size(); ++i)
+		if (auto found=previous.find(flagsChoiceName[i]); found!=previous.end()) flagsChoiceState[i]=found->second;
 }
 
 void GameGUI::adjustLocalTeam()

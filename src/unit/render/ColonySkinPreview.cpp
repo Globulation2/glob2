@@ -323,7 +323,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
                     building->type->isBuildingSite ||
-                    building->type->shortTypeNum != IntBuildingType::SWARM_BUILDING) continue;
+                    building->type->presentation.skinSlot != "swarm") continue;
                 const auto *swarm = swarmMesh(building->team);
                 if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
                     map.isFOWDiscovered(mx,my,visibleTeams)))

@@ -49,10 +49,10 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///2) At least strategy.upgrading_phase_1_unit_min units
 	///3) At least strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
 	BuildingSearch schools(runtime);
-	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools.add_condition(new NotUnderConstruction);
 	const int school_counts=schools.count_buildings();
-	const int trained_count=stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	const int trained_count=stat->workersByConstructionLevel[1] + stat->workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
 
 	if(!rules.isUnitUpgradesDisabled() && stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>=strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
 	{
@@ -68,15 +68,15 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///2) At least strategy.upgrading_phase_2_unit_min units
 	///3) At least strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
 	BuildingSearch schools_2(runtime);
-	schools_2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools_2.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools_2.add_condition(new NotUnderConstruction);
 	schools_2.add_condition(new BuildingLevel(2));
 	BuildingSearch schools_3(runtime);
-	schools_3.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
+	schools_3.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainConstruction));
 	schools_3.add_condition(new NotUnderConstruction);
 	schools_3.add_condition(new BuildingLevel(3));
 	const int school_counts_2=schools_2.count_buildings() + schools_3.count_buildings();
-	const int trained_count_2=runtime.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	const int trained_count_2=runtime.get_team_stats().workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
 
 	if(!rules.isUnitUpgradesDisabled() && stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
 	{
@@ -92,7 +92,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///2) Less than strategy.war_preparation_phase_barracks_max barracks OR
 	///3) Less than strategy.war_preparation_phase_trained_warrior_max trained warriors
 	BuildingSearch barracks(runtime);
-	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
+	barracks.add_condition(new ProvidesBuildingCapability(BuildingDemand::TrainAttackStrength));
 	int barracks_count=barracks.count_buildings();
 
 	// Standard phases wait for trained warriors and sufficient barracks. With

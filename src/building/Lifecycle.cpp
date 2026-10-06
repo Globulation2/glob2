@@ -22,9 +22,9 @@
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		globalGradient[i]=NULL;
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			roundTripGradient[r][i]=NULL;
 	}
@@ -40,8 +40,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
 
 	// type
-	this->typeNum=typeNum;
-	type=types->get(typeNum);
+	bindType(typeNum,types);
 	owner->prestige+=type->prestige;
 
 	// construction state
@@ -54,6 +53,12 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	else
 		constructionResultState=NO_CONSTRUCTION;
 
+
+	if (type->isBuildingSite)
+	{
+		constructionBudget = type->semantics.constructionCost;
+		siteCompletionPending = constructionBudget == BuildingResourceCost{};
+	}
 
 	// units
 	shortTypeNum = type->shortTypeNum;
@@ -80,6 +85,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		clearingResources[i]=true;
 	clearingResources[STONE]=false;
 	minLevelToFlag=0;
+	minWorkerLevelToFlag=0;
+	explorersRequireBombing=false;
 
 	// building specific :
 	for(int i=0; i<MAX_NB_RESOURCES; i++)
@@ -94,16 +101,13 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// preferred parameters
 
-	productionTimeout=type->unitProductionTime;
-
-	totalRatio=0;
-	ratio[0]=1;
-	totalRatio++;
-	percentUsed[0]=0;
-	for (int i=1; i<NB_UNIT_TYPE; i++)
+	resetProduction();
+	totalRatio = 0;
+	for (int i = 0; i < NB_UNIT_TYPE; ++i)
 	{
-		ratio[i]=0;
-		percentUsed[i]=0;
+		ratio[i] = type->semantics.production.initialRatios[i];
+		totalRatio += ratio[i];
+		percentUsed[i] = 0;
 	}
 
 	receiveResourceMask=0;
@@ -122,9 +126,9 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<NB_ABILITY; i++)
 		inUpgrade[i]=LS_UNKNOWN;
 
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		globalGradient[i]=NULL;
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			roundTripGradient[r][i]=NULL;
 	}
@@ -148,18 +152,29 @@ Building::~Building()
 	freeGradients();
 }
 
+BuildingRoute Building::resolveRoute(BuildingRoute route) const
+{
+	if (route != BuildingRoute::Automatic) return route;
+	if (!type->semantics.occupiesGround)
+	{
+		if (type->zonable[WORKER]) return BuildingRoute::Clearing;
+		if (type->zonable[WARRIOR]) return BuildingRoute::Combat;
+	}
+	return BuildingRoute::Footprint;
+}
+
 void Building::dirtyGradients()
 {
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		dirtyGradient[i] = true;
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	for (int i=0; i<BUILDING_ACCESS_COUNT; i++)
 		locked[i] = false;
 }
 
 void Building::resetPathfindGradients()
 {
 	dirtyGradients();
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
@@ -188,7 +203,7 @@ void Building::freeIdleGradients()
 	// Units keep a gradient alive by reading it; 500 ticks after the last one, it goes.
 	constexpr Uint32 IDLE_TICKS = 500;
 	Uint32 now = owner->game->stepCounter;
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	for (int c=0; c<BUILDING_GRADIENT_COUNT; c++)
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
@@ -196,6 +211,9 @@ void Building::freeIdleGradients()
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
+	}
+	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
 			{
@@ -210,12 +228,15 @@ void Building::freeGradients()
 	// Construction, reload and teardown may have no usable owner/map, or the
 	// map may have changed size. Only live invalidations recycle storage.
 	dirtyGradients();
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
+	}
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
 			delete[] roundTripGradient[r][i];
@@ -224,7 +245,7 @@ void Building::freeGradients()
 			roundTripGradientUsedStep[r][i] = 0;
 		}
 	}
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		lastGlobalGradientUpdateStepCounter[i] = 0;
 		globalGradientUsedStep[i] = 0;
@@ -303,6 +324,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
 		localResource[i] = stream->readSint32(oss.str().c_str());
+		if (localResource[i]<0) throw std::runtime_error("Invalid negative building inventory");
 	}
 
 	// quality parameters
@@ -338,7 +360,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	typeNum = stream->readSint32("typeNum");
 	if (typeNum < 0 || static_cast<size_t>(typeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
-	type = types->get(typeNum);
+	bindType(typeNum,types);
 	assert(type);
 	updateResourcesPointer();
 
@@ -355,6 +377,70 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	owner->prestige += type->prestige;
 
+	minWorkerLevelToFlag = 0;
+	explorersRequireBombing = type->zonable[EXPLORER] && minLevelToFlag != 0;
+	siteCompletionPending = false;
+	productionUnit = -1;
+	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
+	{
+		minWorkerLevelToFlag = stream->readSint32("minWorkerLevelToFlag");
+		if (minWorkerLevelToFlag < 0 || minWorkerLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid worker flag qualification");
+		explorersRequireBombing = stream->readUint8("explorersRequireBombing") != 0;
+		siteCompletionPending = stream->readUint8("siteCompletionPending") != 0;
+		for (int unit=0; unit<NB_UNIT_TYPE; ++unit) {
+			constructionOriginRatios[unit]=stream->readSint32(("constructionOriginRatio["+std::to_string(unit)+"]").c_str());
+			if (constructionOriginRatios[unit]<0 || constructionOriginRatios[unit]>32767) throw std::runtime_error("Invalid saved construction production preference");
+		}
+		constructionOriginTypeNum = stream->readSint32("constructionOriginTypeNum");
+		if (constructionOriginTypeNum < -1 || constructionOriginTypeNum >= int(types->size())) throw std::runtime_error("Invalid saved construction origin");
+		const bool pending = buildingState==WAITING_FOR_CONSTRUCTION || buildingState==WAITING_FOR_CONSTRUCTION_ROOM;
+		bool validOrigin=false;
+		if (constructionResultState==NO_CONSTRUCTION)
+			validOrigin=!type->isBuildingSite && !pending && constructionOriginTypeNum==-1;
+		else if (constructionResultState==NEW_BUILDING)
+			validOrigin=type->isBuildingSite && !pending && constructionOriginTypeNum==-1;
+		else if (constructionOriginTypeNum>=0)
+		{
+			const BuildingType* origin=types->get(constructionOriginTypeNum);
+			const int site=constructionResultState==REPAIR ? origin->prevLevel : origin->nextLevel;
+			validOrigin=!origin->isBuildingSite && site>=0 && types->get(site)->isBuildingSite
+				&& (constructionResultState!=REPAIR || origin->semantics.repairable)
+				&& (type->isBuildingSite ? !pending && site==typeNum
+					: (pending || buildingState==DEAD) && constructionOriginTypeNum==typeNum);
+		}
+		if (!validOrigin) throw std::runtime_error("Saved construction origin does not match its job and stage");
+		repairInitialDeficit = stream->readSint32("repairInitialDeficit");
+		repairHealthGranted = stream->readSint32("repairHealthGranted");
+		if (repairInitialDeficit<0 || repairInitialDeficit>getEffectiveMaxHp() || repairHealthGranted<0 || repairHealthGranted>repairInitialDeficit)
+			throw std::runtime_error("Invalid saved repair progress");
+		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+		{
+			constructionBudget[r] = stream->readSint32(("constructionBudget["+std::to_string(r)+"]").c_str());
+			constructionReserved[r] = stream->readSint32(("constructionReserved["+std::to_string(r)+"]").c_str());
+			if (constructionBudget[r]<0 || constructionBudget[r]>1000000 || constructionReserved[r]<0 || constructionReserved[r]>constructionBudget[r])
+				throw std::runtime_error("Invalid saved construction budget");
+		}
+		productionUnit = stream->readSint32("productionUnit");
+		if (productionUnit < -1 || productionUnit >= NB_UNIT_TYPE)
+			throw std::runtime_error("Invalid saved production recipe");
+	}
+	if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG && constructionResultState != NO_CONSTRUCTION)
+	{
+		std::copy_n(ratio,NB_UNIT_TYPE,constructionOriginRatios.begin());
+		constructionOriginTypeNum = type->isBuildingSite ? (constructionResultState == UPGRADE ? type->prevLevel : constructionResultState == REPAIR ? type->nextLevel : -1) : typeNum;
+		if (type->isBuildingSite)
+		{
+			constructionBudget = type->semantics.constructionCost;
+			if (constructionResultState == REPAIR) repairInitialDeficit=std::max(0,getEffectiveMaxHp()-hp);
+			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				if (constructionResultState == REPAIR)
+				{
+					constructionBudget[r] = std::max(0, constructionBudget[r]-localResource[r]);
+					localResource[r] = 0; // Old repair credits were never real inventory.
+				}
+				else constructionReserved[r] = std::min(constructionBudget[r], localResource[r]);
+		}
+	}
 	seenByMask = stream->readUint32("seenByMask");
 
 	inCanFeedUnit=LS_UNKNOWN;
@@ -458,6 +544,20 @@ void Building::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(typeNum, "typeNum");
 	// we drop type
 
+	stream->writeSint32(minWorkerLevelToFlag, "minWorkerLevelToFlag");
+	stream->writeUint8(explorersRequireBombing, "explorersRequireBombing");
+	stream->writeUint8(siteCompletionPending, "siteCompletionPending");
+	for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+		stream->writeSint32(constructionOriginRatios[unit],("constructionOriginRatio["+std::to_string(unit)+"]").c_str());
+	stream->writeSint32(constructionOriginTypeNum, "constructionOriginTypeNum");
+	stream->writeSint32(repairInitialDeficit, "repairInitialDeficit");
+	stream->writeSint32(repairHealthGranted, "repairHealthGranted");
+	for (int r=0; r<MAX_NB_RESOURCES; ++r)
+	{
+		stream->writeSint32(constructionBudget[r], ("constructionBudget["+std::to_string(r)+"]").c_str());
+		stream->writeSint32(constructionReserved[r], ("constructionReserved["+std::to_string(r)+"]").c_str());
+	}
+	stream->writeSint32(productionUnit, "productionUnit");
 	stream->writeUint32(seenByMask, "seenByMask");
 
 	stream->writeLeaveSection();
@@ -659,3 +759,12 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+
+
+void Building::bindType(Sint32 id, BuildingsTypes* catalog)
+{
+    if (!catalog) catalog=&owner->game->buildingsTypes;
+    typeNum=id;
+    type=catalog->get(id);
+    runtime=catalog->getRuntime(id);
+}

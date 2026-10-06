@@ -51,6 +51,7 @@ bool Unit::isUnitHungry(void)
 
 void Unit::standardRandomActivity()
 {
+	if (attachedBuilding) attachedBuilding->releaseService(this);
 	attachedBuilding=NULL;
 	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;

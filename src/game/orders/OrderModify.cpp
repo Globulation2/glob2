@@ -7,6 +7,8 @@
 #include "Marshaling.h"
 #include "Order.h"
 #include "Brush.h"
+#include "Version.h"
+#include "FileFormatVersions.h"
 
 // OrderModify' code
 
@@ -198,10 +200,11 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 
 // OrderModifyMinLevelToFlag's code
 
-OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag)
+OrderModifyMinLevelToFlag::OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag, Uint8 targetRole)
 {
 	this->gid=gid;
 	this->minLevelToFlag=minLevelToFlag;
+	this->targetRole=targetRole;
 }
 
 std::shared_ptr<OrderModifyMinLevelToFlag> OrderModifyMinLevelToFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
@@ -221,15 +224,19 @@ Uint8 *OrderModifyMinLevelToFlag::getData(void)
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
 	addUint16(data, minLevelToFlag, 2);
+	data[4]=targetRole;
 	return data;
 }
 
 bool OrderModifyMinLevelToFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if (dataLength!=getDataLength())
+	if (dataLength != (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG ? 4 : 5))
 		return false;
 	this->gid=getUint16(data, 0);
 	this->minLevelToFlag=getUint16(data, 2);
+	legacyCombinedRole = versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG;
+	targetRole = legacyCombinedRole ? 0 : data[4];
+	if (targetRole > 2) return false;
 	return true;
 }
 

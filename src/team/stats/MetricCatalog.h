@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+class BuildingsTypes;
+
 namespace Stats
 {
 //! Ticks between two samples of a team's history (TeamStats::step).
@@ -43,6 +45,7 @@ struct Band
 {
 	std::string labelKey;
 	Extract value = nullptr;
+	bool literalLabel = false; //!< Catalog-authored label, already human-readable.
 };
 
 //! One entry of the catalog. A metric's value comes either from the sampled
@@ -120,6 +123,8 @@ struct Metric
 
 //! Every metric, grouped and in display order.
 const std::vector<Metric> &catalog();
+//! Per-game building bands, with owned labels and concrete variant counters.
+std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings);
 //! Index into catalog() of the metric with this id, or -1.
 int findMetric(const std::string &id);
 //! The metric with this id, for ids written in the code: it must exist.
@@ -195,6 +200,7 @@ struct Chart
 	bool global = false;   //!< One series for the whole map rather than one per team.
 	bool ordered = false;  //!< Bands run from worst to best (hunger), not unrelated kinds.
 	bool any = false;	   //!< Some value is not zero: there is something to see.
+	std::vector<bool> bandLabelLiteral;
 	std::vector<std::string> bandKeys; //!< Text keys of the bands; empty unless stacked.
 	std::vector<TeamSeries> teams;	   //!< A single entry when `global`.
 	double low = 0, high = 0;		   //!< Range of the values (stacked: of the stack), zero included.

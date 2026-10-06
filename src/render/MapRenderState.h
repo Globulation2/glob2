@@ -42,7 +42,7 @@ struct MapRenderState
 	std::valarray<unsigned char> overlayAlphas;
 	//! How this frame's zoom draws each map element; set by Game::drawMap.
 	ZoomDetail detail;
-	//! The terrain overview's image, one pixel per visible tile, kept between frames.
+	//! The terrain overview's sampled palette image, kept between frames.
 	std::unique_ptr<GAGCore::DrawableSurface> overview;
 	//! The furthest this view's camera can zoom out, set by its owner; 0 when
 	//! unknown. It anchors the far end of the detail curves (ZoomDetail::rampTile).

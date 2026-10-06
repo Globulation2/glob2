@@ -353,7 +353,7 @@ class OrderModifyMinLevelToFlag:public OrderModify
 {
 public:
 	OrderModifyMinLevelToFlag() = default;
-	OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag);
+	OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag, Uint8 targetRole = 0);
 	virtual ~OrderModifyMinLevelToFlag(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -361,14 +361,16 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 4; }
+	int getDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_MODIFY_MIN_LEVEL_TO_FLAG; }
 
 	Uint16 gid;
 	Uint16 minLevelToFlag;
+	Uint8 targetRole = 0; // 0: warrior threshold, 1: explorer bombing, 2: worker qualification
+	bool legacyCombinedRole = false; // only imported pre-catalog orders
 
 protected:
-	Uint8 data[4];
+	Uint8 data[5];
 };
 
 class OrderMoveFlag:public OrderModify

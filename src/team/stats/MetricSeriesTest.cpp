@@ -455,9 +455,12 @@ TEST_SUITE("MetricCatalog")
 		all.total = all.split = all.relative = all.share = true;
 		all.window = 1000;
 
+		auto buildings=metric("buildings");
+		buildings.bands.push_back({"fixture variant",[](const GameplayMeasurements&) { return 0.; },true});
+
 		// A level that can be split and shared: splitting wins over the share, and a
 		// split chart can always be shown as percentages.
-		auto view = Stats::validView(metric("buildings"), all);
+		auto view = Stats::validView(buildings, all);
 		CHECK(view.window == Stats::MAX_RATE_WINDOW);
 		CHECK_FALSE(view.total);
 		CHECK(view.split);
@@ -466,10 +469,10 @@ TEST_SUITE("MetricCatalog")
 
 		// Unsplit, the share stays; "buildings" has no per-population form.
 		all.split = false;
-		view = Stats::validView(metric("buildings"), all);
+		view = Stats::validView(buildings, all);
 		CHECK(view.share);
 		CHECK_FALSE(view.relative);
-		CHECK(Stats::buildChart(metric("buildings"), all, {}).percent);
+		CHECK(Stats::buildChart(buildings, all, {}).percent);
 
 		// A counter that is per population but not shareable keeps total and relative.
 		view = Stats::validView(metric("deaths"), all);

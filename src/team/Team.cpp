@@ -98,7 +98,7 @@ bool Team::integrity(void)
 	{
 		checkInvariant(*it);
 		checkInvariant((*it)->type);
-		checkInvariant((*it)->type->isVirtual);
+		checkInvariant((*it)->type->zonable[WORKER]);
 		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 

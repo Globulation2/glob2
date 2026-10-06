@@ -105,12 +105,17 @@ namespace Cortex
 		}
 
 		obs.maxBuildLevel = 0;
+		obs.hasModelProjection = 0;
+		obs.modelUpgradableTotal = 0;
+        obs.productionMask = obs.productionPlannedMask = obs.productionMissingMask = 0;
+        obs.productionPlacementType = -1;
+        obs.productionNeedsRetune = 0;
 
 		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
 		{
 			obs.upgradableCount[t] = 0;
 			for (int l = 0; l < CORTEX_BUILDING_LONG_LEVELS; l++)
-				obs.buildingCountPerLevel[t][l] = 0;
+				{ obs.buildingCountPerLevel[t][l] = 0; obs.modelBuildingCountPerLevel[t][l] = 0; }
 			for (int c = 0; c < CORTEX_BUILD_CANDIDATES; c++)
 			{
 				obs.buildCandidates[t][c].valid = 0;

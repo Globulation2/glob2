@@ -339,7 +339,8 @@ private:
 	///This function updated the units assigned and the creation
 	///ratios of a particular Swarm. Its done after the completion
 	///of a new swarm and periodically thereafter
-	void manage_swarm(AISharedRuntime::Runtime& runtime, int id);
+	struct ProductionDemand { std::array<int,3> ratios{}; int workers=0; };
+	ProductionDemand manage_swarm(AISharedRuntime::Runtime& runtime, int id);
 
 
 	///This function chooses the type of level 1 building to be upgraded randomly

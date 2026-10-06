@@ -73,6 +73,8 @@ TEST_SUITE("GUIOrderCoverage")
         auto& pending=gui.pendingFor(gid);
         pending.pendingPosX=3; pending.pendingPosY=7;
         pending.pendingMinLevelToFlag=2;
+        pending.pendingMinWorkerLevelToFlag=1;
+        pending.pendingExplorersRequireBombing=true;
         pending.pendingRatio=std::array<Sint32,NB_UNIT_TYPE>{2,1,3};
         pending.pendingClearingResources=std::array<bool,BASIC_COUNT>{true,false,true};
         auto move=std::make_shared<OrderMoveFlag>(gid,3,6,true);
@@ -89,6 +91,12 @@ TEST_SUITE("GUIOrderCoverage")
         CHECK(pending.pendingMinLevelToFlag.has_value());
         level->minLevelToFlag=2; gui.reconcileBuildingGuiState(level);
         CHECK_FALSE(pending.pendingMinLevelToFlag.has_value());
+        CHECK(pending.pendingMinWorkerLevelToFlag.has_value());
+        CHECK(pending.pendingExplorersRequireBombing.has_value());
+        auto workerLevel=std::make_shared<OrderModifyMinLevelToFlag>(gid,1,2);
+        workerLevel->sender=0; gui.reconcileBuildingGuiState(workerLevel);
+        CHECK_FALSE(pending.pendingMinWorkerLevelToFlag.has_value());
+        CHECK(pending.pendingExplorersRequireBombing.has_value());
         Sint32 ratios[NB_UNIT_TYPE]={2,1,2};
         auto ratio=std::make_shared<OrderModifySwarm>(gid,ratios);
         ratio->sender=0; gui.reconcileBuildingGuiState(ratio);

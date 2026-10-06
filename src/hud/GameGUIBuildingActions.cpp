@@ -9,19 +9,10 @@ void GameGUI::requestBuildingConstruction(Building &building)
 {
 	if (globalContainer->isViewingGame() || building.owner->teamNumber != localTeamNo)
 		return;
-	if (building.constructionResultState == Building::REPAIR)
+	if (building.constructionResultState==Building::REPAIR || building.constructionResultState==Building::UPGRADE)
 	{
-		int typeNum = building.typeNum;
-		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-		orderQueue.push_back(
-			shared_ptr<Order>(new OrderCancelConstruction(building.gid, unitWorking)));
-	}
-	else if (building.constructionResultState == Building::UPGRADE)
-	{
-		int typeNum = building.typeNum;
-		int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
-		orderQueue.push_back(
-			shared_ptr<Order>(new OrderCancelConstruction(building.gid, unitWorking)));
+		const int workers=defaultAssign.getDefaultAssignedUnits(building.getConstructionOriginTypeNum());
+		orderQueue.push_back(std::make_shared<OrderCancelConstruction>(building.gid,workers));
 	}
 	else if ((building.constructionResultState == Building::NO_CONSTRUCTION) &&
 			 (building.buildingState == Building::ALIVE))

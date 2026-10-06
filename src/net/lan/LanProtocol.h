@@ -12,6 +12,7 @@
 //   0xC0 RoomJson  u32 length, then a UTF-8 JSON object with a "type" member
 //   0xC1 MapChunk  32-byte SHA-256 of the decompressed map, u32 offset, u32 total
 //                  (both into the gzip-compressed transfer bytes), then the bytes
+//   0xC2 JsonChunk u32 total, u32 offset, then <=48 KiB of one RoomJson payload
 
 #include <array>
 #include <cstddef>
@@ -31,15 +32,16 @@
 namespace Lan
 {
 	/// Bumped whenever a room message or the room flow changes incompatibly.
-	constexpr std::uint16_t ROOM_PROTOCOL_VERSION = 1;
+	constexpr std::uint16_t ROOM_PROTOCOL_VERSION = 2;
 
 	constexpr std::uint8_t MSG_ROOM_JSON = 0xC0;
 	constexpr std::uint8_t MSG_MAP_CHUNK = 0xC1;
+	constexpr std::uint8_t MSG_JSON_CHUNK = 0xC2;
 	constexpr std::uint8_t MSG_ROOM_FIRST = 0xC0;
 	constexpr std::uint8_t MSG_ROOM_LAST = 0xCF;
 
 	constexpr std::size_t MAX_FRAME_BYTES = 65535;
-	constexpr std::size_t MAX_JSON_BYTES = 60000;
+	constexpr std::size_t MAX_JSON_BYTES = 32u << 20;
 	constexpr std::size_t MAP_CHUNK_BYTES = 48 * 1024;
 	constexpr std::size_t MAP_WINDOW_CHUNKS = 8;          ///< chunk requests a guest keeps in flight
 	constexpr std::size_t MAX_MAP_BYTES = 256u << 20;      ///< compressed transfer limit
@@ -103,6 +105,8 @@ namespace Lan
 		std::deque<std::vector<std::uint8_t>> frames;
 		std::deque<std::vector<std::uint8_t>> outbox;
 		std::size_t outboxBytes = 0;
+		std::vector<std::uint8_t> pendingJson;
+		std::uint32_t pendingJsonTotal = 0;
 		std::string failure;
 		bool failed = false;
 	};

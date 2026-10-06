@@ -48,7 +48,7 @@ private:
 	bool menuMusic = false;
 
 public:
-	explicit GlobalContainer(const char *profileName="glob2");
+	explicit GlobalContainer(const char *profileName="glob2", const std::string& buildingCatalog="");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);

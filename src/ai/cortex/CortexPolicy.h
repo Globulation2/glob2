@@ -197,6 +197,7 @@ namespace Cortex
 	  static const int NUM_DECIDE_FEATURES = 48;
 
 	  CortexPolicy();
+      static void productionTargets(const CortexObservation& obs, Sint32 out[CORTEX_UNIT_TYPES]);
 
 	  /// Decide the next action intent from the current observation. Scores
 	  /// every candidate decision and returns the highest-scoring action (NoOp

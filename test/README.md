@@ -879,11 +879,8 @@ Older saves do not carry it and load leaves the member at `-1`, the sentinel
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
-decoding from the right offset. `test/unit/stubs/RuntimeStubs.cpp` satisfies the
-`find_location` / `passes_conditions` link surface (`BuildingsTypes`, `FlagMap`,
-`GradientManager`, and the `Constraint` / `Condition` factories) that a
-constraint-free order never reaches at runtime. It is the `RuntimeBuildingOrderSaveLoad`
-suite of `glob2-unit-tests`.
+decoding from the right offset. The `RuntimeBuildingOrderSaveLoad` suite runs in
+`glob2-engine-tests`, linking the real catalog, placement and runtime components.
 
 ### Native main Settings redesign
 
@@ -1376,9 +1373,10 @@ simulator, an owned `--simulator-set` to install, run and retrieve the separate 
 To retain released simulation compatibility traces, replays, commands, and logs,
 pass `--output artifacts/released-compatibility` to
 `test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
-the legacy checkpoint comparison excludes the version-dependent aggregate and
-compares every stored team/entity record. The evidence manifest records this
-exception. CI retains these artifacts even when verification fails.
+the legacy checkpoint comparison also checks complete bytes, including the
+aggregate checksum and every stored team/entity record. The current references
+include simulation revision 20's capability state; historical version-123
+references remain separate. CI retains these artifacts even when verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
@@ -1460,6 +1458,11 @@ Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
 build/test logs, JUnit, compiler/tool versions, source revision, selection,
 profiles, full coverage JSON, weighted implementation summaries and HTML.
+CI gives the instrumented suite a 90-minute job budget while retaining the
+900-second per-case timeout. It passes `--stream-logs` so command progress and
+diagnostics remain visible in the job log even when artifact upload cannot finish.
+Local runs keep file-only output unless this option is requested.
+
 CI passes `--discard-merged-profiles` to remove redundant raw profiles only after
 the binary's tests, profile merge, JSON export and HTML generation succeed. The
 merged profile and all reports and test evidence remain; failed runs retain raw
@@ -1500,7 +1503,8 @@ and logs; a timeout must identify its case rather than hide the whole catalog.
 
 Use `python3 test/test_cli_smoke.py --binary <client> --artifacts artifacts/cli --junit artifacts/cli.xml`
 for real executable contracts: argument validation, map image/report workflows,
-headless worker parity and saved continuation. `test/run_coverage.py --with-cli`
+headless worker parity, experimental catalog generation, embedded-catalog reopening
+without installed definitions, and saved continuation. `test/run_coverage.py --with-cli`
 builds the instrumented client and exports these profiles separately under `client/`;
 never merge its counts with independently linked engine or unit reports.
 
@@ -1785,3 +1789,31 @@ and captures screenshots. `TerrainPresentation` covers software and GPU
 registry/asset invalidation, plus explicit edge-mask expectations for custom aliases
 at wrapped map boundaries. Cache-versus-direct pixel equality alone is insufficient:
 both paths can share the same wrong layer description.
+
+### Building catalog composition and performance
+
+`BuildingCatalogFixtures` loads retained manifests under
+`test/fixtures/building-catalog/composition/`; it never regenerates definitions at
+runtime. The seeded combinations exercise mixed services, split recipes, shared
+stock, rectangular overlays and missing capabilities. Per-tick save continuation,
+resource conservation and retained custom-rule traces complement the focused
+`BuildingCatalog`, `BuildingServices` and `BuildingProductionCombat` suites.
+`AICustomCatalog` checks actual replacement-provider selection and split-production
+orders across the native controllers. These custom traces do not establish stock
+behavior parity.
+
+`BuildingGradientBenchmark` is opt-in (`--tag benchmark --filter
+'BuildingGradientBenchmark/*'`). It measures actual building/resource field
+preparation and a fixed stock simulation without AI decisions. The source compiles
+unchanged against the pre-catalog engine for paired measurements. Kernel rows
+include input dimensions, repetitions, iteration counts and output digests;
+simulation rows retain endpoint unit/building counts, health and inventory.
+Run matched release toolchains one process at a time on an otherwise idle host.
+Timing thresholds are evaluated from retained interleaved runs, not asserted in CI.
+
+`BuildingCatalogBenchmark` separates catalog setup from steady simulation with
+55, 256 and 1,024 definitions, keeping live entities fixed. Its private supply
+routing workload reports cold, warm and depletion passes below, at and above the
+cache budget, including retained cell bytes. These custom-catalog measurements
+complement the unchanged-source stock comparison; they have no historical
+baseline equivalent.

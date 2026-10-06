@@ -16,6 +16,7 @@
 
 #include "AINames.h"
 #include "BasePlayer.h"
+#include "BuildingType.h"
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "ExperimentalFeatures.h"
@@ -306,11 +307,20 @@ const std::vector<std::string>& MatchSetup::aiIds()
 MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 {
 	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"},
-	             {"pauseLimit"});
+	             {"pauseLimit", "buildingCatalog"});
 	if (!value["schemaVersion"].is_number_integer() || value["schemaVersion"].get<std::int64_t>() != SCHEMA_VERSION)
 		schemaError("/schemaVersion", "must be " + std::to_string(SCHEMA_VERSION));
 	MatchSetup setup;
 	setup.simVersion = SimVersion::fromJson(value["simVersion"], "/simVersion");
+	if (value.contains("buildingCatalog"))
+	{
+		const auto &catalog = value["buildingCatalog"];
+		strictObject(catalog, "/buildingCatalog", {"snapshot", "hash"});
+		setup.buildingCatalogSnapshot = string(catalog["snapshot"], "/buildingCatalog/snapshot");
+		if (setup.buildingCatalogSnapshot.empty() || setup.buildingCatalogSnapshot.size() > 8 * 1024 * 1024)
+			schemaError("/buildingCatalog/snapshot", "must contain between 1 and 8388608 UTF-8 bytes");
+		setup.buildingCatalogHash = hashString(catalog["hash"], "/buildingCatalog/hash");
+	}
 	setup.seed = static_cast<std::uint32_t>(integer(value["seed"], "/seed", 0, UINT32_MAX));
 	setup.map = parseMap(value["map"], "/map");
 
@@ -343,7 +353,7 @@ MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 	{
 		const std::string path = "/experiments/" + std::to_string(i);
 		const std::string key = string(experiments[i], path);
-		if (key.size() > 64 || !matches(key, "^[a-z0-9]+(-[a-z0-9]+)*$"))
+		if (key.size() > 128 || !matches(key, "^[a-z0-9]+(-[a-z0-9]+)*$"))
 			schemaError(path, "must be an experiment key");
 		if (!seen.insert(key).second)
 			schemaError(path, "is listed twice");
@@ -414,8 +424,23 @@ void MatchSetup::validateSemantics() const
 			                                                 ") must equal the number of setup teams (" +
 			                                                 std::to_string(teams.size()) + ")");
 	}
+	std::vector<std::string> catalogKeys;
+	if (!buildingCatalogSnapshot.empty())
+	{
+		BuildingsTypes catalog;
+		try { catalog.loadSnapshotJson(buildingCatalogSnapshot); }
+		catch (const std::exception& error) { semanticError("/buildingCatalog/snapshot", error.what()); }
+		if (catalog.snapshotJson() != buildingCatalogSnapshot)
+			semanticError("/buildingCatalog/snapshot", "must use the canonical catalog encoding");
+		if (catalog.fingerprint() != buildingCatalogHash)
+			semanticError("/buildingCatalog/hash", "does not match the embedded catalog");
+		for (const auto& experiment : catalog.experiments()) catalogKeys.push_back(experiment.key);
+	}
+	else if (!buildingCatalogHash.empty())
+		semanticError("/buildingCatalog", "a catalog hash requires its snapshot");
 	for (std::size_t i = 0; i < experiments.size(); ++i)
-		if (!parseExperimentKey(experiments[i]))
+		if (!parseExperimentKey(experiments[i]) &&
+			std::find(catalogKeys.begin(), catalogKeys.end(), experiments[i]) == catalogKeys.end())
 			semanticError("/experiments/" + std::to_string(i), "unknown experiment \"" + experiments[i] + "\"");
 }
 
@@ -443,6 +468,8 @@ MatchSetup MatchSetup::parse(const std::string& text)
 json MatchSetup::toJson() const
 {
 	json out = json::object();
+	if (!buildingCatalogSnapshot.empty())
+		out["buildingCatalog"] = {{"snapshot", buildingCatalogSnapshot}, {"hash", buildingCatalogHash}};
 	// nlohmann::json orders object keys alphabetically; dump() therefore has one
 	// canonical form for a given setup, whatever order the input used.
 	out["schemaVersion"] = SCHEMA_VERSION;
@@ -590,14 +617,8 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	header.setPermadeathDisabled(rules.permadeathDisabled);
 	header.setPeacefulModeEnabled(rules.peacefulMode);
 	header.setBuildingHpLevel(static_cast<Uint8>(rules.buildingHpLevel));
-	ExperimentSet experimentSet;
-	for (const auto& key : experiments)
-	{
-		const auto id = parseExperimentKey(key);
-		if (!id)
-			semanticError("/experiments", "unknown experiment \"" + key + "\"");
-		experimentSet.set(*id);
-	}
+	if (!buildingCatalogSnapshot.empty()) header.setBuildingCatalogSnapshot(buildingCatalogSnapshot);
+	ExperimentSet experimentSet = ExperimentSet::fromKeys(experiments, nullptr, header.buildingExperimentKeys());
 	for (const auto& definition : experimentDefinitions())
 		if (mapHeader.requiredTerrainExperiments.has(definition.id) && !experimentSet.has(definition.id))
 			semanticError("/experiments", "missing map-required terrain experiment " + std::string(definition.key));
@@ -610,6 +631,13 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 {
 	MatchSetup setup;
 	setup.simVersion = simVersion;
+	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+	if (!setup.buildingCatalogSnapshot.empty())
+	{
+		BuildingsTypes catalog;
+		catalog.loadSnapshotJson(setup.buildingCatalogSnapshot);
+		setup.buildingCatalogHash = catalog.fingerprint();
+	}
 	setup.seed = header.getRandomSeed();
 	setup.map = source;
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)

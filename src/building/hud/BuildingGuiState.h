@@ -51,6 +51,8 @@ struct BuildingGuiState
 	/// reconcileBuildingGuiState on ORDER_MODIFY_MIN_LEVEL_TO_FLAG (non-local /
 	/// replay).
 	std::optional<Sint32> pendingMinLevelToFlag;
+	std::optional<bool> pendingExplorersRequireBombing;
+	std::optional<Sint32> pendingMinWorkerLevelToFlag;
 
 	/// Pending per-unit-type swarm ratios. Whole array replaces wholesale (the
 	/// OrderModifySwarm payload also carries the whole array). Cleared by
@@ -98,6 +100,10 @@ template <class B> bool displayedClearingResource(const BuildingGuiStateMap& m, 
 { auto* s = pendingStateOf(m, b); return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : b.clearingResources[i]; }
 template <class B> Sint32 displayedMinLevelToFlag(const BuildingGuiStateMap& m, const B& b)
 { auto* s = pendingStateOf(m, b); return (s && s->pendingMinLevelToFlag) ? *s->pendingMinLevelToFlag : b.minLevelToFlag; }
+template <class B> Sint32 displayedMinWorkerLevelToFlag(const BuildingGuiStateMap& m,const B& b)
+{ auto* s=pendingStateOf(m,b); return (s && s->pendingMinWorkerLevelToFlag) ? *s->pendingMinWorkerLevelToFlag : b.minWorkerLevelToFlag; }
+template <class B> bool displayedExplorersRequireBombing(const BuildingGuiStateMap& m,const B& b)
+{ auto* s=pendingStateOf(m,b); return (s && s->pendingExplorersRequireBombing) ? *s->pendingExplorersRequireBombing : b.explorersRequireBombing; }
 template <class B> std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const BuildingGuiStateMap& m, const B& b)
 {
 	auto* s = pendingStateOf(m, b);

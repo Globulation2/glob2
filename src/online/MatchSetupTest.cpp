@@ -19,6 +19,7 @@
 #include "AI.h"
 #include "AINames.h"
 #include "BasePlayer.h"
+#include "BuildingType.h"
 #include "ExperimentalFeatures.h"
 #include "GameHeader.h"
 #include "MapHeader.h"
@@ -83,6 +84,55 @@ std::string sha256Hex(const std::string& text)
 
 TEST_SUITE("MatchSetup")
 {
+	TEST_CASE("embedded catalogs carry dynamic experiments independently of installed definitions")
+	{
+		glob2test::HeadlessGlobals globals;
+		BuildingsTypes catalog;
+		catalog.initLegacy();
+		json snapshot = json::parse(catalog.snapshotJson());
+		snapshot["experiments"].push_back({{"key", "catalog-fixture"}, {"label", "Fixture"}, {"help", "Fixture gate."}});
+		catalog.loadSnapshotJson(snapshot.dump());
+		json document = json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
+		document["buildingCatalog"] = {{"snapshot", catalog.snapshotJson()}, {"hash", catalog.fingerprint()}};
+		document["experiments"] = {"catalog-fixture"};
+		const MatchSetup setup = MatchSetup::fromJson(document);
+		const MapHeader map = mapWithTeams(4);
+		GameHeader header = setup.toGameHeader(map);
+		CHECK(header.getBuildingCatalogSnapshot() == catalog.snapshotJson());
+		CHECK(header.getExperiments().has("catalog-fixture"));
+		CHECK(!knownExperimentKey("catalog-fixture"));
+        const auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion).toJson();
+        // Account IDs and closed lobby slots are not simulation-header state.
+        // Every durable setup field, especially embedded experiment identity,
+        // must survive this conversion unchanged.
+        auto durable=document;durable.erase("seats");
+        auto restoredDurable=restored;restoredDurable.erase("seats");
+        CHECK(restoredDurable==durable);
+        REQUIRE(restored["seats"].size()==2);
+        CHECK(restored["seats"][0]["name"]=="Alice");
+        CHECK(restored["seats"][1]["team"]==2);
+		document["buildingCatalog"]["hash"] = std::string(64, '0');
+		CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
+		document["buildingCatalog"]["hash"] = catalog.fingerprint();
+		document["buildingCatalog"]["snapshot"] = catalog.snapshotJson() + "\n";
+		CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
+		document.erase("buildingCatalog");
+		CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
+	}
+
+	TEST_CASE("catalog rules identity partitions ratings without changing the executable identity")
+	{
+		const SimVersion engine{135, 55, std::string(64, 'a')};
+		CHECK(catalogRulesVersion(engine, "") == engine);
+		const auto first = catalogRulesVersion(engine, std::string(64, 'b'));
+		CHECK(first.versionMinor == engine.versionMinor);
+		CHECK(first.netProtocol == engine.netProtocol);
+		CHECK(first.dataHash == sha256Hex("glob2-building-rules-v1\n" + engine.key() + "\n" + std::string(64, 'b')));
+		CHECK(first != engine);
+		CHECK(first != catalogRulesVersion(engine, std::string(64, 'c')));
+		CHECK_THROWS_AS(catalogRulesVersion(engine, "bad-hash"), std::invalid_argument);
+	}
+
 	TEST_CASE("SHA-256 matches the FIPS 180-4 test vectors")
 	{
 		CHECK(sha256Hex("") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
@@ -431,6 +481,10 @@ TEST_SUITE("MatchSetup")
 			}
 		onDisk.insert("data/nicowar.default.txt");
 		onDisk.insert("data/nicowar.txt");
+		onDisk.insert("data/buildings/manifest.json");
+		const auto buildingManifest = json::parse(glob2test::readFile(root / "data/buildings/manifest.json"));
+		for (const auto& name : buildingManifest.at("files"))
+			onDisk.insert("data/buildings/" + name.get<std::string>());
 		const auto& listed = simDataFiles();
 		CHECK(std::set<std::string>(listed.begin(), listed.end()) == onDisk);
 		CHECK(std::is_sorted(listed.begin(), listed.end()));
