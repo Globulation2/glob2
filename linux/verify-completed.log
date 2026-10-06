@@ -1,0 +1,8 @@
+EXACT MATCH small-castor
+EXACT MATCH land-maxima
+EXACT MATCH large-mixed
+oazis-maxima serial 764366699
+oazis-maxima parallel 764366699
+oazis-maxima fallback 764366699
+oazis-maxima disabled 764366699
+EXACT MATCH oazis-maxima

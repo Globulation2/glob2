@@ -1,0 +1,1 @@
+16 of 16 scenario/control pairs match all three artifact SHA256 hashes exactly across macOS ARM64 and Linux x86_64.

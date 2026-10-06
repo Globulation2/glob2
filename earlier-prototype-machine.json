@@ -1,0 +1,11 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "revision": "407c58c6b352bda85d4a8ab05572f4098e4c43b6",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "baseline_sha256": "0fc95fcd3dc083dd9ad9ee4d3e7cf0c8ba3883e9ebaa5975c9c6e346cc80eba1",
+  "prototype_sha256": "cc509b26badef2e004a92ed6d6d925f361ca330f07af7dc950b7b47de08b6d16",
+  "patch_sha256": "5d95b7e302f29669fba02edaa40b295691bd34bde38858dc49ad87db1cd3eafd",
+  "pure_prototype_patch_sha256": "51f817adbfa265c1fc0ae6d09db49619da84bf33a835b517b75fa0c7f75c0f4f",
+  "timing_conditions": "Release -O3; source assets for headless runs; same SDL dependencies and compiler for both macOS binaries; rotating variant order; one full-window warmup; 4096 measured ticks per run; 2 gradient workers and 8-tick delay; existing default AI budgets (2 or 4); timing runs omit replay/checksum/save outputs.",
+  "source_archive_sha256": "d82ac0ef89e2f335561bd8c8d7c2576e75e4d0fd93800a066b02ebc8e6ef2b5e"
+}

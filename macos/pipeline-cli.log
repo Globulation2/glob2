@@ -1,0 +1,17 @@
+mixed-water 0 d1-w1: wall=0.381s cpu=0.426s
+mixed-water 0 d1-w2: wall=0.395s cpu=0.447s
+mixed-water 0 d1-w4: wall=0.411s cpu=0.461s
+mixed-water 0 d1-w8: wall=0.388s cpu=0.434s
+mixed-water 0 d3-w0: wall=0.391s cpu=0.410s
+mixed-water 0 d3-w1: wall=0.382s cpu=0.427s
+mixed-water 0 d3-w2: wall=0.380s cpu=0.423s
+mixed-water 0 d3-w4: wall=0.388s cpu=0.434s
+mixed-water 0 d3-w8: wall=0.390s cpu=0.440s
+mixed-water 0 d8-w0: wall=0.412s cpu=0.427s
+mixed-water 0 d8-w1: wall=0.372s cpu=0.421s
+mixed-water 0 d8-w2: wall=0.394s cpu=0.443s
+mixed-water 0 d8-w4: wall=0.387s cpu=0.433s
+mixed-water 0 d8-w8: wall=0.389s cpu=0.435s
+mixed-water 0 d1-w0: wall=0.391s cpu=0.410s
+PASS exact same-schedule traces and outcomes
+PASS pipeline defaults, trace determinism, eight-phase save continuation and invalid option rejection

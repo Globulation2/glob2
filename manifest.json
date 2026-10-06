@@ -1,0 +1,18 @@
+{
+  "tested_commit": "325357ec2a5d72e8cca32beccf5ee2793d054abb",
+  "base": "7ec6fc1cc",
+  "baseline_binary_source": "407c58c6b352bda85d4a8ab05572f4098e4c43b6",
+  "baseline_engine_equals_base": true,
+  "baseline_to_base_changes": "32 localization catalog files only",
+  "binary_sha256": {
+    "glob2-master": "0fc95fcd3dc083dd9ad9ee4d3e7cf0c8ba3883e9ebaa5975c9c6e346cc80eba1",
+    "glob2-candidate": "33f3e924256a712e0bfca043d4ac106d1b99ef8f584b4dae7c408e8e701cbe46"
+  },
+  "fixtures_sha256": {
+    "small-castor": "f17bf4c32629ee9f7ae69a0d6361b7f158221e5c77e1c5f2670bad38fe7df1a1",
+    "land-maxima": "15de5b2c2cb056facf84046af2e5a5dc092416f75ba7bc1eb00481855dfac58c",
+    "large-mixed": "13f362ed6b82f8966ca6e6c5cc5c20108306f0eb4c896fa4657d96e83520d18f",
+    "oazis-maxima": "50ec32808ce2faf8ed8967d26d73272d5ad025360a9fccf9bd64a551758be15a"
+  },
+  "method": "Ten alternating pairs per scenario, 1024 advanced ticks, one discarded full-window warmup pair. Run-only elapsed and process CPU from result.json; no telemetry/save/replay in timed run. Two gradient workers, delay8, AI threads2/4; in-use M3 workstation. First small-Castor outlier retained; no hand-picked exclusions. No simultaneous owned local validation/compression during timing. Linux performance not remeasured on final refactor."
+}

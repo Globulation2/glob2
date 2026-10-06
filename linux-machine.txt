@@ -1,0 +1,18 @@
+Linux devlaptop 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:27:52 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+3.4.16
+3.4.6
+3.2.2
+3.2.0
+55f7161dd23c7799bdafe9e513d7a36adc92863f
+04d4fb9578bebaaa9c43ae16d4e431769b6e3a72e2cac050408a5fc1f615654c  /home/bradley/glob2-read-phase/build/linux/client/release/src/glob2
+.
+..
+include
+lib
+recording-manifest.json
+share

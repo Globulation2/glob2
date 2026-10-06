@@ -1,0 +1,650 @@
+{
+  "upstream_revision": "407c58c6b352bda85d4a8ab05572f4098e4c43b6",
+  "method": "Fixed saved checkpoints; seed 19, map seed 1001 for generated cases. Rotating variant order; one full-window warmup discarded; ten measured pairs per scenario. macOS 4096-tick windows, Linux 1024-tick windows, extra-worker comparison 2048-tick windows. Both in-use workstations; no claim of universal hardware or scenario coverage. CPU is measured process CPU during the engine run. Bootstrap intervals describe repeat variability, not new seeds or machines.",
+  "macos": {
+    "land-maxima": {
+      "against_master": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "master",
+        "candidate": "overlap",
+        "control_median_ms": 2468.4335415,
+        "candidate_median_ms": 2411.737854,
+        "paired_median_time_reduction_percent": 2.2841998240891392,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          2.2120948742772484,
+          2.427975338812449
+        ],
+        "paired_median_cpu_change_percent": 0.16436577785352569
+      },
+      "same_boundary": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "boundary-serial",
+        "candidate": "overlap",
+        "control_median_ms": 2470.9458335,
+        "candidate_median_ms": 2411.737854,
+        "paired_median_time_reduction_percent": 2.3685729799780564,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          2.12914386871329,
+          2.744831996996233
+        ],
+        "paired_median_cpu_change_percent": 0.130026688056617
+      }
+    },
+    "large-mixed": {
+      "against_master": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "master",
+        "candidate": "overlap",
+        "control_median_ms": 4584.822395499999,
+        "candidate_median_ms": 4484.270708,
+        "paired_median_time_reduction_percent": 2.1718671543367596,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          1.933986058618875,
+          2.3518069331687763
+        ],
+        "paired_median_cpu_change_percent": 0.0016001487626482458
+      },
+      "same_boundary": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "boundary-serial",
+        "candidate": "overlap",
+        "control_median_ms": 4573.318417,
+        "candidate_median_ms": 4484.270708,
+        "paired_median_time_reduction_percent": 1.8116533085643316,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          1.6549940015942233,
+          2.1923572448214523
+        ],
+        "paired_median_cpu_change_percent": 0.19194921329395154
+      }
+    },
+    "oazis-maxima": {
+      "against_master": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "control": "master",
+        "candidate": "overlap",
+        "control_median_ms": 12415.4373125,
+        "candidate_median_ms": 12285.639166500001,
+        "paired_median_time_reduction_percent": 1.1153622105511074,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          0.9871849667234533,
+          1.1719784981096049
+        ],
+        "paired_median_cpu_change_percent": -0.038107731951742
+      },
+      "same_boundary": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "control": "boundary-serial",
+        "candidate": "overlap",
+        "control_median_ms": 12415.552103999999,
+        "candidate_median_ms": 12285.639166500001,
+        "paired_median_time_reduction_percent": 1.115724108487448,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          0.8462175910670666,
+          1.291019805523863
+        ],
+        "paired_median_cpu_change_percent": -0.06711034111919201
+      }
+    },
+    "small-castor": {
+      "against_master": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "master",
+        "candidate": "overlap",
+        "control_median_ms": 147.262209,
+        "candidate_median_ms": 137.011729,
+        "paired_median_time_reduction_percent": 6.9770713934460105,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          6.4738676017600305,
+          7.277521961259348
+        ],
+        "paired_median_cpu_change_percent": -3.235042345215833
+      },
+      "same_boundary": {
+        "successful_pairs": 10,
+        "included_repeats": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "control": "boundary-serial",
+        "candidate": "overlap",
+        "control_median_ms": 148.75933350000003,
+        "candidate_median_ms": 137.011729,
+        "paired_median_time_reduction_percent": 8.023133768026192,
+        "paired_reduction_bootstrap_95_percent_interval": [
+          7.470218114306693,
+          8.43087185245981
+        ],
+        "paired_median_cpu_change_percent": -3.795000675495197
+      }
+    }
+  },
+  "linux": {
+    "land-maxima": {
+      "successful_pairs": 10,
+      "included_repeats": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "control": "boundary-serial",
+      "candidate": "overlap",
+      "control_median_ms": 1364.062399,
+      "candidate_median_ms": 1368.1485785,
+      "paired_median_time_reduction_percent": -0.615484796236343,
+      "paired_reduction_bootstrap_95_percent_interval": [
+        -0.8661665792609963,
+        -0.15225907369980085
+      ],
+      "paired_median_cpu_change_percent": 2.290904098652624
+    },
+    "large-mixed": {
+      "successful_pairs": 10,
+      "included_repeats": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "control": "boundary-serial",
+      "candidate": "overlap",
+      "control_median_ms": 1911.5165415000001,
+      "candidate_median_ms": 1914.4802515000001,
+      "paired_median_time_reduction_percent": 0.5411231335339606,
+      "paired_reduction_bootstrap_95_percent_interval": [
+        -0.29417006334562235,
+        0.8971519621307822
+      ],
+      "paired_median_cpu_change_percent": 1.7681369171169248
+    },
+    "oazis-maxima": {
+      "successful_pairs": 10,
+      "included_repeats": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "control": "boundary-serial",
+      "candidate": "overlap",
+      "control_median_ms": 5592.976811500001,
+      "candidate_median_ms": 5525.126575,
+      "paired_median_time_reduction_percent": 1.2170376122864757,
+      "paired_reduction_bootstrap_95_percent_interval": [
+        0.6965898942326687,
+        1.5293746319802404
+      ],
+      "paired_median_cpu_change_percent": 0.2600939893947274
+    },
+    "small-castor": {
+      "successful_pairs": 10,
+      "included_repeats": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "control": "boundary-serial",
+      "candidate": "overlap",
+      "control_median_ms": 50.6069975,
+      "candidate_median_ms": 43.3401365,
+      "paired_median_time_reduction_percent": 14.510930780007957,
+      "paired_reduction_bootstrap_95_percent_interval": [
+        13.114725171934838,
+        16.20164365655119
+      ],
+      "paired_median_cpu_change_percent": -6.480364685807105
+    }
+  },
+  "extra_worker": {
+    "macos": {
+      "land-maxima": {
+        "five_worker_scheduling_gain": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "boundary-serial-5",
+          "candidate": "overlap-5",
+          "control_median_ms": 1278.565333,
+          "candidate_median_ms": 1255.7457705,
+          "paired_median_time_reduction_percent": 1.6470772687804391,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            1.0036502551432513,
+            2.211717742296948
+          ],
+          "paired_median_cpu_change_percent": 0.35086737453600136
+        },
+        "five_worker_against_stock_pool": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "old-boundary-4",
+          "candidate": "overlap-5",
+          "control_median_ms": 1274.434979,
+          "candidate_median_ms": 1255.7457705,
+          "paired_median_time_reduction_percent": 1.3706216455037001,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            0.9374802815703576,
+            1.8893695539576871
+          ],
+          "paired_median_cpu_change_percent": 1.9710579586488919
+        }
+      },
+      "large-mixed": {
+        "five_worker_scheduling_gain": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "boundary-serial-5",
+          "candidate": "overlap-5",
+          "control_median_ms": 2251.1186660000003,
+          "candidate_median_ms": 2194.5065004999997,
+          "paired_median_time_reduction_percent": 2.340528034770928,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            0.3319273703232595,
+            2.8374987938275753
+          ],
+          "paired_median_cpu_change_percent": 0.15073093314170727
+        },
+        "five_worker_against_stock_pool": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "old-boundary-4",
+          "candidate": "overlap-5",
+          "control_median_ms": 2258.296042,
+          "candidate_median_ms": 2194.5065004999997,
+          "paired_median_time_reduction_percent": 2.5660491274325015,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            0.6716891799355307,
+            3.333761548940628
+          ],
+          "paired_median_cpu_change_percent": 0.937972600151249
+        }
+      }
+    },
+    "linux": {
+      "land-maxima": {
+        "five_worker_scheduling_gain": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "boundary-serial-5",
+          "candidate": "overlap-5",
+          "control_median_ms": 2423.4961915000004,
+          "candidate_median_ms": 2466.4675955000002,
+          "paired_median_time_reduction_percent": -1.308673304722885,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            -2.8424202234744067,
+            -0.8122186691429167
+          ],
+          "paired_median_cpu_change_percent": 2.8505178556614386
+        },
+        "five_worker_against_stock_pool": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "old-boundary-4",
+          "candidate": "overlap-5",
+          "control_median_ms": 2424.4946339999997,
+          "candidate_median_ms": 2466.4675955000002,
+          "paired_median_time_reduction_percent": -1.9504316048310377,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            -2.704406673417026,
+            -0.7685730841854976
+          ],
+          "paired_median_cpu_change_percent": 3.7488958609562584
+        }
+      },
+      "large-mixed": {
+        "five_worker_scheduling_gain": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "boundary-serial-5",
+          "candidate": "overlap-5",
+          "control_median_ms": 3908.4824184999998,
+          "candidate_median_ms": 3894.6114315,
+          "paired_median_time_reduction_percent": -0.11913292197234249,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            -0.9778851611648598,
+            0.8738411298226945
+          ],
+          "paired_median_cpu_change_percent": 1.908184919061151
+        },
+        "five_worker_against_stock_pool": {
+          "successful_pairs": 10,
+          "included_repeats": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "control": "old-boundary-4",
+          "candidate": "overlap-5",
+          "control_median_ms": 3884.6061995,
+          "candidate_median_ms": 3894.6114315,
+          "paired_median_time_reduction_percent": -0.20149216408040793,
+          "paired_reduction_bootstrap_95_percent_interval": [
+            -1.1934044112801079,
+            0.3048597507895767
+          ],
+          "paired_median_cpu_change_percent": 2.8376657645487136
+        }
+      }
+    }
+  },
+  "limits": [
+    "Four checkpoints; mostly uniform land/legacy terrain; no broad JavaScript AI, terrain modifier, market or crowded guard-area stress matrix.",
+    "No interactive playtest or release integration. Prototype is an uncommitted local experiment; semantic environment toggle is unsuitable for production.",
+    "Save/load checks cover 256 resumed ticks. Intermediate saves change the header SHA1 and some serialized cache state; the Maxima control reproduces the same differences on untouched master.",
+    "Owned setup overlapped four Oazis rounds. Complete affected rounds were excluded and replaced; raw records and exclusion rationale retained.",
+    "The extra-worker experiment uses 2048-tick windows, unlike the primary macOS 4096-tick windows; its percentage gains cannot directly rank four versus five workers."
+  ],
+  "verification": {
+    "pipeline_executor_assertions_per_platform": 277281,
+    "pipeline_executor_test_cases_per_platform": 5,
+    "cross_platform_game_configurations": 12,
+    "cross_platform_all_checksum_replay_save_bytes_equal": true,
+    "five_worker_configurations": 4,
+    "five_worker_all_checksum_replay_save_bytes_equal": true,
+    "save_continuation": [
+      {
+        "scenario": "small-castor",
+        "continued_ticks": 256,
+        "uninterrupted_team_entity_trace_equal": true,
+        "aggregate_trace_equal_after_save_version_normalization": true,
+        "expected_header_version_checksum_xor": 25165824,
+        "worker_configuration_exact_trace_equal": true,
+        "save_hashes": [
+          "4171fe142f99eb1592aa0f8cf41f6c73feec0cdf760650fad3a923c5b7be10c6",
+          "2fcc0eaec11e667e1c026646d76b563e839b6f84dc02b1827307e40aa653cd9c",
+          "2fcc0eaec11e667e1c026646d76b563e839b6f84dc02b1827307e40aa653cd9c"
+        ],
+        "all_final_save_bytes_equal": false,
+        "normalized_save_hashes": [
+          "fc3a5cd3006f1d6e8be8d4d1a07ef9d3b9027b0efc7ecfd05d5ce40a8cb93275",
+          "fc3a5cd3006f1d6e8be8d4d1a07ef9d3b9027b0efc7ecfd05d5ce40a8cb93275",
+          "fc3a5cd3006f1d6e8be8d4d1a07ef9d3b9027b0efc7ecfd05d5ce40a8cb93275"
+        ],
+        "all_save_state_bytes_equal_excluding_header_sha1": true
+      },
+      {
+        "scenario": "land-maxima",
+        "continued_ticks": 256,
+        "uninterrupted_team_entity_trace_equal": true,
+        "aggregate_trace_equal_after_save_version_normalization": true,
+        "expected_header_version_checksum_xor": 1572864,
+        "worker_configuration_exact_trace_equal": true,
+        "save_hashes": [
+          "3b5cc38894bc3f004e5d809f51a65ba5091f3abc59f5b048ac46913b4f720acd",
+          "90d0e781a44172d7bb1cb323e4ee3adccb83b46994f8f2bf786c52d731c2af1c",
+          "90d0e781a44172d7bb1cb323e4ee3adccb83b46994f8f2bf786c52d731c2af1c"
+        ],
+        "all_final_save_bytes_equal": false,
+        "normalized_save_hashes": [
+          "e89b0574dbfa58010edb6bf4f5ef8974d0b3b202aa66bc48e6090cd8da2ad4f1",
+          "0646f2e1f3bf5fbaa3855e1e1d4dcaad23bb64ce3659e4ad04a8587f863d141f",
+          "0646f2e1f3bf5fbaa3855e1e1d4dcaad23bb64ce3659e4ad04a8587f863d141f"
+        ],
+        "all_save_state_bytes_equal_excluding_header_sha1": false
+      },
+      {
+        "scenario": "large-mixed",
+        "continued_ticks": 256,
+        "uninterrupted_team_entity_trace_equal": true,
+        "aggregate_trace_equal_after_save_version_normalization": true,
+        "expected_header_version_checksum_xor": 1572864,
+        "worker_configuration_exact_trace_equal": true,
+        "save_hashes": [
+          "e1ebee407b7f0f16918faa1a2dcc8f15dbc49d84730fad1ef4193b242753d861",
+          "35a7329d881d010fb11fd5ff526ab949dfdfcdb521b7f39b950bf01bdde02e70",
+          "35a7329d881d010fb11fd5ff526ab949dfdfcdb521b7f39b950bf01bdde02e70"
+        ],
+        "all_final_save_bytes_equal": false,
+        "normalized_save_hashes": [
+          "8b8c9a91893dadf82ba007f55693d81ccd9034ee517c81c459099225c6a80bd3",
+          "9070efbc5ac0ce39240a83c99e8ea53c4f5fbf99692f5204d33d30a73136e390",
+          "9070efbc5ac0ce39240a83c99e8ea53c4f5fbf99692f5204d33d30a73136e390"
+        ],
+        "all_save_state_bytes_equal_excluding_header_sha1": false
+      },
+      {
+        "scenario": "oazis-maxima",
+        "continued_ticks": 256,
+        "uninterrupted_team_entity_trace_equal": true,
+        "aggregate_trace_equal_after_save_version_normalization": true,
+        "expected_header_version_checksum_xor": 96,
+        "worker_configuration_exact_trace_equal": true,
+        "save_hashes": [
+          "978ce1358d4cdc305e12e1b2e46b4916a3dc83d147ca1a46c2fddab55f395bb5",
+          "8b9b54d521daef45b7512a6b55477eadac055ad038df93d0d9dbb436e855fcd6",
+          "8b9b54d521daef45b7512a6b55477eadac055ad038df93d0d9dbb436e855fcd6"
+        ],
+        "all_final_save_bytes_equal": false,
+        "normalized_save_hashes": [
+          "fe2a54a04c12e3aa9e83feeae45f1f389f725e6c632e116b6409346fb3c581df",
+          "8b4e9a315024057ec2cea32fb1d6779d2cc65c1964e3aec9dff416e4a2315f13",
+          "8b4e9a315024057ec2cea32fb1d6779d2cc65c1964e3aec9dff416e4a2315f13"
+        ],
+        "all_save_state_bytes_equal_excluding_header_sha1": false
+      }
+    ],
+    "save_continuation_master_control": [
+      {
+        "scenario": "land-maxima",
+        "continued_ticks": 256,
+        "uninterrupted_team_entity_trace_equal": true,
+        "aggregate_trace_equal_after_save_version_normalization": true,
+        "expected_header_version_checksum_xor": 1572864,
+        "worker_configuration_exact_trace_equal": true,
+        "save_hashes": [
+          "3b5cc38894bc3f004e5d809f51a65ba5091f3abc59f5b048ac46913b4f720acd",
+          "90d0e781a44172d7bb1cb323e4ee3adccb83b46994f8f2bf786c52d731c2af1c",
+          "90d0e781a44172d7bb1cb323e4ee3adccb83b46994f8f2bf786c52d731c2af1c"
+        ],
+        "all_final_save_bytes_equal": false,
+        "normalized_save_hashes": [
+          "e89b0574dbfa58010edb6bf4f5ef8974d0b3b202aa66bc48e6090cd8da2ad4f1",
+          "0646f2e1f3bf5fbaa3855e1e1d4dcaad23bb64ce3659e4ad04a8587f863d141f",
+          "0646f2e1f3bf5fbaa3855e1e1d4dcaad23bb64ce3659e4ad04a8587f863d141f"
+        ],
+        "all_save_state_bytes_equal_excluding_header_sha1": false
+      }
+    ]
+  },
+  "workspace_outcome": "All prototype source changes and the headless-only build change were restored to upstream 407c58; the primary game binary was restored to the measured master binary. The experimental patch, binaries, inputs, scripts and evidence remain in ignored artifacts/prep-overlap."
+}
