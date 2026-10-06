@@ -1,5 +1,9 @@
 {
+  "android-de4-validation-evidence.zip": "64fe8c8390b350bb3ad4e680cf03785e72c0dd2e4883596876a7a09c7c792d1c",
+  "android-de4-validation-summary.json": "8e5874d67f0a8eeb6c63a91c3136afa5da13805933595f2a0c6fca84996cec32",
   "browser-validation.zip": "ce1b1c8cdf11191da0ba3951cae2db33b880ff79431304705cb9c82dacc6af3a",
   "environment.json": "3ba228e79ecafe0ae0a6a81c310ffe4e5d209ad6c961f2c14033c1694500b2d0",
+  "native-a1-validation-evidence.zip": "bf1627c9162c0c900ec8f8275839ee03fd866a072edbe627ee553def7664e996",
+  "native-a1-validation-summary.json": "7e73f9cb82b31c313c83fab2be058650d10c48dd4f6c4d0591da6659c730798c",
   "native-validation.zip": "41ae4f8f54acfa3b4bee8c211ab5bd9a188ad0fd5bf34154c01a2aec202f9c95"
 }

@@ -1,0 +1,69 @@
+{
+  "productionRevision": "9a54d4bf20b73bd63bd9d0f762cee67dda71eb51",
+  "finalRevision": "a1c437295265d5593b3055bd166d5c9cdb62027f",
+  "baseRevision": "ee3be8ecd9d7100de78ef63869271371d427cb66",
+  "cliSha256": "5d4b5672ebfbdc7eddd5fd49bffad5b3e8a4f0d5c3a1c604ed05c03c19af0e29",
+  "cliIdenticalToProduction9a": true,
+  "postProductionFiles": [
+    "docs/map-generators/REPORT.md",
+    "docs/map-generators/map-report.schema.json",
+    "src/ai/shared_runtime/RuntimeContinuationTest.cpp",
+    "src/map/tools/MapReportHarness.cpp",
+    "test/build_system/test_scene_boundary.py",
+    "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "test/fixtures/resources/seeded-compositions.trace",
+    "test/test_map_report.py"
+  ],
+  "nativeBroad": {
+    "tests": 1897,
+    "passed": 1748,
+    "failed": 1,
+    "skipped": 148,
+    "errors": 0,
+    "revision": "9a54d4bf2",
+    "failure": "Static-source fixture supplied brush size instead of stock; corrected test rerun below."
+  },
+  "nativeAffectedRerun": {
+    "tests": 13,
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "revision": "a1c437295"
+  },
+  "display": {
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "revision": "9a54d4bf2"
+  },
+  "buildSystem": {
+    "tests": 346,
+    "skipped": 2,
+    "failures": 0,
+    "interpreter": "repository documented asset-encoder runtime",
+    "revision": "d40f2d023"
+  },
+  "mapImage": "PASS at9a",
+  "mapReport": "PASS ata1",
+  "coverageStatement": "Union of broad production run and affected test-only rerun, not one all-green full-suite run at final revision. Display subset covers some broad skips; no recomputed unique coverage total.",
+  "limitations": [
+    "No valid performance measurements yet.",
+    "Final gameplay tournament still pending.",
+    "macOS/iOS and physical ARM unverified.",
+    "Human gameplay review outstanding."
+  ],
+  "commands": {
+    "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix GLOB2_RECORDING_PREFIX=/tmp/glob2-terrain-baseline-build/recording/prefix CCACHE=1 TMPDIR=$PWD/artifacts/resource-refactor/test-tmp scons release=1 optimized_assets=0 -j10 build/linux/client/release/src/glob2 tests map-report-test",
+    "broad": "python3 test/run_tests.py --binary all --no-display --exclude-tag benchmark --junit artifacts/resource-refactor/broad-9a54-all.xml --write-inventory artifacts/resource-refactor/broad-9a54-inventory.json --artifacts artifacts/resource-refactor/broad-9a54-artifacts -j4",
+    "affected": "python3 test/run_tests.py --filter 'RuntimeContinuation/*' --filter 'SharedWorkerLifecycle/*' --filter 'SimulationReadPhase/*' --filter 'RuntimeResources/released observation*' --filter 'RuntimeResources/frozen seeded*' --filter 'TurnEngineHarness/the committed*' -j4",
+    "mapReport": "python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/test/MapReportHarness",
+    "mapImage": "python3 test/test_map_image.py artifacts/resource-refactor/candidate-9a54d4bf2/glob2",
+    "buildSystem": "[python3 tools/package_assets.py --encoder-python output] -m unittest discover -s test/build_system -v",
+    "display": "python3 test/run_tests.py --filter 'EditorActionCoverage/custom catalog*' --filter 'EditorActionCoverage/editor material*' --filter 'EditorActionCoverage/resource brushes*' --filter 'GUIInteractionCoverage/custom mixed*' --filter 'JavaScriptIntegration/JavaScript terrain resource*' --filter 'Settings/catalog building*' --filter 'MarketsV2/market panels*' --filter 'BuildingCatalogFixtures/ordinary building aliases*' --junit artifacts/resource-refactor/display-9a54.xml --artifacts artifacts/resource-refactor/display-9a54-artifacts --display-jobs 2 -j2"
+  },
+  "nativeEnvironment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib",
+    "TMPDIR": "$PWD/artifacts/resource-refactor/test-tmp"
+  }
+}

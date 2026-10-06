@@ -1,0 +1,95 @@
+{
+  "tested_source": "de4a315d8edf0aae7e08f3709db0c622c5f521ce",
+  "production_source": "9a54d4bf20b73bd63bd9d0f762cee67dda71eb51",
+  "source_delta": " src/ai/shared_runtime/RuntimeContinuationTest.cpp |   7 +-\n src/map/tools/MapReportHarness.cpp                |   1 +\n test/fixtures/multiplayer/FourSquares1.g2mr       | Bin 3023 -> 3023 bytes\n test/fixtures/resources/seeded-compositions.trace | 300 +++++++++++-----------\n 4 files changed, 155 insertions(+), 153 deletions(-)\n",
+  "source_clean": true,
+  "results": {
+    "registry_unit_cases": 9,
+    "fresh_engine_cases": 56,
+    "all_passed": true,
+    "suite_counts": {
+      "AIRules": 3,
+      "RuntimeContinuation": 1,
+      "SharedWorkerLifecycle": 3,
+      "SimulationReadPhase": 1,
+      "FarmAreas": 17,
+      "TerrainResources": 1,
+      "RuntimeResources": 25,
+      "ClearingFlagGradient": 3,
+      "JavaScriptCompatibility": 1,
+      "TeamStatsSave": 1
+    },
+    "staging_zero_case_runs_counted": false
+  },
+  "composition": {
+    "equal": true,
+    "trace": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/android-final-de4-cases/artifacts/resource-case-044/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace",
+    "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/android-source/test/fixtures/resources/seeded-compositions.trace",
+    "sha256": "0c2b5b0ae134187198c1a9a3a43b3474192cf05f605b0922b70f6f3fa9f47ab2",
+    "rows": 150
+  },
+  "cross_platform": {
+    "source_revision": "de4a315d8edf0aae7e08f3709db0c622c5f521ce",
+    "binary_sha256": "436fefd96aac9be9fea59a61bf31a2a9ffe84db8fa22b86361d8ea214503f3e0",
+    "executed_binary_sha256": "a7b92f7d097259bda2e3c1e3c4061f570e3bf062c472b3bf383cbaf21f61b550",
+    "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+    "bridge_provenance": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/android-source/artifacts/android-shell-cli-de4/provenance.json",
+    "commands": [
+      [
+        "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb",
+        "-P",
+        "15037",
+        "-s",
+        "emulator-5580",
+        "shell",
+        "cd /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de && mkdir -p /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/profiles/trace-cli && env LD_LIBRARY_PATH=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de SDL_VIDEODRIVER=dummy SDL_RENDER_DRIVER=software SDL_AUDIODRIVER=dummy SDL_PREFERRED_LOCALES=en_US GLOB2_ASSET_DIR=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de GLOB2_USER_DATA_DIR=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/profiles/trace-cli GLOB2_REPLAY_PATH=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/android-trace.replay GLOB2_CHECKSUM_SIDECAR=1 timeout -k 5 300 ./glob2-android-shell --nox /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/games/cross-replay.game.gz 1500 1"
+      ],
+      [
+        "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk/platform-tools/adb",
+        "-P",
+        "15037",
+        "-s",
+        "emulator-5580",
+        "shell",
+        "cd /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de && mkdir -p /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/profiles/trace-cli && env LD_LIBRARY_PATH=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de SDL_VIDEODRIVER=dummy SDL_RENDER_DRIVER=software SDL_AUDIODRIVER=dummy SDL_PREFERRED_LOCALES=en_US GLOB2_ASSET_DIR=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de GLOB2_USER_DATA_DIR=/data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/profiles/trace-cli timeout -k 5 300 ./glob2-android-shell --verify-match /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/test/fixtures/multiplayer/FourSquares1.g2mr --map /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/maps/FourSquares1.map.gz --out /data/local/tmp/glob2-tests-b701ede0e90f47d89ad66b408a7141de/android-verify-match"
+      ]
+    ],
+    "timing_valid": false,
+    "replay": {
+      "ticks": 1500,
+      "matches_native": true,
+      "sha256": "5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4",
+      "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/native-9a54-determinism/native.replay.checksums"
+    },
+    "verify_match": {
+      "matches_native": true,
+      "sha256": "c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38",
+      "reference": "/home/bradley/.codex/worktrees/a264/glob2/artifacts/resource-refactor/native-9a54-determinism/verify-match.checksums.txt",
+      "verdict": "verified"
+    }
+  },
+  "payload_integrity": {
+    "inputs_verified": 8137,
+    "stages": [
+      "before-tests",
+      "after-registry",
+      "after-cases-and-traces"
+    ],
+    "all_match": true,
+    "corruption_observed": false
+  },
+  "cleanup": {
+    "ports_closed": {
+      "5580": true,
+      "5581": true,
+      "15037": true
+    }
+  },
+  "limitations": [
+    "Android x86_64 API35 emulator with NDK28.2.13676358/API24 native target; native shell and dummy SDL, not APK/JVM/touch/UI/ARM validation.",
+    "CLI uses unmodified production objects with retained shell entry and existing test platform bridges; staged assets replace APK installation. SDL_PREFERRED_LOCALES=en_US avoids no-JVM locale probing.",
+    "No performance claims; build, emulator, and tournament overlapped.",
+    "Historical d556 staging corruption remains unexplained and retained in previous evidence. This fresh payload was completely verified before counted tests and afterward."
+  ],
+  "previous_evidence": "android-final-validation-evidence.zip preserves superseded source results and staging incident; not used as evidence for current source."
+}
