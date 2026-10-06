@@ -1,0 +1,31 @@
+{
+  "binarySha256": "1fa59d55b02b60948f1f05b83db012786418fbb4dd7d4fb267c3b2be19cf2ea0",
+  "traceSha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "traceBytes": 1849612,
+  "command": [
+    "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--map-file",
+    "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/platform/apps/engine-agent/fixtures/ais/two.map.gz",
+    "--game-seed",
+    "19",
+    "--player",
+    "javascript",
+    "--ai-script",
+    "0:/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/examples/javascript/studio-starter.js",
+    "--player",
+    "numbi",
+    "--ticks",
+    "1024",
+    "--replay",
+    "true",
+    "--telemetry",
+    "checksums",
+    "--save",
+    "initial",
+    "--save",
+    "final",
+    "--output-dir",
+    "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/studio-857"
+  ]
+}

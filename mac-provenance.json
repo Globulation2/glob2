@@ -1,0 +1,23 @@
+{
+  "source": "4639958b1ea60899ef22714b040775e73240668d",
+  "base": "9d4a364725f1872434403be8ced92e630e529fc7",
+  "sourceTree": "218c1dd7e057dcbaa4b2b4c27eed8fad808fbff7",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "binarySha256": "1cb4b2a9f9aa1071b64e14e432e5866e41182aa4f8599c9bde4a79be8b14866d",
+  "nativeBuildFlags": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3",
+      "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/glob2/artifacts/recording-sdl3/prefix/lib"
+    },
+    "revision": "4639958b1ea60899ef22714b040775e73240668d",
+    "sourceStatus": [],
+    "sourceTreeSha256": "14af8da08b4a3621587f279737382e3a9d03668d78f7889b88e6c9a2e95d9d83"
+  },
+  "buildCommand": "GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix /opt/homebrew/opt/scons/libexec/bin/python artifacts/building-gradient-857/focused-mac-build.py",
+  "testCommand": "python3 test/run_tests.py --no-display -j4 --junit artifacts/building-gradient-857/native-mac-final.xml --artifacts artifacts/building-gradient-857/native-mac-final"
+}

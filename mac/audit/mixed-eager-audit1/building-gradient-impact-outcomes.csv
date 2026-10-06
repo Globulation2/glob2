@@ -1,0 +1,10 @@
+tick,kind,building,unit,resource,elapsed_ticks,distance,reversals,censored,x,y,building_identity,unit_identity,event,censor_reason,source_building,source_building_identity
+522,harvested,0,2,1,10,0,0,0,25,96,1,1,33,,-1,0
+522,hired,0,2,1,0,0,0,0,26,95,1,1,35,,-1,0
+544,unfinished_trip,1,0,0,32,1,0,1,34,107,1,1,107,horizon,-1,0
+544,unfinished_trip,0,1,1,32,2,0,1,31,106,1,1,107,horizon,-1,0
+544,unfinished_trip,0,2,1,32,1,0,1,26,95,1,1,107,horizon,-1,0
+544,unfinished_trip,2,3,0,32,2,0,1,27,96,1,1,107,horizon,-1,0
+544,unfinished_trip,1025,1024,0,32,2,0,1,98,21,1,1,107,horizon,-1,0
+544,unfinished_trip,1024,1025,1,32,0,0,1,96,25,1,1,107,horizon,-1,0
+544,unfinished_trip,1024,1027,1,32,2,0,1,99,22,1,1,107,horizon,-1,0

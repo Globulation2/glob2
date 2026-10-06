@@ -1,0 +1,13 @@
+
+> test
+> vitest run packages/protocol/test
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/9520/glob2/platform
+
+
+ Test Files  5 passed (5)
+      Tests  21 passed (21)
+   Start at  19:00:18
+   Duration  2.00s (import 45%, tests 33%, transform 21%, worker 1%)
+

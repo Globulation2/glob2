@@ -1,0 +1,31 @@
+{
+  "binarySha256": "1cb4b2a9f9aa1071b64e14e432e5866e41182aa4f8599c9bde4a79be8b14866d",
+  "traceSha256": "3bfb63dd4724281d4c162fd144d137b6da64ed05d35e821511cefb71f28c22fe",
+  "traceBytes": 1849612,
+  "command": [
+    "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+    "--run-game",
+    "--map-file",
+    "/Users/bradley/.codex/worktrees/9520/glob2/platform/apps/engine-agent/fixtures/ais/two.map.gz",
+    "--game-seed",
+    "19",
+    "--player",
+    "javascript",
+    "--ai-script",
+    "0:/Users/bradley/.codex/worktrees/9520/glob2/examples/javascript/studio-starter.js",
+    "--player",
+    "numbi",
+    "--ticks",
+    "1024",
+    "--replay",
+    "true",
+    "--telemetry",
+    "checksums",
+    "--save",
+    "initial",
+    "--save",
+    "final",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-857/studio"
+  ]
+}

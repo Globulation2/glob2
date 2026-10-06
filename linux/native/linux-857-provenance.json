@@ -1,0 +1,8 @@
+{
+  "source": "4639958b1ea60899ef22714b040775e73240668d",
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "binarySha256": "1fa59d55b02b60948f1f05b83db012786418fbb4dd7d4fb267c3b2be19cf2ea0",
+  "buildCommand": "GLOB2_SDL3_PREFIX=/home/bradley/glob2-verify/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-building-gradient-20261004-9520/recording-prefix LD_LIBRARY_PATH=/home/bradley/glob2-verify/sdl3/prefix/lib python3 ../focused-linux-build.py",
+  "testCommand": "LD_LIBRARY_PATH=/home/bradley/glob2-verify/sdl3/prefix/lib python3 test/run_tests.py --no-display -j4 --junit ../native-857-final.xml --artifacts ../native-857-final"
+}
