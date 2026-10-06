@@ -575,7 +575,7 @@
       "sprite": "data/gfx/terrain-boulders",
       "profile": "rock",
       "ocean": false,
-      "preview": [68, 70, 71],
+      "preview": [67, 69, 71],
       "variants": [
         {
           "frame": 0,
@@ -642,7 +642,7 @@
           "weight": 1
         }
       ],
-      "minimap": [68, 70, 71],
+      "minimap": [67, 69, 71],
       "seam": {
         "height": 4,
         "cast_q8": 80,
@@ -1128,7 +1128,7 @@
       "sprite": "data/gfx/terrain-gravel",
       "profile": "rock",
       "ocean": false,
-      "preview": [135, 127, 116],
+      "preview": [134, 126, 115],
       "variants": [
         {
           "frame": 0,
@@ -1195,7 +1195,7 @@
           "weight": 1
         }
       ],
-      "minimap": [135, 127, 116],
+      "minimap": [134, 126, 115],
       "seam": {
         "height": 2,
         "cast_q8": 40,
@@ -1363,7 +1363,7 @@
       "sprite": "data/gfx/terrain-marsh",
       "profile": "soft",
       "ocean": false,
-      "preview": [74, 95, 80],
+      "preview": [78, 95, 74],
       "variants": [
         {
           "frame": 0,
@@ -1430,7 +1430,7 @@
           "weight": 1
         }
       ],
-      "minimap": [74, 95, 80],
+      "minimap": [78, 95, 74],
       "seam": {
         "height": 1
       }
@@ -1754,7 +1754,7 @@
       "sprite": "data/gfx/terrain-lava",
       "profile": "fractured",
       "ocean": false,
-      "preview": [196, 84, 34],
+      "preview": [168, 72, 30],
       "variants": [
         {
           "frame": 0,
@@ -1824,7 +1824,7 @@
       "animation_frames": 4,
       "animation_stride": 16,
       "animation_ticks": 8,
-      "minimap": [200, 80, 30],
+      "minimap": [176, 68, 28],
       "seam": {
         "height": 4,
         "fringe": [214, 110, 40],

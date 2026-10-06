@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "529136e012c3c5a37d7459cd44c28a5c4c91dc38b92d2cc7cb3a113d320a1a2d",
+    "tools/artwork/terrain_synth.py": "9950266f6755b1d445025568ab13cf3e15a66186bfb4e091fe215d961a5498df",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "scree",
@@ -78,9 +78,9 @@
   ],
   "style_stats": {
     "0": {
-      "luma": 120.4,
-      "std": 13.2,
-      "grain": 7.7,
+      "luma": 120.5,
+      "std": 13.0,
+      "grain": 7.6,
       "sat": 0.08,
       "alpha": 255.0
     }
@@ -140,21 +140,21 @@
   "python": "3.14.4",
   "pillow": "12.2.0",
   "runtime_sha256": {
-    "data/gfx/terrain-scree0.png": "7dea3cda86b58bb0b312b79da2f3c8356318aa649ed1cb2285ad101d14444d04",
-    "data/gfx/terrain-scree1.png": "b27eb15b21d4ad2780012802c3c89041cf186b0aece9c29a0ddd1b5a9b556b33",
-    "data/gfx/terrain-scree2.png": "27ba0eb5b331caf264a5a8200c13b46775ac0dfb38e151b0021069761594622b",
-    "data/gfx/terrain-scree3.png": "ce141c3de7010968ac5992e569921abced0967c4f64118df1ba2d8409f343a6e",
-    "data/gfx/terrain-scree4.png": "4cf74dd68a0785a9549ab2a17808084e01acdd03e353c884b7f7a736b2a3424a",
-    "data/gfx/terrain-scree5.png": "dff9b08bf9bd0cd23cd23a1036a66277a764294b9ceb7a0cc0b68ca8c3d7321d",
-    "data/gfx/terrain-scree6.png": "77529b9405199d8c464db8f7440bae44611a238234087b650d526e15f1d0918c",
-    "data/gfx/terrain-scree7.png": "e87ee5827c6cf50b8418f9b2ae7927486e26c97708976820f8da8230caf172af",
-    "data/gfx/terrain-scree8.png": "01eb4a2b746a4aec085bc3ffc0ef0a8e8683a680f155b33bbd84382009462e69",
-    "data/gfx/terrain-scree9.png": "3eebd2374c2da4c281aac03e0a32bc7924bb6f9deafc06945e5601b0d938bb1e",
-    "data/gfx/terrain-scree10.png": "f01ed144f018c1428f9c32ddec19cb489e243890643bd6c312bcd9dd88f17daf",
-    "data/gfx/terrain-scree11.png": "c056197ac1cd82cfa40b677beb9a68997cc69e2e9dc4e56e8cf62ee39a1b3da2",
-    "data/gfx/terrain-scree12.png": "a211df7f556ea3a97a88aa8a24e44125dbcccb1e94ee5ac362319c8c3eebbd49",
-    "data/gfx/terrain-scree13.png": "15c0e8fd92aa40028b87e2a7187fb7fdce8622e58a8e700546ff7228014e6573",
-    "data/gfx/terrain-scree14.png": "f693413bcb04e677da5c7c5c48c798fc79942e0f88ef47032db714bf3e813e7c",
-    "data/gfx/terrain-scree15.png": "298a2b35faf257faaaf89381de9d7ffe164d9e0949c0da377d16c77c2405e1b5"
+    "data/gfx/terrain-scree0.png": "34b7e44fcc38c890f2cb91fb06d5329a8944d4df7ceab9d98db1799a7d1d1832",
+    "data/gfx/terrain-scree1.png": "fce1d8314606f7ae88cf491781663cddf62544b4373d2321809a6182d099f146",
+    "data/gfx/terrain-scree2.png": "95e7b00fe420a47755c657487289d0d97b3316611fe7bf55a84e19253c946621",
+    "data/gfx/terrain-scree3.png": "b25fd8b764342beb6768d8df1d766a032c4bb98e506d4ea0940edcc22b7de1a1",
+    "data/gfx/terrain-scree4.png": "ed8216228ef3e35f6157cae7412da94e3025b759f358d8b37ba92605d2e75a19",
+    "data/gfx/terrain-scree5.png": "1b93b9f41799d420c29429c523c68bfb705255482750f0a7d5292e116a4aee96",
+    "data/gfx/terrain-scree6.png": "51033a23d4bbf0cd4f32752afac67ea1d0a58b812e63acb5ff3b8fc2a038092f",
+    "data/gfx/terrain-scree7.png": "36c749e60bf8b1616d8a8f177f0f57f357268373776720e0440759dac898c7d3",
+    "data/gfx/terrain-scree8.png": "0607461aed41817c2d2d45220f875fc64977c5c042e4e069085b83df0ea0dc92",
+    "data/gfx/terrain-scree9.png": "a28fac2fdf1390bc3550569cfa21db086b18ea6b2987e82e3f0caebfdc4c195b",
+    "data/gfx/terrain-scree10.png": "c128fea01db642acfe4612ca7eda7fdbef43fc66bb05fd301e8faf56655cf2e0",
+    "data/gfx/terrain-scree11.png": "6b0ec584633ecf19db37d88ab4404cf058ce11783509503fb0d9e3b77461cd72",
+    "data/gfx/terrain-scree12.png": "92526209ed05ca6243ce1ad67426beeab30a816704019a2e9b3f059432089a35",
+    "data/gfx/terrain-scree13.png": "8a26b594851f81b8af73d96ea09e8ecb63c2d420a1d52d17de4202955b198cbe",
+    "data/gfx/terrain-scree14.png": "3f0aff80f731c8221be64561c1c4ea44b9e548c8db3626ee02bce4f0f91d8750",
+    "data/gfx/terrain-scree15.png": "f976de5bd5c2784aa9f15b25c809cce08ef8a3330113b2c9b77a0fe6a7e039d6"
   }
 }

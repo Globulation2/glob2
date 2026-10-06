@@ -215,20 +215,28 @@ def worley(rng, cells, metric="euclid", jitter=1.0):
     """Jittered-grid Worley cells; F1/F2 in units of the cell size.
 
     Each pixel examines the nine surrounding cells with wrapped indices, so the
-    field is periodic and the cost stays linear in the canvas size.
+    field is periodic and the cost stays linear in the canvas size. Metrics:
+    `euclid` (round cells), `chebyshev` (axis-aligned squares) and `angular`
+    (a Chebyshev metric rotated by a random angle per cell, so cells become
+    angular stones with no shared orientation).
     """
     cells = max(1, int(cells))
     size = N / cells
     px = [[0.0] * cells for _ in range(cells)]
     py = [[0.0] * cells for _ in range(cells)]
+    rot = [[(1.0, 0.0)] * cells for _ in range(cells)]
     for cy in range(cells):
         for cx in range(cells):
             px[cy][cx] = (cx + 0.5 + (rng.random() - 0.5) * jitter) * size
             py[cy][cx] = (cy + 0.5 + (rng.random() - 0.5) * jitter) * size
+            if metric == "angular":
+                angle = rng.random() * TAU
+                rot[cy][cx] = (math.cos(angle), math.sin(angle))
     f1 = [0.0] * (N * N)
     f2 = [0.0] * (N * N)
     ids = [0] * (N * N)
     chebyshev = metric == "chebyshev"
+    angular = metric == "angular"
     for i in range(N * N):
         x, y = XS[i], YS[i]
         cx0 = int(x / size)
@@ -242,7 +250,13 @@ def worley(rng, cells, metric="euclid", jitter=1.0):
                 wrap_x = ((cx0 + ox) // cells) * N
                 dx = px[cy][cx] + wrap_x - x
                 dy = py[cy][cx] + wrap_y - y
-                d = max(abs(dx), abs(dy)) if chebyshev else math.sqrt(dx * dx + dy * dy)
+                if angular:
+                    c, sn = rot[cy][cx]
+                    d = max(abs(dx * c + dy * sn), abs(-dx * sn + dy * c))
+                elif chebyshev:
+                    d = max(abs(dx), abs(dy))
+                else:
+                    d = math.sqrt(dx * dx + dy * dy)
                 if d < best:
                     second, best, best_id = best, d, cy * cells + cx
                 elif d < second:
@@ -634,13 +648,14 @@ def render_clay(ctx):
 def render_gravel(ctx):
     p = RECIPES["gravel"].palette
     rng = ctx.rng
-    f1, f2, ids = worley(rng, 6)
-    grit = fbm(rng, 16, 2)
-    tone = normalize([0.5 * (1 - a) + 0.5 * g for a, g in zip(f1, grit)])
+    f1, f2, ids = worley(rng, 5)
+    grit = fbm(rng, 10, 2)
+    # Pebbles about six native pixels across, each with its own tone.
+    tone = normalize([0.3 * (1 - a) + 0.7 * g for a, g in zip(f1, grit)])
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 36, 0.08))
-    rgb = shade(rgb, [1 - v for v in f1], 0.22)
-    gaps = band([b - a for a, b in zip(f1, f2)], 0.08, 0.10)
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.11))
+    rgb = shade(rgb, [1 - v for v in f1], 0.15)
+    gaps = band([b - a for a, b in zip(f1, f2)], 0.07, 0.09)
     rgb = mix(rgb, p["dark"], gaps, 0.6)
     rgb = grain(rgb, rng, 0.08)
     return rgb, None
@@ -682,16 +697,19 @@ def render_mud(ctx):
 
 @recipe(name="marsh", group="rough", label="Marsh", profile="soft",
         seam={"height": 1},
-        palette={"dark": (50, 66, 54), "mid": (74, 96, 78), "light": (104, 122, 96), "pool": (40, 70, 90)},
-        style=Style(luma=88, std=10, grain_max=9), alpha_range=(205, 255))
+        palette={"dark": (58, 68, 48), "mid": (80, 96, 70), "light": (106, 120, 88), "pool": (40, 70, 90)},
+        style=Style(luma=86, std=10, grain_max=9), alpha_range=(205, 255))
 def render_marsh(ctx):
     p = RECIPES["marsh"].palette
     rng = ctx.rng
-    reeds = normalize(fbm(rng, 12, 3, cells_y=3))
-    rgb = ramp(reeds, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = grain(rgb, rng, 0.10)
-    low = fbm(rng, 5, 2)
-    pools = band(low, 0.27, 0.06)
+    rgb, _ = ground(ctx, 4, 3, (p["dark"], p["mid"], p["light"]), warp=10, grit=0.14)
+    # Pools: rounded patches around some Worley cell centres, edges warped so
+    # they are irregular, with a smoothed threshold.
+    f1, _, ids = worley(rng, 4)
+    wx, wy = fbm(rng, 5, 2), fbm(rng, 5, 2)
+    depth = domain_warp(f1, wx, wy, 6)
+    wet = [1.0 if rng.random() < 0.55 else 0.0 for _ in range(16)]
+    pools = [(1 - smoothstep(0.26, 0.40, d)) * wet[i] for d, i in zip(depth, ids)]
     rgb = mix(rgb, p["pool"], pools, 0.9)
     alpha = [255 - 40 * m for m in pools]
     return rgb, alpha
@@ -716,14 +734,17 @@ def render_deep_snow(ctx):
 def render_scree(ctx):
     p = RECIPES["scree"].palette
     rng = ctx.rng
-    f1, f2, ids = worley(rng, 5, metric="chebyshev", jitter=0.9)
+    f1, f2, ids = worley(rng, 5, metric="angular", jitter=0.9)
+    wx, wy = fbm(rng, 6, 2), fbm(rng, 6, 2)
+    edge = domain_warp([b - a for a, b in zip(f1, f2)], wx, wy, 4)
     grit = fbm(rng, 12, 2)
-    tone = normalize([0.55 * (1 - a) + 0.45 * g for a, g in zip(f1, grit)])
+    # Flat angular stones in random orientations: per-stone tone, no shared
+    # light direction, dark gaps between them.
+    tone = normalize([0.35 * (1 - a) + 0.65 * g for a, g in zip(f1, grit)])
     rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.09))
-    rgb = shade(rgb, [1 - v for v in f1], 0.3)
-    gaps = band([b - a for a, b in zip(f1, f2)], 0.06, 0.08)
-    rgb = mix(rgb, p["dark"], gaps, 0.55)
+    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 25, 0.12))
+    gaps = band(edge, 0.05, 0.08)
+    rgb = mix(rgb, p["dark"], gaps, 0.6)
     rgb = grain(rgb, rng, 0.08)
     return rgb, None
 
@@ -919,8 +940,19 @@ def render_void_hole(ctx):
         preview=(40, 30, 38), minimap=(30, 22, 28))
 def render_chasm(ctx):
     p = RECIPES["chasm"].palette
-    streaks = normalize(fbm(ctx.rng, 10, 3, cells_y=3))
-    rgb = ramp(streaks, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rng = ctx.rng
+    # Diagonal rock streaks, bent by a low-frequency warp so they curve and
+    # break instead of running straight.
+    bend = fbm(rng, 3, 2)
+    strength = fbm(rng, 4, 2)
+    streaks = [
+        (1 - abs(math.sin(TAU * 2 * (x + y) / N + 9 * (b - 0.5)))) ** 2 * (0.3 + 0.7 * st)
+        for x, y, b, st in zip(XS, YS, bend, strength)
+    ]
+    base = fbm(rng, 4, 3)
+    tone = normalize([0.5 * st + 0.5 * bs for st, bs in zip(streaks, base)], 0.02, 0.995)
+    rgb = ramp(tone, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    rgb = grain(rgb, rng, 0.08)
     return rgb, None
 
 
@@ -940,21 +972,13 @@ def render_boulders(ctx):
     tone = normalize([0.5 * (1 - a) + 0.5 * g for a, g in zip(f1, grit)])
     rgb = ramp(tone, [(0.0, p["ground_dark"]), (0.5, p["ground"]), (1.0, p["ground_light"])])
     rgb = shade(rgb, [1 - v for v in f1], 0.15)
-    # Two stones cross the shared border band and are identical in every
-    # variant; the others vary and stay clear of the band.
+    # Stones stay inside the tile, clear of the shared border band, so the band
+    # is gravel in every variant and no stone repeats along tile edges.
     stones = []
-    shared = ctx.shared_rng
-    for _ in range(2):
-        cx, cy = ctx.band_point(14)
-        r = 7 + shared.random() * 4
-        lumps = [(2, 0.08 + shared.random() * 0.08, shared.random() * TAU),
-                 (3, 0.05 + shared.random() * 0.07, shared.random() * TAU),
-                 (5, 0.03 + shared.random() * 0.03, shared.random() * TAU)]
-        stones.append((cx, cy, r, lumps))
-    for _ in range(rng.randint(4, 6)):
+    for _ in range(rng.randint(5, 7)):
         for _attempt in range(20):
-            r = 8 + rng.random() * 7
-            cx, cy = ctx.interior_point(20 + r)
+            r = 7 + rng.random() * 7
+            cx, cy = ctx.interior_point(18 + r)
             if all(math.hypot(cx - ox, cy - oy) > (r + orr) * 0.85 for ox, oy, orr, _ in stones):
                 break
         lumps = [(2, 0.08 + rng.random() * 0.08, rng.random() * TAU),
@@ -1032,10 +1056,10 @@ def render_thicket(ctx):
 
 @recipe(name="lava", group="lava", label="Lava", profile="fractured",
         seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 96, "fringe_width_q8": 512},
-        palette={"crust_dark": (56, 24, 18), "crust": (70, 30, 22), "crust_warm": (120, 50, 26),
-                 "glow": (210, 96, 30), "glow_bright": (250, 190, 60)},
-        style=Style(luma=70, std=22, grain_max=16, match=0.8), phases=4, animation_ticks=8,
-        preview=(196, 84, 34), minimap=(200, 80, 30),
+        palette={"crust_dark": (40, 22, 18), "crust": (54, 28, 22), "crust_warm": (96, 44, 26),
+                 "glow": (170, 70, 24), "glow_bright": (220, 150, 60)},
+        style=Style(luma=58, std=17, grain_max=13, match=0.8), phases=4, animation_ticks=8,
+        preview=(168, 72, 30), minimap=(176, 68, 28),
         note="placeholder until the image-generated lava lands")
 def render_lava(ctx):
     p = RECIPES["lava"].palette
@@ -1047,8 +1071,8 @@ def render_lava(ctx):
     rgb = ramp(crust_noise, [(0.0, p["crust_dark"]), (1.0, p["crust"])])
     rgb = shade(rgb, [1 - v for v in f1], 0.2)
     rgb = grain(rgb, rng, 0.10)
-    channel = band(edge, 0.04, 0.06)
-    warm = band(edge, 0.10, 0.12)
+    channel = band(edge, 0.03, 0.045)
+    warm = band(edge, 0.08, 0.10)
     rgb = mix(rgb, p["crust_warm"], warm, 0.35)
     offsets = [rng.random() for _ in range(4)]
     pulse = [0.5 + 0.5 * math.sin(TAU * (ctx.t + offsets[i])) for i in ids]
