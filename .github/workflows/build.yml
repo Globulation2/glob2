@@ -135,7 +135,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.coverage == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -160,7 +160,7 @@ jobs:
       - name: Run native coverage without the slow integration tier
         run: |
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/run_coverage.py --quick --timeout 900 -j4 \
-            --discard-merged-profiles \
+            --discard-merged-profiles --stream-logs \
             --cc clang-18 --cxx clang++-18 \
             --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
       - name: Retain coverage and failing test evidence
