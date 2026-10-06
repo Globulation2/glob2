@@ -744,6 +744,52 @@ TEST_SUITE("TerrainRuntime")
 		// Current files number their custom definitions from the current built-ins.
 		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
 	}
+	TEST_CASE("painted catalogue terrain survives save and reload with its frames and checksum")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+		auto &map = world.game.map;
+		std::vector<TerrainType> painted;
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+			if (terrainPaintable(TerrainType(i)))
+				painted.push_back(TerrainType(i));
+		REQUIRE(painted.size() == 24);
+		for (std::size_t n = 0; n < painted.size(); ++n)
+		{
+			map.setCellTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2, painted[n]);
+			// Saved frames come from the type's own contract, never a neighbour's.
+			const auto &frames = terrainCompatibility(painted[n]);
+			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) >= frames.firstFrame);
+			CHECK(map.getTerrain(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) < frames.firstFrame + frames.variants);
+		}
+		map.setCellTerrain(20, 20, ICE);
+		map.setCellTerrain(21, 20, TRAIL);
+		const auto required = map.requiredTerrainExperiments();
+		CHECK(required.size() == 11); // nine catalogue groups plus ice and trail
+		for (auto text : {false, true})
+		{
+			CAPTURE(text);
+			auto *bytes = new GAGCore::MemoryStreamBackend;
+			std::unique_ptr<GAGCore::OutputStream> output(text
+				? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(bytes))
+				: static_cast<GAGCore::OutputStream *>(new GAGCore::BinaryOutputStream(bytes)));
+			world.game.save(output.get(), false, "catalogue");
+			output->flush();
+			auto *storage = new GAGCore::MemoryStreamBackend(std::string(bytes->getBuffer(), bytes->getPosition()));
+			std::unique_ptr<GAGCore::InputStream> input(text
+				? static_cast<GAGCore::InputStream *>(new GAGCore::TextInputStream(storage))
+				: static_cast<GAGCore::InputStream *>(new GAGCore::BinaryInputStream(storage)));
+			GameGUI loaded;
+			REQUIRE(loaded.game.load(input.get()));
+			for (std::size_t n = 0; n < painted.size(); ++n)
+				CHECK(loaded.game.map.terrainTypeAt(int(n % 8) * 2 + 2, int(n / 8) * 3 + 2) == painted[n]);
+			CHECK(loaded.game.map.terrainTypeAt(20, 20) == ICE);
+			CHECK(loaded.game.map.terrainTypeAt(21, 20) == TRAIL);
+			CHECK(loaded.game.map.checkSum(true) == map.checkSum(true));
+			CHECK(loaded.game.map.requiredTerrainExperiments() == required);
+			CHECK(loaded.game.mapHeader.requiredTerrainExperiments == required);
+		}
+	}
 	TEST_CASE("each catalogue type requires exactly its group's experiment and shares the group profile")
 	{
 		glob2test::HeadlessGlobals globals;
