@@ -769,6 +769,23 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(sameTerrainProperties(map.terrainProperties(type),
 										terrainGroupDefinition(terrainGroup(type)).properties));
 		}
+		// Runtime definitions: a gated group's exact profile declares the group's
+		// experiment, a profile of its own declares nothing.
+		{
+			Map custom;
+			custom.setSize(5, 5, GRASS);
+			custom.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[
+				{"key":"mod:pit","name":"Pit","base":"void_hole","properties":{},"appearance":"void_hole"},
+				{"key":"mod:bog","name":"Bog","base":"water","properties":{"groundSpeedQ8":128},"appearance":"water"}]})");
+			const auto pit = *custom.terrainRegistry().find("mod:pit");
+			const auto bog = *custom.terrainRegistry().find("mod:bog");
+			custom.setCellTerrain(1, 1, pit);
+			CHECK(custom.requiredTerrainExperiments().has(ExperimentId::VoidTerrain));
+			CHECK(custom.requiredTerrainExperiments().size() == 1);
+			custom.setCellTerrain(1, 1, GRASS);
+			custom.setCellTerrain(2, 2, bog);
+			CHECK(custom.requiredTerrainExperiments().empty());
+		}
 		// Classic ground never acquires a requirement.
 		Map plain;
 		plain.setSize(5, 5, GRASS);

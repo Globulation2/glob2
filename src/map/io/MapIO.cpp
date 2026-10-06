@@ -73,10 +73,10 @@ try
 
 	// Files older than the catalogue were written with seven built-ins: their custom
 	// definitions and tile IDs start at 7 and move behind the current built-ins.
-	const unsigned savedBuiltins = versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE
-		? TERRAIN_COUNT_FORMAT_136 : unsigned(TERRAIN_COUNT);
-	auto remapTerrainId = [savedBuiltins](Uint16 v) -> Uint16
-	{ return v < savedBuiltins ? v : Uint16(v - savedBuiltins + TERRAIN_COUNT); };
+	const unsigned savedBuiltins = TerrainRegistry::savedBuiltinCount(versionMinor);
+	// Returns a value the registry rejects when the renumbered ID would not fit.
+	auto remapTerrainId = [savedBuiltins](Uint16 v) -> unsigned
+	{ return v < savedBuiltins ? v : unsigned(v) - savedBuiltins + TERRAIN_COUNT; };
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
 	{
 		stream->readEnterSection("terrainRegistry");
@@ -138,7 +138,7 @@ try
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
         if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ v=remapTerrainId(v); if (!validTerrainType(v)) throw std::runtime_error("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(v); });
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto id=remapTerrainId(v); if (!validTerrainType(id)) throw std::runtime_error("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(id); });
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v;});
         GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.variety=v;});

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainRegistry.h"
+#include "FileFormatVersions.h"
 #include "online/Sha256.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
@@ -303,10 +304,15 @@ std::string TerrainRegistry::serialize() const
 	result += "]}";
 	return result;
 }
+unsigned TerrainRegistry::savedBuiltinCount(int versionMinor)
+{
+	return versionMinor < FILE_FORMAT_VERSION_TERRAIN_CATALOGUE ? TERRAIN_COUNT_BEFORE_CATALOGUE
+																		: unsigned(TERRAIN_COUNT);
+}
 std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_view source,
 																			  unsigned savedBuiltinCount)
 {
-	if (savedBuiltinCount < TERRAIN_COUNT_FORMAT_136 || savedBuiltinCount > TERRAIN_COUNT)
+	if (savedBuiltinCount < TERRAIN_COUNT_BEFORE_CATALOGUE || savedBuiltinCount > TERRAIN_COUNT)
 		throw std::invalid_argument("Unsupported saved terrain built-in count");
 	auto j = parse(source);
 	if (j.at("terrains").empty())

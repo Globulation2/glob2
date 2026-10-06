@@ -180,9 +180,27 @@ bool Map::projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const
 ExperimentSet Map::requiredTerrainExperiments() const
 {
 	ExperimentSet required;
-	for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-		if (terrainCounts[t])
-			if (const auto experiment = terrainExperiment(static_cast<TerrainType>(t))) required.set(*experiment);
+	const auto &registry = terrainRegistry();
+	for (unsigned t = 0; t < registry.size(); ++t)
+	{
+		if (!terrainCounts[t])
+			continue;
+		auto type = static_cast<TerrainType>(t);
+		// A runtime definition with a gated group's exact profile plays that
+		// group's mechanic, so it declares the same experiment. Definitions with
+		// their own profile stay ungated, as every custom type was before.
+		if (t >= TERRAIN_COUNT)
+		{
+			unsigned builtin = 0;
+			while (builtin < TERRAIN_COUNT &&
+				   registry.propertyIndex(static_cast<TerrainType>(builtin)) != registry.propertyIndex(type))
+				++builtin;
+			if (builtin == TERRAIN_COUNT)
+				continue;
+			type = static_cast<TerrainType>(builtin);
+		}
+		if (const auto experiment = terrainExperiment(type)) required.set(*experiment);
+	}
 	return required;
 }
 

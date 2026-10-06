@@ -40,7 +40,7 @@ constexpr TerrainTypeDefinition authored(TerrainType id, TerrainGroup group, con
 										  TerrainColor mid)
 {
 	return {id,      group, name, label, minimap, mid, mid, minimap,
-			AUTHORED_FRAME_BASE + AUTHORED_FRAMES * (int(id) - int(TERRAIN_COUNT_FORMAT_136)),
+			AUTHORED_FRAME_BASE + AUTHORED_FRAMES * (int(id) - int(TERRAIN_COUNT_BEFORE_CATALOGUE)),
 			AUTHORED_FRAMES, false};
 }
 } // namespace terrain_table_detail
@@ -136,7 +136,7 @@ static_assert(
 				row.firstFrame + row.variants > 65536)
 				return false;
 			if (row.legacyCorners != !TERRAIN_GROUPS[unsigned(row.group)].paletteVisible &&
-				i >= TERRAIN_COUNT_FORMAT_136)
+				i >= TERRAIN_COUNT_BEFORE_CATALOGUE)
 				return false;
 			for (unsigned j = 0; j < i; ++j)
 			{
@@ -164,7 +164,7 @@ static_assert(
 	[]
 	{
 		using namespace terrain_table_detail;
-		return TERRAIN_COUNT_FORMAT_136 == 7 &&
+		return TERRAIN_COUNT_BEFORE_CATALOGUE == 7 &&
 			   frozenRow(TERRAIN_TYPES[WATER], "water", 256, 16, true) &&
 			   frozenRow(TERRAIN_TYPES[SAND], "sand", 128, 16, true) &&
 			   frozenRow(TERRAIN_TYPES[GRASS], "grass", 0, 16, true) &&

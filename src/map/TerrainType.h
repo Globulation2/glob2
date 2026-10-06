@@ -47,4 +47,4 @@ enum TerrainType : std::uint16_t
 };
 // Files older than format 138 were written when seven built-ins existed; their
 // custom definitions and tile identities start at this count and are remapped on load.
-inline constexpr unsigned TERRAIN_COUNT_FORMAT_136 = 7;
+inline constexpr unsigned TERRAIN_COUNT_BEFORE_CATALOGUE = 7;

@@ -14,7 +14,15 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-BINDINGS = ("water", "sand", "grass", "ice", "road")
+# Every paintable built-in terrain name from src/map/TerrainTypeTable.h; the engine's
+# Catalog::parse requires the same set.
+BINDINGS = ("water", "sand", "grass", "ice", "road",
+            "boulders", "hedge", "thicket", "ridge_rock", "outcrop",
+            "dirt", "clay", "gravel", "flower_meadow",
+            "mud", "marsh", "deep_snow", "scree",
+            "dirt_track", "boardwalk", "lava", "ember_field",
+            "loam", "moss", "spring_meadow", "deep_water", "dark_water",
+            "void_hole", "chasm")
 
 
 def pixel_fingerprint(image):

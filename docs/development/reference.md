@@ -907,7 +907,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   adding a group is one profile and, when gated, one `ExperimentId`.
 - Format 138 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
   older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
-  count (`TERRAIN_COUNT_FORMAT_136`) to follow the current built-ins, and
+  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
   `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
   byte for byte; custom registries re-serialize with shifted IDs, so their digest
   changes and format-137 replays that embed one no longer verify.
@@ -924,6 +924,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   authoritative for previews and minimaps; built-ins use catalog palettes.
   Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
   experiments into matches, while saves retain them independently of user settings.
+  A runtime definition whose properties equal a gated built-in group's profile
+  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
+  property indices); a definition with its own profile stays ungated.
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and

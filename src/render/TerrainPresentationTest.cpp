@@ -1074,6 +1074,10 @@ TEST_SUITE("TerrainPresentation")
 		paint(60, 8, 4, 8, WATER);
 		paint(0, 10, 1, 1, ICE);
 		paint(20, 10, 1, 1, TRAIL);
+		// Catalogue terrain only by its exact colour: the dark-water colour itself
+		// imports, while an off-palette dark blue nearest to it still becomes water.
+		paint(30, 30, 1, 1, DARK_WATER);
+		image.drawFilledRect(34, 30, 1, 1, 0, 0, 128);
 		image.drawFilledRect(45, 45, 2, 2, 255, 255, 255);
 		const auto filename = (glob2test::artifactDir() / "terrain-import-edges.png").string();
 		REQUIRE(IMG_SavePNG(image.getSDLSurface(), filename.c_str()));
@@ -1094,6 +1098,9 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.terrainTypeAt(20, 10) == TRAIL);
 		CHECK(map.terrainTypeAt(19, 10) == GRASS);
 		CHECK(map.terrainPropertiesAt(19, 10).buildable);
+		CHECK(map.terrainTypeAt(30, 30) == DARK_WATER);
+		CHECK(map.terrainTypeAt(34, 30) == WATER);
+		CHECK(map.requiredTerrainExperiments().has(ExperimentId::DeepWaterTerrain));
 		// An ordinary grass/water boundary still receives the legacy shore repair.
 		CHECK(map.terrainTypeAt(15, 5) != WATER);
 		fixture.game.map.rebuildTerrain();

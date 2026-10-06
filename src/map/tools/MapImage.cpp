@@ -61,6 +61,10 @@ Surface surface(SDL_Surface *p)
 		throw std::runtime_error(std::string("Map image: ") + SDL_GetError());
 	return Surface(p, SDL_DestroySurface);
 }
+// Classic categories plus ice and trail classify by nearest colour, as they always
+// have. Catalogue terrains are recognised only by their exact exported colour, so an
+// off-palette shade in an existing image still becomes classic ground rather than a
+// gated catalogue type.
 int nearest(Uint8 r, Uint8 g, Uint8 b)
 {
 	int best = 0, distance = std::numeric_limits<int>::max();
@@ -69,6 +73,8 @@ int nearest(Uint8 r, Uint8 g, Uint8 b)
 		const auto &c = palette[i];
 		int d = (int(r) - c.r) * (int(r) - c.r) + (int(g) - c.g) * (int(g) - c.g) +
 				(int(b) - c.b) * (int(b) - c.b);
+		if (unsigned(c.terrain) >= TERRAIN_COUNT_BEFORE_CATALOGUE && d != 0)
+			continue;
 		if (d < distance)
 		{
 			best = i;

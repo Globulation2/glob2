@@ -214,18 +214,18 @@ TEST_SUITE("TerrainRegistry")
 			source(Json::array({definition("test:z"), definition("test:a", "grass", {{"groundSpeedQ8", 192}})})));
 		auto saved = Json::parse(registry->serialize());
 		for (auto &item : saved["terrains"])
-			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_FORMAT_136;
-		CHECK(saved["terrains"][0]["id"] == TERRAIN_COUNT_FORMAT_136);
-		const auto legacy = TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_FORMAT_136);
+			item["id"] = item["id"].get<unsigned>() - TERRAIN_COUNT + TERRAIN_COUNT_BEFORE_CATALOGUE;
+		CHECK(saved["terrains"][0]["id"] == TERRAIN_COUNT_BEFORE_CATALOGUE);
+		const auto legacy = TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_BEFORE_CATALOGUE);
 		CHECK(legacy->serialize() == registry->serialize());
 		CHECK(legacy->digest() == registry->digest());
 		CHECK(legacy->find("test:a") == TerrainType(TERRAIN_COUNT));
 		CHECK(legacy->find("test:z") == TerrainType(TERRAIN_COUNT + 1));
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump()));
-		CHECK_THROWS(TerrainRegistry::deserialize(registry->serialize(), TERRAIN_COUNT_FORMAT_136));
-		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_FORMAT_136 - 1));
+		CHECK_THROWS(TerrainRegistry::deserialize(registry->serialize(), TERRAIN_COUNT_BEFORE_CATALOGUE));
+		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT_BEFORE_CATALOGUE - 1));
 		CHECK_THROWS(TerrainRegistry::deserialize(saved.dump(), TERRAIN_COUNT + 1));
-		CHECK(TerrainRegistry::deserialize(R"({"schemaVersion":1,"terrains":[]})", TERRAIN_COUNT_FORMAT_136) == builtin);
+		CHECK(TerrainRegistry::deserialize(R"({"schemaVersion":1,"terrains":[]})", TERRAIN_COUNT_BEFORE_CATALOGUE) == builtin);
 	}
 	TEST_CASE("large registries compile equivalent definitions into bounded movement profiles")
 	{

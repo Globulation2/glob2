@@ -1034,11 +1034,12 @@ int runMapStudy(int argc, char **argv)
 			for (int x = 0; x < map.getW(); ++x)
 			{
 				const auto type = map.terrainTypeAt(x,y);
-				int c = type == GRASS                        ? 0
-						: type == SAND                       ? 1
-						: type == WATER                      ? 2
-						: map.terrainUsesLegacyCorners(type) ? 3
-															 : 10 + int(type);
+				const auto group = unsigned(type) < TERRAIN_COUNT ? std::optional(terrainGroup(type)) : std::nullopt;
+				int c = group == TerrainGroup::Grass ? 0
+						: group == TerrainGroup::Sand  ? 1
+						: group == TerrainGroup::Water ? 2
+						: group == TerrainGroup::Shore ? 3
+													   : 10 + int(type);
 				if (map.getResource(x, y).type == WHEAT)
 					c = 4;
 				if (map.getResource(x, y).type == WOOD)
