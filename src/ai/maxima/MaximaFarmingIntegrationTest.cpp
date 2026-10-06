@@ -528,9 +528,11 @@ void firebreakManagementRadius()
     REQUIRE(!map.isClearArea(11,22,f.player.team->me)); // old clearing removed
     REQUIRE(map.isClearArea(11,63,f.player.team->me)); // wrapped distance
     auto* original=home->type;
-    home->type=globalContainer->buildingsTypes.getByType("warflag",0,false);
+    const int originalType=home->typeNum;
+    home->typeNum=f.game.buildingsTypes.getTypeNum("warflag",0,false);
+    home->type=f.game.buildingsTypes.get(home->typeNum);
     update();REQUIRE(!map.isClearArea(11,21,f.player.team->me));
-    home->type=original;
+    home->typeNum=originalType;home->type=original;
 }
 
 void maintenanceProtectionAgreement()

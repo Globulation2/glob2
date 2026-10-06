@@ -8,6 +8,64 @@ notes when the referenced behavior changes.
 Tournament CLI, persistent workers, and per-player AI save compatibility are
 documented in [Distributed tournaments](../tools/tournaments.md).
 
+## AI observations and delayed orders
+
+All shipped AI controllers decide from an immutable engine snapshot through
+`AIEngine::AIWorldView`. The simulation owner captures a union of required
+components at the polling boundary. Engine snapshot records live under
+`src/engine/sim/snapshot/`; the AI adapter and shared queries live under
+`src/ai/observation/`. Records contain values and stable entity identities;
+rendering pointers and live `Game`, `Map`, `Team`, `Unit` or `Building` objects
+are not decision inputs.
+
+Controllers borrow the complete observation for one invocation and release it
+before returning. Their private planning state, RNG, pending intents and bounded
+caches may persist. Incremental caches retain explicitly named immutable component
+inputs when necessary, rather than retaining the whole world. New snapshot fields
+belong to the engine component that owns their source data; add capture and query
+coverage when extending them.
+
+`AIEngine::Pipeline` orders each controller's decisions on its private worker
+stream. The match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8,
+defaulting to 0. An order observed at logical tick `t` is delivered at `t + delay`.
+Worker completion time does not choose that deadline: the owner waits for due
+work, then publishes in stable request order. Changing worker count selects
+execution resources, not game timing. Human orders and scenario map scripts retain
+their existing scheduling.
+
+Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
+The owner validates current identities and normal order rules at delivery and
+reports accepted, rejected or canceled execution through immutable receipts on
+the next admitted decision. Controllers must distinguish an issued intent from
+an observed effect, tolerate stale observations, and reconcile rejection without
+resending or releasing a reservation prematurely. Receipt acceptance establishes
+order execution; it does not imply completion of a building's later work.
+
+JavaScript memory updates run in the same ordered stream as decisions, once per
+logical observation tick. Unpolled replica and replay controllers retain the old
+post-step visibility-history boundary through an explicit owner barrier and a
+fresh frozen observation. Never mutate their remembered terrain concurrently with
+a decision. Worker diagnostics are buffered values; file output, field publication
+and shared telemetry updates belong to the owner at the delivery boundary.
+Diagnostic field reservations count outstanding captures and publication-copy
+headroom against one session budget across the delay horizon. Saved pending field captures, diagnostic text and named telemetry share a 128 MiB
+retention budget when restored. Excess presentation output is consumed and discarded;
+orders and resource-field enrollment planes remain intact. Repeated enrollment planes
+share one restored allocation after their initialization identity and contents match.
+
+Save barriers finish outstanding computation without delivering future orders
+early. Format 140 retains the match delay, completed pending command bytes and
+deadlines, request sequences, execution feedback, controller RNG and private
+continuation state. Older supported saves load with delay 0 and an empty engine
+order queue; the save compatibility floor remains 58. Lifecycle changes cancel
+requests by controller generation. Verify delay 0 and 8, rejection and identity
+reuse, serial/threaded execution, and save/load with outstanding work. A snapshot
+migration alone does not establish identical AI trajectories or performance;
+compare per-tick checksums and measure capture, retention and worker costs. Delay 0
+retains each controller's strategy and cadence, apart from the explicit pending
+intent, rejection and identity fixes listed in the
+[replay guide](headless-replays.md).
+
 ## Build and test entry points
 
 Choose build concurrency for available memory and other running builds; CPU count
@@ -940,7 +998,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   remains unchanged. Building format 137 adds the per-game building catalog; replay
   floor 137 and network protocol 57 introduced those simulation/catalog gates.
-  The current replay floor is 139 for the completed-tick observation phase.
+  The current replay floor is 140 for the immutable AI pipeline.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
@@ -982,19 +1040,17 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 - The engine has a completed-tick observation phase. `Game::syncStep` first runs
   all world mutations, including fog, projects and scripts, then selects/reserves
   one periodic gradient job. Engine defers private seeding into its next
-  `ReadOnlyPhase` alongside AI decisions. This is the default architecture; the
+  preparation barrier before capturing AI decision inputs. This is the default architecture; the
   compute mask and thread count select execution only, never observation timing.
   Direct `Game::syncStep` callers complete preparation before returning unless
   they explicitly request `PreparationCompletion::Deferred` and own its barrier.
   Standalone `Map::syncStep` retains synchronous map-level preparation.
-- `ReadOnlyPhase` borrows groups of callbacks and runs them through one
-  `ComputeExecutor` barrier. World state must stay stable until every task leaves,
-  including on exceptions. Tasks may change their own controller/private results
-  and synchronized derived caches. Bind shared AI telemetry before dispatch;
-  publish orders afterwards in player order. Add further work only after auditing
-  scratch ownership, RNG use, input lifetime and every shared cache it touches.
-  Script observation and on-demand building gradients retain their existing
-  scheduling and are not automatically independent observation tasks.
+- `ReadOnlyPhase` remains the barrier for private gradient preparation that
+  borrows stable owner inputs. AI decisions use the separate immutable snapshot
+  pipeline described [above](#ai-observations-and-delayed-orders), and can outlive
+  the polling boundary. Add worker work only after auditing scratch ownership,
+  RNG, input lifetime and shared caches; workers never publish shared telemetry
+  or mutate live simulation objects.
 - Gradient selection, round-robin flags and queue membership stay on the simulation
   owner. A typed reservation is visible to AI lazy invalidation before dispatch;
   preparation writes only its private seeds and immutable terrain snapshots.

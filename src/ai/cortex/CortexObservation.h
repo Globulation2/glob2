@@ -2,12 +2,11 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "CortexWorld.h"
+class Player;
 
 #include "CortexTypes.h"
 
-class Player;
-class Team;
-class Game;
 
 // AICortex observation layer. This is the ONLY place that reads live engine
 // state (Game*/Team*/Map*) to fill a CortexObservation. Both the direct
@@ -31,7 +30,7 @@ namespace Cortex
 	/// flags now — offense + defense — so a bare "last WAR_FLAG wins" capture would be
 	/// ambiguous), so the enemy-straggler and own-warriors-near-flag passes measure the
 	/// offense front, which is what the retire/retreat decisions reason about.
-	CortexObservation observe(Player* player, int openMargin, Uint16 offenseFlagGid);
+	CortexObservation observeWorld(Cortex::WorldPlayer* player, int openMargin, Uint16 offenseFlagGid);
 
 	/// Internal observe() helper: the single index pass over team->myBuildings
 	/// that fills the building-derived signals (feedCapacity, swarm/inn tracking,
@@ -41,7 +40,12 @@ namespace Cortex
 	/// .cpp stays under the file-size cap; the iteration order is lockstep-determinism-
 	/// critical and is preserved verbatim. Called exactly once, at the same point
 	/// observe() previously ran the loop inline.
-	void observeBuildings(CortexObservation& obs, Team* team, Game* game,
+	void observeBuildings(CortexObservation& obs, Cortex::WorldTeam* team, Cortex::World* game,
 		int maxBuildLevel, Uint16 offenseFlagGid, bool& warFlagFound,
 		Sint32& warFlagX, Sint32& warFlagY, Sint32& warFlagRange);
+}
+
+namespace Cortex {
+CortexObservation observe(::Player* player, int margin, Uint16 gid);
+void observeBuildings(CortexObservation&, ::Team*, ::Game*, int, Uint16, bool&, Sint32&, Sint32&, Sint32&);
 }

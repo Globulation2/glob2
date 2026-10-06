@@ -14,7 +14,7 @@ enum Channel { Production, Feeding, Healing, Walking, Swimming, CombatTraining,
     Education, ProjectileDefense, Exploration, WarriorAttraction, WorkerAttraction,
     PassiveGround, Exchange, Count };
 
-inline const BuildingType& completed(const BuildingsTypes& catalog,const BuildingType& type)
+template<class Catalog> inline const BuildingType& completed(const Catalog& catalog,const BuildingType& type)
 {
     return type.isBuildingSite && type.nextLevel>=0 ? *catalog.get(type.nextLevel) : type;
 }
@@ -27,7 +27,7 @@ inline bool trainsWarriorCombat(const BuildingType& type)
     }
     return false;
 }
-inline int channel(const BuildingsTypes& catalog,const BuildingType& input)
+template<class Catalog> inline int channel(const Catalog& catalog,const BuildingType& input)
 {
     const auto& type=completed(catalog,input);const auto& s=type.semantics;
     const bool seats=type.maxUnitInside>0;

@@ -201,10 +201,10 @@ void enemy_team_iterator::set_to_next()
 		team_number++;
 	// A full-capacity match has no spare null slot after its teams. Bound
 	// enumeration by the live match count before touching the array.
-	const Game &game = *runtime->player->game;
+	const auto& game = *runtime->readPlayer()->game;
 	const int count = game.teamsCount();
 	for (; team_number < count && game.teams[team_number] &&
-		!(runtime->player->team->attackableTeams() & game.teams[team_number]->me); ++team_number)
+		!(runtime->readPlayer()->team->attackableTeams() & game.teams[team_number]->me); ++team_number)
 	{
 	}
 
@@ -219,10 +219,10 @@ void enemy_team_iterator::set_to_next()
 
 int SearchTools::is_flag(Runtime& runtime, int x, int y)
 {
-	Building** buildings=runtime.player->team->myBuildings;
+	const auto& buildings=runtime.readPlayer()->team->myBuildings;
 	for(int n=0; n<Building::MAX_COUNT; ++n)
 	{
-		Building* b=buildings[n];
+		AISharedRuntime::Read::Building* b=buildings[n];
 		if(b)
 		{
 			if(b->posX==x && b->posY==y)
@@ -298,15 +298,15 @@ void enemy_building_iterator::set_to_next()
 
 	while(current_index<Building::MAX_COUNT)
 	{
-		Building* b=runtime->player->game->teams[team]->myBuildings[current_index];
+		AISharedRuntime::Read::Building* b=runtime->readPlayer()->game->teams[team]->myBuildings[current_index];
 		if(b)
 		{
-			if( (b->seenByMask&runtime->player->team->me
+			if( (b->seenByMask&runtime->readPlayer()->team->me
                              // Don't allow AIs to cheat!!!!!!
                              // || runtime->get_starting_buildings().find(b->gid)!=runtime->get_starting_buildings().end()
                              ) &&
-				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || buildingProvides(*runtime->player->game,b->typeNum,building_type)) &&
-				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || runtime->player->game->buildingCapabilities().lineagePosition(b->typeNum)==level))
+				(building_type==AI_SHARED_RUNTIME_WILDCARD_TYPE || buildingProvides(*runtime->readPlayer()->game,b->typeNum,building_type)) &&
+				(level==AI_SHARED_RUNTIME_WILDCARD_LEVEL || runtime->readPlayer()->game->buildingCapabilities().lineagePosition(b->typeNum)==level))
 			{
 				if(construction_site)
 				{

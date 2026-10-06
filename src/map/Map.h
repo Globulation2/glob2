@@ -5,13 +5,16 @@
 #pragma once
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
+#include "sim/snapshot/Requirements.h"
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <list>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <span>
 #include <vector>
 #include <assert.h>
 
@@ -25,6 +28,8 @@
 #include "TerrainRegistry.h"
 #include "TerrainExperiments.h"
 #include "BitArray.h"
+
+namespace SimulationSnapshot { struct Handle; }
 
 class Unit;
 
@@ -96,6 +101,7 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	Uint64 snapshotResources = 1, snapshotOccupancy = 1, snapshotAreas = 1, snapshotVisibility = 1, snapshotTerrain = 1;
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
@@ -130,6 +136,7 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
+	std::array<Uint64, 5> snapshotGenerations() const { return {snapshotTerrain, snapshotResources, snapshotOccupancy, snapshotAreas, snapshotVisibility}; }
 	// Immutable terrain costs shared by independent resumed searches.
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
@@ -156,7 +163,7 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -164,7 +171,9 @@ public:
 	// and synchronized caches only. Drain before world mutation, save or reconfigure.
 	void stagePeriodicGradientPreparation();
 	bool hasPendingGradientPreparation() const;
+	SimulationSnapshot::Requirements pendingGradientRequirements() const;
 	void preparePendingGradient();
+	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline();
 	void setGradientWorkerCount(unsigned workers);
@@ -507,9 +516,9 @@ public:
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
 	void replaceResource(size_t index, const Resource &resource);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
-	void setResourceAmount(size_t index, Uint8 amount) { tiles[index].resource.amount = amount; }
-	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; }
-	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; }
+	void setResourceAmount(size_t index, Uint8 amount) { tiles[index].resource.amount = amount; ++snapshotResources; }
+	void setFertility(int x, int y, Uint16 value) { tiles[coordToIndex(x, y)].fertility = value; ++snapshotResources; }
+	void setResourcesGrow(int x, int y, Uint8 value) { tiles[coordToIndex(x, y)].canResourcesGrow = value; ++snapshotResources; }
 	// Raw mask replacement for order application/import; callers retain their
 	// existing topology-generation and displayed-overlay updates.
 	void setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value);
@@ -534,17 +543,17 @@ public:
 
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::clearArea, tiles[coordToIndex(x,y)].clearArea | Team::teamNumberToMask(teamNum));
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::guardArea, tiles[coordToIndex(x,y)].guardArea | Team::teamNumberToMask(teamNum));
 	}
 
 	void addFarmArea(int x, int y, Uint32 teamNum)
 	{
-		tiles[coordToIndex(x, y)].farmArea |=  Team::teamNumberToMask(teamNum);
+		setAreaMask(coordToIndex(x,y), &Tile::farmArea, tiles[coordToIndex(x,y)].farmArea | Team::teamNumberToMask(teamNum));
 	}
 
 	
@@ -727,14 +736,15 @@ public:
 	bool isImmobileUnit(int x, int y) const;
 	//! Returns the team number of the immobile unit on the given square, 255 for none
 	Uint8 getImmobileUnit(int x, int y) const;
+	std::span<const Uint8> immobileState() const { return {immobileUnits,tiles.size()}; }
 
 	//! Return GID
 	Uint16 getGroundUnit(int x, int y) const { return tiles[coordToIndex(x, y)].groundUnit; }
 	Uint16 getAirUnit(int x, int y) const { return tiles[coordToIndex(x, y)].airUnit; }
 	Uint16 getBuilding(int x, int y) const { return tiles[coordToIndex(x, y)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; }
-	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; }
+	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; ++snapshotOccupancy; }
+	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; ++snapshotOccupancy; }
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid);
 
 	//! Return the sector index of the sector containing tile (x,y). The
@@ -1038,6 +1048,7 @@ protected:
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	mutable std::mutex resourcesGradientMutex;
+	std::map<Uint16**, Uint64> resourceFieldGenerations;
 	//! Same, with the team's stocked markets as goals (see getResourceGradient).
 	Uint16 *marketResourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	
@@ -1058,6 +1069,20 @@ protected:
 	Uint16 *clearAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	
 public:
+	void installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values);
+	template<class Visitor> void visitPublishedResourceFields(Visitor visit) const
+	{
+		for (int team = 0; team < Team::MAX_COUNT; ++team)
+			for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource)
+				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+					for (bool market : {false, true})
+					{
+						const auto* slot = market ? &marketResourcesGradient[team][resource][swim] : &resourcesGradient[team][resource][swim];
+						if (!*slot) continue;
+						const auto generation = resourceFieldGenerations.find(const_cast<Uint16**>(slot));
+						visit(team, resource, swim, market, generation == resourceFieldGenerations.end() ? 0 : generation->second, *slot, size);
+					}
+	}
 	// Used to guide explorers
 	//[int team]
 	// 0=unexplored, 255=just explored
@@ -1151,4 +1176,6 @@ public:
 	void controlSand(void);
 	void smoothResources(int times);
 
+private:
+	void preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation);
 };

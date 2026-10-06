@@ -2,6 +2,8 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "CortexWorld.h"
+class Player;
 
 #include "CortexTypes.h" // WHEAT_PARITY and the other wheat tunables.
 
@@ -9,8 +11,6 @@
 #include <SDL3/SDL_stdinc.h>
 #include <vector>
 
-class Map;
-class Player;
 
 // AICortex wheat-sustainability geometry.
 //
@@ -23,7 +23,7 @@ class Player;
 //   * scanWheatForbidden(...) — the PURE geometry + reconcile core. It takes
 //     explicit inputs (no Player*/Game*), so the same code serves both the live
 //     path and the headless `-dump-wheat` debug tool. It emits no Orders.
-//   * reconcileWheatForbidden(Player*, ...) — the live wrapper. It derives the
+//   * reconcileWheatForbiddenWorld(Player*, ...) — the live wrapper. It derives the
 //     team mask, consumer (inn) seeds, and colony region from the player, calls
 //     scanWheatForbidden, and (when asked) accumulates the ADD/DEL tile lists
 //     into BrushAccumulators ready for OrderAlterForbidden. It still emits no
@@ -86,7 +86,12 @@ namespace Cortex
 	//!                   identical, so determinism is preserved. Default false leaves
 	//!                   every existing caller unchanged.
 	WheatScanResult scanWheatForbidden(
-		Map& map, Uint32 teamMask, int teamNumber,
+		Cortex::WorldMap& map, Uint32 teamMask, int teamNumber,
+		const std::vector<int>& consumerSeeds,
+		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
+	WheatScanResult scanWheatForbidden(
+		::Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
@@ -109,7 +114,11 @@ namespace Cortex
 	//! `liftAll` (default false) is passed through to scanWheatForbidden: when true
 	//! the whole field is un-forbidden for the wheat-blitz food burst (only the DEL
 	//! mask is non-empty). Default false keeps every existing caller unchanged.
-	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
+	WheatReconcile reconcileWheatForbiddenWorld(Cortex::WorldPlayer* player, int openMargin, bool buildMasks,
 	                                       bool liftAll = false, bool farmPaint = false);
 
+}
+
+namespace Cortex {
+WheatReconcile reconcileWheatForbidden(::Player*,int,bool,bool liftAll=false,bool farmPaint=false);
 }

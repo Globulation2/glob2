@@ -1,6 +1,9 @@
+#include "CabinoObservationFixture.h"
+#include "ai/engine/AIDecision.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AICastor.h"
+#include "ai/observation/WorldQueries.h"
 #include "AINicowar.h"
 #include "AICabino.h"
 #include "ai/cortex/CortexWater.h"
@@ -10,6 +13,31 @@
 #include "Player.h"
 #include "ExperimentalFeatures.h"
 #include <set>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include "Version.h"
+
+namespace
+{
+// Direct Castor helpers borrow the same immutable inputs as a decision, without
+// advancing controller cadence or retaining a view after this fixture operation.
+template<class Operation> decltype(auto) withCastorObservation(AICastor& ai, Game& game, Operation&& operation)
+{
+    const auto world = AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    AIEngine::WorldQueries queries(*world, ai.teamNumber, ai.resourceInitializations);
+    ai.observation = world.get(); ai.queries = &queries;
+    ai.observedTeams.resize(world->teams.size());
+    for (std::size_t i = 0; i < ai.observedTeams.size(); ++i) ai.observedTeams[i].view = &world->teams[i];
+    for (const auto& building : world->buildings) ai.observedTeams[building.team].myBuildings[Building::GIDtoID(building.identity.gid)] = &building;
+    for (const auto& unit : world->units) ai.observedTeams[unit.team].myUnits[Unit::GIDtoID(unit.identity.gid)] = &unit;
+    ai.observedTeam = ai.teamAt(ai.teamNumber);
+    struct Release {
+        AICastor& ai;
+        ~Release() { ai.observation = nullptr; ai.queries = nullptr; ai.observedTeam = nullptr; ai.observedTeams.clear(); }
+    } release{ai};
+    return operation();
+}
+}
 
 TEST_SUITE("AIRecoveryCoverage")
 {
@@ -123,17 +151,17 @@ TEST_SUITE("AIRecoveryCoverage")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
         AICastor ai(w.game.players[0]);
-        ai.computeBuildingSum(); ai.timer=100;
+        withCastorObservation(ai,w.game,[&]{ai.computeBuildingSum();}); ai.timer=100;
         using Project=AICastor::Project;
-        REQUIRE(ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"test")));
+        REQUIRE(withCastorObservation(ai,w.game,[&]{return ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"test"));}));
         auto* original=ai.projects.front();
         ai.timer=150;
-        CHECK(!ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"repeat")));
+        CHECK(!withCastorObservation(ai,w.game,[&]{return ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"repeat"));}));
         REQUIRE(ai.projects.size()==1); CHECK(ai.projects.front()==original); CHECK(original->timer==150);
-        REQUIRE(ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,2,3,"larger")));
+        REQUIRE(withCastorObservation(ai,w.game,[&]{return ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,2,3,"larger"));}));
         REQUIRE(ai.projects.size()==1); CHECK(ai.projects.front()->amount==2);
-        w.addBuilding("inn",4,4); ai.computeBuildingSum();
-        CHECK(!ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"satisfied")));
+        w.addBuilding("inn",4,4); withCastorObservation(ai,w.game,[&]{ai.computeBuildingSum();});
+        CHECK(!withCastorObservation(ai,w.game,[&]{return ai.addProject(new Project(IntBuildingType::FOOD_BUILDING,1,2,"satisfied"));}));
         CHECK(ai.projects.size()==1);
     }
 
@@ -144,10 +172,10 @@ TEST_SUITE("AIRecoveryCoverage")
         AICastor ai(w.game.players[0]);
         AICastor::Project p(IntBuildingType::SWARM_BUILDING,"test");
         ai.timer=100; p.timer=100;
-        CHECK(!ai.continueProject(&p)); CHECK(p.subPhase==AICastor::AI_CASTOR_SUBPHASE_BOOT);
+        CHECK(!withCastorObservation(ai,w.game,[&]{return ai.continueProject(&p);})); CHECK(p.subPhase==AICastor::AI_CASTOR_SUBPHASE_BOOT);
         ai.timer=1000; ai.foodLock=true; ai.starvingWarning=true;
         p.critical=false; p.blocking=true;
-        CHECK(!ai.continueProject(&p)); CHECK(p.timer>ai.timer); CHECK(!p.blocking);
+        CHECK(!withCastorObservation(ai,w.game,[&]{return ai.continueProject(&p);})); CHECK(p.timer>ai.timer); CHECK(!p.blocking);
         CHECK(p.subPhase==AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES);
     }
     TEST_CASE("Nicowar defense flags materialize once and withdraw when the threat disappears")
@@ -161,6 +189,7 @@ TEST_SUITE("AIRecoveryCoverage")
         w.team->enemies=w.game.teams[1]->me;
         threatened->underAttackTimer=100;
         AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
         runtime.gm.reset(new AISharedRuntime::Gradients::GradientManager(&w.game.map));
         runtime.br.initiate();
@@ -176,14 +205,23 @@ TEST_SUITE("AIRecoveryCoverage")
         REQUIRE(ai.defense_flags.size()==1);
         const auto id=ai.defense_flags.front();
         REQUIRE(runtime.br.is_building_found(id));
-        auto* flag=runtime.br.get_building(id);
-        CHECK(flag->type->shortTypeNum==IntBuildingType::WAR_FLAG);
-        CHECK(flag->maxUnitWorking==1);
+        Uint16 flagGid;
+        {
+            const auto* flag=runtime.br.get_building(id);
+            flagGid=flag->gid;
+            CHECK(flag->type->shortTypeNum==IntBuildingType::WAR_FLAG);
+            CHECK(flag->maxUnitWorking==1);
+        }
         ai.compute_defense_flag_positioning(runtime); flush();
         REQUIRE(ai.defense_flags.size()==1); CHECK(ai.defense_flags.front()==id);
         w.game.map.setGroundUnit(enemy->posX,enemy->posY,NOGUID);
         threatened->underAttackTimer=0;
+        // Begin the next owner observation after removing the threat. Facade
+        // pointers belong to one borrow; inspect the executed live result by GID.
+        runtime.refreshOwnerObservation();
         ai.compute_defense_flag_positioning(runtime); flush();
+        const auto* flag=w.team->myBuildings[Building::GIDtoID(flagGid)];
+        REQUIRE(flag);
         CHECK(flag->buildingState!=Building::ALIVE);
     }
 
@@ -202,20 +240,93 @@ TEST_SUITE("AIRecoveryCoverage")
             while(!ai.orders.empty()) { auto order=ai.orders.front(); ai.orders.pop();
                 order->sender=0; w.game.executeOrder(order,0); }
         };
-        defense.perform(0); CHECK(defense.defending_zones.empty());
-        home->hp-=10; defense.perform(0); flush();
+        glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(0);}); CHECK(defense.defending_zones.empty());
+        home->hp-=10; glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(0);}); flush();
         REQUIRE(defense.defending_zones.size()==1);
-        defense.perform(2); flush();
+        glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(2);}); flush();
         const auto gid=defense.defending_zones.front().flag;
         REQUIRE(gid!=NOGBID);
         auto* flag=w.team->myBuildings[Building::GIDtoID(gid)];
         REQUIRE(flag); CHECK(flag->type->shortTypeNum==IntBuildingType::WAR_FLAG);
         CHECK(flag->maxUnitWorking==2);
-        home->hp-=10; defense.perform(0); flush(); CHECK(defense.defending_zones.size()==1);
-        defense.perform(1); flush(); CHECK(defense.defending_zones.size()==1);
+        home->hp-=10; glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(0);}); flush(); CHECK(defense.defending_zones.size()==1);
+        glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(1);}); flush(); CHECK(defense.defending_zones.size()==1);
         w.game.map.setGroundUnit(enemy->posX,enemy->posY,NOGUID);
-        defense.perform(1); flush();
+        glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(1);}); flush();
         CHECK(defense.defending_zones.empty()); CHECK(flag->buildingState!=Building::ALIVE);
+    }
+
+    TEST_CASE("Cabino pending upgrades survive delayed observation and release rejected reservations")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* building=w.addBuilding("barracks",4,4);
+        REQUIRE(building);
+        Cabino::AICabino ai(w.game.players[0]);
+        auto& upgrades=*static_cast<Cabino::RandomUpgradeRepairModule*>(ai.getUpgradeRepairModule());
+        upgrades.pending_construction.push_back({building->gid,4,unsigned(building->maxUnitWorking),false,0});
+        glob2test::withCabinoObservation(ai,w.game,[&]{ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,1,4);});
+        for(int delay:{0,8}) {
+            w.game.stepCounter+=delay;
+            glob2test::withCabinoObservation(ai,w.game,[&]{upgrades.updatePendingConstruction();});
+            CHECK(upgrades.pending_construction.size()==1);
+            CHECK(upgrades.active_construction.empty());
+            CHECK(ai.orders.empty());
+            CHECK(building->constructionResultState==Building::NO_CONSTRUCTION);
+        }
+        OrderConstruction command(building->gid,1,1);
+        AIEngine::ExecutionReceipt rejected;
+        rejected.status=AIEngine::ExecutionStatus::Rejected;
+        rejected.command.push_back(command.getOrderType());
+        rejected.command.insert(rejected.command.end(),command.getData(),command.getData()+command.getDataLength());
+        const auto view=AIEngine::AIWorldView::capture(w.game,AIEngine::AIWorldView::captureCatalog(w.game));
+        const std::vector<AIEngine::ExecutionReceipt> receipts{rejected};
+        ai.getOrder(AIEngine::DecisionContext{*view,0,0,receipts});
+        CHECK(upgrades.pending_construction.empty());
+        auto& units=*static_cast<Cabino::DistributedUnitManager*>(ai.getUnitModule());
+        CHECK(units.module_records["RandomUpgradeRepairModule"].reservedUnits[WORKER][BUILD][0]==0);
+        CHECK(ai.game==nullptr); CHECK(ai.team==nullptr); CHECK(ai.map==nullptr);
+    }
+
+    TEST_CASE("Cabino queued target identities survive saves and reject reused building slots")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int delay:{0,8}) {
+            glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+            auto* building=fixture.addBuilding("barracks",4,4);REQUIRE(building);
+            Cabino::AICabino ai(fixture.game.players[0]);
+            auto& upgrades=*static_cast<Cabino::RandomUpgradeRepairModule*>(ai.getUpgradeRepairModule());
+            upgrades.pending_construction.push_back({building->gid,4,unsigned(building->maxUnitWorking),false,0});
+            glob2test::withCabinoObservation(ai,fixture.game,[&] {
+                ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,1,4);
+                ai.enqueueOrder(std::make_shared<OrderConstruction>(building->gid,1,1));
+            });
+            REQUIRE(ai.orders.size()==1);REQUIRE(ai.orders.front()->aiSelectedTarget.has_value());
+            const BuildingRef selected{building->gid,building->scriptIdentity};
+            CHECK(*ai.orders.front()->aiSelectedTarget==selected);
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(backend);ai.save(&output);output.flush();
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+            Cabino::AICabino resumed(fixture.game.players[0]);
+            REQUIRE(resumed.load(&input,fixture.game.players[0],VERSION_MINOR));
+            REQUIRE(resumed.orders.size()==1);REQUIRE(resumed.orders.front()->aiSelectedTarget.has_value());
+            CHECK(*resumed.orders.front()->aiSelectedTarget==selected);
+            building->scriptIdentity=fixture.game.allocateScriptIdentity(true,building->gid);
+            fixture.game.stepCounter+=delay;
+            const auto view=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+            const std::vector<AIEngine::ExecutionReceipt> receipts;
+            AIEngine::DecisionContext context{*view,0,0,receipts};context.scheduledTick=view->tick+delay;
+            CHECK(ai.getOrder(context)->getOrderType()==ORDER_NULL);
+            CHECK(resumed.getOrder(context)->getOrderType()==ORDER_NULL);
+            CHECK(ai.orders.empty());CHECK(resumed.orders.empty());
+            CHECK(upgrades.pending_construction.empty());
+            CHECK(static_cast<Cabino::RandomUpgradeRepairModule*>(resumed.getUpgradeRepairModule())->pending_construction.empty());
+            auto& units=*static_cast<Cabino::DistributedUnitManager*>(ai.getUnitModule());
+            CHECK(units.module_records["RandomUpgradeRepairModule"].reservedUnits[WORKER][BUILD][0]==0);
+            CHECK(building->constructionResultState==Building::NO_CONSTRUCTION);
+            CHECK(ai.game==nullptr);CHECK(resumed.game==nullptr);
+        }
     }
 
 }

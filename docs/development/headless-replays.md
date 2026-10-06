@@ -17,9 +17,29 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 139 (observation phase below).
+clients using those rules. The current replay floor is 140 (immutable AI pipeline).
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
+
+Structured `--run-game` accepts `--ai-order-delay N`, where `N` is an integer
+from 0 through 8 and defaults to 0 for a new match. It is one match-wide engine
+setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`
+sets the same rule. Saved games retain their original setting; do not override it
+when continuing a save. Delay 8 intentionally changes response pacing compared
+with delay 0. Compare the same initial state, seed, delay and orders across worker
+counts and platforms when checking determinism.
+
+Format 140 saves the AI engine's completed pending orders, logical deadlines and
+execution feedback. Saving finishes outstanding decisions without executing
+future commands early. Older supported saves load with delay 0 and an empty
+scheduling queue. Delay 0 preserves strategy and polling cadence, with explicit correctness fixes:
+Castor uses private intent instead of direct world mutation and reconciles upgrade
+execution; Runtime and Cabino retain unexecuted upgrades and release rejected
+reservations; Cortex releases matching rejected action latches. Runtime, Maxima,
+Cabino and Cortex discard queued commands whose selected target incarnation has
+disappeared. These fixes can change trajectories. Replay/network acceptance remains governed by the engine's
+replay and simulation version gates. See the
+[AI engine contract](reference.md#ai-observations-and-delayed-orders).
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
@@ -403,7 +423,7 @@ one completed-tick observation phase. `--compute-threads 1` serializes that phas
 at the same boundary. The default worker cap is unchanged. Fixed publication
 cadence and saved pending deadlines are unchanged; saves drain deferred preparation
 before serializing, and old saves still load. Moving the observation point can
-change routes/AI trajectories; the current replay floor is therefore 139. LAN and
+change routes/AI trajectories; that change raised the replay floor to 139; format 140 now sets the current floor. LAN and
 online sim-version gates reject clients using the older boundary. See the
 [phase contract](reference.md) before adding new parallel work.
 

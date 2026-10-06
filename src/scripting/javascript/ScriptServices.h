@@ -2,6 +2,7 @@
 #pragma once
 #include "ScriptObservations.h"
 #include "ScriptRuntime.h"
+#include "ai/engine/AIDecision.h"
 #include <map>
 #include <memory>
 #include <vector>
@@ -12,7 +13,6 @@ namespace Script
 class Spatial;
 class Services
 {
-	Game &game;
 	int team;
 	Observations &observations;
 	Value records = Value::array();
@@ -20,14 +20,21 @@ class Services
 	unsigned next = 1;
 	// Validation diagnostics are observational: never serialized or checksummed.
 	bool validationReporting = false, rejectedDecision = false;
+	bool waitForExecution = false;
 	std::unique_ptr<Spatial> spatial;
 	void reconcile();
 
   public:
 	Services(Game &, int team, Observations &);
 	~Services();
+    std::uint64_t retainedQueryVectorBytes() const;
 	unsigned nextAction() const { return next; }
 	void begin();
+	void applyExecutionReceipts(const std::vector<AIEngine::ExecutionReceipt>&);
+	void useObservedExecution() {
+        waitForExecution = false;
+        for (auto& record : records.items) record.set("awaitingExecution", false);
+    }
 	void enableValidationReporting() { validationReporting = true; }
 	bool hasRejectedDecision() const { return rejectedDecision; }
 	Value query(const std::string &, const std::vector<Value> &, const QueryBudget &);

@@ -3,6 +3,7 @@
 
 #include "AITelemetryFields.h"
 #include "AICastor.h"
+#include "ai/observation/WorldQueries.h"
 #include "Game.h"
 #include <algorithm>
 #include <span>
@@ -22,7 +23,7 @@ bool AICastor::addProject(Project *project)
 	// Reject the project before adding its critical wait and workforce reservation.
 	// An unavailable bootstrap project must not hold every later expansion hostage.
 	if (buildingSum[project->demand][0]>=project->amount
-		|| (game->gameHeader.isHungerDisabled() && project->demand==AICastor::FeedUnits)
+		|| (observation->rules.hungerDisabled && project->demand==AICastor::FeedUnits)
 		|| !demandAvailable(project->demand))
 	{
 		delete project;
@@ -59,7 +60,7 @@ void AICastor::addProjects()
 
 	buildsAmount=-1;
 	
-	if (!game->gameHeader.isHungerDisabled() && buildingSum[AICastor::FeedUnits][0]==0)
+	if (!observation->rules.hungerDisabled && buildingSum[AICastor::FeedUnits][0]==0)
 	{
 		Project *project=new Project(AICastor::FeedUnits, "boot");
 
@@ -156,7 +157,7 @@ void AICastor::addProjects()
 		int upgradeSum=0;
 		for (int li=AI_CASTOR_FIRST_UPGRADE_LEVEL; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
-		if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<strategy.build[bi].baseUpgrade
+		if (!observation->rules.upgradesDisabled && upgradeSum<strategy.build[bi].baseUpgrade
 			&& demandAvailable(bi))
 			return;
 	}
@@ -205,7 +206,7 @@ void AICastor::addProjects()
 			int upgradeSum=0;
 			for (int li=agi; li<NB_UNIT_LEVELS; li++)
 				upgradeSum+=buildingLevels[bi][0][li];
-			if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<upgradeGoal[bi]
+			if (!observation->rules.upgradesDisabled && upgradeSum<upgradeGoal[bi]
 				&& demandAvailable(bi))
 				return;
 		}
@@ -218,7 +219,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	telemetry.count(AITrace::AI2::AICastor_continueProject_calls);
 	if (!demandAvailable(project->demand)
-		|| (game->gameHeader.isHungerDisabled() && project->demand==AICastor::FeedUnits))
+		|| (observation->rules.hungerDisabled && project->demand==AICastor::FeedUnits))
 	{ project->finished=true; return {}; }
 	telemetry.set(AITrace::AI2::project_shortTypeNum, project->demand);
 	telemetry.set(AITrace::AI2::project_amount, project->amount);
@@ -263,8 +264,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		Sint32 typeNum=selectBuilding(project->demand);
   if (typeNum < 0) { project->finished=true; return {}; }
-		int bw=game->buildingsTypes.get(typeNum)->width;
-		int bh=game->buildingsTypes.get(typeNum)->height;
+		int bw=(&queries->kind(typeNum).resolvedType)->width;
+		int bh=(&queries->kind(typeNum).resolvedType)->height;
 
 		
 		computeCanSwim();
@@ -337,7 +338,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	{
 		// balance workers:
 		
-		int isFree=team->stats.getWorkersBalance();
+		int isFree=observedTeam->view->workerBalance;
 		Sint32 mainWorkers=project->mainWorkers;
 		Sint32 finalWorkers=project->finalWorkers;
 		if (isFree<=AI_CASTOR_FREE_WORKERS_LOW)
@@ -351,38 +352,34 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 				mainWorkers=((isFree+mainWorkers)>>1);
 		}
 		
-		Building **myBuildings=team->myBuildings;
+		const auto& myBuildings=observedTeam->myBuildings;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
-			Building *b=myBuildings[i];
+			const AIEngine::BuildingView *b=myBuildings[i];
 			if (b)
 			{
 				if (provides(*b, project->demand))
 				{
-					if (b->type->isBuildingSite)
+					if (queries->kind(*b).resolvedType.isBuildingSite)
 					{
 						// a main building site
-						if (mainWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,mainWorkers))
+						if (mainWorkers>=0 && requestedWorkers(*b)!=desiredWorkers(*b,mainWorkers))
 						{
-							b->maxUnitWorking=desiredWorkers(*b,mainWorkers);
-							b->update();
 							project->timer=timer;
 							return telemetry.returnedOrder(
 								AITrace::AI2::AICastor_continueProject_result,
-								shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,mainWorkers))));
+								requestWorkers(*b, desiredWorkers(*b,mainWorkers)));
 						}
 					}
 					else
 					{
 						// a main building
-						if (finalWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,finalWorkers))
+						if (finalWorkers>=0 && requestedWorkers(*b)!=desiredWorkers(*b,finalWorkers))
 						{
-							b->maxUnitWorking=desiredWorkers(*b,finalWorkers);
-							b->update();
 							project->timer=timer;
 							return telemetry.returnedOrder(
 								AITrace::AI2::AICastor_continueProject_result,
-								shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,finalWorkers))));
+								requestWorkers(*b, desiredWorkers(*b,finalWorkers)));
 						}
 					}
 				}
@@ -390,29 +387,23 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					|| provides(*b, AICastor::FeedUnits))
 				{
 					// food buildings
-					if (project->foodWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,project->foodWorkers))
+					if (project->foodWorkers>=0 && requestedWorkers(*b)!=desiredWorkers(*b,project->foodWorkers))
 					{
-						b->maxUnitWorking=desiredWorkers(*b,project->foodWorkers);
-						b->update();
 						project->timer=timer;
 						return telemetry.returnedOrder(
 							AITrace::AI2::AICastor_continueProject_result,
-							shared_ptr<Order>(
-								new OrderModifyBuilding(b->gid, desiredWorkers(*b,project->foodWorkers))));
+							requestWorkers(*b, desiredWorkers(*b,project->foodWorkers)));
 					}
 				}
-				else if (b->type->maxUnitWorking!=0)
+				else if (queries->kind(*b).resolvedType.maxUnitWorking!=0)
 				{
 					// others buildings:
-					if (project->otherWorkers>=0 && b->maxUnitWorking!=desiredWorkers(*b,project->otherWorkers))
+					if (project->otherWorkers>=0 && requestedWorkers(*b)!=desiredWorkers(*b,project->otherWorkers))
 					{
-						b->maxUnitWorking=desiredWorkers(*b,project->otherWorkers);
-						b->update();
 						project->timer=timer;
 						return telemetry.returnedOrder(
 							AITrace::AI2::AICastor_continueProject_result,
-							shared_ptr<Order>(
-								new OrderModifyBuilding(b->gid, desiredWorkers(*b,project->otherWorkers))));
+							requestWorkers(*b, desiredWorkers(*b,project->otherWorkers)));
 					}
 				}
 			}
@@ -455,18 +446,17 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{
-			Building **myBuildings=team->myBuildings;
+			const auto& myBuildings=observedTeam->myBuildings;
 			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
-				Building *b=myBuildings[i];
-				if (b && provides(*b, project->demand) && b->maxUnitWorking<desiredWorkers(*b,project->mainWorkers))
+				const AIEngine::BuildingView *b=myBuildings[i];
+				if (b && provides(*b, project->demand) && requestedWorkers(*b)<desiredWorkers(*b,project->mainWorkers))
 				{
-					b->maxUnitWorking++;
-					b->update();
+					const int workers=requestedWorkers(*b)+1;
 					project->timer=timer;
 					return telemetry.returnedOrder(
 						AITrace::AI2::AICastor_continueProject_result,
-						shared_ptr<Order>(new OrderModifyBuilding(b->gid, b->maxUnitWorking)));
+						requestWorkers(*b, workers));
 				}
 			}
 		}
@@ -498,19 +488,17 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		{
 			Sint32 finalWorkers=project->finalWorkers;
 			
-			Building **myBuildings=team->myBuildings;
+			const auto& myBuildings=observedTeam->myBuildings;
 			for (int i=0; i<Building::MAX_COUNT; i++)
 			{
-				Building *b=myBuildings[i];
-				if (b && provides(*b, project->demand) && b->maxUnitWorking!=desiredWorkers(*b,finalWorkers))
+				const AIEngine::BuildingView *b=myBuildings[i];
+				if (b && provides(*b, project->demand) && requestedWorkers(*b)!=desiredWorkers(*b,finalWorkers))
 				{
 
-					b->maxUnitWorking=desiredWorkers(*b,finalWorkers);
-					b->update();
 					project->timer=timer;
 					return telemetry.returnedOrder(
 						AITrace::AI2::AICastor_continueProject_result,
-						shared_ptr<Order>(new OrderModifyBuilding(b->gid, desiredWorkers(*b,finalWorkers))));
+						requestWorkers(*b, desiredWorkers(*b,finalWorkers)));
 				}
 			}
 		}

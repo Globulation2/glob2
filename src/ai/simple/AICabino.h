@@ -7,7 +7,10 @@
 static constexpr int AI_CABINO_SAVE_FORMAT_CONTINUATION = 132;
 
 #include "field/Frontier.h"
+#include "ai/shared_runtime/RuntimeObservation.h"
+#include "ai/observation/WorldQueries.h"
 #include <memory>
+#include <sstream>
 
 #include "BuildingType.h"
 #include "Building.h"
@@ -34,15 +37,17 @@ class Team;
 ///just how devestating an attack of level 3 warriros can be to a guard half the size of level 1 warriors!
 namespace Cabino
 {
+ template<class T> Uint64 queryVectorBytes(const std::vector<T>& values) { return Uint64(values.capacity())*sizeof(T); }
+ namespace Read = AISharedRuntime::Read;
  // Independent strategic demands; each concrete variant can fulfill several.
  enum Demand { ProduceWorkers, FeedUnits, HealUnits, TrainWalking, TrainSwimming,
   TrainAttack, TrainConstruction, DefendWithProjectiles, AttractExplorers,
   AttractWarriors, ClearResources, ExchangeResources, DemandCount };
  AIPlanning::BuildingIntent intentForDemand(unsigned demand);
- bool provides(const Game& game,const Building& building,unsigned demand);
+ bool provides(const Read::World& game,const Read::Building& building,unsigned demand);
  class AICabino;
  int selectBuilding(AICabino& ai,unsigned demand);
- unsigned upgradeWeight(const Game& game,const Building& building);
+ unsigned upgradeWeight(const Read::World& game,const Read::Building& building);
 
 	///This constant turns on status output. status is output to the file "CabinoStatus.txt" in the current
 	///working directory. It has plenty of information that explains Cabino's choices, which is good for
@@ -100,14 +105,13 @@ namespace Cabino
 			bool load(GAGCore::InputStream *stream, AICabino& owner);
 		private:
 			friend class GradientManager;
+            Uint64 retainedQueryVectorBytes() const { return queryVectorBytes(gradient); }
 			bool isSource(unsigned x, unsigned y);
 			bool isObstacle(unsigned x, unsigned y);
 			unsigned width;
 			unsigned height;
 			unsigned sources;
 			unsigned obstacles;
-			Team* team;
-			Map* map;
 			AICabino* ai;
 			std::vector<short int> gradient;
 	};
@@ -118,6 +122,7 @@ namespace Cabino
 	{
 		public:
 			GradientManager() {};
+            Uint64 retainedQueryVectorBytes() const { Uint64 bytes=frontier.capacity()*sizeof(int); for(const auto& [signature,gradient]:gradients) bytes+=gradient.retainedQueryVectorBytes(); return bytes; }
 			GradientManager(AICabino* team) : team(team) {}
 			void setTeam(AICabino* aTeam)
 			{
@@ -164,14 +169,17 @@ namespace Cabino
 			~AICabino();
 
 			Player *player;
-			Team *team;
-			Game *game;
-			Map *map;
+			Read::Team*team;
+			Read::World*game;
+			Read::Map*map;
 
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 
 			std::shared_ptr<Order> getOrder(void);
+            std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+            bool supportsObservation() const override { return true; }
+            std::optional<Uint64> retainedQueryVectorBytes() const override;
 
 			void setDefenseModule(DefenseModule* module);
 			void setAttackModule(AttackModule* module);
@@ -197,6 +205,9 @@ namespace Cabino
 			}
 
 			std::queue<std::shared_ptr<Order> > orders;
+            void enqueueOrder(std::shared_ptr<Order>);
+            void discardInvalidQueuedOrders();
+            std::ostringstream diagnosticStream;
 
 			///This will remove all messages accocciatted with the given catagorizations
 			void clearDebugMessages(std::string module, std::string group, std::string variable)
@@ -221,11 +232,11 @@ namespace Cabino
 
 			void flare(unsigned x, unsigned y)
 			{
-				orders.push(std::shared_ptr<Order>(new MapMarkOrder(team->teamNumber, x, y)));
+				enqueueOrder(std::shared_ptr<Order>(new MapMarkOrder(team->teamNumber, x, y)));
 			}
 			void pause()
 			{
-				orders.push(std::shared_ptr<Order>(new PauseGameOrder(true)));
+				enqueueOrder(std::shared_ptr<Order>(new PauseGameOrder(true)));
 			}
 		private:
 
@@ -235,6 +246,11 @@ namespace Cabino
 
 			///Initiates the player
 			void init(Player *player);
+            std::shared_ptr<const Read::Catalog> catalog;
+            std::shared_ptr<const AIEngine::AIWorldView::Catalog> catalogInput;
+            std::shared_ptr<Order> decide();
+            void applyReceipts(const AIEngine::DecisionContext&);
+
 			unsigned int timer;
 			unsigned int iteration;
 			unsigned int center_x;
@@ -427,9 +443,9 @@ namespace Cabino
 
 			std::vector<zone> getBestZones(getBestZonesSplit* split_calc);
 		private:
-			Map* map;
-			Team* team;
-			Game* game;
+			Read::Map* map;
+			Read::Team* team;
+			Read::World* game;
 			unsigned int center_x;
 			unsigned int center_y;
 	};
@@ -438,7 +454,7 @@ namespace Cabino
 	class TeamStatsGenerator
 	{
 		public:
-			TeamStatsGenerator(Team* team);
+			TeamStatsGenerator(Read::Team* team);
 			///Gets the number of units that follow the criteria. type is the type of unit. medical_state is the medical state of
 			///the unit. activity is what the unit is doing. ability is the ability the unit should have to qualify. level is the
 			///level of skill that unit should have in the ability, and isMinimum states whether the unit has to have exactly level
@@ -453,7 +469,7 @@ namespace Cabino
 			///Returns the highest level that the team has for a particular building type, or 0 for none.
 
 			///The team that this team stats generator is connected to
-			Team* team;
+			Read::Team* team;
 	};
 
 
@@ -463,6 +479,7 @@ namespace Cabino
 		public:
 			///Destructs the module, deconnecting it from the base.
 			virtual ~Module() {};
+            virtual Uint64 retainedQueryVectorBytes() const { return 0; }
 			virtual void captureTelemetry(const AITelemetry::Sink &) const {}
 			///Asks the Module to perform something in its timeslice. If this returns true,
 			///The main module will give it another tick, for split calculations. The function
@@ -545,6 +562,7 @@ namespace Cabino
 	class SimpleBuildingDefense : public DefenseModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { return queryVectorBytes(defending_zones); }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -602,6 +620,7 @@ namespace Cabino
 	class GeneralsDefense : public DefenseModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { return queryVectorBytes(defending_flags); }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -639,6 +658,7 @@ namespace Cabino
 	class PrioritizedBuildingAttack : public AttackModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { return queryVectorBytes(attacks); }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -676,7 +696,8 @@ namespace Cabino
 
 			///Chooses an enemy to attack. Will change to a different enemy if the current enemy has been eradicated.
 			bool targetEnemy();
-			Team* enemy;
+			unsigned enemyTeamNumber=255;
+            Read::Team* enemy() const { return enemyTeamNumber==255 ? nullptr : ai.game->teams[enemyTeamNumber]; }
 
 			///If we have enough warriors of the best available skill level, launch an attack!
 			bool attack();
@@ -693,6 +714,7 @@ namespace Cabino
 	class DistributedNewConstructionManager : public NewConstructionModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { return queryVectorBytes(new_buildings)+queryVectorBytes(footprints)+queryVectorBytes(imap); }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -831,7 +853,7 @@ namespace Cabino
 		///(either repair or upgrade.)
 		struct constructionRecord
 		{
-			///The gid of the building that this record is for. A gid, not a Building*:
+			///The gid of the building that this record is for. A gid, not a Read::Building*:
 			///the building can be destroyed while the record is still held.
 			unsigned int building;
 			///The number of units assigned to the building (or requested if its still pending)
@@ -1045,6 +1067,7 @@ namespace Cabino
 	class InnManager : public OtherModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { Uint64 bytes=0; for(const auto& [gid,inn]:inns) bytes+=queryVectorBytes(inn.records); return bytes; }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -1147,6 +1170,7 @@ namespace Cabino
 	class HappinessHandler : public OtherModule
 	{
 	  public:
+        Uint64 retainedQueryVectorBytes() const override { return queryVectorBytes(fruit_trees)+queryVectorBytes(exploring_fruit_trees); }
 		void captureTelemetry(const AITelemetry::Sink &sink) const override;
 
 	  public:
@@ -1486,24 +1510,24 @@ namespace Cabino
 	}
 
 	///Returns the building* of the gid, or NULL
-	inline Building* getBuildingFromGid(Game* game, int gid)
+	inline Read::Building* getBuildingFromGid(Read::World* game, int gid)
 	{
-		if(gid==NOGBID)
+		if(gid<0 || gid>=Building::MAX_COUNT*Team::MAX_COUNT || !game->teams[Building::GIDtoTeam(gid)])
 			return NULL;
 		return game->teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
 	}
 	///Returns a unit* of the gid, or NULL
-	inline Unit* getUnitFromGid(Game* game, int gid)
+	inline Read::Unit* getUnitFromGid(Read::World* game, int gid)
 	{
-		if(gid==NOGUID)
+		if(gid<0 || gid>=Unit::MAX_COUNT*Team::MAX_COUNT || !game->teams[Unit::GIDtoTeam(gid)])
 			return NULL;
 		return game->teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
 	}
 
 	///Returns true if the given building hasn't been destroyed
-	bool buildingStillExists(Game* team, Building* b);
+	bool buildingStillExists(Read::World* team, Read::Building* b);
 	///Returns true if the given building hasn't been destroyed
-	bool buildingStillExists(Game* game, unsigned int gid);
+	bool buildingStillExists(Read::World* game, unsigned int gid);
 
 	///Implements a selection sort algorithm, which is usefull because it enables predicate sorting, or weighted random sorting etc based
 	///on the predicate. the iter type is any forward iterator, and predicate is a functor that takes in two iter::value_type's and returns

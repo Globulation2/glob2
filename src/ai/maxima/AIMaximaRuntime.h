@@ -1,8 +1,8 @@
 /*
   Maxima private runtime.
 
-  This deliberately does not include or depend on the shared AI framework. It provides only
-  the services used by Maxima and owns all of its state per AI instance.
+  Maxima owns its decision state and gradient scheduling per AI instance.
+  Its read adapter shares immutable engine observations with the other controllers.
  */
 
 #ifndef AI_MAXIMA_RUNTIME_H
@@ -13,9 +13,12 @@
 #include "AIImplementation.h"
 #include "Map.h"
 #include "Order.h"
+#include "ai/observation/OrderSelection.h"
 #include "Player.h"
 #include "TeamStat.h"
 #include "Ressource.h"
+#include "MaximaObservationBinding.h"
+#include "ai/engine/AIDecision.h"
 
 #include <memory>
 #include <limits>
@@ -152,7 +155,7 @@ namespace Entities
 	{
 	public:
 		virtual ~Entity() {}
-		virtual bool matches(Player* player, int x, int y) const=0;
+		virtual bool matches(AISharedRuntime::Read::Player* player, int x, int y) const=0;
 		virtual bool equals(const Entity& other) const=0;
 		virtual bool can_change() const=0;
 		virtual EntityType type() const=0;
@@ -164,7 +167,7 @@ namespace Entities
 	{
 	public:
 		Building(int buildingType, int team, bool includeConstruction);
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EBuilding; }
@@ -179,7 +182,7 @@ namespace Entities
 	{
 	public:
 		AnyTeamBuilding(int team, bool includeConstruction);
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EAnyTeamBuilding; }
@@ -193,7 +196,7 @@ namespace Entities
 	{
 	public:
 		explicit Resource(int resourceType);
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const;
 		EntityType type() const { return EResource; }
@@ -205,7 +208,7 @@ namespace Entities
 	class AnyResource : public Entity
 	{
 	public:
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return true; }
 		EntityType type() const { return EAnyResource; }
@@ -215,7 +218,7 @@ namespace Entities
 	class Water : public Entity
 	{
 	public:
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return EWater; }
@@ -225,7 +228,7 @@ namespace Entities
 	class Unwalkable : public Water
 	{
 	public:
-		bool matches(Player*,int,int) const override;
+		bool matches(AISharedRuntime::Read::Player*,int,int) const override;
 		bool equals(const Entity&) const override;
 		EntityType type() const override { return EUnwalkable; }
 		void save(GAGCore::OutputStream*) const override;
@@ -235,7 +238,7 @@ namespace Entities
 	{
 	public:
 		Position(int x, int y);
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return EPosition; }
@@ -248,7 +251,7 @@ namespace Entities
 	class Sand : public Entity
 	{
 	public:
-		bool matches(Player*, int, int) const;
+		bool matches(AISharedRuntime::Read::Player*, int, int) const;
 		bool equals(const Entity&) const;
 		bool can_change() const { return false; }
 		EntityType type() const { return ESand; }
@@ -262,13 +265,14 @@ public:
     field::TerrainTravel terrainTravel=field::TerrainTravel::Geometric;
 	void add_source(Entities::Entity* source);
 	void add_obstacle(Entities::Entity* obstacle);
-	bool matches_source(Player*, int, int) const;
-	bool matches_obstacle(Player*, int, int) const;
+	bool matches_source(AISharedRuntime::Read::Player*, int, int) const;
+	bool matches_obstacle(AISharedRuntime::Read::Player*, int, int) const;
 	bool needs_updating() const;
 	bool operator==(const GradientInfo&) const;
 	void save(GAGCore::OutputStream*) const;
 	bool load(GAGCore::InputStream*,Sint32 versionMinor);
 private:
+    friend class GradientManager;
 	std::vector<std::shared_ptr<Entities::Entity> > sources;
 	std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 };
@@ -281,7 +285,7 @@ public:
 	bool has_sources() const { return sourceCount!=0; }
 private:
 	friend class GradientManager;
-	void recalculate(Player* player, field::Frontier& frontier);
+	void recalculate(AISharedRuntime::Read::Player* player, field::Frontier& frontier);
 	GradientInfo info;
     std::uint64_t terrainGeneration=0;
 	int width;
@@ -293,6 +297,9 @@ class GradientManager
 {
 public:
 	explicit GradientManager(Player* player);
+    Uint64 retainedVectorBytes() const noexcept;
+    void bind(AISharedRuntime::Read::Player* value) {binding.borrow(value);lastTerrainRevision=value->map->terrainGeneration();}
+    void unbind() {binding.clear();}
 	Gradient& get_gradient(const GradientInfo& info);
 	void queue_gradient(const GradientInfo& info);
 	bool is_updated(const GradientInfo& info) const;
@@ -302,7 +309,9 @@ public:
 	void loadExecutionState(GAGCore::InputStream*, Sint32 versionMinor);
 private:
 	int find(const GradientInfo& info) const;
-	Player* player;
+	ObservationBinding binding;
+    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
+    Uint64 lastTerrainRevision=0;
 	std::vector<std::shared_ptr<Gradient> > gradients;
 	std::vector<int> ages;
 	field::Frontier frontier; // transient, shared by this manager's fields
@@ -412,19 +421,22 @@ namespace Construction
 	{
 		BuildingRecord();
 		int x, y, type, gid, age;
-		Uint64 runtimeIdentity; // From identity_of; rebound on load, not saved.
-		bool issued, upgrading, upgradeSeen;
+		Uint64 runtimeIdentity; // Engine scriptIdentity; rebound on load, not saved.
+		bool issued, upgrading, upgradeSeen, awaitingUpgradeExecution;
 	};
 
 	class BuildingRegister
 	{
 	public:
 		explicit BuildingRegister(Player* player);
+    void bind(AISharedRuntime::Read::Player* value) {binding.borrow(value);}
+    void unbind() {binding.clear();}
 		void initiate();
 		unsigned register_building();
 		void issue_order(int id, int x, int y, int type);
 		void remove_building(int id);
-		void set_upgrading(int id);
+		void set_upgrading(int id, bool awaitingExecution=false);
+		void order_execution_completed(int gid, bool accepted, std::optional<Uint32> generation={});
 		void tick();
 		bool is_building_pending(unsigned id) const;
 		bool is_building_found(unsigned id) const;
@@ -435,31 +447,21 @@ namespace Construction
 		int get_assigned(unsigned id) const;
 		int get_enrolled(unsigned id) const;
 		int get_on_site(unsigned id) const;
-		::Building* get_building(unsigned id) const;
-		::BuildingType* get_building_type(unsigned id) const;
+		AISharedRuntime::Read::Building* get_building(unsigned id) const;
+		const ::BuildingType* get_building_type(unsigned id) const;
 		const std::map<int, BuildingRecord>& found() const { return foundBuildings; }
 		const std::map<int, BuildingRecord>& pending() const { return pendingBuildings; }
 		void save(GAGCore::OutputStream*) const;
 		bool load(GAGCore::InputStream*,Sint32 versionMinor);
-		///Records which Building object occupies each of the team's slots. Call
-		///once per AI order, before anything reads identities.
-		void observe_buildings() const;
-	private:
+    private:
         friend class ::AIMaximaRuntime::Context;
-		///An identity for the Building object now in `building`'s slot. A slot
-		///gets a new identity whenever the object in it changes, so a gid reused
-		///by a new building never matches a record made for the old one. Game
-		///deletes buildings at the end of a step and creates them from orders at
-		///the start of the next, and the AI is asked for an order in between, so
-		///observing every order sees each slot empty before it is reused.
-		Uint64 identity_of(const ::Building* building) const;
-		Player* player;
+        // Stable incarnation from the simulation, also captured by AIWorldView.
+        Uint64 identity_of(const AISharedRuntime::Read::Building* building) const;
+		ObservationBinding binding;
+    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
 		std::map<int, BuildingRecord> pendingBuildings;
 		std::map<int, BuildingRecord> foundBuildings;
 		unsigned nextId;
-		mutable std::vector<const ::Building*> observedBuildings;
-		mutable std::vector<Uint64> buildingIdentities;
-		mutable Uint64 nextBuildingIdentity;
 	};
 
 	class Constraint
@@ -520,7 +522,7 @@ namespace Construction
 	private:
 		friend class ::AIMaximaRuntime::Context;
 		PlacementResult find_location(Context&, int cellBudget, bool& complete);
-		bool score_location(Context&, ::BuildingType*, bool flag, int x, int y,
+		bool score_location(Context&, const ::BuildingType*, bool flag, int x, int y,
 			int& score);
 		void reset_search();
 		Conditions::Result conditions_pass(Context&) const;
@@ -677,6 +679,7 @@ class Context
 {
   public:
 	AITelemetry::Sink telemetry;
+    std::vector<AIEngine::DiagnosticRecord> bufferedDiagnostics;
 
   public:
 	explicit Context(Player* player);
@@ -702,8 +705,15 @@ class Context
 	std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int id);
 	Construction::BuildingRegister& get_building_register() { return buildings; }
 	Gradients::GradientManager& get_gradient_manager() { return gradients; }
+    const Gradients::GradientManager& get_gradient_manager() const { return gradients; }
 	TeamStat& get_team_stats();
-	void push_order(std::shared_ptr<Order> order) { orders.push_back(order); }
+	void push_order(std::shared_ptr<Order> order) {
+        if(AIEngine::Command::targetGid(*order)) {
+            auto ownerObservation=scopeOwnerObservation();
+            AIEngine::selectTarget(*order,readPlayer()->game->source);
+        }
+        orders.push_back(order);
+    }
 	bool is_fruit_on_map() const { return fruitOnMap; }
 	void dispatch_event(const RuntimeEvent& event);
 	void save(GAGCore::OutputStream*) const;
@@ -712,9 +722,23 @@ class Context
 	void loadExecutionState(GAGCore::InputStream*, Sint32 versionMinor);
 
 	Player* player;
+    mutable ObservationBinding binding;
+    AISharedRuntime::Read::Player* readPlayer() const {return binding.get();}
+    void bindObservation(const AIEngine::DecisionContext& decision);
+    void releaseObservation();
+    class OwnerObservationScope {
+        Context* context=nullptr;
+      public:
+        explicit OwnerObservationScope(Context&);
+        ~OwnerObservationScope();
+        OwnerObservationScope(const OwnerObservationScope&)=delete;
+        OwnerObservationScope& operator=(const OwnerObservationScope&)=delete;
+    };
+    OwnerObservationScope scopeOwnerObservation() const {return OwnerObservationScope(const_cast<Context&>(*this));}
 	Uint32 allies, enemies, inn_view, market_view, other_view;
 private:
 	friend class Management::ResourceTracker;
+    bool observationBound=false;
 	void initialize();
 	void update_management_orders();
 	void update_building_orders();

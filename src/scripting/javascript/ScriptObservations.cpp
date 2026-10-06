@@ -17,6 +17,24 @@
 #include <stdexcept>
 namespace Script
 {
+Observations::Observations(Game &g, int t) : game(g), team(t) {}
+Observations::ObservationScope::ObservationScope(const Observations& o, const AIEngine::AIWorldView& value)
+    : observations(o), previous(o.view) { observations.view = &value; }
+Observations::ObservationScope::ObservationScope(const Observations& o)
+    : observations(o), previous(o.view)
+{
+    if (!previous)
+    {
+        owned = AIEngine::AIWorldView::capture(o.game, AIEngine::AIWorldView::captureCatalog(o.game));
+        observations.view = owned.get();
+    }
+}
+Observations::ObservationScope::~ObservationScope() { observations.view = previous; }
+const AIEngine::AIWorldView& Observations::world() const
+{
+    if (!view) throw std::logic_error("Script observation used outside its decision scope");
+    return *view;
+}
 namespace
 {
 Value numbers(const Sint32 *values, int n)
@@ -26,17 +44,17 @@ Value numbers(const Sint32 *values, int n)
 		a.items.emplace_back(values[i]);
 	return a;
 }
-bool visible(Game &game, int team, const Unit &u)
+bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::UnitView &u)
 {
-	return team < 0 || u.owner->teamNumber == team ||
+	return team < 0 || u.team == team ||
 		   (u.insideTimeout >= 0 &&
-			(game.map.isFOWDiscovered(u.posX, u.posY, game.teams[team]->me) ||
-			 game.map.isFOWDiscovered(u.posX - u.dx, u.posY - u.dy, game.teams[team]->me)));
+			((world.tile(u.x, u.y).visible & world.teams[team].mask) ||
+			 (world.tile(u.x - u.dx, u.y - u.dy).visible & world.teams[team].mask)));
 }
-bool visible(Game &game, int team, const Building &b)
+bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::BuildingView &b)
 {
-	return team < 0 || b.owner->teamNumber == team ||
-		   (!b.type->isCloaked && game.map.isFOWDiscovered(b.posX, b.posY, game.teams[team]->me));
+	return team < 0 || b.team == team ||
+		   (!world.catalog->at(b.type).isCloaked && (world.tile(b.x, b.y).visible & world.teams[team].mask));
 }
 int arg(const std::vector<Value> &a, size_t i, int lo, int hi)
 {
@@ -45,32 +63,32 @@ int arg(const std::vector<Value> &a, size_t i, int lo, int hi)
 	return Value::object().set("value", a[i]).integer("value", lo, hi);
 }
 } // namespace
-Value Observations::ref(const Unit *u) const
+Value Observations::ref(const AIEngine::UnitView *u) const
 {
 	if (!u)
 		return {};
-	return Value::object().set("id", unsigned(u->gid)).set("generation", u->scriptIdentity);
+	return Value::object().set("id", unsigned(u->identity.gid)).set("generation", u->identity.generation);
 }
-Value Observations::ref(const Building *b) const
+Value Observations::ref(const AIEngine::BuildingView *b) const
 {
 	if (!b)
 		return {};
-	return Value::object().set("id", unsigned(b->gid)).set("generation", b->scriptIdentity);
+	return Value::object().set("id", unsigned(b->identity.gid)).set("generation", b->identity.generation);
 }
-Value Observations::unit(const Unit &u) const
+Value Observations::unit(const AIEngine::UnitView &u) const
 {
-	if (!visible(game, team, u) || u.isDead)
+	if (!visible(world(), team, u) || u.dead)
 		return {};
 	Value v = ref(&u);
-	v.set("team", u.owner->teamNumber)
-		.set("type", u.typeNum)
-		.set("x", u.posX)
-		.set("y", u.posY)
+	v.set("team", u.team)
+		.set("type", u.type)
+		.set("x", u.x)
+		.set("y", u.y)
 		.set("hp", u.hp)
 		.set("maxHp", u.performance[HP])
-		.set("levels", numbers(u.level, NB_ABILITY))
-		.set("performance", numbers(u.performance, NB_ABILITY));
-	if (team < 0 || u.owner->teamNumber == team)
+		.set("levels", numbers(u.levels.data(), NB_ABILITY))
+		.set("performance", numbers(u.performance.data(), NB_ABILITY));
+	if (team < 0 || u.team == team)
 	{
 		v.set("experience", u.experience)
 			.set("experienceLevel", u.experienceLevel)
@@ -88,49 +106,49 @@ Value Observations::unit(const Unit &u) const
 			.set("destinationPurpose", u.destinationPurpose)
 			.set("targetX", u.targetX)
 			.set("targetY", u.targetY);
-		v.set("attachedBuilding", u.attachedBuilding && visible(game, team, *u.attachedBuilding)
-									  ? ref(u.attachedBuilding)
+		v.set("attachedBuilding", world().building(u.attached) && visible(world(), team, *world().building(u.attached))
+									  ? ref(world().building(u.attached))
 									  : Value());
-		v.set("targetBuilding", u.targetBuilding && visible(game, team, *u.targetBuilding)
-									? ref(u.targetBuilding)
+		v.set("targetBuilding", world().building(u.target) && visible(world(), team, *world().building(u.target))
+									? ref(world().building(u.target))
 									: Value());
 	}
 	return v;
 }
-Value Observations::building(const Building &b) const
+Value Observations::building(const AIEngine::BuildingView &b) const
 {
-	if (!visible(game, team, b) || b.buildingState == Building::DEAD)
+	if (!visible(world(), team, b) || b.state == Building::DEAD)
 		return {};
 	Value v = ref(&b);
-	v.set("team", b.owner->teamNumber)
-		.set("type", b.typeNum)
-		.set("shortType", b.shortTypeNum)
-		.set("key", b.type->key)
-		.set("capabilities", buildingCapabilities(game, b.typeNum))
-		.set("relocatable", b.type->semantics.relocatable)
-		.set("interTeamExchange", b.type->semantics.market.interTeamFruitExchange)
-		.set("x", b.posX)
-		.set("y", b.posY)
+	v.set("team", b.team)
+		.set("type", b.type)
+		.set("shortType", b.shortType)
+		.set("key", world().catalog->at(b.type).key)
+		.set("capabilities", buildingCapabilities(world(), b.type))
+		.set("relocatable", world().catalog->at(b.type).semantics.relocatable)
+		.set("interTeamExchange", world().catalog->at(b.type).semantics.market.interTeamFruitExchange)
+		.set("x", b.x)
+		.set("y", b.y)
 		.set("hp", b.hp)
-		.set("maxHp", b.getEffectiveMaxHp())
-		.set("level", b.type->level)
-		.set("virtual", bool(b.type->isVirtual))
-		.set("construction", int(b.constructionResultState));
-	if (team < 0 || b.owner->teamNumber == team)
+		.set("maxHp", b.maxHp)
+		.set("level", world().catalog->at(b.type).level)
+		.set("virtual", bool(world().catalog->at(b.type).isVirtual))
+		.set("construction", int(b.construction));
+	if (team < 0 || b.team == team)
 	{
-		v.set("workers", b.maxUnitWorking)
-			.set("futureWorkers", b.getMaxUnitWorkingFuture())
+		v.set("workers", b.workers)
+			.set("futureWorkers", b.futureWorkers)
 			.set("priority", b.priority)
-			.set("range", b.unitStayRange)
-			.set("minimumLevel", b.minLevelToFlag)
-			.set("requireBombing", b.explorersRequireBombing)
-			.set("workerMinimumLevel", b.minWorkerLevelToFlag)
-			.set("resources", numbers(b.resources, MAX_NB_RESOURCES))
-			.set("wishedResources", numbers(b.wishedResources, MAX_NB_RESOURCES))
-			.set("production", numbers(b.ratio, NB_UNIT_TYPE))
+			.set("range", b.range)
+			.set("minimumLevel", b.minimumLevel)
+			.set("requireBombing", b.requireBombing)
+			.set("workerMinimumLevel", b.minimumWorkerLevel)
+			.set("resources", numbers(b.resources.data(), MAX_NB_RESOURCES))
+			.set("wishedResources", numbers(b.wishedResources.data(), MAX_NB_RESOURCES))
+			.set("production", numbers(b.ratios.data(), NB_UNIT_TYPE))
 			.set("productionTimeout", b.productionTimeout)
-			.set("receiveMask", b.receiveResourceMask)
-			.set("sendMask", b.sendResourceMask)
+			.set("receiveMask", b.receiveMask)
+			.set("sendMask", b.sendMask)
 			.set("bullets", b.bullets);
 		Value a = Value::array();
 		for (int i = 0; i < BASIC_COUNT; ++i)
@@ -150,7 +168,7 @@ const Observations::RememberedTile *Observations::lookup(unsigned index) const
 Observations::RememberedTile &Observations::remember(unsigned index)
 {
 	if (remembered.empty())
-		remembered.resize((unsigned(game.map.getW()) * game.map.getH() + 255) / 256);
+		remembered.resize((unsigned(world().width) * world().height + 255) / 256);
 	auto &chunk = remembered.at(index / 256);
 	if (!chunk)
 		chunk = std::make_unique<Chunk>();
@@ -161,36 +179,37 @@ Observations::RememberedTile &Observations::remember(unsigned index)
 }
 void Observations::observe()
 {
-	if (team < 0 || lastTick == game.stepCounter)
+	auto observation = captureObservation();
+	if (team < 0 || lastTick == world().tick)
 		return;
-	const unsigned mask = game.teams[team]->me;
-	for (int y = 0; y < game.map.getH(); ++y)
-		for (int x = 0; x < game.map.getW(); ++x)
-			if (game.map.isFOWDiscovered(x, y, mask))
+	const unsigned mask = world().teams[team].mask;
+	for (int y = 0; y < world().height; ++y)
+		for (int x = 0; x < world().width; ++x)
+			if ((world().tile(x,y).visible & mask))
 			{
-				const auto &t = game.map.getTile(x, y);
+				const auto &t = world().tile(x, y);
 				const auto &r = t.resource;
-				remember(unsigned(game.map.coordToIndex(x, y))) = {
-					game.stepCounter, t.terrain, t.fertility, game.map.terrainTypeAt(x,y), r.type, r.variety, r.amount, true};
+				remember(unsigned((world().normalizeY(y) * world().width + world().normalizeX(x)))) = {
+					world().tick, t.legacyTerrain, t.fertility, world().tile(x,y).terrain, r.type, r.variety, r.amount, true};
 			}
-	lastTick = game.stepCounter;
+	lastTick = world().tick;
 }
 Value Observations::tile(int x, int y) const
 {
-	x &= game.map.getW() - 1;
-	y &= game.map.getH() - 1;
-	const bool current = team < 0 || game.map.isFOWDiscovered(x, y, game.teams[team]->me);
+	x &= world().width - 1;
+	y &= world().height - 1;
+	const bool current = team < 0 || (world().tile(x,y).visible & world().teams[team].mask);
 	Value v = Value::object().set("x", x).set("y", y).set("visible", current);
 	RememberedTile t;
 	if (current)
 	{
-		const auto &c = game.map.getTile(x, y);
-		t = {game.stepCounter, c.terrain, c.fertility, game.map.terrainTypeAt(x,y),
+		const auto &c = world().tile(x, y);
+		t = {world().tick, c.legacyTerrain, c.fertility, world().tile(x,y).terrain,
 			 c.resource.type, c.resource.variety, c.resource.amount};
 	}
 	else
 	{
-		auto *previous = lookup(unsigned(game.map.coordToIndex(x, y)));
+		auto *previous = lookup(unsigned((world().normalizeY(y) * world().width + world().normalizeX(x))));
 		if (!previous)
 			return v.set("explored", false);
 		t = *previous;
@@ -207,25 +226,25 @@ Value Observations::tile(int x, int y) const
 		v.set("fertility", int(t.fertility));
 	if (current)
 	{
-		const auto &c = game.map.getTile(x, y);
+		const auto &c = world().tile(x, y);
 		auto unitId = [&](unsigned id)
 		{
 			if (id >= Unit::MAX_COUNT * Team::MAX_COUNT)
 				return 65535u;
 			int owner = Unit::GIDtoTeam(id);
-			if (owner >= game.mapHeader.getNumberOfTeams())
+			if (owner >= int(world().teams.size()))
 				return 65535u;
-			auto *u = game.teams[owner]->myUnits[Unit::GIDtoID(id)];
-			return u && !u->isDead && visible(game, team, *u) ? id : 65535u;
+			auto *u = world().unitAtSlot(id);
+			return u && !u->dead && visible(world(), team, *u) ? id : 65535u;
 		};
 		unsigned buildingId = c.building;
 		int owner = buildingId < Building::MAX_COUNT * Team::MAX_COUNT
 						? Building::GIDtoTeam(buildingId)
 						: Team::MAX_COUNT;
-		auto *b = owner < game.mapHeader.getNumberOfTeams()
-					  ? game.teams[owner]->myBuildings[Building::GIDtoID(buildingId)]
+		auto *b = owner < int(world().teams.size())
+					  ? world().buildingAtSlot(buildingId)
 					  : nullptr;
-		if (!b || !visible(game, team, *b))
+		if (!b || !visible(world(), team, *b))
 			buildingId = 65535;
 		v.set("groundUnit", unitId(c.groundUnit))
 			.set("airUnit", unitId(c.airUnit))
@@ -233,10 +252,10 @@ Value Observations::tile(int x, int y) const
 	}
 	if (team >= 0)
 	{
-		v.set("forbidden", bool(game.map.getForbidden(x, y) & game.teams[team]->me));
+		v.set("forbidden", bool(world().tile(x,y).forbidden & world().teams[team].mask));
 		// Only present where the team painted a farm (the farm-areas experiment), so
 		// tile records in games without it are unchanged.
-		if (game.map.farmAreasEnabled() && game.map.isFarmArea(x, y, game.teams[team]->me))
+		if (world().farmAreasEnabled && (world().tile(x,y).farm & world().teams[team].mask))
 			v.set("farmArea", true);
 	}
 	return v;
@@ -244,6 +263,7 @@ Value Observations::tile(int x, int y) const
 Value Observations::query(const std::string &name, const std::vector<Value> &args,
 						  const QueryBudget &budget) const
 {
+	auto observation = captureObservation();
 	auto charge = [&](std::size_t nodes, std::size_t bytes = 0)
 	{
 		if (budget)
@@ -252,7 +272,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
     if (name == "rules")
     {
         Value rules=Value::object();
-        for(const auto& [key,value]:gameRuleValues(game.gameHeader))
+        for(const auto& [key,value]:world().ruleValues)
         { charge(1,key.size()); rules.set(key,value); }
         return rules;
     }
@@ -260,7 +280,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 	{
 		// Keys of the experiments this game carries (ExperimentalFeatures.h).
 		Value a = Value::array();
-		for (const auto &key : game.gameHeader.getExperiments().keys())
+		for (const auto &key : world().experimentKeys)
 		{
 			charge(1, key.size());
 			a.items.push_back(Value(key));
@@ -271,17 +291,17 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
     {
 		// Registry definitions reveal no tile state. Cache per immutable registry;
 		// callers receive detached, read-only JS snapshots in both profiles.
-		charge(game.map.terrainRegistry().size() * 48);
-		if (terrainDefinitionRegistry != game.map.frozenTerrainRegistry())
+		charge(world().terrain->size() * 48);
+		if (terrainDefinitionRegistry != world().terrain)
 		{
 			terrainDefinitions = [&]
 			{
 				Value result = Value::array();
-				for (unsigned id = 0; id < game.map.terrainRegistry().size(); ++id)
+				for (unsigned id = 0; id < world().terrain->size(); ++id)
 				{
 					const auto type = static_cast<TerrainType>(id);
-					const auto &p = game.map.terrainProperties(type);
-					const auto &presentation = game.map.terrainPresentation(type);
+					const auto &p = world().terrain->properties(type);
+					const auto &presentation = world().terrain->presentation(type);
 					const auto experiment = terrainExperiment(type);
 					Value resources = Value::array();
 					for (unsigned resource = 0; resource < MAX_NB_RESOURCES; ++resource)
@@ -317,7 +337,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 				}
 				return result;
 			}();
-			terrainDefinitionRegistry = game.map.frozenTerrainRegistry();
+			terrainDefinitionRegistry = world().terrain;
 		}
 		return terrainDefinitions;
 	}
@@ -325,13 +345,13 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 	{
 		Value a = Value::array();
 		const Value options = args.empty() ? Value::object() : args[0];
-        const int offset = options.get("offset").kind == Value::Null ? 0 : options.integer("offset", 0, int(game.buildingsTypes.size()));
-        const int limit = options.get("limit").kind == Value::Null ? int(game.buildingsTypes.size()) : options.integer("limit", 1, int(game.buildingsTypes.size()));
-        for (unsigned i = offset; i < game.buildingsTypes.size() && i < unsigned(offset + limit); ++i)
+        const int offset = options.get("offset").kind == Value::Null ? 0 : options.integer("offset", 0, int(world().catalog->size()));
+        const int limit = options.get("limit").kind == Value::Null ? int(world().catalog->size()) : options.integer("limit", 1, int(world().catalog->size()));
+        for (unsigned i = offset; i < world().catalog->size() && i < unsigned(offset + limit); ++i)
 		{
-			if (!game.isBuildingTypeAvailable(i)) continue;
-			const auto &b = *game.buildingsTypes.get(i);
-			charge(256 + NB_ABILITY * (MAX_NB_RESOURCES + 8), b.type.size() + b.key.size());
+			if (!world().catalog->at(i).available) continue;
+			const auto &b = world().catalog->at(i);
+			charge(256 + NB_ABILITY * (MAX_NB_RESOURCES + 8), b.legacyType.size() + b.key.size());
             auto service = [&](const BuildingServiceSpec& spec) {
                 return Value::object().set("enabled", spec.enabled).set("unitMask", spec.unitMask)
                     .set("duration", spec.duration).set("cost", numbers(spec.cost.data(), MAX_NB_RESOURCES));
@@ -347,46 +367,46 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 			a.items.push_back(
 				Value::object()
 					.set("id", i)
-                    .set("key", b.key).set("nextType", b.nextLevel).set("previousType", b.prevLevel)
+                    .set("key", b.key).set("nextType", b.next).set("previousType", b.previous)
                     .set("placeable", b.semantics.placeable).set("instantPlacement", b.semantics.instantPlacement)
                     .set("requiredWorkerLevel", b.semantics.requiredWorkerLevel)
                     .set("admittedUnitMask", b.semantics.admittedUnitMask)
-                    .set("maxUnitsInside", b.maxUnitInside).set("maxRadius", b.maxUnitStayRange)
+                    .set("maxUnitsInside", b.maximumInside).set("maxRadius", b.maximumRange)
                     .set("relocatable", b.semantics.relocatable).set("occupiesGround", b.semantics.occupiesGround)
                     .set("repairable", b.semantics.repairable).set("regeneration", b.semantics.regenerationPerTick)
                     .set("feeding", service(b.semantics.feeding)).set("healing", service(b.semantics.healing))
                     .set("training", training).set("production", production)
-                    .set("capabilities", buildingCapabilities(game, i))
+                    .set("capabilities", buildingCapabilities(world(), i))
                     .set("projectileDamage", numbers(b.semantics.projectileDamage.data(), NB_UNIT_TYPE))
                     .set("projectileRange", b.shootingRange).set("projectileSpeed", b.shootSpeed).set("projectileRhythm", b.shootRhythm)
                     .set("ammunitionResource", b.semantics.ammunitionResource).set("ammunitionCost", b.semantics.ammunitionCost)
-                    .set("suppliesStock", b.runtimeSuppliesStock).set("fetchesStock", b.runtimeFetchesStock)
+                    .set("suppliesStock", b.suppliesStock).set("fetchesStock", b.fetchesStock)
                     .set("suppliesDirectStock", b.semantics.market.suppliesDirectStock)
                     .set("exchangesFruit", b.semantics.market.interTeamFruitExchange)
-                    .set("name", b.type)
+                    .set("name", b.legacyType)
 					.set("shortType", b.shortTypeNum)
 					.set("level", b.level)
-					.set("site", bool(b.isBuildingSite))
+					.set("site", bool(b.site))
 					.set("virtual", bool(b.isVirtual))
 					.set("width", b.width)
 					.set("height", b.height)
 					.set("maxHp", b.hpMax)
-					.set("maxWorkers", b.semantics.assignmentLimit).set("usesWorkers", bool(b.maxUnitWorking))
-					.set("resourceCapacity", numbers(b.maxResource, MAX_NB_RESOURCES)));
+					.set("maxWorkers", b.semantics.assignmentLimit).set("usesWorkers", bool(b.maximumWorkers))
+					.set("resourceCapacity", numbers(b.maxResource.data(), MAX_NB_RESOURCES)));
 		}
 		return a;
 	}
 	if (name == "teams")
 	{
 		Value a = Value::array();
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		for (int t = 0; t < int(world().teams.size()); ++t)
 		{
-			const auto &tm = *game.teams[t];
+			const auto &tm = world().teams[t];
 			charge(64);
-			Value v = Value::object().set("id", t).set("alive", tm.isAlive);
+			Value v = Value::object().set("id", t).set("alive", tm.alive);
 			if (team < 0 || team == t)
 				v.set("allies", tm.allies)
-					.set("resources", numbers(tm.teamResources, MAX_NB_RESOURCES));
+					.set("resources", numbers(tm.resources.data(), MAX_NB_RESOURCES));
 			a.items.push_back(v);
 		}
 		return a;
@@ -415,7 +435,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (!args.empty())
 		{
 			if (args[0].get("team").kind != Value::Null)
-				filter = args[0].integer("team", 0, game.mapHeader.getNumberOfTeams() - 1);
+				filter = args[0].integer("team", 0, int(world().teams.size()) - 1);
 			if (args[0].get("offset").kind != Value::Null)
 				offset = args[0].integer("offset", 0, 32768);
 			if (args[0].get("limit").kind != Value::Null)
@@ -424,15 +444,15 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (!limit)
 			return Value::array();
 		Value a = Value::array();
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		for (int t = 0; t < int(world().teams.size()); ++t)
 			if (filter < 0 || t == filter)
 				for (int i = 0; i < (name == "units" ? Unit::MAX_COUNT : Building::MAX_COUNT); ++i)
 				{
 					Value v;
 					if (name == "units")
 					{
-						auto *u = game.teams[t]->myUnits[i];
-						if (!u || u->isDead || !visible(game, team, *u))
+						auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
+						if (!u || u->dead || !visible(world(), team, *u))
 							continue;
 						if (offset)
 						{
@@ -444,8 +464,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					}
 					else
 					{
-						auto *b = game.teams[t]->myBuildings[i];
-						if (!b || b->buildingState == Building::DEAD || !visible(game, team, *b))
+						auto *b = world().buildingAtSlot(Building::GIDfrom(i, t));
+						if (!b || b->state == Building::DEAD || !visible(world(), team, *b))
 							continue;
 						if (offset)
 						{
@@ -469,15 +489,15 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (id >= (name == "unit" ? Unit::MAX_COUNT : Building::MAX_COUNT) * Team::MAX_COUNT)
 			return {};
 		int owner = name == "unit" ? Unit::GIDtoTeam(id) : Building::GIDtoTeam(id);
-		if (owner >= game.mapHeader.getNumberOfTeams())
+		if (owner >= int(world().teams.size()))
 			return {};
 		const Value &generation = args[0].get("generation");
 		if (generation.kind != Value::Number)
 			return {};
 		if (name == "unit")
 		{
-			auto *u = game.teams[owner]->myUnits[Unit::GIDtoID(id)];
-			if (u && !u->isDead && visible(game, team, *u) &&
+			auto *u = world().unitAtSlot(id);
+			if (u && !u->dead && visible(world(), team, *u) &&
 				generation.number == ref(u).get("generation").number)
 			{
 				charge(160);
@@ -486,8 +506,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		}
 		else
 		{
-			auto *b = game.teams[owner]->myBuildings[Building::GIDtoID(id)];
-			if (b && b->buildingState != Building::DEAD && visible(game, team, *b) &&
+			auto *b = world().buildingAtSlot(id);
+			if (b && b->state != Building::DEAD && visible(world(), team, *b) &&
 				generation.number == ref(b).get("generation").number)
 			{
 				charge(160);
@@ -558,12 +578,13 @@ void Observations::save(GAGCore::OutputStream *s) const
 }
 void Observations::load(GAGCore::InputStream *s, int version)
 {
+	auto observation = captureObservation();
 	remembered.clear();
 	knownTiles = 0;
 	s->readEnterSection("scriptObservations");
 	lastTick = s->readUint32("tick");
 	unsigned n = s->readUint32("count");
-	unsigned size = unsigned(game.map.getW()) * game.map.getH();
+	unsigned size = unsigned(world().width) * world().height;
 	if (n > size)
 		throw std::runtime_error("Invalid observed terrain count");
 	for (unsigned i = 0; i < n; ++i)
@@ -579,7 +600,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		t.amount = s->readUint8("amount");
 		const unsigned terrainType = version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
 			? s->readUint16("terrainType") : unsigned(legacyTerrainType(t.terrain));
-		if (!game.map.validTerrainType(terrainType))
+		if (!world().terrain->valid(terrainType))
 			throw std::runtime_error("Invalid remembered terrain type");
 		t.terrainType = static_cast<TerrainType>(terrainType);
 		if (index >= size || lookup(index))
@@ -594,28 +615,28 @@ void Observations::load(GAGCore::InputStream *s, int version)
 
 Script::Observations::Cell Script::Observations::cell(int x, int y) const
 {
-	x &= game.map.getW() - 1;
-	y &= game.map.getH() - 1;
+	auto observation = captureObservation();
+	x &= world().width - 1;
+	y &= world().height - 1;
 	Cell out;
-	out.visible = team < 0 || game.map.isFOWDiscovered(x, y, game.teams[team]->me);
+	out.visible = team < 0 || (world().tile(x,y).visible & world().teams[team].mask);
 	if (out.visible)
 	{
-		const auto &tile = game.map.getTile(x, y);
+		const auto &tile = world().tile(x, y);
 		out.known = true;
-		out.tick = game.stepCounter;
-		out.terrain = tile.terrain;
-		out.terrainType = game.map.terrainTypeAt(x,y);
+		out.tick = world().tick;
+		out.terrain = tile.legacyTerrain;
+		out.terrainType = world().tile(x,y).terrain;
 		out.fertility = tile.fertility;
 		out.resource = tile.resource.type;
 		out.amount = tile.resource.amount;
 		if (tile.building != 65535)
 		{
-			const auto &b = game.teams[Building::GIDtoTeam(tile.building)]
-								->myBuildings[Building::GIDtoID(tile.building)];
-			out.building = b && visible(game, team, *b);
+			const auto &b = world().buildingAtSlot(tile.building);
+			out.building = b && visible(world(), team, *b);
 		}
 	}
-	else if (const auto *old = lookup(game.map.coordToIndex(x, y)))
+	else if (const auto *old = lookup((world().normalizeY(y) * world().width + world().normalizeX(x))))
 	{
 		out.known = true;
 		out.tick = old->tick;
@@ -626,7 +647,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 		out.amount = old->amount;
 	}
 	if (team >= 0 && out.known)
-		out.forbidden = (game.map.getTile(x, y).forbidden & game.teams[team]->me) != 0;
+		out.forbidden = (world().tile(x, y).forbidden & world().teams[team].mask) != 0;
 	return out;
 }
 
@@ -634,10 +655,11 @@ void Script::Observations::visitSpatialEntities(
 	bool units, int filter, const std::function<void(const SpatialEntity &)> &visit,
 	const QueryBudget &budget) const
 {
-	if (filter < -1 || filter >= game.mapHeader.getNumberOfTeams())
+	auto observation = captureObservation();
+	if (filter < -1 || filter >= int(world().teams.size()))
 		throw std::runtime_error("Invalid spatial source team");
 	const int capacity = units ? Unit::MAX_COUNT : Building::MAX_COUNT;
-	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+	for (int t = 0; t < int(world().teams.size()); ++t)
 		if (filter < 0 || filter == t)
 		{
 			// Charge the fixed slot scan, independent of hidden entity counts.
@@ -646,17 +668,17 @@ void Script::Observations::visitSpatialEntities(
 			for (int i = 0; i < capacity; ++i)
 				if (units)
 				{
-					const auto *u = game.teams[t]->myUnits[i];
-					if (u && !u->isDead && visible(game, team, *u))
-						visit({t, u->typeNum, u->posX, u->posY, u->hp,
+					const auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
+					if (u && !u->dead && visible(world(), team, *u))
+						visit({t, u->type, u->x, u->y, u->hp,
 							   u->performance[ATTACK_STRENGTH], false});
 				}
 				else
 				{
-					const auto *b = game.teams[t]->myBuildings[i];
-					if (b && b->buildingState != Building::DEAD && visible(game, team, *b))
-						visit({t, b->shortTypeNum, b->posX, b->posY, b->hp, 0,
-							   bool(b->type->isVirtual), b->typeNum});
+					const auto *b = world().buildingAtSlot(Building::GIDfrom(i, t));
+					if (b && b->state != Building::DEAD && visible(world(), team, *b))
+						visit({t, b->shortType, b->x, b->y, b->hp, 0,
+							   bool(world().catalog->at(b->type).isVirtual), b->type});
 				}
 		}
 }

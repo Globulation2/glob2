@@ -11,6 +11,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <array>
 #include <iostream>
 
 namespace
@@ -83,9 +84,12 @@ void MenuColony::update(Uint64 now, bool visible)
 	// At most two steps per menu frame; never accumulate hidden-time debt.
 	while (pending >= GAME_TICK_MS)
 	{
-		auto order = game->players[0]->ai->getOrder(false);
-		order->sender = 0;
-		game->executeOrder(order, 0);
+        const std::array<unsigned,1> actors{0};
+        for(const auto& [actor,scheduled]:game->prepareAIOrders(actors,false)) {
+            scheduled->sender=actor;
+            auto order=game->validateAIOrder(scheduled,actor);
+            game->executeOrder(order,0);
+        }
 		game->syncStep(0);
 		pending -= GAME_TICK_MS;
 	}

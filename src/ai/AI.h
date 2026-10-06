@@ -8,6 +8,9 @@
 #include <memory>
 #include "MersenneTwister.h"
 #include "AITelemetry.h"
+#include "sim/snapshot/Requirements.h"
+#include "sim/EntityRef.h"
+#include <vector>
 namespace GAGCore
 {
 	class InputStream;
@@ -17,6 +20,7 @@ class Player;
 class Team;
 class Order;
 class AIImplementation;
+namespace AIEngine { struct DecisionContext; struct Command; struct ExecutionReceipt; }
 /*
  * AI is the base class for the AI-implementations
  */
@@ -72,6 +76,14 @@ public:
 private:
 	MersenneTwister randomEngine;
 	bool randomInitialized = false;
+	std::unique_ptr<AITelemetry::Series> decisionTelemetry;
+    // These records contain only command identity/bytes, never an observation.
+    struct WrapperRelease { Uint64 pollSequence; BuildingRef target; };
+    Uint32 wrapperGeneration = 0;
+    std::vector<WrapperRelease> wrapperReleases;
+    std::vector<AIEngine::ExecutionReceipt> deferredControllerReceipts;
+    void saveWrapperFeedback(GAGCore::OutputStream*) const;
+    void loadWrapperFeedback(GAGCore::InputStream*);
 	void initializeRandom();
 
 public:
@@ -82,5 +94,11 @@ public:
 	void resetRandom() { randomInitialized = false; }
 
 	std::shared_ptr<Order> getOrder(bool paused);
+	// Owner setup precedes dispatch; decide borrows captured inputs only. The
+	// completed sample is published independently from the controller's stream.
+	void prepareDecision();
+	SimulationSnapshot::Requirements observationRequirements() const;
+	AIEngine::Command decide(const AIEngine::DecisionContext& context);
+	void publishDecision(const AIEngine::Command& output);
 
 };

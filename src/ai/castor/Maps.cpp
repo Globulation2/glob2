@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "AICastor.h"
+#include "ai/observation/WorldQueries.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapInternal.h"
@@ -19,11 +20,11 @@ using std::shared_ptr;
 void AICastor::computeObstacleUnitMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
-	const auto& tiles=map->getTiles();
-	Uint32 teamMask=team->me;
+	const auto& tiles=observation->tiles;
+	Uint32 teamMask=observedTeam->view->mask;
 	for (size_t i=0; i<size; i++)
 	{
 		const auto& c=tiles[i];
@@ -33,7 +34,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!map->terrainPropertiesAt(i).walkable && !(canSwim && map->terrainPropertiesAt(i).swimmable))
+		else if (!observation->terrain->properties(observation->tiles[i].terrain).walkable && !(canSwim && observation->terrain->properties(observation->tiles[i].terrain).swimmable))
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -44,16 +45,16 @@ void AICastor::computeObstacleUnitMap()
 void AICastor::computeObstacleBuildingMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
-	const auto& tiles=map->getTiles();
+	const auto& tiles=observation->tiles;
 	for (size_t i=0; i<size; i++)
 	{
-		const Tile& c=tiles[i];
+		const auto c=tiles[i];
 		if (c.building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (!map->terrainPropertiesAt(i).buildable)
+		else  if (!observation->terrain->properties(observation->tiles[i].terrain).buildable)
 			obstacleBuildingMap[i]=0;
 		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
@@ -65,10 +66,10 @@ void AICastor::computeObstacleBuildingMap()
 void AICastor::computeSpaceForBuildingMap(int max)
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
 	size_t size=w*h;
 	
 	memcpy(spaceForBuildingMap, obstacleBuildingMap, size);
@@ -103,14 +104,14 @@ void AICastor::computeSpaceForBuildingMap(int max)
 
 void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int bh, int dw, int dh)
 {
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	const auto& tiles=map->getTiles();
+	const auto& tiles=observation->tiles;
 	
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
+	//Uint8 *wheatGradient=queries->resourcesGradient[teamNumber][WHEAT][canSwim];
 	
 	// we skip building with already a neighbour:
 	bool neighbour=false;
@@ -224,16 +225,16 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	
-	int wDec=map->wDec;
+	int wDec=std::countr_zero(unsigned(observation->width));
 	
-	int wMask=map->wMask;
-	int hMask=map->hMask;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	Uint32 visionMask=team->me;
+	Uint32 visionMask=observedTeam->view->mask;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -241,7 +242,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 				for (int dx=0; dx<dw; dx++)
 				{
 					size_t index=(((y+dy)&hMask)<<wDec)+((x+dx)&wMask);
-					if ((map->mapDiscovered[index]&visionMask))
+					if ((observation->tiles[index].discovered&visionMask))
 						goto doubleBreak;
 				}
 			gradient[(y<<wDec)+x]=AI_CASTOR_NEIGHBOUR_OUT_OF_VISION;
@@ -250,34 +251,34 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 			gradient[(y<<wDec)+x]=0;
 		}
 	
-	Game *game=team->game;
-	for (Sint32 ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+
+	for (Sint32 ti=0; ti<observation->teams.size(); ti++)
 	{
-		Team *team=game->teams[ti];
-		assert(team);
-		if (!team)
+		TeamObservation *neighbourTeam=teamAt(ti);
+		assert(neighbourTeam);
+		if (!neighbourTeam)
 			continue;
-		Building **myBuildings=team->myBuildings;
+		const auto& myBuildings=neighbourTeam->myBuildings;
 		for (int i=0; i<Building::MAX_COUNT; i++)
 		{
-			Building *b=myBuildings[i];
-			if (b && !b->type->isVirtual)
+			const AIEngine::BuildingView *b=myBuildings[i];
+			if (b && !queries->kind(*b).resolvedType.isVirtual)
 			{
-				int bx=b->posX;
-				int by=b->posY;
-				int bw=b->type->width;
-				int bh=b->type->height;
+				int bx=b->x;
+				int by=b->y;
+				int bw=queries->kind(*b).resolvedType.width;
+				int bh=queries->kind(*b).resolvedType.height;
 				computeBuildingNeighbourMapOfBuilding(bx, by, bw, bh, dw, dh);
 			}
 		}
 	}
 	
-	for (std::list<Game::BuildProject>::iterator bpi=game->buildProjects.begin(); bpi!=game->buildProjects.end(); bpi++)
+	for (auto bpi=observation->buildProjects.begin(); bpi!=observation->buildProjects.end(); ++bpi)
 	{
-		int bx=bpi->posX&map->getMaskW();
-		int by=bpi->posY&map->getMaskH();
+		int bx=bpi->posX&(observation->width-1);
+		int by=bpi->posY&(observation->height-1);
 		Sint32 typeNum=(bpi->typeNum);
-		BuildingType *bt=game->buildingsTypes.get(typeNum);
+		const BuildingType *bt=(&queries->kind(typeNum).resolvedType);
 		int bw=bt->width;
 		int bh=bt->height;
 		computeBuildingNeighbourMapOfBuilding(bx, by, bw, bh, dw, dh);
@@ -287,11 +288,11 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 void AICastor::computeWorkPowerMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	size_t size=w*h;
 	Uint8 *gradient=workPowerMap;
 	Uint8 maxRange=AI_CASTOR_WORK_POWER_MAX_RANGE;
@@ -302,19 +303,19 @@ void AICastor::computeWorkPowerMap()
 	
 	memset(gradient, 0, size);
 	
-	Unit **myUnits=team->myUnits;
+	const auto& myUnits=observedTeam->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		Unit *u=myUnits[i];
-		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		const AIEngine::UnitView *u=myUnits[i];
+		if (u && u->type==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungriness;
+			int range=((u->hungry-u->hungryTrigger)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
 			if (range<0)
 				continue;
 			if (range>maxRange)
 				range=maxRange;
-			int ux=u->posX;
-			int uy=u->posY;
+			int ux=u->x;
+			int uy=u->y;
 			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			{
 				Uint8 *gp=&gradient[(ux&wMask)+((uy&hMask)<<wDec)];
@@ -366,28 +367,28 @@ void AICastor::computeWorkPowerMap()
 void AICastor::computeWorkRangeMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	size_t size=w*h;
 	Uint8 *gradient=workRangeMap;
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	
-	Unit **myUnits=team->myUnits;
+	const auto& myUnits=observedTeam->myUnits;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		Unit *u=myUnits[i];
-		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		const AIEngine::UnitView *u=myUnits[i];
+		if (u && u->type==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungriness;
+			int range=((u->hungry-u->hungryTrigger)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness;
 			if (range<0)
 				continue;
 			if (range>AI_CASTOR_GRADIENT_WALL)
 				range=AI_CASTOR_GRADIENT_WALL;
-			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
+			int index=(u->x&wMask)+((u->y&hMask)<<wDec);
 			gradient[index]=(Uint8)range;
 		}
 	}
@@ -399,8 +400,8 @@ void AICastor::computeWorkRangeMap()
 void AICastor::computeWorkAbilityMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
 	
 	for (size_t i=0; i<size; i++)
@@ -419,21 +420,21 @@ void AICastor::computeWorkAbilityMap()
 void AICastor::computeHydratationMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	size_t size=w*h;
 	
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
-	const auto& tiles=map->getTiles();
+	const auto& tiles=observation->tiles;
 	static const int range=AI_CASTOR_HYDRATATION_RANGE;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
-			if (terrainProvidesFertility(map->terrainPropertiesAt(x,y)))
+			if (terrainProvidesFertility(queries->terrainPropertiesAt(x,y)))
 				for (int r=1; r<range; r++)
 				{
 					for (int dx=-r; dx<=r; dx++)
@@ -472,18 +473,18 @@ void AICastor::computeHydratationMap()
 void AICastor::computeNotGrassMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
 	
 	memset(notGrassMap, 0, size);
 	
-	const auto& tiles=map->getTiles();
+	const auto& tiles=observation->tiles;
 	for (size_t i=0; i<size; i++)
 	{
 		// Habitat replaces the historical >16 sprite test, including its
 		// accidental treatment of transition sprite 16 as a wheat tile.
-		if (!(map->terrainPropertiesAt(i).allowedResources & (1u<<WHEAT)))
+		if (!(observation->terrain->properties(observation->tiles[i].terrain).allowedResources & (1u<<WHEAT)))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -493,11 +494,11 @@ void AICastor::computeNotGrassMap()
 void AICastor::computeWheatCareMap()
 {
 	PERF_SCOPE_TIME(AIObserve);
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
+	//Uint8 *wheatGradient=queries->resourcesGradient[teamNumber][WHEAT][canSwim];
 	
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
@@ -514,7 +515,7 @@ void AICastor::computeWheatCareMap()
 			else
 				wheatCareMap[0][i]=AI_CASTOR_WHEATCARE_LOW;
 		}
-	map->updateGlobalGradient(wheatCareMap[0]);
+	queries->updateGlobalGradient(wheatCareMap[0]);
 }
 
 // The map's resource gradients are Uint16 with GRADIENT_STEP per tile (MapInternal.h);
@@ -532,14 +533,14 @@ Uint8 castorWheatGradient(Uint16 g)
 
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	return castorWheatGradient(map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
+	return castorWheatGradient(queries->resourceGradient(teamNumber,WHEAT,canSwim ? Map::SWIM_CLASS_EVEN : 0).data()[index]);
 }
 
 void AICastor::copyWheatGradient(Uint8* destination)
 {
-	const size_t size=map->w*map->h;
+	const size_t size=observation->width*observation->height;
 	if (!size) return;
-	const auto* gradient=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0);
+	const auto* gradient=queries->resourceGradient(teamNumber,WHEAT,canSwim ? Map::SWIM_CLASS_EVEN : 0).data();
 	for (size_t i=0; i<size; ++i)
 		destination[i]=castorWheatGradient(gradient[i]);
 }
@@ -550,17 +551,17 @@ void AICastor::computeWheatGrowthMap()
 	if (lastWheatGrowthMapComputed==timer)
 		return;
 	
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
-	const auto* gradient=size ? map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
+	const auto* gradient=size ? queries->resourceGradient(teamNumber,WHEAT,canSwim ? Map::SWIM_CLASS_EVEN : 0).data() : nullptr;
 	for (size_t i=0; i<size; i++)
 		if (castorWheatGradient(gradient[i])==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);
 
-	map->updateGlobalGradient(wheatGrowthMap);
+	queries->updateGlobalGradient(wheatGrowthMap);
 
 	for (size_t i=0; i<size; i++)
 	{
@@ -585,30 +586,30 @@ void AICastor::computeEnemyPowerMap()
 		return;
 	lastEnemyPowerMapComputed=timer;
 	
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	size_t size=w*h;
 	Uint8 *gradient=enemyPowerMap;
 	
 	memset(gradient, 0, size);
 	
-	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+	for (int ti=0; ti<observation->teams.size(); ti++)
 	{
-		Team *enemyTeam=game->teams[ti];
-		Uint32 me=team->me;
-		if ((team->attackableTeams()&enemyTeam->me)==0)
+		TeamObservation *enemyTeam=teamAt(ti);
+		Uint32 me=observedTeam->view->mask;
+		if ((observedTeam->view->enemies&enemyTeam->view->mask)==0)
 			continue;
-		Building **enemyBuildings=enemyTeam->myBuildings;
+		const auto& enemyBuildings=enemyTeam->myBuildings;
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
-			Building *b=enemyBuildings[bi];
-			if (b==NULL || ((b->seenByMask&me)==0))
+			const AIEngine::BuildingView *b=enemyBuildings[bi];
+			if (b==NULL || ((b->seenBy&me)==0))
 				continue;
-			int bx=b->posX;
-			int by=b->posY;
+			int bx=b->x;
+			int by=b->y;
 			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			static const int range=AI_CASTOR_ENEMY_POWER_RANGE; // max 32
 			{
@@ -664,41 +665,41 @@ void AICastor::computeEnemyRangeMap()
 		return;
 	lastEnemyRangeMapComputed=timer;
 	
-	int w=map->w;
-	int h=map->h;
-	int wMask=map->wMask;
-	int hMask=map->hMask;
-	int wDec=map->wDec;
+	int w=observation->width;
+	int h=observation->height;
+	int wMask=(observation->width-1);
+	int hMask=(observation->height-1);
+	int wDec=std::countr_zero(unsigned(observation->width));
 	size_t size=w*h;
 	Uint8 *gradient=enemyRangeMap;
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	
-	for (int ti=0; ti<game->mapHeader.getNumberOfTeams(); ti++)
+	for (int ti=0; ti<observation->teams.size(); ti++)
 	{
-		Team *enemyTeam=game->teams[ti];
-		Uint32 me=team->me;
+		TeamObservation *enemyTeam=teamAt(ti);
+		Uint32 me=observedTeam->view->mask;
 		
-		if ((team->attackableTeams() & enemyTeam->me)==0)
+		if ((observedTeam->view->enemies & enemyTeam->view->mask)==0)
 			continue;
-		Building **enemyBuildings=enemyTeam->myBuildings;
+		const auto& enemyBuildings=enemyTeam->myBuildings;
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
 		{
-			Building *b=enemyBuildings[bi];
-			if (b==NULL || ((b->seenByMask&me)==0) || b->type->isBuildingSite)
+			const AIEngine::BuildingView *b=enemyBuildings[bi];
+			if (b==NULL || ((b->seenBy&me)==0) || queries->kind(*b).resolvedType.isBuildingSite)
 				continue;
-			int bx=b->posX;
-			int by=b->posY;
-			int bw=b->type->width;
-			int bh=b->type->height;
+			int bx=b->x;
+			int by=b->y;
+			int bw=queries->kind(*b).resolvedType.width;
+			int bh=queries->kind(*b).resolvedType.height;
 			for (int dy=by; dy<by+bh; dy++)
 				for (int dx=bx; dx<bx+bw; dx++)
 					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=AI_CASTOR_GRADIENT_WALL;
 		}
 	}
 	
-	if(map->hasTerrainMovementModifiers()) updateGlobalGradient(gradient);
-	else map->updateGlobalGradient(gradient);
+	if(observation->terrainMovementModifiers) updateGlobalGradient(gradient);
+	else queries->updateGlobalGradient(gradient);
 }
 
 void AICastor::computeEnemyWarriorsMap()
@@ -708,27 +709,27 @@ void AICastor::computeEnemyWarriorsMap()
 		return;
 	lastEnemyWarriorsMapComputed=timer;
 	if (verbose)
-		printf("computeEnemyWarriorsMap()\n");
+		bufferedDiagnostics.push_back({"", "", "computeEnemyWarriorsMap()\n"});
 	
-	int w=map->w;
-	int h=map->h;
+	int w=observation->width;
+	int h=observation->height;
 	size_t size=w*h;
 	Uint8 *gradient=enemyWarriorsMap;
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 	{
-		if ((map->fogOfWar[i]&team->me)==0)
+		if ((observation->tiles[i].visible&observedTeam->view->mask)==0)
 			continue;
-		Uint16 guid=map->getTiles()[i].groundUnit;
+		Uint16 guid=observation->tiles[i].groundUnit;
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));
-		if ((teamMask&team->attackableTeams())==0)
+		if ((teamMask&observedTeam->view->enemies)==0)
 			continue;
 		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}
-	if(map->hasTerrainMovementModifiers()) updateGlobalGradient(gradient);
-	else map->updateGlobalGradient(gradient);
+	if(observation->terrainMovementModifiers) updateGlobalGradient(gradient);
+	else queries->updateGlobalGradient(gradient);
 }
 

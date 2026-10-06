@@ -144,7 +144,7 @@ void ChangeSwarm::modify(Runtime& runtime)
 	ratio[2]=warrior_ratio;
 	auto* building=runtime.get_building_register().get_building(building_id);
  for(int unit=0;unit<NB_UNIT_TYPE;++unit)
-  if(!building->type->semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.player->game->gameHeader.isPeacefulModeEnabled())) ratio[unit]=0;
+  if(!building->type->semantics.production.recipes[unit].enabled || (unit==WARRIOR && runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled())) ratio[unit]=0;
  runtime.push_order(std::make_shared<OrderModifySwarm>(building->gid,ratio));
 }
 
@@ -226,7 +226,7 @@ void RetireFeeding::modify(Runtime& runtime)
 {
     auto* building=runtime.get_building_register().get_building(building_id);
     if(!building) return;
-    const auto& index=runtime.player->game->buildingCapabilities();
+    const auto& index=runtime.readPlayer()->game->buildingCapabilities();
     constexpr auto feeding=AIPlanning::BuildingIntent::Feed;
     // A free feeding service cannot be starved of input, and a mixed provider
     // must remain available to its other strategic consumers.

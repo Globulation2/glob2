@@ -231,11 +231,11 @@ int CenterOfBuilding::calculate_constraint(Runtime& runtime, int x, int y)
 
 bool CenterOfBuilding::passes_constraint(Runtime& runtime, int x, int y)
 {
-	Building* b=runtime.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	if(b)
 	{
-		if(runtime.player->game->map.normalizeX(b->posX+b->type->width/2)==x &&
-		   runtime.player->game->map.normalizeY(b->posY+b->type->height/2)==y)
+		if(runtime.readPlayer()->game->map.normalizeX(b->posX+b->type->width/2)==x &&
+		   runtime.readPlayer()->game->map.normalizeY(b->posY+b->type->height/2)==y)
 		{
 			return true;
 		}
@@ -286,7 +286,7 @@ int SinglePosition::calculate_constraint(Runtime& runtime, int x, int y)
 
 bool SinglePosition::passes_constraint(Runtime& runtime, int x, int y)
 {
-	if(runtime.player->game->map.normalizeX(posx)==x && runtime.player->game->map.normalizeY(posy)==y)
+	if(runtime.readPlayer()->game->map.normalizeX(posx)==x && runtime.readPlayer()->game->map.normalizeY(posy)==y)
 		return true;
 	return false;
 }

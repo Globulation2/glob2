@@ -211,11 +211,25 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs()};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
 }
 
 bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
-void Map::preparePendingGradient()
+SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
+{
+    return hasPendingGradientPreparation() ? SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain) : 0;
+}
+void Map::preparePendingGradient() { preparePendingGradientInputs(nullptr); }
+void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
+{
+    if (!hasPendingGradientPreparation()) return;
+    if (!foundation.terrain || foundation.worldIdentity != identity() ||
+        foundation.width != getW() || foundation.height != getH() ||
+        foundation.terrain->revision != terrainGeneration())
+        throw std::invalid_argument("Gradient preparation requires current projected terrain");
+    preparePendingGradientInputs(&foundation);
+}
+void Map::preparePendingGradientInputs(const SimulationSnapshot::Handle* foundation)
 {
 	// Consume before executing: failure leaves no dangling descriptor, while the
 	// pipeline records a completed error so saves/publication cannot wait forever.
@@ -231,12 +245,13 @@ void Map::preparePendingGradient()
 		case Kind::Clear: seedClearAreasGradient(team, swim, job.data.get()); break;
 		}
 		// Propagation owns immutable terrain inputs after the read barrier closes.
-		job.modifiedCosts = hasTerrainMovementModifiers();
-		job.registry = frozenTerrainRegistry();
+		if (foundation) job.terrainLease = foundation->project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
+        job.modifiedCosts = foundation ? foundation->terrain->movementModifiers : hasTerrainMovementModifiers();
+		job.registry = foundation ? foundation->terrain->registry : frozenTerrainRegistry();
 		job.terrainBuckets = terrainQueueBuckets();
 		job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
 		job.profiles = job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT ? frozenTerrainMovementSnapshot(swim) : nullptr;
-		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? frozenTerrainSnapshot() : nullptr;
+		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? (foundation ? foundation->terrain->identity : frozenTerrainSnapshot()) : nullptr;
 	});
 }
 
@@ -248,6 +263,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
+	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { ++resourceFieldGenerations[slot]; };
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
 		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {
@@ -419,6 +435,7 @@ void Map::stagePeriodicGradientPreparation()
 
 void Map::switchFogOfWar(void)
 {
+	++snapshotVisibility;
 	PERF_SCOPE_TIME(Fog);
 	memset(fogOfWar, 0, size*sizeof(Uint32));
 	if (fogOfWar == &fogOfWarA[0])
@@ -430,6 +447,7 @@ void Map::switchFogOfWar(void)
 void Map::setMapDiscovered(int x, int y, Uint32 sharedVision)
 {
 	size_t index = coordToIndex(x, y);
+	++snapshotVisibility;
 	mapDiscovered[index] |= sharedVision;
 	fogOfWarA[index] |= sharedVision;
 	fogOfWarB[index] |= sharedVision;

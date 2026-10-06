@@ -3,7 +3,9 @@
 
 
 #include "AICastor.h"
+#include "ai/observation/WorldQueries.h"
 #include "Game.h"
+#include "Version.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -14,8 +16,65 @@
 using std::shared_ptr;
 
 
-std::shared_ptr<Order>AICastor::getOrder()
+AICastor::TeamObservation* AICastor::teamAt(int index) const
 {
+ if(index<0 || index>=int(observedTeams.size()) || !observedTeams[index].view) return nullptr;
+ return const_cast<TeamObservation*>(&observedTeams[index]);
+}
+std::shared_ptr<Order> AICastor::getOrder()
+{
+ const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
+ const std::vector<AIEngine::ExecutionReceipt> receipts;
+ std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
+ AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};context.resourceEnrollments=&enrollments;
+ auto result=getOrder(context);
+ for(const auto& request:enrollments) map->installObservedResourceField(request.team,request.resource,request.swim,*request.initialField);
+ return result;
+}
+std::shared_ptr<Order> AICastor::getOrder(const AIEngine::DecisionContext& context)
+{
+ if(context.team!=unsigned(teamNumber)) throw std::invalid_argument("Castor observation has wrong team");
+ for(const auto& receipt:context.receipts) if(!receipt.command.empty()) {
+  auto order=Order::getOrder(receipt.command.data(),receipt.command.size(),VERSION_MINOR);
+  if(order) {
+   bool matches=false;
+   if(const auto* staffing=dynamic_cast<const OrderModifyBuilding*>(order.get())) {
+    const auto pending=pendingWorkers.find(staffing->gid);
+    matches=pending!=pendingWorkers.end() && pending->second.tick==receipt.request.observedTick && pending->second.sequence==receipt.request.pollSequence;
+   }
+   if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(order.get())) {
+    const auto pending=pendingRatios.find(ratios->gid);
+    matches=pending!=pendingRatios.end() && pending->second.tick==receipt.request.observedTick && pending->second.sequence==receipt.request.pollSequence;
+   }
+   if(matches) orderExecutionCompleted(*order,receipt.status==AIEngine::ExecutionStatus::Accepted);
+  }
+  std::erase_if(pendingCreates,[&](const auto& intent){return intent.tick==receipt.request.observedTick && intent.sequence==receipt.request.pollSequence;});
+ }
+ std::erase_if(pendingCreates,[&](const auto& intent){
+  for(const auto& project:context.world.buildProjects) if(project.teamNumber==teamNumber && project.typeNum==intent.type && context.world.normalizeX(project.posX)==context.world.normalizeX(intent.x) && context.world.normalizeY(project.posY)==context.world.normalizeY(intent.y)) return true;
+  const auto& kind=context.world.catalog->at(intent.type);
+  for(const auto& b:context.world.buildings) if(b.team==teamNumber && (b.type==intent.type || (kind.site && b.type==kind.next)) && b.x==context.world.normalizeX(intent.x) && b.y==context.world.normalizeY(intent.y)) return true;
+  return false;
+ });
+ AIEngine::WorldQueries captured(context.world,teamNumber,resourceInitializations,context.resourceEnrollments);
+ for(const auto& intent:pendingCreates) captured.reserve(intent.type,intent.x,intent.y);
+ decisionSequence=context.pollSequence;
+ observation=&context.world;queries=&captured;observedTeams.resize(context.world.teams.size());
+ for(size_t i=0;i<observedTeams.size();++i) observedTeams[i].view=&context.world.teams[i];
+ for(const auto& b:context.world.buildings) observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+ for(const auto& u:context.world.units) observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ observedTeam=teamAt(teamNumber);
+ const auto clear=[&]{observation=nullptr;queries=nullptr;observedTeam=nullptr;observedTeams.clear();};
+ try {
+  auto result=decide();
+  if(const auto* create=dynamic_cast<const OrderCreate*>(result.get())) pendingCreates.push_back({context.world.tick,context.pollSequence,create->typeNum,create->posX,create->posY});
+  clear();return result;
+ } catch(...) {clear();throw;}
+}
+
+std::shared_ptr<Order>AICastor::decide()
+{
+	reconcilePendingAssignments();
 	timer++;
 	
 	if (!strategy.defined)
@@ -68,7 +127,7 @@ std::shared_ptr<Order>AICastor::getOrder()
 			break;
 			case 12:
 			{
-				size_t size=map->w*map->h;
+				size_t size=observation->width*observation->height;
 				copyWheatGradient(oldWheatGradient[0]);
 				for (int i=1; i<4; i++)
 					memcpy(oldWheatGradient[i], oldWheatGradient[0], size);

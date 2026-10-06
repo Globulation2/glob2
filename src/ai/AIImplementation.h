@@ -12,8 +12,14 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 #include "BuildingType.h"
 #include "AITelemetry.h"
 #include "MersenneTwister.h"
+#include "ai/engine/AIDiagnostics.h"
+#include "sim/snapshot/Requirements.h"
 #include <cassert>
 #include <memory>
+#include <optional>
+#include <stdexcept>
+
+namespace AIEngine { struct DecisionContext; }
 
 namespace GAGCore
 {
@@ -36,13 +42,9 @@ You have to understand how the Order class is used.
 Use the controller-provided random stream for AI decisions. Never use rand().
 Be sure to return at least a *NullOrder, not NULL.
 
-Idea:
-You can access useful data this way:
-player
-player->team
-player->team->game
-player->team->game->map
-The current AIs store pointers to all these for convenient access.
+Decision inputs:
+Use the immutable world in DecisionContext and controller-private query caches.
+Live Player/Game access belongs only to simulation-owner construction and load.
 
 Fairness:
 AI don't have restricted access to hidden part of the map.
@@ -64,6 +66,7 @@ public:
 	void restoreRandom(const MersenneTwister& state) { assert(randomEngine); *randomEngine=state; }
 	Uint32 random() const { assert(randomEngine); return (*randomEngine)(); }
   AITelemetry::Sink telemetry;
+  mutable std::vector<AIEngine::DiagnosticRecord> bufferedDiagnostics;
   virtual void captureTelemetry() {}
   virtual Uint32 telemetrySchemaVersion() const { return 1; }
   virtual const std::vector<AITelemetry::Field> &telemetrySchema() const
@@ -77,6 +80,21 @@ public:
 	virtual void save(GAGCore::OutputStream *stream)=0;
 	
 	virtual std::shared_ptr<Order> getOrder(void)=0;
+	// Safe worker execution is opt-in only after every decision read has moved
+	// to owned observation inputs. The default cannot accidentally call the
+	// legacy live-world implementation on a background thread.
+	virtual bool supportsObservation() const { return false; }
+	virtual SimulationSnapshot::Requirements observationRequirements() const { return SimulationSnapshot::All; }
+	// Sampled only by the controller's own lane after a decision. Empty means
+	// this controller has not supplied retained vector-capacity accounting.
+	virtual std::optional<Uint64> retainedQueryVectorBytes() const { return std::nullopt; }
+	virtual std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&)
+	{
+		throw std::logic_error("AI has not migrated to immutable observations");
+	}
+	// Called on the controller's own lane when reconciling immutable receipts.
+	// Acceptance is command admission, not completion of construction.
+	virtual void orderExecutionCompleted(const Order&, bool accepted) {}
 private:
 	MersenneTwister *randomEngine = nullptr;
 };

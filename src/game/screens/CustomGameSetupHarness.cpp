@@ -67,6 +67,8 @@ struct CountingAI : AIImplementation {
     ++calls;
     return std::make_shared<NullOrder>();
   }
+  bool supportsObservation() const override { return true; }
+  std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override { return getOrder(); }
 };
 } // namespace
 

@@ -260,6 +260,7 @@ TEST_SUITE("AIDecisionCoverage")
             auto* swarm=fixture.startingSwarm;
             swarm->resources[WHEAT]=wheat;
             AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+            AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
             MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
             bool deletedInn=false;
             // Keep the world fixed so starvation/death and new construction cannot
@@ -301,6 +302,7 @@ TEST_SUITE("AIDecisionCoverage")
             game.teams[0]->stats.step(game.teams[0]);
         REQUIRE(game.teams[0]->stats.getLatestStat()->totalUnit==24);
         AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
         // Keep population fixed while advancing beyond the 2000-tick swarm
         // build cycle. Apply orders so new construction sites enter the map.

@@ -103,3 +103,33 @@ TEST_CASE("reservation is invalidatable before preparation and seed failures can
     }
 }
 }
+
+TEST_SUITE("GradientPipeline") {
+TEST_CASE("projected terrain leases end at completion including failed work") {
+    for (int failure : {0,1,2}) {
+        auto terrain=std::make_shared<SimulationSnapshot::Terrain>();
+        std::weak_ptr<const SimulationSnapshot::Terrain> lifetime=terrain;
+        SimulationSnapshot::Handle foundation;
+        foundation.requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
+        foundation.terrain=terrain;
+        auto* slot=new std::uint16_t[1]{};
+        GradientPipeline pipeline;
+        pipeline.configure(0,2,1,[&](auto& job,auto&) {
+            CHECK(job.terrainLease.has_value());
+            CHECK(job.terrainLease->terrain==lifetime.lock());
+            if(failure==1) throw std::runtime_error("work failure");
+        });
+        pipeline.advance();
+        auto* job=pipeline.reserve(&slot,0);
+        job->terrainLease=foundation.project(foundation.requirements);
+        foundation={};terrain.reset();
+        CHECK_FALSE(lifetime.expired());
+        if(failure==2) CHECK_THROWS_AS(pipeline.prepare(job,[](auto&){throw std::runtime_error("seed failure");}),std::runtime_error);
+        else pipeline.prepare(job,[](auto&){});
+        CHECK(lifetime.expired());
+        if(failure) CHECK_THROWS_AS(pipeline.finish(),std::runtime_error);
+        else pipeline.finish();
+        pipeline.reset();delete[] slot;
+    }
+}
+}

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "AIJavaScript.h"
+#include "ai/engine/AIDecision.h"
 #include "Player.h"
 #include "Game.h"
 #include "FileFormatVersions.h"
@@ -13,6 +14,7 @@
 AIJavaScript::AIJavaScript(Player *p)
 	: player(p), observations(*p->game, p->teamNumber), runtime(Script::makeRuntime())
 {
+	teamNumber = p->teamNumber;
 	source = Script::sourceFromConfig(player->game->gameHeader.getAIConfig(player->number));
 	profile = Script::profileFromConfig(player->game->gameHeader.getAIConfig(player->number));
 	runtime->validate(source);
@@ -30,6 +32,7 @@ AIJavaScript::AIJavaScript(Player *p)
 }
 bool AIJavaScript::load(GAGCore::InputStream *s, Player *, Sint32 version)
 {
+	observationTick = player->game->stepCounter;
 	if (version < FILE_FORMAT_VERSION_JAVASCRIPT ||
 		(profile == 2 && version < FILE_FORMAT_VERSION_CUSTOM_AI))
 		return false;
@@ -64,6 +67,19 @@ void AIJavaScript::save(GAGCore::OutputStream *s)
 }
 std::shared_ptr<Order> AIJavaScript::getOrder()
 {
+    auto observation = observations.captureObservation();
+    if (services) services->useObservedExecution();
+    return decide();
+}
+std::shared_ptr<Order> AIJavaScript::getOrder(const AIEngine::DecisionContext& context)
+{
+    auto observation = observations.bindObservation(context.world);
+    if (services) services->applyExecutionReceipts(context.receipts);
+    return decide();
+}
+std::shared_ptr<Order> AIJavaScript::decide()
+{
+	observationTick = observations.world().tick;
 	if (disabled)
 		return std::make_shared<NullOrder>();
 	auto checkpoint = snapshotRandom();
@@ -77,10 +93,10 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 			services->begin();
 			host.nextAction = services->nextAction();
 		}
-		host.tick = player->game->stepCounter;
-		host.team = player->teamNumber;
-		host.width = player->game->map.getW();
-		host.height = player->game->map.getH();
+		host.tick = observations.world().tick;
+		host.team = teamNumber;
+		host.width = observations.world().width;
+		host.height = observations.world().height;
 		host.random = [this] { return random(); };
 		host.query = [this](const auto &name, const auto &args, const Script::QueryBudget &budget)
 		{
@@ -98,7 +114,7 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 			accepted = services->dispatch();
 		}
 		else
-			accepted = Script::order(*player->game, player->teamNumber, result.effects);
+			accepted = Script::order(observations.world(), teamNumber, result.effects);
 		state = std::move(result.state);
 		initialized = true;
 		return accepted;
@@ -123,12 +139,13 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 		try
 		{
 			std::string diagnostic =
-				displayName + " at tick " + std::to_string(player->game->stepCounter) + ": " +
+				displayName + " at tick " + std::to_string(observations.world().tick) + ": " +
 				std::string(ex.what(), std::min(std::strlen(ex.what()), std::size_t(16000)));
 			auto fallback = std::make_shared<NullOrder>();
 			error.swap(diagnostic);
 			disabled = true;
-			std::cerr << "JavaScript AI player " << player->number << ": " << error << '\n';
+			// The simulation owner publishes diagnostics after the logical deadline.
+            bufferedDiagnostics.push_back({{}, {}, error + "\n"});
 			return fallback;
 		}
 		catch (const std::bad_alloc &)
@@ -138,10 +155,11 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 	}
 }
 
-void AIJavaScript::observe()
+void AIJavaScript::observe(const AIEngine::AIWorldView& world)
 {
-	if (!disabled && player->game->teams[player->teamNumber]->isAlive)
-		observations.observe();
+    auto observation = observations.bindObservation(world);
+    if (!disabled && world.teams[teamNumber].alive)
+        observations.observe();
 }
 
 void AIJavaScript::captureTelemetry()
@@ -150,7 +168,7 @@ void AIJavaScript::captureTelemetry()
 		return;
 	auto &values = telemetry.series->named;
 	values.clear();
-	const unsigned tick = player->game->stepCounter;
+	const unsigned tick = observationTick;
 	values.push_back(
 		{"runtime.status", disabled ? "Disabled" : "Running", "", error.substr(0, 4096), tick});
 	if (!services)
@@ -185,4 +203,9 @@ void AIJavaScript::captureTelemetry()
 							  : description.get("description").text,
 						  unsigned(sample.get("updated").number)});
 	}
+}
+
+std::optional<Uint64> AIJavaScript::retainedQueryVectorBytes() const {
+    return observations.retainedQueryVectorBytes()+Script::retainedValueVectorBytes(state)
+        +(services?services->retainedQueryVectorBytes():0);
 }

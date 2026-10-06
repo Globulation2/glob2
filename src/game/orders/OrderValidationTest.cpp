@@ -364,4 +364,41 @@ TEST_SUITE("OrderValidation")
 		CHECK(f.game.game.players[0]->type == BasePlayer::P_LOCAL);
 		f.game.step(5);
 	}
+	TEST_CASE("executor reports actual admission for unchanged invalid and deferred commands")
+	{
+		Fixture fixture;auto& game=fixture.game.game;game.map.setMapDiscovered();
+		const auto apply=[&](std::shared_ptr<Order> order){order->sender=0;return game.executeOrder(std::move(order),0);};
+		CHECK(apply(std::make_shared<OrderModifyBuilding>(fixture.ownInn->gid,1)));
+		CHECK(apply(std::make_shared<OrderModifyBuilding>(fixture.ownInn->gid,1))); // already requested is still admitted
+		CHECK_FALSE(apply(std::make_shared<OrderModifyBuilding>(fixture.ownInn->gid,fixture.ownInn->type->semantics.assignmentLimit+1)));
+		auto stale = std::make_shared<OrderModifyBuilding>(0, 1);
+		stale->gid = 0xffff; // malformed wire targets bypass constructor assertions
+		CHECK_FALSE(apply(stale));
+		CHECK_FALSE(apply(std::make_shared<OrderCreate>(0,fixture.ownInn->posX,fixture.ownInn->posY,Fixture::type("inn",true),1,1)));
+		fixture.game.addUnit(WORKER,20,20,0);
+		const auto projects=game.buildProjects.size();
+		CHECK(apply(std::make_shared<OrderCreate>(0,20,20,Fixture::type("inn",true),1,1)));
+		CHECK(game.buildProjects.size()==projects+1);
+		CHECK(apply(std::make_shared<OrderDelete>(fixture.ownFlag->gid)));
+		CHECK_FALSE(apply(std::make_shared<OrderDelete>(fixture.ownFlag->gid)));
+		CHECK(apply(std::make_shared<OrderCancelDelete>(fixture.ownFlag->gid)));
+		CHECK_FALSE(apply(std::make_shared<OrderCancelDelete>(fixture.ownFlag->gid)));
+		game.teams[0]->isAlive=false;
+		CHECK_FALSE(apply(std::make_shared<OrderModifyBuilding>(fixture.ownInn->gid,1)));
+		CHECK(apply(std::make_shared<NullOrder>()));
+	}
+	TEST_CASE("construction admission reports rule rejection and repair acceptance")
+	{
+		Fixture fixture;auto& game=fixture.game.game;game.map.setMapDiscovered();
+		const auto apply=[&](std::shared_ptr<Order> order){order->sender=0;return game.executeOrder(std::move(order),0);};
+		game.gameHeader.setUnitUpgradesDisabled(true);
+		fixture.ownInn->hp = fixture.ownInn->getEffectiveMaxHp();
+		CHECK_FALSE(apply(std::make_shared<OrderConstruction>(fixture.ownInn->gid,1,1)));
+		CHECK(fixture.ownInn->buildingState==Building::ALIVE);
+		--fixture.ownInn->hp;
+		CHECK(apply(std::make_shared<OrderConstruction>(fixture.ownInn->gid,1,1)));
+		CHECK(fixture.ownInn->constructionResultState==Building::REPAIR);
+		CHECK_FALSE(apply(std::make_shared<OrderConstruction>(fixture.ownInn->gid,1,1)));
+	}
+
 }

@@ -88,13 +88,13 @@ class TorusRenderBenchmark
     static void advanceAiTick(GameGUI &gui)
     {
         Game &game = gui.game;
-        for (int player = 0; player < game.gameHeader.getNumberOfPlayers(); ++player)
-            if (game.players[player]->ai)
-            {
-                auto order = game.players[player]->ai->getOrder(false);
-                order->sender = player;
-                gui.executeOrder(order);
-            }
+        std::vector<unsigned> actors;
+        for(int player=0;player<game.gameHeader.getNumberOfPlayers();++player)
+            if(game.players[player]->ai)actors.push_back(unsigned(player));
+        for(const auto& [actor,scheduled]:game.prepareAIOrders(actors,false)) {
+            scheduled->sender=actor;
+            gui.executeOrder(game.validateAIOrder(scheduled,actor));
+        }
         game.syncStep(gui.localTeamNo);
     }
 

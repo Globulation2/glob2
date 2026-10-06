@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -24,9 +25,9 @@ using std::shared_ptr;
 void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 {
 	using namespace Cortex;
-	using std::cerr;
-	Team* team = player->team;
-	Game* game = team->game;
+	auto& cerr = diagnosticStream;
+	Cortex::WorldTeam* team = decisionPlayer->team;
+	Cortex::World* game = team->game;
 	const int me = team->teamNumber;
 
 	cerr << "CORTEX_DUMP ==== first-under-attack snapshot ====\n";
@@ -138,7 +139,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	// --- ground truth (diagnostic only; never fed to the policy) ---
 	for (int t = 0; t < game->teamsCount(); t++)
 	{
-		Team* et = game->teams[t];
+		Cortex::WorldTeam* et = game->teams[t];
 		if (!et || et->teamNumber == me) continue;
 		const TeamStat* es = et->stats.getLatestStat();
 		if (!es) continue;
@@ -165,41 +166,22 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 // one CSV row per valid tracked swarm to <prefix>.team<N>.csv, where <prefix> is
 // GLOB2_CORTEX_TRACE. Each row is the swarm's observed state this decision cycle
 // plus the cap the HAND RULE chose (the BC target). Pure read of obs + the tune
-// action already computed for gameplay; opening/writing a file never touches RNG,
+// action already computed for gameplay; buffering output never touches RNG,
 // orders, or persisted state, so the lockstep sync stream is unaffected. One file
 // per AI instance avoids interleaving and lets each write its own header once.
 void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
                                const Cortex::CortexAction& tune)
 {
 	using namespace Cortex;
-	const int me = player->team->teamNumber;
+	const int me = decisionPlayer->team->teamNumber;
 
-	if (!traceFile)
-	{
-		if (traceOpenAttempted) return; // already tried (and failed) once; do not retry.
-		traceOpenAttempted = true;
-		const char* prefix = getenv("GLOB2_CORTEX_TRACE");
-		if (!prefix || !prefix[0]) return;
-		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
-		traceFile = std::fopen(path.c_str(), "a");
-		if (!traceFile)
-		{
-			// glob2 chdir()s to its resource dir at startup, so a relative prefix
-			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
-			// once (traceOpenAttempted gate above) rather than silently dumping nothing.
-			std::cerr << "CORTEX_TRACE: cannot open '" << path
-			          << "' for the worker-tuning trace — pass an ABSOLUTE GLOB2_CORTEX_TRACE"
-			             " path (glob2 chdir()s at startup). Trace disabled.\n";
-			return;
-		}
-		// "a" positions at end, so a non-zero offset means the file already has rows;
-		// only the first writer emits the header.
-		if (std::ftell(traceFile) == 0)
-			std::fputs("tick,team,swarm_index,gid,wheat,maxWheat,maxUnitWorking,"
+	const char* prefix = getenv("GLOB2_CORTEX_TRACE");
+	if (!prefix || !prefix[0]) return;
+	const std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+	const std::string header = "tick,team,swarm_index,gid,wheat,maxWheat,maxUnitWorking,"
 			           "unitsInside,maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
 			           "freeWorkers,totalFree,totalNeeded,workers,swarmCount,feedCapacity,"
-			           "starvingUnits,needFood,maxBuildLevel,desired\n", traceFile);
-	}
+			           "starvingUnits,needFood,maxBuildLevel,desired\n";
 
 	const bool haveTune = (tune.kind == ACTION_TUNE_WORKERS);
 	std::ostringstream row;
@@ -223,8 +205,7 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 	const std::string text = row.str();
 	if (!text.empty())
 	{
-		std::fputs(text.c_str(), traceFile);
-		std::fflush(traceFile); // once per ~25 ticks; survive a killed headless run.
+		bufferedDiagnostics.push_back({path, header, text});
 	}
 }
 
@@ -236,39 +217,18 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 // bitmask, the chosen class index, and the cycle's failed feasibility-gate bitmask
 // (CortexGate bits — ANDed with a candidate's candidateGates[] mask this shows WHY a
 // gated candidate was vetoed). Pure read of obs + the DecideTrace decide()
-// already produced for gameplay; opening/writing a file never touches RNG, orders, or
-// persisted state, so the lockstep sync stream is unaffected. SEPARATE file handle +
-// open-attempt guard from the worker trace (distinct CSV, distinct schema).
+// already produced for gameplay; buffering output never touches RNG, orders, or
+// persisted state, so the lockstep sync stream is unaffected. Separate output path from the worker trace (distinct CSV, distinct schema).
 void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
                                const Cortex::DecideTrace& trace)
 {
 	using namespace Cortex;
-	const int me = player->team->teamNumber;
+	const int me = decisionPlayer->team->teamNumber;
 
-	if (!decideTraceFile)
-	{
-		if (decideTraceOpenAttempted) return; // already tried (and failed) once; do not retry.
-		decideTraceOpenAttempted = true;
-		const char* prefix = getenv("GLOB2_CORTEX_DECIDE_TRACE");
-		if (!prefix || !prefix[0]) return;
-		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
-		decideTraceFile = std::fopen(path.c_str(), "a");
-		if (!decideTraceFile)
-		{
-			// glob2 chdir()s to its resource dir at startup, so a relative prefix
-			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
-			// once (decideTraceOpenAttempted gate above) rather than silently dumping nothing.
-			std::cerr << "CORTEX_DECIDE_TRACE: cannot open '" << path
-			          << "' for the decision-selection trace — pass an ABSOLUTE"
-			             " GLOB2_CORTEX_DECIDE_TRACE path (glob2 chdir()s at startup)."
-			             " Trace disabled.\n";
-			return;
-		}
-		// "a" positions at end, so a non-zero offset means the file already has rows;
-		// only the first writer emits the header. The 48 feature names are in
-		// DECIDE_CONTRACT idx order — they MUST match extractDecideFeatures 1:1.
-		if (std::ftell(decideTraceFile) == 0)
-			std::fputs("tick,team,"
+	const char* prefix = getenv("GLOB2_CORTEX_DECIDE_TRACE");
+	if (!prefix || !prefix[0]) return;
+	const std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+	const std::string header = "tick,team,"
 			           "swarms,swarmSites,inns,innSites,school,schoolSites,race,raceSites,"
 			           "heal,healSites,barracks,barracksSites,upgradableCount,totalUnit,"
 			           "workers,explorers,warriors,freeWorkers,totalFree,totalNeeded,"
@@ -279,8 +239,7 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 			           "warFlagsActive,enemyCount,enemyUnitsNearFlag,flagTargetsValid,"
 			           "flagPosture,haveDefenseTarget,algaeReachable,algaeDiscovered,"
 			           "swimLandReach,swimWaterReach,tick,"
-			           "eligible_mask,chosen,failedGates\n", decideTraceFile);
-	}
+			           "eligible_mask,chosen,failedGates\n";
 
 	int features[CortexPolicy::NUM_DECIDE_FEATURES];
 	CortexPolicy::extractDecideFeatures(obs, features);
@@ -293,8 +252,7 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 	    << ',' << trace.failedGates << '\n';
 
 	const std::string text = row.str();
-	std::fputs(text.c_str(), decideTraceFile);
-	std::fflush(decideTraceFile); // once per ~25 ticks; survive a killed headless run.
+	bufferedDiagnostics.push_back({path, header, text});
 }
 
 // INN DIAGNOSTIC TRACE (docs debugging Cortex-vs-Nicowar worker allocation to inns).
@@ -307,43 +265,23 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 // CortexPolicy::computeFacts because getOrder() has no DecideFacts to pass through
 // (decide() builds one internally) — re-deriving it is byte-identical and avoids
 // duplicating the tier formula. Pure read of obs + the tune action already computed
-// for gameplay; opening/writing a file never touches RNG, orders, or persisted state,
-// so the lockstep sync stream is unaffected. SEPARATE FILE* handle + open-attempt
-// guard from the worker/decision traces (distinct CSV, distinct schema).
+// for gameplay; buffering output never touches RNG, orders, or persisted state,
+// so the lockstep sync stream is unaffected. Separate output path from the worker/decision traces (distinct CSV, distinct schema).
 void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
                             const Cortex::CortexAction& tune)
 {
 	using namespace Cortex;
-	const int me = player->team->teamNumber;
+	const int me = decisionPlayer->team->teamNumber;
 
-	if (!innTraceFile)
-	{
-		if (innTraceOpenAttempted) return; // already tried (and failed) once; do not retry.
-		innTraceOpenAttempted = true;
-		const char* prefix = getenv("GLOB2_CORTEX_INN_TRACE");
-		if (!prefix || !prefix[0]) return;
-		std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
-		innTraceFile = std::fopen(path.c_str(), "a");
-		if (!innTraceFile)
-		{
-			// glob2 chdir()s to its resource dir at startup, so a relative prefix
-			// resolves there, not in the launch dir — pass an ABSOLUTE path. Warn
-			// once (innTraceOpenAttempted gate above) rather than silently dumping nothing.
-			std::cerr << "CORTEX_INN_TRACE: cannot open '" << path
-			          << "' for the inn-diagnostic trace — pass an ABSOLUTE GLOB2_CORTEX_INN_TRACE"
-			             " path (glob2 chdir()s at startup). Trace disabled.\n";
-			return;
-		}
-		// "a" positions at end, so a non-zero offset means the file already has rows;
-		// only the first writer emits the header.
-		if (std::ftell(innTraceFile) == 0)
-			std::fputs("tick,team,inn_index,gid,wheat,maxWheat,maxUnitWorking,unitsInside,"
+	const char* prefix = getenv("GLOB2_CORTEX_INN_TRACE");
+	if (!prefix || !prefix[0]) return;
+	const std::string path = std::string(prefix) + ".team" + std::to_string(me) + ".csv";
+	const std::string header = "tick,team,inn_index,gid,wheat,maxWheat,maxUnitWorking,unitsInside,"
 			           "maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
 			           "diagBlindWheatNearby,restockTripsNeeded,priority,ticksSinceFinished,"
 			           "desired,freeWorkers,workers,warriors,totalUnit,feedCapacity,"
 			           "starvingUnits,needFood,growWorker,growWarrior,tierBase,tierMid,"
-			           "tierNeeds\n", innTraceFile);
-	}
+			           "tierNeeds\n";
 
 	// Recompute the production-mix tier facts (CortexPolicy.cpp:205-269) from the pure
 	// computeFacts: tierBase = the hauler floor (Σ swarm+inn maxUnitWorking +
@@ -379,7 +317,6 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
 	const std::string text = row.str();
 	if (!text.empty())
 	{
-		std::fputs(text.c_str(), innTraceFile);
-		std::fflush(innTraceFile); // once per ~25 ticks; survive a killed headless run.
+		bufferedDiagnostics.push_back({path, header, text});
 	}
 }

@@ -22,7 +22,7 @@ class Order;
 //! the reader still accepts. Version 139 moves periodic gradient preparation to the
 //! completed-tick observation boundary; older replays have different trajectories.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 139;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 140;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

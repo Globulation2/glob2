@@ -44,6 +44,7 @@ class Maxima : public AIImplementation, private AIMaximaRuntime::RuntimeAI
 public:
 	std::shared_ptr<GameDiagnostics::FieldSink> fieldDiagnostics; // session-owned, never serialized
   void captureTelemetry() override;
+  std::optional<Uint64> retainedQueryVectorBytes() const override;
   const std::vector<AITelemetry::Field> &telemetrySchema() const override
   {
 	  return AITelemetry::schema(7);
@@ -55,6 +56,9 @@ public:
 	bool loadState(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream) override;
 	std::shared_ptr<Order> getOrder() override;
+    std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+    bool supportsObservation() const override {return true;}
+	void orderExecutionCompleted(const Order& order, bool accepted) override;
 	std::string auditStrategyJson() const;
 	std::string canonicalStrategy() const;
 	void tick(AIMaximaRuntime::Context& runtime) override;
@@ -627,7 +631,7 @@ private:
 	int feeding_capacity(int root,int position) const;
     int feeding_capacity_for_type(int concreteType) const;
     int aggregate_feeding_capacity(const std::array<long long,8>& rates) const;
-    long long recipient_meal_rate(const Unit& unit) const;
+    long long recipient_meal_rate(const AISharedRuntime::Read::Unit& unit) const;
     long long birth_food_acreage() const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;

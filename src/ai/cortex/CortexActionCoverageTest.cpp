@@ -11,9 +11,54 @@
 #include "CortexPolicy.h"
 #include <nlohmann/json.hpp>
 #include "Player.h"
+#include "ai/engine/AIDecision.h"
+#include "Version.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 
 namespace
 {
+// Private action helpers are exercised within the same scoped observation
+// boundary as production decisions. Returned handles resolve back to fixtures
+// only after the decision-local adapter has been released.
+class ObservedCortex : public AICortex
+{
+    Player* owner;
+    template<class Function> decltype(auto) decision(Function&& function)
+    {
+        const auto captured=AIEngine::AIWorldView::capture(*owner->game, AIEngine::AIWorldView::captureCatalog(*owner->game));
+        Cortex::World world(*captured);
+        applyQueuedIntent(world);
+        Cortex::WorldPlayer local{&world,world.teams[owner->teamNumber],owner->number};
+        struct Reset { Cortex::WorldPlayer*& pointer; ~Reset(){pointer=nullptr;} } reset{decisionPlayer};
+        decisionPlayer=&local;
+        return function();
+    }
+    template<class Function> Building* target(Function&& function)
+    {
+        const auto ref=decision([&] { auto* building=function();return building ? building->source->identity : BuildingRef{}; });
+        return owner->game->resolveBuilding(ref);
+    }
+public:
+    explicit ObservedCortex(Player* player) : AICortex(player),owner(player) {}
+    void queueForTest(std::shared_ptr<Order> order) { decision([&]{enqueueOrder(std::move(order));}); }
+    Building* findFlagByGid(Uint16 gid) { return target([&]{return AICortex::findFlagByGid(gid);}); }
+    Building* findUpgradeTarget(int type) { return target([&]{return AICortex::findUpgradeTarget(type);}); }
+    Building* rediscoverFlag(Uint16& gid,int x,int y) { return target([&]{return AICortex::rediscoverFlag(gid,x,y);}); }
+    template<class... Arguments> void translateAction(Arguments&&... arguments)
+    { decision([&]{AICortex::translateAction(std::forward<Arguments>(arguments)...);}); }
+    template<class... Arguments> void ensureFlagAt(Arguments&&... arguments)
+    { decision([&]{AICortex::ensureFlagAt(std::forward<Arguments>(arguments)...);}); }
+    void clearOneFlag(Uint16& gid) { decision([&]{AICortex::clearOneFlag(gid);}); }
+    void clearAllOffenseFlags() { decision([&]{AICortex::clearAllOffenseFlags();}); }
+    bool computeRallyPoint(int& x,int& y) { return decision([&]{return AICortex::computeRallyPoint(x,y);}); }
+    void reconcileStaleDefenseFlag(const Cortex::CortexObservation& observation)
+    { decision([&]{AICortex::reconcileStaleDefenseFlag(observation);}); }
+    int countArrivedAtFlag(Building* flag)
+    {
+        return decision([&]{return AICortex::countArrivedAtFlag(flag ? decisionPlayer->game->teams[Building::GIDtoTeam(flag->gid)]->myBuildings[Building::GIDtoID(flag->gid)] : nullptr);});
+    }
+};
 void refreshStats(Team& team)
 {
     const auto* previous=team.stats.getLatestStat();
@@ -129,8 +174,11 @@ TEST_SUITE("CortexActionCoverage")
                 MersenneTwister random(713);
                 SyncRandScope scope(random);
                 const int current=supplied ? world.team->maxBuildLevel() : -1;
-                ordinaryCount[supplied]=placeCandidates(&world.game,world.team,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
-                forwardCount[supplied]=placeForwardCandidate(&world.game,world.team,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
+                const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+                Cortex::World observed(*view);
+                auto* observedTeam=observed.teams.at(world.team->teamNumber);
+                ordinaryCount[supplied]=placeCandidates(&observed,observedTeam,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
+                forwardCount[supplied]=placeForwardCandidate(&observed,observedTeam,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
                 randomEnd[supplied]=getSyncRandState();
             }
             CHECK(ordinaryCount[0]==ordinaryCount[1]);
@@ -147,6 +195,30 @@ TEST_SUITE("CortexActionCoverage")
             CHECK(observation.maxBuildLevel==qualification);
             CHECK((observation.buildCandidates[CORTEX_BUILD_HEAL][0].valid!=0)==(qualification==1));
         }
+    }
+
+    TEST_CASE("Cortex observations stay isolated from later simulation changes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* swarm=fixture.addBuilding("swarm",4,4);
+        auto* worker=fixture.addUnit(WORKER,12,12);
+        REQUIRE(swarm); REQUIRE(worker);
+        refreshStats(*fixture.team);
+        const auto view=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+        Cortex::World observed(*view);
+        Cortex::WorldPlayer player{&observed,observed.teams.at(0),0};
+        MersenneTwister random(713); SyncRandScope scope(random);
+        const auto state=getSyncRandState();
+        const auto first=Cortex::observeWorld(&player,0,NOGBID);
+        swarm->maxUnitWorking=99; worker->constructionLevel=3; worker->posX=23;
+        fixture.game.stepCounter+=8;
+        setSyncRandState(state);
+        const auto second=Cortex::observeWorld(&player,0,NOGBID);
+        CHECK(first.tick==second.tick);
+        CHECK(first.maxBuildLevel==second.maxBuildLevel);
+        CHECK(first.trackedSwarms[0].maxUnitWorking==second.trackedSwarms[0].maxUnitWorking);
+        CHECK(first.buildCandidates[Cortex::CORTEX_BUILD_FOOD][0].x==second.buildCandidates[Cortex::CORTEX_BUILD_FOOD][0].x);
     }
 
     TEST_CASE("bounded model channels preserve stock identity and ignore custom family metadata")
@@ -187,7 +259,7 @@ TEST_SUITE("CortexActionCoverage")
             world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());world.game.configureBuildingCatalog();
             auto* hybrid=world.addBuilding("inn",4,4);
             CHECK(Cortex::servesRole(world.game,*hybrid->type,Cortex::CORTEX_BUILD_EXCHANGE)==(purpose==1));
-            AICortex ai(world.game.players[0]);
+            ObservedCortex ai(world.game.players[0]);
             Uint16 gid=hybrid->gid;
             REQUIRE(ai.findFlagByGid(gid)==hybrid);
             hybrid->maxUnitWorking=3;
@@ -227,7 +299,7 @@ TEST_SUITE("CortexActionCoverage")
         for (const auto& role : obs.modelBuildingCountPerLevel) for (int count : role) modelCount += count;
         CHECK(modelCount == 1);
         CHECK(obs.feedCapacity > 0);
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         ai.translateAction(Cortex::makeSetProductionAction(2,3,4), obs);
         REQUIRE(ai.orderQueue.size() == 1);
         const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(ai.orderQueue.front());
@@ -272,7 +344,7 @@ TEST_SUITE("CortexActionCoverage")
         // the engine's overlay occupancy path rather than a fabricated slot.
         for(int y=0;y<world.game.map.getH();++y)
             for(int x=0;x<world.game.map.getW();++x)world.game.map.setResource(x,y,STONE,1);
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         Cortex::CortexPolicy policy;
         for(int unit=0;unit<3;++unit) {
             bool created=false;
@@ -319,7 +391,7 @@ TEST_SUITE("CortexActionCoverage")
         Cortex::CortexPolicy policy;
         const auto initial=policy.decide(obs);
         CHECK(initial.kind!=Cortex::ACTION_SET_PRODUCTION);
-        AICortex ai(world.game.players[0]);ai.translateAction(initial,obs);drain(ai,world.game);
+        ObservedCortex ai(world.game.players[0]);ai.translateAction(initial,obs);drain(ai,world.game);
         for(int unit=0;unit<3;++unit)producer->ratio[unit]=0;
         obs=Cortex::observe(world.game.players[0],0,NOGBID);
         REQUIRE(obs.productionNeedsRetune);
@@ -358,7 +430,7 @@ TEST_SUITE("CortexActionCoverage")
         REQUIRE(worker->workerLevel()==2);
         auto* first=world.addBuilding("barracks",4,4);
         auto* second=world.addBuilding("barracks",12,4);
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         REQUIRE(ai.findUpgradeTarget(IntBuildingType::ATTACK_BUILDING)==first);
         first->hp-=1;
         CHECK(ai.findUpgradeTarget(IntBuildingType::ATTACK_BUILDING)==second);
@@ -378,8 +450,15 @@ TEST_SUITE("CortexActionCoverage")
         auto order=std::dynamic_pointer_cast<OrderConstruction>(ai.orderQueue.front());
         REQUIRE(order!=nullptr);
         CHECK(order->gid==first->gid); CHECK(order->unitWorking==4); CHECK(order->unitWorkingFuture==0);
-        ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
-        CHECK(ai.orderQueue.size()==1);
+        // A pending upgrade stays private at both supported scheduling extremes.
+        for (int delay : {0,8}) {
+            CAPTURE(delay);
+            world.game.stepCounter += delay;
+            ai.translateAction(Cortex::makeUpgradeAction(Cortex::CORTEX_BUILD_ATTACK),obs);
+            CHECK(ai.orderQueue.size()==1);
+            CHECK(first->constructionResultState==Building::NO_CONSTRUCTION);
+            CHECK(first->type->isBuildingSite==false);
+        }
         drain(ai,world.game);
         CHECK(first->constructionResultState==Building::UPGRADE);
         CHECK(first->maxUnitWorking==4);
@@ -389,7 +468,7 @@ TEST_SUITE("CortexActionCoverage")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         auto obs=Cortex::makeEmptyObservation(); obs.valid=1;
         for (int type : {-1,Cortex::CORTEX_BUILDING_TYPES})
             ai.translateAction(Cortex::makeBuildAction(type,0),obs);
@@ -416,7 +495,7 @@ TEST_SUITE("CortexActionCoverage")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         auto obs=Cortex::makeEmptyObservation(); obs.valid=1; obs.tick=100;
         auto& wave=ai.offenseWaves[0];
         ai.ensureFlagAt(wave.gid,wave.createCooldown,4,4,-2,-3,-4,1,obs);
@@ -429,8 +508,12 @@ TEST_SUITE("CortexActionCoverage")
         ai.ensureFlagAt(wave.gid,wave.createCooldown,4,4,1,0,0,1,obs);
         REQUIRE(wave.gid!=NOGBID);
         auto* flag=ai.findFlagByGid(wave.gid); REQUIRE(flag);
-        CHECK(flag->priority==1); CHECK(flag->unitStayRange==1);
+        // Reconciliation changes private intent; the live flag changes only
+        // when its emitted priority order is executed.
+        CHECK(flag->priority==0); CHECK(flag->unitStayRange==1);
+        REQUIRE_FALSE(ai.orderQueue.empty());
         drain(ai,world.game);
+        CHECK(flag->priority==1);
         ai.ensureFlagAt(wave.gid,wave.createCooldown,4,4,1,0,0,1,obs);
         CHECK(ai.orderQueue.empty());
         ai.ensureFlagAt(wave.gid,wave.createCooldown,12,12,999,999,999,0,obs);
@@ -447,7 +530,7 @@ TEST_SUITE("CortexActionCoverage")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         auto* first=world.addBuilding("warflag",4,4);
         auto* second=world.addBuilding("warflag",12,12);
         world.addBuilding("explorationflag",3,3);
@@ -477,7 +560,7 @@ TEST_SUITE("CortexActionCoverage")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         int x=-1,y=-1;
         CHECK_FALSE(ai.computeRallyPoint(x,y));
         world.addBuilding("inn",4,4);
@@ -503,7 +586,7 @@ TEST_SUITE("CortexActionCoverage")
         glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto* swarm=world.addBuilding("swarm",4,4);
         world.addBuilding("inn",12,4);
-        AICortex ai(world.game.players[0]);
+        ObservedCortex ai(world.game.players[0]);
         auto obs=Cortex::makeEmptyObservation(); obs.valid=1;
         const auto action=Cortex::makeSetProductionAction(-2,3,99);
         ai.translateAction(action,obs);
@@ -517,4 +600,91 @@ TEST_SUITE("CortexActionCoverage")
         CHECK(ai.orderQueue.empty());
         swarm->buildingState=Building::ALIVE;
     }
+}
+
+TEST_CASE("Cortex rejection receipts clear exact delayed upgrade and flag intents" * doctest::test_suite("CortexActionCoverage"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(const int delay:{0,8}) {
+        glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* building=fixture.addBuilding("barracks",4,4);REQUIRE(building);
+        AICortex ai(fixture.game.players[0]);
+        const int role=Cortex::CORTEX_BUILD_ATTACK;
+        ai.pendingUpgradeType=role;ai.pendingUpgradeUntil=2000;ai.buildCooldownUntil[role]=250;
+        auto upgrade=std::make_shared<OrderConstruction>(building->gid,1,1);
+        ai.rememberQueuedBuild(*upgrade,role);ai.orderQueue.push(upgrade);
+        const auto view=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+        const std::vector<AIEngine::ExecutionReceipt> empty;
+        AIEngine::DecisionContext context{*view,0,0,empty};context.pollSequence=17;context.scheduledTick=delay;
+        CHECK(ai.getOrder(context)->getOrderType()==ORDER_CONSTRUCTION);
+        REQUIRE(ai.issuedCommands.size()==1);
+        CHECK((ai.issuedCommands[0].target==BuildingRef{building->gid,building->scriptIdentity}));
+        AIEngine::ExecutionReceipt rejected;
+        rejected.request={0,1,view->tick,17,0};rejected.scheduledTick=delay;
+        rejected.executionTick=delay;rejected.status=AIEngine::ExecutionStatus::Rejected;
+        rejected.command=ai.issuedCommands[0].bytes;
+        fixture.game.stepCounter=delay+1;
+        const auto later=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+        const std::vector<AIEngine::ExecutionReceipt> receipts{rejected};
+        AIEngine::DecisionContext feedback{*later,0,0,receipts};feedback.pollSequence=18;feedback.scheduledTick=later->tick+delay;
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream saved(backend);ai.save(&saved);saved.flush();
+        const auto bytes=backend->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
+        AICortex resumed(&input,fixture.game.players[0],VERSION_MINOR);
+        REQUIRE(resumed.issuedCommands.size()==1);
+        resumed.getOrder(feedback);
+        CHECK(resumed.pendingUpgradeType==-1);CHECK(resumed.issuedCommands.empty());
+        ai.getOrder(feedback);
+        CHECK(ai.pendingUpgradeType==-1);CHECK(ai.pendingUpgradeUntil==0);
+        CHECK(ai.buildCooldownUntil[role]==0);CHECK(ai.issuedCommands.empty());
+        // Repeated old feedback cannot retire a newer request on the same target.
+        ai.pendingUpgradeType=role;ai.pendingUpgradeUntil=4000;ai.buildCooldownUntil[role]=500;
+        ai.rememberQueuedBuild(*upgrade,role);ai.orderQueue.push(upgrade);
+        ai.getOrder(feedback);REQUIRE(ai.issuedCommands.size()==1);
+        ai.getOrder(feedback);
+        CHECK(ai.pendingUpgradeUntil==4000);CHECK(ai.buildCooldownUntil[role]==500);
+        CHECK(ai.issuedCommands.size()==1);
+        ai.issuedCommands.clear();
+        const int flag=fixture.game.buildingsTypes.getTypeNum("warflag",0,false);
+        REQUIRE(flag>=0);
+        auto create=std::make_shared<OrderCreate>(0,10,10,flag,1,1,4);
+        ai.offenseWaves[0].createCooldown=750;ai.offenseWaves[1].createCooldown=750;
+        ai.rememberFlagCreation(*create,ai.offenseWaves[0].createCooldown);ai.orderQueue.push(create);
+        context.pollSequence=19;ai.getOrder(context);REQUIRE(ai.issuedCommands.size()==1);
+        rejected.request.pollSequence=19;rejected.command=ai.issuedCommands[0].bytes;
+        const std::vector<AIEngine::ExecutionReceipt> flagReceipt{rejected};
+        AIEngine::DecisionContext flagFeedback{*later,0,0,flagReceipt};flagFeedback.pollSequence=20;
+        ai.getOrder(flagFeedback);
+        CHECK(ai.offenseWaves[0].createCooldown==0);
+        CHECK(ai.offenseWaves[1].createCooldown==750);
+    }
+}
+TEST_CASE("Cortex delayed staffing overlay respects entity incarnations" * doctest::test_suite("CortexActionCoverage"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* building=fixture.addBuilding("swarm",4,4);REQUIRE(building);
+    ObservedCortex ai(fixture.game.players[0]);
+    const int oldWorkers=building->maxUnitWorking;
+    const int requested=oldWorkers==3 ? 4 : 3;
+    ai.orderQueue.push(std::make_shared<OrderModifyBuilding>(building->gid,requested));
+    const auto view=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    const std::vector<AIEngine::ExecutionReceipt> receipts;
+    AIEngine::DecisionContext context{*view,0,0,receipts};context.scheduledTick=8;
+    ai.getOrder(context);
+    Cortex::World projected(*view);ai.applyQueuedIntent(projected);
+    CHECK(projected.teams[0]->myBuildings[Building::GIDtoID(building->gid)]->maxUnitWorking==requested);
+    CHECK(building->maxUnitWorking==oldWorkers);
+    building->scriptIdentity=fixture.game.allocateScriptIdentity(true,building->gid);
+    const auto replacement=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    Cortex::World replaced(*replacement);ai.applyQueuedIntent(replaced);
+    CHECK(replaced.teams[0]->myBuildings[Building::GIDtoID(building->gid)]->maxUnitWorking==oldWorkers);
+    ai.queueForTest(std::make_shared<OrderModifyBuilding>(building->gid,requested));
+    building->scriptIdentity=fixture.game.allocateScriptIdentity(true,building->gid);
+    const auto reused=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    AIEngine::DecisionContext later{*reused,0,0,receipts};later.scheduledTick=8;later.pollSequence=1;
+    CHECK(ai.getOrder(later)->getOrderType()==ORDER_NULL);
+    CHECK(ai.orderQueue.empty());CHECK(ai.queuedCommands.empty());
+    CHECK(ai.issuedCommands.size()==1); // the first issued request still awaits its own receipt
 }

@@ -3,6 +3,8 @@
 #include "field/UniformTraversal.h"
 #include "field/TerrainTravel.h"
 #include "Map.h"
+#include "shared_runtime/RuntimeObservation.h"
+#include <type_traits>
 #include "Game.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -14,10 +16,11 @@
 
 namespace AIMaxima {
 // A shared predicate keeps local and recovery estimates on the same routes.
-inline bool foodTileAccessible(Map* map,int x,int y,Uint32 teamMask,
+template<class MapValue>
+inline bool foodTileAccessible(MapValue* map,int x,int y,Uint32 teamMask,
     bool canSwim,const std::vector<Uint8>* protectedTiles)
 {
-    const Tile& tile=map->getTile(x,y);
+    const auto tile=map->getTile(x,y);
     const int index=y*map->getW()+x;
     return map->isMapDiscovered(x,y,teamMask)
         && (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
@@ -40,10 +43,14 @@ inline long long wheatStockFertilityEquivalent(int amount, int stockHorizonTicks
 
 // Custom rules change only the renewable contribution: standing grain is still
 // real supply. Keep the default arithmetic identical and use the engine's tiers.
-inline long long effectiveWheatRegrowth(Map* map, long long fertility)
+template<class MapValue>
+inline long long effectiveWheatRegrowth(MapValue* map, long long fertility)
 {
-    if (!map->game) return fertility;
-    const auto& rules=map->game->gameHeader;
+    const GameHeader* captured=nullptr;
+    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>) captured=map->world->configuration.get();
+    else if(map->game) captured=&map->game->gameHeader;
+    if(!captured)return fertility;
+    const auto& rules=*captured;
     if (rules.isResourceGrowthDisabled()) return 0;
     return fertility / (1 << rules.getResourceScarcityLevel());
 }
@@ -51,8 +58,8 @@ inline long long effectiveWheatRegrowth(Map* map, long long fertility)
 // Only modified terrain needs a priority queue. Preserve the ordinary-map BFS
 // and its exact distances below. This reverse field measures a carrier's return
 // to a building in neutral Chebyshev tile equivalents, just like AI travel fields.
-template<class Visit>
-inline void traverseWeightedFoodSupply(Map* map,const std::vector<Building*>& buildings,
+template<class Visit,class MapValue,class BuildingValue>
+inline void traverseWeightedFoodSupply(MapValue* map,const std::vector<BuildingValue*>& buildings,
     Uint32 teamMask,bool canSwim,const std::vector<Uint8>* protectedTiles,Visit visit)
 {
     const int width=map->getW(),size=width*map->getH();
@@ -65,7 +72,7 @@ inline void traverseWeightedFoodSupply(Map* map,const std::vector<Building*>& bu
         if(cost<distance[index] && foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles))
         {distance[index]=cost;queue.emplace(cost,index);}
     };
-    for(const Building* building:buildings)
+    for(const auto* building:buildings)
         for(int dy=-1;dy<=building->type->height;++dy)
             for(int dx=-1;dx<=building->type->width;++dx)
                 if(dx==-1 || dx==building->type->width || dy==-1 || dy==building->type->height)
@@ -88,7 +95,8 @@ inline void traverseWeightedFoodSupply(Map* map,const std::vector<Building*>& bu
 // Recovery estimate used only when all local catchments are empty. Search once
 // from every completed food building, stopping one local radius beyond the
 // nearest growing wheat. Discount distant supply for the longer carrier trip.
-inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buildings,
+template<class MapValue,class BuildingValue>
+inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingValue*>& buildings,
     Uint32 teamMask,bool canSwim,int radius,const Farming::ExactFertilityCache& fertility,
     const std::vector<Uint8>* protectedTiles, int stockHorizonTicks)
 {
@@ -120,7 +128,7 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
         if(distance[index]<0 && foodTileAccessible(map,x,y,teamMask,canSwim,protectedTiles))
         {distance[index]=steps;queue.push_back(index);}
     };
-    for(const Building* b:buildings)
+    for(const auto* b:buildings)
         for(int dy=-1;dy<=b->type->height;++dy)
             for(int dx=-1;dx<=b->type->width;++dx)
                 if(dx==-1 || dx==b->type->width || dy==-1 || dy==b->type->height)
@@ -131,7 +139,7 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
         [&](int index) {
             const int x=index%width,y=index/width,steps=distance[index];
             if(steps>stop)return field::Visit::Stop;
-            const Tile& tile=map->getTile(x,y);
+            const auto tile=map->getTile(x,y);
             if((map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT))&&tile.resource.type==WHEAT&&tile.resource.amount>0)
             {
                 if(stop==size)stop=std::min(size,steps+localRadius);
@@ -146,7 +154,8 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
 
 // Shared by policy and read-only tournament observations. Corn is the engine's
 // resource name for wheat; fertility measures its recurring growing capacity.
-inline long long reachableFoodCapacity(Map* map, Building* building,
+template<class MapValue,class BuildingValue>
+inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
     Uint32 teamMask, bool canSwim, int radius,
     const Farming::ExactFertilityCache& fertility,
     const std::vector<Uint8>* protectedTiles, std::set<int>* shared_tiles,
@@ -155,7 +164,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
     if(map->hasTerrainMovementModifiers())
     {
         long long capacity=0;const int width=map->getW();
-        traverseWeightedFoodSupply(map,{building},teamMask,canSwim,protectedTiles,
+        traverseWeightedFoodSupply(map,std::vector<BuildingValue*>{building},teamMask,canSwim,protectedTiles,
             [&](int index,int steps) {
                 if(steps>radius)return field::Visit::Stop;
                 const int x=index%width,y=index/width;
@@ -192,7 +201,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 	field::traverse(queue,{width,map->getH()},field::Surrounding,
 		[&](int index) {
 			const int x=index%width,y=index/width;
-			const Tile& tile=map->getTile(x,y);
+			const auto tile=map->getTile(x,y);
 			if((map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT))&&tile.resource.type==WHEAT&&tile.resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
 				capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);

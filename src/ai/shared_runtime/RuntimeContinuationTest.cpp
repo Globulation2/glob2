@@ -8,7 +8,9 @@
 #include "shared_runtime/BuildingDemands.h"
 #include "Game.h"
 #include "Version.h"
+#include "ai/observation/AIWorldView.h"
 #include "shared_runtime/Runtime.h"
+#include "AIMaximaRuntime.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -74,6 +76,8 @@ class RuntimeContinuationTest
     static void independentManagers()
     {
         Game source(nullptr),target(nullptr);setup(source);setup(target);
+        AISharedRuntime::Runtime::OwnerObservationScope source0(runtime(source,0)),source1(runtime(source,1));
+        AISharedRuntime::Runtime::OwnerObservationScope target0(runtime(target,0)),target1(runtime(target,1));
         // Each controller owns its cache, regardless of poll order.
         runtime(source,1).getOrder();runtime(source,0).getOrder();
         auto& first=runtime(source,0).get_gradient_manager();
@@ -109,6 +113,97 @@ class RuntimeContinuationTest
         legacyCopy->update();
         REQUIRE(save(first,false)==originalFirst);
     }
+    static void snapshotGradientContinuation()
+    {
+        Game game(nullptr);setup(game);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
+        game.map.setResource(4,5,WHEAT,3);
+        game.map.setCellTerrain(7,5,TRAIL);
+        auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        GradientManager live(&game.map),snapshot(*world);
+        GradientInfo wheat=info(new Entities::Resource(WHEAT));
+        wheat.terrainTravel=field::TerrainTravel::Walk;
+        live.queue_gradient(wheat);snapshot.queue_gradient(wheat);
+        for(int tick=0;tick<160;++tick) {
+            live.update();snapshot.update();
+            REQUIRE(save(live,false)==save(snapshot,false));
+            REQUIRE(live.is_updated(wheat)==snapshot.is_updated(wheat));
+            if(tick%11==0) {
+                live.get_gradient(wheat);snapshot.get_gradient(wheat);
+                REQUIRE(save(live,false)==save(snapshot,false));
+            }
+        }
+        for(bool text:{false,true}) {
+            GradientManager restored(*world);
+            REQUIRE(load(restored,save(snapshot,text),text));
+            for(int tick=0;tick<5;++tick) {
+                live.update();snapshot.update();restored.update();
+                REQUIRE(save(snapshot,text)==save(restored,text));
+            }
+        }
+        // Terrain may change after the last AI poll, before owner save. The
+        // comparison binds current metadata without recomputing the old field.
+        game.map.setCellTerrain(6,5,ICE);
+        auto changed=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        snapshot.bindWorld(*changed);
+        REQUIRE(save(live,false)==save(snapshot,false));
+        for(bool text:{false,true}) {
+            GradientManager restored(*changed);
+            REQUIRE(load(restored,save(snapshot,text),text));
+            REQUIRE(restored.get_gradient(wheat).get_height(6,5)==snapshot.get_gradient(wheat).get_height(6,5));
+            REQUIRE(save(restored,text)==save(snapshot,text));
+        }
+        snapshot.unbindWorld();
+        // Saving uses cached metadata and field state, never an expired lease.
+        CHECK_FALSE(save(snapshot,false).empty());
+    }
+    static void snapshotMapQueries()
+    {
+        Game game(nullptr);setup(game);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
+        game.map.setResource(4,5,WHEAT,3);
+        game.map.setResource(6,7,WOOD,0);
+        game.map.addForbidden(4,5,0);
+        game.map.addClearArea(4,5,0);
+        game.map.setMapDiscovered(4,5,game.teams[0]->me);
+        const int type=game.buildingsTypes.getTypeNum("inn",0,false);
+        REQUIRE(game.addBuilding(12,12,type,0));
+        const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        AISharedRuntime::SearchTools::MapInfo live(runtime(game,0));
+        AISharedRuntime::SearchTools::MapInfo snapshot(*world,game.teams[0]->me);
+        std::vector<GradientInfo> predicates;
+        predicates.push_back(info(new Entities::Building(type,0,false)));
+        predicates.push_back(info(new Entities::AnyTeamBuilding(0,false)));
+        predicates.push_back(info(new Entities::AnyBuilding(false)));
+        predicates.push_back(info(new Entities::Resource(WHEAT)));
+        predicates.push_back(info(new Entities::AnyResource));
+        predicates.push_back(info(new Entities::ResourceSet((1u<<WHEAT)|(1u<<WOOD))));
+        predicates.push_back(info(new Entities::ResourceSet));
+        predicates.push_back(info(new Entities::Water));
+        predicates.push_back(info(new Entities::Sand));
+        predicates.push_back(info(new Entities::Unwalkable));
+        predicates.push_back(info(new Entities::Position(4,5)));
+        for(int y=0;y<game.map.getH();++y) for(int x=0;x<game.map.getW();++x) {
+            CHECK(snapshot.is_resource(x,y)==live.is_resource(x,y));
+            CHECK(snapshot.is_resource(x,y,WHEAT)==live.is_resource(x,y,WHEAT));
+            CHECK(snapshot.is_forbidden_area(x,y)==live.is_forbidden_area(x,y));
+            CHECK(snapshot.is_clearing_area(x,y)==live.is_clearing_area(x,y));
+            CHECK(snapshot.is_discovered(x,y)==live.is_discovered(x,y));
+            CHECK(snapshot.can_paint_farm(x,y)==live.can_paint_farm(x,y));
+            CHECK(snapshot.is_resource_habitat(x,y,WHEAT)==live.is_resource_habitat(x,y,WHEAT));
+            CHECK(snapshot.backs_onto_sand(x,y)==live.backs_onto_sand(x,y));
+            for(auto& predicate:predicates)
+                CHECK(predicate.match_source(*world,x,y)==predicate.match_source(&game.map,x,y));
+        }
+        game.map.setNoResource(4,5,0);
+        game.map.removeForbidden(4,5,0);
+        // The direct owner adapter observes changes at its next borrow boundary.
+        runtime(game,0).refreshOwnerObservation();
+        CHECK(snapshot.is_resource(4,5,WHEAT));
+        CHECK(snapshot.is_forbidden_area(4,5));
+        CHECK_FALSE(live.is_resource(4,5,WHEAT));
+        CHECK_FALSE(live.is_forbidden_area(4,5));
+    }
     static void completedTransitionsReleaseWaits()
     {
         Game game(nullptr);
@@ -126,11 +221,12 @@ class RuntimeContinuationTest
         for(auto& variant:snapshot["variants"]) variant["properties"]["type"]="";
         game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
         setup(game);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
         auto* building=game.addBuilding(4,4,initial,0);
         REQUIRE(building);
         auto& registry=runtime(game,0).get_building_register();
         registry.initiate();
-        REQUIRE(registry.get_building(0)==building);
+        REQUIRE(registry.get_building(0)->gid==building->gid);
         registry.set_upgrading(0);
         CHECK(registry.is_building_upgrading(0));
         AISharedRuntime::Conditions::ParticularBuilding firstStage(new AISharedRuntime::Conditions::BuildingLevel(1),0);
@@ -152,6 +248,27 @@ class RuntimeContinuationTest
         registry.tick();
         CHECK_FALSE(registry.is_building_upgrading(0));
         CHECK(registry.get_type(0)==destination);
+        // The scheduler may hold a command for eight observations. None may
+        // release the upgrade intent until execution has actually happened.
+        registry.set_upgrading(0,true);
+        for(int delayedTick=0;delayedTick<8;++delayedTick) {
+            registry.tick();
+            CHECK(registry.is_building_upgrading(0));
+        }
+        auto bytes=saveRuntime(runtime(game,0));
+        auto* backend=new MemoryStreamBackend;
+        backend->write(bytes.data(),bytes.size());backend->seekFromStart(0);
+        BinaryInputStream input(backend);
+        REQUIRE(runtime(game,0).load(&input,game.players[0],VERSION_MINOR));
+        registry.tick();
+        CHECK(registry.is_building_upgrading(0));
+        OrderConstruction request(building->gid,1,1);
+        runtime(game,0).orderExecutionCompleted(request,false);
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        registry.set_upgrading(0,true);
+        runtime(game,0).orderExecutionCompleted(request,true);
+        registry.tick(); // accepted instant repair, same variant
+        CHECK_FALSE(registry.is_building_upgrading(0));
     }
     static void placementInputsUseConstructionPrice()
     {
@@ -167,6 +284,7 @@ class RuntimeContinuationTest
         game.buildingsTypes.loadSnapshotJson(snapshot.dump());game.configureBuildingCatalog();
         CHECK(game.buildingsTypes.get(completed)->semantics.feeding.costMask==0);
         setup(game);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
         auto& controller=runtime(game,0);MersenneTwister random(713);controller.setRandomEngine(random);
         AISharedRuntime::Construction::BuildingOrder order(controller,AISharedRuntime::BuildingDemand::Feed,2);
         CHECK(order.input_resource_mask(controller)==(1u<<STONE));
@@ -208,6 +326,73 @@ class RuntimeContinuationTest
     }
 
 public:
+    static void queuedTargetContinuation()
+    {
+        Game game(nullptr);setup(game);
+        const int type=game.buildingsTypes.getTypeNum("inn",0,false);
+        auto* building=game.addBuilding(4,4,type,0);REQUIRE(building);
+        auto& controller=runtime(game,0);
+        controller.getOrder();
+        const auto identity=Game::refOf(building);
+        auto& registry=controller.get_building_register();
+        registry.set_upgrading(0,true);
+        OrderConstruction receipt(building->gid,1,1);
+        receipt.aiSelectedTarget=BuildingRef{identity.gid,identity.generation+1};
+        controller.orderExecutionCompleted(receipt,false);
+        CHECK(registry.is_building_upgrading(0));
+        receipt.aiSelectedTarget=identity;
+        controller.orderExecutionCompleted(receipt,false);
+        CHECK_FALSE(registry.is_building_upgrading(0));
+        controller.push_order(std::make_shared<OrderModifyBuilding>(building->gid,3));
+        const auto bytes=saveRuntime(controller);
+        auto emitted=controller.getOrder();
+        REQUIRE(emitted->getOrderType()==ORDER_MODIFY_BUILDING);
+        REQUIRE(emitted->aiSelectedTarget);
+        CHECK(emitted->aiSelectedTarget->generation==identity.generation);
+        controller.push_order(std::make_shared<OrderModifyBuilding>(building->gid,3));
+        // Keep the GID occupied, but expose a different incarnation before
+        // emission. Both uninterrupted and restored private queues reject it.
+        building->scriptIdentity=identity.generation+1;
+        auto restore=[&] {
+            BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0);REQUIRE(controller.load(&input,game.players[0],VERSION_MINOR));
+        };
+        CHECK(controller.getOrder()->getOrderType()==ORDER_NULL);
+        CHECK_FALSE(controller.get_building_register().is_building_found(0));
+        restore();
+        CHECK(controller.getOrder()->getOrderType()==ORDER_NULL);
+        building->scriptIdentity=identity.generation;
+        class QuietMaxima : public AIMaximaRuntime::RuntimeAI {
+        public:
+            void tick(AIMaximaRuntime::Context&) override {}
+            void handle_event(AIMaximaRuntime::Context&,const AIMaximaRuntime::RuntimeEvent&) override {}
+        } quiet;
+        AIMaximaRuntime::Context maxima(game.players[0]);
+        {
+            auto observed=maxima.scopeOwnerObservation();
+            maxima.getOrder(quiet);
+        }
+        maxima.push_order(std::make_shared<OrderModifyBuilding>(building->gid,3));
+        auto* memory=new MemoryStreamBackend;
+        BinaryOutputStream output(memory);
+        {
+            auto observed=maxima.scopeOwnerObservation();maxima.save(&output);
+        }
+        output.flush();const auto maximaBytes=memory->takeContents();
+        building->scriptIdentity=identity.generation+1;
+        {
+            auto observed=maxima.scopeOwnerObservation();
+            CHECK(maxima.getOrder(quiet)->getOrderType()==ORDER_NULL);
+        }
+        AIMaximaRuntime::Context resumed(game.players[0]);
+        {
+            auto observed=resumed.scopeOwnerObservation();
+            BinaryInputStream input(new MemoryStreamBackend(maximaBytes.data(),maximaBytes.size()));input.seekFromStart(0);
+            REQUIRE(resumed.load(&input,VERSION_MINOR));
+            CHECK(resumed.getOrder(quiet)->getOrderType()==ORDER_NULL);
+        }
+        building->scriptIdentity=identity.generation;
+    }
     static void recurringInputsAndProviderLookup()
     {
         using AISharedRuntime::Management::ResourceTracker;
@@ -237,6 +422,7 @@ public:
             CHECK(game.buildingsTypes.get(completed)->semantics.production.recipes[WORKER].costMask
                 ==((1u<<WHEAT)|(1u<<PRUNE)));
             setup(game);
+            AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime(game,0));
             auto* recurring=game.addBuilding(4,4,completed,0);
             auto* ordinary=game.addBuilding(12,4,completed,0);
             auto* construction=game.addBuilding(20,4,site,0);
@@ -247,9 +433,9 @@ public:
             auto& controller=runtime(game,0);
             controller.getOrder(); // initialize the register through its normal path
             auto& registry=controller.get_building_register();
-            REQUIRE(registry.get_building(0)==recurring);
-            REQUIRE(registry.get_building(1)==ordinary);
-            REQUIRE(registry.get_building(2)==construction);
+            REQUIRE(registry.get_building(0)->gid==recurring->gid);
+            REQUIRE(registry.get_building(1)->gid==ordinary->gid);
+            REQUIRE(registry.get_building(2)->gid==construction->gid);
             CHECK(registry.provides(0,Feed)==paid);
             CHECK(registry.provides(0,ProduceWorker)==paid);
             CHECK(registry.provides(2,Feed)==paid); // site resolves completion
@@ -330,6 +516,8 @@ public:
             REQUIRE(!load(badQueue,save(original,text),text));
         }
         independentManagers();
+        snapshotMapQueries();
+        snapshotGradientContinuation();
         completedTransitionsReleaseWaits();
         placementInputsUseConstructionPrice();
         terrainTravelContinuation();
@@ -402,4 +590,104 @@ TEST_CASE("recurring input tracking and provider lookup preserve composite membe
 {
     glob2test::HeadlessGlobals globals;
     RuntimeContinuationTest::recurringInputsAndProviderLookup();
+}
+
+TEST_CASE("runtime owner helpers and decisions release their full observation leases" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.header=true});
+    fixture.addBuilding("swarm",4,4);
+    fixture.game.players[0]->makeItAI(AI::ECONO);
+    auto& controller=*dynamic_cast<AISharedRuntime::Runtime*>(fixture.game.players[0]->ai->aiImplementation);
+    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    std::weak_ptr<const SimulationSnapshot::Entities> lease;
+    {
+        AISharedRuntime::Runtime::OwnerObservationScope scope(controller);
+        controller.readPlayer();
+        lease=controller.observation().components().entities;
+        CHECK_FALSE(lease.expired());
+    }
+    CHECK(lease.expired());
+    controller.getOrder();
+    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    auto world=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    std::weak_ptr<const AIEngine::AIWorldView> borrowed=world;
+    {
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        controller.getOrder({*world,0,0,receipts,world});
+    }
+    world.reset();
+    CHECK(borrowed.expired());
+    CHECK_THROWS_AS(controller.readPlayer(),std::logic_error);
+    class FailingAI : public AISharedRuntime::RuntimeAI {
+    public:
+        bool load(InputStream*,Player*,Sint32) override {return true;}
+        void save(OutputStream*) override {}
+        void handle_message(AISharedRuntime::Runtime&,const std::string&) override {}
+        void tick(AISharedRuntime::Runtime&) override {throw std::runtime_error("fixture failure");}
+    };
+    AISharedRuntime::Runtime failing(new FailingAI,fixture.game.players[0]);
+    world=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    borrowed=world;
+    {
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        AIEngine::DecisionContext context{*world,0,0,receipts,world};
+        CHECK_THROWS_WITH(failing.getOrder(context),"fixture failure");
+    }
+    world.reset();
+    CHECK(borrowed.expired());
+    CHECK_THROWS_AS(failing.readPlayer(),std::logic_error);
+}
+
+TEST_CASE("flat building relationships resolve captured unit incarnations" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    auto* building=fixture.addBuilding("inn",4,4);
+    auto* worker=fixture.addUnit(WORKER,12,12);
+    auto* occupant=fixture.addUnit(WARRIOR,13,12);
+    building->unitsWorking.push_back(worker);
+    building->unitsInside.push_back(occupant);
+    auto observed=AIEngine::AIWorldView::capture(fixture.game,AIEngine::AIWorldView::captureCatalog(fixture.game));
+    // The observation owns relationships independently of the live lists.
+    building->unitsWorking.clear();building->unitsInside.clear();
+    auto catalog=std::make_shared<const AISharedRuntime::Read::Catalog>(*observed->catalog);
+    AISharedRuntime::Read::World world(*observed,catalog);
+    auto* captured=world.teams[Building::GIDtoTeam(building->gid)]->myBuildings[Building::GIDtoID(building->gid)];
+    REQUIRE(captured);
+    REQUIRE(captured->unitsWorking.size()==1);
+    REQUIRE(captured->unitsInside.size()==1);
+    const auto* readWorker=captured->unitsWorking.front();
+    const auto* readOccupant=captured->unitsInside.front();
+    REQUIRE(readWorker);REQUIRE(readOccupant);
+    CHECK(readWorker->gid==worker->gid);
+    CHECK(readOccupant->gid==occupant->gid);
+    const auto* identityWorker=observed->unitAtSlot(worker->gid);
+    const auto* identityOccupant=observed->unitAtSlot(occupant->gid);
+    REQUIRE(identityWorker);REQUIRE(identityOccupant);
+    CHECK(readWorker->scriptIdentity==identityWorker->identity.generation);
+    CHECK(readOccupant->scriptIdentity==identityOccupant->identity.generation);
+}
+
+TEST_CASE("queued orders preserve selection incarnations through save and slot replacement" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    RuntimeContinuationTest::queuedTargetContinuation();
+    OrderModifyBuilding order(17,3);
+    auto* memory=new MemoryStreamBackend;
+    BinaryOutputStream output(memory);output.writeUint32(0x51A139,"following");output.flush();
+    BinaryInputStream input(new MemoryStreamBackend(memory->getBuffer(),memory->getPosition()));input.seekFromStart(0);
+    AIEngine::loadSelectedTarget(input,order,139);
+    CHECK_FALSE(order.aiSelectedTarget);
+    CHECK(input.readUint32("following")==0x51A139);
+    glob2test::HeadlessGame empty(glob2test::GameOptions{.header=true});
+    const auto observation=AIEngine::AIWorldView::capture(empty.game,AIEngine::AIWorldView::captureCatalog(empty.game));
+    AIEngine::selectTarget(order,*observation);
+    REQUIRE(order.aiSelectedTarget);
+    CHECK(order.aiSelectedTarget->gid==17);
+    CHECK(order.aiSelectedTarget->generation==0);
+    CHECK_FALSE(AIEngine::selectedTargetExists(order,*observation));
 }

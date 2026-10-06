@@ -438,10 +438,12 @@ void Map::setTerrain(int x, int y, Uint16 sprite)
 	const auto index = coordToIndex(x,y);
 	changeTerrainIdentity(index, legacyTerrainType(sprite));
 	tiles[index].terrain = sprite;
+	++snapshotTerrain;
 }
 
 void Map::setCellTerrain(size_t index, TerrainType type)
 {
+	++snapshotTerrain;
 	if (index >= size) throw std::out_of_range("Terrain cell index");
 	changeTerrainIdentity(index, type);
 	const auto &p = terrainRegistry().compatibility(type);
@@ -493,6 +495,8 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
+	++snapshotTerrain; ++snapshotResources; ++snapshotOccupancy; ++snapshotAreas; ++snapshotVisibility;
+	resourceFieldGenerations.clear();
 	static std::atomic<Uint64> nextIdentity{1};
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;

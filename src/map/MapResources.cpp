@@ -30,6 +30,7 @@ void Map::decResource(int x, int y)
 	
 	if (!fulltype->shrinkable)
 		return;
+	++snapshotResources;
 	if (fulltype->eternal)
 	{
 		if (r.amount > 0)
@@ -268,6 +269,7 @@ bool Map::incResource(int x, int y, int resourceType, int variety)
 			r.variety = variety;
 			r.amount = RESOURCE_INITIAL_AMOUNT;
 			r.animation = 0;
+			++snapshotResources;
 			resourceSeedChanged(index, ResourceSeedCache::Resource);
 			return true;
 		}
@@ -288,11 +290,13 @@ bool Map::incResource(int x, int y, int resourceType, int variety)
 	if (r.amount < fulltype->sizesCount)
 	{
 		r.amount++;
+		++snapshotResources;
 		return true;
 	}
 	else
 	{
 		r.amount--;
+		++snapshotResources;
 	}
 	return false;
 }
@@ -336,6 +340,7 @@ void Map::setResource(int x, int y, int type, int l)
 				assert(rt->sizesCount>1);
 				rp.amount=RESOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
 				rp.animation=0;
+				++snapshotResources;
 				if (changedType) resourceSeedChanged(coordToIndex(dx, dy), ResourceSeedCache::Resource);
 			}
 }

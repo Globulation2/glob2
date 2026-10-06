@@ -737,7 +737,7 @@ static void streamingScalesWithArmy()
     a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==45);
     a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==3);allocation(45);
     const auto first=a.attack_flags;
-    for(int i=0;i<45;++i)f.attach(army[i],c.buildings.get_building(first[i/20]));
+    for(int i=0;i<45;++i)f.attach(army[i],f.game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.get_building(first[i/20])->gid)]);
     a.plan_offense(c);
     REQUIRE((a.offense_diagnostics.eligibleWarriors==45 && a.budget.tactical_requested_force==45));
     a.control_offense(c);REQUIRE((a.attack_flags==first && c.buildingOrders.empty()));
@@ -750,7 +750,7 @@ static void streamingScalesWithArmy()
     a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==2);allocation(25);
     REQUIRE((a.attack_flags[0]==first[0] && a.attack_flags[1]==first[1]));
     // A lost primary must promote a survivor without cancelling the mission.
-    c.buildings.get_building(first[0])->kill();c.buildings.tick();
+    f.game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.get_building(first[0])->gid)]->kill();c.buildings.tick();
     a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first[0]));
     REQUIRE((a.tactical_mission.flagId==first[1] && a.campaign.state==Maxima::CampaignActive));
     a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==2);allocation(25);

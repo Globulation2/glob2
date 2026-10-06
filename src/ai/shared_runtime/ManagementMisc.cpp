@@ -34,15 +34,15 @@ ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, 
 
 void ChangeAlliances::modify(Runtime& runtime)
 {
-	if (team < 0 || team >= runtime.player->game->mapHeader.getNumberOfTeams() ||
-		team >= Team::MAX_COUNT || !runtime.player->game->teams[team])
+	if (team < 0 || team >= runtime.readPlayer()->game->mapHeader.getNumberOfTeams() ||
+		team >= Team::MAX_COUNT || !runtime.readPlayer()->game->teams[team])
 		return;
 	Uint32 alliedmask=runtime.allies;
 	Uint32 enemymask=runtime.enemies;
 	Uint32 market_mask=runtime.market_view;
 	Uint32 inn_mask=runtime.inn_view;
 	Uint32 other_mask=runtime.other_view;
-	Team* t=runtime.player->game->teams[team];
+	AISharedRuntime::Read::Team* t=runtime.readPlayer()->game->teams[team];
 	// t->me is always a single bit (Team::teamNumberToMask = 1 << teamNumber),
 	// so &= ~t->me clears it cleanly; the legacy `if(mask&t->me) mask^=t->me;`
 	// pattern was equivalent but obscured the intent.
@@ -77,15 +77,15 @@ void ChangeAlliances::modify(Runtime& runtime)
 	runtime.inn_view=inn_mask;
 	runtime.other_view=other_mask;
 
-	runtime.push_order(shared_ptr<Order>(new SetAllianceOrder(runtime.player->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask)));
+	runtime.push_order(shared_ptr<Order>(new SetAllianceOrder(runtime.readPlayer()->team->teamNumber, alliedmask, enemymask, market_mask, inn_mask, other_mask)));
 }
 
 
 
 tribool ChangeAlliances::wait(Runtime& runtime)
 {
-	return team >= 0 && team < runtime.player->game->mapHeader.getNumberOfTeams() &&
-		team < Team::MAX_COUNT && runtime.player->game->teams[team];
+	return team >= 0 && team < runtime.readPlayer()->game->mapHeader.getNumberOfTeams() &&
+		team < Team::MAX_COUNT && runtime.readPlayer()->game->teams[team];
 }
 
 
@@ -165,12 +165,13 @@ UpgradeRepair::UpgradeRepair(int id) : id(id)
 void UpgradeRepair::modify(Runtime& runtime)
 {
 	auto* building=runtime.get_building_register().get_building(id);
+	if(!building || runtime.get_building_register().is_building_upgrading(id)) return;
 	// Construction means repair for damaged buildings and upgrade for healthy
 	// ones. Do not register an upgrade wait when authoritative rules reject it.
 	if(building->hp<building->getEffectiveMaxHp()) { if(!building->type->semantics.repairable) return; }
- else if(runtime.player->game->gameHeader.isUnitUpgradesDisabled() || !building->isUpgradeAvailable()) return;
-	runtime.push_order(AIRules::constructionOrder(*runtime.player->game, *building,1,1));
-	runtime.get_building_register().set_upgrading(id);
+ else if(runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled() || !building->isUpgradeAvailable()) return;
+	runtime.push_order(AISharedRuntime::Read::constructionOrder(*runtime.readPlayer()->game, *building,1,1));
+	runtime.get_building_register().set_upgrading(id,true);
 }
 
 

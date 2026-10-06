@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -16,7 +17,7 @@
 
 #include <vector>
 #include <cstdlib>  // getenv (gated diagnostics)
-#include <iostream> // std::cerr (gated diagnostics)
+#include <iostream> // owner-wrapper diagnostic output only
 
 namespace Cortex
 {
@@ -52,7 +53,7 @@ namespace Cortex
 		// stand on reachable ground and harvest that algae from the shore. (Only
 		// meaningful with canSwim=false: a non-swimmer's reachable region tells us
 		// whether algae can be hauled to a building site WITHOUT a swimming pool.)
-		int countReach(Map& map, const Team* team, int cx, int cy, bool canSwim,
+		int countReach(Cortex::WorldMap& map, const Cortex::WorldTeam* team, int cx, int cy, bool canSwim,
 		               bool* algaeAdjacent = NULL)
 		{
 			const int w = map.getW();
@@ -103,7 +104,7 @@ namespace Cortex
 		}
 	} // namespace
 
-	SwimAssessment assessSwim(Player* player, bool wantSwimReach)
+	SwimAssessment assessSwimWorld(Cortex::WorldPlayer* player, bool wantSwimReach)
 	{
 		SwimAssessment out;
 		out.algaeDiscovered = 0;
@@ -113,11 +114,11 @@ namespace Cortex
 
 		if (player == NULL || player->team == NULL)
 			return out;
-		Team* team = player->team;
-		Game* game = team->game;
+		Cortex::WorldTeam* team = player->team;
+		Cortex::World* game = team->game;
 		if (game == NULL)
 			return out;
-		Map& map = game->map;
+		Cortex::WorldMap& map = game->map;
 		const int w = map.getW();
 		const int h = map.getH();
 
@@ -141,10 +142,10 @@ namespace Cortex
 		// nothing to anchor on (and the reach signal is meaningless), so leave both
 		// counts at 0 (the policy's reach-expansion gate then never fires).
 		int anchorX = -1, anchorY = -1;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 				continue;
 			if (b->type != NULL && b->type->isVirtual)
 				continue; // flags occupy no ground; not a colony anchor.
@@ -181,7 +182,7 @@ namespace Cortex
 		// unweighted 8-connected grid is visitation-order independent, so no tie-break
 		// is needed for determinism. Warp-safe via Map normalization; no floats / RNG /
 		// std::set. Unbounded (whole map) — unlike countReach's radius-bounded fill.
-		void bfsGroundField(Map& map, Uint32 me, int seedX, int seedY, bool canSwim,
+		void bfsGroundField(Cortex::WorldMap& map, Uint32 me, int seedX, int seedY, bool canSwim,
 		                    std::vector<int>& dist)
 		{
 			const int w = map.getW();
@@ -221,7 +222,7 @@ namespace Cortex
 		// field), so we read its 8-neighbourhood — the same "reached when BFS touches
 		// any 8-adjacent tile" trick countReach uses for its anchor. -1 when none of
 		// the 8 neighbours was reached (the target's land region is unreachable).
-		int distToTarget(Map& map, const std::vector<int>& dist, int tx, int ty)
+		int distToTarget(Cortex::WorldMap& map, const std::vector<int>& dist, int tx, int ty)
 		{
 			const int w = map.getW();
 			int best = -1;
@@ -244,13 +245,13 @@ namespace Cortex
 		// a virtual-building skip) so the landing-zone swim ranking measures from the same
 		// muster origin the offense pipeline gathers at. Returns false when the team has
 		// no building.
-		bool rallyTile(const Team* team, int& rx, int& ry)
+		bool rallyTile(const Cortex::WorldTeam* team, int& rx, int& ry)
 		{
-			Building* fallback = NULL;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
+			Cortex::WorldBuilding* fallback = NULL;
+			for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
+				Cortex::WorldBuilding* b = team->myBuildings[i];
+				if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 					continue;
 				if (fallback == NULL)
 					fallback = b;
@@ -272,7 +273,7 @@ namespace Cortex
 		}
 	} // namespace
 
-	AmphibiousAssessment assessAmphibious(Player* player, int targetX, int targetY,
+	AmphibiousAssessment assessAmphibiousWorld(Cortex::WorldPlayer* player, int targetX, int targetY,
 	                                      const Sint32* standoffX, const Sint32* standoffY,
 	                                      int standoffCount, int landingStandoffTiles,
 	                                      int forwardRallyPathDist)
@@ -290,11 +291,11 @@ namespace Cortex
 
 		if (player == NULL || player->team == NULL)
 			return out;
-		Team* team = player->team;
-		Game* game = team->game;
+		Cortex::WorldTeam* team = player->team;
+		Cortex::World* game = team->game;
 		if (game == NULL)
 			return out;
-		Map& map = game->map;
+		Cortex::WorldMap& map = game->map;
 		const Uint32 me = team->me;
 		const int w = map.getW();
 		const int h = map.getH();
@@ -322,8 +323,8 @@ namespace Cortex
 		// counts (and how much of the swim field is actually water) alongside the two
 		// distances. Locked-equal distances with a large swimWater count means the
 		// shortest route genuinely gains nothing from water (e.g. a resource-walled
-		// approach), not that the swim toggle is broken. Pure read -> stderr.
-		if (getenv("CORTEX_DUMP_AMPHIB"))
+		// approach), not that the swim toggle is broken. Pure read -> invocation-owned diagnostic buffer.
+		if (getenv("CORTEX_DUMP_AMPHIB") && player->diagnostics)
 		{
 			int landReached = 0, swimReached = 0, swimWater = 0;
 			for (int y = 0; y < h; y++)
@@ -339,7 +340,7 @@ namespace Cortex
 							swimWater++;
 					}
 				}
-			std::cerr << "CORTEX_AMPHIB rally=" << rallyX << "," << rallyY
+			(*player->diagnostics) << "CORTEX_AMPHIB rally=" << rallyX << "," << rallyY
 			          << " tgt=" << targetX << "," << targetY
 			          << " landDist=" << out.landDist << " swimDist=" << out.swimDist
 			          << " landReached=" << landReached
@@ -425,20 +426,20 @@ namespace Cortex
 				out.forwardRallyY = chosen / w;
 			}
 			// DIAGNOSTIC (gated): the staging pick alongside the trigger inputs.
-			if (getenv("CORTEX_DUMP_AMPHIB"))
+			if (getenv("CORTEX_DUMP_AMPHIB") && player->diagnostics)
 			{
-				std::cerr << "CORTEX_FWDRALLY tgt=" << targetX << "," << targetY
+				(*player->diagnostics) << "CORTEX_FWDRALLY tgt=" << targetX << "," << targetY
 				          << " landDist=" << out.landDist
 				          << " pathKnob=" << forwardRallyPathDist
 				          << " rally=";
 				if (out.forwardRallyValid)
-					std::cerr << out.forwardRallyX << "," << out.forwardRallyY
+					(*player->diagnostics) << out.forwardRallyX << "," << out.forwardRallyY
 					          << " tgtD=" << ((bestIdx >= 0) ? bestTgt : bestTgtAny)
 					          << " rallyD=" << ((bestIdx >= 0) ? bestRally : bestRallyAny)
 					          << " standoffOk=" << (bestIdx >= 0 ? 1 : 0);
 				else
-					std::cerr << "none";
-				std::cerr << "\n";
+					(*player->diagnostics) << "none";
+				(*player->diagnostics) << "\n";
 			}
 			return out;
 		}
@@ -511,4 +512,21 @@ namespace Cortex
 		out.landingY = chosen / w;
 		return out;
 	}
+}
+
+namespace Cortex {
+SwimAssessment assessSwim(::Player* player,bool swim)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    World world(*view); WorldPlayer local{&world,world.teams[player->teamNumber],player->number,&std::cerr};
+    return assessSwimWorld(&local,swim);
+}
+AmphibiousAssessment assessAmphibious(::Player* player,int x,int y,const Sint32* sx,const Sint32* sy,int count,int standoff,int distance)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    World world(*view); WorldPlayer local{&world,world.teams[player->teamNumber],player->number,&std::cerr};
+    return assessAmphibiousWorld(&local,x,y,sx,sy,count,standoff,distance);
+}
 }

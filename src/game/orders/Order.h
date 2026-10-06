@@ -3,6 +3,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "sim/EntityRef.h"
+#include <optional>
 
 #include <assert.h>
 
@@ -74,6 +76,11 @@ public:
 	
 	int sender; // sender player number, setby NetGame in getOrder() only
 	Uint32 gameCheckSum;
+	// Local engine transport metadata. Replay/network payloads still encode
+	// actual orders only; independently generated AI streams tag their outputs.
+	Uint32 aiGeneration = 0;
+	Uint64 aiPollSequence = 0;
+	std::optional<BuildingRef> aiSelectedTarget;
 };
 
 

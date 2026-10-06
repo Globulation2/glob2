@@ -243,9 +243,9 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 			if (globalContainer->replayWriter)
 				globalContainer->replayWriter->captureTelemetry();
 		}
-		for(int p=0;p<gameHeader.getNumberOfPlayers();++p)
-			if(players[p] && players[p]->ai && players[p]->ai->implementationID==AI::JAVASCRIPT)
-				static_cast<AIJavaScript*>(players[p]->ai->aiImplementation)->observe();
+		// Normally polled controllers already observed this logical tick in their
+		// ordered worker stream. Only replica/replay seats need this boundary.
+		observeUnpolledAI();
 
 		syncRand();
 

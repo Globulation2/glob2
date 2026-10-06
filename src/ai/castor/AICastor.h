@@ -7,10 +7,14 @@
 #include <bit>
 #include <list>
 #include <memory>
+#include <map>
 #include <string>
 
 #include "BuildingCapabilities.h"
 #include "AIImplementation.h"
+#include "ai/observation/AIWorldView.h"
+#include "ai/observation/ResourceInitializationCache.h"
+namespace AIEngine { class WorldQueries; }
 #include "AICastorTuning.h"
 
 struct Tile;
@@ -46,10 +50,10 @@ public:
  }();
  static_assert(std::popcount(demandIntentMask) == DemandCount);
  static AIPlanning::BuildingIntent intentForDemand(int demand);
- bool provides(const Building& building, int demand) const;
+ bool provides(const AIEngine::BuildingView& building, int demand) const;
  bool demandAvailable(int demand) const;
  int selectBuilding(int demand) const;
- int desiredWorkers(const Building& building, int request) const;
+ int desiredWorkers(const AIEngine::BuildingView& building, int request) const;
 
 	// "Never run yet" for the per-map computation timers. All-ones compares as
 	// "in the future" against ">timer+N", so a zero would not do.
@@ -171,6 +175,45 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	
 	std::shared_ptr<Order>getOrder(void);
+ bool supportsObservation() const override { return true; }
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth); }
+ std::optional<Uint64> retainedQueryVectorBytes() const override
+ {
+  Uint64 bytes = 0;
+  for (const auto& [key, field] : resourceInitializations)
+   if (field.values) bytes += Uint64(field.values->capacity()) * sizeof(Uint16);
+  bytes += Uint64(observedTeams.capacity()) * sizeof(TeamObservation);
+  return bytes;
+ }
+ std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+	void orderExecutionCompleted(const Order& order, bool accepted) override;
+
+private:
+ struct TeamObservation {
+  const AIEngine::TeamView* view=nullptr;
+  std::array<const AIEngine::BuildingView*,1024> myBuildings{};
+  std::array<const AIEngine::UnitView*,1024> myUnits{};
+ };
+ struct PendingCreate { Uint32 tick;Uint64 sequence;int type,x,y; };
+ std::vector<PendingCreate> pendingCreates;
+ Uint64 decisionSequence=0;
+ std::vector<TeamObservation> observedTeams;
+ TeamObservation* observedTeam=nullptr;
+ TeamObservation* teamAt(int index) const;
+ int teamNumber=0;
+ const AIEngine::AIWorldView* observation=nullptr;
+ AIEngine::WorldQueries* queries=nullptr;
+ AIEngine::ResourceInitializations resourceInitializations;
+ std::shared_ptr<Order> decide();
+	struct PendingWorkers { Uint32 generation; Sint32 workers; Uint32 tick=0;Uint64 sequence=0; };
+	struct PendingRatios { Uint32 generation; std::array<Sint32, NB_UNIT_TYPE> ratios; Uint32 tick=0;Uint64 sequence=0; };
+	std::map<Uint16, PendingWorkers> pendingWorkers;
+	std::map<Uint16, PendingRatios> pendingRatios;
+	int requestedWorkers(const AIEngine::BuildingView& building) const;
+	Sint32 requestedRatio(const AIEngine::BuildingView& building, int unit) const;
+	std::shared_ptr<Order> requestWorkers(const AIEngine::BuildingView& building, Sint32 workers);
+	std::shared_ptr<Order> requestRatios(const AIEngine::BuildingView& building, const Sint32* ratios);
+	void reconcilePendingAssignments();
 	
 private:
 	void init(Player *player);

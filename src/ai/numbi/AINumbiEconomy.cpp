@@ -5,6 +5,8 @@
 #include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
 #include "AINumbi.h"
+#include "NumbiQueries.h"
+#include "ai/engine/AIDecision.h"
 #include "Game.h"
 #include "Order.h"
 #include "Player.h"
@@ -16,53 +18,43 @@ using std::shared_ptr;
 
 int AINumbi::selectBuilding(Intent intent)
 {
-	const auto& index = game->buildingCapabilities();
-	const auto& candidates = index.placements(intent);
-	unsigned eligible = 0;
-	for (const auto& candidate : candidates)
-		if (index.available(candidate, intent, game->gameHeader)) ++eligible;
-	if (!eligible) return -1;
-	unsigned chosen = eligible == 1 ? 0 : random() % eligible;
-	for (const auto& candidate : candidates)
-		if (index.available(candidate, intent, game->gameHeader) && chosen-- == 0)
-			return candidate.placementType;
-	return -1;
+ const auto candidates=queries->placements(intent);
+ return candidates.empty()?-1:candidates[candidates.size()==1?0:random()%candidates.size()];
 }
 
-bool AINumbi::provides(const Building& building, Intent intent) const
+bool AINumbi::provides(const AIEngine::BuildingView& building, Intent intent) const
 {
-	const int complete = building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
-	return game->buildingCapabilities().matches(complete, intent);
+ return queries->provides(building,intent);
 }
 
-int AINumbi::estimateFood(Building *building)
+int AINumbi::estimateFood(const AIEngine::BuildingView *building)
 {
 	PERF_SCOPE_TIME(AIObserve);
 	telemetry.count(AITrace::AI1::AINumbi_estimateFood_calls);
 	int resource = -1;
 	for (int r = 0; r < MAX_NB_RESOURCES && resource < 0; ++r)
 		for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
-			if (building->type->semantics.production.recipes[unit].enabled
-				&& building->type->semantics.production.recipes[unit].cost[r] > 0)
+			if (queries->kind(*building).semantics.production.recipes[unit].enabled
+				&& queries->kind(*building).semantics.production.recipes[unit].cost[r] > 0)
 				{ resource = r; break; }
 	if (resource < 0) return std::numeric_limits<int>::max();
 	int rx, ry, dist;
 	bool found;
-	if (map->resourceAvailableUpdate(team->teamNumber, resource, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
+	if (queries->resourceAvailableUpdate(teamNumber, resource, 0, building->x-1, building->y-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->resourceAvailableUpdate(team->teamNumber, resource, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
+	else if (queries->resourceAvailableUpdate(teamNumber, resource, 0, building->x+queries->kind(*building).width+1, building->y-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->resourceAvailableUpdate(team->teamNumber, resource, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (queries->resourceAvailableUpdate(teamNumber, resource, 0, building->x+queries->kind(*building).width+1, building->y+queries->kind(*building).height+1, &rx, &ry, &dist))
 		found=true;
-	else if (map->resourceAvailableUpdate(team->teamNumber, resource, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (queries->resourceAvailableUpdate(teamNumber, resource, 0, building->x-1, building->y+queries->kind(*building).height+1, &rx, &ry, &dist))
 		found=true;
 	else
 		found=false;
 
 	if (found)
 	{
-		rx+=map->getW();
-		ry+=map->getH();
+		rx+=observation->width;
+		ry+=observation->height;
 
 		int w=0;
 		int h=0;
@@ -72,14 +64,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx+i, ry, resource)||map->isResourceTakeable(rx+i, ry-1, resource))
+			if (queries->isResourceTakeable(rx+i, ry, resource)||queries->isResourceTakeable(rx+i, ry-1, resource))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx-i, ry, resource)||map->isResourceTakeable(rx-i, ry-1, resource))
+			if (queries->isResourceTakeable(rx-i, ry, resource)||queries->isResourceTakeable(rx-i, ry-1, resource))
 				w++;
 			else if (hole--<0)
 				break;
@@ -89,14 +81,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx, ry+i, resource)||map->isResourceTakeable(rx-1, ry+i, resource))
+			if (queries->isResourceTakeable(rx, ry+i, resource)||queries->isResourceTakeable(rx-1, ry+i, resource))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx, ry-i, resource)||map->isResourceTakeable(rx-1, ry-i, resource))
+			if (queries->isResourceTakeable(rx, ry-i, resource)||queries->isResourceTakeable(rx-1, ry-i, resource))
 				h++;
 			else if (hole--<0)
 				break;
@@ -107,14 +99,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx, ry+i, resource)||map->isResourceTakeable(rx+1, ry+i, resource))
+			if (queries->isResourceTakeable(rx, ry+i, resource)||queries->isResourceTakeable(rx+1, ry+i, resource))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx, ry-i, resource)||map->isResourceTakeable(rx+1, ry-i, resource))
+			if (queries->isResourceTakeable(rx, ry-i, resource)||queries->isResourceTakeable(rx+1, ry-i, resource))
 				h++;
 			else if (hole--<0)
 				break;
@@ -124,13 +116,13 @@ int AINumbi::estimateFood(Building *building)
 		w=0;
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx+i, ry, resource)||map->isResourceTakeable(rx+i, ry+1, resource))
+			if (queries->isResourceTakeable(rx+i, ry, resource)||queries->isResourceTakeable(rx+i, ry+1, resource))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=AI_NUMBI_WHEAT_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_WHEAT_SCAN_MAX_RADIUS; i++)
-			if (map->isResourceTakeable(rx-i, ry, resource)||map->isResourceTakeable(rx-i, ry+1, resource))
+			if (queries->isResourceTakeable(rx-i, ry, resource)||queries->isResourceTakeable(rx-i, ry+1, resource))
 				w++;
 			else if (hole--<0)
 				break;
@@ -145,50 +137,52 @@ int AINumbi::estimateFood(Building *building)
 
 std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int requestedWarriors)
 {
-	const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : requestedWarriors;
+	const int warriors=observation->rules.peaceful ? 0 : requestedWarriors;
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_warriors, warriors);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_explorers, explorers);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_workers, workers);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_nbWorkersFactor, nbWorkersFactor);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_minSwarmNumbers, minSwarmNumbers);
 	telemetry.count(AITrace::AI1::AINumbi_swarmsForWorkers_calls);
-	std::list<Building *> swarms=team->swarms;
+	std::vector<const AIEngine::BuildingView*> swarms;
+ for(const auto identity:observation->teams[teamNumber].swarms)
+  if(const auto* building=observation->building(identity)) swarms.push_back(building);
 	int ss=swarms.size();
 	Sint32 numberRequested=1+(nbWorkersFactor/(ss+1));
 	int nbu=countUnits();
-	if(auto order=AIPlanning::missingProductionOrder(*game,*team,{workers,explorers,warriors},numberRequested,numberRequested)) return order;
+	if(auto order=queries->missingProductionOrder({workers,explorers,warriors},numberRequested,numberRequested)) return order;
 
-	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
+	for (std::vector<const AIEngine::BuildingView*>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 	{
-		Building *b=*it;
+		const AIEngine::BuildingView *b=*it;
 		const Sint32 desired[NB_UNIT_TYPE] = {workers, explorers, warriors};
 		Sint32 newRatio[NB_UNIT_TYPE]{};
 		bool changed = false;
 		for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
 		{
-			newRatio[unit] = b->type->semantics.production.recipes[unit].enabled ? desired[unit] : 0;
-			changed |= b->ratio[unit] != newRatio[unit];
+			newRatio[unit] = queries->kind(*b).semantics.production.recipes[unit].enabled ? desired[unit] : 0;
+			changed |= requestedRatio(*b,unit) != newRatio[unit];
 		}
 		if (changed)
 			return telemetry.returnedOrder(AITrace::AI1::AINumbi_swarmsForWorkers_result,
-				std::make_shared<OrderModifySwarm>(b->gid, newRatio));
+				std::make_shared<OrderModifySwarm>(b->identity.gid, newRatio));
 
 		int f=estimateFood(b);
-		int numberRequestedTemp=std::min<int>(numberRequested, b->type->semantics.assignmentLimit);
-		int numberRequestedLocal=b->maxUnitWorking;
+		int numberRequestedTemp=std::min<int>(numberRequested, queries->kind(*b).semantics.assignmentLimit);
+		int numberRequestedLocal=requestedWorkers(*b);
 		if (f<(nbu*AI_NUMBI_LOW_FOOD_PER_UNIT-1))
 			numberRequestedTemp=0;
 		else if (numberRequestedLocal==0)
 			if (f<(nbu*AI_NUMBI_HIGH_FOOD_PER_UNIT+1))
 				numberRequestedTemp=0;
 
-		if (b->type->semantics.feeding.enabled || b->type->semantics.healing.enabled)
+		if (queries->kind(*b).semantics.feeding.enabled || queries->kind(*b).semantics.healing.enabled)
 			numberRequestedTemp=std::max(numberRequestedTemp, numberRequestedLocal);
 		if (numberRequestedLocal!=numberRequestedTemp)
 		{
 			return telemetry.returnedOrder(
 				AITrace::AI1::AINumbi_swarmsForWorkers_result,
-				shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp)));
+				shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, numberRequestedTemp)));
 		}
 	}
 	return telemetry.returnedOrder(AITrace::AI1::AINumbi_swarmsForWorkers_result,
@@ -197,36 +191,37 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 
 std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, Intent intent)
 {
-	if (!AIPlanning::BuildingCapabilityIndex::allowed(intent, game->gameHeader))
+	if (!queries->allowed(intent))
 		return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_buildingType, static_cast<int>(intent));
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_workers, workers);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbersInc, numbersInc);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_adjustBuildings_calls);
-	Building **myBuildings=team->myBuildings;
+	const AIEngine::BuildingView* const* myBuildings=observedBuildings.data();
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
 
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
-		Building *b=myBuildings[i];
+		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b)&&provides(*b, intent))
 		{
 			fb++;
-			int w=std::min<int>(workers, b->type->semantics.assignmentLimit);
-			const auto& semantic = b->type->semantics;
+			int w=std::min<int>(workers, queries->kind(*b).semantics.assignmentLimit);
+			const auto& semantic = queries->kind(*b).semantics;
 			const bool mixed = (semantic.feeding.enabled && intent != Intent::Feed)
 				|| (semantic.healing.enabled && intent != Intent::Heal)
 				|| std::any_of(semantic.production.recipes.begin(), semantic.production.recipes.end(), [](const auto& r) { return r.enabled; });
-			if (mixed) w=std::max(w, b->maxUnitWorking);
-			if ((b->maxUnitWorking != w)&&(b->type->maxUnitWorking))
+			if (mixed) w=std::max(w, requestedWorkers(*b));
+			if ((requestedWorkers(*b) != w)&&(queries->kind(*b).maximumWorkers))
 				return telemetry.returnedOrder(
 					AITrace::AI1::AINumbi_adjustBuildings_result,
-					shared_ptr<Order>(new OrderModifyBuilding(b->gid, w)));
+					shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, w)));
 		}
 	}
 
+	fb+=pendingBuildings(intent);
 	int wr=countUnits();
 
 	if (intent==Intent::Feed)
@@ -240,10 +235,10 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 		const int typeNum = selectBuilding(intent);
 		if (typeNum >= 0 && findNewEmplacement(intent, typeNum, &x, &y))
 		{
-			int teamNumber=team->teamNumber;
+
 			return telemetry.returnedOrder(
 				AITrace::AI1::AINumbi_adjustBuildings_result,
-				AIRules::createOrder(*game, teamNumber, x, y, typeNum,
+				queries->createOrder( teamNumber, x, y, typeNum,
 												  AI_NUMBI_BUILD_ORDER_UNITS_WORKING,
 												  AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
 		}
@@ -261,15 +256,16 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 	telemetry.set(AITrace::AI1::AINumbi_checkoutExpands_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_checkoutExpands_calls);
 
-	Building **myBuildings=team->myBuildings;
+	const AIEngine::BuildingView* const* myBuildings=observedBuildings.data();
 	int ss=0;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
-		Building *b=myBuildings[i];
+		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b)&&provides(*b, Intent::ProduceWorker))
 			ss++;
 	}
 
+	ss+=pendingBuildings(Intent::ProduceWorker);
 	int wr=countUnits();
 
 	if (ss<=(wr/numbers))
@@ -279,10 +275,10 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 		const int typeNum = selectBuilding(Intent::ProduceWorker);
 		if (typeNum >= 0 && findNewEmplacement(Intent::ProduceWorker, typeNum, &x, &y))
 		{
-			int teamNumber=team->teamNumber;
+
 			return telemetry.returnedOrder(
 				AITrace::AI1::AINumbi_checkoutExpands_result,
-				AIRules::createOrder(*game, teamNumber, x, y, typeNum,
+				queries->createOrder( teamNumber, x, y, typeNum,
 												  AI_NUMBI_BUILD_ORDER_UNITS_WORKING,
 												  AI_NUMBI_BUILD_ORDER_FLAG_RADIUS));
 		}

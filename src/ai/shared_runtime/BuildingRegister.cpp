@@ -39,7 +39,7 @@ bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	stream->readEnterSection("FlagMap");
 	stream->readEnterSection("flagmap");
 	Uint32 size=stream->readCount("size");
-	if (size != static_cast<Uint32>(player->map->getW()*player->map->getH())) return false;
+	if (size != static_cast<Uint32>(runtime.readPlayer()->map->getW()*runtime.readPlayer()->map->getH())) return false;
 	flagmap.resize(size);
 	for (Uint32 flagmap_index = 0; flagmap_index < size; flagmap_index++)
 	{
@@ -49,7 +49,7 @@ bool FlagMap::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	}
 	stream->readLeaveSection();
 	width=stream->readUint32("width");
-	if (width != player->map->getW()) return false;
+	if (width != runtime.readPlayer()->map->getW()) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -83,12 +83,16 @@ BuildingRegister::BuildingRegister(Player* player, Runtime& runtime) : building_
 
 void BuildingRegister::initiate()
 {
+    Runtime::OwnerObservationScope observation(runtime);
+    runtime.refreshOwnerObservation();
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		Building* b=player->team->myBuildings[i];
+		auto* b=runtime.readPlayer()->team->myBuildings[i];
 		if(b!=NULL)
 		{
-			found_buildings[building_id++]=std::make_tuple(b->posX, b->posY, b->typeNum, b->gid, false);
+			const auto id=building_id++;
+            found_buildings[id]=std::make_tuple(b->posX, b->posY, b->typeNum, b->gid, false);
+            found_generations[id]=b->scriptIdentity;
 		}
 	}
 }
@@ -120,7 +124,8 @@ void BuildingRegister::remove_building(int id)
 bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	pending_buildings.clear();
-	found_buildings.clear();
+	found_buildings.clear();found_generations.clear();
+	awaiting_upgrade_execution.clear();
 	stream->readEnterSection("BuildingRegister");
 
 	stream->readEnterSection("pending_buildings");
@@ -163,6 +168,14 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		else
 			t=indeterminate;
 		found_buildings[id]=std::make_tuple(xpos, ypos, building_type, gid, t);
+		if(versionMinor>=FILE_FORMAT_VERSION_AI_PIPELINE && stream->readUint8("awaiting_upgrade_execution"))
+			awaiting_upgrade_execution.insert(id);
+        if(versionMinor>=FILE_FORMAT_VERSION_AI_PIPELINE)
+            found_generations[id]=stream->readUint32("targetGeneration");
+        else {
+            const auto* building=player->team->myBuildings[::Building::GIDtoID(gid)];
+            found_generations[id]=building ? building->scriptIdentity : 0;
+        }
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -211,6 +224,8 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 			stream->writeUint8(AI_SHARED_RUNTIME_TRIBOOL_FALSE, "upgrade_status");
 		else
 			stream->writeUint8(AI_SHARED_RUNTIME_TRIBOOL_INDETERMINATE, "upgrade_status");
+		stream->writeUint8(awaiting_upgrade_execution.count(i->first)!=0,"awaiting_upgrade_execution");
+        stream->writeUint32(found_generations.at(i->first),"targetGeneration");
 		stream->writeLeaveSection();
 		found_size++;
 	}
@@ -222,9 +237,22 @@ void BuildingRegister::save(GAGCore::OutputStream *stream)
 
 
 
-void BuildingRegister::set_upgrading(unsigned int id)
+void BuildingRegister::set_upgrading(unsigned int id, bool awaitingExecution)
 {
-	std::get<4>(found_buildings[id])=indeterminate;
+    const auto found=found_buildings.find(id);
+    if(found==found_buildings.end()) return;
+    std::get<4>(found->second)=indeterminate;
+    if(awaitingExecution) awaiting_upgrade_execution.insert(id);
+}
+
+void BuildingRegister::order_execution_completed(int gid, bool accepted, std::optional<Uint32> generation)
+{
+    for(auto& [id,record]:found_buildings)
+        if(std::get<3>(record)==gid && (!generation || found_generations.at(id)==*generation)
+            && awaiting_upgrade_execution.erase(id)) {
+            if(!accepted) std::get<4>(record)=false;
+            break;
+        }
 }
 
 
@@ -232,19 +260,22 @@ void BuildingRegister::set_upgrading(unsigned int id)
 
 void BuildingRegister::tick()
 {
+ Runtime::OwnerObservationScope observation(runtime);
+ runtime.refreshOwnerObservation();
  for(auto i=pending_buildings.begin();i!=pending_buildings.end();) {
   auto& pending=i->second;
   auto& ticks=std::get<3>(pending);
   if(ticks==AI_SHARED_RUNTIME_PENDING_NOT_ISSUED) { ++i; continue; }
   const int type=std::get<2>(pending);
-  if(++ticks>AI_SHARED_RUNTIME_PENDING_BUILDING_TIMEOUT_TICKS || type<0 || size_t(type)>=player->game->buildingsTypes.size()) { i=pending_buildings.erase(i); continue; }
-  const auto* definition=player->game->buildingsTypes.get(type);
+  if(++ticks>AI_SHARED_RUNTIME_PENDING_BUILDING_TIMEOUT_TICKS || type<0 || size_t(type)>=runtime.readPlayer()->game->buildingsTypes.size()) { i=pending_buildings.erase(i); continue; }
+  const auto* definition=runtime.readPlayer()->game->buildingsTypes.get(type);
   const int x=std::get<0>(pending),y=std::get<1>(pending);
-  const int gid=definition->semantics.occupiesGround ? player->map->getBuilding(x,y) : is_flag(runtime,x,y);
-  auto* building=gid!=NOGBID && ::Building::GIDtoTeam(gid)==player->team->teamNumber ? player->team->myBuildings[::Building::GIDtoID(gid)] : nullptr;
+  const int gid=definition->semantics.occupiesGround ? runtime.readPlayer()->map->getBuilding(x,y) : is_flag(runtime,x,y);
+  auto* building=gid!=NOGBID && ::Building::GIDtoTeam(gid)==runtime.readPlayer()->team->teamNumber ? runtime.readPlayer()->team->myBuildings[::Building::GIDtoID(gid)] : nullptr;
   if(building && (building->typeNum==type || (definition->isBuildingSite && building->typeNum==definition->nextLevel))) {
    if(!building->type->semantics.occupiesGround) runtime.get_flag_map().set_flag(x,y,gid);
    found_buildings[i->first]=std::make_tuple(x,y,building->typeNum,gid,false);
+   found_generations[i->first]=building->scriptIdentity;
    i=pending_buildings.erase(i); continue;
   }
   ++i;
@@ -252,17 +283,20 @@ void BuildingRegister::tick()
  for(auto i=found_buildings.begin();i!=found_buildings.end();) {
   auto& found=i->second;
   const int gid=std::get<3>(found);
-  auto* building=player->team->myBuildings[::Building::GIDtoID(gid)];
+  auto* building=runtime.readPlayer()->team->myBuildings[::Building::GIDtoID(gid)];
   const int oldX=std::get<0>(found),oldY=std::get<1>(found);
   if(runtime.get_flag_map().get_flag(oldX,oldY)==gid) runtime.get_flag_map().set_flag(oldX,oldY,NOGBID);
-  if(!building) { i=found_buildings.erase(i); continue; }
+  if(!building || building->scriptIdentity!=found_generations.at(i->first)) {
+   awaiting_upgrade_execution.erase(i->first);found_generations.erase(i->first);
+   i=found_buildings.erase(i);continue;
+  }
   std::get<0>(found)=building->posX; std::get<1>(found)=building->posY; std::get<2>(found)=building->typeNum;
   if(!building->type->semantics.occupiesGround) runtime.get_flag_map().set_flag(building->posX,building->posY,gid);
   auto& upgrading=std::get<4>(found);
-  if(building->constructionResultState!=::Building::NO_CONSTRUCTION) upgrading=true;
-  // Queued engine orders drain before this observation. A transition can
-  // finish between observations, including a repair that keeps the same type.
-  else upgrading=false;
+  if(building->constructionResultState!=::Building::NO_CONSTRUCTION) { upgrading=true; awaiting_upgrade_execution.erase(i->first); }
+  // An unchanged world cannot distinguish a queued command from an instant
+  // repair. Wait for its execution receipt before observing completion.
+  else if(!awaiting_upgrade_execution.count(i->first)) upgrading=false;
   ++i;
  }
 }
@@ -307,22 +341,25 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 
 
 
-Building* BuildingRegister::get_building(unsigned int id)
+Read::Building* BuildingRegister::get_building(unsigned int id)
 {
     const auto found=found_buildings.find(id);
     if(found==found_buildings.end()) return nullptr;
-    return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found->second))];
+    auto* building=runtime.readPlayer()->team->myBuildings[::Building::GIDtoID(std::get<3>(found->second))];
+    const auto generation=found_generations.find(id);
+    return building && generation!=found_generations.end() && building->scriptIdentity==generation->second ? building : nullptr;
 }
 
 
 
-BuildingType* BuildingRegister::get_building_type(unsigned int id)
+const BuildingType* BuildingRegister::get_building_type(unsigned int id)
 {
 	if(found_buildings.find(id)==found_buildings.end())
 	{
 		return NULL;
 	}
-	return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found_buildings[id]))]->type;
+    const auto* building=get_building(id);
+    return building ? building->type : nullptr;
 }
 
 
@@ -345,7 +382,8 @@ int BuildingRegister::get_level(unsigned int id)
 	{
 		return 0;
 	}
-	return runtime.player->game->buildingCapabilities().lineagePosition(get_building(id)->typeNum);
+    const auto* building=get_building(id);
+    return building ? runtime.readPlayer()->game->buildingCapabilities().lineagePosition(building->typeNum) : 0;
 }
 
 
@@ -356,7 +394,8 @@ int BuildingRegister::get_assigned(unsigned int id)
 	{
 		return 0;
 	}
-	return get_building(id)->maxUnitWorking;
+    const auto* building=get_building(id);
+    return building ? building->maxUnitWorking : 0;
 }
 
 bool BuildingRegister::provides(unsigned int id,int demand)
@@ -365,5 +404,5 @@ bool BuildingRegister::provides(unsigned int id,int demand)
     const auto* building=get_building(id);
     if(!building) return false;
     const int completed=building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
-    return player->game->buildingCapabilities().matches(completed,buildingIntent(demand));
+    return runtime.readPlayer()->game->buildingCapabilities().matches(completed,buildingIntent(demand));
 }

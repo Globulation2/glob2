@@ -14,7 +14,7 @@ namespace AIMaxima
 {
 namespace WorldHelpers
 {
-	inline bool building_currently_visible(Player* player, const Building* building)
+	inline bool building_currently_visible(AISharedRuntime::Read::Player* player, const AISharedRuntime::Read::Building* building)
 	{
 		if(!player || !player->map || !building)
 			return false;
@@ -26,7 +26,7 @@ namespace WorldHelpers
 		return false;
 	}
 
-	inline int warrior_power(const Unit* warrior)
+	inline int warrior_power(const AISharedRuntime::Read::Unit* warrior)
 	{
 		return std::max(1, warrior->getRealAttackStrength()
 			*warrior->performance[ATTACK_SPEED]*warrior->hp

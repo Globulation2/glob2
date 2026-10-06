@@ -5,9 +5,11 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <map>
 #include <string>
 #include <vector>
 class Game;
+namespace GAGCore { class InputStream; class OutputStream; }
 struct Scene;
 namespace AIMaximaPlacement { struct WorldState; }
 namespace GameDiagnostics
@@ -22,15 +24,25 @@ struct FieldSink
 	bool enabled = false, captured = false, failed = false, skipped = false;
 	std::array<MapRender::Field, 5> fields;
 	void capture(const AIMaximaPlacement::WorldState& world) noexcept;
+    void save(GAGCore::OutputStream*) const;
+    bool load(GAGCore::InputStream*);
 };
 class Session
 {
 public:
 	Session(Game& game, std::string directory, unsigned interval, bool png, size_t byteBudget = CaptureBudget);
 	~Session();
-	// Simulation owner: before dispatching AI workers, then after joining them.
+	// Simulation-owner API. The pipeline keeps a weak Session reference;
+	// workers receive private FieldSink values, never the Session.
 	void beginTick(const Game& game) noexcept;
 	void completeTick(const Game& game) noexcept;
+    std::shared_ptr<FieldSink> reserveCapture(int player, std::uint64_t observedTick) noexcept;
+    void publishCapture(const FieldSink&) noexcept;
+    // Registers an already completed saved output before admitting new captures.
+    // False discards diagnostic output only and records a bounded skipped issue.
+    bool adoptCapture(const FieldSink&) noexcept;
+    // Call only after the controller stream has joined and discarded its outputs.
+    void cancelCaptures(int player) noexcept;
 	bool pending() const { return ready.load(); }
 	// Graphics owner, while the simulation is parked (or stopped).
 	void drain() noexcept;
@@ -40,6 +52,8 @@ private:
 	bool png;
 	std::vector<std::shared_ptr<FieldSink>> sinks;
 	size_t byteBudget;
+    size_t reservedBytes = 0;
+    std::map<std::pair<int,std::uint64_t>,size_t> reservations;
 	std::unique_ptr<Scene> scene;
 	std::atomic<bool> ready{false};
 	std::uint64_t completed = 0, failures = 0, skipped = 0;

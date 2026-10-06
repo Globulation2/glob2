@@ -27,7 +27,7 @@ void ResourceTracker::tick()
 	timer = (timer == std::numeric_limits<int>::max()) ? 0 : timer + 1;
 	if((timer%AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS)==0)
 	{
-		Building* b = runtime.get_building_register().get_building(building_id);
+		AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(building_id);
 		if (!b) return;
 		if(resource==RecurringInputStock) {
    int amount=0;

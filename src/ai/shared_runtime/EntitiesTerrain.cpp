@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "ai/observation/AIWorldView.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -133,3 +134,12 @@ bool Entities::Unwalkable::is_entity(Map* map, int x, int y)
 { return !map->terrainPropertiesAt(x,y).walkable; }
 bool Entities::Unwalkable::operator==(const Entity& rhs) const
 { return typeid(rhs)==typeid(Entities::Unwalkable); }
+
+bool Entities::Water::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return terrainProvidesFertility(world.terrain->properties(world.tile(x,y).terrain)); }
+bool Entities::Position::is_entity(const AIEngine::AIWorldView&,int posx,int posy)
+{ return x==posx && y==posy; }
+bool Entities::Sand::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return world.terrain->properties(world.tile(x,y).terrain).shoreline; }
+bool Entities::Unwalkable::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return !world.terrain->properties(world.tile(x,y).terrain).walkable; }

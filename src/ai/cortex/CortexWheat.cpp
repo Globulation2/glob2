@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -40,14 +41,14 @@ namespace Cortex
 		const int NB_DX[4] = { 0, -1, 1, 0 };
 		const int NB_DY[4] = { -1, 0, 0, 1 };
 
-		bool isWheat(Map& map, int x, int y)
+		template<class MapType> bool isWheat(MapType& map, int x, int y)
 		{
 			return map.getResource(x, y).type == WHEAT;
 		}
 	} // namespace
 
-	WheatScanResult scanWheatForbidden(
-		Map& map, Uint32 teamMask, int teamNumber,
+	template<class MapType> WheatScanResult scanWheatForbiddenImpl(
+		MapType& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll, bool farmPaint)
@@ -296,16 +297,16 @@ namespace Cortex
 		return res;
 	}
 
-	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
+	WheatReconcile reconcileWheatForbiddenWorld(Cortex::WorldPlayer* player, int openMargin, bool buildMasks,
 	                                       bool liftAll, bool farmPaint)
 	{
 		WheatReconcile out;
 		if (player == NULL || player->team == NULL || player->team->game == NULL)
 			return out;
 
-		Team* team = player->team;
-		Game* game = team->game;
-		Map& map = game->map;
+		Cortex::WorldTeam* team = player->team;
+		Cortex::World* game = team->game;
+		Cortex::WorldMap& map = game->map;
 		const int w = map.getW();
 		const int h = map.getH();
 		if (w <= 0 || h <= 0)
@@ -322,10 +323,10 @@ namespace Cortex
 		// Iterate by array index, never a std::set, for lockstep determinism.
 		std::vector<int> seeds;
 		int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 				continue;
 			if (b->type && b->type->isVirtual)
 				continue; // war/exploration flag: not part of the colony footprint.
@@ -377,11 +378,30 @@ namespace Cortex
 			// two BrushAccumulators, one 1x1 brush per tile (figure 0), exactly as
 			// AIWarrush paints its forbidden checkerboard (AIWarrush.cpp:551-583).
 			for (int idx : r.add)
-				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
+				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), map.getW(), map.getH());
 			for (int idx : r.del)
-				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
+				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), map.getW(), map.getH());
 		}
 		return out;
 	}
 
+    WheatScanResult scanWheatForbidden(WorldMap& map, Uint32 mask, int team,
+        const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
+        int margin,bool ignoreFog,bool debug,bool lift,bool farm)
+    { return scanWheatForbiddenImpl(map,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+    WheatScanResult scanWheatForbidden(::Map& map, Uint32 mask, int team,
+        const std::vector<int>& seeds, int minX,int minY,int maxX,int maxY,
+        int margin,bool ignoreFog,bool debug,bool lift,bool farm)
+    { return scanWheatForbiddenImpl(map,mask,team,seeds,minX,minY,maxX,maxY,margin,ignoreFog,debug,lift,farm); }
+
+}
+
+namespace Cortex {
+WheatReconcile reconcileWheatForbidden(::Player* player,int margin,bool masks,bool lift,bool farm)
+{
+    if(!player || !player->team)return {};
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    World world(*view); WorldPlayer local{&world,world.teams[player->teamNumber],player->number};
+    return reconcileWheatForbiddenWorld(&local,margin,masks,lift,farm);
+}
 }

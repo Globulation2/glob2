@@ -113,7 +113,7 @@ void BuildingDestroyed::save(GAGCore::OutputStream *stream)
 
 EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbid(gbid)
 {
-	Building* b=runtime.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	type=b->typeNum;
 	level=b->type->level;
 	location=position(b->posX, b->posY);
@@ -123,7 +123,7 @@ EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbi
 
 tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 {
-	Building* b=runtime.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
+	AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	if(b==NULL)
 	{
 		return true;
@@ -136,7 +136,7 @@ tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 	{
 		// A completed upgrade or repair remains the same target. Resolve only
 		// when its concrete variant changes, following explicit transitions.
-		const auto& catalog = runtime.player->game->buildingsTypes;
+		const auto& catalog = runtime.readPlayer()->game->buildingsTypes;
 		std::vector<int> pending{type};
 		std::vector<bool> seen(catalog.size(), false);
 		bool related = false;
@@ -270,11 +270,11 @@ BeingUpgradedTo::BeingUpgradedTo(int level) : level(level)
 
 bool BeingUpgradedTo::passes(Runtime& runtime, int id)
 {
-	Building* b= runtime.get_building_register().get_building(id);
+	AISharedRuntime::Read::Building* b= runtime.get_building_register().get_building(id);
 	if(!runtime.get_building_register().is_building_upgrading(id))
 		return false;
     const int target=b->type->isBuildingSite ? b->typeNum : b->type->nextLevel;
-    return target>=0 && runtime.player->game->buildingCapabilities().lineagePosition(target)==level;
+    return target>=0 && runtime.readPlayer()->game->buildingCapabilities().lineagePosition(target)==level;
 }
 
 
@@ -307,8 +307,8 @@ BuildingLevel::BuildingLevel(int building_level) : building_level(building_level
 
 bool BuildingLevel::passes(Runtime& runtime, int id)
 {
-	Building* building = runtime.get_building_register().get_building(id);
-	if(runtime.player->game->buildingCapabilities().lineagePosition(building->typeNum)==building_level)
+	AISharedRuntime::Read::Building* building = runtime.get_building_register().get_building(id);
+	if(runtime.readPlayer()->game->buildingCapabilities().lineagePosition(building->typeNum)==building_level)
 		return true;
 	return false;
 }

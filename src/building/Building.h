@@ -178,7 +178,7 @@ class Building : public BuildingUtils
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
 	///and the number of units that should be working after the construction is finished.
-	void launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture);
+	bool launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture);
 	///Cancels construction of a building, returning it to a normal state.
 	void cancelConstruction(Sint32 unitWorking);
 	///Causes a building to be put on the waiting list for deletion. It is deleted by team after all units

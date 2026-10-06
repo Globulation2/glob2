@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <memory>
+#include <span>
 
 #include "Map.h"
 #include "Utilities.h"
@@ -64,6 +65,8 @@ class PlayerQuitsGameOrder;
 class GameAnimations;
 class SoftwareTerrainCache;
 namespace AIPlanning { class BuildingCapabilityIndex; }
+namespace AIEngine { class Pipeline; }
+namespace GameDiagnostics { class Session; }
 
 // Minimum value of the prestige-victory threshold.
 #define MIN_MAX_PRESTIGE 500
@@ -220,7 +223,22 @@ public:
 	void setGameHeader(const GameHeader& gameHeader, bool saveAI=false);
 
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
-	void executeOrder(std::shared_ptr<Order> order, int localPlayer);
+	// Returns whether the existing executor admitted the command, including queued construction.
+	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
+	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
+		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {});
+	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
+	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
+	void cancelAI(unsigned player);
+	void drainAI();
+	void clearAI();
+	void saveAI(GAGCore::OutputStream* stream);
+	bool loadAI(GAGCore::InputStream* stream);
+	void observeUnpolledAI();
+	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
+private:
+	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
+public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.
 	void buildProjectSyncStep(Sint32 localTeam);
@@ -346,33 +364,33 @@ private:
 	/// Per-order-type executors. The dispatcher executeOrder() downcasts the
 	/// shared_ptr<Order> to its concrete type and calls the matching helper.
 	/// Helpers do NOT re-check team aliveness — the dispatcher gates that.
-	void executeCreate(const OrderCreate& order, int localPlayer);
-	void executeModifyBuilding(const OrderModifyBuilding& order, int localPlayer);
-	void executeModifyExchange(const OrderModifyExchange& order, int localPlayer);
-	void executeModifyFlag(const OrderModifyFlag& order, int localPlayer);
-	void executeModifyClearingFlag(const OrderModifyClearingFlag& order, int localPlayer);
+	bool executeCreate(const OrderCreate& order, int localPlayer);
+	bool executeModifyBuilding(const OrderModifyBuilding& order, int localPlayer);
+	bool executeModifyExchange(const OrderModifyExchange& order, int localPlayer);
+	bool executeModifyFlag(const OrderModifyFlag& order, int localPlayer);
+	bool executeModifyClearingFlag(const OrderModifyClearingFlag& order, int localPlayer);
 	/// Sets minLevelToFlag and flushes currently-assigned units by toggling
 	/// maxUnitWorking through zero so the building releases them on update().
-	void executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& order, int localPlayer);
-	void executeMoveFlag(const OrderMoveFlag& order, int localPlayer);
-	void executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
-	void executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
-	void executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
-	void executeAlterFarmArea(const OrderAlterFarmArea& order, int localPlayer);
+	bool executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& order, int localPlayer);
+	bool executeMoveFlag(const OrderMoveFlag& order, int localPlayer);
+	bool executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
+	bool executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
+	bool executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
+	bool executeAlterFarmArea(const OrderAlterFarmArea& order, int localPlayer);
 	/// The team exists and the brush mode is add or delete; shared by the area orders.
 	bool isValidAlterArea(const OrderAlterArea& order) const;
-	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
+	bool executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
 	/// Delete-building. Bypasses the team-alive gate: dead-team buildings
 	/// can still be torn down.
-	void executeDelete(const OrderDelete& order);
-	void executeChangePriority(const OrderChangePriority& order);
-	void executeCancelDelete(const OrderCancelDelete& order);
-	void executeConstruction(const OrderConstruction& order);
-	void executeCancelConstruction(const OrderCancelConstruction& order);
-	void executeSetAlliance(const SetAllianceOrder& order);
+	bool executeDelete(const OrderDelete& order);
+	bool executeChangePriority(const OrderChangePriority& order);
+	bool executeCancelDelete(const OrderCancelDelete& order);
+	bool executeConstruction(const OrderConstruction& order);
+	bool executeCancelConstruction(const OrderCancelConstruction& order);
+	bool executeSetAlliance(const SetAllianceOrder& order);
 	/// Marks the leaving player's team dead only if no other player still
 	/// controls that team; either way, the leaving player slot becomes AI::NONE.
-	void executePlayerQuitGame(const PlayerQuitsGameOrder& order);
+	bool executePlayerQuitGame(const PlayerQuitsGameOrder& order);
 
 public:
 	bool anyPlayerWaited;

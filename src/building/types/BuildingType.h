@@ -139,6 +139,8 @@ class BuildingsTypes
 {
 public:
 	BuildingsTypes() = default;
+    // Data-only catalog for worker observations: artwork handles are discarded.
+    static BuildingsTypes fromObservation(std::vector<BuildingType> descriptors);
 	BuildingsTypes(const BuildingsTypes& other);
 	BuildingsTypes& operator=(const BuildingsTypes& other);
 	BuildingsTypes(BuildingsTypes&&) noexcept = default;

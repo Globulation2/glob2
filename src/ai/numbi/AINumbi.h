@@ -8,6 +8,9 @@
 #include "AINumbiTuning.h"
 #include "BuildingCapabilities.h"
 #include <array>
+#include "ai/observation/AIWorldView.h"
+#include "NumbiResourceCache.h"
+namespace AIEngine { class WorldQueries; }
 
 class Game;
 class Map;
@@ -38,8 +41,39 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	
 	std::shared_ptr<Order>getOrder(void);
+	bool supportsObservation() const override { return true; }
+ SimulationSnapshot::Requirements observationRequirements() const override { return SimulationSnapshot::All & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth); }
+ std::optional<Uint64> retainedQueryVectorBytes() const override
+ {
+  Uint64 bytes = 0;
+  for (const auto& [key, field] : resourceInitializations)
+   if (field.values) bytes += Uint64(field.values->capacity()) * sizeof(Uint16);
+  return bytes;
+ }
+	std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
+	void orderExecutionCompleted(const Order&,bool) override;
 	
 private:
+	using Intent = AIPlanning::BuildingIntent;
+	struct PendingRequest {
+	 Uint32 tick=0;
+ Uint64 pollSequence=0;
+	 BuildingRef target;
+	 std::shared_ptr<Order> order;
+	};
+	std::vector<PendingRequest> pendingRequests;
+	int requestedWorkers(const AIEngine::BuildingView&) const;
+	Sint32 requestedRatio(const AIEngine::BuildingView&,int unit) const;
+	bool hasPending(const AIEngine::BuildingView&) const;
+	int pendingBuildings(Intent intent) const;
+	std::shared_ptr<Order> remember(std::shared_ptr<Order>,Uint32 tick,Uint64 pollSequence);
+	int teamNumber=0;
+	const AIEngine::AIWorldView* observation=nullptr;
+	AIEngine::WorldQueries* queries=nullptr;
+	NumbiObservation::ResourceInitializations resourceInitializations;
+	std::array<const AIEngine::BuildingView*,1024> observedBuildings{};
+	std::array<const AIEngine::UnitView*,1024> observedUnits{};
+	std::shared_ptr<Order> decide();
 	int timer;
 	int phase;
 	int attackPhase;
@@ -47,12 +81,11 @@ private:
 	int criticalWarriors;
 	int criticalTime;
 	int attackTimer;
-	using Intent = AIPlanning::BuildingIntent;
 	std::array<int, static_cast<unsigned>(Intent::Count)> mainBuilding{};
 	int selectBuilding(Intent intent);
-	bool provides(const Building& building, Intent intent) const;
+	bool provides(const AIEngine::BuildingView& building, Intent intent) const;
 	void init(Player *player);
-	int estimateFood(Building *building);
+	int estimateFood(const AIEngine::BuildingView *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);
 	std::shared_ptr<Order>swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors);

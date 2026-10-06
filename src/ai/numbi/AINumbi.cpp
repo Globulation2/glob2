@@ -12,6 +12,8 @@
 #include <sstream>
 
 #include "AINumbi.h"
+#include "NumbiQueries.h"
+#include "ai/engine/AIDecision.h"
 #include "AIStateSerialization.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
@@ -43,6 +45,8 @@ void AINumbi::init(Player *player)
 	criticalTime=AI_NUMBI_CRITICAL_TIME_DEFAULT_TICKS;
 	attackTimer=0;
 	mainBuilding.fill(0);
+	pendingRequests.clear();
+	resourceInitializations.clear();
 
 	assert(player);
 
@@ -50,6 +54,7 @@ void AINumbi::init(Player *player)
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
+	teamNumber=player->team->teamNumber;
 
 	assert(this->team);
 	assert(this->game);
@@ -93,6 +98,49 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 
 	if (versionMinor >= AI_NUMBI_SAVE_FORMAT_CONTINUATION)
 		timer = AIStateSerialization::readSint32(stream, "timer");
+	if (versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE)
+	{
+	 stream->readEnterSection("pendingRequests");
+	 const Uint32 count=stream->readUint32("count");
+	 if(count>1024) {stream->readLeaveSection(2);return false;}
+	 for(Uint32 i=0;i<count;++i) {
+	  stream->readEnterSection(i);
+	  PendingRequest request;
+	  request.tick=stream->readUint32("tick");
+  request.pollSequence=stream->readUint32("pollSequenceLow");request.pollSequence|=Uint64(stream->readUint32("pollSequenceHigh"))<<32;
+	  request.target.gid=stream->readUint16("gid");
+	  request.target.generation=stream->readUint32("generation");
+	  const Uint32 size=stream->readUint32("size");
+	  if(!size || size>65536) {stream->readLeaveSection(3);return false;}
+	  std::vector<Uint8> bytes(size);stream->read(bytes.data(),size,"order");
+	  request.order=Order::getOrder(bytes.data(),bytes.size(),versionMinor);
+	  stream->readLeaveSection();
+	  if(!request.order || request.order->getOrderType()==ORDER_NULL) {stream->readLeaveSection(2);return false;}
+	  if(!request.target.empty() && Building::GIDtoTeam(request.target.gid)!=teamNumber) {stream->readLeaveSection(2);return false;}
+	  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get()))
+    if(create->teamNumber!=teamNumber || create->typeNum<0 || size_t(create->typeNum)>=game->buildingsTypes.size()) {stream->readLeaveSection(2);return false;}
+   pendingRequests.push_back(std::move(request));
+	 }
+	 stream->readLeaveSection();
+	 stream->readEnterSection("resourceInitializations");
+	 const Uint32 fields=stream->readUint32("count");
+	 if(fields>MAX_NB_RESOURCES*7) {stream->readLeaveSection(2);return false;}
+	 for(Uint32 i=0;i<fields;++i) {
+	  stream->readEnterSection(i);
+	  const int key=stream->readSint32("key");
+	  NumbiObservation::ResourceInitialization field;
+	  field.observedTick=stream->readUint32("tick");
+	  const Uint32 cells=stream->readUint32("cells");
+	  if(key<0 || key/(MAX_NB_RESOURCES*7)!=teamNumber || cells!=Uint32(map->getW()*map->getH())) {stream->readLeaveSection(3);return false;}
+	  std::vector<Uint8> bytes(size_t(cells)*2);stream->read(bytes.data(),bytes.size(),"values");
+	  auto values=std::make_shared<std::vector<Uint16>>(cells);
+	  for(size_t cell=0;cell<cells;++cell) (*values)[cell]=bytes[cell*2] | (Uint16(bytes[cell*2+1])<<8);
+	  field.values=std::move(values);
+	  stream->readLeaveSection();
+	  if(!resourceInitializations.emplace(key,std::move(field)).second) {stream->readLeaveSection(2);return false;}
+	 }
+	 stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
 
 	if (versionMinor >= AI_NUMBI_SAVE_FORMAT_CONTINUATION &&
@@ -119,11 +167,144 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeSint32(timer, "timer");
+	stream->writeEnterSection("pendingRequests");
+	stream->writeUint32(pendingRequests.size(),"count");
+	unsigned i=0;
+	for(const auto& request:pendingRequests) {
+	 stream->writeEnterSection(i++);
+	 stream->writeUint32(request.tick,"tick");
+  stream->writeUint32(request.pollSequence,"pollSequenceLow");stream->writeUint32(request.pollSequence>>32,"pollSequenceHigh");
+	 stream->writeUint16(request.target.gid,"gid");
+	 stream->writeUint32(request.target.generation,"generation");
+	 auto& order=*request.order;
+	 std::vector<Uint8> bytes{order.getOrderType()};
+	 if(order.getDataLength()) bytes.insert(bytes.end(),order.getData(),order.getData()+order.getDataLength());
+	 stream->writeUint32(bytes.size(),"size");stream->write(bytes.data(),bytes.size(),"order");
+	 stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("resourceInitializations");
+	stream->writeUint32(resourceInitializations.size(),"count");i=0;
+	for(const auto& [key,field]:resourceInitializations) {
+	 stream->writeEnterSection(i++);stream->writeSint32(key,"key");stream->writeUint32(field.observedTick,"tick");
+	 const auto& values=*field.values;
+	 stream->writeUint32(values.size(),"cells");std::vector<Uint8> bytes(values.size()*2);
+	 for(size_t cell=0;cell<values.size();++cell) {bytes[cell*2]=Uint8(values[cell]);bytes[cell*2+1]=Uint8(values[cell]>>8);}
+	 stream->write(bytes.data(),bytes.size(),"values");stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
 
-std::shared_ptr<Order>AINumbi::getOrder(void)
+int AINumbi::requestedWorkers(const AIEngine::BuildingView& building) const
+{
+ for(const auto& request:pendingRequests) if(request.target==building.identity)
+  if(const auto* workers=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return workers->numberRequested;
+ return building.workers;
+}
+Sint32 AINumbi::requestedRatio(const AIEngine::BuildingView& building,int unit) const
+{
+ for(const auto& request:pendingRequests) if(request.target==building.identity)
+  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get())) return ratios->ratio[unit];
+ return building.ratios[unit];
+}
+bool AINumbi::hasPending(const AIEngine::BuildingView& building) const
+{
+ return std::any_of(pendingRequests.begin(),pendingRequests.end(),[&](const auto& request){return request.target==building.identity;});
+}
+int AINumbi::pendingBuildings(Intent intent) const
+{
+ int count=0;
+ for(const auto& project:observation->buildProjects)
+  if(project.teamNumber==teamNumber && queries->matches(project.typeNum,intent)) ++count;
+ for(const auto& request:pendingRequests) if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get()))
+  if(queries->matches(create->typeNum,intent)) ++count;
+ return count;
+}
+std::shared_ptr<Order> AINumbi::remember(std::shared_ptr<Order> order,Uint32 tick,Uint64 pollSequence)
+{
+ if(!order || order->getOrderType()==ORDER_NULL) return order;
+ Uint16 gid=0xffff;
+ if(const auto* request=dynamic_cast<const OrderModifyBuilding*>(order.get())) gid=request->gid;
+ else if(const auto* request=dynamic_cast<const OrderModifySwarm*>(order.get())) gid=request->gid;
+ else if(const auto* request=dynamic_cast<const OrderConstruction*>(order.get())) gid=request->gid;
+ else if(const auto* request=dynamic_cast<const OrderDelete*>(order.get())) gid=request->gid;
+ const auto* target=gid==0xffff?nullptr:observation->buildingAtSlot(gid);
+ if(target && hasPending(*target)) return std::make_shared<NullOrder>();
+ pendingRequests.push_back({tick,pollSequence,target?target->identity:BuildingRef{},order});
+ return order;
+}
+void AINumbi::orderExecutionCompleted(const Order& order,bool)
+{
+ // Legacy synchronous callers deliver the receipt after execution; production
+ // asynchronous callers consume immutable receipts inside getOrder(context).
+ for(auto it=pendingRequests.begin();it!=pendingRequests.end();++it) {
+  auto& pending=*it->order;
+  if(typeid(pending)!=typeid(order)) continue;
+  if(const auto* a=dynamic_cast<const OrderCreate*>(&order)) {
+   const auto& b=static_cast<const OrderCreate&>(pending);
+   if(a->typeNum!=b.typeNum || a->posX!=b.posX || a->posY!=b.posY) continue;
+  } else {
+   // All Numbi entity commands encode the target gid first.
+   const auto* received=const_cast<Order&>(order).getData();const auto* emitted=pending.getData();
+   if(const_cast<Order&>(order).getDataLength()<2 || received[0]!=emitted[0] || received[1]!=emitted[1]) continue;
+  }
+  pendingRequests.erase(it);break;
+ }
+}
+
+std::shared_ptr<Order> AINumbi::getOrder()
+{
+ const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
+ const std::vector<AIEngine::ExecutionReceipt> receipts;
+ std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
+ AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};
+ context.resourceEnrollments=&enrollments;
+ auto order=getOrder(context);
+ for(const auto& request:enrollments)
+  map->installObservedResourceField(request.team,request.resource,request.swim,*request.initialField);
+ return order;
+}
+
+std::shared_ptr<Order> AINumbi::getOrder(const AIEngine::DecisionContext& context)
+{
+ if(context.team!=unsigned(teamNumber)) throw std::invalid_argument("Numbi observation has wrong team");
+ for(const auto& receipt:context.receipts)
+  std::erase_if(pendingRequests,[&](const auto& request){return request.tick==receipt.request.observedTick && request.pollSequence==receipt.request.pollSequence;});
+ std::erase_if(pendingRequests,[&](const auto& request){
+  const auto* b=request.target.empty()?nullptr:context.world.building(request.target);
+  if(!request.target.empty() && !b) return true;
+  if(const auto* workers=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->workers==workers->numberRequested;
+  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get()))
+   return b && std::equal(b->ratios.begin(),b->ratios.end(),ratios->ratio);
+  if(dynamic_cast<const OrderConstruction*>(request.order.get()))
+   return b && (b->construction!=Building::NO_CONSTRUCTION || context.world.catalog->at(b->type).site);
+  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) {
+   for(const auto& project:context.world.buildProjects)
+    if(project.teamNumber==teamNumber && project.typeNum==create->typeNum
+     && context.world.normalizeX(project.posX)==context.world.normalizeX(create->posX)
+     && context.world.normalizeY(project.posY)==context.world.normalizeY(create->posY)) return true;
+   const auto& k=context.world.catalog->at(create->typeNum);
+   for(const auto& building:context.world.buildings)
+    if(building.team==teamNumber && (building.type==create->typeNum || (k.site && building.type==k.next))
+     && building.x==context.world.normalizeX(create->posX) && building.y==context.world.normalizeY(create->posY)) return true;
+  }
+  return false;
+ });
+ NumbiObservation::Queries captured(context.world,teamNumber,resourceInitializations,context.resourceEnrollments);
+ for(const auto& request:pendingRequests)
+  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) captured.reserve(create->typeNum,create->posX,create->posY);
+ observation=&context.world; queries=&captured;
+ observedBuildings.fill(nullptr); observedUnits.fill(nullptr);
+ for(const auto& b:context.world.buildings) if(b.team==teamNumber) observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+ for(const auto& u:context.world.units) if(u.team==teamNumber) observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ try {
+  auto result=remember(decide(),context.world.tick,context.pollSequence); observation=nullptr;queries=nullptr;observedBuildings.fill(nullptr);observedUnits.fill(nullptr);return result;
+ } catch(...) {observation=nullptr;queries=nullptr;observedBuildings.fill(nullptr);observedUnits.fill(nullptr);throw;}
+}
+
+std::shared_ptr<Order>AINumbi::decide()
 {
 	timer++;
 
@@ -270,26 +451,26 @@ std::shared_ptr<Order>AINumbi::getOrder(void)
 
 int AINumbi::countUnits(void)
 {
-	return team->stats.getLatestStat()->totalUnit;
+	return observation->teams[teamNumber].statistics.totalUnit;
 }
 
 int AINumbi::countUnits(const int medicalState)
 {
 	if (medicalState == Unit::MED_FREE)
 	{
-		return team->stats.getLatestStat()->totalUnit
-			- team->stats.getLatestStat()->needFoodCritical
-			- team->stats.getLatestStat()->needFood
-			- team->stats.getLatestStat()->needHeal;
+		return observation->teams[teamNumber].statistics.totalUnit
+			- observation->teams[teamNumber].statistics.needFoodCritical
+			- observation->teams[teamNumber].statistics.needFood
+			- observation->teams[teamNumber].statistics.needHeal;
 	}
 	else if (medicalState == Unit::MED_HUNGRY)
 	{
-		return team->stats.getLatestStat()->needFoodCritical
-			+ team->stats.getLatestStat()->needFood;
+		return observation->teams[teamNumber].statistics.needFoodCritical
+			+ observation->teams[teamNumber].statistics.needFood;
 	}
 	else if (medicalState == Unit::MED_DAMAGED)
 	{
-		return team->stats.getLatestStat()->needHeal;
+		return observation->teams[teamNumber].statistics.needHeal;
 	}
 	else
 		assert(false);

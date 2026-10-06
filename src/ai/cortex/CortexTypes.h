@@ -254,7 +254,7 @@ namespace Cortex
 	};
 
 	/// The full feature vector handed to the policy layer. Built by
-	/// Cortex::observe(); read by CortexPolicy::decide(). The policy must read
+	/// Cortex::observeWorld(); read by CortexPolicy::decide(). The policy must read
 	/// ONLY this struct — never Game* directly (see README anti-pattern).
 	struct CortexObservation
 	{

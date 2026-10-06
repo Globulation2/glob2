@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "ai/observation/AIWorldView.h"
 #include "Building.h"
 #include "Game.h"
 
@@ -160,4 +161,22 @@ void Entities::AnyBuilding::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AnyBuilding");
 	stream->writeUint8(under_construction, "under_construction");
 	stream->writeLeaveSection();
+}
+
+bool Entities::Building::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.tile(x,y).building);
+    return building && building->team==team && building->type==building_type
+        && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
+}
+bool Entities::AnyTeamBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.tile(x,y).building);
+    return building && building->team==team
+        && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
+}
+bool Entities::AnyBuilding::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto* building=world.buildingAtSlot(world.tile(x,y).building);
+    return building && (building->construction==::Building::NO_CONSTRUCTION || under_construction);
 }

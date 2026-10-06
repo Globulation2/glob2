@@ -183,7 +183,7 @@ int NewNicowar::choose_building_for_upgrade(Runtime& runtime, int type, int leve
 
 void NewNicowar::upgrade_buildings(Runtime& runtime)
 {
-	TeamStat* stat=runtime.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.readPlayer()->team->stats.getLatestStat();
 	int can_upgrade_level1 = stat->workersByConstructionLevel[1] + stat->workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
 	int can_upgrade_level2 = stat->workersByConstructionLevel[2] + stat->workersByConstructionLevel[3];
 

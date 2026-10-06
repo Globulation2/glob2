@@ -92,7 +92,7 @@ void BuildingCondition::save_condition(BuildingCondition* condition, GAGCore::Ou
 
 bool NotUnderConstruction::passes(Runtime& runtime, int id)
 {
-	Building* building = runtime.get_building_register().get_building(id);
+	AISharedRuntime::Read::Building* building = runtime.get_building_register().get_building(id);
 	bool result=building->constructionResultState==::Building::NO_CONSTRUCTION && !runtime.get_building_register().is_building_upgrading(id);
 	return result;
 }
@@ -101,7 +101,7 @@ bool NotUnderConstruction::passes(Runtime& runtime, int id)
 
 bool UnderConstruction::passes(Runtime& runtime, int id)
 {
-	Building* building = runtime.get_building_register().get_building(id);
+	AISharedRuntime::Read::Building* building = runtime.get_building_register().get_building(id);
 	return building->constructionResultState!=::Building::NO_CONSTRUCTION && building->buildingState==Building::ALIVE;
 }
 
@@ -117,8 +117,9 @@ bool BeingUpgraded::passes(Runtime& runtime, int id)
 
 bool Upgradable::passes(Runtime& runtime, int id)
 {
-	Building* building = runtime.get_building_register().get_building(id);
- if(building && !runtime.player->game->gameHeader.isUnitUpgradesDisabled()
+	AISharedRuntime::Read::Building* building = runtime.get_building_register().get_building(id);
+ if(building && !runtime.get_building_register().is_building_upgrading(id)
+    && !runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()
     && building->constructionResultState==Building::NO_CONSTRUCTION
     && building->isUpgradeAvailable()
     && building->isHardSpaceForBuildingSite(Building::UPGRADE)

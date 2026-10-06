@@ -339,6 +339,18 @@ void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
 	compileRuntimeTraits();
 }
 
+BuildingsTypes BuildingsTypes::fromObservation(std::vector<BuildingType> descriptors)
+{
+    BuildingsTypes result;
+    for(auto& descriptor:descriptors) {
+        descriptor.gameSpritePtr=nullptr;
+        descriptor.miniSpritePtr=nullptr;
+    }
+    result.entries_=std::make_shared<std::vector<BuildingType>>(std::move(descriptors));
+    result.compileRuntimeTraits();
+    return result;
+}
+
 BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
 	: runtimeTypes_(other.runtimeTypes_), entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
 	  experiments_(other.experiments_), catalogKey_(other.catalogKey_),

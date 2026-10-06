@@ -16,6 +16,7 @@ void Map::replaceResource(size_t index, const Resource &resource)
 {
 	const bool changedType = tiles[index].resource.type != resource.type;
 	tiles[index].resource = resource;
+	++snapshotResources;
 	if (changedType) resourceSeedChanged(index, ResourceSeedCache::Resource);
 }
 
@@ -27,6 +28,7 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	if (old.building != tile.building) changes |= ResourceSeedCache::Building;
 	if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
 	tiles[index] = tile;
+	++snapshotTerrain; ++snapshotResources; ++snapshotOccupancy; ++snapshotAreas;
 	if (changes) resourceSeedChanged(index, changes);
 }
 
@@ -34,6 +36,7 @@ void Map::setAreaMask(size_t index, Uint32 Tile::*field, Uint32 value)
 {
 	if (tiles[index].*field == value) return;
 	tiles[index].*field = value;
+	++snapshotAreas;
 	if (field == &Tile::forbidden) resourceSeedChanged(index, ResourceSeedCache::Forbidden);
 }
 
@@ -64,6 +67,7 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 			if (tiles[index].building != building)
 			{
 				tiles[index].building = building;
+				++snapshotOccupancy;
 				resourceSeedChanged(index, ResourceSeedCache::Building);
 			}
 		}

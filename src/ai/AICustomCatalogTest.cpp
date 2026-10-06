@@ -1,8 +1,10 @@
+#include "CabinoObservationFixture.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AI.h"
 #include "Version.h"
 #include "AINumbi.h"
+#include "ai/observation/WorldQueries.h"
 #include "AICastor.h"
 #include "AIWarrush.h"
 #include "AICabino.h"
@@ -112,17 +114,63 @@ struct CatalogWorld
     }
 };
 
+// Direct strategy probes borrow the same immutable inputs as a normal poll.
+template<class Function>
+auto withNumbiObservation(AINumbi& ai,Game& game,Function&& function)
+{
+    const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
+    ai.observation=world.get();ai.queries=&queries;
+    ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);
+    for(const auto& b:world->buildings) if(b.team==ai.teamNumber) ai.observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+    for(const auto& u:world->units) if(u.team==ai.teamNumber) ai.observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+    const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);};
+    try {auto result=function();clear();return result;} catch(...) {clear();throw;}
+}
+
+template<class Function>
+auto withWarrushObservation(AIWarrush& ai,Game& game,Function&& function)
+{
+ const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+ AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
+ ai.observation=world.get();ai.queries=&queries;ai.observedTeams.resize(world->teams.size());
+ for(size_t i=0;i<world->teams.size();++i) ai.observedTeams[i].view=&world->teams[i];
+ for(const auto& b:world->buildings) ai.observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+ for(const auto& u:world->units) ai.observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ ai.observedTeam=ai.teamAt(ai.teamNumber);
+ const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;ai.observedTeams.clear();};
+ try {auto result=function();clear();return result;} catch(...) {clear();throw;}
+}
+
+template<class Function>
+auto withCastorObservation(AICastor& ai,Game& game,Function&& function)
+{
+ const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+ AIEngine::WorldQueries queries(*world,ai.teamNumber,ai.resourceInitializations);
+ ai.observation=world.get();ai.queries=&queries;ai.observedTeams.resize(world->teams.size());
+ for(size_t i=0;i<world->teams.size();++i) ai.observedTeams[i].view=&world->teams[i];
+ for(const auto& b:world->buildings) ai.observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+ for(const auto& u:world->units) ai.observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ ai.observedTeam=ai.teamAt(ai.teamNumber);
+ const auto clear=[&]{ai.observation=nullptr;ai.queries=nullptr;ai.observedTeam=nullptr;ai.observedTeams.clear();};
+ try {
+  if constexpr(std::is_void_v<std::invoke_result_t<Function>>) {function();clear();}
+  else {auto result=function();clear();return result;}
+ } catch(...) {clear();throw;}
+}
+
 int selectThroughController(CatalogWorld& fixture,AI::ImplementationID id,bool missing)
 {
     auto& game=fixture.world.game;
     auto* implementation=game.players[0]->ai->aiImplementation;
     switch(id) {
-    case AI::NUMBI:return dynamic_cast<AINumbi*>(implementation)->selectBuilding(Intent::Feed);
-    case AI::CASTOR:return dynamic_cast<AICastor*>(implementation)->selectBuilding(AICastor::FeedUnits);
-    case AI::WARRUSH:return dynamic_cast<AIWarrush*>(implementation)->selectBuilding(Intent::Feed);
-    case AI::CABINO:return Cabino::selectBuilding(*dynamic_cast<Cabino::AICabino*>(implementation),Cabino::FeedUnits);
+    case AI::NUMBI: {auto& ai=*dynamic_cast<AINumbi*>(implementation);return withNumbiObservation(ai,game,[&]{return ai.selectBuilding(Intent::Feed);});}
+    case AI::CASTOR: {auto& ai=*dynamic_cast<AICastor*>(implementation);return withCastorObservation(ai,game,[&]{return ai.selectBuilding(AICastor::FeedUnits);});}
+    case AI::WARRUSH: {auto& ai=*dynamic_cast<AIWarrush*>(implementation);return withWarrushObservation(ai,game,[&]{return ai.selectBuilding(Intent::Feed);});}
+    case AI::CABINO:{auto& ai=*dynamic_cast<Cabino::AICabino*>(implementation);return glob2test::withCabinoObservation(ai,game,[&]{return Cabino::selectBuilding(ai,Cabino::FeedUnits);});}
     case AI::ECONO:case AI::NICOWAR: {
         auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(implementation);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);
         runtime.br.initiate();
         if(id==AI::ECONO) {
@@ -153,6 +201,12 @@ int selectThroughController(CatalogWorld& fixture,AI::ImplementationID id,bool m
         auto& ai=*dynamic_cast<AICortex*>(implementation);
         auto obs=Cortex::makeEmptyObservation();obs.valid=1;
         auto& slot=obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD][0];slot.valid=1;slot.x=30;slot.y=4;
+        const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        Cortex::World observed(*view);
+        ai.applyQueuedIntent(observed);
+        Cortex::WorldPlayer player{&observed,observed.teams.at(0),0};
+        struct Reset { Cortex::WorldPlayer*& value; ~Reset(){value=nullptr;} } reset{ai.decisionPlayer};
+        ai.decisionPlayer=&player;
         ai.translateAction(Cortex::makeBuildAction(Cortex::CORTEX_BUILD_FOOD,0),obs);
         if(missing){CHECK(ai.orderQueue.empty());return -1;}
         REQUIRE(ai.orderQueue.size()==1);
@@ -161,6 +215,7 @@ int selectThroughController(CatalogWorld& fixture,AI::ImplementationID id,bool m
     }
     case AI::MAXIMA: {
         auto& ai=*dynamic_cast<AIMaxima::Maxima*>(implementation);
+        auto ownerObservation=ai.context.scopeOwnerObservation();
         AIMaximaRuntime::Construction::BuildingOrder order(AIMaximaBuildings::Feeding,2);
         order.add_constraint(new AIMaximaRuntime::Construction::SinglePosition(30,4));
         bool complete=false;const auto placement=order.find_location(ai.context,1,complete);
@@ -212,6 +267,7 @@ TEST_CASE("Nicowar and Econo keep independent weighted material objectives and s
         for(int y=0;y<64;++y)for(int x=0;x<64;++x) game.map.setNoResource(x,y,0);
         game.map.setResource(4,20,WOOD,5);game.map.setResource(28,20,STONE,5);game.map.setResource(28,40,WHEAT,5);
         auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
         if(controller==AI::NICOWAR) {
             auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
@@ -269,7 +325,9 @@ TEST_CASE("shared runtime retirement distinguishes attraction and feeding and pr
         auto* flagBuilding=game.addBuilding(4,4,flagType,0,2,2);
         auto* foodBuilding=game.addBuilding(12,12,foodType,0,2,2);
         REQUIRE(flagBuilding);REQUIRE(foodBuilding);
-        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);runtime.br.initiate();
+        AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
+        runtime.br.initiate();
         using namespace AISharedRuntime::Management;
         for(int id:{0,1}) {
             std::unique_ptr<ManagementOrder> retirement(id==0 ? static_cast<ManagementOrder*>(new RetireAttraction(id,1u<<WARRIOR)) : new RetireFeeding(id));
@@ -313,8 +371,9 @@ TEST_CASE("Nicowar retained attraction retirement completes missions across save
         auto* flag=game.addBuilding(20,28,game.buildingsTypes.findByKey("warflag.0.finished"),0,4,4);REQUIRE(flag);
         game.teams[1]->myBuildings[0]->seenByMask|=game.teams[0]->me;
         auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
-        int id=-1;for(auto it=runtime.br.begin();it!=runtime.br.end();++it) if(runtime.br.get_building(it->first)==flag) id=it->first;
+        int id=-1;for(auto it=runtime.br.begin();it!=runtime.br.end();++it) if(runtime.br.get_building(it->first) && runtime.br.get_building(it->first)->gid==flag->gid) id=it->first;
         REQUIRE(id>=0);
         auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
         NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");ai.target=1;ai.war=true;
@@ -413,6 +472,7 @@ TEST_CASE("Nicowar resolves one aggregate production demand per colony managemen
         CHECK(game.buildingsTypes.getRuntime(fixture.anchor)->productionEnabledMask==(1u<<WORKER));
         for(int n=0;n<4;++n) REQUIRE(game.addBuilding(4+8*n,28,fixture.anchor,0,4,4));
         auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+        AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);runtime.br.initiate();
         auto& ai=*dynamic_cast<NewNicowar*>(runtime.runtimeai.get());
         NicowarStrategyLoader loader;ai.strategy=loader.getParticularStrategy("default");
@@ -437,6 +497,7 @@ TEST_CASE("six native strategies construct and use separate demanded production 
         game.gameHeader.setHungerDisabled(true);game.gameHeader.setUnitUpgradesDisabled(true);
         game.stepCounter=50000;
         auto* runtime=dynamic_cast<AISharedRuntime::Runtime*>(implementation);
+        auto observationScope=runtime ? std::make_unique<AISharedRuntime::Runtime::OwnerObservationScope>(*runtime) : nullptr;
         if(runtime) {
             runtime->gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);
             runtime->br.initiate();
@@ -461,9 +522,9 @@ TEST_CASE("six native strategies construct and use separate demanded production 
                 if(std::find(team.swarms.begin(),team.swarms.end(),b)==team.swarms.end()) team.addToStaticAbilitiesLists(b);
         };
         for(int turn=0;turn<20;++turn) {
-            if(controller==AI::NUMBI) apply(dynamic_cast<AINumbi*>(implementation)->swarmsForWorkers(1,8,4,1,1));
+            if(controller==AI::NUMBI) {auto& ai=*dynamic_cast<AINumbi*>(implementation);apply(withNumbiObservation(ai,game,[&]{return ai.swarmsForWorkers(1,8,4,1,1);}));}
             if(controller==AI::CASTOR) {
-                auto& ai=*dynamic_cast<AICastor*>(implementation);ai.warLevel=1;apply(ai.controlSwarms());
+                auto& ai=*dynamic_cast<AICastor*>(implementation);ai.warLevel=1;apply(withCastorObservation(ai,game,[&]{return ai.controlSwarms();}));
             }
             if(controller==AI::WARRUSH) {
                 auto& ai=*dynamic_cast<AIWarrush*>(implementation);ai.buildingDelay=1000;ai.areaUpdatingDelay=1000;apply(ai.getOrder());
@@ -473,10 +534,11 @@ TEST_CASE("six native strategies construct and use separate demanded production 
                 auto& manager=*dynamic_cast<Cabino::BasicDistributedSwarmManager*>(ai.unit_module);
                 manager.module_records.clear();
                 for(int unit=0;unit<NB_UNIT_TYPE;++unit) manager.module_records["fixture demand"].requested[unit][HARVEST][0]=100;
-                manager.moderateSwarms();
+                glob2test::withCabinoObservation(ai,game,[&]{manager.moderateSwarms();});
                 while(!ai.orders.empty()) {auto order=ai.orders.front();ai.orders.pop();apply(order);}
             }
             if(runtime) {
+                runtime->refreshOwnerObservation();
                 runtime->br.tick();runtime->update_management_orders();
                 if(controller==AI::ECONO) {
                     auto& ai=*dynamic_cast<AISharedRuntime::Econo*>(runtime->runtimeai.get());
@@ -512,18 +574,19 @@ TEST_CASE("shared runtime exact anchors support rectangular attractors across th
     const auto* type=game.buildingsTypes.get(flag);
     CHECK(game.buildingsTypes.getRuntime(flag)->width==2);CHECK(game.buildingsTypes.getRuntime(flag)->height==3);
     auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(game.players[0]->ai->aiImplementation);
+    AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
     runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&game.map);
     REQUIRE(game.checkRoomForBuilding(63,62,type,0));
     using namespace AISharedRuntime::Construction;
     BuildingOrder order(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
     order.add_constraint(new SinglePosition(127,-2));
-    const auto placed=order.find_location(runtime,&game.map,*runtime.gm);
+    const auto placed=order.find_location(runtime,runtime.readPlayer()->map,runtime.get_gradient_manager());
     CHECK(order.get_concrete_type()==flag);
     CHECK(placed.x==63);CHECK(placed.y==62);
     BuildingOrder conflicting(runtime,AISharedRuntime::BuildingDemand::AttractWarriors,2);
     conflicting.add_constraint(new SinglePosition(127,-2));
     conflicting.add_constraint(new SinglePosition(2,62));
-    const auto absent=conflicting.find_location(runtime,&game.map,*runtime.gm);
+    const auto absent=conflicting.find_location(runtime,runtime.readPlayer()->map,runtime.get_gradient_manager());
     CHECK(absent.x==-1);CHECK(absent.y==-1);
 }
 TEST_CASE("Maxima exact anchors support rectangular footprints across the torus")
@@ -621,7 +684,7 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
         });
         auto& game=fixture.world.game;
         auto& ai=*dynamic_cast<AICastor*>(game.players[0]->ai->aiImplementation);
-        ai.computeBuildingSum();
+        withCastorObservation(ai,game,[&]{ai.computeBuildingSum();});
         int initial[AICastor::DemandCount][2][NB_UNIT_LEVELS];
         for(int demand=0;demand<AICastor::DemandCount;++demand)
             for(int site=0;site<2;++site)for(int stage=0;stage<NB_UNIT_LEVELS;++stage)
@@ -629,7 +692,7 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
         auto* finished=game.addBuilding(20,4,fixture.completed,0,4,4);
         REQUIRE(finished);
         finished->maxUnitWorking=4;
-        ai.computeBuildingSum();
+        withCastorObservation(ai,game,[&]{ai.computeBuildingSum();});
         for(int demand=0;demand<AICastor::DemandCount;++demand) {
             const bool expected=(service==0 && demand==AICastor::ProduceWorkers)
                 || (service==1 && (demand==AICastor::FeedUnits || demand==AICastor::HealUnits))
@@ -638,12 +701,12 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
         }
         // Additional production classes and unrelated training do not turn one
         // strategic demand into several; mixed Castor demands retain staffing.
-        CHECK(ai.desiredWorkers(*finished,1)==((service==1 || service==2) ? 4 : 1));
-        CHECK(ai.desiredWorkers(*finished,9)==6);
+        CHECK(withCastorObservation(ai,game,[&]{return ai.desiredWorkers(*ai.observation->buildingAtSlot(finished->gid),1);})==((service==1 || service==2) ? 4 : 1));
+        CHECK(withCastorObservation(ai,game,[&]{return ai.desiredWorkers(*ai.observation->buildingAtSlot(finished->gid),9);})==6);
         auto* site=game.addBuilding(25,4,fixture.replacement,0,2,2);
         REQUIRE(site);
-        CHECK(ai.desiredWorkers(*site,9)==3);
-        ai.computeBuildingSum();
+        CHECK(withCastorObservation(ai,game,[&]{return ai.desiredWorkers(*ai.observation->buildingAtSlot(site->gid),9);})==3);
+        withCastorObservation(ai,game,[&]{ai.computeBuildingSum();});
         for(int demand=0;demand<AICastor::DemandCount;++demand) {
             const bool expected=(service==0 && demand==AICastor::ProduceWorkers)
                 || (service==1 && (demand==AICastor::FeedUnits || demand==AICastor::HealUnits))
@@ -655,12 +718,12 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
             // refers to the current feed+heal provider until that transition.
             finished->buildingState=Building::WAITING_FOR_CONSTRUCTION;
             finished->constructionResultState=Building::UPGRADE;
-            ai.computeBuildingSum();
+            withCastorObservation(ai,game,[&]{ai.computeBuildingSum();});
             CHECK(ai.buildingLevels[AICastor::FeedUnits][0][0]==initial[AICastor::FeedUnits][0][0]);
             CHECK(ai.buildingLevels[AICastor::HealUnits][0][0]==initial[AICastor::HealUnits][0][0]);
             CHECK(ai.buildingLevels[AICastor::TrainWalking][1][1]==1);
             CHECK(ai.buildingLevels[AICastor::TrainConstruction][1][1]==1);
-            CHECK(ai.desiredWorkers(*finished,1)==4);
+            CHECK(withCastorObservation(ai,game,[&]{return ai.desiredWorkers(*ai.observation->buildingAtSlot(finished->gid),1);})==4);
             finished->buildingState=Building::ALIVE;
             finished->constructionResultState=Building::NO_CONSTRUCTION;
         }
@@ -696,7 +759,7 @@ TEST_CASE("Warrush staffing preserves intent priority slot order and current sta
         REQUIRE(building);return building;
     };
     const auto selected=[&](Building* building,int requested) {
-        auto order=std::dynamic_pointer_cast<OrderModifyBuilding>(ai.staffingOrder());
+        auto order=std::dynamic_pointer_cast<OrderModifyBuilding>(withWarrushObservation(ai,game,[&]{return ai.staffingOrder();}));
         REQUIRE(order);CHECK(order->gid==building->gid);CHECK(order->numberRequested==requested);
     };
     auto* explorer=add("hospital.0.site",14,4);
@@ -720,7 +783,7 @@ TEST_CASE("Warrush staffing preserves intent priority slot order and current sta
     CHECK(finishedWarrior->maxUnitWorking==0);
     selected(feeder,3);feeder->maxUnitWorking=3;
     selected(trainingSite,3);trainingSite->maxUnitWorking=3;
-    CHECK(ai.staffingOrder()->getOrderType()==ORDER_NULL);
+    CHECK(withWarrushObservation(ai,game,[&]{return ai.staffingOrder();})->getOrderType()==ORDER_NULL);
 }
 
 TEST_CASE("Warrush mixed producer staffing respects zero and saturated assignment limits")
@@ -748,14 +811,14 @@ TEST_CASE("Warrush mixed producer staffing respects zero and saturated assignmen
         game.teams[0]->myBuildings[0]->maxUnitWorking=5;
         auto* hybrid=game.addBuilding(14,4,game.buildingsTypes.findByKey("racetrack.0.finished"),0,0,0);
         REQUIRE(hybrid);
-        auto order=ai.staffingOrder();
+        auto order=withWarrushObservation(ai,game,[&]{return ai.staffingOrder();});
         if(limit==0) CHECK(order->getOrderType()==ORDER_NULL);
         else {
             auto staffing=std::dynamic_pointer_cast<OrderModifyBuilding>(order);
             REQUIRE(staffing);CHECK(staffing->gid==hybrid->gid);CHECK(staffing->numberRequested==limit);
         }
         hybrid->maxUnitWorking=limit;
-        CHECK(ai.staffingOrder()->getOrderType()==ORDER_NULL);
+        CHECK(withWarrushObservation(ai,game,[&]{return ai.staffingOrder();})->getOrderType()==ORDER_NULL);
     }
 }
 
@@ -775,11 +838,13 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
         ai.canSwim=swimming;
         auto* gradient=game.map.getResourceGradient(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
         for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
-        ai.copyWheatGradient(copied.data());
-        for(std::size_t i=0;i<copied.size();++i) {
-            CHECK(copied[i]==expected[i%expected.size()]);
-            CHECK(ai.wheatGradientAt(i)==expected[i%expected.size()]);
-        }
+        withCastorObservation(ai,game,[&] {
+            ai.copyWheatGradient(copied.data());
+            for(std::size_t i=0;i<copied.size();++i) {
+                CHECK(copied[i]==expected[i%expected.size()]);
+                CHECK(ai.wheatGradientAt(i)==expected[i%expected.size()]);
+            }
+        });
     }
 }
 }

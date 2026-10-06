@@ -190,21 +190,21 @@ int Building::getConstructionCompletionTypeNum() const
 	return type->isBuildingSite ? type->nextLevel : typeNum;
 }
 
-void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
+bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
 	if ((buildingState==ALIVE) && (!type->isBuildingSite))
 	{
 		const int target = hp < getEffectiveMaxHp() ? type->prevLevel : type->nextLevel;
-		if (target < 0) return;
+		if (target < 0) return false;
 		const BuildingType* site = owner->game->buildingsTypes.get(target);
 		const BuildingType* completed = hp < getEffectiveMaxHp() ? type
 			: site->isBuildingSite ? owner->game->buildingsTypes.get(site->nextLevel) : site;
 		if (unitWorking < 0 || unitWorking > site->semantics.assignmentLimit || unitWorkingFuture < 0
-			|| unitWorkingFuture > completed->semantics.assignmentLimit) return;
+			|| unitWorkingFuture > completed->semantics.assignmentLimit) return false;
 		if (hp<getEffectiveMaxHp())
 		{
 			if (!type->semantics.repairable || (type->prevLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(REPAIR))
-				return;
+				return false;
 			constructionResultState=REPAIR;
 		}
 		else
@@ -212,9 +212,9 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 			// Enforce the rule here as well as in order validation: local callers
 			// may reach this boundary directly. The damaged-building branch above
 			// remains a repair, which does not grant an unavailable building level.
-			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return;
+			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
 			if (!isUpgradeAvailable() || !isHardSpaceForBuildingSite(UPGRADE))
-				return;
+				return false;
 			constructionResultState=UPGRADE;
 		}
 
@@ -261,7 +261,9 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		maxUnitWorkingPreferred = maxUnitWorking;
 		maxUnitWorkingFuture = unitWorkingFuture;
 		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
+		return true;
 	}
+	return false;
 }
 
 void Building::cancelConstruction(Sint32 unitWorking)

@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -22,7 +23,7 @@ namespace Cortex
 		// (nx, ny) covered by the footprint (cx, cy) top-left, cw x ch? Footprints
 		// are small (<= a few tiles per side), so the direct scan is cheap and
 		// avoids fragile rectangle-overlap math across the map seam.
-		bool footprintContains(const Map& map, int cx, int cy, int cw, int ch,
+		bool footprintContains(const Cortex::WorldMap& map, int cx, int cy, int cw, int ch,
 		                       int nx, int ny)
 		{
 			for (int j = 0; j < ch; j++)
@@ -66,13 +67,13 @@ namespace Cortex
 	// Chebyshev distance from the footprint's top-left corner to the nearest
 	// live building owned by `team`. Returns -1 when the team has no
 	// buildings yet (first placement: distance is meaningless).
-	int distanceToNearestBuilding(Game* game, Team* team, int x, int y)
+	int distanceToNearestBuilding(Cortex::World* game, Cortex::WorldTeam* team, int x, int y)
 	{
 		int best = -1;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 				continue;
 			int d = game->map.warpDistMax(x, y, b->posX, b->posY);
 			if (best < 0 || d < best)
@@ -123,7 +124,7 @@ namespace Cortex
 		    && axisSignedGap(ay, ah, by, bh, mapH) < 0;
 	}
 
-	static unsigned innOccupiedSideMask(const Map& map, int innX, int innY, int innW, int innH,
+	static unsigned innOccupiedSideMask(const Cortex::WorldMap& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		const bool haveCand = (candW > 0 && candH > 0);
@@ -172,14 +173,14 @@ namespace Cortex
 		return count;
 	}
 
-	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	int innOccupiedSides(const Cortex::WorldMap& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		return sideCount(innOccupiedSideMask(map, innX, innY, innW, innH,
 		                                    candX, candY, candW, candH));
 	}
 
-	void grownFootprint(const BuildingsTypes& catalog, const BuildingType* bt, int& w, int& h)
+	void grownFootprint(const Cortex::WorldCatalog& catalog, const BuildingType* bt, int& w, int& h)
 	{
 		w = (bt != NULL) ? bt->width : 0;
 		h = (bt != NULL) ? bt->height : 0;
@@ -199,7 +200,7 @@ namespace Cortex
 		}
 	}
 
-	void grownFootprintBox(const BuildingsTypes& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h)
+	void grownFootprintBox(const Cortex::WorldCatalog& catalog, const BuildingType* bt, int& ox, int& oy, int& w, int& h)
 	{
 		ox = 0;
 		oy = 0;
@@ -239,7 +240,7 @@ namespace Cortex
 		h  = maxY - minY;
 	}
 
-	bool anyWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
+	bool anyWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
 	{
 		// The footprint expanded by `dist` in Chebyshev distance is exactly the
 		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
@@ -256,7 +257,7 @@ namespace Cortex
 		return false;
 	}
 
-	int countWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
 	{
 		// Forbidden-BLIND companion to countHarvestableWheatWithin: counts every WHEAT
 		// tile in the expanded footprint regardless of the forbidden mask. The gap
@@ -274,7 +275,7 @@ namespace Cortex
 		return count;
 	}
 
-	int countSurvivingWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countSurvivingWheatWithin(const Cortex::WorldMap& map, int x, int y, int w, int h, int dist)
 	{
 		// Parity-aware count of the WHEAT tiles that SURVIVE Cortex's wheat-protection
 		// checkerboard — the open half the paint leaves harvestable: WHEAT tiles whose
@@ -304,7 +305,7 @@ namespace Cortex
 		return count;
 	}
 
-	int countHarvestableWheatWithin(const Map& map, Uint32 teamMask,
+	int countHarvestableWheatWithin(const Cortex::WorldMap& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{
 		// Same expanded-footprint scan box as anyWheatWithin ([x-dist, x+w+dist) x
@@ -329,16 +330,16 @@ namespace Cortex
 		return count;
 	}
 
-	bool candidateCrowdsInn(Game* game, Team* team, const Map& map,
+	bool candidateCrowdsInn(Cortex::World* game, Cortex::WorldTeam* team, const Cortex::WorldMap& map,
 	                        int x, int y, int w, int h)
 	{
 		if (game == NULL || team == NULL)
 			return false;
 
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 				continue;
 			if (b->type == NULL ||
 			    !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_FOOD))
@@ -367,7 +368,7 @@ namespace Cortex
 		return false;
 	}
 
-	bool candidateOverlapsReservedExpansion(Game* game, Team* team, const Map& map,
+	bool candidateOverlapsReservedExpansion(Cortex::World* game, Cortex::WorldTeam* team, const Cortex::WorldMap& map,
 	                                        int cgx, int cgy, int cew, int ceh)
 	{
 		if (game == NULL || team == NULL)
@@ -386,10 +387,10 @@ namespace Cortex
 		// type returns the box covering its current footprint plus all remaining upgrade
 		// levels, anchored relative to the current corner (posX, posY), so this works
 		// whether the existing building is level 0 or already partly upgraded.
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 		{
-			Building* b = team->myBuildings[i];
-			if (b == NULL || b->buildingState == Building::DEAD)
+			Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 				continue;
 			if (b->type == NULL || b->type->nextLevel < 0 || !b->type->semantics.occupiesGround)
 				continue;
@@ -403,13 +404,13 @@ namespace Cortex
 		}
 		return false;
 	}
-	PlacementGeometry::PlacementGeometry(Team* team, Map& map) : map(map)
+	PlacementGeometry::PlacementGeometry(Cortex::WorldTeam* team, Cortex::WorldMap& map) : map(map)
 	{
 		if (!team) return;
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; ++i)
 		{
-			const Building* b = team->myBuildings[i];
-			if (!b || b->buildingState == Building::DEAD) continue;
+			const Cortex::WorldBuilding* b = team->myBuildings[i];
+			if (!b || b->buildingState == Cortex::WorldBuilding::DEAD) continue;
 			buildings.push_back({b->posX, b->posY, 0, 0});
 			if (!b->type) continue;
 			const unsigned roles = buildingRoles(*team->game, *b->type);

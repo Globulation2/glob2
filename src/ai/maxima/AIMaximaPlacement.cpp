@@ -15,9 +15,64 @@
 #include <queue>
 #include <sstream>
 #include <mutex>
+#include <type_traits>
 
 namespace AIMaximaPlacement
 {
+
+uint64_t Planner::retainedQueryVectorBytes() const noexcept
+{
+    // Private query payload only: exclude shared geometry and container node heaps.
+    const auto bytes = [](const auto& values) -> uint64_t {
+        return values.capacity() * sizeof(typename std::decay_t<decltype(values)>::value_type);
+    };
+    uint64_t total = 0;
+    total += bytes(incrementalIntents);
+    total += bytes(incrementalCandidates);
+    total += bytes(footprintRefs);
+    total += bytes(circulationRefs);
+    total += bytes(waterMaskCache);
+    total += bytes(resourceSourceCache);
+    total += bytes(foodOpportunitySourceCache);
+    total += bytes(foodHaloMaximumCache);
+    total += bytes(threatProtectionSourceCache);
+    total += bytes(threatPrefixCache);
+    total += bytes(protectionPrefixCache);
+    total += bytes(buildingDistanceSourceCache);
+    total += bytes(scoringReservedGeneration);
+    total += bytes(scoringAffectedGeneration);
+    total += bytes(scoringBlockedNeighbors);
+    total += bytes(scoringReservedScratch);
+    total += bytes(scoringAffectedScratch);
+    total += bytes(colonyFoodClaims);
+    total += bytes(colonyAnchors);
+    total += bytes(foodBaselineConsumers);
+    total += bytes(candidateFoodLedgers);
+    total += bytes(incrementalWorld.tiles);
+    total += bytes(incrementalWorld.buildings);
+    total += bytes(incrementalWorld.feedingColonies);
+    total += incrementalWorld.retainedProfileIndexBytes();
+    total += bytes(foodInput.yield);
+    total += bytes(foodInput.traversable);
+    total += bytes(foodInput.consumers);
+    for (const auto& candidate : incrementalCandidates)
+        total += bytes(candidate.parcelTiles) + bytes(candidate.accessTiles) + bytes(candidate.arteryTiles);
+    for (const auto* action : {&incrementalBestStrict, &incrementalBestFallback})
+        total += bytes(action->parcelTiles) + bytes(action->accessTiles) + bytes(action->arteryTiles);
+    total += bytes(incrementalWorld.profiles);
+    for (const auto& profile : incrementalWorld.profiles) total += bytes(profile.levels);
+    for (const auto& values : routeDistanceCache) total += bytes(values);
+    for (const auto& values : routeParentCache) total += bytes(values);
+    for (const auto& values : resourceDistanceCache) total += bytes(values.storage());
+    for (const auto* values : {&waterDistanceCache, &footprintDistanceCache,
+            &completedBuildingDistanceCache, &criticalBuildingDistanceCache, &towerBuildingDistanceCache})
+        total += bytes(values->storage());
+    for (const auto& frontier : distanceFrontiers) total += frontier.retainedBytes();
+    total += foodLedger.retainedVectorBytes() + foodResult.retainedVectorBytes()
+        + foodServiceBaseline.retainedVectorBytes();
+    for (const auto& candidate : candidateFoodLedgers) total += candidate.result.retainedVectorBytes();
+    return total;
+}
 
 namespace
 {

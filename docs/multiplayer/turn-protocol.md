@@ -21,6 +21,24 @@ The relay never simulates the game, so it does not know the rules. It treats ord
 opaque bytes. The only exceptions are the few order type ids in the
 [order handling](#order-handling) section.
 
+## AI order scheduling
+
+MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 8;
+omitting it means 0. The engine stores it in GameHeader and uses the same delay
+for every AI seat. A decision at tick `t` yields an order for `t + delay`, with
+due computation completed before delivery. This logical AI delay is independent
+of the transport's jitter buffer and does not delay human commands. Match setup,
+save continuation and verification must preserve the value.
+
+The authoritative simulation owner captures immutable AI inputs and delivers
+commands in stable request order. It checks entity incarnations and normal order
+validity at delivery, then feeds execution receipts into subsequent decisions.
+Remote/replay JavaScript replicas retain visibility memory through ordered frozen
+observations without running an extra decision. Worker count and elapsed
+computation time do not select simulation order ticks. See the
+[engine scheduling contract](../development/reference.md#ai-observations-and-delayed-orders)
+for save and lifecycle boundaries.
+
 ## Model
 
 - The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts

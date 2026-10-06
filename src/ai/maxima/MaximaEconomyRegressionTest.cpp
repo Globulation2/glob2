@@ -210,7 +210,7 @@ void colonyStartupAndAffordability()
     ai.snapshot.free_workers=10;
     int id=-1;
     for(const auto& entry:ai.context.get_building_register().found())
-        if(ai.context.get_building_register().get_building(entry.first)==swarm)id=entry.first;
+        if(ai.context.get_building_register().get_building(entry.first) && ai.context.get_building_register().get_building(entry.first)->gid==swarm->gid)id=entry.first;
     REQUIRE(id>=0);
     AIMaximaPlacement::DevelopmentAction action;
     action.id=123; action.buildingId=id; action.purpose=AIMaximaPlacement::ColonySeed;
@@ -1456,14 +1456,15 @@ TEST_CASE("recipient meal demand follows saved hunger and external action clocks
     ai.snapshot=ai.collect_snapshot(ai.context);
     CHECK(ai.snapshot.feeding_demand[WORKER]>initialDemand);
     CHECK(ai.feeding_capacity(inn,1)<capacity425);
-    const auto recurring=ai.recipient_meal_rate(*worker);
+    auto readMeal=[&] {auto observed=ai.context.scopeOwnerObservation();return ai.recipient_meal_rate(*ai.context.readPlayer()->team->myUnits[Unit::GIDtoID(worker->gid)]);};
+    const auto recurring=readMeal();
     worker->hungry=Unit::HUNGRY_MAX;worker->speed=256;worker->displacement=Unit::DIS_INSIDE;
-    CHECK(ai.recipient_meal_rate(*worker)==recurring); // service state cannot erase recurring demand
+    CHECK(readMeal()==recurring); // service state cannot erase recurring demand
     worker->displacement=Unit::DIS_RANDOM;worker->performance[WALK]=24;
-    CHECK(ai.recipient_meal_rate(*worker)>recurring);
-    worker->hungriness=0;CHECK(ai.recipient_meal_rate(*worker)==0);
+    CHECK(readMeal()>recurring);
+    worker->hungriness=0;CHECK(readMeal()==0);
     worker->hungriness=700;f.game.gameHeader.setHungerDisabled(true);
-    CHECK(ai.recipient_meal_rate(*worker)==0);
+    CHECK(readMeal()==0);
     f.game.gameHeader.setHungerDisabled(false);
     const auto slow=AIMaxima::recipientMealRate(150000,37500,1,1,WALK,16,534);
     CHECK(slow>0); // fractional population demand survives until aggregation
@@ -1735,7 +1736,7 @@ TEST_CASE("production observation keeps planned work despite temporarily absent 
     f.game.setGameHeader(header,true);
     ai.context.initialize();ai.ensure_strategy();int id=-1;
     for(const auto& entry:ai.context.get_building_register().found())
-        if(ai.context.get_building_register().get_building(entry.first)==producer)id=entry.first;
+        if(ai.context.get_building_register().get_building(entry.first) && ai.context.get_building_register().get_building(entry.first)->gid==producer->gid)id=entry.first;
     REQUIRE(id>=0);
     ai.staffing_control[id].request=8;ai.swarm_allowance[id]=5;
     Sint32 ratios[3]{3,0,1};auto order=std::make_shared<OrderModifySwarm>(producer->gid,ratios);

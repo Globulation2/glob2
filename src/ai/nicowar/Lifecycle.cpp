@@ -19,7 +19,7 @@ using namespace AISharedRuntime::SearchTools;
 
 
 
-NewNicowar::NewNicowar()
+NewNicowar::NewNicowar() : strategyDefinitions(std::make_shared<NicowarStrategyLoader>())
 {
 	timer=0;
 	buildings_under_construction=0;
@@ -290,7 +290,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_UPGRADE_PHASE)
 	{
-		if (!runtime.player->game->gameHeader.isUnitUpgradesDisabled()) upgrade_buildings(runtime);
+		if (!runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()) upgrade_buildings(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CONTROL_ATTACKS_PHASE)
 	{
@@ -298,7 +298,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_DEFENSE_FLAG_PHASE)
 	{
-		if (!runtime.player->game->gameHeader.isPeacefulModeEnabled()) compute_defense_flag_positioning(runtime);
+		if (!runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled()) compute_defense_flag_positioning(runtime);
 	}
 	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == 0)
 	{
@@ -310,7 +310,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS == AI_NICOWAR_EXPLORER_ATTACK_OFFSET)
 	{
-		if (!runtime.player->game->gameHeader.isPeacefulModeEnabled()) compute_explorer_flag_attack_positioning(runtime);
+		if (!runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled()) compute_explorer_flag_attack_positioning(runtime);
 	}
 
 	order_buildings(runtime);
@@ -329,7 +329,7 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 	{
 		MapInfo mi(runtime);
 		int id=std::stoi(message.substr(22, message.size()-1));
-		Building* b = runtime.get_building_register().get_building(id);
+		AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(id);
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
 		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
@@ -351,7 +351,7 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 	{
 		MapInfo mi(runtime);
 		int id=std::stoi(message.substr(22, message.size()-1));
-		Building* b = runtime.get_building_register().get_building(id);
+		AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(id);
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
 		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
@@ -410,8 +410,7 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 
 void NewNicowar::selectStrategy()
 {
-	NicowarStrategyLoader loader;
-	strategy = loader.chooseRandomStrategy();
+	strategy = strategyDefinitions->chooseRandomStrategy();
 	//strategy = loader.getParticularStrategy("default");
 }
 

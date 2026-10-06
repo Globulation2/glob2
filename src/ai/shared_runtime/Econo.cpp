@@ -138,13 +138,13 @@ void Econo::handle_message(Runtime& runtime, const std::string& message)
 		//Constraints around nearby settlement
 		AISharedRuntime::Gradients::GradientInfo gi_building;
             gi_building.terrainTravel=field::TerrainTravel::Swim;
-		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
+		gi_building.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, false));
 		gi_building.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 		//You want to be close to other buildings, but wheat is more important
 		bo->add_constraint(new AISharedRuntime::Construction::MinimizedDistance(gi_building, AI_SHARED_RUNTIME_RTI_BUILD_CLUSTER_WEIGHT));
 
 		AISharedRuntime::Gradients::GradientInfo gi_building_construction;
-		gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.player->team->teamNumber, true));
+		gi_building_construction.add_source(new AISharedRuntime::Gradients::Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, true));
 		gi_building_construction.add_obstacle(new AISharedRuntime::Gradients::Entities::AnyResource);
 		//You don't want to be too close
 		bo->add_constraint(new AISharedRuntime::Construction::MinimumDistance(gi_building_construction, AI_SHARED_RUNTIME_RTI_INN_CONSTRUCTION_MIN_DIST));

@@ -269,6 +269,7 @@ void JavaScriptMap::step(const std::string &source, Game &game, ClientCommandSin
 	try
 	{
 		Observations observations(game, -1);
+		auto observationScope = observations.captureObservation();
 		Host host;
 		host.tick = game.stepCounter;
 		host.team = -1;

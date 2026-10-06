@@ -3,8 +3,8 @@
 Performance collection is automatic. `GLOB2_TEAM_TIMELINE=1` exports it alongside gameplay
 and AI statistics. It is local to an execution session: loading starts fresh timing coverage,
 and no performance data enters saves, orders, RNG, simulation checksums, or AI decisions.
-No HUD values or pacing rules change. AI samples are written in fixed-size binary batches
-with byte-for-byte equivalence to the previous scalar writes; the save format is unchanged.
+Performance counters are not serialized. Controller and scheduling continuation state
+have their own save-format rules; timing collection does not change them.
 
 ## Meaning of the measurements
 
@@ -40,10 +40,11 @@ Scopes cover units/buildings/tasks, map updates, fog, scripts, construction proj
 statistics, orders/replay checksums, AI totals and observation/planning/gradient phases,
 resource/building/round-trip/area gradients and propagation, pathfinding, rendering passes,
 loading/generation/site assignment/site relaxation/validation, and save/output work.
-Per-player AI totals identify player, team, implementation, and controller generation.
-Replay timings describe replay execution, not reconstructed original AI decisions.
-AI subphase scopes are aggregate timings across players; the complete per-player AI cost is
-reported by `ai.player`. Audio callback and GPU execution times are not instrumented.
+Per-player `ai.player` scopes identify player, team, implementation, and controller
+generation where the synchronous polling API is instrumented. Scheduled worker decisions
+use the explicit `ai_pipeline` metrics below; worker-local scopes are not merged into the
+owner collector. Replay timings describe replay execution, not reconstructed original
+AI decisions. Audio callback and GPU execution times are not instrumented.
 Startup timings include generation attempts performed while preparing the session.
 
 ## Cost and sampling
@@ -160,56 +161,106 @@ those nested in round-trip construction or saving. Sum these two scopes to compa
 building-field construction, but do not then add inclusive round-trip/save timings
 to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 
-## Parallel AI polling and experimental map computation
+## Scheduled AI decisions and experimental map computation
 
-Structured `--run-game` accepts `--compute-threads N` (1–64 execution threads,
-including the submitting thread) and `--compute-experiments MODE`. Modes are
-`none`, `areas`, `initialize`, `hiring`, `ai`, and `all`. AI polling is the
-default mode. The default thread count is the smaller of four, the available
-hardware threads, and the number of AI controllers, with a minimum of one.
-Other compute modes remain experimental opt-ins. Specify one thread for a
-serial AI reference.
+All shipped controllers borrow immutable engine snapshots for decisions. The simulation
+owner captures the required component union once per poll tick; unchanged components are
+shared, and mutable component buffers are reused only after their consumer leases end.
+Unit membership uses flat offset/count ranges. Controllers keep private strategy state and
+bounded query caches, rather than retaining a whole observation between polls. Published
+resource fields preserve the map's existing refresh age. An absent field is initialized
+from frozen inputs and enrolled by the simulation owner, without refreshing an existing
+published field.
 
-Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
+The engine polls each eligible controller at most once per logical tick. Each controller's
+jobs run in FIFO order without overlap; different controllers may run concurrently. One
+match-wide delay of 0–8 ticks sets the order's deadline. At the deadline the owner waits
+for unfinished work, then publishes the complete batch in player order. A slow worker
+cannot postpone an order's logical execution tick. Paused games submit no decisions and
+advance no deadline clock. Delay zero still uses captured inputs and the same scheduler.
+
+Orders carry observed target incarnations. The execution boundary rejects a missing or
+replaced target and queues immutable accepted/rejected feedback for a later decision.
+Controller replacement joins its work before destruction. Saving drains computation
+without publishing future commands early, and retains deadlines, queued commands,
+receipts, RNG and controller continuation state. Worker counts remain local execution
+configuration. Changing the match delay can change strategy, replay orders and game feel;
+changing only worker count must preserve execution at the same delay.
+
+Structured `--run-game` accepts `--ai-order-delay D` for a new match, and
+`--compute-threads N` (1–64) with `--compute-experiments MODE`. Modes are `none`,
+`areas`, `initialize`, `hiring`, `ai`, and `all`; `ai` is the default. The default
+count is the smaller of four, available hardware threads, and AI controllers, with a
+minimum of one. Ordinary GUI and legacy `--nox` runs accept `--ai-threads N`.
+With `ai` enabled, this count configures the AI executor's background workers;
+the simulation owner is additional. One means one background AI worker.
+`--compute-experiments none` uses inline AI computation with the same delay schedule.
+Thread creation failure and platforms without threads also use that inline schedule.
+A loaded match's configured delay cannot be overridden.
+
+Map computation has a separate executor whose thread count includes the submitting
+thread. Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
 refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
-16384 cells. Goal painting and forbidden-border detection retain their serial
-ordering. Hiring jobs advance existing frozen building searches in separate swim
-classes before candidate evaluation; they neither refresh caches nor change use
-timestamps. This can perform unnecessary work and must be measured separately.
-Periodic one-field-per-tick refresh remains unchanged. The `areas`,
-`initialize`, and `hiring` modes leave AI polling unchanged.
+16384 cells; goal painting and forbidden-border detection retain their serial ordering.
+Hiring jobs advance frozen building searches in separate swim classes before candidate
+evaluation, without refreshing caches or changing use timestamps. These jobs use
+blocking batches and may perform unnecessary work. Periodic one-field-per-tick refresh
+remains unchanged. `all` includes AI scheduling and these map experiments; other map
+modes use inline scheduled AI decisions. Measure the additional work separately.
 
-The `ai` experiment polls eligible AI controllers in a blocking batch after the
-GUI sync step. It binds their telemetry on the main thread, waits for every
-controller to return one order, then submits those orders in player order before
-the network update and simulation step. No AI work continues past the barrier.
-Paused games keep the serial order path. `all` also includes AI polling.
-Worker-local implicit performance scopes are not merged
-into the main-thread collector; use batch metrics and process-level timing for
-threaded comparisons. Short or uneven AI workloads may cost more in dispatch
-and barrier overhead than they save in parallel work.
-
-Ordinary GUI games and legacy `--nox` runs use parallel AI polling by default
-when multiple controllers and CPUs are available. `--ai-threads N` overrides
-the thread count (1–64, including the main thread). Structured `--run-game`
-uses `--compute-threads N`; `--compute-experiments none` disables AI batching.
-
-A game-owned executor uses persistent workers, main-thread participation and a
-barrier before simulation resumes. Nested jobs run inline. Eager propagation
-scratch is owned by executor slot; lazy searches retain their own queues. Thread
-creation failure and the serial browser fallback use serial execution; threaded
-browser builds use the same executor as native builds. Thread count and
-performance counters are not saved or included in simulation checksums.
-
-`result.json` reports actual `compute_threads`, selected `compute_experiments`,
+`result.json` retains the map executor's `compute_threads`, `compute_experiments`,
 `compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
-`compute_wait_ns`, and `compute_active_elapsed_ns`. The last value sums active
-elapsed time across executor slots; it is **not CPU time**. `hiring_prepasses`
-counts candidate-scan hooks and `hiring_popped_entries` counts queue entries
-advanced there (including stale entries). `setup_ns` ends immediately before
-`Engine::run`; `run_ns` measures that call, including its normal finalization.
-Worker-local implicit scope timings are not merged into main-thread scope totals;
-use the explicit batch metrics and process CPU measurements for comparisons.
+`compute_wait_ns`, and `compute_active_elapsed_ns`. They do not describe the separate
+AI worker queue. `hiring_prepasses` counts candidate-scan hooks and
+`hiring_popped_entries` counts advanced entries, including stale entries.
+`setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
+
+The nested `ai_pipeline` object reports session counters:
+
+| Metric | Meaning |
+| --- | --- |
+| `captures` | Distinct snapshot capture boundaries. |
+| `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
+| `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
+| `bytes_copied` | Accounted component payload copied across captures, including published resource planes. |
+| `component_reuses` | Unchanged component or resource-plane reuse events. |
+| `allocations` | Instrumented pool-object, vector-growth and resource-field map allocation events. |
+| `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
+| `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
+| `deadline_misses` | Outputs whose futures were unfinished when their deadlines were checked. |
+| `deadline_wait_ns` | Elapsed waiting/completion time for those missed deadlines. |
+| `maximum_pending` | Largest number of queued decision outputs across all controllers. |
+| `snapshot_allocated_buffers`, `snapshot_reusable_buffers`, `snapshot_leased_buffers` | Allocated pool buffers, buffers with only their pool reference, and buffers with other references. These count component/plane epochs, not whole-world generations. |
+| `snapshot_retained_bytes`, `snapshot_capacity_bytes`, `snapshot_leased_bytes` | Accounted pooled objects plus payload capacity, payload capacity alone, and the subset referenced outside its pool. |
+| `snapshot_peak_*` | Session high-water values for the corresponding snapshot buffer/byte counters. |
+| `controller_query_vector_bytes`, `controller_query_vector_peak_bytes` | Current sum of published controller query-vector capacities and its session high-water value. |
+| `controller_query_vector_samples` | Controllers with an available published capacity sample; unavailable controllers contribute no value. |
+
+Elapsed work across threads is not process CPU time. Preparation and extraction partition
+owner capture work; decision and deadline-wait durations can overlap other work, so do not
+sum all counters into a total. `bytes_copied` is cumulative traffic, and `allocations` is
+not an exhaustive allocator trace. Use process user-plus-system CPU and peak RSS alongside
+the explicit metrics. Worker-local implicit scopes are not merged into owner totals.
+
+The asynchronous AI migration requires at least ten paired zero-delay runs against
+master, with uncertainty reported for full-match CPU and elapsed-time ratios. Both
+regressions must remain within 5%. Separate deadline misses and waits from average
+tick time, and compare gameplay at delays 0, 1, 4 and 8 independently of throughput.
+The production delay remains zero until those experiments justify a change.
+
+Snapshot pools have seventeen slots per component/plane to cover the largest consumer
+horizon: sixteen-tick map-gradient jobs and eight-tick AI decisions. Slots allocate on
+demand and retain reusable capacity. Lease counters include the store's latest snapshot
+and references from pooled components, rather than counting only workers. Shared catalog
+and terrain payloads are counted once. Byte accounting includes nested vector and growth
+capacities, but excludes registry/configuration heaps, string heaps, map nodes, allocator
+overhead and shared-pointer control blocks; it is not a complete heap census.
+
+Controller capacities are sampled on the controller's decision lane and published with
+its output. They include reported retained query vectors, including private resource
+initializations and projection scratch, while excluding temporary query allocations,
+node heaps and legacy raw-array caches. Availability is explicit. Snapshot and controller
+categories can share payloads; do not infer total resident memory by adding them.
 
 On macOS/Linux, prepare retained fixtures and run paired measurements:
 
@@ -228,11 +279,16 @@ a completed game, or changed termination ticks as computation speedup. A full
 campaign can take considerable time and disk space. Timed runs omit optional
 exports and saves; built-in scope collection remains enabled in both binaries.
 
+Verification requires compatible executables expected to produce identical orders and
+save bytes. When delay or save format changes, compare worker counts within the same
+delay and format separately; cross-version byte equality is not the acceptance test.
+
 The runner retains commands, executable/input hashes, logs, results, per-process
 peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
-It runs one warm-up and five measured repetitions with rotated/reversed ordering.
-Compare each experiment's serial execution, its threaded execution, and the
-unchanged baseline. Aggregate ratios do not replace per-scenario CPU and small-map
+It runs one warm-up and five measured repetitions by default, with rotated/reversed
+ordering; use `--repeats 10` for ten paired measurement rounds.
+Compare inline scheduled AI (`none`), one background AI worker, multiple workers,
+and the baseline at the same delay. Aggregate ratios do not replace per-scenario CPU and small-map
 regression checks. Timing thresholds are deliberately not CI assertions.
 
 

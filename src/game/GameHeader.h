@@ -11,12 +11,14 @@
 #include <vector>
 #include "WinningConditions.h"
 #include <assert.h>
+#include <stdexcept>
 
 ///This is the game header. It is dynamic, and can change from game to game, even
 ///if the map doesn't. It holds all configurable information for a game, from team
 ///alliances to customized victory conditions
 class GameHeader
 {
+	Uint64 observationRevisionValue = 1;
 public:
 	///Gives default values to all entries
 	GameHeader();
@@ -46,20 +48,23 @@ public:
 	inline Sint32 getNumberOfPlayers() const { return numberOfPlayers; }
 	
 	///Sets the number of players in the game
-	inline void setNumberOfPlayers(Sint32 players) { numberOfPlayers=players; }
+	inline void setNumberOfPlayers(Sint32 players) { numberOfPlayers=players;  ++observationRevisionValue; }
 	
 	///Returns the games latency. This would be 0 for local games, but higher for networked games.
 	inline Sint32 getGameLatency() const { return gameLatency; }
 	
 	///Sets the latency of the game.
-	inline void setGameLatency(Sint32 latency) { gameLatency = latency; }
+	Uint64 observationRevision() const { return observationRevisionValue; }
+	unsigned getAIOrderDelay() const { return aiOrderDelay; }
+	void setAIOrderDelay(unsigned ticks) { if (ticks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
+	inline void setGameLatency(Sint32 latency) { gameLatency = latency;  ++observationRevisionValue; }
 	
 	///Returns the order rate. 1 means an order is sent across the net for every frame,
 	///2 sends at every second frame, 3 at every 3'rd and so on
 	inline Uint8 getOrderRate() const { return orderRate; }
 	
 	///Sets the order frame rate
-	inline void setOrderRate(Uint8 orderRate) { this->orderRate = orderRate; }
+	inline void setOrderRate(Uint8 orderRate) { this->orderRate = orderRate;  ++observationRevisionValue; }
 	
 	///Provides access to the base player. n must be between 0 and 31.
 	inline BasePlayer& getBasePlayer(const int n)
@@ -118,7 +123,7 @@ public:
 	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }
 	
 	///Sets whether ally-teams are fixed during the game
-	inline void setAllyTeamsFixed(bool fixed) { allyTeamsFixed = fixed; }
+	inline void setAllyTeamsFixed(bool fixed) { allyTeamsFixed = fixed;  ++observationRevisionValue; }
 	
 	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
 	///Ones first on the list are considered first.
@@ -129,60 +134,60 @@ public:
 	inline Uint32 getRandomSeed() const { return seed; }
 	
 	///Sets the random generator seed to be used
-	inline void setRandomSeed(Uint32 s) { seed = s; }
+	inline void setRandomSeed(Uint32 s) { seed = s;  ++observationRevisionValue; }
 	
 	///Returns whether the map is discovered at game start
 	inline bool isMapDiscovered() const { return mapDiscovered; }
 	
 	///Sets whether the map is discovered at game start
-	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered; }
+	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered;  ++observationRevisionValue; }
 	/// Canonical resolved runtime values; empty means legacy/default resolution.
 	const std::string& getAIConfig(int player) const { assert(player >= 0 && player < Team::MAX_COUNT); return aiConfig[player]; }
-	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values; }
+	void setAIConfig(int player, const std::string& values) { assert(player >= 0 && player < Team::MAX_COUNT); aiConfig[player] = values;  ++observationRevisionValue; }
 
 	///Returns whether resources are allowed to grow/spread over time (custom-game rule)
 	inline bool isResourceGrowthDisabled() const { return resourceGrowthDisabled; }
 
 	///Sets whether resources are allowed to grow/spread over time (custom-game rule)
-	inline void setResourceGrowthDisabled(bool disabled) { resourceGrowthDisabled=disabled; }
+	inline void setResourceGrowthDisabled(bool disabled) { resourceGrowthDisabled=disabled;  ++observationRevisionValue; }
 
 	///Returns the resource-scarcity tier (0=off/today's rate, 1-3=progressively slower growth)
 	inline Uint8 getResourceScarcityLevel() const { return resourceScarcityLevel; }
 
 	///Sets the resource-scarcity tier (custom-game rule)
-	inline void setResourceScarcityLevel(Uint8 level) { resourceScarcityLevel=level; }
+	inline void setResourceScarcityLevel(Uint8 level) { resourceScarcityLevel=level;  ++observationRevisionValue; }
 
 	///Returns whether buildings complete construction instantly (custom-game rule)
 	inline bool isInstantConstructionEnabled() const { return instantConstruction; }
 
 	///Sets whether buildings complete construction instantly (custom-game rule)
-	inline void setInstantConstructionEnabled(bool enabled) { instantConstruction=enabled; }
+	inline void setInstantConstructionEnabled(bool enabled) { instantConstruction=enabled;  ++observationRevisionValue; }
 
 	///Returns the stockpile-start tier (0=none/today's default, 1-3=progressively larger
 	///starting amount seeded into each team's shared market/exchange resource pool)
 	inline Uint8 getStockpileStartLevel() const { return stockpileStartLevel; }
 
 	///Sets the stockpile-start tier (custom-game rule)
-	inline void setStockpileStartLevel(Uint8 level) { stockpileStartLevel=level; }
+	inline void setStockpileStartLevel(Uint8 level) { stockpileStartLevel=level;  ++observationRevisionValue; }
 
 	///Returns whether units are exempt from hunger and starvation (custom-game rule)
 	inline bool isHungerDisabled() const { return hungerDisabled; }
 
 	///Sets whether units are exempt from hunger and starvation (custom-game rule)
-	inline void setHungerDisabled(bool disabled) { hungerDisabled=disabled; }
+	inline void setHungerDisabled(bool disabled) { hungerDisabled=disabled;  ++observationRevisionValue; }
 
 	///Returns whether unit training and building upgrades are disabled (custom-game rule)
 	inline bool isUnitUpgradesDisabled() const { return unitUpgradesDisabled; }
 
 	///Sets whether unit training and building upgrades are disabled (custom-game rule)
-	inline void setUnitUpgradesDisabled(bool disabled) { unitUpgradesDisabled=disabled; }
+	inline void setUnitUpgradesDisabled(bool disabled) { unitUpgradesDisabled=disabled;  ++observationRevisionValue; }
 
 	///Returns the "glass cannon" tier (0=off/today's balance, 1-2=progressively higher
 	///damage dealt and lower HP/armor)
 	inline Uint8 getGlassCannonLevel() const { return glassCannonLevel; }
 
 	///Sets the "glass cannon" tier (custom-game rule)
-	inline void setGlassCannonLevel(Uint8 level) { glassCannonLevel=level; }
+	inline void setGlassCannonLevel(Uint8 level) { glassCannonLevel=level;  ++observationRevisionValue; }
 
 	///Resolves the "glass cannon" tier to its actual scale factor: multiplies
 	///attack strength (melee and magic), divides HP and armor. The single canonical place this
@@ -201,26 +206,26 @@ public:
 	inline bool isUnitsFearless() const { return unitsFearless; }
 
 	///Sets whether units fight to the death instead of retreating when damaged (custom-game rule)
-	inline void setUnitsFearless(bool fearless) { unitsFearless=fearless; }
+	inline void setUnitsFearless(bool fearless) { unitsFearless=fearless;  ++observationRevisionValue; }
 
 	///Returns whether units are exempt from permanent death (custom-game rule)
 	inline bool isPermadeathDisabled() const { return permadeathDisabled; }
 
 	///Sets whether units are exempt from permanent death (custom-game rule)
-	inline void setPermadeathDisabled(bool disabled) { permadeathDisabled=disabled; }
+	inline void setPermadeathDisabled(bool disabled) { permadeathDisabled=disabled;  ++observationRevisionValue; }
 
 	///Returns whether all combat is disabled for this match (custom-game rule)
 	inline bool isPeacefulModeEnabled() const { return peacefulMode; }
 
 	///Sets whether all combat is disabled for this match (custom-game rule)
-	inline void setPeacefulModeEnabled(bool enabled) { peacefulMode=enabled; }
+	inline void setPeacefulModeEnabled(bool enabled) { peacefulMode=enabled;  ++observationRevisionValue; }
 
 	///Returns the "fortress buildings" tier (0=off/today's HP, 1-2=progressively higher
 	///building HP)
 	inline Uint8 getBuildingHpLevel() const { return buildingHpLevel; }
 
 	///Sets the "fortress buildings" tier (custom-game rule)
-	inline void setBuildingHpLevel(Uint8 level) { buildingHpLevel=level; }
+	inline void setBuildingHpLevel(Uint8 level) { buildingHpLevel=level;  ++observationRevisionValue; }
 
 	///Resolves the "fortress buildings" tier to its actual HP multiplier.
 	///The single canonical place this scale is defined; Building's
@@ -239,8 +244,8 @@ public:
 	inline const ExperimentSet& getExperiments() const { return experiments; }
 	///Mutable access, for building a header before the game starts only: changing
 	///it once the game runs would desync peers and replays.
-	inline ExperimentSet& getExperiments() { return experiments; }
-	inline void setExperiments(const ExperimentSet& set) { experiments = set; }
+	inline ExperimentSet& getExperiments() { ++observationRevisionValue; return experiments; }
+	inline void setExperiments(const ExperimentSet& set) { experiments = set;  ++observationRevisionValue; }
 	///The hot-path read for simulation code: is this experiment on in this game?
 	inline bool hasExperiment(ExperimentId id) const { return experiments.has(id); }
 	// Empty only in pre-catalog files or an unresolved setup. A Game fills this
@@ -260,6 +265,7 @@ private:
 	///The number of ticks between an order issue, and the execution of the order.
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
+	Uint8 aiOrderDelay = 0;
 
 	///Sets the order rate
 	Uint8 orderRate;

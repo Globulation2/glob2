@@ -16,7 +16,11 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	this->player=player;
+    readWorld.reset();currentObservation.reset();observationCatalog.reset();readCatalog.reset();
 	gm.reset();
+    // Loading helpers read restored map metadata through one owner-scoped borrow.
+    // The borrow is released on success, early return and exceptions.
+    OwnerObservationScope observationScope(*this);
 	orders.clear();
 	management_orders.clear();
 	building_orders.clear();
@@ -43,6 +47,7 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		auto order = Order::getOrder(buffer.data(), buffer.size(), versionMinor);
 		if (!order) return false;
 		AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);
+        AIEngine::loadSelectedTarget(*stream,*order,versionMinor);
 		orders.push_back(order);
 		stream->readLeaveSection();
 	}
@@ -217,6 +222,7 @@ void Runtime::save(GAGCore::OutputStream *stream)
 		///one byte indicating the type is required to be written for order.
 		stream->writeUint8((*i)->getOrderType(), "type");
 		stream->write((*i)->getData(), (*i)->getDataLength(), "data");
+        AIEngine::saveSelectedTarget(*stream,**i);
 		stream->writeLeaveSection();
 		ordersIndex++;
 	}
@@ -309,7 +315,14 @@ void Runtime::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(from_load_timer,"fromLoadTimer");
 	stream->writeUint8(is_fruit,"isFruit");
 	stream->writeUint8(gm != nullptr,"hasGradientManager");
-	if(gm)gm->save(stream);
+	if(gm) {
+        // Save runs on the simulation owner after the ordered worker stream is
+        // drained. Only refresh the validity comparison, never the field.
+        auto observed=AIEngine::AIWorldView::capture(*player->game,observationCatalog ? observationCatalog : AIEngine::AIWorldView::captureCatalog(*player->game));
+        gm->bindWorld(*observed);
+        try {gm->save(stream);gm->unbindWorld();}
+        catch(...) {gm->unbindWorld();throw;}
+    }
     stream->writeEnterSection("retiredAttractions");
     stream->writeUint32(retired_attractions.size(),"size");
     Uint32 retiredIndex=0;

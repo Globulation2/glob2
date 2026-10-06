@@ -2,6 +2,7 @@
 #pragma once
 #include "BuildingCapabilities.h"
 #include "Game.h"
+#include "ai/observation/AIWorldView.h"
 #include "ScriptValue.h"
 #include <stdexcept>
 
@@ -41,6 +42,26 @@ inline Value buildingCapabilities(const Game& game, int type)
  for (const auto& [key, intent] : buildingCapabilityNames())
   if (buildingProvides(game, type, intent)) out.items.emplace_back(key);
  return out;
+}
+inline bool buildingProvides(const AIEngine::AIWorldView& world, int type, AIPlanning::BuildingIntent intent)
+{
+ return (world.catalog->at(type).capabilityMask & (Uint64(1) << unsigned(intent))) != 0;
+}
+inline Value buildingCapabilities(const AIEngine::AIWorldView& world, int type)
+{
+ Value out = Value::array();
+ for (const auto& [key, intent] : buildingCapabilityNames())
+  if (buildingProvides(world, type, intent)) out.items.emplace_back(key);
+ return out;
+}
+inline bool buildingVariantDescendsFrom(const AIEngine::AIWorldView::Catalog& catalog, int origin, int actual)
+{
+ for (std::size_t n = 0; origin >= 0 && n < catalog.size(); ++n)
+ {
+  if (origin == actual) return true;
+  origin = catalog.at(origin).next;
+ }
+ return false;
 }
 inline bool buildingVariantDescendsFrom(const BuildingsTypes& catalog, int origin, int actual)
 {

@@ -19,7 +19,10 @@ static unsigned compare(Game& game)
 {
     unsigned checks = 0;
     auto* team = game.teams[0];
-    Cortex::PlacementGeometry snapshot(team, game.map);
+    const auto captured=AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
+    Cortex::World observed(*captured);
+    auto* observedTeam=observed.teams[0];
+    Cortex::PlacementGeometry snapshot(observedTeam, observed.map);
     // Compare the mask against the independent per-building distance query,
     // including footprints/radii that wrap or cover the whole map.
     for (int w : {1, 2, 6, 20})
@@ -43,11 +46,11 @@ static unsigned compare(Game& game)
                 for (int h : {0, 1, 2, 3, 4, 6})
                 {
                     require(snapshot.candidateCrowdsInn(x,y,w,h) ==
-                        Cortex::candidateCrowdsInn(&game,team,game.map,x,y,w,h));
+                        Cortex::candidateCrowdsInn(&observed,observedTeam,observed.map,x,y,w,h));
                     require(snapshot.candidateOverlapsReservedExpansion(x,y,w,h) ==
-                        Cortex::candidateOverlapsReservedExpansion(&game,team,game.map,x,y,w,h));
+                        Cortex::candidateOverlapsReservedExpansion(&observed,observedTeam,observed.map,x,y,w,h));
                     require(snapshot.distanceToNearestBuilding(x,y) ==
-                        Cortex::distanceToNearestBuilding(&game,team,x,y));
+                        Cortex::distanceToNearestBuilding(&observed,observedTeam,x,y));
                     int edge = -1, swarm = -1, inn = -1;
                     for (int i=0;i<Building::MAX_COUNT;++i)
                     {
@@ -91,13 +94,20 @@ TEST_SUITE("CortexGeometry")
 	    auto* pool = add(2,9,IntBuildingType::SWIMSPEED_BUILDING,0,false);
 	    add(10,2,IntBuildingType::WALKSPEED_BUILDING,1,false);
 	    checks += compare(game);
-	    auto* previousType = pool->type;
-	    pool->type = nullptr;
-	    checks += compare(game);
-	    pool->type = globals->buildingsTypes.get(globals->buildingsTypes.getTypeNum(
-	        IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false));
-	    checks += compare(game);
-	    pool->type = previousType;
+        const auto previousTypeNum = pool->typeNum;
+        auto* previousType = pool->type;
+        // An absent entity is omitted by both the live oracle and extraction.
+        // A null type pointer is not a valid serialized simulation state.
+        const auto slot = Building::GIDtoID(pool->gid);
+        game.teams[0]->myBuildings[slot] = nullptr;
+        checks += compare(game);
+        game.teams[0]->myBuildings[slot] = pool;
+        pool->typeNum = game.buildingsTypes.getTypeNum(
+            IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false);
+        pool->type = game.buildingsTypes.get(pool->typeNum);
+        checks += compare(game);
+        pool->typeNum = previousTypeNum;
+        pool->type = previousType;
 	    // Map-only occupants include other teams; corner tiles count on both sides.
 	    game.map.setBuilding(14,14,1,1,Building::GIDfrom(1,1));
 	    game.map.setBuilding(3,15,1,1,Building::GIDfrom(2,1));

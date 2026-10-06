@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "AI.h"
 #include "AICastor.h"
+#include "ai/engine/AIDecision.h"
 #include "AICastorTuning.h"
 #include "Order.h"
 #include "Player.h"
@@ -198,6 +199,70 @@ TEST_SUITE("CastorContinuation")
             restored.save(second.get()); second->flush();
             CHECK(secondBackend->takeContents()==bytes);
         }
+    }
+    TEST_CASE("decisions keep assignments private and rejected requests can retry")
+    {
+        glob2test::HeadlessGlobals globals;
+        World world(AI::CASTOR,false,713);
+        auto& game=world.world.game;
+        AICastor controller(game.players[0]);
+        MersenneTwister random(713); controller.setRandomEngine(random);
+        std::shared_ptr<OrderModifySwarm> requested;
+        for (int tick=0;tick<300;++tick)
+        {
+            const auto before=state(game);
+            const auto order=controller.getOrder();
+            REQUIRE(order);
+            CHECK(state(game)==before);
+            if (auto ratio=std::dynamic_pointer_cast<OrderModifySwarm>(order))
+            { requested=ratio; break; }
+        }
+        REQUIRE(requested);
+        auto* building=game.resolveBuilding({requested->gid,
+            game.teams[0]->myBuildings[Building::GIDtoID(requested->gid)]->scriptIdentity});
+        REQUIRE(building);
+        CHECK_FALSE(std::equal(std::begin(requested->ratio),std::end(requested->ratio),building->ratio));
+        controller.controlSwarmsTimer=0;
+        const auto whilePending=controller.getOrder();
+        const auto repeated=std::dynamic_pointer_cast<OrderModifySwarm>(whilePending);
+        CHECK((!repeated || repeated->gid!=requested->gid));
+        controller.orderExecutionCompleted(*requested,false);
+        controller.controlSwarmsTimer=0;
+        const auto retry=std::dynamic_pointer_cast<OrderModifySwarm>(controller.getOrder());
+        REQUIRE(retry);
+        CHECK(retry->gid==requested->gid);
+        CHECK(std::equal(std::begin(retry->ratio),std::end(retry->ratio),requested->ratio));
+    }
+    TEST_CASE("snapshot decisions ignore later live changes and release borrowed inputs")
+    {
+        glob2test::HeadlessGlobals globals;
+        World fixture(AI::CASTOR,false,713);auto& game=fixture.world.game;
+        AICastor first(game.players[0]),second(game.players[0]);
+        MersenneTwister firstRandom(713),secondRandom(713);first.setRandomEngine(firstRandom);second.setRandomEngine(secondRandom);
+        auto observation=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+        std::weak_ptr<const AIEngine::AIWorldView> borrowed=observation;
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        AIEngine::DecisionContext context{*observation,0,0,receipts};
+        const auto encode=[](const std::shared_ptr<Order>& order) {
+            REQUIRE(order);std::vector<Uint8> bytes{order->getOrderType()};
+            if(order->getDataLength()) bytes.insert(bytes.end(),order->getData(),order->getData()+order->getDataLength());
+            return bytes;
+        };
+        auto* building=game.teams[0]->myBuildings[0];REQUIRE(building);
+        const int originalWorkers=building->maxUnitWorking;
+        for(unsigned poll=1;poll<=400;++poll) {
+            context.pollSequence=poll;
+            building->maxUnitWorking=originalWorkers;
+            game.gameHeader.setHungerDisabled(false);
+            const auto firstOrder=encode(first.getOrder(context));
+            building->maxUnitWorking=99;game.gameHeader.setHungerDisabled(true);
+            const auto secondOrder=encode(second.getOrder(context));
+            CAPTURE(poll);REQUIRE(firstOrder==secondOrder);
+            CHECK(first.observation==nullptr);CHECK(second.observation==nullptr);
+            CHECK(first.observedTeams.empty());CHECK(second.observedTeams.empty());
+        }
+        building->maxUnitWorking=originalWorkers;game.gameHeader.setHungerDisabled(false);
+        observation.reset();CHECK(borrowed.expired());
     }
     TEST_CASE("historical timer-only AI saves remain readable")
     {

@@ -224,6 +224,7 @@ private:
 
 	///This is the basic, variable strategy that Nicowar will be taking at all times
 	NicowarStrategy strategy;
+    std::shared_ptr<NicowarStrategyLoader> strategyDefinitions; // Loaded on owner, chosen on worker.
 
 	///These are all of the various buildings that can be constructed. Note that,
 	///while their may be more than one for a particular type of building, the

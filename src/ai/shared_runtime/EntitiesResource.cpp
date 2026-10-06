@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "ai/observation/AIWorldView.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -104,4 +105,19 @@ bool Entities::ResourceSet::load(GAGCore::InputStream* stream,Player*,Sint32)
 void Entities::ResourceSet::save(GAGCore::OutputStream* stream)
 {
  stream->writeEnterSection("ResourceSet"); stream->writeUint32(mask,"mask"); stream->writeLeaveSection();
+}
+
+bool Entities::Resource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    const auto& resource=world.tile(x,y).resource;
+    return resource.type==resource_type && resource.amount>0;
+}
+bool Entities::AnyResource::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{ return world.tile(x,y).resource.type!=NO_RES_TYPE; }
+bool Entities::ResourceSet::is_entity(const AIEngine::AIWorldView& world,int x,int y)
+{
+    if(!mask) return world.terrain->properties(world.tile(x,y).terrain).walkable;
+    const auto& resource=world.tile(x,y).resource;
+    return resource.type>=0 && resource.type<MAX_NB_RESOURCES
+        && (mask&(1u<<resource.type)) && resource.amount>0;
 }

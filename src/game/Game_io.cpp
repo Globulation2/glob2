@@ -263,6 +263,8 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_PLAYER, "signatureAfterPlayers"))
 		co_return false;
+	if (versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE && mapHeader.getIsSavedGame())
+		if (!loadAI(stream)) co_return false;
 
 	// Legacy saves reconstruct service lists by running building updates. That
 	// changes tie-breaking order and can even advance construction. New saved
@@ -599,6 +601,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 {
 	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
+	drainAI(); // Freeze submissions and finish private state, without delivering future orders.
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
 		if (teams[t])
 			AITelemetry::capture(teams[t], false, false);
@@ -712,6 +715,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 	stream->writeLeaveSection();
 	stream->write(FILE_SIG_GAME_PLAYER, FILE_SIG_LEN, "signatureAfterPlayers");
+	if (!fileIsAMap) saveAI(stream);
 
 	// Save the old map script state
 	sgslScript.save(stream, this);

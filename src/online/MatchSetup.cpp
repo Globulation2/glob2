@@ -40,7 +40,7 @@ bool MatchRules::operator==(const MatchRules& o) const
 	       hungerDisabled == o.hungerDisabled && unitUpgradesDisabled == o.unitUpgradesDisabled &&
 	       glassCannonLevel == o.glassCannonLevel && unitsFearless == o.unitsFearless &&
 	       permadeathDisabled == o.permadeathDisabled && peacefulMode == o.peacefulMode &&
-	       buildingHpLevel == o.buildingHpLevel;
+	       buildingHpLevel == o.buildingHpLevel && aiOrderDelay == o.aiOrderDelay;
 }
 
 bool GeneratorDescriptor::operator==(const GeneratorDescriptor& o) const
@@ -221,7 +221,7 @@ MatchRules parseRules(const json& value, const std::string& path)
 	             {"prestigeVictory", "suddenDeathMinutes", "mapDiscovered", "allyTeamsFixed", "resourceGrowthDisabled",
 	              "resourceScarcityLevel", "instantConstruction", "stockpileStartLevel", "hungerDisabled",
 	              "unitUpgradesDisabled", "glassCannonLevel", "unitsFearless", "permadeathDisabled", "peacefulMode",
-	              "buildingHpLevel"});
+	              "buildingHpLevel"}, {"aiOrderDelay"});
 	MatchRules r;
 	auto b = [&](const char* key) { return boolean(value[key], path + "/" + key); };
 	auto i = [&](const char* key, int max) { return static_cast<int>(integer(value[key], path + "/" + key, 0, max)); };
@@ -231,6 +231,7 @@ MatchRules parseRules(const json& value, const std::string& path)
 	r.allyTeamsFixed = b("allyTeamsFixed");
 	r.resourceGrowthDisabled = b("resourceGrowthDisabled");
 	r.resourceScarcityLevel = i("resourceScarcityLevel", 3);
+	r.aiOrderDelay = value.contains("aiOrderDelay") ? i("aiOrderDelay", 8) : 0;
 	r.instantConstruction = b("instantConstruction");
 	r.stockpileStartLevel = i("stockpileStartLevel", 3);
 	r.hungerDisabled = b("hungerDisabled");
@@ -530,6 +531,7 @@ json MatchSetup::toJson() const
 	                {"allyTeamsFixed", r.allyTeamsFixed},
 	                {"resourceGrowthDisabled", r.resourceGrowthDisabled},
 	                {"resourceScarcityLevel", r.resourceScarcityLevel},
+	                {"aiOrderDelay", r.aiOrderDelay},
 	                {"instantConstruction", r.instantConstruction},
 	                {"stockpileStartLevel", r.stockpileStartLevel},
 	                {"hungerDisabled", r.hungerDisabled},
@@ -608,6 +610,7 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
 	header.setResourceGrowthDisabled(rules.resourceGrowthDisabled);
 	header.setResourceScarcityLevel(static_cast<Uint8>(rules.resourceScarcityLevel));
+	header.setAIOrderDelay(rules.aiOrderDelay);
 	header.setInstantConstructionEnabled(rules.instantConstruction);
 	header.setStockpileStartLevel(static_cast<Uint8>(rules.stockpileStartLevel));
 	header.setHungerDisabled(rules.hungerDisabled);
@@ -694,6 +697,7 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	r.allyTeamsFixed = header.areAllyTeamsFixed();
 	r.resourceGrowthDisabled = header.isResourceGrowthDisabled();
 	r.resourceScarcityLevel = header.getResourceScarcityLevel();
+	r.aiOrderDelay = header.getAIOrderDelay();
 	r.instantConstruction = header.isInstantConstructionEnabled();
 	r.stockpileStartLevel = header.getStockpileStartLevel();
 	r.hungerDisabled = header.isHungerDisabled();

@@ -50,7 +50,7 @@ namespace
 		return stream.str();
 	}
 
-	int tactical_building_value(const Game& game, int type, const MaximaStrategy::Tactics& policy)
+	int tactical_building_value(const AISharedRuntime::Read::World& game, int type, const MaximaStrategy::Tactics& policy)
 	{
 		if (type < 0 || size_t(type) >= game.buildingsTypes.size()) return policy.target_default_value;
 		const auto& building = *game.buildingsTypes.get(type);
@@ -69,9 +69,9 @@ namespace
 		return value;
 	}
 
-	bool tactical_warrior_available(const Unit* warrior,
-		const Building* continuingFlag, int minimumLevel,
-		const std::vector<const Building*>* offenseFlags=NULL)
+	bool tactical_warrior_available(const AISharedRuntime::Read::Unit* warrior,
+		const AISharedRuntime::Read::Building* continuingFlag, int minimumLevel,
+		const std::vector<const AISharedRuntime::Read::Building*>* offenseFlags=NULL)
 	{
 		// Match the engine's flag subscription rule: the lower of the two combat
 		// abilities must reach the flag's minimum level (user level minus one).
@@ -94,10 +94,10 @@ namespace
 	class TacticalReachability
 	{
 	public:
-		TacticalReachability(Map* map, int minimumLevel,
-			const std::vector<const Building*>* offenseFlags=NULL)
+		TacticalReachability(AISharedRuntime::Read::Map* map, int minimumLevel,
+			const std::vector<const AISharedRuntime::Read::Building*>* offenseFlags=NULL)
 			: map(map), minimumLevel(minimumLevel), offenseFlags(offenseFlags) {}
-		std::vector<int> powersAt(Team* team, const Building* continuingFlag,
+		std::vector<int> powersAt(AISharedRuntime::Read::Team* team, const AISharedRuntime::Read::Building* continuingFlag,
 			int x, int y, int cap, bool swimmersOnly=false,
 			std::map<std::string, int>* diagnostics=NULL)
 		{
@@ -105,7 +105,7 @@ namespace
 			const int target=map->normalizeY(y)*map->getW()+map->normalizeX(x);
 			for(int id=0; id<Unit::MAX_COUNT; ++id)
 			{
-				const Unit* warrior=team->myUnits[id];
+				const AISharedRuntime::Read::Unit* warrior=team->myUnits[id];
 				if(diagnostics && warrior && warrior->typeNum==WARRIOR && !warrior->isDead)
 				{
 					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
@@ -146,9 +146,9 @@ namespace
 			return powers;
 		}
 	private:
-		Map* map;
+		AISharedRuntime::Read::Map* map;
 		int minimumLevel;
-		const std::vector<const Building*>* offenseFlags;
+		const std::vector<const AISharedRuntime::Read::Building*>* offenseFlags;
 		std::vector<int> components[2];
 		void label(bool swimming)
 		{
@@ -172,7 +172,7 @@ namespace
 		}
 	};
 
-	bool rally_walkable(const Map* map, Uint32 team, int x, int y)
+	bool rally_walkable(const AISharedRuntime::Read::Map* map, Uint32 team, int x, int y)
 	{
 		return map->getBuilding(x,y)==NOGBID && !map->isResource(x,y)
 			&& map->terrainPropertiesAt(x,y).walkable && !map->isForbidden(x,y,team);
@@ -180,7 +180,7 @@ namespace
 
 	// Count distinct connected standing tiles inside the engine's circular flag
 	// range. Mobile units do not make a permanent obstacle to their own rally.
-	int rally_space(Map* map, Uint32 team, int x, int y, int radius, int needed)
+	int rally_space(AISharedRuntime::Read::Map* map, Uint32 team, int x, int y, int radius, int needed)
 	{
 		if(!rally_walkable(map,team,x,y))return 0;
 		std::set<int> visited;
@@ -207,7 +207,7 @@ namespace
 
 	struct PreemptiveBuilding
 	{
-		PreemptiveBuilding(int team, Building* building)
+		PreemptiveBuilding(int team, AISharedRuntime::Read::Building* building)
 			: team(team), x(building->posX), y(building->posY),
 			  width(building->type->width), height(building->type->height),
 			  gid(building->gid)
@@ -283,6 +283,7 @@ void Maxima::OffenseDiagnostics::reset(int currentTick)
 /// budget fields and the diagnostics; the executor moves the flag.
 void Maxima::plan_offense(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	offense_diagnostics.reset(timer);
 	budget.tactical_kind=Tactics::MissionNone;
 	budget.tactical_target_team=-1;
@@ -292,7 +293,7 @@ void Maxima::plan_offense(Context& runtime)
 	budget.tactical_target_y=0;
 	budget.tactical_candidate_score=INT_MIN;
 	budget.tactical_requested_force=0;
-	if(runtime.player->game->gameHeader.isPeacefulModeEnabled() || !strategy.tactics.enabled)
+	if(runtime.readPlayer()->game->gameHeader.isPeacefulModeEnabled() || !strategy.tactics.enabled)
 	{
 		offense_diagnostics.gate="blocked: warrior tactics disabled";
 		return;
@@ -302,8 +303,8 @@ void Maxima::plan_offense(Context& runtime)
 		offense_diagnostics.gate="blocked: colony emergency keeps the army home";
 		return;
 	}
-	Map* map=runtime.player->map;
-	const Building* flag=tactical_mission.flagId>=0
+	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
+	const AISharedRuntime::Read::Building* flag=tactical_mission.flagId>=0
 		&& runtime.get_building_register().is_building_found(tactical_mission.flagId)
 		? runtime.get_building_register().get_building(tactical_mission.flagId) : NULL;
 	const bool active=tactical_mission.flagId>=0;
@@ -325,7 +326,7 @@ void Maxima::plan_offense(Context& runtime)
 		return learned_power ? own_power>=believed_power
 			: Labour::attackStrengthSufficient(own_power,believed_defenders);
 	};
-	std::vector<const Building*> offenseFlags;
+	std::vector<const AISharedRuntime::Read::Building*> offenseFlags;
 	for(const auto& wave:offense_waves)
 		if(runtime.get_building_register().is_building_found(wave.flagId))
 			offenseFlags.push_back(runtime.get_building_register().get_building(wave.flagId));
@@ -338,12 +339,12 @@ void Maxima::plan_offense(Context& runtime)
 	// to the offense: they come back, and a siege dropped every time its army
 	// cycles through the inns is a siege that never finishes.
 	int recovering=0;
-	std::vector<const Unit*> trainees;
+	std::vector<const AISharedRuntime::Read::Unit*> trainees;
 	const auto muster=[&](int level) {
 		eligible=0;eligible_damage_rate=0;recovering=0;trainees.clear();
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
-			const Unit* warrior=runtime.player->team->myUnits[id];
+			const AISharedRuntime::Read::Unit* warrior=runtime.readPlayer()->team->myUnits[id];
 			if(tactical_warrior_available(warrior, flag, level, &offenseFlags))
 			{
 				++eligible;
@@ -367,7 +368,7 @@ void Maxima::plan_offense(Context& runtime)
 	int flag_level=active ? (flag ? flag->minLevelToFlag+1
 		: budget.tactical_flag_level) : strategy.tactics.flag_minimum_level;
 	// Both the muster and flag use one-based levels; disabled training recruits base-level warriors.
-	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) flag_level=1;
+	if (runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()) flag_level=1;
 	muster(flag_level);
 	if(!active && flag_level>1
 	   && !strength_sufficient(eligible_damage_rate))
@@ -387,13 +388,13 @@ void Maxima::plan_offense(Context& runtime)
 	// Reserve training only for available warriors who can learn there.
 	// Match trainees to capacity so overlapping barracks do not reserve the
 	// same soldier twice or hold fully trained soldiers back indefinitely.
-	std::vector<const Building*> barracks;
+	std::vector<const AISharedRuntime::Read::Building*> barracks;
 	std::vector<int> capacities;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		const Building* b=runtime.player->team->myBuildings[id];
-		if(runtime.player->game->gameHeader.isUnitUpgradesDisabled()
-		   || !b || !AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::CombatTraining)
+		const AISharedRuntime::Read::Building* b=runtime.readPlayer()->team->myBuildings[id];
+		if(runtime.readPlayer()->game->gameHeader.isUnitUpgradesDisabled()
+		   || !b || !AIMaximaBuildings::serves(*runtime.readPlayer()->game,*b->type,AIMaximaBuildings::CombatTraining)
 		   || b->type->isBuildingSite)continue;
 		const int capacity=b->maxUnitInside-int(b->unitsInside.size());
 		if(capacity>0){barracks.push_back(b);capacities.push_back(capacity);}
@@ -459,14 +460,14 @@ void Maxima::plan_offense(Context& runtime)
 	GradientInfo land_info;
     land_info.terrainTravel=field::TerrainTravel::Walk;
 	land_info.add_source(new Entities::AnyTeamBuilding(
-		runtime.player->team->teamNumber, CompletedBuildings));
+		runtime.readPlayer()->team->teamNumber, CompletedBuildings));
 	land_info.add_obstacle(new Entities::AnyResource);
 	land_info.add_obstacle(new Entities::Unwalkable);
 	Gradient& land_route=runtime.get_gradient_manager().get_gradient(land_info);
 	GradientInfo swim_info;
     swim_info.terrainTravel=field::TerrainTravel::Swim;
 	swim_info.add_source(new Entities::AnyTeamBuilding(
-		runtime.player->team->teamNumber, CompletedBuildings));
+		runtime.readPlayer()->team->teamNumber, CompletedBuildings));
 	swim_info.add_obstacle(new Entities::AnyResource);
 	Gradient& swim_route=runtime.get_gradient_manager().get_gradient(swim_info);
 
@@ -487,7 +488,7 @@ void Maxima::plan_offense(Context& runtime)
 			++why["no_route"];
 			return -1;
 		}
-		if(int(reachability.powersAt(runtime.player->team, flag, x, y, cap,
+		if(int(reachability.powersAt(runtime.readPlayer()->team, flag, x, y, cap,
 			amphibious).size())<minimum)
 		{
 			++why["too_few_reachable"];
@@ -550,14 +551,14 @@ void Maxima::plan_offense(Context& runtime)
 				{
 					const auto& defense = tower->second;
 					if (defense.construction || defense.type < 0
-						|| size_t(defense.type) >= runtime.player->game->buildingsTypes.size()) continue;
-					const auto& type = *runtime.player->game->buildingsTypes.get(defense.type);
+						|| size_t(defense.type) >= runtime.readPlayer()->game->buildingsTypes.size()) continue;
+					const auto& type = *runtime.readPlayer()->game->buildingsTypes.get(defense.type);
 					if (type.shootRhythm > 0 && type.semantics.projectileDamage[WARRIOR] > 0
 						&& map->warpDistSquare(sighting.x,sighting.y,defense.x,defense.y)
 							<= type.shootingRange * type.shootingRange)
 						++nearby_towers;
 				}
-				int score=tactical_building_value(*runtime.player->game,sighting.type, strategy.tactics)
+				int score=tactical_building_value(*runtime.readPlayer()->game,sighting.type, strategy.tactics)
 					+std::max(0, opponents[opponent->first].score)
 					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
 					-nearby_towers*strategy.tactics.target_tower_penalty
@@ -658,6 +659,7 @@ void Maxima::plan_offense(Context& runtime)
 
 void Maxima::end_offense(Context& runtime, const char* reason)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	std::set<int> flags(attack_flags.begin(),attack_flags.end());
 	for(const auto& wave:offense_waves)flags.insert(wave.flagId);
 	flags.erase(tactical_mission.flagId);
@@ -682,6 +684,7 @@ void Maxima::end_offense(Context& runtime, const char* reason)
 
 void Maxima::observe_wave_delivery()
 {
+    auto ownerObservation=context.scopeOwnerObservation();
 	if(failed_waves>=4)return;
 	const auto score=[&](Tactics::WaveDelivery& delivery) {
 		if(delivery.scored || delivery.launched==0 || failed_waves>=4)return;
@@ -692,7 +695,7 @@ void Maxima::observe_wave_delivery()
 	{
 		if(wave.phase!=Tactics::WaveAdvance)continue;
 		auto& registry=context.get_building_register();
-		Building* flag=registry.is_building_found(wave.flagId)
+		AISharedRuntime::Read::Building* flag=registry.is_building_found(wave.flagId)
 			? registry.get_building(wave.flagId) : NULL;
 		if(!flag)continue;
 		auto inserted=wave_delivery.emplace(wave.flagId,Tactics::WaveDelivery{});
@@ -701,9 +704,9 @@ void Maxima::observe_wave_delivery()
 		if(inserted.second)delivery.launched=enrolled;
 		if(delivery.scored)continue;
 		int arrived=0;
-		for(const Unit* warrior:flag->unitsWorking)
+		for(const AISharedRuntime::Read::Unit* warrior:flag->unitsWorking)
 			if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
-			   && context.player->map->warpDistMax(warrior->posX,warrior->posY,
+			   && context.readPlayer()->map->warpDistMax(warrior->posX,warrior->posY,
 				wave.targetX,wave.targetY)<=budget.tactical_siege_radius)++arrived;
 		delivery.arrived=std::max(delivery.arrived,arrived);
 		// Assess a spent wave once, retaining its peak simultaneous delivery.
@@ -731,6 +734,7 @@ void Maxima::fall_back_to_streaming()
 // permanent fallback after repeated poor wave delivery.
 bool Maxima::control_offense_waves(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	if(failed_waves>=4)return false;
 	if(!budget.tactics_enabled || severe_colony_emergency())
 	{
@@ -742,7 +746,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		if(!offense_waves.empty())end_offense(runtime,"no_wave_target");
 		return false;
 	}
-	Map* map=runtime.player->map;
+	AISharedRuntime::Read::Map* map=runtime.readPlayer()->map;
 	GradientInfo routeInfo;
     routeInfo.terrainTravel=field::TerrainTravel::Walk;
 	routeInfo.add_source(new Entities::Position(budget.tactical_target_x,budget.tactical_target_y));
@@ -758,10 +762,10 @@ bool Maxima::control_offense_waves(Context& runtime)
 	// arrivals and workers can pass one another, then proximity to the objective.
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
-		const Building* home=runtime.player->team->myBuildings[id];
+		const AISharedRuntime::Read::Building* home=runtime.readPlayer()->team->myBuildings[id];
 		if(!home || home->type->isBuildingSite
-		   || (!AIMaximaBuildings::serves(*runtime.player->game,*home->type,AIMaximaBuildings::Production)
-			&& !AIMaximaBuildings::serves(*runtime.player->game,*home->type,AIMaximaBuildings::Feeding)))continue;
+		   || (!AIMaximaBuildings::serves(*runtime.readPlayer()->game,*home->type,AIMaximaBuildings::Production)
+			&& !AIMaximaBuildings::serves(*runtime.readPlayer()->game,*home->type,AIMaximaBuildings::Feeding)))continue;
 		landHome=landHome || route.get_height(map->normalizeX(home->posX),map->normalizeY(home->posY))>=0;
 		const int margin=std::max(6,policy.muster_radius+2);
 		const int width=home->type->width+2*margin,height=home->type->height+2*margin;
@@ -772,7 +776,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 			visited[py*width+px]=1;
 			const int x=map->normalizeX(home->posX+px-margin);
 			const int y=map->normalizeY(home->posY+py-margin);
-			if(rally_walkable(map,runtime.player->team->me,x,y))queue.push_back(std::make_pair(px,py));
+			if(rally_walkable(map,runtime.readPlayer()->team->me,x,y))queue.push_back(std::make_pair(px,py));
 		};
 		for(int y=margin-1;y<=margin+home->type->height;++y)
 			for(int x=margin-1;x<=margin+home->type->width;++x)add(x,y);
@@ -785,7 +789,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 				if(distance<0)return field::Visit::Expand;
 				landHome=true;
 				if(bestSpace==2*capacity && distance>=bestDistance)return field::Visit::Expand;
-				const int space=rally_space(map,runtime.player->team->me,x,y,policy.muster_radius,2*capacity);
+				const int space=rally_space(map,runtime.readPlayer()->team->me,x,y,policy.muster_radius,2*capacity);
 				if(space<capacity || space<bestSpace || (space==bestSpace && distance>=bestDistance))return field::Visit::Expand;
 				rallyX=x;rallyY=y;bestDistance=distance;bestSpace=space;
 
@@ -825,7 +829,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 	for(auto it=offense_waves.begin();it!=offense_waves.end();)
 	{
 		Tactics::Wave& wave=*it;
-		Building* flag=runtime.get_building_register().is_building_found(wave.flagId)
+		AISharedRuntime::Read::Building* flag=runtime.get_building_register().is_building_found(wave.flagId)
 			? runtime.get_building_register().get_building(wave.flagId) : NULL;
 		if(!flag && !runtime.get_building_register().is_building_pending(wave.flagId))
 		{
@@ -833,7 +837,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 			continue;
 		}
 		if(flag && wave.phase==Tactics::WaveMuster
-		   && rally_space(map,runtime.player->team->me,flag->posX,flag->posY,policy.muster_radius,capacity)<capacity
+		   && rally_space(map,runtime.readPlayer()->team->me,flag->posX,flag->posY,policy.muster_radius,capacity)<capacity
 		   && rallyX>=0)
 		{
 			wave.rallyX=rallyX;wave.rallyY=rallyY;wave.bestArrived=0;
@@ -849,7 +853,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 			+(wave.phase==Tactics::WaveMuster ? 2 : 0) : 0;
 		const int cohort=flag ? int(flag->unitsWorking.size()) : 0;
 		if(flag)
-			for(const Unit* warrior:flag->unitsWorking)
+			for(const AISharedRuntime::Read::Unit* warrior:flag->unitsWorking)
 				if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
 				   && (wave.phase==Tactics::WaveMuster
 					? map->warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
@@ -956,10 +960,10 @@ bool Maxima::control_offense_waves(Context& runtime)
 	{
 		const int team=tactical_mission.targetTeam;
 		const int local=Building::GIDtoID(tactical_mission.targetGid);
-		const Building* objective=team>=0 && team<Team::MAX_COUNT
-            && runtime.player->game->teams[team] && local>=0 && local<Building::MAX_COUNT
-            ? runtime.player->game->teams[team]->myBuildings[local] : NULL;
-		if(objective && building_currently_visible(runtime.player,objective))
+		const AISharedRuntime::Read::Building* objective=team>=0 && team<Team::MAX_COUNT
+            && runtime.readPlayer()->game->teams[team] && local>=0 && local<Building::MAX_COUNT
+            ? runtime.readPlayer()->game->teams[team]->myBuildings[local] : NULL;
+		if(objective && building_currently_visible(runtime.readPlayer(),objective))
 		{
 			if(tactical_mission.lastTargetHp<0 || objective->hp<tactical_mission.lastTargetHp)
 				tactical_mission.lastProgressTick=timer;
@@ -978,6 +982,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 /// Keep the offensive flag on the planned target. Runs every review tick.
 void Maxima::control_offense(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	if(control_offense_waves(runtime))
 		return;
 	auto& registry=runtime.get_building_register();
@@ -1031,7 +1036,7 @@ void Maxima::control_offense(Context& runtime)
 		&& tactical_mission.kind==Tactics::MissionRaid
 		&& budget.tactical_kind==Tactics::MissionRaid
 		&& tactical_mission.targetTeam==budget.tactical_target_team
-		&& runtime.player->map->warpDistSquare(tactical_mission.targetX,
+		&& runtime.readPlayer()->map->warpDistSquare(tactical_mission.targetX,
 			tactical_mission.targetY, budget.tactical_target_x, budget.tactical_target_y)
 			<=budget.raid_flag_radius*budget.raid_flag_radius*16;
 	const int radius=budget.tactical_kind==Tactics::MissionRaid
@@ -1112,11 +1117,11 @@ void Maxima::control_offense(Context& runtime)
 		{
 			const int team=tactical_mission.targetTeam;
 			const int local=Building::GIDtoID(tactical_mission.targetGid);
-			Building* building=team>=0 && team<Team::MAX_COUNT
-				&& runtime.player->game->teams[team] && local>=0 && local<Building::MAX_COUNT
-				? runtime.player->game->teams[team]->myBuildings[local] : NULL;
+			AISharedRuntime::Read::Building* building=team>=0 && team<Team::MAX_COUNT
+				&& runtime.readPlayer()->game->teams[team] && local>=0 && local<Building::MAX_COUNT
+				? runtime.readPlayer()->game->teams[team]->myBuildings[local] : NULL;
 			if(building && building->gid==tactical_mission.targetGid
-			   && building_currently_visible(runtime.player, building)
+			   && building_currently_visible(runtime.readPlayer(), building)
 			   && (tactical_mission.lastTargetHp<0
 				|| building->hp<tactical_mission.lastTargetHp))
 			{
@@ -1208,6 +1213,7 @@ void Maxima::control_offense(Context& runtime)
 
 void Maxima::choose_enemy_target(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	telemetry.count(AITrace::AI7::Maxima_choose_enemy_target_calls);
 	int best_target=-1;
 	int best_score=INT_MIN;
@@ -1221,8 +1227,8 @@ void Maxima::choose_enemy_target(Context& runtime)
 		}
 	}
 	const bool current_valid=target>=0 && target<Team::MAX_COUNT
-		&& runtime.player->game->teams[target]
-		&& runtime.player->game->teams[target]->isAlive
+		&& runtime.readPlayer()->game->teams[target]
+		&& runtime.readPlayer()->game->teams[target]->isAlive
 		&& opponents[target].score!=INT_MIN;
 	const bool campaign_committed=!attack_flags.empty()
 		|| campaign.state==CampaignActive || campaign.state==CampaignPaused;
@@ -1245,6 +1251,7 @@ void Maxima::choose_enemy_target(Context& runtime)
 
 bool Maxima::dig_out_enemy(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	///First choose an enemy building to dig out
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
@@ -1253,13 +1260,13 @@ bool Maxima::dig_out_enemy(Context& runtime)
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_building;
     gi_building.terrainTravel=field::TerrainTravel::Swim;
-	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, CompletedBuildings));
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.readPlayer()->team->teamNumber, CompletedBuildings));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, AnyConstruction); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		Building* b=runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
+		AISharedRuntime::Read::Building* b=runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
 		int bx = (b->posX + mi.get_width()) % mi.get_width();
 		int by = (b->posY + mi.get_height()) % mi.get_height();
 		if(gradient.get_height(bx, by) == -2)
@@ -1273,8 +1280,8 @@ bool Maxima::dig_out_enemy(Context& runtime)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
-	const int by=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
+	const int bx=(runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(runtime.readPlayer()->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
@@ -1440,10 +1447,11 @@ bool Maxima::dig_out_enemy(Context& runtime)
 
 Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	Uint32 signature=2166136261u;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		Building* building=runtime.player->team->myBuildings[id];
+		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[id];
 		if(!building || !building->type->semantics.occupiesGround
 		   || building->type->isBuildingSite)
 			continue;
@@ -1456,13 +1464,13 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 	}
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		Team* enemy_team=runtime.player->game->teams[*enemy];
+		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*enemy];
 		if(!enemy_team || !enemy_team->isAlive)
 			continue;
 		for(enemy_building_iterator item(runtime, *enemy, -1, -1, CompletedBuildings);
 			item!=enemy_building_iterator(); ++item)
 		{
-			Building* building=
+			AISharedRuntime::Read::Building* building=
 				enemy_team->myBuildings[Building::GIDtoID(*item)];
 			if(!building || !building->type->semantics.occupiesGround
 			   || building->type->isBuildingSite)
@@ -1482,6 +1490,7 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 
 void Maxima::clear_preemptive_defense(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	if(preemptive_guard_tiles.empty())
 		return;
 	MapInfo map(runtime);
@@ -1511,13 +1520,14 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 
 void Maxima::update_preemptive_defense(Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	if(!budget.preemptive_defense_active)
 	{
 		clear_preemptive_defense(runtime);
 		last_preemptive_defense_tick=-1000000;
 		last_preemptive_effective_zone_max=-1;
 		last_preemptive_amphibious_active=false;
-		if(runtime.player && runtime.player->map)
+		if(runtime.readPlayer() && runtime.readPlayer()->map)
 		{
 		}
 		return;
@@ -1560,21 +1570,21 @@ void Maxima::update_preemptive_defense(Context& runtime)
 	std::map<int, std::vector<PreemptiveBuilding> > enemy_buildings;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		Building* building=runtime.player->team->myBuildings[id];
+		AISharedRuntime::Read::Building* building=runtime.readPlayer()->team->myBuildings[id];
 		if(building && building->type->semantics.occupiesGround
 		   && !building->type->isBuildingSite)
 			own_buildings.push_back(PreemptiveBuilding(
-				runtime.player->team->teamNumber, building));
+				runtime.readPlayer()->team->teamNumber, building));
 	}
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		Team* enemy_team=runtime.player->game->teams[*enemy];
+		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*enemy];
 		if(!enemy_team || !enemy_team->isAlive)
 			continue;
 		for(enemy_building_iterator item(runtime, *enemy, -1, -1, CompletedBuildings);
 			item!=enemy_building_iterator(); ++item)
 		{
-			Building* building=
+			AISharedRuntime::Read::Building* building=
 				enemy_team->myBuildings[Building::GIDtoID(*item)];
 			if(building && building->type->semantics.occupiesGround
 			   && !building->type->isBuildingSite)
@@ -1709,6 +1719,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 
 void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	if(!budget.reactive_defense_enabled)
 	{
 		for(std::vector<int>::const_iterator flag=defense_flags.begin();
@@ -1751,7 +1762,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	//Use the 'locations' list to keep track of non-zero squares
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		Unit* unit = runtime.player->team->myUnits[i];
+		AISharedRuntime::Read::Unit* unit = runtime.readPlayer()->team->myUnits[i];
 		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
 		{
 			unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] = unit->gid;
@@ -1760,17 +1771,17 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		Building* building = runtime.player->team->myBuildings[i];
+		AISharedRuntime::Read::Building* building = runtime.readPlayer()->team->myBuildings[i];
 		if(building && building->underAttackTimer
-		   && buildingGID[runtime.player->map->normalizeX(building->posX) * h
-		       + runtime.player->map->normalizeY(building->posY)] == NOGBID)
+		   && buildingGID[runtime.readPlayer()->map->normalizeX(building->posX) * h
+		       + runtime.readPlayer()->map->normalizeY(building->posY)] == NOGBID)
 		{
 			int nx = (building->posX - building->type->decLeft + w) %w;
 			int ny = (building->posY - building->type->decTop + h) %h;
 			// Building origins can cross the toroidal seam during upgrades.
 			// Normalize before indexing, as we already do for units.
-			buildingGID[runtime.player->map->normalizeX(building->posX) * h
-			    + runtime.player->map->normalizeY(building->posY)] = building->gid;
+			buildingGID[runtime.readPlayer()->map->normalizeX(building->posX) * h
+			    + runtime.readPlayer()->map->normalizeY(building->posY)] = building->gid;
 			modify_points(counts, w, h, nx, ny, RADIUS, 1, locations);
 		}
 	}
@@ -1784,22 +1795,22 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	// answer to an ordinary army.
 	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		Team* enemy_team=runtime.player->game->teams[*enemy];
+		AISharedRuntime::Read::Team* enemy_team=runtime.readPlayer()->game->teams[*enemy];
 		if(!enemy_team || !enemy_team->isAlive)
 			continue;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			Unit* unit=enemy_team->myUnits[i];
+			AISharedRuntime::Read::Unit* unit=enemy_team->myUnits[i];
 			if(!unit || unit->typeNum!=WARRIOR
-			   || !runtime.player->map->isFOWDiscovered(
-				unit->posX, unit->posY, runtime.player->team->me))
+			   || !runtime.readPlayer()->map->isFOWDiscovered(
+				unit->posX, unit->posY, runtime.readPlayer()->team->me))
 				continue;
 			bool near_colony=false;
 			for(int b=0; b<Building::MAX_COUNT; ++b)
 			{
-				Building* own=runtime.player->team->myBuildings[b];
+				AISharedRuntime::Read::Building* own=runtime.readPlayer()->team->myBuildings[b];
 				if(own && own->type->semantics.occupiesGround
-				   && runtime.player->map->warpDistSquare(unit->posX, unit->posY,
+				   && runtime.readPlayer()->map->warpDistSquare(unit->posX, unit->posY,
 					own->posX, own->posY)<=144)
 				{
 					near_colony=true;
@@ -1874,21 +1885,21 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			for(int py = -RADIUS-3; py<=RADIUS+3; ++py)
 			{
 				int ny = (max_y + py + h)%h;
-				const bool covered=runtime.player->map->warpDistSquare(
+				const bool covered=runtime.readPlayer()->map->warpDistSquare(
 					max_x, max_y, nx, ny)<=RADIUS*RADIUS;
 				if(covered && unitGID[nx * h + ny] != NOGUID)
 				{
-					Unit* unit = runtime.player->team->myUnits[Unit::GIDtoID(unitGID[nx * h + ny])];
+					AISharedRuntime::Read::Unit* unit = runtime.readPlayer()->team->myUnits[Unit::GIDtoID(unitGID[nx * h + ny])];
 					covered_points.push_back(position(nx, ny));
 					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
-					Building* building = runtime.player->team->myBuildings[Building::GIDtoID(buildingGID[nx * h + ny])];
+					AISharedRuntime::Read::Building* building = runtime.readPlayer()->team->myBuildings[Building::GIDtoID(buildingGID[nx * h + ny])];
 					int nx2 = (building->posX - building->type->decLeft + w) %w;
 					int ny2 = (building->posY - building->type->decTop + h) %h;
-					if(runtime.player->map->warpDistSquare(max_x, max_y, nx2, ny2)
+					if(runtime.readPlayer()->map->warpDistSquare(max_x, max_y, nx2, ny2)
 					   <=RADIUS*RADIUS)
 					{
 						covered_points.push_back(position(nx2, ny2));
@@ -1900,7 +1911,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				{
 					covered_points.push_back(position(nx, ny));
 					const Uint16 gid=enemyGID[nx * h + ny];
-					Unit* enemy=runtime.player->game->teams[Unit::GIDtoTeam(gid)]
+					AISharedRuntime::Read::Unit* enemy=runtime.readPlayer()->game->teams[Unit::GIDtoTeam(gid)]
 						->myUnits[Unit::GIDtoID(gid)];
 					if(enemy)
 						modify_points(counts, w, h, (enemy->posX+w)%w,
@@ -1912,10 +1923,10 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				// within RADIUS of the flag (remember that we loop
 				// over a bigger area).
 				if (covered) {
-					Uint16 guid = runtime.player->map->getGroundUnit(nx, ny);
-					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->attackableTeams())
+					Uint16 guid = runtime.readPlayer()->map->getGroundUnit(nx, ny);
+					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.readPlayer()->team->attackableTeams())
 					{
-						Unit* unit = runtime.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
+						AISharedRuntime::Read::Unit* unit = runtime.readPlayer()->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 						if(unit && unit->typeNum == WARRIOR)
 						{
 							covered_points.push_back(position(nx, ny));
@@ -1972,12 +1983,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		{
 			if(runtime.get_building_register().is_building_found(*i))
 			{
-				Building* b = runtime.get_building_register().get_building(*i);
+				AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(*i);
 				for(std::vector<int>::iterator j = flagLocations.begin(); j!=flagLocations.end(); ++j)
 				{
 					int flag_x = (*j) / h;
 					int flag_y = (*j) % h;
-					int d = runtime.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
+					int d = runtime.readPlayer()->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
 						min_dist = d;
@@ -1995,12 +2006,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			*budget.reactive_defense_move_radius)
 		{
 			int id_flag = existing_defense_flags[min_flag];
-			Building* flag=runtime.get_building_register().get_building(id_flag);
+			AISharedRuntime::Read::Building* flag=runtime.get_building_register().get_building(id_flag);
 			const std::vector<position>& covered_points=flagCoverage[flagLocations[min_pos]];
 			bool coverage_preserved=true;
 			for(std::vector<position>::const_iterator point=covered_points.begin();
 				point!=covered_points.end(); ++point)
-				if(runtime.player->map->warpDistSquare(flag->posX, flag->posY,
+				if(runtime.readPlayer()->map->warpDistSquare(flag->posX, flag->posY,
 					point->x, point->y)>RADIUS*RADIUS)
 				{
 					coverage_preserved=false;
@@ -2042,7 +2053,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	{
 		if(runtime.get_building_register().is_building_found(*i))
 		{
-			Building* flag=runtime.get_building_register().get_building(*i);
+			AISharedRuntime::Read::Building* flag=runtime.get_building_register().get_building(*i);
 			int local_enemy_count=0;
 			for(int px=-RADIUS; px<=RADIUS; ++px)
 			{
@@ -2052,12 +2063,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 						continue;
 					const int nx=(flag->posX+px+w)%w;
 					const int ny=(flag->posY+py+h)%h;
-					const Uint16 guid=runtime.player->map->getGroundUnit(nx, ny);
+					const Uint16 guid=runtime.readPlayer()->map->getGroundUnit(nx, ny);
 					if(guid==NOGUID
 					   || !((1<<Unit::GIDtoTeam(guid))
-						& runtime.player->team->attackableTeams()))
+						& runtime.readPlayer()->team->attackableTeams()))
 						continue;
-					Unit* enemy=runtime.player->game->teams[Unit::GIDtoTeam(guid)]
+					AISharedRuntime::Read::Unit* enemy=runtime.readPlayer()->game->teams[Unit::GIDtoTeam(guid)]
 						->myUnits[Unit::GIDtoID(guid)];
 					if(enemy && enemy->typeNum==WARRIOR)
 						local_enemy_count+=1;
@@ -2161,6 +2172,7 @@ void Maxima::modify_points(Uint16* counts, int w, int h, int x, int y, int dist,
 
 void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& runtime)
 {
+    auto ownerObservation=runtime.scopeOwnerObservation();
 	//The algorithm here is interesting. Bassically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
 	//is counted as part of the larger group, and every unit 4 squares from those and so on, as long as it doesn't go past
 	//6 squares from the average. Flags are put on the average x and y of largest groups
@@ -2178,17 +2190,17 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	const int strike_target=following_offense ? tactical_mission.targetTeam : target;
 
 	if(budget.explorer_campaign_active && strike_target>=0
-	   && strike_target<Team::MAX_COUNT && runtime.player->game->teams[strike_target]
-	   && runtime.player->game->teams[strike_target]->isAlive
-	   && (runtime.player->team->attackableTeams()&runtime.player->game->teams[strike_target]->me))
+	   && strike_target<Team::MAX_COUNT && runtime.readPlayer()->game->teams[strike_target]
+	   && runtime.readPlayer()->game->teams[strike_target]->isAlive
+	   && (runtime.readPlayer()->team->attackableTeams()&runtime.readPlayer()->game->teams[strike_target]->me))
 	{
-		Unit** units = new Unit*[Unit::MAX_COUNT];
-		Unit* first = NULL;
+		AISharedRuntime::Read::Unit** units = new AISharedRuntime::Read::Unit*[Unit::MAX_COUNT];
+		AISharedRuntime::Read::Unit* first = NULL;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			Unit* unit = runtime.player->game->teams[strike_target]->myUnits[i];
-			if(unit && runtime.player->map->isFOWDiscovered(unit->posX, unit->posY,
-				runtime.player->team->me) && unit->typeNum==WARRIOR
+			AISharedRuntime::Read::Unit* unit = runtime.readPlayer()->game->teams[strike_target]->myUnits[i];
+			if(unit && runtime.readPlayer()->map->isFOWDiscovered(unit->posX, unit->posY,
+				runtime.readPlayer()->team->me) && unit->typeNum==WARRIOR
 			   && unit->activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
@@ -2207,7 +2219,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			int group_y = 0;
 			int group_size = 0;
 
-			std::queue<Unit*> proccess;
+			std::queue<AISharedRuntime::Read::Unit*> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
 			for(int i=0; i<Unit::MAX_COUNT; ++i)
@@ -2230,7 +2242,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 			while(!proccess.empty())
 			{
-				Unit* top = proccess.front();
+				AISharedRuntime::Read::Unit* top = proccess.front();
 				int ix = xposs.front();
 				int iy = yposs.front();
 				proccess.pop();
@@ -2242,9 +2254,9 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 					for(int dy = -4; dy<=4; ++dy)
 					{
 						int ny = (top->posY + dy + h) % h;
-						if(runtime.player->map->warpDistSquare(group_x / group_size, group_y / group_size, nx, ny) < (6*6))
+						if(runtime.readPlayer()->map->warpDistSquare(group_x / group_size, group_y / group_size, nx, ny) < (6*6))
 						{
-							Uint16 guid = runtime.player->map->getGroundUnit(nx, ny);
+							Uint16 guid = runtime.readPlayer()->map->getGroundUnit(nx, ny);
 							if(guid != NOGUID && Unit::GIDtoTeam(guid) == strike_target)
 							{
 								int id = Unit::GIDtoID(guid);
@@ -2273,7 +2285,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	}
 
 	std::sort(groups.begin(), groups.end(), std::greater<std::tuple<int, int, int> >());
-	const int trained_explorers=runtime.player->team->stats.getLatestStat()
+	const int trained_explorers=runtime.readPlayer()->team->stats.getLatestStat()
 		->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
 	int total_attacks=budget.explorer_campaign_flags;
 
@@ -2291,12 +2303,12 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		{
 			if(runtime.get_building_register().is_building_found(*i))
 			{
-				Building* b = runtime.get_building_register().get_building(*i);
+				AISharedRuntime::Read::Building* b = runtime.get_building_register().get_building(*i);
 				for(std::vector<std::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
 				{
 					int flag_x = std::get<1>(*j);
 					int flag_y = std::get<2>(*j);
-					int d = runtime.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
+					int d = runtime.readPlayer()->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
 						min_dist = d;

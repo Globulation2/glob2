@@ -374,6 +374,39 @@
       "note": "dataHash must be 64 lowercase hex digits."
     },
     {
+      "file": "valid/MatchSetup/ai-order-delay-eight.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "The same eight-tick engine delay applies to every AI seat."
+    },
+    {
+      "file": "valid/MatchSetup/ai-order-delay-omitted.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Older setup documents omit the delay and retain the zero-tick default."
+    },
+    {
+      "file": "invalid/MatchSetup/ai-order-delay-negative.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "AI order delay must be an integer from zero through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/ai-order-delay-too-large.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "AI order delay must be an integer from zero through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/ai-order-delay-fractional.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "AI order delay must be an integer from zero through eight."
+    },
+    {
       "file": "valid/MatchSetup/catalog-1v1.json",
       "schema": "MatchSetup",
       "valid": true,

@@ -270,6 +270,7 @@ TEST_SUITE("ExperimentalFeatures")
 		original.getBasePlayer(0) = BasePlayer(0, "one", 0, BasePlayer::P_LOCAL);
 		original.getBasePlayer(1) = BasePlayer(1, "two", 1, BasePlayer::P_AI);
 		original.setExperiments(guardOnly());
+        original.setAIOrderDelay(8);
 		REQUIRE(original.hasExperiment(ExperimentId::GuardAreaBalancing));
 
 		for (int form = 0; form < 2; ++form)
@@ -287,14 +288,18 @@ TEST_SUITE("ExperimentalFeatures")
 			const bool ok = form == 0 ? loaded.load(&in, VERSION_MINOR) : loaded.loadWithoutPlayerInfo(&in, VERSION_MINOR);
 			GLOB2_REQUIRE(ok, "form loads");
 			CHECK(loaded.getExperiments() == original.getExperiments());
+            CHECK(loaded.getAIOrderDelay()==8);
 			CHECK(current->getPosition() == bytes.size());
 
-			// Building-catalog format appends an empty catalog chunk count after the
-			// experiment set. Remove both additions to form a version 123 header.
-			const std::string sectionBytes = bytesOf(original.getExperiments());
-			REQUIRE(bytes.size() > sectionBytes.size());
-			const size_t legacySize = bytes.size() - sectionBytes.size() - sizeof(Uint32);
-			auto* legacy = new MemoryStreamBackend(bytes.data(), legacySize);
+            // Build the older wire layout explicitly: version 123 has neither
+            // experiment/catalog tails nor the format-140 delay byte following
+            // the common gameLatency/orderRate prefix.
+            const std::string sectionBytes = bytesOf(original.getExperiments());
+            REQUIRE(bytes.size() > sectionBytes.size()+sizeof(Uint32)+sizeof(Uint8));
+            std::string legacyBytes=bytes.substr(0,bytes.size()-sectionBytes.size()-sizeof(Uint32));
+            legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),sizeof(Uint8));
+            const size_t legacySize=legacyBytes.size();
+            auto* legacy = new MemoryStreamBackend(legacyBytes.data(),legacySize);
 			legacy->seekFromStart(0);
 			BinaryInputStream old(legacy);
 			GameHeader older;
@@ -303,6 +308,7 @@ TEST_SUITE("ExperimentalFeatures")
 				: older.loadWithoutPlayerInfo(&old, FILE_FORMAT_VERSION_EXPERIMENTS - 1);
 			GLOB2_REQUIRE(read, "version 123 form loads");
 			CHECK(older.getExperiments().empty());
+            CHECK(older.getAIOrderDelay()==0);
 			CHECK(legacy->getPosition() == legacySize);
 			if (form == 0)
 				CHECK(older.getNumberOfPlayers() == original.getNumberOfPlayers());

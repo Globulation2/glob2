@@ -144,6 +144,7 @@ rule is required, so there are no defaults for two builds to disagree on.
 | `rules.prestigeVictory`, `rules.suddenDeathMinutes` | prestige and sudden-death winning conditions (minutes × 60 × 25 ticks) |
 | `rules.mapDiscovered`, `rules.allyTeamsFixed` | `setMapDiscovered`, `setAllyTeamsFixed` |
 | economy and combat rules | the setter of the same name (`setResourceScarcityLevel`, …) |
+| `rules.aiOrderDelay` (optional integer 0–8, absent means 0) | `setAIOrderDelay`; one delay for every AI controller in the match |
 | `experiments` | `ExperimentSet` keys; an unknown key is an error, not ignored |
 | `map.hash` | the map or save the client loads (SHA-256 of the decompressed bytes) |
 

@@ -407,7 +407,7 @@ static void fruitStrategyRegressions()
     c.initialize();
     int innId=-1;
     for(const auto& entry:c.buildings.found())
-        if(c.buildings.get_building(entry.first)==inn)innId=entry.first;
+        if(c.buildings.get_building(entry.first) && c.buildings.get_building(entry.first)->gid==inn->gid)innId=entry.first;
     REQUIRE(innId>=0);
     game.map.setMapDiscovered(24,10,player.team->me);
     auto field=ai.collect_fruit_field(c);
@@ -1276,8 +1276,13 @@ static void rejectedPlacementUpgradeRegressions()
     REQUIRE(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
     REQUIRE(c.buildings.is_building_upgrading(id));
     game.map.setResource(19,19,WOOD,1);
+    for(int delayedTick=0;delayedTick<8;++delayedTick) {
+        c.buildings.tick();REQUIRE(c.buildings.is_building_upgrading(id));
+        REQUIRE(!c.issue_upgrade_repair(id,false));
+    }
     building->launchConstruction(1,0);
     REQUIRE(building->constructionResultState==Building::NO_CONSTRUCTION);
+    ai.orderExecutionCompleted(*dispatched,false);
     c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
     ai.timer=1000;ai.development_planner.observe(ai.collect_development_world(c));
     REQUIRE(ai.development_planner.actions().at(100).state==UpgradeBlocked);
@@ -1291,6 +1296,11 @@ static void rejectedPlacementUpgradeRegressions()
     REQUIRE(c.buildings.is_building_upgrading(id));
     building->cancelConstruction(1);c.buildings.tick();
     REQUIRE(!c.buildings.is_building_upgrading(id));
+    c.buildings.set_upgrading(id,true);
+    OrderConstruction instantRepair(building->gid,1,1);
+    c.buildings.tick();REQUIRE(c.buildings.is_building_upgrading(id));
+    ai.orderExecutionCompleted(instantRepair,true);
+    c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
 }
 
 // All swarms share specialist production, independently of prestige and labor share.
@@ -1318,7 +1328,7 @@ static void explorerSwarmStaffingRegressions()
     // apportionment to check: what matters is that the empty one ends up with
     // more carriers than the full ones.
     for(int id=0;id<3;++id)
-        c.buildings.get_building(id)->resources[WHEAT]=id ? 20 : 0;
+        game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.found().at(id).gid)]->resources[WHEAT]=id ? 20 : 0;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -1341,7 +1351,7 @@ static void explorerSwarmStaffingRegressions()
                     if(auto a=dynamic_cast<Management::AssignWorkers*>(order.get()))
                     {
                         workers[id]=a->workers;
-                        c.buildings.get_building(id)->maxUnitWorking=a->workers;
+                        game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.found().at(id).gid)]->maxUnitWorking=a->workers;
                     }
                     if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get()))
                         explorers=r->explorer;
@@ -1538,7 +1548,7 @@ static void categoryMaintenanceCapacityRegressions()
         {
             REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
             const bool repair=(i%2==0)==repairFirst;
-            if(repair)--c.buildings.get_building(ids[i])->hp;
+            if(repair)--game.teams[0]->myBuildings[Building::GIDtoID(c.buildings.found().at(ids[i]).gid)]->hp;
             REQUIRE(ai.collect_development_limits(c).repairAllowed(type));
             DevelopmentAction action;action.id=100+i;
             action.type=repair?RepairBuilding:UpgradeBuilding;
@@ -1570,7 +1580,9 @@ static void categoryMaintenanceCapacityRegressions()
         input.seekFromStart(0);c.buildings.load(&input,VERSION_MINOR);
         REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)==0);
         REQUIRE(!ai.collect_development_limits(c).repairAllowed(type));
-        // A rejected order frees its slot when the registry observes rejection.
+        // Clearing the fixture queue simulates owner rejection; settle that
+        // outcome before the registry observes the next immutable phase.
+        for(const auto& order:c.orders) ai.orderExecutionCompleted(*order,false);
         c.orders.clear();c.buildings.tick();
         // The independent barracks-seat safeguard also credits the new site;
         // clear its training backlog to isolate the category commitment here.
@@ -1628,6 +1640,9 @@ void upgradeWorkerPriorityRegressions()
         return found;
     };
 
+    // Admission settles execution, while the subsequent fixture phases model
+    // evacuation, a live site and completion without running the simulation.
+    for(const auto& order:c.orders) ai.orderExecutionCompleted(*order,true);
     // The engine has not started the site yet; nothing is due.
     c.orders.clear();
     c.update_management_orders();
@@ -1674,9 +1689,10 @@ TEST_SUITE("Maxima.Implementation")
     TEST_CASE("terrain travel fields serialize mode and retain stale snapshots")
     {
         glob2test::HeadlessGlobals globals;
-        Map map; map.setSize(4,4,WATER);
+        glob2test::HeadlessGame fixture(glob2test::GameOptions{.header=true});
+        auto& map=fixture.game.map; map.setSize(4,4,WATER);map.setGame(&fixture.game);
         for(int x=0;x<16;++x) map.setCellTerrain(x,1,GRASS);
-        Player player; player.map=&map;
+        Player& player=*fixture.game.players[0];
         Gradients::GradientManager manager(&player),restored(&player);
         Gradients::GradientInfo walking;
         walking.add_source(new Gradients::Entities::Position(0,1));
@@ -1718,10 +1734,9 @@ TEST_SUITE("Maxima.Implementation")
 	    payloadRoundTrip<Construction::Constraint>(anchor);
 
 	    {
-	        Map map;
-	        map.setSize(9,9,GRASS);
-	        Player player;
-	        player.map=&map;
+            glob2test::HeadlessGame fixture(glob2test::GameOptions{.header=true});
+            auto& map=fixture.game.map;map.setSize(9,9,GRASS);map.setGame(&fixture.game);
+            Player& player=*fixture.game.players[0];
 	        Context context(&player);
 	        Gradients::GradientInfo first;
 	        first.add_source(new Gradients::Entities::Position(13,27));
@@ -1798,7 +1813,7 @@ TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice tra
             fertility,nullptr,nullptr,1000);
     };
     auto distant=[&]() {
-        return AIMaxima::distantFoodCapacity(&map,{inn},game.teams[0]->me,false,1,
+        return AIMaxima::distantFoodCapacity(&map,std::vector<::Building*>{inn},game.teams[0]->me,false,1,
             fertility,nullptr,1000);
     };
     CHECK(capacity(3)==0);

@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -30,7 +31,7 @@ namespace Cortex
 	{
 		// Returns true if any tile of the footprint [x, x+w) x [y, y+h) borders
 		// (8-neighbourhood) a resource tile. Warp-safe via Map's normalization.
-		bool footprintBordersResource(const Map& map, int x, int y, int w, int h)
+		bool footprintBordersResource(const Cortex::WorldMap& map, int x, int y, int w, int h)
 		{
 			for (int dx = -1; dx <= w; dx++)
 				for (int dy = -1; dy <= h; dy++)
@@ -96,7 +97,7 @@ namespace Cortex
 		};
 	}
 
-	static int placeCandidatesImpl(Game* game, Team* team, int buildingType, int level,
+	static int placeCandidatesImpl(Cortex::World* game, Cortex::WorldTeam* team, int buildingType, int level,
 	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
 	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
@@ -124,7 +125,7 @@ namespace Cortex
             choice.completedType = game->buildingsTypes.getFinishedTypeNum(game->buildingsTypes.get(placementType)->key);
         }
         if (choice.placementType < 0) return 0;
-        BuildingType* bt = game->buildingsTypes.get(choice.placementType);
+        const BuildingType* bt = game->buildingsTypes.get(choice.placementType);
         const BuildingType* completed = game->buildingsTypes.get(choice.completedType);
         const bool occupiesGround = bt->semantics.occupiesGround;
 
@@ -133,7 +134,7 @@ namespace Cortex
 		if (w <= 0 || h <= 0)
 			return 0;
 
-		Map& map = game->map;
+		Cortex::WorldMap& map = game->map;
 		const int mapW = map.getW();
 		const int mapH = map.getH();
 
@@ -401,13 +402,13 @@ namespace Cortex
 		return count;
 	}
 
-	int placeCandidates(Game* game, Team* team, int buildingType, int level,
+	int placeCandidates(Cortex::World* game, Cortex::WorldTeam* team, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType, int maxWorkerQualification)
 	{
 		return placeCandidatesImpl(game, team, buildingType, level, out, NULL, placementType, maxWorkerQualification);
 	}
 
-	int placeForwardCandidate(Game* game, Team* team, int buildingType,
+	int placeForwardCandidate(Cortex::World* game, Cortex::WorldTeam* team, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
 	                          BuildCandidate& out, int maxWorkerQualification)

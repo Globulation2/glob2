@@ -1,3 +1,4 @@
+#include <unordered_set>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptSpatial.h"
 #include "TerrainProperties.h"
@@ -93,7 +94,7 @@ int gap(int a, int aw, int b, int bw, int size)
 }
 } // namespace
 Spatial::Spatial(Game &g, int t, Observations &o)
-	: game(g), team(t), width(g.map.getW()), height(g.map.getH()), observations(o)
+	: team(t), width(g.map.getW()), height(g.map.getH()), observations(o)
 {
 }
 int Spatial::index(int x, int y) const
@@ -111,14 +112,14 @@ void Spatial::begin(const Value &records)
 }
 void Spatial::snapshot()
 {
-	if (tick == game.stepCounter)
+	if (tick == observations.world().tick)
 		return;
 	cells.resize(std::size_t(width) * height);
 	for (int y = 0; y < height; ++y)
 		for (int x = 0; x < width; ++x)
 			cells[index(x, y)] = observations.cell(x, y);
 	incomplete = std::any_of(cells.begin(), cells.end(), [](const auto &c) { return !c.known; });
-	tick = game.stepCounter;
+	tick = observations.world().tick;
 }
 std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budget)
 {
@@ -153,7 +154,7 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
                 ? -1 : (units ? unitType(filter.get("type")) : filter.integer("type", 0, 12));
 			const auto capabilityName = text(filter, "capability", "");
             const auto capability = capabilityName.empty() ? AIPlanning::BuildingIntent::Count : buildingCapability(capabilityName);
-            const int variantFilter = number(filter, "buildingType", -1, 0, int(game.buildingsTypes.size()) - 1);
+            const int variantFilter = number(filter, "buildingType", -1, 0, int(observations.world().catalog->size()) - 1);
             const auto relation = text(filter, "relation", "any");
 			if (relation != "any" && relation != "own" && relation != "ally" && relation != "enemy")
 				throw std::runtime_error("Unknown team relation");
@@ -169,16 +170,16 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 					if (!units && filter.get("virtual").kind != Value::Null &&
 						e.isVirtual != boolean(filter, "virtual", false))
 						return;
-					const bool allied = (game.teams[team]->allies & (1u << e.team)) != 0;
+					const bool allied = (observations.world().teams[team].allies & (1u << e.team)) != 0;
 					if ((relation == "own" && e.team != team) || (relation == "ally" && !allied) ||
 						(relation == "enemy" && (e.team == team || allied)))
 						return;
 					if (!units && !buildingName.empty()) {
-                        const auto* descriptor = game.buildingsTypes.get(e.buildingType);
-                        if (descriptor->type != buildingName && descriptor->key != buildingName) return;
+                        const auto* descriptor = (&observations.world().catalog->at(e.buildingType));
+                        if (descriptor->legacyType != buildingName && descriptor->key != buildingName) return;
                     }
                     if (!units && variantFilter >= 0 && e.buildingType != variantFilter) return;
-                    if (!units && capability != AIPlanning::BuildingIntent::Count && !buildingProvides(game, e.buildingType, capability)) return;
+                    if (!units && capability != AIPlanning::BuildingIntent::Count && !buildingProvides(observations.world(), e.buildingType, capability)) return;
                     if (typeFilter >= 0 && e.type != typeFilter)
 						return;
 					int weight = 1;
@@ -210,10 +211,10 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		seeds[i] = source[i] > 0;
 		const auto &c = cells[i];
 		passable[i] = metric != "path" ||
-					  (c.known && ::Script::passable(c, mode, game.map.terrainRegistry()));
+					  (c.known && ::Script::passable(c, mode, *observations.world().terrain));
 		if(metric=="path")
         {
-			const auto &registry = game.map.terrainRegistry();
+			const auto &registry = *observations.world().terrain;
 			entryCosts[i] = mode == "fly" ? registry.airCost(c.terrainType)
 										  : registry.movement(3).entries[c.terrainType].cardinal;
 		}
@@ -320,6 +321,7 @@ long long Spatial::sum(int x, int y, int w, int h) const
 Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 					 const QueryBudget &budget)
 {
+	auto observation = observations.captureObservation();
 	if (args.empty())
 		throw std::runtime_error("Spatial query requires arguments");
 	const auto &a = args[0];
@@ -364,11 +366,11 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		handles.push_back(field);
 		return Value::object()
 			.set("id", unsigned(handles.size() - 1))
-			.set("tick", game.stepCounter);
+			.set("tick", observations.world().tick);
 	}
 	if (name == "fieldValue")
 	{
-		if (args.size() != 3 || a.get("tick").number != game.stepCounter)
+		if (args.size() != 3 || a.get("tick").number != observations.world().tick)
 			throw std::runtime_error("Field handle expired; reacquire the field each callback");
 		unsigned id = a.integer("id", 0, 7);
 		if (id >= handles.size())
@@ -394,7 +396,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		const auto mode = text(a, "movement", "walk");
 		if (mode != "walk" && mode != "swim" && mode != "fly")
 			throw std::runtime_error("Unknown movement mode");
-		return c.known ? Value(passable(c, mode, game.map.terrainRegistry())) : Value();
+		return c.known ? Value(passable(c, mode, *observations.world().terrain)) : Value();
 	}
 	if (name == "summary")
 	{
@@ -480,7 +482,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		auto open = [&](int i)
 		{
 			const auto &c = cells[i];
-			return c.known && passable(c, mode, game.map.terrainRegistry());
+			return c.known && passable(c, mode, *observations.world().terrain);
 		};
 		for (unsigned i = 0; i < cells.size(); ++i)
 			if (labels[i] < 0 && open(i))
@@ -526,17 +528,24 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 }
 Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudget &budget)
 {
+    auto findType = [&](const std::string& name, bool alias) {
+        const auto& catalog = *observations.world().catalog;
+        for (std::size_t i = 0; i < catalog.size(); ++i)
+            if (alias ? (catalog[i].legacyType == name && catalog[i].semantics.placeable)
+                      : catalog[i].key == name) return int(i);
+        return -1;
+    };
 	int type = -1;
     if (spec.get("buildingType").kind != Value::Null)
-        type = spec.integer("buildingType", 0, int(game.buildingsTypes.size()) - 1);
+        type = spec.integer("buildingType", 0, int(observations.world().catalog->size()) - 1);
     else {
         const auto name = spec.string("building");
-        type = game.buildingsTypes.findByKey(name);
-        if (type < 0) type = game.buildingsTypes.getPlaceableTypeNum(name);
+        type = findType(name, false);
+        if (type < 0) type = findType(name, true);
     }
-    if (type < 0 || !game.isBuildingTypeAvailable(type) || !game.buildingsTypes.get(type)->semantics.placeable)
+    if (type < 0 || !observations.world().catalog->at(type).available || !(&observations.world().catalog->at(type))->semantics.placeable)
         throw std::runtime_error("Unknown or unavailable placeable building variant");
-	const auto *bt = game.buildingsTypes.get(type);
+	const auto *bt = (&observations.world().catalog->at(type));
 	int workers = number(spec, "workers", 2, 0, 20),
 		future = number(spec, "futureWorkers", workers, 0, 20);
 	int ox = 0, oy = 0, bw = bt->width, bh = bt->height;
@@ -544,9 +553,9 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	{
 		const auto *next = bt;
 		int left = 0, top = 0, right = bw, bottom = bh;
-		for (int n = 0; n < int(game.buildingsTypes.size()) && next->nextLevel >= 0; ++n)
+		for (int n = 0; n < int(observations.world().catalog->size()) && next->next >= 0; ++n)
 		{
-			next = game.buildingsTypes.get(next->nextLevel);
+			next = (&observations.world().catalog->at(next->next));
 			int x = next->decLeft - bt->decLeft, y = next->decTop - bt->decTop;
 			left = std::min(left, x);
 			top = std::min(top, y);
@@ -647,8 +656,8 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	{
 		if (command.get("type").text != "create")
 			return;
-		int t = command.integer("buildingType", 0, int(game.buildingsTypes.size()) - 1);
-		const auto *b = game.buildingsTypes.get(t);
+		int t = command.integer("buildingType", 0, int(observations.world().catalog->size()) - 1);
+		const auto *b = (&observations.world().catalog->at(t));
 		if (!b->semantics.occupiesGround)
 			return;
 		int x = command.integer("x", 0, width - 1), y = command.integer("y", 0, height - 1),
@@ -672,18 +681,18 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 		{
 			if (b.get("virtual").number)
 				continue;
-			const auto *base = game.buildingsTypes.get(int(b.get("type").number));
+			const auto *base = (&observations.world().catalog->at(int(b.get("type").number)));
 			const auto *next = base;
-			for (int n = 0; n < int(game.buildingsTypes.size()); ++n)
+			for (int n = 0; n < int(observations.world().catalog->size()); ++n)
 			{
 				int x = int(b.get("x").number) + next->decLeft - base->decLeft,
 					y = int(b.get("y").number) + next->decTop - base->decTop;
 				for (int dy = 0; dy < next->height; ++dy)
 					for (int dx = 0; dx < next->width; ++dx)
 						reserved[index(x + dx, y + dy)] = 1;
-				if (next->nextLevel < 0)
+				if (next->next < 0)
 					break;
-				next = game.buildingsTypes.get(next->nextLevel);
+				next = (&observations.world().catalog->at(next->next));
 			}
 		}
 	}
@@ -723,7 +732,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						bool inside = xx >= 0 && xx < bw && yy >= 0 && yy < bh;
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
-							 (!c.visible || !game.map.terrainProperties(c.terrainType).buildable ||
+							 (!c.visible || !observations.world().terrain->properties(c.terrainType).buildable ||
 							  c.resource != 255)))
 						{
 							valid = false;
@@ -807,7 +816,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						  .set("workers", workers)
 						  .set("futureWorkers", future);
 		if (bt->zonable[WORKER] || bt->zonable[EXPLORER] || bt->zonable[WARRIOR])
-			order.set("range", number(spec, "range", std::min(8, int(bt->maxUnitStayRange)), 0, bt->maxUnitStayRange));
+			order.set("range", number(spec, "range", std::min(8, int(bt->maximumRange)), 0, bt->maximumRange));
 		if (bt->semantics.occupiesGround)
 			order.set("reservedX", (x + ox) & (width - 1))
 				.set("reservedY", (y + oy) & (height - 1))
@@ -820,3 +829,17 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	return result;
 }
 } // namespace Script
+
+std::uint64_t Script::Spatial::retainedQueryVectorBytes() const {
+    std::uint64_t bytes=cells.capacity()*sizeof(Observations::Cell)+handles.capacity()*sizeof(std::shared_ptr<Field>)
+        +frontier.capacity()*sizeof(unsigned)+prefix.capacity()*sizeof(long long)+retainedValueVectorBytes(reservations);
+    std::unordered_set<const Field*> allocations;
+    auto count=[&](const std::shared_ptr<Field>& field) {
+        if(!field || !allocations.insert(field.get()).second) return;
+        bytes+=field->sources.capacity()+field->passable.capacity()+field->distances.capacity()*sizeof(int)
+            +field->entryCosts.capacity()*sizeof(unsigned);
+    };
+    for(const auto& [key,field]:cache) count(field);
+    for(const auto& field:handles) count(field);
+    return bytes;
+}

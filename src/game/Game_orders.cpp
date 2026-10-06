@@ -46,11 +46,15 @@ Building* Game::lookupBuilding(Uint16 gid) const
 	return teams[team]->myBuildings[id];
 }
 
-void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
+bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
 	const auto random = bindRandom();
+	const auto finish = [&](bool accepted) {
+		settleAIOrder(order, accepted);
+		return accepted;
+	};
 	if (!order || order->sender < 0 || order->sender >= gameHeader.getNumberOfPlayers() ||
-		!players[order->sender] || !players[order->sender]->team) return;
+		!players[order->sender] || !players[order->sender]->team) return finish(false);
 
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
@@ -73,74 +77,60 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	Uint8 orderType=order->getOrderType();
 	switch (orderType)
 	{
+		case ORDER_NULL:
+			return finish(true);
+		case ORDER_TEXT_MESSAGE:
+			return finish(true);
 		case ORDER_CREATE:
-			if (!isPlayerAlive) break;
-			executeCreate(*std::static_pointer_cast<OrderCreate>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeCreate(*std::static_pointer_cast<OrderCreate>(order), localPlayer));
 		case ORDER_MODIFY_BUILDING:
-			if (!isPlayerAlive) break;
-			executeModifyBuilding(*std::static_pointer_cast<OrderModifyBuilding>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifyBuilding(*std::static_pointer_cast<OrderModifyBuilding>(order), localPlayer));
 		case ORDER_MODIFY_EXCHANGE:
-			if (!isPlayerAlive) break;
-			executeModifyExchange(*std::static_pointer_cast<OrderModifyExchange>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifyExchange(*std::static_pointer_cast<OrderModifyExchange>(order), localPlayer));
 		case ORDER_MODIFY_FLAG:
-			if (!isPlayerAlive) break;
-			executeModifyFlag(*std::static_pointer_cast<OrderModifyFlag>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifyFlag(*std::static_pointer_cast<OrderModifyFlag>(order), localPlayer));
 		case ORDER_MODIFY_CLEARING_FLAG:
-			if (!isPlayerAlive) break;
-			executeModifyClearingFlag(*std::static_pointer_cast<OrderModifyClearingFlag>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifyClearingFlag(*std::static_pointer_cast<OrderModifyClearingFlag>(order), localPlayer));
 		case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
-			if (!isPlayerAlive) break;
-			executeModifyMinLevelToFlag(*std::static_pointer_cast<OrderModifyMinLevelToFlag>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifyMinLevelToFlag(*std::static_pointer_cast<OrderModifyMinLevelToFlag>(order), localPlayer));
 		case ORDER_MOVE_FLAG:
-			if (!isPlayerAlive) break;
-			executeMoveFlag(*std::static_pointer_cast<OrderMoveFlag>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeMoveFlag(*std::static_pointer_cast<OrderMoveFlag>(order), localPlayer));
 		case ORDER_ALTER_FORBIDDEN:
-			executeAlterForbidden(*std::static_pointer_cast<OrderAlterForbidden>(order), localPlayer);
-			break;
+			return finish(executeAlterForbidden(*std::static_pointer_cast<OrderAlterForbidden>(order), localPlayer));
 		case ORDER_ALTER_GUARD_AREA:
-			executeAlterGuardArea(*std::static_pointer_cast<OrderAlterGuardArea>(order), localPlayer);
-			break;
+			return finish(executeAlterGuardArea(*std::static_pointer_cast<OrderAlterGuardArea>(order), localPlayer));
 		case ORDER_ALTER_CLEAR_AREA:
-			executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer);
-			break;
+			return finish(executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer));
 		case ORDER_ALTER_FARM_AREA:
-			executeAlterFarmArea(*std::static_pointer_cast<OrderAlterFarmArea>(order), localPlayer);
-			break;
+			return finish(executeAlterFarmArea(*std::static_pointer_cast<OrderAlterFarmArea>(order), localPlayer));
 		case ORDER_MODIFY_SWARM:
-			if (!isPlayerAlive) break;
-			executeModifySwarm(*std::static_pointer_cast<OrderModifySwarm>(order), localPlayer);
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeModifySwarm(*std::static_pointer_cast<OrderModifySwarm>(order), localPlayer));
 		case ORDER_DELETE:
-			executeDelete(*std::static_pointer_cast<OrderDelete>(order));
-			break;
+			return finish(executeDelete(*std::static_pointer_cast<OrderDelete>(order)));
 		case ORDER_CHANGE_PRIORITY:
-			executeChangePriority(*std::static_pointer_cast<OrderChangePriority>(order));
-			break;
+			return finish(executeChangePriority(*std::static_pointer_cast<OrderChangePriority>(order)));
 		case ORDER_CANCEL_DELETE:
-			executeCancelDelete(*std::static_pointer_cast<OrderCancelDelete>(order));
-			break;
+			return finish(executeCancelDelete(*std::static_pointer_cast<OrderCancelDelete>(order)));
 		case ORDER_CONSTRUCTION:
-			if (!isPlayerAlive) break;
-			executeConstruction(*std::static_pointer_cast<OrderConstruction>(order));
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeConstruction(*std::static_pointer_cast<OrderConstruction>(order)));
 		case ORDER_CANCEL_CONSTRUCTION:
-			if (!isPlayerAlive) break;
-			executeCancelConstruction(*std::static_pointer_cast<OrderCancelConstruction>(order));
-			break;
+			if (!isPlayerAlive) return finish(false);
+			return finish(executeCancelConstruction(*std::static_pointer_cast<OrderCancelConstruction>(order)));
 		case ORDER_SET_ALLIANCE:
-			executeSetAlliance(*std::static_pointer_cast<SetAllianceOrder>(order));
-			break;
+			return finish(executeSetAlliance(*std::static_pointer_cast<SetAllianceOrder>(order)));
 		case ORDER_PLAYER_QUIT_GAME:
-			executePlayerQuitGame(*std::static_pointer_cast<PlayerQuitsGameOrder>(order));
-			break;
+			return finish(executePlayerQuitGame(*std::static_pointer_cast<PlayerQuitsGameOrder>(order)));
 	}
+	return finish(false);
 }
 
 void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
@@ -205,7 +195,7 @@ void Game::executeOrderAndNotify(std::shared_ptr<Order> order, int localPlayer)
 	publishClientEvent(ClientEvent::OrderExecuted{order});
 }
 
-void Game::executeCreate(const OrderCreate& oc, int localPlayer)
+bool Game::executeCreate(const OrderCreate& oc, int localPlayer)
 {
 	int posX=(oc.posX)&map.getMaskW();
 	int posY=(oc.posY)&map.getMaskH();
@@ -213,18 +203,18 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 		static_cast<size_t>(oc.typeNum) >= buildingsTypes.size() ||
 		oc.unitWorking < 0 || oc.unitWorking > Unit::MAX_COUNT ||
 		oc.unitWorkingFuture < 0 || oc.unitWorkingFuture > Unit::MAX_COUNT ||
-		(oc.flagRadius && (*oc.flagRadius < 0 || *oc.flagRadius > 32767))) return;
-	if (!isBuildingTypeAvailable(oc.typeNum)) return;
+		(oc.flagRadius && (*oc.flagRadius < 0 || *oc.flagRadius > 32767))) return false;
+	if (!isBuildingTypeAvailable(oc.typeNum)) return false;
 	BuildingType *bt=buildingsTypes.get(oc.typeNum);
 	const BuildingType* finished = bt->isBuildingSite ? buildingsTypes.get(bt->nextLevel) : bt;
-	if (oc.unitWorking > bt->semantics.assignmentLimit || oc.unitWorkingFuture > finished->semantics.assignmentLimit) return;
-	if (!bt->semantics.placeable || (oc.flagRadius && *oc.flagRadius > bt->maxUnitStayRange)) return;
-	if(!mapscript.buildingAllowed(bt->key,bt->isVirtual) || !mapscript.buildingAllowed(bt->type,bt->isVirtual))return;
+	if (oc.unitWorking > bt->semantics.assignmentLimit || oc.unitWorkingFuture > finished->semantics.assignmentLimit) return false;
+	if (!bt->semantics.placeable || (oc.flagRadius && *oc.flagRadius > bt->maxUnitStayRange)) return false;
+	if(!mapscript.buildingAllowed(bt->key,bt->isVirtual) || !mapscript.buildingAllowed(bt->type,bt->isVirtual))return false;
 	bool isVirtual=bt->isVirtual;
 	int w=bt->width;
 	int h=bt->height;
 	if (bt->isBuildingSite && (teams[oc.teamNumber]->noMoreBuildingSitesCountdown>0))
-		return;
+		return false;
 	bool isRoom=checkRoomForBuilding(posX, posY, bt, oc.teamNumber);
 	if (isVirtual || isRoom)
 	{
@@ -237,6 +227,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 			}
 			b->owner->addToStaticAbilitiesLists(b);
 			b->update();
+			return true;
 		}
 	}
 	else if (!isVirtual && !isRoom && map.isHardSpaceForBuilding(posX, posY, w, h))
@@ -257,22 +248,28 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 					map.displayedForbiddenView.set(map.coordToIndex(x, y), true);
 			}
 		map.updateForbiddenGradient(oc.teamNumber);
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer)
+bool Game::executeModifyBuilding(const OrderModifyBuilding& omb, int localPlayer)
 {
 	Building *b=lookupBuilding(omb.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		if (omb.numberRequested > b->type->semantics.assignmentLimit) return;
+		if (omb.numberRequested > b->type->semantics.assignmentLimit) return false;
 		b->maxUnitWorking=omb.numberRequested;
 		b->maxUnitWorkingPreferred=b->maxUnitWorking;
 		b->update();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer)
+bool Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer)
 {
 	Building *b=lookupBuilding(ome.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && b->type->canExchange)
@@ -280,17 +277,20 @@ void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 		b->receiveResourceMask=ome.receiveResourceMask;
 		b->sendResourceMask=ome.sendResourceMask;
 		b->update();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
+bool Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 {
 	Building *b=lookupBuilding(omf.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR]))
 	{
 		int oldRange=b->unitStayRange;
 		int newRange=omf.range;
-		if (newRange < 0 || newRange > b->type->maxUnitStayRange) return;
+		if (newRange < 0 || newRange > b->type->maxUnitStayRange) return false;
 		b->unitStayRange=newRange;
 
 		if (b->type->zonableForbidden)
@@ -299,22 +299,28 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 				b->owner->dirtyGlobalGradient();
 		}
 		b->resetPathfindGradients();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int localPlayer)
+bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int localPlayer)
 {
 	Building *b=lookupBuilding(omcf.gid);
 	if (b
 		&& b->buildingState==Building::ALIVE
 		&& b->type->zonable[WORKER])
 	{
-		if (omcf.clearingResources[STONE]) return;
+		if (omcf.clearingResources[STONE]) return false;
 		memcpy(b->clearingResources, omcf.clearingResources, sizeof(bool)*BASIC_COUNT);
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, int localPlayer)
+bool Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, int localPlayer)
 {
 	Building *b=lookupBuilding(omwf.gid);
 	if (b
@@ -322,8 +328,8 @@ void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 		&& (b->type->zonable[WORKER] || b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
 	{
 		if (omwf.targetRole > 2 || (!b->type->zonable[omwf.targetRole == 1 ? EXPLORER : omwf.targetRole == 2 ? WORKER : WARRIOR]
-			&& !(omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))) return;
-		if (omwf.targetRole > 2 || omwf.minLevelToFlag >= NB_UNIT_LEVELS || (omwf.targetRole == 1 && omwf.minLevelToFlag > 1)) return;
+			&& !(omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))) return false;
+		if (omwf.targetRole > 2 || omwf.minLevelToFlag >= NB_UNIT_LEVELS || (omwf.targetRole == 1 && omwf.minLevelToFlag > 1)) return false;
 		if (omwf.targetRole == 1 || (omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))
 			b->explorersRequireBombing = omwf.minLevelToFlag != 0;
 		if (omwf.targetRole == 0) b->minLevelToFlag = omwf.minLevelToFlag;
@@ -335,23 +341,26 @@ void Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 		b->update();
 		b->maxUnitWorking = maxUnitWorkingSaved;
 		b->update();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
+bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 {
 	bool drop=omf.drop;
 	Building *b=lookupBuilding(omf.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && b->type->semantics.relocatable)
 	{
-		if (omf.x < 0 || omf.x >= map.getW() || omf.y < 0 || omf.y >= map.getH()) return;
+		if (omf.x < 0 || omf.x >= map.getW() || omf.y < 0 || omf.y >= map.getH()) return false;
 		for (const Unit* unit : b->unitsInside)
-			if (unit->displacement == Unit::DIS_ENTERING_BUILDING || unit->displacement == Unit::DIS_EXITING_BUILDING) return;
+			if (unit->displacement == Unit::DIS_ENTERING_BUILDING || unit->displacement == Unit::DIS_EXITING_BUILDING) return false;
 		if (b->type->semantics.occupiesGround)
 		{
 			// Entry/exit animations cross the old footprint boundary. Finish those
 			// transitions before moving an occupied physical building.
-			if (!map.isFreeForBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid)) return;
+			if (!map.isFreeForBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid)) return false;
 			map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
 			map.setBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid);
 			b->owner->dirtyGlobalGradient();
@@ -370,12 +379,15 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 				b->owner->dirtyGlobalGradient();
 		}
 		b->resetPathfindGradients();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
+bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
-	if (!isValidAlterArea(oaa)) return;
+	if (!isValidAlterArea(oaa)) return false;
 	const bool adding = oaa.type == BrushTool::MODE_ADD;
 	const Uint32 oldGeneration = map.topologyGeneration;
 	const Uint32 teamMask = teams[oaa.teamNumber]->me;
@@ -400,7 +412,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			if (oaa.teamNumber == players[localPlayer]->teamNumber)
 				map.displayedForbiddenView.set(map.coordToIndex(x, y), adding);
 		}
-	if (!changed) return;
+	if (!changed) return true;
 
 	for (int team=0; team<mapHeader.getNumberOfTeams(); ++team)
 		for (int id=0; id<Building::MAX_COUNT; ++id)
@@ -428,6 +440,8 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 	}
 	if (walkingChanged || clearingChanged)
 		map.updateClearAreasGradient(oaa.teamNumber);
+
+	return true;
 }
 
 namespace
@@ -468,117 +482,147 @@ bool Game::isValidAlterArea(const OrderAlterArea& oaa) const
 		(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
 }
 
-void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
+bool Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
-	if (!isValidAlterArea(oaa)) return;
+	if (!isValidAlterArea(oaa)) return false;
 	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
 		&Tile::guardArea, map.displayedGuardAreaView, anyTile);
 	map.updateGuardAreasGradient(oaa.teamNumber);
+
+	return true;
 }
 
-void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
+bool Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
-	if (!isValidAlterArea(oaa)) return;
+	if (!isValidAlterArea(oaa)) return false;
 	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
 		&Tile::clearArea, map.displayedClearAreaView, anyTile);
 	map.updateClearAreasGradient(oaa.teamNumber);
+
+	return true;
 }
 
 // A farm area (the farm-areas experiment) only changes what a harvest draws
 // from and what counts as a clearing target, so it feeds no gradient of its
 // own. It refuses ground nothing can grow on here rather than only in the
 // brush, since this is the path a replay and every remote client take.
-void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
+bool Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
 {
-	if (!gameHeader.hasExperiment(ExperimentId::FarmAreas) || !isValidAlterArea(oaa)) return;
+	if (!gameHeader.hasExperiment(ExperimentId::FarmAreas) || !isValidAlterArea(oaa)) return false;
 	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
 		&Tile::farmArea, map.displayedFarmAreaView,
 		[this](int x, int y) { return map.canPaintFarmArea(x, y); });
 	// A farm is a clearing goal for everything it does not grow.
 	map.updateClearAreasGradient(oaa.teamNumber);
+
+	return true;
 }
 
-void Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
+bool Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 {
-	for (int ratio : oms.ratio) if (ratio < 0 || ratio > 32767) return;
+	for (int ratio : oms.ratio) if (ratio < 0 || ratio > 32767) return false;
 	Building *b=lookupBuilding(oms.gid);
 	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->semantics.production.enabledUnitMask))
 	{
 		for (int j=0; j<NB_UNIT_TYPE; ++j)
-			if (!(b->type->semantics.production.enabledUnitMask & (1u<<j)) && oms.ratio[j]) return;
+			if (!(b->type->semantics.production.enabledUnitMask & (1u<<j)) && oms.ratio[j]) return false;
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
 			b->ratio[j]=oms.ratio[j];
 		}
 		b->update();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeDelete(const OrderDelete& od)
+bool Game::executeDelete(const OrderDelete& od)
 {
 	Building *b=lookupBuilding(od.gid);
 	if (b)
 	{
+		const bool admitted = b->buildingState == Building::ALIVE;
 		b->launchDelete();
 		assert(b->type);
 		if (b->type->zonableForbidden)
 			b->owner->dirtyGlobalGradient();
+		return admitted;
 	}
+
+	return false;
 }
 
-void Game::executeChangePriority(const OrderChangePriority& ocp)
+bool Game::executeChangePriority(const OrderChangePriority& ocp)
 {
 	Building *b=lookupBuilding(ocp.gid);
 	if (b)
 	{
 		b->priority = ocp.priority;
 		b->updateCallLists();
+		return true;
 	}
+
+	return false;
 }
 
-void Game::executeCancelDelete(const OrderCancelDelete& ocd)
+bool Game::executeCancelDelete(const OrderCancelDelete& ocd)
 {
 	Building *b=lookupBuilding(ocd.gid);
 	if (b)
 	{
+		const bool admitted = b->buildingState == Building::WAITING_FOR_DESTRUCTION;
 		b->cancelDelete();
+		return admitted;
 	}
+
+	return false;
 }
 
-void Game::executeConstruction(const OrderConstruction& oc)
+bool Game::executeConstruction(const OrderConstruction& oc)
 {
-	if (oc.unitWorking > Unit::MAX_COUNT || oc.unitWorkingFuture > Unit::MAX_COUNT) return;
+	if (oc.unitWorking > Unit::MAX_COUNT || oc.unitWorkingFuture > Unit::MAX_COUNT) return false;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{
-		b->launchConstruction(oc.unitWorking, oc.unitWorkingFuture);
+		return b->launchConstruction(oc.unitWorking, oc.unitWorkingFuture);
 	}
+
+	return false;
 }
 
-void Game::executeCancelConstruction(const OrderCancelConstruction& oc)
+bool Game::executeCancelConstruction(const OrderCancelConstruction& oc)
 {
-	if (oc.unitWorking > Unit::MAX_COUNT) return;
+	if (oc.unitWorking > Unit::MAX_COUNT) return false;
 	Building *b=lookupBuilding(oc.gid);
 	if (b)
 	{
+		const bool cancelable = b->constructionResultState != Building::NO_CONSTRUCTION
+			|| b->buildingState == Building::WAITING_FOR_CONSTRUCTION
+			|| b->buildingState == Building::WAITING_FOR_CONSTRUCTION_ROOM;
 		b->cancelConstruction(oc.unitWorking);
+		return cancelable && b->constructionResultState == Building::NO_CONSTRUCTION;
 	}
+
+	return false;
 }
 
-void Game::executeSetAlliance(const SetAllianceOrder& sao)
+bool Game::executeSetAlliance(const SetAllianceOrder& sao)
 {
 	Uint32 team=sao.teamNumber;
-	if (team >= static_cast<unsigned>(mapHeader.getNumberOfTeams()) || !teams[team]) return;
+	if (team >= static_cast<unsigned>(mapHeader.getNumberOfTeams()) || !teams[team]) return false;
 	teams[team]->allies=sao.alliedMask;
 	teams[team]->enemies=sao.enemyMask;
 	teams[team]->sharedVisionExchange=sao.visionExchangeMask;
 	teams[team]->sharedVisionFood=sao.visionFoodMask;
 	teams[team]->sharedVisionOther=sao.visionOtherMask;
+
+	return true;
 }
 
-void Game::executePlayerQuitGame(const PlayerQuitsGameOrder& pqgo)
+bool Game::executePlayerQuitGame(const PlayerQuitsGameOrder& pqgo)
 {
-	if (pqgo.player < 0 || pqgo.player >= gameHeader.getNumberOfPlayers() || !players[pqgo.player]) return;
+	if (pqgo.player < 0 || pqgo.player >= gameHeader.getNumberOfPlayers() || !players[pqgo.player]) return false;
 	bool found = false;
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
@@ -597,4 +641,6 @@ void Game::executePlayerQuitGame(const PlayerQuitsGameOrder& pqgo)
 
 	players[pqgo.player]->makeItAI(AI::NONE);
 	gameHeader.getBasePlayer(pqgo.player).makeItAI(AI::NONE);
+
+	return true;
 }

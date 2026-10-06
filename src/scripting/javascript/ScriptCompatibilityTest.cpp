@@ -134,15 +134,15 @@ TEST_CASE("Completed-tick simulation rejects released replays and enforces accep
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 139);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 140);
 	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
-	CHECK(NET_PROTOCOL_VERSION == 58);
+	CHECK(NET_PROTOCOL_VERSION == 59);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, 137, 138, VERSION_MINOR, VERSION_MINOR + 1};
+	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, 137, 138, 139, VERSION_MINOR, VERSION_MINOR + 1};
 	for (Uint16 version : versions)
 	{
 		CAPTURE(version);

@@ -4,10 +4,16 @@
 #include "AITelemetryFields.h"
 #include "AIStateSerialization.h"
 #include "AICortex.h"
+#include "CortexWorld.h"
+#include "ai/observation/WorldQueries.h"
+#include "CortexPlacement.h"
+#include "ai/engine/AIDecision.h"
+#include "ai/engine/AIOrderScheduler.h"
 #include "CortexObservation.h"
 #include "CortexWheat.h"
 
 #include "Order.h"
+#include "Version.h"
 #include "AIRuleOrders.h"
 #include "OrderMessages.h"
 #include "Player.h"
@@ -42,15 +48,7 @@ AICortex::AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionM
 	if (!load(stream, player, versionMinor)) throw std::runtime_error("invalid Cortex execution state");
 }
 
-AICortex::~AICortex()
-{
-	if (traceFile) // flush + release the gated training trace (RAM-only handle).
-		std::fclose(traceFile);
-	if (decideTraceFile) // flush + release the gated decision trace (RAM-only handle).
-		std::fclose(decideTraceFile);
-	if (innTraceFile) // flush + release the gated inn-diagnostic trace (RAM-only handle).
-		std::fclose(innTraceFile);
-}
+AICortex::~AICortex() = default;
 
 void AICortex::init(Player* player)
 {
@@ -91,12 +89,7 @@ void AICortex::init(Player* player)
 	offenseHoldUntil = 0;
 	wheatOpenMargin = -1; // sentinel: drawn lazily on the first decision cycle.
 	attackDumped = false; // diagnostic one-shot; never serialized.
-	traceFile = nullptr; // gated ML training trace; lazily opened, never serialized.
-	traceOpenAttempted = false; // open the trace at most once, even if it fails.
-	decideTraceFile = nullptr; // gated ML decision trace; lazily opened, never serialized.
-	decideTraceOpenAttempted = false; // open the decision trace at most once, even if it fails.
-	innTraceFile = nullptr; // gated inn-diagnostic trace; lazily opened, never serialized.
-	innTraceOpenAttempted = false; // open the inn trace at most once, even if it fails.
+	issuedCommands.clear();queuedCommands.clear();
 	innFinishedTick.clear(); // Persisted settle clock, initially empty.
 	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
@@ -214,8 +207,12 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 				mode == 1 ? Cortex::CortexNet::NUM_LOGITS : Cortex::CortexNet::NUM_DECIDE_LOGITS)) return false;
 		}
 	}
+    issuedCommands.clear();queuedCommands.clear();
+    if(versionMinor>=FILE_FORMAT_VERSION_AI_PIPELINE &&
+        (!loadCommands(stream,issuedCommands,"issuedCommands",128) ||
+         !loadCommands(stream,queuedCommands,"queuedCommands",65536))) return false;
 	stream->readLeaveSection();
-	return true;
+	return stream->isValid();
 }
 
 void AICortex::save(GAGCore::OutputStream* stream)
@@ -307,10 +304,12 @@ void AICortex::save(GAGCore::OutputStream* stream)
 		stream->writeUint32(blob.size(),"policyBlobSize");
 		stream->write(blob.data(),blob.size(),"policyBlob");
 	}
+    saveCommands(stream,issuedCommands,"issuedCommands");
+    saveCommands(stream,queuedCommands,"queuedCommands");
 	stream->writeLeaveSection();
 }
 
-Building* AICortex::findUpgradeTarget(int buildingType) const
+Cortex::WorldBuilding* AICortex::findUpgradeTarget(int buildingType) const
 {
 	// Scan our real buildings by ARRAY INDEX (myBuildings, never team->upgrade
 	// or any std::set) so the selection is lockstep-deterministic. We keep the
@@ -331,21 +330,21 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:425)
 	// If ANY condition fails the OrderConstruction would be silently dropped, so
 	// only a fully-eligible instance is worth targeting.
-	Team* team = player->team;
+	Cortex::WorldTeam* team = decisionPlayer->team;
 	const int maxBuildLevel = team->maxBuildLevel(); // C++: team/TeamRouting.cpp:245-259
 
-	Building* best = NULL;
+	Cortex::WorldBuilding* best = NULL;
 	int bestLevel = 0;
 	std::size_t bestDemand = 0;
-	for (int i = 0; i < Building::MAX_COUNT; i++)
+	for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 	{
-		Building* b = team->myBuildings[i];
+		Cortex::WorldBuilding* b = team->myBuildings[i];
 		if (b == NULL)
 			continue;
 		if (!Cortex::servesRole(*team->game, *b->type, buildingType))
 			continue;
 		// C++: Building::launchConstruction, building/Construction.cpp:93-108.
-		if (b->buildingState != Building::ALIVE)
+		if (b->buildingState != Cortex::WorldBuilding::ALIVE)
 			continue;
 		if (b->type->isBuildingSite)
 			continue;
@@ -353,11 +352,11 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 			continue;
 		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
-		if (b->constructionResultState != Building::NO_CONSTRUCTION)
+		if (b->constructionResultState != Cortex::WorldBuilding::NO_CONSTRUCTION)
 			continue;
 		if (maxBuildLevel < team->game->buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel)
 			continue;
-		if (!b->isHardSpaceForBuildingSite(Building::UPGRADE)) // C++: building/Building.h:200
+		if (!b->isHardSpaceForBuildingSite(Cortex::WorldBuilding::UPGRADE)) // C++: building/Cortex::WorldBuilding.h:200
 			continue;
 
 		// Bottleneck ranking (deterministic — we deliberately do NOT mimic
@@ -395,10 +394,59 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 
 shared_ptr<Order> AICortex::getOrder(void)
 {
+    const auto view = AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    const std::vector<AIEngine::ExecutionReceipt> receipts;
+    return runObservation(AIEngine::DecisionContext{*view, unsigned(player->number), unsigned(player->teamNumber), receipts}, false);
+}
+shared_ptr<Order> AICortex::getOrder(const AIEngine::DecisionContext& context)
+{
+    return runObservation(context, true);
+}
+shared_ptr<Order> AICortex::runObservation(const AIEngine::DecisionContext& context, bool worker)
+{
+    if(worker) applyReceipts(context);
+    std::vector<std::vector<Uint8>> queuedBytes;
+    std::queue<std::shared_ptr<Order>> validQueue;
+    while(!orderQueue.empty()) {
+        auto order=orderQueue.front();orderQueue.pop();
+        auto bytes=AIEngine::Command::capture(*order,context.world).bytes;
+        const auto intent=std::find_if(queuedCommands.begin(),queuedCommands.end(),[&](const auto& item){return item.bytes==bytes;});
+        if(intent!=queuedCommands.end() && !intent->target.empty() && !context.world.building(intent->target)) {
+            rejectIntent(*intent);queuedCommands.erase(intent);continue;
+        }
+        queuedBytes.push_back(std::move(bytes));validQueue.push(std::move(order));
+    }
+    orderQueue=std::move(validQueue);
+    std::erase_if(queuedCommands,[&](const auto& item) {
+        return std::find(queuedBytes.begin(),queuedBytes.end(),item.bytes)==queuedBytes.end();
+    });
+    Cortex::World world(context.world);
+    applyQueuedIntent(world);
+    Cortex::WorldPlayer local{&world, world.teams.at(context.team), int(context.player), &diagnosticStream};
+    struct Reset { AICortex& ai; ~Reset() {
+        ai.decisionPlayer = nullptr;
+        const auto text = ai.diagnosticStream.str();
+        if (!text.empty()) ai.bufferedDiagnostics.push_back({{}, {}, text});
+        ai.diagnosticStream.str({}); ai.diagnosticStream.clear();
+    } } reset{*this};
+    decisionPlayer = &local;
+    auto result=decide();
+    if(result->getOrderType()!=ORDER_NULL) {
+        if(worker) rememberIssued(*result,context,world);
+        else {
+            const auto bytes=AIEngine::Command::capture(*result,context.world).bytes;
+            const auto emitted=std::find_if(queuedCommands.begin(),queuedCommands.end(),[&](const auto& item){return item.bytes==bytes;});
+            if(emitted!=queuedCommands.end()) queuedCommands.erase(emitted);
+        }
+    }
+    return result;
+}
+shared_ptr<Order> AICortex::decide()
+{
 	Cortex::TuningScope tuningScope(runtimeTuning);
 	policy.telemetry = telemetry;
 	// Drain any Orders queued by a prior decision cycle, one per tick.
-	while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
+	while (!orderQueue.empty() && !Cortex::permittedQueuedOrder(*decisionPlayer->game, *orderQueue.front())) orderQueue.pop();
 	if (!orderQueue.empty())
 	{
 		shared_ptr<Order> order = orderQueue.front();
@@ -427,7 +475,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// footprint for enemyUnitsNearFlag (scoreRetireFlag's straggler grace on the
 		// primary push). The per-wave warrior counts the pipeline needs are computed
 		// directly in the action layer (countWarriorsNear), not via the observation.
-		Cortex::CortexObservation obs = Cortex::observe(player, wheatOpenMargin, offenseWaves[0].gid);
+		Cortex::CortexObservation obs = Cortex::observeWorld(decisionPlayer, wheatOpenMargin, offenseWaves[0].gid);
 
 		// Stamp each tracked inn's post-build settle clock. The first cycle we see an
 		// inn finished we record obs.tick; thereafter ticksSinceFinished is the age,
@@ -464,14 +512,14 @@ shared_ptr<Order> AICortex::getOrder(void)
 		 && obs.trackedSwarms[0].maxUnitWorking != SWARM_START_WORKERS)
 		{
 			Cortex::TrackedBuilding& t0 = obs.trackedSwarms[0];
-			const int bid = Building::GIDtoID(static_cast<Uint16>(t0.gid));
-			Building* b = player->team->myBuildings[bid];
-			if (b && b->buildingState == Building::ALIVE && !b->type->isBuildingSite
+			const int bid = Cortex::WorldBuilding::GIDtoID(static_cast<Uint16>(t0.gid));
+			Cortex::WorldBuilding* b = decisionPlayer->team->myBuildings[bid];
+			if (b && b->buildingState == Cortex::WorldBuilding::ALIVE && !b->type->isBuildingSite
 			 && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 			{
 				b->maxUnitWorking = std::min(SWARM_START_WORKERS, int(b->type->semantics.assignmentLimit));
 				b->update();
-				orderQueue.push(shared_ptr<Order>(
+				enqueueOrder(shared_ptr<Order>(
 					new OrderModifyBuilding(b->gid, b->maxUnitWorking)));
 				t0.maxUnitWorking = b->maxUnitWorking;
 				swarmKickstarted = true;
@@ -483,7 +531,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		if (getenv("CORTEX_DUMP_PERIODIC"))
 		{
 			using namespace Cortex;
-			std::cerr << "CORTEX_TRACE t=" << obs.tick
+			diagnosticStream << "CORTEX_TRACE t=" << obs.tick
 			          << " u=" << obs.totalUnit
 			          << " W=" << obs.workers << " E=" << obs.explorers << " A=" << obs.warriors
 			          << " freeW=" << obs.freeWorkers
@@ -527,7 +575,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 			{
 				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
 				if (!n.valid) continue;
-				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
+				diagnosticStream << "CORTEX_INN t=" << obs.tick << " inn=" << i
 				          << " wheat=" << n.wheat << "/" << n.maxWheat
 				          << " haulers=" << n.maxUnitWorking
 				          << " restockReq=" << n.restockTripsNeeded
@@ -545,7 +593,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 			{
 				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
 				if (!s.valid) continue;
-				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
+				diagnosticStream << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
 				          << " wheat=" << s.wheat << "/" << s.maxWheat
 				          << " haulers=" << s.maxUnitWorking
 				          << " prio=" << s.priority
@@ -557,21 +605,30 @@ shared_ptr<Order> AICortex::getOrder(void)
 			// local wheat is unripe/over-harvested, not merely fogged — that is why
 			// restockTripsNeeded computes 0 and the inn never refills.
 			{
-				Game* g = player->team->game;
-				Team* tm = player->team;
+				Cortex::World* g = decisionPlayer->team->game;
+				Cortex::WorldTeam* tm = decisionPlayer->team;
 				int innIdx = 0;
-				for (int b = 0; b < Building::MAX_COUNT; b++)
+                // Diagnostics use published fields, or private initialization only.
+                // They never enroll a new simulation gradient.
+                AIEngine::ResourceInitializations diagnosticFields;
+                AIEngine::WorldQueries diagnosticQueries(g->source, tm->teamNumber, diagnosticFields);
+				for (int b = 0; b < Cortex::WorldBuilding::MAX_COUNT; b++)
 				{
-					Building* bb = tm->myBuildings[b];
-					if (bb == NULL || bb->buildingState == Building::DEAD)
+					Cortex::WorldBuilding* bb = tm->myBuildings[b];
+					if (bb == NULL || bb->buildingState == Cortex::WorldBuilding::DEAD)
 						continue;
 					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
-					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
+                    int rx=0,ry=0,distance=0;
+                    const bool available=diagnosticQueries.resourceAvailableUpdate(tm->teamNumber,WHEAT,0,bb->posX,bb->posY,&rx,&ry,&distance);
+                    auto field=g->source.resourceGradient(tm->teamNumber,WHEAT,0);
+                    if(field.empty()) field=*diagnosticFields.at((tm->teamNumber*MAX_NB_RESOURCES+WHEAT)*7).values;
+                    const auto gradient=field[g->map.coordToIndex(bb->posX,bb->posY)];
+					diagnosticStream << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
 					          << " wheat=" << bb->resources[WHEAT] << "/" << bb->type->maxResource[WHEAT]
-					          << " wheatAvail=" << (g->map.resourceAvailable(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY) ? 1 : 0)
-					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY)
+					          << " wheatAvail=" << (available ? 1 : 0)
+                              << " wheatGrad=" << int(gradient)
 					          << "\n";
 				}
 			}
@@ -579,16 +636,16 @@ shared_ptr<Order> AICortex::getOrder(void)
 			// One line per team every decision cycle so training pace, food health, and
 			// army size can be compared side-by-side against the opponent.
 			{
-				Game* g = player->team->game;
+				Cortex::World* g = decisionPlayer->team->game;
 				for (int t = 0; t < g->teamsCount(); t++)
 				{
-					Team* et = g->teams[t];
+					Cortex::WorldTeam* et = g->teams[t];
 					if (!et) continue;
 					const TeamStat* es = et->stats.getLatestStat();
 					if (!es) continue;
-					std::cerr << "CORTEX_TRUTH t=" << obs.tick
+					diagnosticStream << "CORTEX_TRUTH t=" << obs.tick
 					          << " team=" << et->teamNumber
-					          << (et->teamNumber == player->team->teamNumber ? " self" : " enemy")
+					          << (et->teamNumber == decisionPlayer->team->teamNumber ? " self" : " enemy")
 					          << " u=" << es->totalUnit
 					          << " W=" << es->numberUnitPerType[WORKER]
 					          << " E=" << es->numberUnitPerType[EXPLORER]
@@ -614,11 +671,11 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// flag's distance to the nearest own inn (food source). Pure read → stderr.
 		if (getenv("CORTEX_DUMP_OFFENSE"))
 		{
-			Game* game = player->team->game;
-			Team* team = player->team;
+			Cortex::World* game = decisionPlayer->team->game;
+			Cortex::WorldTeam* team = decisionPlayer->team;
 			for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 			{
-				Building* flag = findFlagByGid(offenseWaves[i].gid);
+				Cortex::WorldBuilding* flag = findFlagByGid(offenseWaves[i].gid);
 				if (flag == NULL)
 					continue;
 				const int phase = offenseWaves[i].phase;
@@ -629,7 +686,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 				int n = 0, hungry = 0, damaged = 0, free = 0;
 				long hpSum = 0, hungrySum = 0;
 				int minHp = 1 << 30, minHungry = 1 << 30;
-				for (Unit* u : flag->unitsWorking)
+				for (Cortex::WorldUnit* u : flag->unitsWorking)
 				{
 					if (u == NULL)
 						continue;
@@ -638,16 +695,16 @@ shared_ptr<Order> AICortex::getOrder(void)
 					hungrySum += u->hungry;
 					if (u->hp < minHp) minHp = u->hp;
 					if (u->hungry < minHungry) minHungry = u->hungry;
-					if (u->medical == Unit::MED_HUNGRY) hungry++;
-					else if (u->medical == Unit::MED_DAMAGED) damaged++;
+					if (u->medical == Cortex::WorldUnit::MED_HUNGRY) hungry++;
+					else if (u->medical == Cortex::WorldUnit::MED_DAMAGED) damaged++;
 					else free++;
 				}
 				// Distance from the flag (the front) to the nearest own inn (food).
 				int innDist = -1;
-				for (int b = 0; b < Building::MAX_COUNT; b++)
+				for (int b = 0; b < Cortex::WorldBuilding::MAX_COUNT; b++)
 				{
-					Building* bb = team->myBuildings[b];
-					if (bb == NULL || bb->buildingState == Building::DEAD)
+					Cortex::WorldBuilding* bb = team->myBuildings[b];
+					if (bb == NULL || bb->buildingState == Cortex::WorldBuilding::DEAD)
 						continue;
 					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
@@ -655,13 +712,13 @@ shared_ptr<Order> AICortex::getOrder(void)
 					if (innDist < 0 || d < innDist)
 						innDist = d;
 				}
-				std::cerr << "CORTEX_OFF t=" << obs.tick << " wave=" << i
+				diagnosticStream << "CORTEX_OFF t=" << obs.tick << " wave=" << i
 				          << " phase=" << phaseName
 				          << " at=" << flag->posX << "," << flag->posY;
 				if (phase == WAVE_CROSS)
-					std::cerr << " landing=" << offenseWaves[i].landingX << ","
+					diagnosticStream << " landing=" << offenseWaves[i].landingX << ","
 					          << offenseWaves[i].landingY;
-				std::cerr << " cohort=" << n << " arrived=" << arrived
+				diagnosticStream << " cohort=" << n << " arrived=" << arrived
 				          << " free=" << free << " hungry=" << hungry << " damaged=" << damaged
 				          << " avgHp=" << (n ? hpSum / n : 0) << " minHp=" << (n ? minHp : 0)
 				          << " avgHungry=" << (n ? hungrySum / n : 0)
@@ -733,11 +790,11 @@ shared_ptr<Order> AICortex::getOrder(void)
 			{
 				if (*trackX[p] < 0)
 					continue; // nothing ordered for this slot.
-				Building* found = NULL;
-				for (int i = 0; i < Building::MAX_COUNT; i++)
+				Cortex::WorldBuilding* found = NULL;
+				for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 				{
-					Building* b = player->team->myBuildings[i];
-					if (b == NULL || b->buildingState != Building::ALIVE)
+					Cortex::WorldBuilding* b = decisionPlayer->team->myBuildings[i];
+					if (b == NULL || b->buildingState != Cortex::WorldBuilding::ALIVE)
 						continue;
 					if (!Cortex::servesRole(*b->owner->game, *b->type, shortTypes[p]))
 						continue;
@@ -818,7 +875,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// order, no persisted state touched, so the sync stream is unaffected.
 		if (getenv("CORTEX_DUMP_GATES"))
 		{
-			std::cerr << "CORTEX_GATES t=" << obs.tick
+			diagnosticStream << "CORTEX_GATES t=" << obs.tick
 			          << " latch=" << obs.enemyWarriorLevelLatched
 			          << " visible=" << obs.enemyWarriorLevelVisible
 			          << " ownStr=[" << obs.attackStrengthLevel[0] << "," << obs.attackStrengthLevel[1]
@@ -841,9 +898,9 @@ shared_ptr<Order> AICortex::getOrder(void)
 			               : std::string("none"));
 			for (int i = 0; i < Cortex::CORTEX_FLAG_TARGETS; i++)
 				if (obs.flagTargets[i].valid)
-					std::cerr << " tgt" << i << "=(" << obs.flagTargets[i].x << ","
+					diagnosticStream << " tgt" << i << "=(" << obs.flagTargets[i].x << ","
 					          << obs.flagTargets[i].y << ")d" << obs.flagTargetSupportDist[i];
-			std::cerr << "\n";
+			diagnosticStream << "\n";
 		}
 
 		// DECISION-SELECTION TRACE (gated): when GLOB2_CORTEX_DECIDE_TRACE is set,
@@ -935,7 +992,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		else if (policy.wantWheatProtection(obs))
 			enqueueWheatForbidden(obs);
 
-		while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
+		while (!orderQueue.empty() && !Cortex::permittedQueuedOrder(*decisionPlayer->game, *orderQueue.front())) orderQueue.pop();
 		if (!orderQueue.empty())
 		{
 			shared_ptr<Order> order = orderQueue.front();
@@ -945,4 +1002,208 @@ shared_ptr<Order> AICortex::getOrder(void)
 	}
 
 	return shared_ptr<Order>(new NullOrder());
+}
+
+void AICortex::applyQueuedIntent(Cortex::World& world) const
+{
+    const auto apply=[&](const std::shared_ptr<Order>& order,BuildingRef identity) {
+        Uint16 gid=0xffff;
+        switch(order->getOrderType())
+        {
+        case ORDER_MODIFY_BUILDING: gid=static_cast<OrderModifyBuilding&>(*order).gid;break;
+        case ORDER_MODIFY_SWARM: gid=static_cast<OrderModifySwarm&>(*order).gid;break;
+        case ORDER_CHANGE_PRIORITY: gid=static_cast<OrderChangePriority&>(*order).gid;break;
+        case ORDER_MODIFY_MIN_LEVEL_TO_FLAG: gid=static_cast<OrderModifyMinLevelToFlag&>(*order).gid;break;
+        case ORDER_MOVE_FLAG: gid=static_cast<OrderMoveFlag&>(*order).gid;break;
+        default:return;
+        }
+        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT || Building::GIDtoTeam(gid)>=world.teams.size())return;
+        auto* building=world.teams[Building::GIDtoTeam(gid)]->myBuildings[Building::GIDtoID(gid)];
+        if(!building || (!identity.empty() && building->source->identity!=identity))return;
+        switch(order->getOrderType())
+        {
+        case ORDER_MODIFY_BUILDING: building->maxUnitWorking=static_cast<OrderModifyBuilding&>(*order).numberRequested;break;
+        case ORDER_MODIFY_SWARM: {
+            const auto& ratios=static_cast<OrderModifySwarm&>(*order).ratio;
+            std::copy_n(ratios,NB_UNIT_TYPE,building->ratio.begin());break;
+        }
+        case ORDER_CHANGE_PRIORITY: building->priority=static_cast<OrderChangePriority&>(*order).priority;break;
+        case ORDER_MODIFY_MIN_LEVEL_TO_FLAG: building->minLevelToFlag=static_cast<OrderModifyMinLevelToFlag&>(*order).minLevelToFlag;break;
+        case ORDER_MOVE_FLAG: {
+            const auto& move=static_cast<OrderMoveFlag&>(*order);
+            building->posX=world.map.normalizeX(move.x);building->posY=world.map.normalizeY(move.y);break;
+        }
+        }
+    };
+    for(const auto& pending:issuedCommands) {
+        if(pending.target.empty()) continue;
+        const auto order=Order::getOrder(pending.bytes.data(),pending.bytes.size(),VERSION_MINOR);
+        if(order) apply(order,pending.target);
+    }
+    auto queued=orderQueue;
+    while(!queued.empty()) {apply(queued.front(),{});queued.pop();}
+}
+
+namespace {
+std::vector<Uint8> cortexCommandBytes(Order& order)
+{
+    std::vector<Uint8> bytes{order.getOrderType()};
+    if(order.getDataLength()) {
+        const auto* data=order.getData();bytes.insert(bytes.end(),data,data+order.getDataLength());
+    }
+    return bytes;
+}
+}
+void AICortex::enqueueOrder(std::shared_ptr<Order> order)
+{
+    if(decisionPlayer) {
+        PendingCommand pending;const auto command=AIEngine::Command::capture(*order,decisionPlayer->game->source);
+        pending.bytes=command.bytes;if(command.target)pending.target=*command.target;
+        queuedCommands.push_back(std::move(pending));
+    }
+    orderQueue.push(std::move(order));
+}
+void AICortex::rememberFlagCreation(Order& order,Sint32& cooldown)
+{
+    PendingCommand pending;pending.bytes=cortexCommandBytes(order);pending.flagCooldown=cooldown;
+    for(int i=0;i<MAX_OFFENSE_FLAGS;++i)if(&cooldown==&offenseWaves[i].createCooldown) {
+        pending.flagKind=1;pending.flagSlot=i;
+    }
+    for(int i=0;i<Cortex::CORTEX_MAX_DEFENSE_FLAGS;++i)if(&cooldown==&defenseFlags[i].createCooldown) {
+        pending.flagKind=2;pending.flagSlot=i;
+    }
+    if(pending.flagKind) {
+        const auto existing=std::find_if(queuedCommands.rbegin(),queuedCommands.rend(),[&](const auto& item){return item.bytes==pending.bytes;});
+        if(existing!=queuedCommands.rend()) {
+            existing->flagKind=pending.flagKind;existing->flagSlot=pending.flagSlot;existing->flagCooldown=pending.flagCooldown;
+        } else queuedCommands.push_back(std::move(pending));
+    }
+}
+void AICortex::rememberQueuedBuild(Order& order,int role)
+{
+    PendingCommand pending;pending.bytes=cortexCommandBytes(order);
+    pending.buildClass=role;pending.buildCooldown=buildCooldownUntil[role];
+    if(order.getOrderType()==ORDER_CONSTRUCTION) {
+        pending.upgradeType=role;pending.upgradeUntil=pendingUpgradeUntil;
+    }
+    const auto existing=std::find_if(queuedCommands.rbegin(),queuedCommands.rend(),[&](const auto& item){return item.bytes==pending.bytes;});
+    if(existing!=queuedCommands.rend()) {
+        existing->buildClass=pending.buildClass;existing->buildCooldown=pending.buildCooldown;
+        existing->upgradeType=pending.upgradeType;existing->upgradeUntil=pending.upgradeUntil;
+    } else queuedCommands.push_back(std::move(pending));
+}
+void AICortex::rememberIssued(Order& order,const AIEngine::DecisionContext& context,const Cortex::World& world)
+{
+    if(issuedCommands.size()>=128) throw std::runtime_error("Cortex pending command limit exceeded");
+    PendingCommand pending;pending.bytes=cortexCommandBytes(order);
+    pending.observedTick=context.world.tick;pending.scheduledTick=context.scheduledTick;
+    pending.sequence=context.pollSequence;
+    const auto command=AIEngine::Command::capture(order,context.world);
+    if(command.target) pending.target=*command.target;
+    const auto flag=std::find_if(queuedCommands.begin(),queuedCommands.end(),[&](const auto& item) {
+        return item.bytes==pending.bytes;
+    });
+    if(flag!=queuedCommands.end()) {
+        if(!flag->target.empty()) pending.target=flag->target;
+        pending.flagKind=flag->flagKind;pending.flagSlot=flag->flagSlot;pending.flagCooldown=flag->flagCooldown;
+        pending.buildClass=flag->buildClass;pending.buildCooldown=flag->buildCooldown;
+        pending.upgradeType=flag->upgradeType;pending.upgradeUntil=flag->upgradeUntil;
+        queuedCommands.erase(flag);
+    }
+    const BuildingType* type=nullptr;
+    if(dynamic_cast<const OrderConstruction*>(&order)) {
+        const auto* building=context.world.building(pending.target);
+        if(building) type=world.buildingsTypes.get(building->type);
+        if(pending.upgradeType<0 && type && pendingUpgradeType>=0 && Cortex::servesRole(world,*type,pendingUpgradeType)) {
+            pending.upgradeType=pendingUpgradeType;pending.upgradeUntil=pendingUpgradeUntil;
+        }
+    }
+    if(pending.buildClass<0 && pending.upgradeType>=0) {
+        pending.buildClass=pending.upgradeType;pending.buildCooldown=buildCooldownUntil[pending.upgradeType];
+    }
+    issuedCommands.push_back(std::move(pending));
+}
+void AICortex::rejectIntent(const PendingCommand& command)
+{
+    // The request's stamp identifies this intent, even after a newer action has
+    // reused its building gid or flag slot. Rejection never clears newer state.
+    if(command.upgradeType>=0 && pendingUpgradeType==command.upgradeType && pendingUpgradeUntil==command.upgradeUntil) {
+        pendingUpgradeType=-1;pendingUpgradeUntil=0;
+    }
+    if(command.buildClass>=0 && buildCooldownUntil[command.buildClass]==command.buildCooldown)
+        buildCooldownUntil[command.buildClass]=0;
+    if(command.flagKind==1 && offenseWaves[command.flagSlot].createCooldown==command.flagCooldown)
+        offenseWaves[command.flagSlot].createCooldown=0;
+    if(command.flagKind==2 && defenseFlags[command.flagSlot].createCooldown==command.flagCooldown)
+        defenseFlags[command.flagSlot].createCooldown=0;
+}
+void AICortex::applyReceipts(const AIEngine::DecisionContext& context)
+{
+    for(const auto& receipt:context.receipts) {
+        const auto found=std::find_if(issuedCommands.begin(),issuedCommands.end(),[&](const auto& pending) {
+            return pending.observedTick==receipt.request.observedTick && pending.sequence==receipt.request.pollSequence
+                && pending.scheduledTick==receipt.scheduledTick && pending.bytes==receipt.command;
+        });
+        if(found==issuedCommands.end()) continue;
+        if(receipt.status!=AIEngine::ExecutionStatus::Accepted) {
+            rejectIntent(*found);
+        }
+        issuedCommands.erase(found);
+    }
+}
+void AICortex::saveCommands(GAGCore::OutputStream* stream,const std::vector<PendingCommand>& commands,const char* name) const
+{
+    stream->writeEnterSection(name);stream->writeUint32(commands.size(),"count");
+    for(unsigned i=0;i<commands.size();++i) {
+        stream->writeEnterSection(i);const auto& command=commands[i];
+        stream->writeUint32(command.bytes.size(),"size");stream->write(command.bytes.data(),command.bytes.size(),"bytes");
+        stream->writeUint16(command.target.gid,"gid");stream->writeUint32(command.target.generation,"generation");
+        stream->writeUint32(command.observedTick,"observedTick");stream->writeUint32(command.scheduledTick,"scheduledTick");
+        stream->writeUint32(Uint32(command.sequence),"sequenceLow");stream->writeUint32(Uint32(command.sequence>>32),"sequenceHigh");
+        stream->writeSint32(command.upgradeType,"upgradeType");stream->writeSint32(command.upgradeUntil,"upgradeUntil");
+        stream->writeSint32(command.buildClass,"buildClass");stream->writeSint32(command.buildCooldown,"buildCooldown");
+        stream->writeSint32(command.flagKind,"flagKind");stream->writeSint32(command.flagSlot,"flagSlot");stream->writeSint32(command.flagCooldown,"flagCooldown");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+bool AICortex::loadCommands(GAGCore::InputStream* stream,std::vector<PendingCommand>& commands,const char* name,unsigned limit)
+{
+    GAGCore::BinaryInputStream::CheckedReads checked(stream);
+    stream->readEnterSection(name);
+    const auto count=stream->readCount("count",limit);
+    std::vector<PendingCommand> restored;restored.reserve(count);
+    size_t totalBytes=0;
+    for(unsigned i=0;i<count;++i) {
+        stream->readEnterSection(i);PendingCommand command;
+        const auto size=stream->readCount("size",4*1024*1024);
+        if(!size || size>16*1024*1024-totalBytes)return false;
+        totalBytes+=size;
+        command.bytes.resize(size);stream->read(command.bytes.data(),size,"bytes");
+        if(!Order::getOrder(command.bytes.data(),command.bytes.size(),VERSION_MINOR))return false;
+        command.target.gid=stream->readUint16("gid");command.target.generation=stream->readUint32("generation");
+        if(!command.target.empty() && Building::GIDtoTeam(command.target.gid)!=player->teamNumber)return false;
+        command.observedTick=stream->readUint32("observedTick");command.scheduledTick=stream->readUint32("scheduledTick");
+        const auto low=stream->readUint32("sequenceLow"),high=stream->readUint32("sequenceHigh");
+        command.sequence=Uint64(low)|(Uint64(high)<<32);
+        command.upgradeType=AIStateSerialization::readSint32(stream,"upgradeType");command.upgradeUntil=AIStateSerialization::readSint32(stream,"upgradeUntil");
+        command.buildClass=AIStateSerialization::readSint32(stream,"buildClass");command.buildCooldown=AIStateSerialization::readSint32(stream,"buildCooldown");
+        command.flagKind=AIStateSerialization::readSint32(stream,"flagKind");command.flagSlot=AIStateSerialization::readSint32(stream,"flagSlot");command.flagCooldown=AIStateSerialization::readSint32(stream,"flagCooldown");
+        if(command.upgradeType < -1 || command.upgradeType>=Cortex::CORTEX_BUILDING_TYPES || command.buildClass < -1 || command.buildClass>=Cortex::CORTEX_BUILDING_TYPES
+            || command.flagKind<0 || command.flagKind>2 || command.flagSlot < -1
+            || (command.flagKind==1 && (command.flagSlot<0 || command.flagSlot>=MAX_OFFENSE_FLAGS))
+            || (command.flagKind==2 && (command.flagSlot<0 || command.flagSlot>=Cortex::CORTEX_MAX_DEFENSE_FLAGS)))return false;
+        restored.push_back(std::move(command));stream->readLeaveSection();
+    }
+    stream->readLeaveSection();commands=std::move(restored);return stream->isValid();
+}
+
+std::optional<Uint64> AICortex::retainedQueryVectorBytes() const
+{
+    // World/query scratch is invocation-local. The retained decision vectors
+    // are the bounded delayed-intent ledgers (model weights are excluded).
+    Uint64 bytes=(issuedCommands.capacity()+queuedCommands.capacity())*sizeof(PendingCommand);
+    for(const auto* commands:{&issuedCommands,&queuedCommands})
+        for(const auto& command:*commands) bytes+=command.bytes.capacity()*sizeof(Uint8);
+    return bytes;
 }

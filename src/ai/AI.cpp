@@ -3,6 +3,11 @@
 
 #include <PerformanceTelemetry.h>
 #include "AI.h"
+#include "ai/engine/AIOrderScheduler.h"
+#include "ai/engine/AIReceiptSerialization.h"
+#include <algorithm>
+#include <fstream>
+#include <iostream>
 #include "AIRuleOrders.h"
 #include <cstdlib>
 #include "AIJavaScript.h"
@@ -17,6 +22,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <Stream.h>
+#include "FileFormatVersions.h"
 
 
 #include "AINull.h"
@@ -136,6 +142,112 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	return order;
 }
 
+SimulationSnapshot::Requirements AI::observationRequirements() const
+{
+ auto required=aiImplementation->observationRequirements();
+ if(implementationID!=JAVASCRIPT && player->game->gameHeader.isUnitUpgradesDisabled())
+  required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)
+   |SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
+   |SimulationSnapshot::bit(SimulationSnapshot::Component::Rules);
+ return required;
+}
+void AI::prepareDecision()
+{
+	if (!aiImplementation->supportsObservation()) throw std::logic_error("AI decision boundary audit incomplete");
+	initializeRandom();
+	bindTelemetry();
+	if (!decisionTelemetry) { decisionTelemetry = std::make_unique<AITelemetry::Series>(*telemetrySeries); decisionTelemetry->history.clear(); }
+}
+AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
+{
+	if (!decisionTelemetry) throw std::logic_error("AI decision dispatch was not prepared by owner");
+	SyncRandScope randomScope(randomEngine);
+	auto& sink = aiImplementation->telemetry;
+	sink.series = decisionTelemetry.get(); sink.tick = context.world.tick;
+	sink.count(AITelemetry::Polls);
+    // Wrapper commands have their own feedback lane. Controller receipts must
+    // survive polls preempted by the training-release policy.
+    if(wrapperGeneration!=context.controllerGeneration) {
+        wrapperReleases.clear();deferredControllerReceipts.clear();
+        wrapperGeneration=context.controllerGeneration;
+    }
+    for(const auto& receipt:context.receipts) {
+        if(receipt.request.generation!=wrapperGeneration) continue;
+        auto wrapper=std::find_if(wrapperReleases.begin(),wrapperReleases.end(),
+            [&](const auto& release){return release.pollSequence==receipt.request.pollSequence;});
+        if(wrapper!=wrapperReleases.end()) {
+            if(receipt.selectedTarget!=wrapper->target) throw std::logic_error("AI wrapper receipt identity mismatch");
+            wrapperReleases.erase(wrapper);
+        } else if(!receipt.command.empty() && receipt.command.front()!=ORDER_NULL)
+            deferredControllerReceipts.push_back(receipt);
+    }
+    if(deferredControllerReceipts.size()>9) throw std::logic_error("AI deferred receipt bound exceeded");
+	std::shared_ptr<Order> order;
+	// Preserve the existing native training-release policy using captured config
+	// and catalog capabilities. No live rules helper is reachable here.
+	if (implementationID != JAVASCRIPT && context.world.rules.upgradesDisabled)
+		for (const auto& b : context.world.buildings)
+		{
+			if (b.team != int(context.team) || b.workers <= 0) continue;
+			const auto& kind = context.world.catalog->at(b.type);
+			if (kind.site || !AIRules::trainingBuilding(kind.resolvedType)) continue;
+			bool useful = false;
+			for (unsigned i = 0; i < unsigned(AIPlanning::BuildingIntent::Count); ++i) {
+				const auto intent = AIPlanning::BuildingIntent(i);
+				if (AIPlanning::BuildingCapabilityIndex::trainingAbility(intent) < 0 && intent != AIPlanning::BuildingIntent::TrainConstruction)
+					useful = useful || (kind.capabilityMask & (Uint64(1) << i));
+			}
+            if(!useful && std::none_of(wrapperReleases.begin(),wrapperReleases.end(),
+                    [&](const auto& release){return release.target==b.identity;})) {
+                order=std::make_shared<OrderModifyBuilding>(b.identity.gid,0);
+                order->aiSelectedTarget=b.identity;
+                wrapperReleases.push_back({context.pollSequence,b.identity});
+                if(wrapperReleases.size()>9) throw std::logic_error("AI wrapper release bound exceeded");
+                break;
+            }
+		}
+    if(!order) {
+        // DecisionContext holds a reference, so construct the merged batch view.
+        AIEngine::DecisionContext merged{context.world,context.player,context.team,deferredControllerReceipts,
+            context.observation,context.scheduledTick,context.pollSequence,context.resourceEnrollments,context.fieldDiagnostics,context.controllerGeneration};
+        order=aiImplementation->getOrder(merged);
+        deferredControllerReceipts.clear();
+    }
+	if (!order) throw std::runtime_error("AI returned no order object");
+	sink.count(AITelemetry::OrderTypes + order->getOrderType());
+	sink.count(order->getOrderType() == ORDER_NULL ? AITelemetry::NullOrders : AITelemetry::Orders);
+	aiImplementation->captureTelemetry();
+	decisionTelemetry->current.tick = context.world.tick; decisionTelemetry->current.available = true;
+	auto result = AIEngine::Command::capture(*order, context.world);
+	result.fieldDiagnostics = context.fieldDiagnostics;
+	result.retainedQueryVectorBytes = aiImplementation->retainedQueryVectorBytes();
+	result.telemetry = decisionTelemetry->current;
+	result.namedTelemetry = decisionTelemetry->named;
+	result.diagnostics = std::move(aiImplementation->bufferedDiagnostics);
+	aiImplementation->bufferedDiagnostics.clear();
+	return result;
+}
+void AI::publishDecision(const AIEngine::Command& output)
+{
+	// The private telemetry sink stays bound to the worker stream. Publishing
+	// copies completed values and never visits mutable controller state.
+	if (output.telemetry && telemetrySeries) {
+		telemetrySeries->current = *output.telemetry; telemetrySeries->named = output.namedTelemetry;
+	}
+	for (const auto& diagnostic : output.diagnostics)
+	{
+		if (diagnostic.path.empty()) {
+			if (diagnostic.standardOutput) std::cout << diagnostic.text;
+			else std::cerr << diagnostic.text;
+		}
+		else {
+			std::ofstream file(diagnostic.path, std::ios::app);
+			if (file && file.tellp() == 0) file << diagnostic.header;
+			if (file) file << diagnostic.text;
+		}
+	}
+}
+
 void AI::initializeRandom()
 {
 	if (randomInitialized) return;
@@ -155,6 +267,7 @@ void AI::initializeRandom()
 bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	randomInitialized = false;
+	decisionTelemetry.reset();
 	resumeTelemetry = true;
 	telemetrySeries.reset();
 	telemetryTeam = nullptr;
@@ -163,6 +276,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (aiImplementation)
 		delete aiImplementation;
 	aiImplementation=NULL;
+    wrapperReleases.clear();deferredControllerReceipts.clear();wrapperGeneration=0;
 
 	char signature[4];
 	
@@ -252,6 +366,13 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		randomInitialized = true;
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE) {
+		std::vector<std::shared_ptr<AITelemetry::Series>> saved;
+		AITelemetry::load(stream, saved, versionMinor);
+		if (saved.size() > 1) return false;
+		if (!saved.empty()) decisionTelemetry = std::make_unique<AITelemetry::Series>(*saved.front());
+        loadWrapperFeedback(stream);
+	}
 	stream->read(signature, 4, "signatureEnd");
 	stream->readLeaveSection();
 	if (memcmp(signature,"AI e", 4)!=0)
@@ -289,6 +410,10 @@ void AI::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 	
+	std::vector<std::shared_ptr<AITelemetry::Series>> saved;
+	if (decisionTelemetry) saved.push_back(std::make_shared<AITelemetry::Series>(*decisionTelemetry));
+	AITelemetry::save(stream, saved);
+    saveWrapperFeedback(stream);
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
 }
@@ -337,10 +462,51 @@ void AI::bindTelemetry()
 }
 void AI::captureTelemetry()
 {
+	// Async controller state belongs to its lane; the owner samples only published output.
+	if (decisionTelemetry) return;
 	bindTelemetry();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 	// Initial/dormant AIs may have lazily initialized state. Never inspect it.
 	if (telemetrySeries->current.available)
 		aiImplementation->captureTelemetry();
 	telemetrySeries->current.tick = player->game->stepCounter;
+}
+
+void AI::saveWrapperFeedback(GAGCore::OutputStream* stream) const
+{
+    stream->writeEnterSection("wrapperFeedback");
+    stream->writeUint32(wrapperGeneration,"generation");
+    stream->writeUint32(wrapperReleases.size(),"releases");
+    for(unsigned i=0;i<wrapperReleases.size();++i){
+        stream->writeEnterSection(i);const auto& value=wrapperReleases[i];
+        stream->writeUint32(Uint32(value.pollSequence),"sequenceLow");stream->writeUint32(Uint32(value.pollSequence>>32),"sequenceHigh");
+        stream->writeUint16(value.target.gid,"gid");stream->writeUint32(value.target.generation,"targetGeneration");stream->writeLeaveSection();
+    }
+    stream->writeUint32(deferredControllerReceipts.size(),"receipts");
+    for(unsigned i=0;i<deferredControllerReceipts.size();++i){stream->writeEnterSection(i);AIEngine::saveExecutionReceipt(*stream,deferredControllerReceipts[i]);stream->writeLeaveSection();}
+    stream->writeLeaveSection();
+}
+void AI::loadWrapperFeedback(GAGCore::InputStream* stream)
+{
+    stream->readEnterSection("wrapperFeedback");
+    wrapperGeneration=stream->readUint32("generation");
+    const auto releases=stream->readCount("releases",9);
+    for(unsigned i=0;i<releases;++i){
+        stream->readEnterSection(i);const auto low=stream->readUint32("sequenceLow"),high=stream->readUint32("sequenceHigh");
+        WrapperRelease release{Uint64(low)|(Uint64(high)<<32),{stream->readUint16("gid"),stream->readUint32("targetGeneration")}};
+        if(!release.target.generation || release.target.gid==NOGBID ||
+            (!wrapperReleases.empty() && wrapperReleases.back().pollSequence>=release.pollSequence))
+            throw std::runtime_error("Invalid saved AI wrapper release");
+        wrapperReleases.push_back(release);stream->readLeaveSection();
+    }
+    const auto receipts=stream->readCount("receipts",9);
+    for(unsigned i=0;i<receipts;++i){
+        stream->readEnterSection(i);auto receipt=AIEngine::loadExecutionReceipt(*stream);
+        if(receipt.request.player!=unsigned(player->number) || receipt.request.generation!=wrapperGeneration ||
+            (!deferredControllerReceipts.empty() && deferredControllerReceipts.back().request.pollSequence>=receipt.request.pollSequence) ||
+            std::any_of(wrapperReleases.begin(),wrapperReleases.end(),[&](const auto& release){return release.pollSequence==receipt.request.pollSequence;}))
+            throw std::runtime_error("Invalid saved deferred AI receipt");
+        deferredControllerReceipts.push_back(std::move(receipt));stream->readLeaveSection();
+    }
+    stream->readLeaveSection();
 }

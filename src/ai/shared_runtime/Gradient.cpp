@@ -11,6 +11,7 @@
 #include "Utilities.h"
 #include "Brush.h"
 #include "FileFormatVersions.h"
+#include "ai/observation/AIWorldView.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -257,6 +258,40 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
 }
 
 
+void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& frontier)
+{
+	PERF_SCOPE_TIME(AIGradient);
+	width=world.width;
+    terrainGeneration=world.terrainRevision;
+	gradient.resize(world.width*world.height);
+	std::fill(gradient.begin(), gradient.end(),0);
+
+	frontier.clear();
+	for(int x=0; x<world.width; ++x)
+	{
+		for(int y=0; y<world.height; ++y)
+		{
+			if(gradient_info.match_source(world, x, y))
+			{
+				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
+				frontier.push_back(get_pos(x,y));
+			}
+			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrain->properties(world.tile(x,y).terrain),gradient_info.terrainTravel))
+				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
+		}
+	}
+    if(gradient_info.terrainTravel!=field::TerrainTravel::Geometric &&
+        (gradient_info.terrainTravel==field::TerrainTravel::Fly?world.airTerrainConstraints:world.terrainMovementModifiers))
+    {
+		field::expandTerrainTravel(
+			gradient, width, world.height, gradient_info.terrainTravel,
+			[&](std::size_t i) { return world.tiles[i].terrain; }, *world.terrain);
+		frontier.clear();
+    }
+    else expand_bfs(frontier);
+}
+
+
 int Gradient::get_height(int posx, int posy) const
 {
 	// Torus-wrap: callers (e.g. Nicowar farming) query x±1/y±1 neighbours that
@@ -283,9 +318,27 @@ GradientManager::GradientManager(Map* map) : map(map), cur_update(0), timer(0)
 {
 }
 
+GradientManager::GradientManager(const AIEngine::AIWorldView& view) : cur_update(0), timer(0) { bindWorld(view); }
+void GradientManager::bindWorld(const AIEngine::AIWorldView& view)
+{
+    world=&view;snapshotMode=true;
+    boundTerrainRevision=view.terrainRevision;
+    boundWidth=view.width;boundHeight=view.height;
+}
+std::uint64_t GradientManager::terrain_revision() const
+{ return snapshotMode ? boundTerrainRevision : map->terrainGeneration(); }
+void GradientManager::recalculate(Gradient& gradient)
+{
+    if(snapshotMode) {if(!world) throw std::logic_error("AI gradient observation is not bound");gradient.recalculate(*world,frontier);}
+    else gradient.recalculate(map,frontier);
+}
+
 std::unique_ptr<GradientManager> GradientManager::clone() const
 {
 	auto copy=std::make_unique<GradientManager>(map);
+    copy->world=world;copy->snapshotMode=snapshotMode;
+    copy->boundTerrainRevision=boundTerrainRevision;
+    copy->boundWidth=boundWidth;copy->boundHeight=boundHeight;
 	copy->cur_update=cur_update;
 	copy->timer=timer;
 	copy->ticks_since_update=ticks_since_update;
@@ -309,10 +362,10 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if((*i)->terrainGeneration!=map->terrainGeneration() || ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
+			if((*i)->terrainGeneration!=terrain_revision() || ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
 			{
 				ticks_since_update[i-gradients.begin()]=0;
-				(*i)->recalculate(map,frontier);
+				recalculate(**i);
 			}
 			return **i;
 		}
@@ -320,7 +373,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 
 	//Did not find a matching gradient
 	gradients.push_back(std::shared_ptr<Gradient>(new Gradient(gi)));
-	(*(gradients.end()-1))->recalculate(map,frontier);
+	recalculate(**(gradients.end()-1));
 	ticks_since_update.push_back(0);
 	return **(gradients.end()-1);
 }
@@ -332,7 +385,7 @@ void GradientManager::queue_gradient(const GradientInfo& gi)
 	{
 		if(gradients[i]->get_gradient_info() == gi)
 		{
-			if(gradients[i]->terrainGeneration!=map->terrainGeneration() || gi.needs_updating())
+			if(gradients[i]->terrainGeneration!=terrain_revision() || gi.needs_updating())
 			{
 				queuedGradients.push(i);
 			}
@@ -352,7 +405,7 @@ bool GradientManager::is_updated(const GradientInfo& gi)
 	{
 		if((*i)->get_gradient_info() == gi)
 		{
-			if((*i)->terrainGeneration!=map->terrainGeneration() || (ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating()))
+			if((*i)->terrainGeneration!=terrain_revision() || (ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS && (*i)->get_gradient_info().needs_updating()))
 			{
 				return false;
 			}
@@ -376,9 +429,9 @@ void GradientManager::update()
 	if((timer%1)==0 && !queuedGradients.empty())
 	{
 		int g=queuedGradients.front();
-		if(gradients[g]->terrainGeneration!=map->terrainGeneration() || ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
+		if(gradients[g]->terrainGeneration!=terrain_revision() || ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
 		{
-			gradients[g]->recalculate(map,frontier);
+			recalculate(*gradients[g]);
 			ticks_since_update[g]=0;
 		}
 		queuedGradients.pop();
@@ -402,7 +455,7 @@ void GradientManager::save(GAGCore::OutputStream* stream)
 		stream->writeEnterSection(i);
 		Gradient& g=*gradients[i];
 		g.gradient_info.save(stream);
-        stream->writeUint8(g.terrainGeneration==map->terrainGeneration(),"terrainCurrent");
+        stream->writeUint8(g.terrainGeneration==terrain_revision(),"terrainCurrent");
 		stream->writeSint32(ticks_since_update[i],"age");
 		stream->writeSint32(g.width,"width");
 		stream->writeUint32(g.gradient.size(),"size");
@@ -440,13 +493,13 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 		if(!info.load(stream,player,versionMinor)) return false;
 		auto g=std::make_shared<Gradient>(info);
         const bool terrainCurrent=versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES || stream->readUint8("terrainCurrent");
-        g->terrainGeneration=terrainCurrent?map->terrainGeneration():0;
+        g->terrainGeneration=terrainCurrent?terrain_revision():0;
 		ticks_since_update.push_back(stream->readSint32("age"));
 		g->width=stream->readSint32("width");
 		const Uint32 size=stream->readCount("size");
 		// A queued gradient can be uncomputed; materialized fields must match
 		// the loaded map. Values use explicit endian-safe signed 16-bit IO.
-		if(size ? (size!=Uint32(map->getW()*map->getH()) || g->width!=map->getW()) : g->width!=0)
+		if(size ? (size!=Uint32(snapshotMode ? boundWidth*boundHeight : map->getW()*map->getH()) || g->width!=(snapshotMode ? boundWidth : map->getW())) : g->width!=0)
 			return false;
 		g->gradient.resize(size);
 		stream->readEnterSection("values");
@@ -468,4 +521,26 @@ bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 ve
 	stream->readLeaveSection();
 	stream->readLeaveSection();
 	return true;
+}
+
+bool GradientInfo::match_source(const AIEngine::AIWorldView& world, int x, int y)
+{
+    for(const auto& source:sources) if(source->is_entity(world,x,y)) return true;
+    return false;
+}
+bool GradientInfo::match_obstacle(const AIEngine::AIWorldView& world, int x, int y)
+{
+    for(const auto& obstacle:obstacles) if(obstacle->is_entity(world,x,y)) return true;
+    return false;
+}
+
+Uint64 AISharedRuntime::Gradients::GradientManager::retainedVectorBytes() const noexcept
+{
+    Uint64 bytes = gradients.capacity() * sizeof(gradients[0])
+        + ticks_since_update.capacity() * sizeof(int) + frontier.retainedBytes();
+    for (const auto& item : gradients) if (item)
+        bytes += item->gradient.capacity() * sizeof(Sint16)
+            + item->gradient_info.sources.capacity() * sizeof(item->gradient_info.sources[0])
+            + item->gradient_info.obstacles.capacity() * sizeof(item->gradient_info.obstacles[0]);
+    return bytes;
 }

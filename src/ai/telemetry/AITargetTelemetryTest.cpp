@@ -8,6 +8,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "AINumbi.h"
+#include "ai/observation/WorldQueries.h"
 #include "ai/cortex/AICortex.h"
 #include "ai/cortex/CortexObservation.h"
 #include "ai/cortex/CortexPlacement.h"
@@ -82,7 +83,7 @@ std::vector<Uint32> state(Game &game)
 	return result;
 }
 
-const AITelemetry::Value &field(AI &ai, unsigned index)
+const AITelemetry::Value &telemetryField(AI &ai, unsigned index)
 {
 	return ai.telemetrySeries->current.values[index];
 }
@@ -170,8 +171,17 @@ TEST_SUITE("AITargetTelemetrySave")
 		glob2test::HeadlessGlobals globals;
 		World w(AI::CORTEX, 2);
 		auto &ai = *static_cast<AICortex *>(w.ai().aiImplementation);
+        auto withDecision = [&](auto invoke) {
+            const auto view=AIEngine::AIWorldView::capture(w.game(),AIEngine::AIWorldView::captureCatalog(w.game()));
+            Cortex::World observed(*view);
+            ai.applyQueuedIntent(observed);
+            Cortex::WorldPlayer local{&observed,observed.teams.at(0),0};
+            struct Reset { Cortex::WorldPlayer*& pointer; ~Reset() { pointer=nullptr; } } reset{ai.decisionPlayer};
+            ai.decisionPlayer=&local;
+            invoke();
+        };
 		const unsigned index = AITrace::AI6::offense_target_team;
-		CHECK_FALSE(field(w.ai(), index).valid);
+		CHECK_FALSE(telemetryField(w.ai(), index).valid);
 
 		auto obs = Cortex::makeEmptyObservation();
 		obs.valid = 1;
@@ -180,21 +190,21 @@ TEST_SUITE("AITargetTelemetrySave")
 		obs.flagTargets[3].x = 4 + 32; // team 1's swarm
 		obs.flagTargets[3].y = 4;
 		obs.flagTargetTeam[3] = 1;
-		ai.translateAction(Cortex::makeWarFlagAction(3, 4, 4, 0), obs);
-		CHECK(field(w.ai(), index).valid);
-		CHECK(Sint64(field(w.ai(), index).bits) == 1);
+		withDecision([&] { ai.translateAction(Cortex::makeWarFlagAction(3, 4, 4, 0), obs); });
+		CHECK(telemetryField(w.ai(), index).valid);
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == 1);
 
 		// The value is saved with the series: a reload sees the commit.
 		auto restored = loaded(saved(w.game()));
 		CHECK(Sint64(restored->game.players[0]->ai->telemetrySeries->current.values[index].bits) == 1);
 
 		// Every way the offense stands down clears the target.
-		ai.translateActionClearFlags();
-		CHECK(Sint64(field(w.ai(), index).bits) == -1);
-		ai.translateAction(Cortex::makeWarFlagAction(3, 4, 4, 0), obs);
-		CHECK(Sint64(field(w.ai(), index).bits) == 1);
-		ai.translateAction(Cortex::makeWarFlagAction(-1, 4, 4, 0), obs);
-		CHECK(Sint64(field(w.ai(), index).bits) == -1);
+		withDecision([&] { ai.translateActionClearFlags(); });
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == -1);
+		withDecision([&] { ai.translateAction(Cortex::makeWarFlagAction(3, 4, 4, 0), obs); });
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == 1);
+		withDecision([&] { ai.translateAction(Cortex::makeWarFlagAction(-1, 4, 4, 0), obs); });
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == -1);
 	}
 
 	TEST_CASE("Numbi reports the highest-numbered enemy its attack searches")
@@ -204,12 +214,22 @@ TEST_SUITE("AITargetTelemetrySave")
 		auto &numbi = *static_cast<AINumbi *>(w.ai().aiImplementation);
 		const unsigned index = AITrace::AI1::AINumbi_mayAttack_enemy_team;
 		// Already attacking with warriors to spare: the next call searches for an enemy.
+        auto search = [&] {
+            const auto view=AIEngine::AIWorldView::capture(w.game(),AIEngine::AIWorldView::captureCatalog(w.game()));
+            AIEngine::WorldQueries queries(*view,numbi.teamNumber,numbi.resourceInitializations);
+            numbi.observation=view.get();numbi.queries=&queries;
+            numbi.observedBuildings.fill(nullptr);numbi.observedUnits.fill(nullptr);
+            for(const auto& b:view->buildings) if(b.team==numbi.teamNumber) numbi.observedBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+            for(const auto& u:view->units) if(u.team==numbi.teamNumber) numbi.observedUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+            struct Reset { AINumbi& ai; ~Reset(){ai.observation=nullptr;ai.queries=nullptr;ai.observedBuildings.fill(nullptr);ai.observedUnits.fill(nullptr);} } reset{numbi};
+            numbi.mayAttack(0,0,1);
+        };
 		numbi.attackPhase = 1;
-		numbi.mayAttack(0, 0, 1);
-		CHECK(Sint64(field(w.ai(), index).bits) == 3);
+        search();
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == 3);
 		w.game().teams[0]->enemies = 0;
-		numbi.mayAttack(0, 0, 1);
-		CHECK(Sint64(field(w.ai(), index).bits) == -1);
+        search();
+		CHECK(Sint64(telemetryField(w.ai(), index).bits) == -1);
 	}
 
 	TEST_CASE("target telemetry names only real enemies and leaves the simulation unchanged")
@@ -240,7 +260,7 @@ TEST_SUITE("AITargetTelemetrySave")
 				tick(collected);
 				tick(detached);
 				REQUIRE(state(collected) == state(detached));
-				const auto &value = field(ai, f.index);
+				const auto &value = telemetryField(ai, f.index);
 				if (value.valid)
 				{
 					const Sint64 team = Sint64(value.bits);

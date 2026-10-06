@@ -71,6 +71,7 @@ namespace Online
 		bool allyTeamsFixed = true;
 		bool resourceGrowthDisabled = false;
 		int resourceScarcityLevel = 0; ///< 0..3
+		int aiOrderDelay = 0; ///< Engine-wide decision deadline offset, 0..8 ticks
 		bool instantConstruction = false;
 		int stockpileStartLevel = 0; ///< 0..3
 		bool hungerDisabled = false;

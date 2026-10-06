@@ -75,11 +75,11 @@ tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
 	if(workers)
-		amount+=runtime.player->team->stats.getLatestStat()->numberUnitPerType[WORKER];
+		amount+=runtime.readPlayer()->team->stats.getLatestStat()->numberUnitPerType[WORKER];
 	if(explorers)
-		amount+=runtime.player->team->stats.getLatestStat()->numberUnitPerType[EXPLORER];
+		amount+=runtime.readPlayer()->team->stats.getLatestStat()->numberUnitPerType[EXPLORER];
 	if(warriors)
-		amount+=runtime.player->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
+		amount+=runtime.readPlayer()->team->stats.getLatestStat()->numberUnitPerType[WARRIOR];
 	if(method==Greater)
 	{
 		return (amount >= num);

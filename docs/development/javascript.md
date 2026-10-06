@@ -2,8 +2,9 @@
 
 Glob2's optional JavaScript AI and map-script backend uses vendored QuickJS-NG
 and OpenLibm. It exposes copied game observations and accepts validated existing
-orders or scenario effects. Existing AIs and USL/SGSL maps retain their execution
-paths. Selecting JavaScript suppresses the map's retained legacy SGSL script,
+orders or scenario effects. AI controllers use the engine's immutable observation
+and order scheduling pipeline; USL/SGSL map scripts retain their execution paths. Selecting JavaScript
+suppresses the map's retained legacy SGSL script,
 including its presentation and win/loss results. Scripts are **trusted developer
 code**. Loading a map, save or replay
 with embedded JavaScript executes it automatically, without an enablement setting
@@ -155,6 +156,21 @@ one callback per tick or use the callback count as elapsed time. Map callbacks
 require a game with a mission/GUI context; normal headless Engine sessions supply
 one. AI observation history is recorded during simulation, even between decisions,
 and disabled/eliminated controllers stop recording it.
+
+AI callbacks read a frozen view of their logical `ctx.tick`. The match-wide order
+delay is 0–8 ticks, default 0, and applies to every AI controller. Returned orders
+execute at the engine's scheduled deadline rather than immediately during the
+callback. Account for outstanding actions and execution receipts before issuing
+another command for the same intent. Acceptance of an action is distinct from
+completion of its effect. Worker timing and thread count do not alter scheduled
+order ticks. Map-script effects keep their world-logic cadence.
+
+Remembered terrain is controller-owned and updated once per observation tick in
+the ordered decision stream. Unpolled replica/replay controllers receive a frozen
+post-step observation after an owner barrier. Scripts do not retain an engine
+world snapshot between callbacks. Saves preserve pending orders and their
+remaining deadlines along with script state, action IDs and RNG. See the
+[engine contract](reference.md#ai-observations-and-delayed-orders).
 
 Query arguments and returned results use a restricted data format:
 

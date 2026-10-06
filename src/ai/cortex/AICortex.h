@@ -3,6 +3,7 @@
 
 #pragma once
 #include "CortexTuning.h"
+#include "CortexWorld.h"
 
 #include "AIImplementation.h"
 #include "CortexTypes.h"
@@ -12,6 +13,7 @@
 #include <map>
 #include <memory>
 #include <queue>
+#include <sstream>
 
 namespace GAGCore
 {
@@ -50,8 +52,34 @@ public:
 	void save(GAGCore::OutputStream* stream);
 
 	std::shared_ptr<Order> getOrder(void);
+	bool supportsObservation() const override { return true; }
+    std::optional<Uint64> retainedQueryVectorBytes() const override;
+	std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext&) override;
 
 private:
+	Cortex::WorldPlayer* decisionPlayer = nullptr;
+	std::shared_ptr<Order> decide();
+	std::shared_ptr<Order> runObservation(const AIEngine::DecisionContext&, bool worker);
+	mutable std::ostringstream diagnosticStream;
+	void applyQueuedIntent(Cortex::World&) const;
+    struct PendingCommand {
+        std::vector<Uint8> bytes;
+        BuildingRef target;
+        Uint32 observedTick=0,scheduledTick=0;
+        Uint64 sequence=0;
+        int upgradeType=-1,upgradeUntil=0,buildClass=-1,buildCooldown=0;
+        int flagKind=0,flagSlot=-1,flagCooldown=0;
+    };
+    std::vector<PendingCommand> issuedCommands,queuedCommands;
+    void applyReceipts(const AIEngine::DecisionContext&);
+    void rememberIssued(Order&,const AIEngine::DecisionContext&,const Cortex::World&);
+    void rememberFlagCreation(Order&,Sint32&);
+    void rememberQueuedBuild(Order&,int);
+    void enqueueOrder(std::shared_ptr<Order>);
+    void rejectIntent(const PendingCommand&);
+    void saveCommands(GAGCore::OutputStream*,const std::vector<PendingCommand>&,const char*) const;
+    bool loadCommands(GAGCore::InputStream*,std::vector<PendingCommand>&,const char*,unsigned limit);
+
 	Cortex::CortexTuning runtimeTuning;
 	/// Ticks between policy invocations. The observation/policy run at this
 	/// cadence; Order emission stays at tick rate via the queue. 25 ticks = 1
@@ -262,7 +290,7 @@ private:
 	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).
 	/// Scans team->virtualBuildings (a list, deterministic insertion order — never a
 	/// std::set).
-	Building* findFlagByGid(Uint16 gid) const;
+	Cortex::WorldBuilding* findFlagByGid(Uint16 gid) const;
 
 	/// True if `gid` is currently owned by ANY tracked flag (any defense flag or any
 	/// offense wave). Used by rediscoverFlag so a newly-landed flag is never double-
@@ -274,7 +302,7 @@ private:
 	/// another tracked flag. Returns the claimed building (and stores its gid in `gid`),
 	/// or NULL if none has appeared yet. Position-matching disambiguates concurrently
 	/// created flags (their targets are far apart).
-	Building* rediscoverFlag(Uint16& gid, int tx, int ty);
+	Cortex::WorldBuilding* rediscoverFlag(Uint16& gid, int tx, int ty);
 
 	/// Ensure the flag tracked by `gid` sits at (tx, ty) with the given summon count,
 	/// minLevel, and engine priority: create it if absent (respecting `cooldown` and the
@@ -314,7 +342,7 @@ private:
 	/// (every client runs the same AI over the same state), so it is safe to drive phase
 	/// transitions from it. Shared by manageOffenseWaves and the CORTEX_DUMP_OFFENSE
 	/// diagnostic. 0 for a NULL flag.
-	int countArrivedAtFlag(Building* flag) const;
+	int countArrivedAtFlag(Cortex::WorldBuilding* flag) const;
 
 	/// Home RALLY point for the muster-then-march offense: the colony's heart (its
 	/// first/primary swarm, falling back to the first alive building). A single valid
@@ -347,7 +375,7 @@ private:
 	/// team->myBuildings by ARRAY INDEX (never a std::set) and ranks eligible
 	/// instances deterministically — improving on Nicowar's random pick. See the
 	/// .cpp for the predicate and the bottleneck ranking.
-	Building* findUpgradeTarget(int buildingType) const;
+	Cortex::WorldBuilding* findUpgradeTarget(int buildingType) const;
 
 	Player* player;
 
@@ -473,66 +501,23 @@ private:
 	/// DIAGNOSTIC ONLY (not serialized, never read by the policy, emits no Order).
 	/// One-shot guard so the under-attack state dump fires only the FIRST decision
 	/// cycle on which the colony is taking fire. Gated behind the CORTEX_DUMP_ATTACK
-	/// env var; pure read of the observation + ground-truth Game state to stderr, so
+	/// env var; pure read of the observation + snapshot team state for owner publication, so
 	/// it cannot perturb the sync stream. RAM-only; never affects simulation state.
 	bool attackDumped;
 	/// Print the under-attack characterization (scouting / economy / timing / enemy)
 	/// to stderr. Diagnostic; does not touch RNG, orders, or any persisted state.
 	void dumpAttackState(const Cortex::CortexObservation& obs) const;
 
-	/// TRAINING TRACE (gated, not serialized, never read by the policy, emits no
-	/// Order). When GLOB2_CORTEX_TRACE=<prefix> is set, every decision cycle appends
-	/// one CSV row per valid tracked swarm to <prefix>.team<N>.csv — the (state,
-	/// hand-action) pairs the ML pilot trains on (see docs/AI/cortex/PILOT.md). Pure
-	/// read of the observation + the already-computed worker-tune action; opening and
-	/// writing a file touches no RNG/order/sync state, so the lockstep stream is
-	/// unaffected. Lazily opened on first use, closed in the destructor; RAM-only
-	/// handle. `tune` is the action returned by CortexPolicy::tuneWorkers this cycle.
-	/// GLOB2_CORTEX_TRACE MUST be an ABSOLUTE path: glob2 chdir()s to its resource
-	/// directory at startup (Glob2.cpp), so a relative path would resolve there, not in
-	/// the launch directory. The open is attempted once (traceOpenAttempted); on failure
-	/// it warns to stderr and disables the trace instead of retrying every cycle.
-	std::FILE* traceFile;
-	bool traceOpenAttempted;
+	/// Buffer training rows for owner publication to GLOB2_CORTEX_TRACE.team<N>.csv.
+	/// Reads only the scoped observation and the computed action.
 	void dumpWorkerTrace(const Cortex::CortexObservation& obs,
 	                     const Cortex::CortexAction& tune);
 
-	/// DECISION-SELECTION TRACE for the decide() ML pilot (docs/AI/cortex/
-	/// DECIDE_CONTRACT.md). When GLOB2_CORTEX_DECIDE_TRACE=<abs prefix> is set,
-	/// every decision cycle appends ONE CSV row per AI instance to
-	/// <prefix>.team<N>.csv: tick, team, the 48 decision features (in
-	/// DECIDE_CONTRACT idx order, via CortexPolicy::extractDecideFeatures), the
-	/// per-cycle eligibility bitmask, and the chosen class index. The training
-	/// (state, eligible-mask, chosen) tuples for the utility-score net. Pure read
-	/// of the observation + the DecideTrace decide() already produced; opening and
-	/// writing a file touches no RNG/order/sync state, so the lockstep stream is
-	/// unaffected. SEPARATE file handle + open-attempt guard from the worker trace
-	/// (they are distinct CSVs with distinct schemas). GLOB2_CORTEX_DECIDE_TRACE
-	/// MUST be an ABSOLUTE path (glob2 chdir()s at startup); on open failure it
-	/// warns once and disables rather than retrying every cycle.
-	std::FILE* decideTraceFile;
-	bool decideTraceOpenAttempted;
+	/// Buffer the decision feature/class trace for GLOB2_CORTEX_DECIDE_TRACE.
 	void dumpDecideTrace(const Cortex::CortexObservation& obs,
 	                     const Cortex::DecideTrace& trace);
 
-	/// INN DIAGNOSTIC TRACE (gated, not serialized, never read by the policy, emits
-	/// no Order). When GLOB2_CORTEX_INN_TRACE=<abs prefix> is set, every decision
-	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
-	/// inn-side companion to the swarm worker trace, for debugging worker allocation
-	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
-	/// inn's observed state this cycle (wheat buffer, restockTripsNeeded, wheat
-	/// diagnostics), the worker cap the tune action chose (or the current one when it
-	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
-	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to
-	/// pass through). Pure read of the observation + the already-computed tune action;
-	/// opening and writing a file touches no RNG/order/sync state, so the lockstep
-	/// stream is unaffected. SEPARATE file handle + open-attempt guard from the worker
-	/// and decision traces (distinct CSV, distinct schema). GLOB2_CORTEX_INN_TRACE MUST
-	/// be an ABSOLUTE path (glob2 chdir()s at startup); on open failure it warns once
-	/// and disables rather than retrying every cycle. `tune` is the action returned by
-	/// CortexPolicy::tuneWorkers this cycle.
-	std::FILE* innTraceFile;
-	bool innTraceOpenAttempted;
+	/// Buffer inn/restock/production-tier diagnostics for GLOB2_CORTEX_INN_TRACE.
 	void dumpInnTrace(const Cortex::CortexObservation& obs,
 	                  const Cortex::CortexAction& tune);
 };

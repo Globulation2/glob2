@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -36,7 +37,7 @@ namespace
 // Mission retirement cannot demolish a building that also serves the economy,
 // another unit attraction, or training. A physical attractor can release its
 // workforce while keeping the constructed structure for a later mission.
-shared_ptr<Order> retireWarAttractor(const Building& building)
+shared_ptr<Order> retireWarAttractor(const Cortex::WorldBuilding& building)
 {
  const auto& type=*building.type;
  const auto& s=type.semantics;
@@ -57,20 +58,20 @@ shared_ptr<Order> retireWarAttractor(const Building& building)
 // right next to) the target isn't pointlessly re-ordered every cycle.
 static const int FLAG_MOVE_THRESHOLD = 3;
 
-Building* AICortex::findFlagByGid(Uint16 gid) const
+Cortex::WorldBuilding* AICortex::findFlagByGid(Uint16 gid) const
 {
 	// Attraction is independent of ground occupancy. Resolve the stable gid in
 	// the complete team registry, including physical mixed-service buildings.
 	if (gid == NOGBID)
 		return NULL;
-	Team* team = player->team;
-	for (int index=0;index<Building::MAX_COUNT;++index)
+	Cortex::WorldTeam* team = decisionPlayer->team;
+	for (int index=0;index<Cortex::WorldBuilding::MAX_COUNT;++index)
 	{
-		Building* b=team->myBuildings[index];
+		Cortex::WorldBuilding* b=team->myBuildings[index];
 		if (b
 		    && b->gid == gid
 		    && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
-		    && b->buildingState == Building::ALIVE)
+		    && b->buildingState == Cortex::WorldBuilding::ALIVE)
 			return b;
 	}
 	return NULL;
@@ -89,22 +90,22 @@ bool AICortex::isOwnedGid(Uint16 gid) const
 	return false;
 }
 
-Building* AICortex::rediscoverFlag(Uint16& gid, int tx, int ty)
+Cortex::WorldBuilding* AICortex::rediscoverFlag(Uint16& gid, int tx, int ty)
 {
 	// An OrderCreate we issued earlier has now (potentially) landed as a new WAR_FLAG
 	// with a fresh gid we never saw. Claim it into `gid`: the live WAR_FLAG nearest
 	// (tx, ty) whose gid is NOT already owned by another tracked flag (defense or any
 	// other offense wave). Targets are far apart, so the nearest unclaimed flag is
 	// unambiguously the one this slot just placed even if several created on one cycle.
-	Team* team = player->team;
-	Building* best = NULL;
+	Cortex::WorldTeam* team = decisionPlayer->team;
+	Cortex::WorldBuilding* best = NULL;
 	int bestDist = 0;
-	for (int index=0;index<Building::MAX_COUNT;++index)
+	for (int index=0;index<Cortex::WorldBuilding::MAX_COUNT;++index)
 	{
-		Building* b=team->myBuildings[index];
+		Cortex::WorldBuilding* b=team->myBuildings[index];
 		if (!b
 		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
-		    || b->buildingState != Building::ALIVE)
+		    || b->buildingState != Cortex::WorldBuilding::ALIVE)
 			continue;
 		if (isOwnedGid(b->gid))
 			continue; // already claimed by another tracked flag.
@@ -139,12 +140,12 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	else if (minLevel > NB_UNIT_LEVELS - 1)
 		minLevel = NB_UNIT_LEVELS - 1;
 
-	Game* game = player->team->game;
+	Cortex::World* game = decisionPlayer->team->game;
 
 	// Resolve this flag. A stale gid (flag died or was deleted) drops to NULL — reset it
 	// so we re-create. If we never captured the gid of a create we issued, try to claim
 	// the newly-landed flag now.
-	Building* existing = findFlagByGid(gid);
+	Cortex::WorldBuilding* existing = findFlagByGid(gid);
 	if (existing == NULL && gid != NOGBID)
 		gid = NOGBID; // tracked flag is gone; forget it.
 	if (existing == NULL)
@@ -159,24 +160,25 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 		if (obs.tick < cooldown)
 			return;
 
-		const auto choice = Cortex::selectBuilding(*game, *player->team, Cortex::CORTEX_BUILD_WAR);
+		const auto choice = Cortex::selectBuilding(*game, *decisionPlayer->team, Cortex::CORTEX_BUILD_WAR);
         const int typeNum = choice.placementType;
         if (typeNum < 0) return;
-        BuildingType* bt = game->buildingsTypes.get(typeNum);
+        const BuildingType* bt = game->buildingsTypes.get(typeNum);
         count = std::min(count, int(bt->semantics.assignmentLimit));
         radius = std::min(radius, int(bt->maxUnitStayRange));
 
-		if (!game->checkRoomForBuilding(tx, ty, bt, player->team->teamNumber))
+		if (!game->checkRoomForBuilding(tx, ty, bt, decisionPlayer->team->teamNumber))
 			return;
 
 		// 7-arg OrderCreate: the trailing flagRadius sets the flag's unitStayRange at
 		// execution (Game_orders.cpp executeCreate). For a flag, unitWorking ==
 		// unitWorkingFuture == warriors summoned, so both are `count`. The new flag's gid
 		// is unknown until it registers; rediscoverFlag claims it a later cycle.
-		orderQueue.push(shared_ptr<Order>(new OrderCreate(
-			player->team->teamNumber, tx, ty, typeNum,
+		enqueueOrder(shared_ptr<Order>(new OrderCreate(
+			decisionPlayer->team->teamNumber, tx, ty, typeNum,
 			count, std::min(count, int(game->buildingsTypes.get(choice.completedType)->semantics.assignmentLimit)), radius)));
 		cooldown = obs.tick + BUILD_COOLDOWN_TICKS;
+        rememberFlagCreation(*orderQueue.back(),cooldown);
 		return;
 	}
 
@@ -185,7 +187,7 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	// flag is still deferred — only count + minLevel + priority are reconciled here.)
 	int dist = game->map.warpDistMax(existing->posX, existing->posY, tx, ty);
 	if (dist > FLAG_MOVE_THRESHOLD && existing->type->semantics.relocatable)
-		orderQueue.push(shared_ptr<Order>(new OrderMoveFlag(existing->gid, tx, ty, false)));
+		enqueueOrder(shared_ptr<Order>(new OrderMoveFlag(existing->gid, tx, ty, false)));
 
 	// Scale the standing flag's summon count to the requested size. Dedup against — and
 	// locally mirror — the live building field, the executor-mirroring pattern the swarm
@@ -194,7 +196,7 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	count = std::min(count, int(existing->type->semantics.assignmentLimit));
 	if (count != existing->maxUnitWorking)
 	{
-		orderQueue.push(shared_ptr<Order>(new OrderModifyBuilding(existing->gid, count)));
+		enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(existing->gid, count)));
 		existing->maxUnitWorking = count;
 	}
 
@@ -204,7 +206,7 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	// born at 0, building/Lifecycle.cpp:81), so it is set here once the flag has a gid.
 	if (minLevel != existing->minLevelToFlag)
 	{
-		orderQueue.push(shared_ptr<Order>(new OrderModifyMinLevelToFlag(existing->gid, minLevel)));
+		enqueueOrder(shared_ptr<Order>(new OrderModifyMinLevelToFlag(existing->gid, minLevel)));
 		existing->minLevelToFlag = minLevel;
 	}
 
@@ -218,15 +220,15 @@ void AICortex::ensureFlagAt(Uint16& gid, Sint32& cooldown, int tx, int ty, int r
 	{
 		existing->priority = priority;
 		existing->updateCallLists();
-		orderQueue.push(shared_ptr<Order>(new OrderChangePriority(existing->gid, priority)));
+		enqueueOrder(shared_ptr<Order>(new OrderChangePriority(existing->gid, priority)));
 	}
 }
 
 void AICortex::clearOneFlag(Uint16& gid)
 {
-	Building* existing = findFlagByGid(gid);
+	Cortex::WorldBuilding* existing = findFlagByGid(gid);
 	if (existing)
-		if (auto order=retireWarAttractor(*existing))orderQueue.push(order);
+		if (auto order=retireWarAttractor(*existing))enqueueOrder(order);
 	gid = NOGBID; // forget it either way: a stale gid must not block a future create.
 }
 
@@ -248,7 +250,7 @@ void AICortex::clearAllOffenseFlags()
 	}
 }
 
-int AICortex::countArrivedAtFlag(Building* flag) const
+int AICortex::countArrivedAtFlag(Cortex::WorldBuilding* flag) const
 {
 	// Warriors of the flag's BOUND cohort (unitsWorking) that have actually reached it —
 	// within its unitStayRange (the same warp-safe Chebyshev metric the diagnostic and
@@ -257,9 +259,9 @@ int AICortex::countArrivedAtFlag(Building* flag) const
 	// identical state). unitsWorking is a std::list — iterated in order, never a set.
 	if (flag == NULL)
 		return 0;
-	Game* game = player->team->game;
+	Cortex::World* game = decisionPlayer->team->game;
 	int arrived = 0;
-	for (Unit* u : flag->unitsWorking)
+	for (Cortex::WorldUnit* u : flag->unitsWorking)
 	{
 		if (u == NULL)
 			continue;
@@ -277,12 +279,12 @@ bool AICortex::computeRallyPoint(int& rx, int& ry) const
 	// averaging (which would break across the toroidal map's wrap seam) is needed. Fall
 	// back to the first alive building if somehow no swarm exists, and report failure
 	// only when we have no buildings at all (caller then plants straight on the enemy).
-	Team* team = player->team;
-	Building* fallback = NULL;
-	for (int i = 0; i < Building::MAX_COUNT; i++)
+	Cortex::WorldTeam* team = decisionPlayer->team;
+	Cortex::WorldBuilding* fallback = NULL;
+	for (int i = 0; i < Cortex::WorldBuilding::MAX_COUNT; i++)
 	{
-		Building* b = team->myBuildings[i];
-		if (b == NULL || b->buildingState == Building::DEAD)
+		Cortex::WorldBuilding* b = team->myBuildings[i];
+		if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 			continue;
 		if (fallback == NULL)
 			fallback = b;
@@ -328,18 +330,18 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// create we may yet latch) or a genuine orphan. We separate the two with a two-cycle
 	// settle window: a flag is swept only once it has been unowned across two consecutive
 	// decision cycles, by which point no live slot is still waiting for it.
-	Team* team = player->team;
+	Cortex::WorldTeam* team = decisionPlayer->team;
 
 	// Record this cycle's unowned flags, carrying each gid's ORIGINAL first-seen tick
 	// forward. A flag can appear more than once when walking virtualBuildings; keying by
 	// gid dedups the bookkeeping so a duplicate entry cannot reset (or advance) the window.
 	std::map<Uint16, Sint32> seenNow;
-	for (int index=0;index<Building::MAX_COUNT;++index)
+	for (int index=0;index<Cortex::WorldBuilding::MAX_COUNT;++index)
 	{
-		Building* b=team->myBuildings[index];
+		Cortex::WorldBuilding* b=team->myBuildings[index];
 		if (!b
 		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
-		    || b->buildingState != Building::ALIVE
+		    || b->buildingState != Cortex::WorldBuilding::ALIVE
 		    || isOwnedGid(b->gid))
 			continue;
 		std::map<Uint16, Sint32>::const_iterator prev = unownedFlagSeen.find(b->gid);
@@ -350,18 +352,18 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// cycle). Iterate virtualBuildings in insertion order (deterministic — never a set) to
 	// emit the OrderDeletes; erase each swept gid from seenNow so a duplicate list entry
 	// neither re-deletes it nor keeps it armed for next cycle.
-	for (int index=0;index<Building::MAX_COUNT;++index)
+	for (int index=0;index<Cortex::WorldBuilding::MAX_COUNT;++index)
 	{
-		Building* b=team->myBuildings[index];
+		Cortex::WorldBuilding* b=team->myBuildings[index];
 		if (!b
 		    || !Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_WAR)
-		    || b->buildingState != Building::ALIVE
+		    || b->buildingState != Cortex::WorldBuilding::ALIVE
 		    || isOwnedGid(b->gid))
 			continue;
 		std::map<Uint16, Sint32>::iterator it = seenNow.find(b->gid);
 		if (it != seenNow.end() && it->second < obs.tick)
 		{
-			if (auto order=retireWarAttractor(*b))orderQueue.push(order);
+			if (auto order=retireWarAttractor(*b))enqueueOrder(order);
 			seenNow.erase(it);
 		}
 	}
@@ -408,14 +410,14 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 	// arrived drives phase transitions (warriors actually present); cohort (BOUND count,
 	// unitsWorking.size()) is the wave's true strength for the spent-retire test — spatial
 	// proximity reads ~0 mid-march and would retire a wave before it ever engaged.
-	Building* flags[MAX_OFFENSE_FLAGS] = { NULL };
+	Cortex::WorldBuilding* flags[MAX_OFFENSE_FLAGS] = { NULL };
 	int arrived[MAX_OFFENSE_FLAGS] = { 0 };
 	int cohort[MAX_OFFENSE_FLAGS] = { 0 };
 	int crossArrivedAtLanding = 0;
 	for (int i = 0; i < MAX_OFFENSE_FLAGS; i++)
 	{
 		OffenseWave& w = offenseWaves[i];
-		Building* flag = findFlagByGid(w.gid);
+		Cortex::WorldBuilding* flag = findFlagByGid(w.gid);
 		if (flag == NULL && w.gid != NOGBID)
 		{
 			// flag died/was deleted; free the slot entirely.
@@ -445,7 +447,7 @@ void AICortex::manageOffenseWaves(int targetX, int targetY, int radius, int warr
 		OffenseWave& w = offenseWaves[i];
 		if (w.phase == WAVE_NONE)
 			continue;
-		Building* flag = flags[i];
+		Cortex::WorldBuilding* flag = flags[i];
 
 		if (w.phase == WAVE_MUSTER)
 		{

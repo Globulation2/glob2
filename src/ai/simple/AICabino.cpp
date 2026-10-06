@@ -6,10 +6,14 @@
 #include <Stream.h>
 
 #include "AICabino.h"
+#include "ai/engine/AIDecision.h"
+#include "ai/observation/OrderSelection.h"
+#include "ai/shared_runtime/ObservationAreaOrders.h"
 #include "AIStateSerialization.h"
 #include "OrderMessages.h"
 #include "Game.h"
 #include "FileFormatVersions.h"
+#include "Version.h"
 #include <span>
 #include "Building.h"
 #include "GlobalContainer.h"
@@ -38,7 +42,7 @@ AIPlanning::BuildingIntent Cabino::intentForDemand(unsigned demand)
  assert(demand < DemandCount);
  return intents[demand];
 }
-bool Cabino::provides(const Game& game,const Building& b,unsigned demand)
+bool Cabino::provides(const Read::World& game,const Read::Building& b,unsigned demand)
 {
  return game.buildingCapabilities().matches(b.type->isBuildingSite ? b.type->nextLevel : b.typeNum,intentForDemand(demand));
 }
@@ -51,7 +55,7 @@ int Cabino::selectBuilding(AICabino& ai,unsigned demand)
   if (index.available(c,intent,ai.game->gameHeader) && ai.random()%++count==0) chosen=c.placementType;
  return chosen;
 }
-unsigned Cabino::upgradeWeight(const Game& game,const Building& b)
+unsigned Cabino::upgradeWeight(const Read::World& game,const Read::Building& b)
 {
  unsigned weight=0;
  for(unsigned demand=0;demand<DemandCount;++demand)
@@ -70,7 +74,7 @@ template<class X,class Y> bool placeRallyNear(AICabino& ai,int type,X& x,Y& y)
     }
  return false;
 }
-unsigned feedingStock(const Building& building,bool capacity)
+unsigned feedingStock(const Read::Building& building,bool capacity)
 {
  unsigned stock=0;
  for(int resource=0;resource<MAX_NB_RESOURCES;++resource)
@@ -87,13 +91,18 @@ void retireRally(AICabino& ai,unsigned gid)
   || s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock
   || std::any_of(s.production.recipes.begin(),s.production.recipes.end(),[](const auto& r){return r.enabled;})
   || std::any_of(s.training.begin(),s.training.end(),[](const auto& r){return r.enabled;})) return;
- if(s.instantPlacement && !s.occupiesGround) ai.orders.push(std::make_shared<OrderDelete>(gid));
- else ai.orders.push(std::make_shared<OrderModifyBuilding>(gid,0));
+ if(s.instantPlacement && !s.occupiesGround) ai.enqueueOrder(std::make_shared<OrderDelete>(gid));
+ else ai.enqueueOrder(std::make_shared<OrderModifyBuilding>(gid,0));
 }
-int legacyConcrete(Game& game,unsigned family,unsigned level,bool site)
+int legacyConcrete(Read::World& game,unsigned family,unsigned level,bool site)
 {
  static constexpr const char* names[]={"swarm","inn","hospital","racetrack","swimmingpool","barracks","school","defencetower","explorationflag","warflag","clearingflag","stonewall","market"};
- return family < std::size(names) ? game.buildingsTypes.getTypeNum(names[family],level,site) : -1;
+ if(family>=std::size(names)) return -1;
+ for(size_t i=0;i<game.buildingsTypes.size();++i) {
+  const auto* type=game.buildingsTypes.get(i);
+  if(type->key==names[family] && type->level==int(level) && type->isBuildingSite==site) return int(i);
+ }
+ return -1;
 }
 }
 
@@ -137,9 +146,12 @@ void AICabino::init(Player *player)
 	unit_module=NULL;
 
 	this->player=player;
-	this->team=player->team;
-	this->game=player->game;
-	this->map=player->map;
+	const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    catalogInput=view->catalog;
+    catalog=std::make_shared<const Read::Catalog>(*catalogInput);
+    Read::World observed(*view,catalog);
+    team=observed.teams.at(player->teamNumber); game=&observed; map=&observed.map;
+    struct Reset { AICabino& ai; ~Reset(){ ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;} } reset{*this};
 
 	gradient_manager.setTeam(this);
 
@@ -182,6 +194,10 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	modules.clear();
 	while (!orders.empty()) orders.pop();
 	init(player);
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    Read::World observed(*view,catalog);
+    team=observed.teams.at(player->teamNumber); game=&observed; map=&observed.map;
+    struct Reset { AICabino& ai; ~Reset(){ ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;} } reset{*this};
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 
 	stream->readEnterSection("AICabino");
@@ -195,7 +211,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	active_module=modules.begin()+moduleIndex;
 
 	stream->readEnterSection("orders");
-	Uint32 ordersSize = stream->readCount("size");
+	Uint32 ordersSize = stream->readCount("size",65536);
 	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
 	{
 		stream->readEnterSection(ordersIndex);
@@ -214,6 +230,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		}
 		if (!order) return false;
 		AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*order,versionMinor);
+        AIEngine::loadSelectedTarget(*stream,*order,versionMinor);
 		orders.push(order);
 		stream->readLeaveSection();
 	}
@@ -230,7 +247,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		stream->read(signature, 4, "signatureStart");
 		if (memcmp(signature,"MoSt", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoSt\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
+			diagnosticStream<<"Signature missmatch at begin of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoSt\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -240,7 +257,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		stream->read(signature, 4, "signatureEnd");
 		if (memcmp(signature,"MoEn", 4)!=0)
 		{
-			std::cout<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
+			diagnosticStream<<"Signature missmatch at end of module #"<<modulesIndex<<", "<<modules[modulesIndex]->getName()<<". Expected \"MoEn\", recieved \""<<std::string(signature, 4)<<"\"."<<std::endl;
 			stream->readLeaveSection();
 			return false;
 		}
@@ -275,6 +292,7 @@ void AICabino::save(GAGCore::OutputStream *stream)
 		const auto order = remainingOrders.front();
 		remainingOrders.pop();
 		NetSendOrder(order).encodeData(stream);
+        AIEngine::saveSelectedTarget(*stream,*order);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -298,12 +316,59 @@ void AICabino::save(GAGCore::OutputStream *stream)
 
 
 
-std::shared_ptr<Order>AICabino::getOrder(void)
+std::shared_ptr<Order> AICabino::getOrder()
+{
+    const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
+    const std::vector<AIEngine::ExecutionReceipt> receipts;
+    return getOrder(AIEngine::DecisionContext{*view,unsigned(player->number),unsigned(player->teamNumber),receipts});
+}
+std::shared_ptr<Order> AICabino::getOrder(const AIEngine::DecisionContext& context)
+{
+    if(catalogInput!=context.world.catalog) {
+        catalogInput=context.world.catalog;
+        catalog=std::make_shared<const Read::Catalog>(*catalogInput);
+    }
+    Read::World observed(context.world,catalog);
+    team=observed.teams.at(context.team);game=&observed;map=&observed.map;
+    struct Reset { AICabino& ai; ~Reset(){
+        ai.team=nullptr; ai.game=nullptr; ai.map=nullptr;
+        const auto text=ai.diagnosticStream.str();if(!text.empty())ai.bufferedDiagnostics.push_back({{},{},text});
+        ai.diagnosticStream.str({});ai.diagnosticStream.clear();
+    } } reset{*this};
+    applyReceipts(context);
+    return decide();
+}
+void AICabino::enqueueOrder(std::shared_ptr<Order> order)
+{
+    if(!game) throw std::logic_error("Cabino command selected outside observation scope");
+    AIEngine::selectTarget(*order,game->source);
+    orders.push(std::move(order));
+}
+void AICabino::discardInvalidQueuedOrders()
+{
+    while(!orders.empty()) {
+        const auto& order=orders.front();
+        if(Read::permittedQueuedOrder(*game,*order) &&
+            AIEngine::selectedTargetExists(*order,game->source)) break;
+        // A command canceled before emission never reaches the engine receipt
+        // queue. Reconcile its private reservation at this same worker boundary.
+        AIEngine::ExecutionReceipt rejection;rejection.status=AIEngine::ExecutionStatus::Canceled;
+        rejection.executionTick=game->source.tick;
+        rejection.command.push_back(order->getOrderType());
+        if(order->getDataLength()) {
+            const auto* bytes=order->getData();rejection.command.insert(rejection.command.end(),bytes,bytes+order->getDataLength());
+        }
+        const std::vector<AIEngine::ExecutionReceipt> receipts{std::move(rejection)};
+        applyReceipts(AIEngine::DecisionContext{game->source,0,unsigned(team->teamNumber),receipts});
+        orders.pop();
+    }
+}
+std::shared_ptr<Order> AICabino::decide()
 {
 
 	// Saved orders can predate the capability gates. Drain obsolete work before
 	// resuming modules; rejecting it in the engine would keep queue state stale.
-	while (!orders.empty() && !AIRules::permittedQueuedOrder(*game, *orders.front())) orders.pop();
+    discardInvalidQueuedOrders();
 	if (!orders.empty())
 	{
 		std::shared_ptr<Order> order = orders.front();
@@ -317,28 +382,19 @@ std::shared_ptr<Order>AICabino::getOrder(void)
 	if (timer<STARTUP_TIME)
 		return std::shared_ptr<Order>(new NullOrder());
 
-	//	std::cout<<"timer="<<timer<<";"<<std::endl;
+	//	diagnosticStream<<"timer="<<timer<<";"<<std::endl;
 
 	if(active_module==modules.end() || iteration==0)
 	{
 		if(iteration==0)
 		{
 			setCenter();
-			if(SEE_EVERYTHING)
-			{
-				for(int x=0; x<map->getW(); ++x)
-				{
-					for(int y=0; y<map->getH(); ++y)
-					{
-						map->setMapDiscovered(x, y, team->me);
-					}
-				}
-			}
+            static_assert(!SEE_EVERYTHING,"AI decisions cannot mutate visibility");
 		}
 		iteration+=1;
 		active_module=modules.begin();
 		if(AICabino_DEBUG)
-			std::cout<<"AICabino: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<std::endl;
+			diagnosticStream<<"AICabino: getOrder: ******Entering iteration "<<iteration<<" at tick #"<<timer<<". ******"<<std::endl;
 		outputDebugMessages();
 	}
 
@@ -351,7 +407,7 @@ std::shared_ptr<Order>AICabino::getOrder(void)
 	//This -1 corrects that.
 	if((timer+1)%TIMER_INTERVAL==0)
 	{
-		//		std::cout<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<std::endl;
+		//		diagnosticStream<<"Performing function: timer="<<timer<<"; module_timer="<<module_timer<<";"<<std::endl;
 		bool cont = (*active_module)->perform(module_timer);
 		if(!cont)
 			++module_timer;
@@ -363,7 +419,7 @@ std::shared_ptr<Order>AICabino::getOrder(void)
 		}
 	};
 
-	while (!orders.empty() && !AIRules::permittedQueuedOrder(*game, *orders.front())) orders.pop();
+    discardInvalidQueuedOrders();
 	if (!orders.empty())
 	{
 		std::shared_ptr<Order> order = orders.front();
@@ -524,7 +580,7 @@ void AICabino::outputDebugMessages()
 	if(CabinoStatusUpdate)
 	{
 		size_t wrap_size=60;
-		std::fstream file("CabinoStatus.txt", std::ios_base::out);
+		std::ostringstream file;
 		for(std::map<std::string, std::map<std::string, std::map<std::string, std::vector<std::string> > > >::iterator i = debug_messages.begin(); i!=debug_messages.end(); ++i)
 		{
 			size_t size=(wrap_size-2-i->first.size())/2;
@@ -545,23 +601,23 @@ void AICabino::outputDebugMessages()
 				}
 			}
 		}
-		file.close();
+		bufferedDiagnostics.push_back({"CabinoStatus.txt",{},file.str()});
 	}
 }
 
 
 
 
-bool Cabino::buildingStillExists(Game* game, Building* building)
+bool Cabino::buildingStillExists(Read::World* game, Read::Building* building)
 {
 	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
-		Team* t = game->teams[i];
+		Read::Team* t = game->teams[i];
 		if(t)
 		{
 			for(int i=0; i<1024; i++)
 			{
-				Building* b = t->myBuildings[i];
+				Read::Building* b = t->myBuildings[i];
 				if (b)
 				{
 					if(b == building)
@@ -576,7 +632,7 @@ bool Cabino::buildingStillExists(Game* game, Building* building)
 
 
 
-bool Cabino::buildingStillExists(Game* game, unsigned int gid)
+bool Cabino::buildingStillExists(Read::World* game, unsigned int gid)
 {
 	return getBuildingFromGid(game, gid)!=NULL;
 }
@@ -611,8 +667,8 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 
 	//This is an optmization, as putting the switch inside the for loop causes it to do log2n checks
 	//For every single square, which has become to cumbersome.
-	Unit* u=NULL;
-	Building* b=NULL;
+	Read::Unit* u=NULL;
+	Read::Building* b=NULL;
 	switch (poll_type)
 	{
 
@@ -661,7 +717,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
-						if((b->owner->me & team->attackableTeams()) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+						if((b->team->me & team->attackableTeams()) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -681,7 +737,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
-						if(b->owner->me == team->me && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+						if(b->team->me == team->me && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -701,7 +757,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
-						if((u->owner->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
+						if((u->team->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -721,7 +777,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
-						if((u->owner->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
+						if((u->team->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
 						{
 							score++;
 						}
@@ -903,7 +959,7 @@ GridPollingSystem::getBestZonesSplit* GridPollingSystem::getBestZones(poll p, un
 
 
 
-TeamStatsGenerator::TeamStatsGenerator(Team* team) : team(team)
+TeamStatsGenerator::TeamStatsGenerator(Read::Team* team) : team(team)
 {
 
 }
@@ -995,11 +1051,11 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 	//would be more appropriette.
 	level-=1;
 	unsigned int free_workers=0;
-	Unit **myUnits=team->myUnits;
+	Read::Unit**myUnits=team->myUnits.data();
 
 	for (int i=0; i<1024; i++)
 	{
-		Unit* u = myUnits[i];
+		Read::Unit* u = myUnits[i];
 		if (u)
 		{
 			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
@@ -1019,11 +1075,11 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 {
 	level-=1;
 	unsigned int free_workers=0;
-	Unit **myUnits=team->myUnits;
+	Read::Unit**myUnits=team->myUnits.data();
 
 	for (int i=0; i<1024; i++)
 	{
-		Unit* u = myUnits[i];
+		Read::Unit* u = myUnits[i];
 		if (u)
 		{
 			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && (ability==BUILD ? u->workerLevel() : u->level[ability])==static_cast<int>(level)) ||
@@ -1042,7 +1098,7 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 // width/height read ai.team->map directly rather than the not-yet-initialized
 // `map` member: member init order follows declaration order (width, height,
 // ..., map), so `map->getW()` here would dereference an uninitialized pointer.
-Gradient::Gradient(AICabino& ai, unsigned sources, unsigned obstacles) : width(ai.team->map->getW()), height(ai.team->map->getH()), sources(sources), obstacles(obstacles),team(ai.team), map(ai.team->map),  ai(&ai), gradient(width*height)
+Gradient::Gradient(AICabino& ai, unsigned sources, unsigned obstacles) : width(ai.team->map->getW()), height(ai.team->map->getH()), sources(sources), obstacles(obstacles), ai(&ai), gradient(width*height)
 {
 
 }
@@ -1053,12 +1109,10 @@ Gradient::Gradient(AICabino& ai, unsigned sources, unsigned obstacles) : width(a
 void Gradient::reset(AICabino& aAi, unsigned aSources, unsigned aObstacles)
 {
 	ai=&aAi;
-	team=ai->team;
-	map=team->map;
 	sources=aSources;
 	obstacles=aObstacles;
-	width=map->getW();
-	height=map->getH();
+	width=ai->map->getW();
+	height=ai->map->getH();
 	gradient.resize(width*height);
 }
 
@@ -1113,6 +1167,7 @@ int Gradient::getHeight(int x, int y) const
 
 bool Gradient::isSource(unsigned x, unsigned y)
 {
+    auto* map=ai->map; auto* team=ai->team;
 	const int resource=map->getTile(x,y).resource.type;
  if(resource>=0 && resource<MAX_NB_RESOURCES && (sources&(1u<<(8+resource))) && map->isResourceTakeable(x,y,resource)) return true;
  if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
@@ -1125,7 +1180,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		return true;
 	if(sources&TeamBuildings && map->getBuilding(x, y)!=NOGBID)
 	{
-		if(getBuildingFromGid(team->game, map->getBuilding(x, y))->owner==team)
+		if(getBuildingFromGid(team->game, map->getBuilding(x, y))->team==team)
 			return true;
 	}
 	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(x, y)))
@@ -1138,6 +1193,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 
 bool Gradient::isObstacle(unsigned x, unsigned y)
 {
+    auto* map=ai->map; auto* team=ai->team;
 	if(obstacles&Resource && map->isResource(x, y))
 		return true;
 	if(obstacles&Building && map->getBuilding(x, y)!=NOGBID)
@@ -1154,11 +1210,11 @@ void Gradient::output()
 	{
 		for(unsigned int x=0; x<width; ++x)
 		{
-			std::cout<<std::setw(3)<<std::setfill('0')<<gradient[x*width+y]<<" ";
+			ai->diagnosticStream<<std::setw(3)<<std::setfill('0')<<gradient[x*width+y]<<" ";
 		}
-		std::cout<<std::endl;
+		ai->diagnosticStream<<std::endl;
 	}
-	std::cout<<std::endl;
+	ai->diagnosticStream<<std::endl;
 }
 
 
@@ -1328,7 +1384,7 @@ bool SimpleBuildingDefense::findDefense()
 	GridPollingSystem gps(ai);
 	for(std::map<unsigned int, unsigned int>::iterator i=building_health.begin(); i!=building_health.end();)
 	{
-		Building* b = getBuildingFromGid(ai.game, i->first);
+		Read::Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b && b->type->semantics.occupiesGround)
 		{
 			if(building_health.find(b->gid) != building_health.end())
@@ -1369,8 +1425,8 @@ bool SimpleBuildingDefense::findDefense()
      defending_zones.push_back(dr);
 
 					if(AICabino_DEBUG)
-						std::cout<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<b->type->key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
-					ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
+						ai.diagnosticStream<<"AICabino: findDefense: Creating a defense flag at "<<dr.flagx<<", "<<dr.flagy<<", to combat "<<dr.assigned<<" units that are attacking our "<<b->type->key<<" at "<<b->posX<<","<<b->posY<<"."<<std::endl;
+					ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, dr.flagx, dr.flagy, typeNum, 1, 1));
 				}
 			}
 			++i;
@@ -1386,7 +1442,7 @@ bool SimpleBuildingDefense::findDefense()
 
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if(b->type->semantics.occupiesGround)
@@ -1410,7 +1466,7 @@ bool SimpleBuildingDefense::updateFlags()
 	{
 		if(i->flag!=NOGBID)
 		{
-			Building* flag=getBuildingFromGid(ai.game, i->flag);
+			Read::Building* flag=getBuildingFromGid(ai.game, i->flag);
 			if(!flag)
 			{
 				// The flag is gone: release its units and drop the record.
@@ -1422,7 +1478,7 @@ bool SimpleBuildingDefense::updateFlags()
 			if(score==0)
 			{
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
+					ai.diagnosticStream<<"AICabino: updateFlags: Found a flag at "<<i->flagx<<","<<i->flagy<<" that is no longer defending against any enemy units. Removing this flag."<<std::endl;
 				retireRally(ai,i->flag);
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, 1, 0, i->flag);
 				i=defending_zones.erase(i);
@@ -1434,7 +1490,7 @@ bool SimpleBuildingDefense::updateFlags()
 				i->assigned=std::min(20u, score);
 				if(static_cast<int>(score)!=flag->maxUnitWorking)
 				{
-					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(20u, score))));
+					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(20u, score))));
 					ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, std::min(20u, score), i->flag);
 				}
 			}
@@ -1453,7 +1509,7 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -1463,10 +1519,10 @@ bool SimpleBuildingDefense::findCreatedDefenseFlags()
 					if(i->flag == NOGBID && b->posX == static_cast<int>(i->flagx) && b->posY == static_cast<int>(i->flagy))
 					{
 						if(AICabino_DEBUG)
-							std::cout<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
+							ai.diagnosticStream<<"AICabino: findCreatedDefenseFlags: Found created flag at "<<i->flagx<<","<<i->flagy<<", adding it to the defense records."<<std::endl;
 						i->flag=b->gid;
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, i->assigned)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, std::max(i->width, i->height)/2)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, i->assigned)));
 						ai.getUnitModule()->request("SimpleBuildingDefense", WARRIOR, ATTACK_STRENGTH, 1, i->assigned, i->flag);
 						break;
 					}
@@ -1538,7 +1594,7 @@ bool GeneralsDefense::load(GAGCore::InputStream *stream, Player *player, Sint32 
 		{
 			dr.x=stream->readSint32("x"); dr.y=stream->readSint32("y");
 		}
-		else if (auto* enemy=getBuildingFromGid(player->game,dr.enemy_flag))
+		else if (auto* enemy=getBuildingFromGid(ai.game,dr.enemy_flag))
 		{ dr.x=enemy->posX; dr.y=enemy->posY; }
 		defending_flags.push_back(dr);
 		// FIXME : clear the container before load
@@ -1581,14 +1637,14 @@ bool GeneralsDefense::findEnemyFlags()
 	GridPollingSystem gps(ai);
 	for (unsigned int t=0; t<static_cast<unsigned int>(Team::MAX_COUNT); t++)
 	{
-		Team* team = ai.game->teams[t];
+		Read::Team* team = ai.game->teams[t];
 		if(team)
 		{
 			if(team->me & ai.team->attackableTeams())
 			{
 				for(unsigned int n=0; n<1024; ++n)
 				{
-					Building* b = team->myBuildings[n];
+					Read::Building* b = team->myBuildings[n];
 					if(b)
 					{
 						if(provides(*ai.game,*b,AttractWarriors))
@@ -1619,9 +1675,9 @@ bool GeneralsDefense::findEnemyFlags()
         dr.x=rallyX; dr.y=rallyY;
         defending_flags.push_back(dr);
 								if(AICabino_DEBUG)
-									std::cout<<"AICabino: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
+									ai.diagnosticStream<<"AICabino: findEnemyFlags: Creating new flag at "<<b->posX<<","<<b->posY<<" to combat an enemy attack!"<<std::endl;
 
-								ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, rallyX, rallyY, typeNum, 1, 1));
+								ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, rallyX, rallyY, typeNum, 1, 1));
 							}
 						}
 					}
@@ -1650,18 +1706,18 @@ bool GeneralsDefense::updateDefenseFlags()
 		if(i->flag==NOGBID)
 
 		{
-			Building* eb = getBuildingFromGid(ai.game, i->enemy_flag);
+			Read::Building* eb = getBuildingFromGid(ai.game, i->enemy_flag);
 			for(unsigned int n=0; n<1024; ++n)
 			{
-				Building* b = ai.team->myBuildings[n];
+				Read::Building* b = ai.team->myBuildings[n];
 				if(b)
 				{
 					if(provides(*ai.game,*b,AttractWarriors) && b->posX==i->x && b->posY==i->y)
 					{
 						i->flag=b->gid;
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,b->type->maxUnitStayRange))));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,b->type->semantics.assignmentLimit))));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, std::min(eb->unitStayRange,b->type->maxUnitStayRange))));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, std::min(eb->maxUnitWorking,b->type->semantics.assignmentLimit))));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
 						break;
 					}
 				}
@@ -1679,7 +1735,7 @@ bool GeneralsDefense::updateDefenseFlags()
 PrioritizedBuildingAttack::PrioritizedBuildingAttack(AICabino& ai) : ai(ai)
 {
 	ai.setAttackModule(this);
-	enemy=NULL;
+	enemyTeamNumber=255;
 }
 
 
@@ -1735,7 +1791,7 @@ bool PrioritizedBuildingAttack::load(GAGCore::InputStream *stream, Player *playe
 	// Team::MAX_COUNT_ON_DISK (32), so it can never collide with a real team.
 	Uint8 enemyTeamNumber = stream->readUint8("teamNumber");
 	if (enemyTeamNumber != 255 && (enemyTeamNumber >= ai.game->mapHeader.getNumberOfTeams() || !ai.game->teams[enemyTeamNumber])) return false;
-	enemy = (enemyTeamNumber == 255) ? NULL : ai.game->teams[enemyTeamNumber];
+	this->enemyTeamNumber=enemyTeamNumber;
 	Uint32 attackRecordSize = stream->readCount("size");
 	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attackRecordSize; attackRecordIndex++)
 	{
@@ -1775,7 +1831,7 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("attacks");
 	// enemy is legitimately null until targetEnemy() picks a target (e.g. a
 	// save taken right at game start); 255 marks "no enemy" for load() above.
-	stream->writeUint8(enemy ? enemy->teamNumber : 255, "teamNumber");
+	stream->writeUint8(enemyTeamNumber, "teamNumber");
 	stream->writeUint32(attacks.size(), "size");
 	for (Uint32 attackRecordIndex = 0; attackRecordIndex < attacks.size(); attackRecordIndex++)
 	{
@@ -1808,7 +1864,7 @@ void PrioritizedBuildingAttack::save(GAGCore::OutputStream *stream) const
 
 bool PrioritizedBuildingAttack::targetEnemy()
 {
-	if(enemy==NULL || !enemy->isAlive)
+	if(enemy()==NULL || !enemy()->isAlive)
 	{
 		for(std::vector<attackRecord>::iterator j = attacks.begin(); j!=attacks.end();)
 		{
@@ -1823,10 +1879,10 @@ bool PrioritizedBuildingAttack::targetEnemy()
 			}
 		}
 
-		std::vector<Team*> targets;
+		std::vector<Read::Team*> targets;
 		for(int i=0; i<Team::MAX_COUNT; ++i)
 		{
-			Team* t = ai.game->teams[i];
+			Read::Team* t = ai.game->teams[i];
 			if(t)
 			{
 				if((t->me & ai.team->attackableTeams()) && t->isAlive)
@@ -1839,8 +1895,8 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		if(targets.size()>0)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: targetEnemy: A new enemy has been chosen."<<std::endl;
-			enemy=targets[ai.random()%targets.size()];
+				ai.diagnosticStream<<"AICabino: targetEnemy: A new enemy has been chosen."<<std::endl;
+			enemyTeamNumber=targets[ai.random()%targets.size()]->teamNumber;
 		}
 	}
 	return false;
@@ -1856,7 +1912,7 @@ bool PrioritizedBuildingAttack::attack()
 	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_attack_calls);
 	// targetEnemy() (time_slice_n==0) leaves enemy NULL when no enemy team is
 	// currently alive to target; nothing to attack this cycle in that case.
-	if(enemy==NULL)
+	if(enemy()==NULL)
 		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
 										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
 										 false);
@@ -1868,7 +1924,7 @@ bool PrioritizedBuildingAttack::attack()
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
@@ -1930,7 +1986,7 @@ bool PrioritizedBuildingAttack::attack()
 			unsigned int needed=0;
 			if(i->flag!=NOGBID)
 			{
-				Building* b = getBuildingFromGid(ai.game, i->flag);
+				Read::Building* b = getBuildingFromGid(ai.game, i->flag);
 				if(b && b->unitsWorking.size()<i->assigned_units)
 					needed=i->assigned_units-b->unitsWorking.size();
 			}
@@ -1947,10 +2003,10 @@ bool PrioritizedBuildingAttack::attack()
 
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
-	std::vector<std::vector<Building*> > buildings(std::size(ATTACK_PRIORITY)+1);
+	std::vector<std::vector<Read::Building*> > buildings(std::size(ATTACK_PRIORITY)+1);
 	for(int i=0; i<1024; ++i)
 	{
-		Building* b = enemy->myBuildings[i];
+		Read::Building* b = enemy()->myBuildings[i];
 		if(b)
 		{
 			if(!b->locked[1])
@@ -1969,18 +2025,18 @@ bool PrioritizedBuildingAttack::attack()
 	{
 		for (size_t count=buildings[i].size();count>1;--count)
    std::swap(buildings[i][count-1],buildings[i][ai.random()%count]);
-  std::stable_partition(buildings[i].begin(),buildings[i].end(),[](const Building* b){return b->constructionResultState==Building::NO_CONSTRUCTION;});
+  std::stable_partition(buildings[i].begin(),buildings[i].end(),[](const Read::Building* b){return b->constructionResultState==Building::NO_CONSTRUCTION;});
 	}
 
 	//Iterate through the buildings, starting attacks as neccecary, and stopping when
 	//we run out of available units, or we have reached the maximum number of attacks
 	//at once.
 	unsigned int attack_count=attacks.size();
-	for(std::vector<std::vector<Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
+	for(std::vector<std::vector<Read::Building*> >::iterator i = buildings.begin(); i != buildings.end(); ++i)
 	{
-		for(std::vector<Building*>::iterator j = i->begin(); j!=i->end(); ++j)
+		for(std::vector<Read::Building*>::iterator j = i->begin(); j!=i->end(); ++j)
 		{
-			Building* b = *j;
+			Read::Building* b = *j;
 			if(attack_count!=MAX_ATTACKS_AT_ONCE && available_units>=ATTACK_WARRIOR_MINIMUM)
 			{
 				//Make sure where not attacking this building already
@@ -2021,9 +2077,9 @@ bool PrioritizedBuildingAttack::attack()
 				if(!placeRallyNear(ai,typeNum,ar.flagx,ar.flagy)) continue;
     attacks.push_back(ar);
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
+					ai.diagnosticStream<<"AICabino: attack: Creating a war flag at "<<ar.flagx<<", "<<ar.flagy<<" and assigning "<<ar.assigned_units<<" units to fight and kill the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 
-				ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
+				ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, ar.flagx, ar.flagy, typeNum, 1, 1));
 				++attack_count;
 				available_units-=ar.assigned_units;
 			}
@@ -2055,7 +2111,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	//assigned level
 	for(int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -2067,11 +2123,11 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 						j->flag=b->gid;
 						unsigned int radius=std::max(j->width, j->height)/2;
 						if(AICabino_DEBUG)
-							std::cout<<"AICabino: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<std::endl;
+							ai.diagnosticStream<<"AICabino: updateAttackFlags: Found a flag that attack() had created. Giving it a "<<radius<<" radius. Assigning "<<j->assigned_units<<" units to it, and setting it to use level "<<j->assigned_level<<" warriors."<<std::endl;
 
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : j->assigned_level)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : j->assigned_level)));
 						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, j->assigned_units, j->flag);
 						break;
 					}
@@ -2089,11 +2145,11 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			//which quickly assumes the same gid before we detect and remove the flag here. If we destroyed a building,
 			//and the ai quickly remakes the same building in the same spot, we don't stop attacking that spot, there
 			//is still a building there.
-			Building* b = getBuildingFromGid(ai.game, j->target);
+			Read::Building* b = getBuildingFromGid(ai.game, j->target);
 			if((b==NULL || b->posX!=static_cast<int>(j->target_x) || b->posY!=static_cast<int>(j->target_y)))
 			{
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
+					ai.diagnosticStream<<"AICabino: updateAttackFlags: Stopping attack on a building, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, 0, j->flag);
 				retireRally(ai,j->flag);
 				j=attacks.erase(j);
@@ -2108,7 +2164,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	unsigned int found_barracks=0;
 	for(int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
@@ -2144,7 +2200,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	{
 		if(j->flag != NOGBID)
 		{
-			//			Building* flag=getBuildingFromGid(ai.game, j->flag);
+			//			Read::Building* flag=getBuildingFromGid(ai.game, j->flag);
 			//Add the number of units that are assigned to this flag to the total number of units available
 			available_units+=j->assigned_units;
 
@@ -2157,7 +2213,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(new_assigned<ATTACK_WARRIOR_MINIMUM)
 			{
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
+					ai.diagnosticStream<<"AICabino: updateAttackFlags: Stopping attack, not enough free warriors, removing the "<<j->flagx<<","<<j->flagy<<" flag."<<std::endl;
 				retireRally(ai,j->flag);
 				j=attacks.erase(j);
 				continue;
@@ -2168,9 +2224,9 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(new_assigned != j->assigned_units)
 			{
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<std::endl;
+					ai.diagnosticStream<<"AICabino: updateAttackFlags: Changing the "<<j->flagx<<","<<j->flagy<<" flag from "<<j->assigned_units<<" to "<<new_assigned<<"."<<std::endl;
 				j->assigned_units=new_assigned;
-				ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(j->flag, new_assigned)));
+				ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(j->flag, new_assigned)));
 				available_units-=new_assigned;
 				ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, strength_level+1, new_assigned, j->flag);
 			}
@@ -2179,7 +2235,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 			if(strength_level != j->assigned_level)
 			{
 				j->assigned_level=strength_level;
-				ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(j->flag, strength_level)));
+				ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(j->flag, strength_level)));
 			}
 		}
 		++j;
@@ -2527,7 +2583,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 		if(CabinoStatusUpdate)
 			ai.addDebugMessage("DistributedNewConstructionManager", "Construction", "General", "There is already too much construction, I will not try to start anymore.");
 		if(local_debug)
-			std::cout<<"Fail 1, too much construction."<<std::endl;
+			ai.diagnosticStream<<"Fail 1, too much construction."<<std::endl;
 		return false;
 	}
 
@@ -2535,7 +2591,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 	for(unsigned i = 0; i<DemandCount; ++i)
 	{
 		counts[i]=0;
-  for(auto* building:std::span<Building*>(ai.team->myBuildings,Building::MAX_COUNT))
+  for(auto* building:std::span<Read::Building*>(ai.team->myBuildings.data(),Building::MAX_COUNT))
    if(building && !building->type->isBuildingSite && provides(*ai.game,*building,i)) ++counts[i];
 		under_construction_counts[i]=0;
 	}
@@ -2601,7 +2657,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_construction>=MAX_NEW_CONSTRUCTION_AT_ONCE)
 			{
 				if(local_debug)
-					std::cout<<"Fail 1, too much construction, for "<<std::to_string(i->building_type)<<"."<<std::endl;
+					ai.diagnosticStream<<"Fail 1, too much construction, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					return false;
 				else
@@ -2611,7 +2667,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(total_free_workers<MINIMUM_TO_CONSTRUCT_NEW && !CHEAT_INSTANT_BUILDING)
 			{
 				if(local_debug)
-					std::cout<<"Fail 2, too few units, for "<<std::to_string(i->building_type)<<"."<<std::endl;
+					ai.diagnosticStream<<"Fail 2, too few units, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					return false;
 				else
@@ -2621,7 +2677,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(under_construction_counts[i->building_type]>=MAX_NEW_CONSTRUCTION_PER_BUILDING[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 3, too many buildings of this type under constructon, for "<<std::to_string(i->building_type)<<"."<<std::endl;
+					ai.diagnosticStream<<"Fail 3, too many buildings of this type under constructon, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					break;
 				else
@@ -2631,7 +2687,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 			if(counts[i->building_type]>=num_buildings_wanted[i->building_type])
 			{
 				if(local_debug)
-					std::cout<<"Fail 4, building cap reached, for "<<std::to_string(i->building_type)<<"."<<std::endl;
+					ai.diagnosticStream<<"Fail 4, building cap reached, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(!CabinoStatusUpdate)
 					break;
 				else
@@ -2658,7 +2714,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 				min_failed_height=size.height;
 
 				if(local_debug)
-					std::cout<<"Fail 5, no suitable positon found, for "<<std::to_string(i->building_type)<<"."<<std::endl;
+					ai.diagnosticStream<<"Fail 5, no suitable positon found, for "<<std::to_string(i->building_type)<<"."<<std::endl;
 				if(CabinoStatusUpdate)
 					ai.addDebugMessage("DistributedNewConstructionManager", "Construction", building_name, "I won't construct this because there is no place to put this building.");
 				break;
@@ -2673,7 +2729,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 
 			//Don't assign more units than the total amount of resources needed to construct the building.
 			unsigned int needed_resource_total=0;
-			BuildingType* t=ai.game->buildingsTypes.get(concreteType);
+			const BuildingType* t=ai.game->buildingsTypes.get(concreteType);
 			for(unsigned int n=0; n<MAX_NB_RESOURCES; ++n)
 			{
 				needed_resource_total+=t->semantics.constructionCost[n];
@@ -2686,9 +2742,9 @@ bool DistributedNewConstructionManager::constructBuildings()
 			new_buildings.push_back(ncr);
 
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: constructBuildings: Starting construction on a "<<std::to_string(i->building_type)<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
+				ai.diagnosticStream<<"AICabino: constructBuildings: Starting construction on a "<<std::to_string(i->building_type)<<", at position "<<p.x<<","<<p.y<<"."<<std::endl;
 			Sint32 type=concreteType;
-			ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, p.x, p.y, type, 1, 1));
+			ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, p.x, p.y, type, 1, 1));
 			total_construction+=1;
 			total_free_workers-=ncr.assigned;
 			under_construction_counts[i->building_type]++;
@@ -2711,13 +2767,13 @@ bool DistributedNewConstructionManager::updateBuildings()
 	{
 		if(i->building!=NOGBID)
 		{
-			Building* b = getBuildingFromGid(ai.game, i->building);
+			Read::Building* b = getBuildingFromGid(ai.game, i->building);
 			if(b==NULL || b->constructionResultState == Building::NO_CONSTRUCTION)
 			{
 				///If its been changed since it was finished (perhaps by another module),
 				///don't undo the changes
 				if(b!=NULL && b->maxUnitWorking==static_cast<int>(i->assigned))
-					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->building, 1)));
+					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->building, 1)));
 				ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, 0, i->building);
 				i = new_buildings.erase(i);
 				continue;
@@ -2738,7 +2794,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 	//Update buildings that have just been created.
 	for(int i=0; i<1024; ++i)
 	{
-		Building *b = ai.team->myBuildings[i];
+		Read::Building*b = ai.team->myBuildings[i];
 		if(b)
 		{
 			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
@@ -2747,7 +2803,7 @@ bool DistributedNewConstructionManager::updateBuildings()
 				{
 					i->building=b->gid;
 					i->no_build_timeout=-1;
-					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->building, i->assigned)));
+					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->building, i->assigned)));
 					ai.getUnitModule()->request("DistributedNewConstructionManager", WORKER, BUILD, 1, i->assigned, i->building);
 				}
 			}
@@ -2829,7 +2885,7 @@ void DistributedNewConstructionManager::updateImap()
 			upgradeData bsize;
 			if(ai.map->getBuilding(x, y)!=NOGBID)
 			{
-				Building* b=getBuildingFromGid(ai.game, ai.map->getBuilding(x, y));
+				Read::Building* b=getBuildingFromGid(ai.game, ai.map->getBuilding(x, y));
 				bsize=findMaxSize(b->typeNum);
 				found_building=true;
 			}
@@ -3081,7 +3137,7 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 {
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end();)
 	{
-		Building *b=getBuildingFromGid(ai.game, i->building);
+		Read::Building*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 		{
 			i=active_construction.erase(i);
@@ -3092,10 +3148,10 @@ bool RandomUpgradeRepairModule::removeOldConstruction(void)
 		if (b->constructionResultState!=Building::UPGRADE && b->constructionResultState!=Building::REPAIR )
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: removeOldConstruction: Removing an old "<<b->type->key<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
+				ai.diagnosticStream<<"AICabino: removeOldConstruction: Removing an old "<<b->type->key<<" from the active construction list, changing assigned number of units back to "<<original<<" from "<<i->assigned<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
 			i=active_construction.erase(i);
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, original)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, original)));
 			continue;
 		}
 		i++;
@@ -3111,24 +3167,28 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 	ai.telemetry.count(AITrace::AI8::RandomUpgradeRepairModule_updatePendingConstruction_calls);
 	for (std::list<constructionRecord>::iterator i = pending_construction.begin(); i!=pending_construction.end();)
 	{
-		Building *b=getBuildingFromGid(ai.game, i->building);
+		Read::Building*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 		{
 			// i belongs to pending_construction (this loop's own container),
 			// not active_construction: erasing it there instead used i, an
 			// iterator from a different list instance, as undefined behavior.
+			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule",WORKER,BUILD,i->requiredLevel+1,i->assigned);
 			i=pending_construction.erase(i);
 			continue;
 		}
+        // Generating an upgrade does not change the observed building. Wait
+        // until execution starts construction before publishing its staffing.
+        if(b->constructionResultState==Building::NO_CONSTRUCTION) { ++i; continue; }
 		unsigned int assigned = i->assigned;
 		if (b->buildingState != Building::WAITING_FOR_CONSTRUCTION && b->buildingState != Building::WAITING_FOR_CONSTRUCTION_ROOM)
 		{
 			constructionRecord u=*i;
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: updatePendingConstruction: The "<<b->type->key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
+				ai.diagnosticStream<<"AICabino: updatePendingConstruction: The "<<b->type->key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, assigned)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, assigned)));
 			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, u.assigned);
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, assigned, b->gid);
 			continue;
@@ -3155,7 +3215,7 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 	//Finally, iterate through the shuffled list of records changing the number of units allocated to upgrade the buildings.
 	for (std::list<constructionRecord>::iterator i = active_construction.begin(); i!=active_construction.end(); i++)
 	{
-		Building *b=getBuildingFromGid(ai.game, i->building);
+		Read::Building*b=getBuildingFromGid(ai.game, i->building);
 		if(!b)
 			continue;
 		// A dying building is still in myBuildings, and cancelling construction on it
@@ -3192,18 +3252,18 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (!is_repair && available_upgrade==0)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<b->type->key<<"."<<std::endl;
+				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling upgrade on the "<<b->type->key<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
-			ai.orders.push(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
 
 		else if (is_repair && available_repair==0)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<b->type->key<<"."<<std::endl;
+				ai.diagnosticStream<<"AICabino: reassignConstruction: There are not enough available units. Canceling repair on the "<<b->type->key<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, 0, b->gid);
-			ai.orders.push(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderCancelConstruction(b->gid, 1)));
 			continue;
 		}
 
@@ -3228,9 +3288,9 @@ bool RandomUpgradeRepairModule::reassignConstruction(void)
 		if (num_to_assign != assigned)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: reassignConstruction: Retasking "<<b->type->key<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
+				ai.diagnosticStream<<"AICabino: reassignConstruction: Retasking "<<b->type->key<<" that is under construction. Number of units available: "<<generic_available<< ". Number of units originally assigned: "<<assigned<<". Number of units assigning: "<<num_to_assign<<"."<<std::endl;
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, i->requiredLevel+1, num_to_assign, b->gid);
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, num_to_assign)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, num_to_assign)));
 			i->assigned=num_to_assign;
 		}
 		reduce(free_workers, i->requiredLevel, num_to_assign);
@@ -3245,11 +3305,11 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 {
  std::array<unsigned,NB_UNIT_LEVELS> ratios{};
  std::array<unsigned,DemandCount> constructionCounts{};
- auto requiredLevel=[&](const Building& building,bool repair) {
+ auto requiredLevel=[&](const Read::Building& building,bool repair) {
   const int next=repair ? building.type->prevLevel : building.type->nextLevel;
   return next<0 ? building.type->semantics.requiredWorkerLevel : ai.game->buildingsTypes.get(next)->semantics.requiredWorkerLevel;
  };
- auto countBuilding=[&](const Building& building) {
+ auto countBuilding=[&](const Read::Building& building) {
   for(unsigned demand=0;demand<DemandCount;++demand)
    if(provides(*ai.game,building,demand)) ++constructionCounts[demand];
  };
@@ -3259,10 +3319,11 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
     ++ratios[requiredLevel(*building,record.is_repair)];
     countBuilding(*building);
    }
- struct Candidate { Building* building; bool repair; unsigned level; unsigned score; };
+ struct Candidate { Read::Building* building; bool repair; unsigned level; unsigned score; };
  std::vector<Candidate> candidates;
- for(auto* building:std::span<Building*>(ai.team->myBuildings,Building::MAX_COUNT)) {
+ for(auto* building:std::span<Read::Building*>(ai.team->myBuildings.data(),Building::MAX_COUNT)) {
   if(!building || building->constructionResultState!=Building::NO_CONSTRUCTION || building->buildingState!=Building::ALIVE) continue;
+  if(std::any_of(pending_construction.begin(),pending_construction.end(),[&](const auto& pending){return pending.building==building->gid;})) continue;
   const bool repair=building->type->semantics.repairable && building->hp<building->getEffectiveMaxHp();
   const unsigned weight=upgradeWeight(*ai.game,*building);
   if(!repair && (weight==0 || !building->isUpgradeAvailable() || ai.game->gameHeader.isUnitUpgradesDisabled())) continue;
@@ -3297,7 +3358,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
   constructionRecord record;
   record.building=building->gid; record.assigned=assigned; record.original=building->maxUnitWorking; record.is_repair=candidate.repair; record.requiredLevel=candidate.level;
   pending_construction.push_back(record);
-  ai.orders.push(AIRules::constructionOrder(*ai.game, *building,1,1));
+  ai.enqueueOrder(Read::constructionOrder(*ai.game, *building,1,1));
   ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,candidate.level+1,assigned);
   reduce(freeWorkers.data(),candidate.level,assigned);
   countBuilding(*building);
@@ -3535,7 +3596,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	minimum_level-=1;
 	usageRecord ur;
-	Building* b=getBuildingFromGid(ai.game, building);
+	Read::Building* b=getBuildingFromGid(ai.game, building);
 	if(buildings.find(building)!=buildings.end())
 	{
 		ur=buildings[building];
@@ -3686,7 +3747,7 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 	int needed=0;
 	for(std::map<int, usageRecord>::iterator i=buildings.begin(); i!=buildings.end();)
 	{
-		Building* b = getBuildingFromGid(ai.game, i->first);
+		Read::Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b==NULL ||  b->posX != static_cast<int>(i->second.x) || b->posY != static_cast<int>(i->second.y) || b->typeNum != static_cast<int>(i->second.type) || b->type->level!=static_cast<int>(i->second.level))
 		{
 			module_records[i->second.owner].usingUnits[i->second.unit_type][i->second.ability][i->second.minimum_level]-=i->second.number;
@@ -3826,15 +3887,17 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	}
 
 	unsigned int assigned_per_swarm=MAXIMUM_UNITS_FOR_SWARM;
-    if(auto order=AIPlanning::missingProductionOrder(*ai.game,*ai.team,{ratios[0],ratios[1],ratios[2]},assigned_per_swarm,assigned_per_swarm)) {
-        ai.orders.push(order);return true;
+    AIEngine::ResourceInitializations scratch;
+    AIEngine::WorldQueries queries(ai.game->source,ai.team->teamNumber,scratch);
+    if(auto order=queries.missingProductionOrder({ratios[0],ratios[1],ratios[2]},assigned_per_swarm,assigned_per_swarm)) {
+        ai.enqueueOrder(order);return true;
     }
 
 
 	bool need_to_output=true;
-	for (std::list<Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
+	for (std::list<Read::Building*>::iterator i = ai.team->swarms.begin(); i != ai.team->swarms.end(); ++i)
 	{
-		Building* swarm=*i;
+		Read::Building* swarm=*i;
   Sint32 desired[NB_UNIT_TYPE];
   for(int unit=0;unit<NB_UNIT_TYPE;++unit) desired[unit]=swarm->type->semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
   const int assigned=std::min<int>(assigned_per_swarm,swarm->type->semantics.assignmentLimit);
@@ -3844,15 +3907,15 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 				changed=true;
 
 		if(swarm->maxUnitWorking < assigned)
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned)));
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(swarm->gid, assigned)));
 
 		if(!changed)
 			continue;
 
 		if(AICabino_DEBUG && need_to_output)
-			std::cout<<"AICabino: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
+			ai.diagnosticStream<<"AICabino: moderateSpawns: Turning changing production ratios on a swarm from {Worker:"<<swarm->ratio[0]<<", Explorer:"<<swarm->ratio[1]<<", Warrior:"<<swarm->ratio[2]<<"} to {Worker:"<<ratios[0]<<", Explorer:"<<ratios[1]<<", Warrior:"<<ratios[2]<<"}. Assigning "<<assigned_per_swarm<<" workers."<<std::endl;
 		need_to_output=false;
-		ai.orders.push(std::shared_ptr<Order>(new OrderModifySwarm(swarm->gid, desired)));
+		ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifySwarm(swarm->gid, desired)));
 	}
 	return false;
 }
@@ -4043,7 +4106,7 @@ bool InnManager::recordInns()
 {
 	for(int i=0; i<1024; ++i)
 	{
-		Building* b=ai.team->myBuildings[i];
+		Read::Building* b=ai.team->myBuildings[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,FeedUnits) && b->constructionResultState==Building::NO_CONSTRUCTION)
@@ -4073,7 +4136,7 @@ bool InnManager::modifyInns()
 
 	for(std::map<int, innRecord>::iterator i = inns.begin(); i!=inns.end();)
 	{
-		Building* inn=getBuildingFromGid(ai.game, i->first);
+		Read::Building* inn=getBuildingFromGid(ai.game, i->first);
 		if (inn==NULL || !provides(*ai.game,*inn,FeedUnits))
 		{
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, 0, i->first);
@@ -4109,8 +4172,8 @@ bool InnManager::modifyInns()
 		if(static_cast<int>(to_assign)!=inn->maxUnitWorking)
 		{
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<std::endl;
-			ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(inn->gid, to_assign)));
+				ai.diagnosticStream<<"AICabino: modifyInns: Changing the number of units assigned to an inn from "<<inn->maxUnitWorking<<" to "<<to_assign<<"."<<std::endl;
+			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(inn->gid, to_assign)));
 			ai.getUnitModule()->request("InnManager", WORKER, HARVEST, 1, to_assign, inn->gid);
 		}
 		++i;
@@ -4183,7 +4246,7 @@ bool TowerController::controlTowers()
 	int count=0;
 	for(int i=0; i<1024; i++)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,DefendWithProjectiles) &&
@@ -4194,8 +4257,8 @@ bool TowerController::controlTowers()
 				if(b->maxUnitWorking < std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))
 				{
 					if(AICabino_DEBUG)
-						std::cout<<"AICabino: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
-					ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))));
+						ai.diagnosticStream<<"AICabino: controlTowers: Changing number of units assigned to a tower, from "<<b->maxUnitWorking<<" to "<<NUM_PER_TOWER<<"."<<std::endl;
+					ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, std::min<int>(NUM_PER_TOWER,b->type->semantics.assignmentLimit))));
 				}
 			}
 		}
@@ -4299,7 +4362,7 @@ bool BuildingClearer::removeOldPadding()
 {
 	for(std::map<int, clearingRecord>::iterator i=cleared_buildings.begin(); i!=cleared_buildings.end();)
 	{
-		Building* b = getBuildingFromGid(ai.game, i->first);
+		Read::Building* b = getBuildingFromGid(ai.game, i->first);
 		if(b==NULL || b->type->level != static_cast<int>(i->second.level) || i->second.x!=b->posX-CLEARING_AREA_BUILDING_PADDING || i->second.y!=b->posY-CLEARING_AREA_BUILDING_PADDING)
 		{
 
@@ -4321,12 +4384,12 @@ bool BuildingClearer::removeOldPadding()
 						y=0;
 					if(ai.map->isClearArea(x, y, ai.team->me))
 					{
-						acc.applyBrush(BrushApplication(x,y,0), ai.map);
+						acc.applyBrush(BrushApplication(x,y,0), ai.map->getW(), ai.map->getH());
 					}
 				}
 			}
 			if(acc.getApplicationCount()>0)
-				ai.orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(ai.team->teamNumber, BrushTool::MODE_DEL, &acc, ai.map)));
+				ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(ai.team->teamNumber, BrushTool::MODE_DEL, acc));
 			// erase(i) invalidates i; its return value is the next valid
 			// iterator, so skip the (removed) for-loop auto-increment below.
 			i = cleared_buildings.erase(i);
@@ -4347,7 +4410,7 @@ bool BuildingClearer::updateClearingAreas()
 	ai.telemetry.count(AITrace::AI8::BuildingClearer_updateClearingAreas_calls);
 	for(unsigned int i=0; i<1024; ++i)
 	{
-		Building* b = ai.team->myBuildings[i];
+		Read::Building* b = ai.team->myBuildings[i];
 		if(b)
 		{
 			if( b->type->semantics.occupiesGround &&
@@ -4379,14 +4442,14 @@ bool BuildingClearer::updateClearingAreas()
 							y=0;
 						if(!ai.map->isClearArea(x,y, ai.team->me))
 						{
-							acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+							acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
 						}
 					}
 				}
 				if(AICabino_DEBUG)
-					std::cout<<"AICabino: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
+					ai.diagnosticStream<<"AICabino: updateClearingAreas: Adding clearing area around the building at "<<b->posX<<","<<b->posY<<"."<<std::endl;
 				if(acc.getApplicationCount()>0)
-					ai.orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(ai.team->teamNumber, BrushTool::MODE_ADD, &acc, ai.map)));
+					ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(ai.team->teamNumber, BrushTool::MODE_ADD, acc));
 				cleared_buildings[b->gid]=cr;
 			}
 		}
@@ -4537,7 +4600,7 @@ bool HappinessHandler::adjustAlliances()
 
 	for(unsigned int i=0; i<static_cast<unsigned int>(Team::MAX_COUNT); ++i)
 	{
-		Team* t=ai.game->teams[i];
+		Read::Team* t=ai.game->teams[i];
 		if(t)
 		{
 			if(t->me & ai.team->attackableTeams())
@@ -4565,8 +4628,8 @@ bool HappinessHandler::adjustAlliances()
 	if(food_mask!=ai.team->sharedVisionFood)
 	{
 		if(AICabino_DEBUG)
-			std::cout<<"AICabino: adjustAlliances: Adjusting food vision alliance."<<std::endl;
-		ai.orders.push(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->attackableTeams(), ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
+			ai.diagnosticStream<<"AICabino: adjustAlliances: Adjusting food vision alliance."<<std::endl;
+		ai.enqueueOrder(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->attackableTeams(), ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
 	}
 
 	return false;
@@ -4622,9 +4685,9 @@ bool HappinessHandler::searchFruitTrees()
 			if(!placeRallyNear(ai,typeNum,flagLocation[n].x,flagLocation[n].y)) continue;
    fruitTreeExplorationRecord fter;
 			if(AICabino_DEBUG)
-				std::cout<<"AICabino: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
+				ai.diagnosticStream<<"AICabino: searchFruitTrees: Creating a new exploration flag for a group of trees."<<std::endl;
 
-			ai.orders.push(AIRules::createOrder(*ai.game, ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
+			ai.enqueueOrder(Read::createOrder(*ai.game, ai.team->teamNumber, flagLocation[n].x, flagLocation[n].y, typeNum, 1, 1));
 			fter.flag=NOGBID;
 			fter.pos_x=flagLocation[n].x;
 			fter.pos_y=flagLocation[n].y;
@@ -4640,14 +4703,14 @@ bool HappinessHandler::searchFruitTrees()
 		{
 			for(unsigned int n=0; n<1024; ++n)
 			{
-				Building* b = ai.team->myBuildings[n];
+				Read::Building* b = ai.team->myBuildings[n];
 				if(b)
 				{
 					if(b->posX == i->pos_x && b->posY == i->pos_y && provides(*ai.game,*b,AttractExplorers))
 					{
 						i->flag=b->gid;
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, i->radius)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, i->radius)));
+						ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, EXPLORERS_PER_GROUP)));
 						ai.getUnitModule()->request("HappinessHandler", EXPLORER, FLY, 1, EXPLORERS_PER_GROUP, i->flag);
 					}
 				}
@@ -4840,9 +4903,9 @@ bool Farmer::updateFarm()
 					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
 				const bool farmed=ai.map->isFarmArea(x, y, ai.team->me);
 				if(wheat_farm && !farmed)
-					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+					farm_add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
 				else if(!wheat_farm && farmed)
-					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
 			}
 
 			if(farm_spot)
@@ -4854,7 +4917,7 @@ bool Farmer::updateFarm()
 				{
 					if(resources.find(point(x, y))!=resources.end())
 					{
-						del_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+						del_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
 						resources.erase(resources.find(point(x, y)));
 					}
 				}
@@ -4862,7 +4925,7 @@ bool Farmer::updateFarm()
 				{
 					if(resources.find(point(x, y))==resources.end() && ai.map->isMapDiscovered(x, y, ai.team->me) && water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2))
 					{
-						add_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
+						add_acc.applyBrush(BrushApplication(x, y, 0), ai.map->getW(), ai.map->getH());
 						resources.insert(point(x, y));
 					}
 				}
@@ -4871,13 +4934,13 @@ bool Farmer::updateFarm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_DEL, &del_acc, ai.map)));
+		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(ai.team->teamNumber, BrushTool::MODE_DEL, del_acc));
 	if(add_acc.getApplicationCount()>0)
-		ai.orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(ai.team->teamNumber, BrushTool::MODE_ADD, &add_acc, ai.map)));
+		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(ai.team->teamNumber, BrushTool::MODE_ADD, add_acc));
 	if(farm_del_acc.getApplicationCount()>0)
-		ai.orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(ai.team->teamNumber, BrushTool::MODE_DEL, &farm_del_acc, ai.map)));
+		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(ai.team->teamNumber, BrushTool::MODE_DEL, farm_del_acc));
 	if(farm_add_acc.getApplicationCount()>0)
-		ai.orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(ai.team->teamNumber, BrushTool::MODE_ADD, &farm_add_acc, ai.map)));
+		ai.enqueueOrder(AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(ai.team->teamNumber, BrushTool::MODE_ADD, farm_add_acc));
 	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_updateFarm_result,
 									 AITrace::AI8::Farmer_updateFarm_true, false);
 }
@@ -4965,4 +5028,67 @@ bool GradientManager::load(GAGCore::InputStream *stream)
 	}
 	stream->readLeaveSection();
 	return stream->isValid();
+}
+
+// Scheduling outcomes reconcile private strategic reservations on the worker
+// stream. The existing module records remain the saved continuation format.
+void AICabino::applyReceipts(const AIEngine::DecisionContext& context)
+{
+    for(const auto& receipt:context.receipts) {
+        if(receipt.command.empty()) continue;
+        auto order=Order::getOrder(receipt.command.data(),receipt.command.size(),VERSION_MINOR);
+        if(!order) continue;
+        if(order->getOrderType()==ORDER_CONSTRUCTION) {
+            auto* upgrades=dynamic_cast<RandomUpgradeRepairModule*>(upgrade_repair_module);
+            const auto gid=static_cast<OrderConstruction&>(*order).gid;
+            if(!upgrades) continue;
+            if(receipt.status==AIEngine::ExecutionStatus::Accepted) {
+                const auto* building=getBuildingFromGid(game,gid);
+                // A completed or canceled instant operation can disappear before
+                // this module's next slice. An older receipt is reflected in
+                // this observation, so release its otherwise stranded claim.
+                if(receipt.executionTick>=context.world.tick || (building && building->constructionResultState!=Building::NO_CONSTRUCTION)) continue;
+            }
+            for(auto i=upgrades->pending_construction.begin();i!=upgrades->pending_construction.end();) {
+                if(i->building!=gid) {++i;continue;}
+                unit_module->unreserve("RandomUpgradeRepairModule",WORKER,BUILD,i->requiredLevel+1,i->assigned);
+                i=upgrades->pending_construction.erase(i);
+            }
+        } else if(receipt.status==AIEngine::ExecutionStatus::Accepted) {
+            continue;
+        } else if(order->getOrderType()==ORDER_CREATE) {
+            const auto& create=static_cast<OrderCreate&>(*order);
+            const auto x=map->normalizeX(create.posX),y=map->normalizeY(create.posY);
+            auto* construction=dynamic_cast<DistributedNewConstructionManager*>(new_construction_module);
+            std::erase_if(construction->new_buildings,[&](const auto& r){return r.building==NOGBID && r.x==unsigned(x) && r.y==unsigned(y);});
+            construction->updateImap();
+            auto* defense=dynamic_cast<SimpleBuildingDefense*>(defense_module);
+            if(defense) std::erase_if(defense->defending_zones,[&](const auto& r){return r.flag==NOGBID && r.flagx==unsigned(x) && r.flagy==unsigned(y);});
+            if(auto* generals=dynamic_cast<GeneralsDefense*>(defense_module))
+                std::erase_if(generals->defending_flags,[&](const auto& r){return r.flag==NOGBID && r.x==x && r.y==y;});
+            auto* attacks=dynamic_cast<PrioritizedBuildingAttack*>(attack_module);
+            if(attacks) std::erase_if(attacks->attacks,[&](const auto& r){return r.flag==NOGBID && r.flagx==unsigned(x) && r.flagy==unsigned(y);});
+            if(auto* happiness=dynamic_cast<HappinessHandler*>(getOtherModule("HappinessHandler")))
+                std::erase_if(happiness->exploring_fruit_trees,[&](const auto& r){return r.flag==NOGBID && r.pos_x==x && r.pos_y==y;});
+        } else if(order->getOrderType()==ORDER_ALTER_FORBIDDEN) {
+            if(auto* farmer=dynamic_cast<Farmer*>(getOtherModule("Farmer"))) {
+                const auto& area=static_cast<OrderAlterForbidden&>(*order);
+                size_t bit=0;
+                for(int y=area.centerY+area.minY;y<area.centerY+area.maxY;++y)
+                    for(int x=area.centerX+area.minX;x<area.centerX+area.maxX;++x,++bit)
+                        if(area.mask.get(bit)) {
+                            const Farmer::point p(map->normalizeX(x),map->normalizeY(y));
+                            if(map->isForbidden(x,y,team->me)) farmer->resources.insert(p);
+                            else farmer->resources.erase(p);
+                        }
+            }
+        }
+    }
+}
+
+std::optional<Uint64> Cabino::AICabino::retainedQueryVectorBytes() const
+{
+    Uint64 bytes=gradient_manager.retainedQueryVectorBytes();
+    for(const auto* module:modules) bytes+=module->retainedQueryVectorBytes();
+    return bytes;
 }

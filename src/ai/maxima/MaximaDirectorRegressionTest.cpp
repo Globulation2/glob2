@@ -244,10 +244,8 @@ static void reusedOwnId() {
         int oldId=f.id(old),oldGid=old->gid;
         old->kill();f.player.team->removeFromAbilitiesLists(old);
         f.player.team->myBuildings[::Building::GIDtoID(oldGid)]=NULL;delete old;
-        // Game deletes buildings at the end of a step and creates them from
-        // orders at the start of the next; Maxima is asked for an order in
-        // between, which observes the emptied slot.
-        c.buildings.observe_buildings();
+        // Identity remains safe even when a worker never observes the empty
+        // slot between removal and replacement.
         auto replacement=f.building(sameLocation?10:40,sameLocation?10:40,0);
         REQUIRE(replacement->gid==oldGid);
         // Check before housekeeping, when deferred management work can execute.
@@ -267,14 +265,14 @@ static void reusedOwnId() {
     // Moving flags and loading live registrations preserve valid identities.
     Fixture f; auto flag=f.building(10,10,0,"warflag");auto& c=f.ai->context;c.initialize();
     int id=f.id(flag);flag->posX=20;flag->posY=20;c.buildings.tick();
-    REQUIRE(c.buildings.get_building(id)==flag);
+    REQUIRE((c.buildings.get_building(id) && c.buildings.get_building(id)->gid==flag->gid));
     GAGCore::MemoryStreamBackend* backend=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(backend);c.buildings.save(&output);
     std::string bytes(backend->getBuffer(),backend->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     Construction::BuildingRegister loaded(&f.player);loaded.load(&input,VERSION_MINOR);
-    REQUIRE(loaded.get_building(id)==flag);
+    REQUIRE((loaded.get_building(id) && loaded.get_building(id)->gid==flag->gid));
 }
 
 static void fortificationUsesOnlySpareLabour()

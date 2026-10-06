@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstddef>
 #include <vector>
+#include <array>
 
 class Map;
 struct TerrainProperties;
@@ -59,6 +60,7 @@ namespace Fertility
 
 		std::uint32_t at(int x, int y) const;
 		const std::vector<std::uint32_t>& values() const { return fertility; }
+		std::size_t capacity() const { return fertility.capacity(); }
 		int getW() const { return width; }
 		int getH() const { return height; }
 		Path pathUsed() const { return usedPath; }
@@ -97,6 +99,8 @@ namespace Fertility
 		std::uint32_t rate(std::size_t index, int resourceType) const;
 		const Field& landField() const { return land; }
 		const std::vector<std::uint32_t>& aquaticField() const { return aquatic; }
+		std::array<std::size_t,4> storageCapacities() const { return {land.capacity(),aquatic.capacity(),localGrowth.capacity(),growthHabitats.capacity()}; }
+		std::array<std::size_t,4> storageSizes() const { return {land.values().size(),aquatic.size(),localGrowth.size(),growthHabitats.size()}; }
 	private:
 		bool ready = false;
 		Field land;

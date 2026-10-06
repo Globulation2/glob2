@@ -27,8 +27,8 @@ BuildingOrder::BuildingOrder(Runtime& runtime,int demand,int workers) : Building
 unsigned BuildingOrder::input_resource_mask(Runtime& runtime) const
 {
  if(concrete_type<0) return 0;
- const auto* placement=runtime.player->game->buildingsTypes.get(concrete_type);
- const auto* completed=placement->isBuildingSite ? runtime.player->game->buildingsTypes.get(placement->nextLevel) : placement;
+ const auto* placement=runtime.readPlayer()->game->buildingsTypes.get(concrete_type);
+ const auto* completed=placement->isBuildingSite ? runtime.readPlayer()->game->buildingsTypes.get(placement->nextLevel) : placement;
  const auto& spec=completed->semantics;
  unsigned recurring=0,construction=0;
  for(int resource=0;resource<MAX_NB_RESOURCES;++resource) {
@@ -147,7 +147,7 @@ void BuildingOrder::add_condition(Condition* condition)
 
 bool BuildingOrder::bind(Runtime& runtime)
 {
- auto& game=*runtime.player->game;
+ auto& game=*runtime.readPlayer()->game;
  const auto& index=game.buildingCapabilities();
  const auto intent=buildingIntent(building_type);
  if(!AIPlanning::BuildingCapabilityIndex::allowed(intent,game.gameHeader)) return false;
@@ -161,20 +161,20 @@ bool BuildingOrder::bind(Runtime& runtime)
  return concrete_type>=0;
 }
 
-position BuildingOrder::find_location(Runtime& runtime, Map* map, GradientManager& manager)
+position BuildingOrder::find_location(Runtime& runtime, Read::Map* map, GradientManager& manager)
 {
 	position best(-1,-1);
-	Player* player=runtime.player;
+	Read::Player* player=runtime.readPlayer();
 	int best_score=std::numeric_limits<int>::min();
  if(!bind(runtime)) return position(-1,-1);
- const auto* type=runtime.player->game->buildingsTypes.get(concrete_type);
+ const auto* type=runtime.readPlayer()->game->buildingsTypes.get(concrete_type);
  const bool check_flag=!type->semantics.occupiesGround;
 
 	for(int x=0; x<map->getW(); ++x)
 	{
 		for(int y=0; y<map->getH(); ++y)
 		{
-			if(!runtime.player->game->checkRoomForBuilding(x,y,type,runtime.player->team->teamNumber))
+			if(!runtime.readPlayer()->game->checkRoomForBuilding(x,y,type,runtime.readPlayer()->team->teamNumber))
 				continue;
 
 			if(check_flag && runtime.get_flag_map().get_flag(x, y)!=NOGBID)

@@ -1,3 +1,4 @@
+#include "CabinoObservationFixture.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "AI.h"
@@ -191,16 +192,16 @@ TEST_CASE("Cabino reservations match unit class and qualification instead of bui
     } reservations(ai);
     auto* building=world.addBuilding("inn",2,2);
     building->maxUnitWorking=7;
-    REQUIRE(reservations.request("construction",WORKER,BUILD,2,4,building->gid));
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,0,false)==0);
-    CHECK(reservations.getNeededUnits(WARRIOR,BUILD,1,false)==0);
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==4);
+    REQUIRE(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.request("construction",WORKER,BUILD,2,4,building->gid);}));
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,0,false);})==0);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WARRIOR,BUILD,1,false);})==0);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==4);
     auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=1;
     auto* unqualified=world.addUnit(WORKER,11,10);unqualified->constructionLevel=0;
     auto* warrior=world.addUnit(WARRIOR,12,10);warrior->constructionLevel=1;
     building->unitsWorking={worker,unqualified,warrior};
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,1,false)==3);
-    CHECK(reservations.getNeededUnits(WORKER,BUILD,2,true)==3);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,2,true);})==3);
     building->unitsWorking.clear();
 }
 TEST_CASE("retained tournament replay contains no unavailable orders")
@@ -293,7 +294,7 @@ TEST_CASE("engine prevents training and upgrades while retaining repairs and sta
     CHECK(OrderValidation::validate(g,0,upgrade).verdict==OrderValidation::Verdict::Rejected);
     inn->launchConstruction(2,2);CHECK(inn->constructionResultState==Building::NO_CONSTRUCTION);
     Script::Observations obs(g,0);
-    auto descriptor=Script::Value::object().set("type","construction").set("building",obs.building(*inn))
+    auto descriptor=Script::Value::object().set("type","construction").set("building",Script::Value::object().set("id",unsigned(inn->gid)).set("generation",unsigned(inn->scriptIdentity)))
         .set("workers",2).set("futureWorkers",2);
     CHECK_THROWS(Script::order(g,0,descriptor));
     inn->hp-=10;
@@ -343,6 +344,7 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
     CHECK(cortex.getOrder()->getOrderType()==ORDER_NULL);CHECK(cortex.orderQueue.empty());
     NewNicowar nicowar;
     AISharedRuntime::Runtime runtime(nullptr,g.players[0]);
+    AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
     nicowar.placement_queue.push_back(NewNicowar::RegularSchool);
     nicowar.construction_queue.push_back(NewNicowar::RegularInn);
     nicowar.buildings_under_construction_per_type[NewNicowar::RegularInn]=1;
@@ -374,7 +376,7 @@ TEST_CASE("Cabino migrates legacy warrior reservations only when training is dis
         auto* loaded=static_cast<Cabino::DistributedUnitManager*>(restored.getUnitModule());
         GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         in.seekFromStart(0);
-        REQUIRE(loaded->load(&in,w.game.players[0],VERSION_MINOR));
+        REQUIRE(glob2test::withCabinoObservation(restored,w.game,[&]{return loaded->load(&in,w.game.players[0],VERSION_MINOR);}));
         const unsigned bucket=disabled?0:2;
         auto& migrated=loaded->module_records["legacy"];
         CHECK(migrated.requested[WARRIOR][ATTACK_STRENGTH][bucket]==7);
@@ -384,8 +386,8 @@ TEST_CASE("Cabino migrates legacy warrior reservations only when training is dis
         CHECK(loaded->buildings[flag->gid].minimum_level==bucket);
         // Releasing both saved claims must subtract from their migrated bucket,
         // rather than wrapping an unsigned zero and starving later army requests.
-        loaded->unreserve("legacy",WARRIOR,ATTACK_STRENGTH,3,5);
-        REQUIRE(loaded->request("legacy",WARRIOR,ATTACK_STRENGTH,3,0,flag->gid));
+        glob2test::withCabinoObservation(restored,w.game,[&]{loaded->unreserve("legacy",WARRIOR,ATTACK_STRENGTH,3,5);});
+        REQUIRE(glob2test::withCabinoObservation(restored,w.game,[&]{return loaded->request("legacy",WARRIOR,ATTACK_STRENGTH,3,0,flag->gid);}));
         CHECK(migrated.reservedUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
         CHECK(migrated.usingUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
         CHECK(loaded->buildings.count(flag->gid)==0);

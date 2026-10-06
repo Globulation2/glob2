@@ -2,152 +2,145 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
-#include "GlobalContainer.h"
+#include "ai/observation/AIWorldView.h"
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::SearchTools;
 
-MapInfo::MapInfo(Runtime& runtime) : runtime(runtime)
+MapInfo::MapInfo(Runtime& runtime) : runtime(&runtime)
 {
-
+    teamMask=runtime.readPlayer()->team->me;
+    world=&runtime.observation();
 }
 
 
+MapInfo::MapInfo(const AIEngine::AIWorldView& view, Uint32 mask)
+    : world(&view), teamMask(mask) {}
 
 int MapInfo::get_width()
 {
-	return runtime.player->map->getW();
+    return world->width;
 }
 
 
 
 int MapInfo::get_height()
 {
-	return runtime.player->map->getH();
+    return world->height;
 }
 
 
 
 bool MapInfo::is_forbidden_area(int x, int y)
 {
-	return runtime.player->map->isForbidden(x, y, runtime.player->team->me);
+    return (world->tile(x,y).forbidden & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_guard_area(int x, int y)
 {
-	return runtime.player->map->isGuardArea(x, y, runtime.player->team->me);
+    return (world->tile(x,y).guard & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_clearing_area(int x, int y)
 {
-	return runtime.player->map->isClearArea(x, y, runtime.player->team->me);
+    return (world->tile(x,y).clear & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_farm_area(int x, int y)
 {
-	return runtime.player->map->isFarmArea(x, y, runtime.player->team->me);
+    return (world->tile(x,y).farm & teamMask)!=0;
 }
 
 
 
 bool MapInfo::farm_areas_enabled()
 {
-	return runtime.player->map->farmAreasEnabled();
+    return world->farmAreasEnabled;
 }
 
 
 
 bool MapInfo::can_paint_farm(int x, int y)
 {
-	return runtime.player->map->canPaintFarmArea(x, y);
+    return world->tile(x,y).canPaintFarm;
 }
 
 
 
 bool MapInfo::is_discovered(int x, int y)
 {
-	return runtime.player->map->isMapDiscovered(x, y, runtime.player->team->me);
+    return (world->tile(x,y).discovered & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_resource(int x, int y, int type)
 {
-	return runtime.player->map->isResourceTakeable(x, y, type);
+    return world->tile(x,y).resource.type==type && world->tile(x,y).resource.amount>0;
 }
 
 
 
 bool MapInfo::is_resource(int x, int y)
 {
-	return runtime.player->map->isResource(x, y);
+    return world->tile(x,y).resource.type!=NO_RES_TYPE;
 }
 
 
 
 bool MapInfo::is_water(int x, int y)
 {
-	return runtime.player->map->terrainPropertiesAt(x, y).swimmable;
+    return world->terrain->properties(world->tile(x,y).terrain).swimmable;
 }
 
 
 
 bool MapInfo::is_sand(int x, int y)
 {
-	return runtime.player->map->terrainPropertiesAt(x, y).inhibitionQ8 != 0;
+    return world->terrain->properties(world->tile(x,y).terrain).inhibitionQ8!=0;
 }
 
 
 
 bool MapInfo::is_resource_habitat(int x, int y, int resource)
 {
-	const auto& terrain=runtime.player->map->terrainPropertiesAt(x,y);
-	if(resource<0 || resource>=MAX_RESOURCES || !(terrain.allowedResources & (1u<<resource))) return false;
-	return globalContainer->resourcesTypes.get(resource)->shrinkable || terrain.nonGrowingResources;
+        const auto& terrain=world->terrain->properties(world->tile(x,y).terrain);
+        return resource>=0 && resource<MAX_RESOURCES
+            && (terrain.allowedResources & (1u<<resource))
+            && (world->resourceShrinkable[resource] || terrain.nonGrowingResources);
+
 }
 
 bool MapInfo::is_crop_habitat(int x, int y)
 {
-	return runtime.player->map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT);
+    return world->terrain->properties(world->tile(x,y).terrain).allowedResources & (1u<<WHEAT);
 }
 
 bool MapInfo::is_grass(int x, int y)
 {
-	return runtime.player->map->terrainPropertiesAt(x, y).buildable;
+    return world->terrain->properties(world->tile(x,y).terrain).buildable;
 }
 
 
 
 bool MapInfo::backs_onto_sand(int x, int y)
 {
-	if(runtime.player->map->terrainPropertiesAt(x-1, y).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x+1, y).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x-1, y-1).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x, y-1).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x+1, y-1).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x-1, y+1).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x, y+1).shoreline)
-		return true;
-	if(runtime.player->map->terrainPropertiesAt(x+1, y+1).shoreline)
-		return true;
-	return false;
+        for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+            if((dx || dy) && world->terrain->properties(world->tile(x+dx,y+dy).terrain).shoreline)
+                return true;
+        return false;
+
 }
 
 
 
 int MapInfo::get_amount_resource(int x, int y)
 {
-	return runtime.player->map->getResource(x, y).amount;
+    return world->tile(x,y).resource.amount;
 }

@@ -6,6 +6,7 @@
 #include <bit>
 
 #include "AICastor.h"
+#include "ai/observation/WorldQueries.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
 #include "Order.h"
@@ -14,7 +15,7 @@
 #include "Utilities.h"
 
 #define AI_FILE_MIN_VERSION 1
-#define AI_FILE_VERSION 4
+#define AI_FILE_VERSION 6
 
 using std::shared_ptr;
 
@@ -23,34 +24,101 @@ AIPlanning::BuildingIntent AICastor::intentForDemand(int demand)
  assert(demand >= 0 && demand < DemandCount);
  return demandIntents[demand];
 }
-bool AICastor::provides(const Building& b, int demand) const
+bool AICastor::provides(const AIEngine::BuildingView& b, int demand) const
 {
- return game->buildingCapabilities().matches(b.type->isBuildingSite ? b.type->nextLevel : b.typeNum, intentForDemand(demand));
+ return queries->matches(queries->kind(b).site ? queries->kind(b).next : b.type, intentForDemand(demand));
 }
 bool AICastor::demandAvailable(int demand) const
 {
- const auto& index = game->buildingCapabilities();
+ const auto& index=*queries;
  const auto intent = intentForDemand(demand);
  for (const auto& c : index.placements(intent))
-  if (index.available(c, intent, game->gameHeader)) return true;
+  if (index.available(c,intent)) return true;
  return false;
 }
-int AICastor::desiredWorkers(const Building& building, int request) const
+int AICastor::desiredWorkers(const AIEngine::BuildingView& building, int request) const
 {
- const int completed=building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
- const auto mask=game->buildingCapabilities().intentMask(completed);
+ const int completed=queries->kind(building).site ? queries->kind(building).next : building.type;
+ const auto mask=queries->rawIntentMask(completed);
  const int demands=std::popcount(mask & demandIntentMask);
- if (demands > 1) request = std::max(request,building.maxUnitWorking);
- return std::clamp(request,0,building.type->semantics.assignmentLimit);
+ if (demands > 1) request = std::max(request,requestedWorkers(building));
+ return std::clamp(request,0,queries->kind(building).semantics.assignmentLimit);
 }
 int AICastor::selectBuilding(int demand) const
 {
- const auto& index = game->buildingCapabilities();
+ const auto& index=*queries;
  const auto intent = intentForDemand(demand);
  int result = -1, count = 0;
  for (const auto& c : index.placements(intent))
-  if (index.available(c, intent, game->gameHeader) && random() % ++count == 0) result = c.placementType;
+  if (index.available(c,intent) && random() % ++count == 0) result = c;
  return result;
+}
+
+// Orders express private intent; they never change the observed simulation.
+int AICastor::requestedWorkers(const AIEngine::BuildingView& building) const
+{
+ const auto it=pendingWorkers.find(building.identity.gid);
+ return it!=pendingWorkers.end() && it->second.generation==building.identity.generation
+  ? it->second.workers : building.workers;
+}
+Sint32 AICastor::requestedRatio(const AIEngine::BuildingView& building, int unit) const
+{
+ const auto it=pendingRatios.find(building.identity.gid);
+ return it!=pendingRatios.end() && it->second.generation==building.identity.generation
+  ? it->second.ratios[unit] : building.ratios[unit];
+}
+std::shared_ptr<Order> AICastor::requestWorkers(const AIEngine::BuildingView& building, Sint32 workers)
+{
+ const auto it=pendingWorkers.find(building.identity.gid);
+ if (it!=pendingWorkers.end() && it->second.generation==building.identity.generation)
+  return std::make_shared<NullOrder>();
+ pendingWorkers[building.identity.gid]={building.identity.generation,workers,observation->tick,decisionSequence};
+ return std::make_shared<OrderModifyBuilding>(building.identity.gid,workers);
+}
+std::shared_ptr<Order> AICastor::requestRatios(const AIEngine::BuildingView& building, const Sint32* ratios)
+{
+ const auto it=pendingRatios.find(building.identity.gid);
+ if (it!=pendingRatios.end() && it->second.generation==building.identity.generation)
+  return std::make_shared<NullOrder>();
+ PendingRatios intent{building.identity.generation,{},observation->tick,decisionSequence};
+ std::copy_n(ratios,NB_UNIT_TYPE,intent.ratios.begin());
+ pendingRatios[building.identity.gid]=intent;
+ Sint32 payload[NB_UNIT_TYPE];
+ std::copy_n(ratios,NB_UNIT_TYPE,payload);
+ return std::make_shared<OrderModifySwarm>(building.identity.gid,payload);
+}
+void AICastor::orderExecutionCompleted(const Order& order, bool)
+{
+ // Value matching prevents an old receipt from retiring a newer request.
+ if (const auto* workers=dynamic_cast<const OrderModifyBuilding*>(&order))
+ {
+  const auto it=pendingWorkers.find(workers->gid);
+  if (it!=pendingWorkers.end() && it->second.workers==workers->numberRequested)
+   pendingWorkers.erase(it);
+ }
+ if (const auto* ratios=dynamic_cast<const OrderModifySwarm*>(&order))
+ {
+  const auto it=pendingRatios.find(ratios->gid);
+  if (it!=pendingRatios.end() && std::equal(it->second.ratios.begin(),it->second.ratios.end(),ratios->ratio))
+   pendingRatios.erase(it);
+ }
+}
+void AICastor::reconcilePendingAssignments()
+{
+ for (auto it=pendingWorkers.begin();it!=pendingWorkers.end();)
+ {
+  const AIEngine::BuildingView* b=observation->buildingAtSlot(it->first);
+  if (!b || b->identity.generation!=it->second.generation || b->workers==it->second.workers)
+   it=pendingWorkers.erase(it);
+  else ++it;
+ }
+ for (auto it=pendingRatios.begin();it!=pendingRatios.end();)
+ {
+  const AIEngine::BuildingView* b=observation->buildingAtSlot(it->first);
+  if (!b || b->identity.generation!=it->second.generation || std::equal(it->second.ratios.begin(),it->second.ratios.end(),b->ratios.begin()))
+   it=pendingRatios.erase(it);
+  else ++it;
+ }
 }
 
 // AICastor::Project part:
@@ -156,6 +224,9 @@ void AICastor::init(Player *player)
 	
 	// Logical :
 	timer=0;
+	pendingWorkers.clear();
+	pendingRatios.clear();
+ resourceInitializations.clear();pendingCreates.clear();
 	canSwim=false;
 	needSwim=false;
 	lastFreeWorkersComputed=AI_CASTOR_TIMER_NEVER;
@@ -206,6 +277,7 @@ void AICastor::init(Player *player)
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
+ teamNumber=player->team->teamNumber;
 
 	assert(this->team);
 	assert(this->game);
@@ -564,10 +636,58 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		if (computeBoot<0 || computeBoot>AI_CASTOR_BOOT_IDLE_TICKS+AI_CASTOR_BOOT_COMPUTE_STEPS)
 		{ stream->readLeaveSection(); return false; }
 	}
+	if (aiFileVersion>=5)
+	{
+		stream->readEnterSection("pendingAssignments");
+		const Uint32 workerCount=stream->readUint32("workers");
+		if (workerCount>Building::MAX_COUNT) { stream->readLeaveSection(2); return false; }
+		for (Uint32 i=0;i<workerCount;++i)
+		{
+			stream->readEnterSection(i);
+			const Uint16 gid=stream->readUint16("gid");
+			PendingWorkers intent{stream->readUint32("generation"),stream->readSint32("workers")};
+   if(aiFileVersion>=6) {intent.tick=stream->readUint32("tick");intent.sequence=stream->readUint32("sequenceLow");intent.sequence|=Uint64(stream->readUint32("sequenceHigh"))<<32;}
+			stream->readLeaveSection();
+			if (Building::GIDtoTeam(gid)!=team->teamNumber || intent.workers<0 || !pendingWorkers.emplace(gid,intent).second)
+			{ stream->readLeaveSection(2); return false; }
+		}
+		const Uint32 ratioCount=stream->readUint32("ratios");
+		if (ratioCount>Building::MAX_COUNT) { stream->readLeaveSection(2); return false; }
+		for (Uint32 i=0;i<ratioCount;++i)
+		{
+			stream->readEnterSection(i);
+			const Uint16 gid=stream->readUint16("gid");
+			PendingRatios intent{stream->readUint32("generation"),{}};
+   if(aiFileVersion>=6) {intent.tick=stream->readUint32("tick");intent.sequence=stream->readUint32("sequenceLow");intent.sequence|=Uint64(stream->readUint32("sequenceHigh"))<<32;}
+			for (unsigned unit=0;unit<NB_UNIT_TYPE;++unit)
+				intent.ratios[unit]=stream->readSint32(("ratio"+std::to_string(unit)).c_str());
+			stream->readLeaveSection();
+			if (Building::GIDtoTeam(gid)!=team->teamNumber || !pendingRatios.emplace(gid,intent).second)
+			{ stream->readLeaveSection(2); return false; }
+		}
+		stream->readLeaveSection();
+	}
+ if(aiFileVersion>=6) {
+  stream->readEnterSection("pendingCreates");const Uint32 count=stream->readUint32("count");
+  if(count>1024) {stream->readLeaveSection(2);return false;}
+  for(Uint32 i=0;i<count;++i) {
+   stream->readEnterSection(i);PendingCreate intent{};
+   intent.tick=stream->readUint32("tick");intent.sequence=stream->readUint32("sequenceLow");intent.sequence|=Uint64(stream->readUint32("sequenceHigh"))<<32;
+   intent.type=stream->readSint32("type");intent.x=stream->readSint32("x");intent.y=stream->readSint32("y");stream->readLeaveSection();
+   if(intent.type<0 || intent.type>=int(game->buildingsTypes.size())) {stream->readLeaveSection(2);return false;}
+   pendingCreates.push_back(intent);
+  }
+  stream->readLeaveSection();
+ }
+	if(aiFileVersion>=6 && !AIEngine::loadResourceInitializations(stream,resourceInitializations,teamNumber,size_t(map->getW())*map->getH())) {stream->readLeaveSection();return false;}
 	stream->readLeaveSection();
 	if (versionMinor<FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
 		&& computeBoot>AI_CASTOR_BOOT_IDLE_TICKS+1)
-		computeNotGrassMap();
+ {
+  const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
+  AIEngine::WorldQueries captured(*world,teamNumber,resourceInitializations);
+  observation=world.get();queries=&captured;computeNotGrassMap();observation=nullptr;queries=nullptr;
+ }
 	return stream->isValid();
 }
 
@@ -587,5 +707,37 @@ void AICastor::save(GAGCore::OutputStream *stream)
 		stream->writeText(project->debugStdName,"debugName");
 		stream->writeLeaveSection();
 	}
+	stream->writeEnterSection("pendingAssignments");
+	stream->writeUint32(static_cast<Uint32>(pendingWorkers.size()),"workers");
+	i=0;
+	for (const auto& [gid,intent]:pendingWorkers)
+	{
+		stream->writeEnterSection(i++);
+		stream->writeUint16(gid,"gid");
+		stream->writeUint32(intent.generation,"generation");
+  stream->writeUint32(intent.tick,"tick");stream->writeUint32(intent.sequence,"sequenceLow");stream->writeUint32(intent.sequence>>32,"sequenceHigh");
+		stream->writeSint32(intent.workers,"workers");
+		stream->writeLeaveSection();
+	}
+	stream->writeUint32(static_cast<Uint32>(pendingRatios.size()),"ratios");
+	i=0;
+	for (const auto& [gid,intent]:pendingRatios)
+	{
+		stream->writeEnterSection(i++);
+		stream->writeUint16(gid,"gid");
+		stream->writeUint32(intent.generation,"generation");
+  stream->writeUint32(intent.tick,"tick");stream->writeUint32(intent.sequence,"sequenceLow");stream->writeUint32(intent.sequence>>32,"sequenceHigh");
+		for (unsigned unit=0;unit<NB_UNIT_TYPE;++unit)
+			stream->writeSint32(intent.ratios[unit],("ratio"+std::to_string(unit)).c_str());
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+ stream->writeEnterSection("pendingCreates");stream->writeUint32(pendingCreates.size(),"count");i=0;
+ for(const auto& intent:pendingCreates) {
+  stream->writeEnterSection(i++);stream->writeUint32(intent.tick,"tick");stream->writeUint32(intent.sequence,"sequenceLow");stream->writeUint32(intent.sequence>>32,"sequenceHigh");
+  stream->writeSint32(intent.type,"type");stream->writeSint32(intent.x,"x");stream->writeSint32(intent.y,"y");stream->writeLeaveSection();
+ }
+ stream->writeLeaveSection();
+ AIEngine::saveResourceInitializations(stream,resourceInitializations);
 	stream->writeLeaveSection();
 }

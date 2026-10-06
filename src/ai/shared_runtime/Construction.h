@@ -2,6 +2,8 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <optional>
+namespace AISharedRuntime::Read { struct Building; struct Map; }
 
 #include "shared_runtime/Gradients.h"
 #include "shared_runtime/Position.h"
@@ -254,7 +256,7 @@ namespace AISharedRuntime
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 			///An internal function used to find the location to place the building
-			position find_location(Runtime& runtime, Map* map, Gradients::GradientManager& manager);
+			position find_location(Runtime& runtime, Read::Map* map, Gradients::GradientManager& manager);
 			tribool passes_conditions(Runtime& runtime);
 			///An internal function that has all of the constraints register their respective Gradients with the GradientManager
 			void queue_gradients(Gradients::GradientManager& manager);
@@ -321,8 +323,8 @@ namespace AISharedRuntime
    bool provides(unsigned int id,int demand);
 			int get_level(unsigned int id);
 			int get_assigned(unsigned int id);
-			Building* get_building(unsigned int id);
-			BuildingType* get_building_type(unsigned int id);
+			Read::Building* get_building(unsigned int id);
+			const BuildingType* get_building_type(unsigned int id);
 		private:
 			friend class AISharedRuntime::SearchTools::building_search_iterator;
 			friend class AISharedRuntime::SearchTools::BuildingSearch;
@@ -366,7 +368,8 @@ namespace AISharedRuntime
 			///Removes the building from the list of pending buildings. This may been to be done in the event that the
 			///conditions for the buildings constructed can never be satisfied.
 			void remove_building(int id);
-			void set_upgrading(unsigned int id);
+			void set_upgrading(unsigned int id, bool awaitingExecution=false);
+			void order_execution_completed(int gid, bool accepted, std::optional<Uint32> generation={});
 			void tick();
 
 			typedef std::map<int, std::tuple<int, int, int, int> >::iterator pending_iterator;
@@ -380,6 +383,8 @@ namespace AISharedRuntime
 			///the default value if its accidentally created.
 			std::map<int, std::tuple<int, int, int, int> > pending_buildings;
 			std::map<int, std::tuple<int, int, int, int, tribool> > found_buildings;
+			std::set<int> awaiting_upgrade_execution;
+            std::map<int,Uint32> found_generations;
 			unsigned int building_id;
 			Player* player;
 			Runtime& runtime;

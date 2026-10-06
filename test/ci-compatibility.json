@@ -49,7 +49,19 @@
     "BuildingCapabilities/*",
     "SceneExtract/*",
     "BuildingCatalogFixtures/*",
-    "AICustomCatalog/*"
+    "AICustomCatalog/*",
+    "AIOrderScheduler/*",
+    "AIPipeline/*",
+    "WorldSnapshot/*",
+    "AIStateContinuation/*",
+    "AIRecoveryCoverage/*",
+    "AIDecisionCoverage/*",
+    "CortexActionCoverage/*",
+    "LegacyAIState/*",
+    "NumbiObservation/*",
+    "WarrushObservation/*",
+    "CastorContinuation/*",
+    "Maxima.Continuation/*"
   ],
   "unit_filters": [
     "*"

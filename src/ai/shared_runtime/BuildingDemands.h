@@ -3,6 +3,7 @@
 #include "BuildingCapabilities.h"
 #include "BuildingType.h"
 #include "Game.h"
+#include "shared_runtime/RuntimeObservation.h"
 
 namespace AISharedRuntime
 {
@@ -22,7 +23,7 @@ inline AIPlanning::BuildingIntent buildingIntent(int demand)
 {
  return static_cast<AIPlanning::BuildingIntent>(demand);
 }
-inline bool buildingProvides(const Game& game,int type,int demand)
+template<class World> inline bool buildingProvides(const World& game,int type,int demand)
 {
  if(type<0 || size_t(type)>=game.buildingsTypes.size() || demand<0 || demand>=BuildingDemand::Count) return false;
  const auto* definition=game.buildingsTypes.get(type);

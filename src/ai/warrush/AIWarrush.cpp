@@ -5,8 +5,12 @@
 
 #include "AITelemetryFields.h"
 #include "AIWarrush.h"
+#include <sstream>
 #include "AIWarrushTuning.h"
+#include "ai/observation/WorldQueries.h"
+#include "shared_runtime/ObservationAreaOrders.h"
 #include "AIStateSerialization.h"
+#include "FileFormatVersions.h"
 #include "Building.h"
 #include "Unit.h"
 #include "Game.h"
@@ -22,46 +26,46 @@ using std::shared_ptr;
 
 namespace {
 	template<typename Pred>
-	int countUnitsIf(const Team *team, Pred p)
+	int countUnitsIf(const auto *team, Pred p)
 	{
 		int n = 0;
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
-			Unit *u = team->myUnits[i];
+			const AIEngine::UnitView *u = team->myUnits[i];
 			if (u && p(u)) n++;
 		}
 		return n;
 	}
 
 	template<typename Pred>
-	Unit *findUnitIf(const Team *team, Pred p)
+	const AIEngine::UnitView *findUnitIf(const auto *team, Pred p)
 	{
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
-			Unit *u = team->myUnits[i];
+			const AIEngine::UnitView *u = team->myUnits[i];
 			if (u && p(u)) return u;
 		}
 		return nullptr;
 	}
 
 	template<typename Pred>
-	int countBuildingsIf(const Team *team, Pred p)
+	int countBuildingsIf(const auto *team, Pred p)
 	{
 		int n = 0;
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
-			Building *b = team->myBuildings[i];
+			const AIEngine::BuildingView *b = team->myBuildings[i];
 			if (b && p(b)) n++;
 		}
 		return n;
 	}
 
 	template<typename Pred>
-	Building *findBuildingIf(const Team *team, Pred p)
+	const AIEngine::BuildingView *findBuildingIf(const auto *team, Pred p)
 	{
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{
-			Building *b = team->myBuildings[i];
+			const AIEngine::BuildingView *b = team->myBuildings[i];
 			if (b && p(b)) return b;
 		}
 		return nullptr;
@@ -76,8 +80,10 @@ void AIWarrush::init(Player *player)
 	this->team=player->team;
 	this->game=player->game;
 	this->map=player->map;
+ teamNumber=player->team->teamNumber;
 	buildingDelay = 0;
 	areaUpdatingDelay = 0;
+ pendingRequests.clear();resourceInitializations.clear();
 	
 	assert(this->team);
 	assert(this->game);
@@ -102,15 +108,36 @@ AIWarrush::~AIWarrush()
 bool AIWarrush::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	init(player);
+ GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	if (versionMinor >= AI_WARRUSH_SAVE_FORMAT_CONTINUATION)
 	{
 		stream->readEnterSection("AIWarrush");
 		buildingDelay = AIStateSerialization::readSint32(stream, "buildingDelay");
 		areaUpdatingDelay = AIStateSerialization::readSint32(stream, "areaUpdatingDelay");
-		stream->readLeaveSection();
-		if (buildingDelay < 0 || buildingDelay > AI_WARRUSH_BUILDING_DELAY_TICKS ||
-			areaUpdatingDelay < 0 || areaUpdatingDelay > AI_WARRUSH_AREAS_DELAY_TICKS)
-			return false;
+  if (buildingDelay < 0 || buildingDelay > AI_WARRUSH_BUILDING_DELAY_TICKS ||
+      areaUpdatingDelay < 0 || areaUpdatingDelay > AI_WARRUSH_AREAS_DELAY_TICKS) {stream->readLeaveSection();return false;}
+		if(versionMinor>=FILE_FORMAT_VERSION_AI_PIPELINE) {
+   stream->readEnterSection("pendingRequests");
+   const Uint32 count=stream->readUint32("count");
+   if(count>1024) {stream->readLeaveSection(2);return false;}
+   for(Uint32 i=0;i<count;++i) {
+    stream->readEnterSection(i);PendingRequest request;
+    request.tick=stream->readUint32("tick");request.pollSequence=stream->readUint32("pollSequenceLow");request.pollSequence|=Uint64(stream->readUint32("pollSequenceHigh"))<<32;
+    request.target.gid=stream->readUint16("gid");request.target.generation=stream->readUint32("generation");
+    const Uint32 size=stream->readUint32("size");
+    if(!size || size>65536) {stream->readLeaveSection(3);return false;}
+    std::vector<Uint8> bytes(size);stream->read(bytes.data(),size,"order");
+    request.order=Order::getOrder(bytes.data(),bytes.size(),versionMinor);stream->readLeaveSection();
+    if(!request.order || (request.order->getOrderType()!=ORDER_CREATE && request.order->getOrderType()!=ORDER_MODIFY_BUILDING && request.order->getOrderType()!=ORDER_MODIFY_SWARM)
+     || (!request.target.empty() && Building::GIDtoTeam(request.target.gid)!=teamNumber)) {stream->readLeaveSection(2);return false;}
+    if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get()))
+    if(create->teamNumber!=teamNumber || create->typeNum<0 || size_t(create->typeNum)>=game->buildingsTypes.size()) {stream->readLeaveSection(2);return false;}
+   pendingRequests.push_back(std::move(request));
+   }
+   stream->readLeaveSection();
+  }
+  stream->readLeaveSection();
+
 	}
 	return stream->isValid();
 }
@@ -120,7 +147,87 @@ void AIWarrush::save(GAGCore::OutputStream *stream)
 	stream->writeEnterSection("AIWarrush");
 	stream->writeSint32(buildingDelay, "buildingDelay");
 	stream->writeSint32(areaUpdatingDelay, "areaUpdatingDelay");
-	stream->writeLeaveSection();
+	stream->writeEnterSection("pendingRequests");stream->writeUint32(pendingRequests.size(),"count");
+ unsigned i=0;
+ for(const auto& request:pendingRequests) {
+  stream->writeEnterSection(i++);stream->writeUint32(request.tick,"tick");stream->writeUint32(request.pollSequence,"pollSequenceLow");stream->writeUint32(request.pollSequence>>32,"pollSequenceHigh");
+  stream->writeUint16(request.target.gid,"gid");stream->writeUint32(request.target.generation,"generation");
+  auto& order=*request.order;std::vector<Uint8> bytes{order.getOrderType()};
+  if(order.getDataLength()) bytes.insert(bytes.end(),order.getData(),order.getData()+order.getDataLength());
+  stream->writeUint32(bytes.size(),"size");stream->write(bytes.data(),bytes.size(),"order");stream->writeLeaveSection();
+ }
+ stream->writeLeaveSection();
+ stream->writeLeaveSection();
+}
+
+bool AIWarrush::hasPending(const AIEngine::BuildingView& building) const
+{
+ return std::any_of(pendingRequests.begin(),pendingRequests.end(),[&](const auto& request){return request.target==building.identity;});
+}
+void AIWarrush::settleObservedRequests(const AIEngine::DecisionContext& context)
+{
+ for(const auto& receipt:context.receipts) std::erase_if(pendingRequests,[&](const auto& request){return request.tick==receipt.request.observedTick && request.pollSequence==receipt.request.pollSequence;});
+ std::erase_if(pendingRequests,[&](const auto& request){
+  const auto* b=request.target.empty()?nullptr:context.world.building(request.target);
+  if(!request.target.empty() && !b) return true;
+  if(const auto* staffing=dynamic_cast<const OrderModifyBuilding*>(request.order.get())) return b && b->workers==staffing->numberRequested;
+  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(request.order.get())) return b && std::equal(b->ratios.begin(),b->ratios.end(),ratios->ratio);
+  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) {
+   for(const auto& project:context.world.buildProjects)
+    if(project.teamNumber==teamNumber && project.typeNum==create->typeNum
+     && context.world.normalizeX(project.posX)==context.world.normalizeX(create->posX)
+     && context.world.normalizeY(project.posY)==context.world.normalizeY(create->posY)) return true;
+   const auto& kind=context.world.catalog->at(create->typeNum);
+   for(const auto& building:context.world.buildings)
+    if(building.team==teamNumber && (building.type==create->typeNum || (kind.site && building.type==kind.next))
+     && building.x==context.world.normalizeX(create->posX) && building.y==context.world.normalizeY(create->posY)) return true;
+  }
+  return false;
+ });
+}
+void AIWarrush::orderExecutionCompleted(const Order& order,bool)
+{
+ auto& mutableOrder=const_cast<Order&>(order);
+ const auto size=mutableOrder.getDataLength();
+ std::erase_if(pendingRequests,[&](const auto& request){
+  auto& command=*request.order;
+  return command.getOrderType()==mutableOrder.getOrderType() && command.getDataLength()==size
+   && (size==0 || std::equal(command.getData(),command.getData()+size,mutableOrder.getData()));
+ });
+}
+AIWarrush::TeamObservation* AIWarrush::teamAt(int index) const
+{
+ if(index<0 || index>=int(observedTeams.size()) || !observedTeams[index].view) return nullptr;
+ return const_cast<TeamObservation*>(&observedTeams[index]);
+}
+std::shared_ptr<Order> AIWarrush::getOrder()
+{
+ const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
+ const std::vector<AIEngine::ExecutionReceipt> receipts;
+ return getOrder(AIEngine::DecisionContext{*world,0,unsigned(teamNumber),receipts});
+}
+std::shared_ptr<Order> AIWarrush::getOrder(const AIEngine::DecisionContext& context)
+{
+ if(context.team!=unsigned(teamNumber)) throw std::invalid_argument("Warrush observation has wrong team");
+ settleObservedRequests(context);
+ AIEngine::WorldQueries captured(context.world,teamNumber,resourceInitializations,context.resourceEnrollments);
+ for(const auto& request:pendingRequests)
+  if(const auto* create=dynamic_cast<const OrderCreate*>(request.order.get())) captured.reserve(create->typeNum,create->posX,create->posY);
+ observation=&context.world;queries=&captured;
+ observedTeams.resize(context.world.teams.size());
+ for(size_t i=0;i<observedTeams.size();++i) observedTeams[i].view=&context.world.teams[i];
+ for(const auto& b:context.world.buildings) observedTeams[b.team].myBuildings[Building::GIDtoID(b.identity.gid)]=&b;
+ for(const auto& u:context.world.units) observedTeams[u.team].myUnits[Unit::GIDtoID(u.identity.gid)]=&u;
+ observedTeam=teamAt(teamNumber);
+ const auto clear=[&]{observation=nullptr;queries=nullptr;observedTeam=nullptr;observedTeams.clear();};
+ try {
+  auto order=decide();
+  const AIEngine::BuildingView* target=nullptr;
+  if(const auto* staffing=dynamic_cast<const OrderModifyBuilding*>(order.get())) target=context.world.buildingAtSlot(staffing->gid);
+  if(const auto* ratios=dynamic_cast<const OrderModifySwarm*>(order.get())) target=context.world.buildingAtSlot(ratios->gid);
+  if(target || dynamic_cast<const OrderCreate*>(order.get())) pendingRequests.push_back({context.world.tick,context.pollSequence,target?target->identity:BuildingRef{},order});
+  clear();return order;
+ } catch(...) {clear();throw;}
 }
 
 int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int value)const
@@ -132,7 +239,7 @@ int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_calls);
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_result,
-		countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] > value; }));
+		countUnitsIf(observedTeam, [skill, value](const AIEngine::UnitView *u) { return u->performance[skill] > value; }));
 }
 
 int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int value)const
@@ -142,50 +249,50 @@ int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int val
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_calls);
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_result,
-		countUnitsIf(team, [skill, value](Unit *u) { return u->performance[skill] == value; }));
+		countUnitsIf(observedTeam, [skill, value](const AIEngine::UnitView *u) { return u->performance[skill] == value; }));
 }
 
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 {
 	telemetry.count(AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_calls);
-	if (game->gameHeader.isHungerDisabled()) return false;
+	if (observation->rules.hungerDisabled) return false;
 	//Yeah, it's a half, not a third. Weird huh? :P
 	return telemetry.returnedBool(
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_result,
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_true,
-		findUnitIf(team,
-				   [](Unit *u)
+		findUnitIf(observedTeam,
+				   [](const AIEngine::UnitView *u)
 				   {
 					   return u->hungry < (Unit::HUNGRY_MAX / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
 				   }) != nullptr);
 }
 
-bool AIWarrush::provides(const Building& building, Intent intent) const
+bool AIWarrush::provides(const AIEngine::BuildingView& building, Intent intent) const
 {
- const int completed = building.type->isBuildingSite ? building.type->nextLevel : building.typeNum;
- return game->buildingCapabilities().matches(completed, intent);
+ const int completed = queries->kind(building).site ? queries->kind(building).next : building.type;
+ return queries->matches(completed,intent);
 }
 
 int AIWarrush::selectBuilding(Intent intent) const
 {
- const auto& index = game->buildingCapabilities();
+ const auto& index = *queries;
  int chosen = -1, count = 0;
  for (const auto& candidate : index.placements(intent))
-  if (index.available(candidate, intent, game->gameHeader) && random() % ++count == 0)
-   chosen = candidate.placementType;
+  if (index.available(candidate,intent) && random() % ++count == 0)
+   chosen = candidate;
  return chosen;
 }
 
-Building *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
+const AIEngine::BuildingView *AIWarrush::getSwarmWithoutSettings(const int workerRatio, const int explorerRatio, const int warriorRatio)const
 {
  const int ratios[] = {workerRatio, explorerRatio, warriorRatio};
- return findBuildingIf(team, [&](Building *b) {
-  if (b->constructionResultState != Building::NO_CONSTRUCTION) return false;
+ return findBuildingIf(observedTeam, [&](const AIEngine::BuildingView *b) {
+  if (hasPending(*b) || b->construction != Building::NO_CONSTRUCTION) return false;
   bool produces = false, differs = false;
   for (int unit = 0; unit < NB_UNIT_TYPE; ++unit) {
-   produces |= b->type->semantics.production.recipes[unit].enabled;
-   const int desired = b->type->semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
-   differs |= b->ratio[unit] != desired;
+   produces |= queries->kind(*b).resolvedType.semantics.production.recipes[unit].enabled;
+   const int desired = queries->kind(*b).resolvedType.semantics.production.recipes[unit].enabled ? ratios[unit] : 0;
+   differs |= b->ratios[unit] != desired;
   }
   return produces && differs;
  });
@@ -200,40 +307,40 @@ std::shared_ptr<Order> AIWarrush::staffingOrder() const
 		AI_WARRUSH_INN_WORKER_COUNT, AI_WARRUSH_BARRACKS_WORKER_COUNT};
 	constexpr auto completedIntents = (std::uint64_t{1} << unsigned(Intent::ProduceWorker))
 		| (std::uint64_t{1} << unsigned(Intent::Feed));
-	std::array<Building*, intents.size()> candidates{};
-	const auto& index = game->buildingCapabilities();
+	std::array<const AIEngine::BuildingView*, intents.size()> candidates{};
+	const auto& index = *queries;
 	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 	{
-		Building* building = team->myBuildings[slot];
-		if (!building || building->maxUnitWorking >= building->type->semantics.assignmentLimit)
+		const AIEngine::BuildingView* building = observedTeam->myBuildings[slot];
+		if (!building || hasPending(*building) || building->workers >= queries->kind(*building).resolvedType.semantics.assignmentLimit)
 			continue;
-		const int completed = building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
-		auto mask = index.intentMask(completed);
-		if (building->constructionResultState == Building::NO_CONSTRUCTION)
+		const int completed = queries->kind(*building).site ? queries->kind(*building).next : building->type;
+		auto mask = queries->kind(completed).rawCapabilityMask;
+		if (building->construction == Building::NO_CONSTRUCTION)
 			mask &= completedIntents;
 		for (std::size_t intent = 0; intent < intents.size(); ++intent)
 			if (!candidates[intent] && (mask & (std::uint64_t{1} << unsigned(intents[intent])))
-				&& building->maxUnitWorking < requests[intent])
+				&& building->workers < requests[intent])
 				candidates[intent] = building;
 		// Intent priority precedes slot order: a later worker producer wins over
 		// an earlier explorer producer. Only the first worker candidate ends the scan.
 		if (candidates.front()) break;
 	}
 	for (std::size_t intent = 0; intent < intents.size(); ++intent)
-		if (Building* building = candidates[intent])
-			return std::make_shared<OrderModifyBuilding>(building->gid,
-				std::min(requests[intent], building->type->semantics.assignmentLimit));
+		if (const AIEngine::BuildingView* building = candidates[intent])
+			return std::make_shared<OrderModifyBuilding>(building->identity.gid,
+				std::min(requests[intent], queries->kind(*building).resolvedType.semantics.assignmentLimit));
 	return std::make_shared<NullOrder>();
 }
 
-Building *AIWarrush::getSwarmAtRandom()const
+const AIEngine::BuildingView *AIWarrush::getSwarmAtRandom()const
 {
-	Building **myBuildings=team->myBuildings;
+	const auto& myBuildings=observedTeam->myBuildings;
 	int swarmsfound = 0;
-	Building *chosen_swarm = NULL;
+	const AIEngine::BuildingView *chosen_swarm = NULL;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
-		Building *b=myBuildings[i];
+		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b) && (provides(*b, Intent::ProduceWorker)))
 		{
 			++swarmsfound;
@@ -253,13 +360,13 @@ bool AIWarrush::allOfBuildingTypeAreCompleted(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreCompleted_true,
-								  findBuildingIf(team,
-												 [this, intent](Building *b)
+								  findBuildingIf(observedTeam,
+												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
-															(b->constructionResultState !=
+															(b->construction !=
 																 Building::NO_CONSTRUCTION ||
-															 b->buildingState == Building::DEAD);
+															 b->state == Building::DEAD);
 												 }) == nullptr);
 }
 
@@ -270,12 +377,12 @@ bool AIWarrush::allOfBuildingTypeAreFull(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFull_true,
-								  findBuildingIf(team,
-												 [this, intent](Building *b)
+								  findBuildingIf(observedTeam,
+												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
-															b->unitsInside.size() <
-																(size_t)b->maxUnitInside;
+															b->inside.count <
+																(size_t)b->maxInside;
 												 }) == nullptr);
 }
 
@@ -284,7 +391,7 @@ int AIWarrush::numberOfBuildingsOfType(Intent intent)const
 	telemetry.set(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_input_shortTypeNum, static_cast<unsigned>(intent));
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_calls);
 	return telemetry.returnedInt(AITrace::AI3::AIWarrush_numberOfBuildingsOfType_result,
-								 countBuildingsIf(team, [this, intent](Building *b)
+								 countBuildingsIf(observedTeam, [this, intent](const AIEngine::BuildingView *b)
 												  { return provides(*b, intent); }));
 }
 
@@ -294,8 +401,8 @@ int AIWarrush::numberOfExtraBuildings()const
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfExtraBuildings_calls);
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfExtraBuildings_result,
-		countBuildingsIf(team,
-						 [this](Building *b)
+		countBuildingsIf(observedTeam,
+						 [this](const AIEngine::BuildingView *b)
 						 {
 							 return provides(*b, Intent::Heal) ||
 									provides(*b, Intent::TrainWalk) ||
@@ -312,12 +419,12 @@ bool AIWarrush::allOfBuildingTypeAreFullyWorked(Intent intent)const
 	telemetry.count(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_calls);
 	return telemetry.returnedBool(AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_result,
 								  AITrace::AI3::AIWarrush_allOfBuildingTypeAreFullyWorked_true,
-								  findBuildingIf(team,
-												 [this, intent](Building *b)
+								  findBuildingIf(observedTeam,
+												 [this, intent](const AIEngine::BuildingView *b)
 												 {
 													 return provides(*b, intent) &&
-															b->unitsWorking.size() !=
-																(size_t)b->maxUnitWorking;
+															b->working.count !=
+																(size_t)b->workers;
 												 }) == nullptr);
 }
 
@@ -326,26 +433,26 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	telemetry.set(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_input_percentage,
 				  percentage);
 	telemetry.count(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_calls);
-	Building **myBuildings=team->myBuildings;
+	const auto& myBuildings=observedTeam->myBuildings;
 	int num_buildings = 0;
 	int num_worked_buildings = 0;
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
-		Building *b=myBuildings[i];
-		if (b && b->type->semantics.occupiesGround && b->type->maxUnitWorking > 0)
+		const AIEngine::BuildingView *b=myBuildings[i];
+		if (b && queries->kind(*b).resolvedType.semantics.occupiesGround && queries->kind(*b).resolvedType.maxUnitWorking > 0)
 		{
 			++num_buildings;
-			if(b->unitsWorking.size() == (size_t)b->maxUnitWorking)
+			if(b->working.count == (size_t)b->workers)
 			{
 				++num_worked_buildings;
-				if(verbose)std::cout << "A";
+				if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "A"; return text.str(); }()});
 			}
-			else if (b->constructionResultState == Building::NO_CONSTRUCTION
+			else if (b->construction == Building::NO_CONSTRUCTION
     && [&]() {
      bool consumes = false;
      for (int resource = 0; resource < MAX_NB_RESOURCES; ++resource) {
-      bool required = b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[resource] > 0;
-      for (const auto& recipe : b->type->semantics.production.recipes)
+      bool required = queries->kind(*b).resolvedType.semantics.feeding.enabled && queries->kind(*b).resolvedType.semantics.feeding.cost[resource] > 0;
+      for (const auto& recipe : queries->kind(*b).resolvedType.semantics.production.recipes)
        required |= recipe.enabled && recipe.cost[resource] > 0;
       if (!required) continue;
       consumes = true;
@@ -355,18 +462,18 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
     }())
 			{//heavily worked swarms and inns sometimes are full and have no workers
 				++num_worked_buildings;
-				if(verbose)std::cout << "C";
+				if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "C"; return text.str(); }()});
 			}
 		}
 	}
-	if(verbose)std::cout << ": " << num_worked_buildings << " worked out of " << num_buildings << "\n";
+	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << ": " << num_worked_buildings << " worked out of " << num_buildings << "\n"; return text.str(); }()});
 	return telemetry.returnedBool(
 		AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_result,
 		AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_true,
 		num_worked_buildings * 100 >= num_buildings * percentage);
 }
 
-std::shared_ptr<Order> AIWarrush::getOrder(void)
+std::shared_ptr<Order> AIWarrush::decide()
 {
 	// reduce delays
 	if (buildingDelay > 0)
@@ -374,17 +481,17 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 	if (areaUpdatingDelay > 0)
 		areaUpdatingDelay--;
 	
-	if(!game->gameHeader.isPeacefulModeEnabled() && game->stepCounter < AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW && game->stepCounter%AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL == 0)
+	if(!observation->rules.peaceful && observation->tick < AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW && observation->tick%AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL == 0)
 	{
-		int teamIndex = game->stepCounter / AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;
-		Team *enemy_team = game->teams[teamIndex];
-		if((enemy_team)&&(team->attackableTeams() & enemy_team->me))return setupExploreFlagForTeam(enemy_team);
+		int teamIndex = observation->tick / AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;
+		TeamObservation *enemy_team = teamAt(teamIndex);
+		if((enemy_team)&&(observedTeam->view->enemies & enemy_team->view->mask))return setupExploreFlagForTeam(enemy_team);
 	}
 
 	//keep those areas up to date
-	if(!game->gameHeader.isPeacefulModeEnabled() && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS*AI_WARRUSH_AREAS_PRUNE_PHASE_NUM/AI_WARRUSH_AREAS_PRUNE_PHASE_DEN)
+	if(!observation->rules.peaceful && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS*AI_WARRUSH_AREAS_PRUNE_PHASE_NUM/AI_WARRUSH_AREAS_PRUNE_PHASE_DEN)
 		return pruneGuardAreas();
-	if(!game->gameHeader.isPeacefulModeEnabled() && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS/AI_WARRUSH_AREAS_PLACE_PHASE_DEN)
+	if(!observation->rules.peaceful && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS/AI_WARRUSH_AREAS_PLACE_PHASE_DEN)
 		return placeGuardAreas();
 	if(areaUpdatingDelay <= 0)
 	{
@@ -396,20 +503,20 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 	if (buildingDelay <= 0)
 	{
 		bool shouldBuildMore = percentageOfBuildingsAreFullyWorked(AI_WARRUSH_BUILD_MORE_PCT_THRESHOLD);
-		if(verbose)if(shouldBuildMore)std::cout << "AIWarrush is ready to build more stuff!";
+		if(verbose)if(shouldBuildMore)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "AIWarrush is ready to build more stuff!"; return text.str(); }()});
 		//Build another swarm if all are swarms are working at capacity, and if we have other random stuff we should-have / need
-		if(verbose)std::cout << "Chance to build swarm: ";
-		if(shouldBuildMore && allOfBuildingTypeAreCompleted(Intent::ProduceWorker) && numberOfExtraBuildings() >= numberOfBuildingsOfType(Intent::ProduceWorker) && (game->gameHeader.isHungerDisabled() || numberOfBuildingsOfType(Intent::Feed) >= numberOfBuildingsOfType(Intent::ProduceWorker) * AI_WARRUSH_INNS_PER_SWARM_RATIO))
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Chance to build swarm: "; return text.str(); }()});
+		if(shouldBuildMore && allOfBuildingTypeAreCompleted(Intent::ProduceWorker) && numberOfExtraBuildings() >= numberOfBuildingsOfType(Intent::ProduceWorker) && (observation->rules.hungerDisabled || numberOfBuildingsOfType(Intent::Feed) >= numberOfBuildingsOfType(Intent::ProduceWorker) * AI_WARRUSH_INNS_PER_SWARM_RATIO))
 		{
-			if(verbose)std::cout << "TAKEN!\n";
+			if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "TAKEN!\n"; return text.str(); }()});
 			return buildBuildingOfType(Intent::ProduceWorker);
 		}
-		if(verbose)std::cout << "ignored.\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "ignored.\n"; return text.str(); }()});
 		
 		//Silly inns. Don't build them right away and don't build too many at a time and don't build too many.
 		//More limits than it should have, maybe, but the idea of the AI is that it should either win
 		//or lose warriors (so it shouldn't need so many inns.)
-		if(verbose)std::cout << "Chance to build inn: ";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Chance to build inn: "; return text.str(); }()});
 		if(isAnyUnitWithLessThanOneThirdFood()
 				&&
 				shouldBuildMore
@@ -422,30 +529,30 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 				|| allOfBuildingTypeAreFullyWorked(Intent::Feed))
 				  )
 		{
-			if(verbose)std::cout << "TAKEN!\n";
+			if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "TAKEN!\n"; return text.str(); }()});
 			return buildBuildingOfType(Intent::Feed);
 		}
-		if(verbose)std::cout << "ignored.\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "ignored.\n"; return text.str(); }()});
 		
 		//if the barracks are all working at capacity,
 		//build more barracks! (this also builds the first barracks...)
-		if(verbose)std::cout << "Chance to build barracks: ";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Chance to build barracks: "; return text.str(); }()});
 		if(
-			!game->gameHeader.isPeacefulModeEnabled() && !game->gameHeader.isUnitUpgradesDisabled()
+			!observation->rules.peaceful && !observation->rules.upgradesDisabled
 			&& allOfBuildingTypeAreCompleted(Intent::TrainAttackStrength)
 			&& allOfBuildingTypeAreFull(Intent::TrainAttackStrength)
 				)
 		{
-			if(verbose)std::cout << "TAKEN!\n";
+			if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "TAKEN!\n"; return text.str(); }()});
 			return buildBuildingOfType(Intent::TrainAttackStrength);
 		}
-		if(verbose)std::cout << "ignored.\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "ignored.\n"; return text.str(); }()});
 	
 		//and if we have excess workers, build random other buildings!
-		if(verbose)std::cout << "Chance to build etc: ";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Chance to build etc: "; return text.str(); }()});
 		if(shouldBuildMore)
 		{
-			if(verbose)std::cout << "TAKEN!\n";
+			if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "TAKEN!\n"; return text.str(); }()});
 			Intent type;
 			int random_number = random()%AI_WARRUSH_RANDOM_BUILDING_DENOM;
 			if(random_number < AI_WARRUSH_HEAL_PCT_THRESHOLD || numberOfBuildingsOfType(Intent::Heal) == 0)type = Intent::Heal;
@@ -455,29 +562,29 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 			else type = Intent::ProjectileDefense;
 			// Skip unavailable choices before committing a construction turn. A rejected
 			// barracks or school must not repeatedly preempt production and staffing.
-			if (!AIPlanning::BuildingCapabilityIndex::allowed(type, game->gameHeader)) type=Intent::Heal;
+			if (!queries->allowed(type)) type=Intent::Heal;
 			return buildBuildingOfType(type);
 		}
-		if(verbose)std::cout << "ignored.\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "ignored.\n"; return text.str(); }()});
 	}
 
 	//If we have enough workers, we can switch to dedicated warrushing production.
 	// With training off, a level threshold would leave every swarm in its opening mix forever.
-	if((game->gameHeader.isUnitUpgradesDisabled() ? team->stats.getLatestStat()->numberUnitPerType[WORKER]
+	if((observation->rules.upgradesDisabled ? observedTeam->view->statistics.numberUnitPerType[WORKER]
 		: numberOfUnitsWithSkillGreaterThanValue(HARVEST,0)) >= AI_WARRUSH_HARVESTER_THRESHOLD)
 	{
 		//This is basically a way to change all the swarms without bothering to remember
 		//anything. (It can only issue one order per tick, so it has to do it over several
 		//ticks and calculate the orders separately.)
-		const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : AI_WARRUSH_SWARM_RATIO_WARRIOR;
-        if(auto order=AIPlanning::missingProductionOrder(*game,*team,{AI_WARRUSH_SWARM_RATIO_WORKER,AI_WARRUSH_SWARM_RATIO_EXPLORER,warriors},AI_WARRUSH_SWARM_WORKER_COUNT,AI_WARRUSH_SWARM_WORKER_COUNT)) return order;
-		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors);
+		const int warriors=observation->rules.peaceful ? 0 : AI_WARRUSH_SWARM_RATIO_WARRIOR;
+        if(auto order=queries->missingProductionOrder({AI_WARRUSH_SWARM_RATIO_WORKER,AI_WARRUSH_SWARM_RATIO_EXPLORER,warriors},AI_WARRUSH_SWARM_WORKER_COUNT,AI_WARRUSH_SWARM_WORKER_COUNT)) return order;
+		const AIEngine::BuildingView *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors);
 		if(out_of_date_swarm)
 		{
 			Sint32 settings[3] = {AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors};
    for (int unit = 0; unit < NB_UNIT_TYPE; ++unit)
-    if (!out_of_date_swarm->type->semantics.production.recipes[unit].enabled) settings[unit] = 0;
-			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->gid, settings));
+    if (!queries->kind(*out_of_date_swarm).resolvedType.semantics.production.recipes[unit].enabled) settings[unit] = 0;
+			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->identity.gid, settings));
 		}
 	}
 
@@ -489,11 +596,11 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	telemetry.count(AITrace::AI3::AIWarrush_pruneGuardAreas_calls);
 	//If we have any guard areas that aren't adjacent to an enemy building, we remove them.
 	BrushAccumulator acc;
-	for(int x=0;x<map->w;x++)
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{
-			if(map->isGuardArea(x,y,team->me))
+			if(queries->isGuardArea(x,y,observedTeam->view->mask))
 			{
 				bool keep = false;
 				for(int xmod=-1;xmod<=1;xmod++)
@@ -501,10 +608,10 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 					for(int ymod=-1;ymod<=1;ymod++)
 					{
 						//if there's a building...
-						if(map->getBuilding(x+xmod,y+ymod)!=NOGBID)
+						if(queries->getBuilding(x+xmod,y+ymod)!=NOGBID)
 						{
 							//...AND it's an enemy building...
-							if(team->attackableTeams() & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
+							if(observedTeam->view->enemies & teamAt(Building::GIDtoTeam(queries->getBuilding(x+xmod,y+ymod)))->view->mask)
 							{
 								//...then we still want it guarded.
 								keep=true;
@@ -514,7 +621,7 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 				}
 				if(!keep)
 				{
-					acc.applyBrush(BrushApplication(x,y,0), map);
+					acc.applyBrush(BrushApplication(x,y,0),observation->width,observation->height);
 				}
 			}
 		}
@@ -522,8 +629,7 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	if(acc.getApplicationCount())
 	{
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_pruneGuardAreas_result,
-									   shared_ptr<Order>(new OrderAlterGuardArea(
-										   team->teamNumber, BrushTool::MODE_DEL, &acc, map)));
+									   AISharedRuntime::observationAreaOrder<OrderAlterGuardArea>(teamNumber,BrushTool::MODE_DEL,acc));
 	}
 	else
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_pruneGuardAreas_result,
@@ -537,38 +643,38 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	//Place guard area on an enemy building if there is one...
 	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
-		Team *t = game->teams[i];
-		if((t)&&(team->attackableTeams() & t->me))
+		TeamObservation *t = teamAt(i);
+		if((t)&&(observedTeam->view->enemies & t->view->mask))
 		{
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
-				Building *b = t->myBuildings[j];
-				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&b->type->semantics.occupiesGround)
+				const AIEngine::BuildingView *b = t->myBuildings[j];
+				if ((b)&&(b->state != Building::DEAD)&&(b->hp != 1 || b->construction == Building::NO_CONSTRUCTION)&&queries->kind(*b).resolvedType.semantics.occupiesGround)
 				{
-					BuildingType *bt = b->type;
+					const BuildingType *bt = &queries->kind(*b).resolvedType;
 					if(
 							//the area must be discovered to prevent AI cheating.
 							(
-									map->isFOWDiscovered(b->posX,               b->posY,              team->me)
-								||	map->isFOWDiscovered(b->posX+bt->width - 1, b->posY,              team->me)
-								||	map->isFOWDiscovered(b->posX+bt->width - 1, b->posY+bt->height-1, team->me)
-								||	map->isFOWDiscovered(b->posX,               b->posY+bt->height-1, team->me)
+									queries->isFOWDiscovered(b->x,               b->y,              observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->x+bt->width - 1, b->y,              observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->x+bt->width - 1, b->y+bt->height-1, observedTeam->view->mask)
+								||	queries->isFOWDiscovered(b->x,               b->y+bt->height-1, observedTeam->view->mask)
 									)
 							&&
 							//do not order a building attacked if the order is already in place.
 							(
-								!map->isGuardArea(b->posX,b->posY,team->me)
+								!queries->isGuardArea(b->x,b->y,observedTeam->view->mask)
 									)			
 										)
 					{
-						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->attackableTeams() & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
+						if((queries->getBuilding(b->x, b->y)!=NOGBID)&&(observedTeam->view->enemies & teamAt(Building::GIDtoTeam(queries->getBuilding(b->x, b->y)))->view->mask)) //paranoia
 						{
 							telemetry.set(AITrace::AI3::AIWarrush_placeGuardAreas_last_team, i);
 							for(int x = 0; x < bt->width; x++)
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % map->getW(), (b->posY+y) % map->getH(),AI_WARRUSH_GUARD_BRUSH_SIZE), map);
+									guard_add_acc.applyBrush(BrushApplication((b->x+x) % queries->getW(), (b->y+y) % queries->getH(),AI_WARRUSH_GUARD_BRUSH_SIZE),observation->width,observation->height);
 								}
 							}
 						}
@@ -582,8 +688,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	{
 		return telemetry.returnedOrder(
 			AITrace::AI3::AIWarrush_placeGuardAreas_result,
-			shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber, BrushTool::MODE_ADD,
-													  &guard_add_acc, map)));
+			AISharedRuntime::observationAreaOrder<OrderAlterGuardArea>(teamNumber,BrushTool::MODE_ADD,guard_add_acc));
 	}
 	else
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_placeGuardAreas_result,
@@ -594,15 +699,15 @@ std::shared_ptr<Order> AIWarrush::farm()
 {
 	// This checkerboard reserves seed tiles for future growth. Without regrowth,
 	// protecting those finite resources would make them permanently unusable.
-	if (game->gameHeader.isResourceGrowthDisabled()) return std::make_shared<NullOrder>();
+	if (observation->rules.resourceGrowthDisabled) return std::make_shared<NullOrder>();
 	telemetry.count(AITrace::AI3::AIWarrush_farm_calls);
 	// Algorithm initially stolen from Nicowar.
-	DynamicGradientMapArray water_gradient(map->w,map->h);
-	for(int x=0;x<map->w;x++)
+	DynamicGradientMapArray water_gradient(observation->width,observation->height);
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{	
-			if (terrainProvidesFertility(map->terrainPropertiesAt(x,y)))
+			if (terrainProvidesFertility(queries->terrainPropertiesAt(x,y)))
 			{
 				water_gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
@@ -612,7 +717,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 		}
 	}
-	map->updateGlobalGradient(water_gradient.c_array());
+	queries->updateGlobalGradient(water_gradient.c_array());
 
 	BrushAccumulator del_acc;
 	BrushAccumulator add_acc;
@@ -620,79 +725,79 @@ std::shared_ptr<Order> AIWarrush::farm()
 	BrushAccumulator clr_add_acc;
 	// With the farm-areas experiment, wheat near water is farmed with a farm
 	// area on the same wheat checkerboard.
-	const bool farms = map->farmAreasEnabled();
+	const bool farms = queries->farmAreasEnabled();
 	BrushAccumulator farm_del_acc;
 	BrushAccumulator farm_add_acc;
-	for(int x=0;x<map->w;x++)
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{
-			const bool wheat_spot = x%2==y%2 && map->isResourceTakeable(x, y, WHEAT)
-				&& map->isMapDiscovered(x, y, team->me)
+			const bool wheat_spot = x%2==y%2 && queries->isResourceTakeable(x, y, WHEAT)
+				&& queries->isMapDiscovered(x, y, observedTeam->view->mask)
 				&& water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET);
-			if(farms && map->isMapDiscovered(x, y, team->me))
+			if(farms && queries->isMapDiscovered(x, y, observedTeam->view->mask))
 			{
-				const bool wheat_farm = wheat_spot && map->canPaintFarmArea(x, y);
-				const bool farmed = map->isFarmArea(x, y, team->me);
+				const bool wheat_farm = wheat_spot && queries->canPaintFarmArea(x, y);
+				const bool farmed = queries->isFarmArea(x, y, observedTeam->view->mask);
 				if(wheat_farm && !farmed)
-					farm_add_acc.applyBrush(BrushApplication(x, y, 0), map);
+					farm_add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 				else if(!wheat_farm && farmed)
-					farm_del_acc.applyBrush(BrushApplication(x, y, 0), map);
+					farm_del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 				// The farm replaces forbidden paint on wheat.
-				if(map->isForbidden(x, y, team->me)
-				   && map->isResourceTakeable(x, y, WHEAT))
-					del_acc.applyBrush(BrushApplication(x, y, 0), map);
+				if(queries->isForbidden(x, y, observedTeam->view->mask)
+				   && queries->isResourceTakeable(x, y, WHEAT))
+					del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 			}
 
-			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, WHEAT)))
+			if((!queries->isResourceTakeable(x, y, WOOD) && !queries->isResourceTakeable(x, y, WHEAT)))
 			{
-				if(map->isForbidden(x, y, team->me))
+				if(queries->isForbidden(x, y, observedTeam->view->mask))
 				{
 					if(
 						//Make sure we're not deleting buildings' forbidden area!
-						!map->isForbidden (x + 1,y,team->me)
-						&& !map->isForbidden (x - 1,y,team->me)
-						&& !map->isForbidden (x,y + 1,team->me)
-						&& !map->isForbidden (x,y - 1,team->me)
+						!queries->isForbidden (x + 1,y,observedTeam->view->mask)
+						&& !queries->isForbidden (x - 1,y,observedTeam->view->mask)
+						&& !queries->isForbidden (x,y + 1,observedTeam->view->mask)
+						&& !queries->isForbidden (x,y - 1,observedTeam->view->mask)
 						//Or fruits'!
-						&& !map->isResourceTakeable(x, y, CHERRY)
-						&& !map->isResourceTakeable(x, y, ORANGE)
-						&& !map->isResourceTakeable(x, y, PRUNE)
+						&& !queries->isResourceTakeable(x, y, CHERRY)
+						&& !queries->isResourceTakeable(x, y, ORANGE)
+						&& !queries->isResourceTakeable(x, y, PRUNE)
 						)
 					{
-						del_acc.applyBrush(BrushApplication(x, y, 0), map);
+						del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 					}
 				}
 			}
 			
-			if(map->isForbidden(x, y, team->me) && map->isClearArea(x, y, team->me))
+			if(queries->isForbidden(x, y, observedTeam->view->mask) && queries->isClearArea(x, y, observedTeam->view->mask))
 			{
-				del_acc.applyBrush(BrushApplication(x, y, 0), map);
+				del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 			}
 			
 			//we never clear anything but wood
-			if(!map->isResourceTakeable(x, y, WOOD))
+			if(!queries->isResourceTakeable(x, y, WOOD))
 			{
-				if(map->isClearArea(x, y, team->me))
+				if(queries->isClearArea(x, y, observedTeam->view->mask))
 				{
-					clr_del_acc.applyBrush(BrushApplication(x, y, 0), map);
+					clr_del_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 				}
 			}
 
 			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isResourceTakeable(x, y, WOOD))
+			if(queries->isResourceTakeable(x, y, WOOD))
 			{
-				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
+				if(!queries->isClearArea(x, y, observedTeam->view->mask) && queries->isMapDiscovered(x, y, observedTeam->view->mask))
 				{
 					for(int xmod=-1;xmod<=1;xmod++)
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isResourceTakeable(x+xmod, y+ymod, WHEAT)
-									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
-									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
+							if(queries->isResourceTakeable(x+xmod, y+ymod, WHEAT)
+									|| (queries->getBuilding(x+xmod,y+ymod)!=NOGBID
+									&& (observedTeam->view->mask & teamAt(Building::GIDtoTeam(queries->getBuilding(x+xmod,y+ymod)))->view->mask)))
 							{
-								clr_add_acc.applyBrush(BrushApplication(x, y, 0), map);
+								clr_add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 								goto doublebreak;
 							}
 						}
@@ -705,28 +810,28 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isResourceTakeable(x, y, WOOD))
+				if(queries->isResourceTakeable(x, y, WOOD))
 				{
-					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
+					if(!queries->isForbidden(x, y, observedTeam->view->mask) && !queries->isClearArea(x, y, observedTeam->view->mask) && queries->isMapDiscovered(x, y, observedTeam->view->mask) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
-						add_acc.applyBrush(BrushApplication(x, y, 0), map);
+						add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 					}
 				}
 			}
 
-			if(!farms && wheat_spot && !map->isForbidden(x, y, team->me))
-				add_acc.applyBrush(BrushApplication(x, y, 0), map);
+			if(!farms && wheat_spot && !queries->isForbidden(x, y, observedTeam->view->mask))
+				add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isResourceTakeable(x, y, CHERRY)
-					|| map->isResourceTakeable(x, y, ORANGE)
-					|| map->isResourceTakeable(x, y, PRUNE)	)
-				&& !map->isForbidden(x, y, team->me)
-				&& map->isMapDiscovered(x, y, team->me)
+				(	queries->isResourceTakeable(x, y, CHERRY)
+					|| queries->isResourceTakeable(x, y, ORANGE)
+					|| queries->isResourceTakeable(x, y, PRUNE)	)
+				&& !queries->isForbidden(x, y, observedTeam->view->mask)
+				&& queries->isMapDiscovered(x, y, observedTeam->view->mask)
 					)
 			{
-				add_acc.applyBrush(BrushApplication(x, y, 0), map);
+				add_acc.applyBrush(BrushApplication(x, y, 0),observation->width,observation->height);
 			}
 
 		}
@@ -734,30 +839,26 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 	if(del_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
-									   shared_ptr<Order>(new OrderAlterForbidden(
-										   team->teamNumber, BrushTool::MODE_DEL, &del_acc, map)));
+									   AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(teamNumber,BrushTool::MODE_DEL,del_acc));
 	if(add_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
-									   shared_ptr<Order>(new OrderAlterForbidden(
-										   team->teamNumber, BrushTool::MODE_ADD, &add_acc, map)));
+									   AISharedRuntime::observationAreaOrder<OrderAlterForbidden>(teamNumber,BrushTool::MODE_ADD,add_acc));
 	if(clr_del_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(
 			AITrace::AI3::AIWarrush_farm_result,
 			shared_ptr<Order>(
-				new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map)));
+				AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(teamNumber,BrushTool::MODE_DEL,clr_del_acc)));
 	if(clr_add_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(
 			AITrace::AI3::AIWarrush_farm_result,
 			shared_ptr<Order>(
-				new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map)));
+				AISharedRuntime::observationAreaOrder<OrderAlterClearArea>(teamNumber,BrushTool::MODE_ADD,clr_add_acc)));
 	if(farm_del_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
-									   shared_ptr<Order>(new OrderAlterFarmArea(
-										   team->teamNumber, BrushTool::MODE_DEL, &farm_del_acc, map)));
+									   AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(teamNumber,BrushTool::MODE_DEL,farm_del_acc));
 	if(farm_add_acc.getApplicationCount()>0)
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
-									   shared_ptr<Order>(new OrderAlterFarmArea(
-										   team->teamNumber, BrushTool::MODE_ADD, &farm_add_acc, map)));
+									   AISharedRuntime::observationAreaOrder<OrderAlterFarmArea>(teamNumber,BrushTool::MODE_ADD,farm_add_acc));
 
 	//nothing to do...
 	return telemetry.returnedOrder(AITrace::AI3::AIWarrush_farm_result,
@@ -765,7 +866,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 }
 
 //Simple hack to place explore flags on opponents' starting swarms.
-std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
+std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(TeamObservation *enemy_team)
 {
 	telemetry.count(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_calls);
  const int typeNum = selectBuilding(Intent::AttractExplorers);
@@ -774,56 +875,56 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(Team *enemy_team)
   for (int radius = 0; radius <= 8; ++radius)
    for (int dx = -radius; dx <= radius; ++dx)
     for (int dy = -radius; dy <= radius; ++dy)
-     if (game->checkRoomForBuilding(x + dx, y + dy, game->buildingsTypes.get(typeNum), team->teamNumber))
-      return AIRules::createOrder(*game, team->teamNumber, x + dx, y + dy, typeNum, 1, 1);
+     if (queries->checkRoomForBuilding(x + dx,y + dy,typeNum,teamNumber))
+      return queries->createOrder(teamNumber, x + dx, y + dy, typeNum, 1, 1);
   return std::make_shared<NullOrder>();
  };
-	if(verbose)std::cout << "looking for swarms:\n";
+	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "looking for swarms:\n"; return text.str(); }()});
 	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
-		Building *b = enemy_team->myBuildings[j];
-		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->constructionResultState == Building::NO_CONSTRUCTION))
+		const AIEngine::BuildingView *b = enemy_team->myBuildings[j];
+		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->construction == Building::NO_CONSTRUCTION))
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(b->posX, b->posY));
+										   placeNear(b->x, b->y));
 		}
 	}
-	if(verbose)std::cout << "No swarms found\n";
+	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No swarms found\n"; return text.str(); }()});
 	//what, they have no swarm? o_O Find any building:
 	for(int j=0;j<Building::MAX_COUNT;j++)
 	{
-		Building *b = enemy_team->myBuildings[j];
+		const AIEngine::BuildingView *b = enemy_team->myBuildings[j];
 		if(b)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(b->posX, b->posY));
+										   placeNear(b->x, b->y));
 		}
 	}
-	if(verbose)std::cout << "No buildings found\n";
+	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No buildings found\n"; return text.str(); }()});
 	//what, they have no buildings? o_O Find any unit:
 	for(int j=0;j<Unit::MAX_COUNT;j++)
 	{
-		Unit *u = enemy_team->myUnits[j];
+		const AIEngine::UnitView *u = enemy_team->myUnits[j];
 		if(u)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(u->posX, u->posY));
+										   placeNear(u->x, u->y));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O
-	if(verbose)std::cout << "No buildings found, no units found o_O\n";
+	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No buildings found, no units found o_O\n"; return text.str(); }()});
 	return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
 								   shared_ptr<Order>(new NullOrder));
 }
 
 bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int height)
 {
-	/*if(map->isHardSpaceForBuilding(x,y,width,height))
+	/*if(queries->isHardSpaceForBuilding(x,y,width,height))
 	{*/
-		if(		map->isMapDiscovered(x,			y,			team->me)
-			||	map->isMapDiscovered(x+width-1,	y,			team->me)
-			||	map->isMapDiscovered(x+width-1,	y+height-1,	team->me)
-			||	map->isMapDiscovered(x,			y+height-1,	team->me)
+		if(		queries->isMapDiscovered(x,			y,			observedTeam->view->mask)
+			||	queries->isMapDiscovered(x+width-1,	y,			observedTeam->view->mask)
+			||	queries->isMapDiscovered(x+width-1,	y+height-1,	observedTeam->view->mask)
+			||	queries->isMapDiscovered(x,			y+height-1,	observedTeam->view->mask)
 				)
 		{
 			return true;
@@ -834,11 +935,11 @@ bool AIWarrush::locationIsAvailableForBuilding(int x, int y, int width, int heig
 
 void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient, Uint8 resource_type)
 {
-	for(int x=0;x<map->w;x++)
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{
-			Tile c=map->getTile(x,y);
+			auto c=queries->getTile(x,y);
 			if (c.resource.type==resource_type)
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
@@ -851,7 +952,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 			{
 				gradient(x, y) = 0;
 			}
-			else if (!map->terrainPropertiesAt(x,y).walkable)
+			else if (!queries->terrainPropertiesAt(x,y).walkable)
 			{
 				gradient(x, y) = 0;
 			}
@@ -862,11 +963,11 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		}
 	}
 	
-	map->updateGlobalGradient(gradient.c_array());
+	queries->updateGlobalGradient(gradient.c_array());
 	
-	for(int x=0;x<map->w;x++)
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{
 			if (gradient(x, y) == AI_WARRUSH_GRADIENT_MAX)
 				gradient(x, y) = 0;
@@ -881,8 +982,8 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
  buildingDelay = AI_WARRUSH_BUILDING_DELAY_TICKS;
  const int typeNum = selectBuilding(intent);
  if (typeNum < 0) return std::make_shared<NullOrder>();
- const BuildingType* bt = game->buildingsTypes.get(typeNum);
- const BuildingType* complete = bt->isBuildingSite ? game->buildingsTypes.get(bt->nextLevel) : bt;
+ const BuildingType* bt = &queries->kind(typeNum).resolvedType;
+ const BuildingType* complete = bt->isBuildingSite ? &queries->kind(bt->nextLevel).resolvedType : bt;
  telemetry.set(AITrace::AI3::AIWarrush_buildBuildingOfType_input_shortTypeNum, static_cast<unsigned>(intent));
  telemetry.count(AITrace::AI3::AIWarrush_buildBuildingOfType_calls);
 
@@ -906,15 +1007,15 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
   resource=std::distance(demand.begin(),std::max_element(demand.begin(),demand.end()));
  }
  const bool needsResource=demand[resource]>0;
- DynamicGradientMapArray resource_gradient(map->w, map->h);
+ DynamicGradientMapArray resource_gradient(observation->width, observation->height);
  if(needsResource) initializeGradientWithResource(resource_gradient, resource);
 
-	DynamicGradientMapArray availability_gradient(map->w,map->h);
-	for(int x=0;x<map->w;x++)
+	DynamicGradientMapArray availability_gradient(observation->width,observation->height);
+	for(int x=0;x<observation->width;x++)
 	{
-		for(int y=0;y<map->h;y++)
+		for(int y=0;y<observation->height;y++)
 		{
-			Tile c=map->getTile(x,y);
+			auto c=queries->getTile(x,y);
 			if (c.resource.type!=NO_RES_TYPE)
 			{
 				availability_gradient(x, y) = 0;
@@ -923,11 +1024,11 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (!map->terrainPropertiesAt(x,y).walkable)
+			else if (!queries->terrainPropertiesAt(x,y).walkable)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if(map->isHardSpaceForBuilding(x-(bt->width / AI_WARRUSH_BUILDING_CENTER_DIVISOR),y-(bt->width / AI_WARRUSH_BUILDING_CENTER_DIVISOR),bt->width*AI_WARRUSH_BUILDING_CLEARANCE_MULT,bt->height*AI_WARRUSH_BUILDING_CLEARANCE_MULT) && locationIsAvailableForBuilding(x,y,bt->width,bt->height)) //the extra numbers at the ends expand the building
+			else if(queries->isHardSpaceForBuilding(x-(bt->width / AI_WARRUSH_BUILDING_CENTER_DIVISOR),y-(bt->width / AI_WARRUSH_BUILDING_CENTER_DIVISOR),bt->width*AI_WARRUSH_BUILDING_CLEARANCE_MULT,bt->height*AI_WARRUSH_BUILDING_CLEARANCE_MULT) && locationIsAvailableForBuilding(x,y,bt->width,bt->height)) //the extra numbers at the ends expand the building
 			{
 				availability_gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
@@ -935,12 +1036,12 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		}
 	}
 	
-	map->updateGlobalGradient(availability_gradient.c_array());
+	queries->updateGlobalGradient(availability_gradient.c_array());
 	
-	Building *swarm = getSwarmAtRandom();
+	const AIEngine::BuildingView *swarm = getSwarmAtRandom();
 	if (!swarm)
 	{
-		if(verbose)std::cout << "No swarm found!\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No swarm found!\n"; return text.str(); }()});
 		return telemetry.returnedOrder(AITrace::AI3::AIWarrush_buildBuildingOfType_result,
 									   shared_ptr<Order>(new NullOrder));
 	}
@@ -949,19 +1050,19 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 		Sint32 x,y;
 		Sint32 x_temp,y_temp;
 		
-		x = swarm->posX; y = swarm->posY;
+		x = swarm->x; y = swarm->y;
 		
-  if(needsResource && map->getGlobalGradientDestination(resource_gradient.c_array(), x, y, &x_temp, &y_temp))
+  if(needsResource && queries->getGlobalGradientDestination(resource_gradient.c_array(), x, y, &x_temp, &y_temp))
   { x = x_temp; y = y_temp; }
-		bool result = map->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
+		bool result = queries->getGlobalGradientDestination(availability_gradient.c_array(), x, y, &destination_x, &destination_y);
 		
-		if(verbose)std::cout << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->posX << "," << swarm->posY << ", found = " << result << std::endl;
-		if(verbose)if((int)availability_gradient(destination_x, destination_y) != AI_WARRUSH_GRADIENT_MAX)std::cout << "Could not find valid location for building! Best spot: " << destination_x << "," << destination_y << " (" << (int)availability_gradient(destination_x, destination_y) << ")\n";
+		if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Trying to build " << static_cast<unsigned>(intent) << "(" << bt->width << " x " << bt->height << ")" << " at " << destination_x << "," << destination_y << " from " << x << "," << y << " swarm is " << swarm->x << "," << swarm->y << ", found = " << result << std::endl; return text.str(); }()});
+		if(verbose)if((int)availability_gradient(destination_x, destination_y) != AI_WARRUSH_GRADIENT_MAX)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "Could not find valid location for building! Best spot: " << destination_x << "," << destination_y << " (" << (int)availability_gradient(destination_x, destination_y) << ")\n"; return text.str(); }()});
 	}
 		
 	// create and return order
-	if (!game->checkRoomForBuilding(destination_x, destination_y, bt, team->teamNumber)) return std::make_shared<NullOrder>();
+	if (!queries->checkRoomForBuilding(destination_x,destination_y,typeNum,teamNumber)) return std::make_shared<NullOrder>();
 	return telemetry.returnedOrder(
 		AITrace::AI3::AIWarrush_buildBuildingOfType_result,
-		AIRules::createOrder(*game,team->teamNumber,destination_x,destination_y,typeNum,1,1));
+		queries->createOrder(teamNumber,destination_x,destination_y,typeNum,1,1));
 }

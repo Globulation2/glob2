@@ -1,3 +1,4 @@
+#include "CortexWorld.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -110,7 +111,7 @@ namespace Cortex
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
-	int nearestWheatDist(const Map& map, int x, int y, int cap)
+	int nearestWheatDist(const Cortex::WorldMap& map, int x, int y, int cap)
 	{
 		for (int r = 0; r <= cap; r++)
 		{
@@ -197,7 +198,7 @@ namespace Cortex
 	// index over other->myBuildings[] (never an std::set); ties break first by scan
 	// order (strict-greater insert) and finally by syncRand() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
-	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
+	int placeFlagTargetsWorld(Cortex::World* game, Cortex::WorldTeam* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
@@ -218,7 +219,7 @@ namespace Cortex
 		// Enumerate enemy teams strictly by index.
 		for (int i = 0; i < game->teamsCount(); i++)
 		{
-			Team* other = game->teams[i];
+			Cortex::WorldTeam* other = game->teams[i];
 			if (other == NULL)
 				continue;
 			const bool isEnemy = (team->attackableTeams() & other->me) != 0;
@@ -226,10 +227,10 @@ namespace Cortex
 				continue;
 
 			// Scan this enemy's buildings by index (never an std::set).
-			for (int j = 0; j < Building::MAX_COUNT; j++)
+			for (int j = 0; j < Cortex::WorldBuilding::MAX_COUNT; j++)
 			{
-				Building* b = other->myBuildings[j];
-				if (b == NULL || b->buildingState == Building::DEAD)
+				Cortex::WorldBuilding* b = other->myBuildings[j];
+				if (b == NULL || b->buildingState == Cortex::WorldBuilding::DEAD)
 					continue;
 
 				// Fairness gate: only buildings we have legitimately seen. An
@@ -282,3 +283,12 @@ namespace Cortex
 		return count;
 	}
 } // namespace Cortex
+
+namespace Cortex {
+int placeFlagTargets(::Game* game,::Team* team,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 owners[CORTEX_FLAG_TARGETS])
+{
+    const auto view=AIEngine::AIWorldView::capture(*game, AIEngine::AIWorldView::captureCatalog(*game));
+    World world(*view);
+    return placeFlagTargetsWorld(&world,world.teams[team->teamNumber],out,owners);
+}
+}

@@ -286,6 +286,7 @@ struct WorldState
 	WorldTile& tile(int x, int y);
 	const BuildingProfile* profile(int buildingType) const;
 	void invalidateProfileIndex() const;
+    uint64_t retainedProfileIndexBytes() const noexcept { return profileIndexes.capacity() * sizeof(int); }
 	const WorldBuilding* building(int id) const;
 	uint32_t computeSignature() const;
 
@@ -540,6 +541,7 @@ class Planner
 {
 public:
 	Planner();
+    uint64_t retainedQueryVectorBytes() const noexcept;
 	void reset();
 	void configure(const std::vector<BuildingProfile>& profiles,
 		int innType, int hospitalType, int schoolType,

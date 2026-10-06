@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ScriptValue.h"
+#include "ScriptQueryStorage.h"
 #include "TerrainType.h"
 #include "Version.h"
+#include "ai/observation/AIWorldView.h"
 #include <array>
 #include <memory>
 class Game;
@@ -26,7 +28,8 @@ class Observations
 		unsigned char type = 255, variety = 0, amount = 0;
 		bool known = false;
 	};
-	Game &game;
+	Game &game; // Scenario-owner fallback only; bound AI queries never access it.
+	mutable const AIEngine::AIWorldView* view = nullptr;
 	mutable std::shared_ptr<const TerrainRegistry> terrainDefinitionRegistry;
 	mutable Value terrainDefinitions;
 	int team;
@@ -39,13 +42,18 @@ class Observations
 	const RememberedTile *lookup(unsigned index) const;
 	RememberedTile &remember(unsigned index);
 	unsigned lastTick = 0xffffffffu;
-	Value ref(const Unit *unit) const;
-	Value ref(const Building *building) const;
-	Value unit(const Unit &unit) const;
-	Value building(const Building &building) const;
+	Value ref(const AIEngine::UnitView *unit) const;
+	Value ref(const AIEngine::BuildingView *building) const;
+	Value unit(const AIEngine::UnitView &unit) const;
+	Value building(const AIEngine::BuildingView &building) const;
 	Value tile(int x, int y) const;
 
   public:
+    std::uint64_t retainedQueryVectorBytes() const {
+        std::uint64_t bytes=remembered.capacity()*sizeof(std::unique_ptr<Chunk>);
+        for(const auto& chunk:remembered) if(chunk) bytes+=sizeof(Chunk);
+        return bytes+retainedValueVectorBytes(terrainDefinitions);
+    }
 	struct Cell
 	{
 		unsigned tick = 0;
@@ -68,7 +76,25 @@ class Observations
 							  const std::function<void(const SpatialEntity &)> &visit,
 							  const QueryBudget &budget) const;
 	void setProfile(unsigned value) { profile = value; }
-	Observations(Game &game, int team) : game(game), team(team) {}
+	Observations(Game &game, int team);
+	// A complete view is borrowed only during this scope. Remembered terrain and
+    // spatial fields remain controller-owned values, never retain the world.
+    class ObservationScope
+    {
+        const Observations& observations;
+        const AIEngine::AIWorldView* previous;
+        std::shared_ptr<const AIEngine::AIWorldView> owned;
+      public:
+        ObservationScope(const Observations&, const AIEngine::AIWorldView&);
+        explicit ObservationScope(const Observations&);
+        ~ObservationScope();
+        ObservationScope(const ObservationScope&) = delete;
+        ObservationScope& operator=(const ObservationScope&) = delete;
+    };
+    ObservationScope bindObservation(const AIEngine::AIWorldView& value) const { return ObservationScope(*this, value); }
+    ObservationScope captureObservation() const { return ObservationScope(*this); }
+    bool hasObservation() const { return view != nullptr; }
+    const AIEngine::AIWorldView& world() const;
 	void observe();
 	Value query(const std::string &name, const std::vector<Value> &args,
 				const QueryBudget &budget = {}) const;

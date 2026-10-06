@@ -992,7 +992,7 @@ void Cabino::PrioritizedBuildingAttack::captureTelemetry(const AITelemetry::Sink
 	if (!sink.series || !sink.series->current.values[AITrace::AI8::PrioritizedBuildingAttack_perform_calls].bits)
 		return;
 	sink.set(AITrace::AI8::module_PrioritizedBuildingAttack_attacks_count, attacks.size());
-	sink.set(AITrace::AI8::module_PrioritizedBuildingAttack_target_team, enemy ? enemy->teamNumber : -1);
+	sink.set(AITrace::AI8::module_PrioritizedBuildingAttack_target_team, enemyTeamNumber == 255 ? -1 : int(enemyTeamNumber));
 }
 
 void Cabino::DistributedNewConstructionManager::captureTelemetry(

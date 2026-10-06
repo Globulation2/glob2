@@ -31,11 +31,19 @@ entity objects, pathfinding queries or direct mutation methods.
   be serializable script data and consume the conversion budget. Use the signatures
   below; unused arguments are not a versioning or extension mechanism.
 
+AI decisions use an immutable observation for `ctx.tick`. A match-wide engine delay
+of 0–8 ticks (default 0) schedules returned orders at `ctx.tick + delay`; profile 2
+actions retain their IDs while awaiting execution receipts. An accepted order may
+still have an effect that completes later. Account for outstanding intents before
+issuing duplicate commands. Map-script callbacks keep their existing cadence.
+See [engine scheduling](reference.md#ai-observations-and-delayed-orders) for
+continuation and lifecycle details.
+
 ## Context
 
 | Member | Meaning |
 | --- | --- |
-| `ctx.tick` | Current simulation step counter; not the callback count |
+| `ctx.tick` | Logical tick of the immutable decision observation; not the callback count or eventual order execution tick |
 | `ctx.myTeam` | AI team ID; `-1` for map scripts |
 | `ctx.random()` | Next private deterministic random number in `[0, 1)` |
 | `ctx.game` | Read API described below |

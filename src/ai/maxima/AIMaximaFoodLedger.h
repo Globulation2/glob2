@@ -159,6 +159,7 @@ struct Input
 struct Result
 {
 	Result();
+    uint64_t retainedVectorBytes() const noexcept;
 	/// Invalidate the snapshot while retaining buffers for the next evaluation.
 	void clear();
 	std::vector<ConsumerResult> consumers;
@@ -196,6 +197,7 @@ class Ledger
 {
 public:
 	Ledger();
+    uint64_t retainedVectorBytes() const noexcept;
 	// Candidate snapshots retain exact allocation/query layers, but omit the
     // final-residual economic bound used only by the authoritative baseline.
 	void evaluate(const Input& input, Result& result,

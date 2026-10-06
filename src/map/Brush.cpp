@@ -247,6 +247,11 @@ static int wrapDeltaToNearest(int delta, int mapDim)
 
 void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 {
+	applyBrush(brush, map->getW(), map->getH());
+}
+
+void BrushAccumulator::applyBrush(const BrushApplication &brush, int mapWidth, int mapHeight)
+{
 	// the first application defines the center, so its offset is zero
 	int px = 0;
 	int py = 0;
@@ -263,8 +268,8 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 	else
 	{
 		// consider brush relative to center
-		px = wrapDeltaToNearest(brush.x - dim.centerX, map->getW());
-		py = wrapDeltaToNearest(brush.y - dim.centerY, map->getH());
+		px = wrapDeltaToNearest(brush.x - dim.centerX, mapWidth);
+		py = wrapDeltaToNearest(brush.y - dim.centerY, mapHeight);
 
 		// extend dimensions
 		dim.minX = std::min(dim.minX, px - BrushTool::getBrushDimXMinus(brush.figure));
@@ -278,6 +283,11 @@ void BrushAccumulator::applyBrush(const BrushApplication &brush, const Map* map)
 }
 
 bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim, const Map *map)
+{
+	return getBitmap(array, dim);
+}
+
+bool BrushAccumulator::getBitmap(Utilities::BitArray *array, AreaDimensions *dim)
 {
 	assert(array);
 	assert(dim);

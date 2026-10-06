@@ -51,6 +51,7 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 	Uint16 *gradient = slot;
 	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	propagateGradient(gradient, swimClass);
+	++resourceFieldGenerations[&slot];
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
 
@@ -262,4 +263,19 @@ unsigned Map::resourceSupplyModes(const Building* consumer, int resource) const
     // field is exactly the union. Resolve this property once per catalog.
     if (modes==3 && !(game->buildingsTypes.extraDirectSupplyMask()&bit)) modes=1;
     return modes;
+}
+
+// Enrollment is an owner-side logical delivery effect. Workers supply the field
+// computed from their observation, so admitting it never reads a newer world.
+void Map::installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values)
+{
+	if (team < 0 || team >= Team::MAX_COUNT || resource < 0 || resource >= MAX_NB_RESOURCES ||
+		swim < 0 || swim >= SWIM_CLASS_COUNT || values.size() != std::size_t(size))
+		throw std::invalid_argument("Invalid observed resource field enrollment");
+	auto& slot = resourcesGradient[team][resource][swim];
+	if (slot) return;
+	auto data = std::make_unique<Uint16[]>(size);
+	std::copy(values.begin(), values.end(), data.get());
+	slot = data.release();
+	++resourceFieldGenerations[&slot];
 }
