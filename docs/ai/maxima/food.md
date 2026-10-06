@@ -113,8 +113,8 @@ supply divided by the candidate's runtime-derived peak recipe cost. Existing
 capacity does not disappear from this count merely because feeding takes priority
 in the current allocation; ordinary new sites still need their actual local claim
 funded. Wheat-free worker production is not constrained
-by this wheat count. The heuristic retains the existing conservative growth
-reservation; local feasibility remains necessary for every ordinary site.
+by this wheat count. The existing growth reservation remains in place; local
+feasibility is necessary for every ordinary site.
 Birth funding sums their claimed
 production-only packet rates and reachable residual crop yield, then converts
 that rate to acreage using the configured regrowth period. Independent hybrid
@@ -186,6 +186,10 @@ compare the policy variants with identical maps, seeds, opponents and swapped
 starting positions. Across engine revisions, include an unchanged passive
 controller as well: changes to another AI can affect Maxima's access to resources
 even in peaceful games. Keep those controls separate from competitive matches.
+
+Choose the objective before tuning: preserving historical decisions and improving
+competitive strength are different goals. For strength tuning, use competitive
+outcomes as the primary measure and development timings to diagnose trade-offs.
 
 Freeze a candidate before the held-out seeds. Measure population trajectories,
 final population, starvation and competitive outcomes separately, and retain failed

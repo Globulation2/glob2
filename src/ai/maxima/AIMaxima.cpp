@@ -5183,19 +5183,19 @@ void Maxima::update_food_retirement(Context& runtime,
         if(workerProducer && value.demand>0)
             productionClaim+=value.claimedProduction;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
-        if(value.kind==AIMaximaFoodLedger::InnConsumer && value.coveragePercent>=burden)
-            ++supported_inns;
-        // Existing producers remain useful capacity when policy gives feeding
-        // priority. New sites still need actual residual supply at placement;
-        // birth funding below continues to count only allocated production.
-        if(workerProducer && value.uncontestedCoveragePercent>=burden) ++supported_swarms;
+		if(value.kind==AIMaximaFoodLedger::InnConsumer && value.coveragePercent>=burden)
+			++supported_inns;
+		// Retain viable existing capacity; funding and placement still use claims.
+		if(workerProducer && value.uncontestedCoveragePercent>=burden)
+			++supported_swarms;
 		if(value.key<0) continue;
 		present.insert(value.key);
 		// Hysteresis: the confirmation survives a dip, and only a real recovery
 		// clears it, so two similar buildings cannot trade places forever.
-		if(value.retirementCoveragePercent()>=budget.food_recovered_percent)
+		const int retirementCoverage=value.retirementCoveragePercent();
+		if(retirementCoverage>=budget.food_recovered_percent)
 			food_burden_since.erase(value.key);
-		else if(value.retirementCoveragePercent()<burden && !food_burden_since.count(value.key))
+		else if(retirementCoverage<burden && !food_burden_since.count(value.key))
 			food_burden_since[value.key]=timer;
 	}
 	// Only capacity one site could actually collect supports another building.
@@ -5252,8 +5252,8 @@ void Maxima::update_food_retirement(Context& runtime,
                 <<"\tproduction_demand="<<value.productionDemand<<"\tproduction_claimed="<<value.claimedProduction
 				<<"\tavailable="<<value.available
 				<<"\tcoverage="<<value.coveragePercent
-                <<"\tuncontested_coverage="<<value.uncontestedCoveragePercent
-                <<"\tretirement_coverage="<<value.retirementCoveragePercent()
+				<<"\tuncontested_coverage="<<value.uncontestedCoveragePercent
+				<<"\tretirement_coverage="<<value.retirementCoveragePercent()
 				<<"\tquality="<<value.quality<<"\tquality_band="<<value.qualityBand
 				<<"\torder="<<value.order;
 			emit_telemetry(runtime,"food_consumer",consumer.str());
@@ -5298,7 +5298,8 @@ void Maxima::update_food_retirement(Context& runtime,
 		// every queued deletion, including one just issued by relocation.
 		if(value.key==relocation_target_building||value.key==replacement)continue;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
-		if(value.retirementCoveragePercent()>=burden)continue;
+		const int retirementCoverage=value.retirementCoveragePercent();
+		if(retirementCoverage>=burden)continue;
 		const std::map<int,int>::const_iterator since=
 			food_burden_since.find(value.key);
 		if(since==food_burden_since.end()
@@ -5315,8 +5316,8 @@ void Maxima::update_food_retirement(Context& runtime,
 		// Only completed buildings are retirable, so a swarm reaching here is
 		// physically present; never remove the settlement's last one.
 		else if(completed_swarms<=1)continue;
-		if(!worst||value.retirementCoveragePercent()<worst->retirementCoveragePercent()
-		   ||(value.retirementCoveragePercent()==worst->retirementCoveragePercent()&&value.key<worst->key))
+		if(!worst||retirementCoverage<worst->retirementCoveragePercent()
+		   ||(retirementCoverage==worst->retirementCoveragePercent()&&value.key<worst->key))
 			worst=&value;
 	}
 	if(!worst)return;
@@ -5328,7 +5329,7 @@ void Maxima::update_food_retirement(Context& runtime,
 	fields<<"\tbuilding_id="<<worst->key
 		<<"\tkind="<<(worst->kind==AIMaximaFoodLedger::InnConsumer?"inn":"swarm")
 		<<"\tcoverage="<<worst->coveragePercent
-        <<"\tretirement_coverage="<<worst->retirementCoveragePercent()
+		<<"\tretirement_coverage="<<worst->retirementCoveragePercent()
 		<<"\tdemand="<<worst->demand<<"\tclaimed="<<worst->claimed
 		<<"\tquality="<<worst->quality
 		<<"\tburden_age="<<(timer-food_burden_since[worst->key])

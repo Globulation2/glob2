@@ -1871,12 +1871,13 @@ TEST_CASE("food allocation does not retire reachable production but exhausted si
     level.productionResources[WHEAT]=level.operatingResources[WHEAT]=500;
     producer.levels.push_back(level);world.profiles.push_back(producer);
     BuildingProfile feeder;feeder.buildingType=2;
-    level.engineType=2;level.completedType=3;
-    level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
-    level.productionUnitMask=0;level.productionResources[WHEAT]=0;
-    level.feedingMask=7;level.feedingRate=800;
-    level.feedingResources[WHEAT]=level.operatingResources[WHEAT]=800;
-    feeder.levels.push_back(level);world.profiles.push_back(feeder);
+    BuildingLevelProfile feedingLevel=level;
+    feedingLevel.engineType=2;feedingLevel.completedType=3;
+    feedingLevel.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+    feedingLevel.productionUnitMask=0;feedingLevel.productionResources[WHEAT]=0;
+    feedingLevel.feedingMask=7;feedingLevel.feedingRate=800;
+    feedingLevel.feedingResources[WHEAT]=feedingLevel.operatingResources[WHEAT]=800;
+    feeder.levels.push_back(feedingLevel);world.profiles.push_back(feeder);
     for(int id=0;id<3;++id) {
         WorldBuilding building;building.id=building.gid=id;
         building.buildingType=id==2?2:0;building.level=1;
