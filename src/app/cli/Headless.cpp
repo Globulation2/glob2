@@ -5,6 +5,8 @@
 #include "scripting/javascript/ScriptRuntime.h"
 #include "scripting/javascript/ScriptValue.h"
 #include "PerformanceTelemetry.h"
+#include <array>
+#include <bit>
 #include "Engine.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
@@ -457,6 +459,7 @@ struct HeadlessRunner
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
+        std::array<Uint64,64> tickHistogram{};
 		if(benchmark)
 		{
 			const uint64_t first=engine.gui.game.stepCounter;
@@ -467,7 +470,13 @@ struct HeadlessRunner
 			if(benchmarkWarmup==0) measureStart=processCpuNs();
 			while(engine.gui.isRunning)
 			{
+                const auto beforeTick=engine.gui.game.stepCounter;
+                const auto tickStart=std::chrono::steady_clock::now();
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
+                if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
+                    const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
+                    ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                }
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
@@ -532,7 +541,14 @@ struct HeadlessRunner
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
 		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
-		result << '}'
+        result << "},\"benchmark_tick_histogram\":[";
+        for(unsigned i=0;i<tickHistogram.size();++i) {
+            if(i) result<<',';
+            result<<"{\"upper_ns_exclusive\":";
+            if(i==63)result<<"null";else result<<(Uint64(1)<<i);
+            result<<",\"count\":"<<tickHistogram[i]<<'}';
+        }
+        result << ']'
 			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
 			<< quote(termination)
 			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())

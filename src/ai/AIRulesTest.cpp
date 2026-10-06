@@ -86,6 +86,51 @@ std::string tick(Game& g)
 }
 TEST_SUITE("AIRules")
 {
+TEST_CASE("owner and snapshot selection audits agree for rule constrained orders")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* inn=fixture.addBuilding("inn",4,4);REQUIRE(inn);
+    auto* school=fixture.addBuilding("school",12,4);REQUIRE(school);
+    const int siteType=game.buildingsTypes.getTypeNum("inn",0,true);REQUIRE(siteType>=0);
+    auto* site=game.addBuilding(20,4,siteType,0);REQUIRE(site);
+    auto* flag=fixture.addBuilding("warflag",2,2);REQUIRE(flag);
+    const auto missing=Building::GIDfrom(Building::MAX_COUNT-1,0);
+    for(unsigned rules=0;rules<8;++rules) {
+        game.gameHeader.setUnitUpgradesDisabled(rules&1);
+        game.gameHeader.setHungerDisabled(rules&2);
+        game.gameHeader.setPeacefulModeEnabled(rules&4);
+        for(bool damaged:{false,true}) {
+            inn->hp=inn->getEffectiveMaxHp()-(damaged?1:0);
+            const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+            auto parity=[&](Order& order) {
+                CAPTURE(rules);CAPTURE(damaged);CAPTURE(order.getOrderType());
+                CHECK(AIRules::permittedQueuedOrder(*view,order)==AIRules::permittedQueuedOrder(game,order));
+            };
+            for(int type=-1;type<=int(game.buildingsTypes.size());++type) {
+                OrderCreate create(0,0,0,type,1,1);parity(create);
+            }
+            for(Uint16 gid:{inn->gid,school->gid,site->gid,missing,Uint16(0xffff)}) {
+                // Malformed wire targets bypass constructor preconditions before audit.
+                OrderConstruction construction(inn->gid,1,1);construction.gid=gid;parity(construction);
+                OrderMoveFlag move(inn->gid,4,4,false);move.gid=gid;parity(move);
+            }
+            OrderMoveFlag move(flag->gid,4,4,false);parity(move);
+            for(int warriors:{0,1}) {
+                Sint32 ratios[NB_UNIT_TYPE]={1,0,warriors};
+                OrderModifySwarm swarm(inn->gid,ratios);parity(swarm);
+            }
+            NullOrder nothing;parity(nothing);
+        }
+    }
+    const auto frozen=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    OrderMoveFlag move(flag->gid,4,4,false);
+    CHECK_FALSE(AIRules::permittedQueuedOrder(*frozen,move));
+    game.gameHeader.setPeacefulModeEnabled(false);
+    CHECK(AIRules::permittedQueuedOrder(game,move));
+    CHECK_FALSE(AIRules::permittedQueuedOrder(*frozen,move));
+}
 TEST_CASE("disabled training preserves independent services of mixed providers")
 {
     glob2test::HeadlessGlobals globals;

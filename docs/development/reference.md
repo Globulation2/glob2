@@ -25,6 +25,15 @@ inputs when necessary, rather than retaining the whole world. New snapshot field
 belong to the engine component that owns their source data; add capture and query
 coverage when extending them.
 
+Snapshot component pools synchronize final lease release and subsequent buffer
+reuse through the same mutex. A reference count establishes that readers have
+finished; this release/acquire barrier also orders their accesses before the owner
+writes the buffer again, including inputs retired by delayed gradient jobs. Reads
+need no locking. Alias lease control blocks use a standard synchronized memory
+pool, retaining their allocator state until the last weak reference is destroyed,
+so leases may safely outlive the capture Store. Warm control-block reuse avoids
+repeated upstream allocations without adding a custom free list.
+
 `AIEngine::Pipeline` orders each controller's decisions on its private worker
 stream. The match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8,
 defaulting to 0. An order observed at logical tick `t` is delivered at `t + delay`.

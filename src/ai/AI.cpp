@@ -214,6 +214,9 @@ AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
         deferredControllerReceipts.clear();
     }
 	if (!order) throw std::runtime_error("AI returned no order object");
+    if (std::getenv("GLOB2_TEST_AI_RULE_AUDIT") &&
+        !AIRules::permittedQueuedOrder(context.world,*order))
+        throw std::runtime_error("AI selected work unavailable under the match rules");
 	sink.count(AITelemetry::OrderTypes + order->getOrderType());
 	sink.count(order->getOrderType() == ORDER_NULL ? AITelemetry::NullOrders : AITelemetry::Orders);
 	aiImplementation->captureTelemetry();

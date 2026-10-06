@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Order.h"
 #include "Building.h"
+#include "ai/observation/AIWorldView.h"
 #include <algorithm>
 #include <memory>
 
@@ -70,4 +71,34 @@ inline bool permittedQueuedOrder(Game& game, Order& order)
     }
     return true;
 }
+// Selection-time qualification uses captured capabilities and entity values.
+// It deliberately mirrors the owner guard; no live rule/query fallback exists.
+inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& order)
+{
+    if(order.getOrderType()==ORDER_CREATE) {
+        const int type=static_cast<const OrderCreate&>(order).typeNum;
+        if(type<0 || !world.catalog || size_t(type)>=world.catalog->size()) return false;
+        const auto& kind=world.catalog->at(type);
+        return kind.available && (kind.capabilityMask || !kind.rawCapabilityMask);
+    }
+    if(world.rules.upgradesDisabled && order.getOrderType()==ORDER_CONSTRUCTION) {
+        const auto gid=static_cast<const OrderConstruction&>(order).gid;
+        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
+        const auto* building=world.buildingAtSlot(gid);
+        return building && (world.catalog->at(building->type).site ||
+            (world.catalog->at(building->type).semantics.repairable && building->hp<building->maxHp));
+    }
+    if(world.rules.peaceful && order.getOrderType()==ORDER_MODIFY_SWARM)
+        return static_cast<const OrderModifySwarm&>(order).ratio[WARRIOR]==0;
+    if(world.rules.peaceful && order.getOrderType()==ORDER_MOVE_FLAG) {
+        const auto gid=static_cast<const OrderMoveFlag&>(order).gid;
+        if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
+        const auto* building=world.buildingAtSlot(gid);
+        if(!building) return true;
+        const auto& kind=world.catalog->at(building->type);
+        return !kind.zonable[WARRIOR] || kind.zonable[WORKER] || kind.zonable[EXPLORER];
+    }
+    return true;
+}
+
 }

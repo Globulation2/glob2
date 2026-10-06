@@ -248,6 +248,13 @@ regressions must remain within 5%. Separate deadline misses and waits from avera
 tick time, and compare gameplay at delays 0, 1, 4 and 8 independently of throughput.
 The production delay remains zero until those experiments justify a change.
 
+Headless benchmark mode also exports `benchmark_tick_histogram`: fixed
+logarithmic nanosecond buckets with exclusive upper bounds (the final `null`
+bound denotes overflow). It samples complete advancing engine steps after
+warmup, including AI deadline waits. Stalled calls do not create tick samples.
+Use these separate instrumented runs for tick-time distributions; ordinary
+paired timing runs retain the default loop and do not pay histogram sampling.
+
 Snapshot pools have seventeen slots per component/plane to cover the largest consumer
 horizon: sixteen-tick map-gradient jobs and eight-tick AI decisions. Slots allocate on
 demand and retain reusable capacity. Lease counters include the store's latest snapshot

@@ -6,9 +6,74 @@
 #include "Unit.h"
 #include "Team.h"
 #include <span>
+#include <atomic>
+#include <thread>
+#include <ThreadSupport.h>
 
 TEST_SUITE("WorldSnapshot")
 {
+	TEST_CASE("component leases and weak control blocks outlive the owning store")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1}};
+		SimulationSnapshot::Handle held;
+		std::weak_ptr<const SimulationSnapshot::Resources> weak;
+		{
+			SimulationSnapshot::Store store;
+			held = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Resources));
+			weak = held.resources;
+		}
+		REQUIRE(held.resources);
+		CHECK(held.resources->cells.size() == 1024);
+		held = {};
+		CHECK(weak.expired());
+		// The alias allocator must still own its resource while this final weak
+		// reference deallocates the control block, after LeaseOwner destruction.
+		weak.reset();
+	}
+	TEST_CASE("lease control block storage stops allocating after warmup")
+	{
+		SimulationSnapshot::BufferPool<std::vector<int>> pool;
+		Uint64 allocations = 0;
+		for (unsigned i = 0; i < 32; ++i) { auto lease = pool.acquire(allocations); lease->resize(32); }
+		const auto upstream = pool.leaseUpstreamAllocations();
+		REQUIRE(upstream > 0);
+		CHECK(pool.leaseRetainedBytes() > 0);
+		for (unsigned i = 0; i < 256; ++i) { auto lease = pool.acquire(allocations); CHECK(lease->size() == 32); }
+		CHECK(pool.leaseUpstreamAllocations() == upstream);
+		CHECK(allocations == 1);
+	}
+	TEST_CASE("worker final lease release synchronizes owner buffer reuse")
+	{
+		if constexpr (GAGCore::ThreadSupport::available)
+		{
+			SimulationSnapshot::BufferPool<std::vector<int>> pool;
+			Uint64 allocations = 0;
+			for (int iteration = 0; iteration < 32; ++iteration)
+			{
+				auto lease = pool.acquire(allocations);
+				lease->assign(128, iteration);
+				auto* identity = lease.get();
+				std::atomic<bool> released{false};
+				int sum = 0;
+				auto worker = GAGCore::ThreadSupport::launch([lease = std::move(lease), &released, &sum]() mutable {
+					for (int value : *lease) sum += value;
+					lease.reset();
+					released.store(true, std::memory_order_relaxed);
+				});
+				// Relaxed polling deliberately supplies no read/write barrier. Only
+				// the lease retirement/acquisition mutex protects this next write.
+				while (!released.load(std::memory_order_relaxed)) std::this_thread::yield();
+				auto reused = pool.acquire(allocations);
+				CHECK(reused.get() == identity);
+				reused->assign(128, -1);
+				worker.join();
+				CHECK(sum == 128 * iteration);
+			}
+			CHECK(allocations == 1);
+		}
+	}
+
 	TEST_CASE("catalog refresh survives intervening projections and rules reuse independently")
 	{
 		glob2test::HeadlessGlobals globals;
