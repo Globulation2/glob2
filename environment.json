@@ -1,0 +1,10 @@
+{
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "machine": "x86_64",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "head": "524844f49ec8cf283a015cb687bf11286f5c4ed5",
+  "original_baseline": "7e54a3fc581d22d32e7b97a6aee76dbfeae58e9f",
+  "latest_checked_master": "16970b936790d47f770a4723c979b32e83df8028",
+  "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix GLOB2_RECORDING_PREFIX=/tmp/glob2-terrain-baseline-build/recording/prefix CCACHE=1 scons release=1 optimized_assets=0 -j12 tests build/linux/client/release/src/glob2",
+  "runtime": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib:/tmp/glob2-sdl3/prefix/lib"
+}
