@@ -1,0 +1,2 @@
+Tested commit 9a5e8927a00009399bfc0f8c0c476f81396ee5ba; feature base7be0b1f9f09d0e4a39a046a47fd9d9c21d9b13cc; fetched mastere53a673b2609175e781ad2608a15a220866cf2fa, both unchanged. Linux x86_64 Node22.22.1; npm ci --ignore-scripts with unchanged lock. From platform/: node_modules/.bin/eslint apps/api/src/maps/catalog.ts apps/api/test/playSupport.ts; prettier --check same files; npm run typecheck (all three tsconfigs). All exit0.
+Type-only import changes erased at runtime; native/runtime tests omitted. No simulation/save/replay changes.
