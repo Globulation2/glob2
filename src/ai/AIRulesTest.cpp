@@ -477,6 +477,8 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     const auto index=map.coordToIndex(8,8);
     const auto food=materialIndex(MaterialId::Food);
     const auto wheat=*map.resourceRegistry().find("wheat");
+    // All-grass fixture maps have zero land fertility until a water donor exists.
+    map.setCellTerrain(9,8,WATER);
     map.setResource(8,8,wheat,0);
     const auto ecology=map.resourceGrowthField().rate(index,resourceIndex(wheat));
     REQUIRE(ecology>0);
@@ -509,6 +511,7 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     // ecological rate does not divide evenly by eight.
     {
         auto definition=prototype;
+        definition["properties"]["ecology"]="uniform";
         definition["properties"]["growthRate"]=ResourceRateScale-3;
         map.setNoResource(8,8,0);
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
@@ -570,6 +573,7 @@ TEST_CASE("prospective material supply combines mixed branch numerators without 
     using Json=nlohmann::json;
     auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][1];
     definition["key"]="prospective-mixed";
+    definition["properties"]["ecology"]="uniform";
     definition["properties"]["primaryMaterial"]="gold";
     definition["properties"]["growthRate"]=ResourceRateScale-3;
     definition["properties"]["spreadRate"]=ResourceRateScale/2;
