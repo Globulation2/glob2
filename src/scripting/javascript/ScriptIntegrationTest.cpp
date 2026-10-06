@@ -8,6 +8,7 @@
 #include "ScriptRuntime.h"
 #include "GlobalContainer.h"
 #include "GameGUI.h"
+#include "MapEdit.h"
 #include "Game.h"
 #include "Unit.h"
 #include "Building.h"
@@ -1591,12 +1592,14 @@ TEST_CASE("JavaScript managed controls use capabilities and independent bombing 
     for(const auto& receipt:services.actions().items)CHECK(receipt.get("status").text=="completed");
 }
 
-TEST_CASE("JavaScript terrain resource permissions follow both catalogs and charge full enumeration" * doctest::test_suite("JavaScriptIntegration"))
+TEST_CASE("JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" * doctest::test_suite("JavaScriptIntegration"))
 {
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1});
-    auto& map=world.game.map;
-    Observations observations(world.game,-1);
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+        .display=true,.width=1024,.height=768,.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+    MapEdit editor;
+    auto& map=editor.game.map;
+    map.setSize(4,4,GRASS);
+    Observations observations(editor.game,-1);
     const auto old=observations.query("terrainTypes",{});
     auto definition=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][0];
     definition["key"]="test:script-habitat";

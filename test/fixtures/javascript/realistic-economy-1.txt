@@ -58,7 +58,7 @@ root/state/metrics/jitter number 3f3b8cca9b800000
 root/state/metrics/workers number 4010000000000000
 root/effects object 3
 root/effects/type string "workers"
-root/effects/building object 33
+root/effects/building object 34
 root/effects/building/id number 0000000000000000
 root/effects/building/generation number 3ff0000000000000
 root/effects/building/team number 0000000000000000
@@ -157,4 +157,17 @@ root/effects/building/clearingResources/1 bool 1
 root/effects/building/clearingResources/2 bool 1
 root/effects/building/clearingResources/3 bool 1
 root/effects/building/clearingResources/4 bool 1
+root/effects/building/clearingMaterials array 12
+root/effects/building/clearingMaterials/0 bool 1
+root/effects/building/clearingMaterials/1 bool 1
+root/effects/building/clearingMaterials/2 bool 1
+root/effects/building/clearingMaterials/3 bool 1
+root/effects/building/clearingMaterials/4 bool 1
+root/effects/building/clearingMaterials/5 bool 1
+root/effects/building/clearingMaterials/6 bool 1
+root/effects/building/clearingMaterials/7 bool 1
+root/effects/building/clearingMaterials/8 bool 1
+root/effects/building/clearingMaterials/9 bool 1
+root/effects/building/clearingMaterials/10 bool 1
+root/effects/building/clearingMaterials/11 bool 1
 root/effects/workers number 4010000000000000
