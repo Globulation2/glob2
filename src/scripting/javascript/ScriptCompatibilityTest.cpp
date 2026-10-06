@@ -134,7 +134,7 @@ TEST_CASE("Terrain seed format rejects released replays and enforces acceptance 
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_TERRAIN_SEED);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
 	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_TERRAIN_SEED);
 	CHECK(NET_PROTOCOL_VERSION == 58);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
