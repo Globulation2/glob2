@@ -1168,22 +1168,26 @@ int Gradient::getHeight(int x, int y) const
 bool Gradient::isSource(unsigned x, unsigned y)
 {
     auto* map=ai->map; auto* team=ai->team;
-	const int resource=map->getTile(x,y).resource.type;
- if(resource>=0 && resource<MAX_NB_RESOURCES && (sources&(1u<<(8+resource))) && map->isResourceTakeable(x,y,resource)) return true;
+	const auto index=map->coordToIndex(x,y);
+	const auto sourceResource=map->world->resourceAt(index).resource;
+	const int resource=sourceResource.type;
+	const auto isTakeable=[&](int type) { return sourceResource.type==type && sourceResource.amount>0; };
+ if(resource>=0 && resource<MAX_NB_RESOURCES && (sources&(1u<<(8+resource))) && isTakeable(resource)) return true;
  if(sources&VillageCenter && x==ai->getCenterX() && y==ai->getCenterY())
 		return true;
-	if(sources&Wheat && map->isResourceTakeable(x, y, WHEAT))
+	if(sources&Wheat && isTakeable(WHEAT))
 		return true;
-	if(sources&Wood && map->isResourceTakeable(x, y, WOOD))
+	if(sources&Wood && isTakeable(WOOD))
 		return true;
-	if(sources&Stone && map->isResourceTakeable(x, y, STONE))
+	if(sources&Stone && isTakeable(STONE))
 		return true;
-	if(sources&TeamBuildings && map->getBuilding(x, y)!=NOGBID)
+	if(sources&TeamBuildings)
 	{
-		if(getBuildingFromGid(team->game, map->getBuilding(x, y))->team==team)
+		const auto building=map->world->occupancyAt(index).building;
+		if(building!=NOGBID && getBuildingFromGid(team->game, building)->team==team)
 			return true;
 	}
-	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(x, y)))
+	if(sources&Water && terrainProvidesFertility(map->world->terrain->properties(map->world->terrainAt(index).type)))
 		return true;
 	return false;
 }

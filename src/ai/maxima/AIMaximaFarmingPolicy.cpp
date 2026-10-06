@@ -99,6 +99,14 @@ namespace
 			&& cell.resource.type==NO_RES_TYPE && cell.building==NOGBID;
 	}
 
+	bool is_empty_growth_cell(AISharedRuntime::Read::Map* map, std::size_t index)
+	{
+		const auto resource=map->world->resourceAt(index);
+		const auto& terrain=map->terrainPropertiesAt(index);
+		return (terrain.allowedResources & (1u<<WHEAT)) && terrain.resourcesGrow && resource.mayGrow
+			&& resource.resource.type==NO_RES_TYPE && map->world->occupancyAt(index).building==NOGBID;
+	}
+
 	// Close one-cell harvest gaps before identifying the outer farm boundary.
 	// Otherwise routine harvesting would turn the entire interior into an edge.
 	std::vector<Uint8> wheat_farm_exterior(AISharedRuntime::Read::Map* map)
@@ -149,7 +157,6 @@ namespace
 		const int w=map->getW();
 		const int h=map->getH();
 		const int index=y*w+x;
-		const auto cell=map->getSpatialTile(x, y);
 		const bool seed_lattice=Farming::isInteriorSeed(x, y);
 		const bool expansion_lattice=Farming::isExpansionCell(x, y);
 		const Uint32 fertility=fertility_cache.at(x, y);
@@ -160,7 +167,7 @@ namespace
 		// protecting an empty tile then exposing its new wheat would defeat it.
 		const bool fertile=fertility>=minimum_fertility
 			|| (resource_type==WHEAT && shoreline_backed);
-		if(is_empty_growth_cell(cell, map->terrainPropertiesAt(x,y))
+		if(is_empty_growth_cell(map, index)
 		   && fertile)
 		{
 			bool adjacent_resource=false;
@@ -182,11 +189,11 @@ namespace
 				for(int dx=-1; dx<=1; ++dx)
 				{
 					if(!dx && !dy) continue;
-					const auto neighbor=map->getSpatialTile(x+dx, y+dy);
-					const bool eligible=is_empty_growth_cell(neighbor, map->terrainPropertiesAt(x+dx,y+dy))
+					const auto neighborIndex=map->coordToIndex(x+dx,y+dy);
+					const bool eligible=is_empty_growth_cell(map, neighborIndex)
 						&& fertility_cache.at(x+dx, y+dy)>=minimum_fertility
 						&& (resource_type!=WHEAT
-							|| wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]);
+							|| wheat_exterior[neighborIndex]);
 					pattern.edge_candidate=pattern.edge_candidate || eligible;
 				}
 			pattern.edge=pattern.edge_candidate && expansion_lattice;
@@ -636,10 +643,10 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	std::vector<int> resource_burden(size, 0);
 	for(int index=0; index<size; ++index)
 	{
-		const auto cell=map->getSpatialTile(index%w, index/w);
+		const auto resource=map->world->resourceAt(index).resource;
 		grandfathered_resource[index]=!applied_maintenance_clearing_mask[index]
-			&& (cell.resource.type==WHEAT || cell.resource.type==WOOD);
-		resource_burden[index]=std::max(1, int(cell.resource.amount));
+			&& (resource.type==WHEAT || resource.type==WOOD);
+		resource_burden[index]=std::max(1, int(resource.amount));
 	}
 	auto retain_circulation=[&](const std::vector<int>& tiles)
 	{
@@ -1108,12 +1115,12 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
-			const auto resource=map->getSpatialTile(x, y);
+			const auto resource=map->world->resourceAt(y*w+x).resource;
 			Uint8 bit=0;
-			if(resource.resource.amount>0)
+			if(resource.amount>0)
 			{
-				if(resource.resource.type==WHEAT) bit=1;
-				else if(resource.resource.type==WOOD) bit=2;
+				if(resource.type==WHEAT) bit=1;
+				else if(resource.type==WOOD) bit=2;
 			}
 			if(!bit) continue;
 			for(int dy=-1; dy<=1; ++dy)
@@ -1127,12 +1134,15 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		for(int x=0; x<w; ++x)
 		{
 			const int index=y*w+x;
-			const auto cell=map->getSpatialTile(x, y);
-			const bool wheat=cell.resource.type==WHEAT
-				&& cell.resource.amount>0;
-			const bool wood=cell.resource.type==WOOD
-				&& cell.resource.amount>0;
-			const bool empty_growth=is_empty_growth_cell(cell, map->terrainPropertiesAt(x,y));
+			const auto resource=map->world->resourceAt(index);
+			const bool wheat=resource.resource.type==WHEAT
+				&& resource.resource.amount>0;
+			const bool wood=resource.resource.type==WOOD
+				&& resource.resource.amount>0;
+			const auto& terrain=map->terrainPropertiesAt(index);
+			const bool empty_growth=(terrain.allowedResources & (1u<<WHEAT))
+				&& terrain.resourcesGrow && resource.mayGrow
+				&& resource.resource.type==NO_RES_TYPE && map->world->occupancyAt(index).building==NOGBID;
 
 			FarmTileClassification wheat_role;
 			FarmTileClassification wood_role;

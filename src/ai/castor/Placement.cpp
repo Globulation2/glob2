@@ -48,7 +48,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	Sint32 bestWorkScore=AI_CASTOR_BEST_WORK_SCORE_FLOOR;
 	for (size_t i=0; i<size; i++)
 	{
-		if ((observation->tiles[i].discovered&me)==0)
+		if ((observation->visibilityAt(i).discovered&me)==0)
 			continue;
 		Uint8 work=workAbilityMap[i];
 		if (bestWorkScore<work)
@@ -96,10 +96,10 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			size_t corner3=(((x+bw-1)&wMask)|(((y+bh-1)&hMask)<<wDec));
 			
 			if (critical
-				&& (observation->tiles[corner0].discovered&me)==0
-				&& (observation->tiles[corner1].discovered&me)==0
-				&& (observation->tiles[corner2].discovered&me)==0
-				&& (observation->tiles[corner3].discovered&me)==0)
+				&& (observation->visibilityAt(corner0).discovered&me)==0
+				&& (observation->visibilityAt(corner1).discovered&me)==0
+				&& (observation->visibilityAt(corner2).discovered&me)==0
+				&& (observation->visibilityAt(corner3).discovered&me)==0)
 				continue;
 			
 			Uint8 space=spaceForBuildingMap[corner0];
@@ -181,7 +181,7 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
     if(observation->terrainMovementModifiers)
     {
 		field::expandTerrainInfluence(
-			gradient, observation->width, observation->height, [&](std::size_t i) { return observation->tiles[i].terrain; },
+			gradient, observation->width, observation->height, [&](std::size_t i) { return observation->terrainAt(i).type; },
 			*observation->terrain);
 		return;
     }

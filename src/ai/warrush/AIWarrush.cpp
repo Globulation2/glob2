@@ -939,20 +939,21 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	{
 		for(int y=0;y<observation->height;y++)
 		{
-			auto c=queries->getTile(x,y);
-			if (c.resource.type==resource_type)
+			const auto index=observation->tileIndex(x,y);
+			const auto resource=observation->resourceAt(index).resource;
+			if (resource.type==resource_type)
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
-			else if (c.resource.type!=NO_RES_TYPE)
+			else if (resource.type!=NO_RES_TYPE)
 			{
 				gradient(x, y) = 0;
 			}
-			else if (c.building!=NOGBID)
+			else if (observation->occupancyAt(index).building!=NOGBID)
 			{
 				gradient(x, y) = 0;
 			}
-			else if (!queries->terrainPropertiesAt(x,y).walkable)
+			else if (!observation->terrain->properties(observation->terrainAt(index).type).walkable)
 			{
 				gradient(x, y) = 0;
 			}
@@ -1015,16 +1016,17 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Intent intent)
 	{
 		for(int y=0;y<observation->height;y++)
 		{
-			auto c=queries->getTile(x,y);
-			if (c.resource.type!=NO_RES_TYPE)
+			const auto index=observation->tileIndex(x,y);
+			const auto resource=observation->resourceAt(index).resource;
+			if (resource.type!=NO_RES_TYPE)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (c.building!=NOGBID)
+			else if (observation->occupancyAt(index).building!=NOGBID)
 			{
 				availability_gradient(x, y) = 0;
 			}
-			else if (!queries->terrainPropertiesAt(x,y).walkable)
+			else if (!observation->terrain->properties(observation->terrainAt(index).type).walkable)
 			{
 				availability_gradient(x, y) = 0;
 			}

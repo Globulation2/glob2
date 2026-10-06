@@ -64,6 +64,11 @@ struct ResourceField
 };
 struct ResourceFields { std::map<ResourceFieldKey, ResourceField> values; };
 
+// Shared farm semantics for checked handles and validated controller readers.
+bool canPaintFarm(const ResourceCell& cell, const TerrainProperties& properties,
+	const std::array<bool, MAX_NB_RESOURCES>& shrinkable,
+	const Fertility::GrowthCache& growth, std::size_t index);
+
 // A handle owns only components explicitly leased to this consumer. Projection
 // does not keep an umbrella snapshot alive through an incidental parent pointer.
 struct Handle

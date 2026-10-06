@@ -34,6 +34,14 @@ all fields, including farm eligibility, which remains an explicit derived query
 when only that value is needed. Keep capture and derived-query costs separate in
 profiles before adding more elaborate copying mechanisms.
 
+`AIWorldView` validates dimensions and leased map-array sizes when it binds an
+observation. Its scalar readers borrow the retained arrays directly: callers must
+request the corresponding component and supply an index from that view's geometry.
+Dimensions are immutable and wrapping masks/shifts are cached. Keep checked handle
+queries at diagnostic boundaries; do not add component or bounds checks to each
+inner-loop read. Use full tiles only when the consumer needs the combined fields,
+including derived farm eligibility.
+
 Snapshot component pools synchronize final lease release and subsequent buffer
 reuse through the same mutex. A reference count establishes that readers have
 finished; this release/acquire barrier also orders their accesses before the owner

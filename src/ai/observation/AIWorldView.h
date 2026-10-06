@@ -17,6 +17,18 @@ using SimulationSnapshot::BuildProjectView;
 class AIWorldView
 {
 	SimulationSnapshot::Handle lease;
+	const decltype(SimulationSnapshot::Catalogs::unitTypes)* observedUnitTypes = nullptr;
+	const TerrainType* terrainCells = nullptr;
+	const Uint16* legacyTerrainCells = nullptr;
+	const SimulationSnapshot::ResourceCell* resourceCells = nullptr;
+	const SimulationSnapshot::OccupancyCell* occupancyCells = nullptr;
+	const SimulationSnapshot::AreaCell* areaCells = nullptr;
+	const SimulationSnapshot::VisibilityCell* visibilityCells = nullptr;
+	int xMask = -1, yMask = -1;
+	unsigned widthShift = 0;
+	bool maskedGeometry = false, farmInputs = false;
+	std::size_t cellCount = 0;
+	TileView composeTile(std::size_t index) const;
 public:
 	using Catalog = std::vector<BuildingKindView>;
 	explicit AIWorldView(SimulationSnapshot::Handle captured);
@@ -34,7 +46,8 @@ public:
 	}
 	const SimulationSnapshot::Handle& components() const { return lease; }
 	Uint32 tick = 0;
-	int width = 0, height = 0, totalPrestige = 0;
+	const int width, height;
+	int totalPrestige = 0;
 	Uint64 terrainRevision = 0;
 	bool terrainMovementModifiers = false, airTerrainConstraints = false;
 	RuleView rules;
@@ -47,19 +60,20 @@ public:
 	std::shared_ptr<const Catalog> catalog;
 	std::shared_ptr<const GameHeader> configuration;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
-	const UnitType& unitType(int type, int level) const { return lease.catalogs->unitTypes.at(type).at(level); }
+	const UnitType& unitType(int type, int level) const { return (*observedUnitTypes)[type][level]; }
 	std::span<const TeamView> teams;
 	std::span<const BuildingView> buildings;
 	std::span<const UnitView> units;
 	std::span<const BuildProjectView> buildProjects;
 	class Tiles
 	{
-		const SimulationSnapshot::Handle* lease;
+		const AIWorldView* world;
 	public:
-		explicit Tiles(const SimulationSnapshot::Handle& value) : lease(&value) {}
-		std::size_t size() const { return std::size_t(lease->width) * lease->height; }
-		TileView operator[](std::size_t index) const { return lease->tileAt(index); }
-		TileView at(std::size_t index) const { return lease->tileAt(index); }
+		explicit Tiles(const AIWorldView& value) : world(&value) {}
+		std::size_t size() const { return world->cellCount; }
+		TileView operator[](std::size_t index) const { return world->composeTile(index); }
+		TileView at(std::size_t index) const
+		{ if (index >= size()) throw std::out_of_range("snapshot tile index"); return world->composeTile(index); }
 	} tiles;
 	std::span<const UnitRef> workers(const BuildingView& building) const
 	{ return std::span<const UnitRef>(lease.entities->relationships).subspan(building.working.offset, building.working.count); }
@@ -71,21 +85,26 @@ public:
 	const UnitView* unitAtSlot(Uint16 gid) const;
 	TileView tile(int x, int y) const;
 	std::size_t tileIndex(int x, int y) const
-	{ return std::size_t(normalizeY(y)) * width + normalizeX(x); }
-	auto terrainAt(std::size_t index) const { return lease.terrainAt(index); }
-	auto resourceAt(std::size_t index) const { return lease.resourceAt(index); }
-	auto occupancyAt(std::size_t index) const { return lease.occupancyAt(index); }
-	auto areasAt(std::size_t index) const { return lease.areasAt(index); }
-	auto visibilityAt(std::size_t index) const { return lease.visibilityAt(index); }
-	bool canPaintFarmAt(std::size_t index) const { return lease.canPaintFarmAt(index); }
-	int normalizeX(int x) const { return wrap(x, width); }
-	int normalizeY(int y) const { return wrap(y, height); }
+	{
+		if (maskedGeometry) return ((std::size_t(unsigned(y) & unsigned(yMask))) << widthShift)
+			+ (unsigned(x) & unsigned(xMask));
+		return std::size_t(normalizeY(y)) * width + normalizeX(x);
+	}
+	// Binding validates component sizes once. Scalar reads require the named
+	// component and an index produced by this observation's geometry.
+	SimulationSnapshot::TerrainCell terrainAt(std::size_t index) const
+	{ return {terrainCells[index], legacyTerrainCells[index]}; }
+	const SimulationSnapshot::ResourceCell& resourceAt(std::size_t index) const { return resourceCells[index]; }
+	const SimulationSnapshot::OccupancyCell& occupancyAt(std::size_t index) const { return occupancyCells[index]; }
+	const SimulationSnapshot::AreaCell& areasAt(std::size_t index) const { return areaCells[index]; }
+	const SimulationSnapshot::VisibilityCell& visibilityAt(std::size_t index) const { return visibilityCells[index]; }
+	bool canPaintFarmAt(std::size_t index) const;
+	int normalizeX(int x) const { return xMask >= 0 ? unsigned(x) & unsigned(xMask) : wrapGeneral(x, width); }
+	int normalizeY(int y) const { return yMask >= 0 ? unsigned(y) & unsigned(yMask) : wrapGeneral(y, height); }
 	int distanceSquared(int x1, int y1, int x2, int y2) const;
 private:
-	static int wrap(int coordinate, int size)
+	static int wrapGeneral(int coordinate, int size)
 	{
-		if (size <= 0) throw std::logic_error("AI observation has no map dimensions");
-		if ((size & (size - 1)) == 0) return unsigned(coordinate) & unsigned(size - 1);
 		if (unsigned(coordinate) < unsigned(size)) return coordinate;
 		const int value = coordinate % size;
 		return value < 0 ? value + size : value;

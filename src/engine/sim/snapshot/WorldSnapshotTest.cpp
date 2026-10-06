@@ -63,9 +63,98 @@ TEST_SUITE("WorldSnapshot")
 				CHECK(view.tileIndex(x,y)==std::size_t(expected(y,7))*width+expected(x,width));
 			}
 		}
-		SimulationSnapshot::Handle empty;
-		AIEngine::AIWorldView view(std::move(empty));
-		CHECK_THROWS_AS(view.normalizeX(0),std::logic_error); CHECK_THROWS_AS(view.normalizeY(0),std::logic_error);
+		for (const auto dimensions : {std::pair{0,7},std::pair{7,0},std::pair{-1,7},std::pair{7,-1}})
+		{
+			SimulationSnapshot::Handle invalid; invalid.width=dimensions.first; invalid.height=dimensions.second;
+			CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(invalid)),std::logic_error);
+		}
+	}
+	TEST_CASE("AI boundary validates each captured map array before fast reads")
+	{
+		using namespace SimulationSnapshot;
+		const auto geometry=[] { Handle h; h.width=32; h.height=32; return h; };
+		const auto checkCells=[&]<class Layer>(Component component, std::shared_ptr<const Layer> Handle::*member)
+		{
+			for (std::size_t count : {1023u,1024u,1025u})
+			{
+				auto h=geometry(); h.requirements=bit(component);
+				auto layer=std::make_shared<Layer>(); layer->cells.resize(count); h.*member=layer;
+				if (count==1024) CHECK_NOTHROW(AIEngine::AIWorldView(std::move(h)));
+				else CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(h)),std::logic_error);
+			}
+		};
+		for (Component component : {Component::Terrain,Component::Resources,Component::Occupancy,Component::Areas,Component::Visibility})
+		{
+			auto missing=geometry(); missing.requirements=bit(component);
+			CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(missing)),std::logic_error);
+		}
+		checkCells(Component::Resources,&Handle::resources);
+		checkCells(Component::Occupancy,&Handle::occupancy);
+		checkCells(Component::Areas,&Handle::areas);
+		checkCells(Component::Visibility,&Handle::visibility);
+		for (std::size_t count : {1023u,1024u,1025u}) for (bool malformedIdentity : {false,true})
+		{
+			auto h=geometry(); h.requirements=bit(Component::Terrain);
+			auto layer=std::make_shared<Terrain>();
+			layer->identity=std::make_shared<const std::vector<TerrainType>>(malformedIdentity?count:1024,GRASS);
+			layer->legacy.resize(malformedIdentity?1024:count); h.terrain=layer;
+			if (count==1024) CHECK_NOTHROW(AIEngine::AIWorldView(std::move(h)));
+			else CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(h)),std::logic_error);
+		}
+		auto missingIdentity=geometry(); missingIdentity.requirements=bit(Component::Terrain);
+		auto terrain=std::make_shared<Terrain>(); terrain->legacy.resize(1024); missingIdentity.terrain=terrain;
+		CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(missingIdentity)),std::logic_error);
+		auto emptyGrowth=geometry(); emptyGrowth.requirements=bit(Component::Growth);
+		emptyGrowth.growth=std::make_shared<const Fertility::GrowthCache>();
+		CHECK_THROWS_AS(AIEngine::AIWorldView(std::move(emptyGrowth)),std::logic_error);
+		// Partial projections validate only their captured arrays; geometry itself
+		// remains usable without invoking a raw reader for an omitted component.
+		CHECK_NOTHROW(AIEngine::AIWorldView(geometry()));
+	}
+	TEST_CASE("AI fast scalar reads preserve checked values and frozen lease isolation")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true}};
+		auto& game=fixture.game; auto& map=game.map;
+		map.setResource(20,20,WHEAT,1); map.setResourceAmount(map.coordToIndex(20,20),1); map.setResourcesGrow(20,20,1);
+		map.setFertility(20,20,123); map.setGroundUnit(20,20,7); map.setAirUnit(20,20,8);
+		map.addForbidden(20,20,0); map.addGuardArea(20,20,0); map.addClearArea(20,20,0);
+		map.setMapDiscovered(20,20,1u);
+		SimulationSnapshot::Store store;
+		const auto captured=store.captureBoundary(game,SimulationSnapshot::All);
+		AIEngine::AIWorldView original(captured);
+		for (std::size_t i=0;i<1024;++i)
+		{
+			const auto terrain=original.terrainAt(i), checkedTerrain=captured.terrainAt(i);
+			CHECK(terrain.type==checkedTerrain.type); CHECK(terrain.legacy==checkedTerrain.legacy);
+			const auto resource=original.resourceAt(i), checkedResource=captured.resourceAt(i);
+			CHECK(resource.resource.getUint32()==checkedResource.resource.getUint32());
+			CHECK(resource.fertility==checkedResource.fertility); CHECK(resource.mayGrow==checkedResource.mayGrow);
+			const auto occupancy=original.occupancyAt(i), checkedOccupancy=captured.occupancyAt(i);
+			CHECK(occupancy.building==checkedOccupancy.building); CHECK(occupancy.groundUnit==checkedOccupancy.groundUnit);
+			CHECK(occupancy.airUnit==checkedOccupancy.airUnit); CHECK(occupancy.immobileUnit==checkedOccupancy.immobileUnit);
+			const auto area=original.areasAt(i), checkedArea=captured.areasAt(i);
+			CHECK(area.forbidden==checkedArea.forbidden); CHECK(area.guard==checkedArea.guard);
+			CHECK(area.clear==checkedArea.clear); CHECK(area.farm==checkedArea.farm);
+			const auto visibility=original.visibilityAt(i), checkedVisibility=captured.visibilityAt(i);
+			CHECK(visibility.discovered==checkedVisibility.discovered); CHECK(visibility.visible==checkedVisibility.visible);
+			CHECK(original.canPaintFarmAt(i)==captured.canPaintFarmAt(i));
+		}
+		const auto index=original.tileIndex(-12,52);
+		CHECK(index==map.coordToIndex(20,20));
+		map.setResourceAmount(index,2); map.setFertility(20,20,456); map.setResourcesGrow(20,20,0);
+		map.setGroundUnit(20,20,9); map.setAirUnit(20,20,10);
+		map.removeForbidden(20,20,0); map.setMapDiscovered(20,20,2u);
+		++game.stepCounter;
+		AIEngine::AIWorldView changed(store.captureBoundary(game,SimulationSnapshot::All));
+		CHECK(original.resourceAt(index).resource.amount==1); CHECK(changed.resourceAt(index).resource.amount==2);
+		CHECK(original.resourceAt(index).fertility==123); CHECK(changed.resourceAt(index).fertility==456);
+		CHECK(original.resourceAt(index).mayGrow); CHECK_FALSE(changed.resourceAt(index).mayGrow);
+		CHECK(original.occupancyAt(index).groundUnit==7); CHECK(changed.occupancyAt(index).groundUnit==9);
+		CHECK(original.occupancyAt(index).airUnit==8); CHECK(changed.occupancyAt(index).airUnit==10);
+		CHECK((original.areasAt(index).forbidden&1u)==1u); CHECK((changed.areasAt(index).forbidden&1u)==0u);
+		CHECK((original.visibilityAt(index).discovered&2u)==0u); CHECK((changed.visibilityAt(index).discovered&2u)==2u);
+		CHECK((original.visibilityAt(index).visible&2u)==0u); CHECK((changed.visibilityAt(index).visible&2u)==2u);
 	}
 	TEST_CASE("component leases and weak control blocks outlive the owning store")
 	{

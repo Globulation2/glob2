@@ -78,7 +78,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			if (rally && provides(*rally, Intent::AttractWarriors))
 			{
 				const AIEngine::BuildingView *b=rally;
-				int gbid=observation->tile(b->x,b->y).building;
+				int gbid=observation->occupancyAt(observation->tileIndex(b->x,b->y)).building;
 				if (disposableRally(*b,*queries) && (gbid==NOGBID || Building::GIDtoTeam(gbid)==teamNumber))
 					return telemetry.returnedOrder(
 						AITrace::AI1::AINumbi_mayAttack_result,

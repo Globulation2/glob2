@@ -20,13 +20,39 @@ template<class MapValue>
 inline bool foodTileAccessible(MapValue* map,int x,int y,Uint32 teamMask,
     bool canSwim,const std::vector<Uint8>* protectedTiles)
 {
-    const auto tile=map->getTile(x,y);
-    const int index=y*map->getW()+x;
-    return map->isMapDiscovered(x,y,teamMask)
-        && (!(tile.forbidden&teamMask) || (protectedTiles && (*protectedTiles)[index]))
-        && tile.building==NOGBID
-        && (tile.resource.type==NO_RES_TYPE || tile.resource.type==WHEAT)
-        && (map->terrainPropertiesAt(x,y).walkable || (canSwim && map->terrainPropertiesAt(x,y).swimmable));
+    const auto index=map->coordToIndex(x,y);
+    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>)
+    {
+        const auto& world=*map->world;
+        if(!(world.visibilityAt(index).discovered&teamMask)) return false;
+        if((world.areasAt(index).forbidden&teamMask)
+            && !(protectedTiles && (*protectedTiles)[index])) return false;
+        if(world.occupancyAt(index).building!=NOGBID) return false;
+        const auto resource=world.resourceAt(index).resource;
+        if(resource.type!=NO_RES_TYPE && resource.type!=WHEAT) return false;
+        const auto& terrain=map->terrainPropertiesAt(index);
+        return terrain.walkable || (canSwim && terrain.swimmable);
+    }
+    else
+    {
+        if(!map->isMapDiscovered(x,y,teamMask)) return false;
+        if(map->isForbidden(x,y,teamMask)
+            && !(protectedTiles && (*protectedTiles)[index])) return false;
+        if(map->getBuilding(x,y)!=NOGBID) return false;
+        const auto resource=map->getResource(x,y);
+        if(resource.type!=NO_RES_TYPE && resource.type!=WHEAT) return false;
+        const auto& terrain=map->terrainPropertiesAt(x,y);
+        return terrain.walkable || (canSwim && terrain.swimmable);
+    }
+}
+
+template<class MapValue>
+inline auto foodResourceAt(MapValue* map,int index,int x,int y)
+{
+    if constexpr(std::is_same_v<MapValue,AISharedRuntime::Read::Map>)
+        return map->world->resourceAt(index).resource;
+    else
+        return map->getResource(x,y);
 }
 
 /// A standing stack of wheat is supply as well as regrowth: mined over a
@@ -109,12 +135,12 @@ inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingVal
             [&](int index,int steps) {
                 if(steps>stop)return field::Visit::Stop;
                 const int x=index%width,y=index/width;
-                const auto& tile=map->getTile(x,y);
-                if(tile.resource.type==WHEAT && tile.resource.amount>0)
+                const auto resource=foodResourceAt(map,index,x,y);
+                if(resource.type==WHEAT && resource.amount>0)
                 {
                     if(stop==std::numeric_limits<int>::max())stop=steps+localRadius;
                     capacity+=(effectiveWheatRegrowth(map,fertility.at(x,y))
-                        +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks))*localRadius
+                        +wheatStockFertilityEquivalent(resource.amount,stockHorizonTicks))*localRadius
                         /std::max(localRadius,steps);
                 }
                 return field::Visit::Expand;
@@ -139,12 +165,12 @@ inline long long distantFoodCapacity(MapValue* map,const std::vector<BuildingVal
         [&](int index) {
             const int x=index%width,y=index/width,steps=distance[index];
             if(steps>stop)return field::Visit::Stop;
-            const auto tile=map->getTile(x,y);
-            if((map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT))&&tile.resource.type==WHEAT&&tile.resource.amount>0)
+            const auto resource=foodResourceAt(map,index,x,y);
+            if((map->terrainPropertiesAt(index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0)
             {
                 if(stop==size)stop=std::min(size,steps+localRadius);
                 capacity+=(effectiveWheatRegrowth(map,fertility.at(x,y))
-                    +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks))*localRadius
+                    +wheatStockFertilityEquivalent(resource.amount,stockHorizonTicks))*localRadius
                     /std::max(localRadius,steps);
             }
             return steps>=stop?field::Visit::Skip:field::Visit::Expand;
@@ -168,11 +194,11 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
             [&](int index,int steps) {
                 if(steps>radius)return field::Visit::Stop;
                 const int x=index%width,y=index/width;
-                const auto& tile=map->getTile(x,y);
-                if(tile.resource.type==WHEAT && tile.resource.amount>0
+                const auto resource=foodResourceAt(map,index,x,y);
+                if(resource.type==WHEAT && resource.amount>0
                     && (!shared_tiles || shared_tiles->insert(index).second))
                     capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))
-                        +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
+                        +wheatStockFertilityEquivalent(resource.amount,stockHorizonTicks);
                 return field::Visit::Expand;
             });
         return capacity;
@@ -201,10 +227,10 @@ inline long long reachableFoodCapacity(MapValue* map, BuildingValue* building,
 	field::traverse(queue,{width,map->getH()},field::Surrounding,
 		[&](int index) {
 			const int x=index%width,y=index/width;
-			const auto tile=map->getTile(x,y);
-			if((map->terrainPropertiesAt(x,y).allowedResources & (1u<<WHEAT))&&tile.resource.type==WHEAT&&tile.resource.amount>0
+			const auto resource=foodResourceAt(map,index,x,y);
+			if((map->terrainPropertiesAt(index).allowedResources & (1u<<WHEAT))&&resource.type==WHEAT&&resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
-				capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
+				capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))+wheatStockFertilityEquivalent(resource.amount,stockHorizonTicks);
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int px,int py) {
 			const int nx=map->normalizeX(px),ny=map->normalizeY(py),adjacent=ny*width+nx;

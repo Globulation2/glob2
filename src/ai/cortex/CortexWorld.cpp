@@ -63,16 +63,17 @@ bool World::checkRoomForBuilding(int x,int y,const BuildingType* type,int team) 
 {
     if(type->isVirtual)
     {
+        const auto nx=map.normalizeX(x),ny=map.normalizeY(y);
         for(const auto* building:teams[team]->virtualBuildings)
-            if(building->posX==map.normalizeX(x)&&building->posY==map.normalizeY(y))return false;
+            if(building->posX==nx&&building->posY==ny)return false;
         return true;
     }
     bool discovered=false;
     for(int dy=0;dy<type->height;++dy)for(int dx=0;dx<type->width;++dx)
     {
-        const auto tile=source.occupancyAt(source.tileIndex(x+dx,y+dy));
-        if(!map.isHardSpaceForBuilding(x+dx,y+dy)||tile.groundUnit!=0xffff)return false;
-        discovered|=map.isMapDiscovered(x+dx,y+dy,teams[team]->me);
+        const auto index=source.tileIndex(x+dx,y+dy);
+        if(!map.isHardSpaceForBuildingAt(index,0xffff,true))return false;
+        discovered|=source.visibilityAt(index).discovered&teams[team]->me;
     }
     return discovered;
 }

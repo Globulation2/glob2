@@ -14,6 +14,7 @@ std::shared_ptr<const AIEngine::AIWorldView> observation(Uint32 tick)
 {
 	SimulationSnapshot::Handle handle;
 	handle.tick = tick;
+	handle.width = handle.height = 1;
 	return std::make_shared<AIEngine::AIWorldView>(std::move(handle));
 }
 AIEngine::Command nullCommand() { return {{ORDER_NULL}, {}, {}}; }

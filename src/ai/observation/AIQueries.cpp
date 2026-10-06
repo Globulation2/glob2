@@ -28,8 +28,37 @@ const UnitView* AIWorldView::unit(UnitRef identity) const
 }
 TileView AIWorldView::tile(int x, int y) const
 {
-	return tiles.at(tileIndex(x, y));
+	return composeTile(tileIndex(x, y));
 }
+bool AIWorldView::canPaintFarmAt(std::size_t index) const
+{
+	if (!farmInputs) return false;
+	const auto& cell = resourceCells[index];
+	const auto& properties = terrain->properties(terrainCells[index]);
+	return SimulationSnapshot::canPaintFarm(cell, properties, resourceShrinkable, *growth, index);
+}
+TileView AIWorldView::composeTile(std::size_t index) const
+{
+	TileView result;
+	if (terrainCells) { result.terrain = terrainCells[index]; result.legacyTerrain = legacyTerrainCells[index]; }
+	if (resourceCells) {
+		const auto& cell = resourceCells[index];
+		result.resource = cell.resource; result.fertility = cell.fertility; result.resourcesMayGrow = cell.mayGrow;
+	}
+	result.canPaintFarm = canPaintFarmAt(index);
+	if (occupancyCells) {
+		const auto& cell = occupancyCells[index];
+		result.building = cell.building; result.groundUnit = cell.groundUnit;
+		result.airUnit = cell.airUnit; result.immobileUnit = cell.immobileUnit;
+	}
+	if (areaCells) {
+		const auto& cell = areaCells[index];
+		result.forbidden = cell.forbidden; result.guard = cell.guard; result.clear = cell.clear; result.farm = cell.farm;
+	}
+	if (visibilityCells) { result.discovered = visibilityCells[index].discovered; result.visible = visibilityCells[index].visible; }
+	return result;
+}
+
 int AIWorldView::distanceSquared(int x1, int y1, int x2, int y2) const
 {
 	int dx = normalizeX(x1) - normalizeX(x2), dy = normalizeY(y1) - normalizeY(y2);

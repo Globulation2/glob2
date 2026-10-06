@@ -28,14 +28,21 @@ bool Handle::canPaintFarmAt(std::size_t index) const
 	if (!resources || !terrain || !catalogs || !growth) return false;
 	const auto& cell = resources->cells.at(index);
 	const auto& properties = terrain->registry->properties(terrain->identity->at(index));
+	return canPaintFarm(cell, properties, catalogs->shrinkable, *growth, index);
+}
+bool canPaintFarm(const ResourceCell& cell, const TerrainProperties& properties,
+	const std::array<bool, MAX_NB_RESOURCES>& shrinkable,
+	const Fertility::GrowthCache& growth, std::size_t index)
+{
 	const auto type = cell.resource.type;
 	const int crop = properties.farmCrop;
 	return cell.mayGrow && properties.resourcesGrow
 		&& (type == NO_RES_TYPE || type == WHEAT || type == WOOD || type == ALGA)
 		&& crop >= 0 && crop < MAX_NB_RESOURCES
-		&& terrainSupportsResource(properties, crop, catalogs->shrinkable[crop])
-		&& growth->rate(index, crop) != 0;
+		&& terrainSupportsResource(properties, crop, shrinkable[crop])
+		&& growth.rate(index, crop) != 0;
 }
+
 TileView Handle::tileAt(std::size_t index) const
 {
 	if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index");

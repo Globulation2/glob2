@@ -23,21 +23,23 @@ void AICastor::computeObstacleUnitMap()
 	int w=observation->width;
 	int h=observation->height;
 	size_t size=w*h;
-	const auto& tiles=observation->tiles;
 	Uint32 teamMask=observedTeam->view->mask;
 	for (size_t i=0; i<size; i++)
 	{
-		const auto& c=tiles[i];
-		if (c.building!=NOGBID)
+		if (observation->occupancyAt(i).building!=NOGBID)
 			obstacleUnitMap[i]=0;
-		else if (c.resource.type!=NO_RES_TYPE)
+		else if (observation->resourceAt(i).resource.type!=NO_RES_TYPE)
 			obstacleUnitMap[i]=0;
-		else if (c.forbidden&teamMask)
-			obstacleUnitMap[i]=0;
-		else if (!observation->terrain->properties(observation->tiles[i].terrain).walkable && !(canSwim && observation->terrain->properties(observation->tiles[i].terrain).swimmable))
+		else if (observation->areasAt(i).forbidden&teamMask)
 			obstacleUnitMap[i]=0;
 		else
-			obstacleUnitMap[i]=1;
+		{
+			const auto& terrain=observation->terrain->properties(observation->terrainAt(i).type);
+			if (!terrain.walkable && !(canSwim && terrain.swimmable))
+				obstacleUnitMap[i]=0;
+			else
+				obstacleUnitMap[i]=1;
+		}
 	}
 }
 
@@ -48,15 +50,13 @@ void AICastor::computeObstacleBuildingMap()
 	int w=observation->width;
 	int h=observation->height;
 	size_t size=w*h;
-	const auto& tiles=observation->tiles;
 	for (size_t i=0; i<size; i++)
 	{
-		const auto c=tiles[i];
-		if (c.building!=NOGBID)
+		if (observation->occupancyAt(i).building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (!observation->terrain->properties(observation->tiles[i].terrain).buildable)
+		else  if (!observation->terrain->properties(observation->terrainAt(i).type).buildable)
 			obstacleBuildingMap[i]=0;
-		else if (c.resource.type!=NO_RES_TYPE)
+		else if (observation->resourceAt(i).resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
 		else
 			obstacleBuildingMap[i]=1;
@@ -109,7 +109,6 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	int wDec=std::countr_zero(unsigned(observation->width));
 	
 	Uint8 *gradient=buildingNeighbourMap;
-	const auto& tiles=observation->tiles;
 	
 	//Uint8 *wheatGradient=queries->resourcesGradient[teamNumber][WHEAT][canSwim];
 	
@@ -120,12 +119,12 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	{
 		int index;
 		index=(xi&wMask)+(((by-1 )&hMask)<<wDec);
-		if (tiles[index].building!=NOGBID)
+		if (observation->occupancyAt(index).building!=NOGBID)
 			neighbour=true;
 		//if (wheatGradient[index]==255)
 		//	wheat=true;
 		index=(xi&wMask)+(((by+bh)&hMask)<<wDec);
-		if (tiles[index].building!=NOGBID)
+		if (observation->occupancyAt(index).building!=NOGBID)
 			neighbour=true;
 		//if (wheatGradient[index]==255)
 		//	wheat=true;
@@ -135,12 +134,12 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 		{
 			int index;
 			index=((bx-1 )&wMask)+((yi&hMask)<<wDec);
-			if (tiles[index].building!=NOGBID)
+			if (observation->occupancyAt(index).building!=NOGBID)
 				neighbour=true;
 			//if (wheatGradient[index]==255)
 			//	wheat=true;
 			index=((bx+bw)&wMask)+((yi&hMask)<<wDec);
-			if (tiles[index].building!=NOGBID)
+			if (observation->occupancyAt(index).building!=NOGBID)
 				neighbour=true;
 			//if (wheatGradient[index]==255)
 			//	wheat=true;
@@ -242,7 +241,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 				for (int dx=0; dx<dw; dx++)
 				{
 					size_t index=(((y+dy)&hMask)<<wDec)+((x+dx)&wMask);
-					if ((observation->tiles[index].discovered&visionMask))
+					if ((observation->visibilityAt(index).discovered&visionMask))
 						goto doubleBreak;
 				}
 			gradient[(y<<wDec)+x]=AI_CASTOR_NEIGHBOUR_OUT_OF_VISION;
@@ -429,7 +428,6 @@ void AICastor::computeHydratationMap()
 	
 	Uint16 *gradient=(Uint16 *)malloc(2*size);
 	memset(gradient, 0, 2*size);
-	const auto& tiles=observation->tiles;
 	static const int range=AI_CASTOR_HYDRATATION_RANGE;
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -479,12 +477,11 @@ void AICastor::computeNotGrassMap()
 	
 	memset(notGrassMap, 0, size);
 	
-	const auto& tiles=observation->tiles;
 	for (size_t i=0; i<size; i++)
 	{
 		// Habitat replaces the historical >16 sprite test, including its
 		// accidental treatment of transition sprite 16 as a wheat tile.
-		if (!(observation->terrain->properties(observation->tiles[i].terrain).allowedResources & (1u<<WHEAT)))
+		if (!(observation->terrain->properties(observation->terrainAt(i).type).allowedResources & (1u<<WHEAT)))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -719,9 +716,9 @@ void AICastor::computeEnemyWarriorsMap()
 	memcpy(gradient, obstacleUnitMap, size);
 	for (size_t i=0; i<size; i++)
 	{
-		if ((observation->tiles[i].visible&observedTeam->view->mask)==0)
+		if ((observation->visibilityAt(i).visible&observedTeam->view->mask)==0)
 			continue;
-		Uint16 guid=observation->tiles[i].groundUnit;
+		Uint16 guid=observation->occupancyAt(i).groundUnit;
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));

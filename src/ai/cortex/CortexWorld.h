@@ -93,7 +93,7 @@ struct WorldMap
     int getH() const { return source.height; }
     int normalizeX(int x) const { return source.normalizeX(x); }
     int normalizeY(int y) const { return source.normalizeY(y); }
-    unsigned coordToIndex(int x, int y) const { return normalizeY(y)*getW()+normalizeX(x); }
+    unsigned coordToIndex(int x, int y) const { return source.tileIndex(x,y); }
     int warpDistMax(int x, int y, int xx, int yy) const
     {
         int dx=std::abs(normalizeX(x)-normalizeX(xx)),dy=std::abs(normalizeY(y)-normalizeY(yy));
@@ -112,25 +112,34 @@ struct WorldMap
     bool farmAreasEnabled() const { return source.farmAreasEnabled; }
     const TerrainProperties& terrainPropertiesAt(int x,int y) const
     { return source.terrain->properties(source.terrainAt(source.tileIndex(x,y)).type); }
+    bool isHardSpaceForGroundUnitAt(std::size_t index,bool swim,Uint32 mask,bool requireFree=false) const
+    {
+        if(source.resourceAt(index).resource.type!=NO_RES_TYPE) return false;
+        const auto occupancy=source.occupancyAt(index);
+        if(occupancy.building!=0xffff || (requireFree&&occupancy.groundUnit!=0xffff)
+            || (source.areasAt(index).forbidden&mask)) return false;
+        const auto& p=source.terrain->properties(source.terrainAt(index).type);
+        return p.walkable || (swim&&p.swimmable);
+    }
     bool isHardSpaceForGroundUnit(int x,int y,bool swim,Uint32 mask) const
+    { return isHardSpaceForGroundUnitAt(source.tileIndex(x,y),swim,mask); }
+    bool isFreeForGroundUnitNoForbidden(int x,int y,bool swim) const
     {
         const auto index=source.tileIndex(x,y);
-        const auto r=source.resourceAt(index); const auto o=source.occupancyAt(index);
-        const auto& p=source.terrain->properties(source.terrainAt(index).type);
-        return r.resource.type==NO_RES_TYPE && o.building==0xffff && !(source.areasAt(index).forbidden&mask)
-            && (p.walkable || (swim&&p.swimmable));
+        return isHardSpaceForGroundUnitAt(index,swim,0,true);
     }
-    bool isFreeForGroundUnitNoForbidden(int x,int y,bool swim) const
-    { return isHardSpaceForGroundUnit(x,y,swim,0) && source.occupancyAt(source.tileIndex(x,y)).groundUnit==0xffff; }
+    bool isHardSpaceForBuildingAt(std::size_t index,Uint16 ignore=0xffff,bool requireFree=false) const
+    {
+        if(source.resourceAt(index).resource.type!=NO_RES_TYPE) return false;
+        const auto occupancy=source.occupancyAt(index);
+        return (occupancy.building==0xffff || occupancy.building==ignore)
+            && (!requireFree || occupancy.groundUnit==0xffff)
+            && source.terrain->properties(source.terrainAt(index).type).buildable;
+    }
     bool isHardSpaceForBuilding(int x,int y,int width=1,int height=1,Uint16 ignore=0xffff) const
     {
         for(int dy=0;dy<height;++dy)for(int dx=0;dx<width;++dx)
-        {
-            const auto index=source.tileIndex(x+dx,y+dy);
-            const auto r=source.resourceAt(index); const auto o=source.occupancyAt(index);
-            if(r.resource.type!=NO_RES_TYPE || (o.building!=0xffff&&o.building!=ignore)
-                || !source.terrain->properties(source.terrainAt(index).type).buildable)return false;
-        }
+            if(!isHardSpaceForBuildingAt(source.tileIndex(x+dx,y+dy),ignore))return false;
         return true;
     }
 };

@@ -247,12 +247,15 @@ namespace
 			{
 				const int index=y*width+x;
 				const auto tile=map->getSpatialTile(x, y);
-				const bool clear=map->isMapDiscovered(x, y, player->team->me)
+				const bool clear=(tile.discovered&player->team->me)!=0
 					&& !(tile.forbidden&player->team->me)
 					&& tile.building==NOGBID
 					&& tile.resource.type==NO_RES_TYPE;
-				swimming[index]=clear && (map->terrainPropertiesAt(index).walkable || map->terrainPropertiesAt(index).swimmable);
-				walking[index]=clear && map->terrainPropertiesAt(index).walkable;
+				if(clear) {
+					const auto& terrain=map->terrainPropertiesAt(index);
+					swimming[index]=terrain.walkable || terrain.swimmable;
+					walking[index]=terrain.walkable;
+				} else swimming[index]=walking[index]=0;
 			}
 
 		std::vector<int> walkingSources;
@@ -270,16 +273,16 @@ namespace
 			for(int x=0; x<width; ++x)
 			{
 				const int index=y*width+x;
-				const auto tile=map->getSpatialTile(x, y);
+				const auto resource=map->world->resourceAt(index).resource;
 				if(!localTiles[index]
-				   || !map->isMapDiscovered(x, y, player->team->me)
-				   || tile.resource.amount<=0
-				   || (tile.resource.type!=ALGA && tile.resource.type!=WHEAT
-					   && tile.resource.type!=WOOD && tile.resource.type!=STONE))
+				   || !(map->world->visibilityAt(index).discovered&player->team->me)
+				   || resource.amount<=0
+				   || (resource.type!=ALGA && resource.type!=WHEAT
+					   && resource.type!=WOOD && resource.type!=STONE))
 					continue;
-				if(tile.resource.type==ALGA)
-					result.knownAlgaeUnits+=tile.resource.amount;
-				if(tile.forbidden&player->team->me)
+				if(resource.type==ALGA)
+					result.knownAlgaeUnits+=resource.amount;
+				if(map->world->areasAt(index).forbidden&player->team->me)
 					continue;
 				bool walkingReach=false;
 				bool swimmingReach=false;
@@ -294,20 +297,20 @@ namespace
 							swimmingReach=swimmingReach
 								|| swimmingDistance[neighbor]!=PREEMPTIVE_UNREACHABLE;
 						}
-				if(tile.resource.type==ALGA && walkingReach)
-					result.walkingAlgaeUnits+=tile.resource.amount;
-				if(tile.resource.type==ALGA && swimmingReach)
-					result.swimmingAlgaeUnits+=tile.resource.amount;
+				if(resource.type==ALGA && walkingReach)
+					result.walkingAlgaeUnits+=resource.amount;
+				if(resource.type==ALGA && swimmingReach)
+					result.swimmingAlgaeUnits+=resource.amount;
 				if(walkingReach || swimmingReach)
 				{
-					switch(tile.resource.type)
+					switch(resource.type)
 					{
 						case WHEAT: ++result.accessibleCornTiles; break;
 						case WOOD: ++result.accessibleWoodTiles; break;
 						case STONE: ++result.accessibleStoneTiles; break;
 						case ALGA:
 							++result.accessibleAlgaeTiles;
-							result.accessibleAlgaeUnits+=tile.resource.amount;
+							result.accessibleAlgaeUnits+=resource.amount;
 							break;
 					}
 				}
@@ -4363,14 +4366,15 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	{
 		const int index=y*world.width+x;
 		WorldTile& tile=world.tiles[index];const auto cell=map->getSpatialTile(x,y);
-		tile.discovered=map->isMapDiscovered(x,y,runtime.readPlayer()->team->allies);
+		tile.discovered=(cell.discovered&runtime.readPlayer()->team->allies)!=0;
 		// Terrain is immutable during a match. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
-		tile.swimmable=map->terrainPropertiesAt(index).swimmable;
-		tile.walkable=map->terrainPropertiesAt(index).walkable;
-		tile.fertilitySource=terrainProvidesFertility(map->terrainPropertiesAt(index));
-		tile.growthInhibiting=map->terrainPropertiesAt(index).inhibitionQ8 != 0;
-		tile.buildable=map->terrainPropertiesAt(index).buildable;tile.occupied=cell.building!=NOGBID;
+		const auto& terrain=map->terrainPropertiesAt(index);
+		tile.swimmable=terrain.swimmable;
+		tile.walkable=terrain.walkable;
+		tile.fertilitySource=terrainProvidesFertility(terrain);
+		tile.growthInhibiting=terrain.inhibitionQ8 != 0;
+		tile.buildable=terrain.buildable;tile.occupied=cell.building!=NOGBID;
 		tile.woodReserve=wood_reserve.cells[index]!=0;
 		tile.foodTraversable=!(cell.forbidden&runtime.readPlayer()->team->me)
 			|| applied_farm_protection_mask[index];
@@ -5940,12 +5944,13 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 	{
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
 		const auto cell=map->getSpatialTile(x,y);
+		const auto& terrain=map->terrainPropertiesAt(y*field.width+x);
 		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
 			&& !(cell.forbidden&runtime.readPlayer()->team->me)
-			&& (map->terrainPropertiesAt(x,y).walkable || (budget.can_swim && map->terrainPropertiesAt(x,y).swimmable));
-		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,runtime.readPlayer()->team->allies);
+			&& (terrain.walkable || (budget.can_swim && terrain.swimmable));
+		tile.visible=cell.resource.amount>0 && (cell.visible&runtime.readPlayer()->team->allies)!=0;
 		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
-		   && map->isMapDiscovered(x,y,runtime.readPlayer()->team->allies))
+		   && (cell.discovered&runtime.readPlayer()->team->allies)!=0)
 			tile.variety=cell.resource.type-CHERRY;
 	}
 	bool knownFruit=false;

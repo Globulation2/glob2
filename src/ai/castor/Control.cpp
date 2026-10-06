@@ -108,9 +108,10 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	Uint32 me=observedTeam->view->mask;
 	for (size_t i=0; i<size; i++)
 	{
-		if (((observation->tiles[i].discovered) & me)!=0)
+		const auto visibility=observation->visibilityAt(i);
+		if ((visibility.discovered & me)!=0)
 			discovered++;
-		if (((observation->tiles[i].visible) & me)!=0)
+		if ((visibility.visible & me)!=0)
 			seeable++;
 	}
 	Sint32 explorerGoal;
