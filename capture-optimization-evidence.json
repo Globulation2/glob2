@@ -1,0 +1,62 @@
+{
+  "source_revision": "9d4a364725f1872434403be8ced92e630e529fc7",
+  "base": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "platform": "macOS arm64, Apple Clang 21",
+  "status": "Correctness debugging and nonacceptance performance smoke; shipping gate remains open",
+  "completed": {
+    "focused": {
+      "passed": 109,
+      "failed": 0,
+      "skipped": 1,
+      "junit_cases": 110
+    },
+    "prior_revision_parity": {
+      "comparison_revision": "3c40a8ab023e7f098022716978a0b733113e03ee",
+      "optimized_production_revision": "caf8821b5e77c7d26364aabd144501fae35cee0e",
+      "note": "9d4 changes only new test fixture setup; production unchanged",
+      "result": "Exact per-tick traces, replay bytes, final saves and Runtime/Castor/Numbi continuation across 1/2/4/8workers"
+    },
+    "performance_smoke": {
+      "warmup_rounds": 1,
+      "measured_pairs": 1,
+      "fixtures": 4,
+      "acceptance_eligible": false,
+      "default_cpu_ratios": {
+        "Numbi": 1.508,
+        "JavaScript": 1.313,
+        "mixed Maxima/Cortex": 1.783,
+        "Cortex": 2.03
+      },
+      "result": "Improved diagnostic ratios; still above required zero-delay5% gate"
+    },
+    "profile": {
+      "controller_mix": "4 Cortex",
+      "duration_seconds": 5,
+      "capture_hotspot": "Changed full map layers; sampled extraction now outweighs removed tile assembly. Early Cortex smoke copies9.37GB in8192ticks with0.935s extraction."
+    }
+  },
+  "limitations": [
+    "No ThreadSanitizer rerun after these optimizations yet; full prior-revision results attached separately",
+    "No full-match ten-pair performance acceptance",
+    "No matching cross-platform execution/browser or gameplay delay experiments completed",
+    "Profiled process timing is not a benchmark"
+  ],
+  "sha256": {
+    "optimization-focused.log": "fcc89b0c10ef8e00df755ff8af0b122a894cfec95c478a5684377e13aa218d4f",
+    "optimization-focused.xml": "aecfd3cc453225b65abe18595f47211ed0310246ce5a25aacbdc469e880cdb79",
+    "narrow-query-focused.log": "3bde6313bda6123525368093404726e860b9743418b6a21cbc32f43b9e50418b",
+    "narrow-query-focused.xml": "6010899358200bfe0798acf43f0a77ff22621463c76e3f494d128e3fc59749af",
+    "narrow-query-compute-equivalence.log": "78d4147bb83e16703759453bd18e0c77fb5a5e356e74b5b6afc0e5fa175120ad",
+    "idle-and-projection-compute-equivalence.log": "78d4147bb83e16703759453bd18e0c77fb5a5e356e74b5b6afc0e5fa175120ad",
+    "optimization-review/release-metadata/build-provenance.json": "c704a7993dbec6d346bc702a0d53cf84ebd95e7e5c476f717728a91934d2300d",
+    "performance/candidate-build-26.json": "4f3a8afd4e05cc2af39f0735d4462b98923112cfaecc62d9798977880ad8b4d5",
+    "performance/optimization-smoke.json": "cd4514937aee8785bf695c6eccee8baf4319122bd1e595733d2e00e76a90363d",
+    "performance/optimization-smoke-build-26/metadata.json": "799fba29b8aeb1481404f2547840182a9060964c80fca0266886b28f16328f50",
+    "performance/optimization-smoke-build-26/measurements.jsonl": "76e72c3e1665e8228fd15fe5bb742727a12a5b68ca1d962ed7cf4a17313dfc21",
+    "performance/optimization-smoke-build-26/summary.json": "fd97805724078cc259d312eb40ab8b82400292d69da06622b5e0382dfbd6655a",
+    "performance/profile-cortex-build-26/sample.txt": "04b3a64a1ffba8f321ae577d1b44b024f1245d0b212744ff3d5e91b5b8e90dac",
+    "performance/profile-cortex-build-26/command.json": "020b17ca9fe9177878d54376a93531e4229da0577c824b94e9c0739fcb1a32bd",
+    "performance/profile-cortex-build-26/result.json": "1f44998b45ef3f41cf65551fbf8cee3f03096b9a47fa09b188f1dc9c2d4b829d"
+  },
+  "archive_sha256": "c85bdeaeb363572c5d0407f99463146f175f3f114d82635dbed0658d23ea4f0b"
+}
