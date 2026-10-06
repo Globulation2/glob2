@@ -283,7 +283,8 @@ TEST_SUITE("TerrainMaterials")
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
 				{
 					auto &p = j["profiles"][i];
-					p.erase("feather_q8");
+					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"})
+						p.erase(field);
 					p["roughness_q8"] = roughness[i];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
 										 {0, -130, 200, -80, 0},
@@ -320,7 +321,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 18185691832014944171ull : 7043546505774538929ull));
+			CHECK(digest == (legacy ? 18185691832014944171ull : 227142420051831929ull));
 		}
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
@@ -386,7 +387,7 @@ TEST_SUITE("TerrainMaterials")
 		auto c = catalog();
 		c.boundaryWarp = {}; // Isolate the unperturbed diagonal connectivity rule.
 		for (auto &profile : c.profiles)
-			profile.roughness = 0;
+			profile.roughness = profile.speckle = profile.bridge = 0;
 		TerrainVisual::Recipe r;
 		r.width = r.height = 16;
 		r.samples.fill(c.find("grass"));
@@ -513,6 +514,7 @@ TEST_SUITE("TerrainMaterials")
 		for (auto &profile : c.profiles)
 		{
 			profile.roughness = 512;
+			profile.speckle = 0; // Pebbles may straddle an edge; contours may not fold it.
 			for (auto &curve : profile.contours)
 			{
 				curve.assign(33, 0);
@@ -601,7 +603,12 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 127},
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 513},
 			{nlohmann::json::json_pointer("/profiles/0/contours_q12/0"), {0, 0, 0, 0, 0, 0}},
-			{nlohmann::json::json_pointer("/profiles/0/contours_q12/0/1"), 513},
+			{nlohmann::json::json_pointer("/profiles/0/contours_q12/0/1"), 1025},
+			{nlohmann::json::json_pointer("/profiles/0/contours_q12"), nlohmann::json::array()},
+			{nlohmann::json::json_pointer("/profiles/0/amplitude_q8"), 1025},
+			{nlohmann::json::json_pointer("/profiles/0/speckle_q8"), true},
+			{nlohmann::json::json_pointer("/profiles/0/bridge_q8"), -1},
+			{nlohmann::json::json_pointer("/version"), 2},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {true, 0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 1.5, 0}},

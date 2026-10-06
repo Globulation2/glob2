@@ -7,10 +7,13 @@ checksums or the synchronized random stream.
 
 ## Add artwork
 
-A version-2 catalog contains `profiles`, `materials`, `bindings` and optional
+A version-3 catalog contains `profiles`, `materials`, `bindings` and optional
 `pair_treatments`. Version-1 packs remain readable with their original five-point
 contours and sampling behavior; version 2 adds denser contours, edge softness and
-world-space bends. Material keys are unique strings. Bindings map semantic terrain
+world-space bends; version 3 adds per-profile displacement amplitude, pebble
+speckle, diagonal bridging and up to sixty-four curves per profile. Version-2
+packs parse unchanged and render through the current resolver, which rounds
+corners and reads each curve mirrored and negated. Material keys are unique strings. Bindings map semantic terrain
 names to material keys; the five shipped bindings are water, sand, grass, ice and
 road. Adding a visual material does not add gameplay rules. Runtime terrain definitions
 reuse a shipped appearance binding with independently resolved simulation properties;
@@ -102,11 +105,10 @@ the nine patches needed by a tile once, including shared contour choices and
 side-connected corner groups, then samples them at native or HD pixel centers.
 
 The optional catalog-level `boundary_warp_q8` array controls world-space bends at
-64-, 32- and 8-pixel scales. The shipped values `[768, 0, 0]` allow at most
-three pixels of broad displacement per axis. Fine breakup comes from the
-authored profiles below; leaving the other fields disabled avoids redundant
-noise and sampling work. When enabled, the first two scales interpolate
-smoothly; the finest adds angular irregularity. These bends continue across tile
+64-, 32- and 8-pixel scales. The shipped values `[640, 256, 96]` allow about four
+pixels of combined displacement per axis: a broad meander, a medium ripple and a
+faint angular grit. The first two scales interpolate smoothly; the finest adds
+angular irregularity. Pebbly detail comes from the authored profiles below. These bends continue across tile
 boundaries instead of restarting a motif in every patch. Values are nonnegative
 integers, bounded by `[1024, 384, 128]`; omitting the array disables the field
 for older packs. Try reducing the first value for straighter edges, or the last
@@ -118,25 +120,43 @@ camera position, animation and simulation randomness. The resolver prepares the
 control points once per tile; native and HD samples use the same geometry.
 
 A boundary profile has `key`, `roughness_q8` (0–512, where 256 is a multiplier of 1),
-and `contours_q12`: exactly four displacement curves. Each has 5, 9, 17 or 33
-evenly spaced points, starts and ends at zero, and uses integer displacements
-within −512…512 in normalized units of 1/4096 of a lattice patch. Existing
-five-point profiles remain valid; denser controls let artists add small bites
-and protrusions without adding more rendering cases.
+and `contours_q12`: four displacement curves, or four to sixty-four in version 3.
+Each has 5, 9, 17 or 33 evenly spaced points, starts and ends at zero, and uses
+integer displacements within −512…512 (−1024…1024 in version 3) in normalized
+units of 1/4096 of a lattice patch, which equal Q8 pixels. A shared-edge or
+patch hash picks the curve and also reads it mirrored or negated, so a profile
+with n curves offers 4n edge shapes; more curves mean less visible repetition.
 These are displacement controls, not pixel coordinates. The common endpoints
-keep neighboring patches joined. In version 2, each shared edge has one displaced
-crossing; detailed curves shape the patch interior. This prevents steep authored
-notches from folding a shared edge into disconnected slivers.
+keep neighboring patches joined. Each shared edge has one displaced crossing;
+detailed curves shape the patch interior. This prevents steep authored notches
+from folding a shared edge into disconnected slivers.
 The runtime interpolates these curves in normalized coordinates, so native and HD
-renders use the same shape. World-space displacement and local contours share an
-eight-pixel displacement budget: increasing the former limits the latter. Center
-regions and narrow roads remain visible. The shipped contours take their
-asymmetric bites from the original grass/sand
-transition artwork (`terrain64`, `65`, `68` and `71`). Sand retains 17 control
-points; ice reverses those shapes and increases roughness; cobblestone uses nine
-points for broader chips. The controls remove endpoint drift to preserve shared
-edges. These profiles shape silhouettes; they do not trace individual stones or
-cracks in the interior artwork. Diagonal-only cells still remain distinct.
+renders use the same shape. Local contours displace samples inside their own
+patch, bounded by the profile's `amplitude_q8` (0–1024 Q8 pixels, default 512);
+only the world-space warp consumes the eight-pixel halo of prepared patches.
+Version 3 reads a shear curve as the displacement at the patch center (earlier
+versions doubled it) and holds that displacement over the central half of the
+patch, which stays fold-free up to the four-pixel limit. Center regions and
+narrow roads remain visible. `tools/terrain_profile_curves.py` regenerates the
+shipped curves: sand traces the thirty-two straight edges of the original
+grass/sand transition tiles (two 17-point patches per edge, endpoint drift
+removed), ice uses seeded angular random walks and cobblestone broad nine-point
+plateaus. These profiles shape silhouettes; they do not trace individual stones
+or cracks in the interior artwork.
+
+Corner weights pass through a smoothstep, so a single-corner region approaches a
+quarter disc instead of a chamfer and a lone quadrant renders as a round blob;
+shared-edge weights and edge midpoints are unchanged. Where two corners of a
+patch hold the same material diagonally, a per-vertex hash picks one of the two
+materials to join through a neck whose half-width is that profile's `bridge_q8`
+(0–1024 Q8 pixels); the other pair stays separated, as in the original diagonal
+tiles. Optional `speckle_q8` (0–1024 Q8 pixels) scatters pebbles of each material
+on a four-pixel world grid (half of the cells, 1.25 to 2.75 pixel radius). A
+pebble raises its own material's score, so specks and bites appear up to roughly
+that many pixels across a boundary, like the detached grains in the original
+sand art, while interior samples are untouched. Pebbles are hashed from wrapped
+world coordinates and the material key, so they continue across tiles and agree
+on both sides of a shared edge.
 
 Optional `feather_q8` controls edge softness from 128 to 512 (half to two native
 pixels, default 256). Softness interpolates from material corner profiles, so
@@ -169,6 +189,7 @@ The compositor does not bake a texture-by-mask-by-material-pair product.
 ```sh
 python3 tools/terrain_tileset.py --check
 python3 tools/terrain_tileset.py --output artifacts/terrain/compiled --page-size 256
+python3 tools/terrain_profile_curves.py --write
 python3 -m unittest discover -s tools -p test_terrain_tileset.py
 python3 test/run_tests.py --filter 'TerrainMaterials/*'
 python3 test/run_tests.py --filter 'TerrainPresentation/*'

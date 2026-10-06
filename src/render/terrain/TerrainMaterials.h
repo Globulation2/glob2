@@ -18,10 +18,14 @@ struct Variant
 struct Profile
 {
 	std::string key;
-	int roughness = 192; // Q8 multiplier; 256 represents 1.
-	int feather = 256;   // Q8 native-pixel edge softness.
+	int roughness = 192;  // Q8 multiplier; 256 represents 1.
+	int feather = 256;    // Q8 native-pixel edge softness.
+	int amplitude = 512;  // Q8 pixel limit on local contour displacement.
+	int speckle = 0;      // Q8 pixel reach of detached pebbles beside an edge.
+	int bridge = 0;       // Q8 pixel half-width of the neck joining diagonal lobes.
+	int shearScale = 128; // Version 3 reads shear curves as pixel displacement (256).
 	bool legacyEdges = false;
-	std::array<std::vector<int>, 4> contours{}; // Q12 normalized patch displacements.
+	std::vector<std::vector<int>> contours; // Q12 normalized patch displacements.
 };
 struct Backdrop
 {
@@ -49,6 +53,7 @@ class Catalog
 {
   public:
 	std::string compiledPack, serialized;
+	int version = 2;
 	// Q8 pixel amplitudes at 64px, 32px and 8px scales. Omitted in older packs.
 	std::array<int, 3> boundaryWarp{};
 	std::vector<Profile> profiles;
@@ -95,7 +100,7 @@ class PreparedCoverage
 		std::array<int, 2> at(int px, int py) const;
 	};
 	std::array<WarpLayer, 3> warp{};
-	int localDisplacementLimit = 512;
+	bool legacy = false; // Version-1 catalogs keep their original sampling.
 	struct Curve
 	{
 		const Profile *profile = nullptr;
@@ -109,9 +114,26 @@ class PreparedCoverage
 		std::array<MaterialId, 4> materials{};
 		std::array<unsigned, 4> slots{};
 		unsigned count = 0;
-		std::array<unsigned, 4> feather{};
+		std::array<unsigned, 4> feather{}, speckle{};
+		std::array<int, 4> pebbles{-1, -1, -1, -1}; // Pebble field per slot.
+		std::array<int, 2> bridge{-1, -1};           // Slots joined across the center.
+		int bridgeScale = 0;
 	};
 	std::array<Patch, 9> patches{};
+	// Sparse world-space pebbles of one material on a four-pixel grid. Cells
+	// -1..8 cover the tile and the neighborhood its samples can touch.
+	struct Pebble
+	{
+		int x = 0, y = 0, radius = 0, strength = 0; // Q8 tile-relative pixels.
+	};
+	struct PebbleField
+	{
+		MaterialId material = 0;
+		std::array<Pebble, 100> cells{};
+		int at(int px, int py) const; // Q12 shape of the strongest covering pebble.
+	};
+	std::vector<PebbleField> pebbles;
+	int pebbleField(const Catalog &, const Recipe &, MaterialId);
 };
 // Convenience for individual diagnostic samples. Bulk composition prepares once.
 Coverage coverage(const Catalog &, const Recipe &, int px, int py);

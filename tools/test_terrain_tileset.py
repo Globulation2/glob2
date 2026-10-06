@@ -55,7 +55,13 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["materials"][0]["variants"][0].update(frame=9999),
             lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(0, 1),
             lambda d: d["profiles"][0]["contours_q12"].__setitem__(0, [0] * 6),
-            lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(1, 513),
+            lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(1, 1025),
+            lambda d: d["profiles"][0]["contours_q12"].__setitem__(slice(None), d["profiles"][0]["contours_q12"][:3]),
+            lambda d: d["profiles"][0].update(contours_q12=[[0, 0, 0, 0, 0]] * 65),
+            lambda d: d["profiles"][0].update(amplitude_q8=1025),
+            lambda d: d["profiles"][0].update(speckle_q8=True),
+            lambda d: d["profiles"][0].update(bridge_q8=-1),
+            lambda d: d.update(version=2),
             lambda d: d["profiles"][0].update(feather_q8=True),
             lambda d: d["profiles"][0].update(feather_q8=127),
             lambda d: d["profiles"][0].update(feather_q8=513),
@@ -91,7 +97,8 @@ class TerrainTileset(unittest.TestCase):
         self.document["version"] = 1
         self.document.pop("boundary_warp_q8")
         for profile in self.document["profiles"]:
-            profile.pop("feather_q8")
+            for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"):
+                profile.pop(field)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
         self.assertEqual(len(validate(self.document)), 80)
         self.document["profiles"][0]["contours_q12"][0][1] = 257

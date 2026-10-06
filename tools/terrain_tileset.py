@@ -53,7 +53,7 @@ def validate(document, root=ROOT):
 
 
 def _validate(document, root):
-    if type(document.get("version")) is not int or document["version"] not in (1, 2):
+    if type(document.get("version")) is not int or document["version"] not in (1, 2, 3):
         raise ValueError("Unsupported terrain catalog version")
     version = document["version"]
     if version == 1 and "boundary_warp_q8" in document:
@@ -92,16 +92,24 @@ def _validate(document, root):
         if version == 1 and "feather_q8" in p:
             raise ValueError("Boundary feather requires catalog version 2")
         integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
+        for field in ("amplitude_q8", "speckle_q8", "bridge_q8"):
+            if version < 3 and field in p:
+                raise ValueError(f"{field} requires catalog version 3")
+            integer(p.get(field, 0), 0, 1024, field)
         curves = p["contours_q12"]
-        if not isinstance(curves, list) or len(curves) != 4 or any(
+        limit = {1: 256, 2: 512}.get(version, 1024)
+        if not isinstance(curves, list) or (
+            len(curves) != 4 if version < 3 else not 4 <= len(curves) <= 64
+        ) or any(
             not isinstance(c, list) or len(c) not in ((5,) if version == 1 else (5, 9, 17, 33))
             or c[0] != 0
             or c[-1] != 0
-            or any(type(n) is not int or abs(n) > (256 if version == 1 else 512) for n in c)
+            or any(type(n) is not int or abs(n) > limit for n in c)
             for c in curves
         ):
             raise ValueError(
-                "Profiles require four curves of 5, 9, 17 or 33 points with shared zero endpoints"
+                "Profiles require four curves (four to sixty-four in version 3) of 5, 9, 17 "
+                "or 33 points with shared zero endpoints"
             )
         profiles[p["key"]] = p
     materials = {}
