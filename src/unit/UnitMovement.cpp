@@ -86,13 +86,12 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		if (movement == MOV_HARVESTING)
 		{
 			const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
-            const auto clearedStocks=map->materialStocksAt(map->coordToIndex(posX+dx,posY+dy));
 			recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
 							   GameplayMeasurements::CLEARING);
 			map->decResource(posX + dx, posY + dy);
 			if (clearedBefore != map->getResource(posX + dx, posY + dy))
-                for(unsigned material=0;material<MaterialCount;++material)
-                    owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAtSlot(map->coordToIndex(posX+dx,posY+dy),material);
+				++owner->stats.measurements.cleared[materialIndex(
+					map->resourcePropertiesByIndex(clearedBefore.type).primaryMaterial)];
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		const bool farmAreas = map->farmAreasEnabled();
@@ -384,13 +383,12 @@ void Unit::handleMovementClearingResources()
 	if (movement==MOV_HARVESTING)
 	{
 		const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
-            const auto clearedStocks=map->materialStocksAt(map->coordToIndex(posX+dx,posY+dy));
 		recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
 						   GameplayMeasurements::CLEARING);
 		map->decResource(posX + dx, posY + dy);
 		if (clearedBefore != map->getResource(posX + dx, posY + dy))
-            for(unsigned material=0;material<MaterialCount;++material)
-                owner->stats.measurements.cleared[material]+=clearedStocks[material]-map->materialAmountAtSlot(map->coordToIndex(posX+dx,posY+dy),material);
+			++owner->stats.measurements.cleared[materialIndex(
+				map->resourcePropertiesByIndex(clearedBefore.type).primaryMaterial)];
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 

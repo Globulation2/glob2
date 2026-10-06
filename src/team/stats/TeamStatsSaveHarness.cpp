@@ -72,6 +72,7 @@ struct TeamStatsMeasurementFixture
 	static void magic(Unit *u) { u->handleMagic(); }
 	static void displacement(Unit *u) { u->handleDisplacement(); }
 	static void clear(Unit *u) { u->tryClaimClearingAreaForHarvesting(); }
+	static void clearForBuilding(Unit *u) { u->handleMovementClearingResources(); }
 	static void partial(Unit *u) { u->applyPartialInsideBenefit(); }
 	static void ammunition(Building *b) { b->convertStoneToBullet(); }
 
@@ -499,9 +500,10 @@ static void measurementScenarios()
 		w.game.map.incResourceByIndex(21, 20, WOOD, 0);
 		worker->movement = Unit::MOV_HARVESTING;
 		worker->medical = Unit::MED_FREE;
-		const int resourceType = w.game.map.getResource(21, 20).type;
+		const auto primaryMaterial = w.game.map.resourcePropertiesByIndex(
+			w.game.map.getResource(21, 20).type).primaryMaterial;
 		TeamStatsMeasurementFixture::clear(worker);
-		require(m.cleared[resourceType] == 1, "clearing completion counts an operation");
+		require(m.cleared[materialIndex(primaryMaterial)] == 1, "clearing completion counts an operation");
 	}
 	{
 		TeamStatsMeasurementFixture w;
@@ -1226,6 +1228,72 @@ static void measurementScreenshots(const std::string &directory)
 		}
 	}
 }
+}
+
+TEST_CASE("clearing telemetry counts operations once by configured primary material" * doctest::test_suite("TeamStatsSave"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json = nlohmann::json;
+    for (const bool buildingClearing : {false, true})
+        for (const bool mixed : {false, true})
+            for (const bool empty : {false, true})
+            {
+                CAPTURE(buildingClearing);
+                CAPTURE(mixed);
+                CAPTURE(empty);
+                TeamStatsMeasurementFixture w;
+                auto &map = w.game.map;
+                auto definition = Json::parse(map.resourceRegistry().serialize())["resources"][0];
+                definition["key"] = "clearing-telemetry";
+                definition["properties"]["primaryMaterial"] = "gold";
+                definition["properties"]["persistsWhenEmpty"] = true;
+                definition["properties"]["clearConsumption"] = "all";
+                definition["yields"] = Json::object();
+                definition["yields"]["gold"] = {{"capacity", 500}, {"initial", 500},
+                    {"consumption", "one"}};
+                if (mixed)
+                    definition["yields"]["wood"] = {{"capacity", 200}, {"initial", 200},
+                        {"consumption", "one"}};
+                map.installResourceDefinitions(Json{{"schemaVersion", 1},
+                    {"resources", Json::array({definition})}}.dump());
+                const auto id = map.resourceRegistry().find("clearing-telemetry");
+                REQUIRE(id.has_value());
+                map.setResource(21, 20, *id, 0);
+                // Keep another eligible tile nearby so building clearing need not
+                // perform any unrelated attachment or route transitions afterward.
+                map.setResource(21, 21, *id, 0);
+                const auto target = map.coordToIndex(21, 20);
+                if (empty)
+                {
+                    map.setMaterialAmount(target, MaterialId::Gold, 0);
+                    if (mixed) map.setMaterialAmount(target, MaterialId::Wood, 0);
+                    REQUIRE(map.getResource(21, 20).amount == 0);
+                    REQUIRE(map.resourceBlocksGround(target));
+                }
+                auto *worker = w.unit();
+                auto *inn = w.building("inn");
+                inn->unitStayRange = 32;
+                inn->clearingMaterials[materialIndex(MaterialId::Gold)] = true;
+                worker->attachedBuilding = inn;
+                worker->medical = Unit::MED_FREE;
+                worker->displacement = Unit::DIS_RANDOM;
+                auto &measurements = w.game.teams[0]->stats.measurements;
+                for (unsigned attempt = 0; attempt < 2; ++attempt)
+                {
+                    worker->movement = Unit::MOV_HARVESTING;
+                    worker->dx = 1;
+                    worker->dy = 0;
+                    if (buildingClearing) TeamStatsMeasurementFixture::clearForBuilding(worker);
+                    else TeamStatsMeasurementFixture::clear(worker);
+                    Uint64 total = 0;
+                    for (unsigned material = 0; material < MaterialCount; ++material)
+                        total += measurements.cleared[material];
+                    CHECK(total == 1);
+                    CHECK(measurements.cleared[materialIndex(MaterialId::Gold)] == 1);
+                    CHECK(measurements.cleared[materialIndex(MaterialId::Wood)] == 0);
+                    CHECK(map.getResource(21, 20).type == NO_RES_TYPE);
+                }
+            }
 }
 
 TEST_SUITE("TeamStatsSave")
