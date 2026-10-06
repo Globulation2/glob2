@@ -1333,6 +1333,7 @@ TEST_CASE("contact costs follow custom deposit obstruction and removal propertie
         definition["properties"]["habitatMask"]=3;
         definition["properties"]["requiresGrowthTerrain"]=false;
         definition["yields"]["wood"]["consumption"]=infinite ? "infinite" : "one";
+        definition["yields"]["wood"]["destroysDeposit"]=!infinite;
         map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
         const auto id=*map.resourceRegistry().find(definition["key"].get<std::string>());
         for (auto terrain : {GRASS,WATER})
