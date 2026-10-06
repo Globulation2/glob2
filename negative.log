@@ -1,0 +1,3 @@
+TerrainTypeTable.h: forbidden Game.h correctly rejected
+TerrainGroup.h: forbidden Game.h correctly rejected
+TerrainPropertiesLayout.h: forbidden Game.h correctly rejected
