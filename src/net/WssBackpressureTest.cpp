@@ -35,7 +35,9 @@ TEST_SUITE("WssTransport")
 			client->state();
 			if (server)
 				server->state();
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			// A one-millisecond sleep can round up to a scheduler tick on Windows.
+			// Keep pumping ready I/O without consuming the test deadline in sleeps.
+			std::this_thread::yield();
 		};
 		while ((!server || client->state() != NetTransport::State::Connected) && std::chrono::steady_clock::now() < deadline)
 			pump();
@@ -53,7 +55,11 @@ TEST_SUITE("WssTransport")
 					REQUIRE(server->send({std::uint8_t(sent >> 8), std::uint8_t(sent), 1, 2, 3, 4, 5, 6}));
 			pump();
 		}
-		for (int i = 0; i < 500; ++i)
+		REQUIRE(sent == total);
+		// Poll without consuming messages for the intended half-second pause.
+		// Counting 500 sleeps made this phase depend on the OS timer quantum.
+		const auto pausedUntil = std::chrono::steady_clock::now() + std::chrono::milliseconds(500);
+		while (std::chrono::steady_clock::now() < pausedUntil)
 			pump();
 		CHECK(client->state() == NetTransport::State::Connected);
 
