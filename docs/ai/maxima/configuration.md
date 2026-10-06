@@ -28,7 +28,11 @@ saved configurations load. They no longer affect decisions: feeding estimates
 come from building capabilities, the planned shared staffing budget and saved
 recipient hunger/action clocks. `food.ticks_per_meal` is likewise retained for
 loading historical configurations and diagnostic comparisons; it no longer
-sets live recipient demand or headcount capacity.
+sets live recipient demand or headcount capacity. The historical
+`economy.sustainable_inn_floor`, `economy.sustainable_inn_corn_divisor` and
+`economy.sustainable_inn_offset` keys are also accepted but unused: a fixed crop
+allowance per feeder double-counts shared recipient demand and cannot describe
+free or non-wheat feeding. The ordinary inn target cap still bounds construction.
 
 The base file and schema are the reference for available keys and defaults.
 The schema exposes types, units, descriptions, hard bounds and recommended tuning

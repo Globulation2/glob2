@@ -172,9 +172,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 	}
 
 	// flags specific options:
-	if (((selBuild->owner->allies)&(Team::teamNumberToMask(localTeamNo)))
-		&& lmx>10
-		&& lmx<22)
+	if ((selBuild->owner->allies)&Team::teamNumberToMask(localTeamNo))
 	{
 
 		// cleared resources for clearing flags: one checkbox row per clearable
@@ -185,7 +183,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			for (int i=0; i<BASIC_COUNT; i++)
 				if (i!=STONE)
 				{
-					if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+					if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 					{
 						std::array<bool, BASIC_COUNT> next;
 						for (int k=0; k<BASIC_COUNT; k++)
@@ -208,7 +206,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<NB_UNIT_LEVELS; i++)
 			{
-				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingMinWorkerLevelToFlag = i;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 2)));
@@ -226,7 +224,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<NB_UNIT_LEVELS; i++)
 			{
-				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingMinLevelToFlag = i;
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i)));
@@ -244,7 +242,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			ypos+=YOFFSET_B_SEP+YOFFSET_TEXT_PARA;
 			for (int i=0; i<EXPLORATION_FLAG_OPTION_COUNT; i++)
 			{
-				if (my>ypos && my<ypos+YOFFSET_TEXT_PARA)
+				if (lmx>10 && lmx<22 && my>ypos && my<ypos+YOFFSET_TEXT_PARA)
 				{
 					pendingFor(selBuild->gid).pendingExplorersRequireBombing = bool(i);
 					orderQueue.push_back(shared_ptr<Order>(new OrderModifyMinLevelToFlag(selBuild->gid, i, 1)));

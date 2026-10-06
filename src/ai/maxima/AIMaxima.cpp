@@ -2451,11 +2451,11 @@ void Maxima::build_policy_bids()
 	if(food_service_stressed)
 		service_required_inns=std::max(service_required_inns,
 			nominal_service_inns+1);
-	const int sustainable_inns=std::max(strategy.economy.sustainable_inn_floor,
-		std::max(environment.accessible_corn,
-			strategy.food.enabled && food_ledger_valid ? int(std::min<long long>(INT_MAX,birth_food_acreage()/65536)) : 0)
-			/strategy.economy.sustainable_inn_corn_divisor
-			+strategy.economy.sustainable_inn_offset);
+    // A second feeder redistributes the same recipients' recurring meals. A
+    // crop-tiles-per-building ceiling charges that demand again and can block
+    // service recovery. Keep the strategy's construction cap; the placement
+    // ledger checks actual meal shares and independent hybrid costs. Without
+    // that ledger, crop count still cannot constrain free/non-wheat services.
 	int demographic_inns=(snapshot.population
 		+strategy.economy.inn_population_offset)
 		/strategy.economy.inn_population_divisor+1;
@@ -2465,17 +2465,15 @@ void Maxima::build_policy_bids()
 		<strategy.economy.food_headroom_critical ? 1 : 0);
 	demographic_inns+=(demands.food>=strategy.construction.survival_utility_high
 		? 1 : 0);
-	survival.desired_inns=std::min(sustainable_inns,
-		std::min(strategy.economy.inn_target_cap,
+	survival.desired_inns=std::min(strategy.economy.inn_target_cap,
 			std::max(strategy.economy.inn_target_floor,
-			std::max(service_required_inns, demographic_inns))));
+			std::max(service_required_inns, demographic_inns)));
 	if(abundance_surge)
-		survival.desired_inns=std::min(sustainable_inns,
-			std::min(strategy.economy.abundance_inn_target_cap,
+		survival.desired_inns=std::min(strategy.economy.abundance_inn_target_cap,
 				std::max(survival.desired_inns,
 					(snapshot.population
 						+strategy.economy.abundance_inn_population_offset)
-						/strategy.economy.abundance_inn_population_divisor+1)));
+						/strategy.economy.abundance_inn_population_divisor+1));
 	survival.construction_sites=
 		survival.utility>=strategy.construction.survival_utility_high
 			? strategy.construction.policy_high_sites

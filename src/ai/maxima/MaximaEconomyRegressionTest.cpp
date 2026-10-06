@@ -873,6 +873,13 @@ TEST_CASE("counted opponent records preserve slot fifteen and load the legacy tw
     {
         using BinaryOutputStream::BinaryOutputStream;
         size_t countOffset = 0;
+        std::vector<size_t> mealOffsets;
+        void writeSint32(Sint32 value, const std::string name) override
+        {
+            if(name=="feeding_workers" || name=="feeding_explorers" || name=="feeding_warriors")
+                mealOffsets.push_back(getPosition());
+            BinaryOutputStream::writeSint32(value,name);
+        }
         void writeUint32(Uint32 value, const std::string name) override
         {
             if (name == "count") countOffset = getPosition();
@@ -902,9 +909,16 @@ TEST_CASE("counted opponent records preserve slot fifteen and load the legacy tw
     constexpr size_t legacySlots = 12;
     constexpr size_t opponentBytes = 1 + 14 * sizeof(Sint32);
     auto legacy = bytes;
-    legacy.erase(output.countOffset + sizeof(Uint32) + legacySlots * opponentBytes,
-        (Team::MAX_COUNT - legacySlots) * opponentBytes);
-    legacy.erase(output.countOffset, sizeof(Uint32));
+    // Version137 adds these three named fields in each of snapshot and
+    // previous_snapshot. The version126 fixture must omit all six words.
+    REQUIRE(output.mealOffsets.size()==6);
+    std::vector<std::pair<size_t,size_t>> removals{
+        {output.countOffset+sizeof(Uint32)+legacySlots*opponentBytes,
+            (Team::MAX_COUNT-legacySlots)*opponentBytes},
+        {output.countOffset,sizeof(Uint32)}};
+    for(size_t offset:output.mealOffsets)removals.push_back({offset,sizeof(Sint32)});
+    std::sort(removals.rbegin(),removals.rend());
+    for(const auto& [offset,length]:removals)legacy.erase(offset,length);
     load(legacy, 126);
     CHECK(ai.opponents[11].visible_warriors == 111);
     for (int i = legacySlots; i < Team::MAX_COUNT; ++i)
@@ -1583,4 +1597,37 @@ TEST_CASE("food retirement preserves the only explorer feeder despite surplus wo
     CHECK(ai.food_burden_since.count(1)==1);
     for(const auto& order:ai.context.managementOrders)
         CHECK(dynamic_cast<Management::DestroyBuilding*>(order.get())==nullptr);
+}
+
+TEST_CASE("aggregate feeding demand escapes a crop count cap during service shortage" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool ledger:{false,true})for(int recipe:{0,1,2}) {
+        CAPTURE(ledger);CAPTURE(recipe);
+        Fixture f;
+        if(recipe) {
+            auto catalog=nlohmann::json::parse(f.game.buildingsTypes.snapshotJson());
+            for(auto& variant:catalog["variants"])if(variant["semantics"]["feeding"]["enabled"].get<bool>()) {
+                variant["semantics"]["feeding"]["cost"]=recipe==1?nlohmann::json::object():nlohmann::json{{"wood",1}};
+                if(recipe==2)variant["properties"]["maxResource"][WOOD]=20;
+            }
+            f.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.configureBuildingCatalog();
+        }
+        auto& ai=*f.ai;ai.context.initialize();ai.ensure_strategy();ai.collect_building_profiles();
+        ai.strategy.food.enabled=ledger;ai.food_ledger_valid=ledger;
+        ai.snapshot.population=154;ai.snapshot.workers=149;ai.snapshot.explorers=5;
+        ai.snapshot.inns=10;ai.snapshot.critical_food=24;ai.snapshot.unserved_food=22;
+        ai.snapshot.feeding_demand[WORKER]=38000;ai.snapshot.feeding_demand[EXPLORER]=2000;
+        ai.environment.accessible_corn=24;ai.environment.feeding_capacity=125;
+        ai.environment.food_headroom=33;ai.environment.food_security=36;ai.demands.food=100;
+        ai.build_policy_bids();
+        const int requested=ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns;
+        if(recipe==0)CHECK(requested>10); // reproduce the observed paid-feeding shortage
+        CHECK(requested>ai.strategy.economy.inn_target_floor);
+        CHECK(requested<=ai.strategy.economy.inn_target_cap);
+        // More wheat cannot change recipient demand or make a free/wood-based
+        // feeding service require an arbitrary acreage allocation per building.
+        ai.environment.accessible_corn=0;ai.build_policy_bids();
+        CHECK(ai.policy_bids[AIMaxima::Maxima::PolicySurvival].desired_inns==requested);
+    }
 }

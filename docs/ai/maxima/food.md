@@ -85,7 +85,9 @@ that rate to acreage using the configured regrowth period. Independent hybrid
 feeding or training costs and buildings without worker production do not create
 birth funding. Free or non-wheat recipes do not invent wheat acreage. Feeding demand also responds to observed hungry and
 unserved units: an optimistic nominal throughput forecast must not impose a
-second coarse limit on additional feeders. Each proposed location still needs
+second coarse limit on additional feeders. There is no crop-tiles-per-feeder
+limit, including when the optional food ledger is disabled; policy construction
+caps remain in force. With the food ledger enabled, each proposed location needs
 its allocated meal claim covered by reachable farm supply. Scattered residual
 supply that no single building can reach does not fund another building.
 
