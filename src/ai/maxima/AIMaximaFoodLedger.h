@@ -57,7 +57,9 @@ struct OperatingPlan
 struct OperatingQuery
 {
     int demand=0,productionDemand=0,quality=0;
-    long long residual=0;
+    long long residual=0; // actual candidate components funded, capped by demand
+    long long transferred=0; // funded feeding reservation credited only against margin
+    bool feasible=true;
 };
 
 /// One inn or swarm that eats wheat, including planned ones. Colony swarms are
@@ -114,6 +116,7 @@ struct ConsumerResult
     int productionDemand=0; // component of demand from planned production
 	/// Supply this claimer actually took, capped by its demand.
 	int claimed;
+    int claimedProduction=0; // exact second-phase allocation
 	/// claimed plus the unclaimed supply it could still reach. An upgrade is
 	/// judged against this, because its own claim is released and retaken.
 	long long available;
@@ -151,6 +154,8 @@ struct Result
 	std::vector<ConsumerResult> consumers;
 	/// Supply still unclaimed on every cell, in the same micro-wheat units.
 	std::vector<uint32_t> residual;
+    std::vector<uint32_t> serviceResidual; // after independent services, before production
+    long long independentClaimed=0;
 	long long totalSupply;
 	long long totalDemand;
 	long long totalClaimed;
@@ -167,6 +172,7 @@ private:
 	// snapshot makes copies and queries of older results independent of the
 	// ledger's scratch buffers. Treat evaluated results as read-only.
 	std::vector<long long> residualSums;
+    std::vector<long long> serviceResidualSums;
 	int residualSumsWidth;
 	int residualSumsHeight;
 };
@@ -178,10 +184,12 @@ class Ledger
 public:
 	Ledger();
 	void evaluate(const Input& input, Result& result) const;
+    void reserveQueryFootprint(const Input& input,int width,int height) const;
     /// Combines the existing exact residual walk with uncontested supply work.
     /// The result can be reused by the candidate's feasibility and score calls.
     OperatingQuery operatingQuery(const Input& input,const Result& result,
-        const ConsumerInput& candidate,int marginPercent) const;
+        const ConsumerInput& candidate,int marginPercent,
+        const Result* transferBaseline=nullptr,int feedingTransferLimit=0) const;
 
 	/// Unclaimed supply a building with this footprint could reach, stopping
 	/// once `cap` is met so a satisfied candidate never walks its whole radius.
@@ -206,7 +214,7 @@ public:
 	/// allocating or rebuilding. A default/invalid result returns zero.
 	long long residualUpperBound(const Input& input, const Result& result,
 		int centerX, int centerY, int left, int top, int width,
-		int height) const;
+		int height,bool services=false) const;
 
 private:
 	struct ReachCell

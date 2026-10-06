@@ -407,3 +407,85 @@ TEST_CASE("operating fractions preserve positive rates beneath a saturated recip
         [](long long q){return q*1000;});
     CHECK(result.production[1]==1000);CHECK(result.total[1]==1000);
 }
+
+TEST_CASE("equivalent feeders retain funded meal reservations before discretionary production" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput();input.yield[input.index(8,8)]=10000;
+    auto feeder=makeConsumer(1,InnConsumer,7,8,8000);
+    auto producer=makeConsumer(2,SwarmConsumer,7,8,8000);producer.productionDemand=8000;
+    input.consumers={feeder,producer};Ledger ledger;Result baseline,redistributed,installed;
+    ledger.evaluate(input,baseline);
+    CHECK(baseline.consumer(1)->claimed==8000);CHECK(baseline.consumer(2)->claimedProduction==2000);
+    input.consumers[0].demand=4000;ledger.evaluate(input,redistributed);
+    auto candidate=makeConsumer(3,InnConsumer,7,8,4000);candidate.operating.independent[1]=4000;
+    const auto query=ledger.operatingQuery(input,redistributed,candidate,150,&baseline,4000);
+    CHECK(query.feasible);CHECK(query.residual==4000);CHECK(query.transferred==4000);
+    input.consumers.push_back(candidate);ledger.evaluate(input,installed);
+    CHECK(installed.consumer(1)->claimed==4000);CHECK(installed.consumer(3)->claimed==4000);
+    CHECK(installed.consumer(2)->claimedProduction==2000);CHECK(installed.independentClaimed==8000);
+    // The margin is charged only on new demand, even with no spare capacity.
+    input.yield[input.index(8,8)]=8000;input.consumers.pop_back();input.consumers[0].demand=8000;
+    ledger.evaluate(input,baseline);input.consumers[0].demand=4000;ledger.evaluate(input,redistributed);
+    CHECK(ledger.operatingQuery(input,redistributed,candidate,150,&baseline,4000).feasible);
+    CHECK_FALSE(ledger.operatingQuery(input,redistributed,candidate,150).feasible);
+}
+
+TEST_CASE("feeding transfer credits are funded local and limited to the meal component" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput(64,64);input.policy.supplyRadius=4;
+    input.yield[input.index(8,8)]=8000;input.yield[input.index(40,8)]=4000;
+    input.consumers.push_back(makeConsumer(1,InnConsumer,7,8,8000));
+    Ledger ledger;Result baseline,redistributed;ledger.evaluate(input,baseline);
+    input.consumers[0].demand=4000;ledger.evaluate(input,redistributed);
+    auto candidate=makeConsumer(2,InnConsumer,39,8,4000);candidate.operating.independent[1]=4000;
+    auto query=ledger.operatingQuery(input,redistributed,candidate,150,&baseline,4000);
+    CHECK(query.residual==4000);CHECK(query.transferred==0);CHECK_FALSE(query.feasible);
+    // A shortage is not an already funded reservation that can be transferred.
+    input.yield[input.index(8,8)]=4000;input.consumers[0].demand=8000;ledger.evaluate(input,baseline);
+    input.consumers[0].demand=4000;ledger.evaluate(input,redistributed);
+    candidate.centerX=7;query=ledger.operatingQuery(input,redistributed,candidate,150,&baseline,4000);
+    CHECK(query.transferred==0);CHECK_FALSE(query.feasible);
+    // New hybrid service cost cannot inherit the feeding component's waiver.
+    input.yield[input.index(8,8)]=8000;input.consumers[0].demand=8000;ledger.evaluate(input,baseline);
+    input.consumers[0].demand=4000;ledger.evaluate(input,redistributed);
+    query=ledger.operatingQuery(input,redistributed,candidate,150,&baseline,2000);
+    CHECK(query.transferred==2000);CHECK_FALSE(query.feasible);
+}
+
+TEST_CASE("hybrid service and production claims use separate spatial pools without double spending" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput();input.yield[input.index(8,8)]=7000;
+    auto hybrid=makeConsumer(1,SwarmConsumer,7,8,10000);hybrid.productionDemand=6000;
+    input.consumers={hybrid,makeConsumer(2,InnConsumer,7,8,2000)};
+    Ledger ledger;Result result;ledger.evaluate(input,result);
+    CHECK(result.consumer(1)->claimed==5000);CHECK(result.consumer(1)->claimedProduction==1000);
+    CHECK(result.consumer(2)->claimed==2000);CHECK(result.independentClaimed==6000);
+    auto incumbent=makeConsumer(1,SwarmConsumer,7,8,2000);incumbent.productionDemand=2000;
+    input.consumers={incumbent};input.yield[input.index(8,8)]=6000;ledger.evaluate(input,result);
+    auto candidate=makeConsumer(3,InnConsumer,7,8,8000);
+    candidate.operating.independent[1]=4000;candidate.operating.production[1]=4000;
+    auto query=ledger.operatingQuery(input,result,candidate,100);
+    CHECK(query.residual==6000);CHECK_FALSE(query.feasible); // six available packets cannot pay eight total
+    input.yield[input.index(8,8)]=16000;ledger.evaluate(input,result);
+    CHECK(ledger.operatingQuery(input,result,candidate,125).feasible);
+    // Free feeding grants no credit to independently priced production.
+    candidate.operating.independent[1]=0;input.yield[input.index(8,8)]=5000;ledger.evaluate(input,result);
+    query=ledger.operatingQuery(input,result,candidate,100,&result,4000);
+    CHECK(query.transferred==0);CHECK_FALSE(query.feasible);
+}
+
+TEST_CASE("hybrid queries reserve constrained production before flexible services in either route order" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput(64,64);input.policy.supplyRadius=6;
+    input.yield[input.index(8,8)]=5000;input.yield[input.index(11,8)]=5000;
+    auto incumbent=makeConsumer(1,SwarmConsumer,12,8,5000);incumbent.productionDemand=5000;
+    input.consumers={incumbent};Ledger ledger;Result result;ledger.evaluate(input,result);
+    CHECK(result.residual[input.index(8,8)]==5000);CHECK(result.residual[input.index(11,8)]==0);
+    for(const auto [x,y]:{std::pair<int,int>{7,8},{12,7}}) {
+        auto candidate=makeConsumer(2,InnConsumer,x,y,10000);
+        candidate.operating.independent[1]=5000;candidate.operating.production[1]=5000;
+        const auto query=ledger.operatingQuery(input,result,candidate,100);
+        CHECK(query.feasible);CHECK(query.residual==10000);
+        CHECK_FALSE(ledger.operatingQuery(input,result,candidate,120).feasible);
+    }
+}

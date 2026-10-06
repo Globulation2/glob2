@@ -649,7 +649,7 @@ namespace
 
 		BOOL_SPEC(food, enabled, "food.enabled", "enabled", "food", "Account protected farm capacity against inn and swarm demand before placing, upgrading or retiring them", StrategyImpactCritical),
 		BOOL_SPEC(food, retirement_enabled, "food.retirement_enabled", "enabled", "food", "Retire inns and swarms that stay below their burden coverage", StrategyImpactHigh),
-		BOOL_SPEC(food, target_capping_enabled, "food.target_capping_enabled", "enabled", "food", "Historical coarse target-cap switch; accepted for compatibility, with current food feasibility enforced at each site", StrategyImpactLow),
+		BOOL_SPEC(food, target_capping_enabled, "food.target_capping_enabled", "enabled", "food", "Bound strategic producer targets by covered providers and remaining peak-recipe supply", StrategyImpactHigh),
 		INT_SPEC(food, growth_period_ticks, "food.growth_period_ticks", 1, 100000, "ticks", "food", "Mean ticks between growth samples of one wheat cell, including the wheat growth gate", StrategyImpactCritical),
 		INT_SPEC(food, ticks_per_meal, "food.ticks_per_meal", 1, 100000, "ticks", "food", "Ticks a fed unit takes to consume one wheat, measured from real games because hunger drains per unit action rather than per tick", StrategyImpactCritical),
 		INT_SPEC(food, inn_demand_percent, "food.inn_demand_percent", 1, 1000, "percent", "food", "Scale applied to modelled inn consumption at full capacity", StrategyImpactHigh),

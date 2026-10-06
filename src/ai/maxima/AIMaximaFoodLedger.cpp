@@ -96,6 +96,7 @@ Result::Result()
 void Result::clear()
 {
 	consumers.clear();residual.clear();residualSums.clear();
+    serviceResidual.clear();serviceResidualSums.clear();independentClaimed=0;
 	totalSupply=totalDemand=totalClaimed=totalResidual=bestSiteResidual=0;
 	residualSumsWidth=residualSumsHeight=0;
 }
@@ -231,29 +232,63 @@ long long Ledger::wheatWork(long long quantity) const
 }
 
 OperatingQuery Ledger::operatingQuery(const Input& input,const Result& result,
-    const ConsumerInput& candidate,int marginPercent) const
+    const ConsumerInput& candidate,int marginPercent,const Result* transferBaseline,
+    int feedingTransferLimit) const
 {
     const auto& plan=candidate.operating;
-    // The old residual walk already visited this footprint. Gather both the
-    // uncontested work curve and contested residual in that single traversal.
     const long long mechanical=std::min<long long>(INT_MAX,
         static_cast<long long>(plan.independent[1])+plan.production[1]);
     const long long cap=std::max(1LL,mechanical*std::max(200,marginPercent)/100);
+    // Production must find genuinely unclaimed supply. Pure services may
+    // displace production, so their stopping bound uses the earlier layer.
+    const auto& stopping=plan.production[1]>0?result.residual:result.serviceResidual;
     walk(input,candidate.centerX,candidate.centerY,candidate.left,candidate.top,
-        candidate.width,candidate.height,reachScratch,&result.residual,cap);
+        candidate.width,candidate.height,reachScratch,&stopping,cap);
     prepareWorkCurve(input,reachScratch,plan);
     const auto claim=AIMaxima::operatingClaimWithWheatWork(plan.independent,plan.production,
         plan.carriers,plan.trips,[&](long long q){return wheatWork(q);});
     OperatingQuery query;query.demand=claim.total[1];query.productionDemand=claim.production[1];
-    long long needed=query.demand,weighted=0;
-    for(const auto& cell:reachScratch) {
-        query.residual+=result.residual[cell.index];
-        const long long take=std::min<long long>(needed,result.residual[cell.index]);
-        weighted+=take*cell.distance;needed-=take;
+    const long long independent=query.demand-query.productionDemand;
+    if(transferBaseline && transferBaseline->serviceResidual.size()==result.serviceResidual.size()) {
+        for(const auto& cell:reachScratch)query.transferred+=std::max(0LL,
+            static_cast<long long>(result.serviceResidual[cell.index])-transferBaseline->serviceResidual[cell.index]);
+        query.transferred=std::min({query.transferred,independent,
+            static_cast<long long>(std::max(0,feedingTransferLimit)),
+            std::max(0LL,transferBaseline->independentClaimed-result.independentClaimed)});
     }
-    weighted+=needed*(input.policy.supplyRadius+input.policy.unreachablePenaltyTiles);
+    const long long extra=std::max(0,marginPercent-100);
+    long long neededIndependent=independent,neededProduction=query.productionDemand;
+    long long requiredIndependent=independent+(independent-query.transferred)*extra/100;
+    long long requiredProduction=query.productionDemand+query.productionDemand*extra/100;
+    long long weighted=0;
+    for(const auto& cell:reachScratch) {
+        const long long services=result.serviceResidual[cell.index],unclaimed=result.residual[cell.index];
+        // Production has the constrained pool. Reserve it first in this
+        // hypothetical query; otherwise a flexible service can consume the
+        // only unclaimed packet while production-reserved stock sits unused.
+        const long long productionTake=std::min(neededProduction,unclaimed);
+        neededProduction-=productionTake;
+        const long long serviceTake=std::min(neededIndependent,services-productionTake);
+        neededIndependent-=serviceTake;weighted+=(serviceTake+productionTake)*cell.distance;
+        // Margin uses the same two spatial pools. Transferred credit changes
+        // only required margin; it never adds supply or frees existing claims.
+        const long long reservedProduction=std::min(requiredProduction,unclaimed);
+        requiredProduction-=reservedProduction;
+        requiredIndependent-=std::min(requiredIndependent,services-reservedProduction);
+    }
+    query.residual=query.demand-neededIndependent-neededProduction;
+    query.feasible=requiredIndependent==0 && requiredProduction==0;
+    weighted+=(neededIndependent+neededProduction)*(input.policy.supplyRadius+input.policy.unreachablePenaltyTiles);
     query.quality=query.demand?int(weighted*qualityScale/query.demand):0;
     return query;
+}
+
+void Ledger::reserveQueryFootprint(const Input& input,int width,int height) const
+{
+    const long long padding=2LL*(std::max(0,input.policy.supplyRadius)+1);
+    const auto bound=size_t(std::min<long long>(input.width,std::max(1,width)+padding)
+        *std::min<long long>(input.height,std::max(1,height)+padding));
+    reachScratch.reserve(bound);queryScratch.reserve(bound);
 }
 
 void Ledger::evaluate(const Input& input, Result& result) const
@@ -263,7 +298,9 @@ void Ledger::evaluate(const Input& input, Result& result) const
 	if(size<=0||int(input.yield.size())!=size
 	   ||int(input.traversable.size())!=size)return;
 	result.residual=input.yield;
+    if(int(distanceScratch.size())!=size) {distanceScratch.assign(size,0);distanceGeneration.assign(size,0);generation=0;}
     // Allocate the bounded work buffers cold, even with no current consumers.
+    for(const auto& consumer:input.consumers)reserveQueryFootprint(input,consumer.width,consumer.height);
     workSupply.resize(std::max(0,input.policy.supplyRadius)+1);
     workQuantity.resize(workSupply.size());workPrefix.resize(workSupply.size());
 	for(int i=0;i<size;++i)
@@ -336,22 +373,23 @@ void Ledger::evaluate(const Input& input, Result& result) const
 		if(i<rankedSwarms.size())order.push_back(rankedSwarms[i]);
 	}
 
-	for(size_t position=0;position<order.size();++position)
-	{
-		const size_t i=order[position];
-		ConsumerResult& value=values[i];
-		value.order=int(position);
-		long long remaining=value.demand;
-		for(size_t r=0;r<reachByConsumer[i].size()&&remaining>0;++r)
-		{
-			const int index=reachByConsumer[i][r].index;
-			const long long take=std::min<long long>(remaining,result.residual[index]);
-			if(take<=0)continue;
-			result.residual[index]=uint32_t(result.residual[index]-take);
-			value.claimed+=int(take);remaining-=take;
-		}
-		result.totalClaimed+=value.claimed;
-	}
+    // Independent services reserve their stock before discretionary births.
+    // Keep the existing deterministic ranking within each component phase.
+    for(int phase=0;phase<2;++phase) {
+        for(size_t position=0;position<order.size();++position) {
+            const size_t i=order[position];ConsumerResult& value=values[i];
+            value.order=int(position);
+            long long remaining=phase?value.productionDemand:value.demand-value.productionDemand;
+            for(const auto& cell:reachByConsumer[i]) {
+                if(remaining<=0)break;
+                const int take=int(std::min<long long>(remaining,result.residual[cell.index]));
+                result.residual[cell.index]-=take;value.claimed+=take;remaining-=take;
+                result.totalClaimed+=take;
+                if(phase)value.claimedProduction+=take;else result.independentClaimed+=take;
+            }
+        }
+        if(phase==0)result.serviceResidual=result.residual;
+    }
 
 	for(size_t i=0;i<count;++i)
 	{
@@ -394,12 +432,15 @@ void Ledger::prepareResidualSums(const Input& input, Result& result) const
 	const int stride=input.width+1;
 	std::vector<long long>& residualSums=result.residualSums;
 	residualSums.assign(size_t(input.height+1)*stride,0);
+    result.serviceResidualSums.assign(residualSums.size(),0);
 	for(int y=0;y<input.height;++y)
 	{
-		long long row=0;
+		long long row=0,serviceRow=0;
 		for(int x=0;x<input.width;++x)
 		{
 			row+=result.residual[y*input.width+x];
+            serviceRow+=result.serviceResidual[y*input.width+x];
+            result.serviceResidualSums[size_t(y+1)*stride+x+1]=result.serviceResidualSums[size_t(y)*stride+x+1]+serviceRow;
 			residualSums[size_t(y+1)*stride+x+1]=
 				residualSums[size_t(y)*stride+x+1]+row;
 		}
@@ -407,12 +448,12 @@ void Ledger::prepareResidualSums(const Input& input, Result& result) const
 }
 
 long long Ledger::residualUpperBound(const Input& input, const Result& result,
-	int centerX, int centerY, int left, int top, int width, int height) const
+	int centerX, int centerY, int left, int top, int width, int height,bool services) const
 {
 	if(input.width<=0||input.height<=0)return 0;
 	if(result.residualSumsWidth!=input.width
 	   ||result.residualSumsHeight!=input.height)return 0;
-	const std::vector<long long>& residualSums=result.residualSums;
+	const std::vector<long long>& residualSums=services?result.serviceResidualSums:result.residualSums;
 	const int stride=input.width+1;
 	const auto rect=[&](int x0,int y0,int w,int h)->long long
 	{

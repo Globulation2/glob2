@@ -639,7 +639,7 @@ farming.urgent_space_threshold = 35
 # from the growth rule alone and remains worth calibrating.
 food.enabled = true
 food.retirement_enabled = true
-# Deprecated and ignored: local placement feasibility replaces coarse target-count caps.
+# Bound producer targets by covered providers and residual peak-recipe supply.
 food.target_capping_enabled = true
 food.growth_period_ticks = 186
 food.ticks_per_meal = 11759

@@ -86,12 +86,18 @@ are included in planner signatures and continuation.
 
 Claimants rank by supply-weighted route-distance quality band, then level,
 completion status and building ID. Quality is evaluated independently of other
-claimants to avoid circular ranking. Inns and swarms alternate claims; each
-claims its nearest supply first. Destroyed buildings release capacity, upgrades
+claimants to avoid circular ranking. The established rank is retained within two phases: independent services
+reserve their nearest supply first, then discretionary production claims the
+remainder. This explicit precedence prevents births from taking already-needed
+meals when feeding is split across more buildings. Destroyed buildings release capacity, upgrades
 claim their new demand, and lost or regrown wheat changes supply immediately.
 
-New inns and swarms require unclaimed reachable capacity at the configured
-placement margin. The first building of each kind is exempt so a colony can
+Candidates reserve independent services from the pre-production supply layer;
+their production component must fit genuinely unclaimed supply after those
+services. Both components use the configured placement margin without spending
+a packet twice. Redistributing the same meals can transfer a geographically
+reachable, already-funded reservation: only that transferred amount waives extra
+margin. Unfunded demand and remote reservations supply no credit. The first building of each kind is exempt so a colony can
 start before it has established farms. Independent colony swarms use their
 own settlement rule. Upgrades release and retake their building's claim at the
 new level. A summed-area upper bound rejects impossible candidates before the
@@ -101,10 +107,12 @@ The existing birth controller chooses production targets; exact local feasibilit
 gates ordinary creation and upgrades, including revalidation before issuing the
 order. Colony settlement retains its separate new-land rule, because its farms
 do not yet have protected supply. Pending projects already claim in the ledger.
-A quotient of residual supply by a peak recipe cost does not cap target counts.
-The historical `food.target_capping_enabled` key remains accepted but no longer
-controls a coarse count cap. The saved `food_supported_swarms` observation counts
-covered existing worker producers, not hypothetical new sites. Birth funding sums their claimed
+The `food.target_capping_enabled` heuristic also caps producer targets by covered
+existing worker producers plus residual supply divided by the candidate's
+runtime-derived peak recipe cost. Wheat-free worker production is not constrained
+by this wheat count. The heuristic retains the existing conservative growth
+reservation; local feasibility remains necessary for every ordinary site.
+Birth funding sums their claimed
 production-only packet rates and reachable residual crop yield, then converts
 that rate to acreage using the configured regrowth period. Independent hybrid
 feeding or training costs and buildings without worker production do not create

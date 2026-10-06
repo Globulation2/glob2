@@ -2506,9 +2506,19 @@ void Maxima::build_policy_bids()
 		strategy.economy.swarm_workers_per_building,65536);
 	growth.desired_swarms=birth.swarms;
 	growth.swarm_workers=birth.workers;
-    // A producer's sustainable claim depends on its local supply routes and
-    // requested work. A global peak-recipe count cannot cap the strategic
-    // target; ordinary placements and upgrades enforce exact local feasibility.
+	// Protected farm capacity is the ceiling on both targets. Asking for
+	// buildings the ledger cannot supply would only produce placements the
+	// capacity check refuses, while holding construction slots and builders.
+	if(strategy.food.enabled && strategy.food.target_capping_enabled
+	   && food_ledger_valid)
+	{
+        // Feeding serves the same colony population across multiple providers.
+        // A count derived from each provider's peak demand cannot bound this
+        // target. The placement ledger checks redistributed local meal claims,
+        // including independent costs of a hybrid, before any order is issued.
+		growth.desired_swarms=std::min(growth.desired_swarms,
+			std::max(1,food_supported_swarms));
+	}
 	growth.construction_sites=
 		growth.utility>=growth_site_utility_high
 			? strategy.construction.growth_utility_high_sites
@@ -5171,7 +5181,7 @@ void Maxima::update_food_retirement(Context& runtime,
         }
         const bool workerProducer=definition && (definition->productionUnitMask&(1u<<WORKER));
         if(workerProducer && value.demand>0)
-            productionClaim+=std::min<long long>(value.claimed,static_cast<long long>(value.claimed)*value.productionDemand/value.demand);
+            productionClaim+=value.claimedProduction;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)
 		{
@@ -5192,15 +5202,20 @@ void Maxima::update_food_retirement(Context& runtime,
 	const long long margin=std::max(1,policy.foodMarginPercent);
     const auto* feeding=profile_variant(preferred_profile(AIMaximaBuildings::Feeding));
     const long long inn_cost=feeding?static_cast<long long>(feeding->operatingResources[WHEAT])*margin/100:0;
+	const long long swarm_cost=static_cast<long long>(policy.foodSwarmDemand)*margin/100;
     if(inn_cost==0 && feeding && feeding_capacity(feeding->engineType,1)>0) {
         supported_inns=Building::MAX_COUNT; // Wheat cannot constrain a wheat-free service.
     }
 	if(inn_cost>0)
 		supported_inns+=int(std::min<long long>(INT_MAX,
 			ledger.bestSiteResidual/inn_cost));
-    // The historical supported-producer counter now describes covered
-    // existing providers only. A site-independent peak-cost quotient cannot
-    // forecast additional locally staffed producers.
+	if(swarm_cost>0)
+		supported_swarms+=int(std::min<long long>(INT_MAX,
+			ledger.bestSiteResidual/swarm_cost));
+    if(swarm_cost==0) {
+        const auto* producer=profile_variant(preferred_profile(AIMaximaBuildings::Production));
+        if(producer && (producer->productionUnitMask&(1u<<WORKER)))supported_swarms=Building::MAX_COUNT;
+    }
     food_birth_crop_rate=int(std::min<long long>(INT_MAX,productionClaim+ledger.bestSiteResidual));
 	food_supported_inns=supported_inns;
 	food_supported_swarms=supported_swarms;
@@ -5233,6 +5248,7 @@ void Maxima::update_food_retirement(Context& runtime,
 				<<"\tcolony="<<(value.colony?1:0)
 				<<"\tretirable="<<(value.retirable?1:0)
 				<<"\tdemand="<<value.demand<<"\tclaimed="<<value.claimed
+                <<"\tproduction_demand="<<value.productionDemand<<"\tproduction_claimed="<<value.claimedProduction
 				<<"\tavailable="<<value.available
 				<<"\tcoverage="<<value.coveragePercent
 				<<"\tquality="<<value.quality<<"\tquality_band="<<value.qualityBand

@@ -1746,7 +1746,7 @@ TEST_CASE("production observation keeps planned work despite temporarily absent 
     CHECK(world.building(id)->productionRatios[WARRIOR]==1);CHECK(producer->unitsWorking.empty());
 }
 
-TEST_CASE("producer candidates retain local feasibility after coarse target caps are removed" * doctest::test_suite("Maxima.Economy"))
+TEST_CASE("producer candidates enforce local feasibility alongside strategic target caps" * doctest::test_suite("Maxima.Economy"))
 {
     using namespace AIMaximaPlacement;
     WorldState world;world.reset(32,32);
@@ -1797,4 +1797,55 @@ TEST_CASE("producer candidates retain local feasibility after coarse target caps
     DevelopmentAction upgrade=candidate;upgrade.type=UpgradeBuilding;upgrade.buildingId=10;
     upgrade.fromLevel=1;upgrade.targetLevel=2;
     CHECK_FALSE(planner.revalidate(world,upgrade,&reason,true));CHECK(reason==RejectedFoodCapacity);
+}
+
+TEST_CASE("feeding candidates transfer funded meal shares through cache reload and replacement" * doctest::test_suite("Maxima.Economy"))
+{
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(32,32);world.feedingColonies.push_back({8,8,{8000,0,0}});
+    for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.buildable=tile.foodTraversable=true;
+    world.tile(8,8).protectedYield=10000;world.tile(8,8).foodOpportunity=1;
+    for(int type=0;type<2;++type) {
+        BuildingProfile profile;profile.buildingType=type;
+        for(int stage=1;stage<=2;++stage) {
+            BuildingLevelProfile level;level.level=stage;level.footprint=Footprint(0,0,1,1);
+            level.initialCarriers=20;level.operatingAssignmentLimit=20;level.operatingResources[1]=8000;
+            if(type==1) {
+                level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding);
+                level.feedingRate=8000;level.feedingMask=1;level.feedingResources[1]=8000;
+            } else {
+                level.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
+                level.productionResources[1]=8000;level.productionUnitMask=1;
+                level.productionRecipes.ticks[0]=125;level.productionRecipes.costs[0][1]=1;
+            }
+            profile.levels.push_back(level);
+        }
+        world.profiles.push_back(profile);
+        WorldBuilding building;building.id=type+1;building.buildingType=type;building.level=1;
+        building.centerX=type?7:9;building.centerY=8;building.hp=building.hpMax=100;
+        building.plannedCarriers=20;building.productionRatios[0]=type?0:1;world.buildings.push_back(building);
+    }
+    Planner planner;planner.mutablePolicy().foodLedgerEnabled=true;planner.mutablePolicy().foodMarginPercent=150;
+    planner.configure(world.profiles,1,2,6,5,7,0);planner.adoptStartingBuildings(world);
+    DevelopmentAction action;action.type=BuildStandalone;action.buildingType=1;action.targetLevel=1;
+    action.centerX=8;action.centerY=7;action.initialFootprint=Footprint(0,0,1,1);
+    RejectionReason reason=RejectedFoodCapacity;
+    REQUIRE(planner.foodCandidatePasses(world,nullptr,action,reason));
+    CHECK(planner.foodCandidateDemand==4000);CHECK(planner.foodQuery.transferred==4000);
+    const auto query=planner.foodQuery;CHECK(planner.foodLocationQuality(world,action)>0);
+    CHECK(planner.foodQuery.transferred==query.transferred); // same cached query used for scoring
+    auto* backend=new GAGCore::MemoryStreamBackend;auto* output=new GAGCore::BinaryOutputStream(backend);
+    planner.save(output);backend->seekFromStart(0);auto* inputBackend=new GAGCore::MemoryStreamBackend(*backend);delete output;
+    GAGCore::BinaryInputStream input(inputBackend);Planner restored;restored.mutablePolicy()=planner.policy();
+    restored.configure(world.profiles,1,2,6,5,7,0);REQUIRE(restored.load(&input,VERSION_MINOR));
+    CHECK_FALSE(restored.foodQueryValid);REQUIRE(restored.foodCandidatePasses(world,nullptr,action,reason));
+    CHECK(restored.foodQuery.transferred==4000);CHECK(restored.foodQuery.residual==query.residual);
+    // Replacement compares with the funded pre-exclusion baseline, transferring
+    // the old provider's existing eight meals once instead of charging a new margin.
+    action.type=UpgradeBuilding;action.buildingId=2;action.fromLevel=1;action.targetLevel=2;
+    action.centerX=7;action.centerY=8;
+    CHECK(restored.foodUpgradePasses(world,action,reason));CHECK(restored.foodQuery.transferred==8000);
+    // Lost supply invalidates both the reservation reference and cached query.
+    world.tile(8,8).protectedYield=0;restored.evaluateFoodLedger(world);
+    CHECK_FALSE(restored.foodUpgradePasses(world,action,reason));CHECK(restored.foodQuery.transferred==0);
 }

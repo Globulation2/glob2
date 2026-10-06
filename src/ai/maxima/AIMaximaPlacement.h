@@ -685,7 +685,7 @@ private:
 		int excludeBuilding=-1, int candidateType=-1, int candidateLevel=1, int candidateColony=-1) const;
     int prepareFeedingCandidate(const WorldState& world,const DevelopmentAction& action) const;
     void prepareFeedingCandidateSet(const WorldState& world,int type,int level,int excludedAction,int excludedBuilding) const;
-    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0; std::array<int,8> independent{},production{}; };
+    struct CandidateFoodLedger { AIMaximaFoodLedger::Result result; int demand=0,feeding=0; std::array<int,8> independent{},production{}; };
     mutable std::vector<CandidateFoodLedger> candidateFoodLedgers;
     mutable int candidateSetType=-1,candidateSetLevel=1,candidateSetExcludedAction=-1,candidateSetExcludedBuilding=-1;
     mutable unsigned foodLedgerEpoch=0,candidateSetEpoch=0;
@@ -710,6 +710,8 @@ private:
 	mutable AIMaximaFoodLedger::Ledger foodLedger;
 	mutable AIMaximaFoodLedger::Input foodInput;
 	mutable AIMaximaFoodLedger::Result foodResult;
+    mutable AIMaximaFoodLedger::Result foodServiceBaseline; // only immutable service layer and funded total
+    mutable int foodCandidateFeeding=0;
 	mutable int foodLedgerExcludedAction;
 	mutable int foodLedgerExcludedBuilding;
 	mutable bool foodLedgerPrepared;
