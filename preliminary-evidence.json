@@ -1,0 +1,36 @@
+{
+  "draft_head": "bf782ac6d275553f0140368fccc961200e5a8fbf",
+  "base": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "status": "preliminary tests predate draft head; not final-revision or shipping evidence",
+  "platform": "macOS arm64",
+  "commands": [
+    "python3 test/run_tests.py --no-display --junit artifacts/async-ai/full-native-tests.xml",
+    "Focused filter commands retained in runner logs/JUnit provenance",
+    "clang++ -std=c++20 -g -O1 -fsanitize=thread -I src -I libgag/include artifacts/async-ai/executor-race-stress.cpp -o artifacts/async-ai/executor-race-stress"
+  ],
+  "coverage_limits": [
+    "No final-head native validation yet",
+    "No measured 5% performance gate",
+    "Full controller TSAN build pending",
+    "Cross-platform traces and browser validation pending",
+    "Skipped display/unsupported cases listed in JUnit"
+  ],
+  "source_tree_hashes": {
+    "full-native-tests.log": [
+      "b1a6f48e519714e259d7fbfa7cdac0bc947be5ce9afbc11d0634110447cf63ca"
+    ],
+    "repaired-focused-tests.log": [
+      "ea651a41677211de566305282220b7a0d462f7e81b0b1f08ebaa899045f546b4"
+    ],
+    "runtime-repairs-16.log": [
+      "ea651a41677211de566305282220b7a0d462f7e81b0b1f08ebaa899045f546b4"
+    ],
+    "golden-regeneration.log": [],
+    "executor-race-stress.log": [],
+    "protocol-validation-final.log": [],
+    "ci-policy-validation.log": [],
+    "image-isolated.log": [
+      "ea651a41677211de566305282220b7a0d462f7e81b0b1f08ebaa899045f546b4"
+    ]
+  }
+}
