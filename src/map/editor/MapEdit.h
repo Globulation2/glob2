@@ -258,6 +258,19 @@ private:
 	TerrainType terrainType;
 };
 
+/// Opens the terrain palette filtered to one catalogue group. Its icon follows the
+/// active brush while that brush belongs to the group, otherwise the group's first
+/// enabled member, and it carries the selection frame whenever a member is active.
+class TerrainGroupSelector : public MapEditorWidget
+{
+public:
+	TerrainGroupSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, TerrainGroup catalogueGroup, ::TerrainType fallback);
+	void draw();
+	TerrainGroup catalogueGroup;
+private:
+	::TerrainType fallback;
+};
+
 
 ///This is a generic blue button. It can be selected and unselected, but not automatically. Its takes the un-translated from of the text, still inside [brackets]
 class BlueButton : public MapEditorWidget
@@ -507,6 +520,7 @@ public:
 	friend class BrushSelector;
 	friend class UnitSelector;
 	friend class TerrainSelector;
+	friend class TerrainGroupSelector;
 	friend class BlueButton;
 	friend class PlusIcon;
 	friend class MinusIcon;
@@ -662,7 +676,9 @@ private:
 	TerrainSelector* grass;
 	TerrainSelector* sand;
 	TerrainSelector* water;
-    std::vector<TerrainSelector*> additionalTerrainSelectors;
+    // One per enabled catalogue group: a TerrainSelector when the group has a
+    // single enabled member, otherwise a TerrainGroupSelector opening the palette.
+    std::vector<MapEditorWidget*> additionalTerrainSelectors;
 	TerrainSelector* wheat;
 	TerrainSelector* trees;
 	TerrainSelector* stone;
@@ -811,6 +827,9 @@ private:
 	std::unique_ptr<ResourcePaletteDialog> resourcePalette;
 	bool importingResources = false;
 	void importResourceFile(const std::string& filename);
+	// Group filter the palette reopens with (TerrainPaletteDialog::AllGroups, a
+	// TerrainGroup index or TerrainPaletteDialog::CustomGroup).
+	int paletteGroup = -1;
 	bool importingTerrain = false;
 	void importTerrainFile(const std::string &filename);
 

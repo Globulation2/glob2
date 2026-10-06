@@ -126,10 +126,15 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		importingTerrain = action == "import terrain definitions";
 		importingResources = !importingTerrain;
 	}
-	else if (action == "open terrain palette")
+	else if (action.starts_with("open terrain palette"))
 	{
 		performAction("unselect");
-		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry());
+		// "open terrain palette <group>" filters to a catalogue group (or "all" / "custom");
+		// without a suffix the palette reopens with the last filter.
+		const std::string prefix = "open terrain palette";
+		if (action.size() > prefix.size() + 1)
+			paletteGroup = TerrainPaletteDialog::groupFilterFor(action.substr(prefix.size() + 1));
+		terrainPalette = std::make_unique<TerrainPaletteDialog>(game.map.frozenTerrainRegistry(), paletteGroup);
 		attachDialog(*terrainPalette);
 	}
 	else if (action == "open resource palette")

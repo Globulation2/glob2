@@ -5716,3 +5716,7 @@ Genera un nuovo aspetto casuale del terreno
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

@@ -5716,3 +5716,7 @@ Znovu náhodně zvolit vzhled terénu
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

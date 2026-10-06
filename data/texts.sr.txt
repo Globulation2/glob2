@@ -5716,3 +5716,7 @@ FFmpeg није доступан, па је снимање искључено. �
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

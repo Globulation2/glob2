@@ -5716,3 +5716,7 @@ Ausaz aukeratu berriro lurraren itxura
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

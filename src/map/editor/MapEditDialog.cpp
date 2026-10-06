@@ -13,6 +13,7 @@
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "TerrainExperiments.h"
+#include <algorithm>
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -270,17 +271,59 @@ Element TeamsEditor::build(const Presentation &p)
 					  {p.pt(10)});
 }
 
+int TerrainPaletteDialog::groupFilterFor(std::string_view key)
+{
+	if (key == "custom")
+		return CustomGroup;
+	for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
+		if (key == terrainGroupDefinition(TerrainGroup(g)).key)
+			return int(g);
+	return AllGroups;
+}
+
 Element TerrainPaletteDialog::build(const Presentation &p)
 {
+	auto offered = [&](TerrainType type)
+	{
+		if (!registry->presentation(type).editorSelectable)
+			return false;
+		const auto experiment = terrainExperiment(type);
+		return !experiment || globalContainer->settings.experiments.has(*experiment);
+	};
+	// Groups with at least one offered built-in, then the map's runtime definitions.
+	std::vector<int> filters{AllGroups};
+	std::vector<std::string> labels{fe::tr("[terrain group all]")};
+	for (unsigned g = 0; g < TERRAIN_GROUP_COUNT; ++g)
+	{
+		const auto &definition = terrainGroupDefinition(TerrainGroup(g));
+		if (!definition.paletteVisible)
+			continue;
+		bool any = false;
+		for (unsigned id = 0; id < TERRAIN_COUNT && !any; ++id)
+			any = terrainGroup(TerrainType(id)) == TerrainGroup(g) && offered(TerrainType(id));
+		if (any)
+		{
+			filters.push_back(int(g));
+			labels.push_back(fe::tr(definition.label));
+		}
+	}
+	if (registry->size() > TERRAIN_COUNT)
+	{
+		filters.push_back(CustomGroup);
+		labels.push_back(fe::tr("[terrain group custom]"));
+	}
+	if (std::find(filters.begin(), filters.end(), filter) == filters.end())
+		filter = AllGroups;
+	const int selected = int(std::find(filters.begin(), filters.end(), filter) - filters.begin());
 	std::vector<Element> entries;
 	for (unsigned id = 0; id < registry->size(); ++id)
 	{
 		const auto type = TerrainType(id);
 		const auto &visual = registry->presentation(type);
-		if (!visual.editorSelectable)
+		if (!offered(type))
 			continue;
-		const auto experiment = terrainExperiment(type);
-		if (experiment && !globalContainer->settings.experiments.has(*experiment))
+		if (filter != AllGroups &&
+			(id < TERRAIN_COUNT ? int(terrainGroup(type)) != filter : filter != CustomGroup))
 			continue;
 		const std::string label = id < TERRAIN_COUNT ? fe::tr(visual.label) : visual.label;
 		fe::ButtonOptions options;
@@ -293,6 +336,12 @@ Element TerrainPaletteDialog::build(const Presentation &p)
 	grid.maxColumns = 4;
 	return fe::footer(
 		fe::column({fe::paragraph(fe::tr("[Terrain palette]"), {fe::FontRole::Heading}),
+					fe::choice("terrain/group", labels, selected,
+							   [this, filters](int chosen)
+							   {
+								   filter = filters[std::size_t(chosen)];
+								   invalidate();
+							   }),
 					fe::scroll("terrain/scroll", fe::wrap(std::move(entries), grid))},
 				   {p.pt(8)}),
 		dialogActions({{"cancel", fe::tr("[Cancel]"), [this] { finish(-1); }, false, SDLK_ESCAPE}},

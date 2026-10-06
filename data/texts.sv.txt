@@ -5716,3 +5716,7 @@ Slumpa terrängens utseende igen
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

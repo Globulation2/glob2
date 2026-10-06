@@ -5716,3 +5716,7 @@ Adds deep and dark water to the map editor. Swimmers cross them more slowly, no 
 Void terrain
 [experiment void-terrain help]
 Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge.
+[terrain group all]
+All groups
+[terrain group custom]
+Custom

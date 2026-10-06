@@ -5716,3 +5716,7 @@ Alege din nou aleatoriu aspectul terenului
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

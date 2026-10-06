@@ -5716,3 +5716,7 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

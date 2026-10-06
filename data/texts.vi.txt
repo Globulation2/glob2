@@ -5716,3 +5716,7 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

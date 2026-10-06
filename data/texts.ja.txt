@@ -5716,3 +5716,7 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 
 [experiment void-terrain help]
 
+[terrain group all]
+
+[terrain group custom]
+

@@ -66,7 +66,15 @@ The map editor's menu offers **Import Terrain Definitions** and **Terrain palett
 on desktop and phone layouts. Place an **uncompressed UTF-8 `.json` file** in the `terrain/` directory
 of your game profile (the directory selected by `GLOB2_USER_DATA_DIR`, when set).
 Select the file in the import dialog, choose a type from the scrollable palette,
-and paint it like built-in terrain. The picker lists `.json` files only. A failed
+and paint it like built-in terrain. The palette has a group filter: every terrain
+group whose experiment is enabled (see
+[experimental features](../features/experimental-features.md)), plus **Custom** for
+the map's imported definitions and **All groups**. The side panel shows one brush per
+enabled group: a group with a single enabled type (ice, or trail while path terrain is
+off) paints directly, and a group with several types opens the palette filtered to
+that group. The palette remembers the last filter; the editor action
+`open terrain palette <group>` (group key, `all` or `custom`) selects one explicitly.
+The picker lists `.json` files only. A failed
 import displays an error and keeps the dialog open so you can correct the file
 and retry. The same menu offers **Reroll terrain look**, which draws a new terrain seed for
 the map (see [terrain materials](../assets/terrain-materials.md#map-seed)): the cells stay as

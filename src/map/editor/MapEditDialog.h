@@ -9,6 +9,7 @@
 #include "resource/ResourceRegistry.h"
 #include "ui/FrontendUI.h"
 #include <string>
+#include <string_view>
 
 class Game;
 
@@ -117,12 +118,19 @@ class TeamsEditor : public Glob2UI::InGameDialog
 class TerrainPaletteDialog : public Glob2UI::InGameDialog
 {
 	std::shared_ptr<const TerrainRegistry> registry;
+	int filter;
 
   public:
-	explicit TerrainPaletteDialog(std::shared_ptr<const TerrainRegistry> value)
-		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value))
+	// Filter values: a TerrainGroup index, every group, or the map's runtime definitions.
+	static constexpr int AllGroups = -1;
+	static constexpr int CustomGroup = int(TerrainGroup::Count);
+	// Maps a group key, "all" or "custom" to a filter; unknown keys mean every group.
+	static int groupFilterFor(std::string_view key);
+	explicit TerrainPaletteDialog(std::shared_ptr<const TerrainRegistry> value, int initialFilter = AllGroups)
+		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), filter(initialFilter)
 	{
 	}
+	int selectedGroup() const { return filter; }
 	const char *recordingId() const override { return "terrain_palette"; }
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 

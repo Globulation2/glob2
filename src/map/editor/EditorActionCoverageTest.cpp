@@ -480,6 +480,72 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.terrainType==TerrainSelector::Wheat);
     }
 
+	TEST_CASE("catalogue groups get side-panel selectors that open a filtered terrain palette [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
+			.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+		globals->settings.experiments.set(ExperimentId::IceTerrain,true);
+		globals->settings.experiments.set(ExperimentId::TrailTerrain,true);
+		globals->settings.experiments.set(ExperimentId::ObstacleTerrain,true);
+		MapEdit editor; blank(editor);
+		// Ice has one member and only Trail is enabled in paths: both keep direct
+		// brushes. Obstacles has three enabled members and gets a group selector.
+		REQUIRE(editor.additionalTerrainSelectors.size()==3);
+		CHECK(dynamic_cast<TerrainSelector*>(editor.additionalTerrainSelectors[0]));
+		CHECK(dynamic_cast<TerrainSelector*>(editor.additionalTerrainSelectors[1]));
+		auto *obstacles = dynamic_cast<TerrainGroupSelector*>(editor.additionalTerrainSelectors[2]);
+		REQUIRE(obstacles);
+		CHECK(obstacles->catalogueGroup==TerrainGroup::Obstacles);
+		editor.performAction("select road");
+		obstacles->activate();
+		REQUIRE(editor.terrainPalette);
+		SDL_Event poll{}; poll.type=SDL_EVENT_USER;
+		auto &host = editor.terrainPalette->host();
+		host.layoutIfNeeded();
+		CHECK(host.bounds("terrain/hedge").w > 0);
+		CHECK(host.bounds("terrain/boulders").w > 0);
+		CHECK_THROWS(host.bounds("terrain/ice"));
+		CHECK_THROWS(host.bounds("terrain/mud")); // rough-terrain is off
+		host.scrollIntoView("terrain/hedge");
+		host.layoutIfNeeded();
+		const auto bounds = host.bounds("terrain/hedge");
+		host.tapAt({bounds.x + bounds.w / 2, bounds.y + bounds.h / 2});
+		CHECK(editor.terrainPalette->finished());
+		editor.delegateMenu(poll);
+		CHECK_FALSE(editor.terrainPalette);
+		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
+		CHECK(editor.paletteGroup==int(TerrainGroup::Obstacles));
+		editor.draw(SDL_GetTicks()); // the group selector shows the active hedge brush
+		cursor(editor,12,12);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
+		CHECK(editor.game.map.terrainTypeAt(12,12)==HEDGE);
+		// The menu's plain palette action reopens the remembered group; "all" lists every enabled type.
+		editor.performAction("open terrain palette");
+		REQUIRE(editor.terrainPalette);
+		editor.terrainPalette->host().layoutIfNeeded();
+		CHECK(editor.terrainPalette->host().bounds("terrain/thicket").w > 0);
+		CHECK_THROWS(editor.terrainPalette->host().bounds("terrain/ice"));
+		editor.terrainPalette->finish(-1);
+		editor.delegateMenu(poll);
+		CHECK_FALSE(editor.terrainPalette);
+		editor.performAction("open terrain palette all");
+		REQUIRE(editor.terrainPalette);
+		editor.terrainPalette->host().layoutIfNeeded();
+		CHECK(editor.terrainPalette->host().bounds("terrain/ice").w > 0);
+		CHECK(editor.terrainPalette->host().bounds("terrain/road").w > 0);
+		CHECK(editor.terrainPalette->host().bounds("terrain/boulders").w > 0);
+		CHECK_THROWS(editor.terrainPalette->host().bounds("terrain/mud"));
+		editor.terrainPalette->finish(-1);
+		editor.delegateMenu(poll);
+		CHECK(editor.paletteGroup==TerrainPaletteDialog::AllGroups);
+		// Unknown group keys fall back to every group. Opening the palette clears the
+		// brush like the other dialogs, and cancelling leaves nothing selected.
+		editor.performAction("open terrain palette nonsense");
+		REQUIRE(editor.terrainPalette);
+		CHECK(editor.terrainPalette->selectedGroup()==TerrainPaletteDialog::AllGroups);
+		editor.terrainPalette->finish(-1);
+		editor.delegateMenu(poll);
+		CHECK(editor.terrainType==TerrainSelector::NoTerrain);
+	}
 	TEST_CASE("custom terrain imports palettes and saved maps work on desktop and phone "
 			  "[display][artifacts]")
 	{

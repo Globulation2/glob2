@@ -168,6 +168,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	if (terrainPalette && terrainPalette->finished())
 	{
 		const int selected = terrainPalette->result();
+		paletteGroup = terrainPalette->selectedGroup();
 		terrainPalette.reset();
 		if (selected >= 0)
 		{

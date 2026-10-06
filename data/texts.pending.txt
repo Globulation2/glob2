@@ -196,3 +196,5 @@
 [experiment deep-water-terrain help]
 [experiment void-terrain]
 [experiment void-terrain help]
+[terrain group all]
+[terrain group custom]
