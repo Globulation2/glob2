@@ -425,3 +425,69 @@ it('exposes pending status immediately and only serves ready enabled sprite bund
   expect((await instance.app.inject({ url: url + '/manifest' })).statusCode).toBe(404);
   expect((await instance.app.inject({ url: url + '/pages/' + page.sha256 })).statusCode).toBe(404);
 });
+
+it('keeps baked sprite URLs available when a rig render revision becomes ready', async () => {
+  const db = harness.database.db;
+  const { enqueueSkinSprites, putContent } = await import('@glob2/core');
+  const revisions = ['b'.repeat(64), 'c'.repeat(64)];
+  const headers = { authorization: `Bearer ${player.accessToken}` };
+  const published = await instance.app.inject({
+    method: 'POST',
+    url: '/api/v1/skins/publish',
+    headers,
+    payload: {
+      name: 'Rig migration',
+      imageBase64: (await colourAtlas()).toString('base64'),
+      materialBase64: (await materialMap()).toString('base64'),
+      buildingColor: 456,
+    },
+  });
+  expect(published.statusCode, published.body).toBe(200);
+  const version = published.json() as { id: string };
+  const retained: { url: string; page: string; revision: string }[] = [];
+  for (const revision of revisions) {
+    await db.insertInto('skin_render_revisions').values({ revision }).execute();
+    await enqueueSkinSprites(db, version.id, revision);
+    const derivative = await db
+      .selectFrom('colony_skin_sprites')
+      .selectAll()
+      .where('version_id', '=', version.id)
+      .where('render_revision', '=', revision)
+      .executeTakeFirstOrThrow();
+    const page = await putContent(harness.blobs, Buffer.from(`page ${revision}`));
+    const manifest = await putContent(harness.blobs, Buffer.from(`manifest ${revision}`));
+    for (const blob of [page, manifest])
+      await db
+        .insertInto('blobs')
+        .values({
+          sha256: blob.sha256,
+          size: blob.size,
+          storage_key: blob.key,
+          content_type: blob === page ? 'image/webp' : 'application/json',
+        })
+        .execute();
+    await db
+      .insertInto('colony_skin_sprite_pages')
+      .values({ sprites_id: derivative.id, sha256: page.sha256 })
+      .execute();
+    await db
+      .updateTable('colony_skin_sprites')
+      .set({ status: 'ready', manifest_sha256: manifest.sha256 })
+      .where('id', '=', derivative.id)
+      .execute();
+    retained.push({
+      url: `/api/v1/skins/versions/${version.id}/sprites/${manifest.sha256}`,
+      page: page.sha256,
+      revision,
+    });
+    for (const bundle of retained) {
+      const response = await instance.app.inject({ url: bundle.url + '/manifest' });
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toBe(`manifest ${bundle.revision}`);
+      const image = await instance.app.inject({ url: bundle.url + '/pages/' + bundle.page });
+      expect(image.statusCode).toBe(200);
+      expect(image.body).toBe(`page ${bundle.revision}`);
+    }
+  }
+  expect(retained[0]?.url).not.toBe(retained[1]?.url);
+});

@@ -411,3 +411,171 @@ render shaded previews for review. To see a shape in a real scene, copy
 previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that
 quadrant cut out of a colony-v2 atlas.
+
+### GSR1 rig migration (worker-walk preview)
+
+GSR1 is a presentation-only alternative to animated GSK1. The initial
+worker-walk candidate is opt-in: `GLOB2_SKIN_RIGS=1` selects it in gameplay,
+`skin-preview`, and `--render-skin`; `VITE_SKIN_RIGS=1` selects it in Colony
+Studio. Native gameplay and Studio fall back to the baked worker if the rig is
+missing or invalid. Offline sprite generation fails on an invalid rig rather
+than publishing a silently different recipe. `GLOB2_SKIN_DEFORMATION=cpu`
+forces the native CPU deformation fallback for comparison. Software clients
+continue consuming published sprite bundles.
+
+The installed manifest's `rigs` entries record format, SHA-256, explicit clip
+mapping, exporter/reference hashes, and acceptance status. `accepted: false`
+means a development candidate, not permission to change the default. The
+remaining six clips still use GSK1. Do not remove their assets or enable rigs by
+default until the worker slice and then the complete catalog pass visual,
+publication, performance and platform acceptance. In particular, baseline M3
+and lower-power hardware measurements cannot be inferred from a Linux software
+renderer. Existing sprite bundles remain immutable; the offline rig preview
+uses a distinct render-recipe digest, including GSR bytes, camera metadata,
+evaluator and shader inputs.
+
+Generate the worker candidate and its editable Blender scene in ignored staging:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/author_worker_rig.py -- --output artifacts/rig/worker
+```
+
+The authoring script preserves the installed worker's welded rest geometry,
+indices and reflected paint chart. It creates fresh parent-ordered bones and
+retargets body rotation plus limb-center paths with shortest-arc swings instead
+of legacy limb rolls. Weights diffuse over the welded graph to soften sockets, then retain four
+influences. Limb vertices use only their own limb and the torso; torso vertices
+can blend adjacent sockets. The source GSK and source animation are offline migration references;
+neither is evaluated to produce rig poses at runtime. This candidate still
+needs joint/paint review; it is not the final art refresh. Changes to this
+script require regenerating the rig and its manifest provenance. The staged
+`.blend` is an inspection/editing artifact; the script remains the reproducible
+authoring source, so rerunning it replaces manual edits to that staged scene.
+
+For production-rendered rig thumbnails, first export a neutral-paint bundle with
+`GLOB2_SKIN_RIGS=1 glob2 --render-skin` using its normal manifest, texture,
+material and output-directory arguments. Then extract the worker selector:
+
+```sh
+python3 tools/skins/studio_thumbnails.py --sprite-bundle artifacts/rig/sprites \
+  --clip worker-walk --output artifacts/rig/thumbs
+```
+
+This path requires Pillow, validates the page hash and dimensions, and crops
+frame zero from the production renderer. No separate rig parser or deformation
+implementation is used. The legacy thumbnail command remains available during
+the catalog migration.
+
+#### Binary and deformation contract
+
+All words are little-endian uint32 or IEEE float32; no native struct layout is
+serialized. Maximum payload size is 16 MiB. GSR1 has no optional/trailing chunks.
+
+| Record | Fields in order |
+| --- | --- |
+| Header (28 bytes) | `GSR1`, vertices, indices, bones, clips, logical canvas size, payload byte count excluding header |
+| Vertex (64 bytes) | rest xyz, unit normal xyz, top-left UV, four uint32 bone indices, four float weights |
+| Triangles | uint32 indices, divisible by three |
+| Bone (68 bytes) | parent uint32 (`0xffffffff` for a root), local rest TRS, model-space inverse-bind TRS |
+| Clip header (128 bytes) | numeric id, sample count, duration, row-major model-to-clip mat4, model-to-camera normal mat3, pivot xyz, radius |
+| Clip frame mapping (2,048 bytes) | 256 `(heading radians, time seconds)` pairs |
+| Clip tracks | sample-major local TRS for each bone, uniformly spaced over the duration |
+
+A TRS is eight floats: translation xyz, quaternion xyzw, positive uniform scale.
+Export rejects shear, reflections and nonuniform scale. The decoder checks
+3–8,192 vertices, 3–49,152 indices, 1–32 bones, 1–8 clips, 1–256 samples per
+clip, canvas size 1–128, exact payload length, finite/bounded scalars, unit
+normals/quaternions, normalized nonnegative weights, every influence index
+(including zero-weight slots), unique clip ids, parent ordering, inverse bind
+consistency, camera invertibility/orthogonality and track/frame bounds. Scalar
+magnitudes cannot exceed 10,000. Scale products across the animated hierarchy
+and inverse binds stay in [0.0001, 10,000]. Loading publishes a new immutable
+model only after all checks pass; failures leave an existing mesh untouched.
+
+C++ and TypeScript validate decoded float32 values using binary64 arithmetic.
+Inclusive scale/duration lower bounds and heading bounds use their serialized
+float32 endpoints; norm and weight-sum tolerance is binary64 `0.0001`. Accepted
+quaternions and weights normalize into float32 storage in both evaluators.
+Shared fixtures test the adjacent float32 values around these boundaries, so a
+language's literal rounding cannot silently change which assets it accepts.
+
+Tracks contain absolute local transforms, not deltas from rest. Time wraps in
+both directions. Translation and scale interpolate linearly; quaternion
+interpolation uses shortest-path slerp, normalized linear interpolation for
+absolute dot products at least 0.9995, and antipodal sign correction. A bone
+palette is `heading-about-pivot * global-animated * inverse-bind`. Positions
+use four-weight linear blending. Normals blend each bone's inverse-transpose
+linear transform, then normalize; a cancelling vector shorter than `1e-8`
+uses `(0,0,1)`. The orthographic camera transforms positions independently of
+normal rotation, and normals normalize again after camera rotation. The
+renderer alone applies the existing 1.25 atlas padding.
+
+Gameplay still calls `unitAnimationFrame`. In the worker mapping, frame `f`
+has heading `-floor(f/32)*pi/4` and time
+`(32*(floor(f/32)%2) + f%32)/32` in a two-second, 64-sample cycle. This retains
+both gait halves. Direction 8 still maps to phase zero of successive headings
+through the existing function; it is not a ninth heading. Continuous evaluation
+exists for tooling, but gameplay timing and discrete heading selection do not
+change.
+
+`SkinModel` owns immutable geometry, bones and `SkinClip` tracks.
+`SkinMesh::fromModel(model, clip)` is a
+migration adapter for all 256 frames of a clip, with no owned pose meshes or baked
+pose array; each draw still selects its discrete frame.
+`evaluate` reuses caller buffers. The context keeps at most 16 uploaded rest
+models, while the existing four-page atlas retains its normal bounded eviction.
+Consecutive paints share the same palette. Failed shader capability/compilation
+uses reusable CPU uploads; failed mesh rendering retains classic-art fallback.
+Destroying/restoring the renderer reconstructs GPU resources from retained
+models. Studio uses the same TypeScript contract for its displayed pose and
+brush projection; fill/pattern charts and inspection fit use the fixed rest
+mesh.
+
+#### Repeatable verification
+
+`SkinModel` and `skin-rig.test.ts` consume the same analytic fixture under
+`test/fixtures/skins/rig.json`; regenerate it with `tools/skins/rig_fixture.py`.
+The fixture covers hierarchy, weighted deformation, normals, antipodal rotations,
+frame mappings, affine camera translation with rounded weights, and malformed assets.
+Run the contract and Studio projection tests
+from the repository root:
+
+```sh
+python3 test/run_tests.py --binary unit --filter 'SkinModel/*'
+npm exec --prefix platform -- vitest run --root platform \
+  apps/web/test/skin-rig.test.ts apps/web/test/skin-projection.test.ts
+```
+
+`SkinModelRender` compares every mapped frame through the actual native atlas
+shader and CPU-baked reference. It requires GPU skinning, verifies lazy shader
+creation, interleaved baked/rig draws, paint variants and restored GL state, then
+exercises renderer resource recreation and forced CPU uploads. Run it with a
+working OpenGL display; a software OpenGL driver is useful for correctness but
+does not establish hardware performance:
+
+```sh
+python3 test/run_tests.py --binary unit --filter 'SkinModelRender/*'
+```
+
+The focused browser suite captures the production deformation shader's outputs
+with WebGL2 transform feedback. It checks every frame of every clip in both the
+analytic and translated-camera fixtures plus the installed worker against the
+TypeScript evaluator, enforcing
+0.05 logical-pixel position error and 0.001 normal-vector error. It records the
+browser-reported renderer and measured errors as test attachments. The suite has
+no API or built-app dependency; install the repository's Playwright browsers first:
+
+```sh
+npm exec --prefix platform -- playwright test -c platform/apps/web/e2e/rig.config.ts
+```
+
+All three engine projects (Chromium, Firefox and WebKit) must pass; unavailable
+WebGL2 fails explicitly. Use `--project=chromium` for a focused iteration, and
+record omitted engines. Browser-reported renderer strings may be masked and do
+not establish physical hardware coverage. This suite checks the shared shader
+body and evaluator, not the complete Emscripten game renderer, Studio interaction,
+or browser context-loss recovery. Native resource recreation likewise does not
+simulate operating-system context loss. Visual acceptance, those integration
+paths, and the requested ten-pair gameplay performance budgets remain separate
+release gates.

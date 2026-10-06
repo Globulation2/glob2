@@ -102,19 +102,39 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
                            "warrior-walk", "warrior-swim", "warrior-fight", "explorer-fly"};
     auto &loader = GAGCore::Toolkit::assets();
     std::vector<GAGCore::AssetLoader::Handle<GAGCore::SkinMesh>> requests;
-    auto path = [&](std::string file) { return installed ? file : std::filesystem::absolute(file).string(); };
-    for (const auto *name : names) requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + name + ".gsk")));
-    for (const auto &swarm : Online::SWARM_MESHES) requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
-    std::array<GAGCore::SkinMesh, 7> replacement;
-    for (unsigned i = 0; i < replacement.size(); ++i) {
-        auto mesh = loader.wait(requests[i]);
-        if (!mesh) { std::cerr << "Colony skin preview: " << names[i] << ": " << requests[i].error() << '\n'; return false; }
-        replacement[i] = *mesh;
-    }
-    clips = std::move(replacement);
-    for (unsigned i = 0; i < swarms.size(); ++i)
-        if (auto mesh = loader.wait(requests[clips.size() + i])) swarms[i] = *mesh;
-    return true;
+	auto path = [&](std::string file)
+	{ return installed ? file : std::filesystem::absolute(file).string(); };
+	const char *mode = std::getenv("GLOB2_SKIN_RIGS");
+	const bool rigRequested = mode && std::string(mode) == "1";
+	for (const auto *name : names)
+	{
+		const auto extension = rigRequested && std::string(name) == "worker-walk" ? ".gsr" : ".gsk";
+		requests.push_back(GAGCore::requestSkinMesh(loader, path(root + "/" + name + extension)));
+	}
+	for (const auto &swarm : Online::SWARM_MESHES)
+		requests.push_back(
+			GAGCore::requestSkinMesh(loader, path(root + "/" + std::string(swarm.file))));
+	std::array<GAGCore::SkinMesh, 7> replacement;
+	for (unsigned i = 0; i < replacement.size(); ++i)
+	{
+		auto mesh = loader.wait(requests[i]);
+		if (i == 0 && rigRequested && (!mesh || !mesh->model || mesh->logicalSize != 38))
+		{
+			requests[i] = GAGCore::requestSkinMesh(loader, path(root + "/worker-walk.gsk"));
+			mesh = loader.wait(requests[i]);
+		}
+		if (!mesh)
+		{
+			std::cerr << "Colony skin preview: " << names[i] << ": " << requests[i].error() << '\n';
+			return false;
+		}
+		replacement[i] = *mesh;
+	}
+	clips = std::move(replacement);
+	for (unsigned i = 0; i < swarms.size(); ++i)
+		if (auto mesh = loader.wait(requests[clips.size() + i]))
+			swarms[i] = *mesh;
+	return true;
 }
 bool ColonySkinPreview::loadInstalledMeshes()
 {

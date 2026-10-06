@@ -1,6 +1,9 @@
 /* Indexed geometry and camera metadata are validated before use. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { decodeRig, evaluateRig, type SkinModel } from './rig.ts';
 export type Mesh = {
+  rig?: SkinModel;
+  clip?: number;
   count: number;
   frames: number;
   uv: Float32Array;
@@ -75,29 +78,111 @@ export function validateView(view: ViewTransform) {
       throw new Error('Invalid model transform');
 }
 const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
+// Internal migration switch. Assets that have not passed their acceptance
+// gates continue loading their baked counterpart, including missing rig files.
+const rigPreview = import.meta.env.VITE_SKIN_RIGS === '1';
+export async function loadRigMesh(asset: string, clip = 0) {
+  const response = await fetch(`/skins/models/${asset}.gsr`);
+  if (!response.ok) throw new Error('Could not load rig');
+  const bytes = await response.arrayBuffer();
+  const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
+    v.toString(16).padStart(2, '0'),
+  ).join('');
+  return rigGeometry(decodeRig(bytes), clip, hash);
+}
+export function rigGeometry(
+  rig: SkinModel,
+  clip: number,
+  meshSha256: string,
+): { mesh: Mesh; view: ViewTransform } {
+  const camera = rig.clips[clip];
+  if (!camera || !Number.isInteger(clip)) throw new Error('Invalid rig clip');
+  const m = camera.modelToClip;
+  const determinant =
+    m[0]! * (m[5]! * m[10]! - m[6]! * m[9]!) -
+    m[1]! * (m[4]! * m[10]! - m[6]! * m[8]!) +
+    m[2]! * (m[4]! * m[9]! - m[5]! * m[8]!);
+  const inverse = [
+    m[5]! * m[10]! - m[6]! * m[9]!,
+    m[2]! * m[9]! - m[1]! * m[10]!,
+    m[1]! * m[6]! - m[2]! * m[5]!,
+    0,
+    m[6]! * m[8]! - m[4]! * m[10]!,
+    m[0]! * m[10]! - m[2]! * m[8]!,
+    m[2]! * m[4]! - m[0]! * m[6]!,
+    0,
+    m[4]! * m[9]! - m[5]! * m[8]!,
+    m[1]! * m[8]! - m[0]! * m[9]!,
+    m[0]! * m[5]! - m[1]! * m[4]!,
+    0,
+    0,
+    0,
+    0,
+    determinant,
+  ].map((v) => v / determinant);
+  for (let row = 0; row < 3; row++)
+    inverse[row * 4 + 3] = -(
+      inverse[row * 4]! * m[3]! +
+      inverse[row * 4 + 1]! * m[7]! +
+      inverse[row * 4 + 2]! * m[11]!
+    );
+  const normals = camera.normalToCamera;
+  const view: ViewTransform = {
+    version: 1,
+    meshSha256,
+    clipToModel: inverse,
+    modelToClip: [...m],
+    normalToModel: Array.from({ length: 9 }, (_, k) => normals[(k % 3) * 3 + Math.floor(k / 3)]!),
+    pivot: [...camera.pivot],
+    radius: camera.radius,
+  };
+  // Preserve the fixed rest chart for fill/pattern tools. Animation is evaluated
+  // only for the displayed pose, and the same result drives brush visibility.
+  const rest = new Float32Array(rig.count * 6);
+  for (let v = 0; v < rig.count; v++) {
+    rest.set(point(m, rig.rest[v * 6]!, rig.rest[v * 6 + 1]!, rig.rest[v * 6 + 2]!), v * 6);
+    for (let k = 0; k < 3; k++)
+      rest[v * 6 + 3 + k] =
+        normals[k * 3]! * rig.rest[v * 6 + 3]! +
+        normals[k * 3 + 1]! * rig.rest[v * 6 + 4]! +
+        normals[k * 3 + 2]! * rig.rest[v * 6 + 5]!;
+  }
+  return {
+    mesh: {
+      count: rig.count,
+      frames: 256,
+      uv: new Float32Array(rig.uv),
+      indices: new Uint32Array(rig.indices),
+      poses: rest,
+      rig,
+      clip,
+    },
+    view,
+  };
+}
 export function loadMesh(asset: string) {
   let pending = cache.get(asset);
   if (!pending) {
-    pending = Promise.all([
-      fetch(`/skins/models/${asset}.gsk`),
-      fetch(`/skins/models/${asset}.view.json`),
-    ])
-      .then(async ([a, b]) => {
-        if (!a.ok || !b.ok) throw new Error('Could not load this model. Please retry.');
-        const bytes = await a.arrayBuffer(),
-          view = (await b.json()) as ViewTransform;
-        validateView(view);
-        const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
-          v.toString(16).padStart(2, '0'),
-        ).join('');
-        if (hash !== view.meshSha256)
-          throw new Error('Model and camera versions do not match. Reload to update.');
-        return { mesh: decode(bytes), view };
-      })
-      .catch((e: unknown) => {
-        cache.delete(asset);
-        throw e;
-      });
+    const baked = () =>
+      Promise.all([fetch(`/skins/models/${asset}.gsk`), fetch(`/skins/models/${asset}.view.json`)])
+        .then(async ([a, b]) => {
+          if (!a.ok || !b.ok) throw new Error('Could not load this model. Please retry.');
+          const bytes = await a.arrayBuffer(),
+            view = (await b.json()) as ViewTransform;
+          validateView(view);
+          const hash = Array.from(
+            new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
+            (v) => v.toString(16).padStart(2, '0'),
+          ).join('');
+          if (hash !== view.meshSha256)
+            throw new Error('Model and camera versions do not match. Reload to update.');
+          return { mesh: decode(bytes), view };
+        })
+        .catch((e: unknown) => {
+          cache.delete(asset);
+          throw e;
+        });
+    pending = rigPreview && asset === 'worker-walk' ? loadRigMesh(asset).catch(baked) : baked();
     cache.set(asset, pending);
   }
   return pending;
@@ -143,7 +228,12 @@ export function projectPose(
   aspect: number,
 ): Float32Array {
   const result = new Float32Array(mesh.count * 6);
-  const pose = mesh.poses.subarray(Math.min(mesh.frames - 1, frame) * mesh.count * 6);
+  const sample = Math.max(0, Math.min(mesh.frames - 1, Math.floor(frame)));
+  // Each vertex is fully read before projection overwrites it, so rig evaluation
+  // can share the output buffer instead of allocating a second deformed mesh.
+  const pose = mesh.rig
+    ? evaluateRig({ model: mesh.rig, clip: mesh.clip ?? 0, sample }, true, result)
+    : mesh.poses.subarray(sample * mesh.count * 6);
   const inv = view.clipToModel,
     n = view.normalToModel;
   // Framing is fixed from the rest pose, cached across camera and animation updates.

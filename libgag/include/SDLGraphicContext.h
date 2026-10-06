@@ -476,18 +476,40 @@ namespace GAGCore
 		std::unique_ptr<RenderBatch> renderBatch;
         bool renderBatchEnabled=true;
 		// Experimental live mesh renderer, owned by the GL context.
-        struct SkinResources
-        {
-            unsigned program = 0, framebuffer = 0, depth = 0;
-            std::vector<unsigned> colors;
-            using Key = SkinAtlasCache::Key;
-            SkinAtlasCache slots;
-            unsigned poses = 0, uv = 0, indices = 0, vao = 0;
-            std::uint64_t meshIdentity = 0;
-            unsigned frame = ~0u;
-            bool attempted = false;
-        } skinResources;
-        void destroySkinRenderer();
+		struct SkinResources
+		{
+			unsigned program = 0, rigProgram = 0, fragment = 0, framebuffer = 0, depth = 0;
+			struct RigBuffers
+			{
+				unsigned vertices = 0, indices = 0;
+			};
+			struct Uniforms
+			{
+				int region = -1, bones = -1, view = -1, normalView = -1;
+				void initialize(unsigned program);
+			} uniforms, rigUniforms;
+			void prepareRigShader();
+			const RigBuffers &restBuffers(const SkinMesh &mesh);
+			static void bindRigGeometry(const RigBuffers &buffers);
+			static void finishRigGeometry();
+			void uploadRigPalette(const SkinMesh &mesh, unsigned sample);
+			void bindCpuGeometry(const SkinMesh &mesh, unsigned sample);
+			// Geometry cache is bounded separately from the pose atlas. Rebuilt
+			// from immutable models after context restoration.
+			std::map<std::uint64_t, RigBuffers> rigs;
+			std::vector<float> cpuPose, uploadScratch;
+			std::vector<unsigned> colors;
+			using Key = SkinAtlasCache::Key;
+			SkinAtlasCache slots;
+			unsigned poses = 0, uv = 0, indices = 0, vao = 0;
+			std::uint64_t meshIdentity = 0;
+			unsigned frame = ~0u;
+			// Uniform values survive program switches and atlas batches.
+			std::uint64_t paletteIdentity = 0;
+			unsigned paletteFrame = ~0u;
+			bool attempted = false, rigAttempted = false;
+		} skinResources;
+		void destroySkinRenderer();
         unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;

@@ -30,6 +30,26 @@ class ColonySkinAssetsTest(unittest.TestCase):
                     self.assertAlmostEqual(a, b, places=8)
                 self.assertEqual(view['pivot'], [0, 0, 0])
 
+    def test_experimental_worker_rig_is_hash_bound_and_preserves_paint_topology(self):
+        import struct
+        folder = ROOT / 'data/skins/colony-v1'
+        manifest = json.loads((folder / 'manifest.json').read_text())
+        record = manifest['rigs']['worker-walk.gsr']
+        self.assertEqual(record['format'], 'GSR1')
+        self.assertFalse(record['accepted'])
+        data = (folder / record['file']).read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(), record['sha256'])
+        self.assertEqual(data, (ROOT / 'platform/apps/web/public/skins/models' / record['file']).read_bytes())
+        for source, digest in record['sources'].items():
+            self.assertEqual(hashlib.sha256((ROOT / source).read_bytes()).hexdigest(), digest, source)
+        magic, vertices, indices, bones, clips, canvas, length = struct.unpack_from('<4s6I', data)
+        self.assertEqual((magic, bones, clips, canvas, length), (b'GSR1', 13, 1, 38, len(data)-28))
+        baked = (folder / 'worker-walk.gsk').read_bytes()
+        self.assertEqual((vertices, indices), struct.unpack_from('<2I', baked, 4))
+        for vertex in range(vertices):
+            self.assertEqual(data[28+vertex*64+24:28+vertex*64+32], baked[20+vertex*8:20+vertex*8+8])
+        self.assertEqual(data[28+vertices*64:28+vertices*64+indices*4], baked[20+vertices*8:20+vertices*8+indices*4])
+
     def test_installed_meshes_match_their_sources_and_paint_contract(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / 'tools/skins/test_export.py'),

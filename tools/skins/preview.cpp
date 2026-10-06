@@ -32,18 +32,26 @@ int main(int argc, char **argv)
         SDL_Delay(20);
     }
     {
-        // colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
-        // map (absent means all glossy), one 256x256 quadrant per model.
-        DrawableSurface paint(std::string(argv[1])+"/paint.webp");
-        if (paint.getW() != 512 || paint.getH() != 512) return 3;
-        auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1])+"/material.webp");
-        DrawableSurface glossy(512,512);
+        const char *mode = std::getenv("GLOB2_SKIN_RIGS");
+        const bool useRig = mode && std::string(mode) == "1";
+		auto meshPath = [&](const std::string &name)
+		{
+			const auto extension = useRig && name == "worker-walk" ? ".gsr" : ".gsk";
+			return std::string(argv[1]) + "/" + name + extension;
+		};
+		// colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
+		// map (absent means all glossy), one 256x256 quadrant per model.
+		DrawableSurface paint(std::string(argv[1]) + "/paint.webp");
+		if (paint.getW() != 512 || paint.getH() != 512)
+			return 3;
+		auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1]) + "/material.webp");
+		DrawableSurface glossy(512,512);
         if (loadedMaterial && (loadedMaterial->getW() != 512 || loadedMaterial->getH() != 512)) return 3;
         DrawableSurface &material = loadedMaterial ? *loadedMaterial : glossy;
         if (argc == 4 && std::string(argv[3]) == "--validate-opacity")
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             gfx->prepareSkinMeshes({{&mesh,0,&paint,&material,SkinRegionWorker}});
             DrawableSurface shadow(256,256);
             shadow.drawFilledRect(0,0,256,256,Color(90,70,50));
@@ -68,7 +76,7 @@ int main(int argc, char **argv)
         if (argc == 4 && std::string(argv[3]) == "--validate-cache")
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             alignas(DrawableSurface) unsigned char storage[sizeof(DrawableSurface)];
             auto *reused = new(storage) DrawableSurface(512,512);
             DrawableSurface materials(512,512);
@@ -126,7 +134,7 @@ int main(int argc, char **argv)
 #endif
             const unsigned phases = std::string(argv[3]) == "--benchmark-pages" ? 128 : 32;
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
+            if (!mesh.load(meshPath("worker-walk"),error)) return 4;
             struct MissingPaint : DrawableSurface { MissingPaint() : DrawableSurface() {} } missingPaint;
             gfx->resetDrawCallCount();
             gfx->prepareSkinMeshes({{&mesh,0,&missingPaint,&material,SkinRegionWorker},{&mesh,0,&paint,&missingPaint,SkinRegionWorker}});
@@ -180,7 +188,7 @@ int main(int argc, char **argv)
         for (int clip = 0; clip < 8; ++clip)
         {
             SkinMesh mesh; std::string error;
-            if (!mesh.load(std::string(argv[1])+"/"+names[clip]+".gsk",error))
+            if (!mesh.load(meshPath(names[clip]),error))
             { std::cerr << error << '\n'; return 4; }
             const bool allPhases = argc == 4 && std::string(argv[3]) == "--all-phases";
             const int pages = allPhases && clip != 7 ? 8 : 1;

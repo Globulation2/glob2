@@ -241,6 +241,8 @@ UNIT_TESTS = [
     '#src/audio/PlayerVoiceDrainTest.cpp',
     '#src/hud/draw/SpriteCenteringTest.cpp',
     '#libgag/src/SkinMeshTest.cpp',
+    '#libgag/src/SkinModelTest.cpp',
+    ('#libgag/src/SkinModelRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/TurretScanTileTest.cpp',
     '#src/unit/render/UnitAnimationTest.cpp',
     '#src/unit/render/UnitDrawGeometryTest.cpp',

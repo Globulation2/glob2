@@ -216,5 +216,34 @@
       "vertices": 1011,
       "triangles": 2000
     }
+  },
+  "rigs": {
+    "worker-walk.gsr": {
+      "format": "GSR1",
+      "version": 1,
+      "experimental": true,
+      "file": "worker-walk.gsr",
+      "sha256": "5d1e68c547cd24a301fea93ecda6c35219f3d9095097234ae7ceccd66bba53ee",
+      "clips": [
+        {
+          "id": 0,
+          "name": "walk",
+          "samples": 64,
+          "mapping": "alternating-gait-halves-v1",
+          "direction8": "existing-unitAnimationFrame"
+        }
+      ],
+      "sources": {
+        "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+        "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+        "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+        "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
+        "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "tools/skins/author_worker_rig.py": "fd5903ca719ac2e6a6df69e48c667c5f8992177e44986fbddbf59b6f15f3a272",
+        "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+        "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb"
+      },
+      "accepted": false
+    }
   }
 }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SkinMesh.h>
+#include <SkinModel.h>
 #include <array>
 #include <atomic>
 #include <bit>
@@ -14,6 +15,36 @@
 namespace GAGCore
 {
 namespace { std::atomic<std::uint64_t> nextIdentity{1}; }
+SkinMesh SkinMesh::fromModel(std::shared_ptr<const SkinModel> model, unsigned clip)
+{
+	if (!model || clip >= model->clips().size())
+		return {};
+	SkinMesh mesh;
+	mesh.identity = nextIdentity.fetch_add(1, std::memory_order_relaxed);
+	mesh.model = std::move(model);
+	mesh.clip = clip;
+	mesh.vertices = mesh.model->vertices();
+	mesh.frames = 256;
+	mesh.logicalSize = mesh.model->logicalSize();
+	mesh.uv = mesh.model->uv();
+	mesh.indices = mesh.model->indices();
+	return mesh;
+}
+bool SkinMesh::evaluate(unsigned frame, std::vector<float> &output) const
+{
+	if (!identity || frame >= frames)
+		return false;
+	if (model)
+		return model->evaluate(clip, frame, output);
+	// SkinMesh is a public migration adapter, so reject incomplete manually
+	// constructed baked data as well as invalid frame requests. Keep output on failure.
+	const auto count = std::size_t(vertices) * 6;
+	if (!count || poses.size() / count < frames)
+		return false;
+	const auto begin = poses.begin() + std::size_t(frame) * count;
+	output.assign(begin, begin + count);
+	return true;
+}
 AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader& loader, const std::string& path)
 {
     auto bytes = loader.requestBytes(path);
@@ -47,6 +78,20 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
     input.seekFromStart(0);
     std::array<char, 4> magic{};
     bool complete = input.readExact(magic.data(), 4);
+	if (magic == std::array<char, 4>{'G', 'S', 'R', '1'})
+	{
+		if (length > 16 * 1024 * 1024)
+			return fail("invalid rig size");
+		input.seekFromStart(0);
+		std::vector<std::uint8_t> bytes(static_cast<std::size_t>(length));
+		if (!input.readExact(bytes.data(), bytes.size()))
+			return fail("truncated rig asset");
+		auto model = SkinModel::decode(bytes, error);
+		if (!model)
+			return false;
+		*this = fromModel(std::move(model), 0);
+		return true;
+	}
     if (magic != std::array<char, 4>{'G','S','K','1'}) return fail("unsupported skin mesh format");
     auto word = [&]() {
         std::array<unsigned char, 4> b{};
