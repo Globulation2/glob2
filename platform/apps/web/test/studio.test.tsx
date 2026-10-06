@@ -161,7 +161,7 @@ it('does not offer to resubmit an accepted message when refreshing history fails
   const composer = await screen.findByRole('textbox', {
     name: 'Describe your map or discuss changes',
   });
-  await screen.findByRole('button', { name: 'Revise this version' });
+  await screen.findByRole('button', { name: 'Edit this version' });
   fireEvent.change(composer, { target: { value: 'Accepted message' } });
   failedSnapshotReads = 1;
   fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
@@ -193,53 +193,57 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
 });
-it('shows private versions and explicit paid generation separately from included discussion', async () => {
+it('shows private versions and submits edits through a single server-directed turn', async () => {
   render(<MapStudio id={id} />);
-  await screen.findByRole('button', { name: /Generate map/ });
+  await screen.findByRole('button', { name: 'Play' });
   fireEvent.click(screen.getByText('More', { selector: 'summary' }));
   expect(screen.getByRole('button', { name: 'Publish this version' })).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Host room' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Revise this version' }));
-  fireEvent.click(screen.getByRole('button', { name: /Generate map/ }));
+  expect(screen.getByRole('button', { name: 'Play' })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Edit this version' }));
+  fireEvent.change(screen.getByRole('textbox', { name: 'Describe your map or discuss changes' }), {
+    target: { value: 'Build the map with more bridges' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
   await waitFor(() => expect(writes).toHaveLength(1));
   expect(writes[0]?.body).toMatchObject({
     settings: { width: 256, height: 128, players: 4 },
     parent: 'version',
   });
 });
-it('keeps unsent feedback out of generation and stores a recoverable draft', async () => {
+it('submits feedback once with its snapshotted build context and stores a recoverable draft', async () => {
   render(<MapStudio id={id} />);
-  await screen.findByRole('button', { name: /Generate map/ });
+  await screen.findByRole('button', { name: 'Play' });
   fireEvent.change(screen.getByRole('textbox', { name: 'Describe your map or discuss changes' }), {
     target: { value: 'More bridges' },
   });
-  expect((screen.getByRole('button', { name: /Generate map/ }) as HTMLButtonElement).disabled).toBe(
-    true,
+  expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(
+    false,
   );
   expect(sessionStorage.getItem('studio-draft:owner:thread')).toBe('More bridges');
   fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
   await waitFor(() => expect(writes).toHaveLength(1));
-  expect(writes[0]?.path).toContain('/messages');
+  expect(writes[0]?.path).toContain('/turns');
   expect(writes[0]?.body).toMatchObject({ text: 'More bridges' });
 });
 it('preserves a draft and revision target while switching workspace views', async () => {
   render(<MapStudio id={id} />);
-  await screen.findByRole('button', { name: 'Revise this version' });
-  fireEvent.click(screen.getByRole('button', { name: 'Revise this version' }));
+  await screen.findByRole('button', { name: 'Edit this version' });
+  fireEvent.click(screen.getByRole('button', { name: 'Edit this version' }));
   const composer = screen.getByRole('textbox', { name: 'Describe your map or discuss changes' });
   fireEvent.change(composer, { target: { value: 'Keep this unsent revision' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Map' }));
+  fireEvent.click(screen.getByRole('button', { name: /^Map/ }));
   fireEvent.click(screen.getByRole('button', { name: 'Chat' }));
   expect(screen.getByRole('textbox', { name: 'Describe your map or discuss changes' })).toBe(
     composer,
   );
   expect((composer as HTMLTextAreaElement).value).toBe('Keep this unsent revision');
-  expect(screen.getByText(/Revising version 1/)).toBeTruthy();
+  expect(screen.getByText(/Editing version 1/)).toBeTruthy();
   expect(sessionStorage.getItem('studio-draft:owner:thread')).toBe('Keep this unsent revision');
 });
 
 it('pins stage inspection without losing the selected generation', async () => {
   render(<MapStudio id={id} />);
+  fireEvent.click(await screen.findByText('Build details', { selector: 'summary' }));
   const stage = await screen.findByRole('button', { name: 'Prepare the design' });
   await waitFor(() => expect((stage as HTMLButtonElement).disabled).toBe(false));
   fireEvent.click(stage);
@@ -247,7 +251,7 @@ it('pins stage inspection without losing the selected generation', async () => {
   expect(screen.getByRole('button', { name: /Follow live/ })).toBeTruthy();
   expect((screen.getByLabelText('Inspect version') as HTMLSelectElement).value).toBe('version');
   fireEvent.click(screen.getByRole('button', { name: /Follow live/ }));
-  expect(screen.getByRole('button', { name: 'Revise this version' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Edit this version' })).toBeTruthy();
 });
 it('keeps the native image visible during checks and when inspecting a check', async () => {
   generationStatus = 'processing';
@@ -255,6 +259,7 @@ it('keeps the native image visible during checks and when inspecting a check', a
   activeRequest = { id: 'version', threadId: id, status: 'processing' };
   render(<MapStudio id={id} />);
   await screen.findByText('Native terrain', { selector: 'figcaption span' });
+  fireEvent.click(screen.getByText('Build details', { selector: 'summary' }));
   fireEvent.click(screen.getByRole('button', { name: /Connected routes/ }));
   expect(screen.getByText('Native terrain', { selector: 'figcaption span' })).toBeTruthy();
   expect(screen.getByText(/Colony 1/)).toBeTruthy();
@@ -262,13 +267,14 @@ it('keeps the native image visible during checks and when inspecting a check', a
 });
 it('persists revision settings through a reload and resets the parent when size changes', async () => {
   const view = render(<MapStudio id={id} />);
-  fireEvent.click(await screen.findByRole('button', { name: 'Revise this version' }));
+  fireEvent.click(await screen.findByRole('button', { name: 'Edit this version' }));
   view.unmount();
   render(<MapStudio id={id} />);
-  await screen.findByText(/Revising version 1/);
+  await screen.findByText(/Editing version 1/);
+  fireEvent.click(screen.getByText(/256 × 128 · 4 players/, { selector: 'summary' }));
   expect((screen.getByLabelText('Height') as HTMLSelectElement).value).toBe('128');
   fireEvent.change(screen.getByLabelText('Players'), { target: { value: '6' } });
-  expect(screen.queryByText(/Revising version 1/)).toBeNull();
+  expect(screen.queryByText(/Editing version 1/)).toBeNull();
 });
 it('shows the separate landing without credits while explicit project links retain maps', async () => {
   available = 0;
@@ -280,8 +286,8 @@ it('shows the separate landing without credits while explicit project links reta
   expect(sessionStorage.getItem('studio-draft:owner:new')).toBe('Saved before purchase');
   view.unmount();
   render(<MapStudio id={id} />);
-  await screen.findByRole('button', { name: 'Host room' });
-  expect((screen.getByRole('button', { name: /Generate map/ }) as HTMLButtonElement).disabled).toBe(
+  await screen.findByRole('button', { name: 'Play' });
+  expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(
     true,
   );
 });
@@ -320,10 +326,13 @@ it('reuses the persisted creation and message IDs after a lost creation response
 it('blocks replacement generation after an unknown submission outcome and retries the same ID', async () => {
   failures = 1;
   render(<MapStudio id={id} />);
-  await screen.findByRole('button', { name: 'Revise this version' });
-  fireEvent.click(screen.getByRole('button', { name: /Generate map/ }));
+  await screen.findByRole('button', { name: 'Edit this version' });
+  fireEvent.change(screen.getByRole('textbox', { name: 'Describe your map or discuss changes' }), {
+    target: { value: 'Build the map with more bridges' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
   const retry = await screen.findByRole('button', { name: 'Retry the same request' });
-  expect((screen.getByRole('button', { name: /Generate map/ }) as HTMLButtonElement).disabled).toBe(
+  expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(
     true,
   );
   fireEvent.click(retry);
@@ -347,7 +356,7 @@ it.each(['returned', 'cancelled'])(
       ).value,
     ).toBe('Keep these islands');
     expect(
-      (screen.getByRole('button', { name: /Generate map/ }) as HTMLButtonElement).disabled,
+      (screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled,
     ).toBe(true);
     if (payment === 'returned') expect(screen.getByText(/Confirming your payment/)).toBeTruthy();
     else expect(screen.getByText(/Checkout was cancelled/)).toBeTruthy();

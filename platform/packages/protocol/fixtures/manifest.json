@@ -197,6 +197,7 @@
     "StudioProgress": "schemas/StudioProgress.schema.json",
     "StudioSettings": "schemas/StudioSettings.schema.json",
     "StudioStageProgress": "schemas/StudioStageProgress.schema.json",
+    "StudioTurn": "schemas/StudioTurn.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
@@ -1214,6 +1215,26 @@
       "schema": "StudioProgress",
       "valid": true,
       "note": "Historical requests explicitly expose missing detail without inventing checks."
+    },
+    {
+      "file": "valid/StudioTurn/build-context.json",
+      "schema": "StudioTurn",
+      "valid": true,
+      "note": "A turn snapshots settings and an optional delivered parent."
+    },
+    {
+      "file": "invalid/StudioTurn/missing-settings.json",
+      "schema": "StudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "Build decisions require settings snapshotted when the message is sent."
+    },
+    {
+      "file": "invalid/StudioTurn/client-decision.json",
+      "schema": "StudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "The client cannot supply an agent build decision."
     },
     {
       "file": "valid/MusicStudioGenerate/acoustic-revision.json",

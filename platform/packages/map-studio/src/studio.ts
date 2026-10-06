@@ -4,6 +4,7 @@ import { Credits, HiveError } from '@glob2/billing';
 import { notify as notifyDatabase, type Database } from '@glob2/db';
 import type {
   StudioGenerate,
+  StudioTurn,
   StudioRequest,
   StudioThread,
   StudioEvent,
@@ -193,7 +194,7 @@ export class Studio {
     ).rows;
     // Conversation snapshots are private worker inputs, not duplicated in client request history.
     const requests = (
-      await sql<StudioRequest>`SELECT id,thread_id,kind,status,jsonb_strip_nulls(jsonb_build_object('brief','','messages','[]'::jsonb,'pipelineVersion',input->'pipelineVersion','settings',input->'settings','parent',input->'parent')) AS input,map_id,map_hash,error,charged,created_at FROM studio_requests WHERE thread_id=${thread} ${requestCursor} ORDER BY created_at DESC,id DESC LIMIT 201`.execute(
+      await sql<StudioRequest>`SELECT id,thread_id,kind,status,jsonb_strip_nulls(jsonb_build_object('brief','','messages','[]'::jsonb,'pipelineVersion',input->'pipelineVersion','turn',input->'turn','sourceTurnId',input->'sourceTurnId','settings',input->'settings','parent',input->'parent')) AS input,map_id,map_hash,error,charged,created_at FROM studio_requests WHERE thread_id=${thread} ${requestCursor} ORDER BY created_at DESC,id DESC LIMIT 201`.execute(
         db,
       )
     ).rows;
@@ -233,9 +234,10 @@ export class Studio {
     account: string,
     thread: string,
     kind: 'chat' | 'generate',
-    input: StudioGenerate | { id: string; text: string },
+    input: StudioGenerate | StudioTurn | { id: string; text: string },
     pipelineVersion: string,
     chatPerHour = 60,
+    turn = false,
   ) {
     return this.db.transaction().execute(async (db) => {
       const wallet = await this.lockWallet(db, account);
@@ -246,7 +248,12 @@ export class Studio {
       if (old) {
         const requested =
           'text' in input
-            ? { text: input.text }
+            ? {
+                text: input.text,
+                ...(turn && 'settings' in input
+                  ? { turn: true, settings: input.settings, parent: input.parent ?? null }
+                  : {}),
+              }
             : { settings: input.settings, parent: input.parent ?? null };
         if (
           old.account_id !== account ||
@@ -268,7 +275,12 @@ export class Studio {
         throw new HiveError('conflict', 'Wait for your current studio request to finish.');
       const submission =
         'text' in input
-          ? { text: input.text }
+          ? {
+              text: input.text,
+              ...(turn && 'settings' in input
+                ? { turn: true, settings: input.settings, parent: input.parent ?? null }
+                : {}),
+            }
           : { settings: input.settings, parent: input.parent ?? null };
       if (kind === 'chat' && 'text' in input) {
         const recent =
@@ -314,11 +326,12 @@ export class Studio {
         brief: threadRow.brief,
         messages,
         pipelineVersion,
+        ...(turn ? { turn: true } : {}),
         ...('settings' in input
           ? { settings: input.settings, ...(input.parent ? { parent: input.parent } : {}) }
           : {}),
       };
-      await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${input.id},${thread},${account},${kind},${JSON.stringify(snapshot)}::jsonb,${JSON.stringify({ submission })}::jsonb)`.execute(
+      await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${input.id},${thread},${account},${kind},${JSON.stringify(snapshot)}::jsonb,${JSON.stringify({ submission, ...(turn ? { generationId: randomUUID() } : {}) })}::jsonb)`.execute(
         db,
       );
       if (kind === 'generate')
@@ -695,7 +708,7 @@ export class Studio {
   async finish(
     row: RequestRow,
     result?:
-      | { text: string; brief?: string }
+      | { text: string; brief?: string; action?: 'discuss' | 'build' }
       | {
           mapHash: string;
           previewHash: string;
@@ -766,6 +779,36 @@ export class Studio {
       await sql`UPDATE studio_requests SET status=${result ? 'ready' : 'failed'},charged=${!!charge},map_id=${mapId},map_hash=${mapHash},error=${error ?? null},completed_at=now(),lease_until=NULL WHERE id=${row.id}`.execute(
         db,
       );
+      // Complete the turn and enqueue its single build under the same wallet lock.
+      // Replayed completions return above; no browser event can create a build.
+      if (result && 'text' in result && current.input.turn && result.action === 'build') {
+        if (!current.input.settings || typeof current.checkpoints['generationId'] !== 'string')
+          throw new HiveError('bad_request', 'The turn is missing its build context.');
+        const wallet = await this.lockWallet(db, row.account_id);
+        if (Number(wallet.balance) - Number(wallet.reserved) < 1)
+          throw new HiveError('credits', 'An available map credit is needed to build.');
+        const generationId = current.checkpoints['generationId'];
+        const input = {
+          ...current.input,
+          turn: undefined,
+          sourceTurnId: current.id,
+          brief: result.brief ?? current.input.brief,
+          messages: [...current.input.messages, { role: 'assistant', text: result.text }],
+        };
+        const submission = { settings: input.settings, parent: input.parent ?? null };
+        await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,input,checkpoints) VALUES(${generationId},${row.thread_id},${row.account_id},'generate',${JSON.stringify(input)}::jsonb,${JSON.stringify({ submission })}::jsonb)`.execute(
+          db,
+        );
+        await sql`UPDATE map_wallets SET reserved=reserved+1 WHERE account_id=${row.account_id}`.execute(
+          db,
+        );
+        await emitEvent(
+          db,
+          { ...row, id: generationId },
+          { type: 'state', payload: { status: 'queued' } },
+          `${generationId}:queued`,
+        );
+      }
       await sql`UPDATE studio_threads SET updated_at=now() WHERE id=${row.thread_id}`.execute(db);
       if (result && 'mapHash' in result) {
         await this.registerArtifact(db, row, {

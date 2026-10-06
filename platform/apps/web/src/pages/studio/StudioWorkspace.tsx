@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { StudioSettings } from '@glob2/protocol';
 import { ART } from '../../art.tsx';
 import { Link } from '../../router.tsx';
@@ -26,7 +26,6 @@ interface Props {
   draft: string;
   setDraft: (v: string) => void;
   send: () => void;
-  generate: () => void;
   settings: StudioSettings;
   changeSettings: (v: StudioSettings) => void;
   parent?: string;
@@ -38,8 +37,36 @@ interface Props {
 }
 export function StudioWorkspace(p: Props) {
   const [pane, setPane] = useState<'chat' | 'map'>('chat');
-  const [split, setSplit] = useState(35);
+  const [split, updateSplit] = useState(() => {
+    const saved = Number(localStorage.getItem('map-studio-split') ?? 50);
+    return Number.isFinite(saved) ? Math.max(35, Math.min(65, saved)) : 50;
+  });
   const splitRef = useRef<HTMLDivElement>(null);
+  const setSplit = useCallback((value: number) => {
+    const width = splitRef.current?.clientWidth ?? 1000;
+    if (
+      width < 649 ||
+      (typeof matchMedia === 'function' && matchMedia('(max-width: 899px)').matches)
+    )
+      return;
+    const minimum = Math.max(35, (320 / width) * 100);
+    const next = Math.max(minimum, Math.min(Math.min(65, ((width - 329) / width) * 100), value));
+    updateSplit(next);
+    localStorage.setItem('map-studio-split', String(next));
+  }, []);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
+  const focusComposer = () => {
+    setPane('chat');
+    requestAnimationFrame(() => composerRef.current?.focus());
+  };
+  useEffect(() => {
+    const element = splitRef.current;
+    if (!element || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => setSplit(split));
+    observer.observe(element);
+    return () => observer.disconnect();
+    // The observer re-clamps the current split when navigation or the viewport changes.
+  }, [split, setSplit]);
   const [follow, setFollow] = useState(true);
   const [inspected, setInspected] = useState<string>();
   const [stage, setStage] = useState<StageId>();
@@ -109,6 +136,9 @@ export function StudioWorkspace(p: Props) {
     setCheck(undefined);
   };
   const selectVersion = (value: string) => {
+    setPane('map');
+    const version = versions.find((v) => v.id === value);
+    if (version) p.revise(version);
     setInspected(value);
     setFollow(false);
     setStage(undefined);
@@ -120,7 +150,9 @@ export function StudioWorkspace(p: Props) {
   const disabled = p.busy || !!active || !p.wallet?.enabled || !p.wallet.available;
   const status = active
     ? active.status === 'uncertain'
-      ? 'Your credit is reserved while the provider outcome is reconciled.'
+      ? active.kind === 'generate'
+        ? 'Your credit is reserved while the provider outcome is reconciled.'
+        : 'The designer reply needs reconciliation. No map build has started.'
       : (active.error ??
         (active.kind === 'chat'
           ? 'The map designer is replying…'
@@ -139,7 +171,14 @@ export function StudioWorkspace(p: Props) {
           Chat
         </button>
         <button aria-pressed={pane === 'map'} onClick={() => setPane('map')}>
-          Map {active?.kind === 'generate' && <span className="ms-live-dot" />}
+          Map{' '}
+          {active?.kind === 'generate' ? (
+            <span className="ms-live-dot" />
+          ) : current?.status === 'ready' ? (
+            '✓'
+          ) : (
+            ''
+          )}
         </button>
       </div>
       <div
@@ -149,29 +188,90 @@ export function StudioWorkspace(p: Props) {
         style={{ '--chat-width': `${split}%` } as CSSProperties}
       >
         <section className="ms-conversation" aria-label="Conversation">
-          <header className="ms-pane-heading">
-            <div>
-              <span className="ms-eyebrow">YOUR CREATIVE PARTNER</span>
-              <h2>Let’s build a world.</h2>
-            </div>
-            <span className="ms-private">Private project</span>
-          </header>
           <Conversation
             thread={p.thread}
             active={active?.kind === 'chat'}
             loadEarlier={p.loadEarlier}
             busy={p.busy}
             choose={p.setDraft}
+            inspect={selectVersion}
+            progress={visibleProgress}
           />
-          {p.thread?.brief && (
-            <details className="ms-brief">
-              <summary>
-                Design brief <span>Agreed so far</span>
-              </summary>
-              <p>{p.thread.brief}</p>
-            </details>
-          )}
           <div className="ms-compose-area">
+            <div className="ms-composer-tools">
+              <span>
+                {parentVersion
+                  ? `Editing version ${versions.indexOf(parentVersion) + 1}`
+                  : 'New map'}
+              </span>
+              {parentVersion && (
+                <button type="button" onClick={() => p.revise(undefined)}>
+                  New map
+                </button>
+              )}
+              <details
+                className="ms-settings-popover"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const summary = e.currentTarget.querySelector('summary');
+                    e.currentTarget.open = false;
+                    requestAnimationFrame(() => summary?.focus());
+                  }
+                }}
+              >
+                <summary>
+                  {p.settings.width} × {p.settings.height} · {p.settings.players} players
+                </summary>
+                <fieldset className="ms-settings" disabled={p.busy || !!active}>
+                  <legend>Map settings</legend>
+                  <div className="ms-settings-grid">
+                    {(['width', 'height'] as const).map((axis) => (
+                      <label key={axis}>
+                        {axis === 'width' ? 'Width' : 'Height'}
+                        <select
+                          value={p.settings[axis]}
+                          onChange={(e) =>
+                            p.changeSettings({
+                              ...p.settings,
+                              [axis]: Number(e.target.value) as StudioSettings['width'],
+                            })
+                          }
+                        >
+                          {[128, 256, 512].map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                    <label>
+                      Players
+                      <select
+                        value={p.settings.players}
+                        onChange={(e) =>
+                          p.changeSettings({ ...p.settings, players: Number(e.target.value) })
+                        }
+                      >
+                        {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                          <option key={n}>{n}</option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </fieldset>
+              </details>
+            </div>
+            {p.thread?.brief && (
+              <details className="ms-brief">
+                <summary>
+                  Design brief <span>Agreed so far</span>
+                </summary>
+                <p>{p.thread.brief}</p>
+              </details>
+            )}
             <form
               className="ms-composer"
               onSubmit={(e) => {
@@ -183,6 +283,7 @@ export function StudioWorkspace(p: Props) {
                 Describe your map or discuss changes
               </label>
               <textarea
+                ref={composerRef}
                 id="studio-message"
                 value={p.draft}
                 rows={2}
@@ -212,74 +313,12 @@ export function StudioWorkspace(p: Props) {
                 </button>
               </div>
             </form>
-            <fieldset className="ms-settings" disabled={p.busy || !!active}>
-              <legend className="ms-sr">Next map settings</legend>
-              <div className="ms-settings-grid">
-                {(['width', 'height'] as const).map((axis) => (
-                  <label key={axis}>
-                    {axis === 'width' ? 'Width' : 'Height'}
-                    <select
-                      value={p.settings[axis]}
-                      onChange={(e) =>
-                        p.changeSettings({
-                          ...p.settings,
-                          [axis]: Number(e.target.value) as StudioSettings['width'],
-                        })
-                      }
-                    >
-                      {[128, 256, 512].map((n) => (
-                        <option key={n} value={n}>
-                          {n}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                ))}
-                <label>
-                  Players
-                  <select
-                    value={p.settings.players}
-                    onChange={(e) =>
-                      p.changeSettings({ ...p.settings, players: Number(e.target.value) })
-                    }
-                  >
-                    {[2, 3, 4, 5, 6, 7, 8].map((n) => (
-                      <option key={n}>{n}</option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="ms-generation-target">
-                {parentVersion ? (
-                  <>
-                    Revising version {versions.indexOf(parentVersion) + 1}.{' '}
-                    <button type="button" onClick={() => p.revise(undefined)}>
-                      Start fresh
-                    </button>
-                  </>
-                ) : (
-                  'Creating a fresh map from this discussion.'
-                )}
-              </div>
-              <button
-                className="primary ms-generate"
-                disabled={disabled || !p.thread?.messages.length || !!p.draft.trim()}
-                onClick={p.generate}
-              >
-                <span aria-hidden="true">✦</span> Generate map{' '}
-                <span className="ms-generate-price">1 credit</span>
-              </button>
-            </fieldset>
             <p className="ms-composer-note">
-              {p.draft.trim()
-                ? 'Send your draft before generating.'
-                : active?.kind === 'generate'
-                  ? 'Your current map is funded. Its credit is reserved until delivery.'
-                  : !p.wallet
-                    ? 'Loading your available credits…'
-                    : !p.wallet.available
-                      ? 'An available credit is needed to chat or generate. Your draft is saved.'
-                      : 'Discussion included with an available credit. Pay only for delivered maps.'}
+              Messages are free. If your request builds a map, it uses 1 credit on delivery.
+              {p.wallet &&
+                !p.wallet.available &&
+                !active &&
+                ' An available credit is needed to chat or build.'}
             </p>
           </div>
         </section>
@@ -289,18 +328,18 @@ export function StudioWorkspace(p: Props) {
           tabIndex={0}
           aria-label="Resize conversation"
           aria-orientation="vertical"
-          aria-valuemin={28}
-          aria-valuemax={55}
+          aria-valuemin={35}
+          aria-valuemax={65}
           aria-valuenow={Math.round(split)}
           onKeyDown={(e) => {
             if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
               e.preventDefault();
-              setSplit((s) =>
+              setSplit(
                 e.key === 'Home'
-                  ? 28
+                  ? 35
                   : e.key === 'End'
-                    ? 55
-                    : Math.max(28, Math.min(55, s + (e.key === 'ArrowLeft' ? -2 : 2))),
+                    ? 65
+                    : split + (e.key === 'ArrowLeft' ? -2 : 2),
               );
             }
           }}
@@ -310,7 +349,7 @@ export function StudioWorkspace(p: Props) {
           onPointerMove={(e) => {
             if (e.currentTarget.hasPointerCapture(e.pointerId) && splitRef.current) {
               const r = splitRef.current.getBoundingClientRect();
-              setSplit(Math.max(28, Math.min(55, ((e.clientX - r.left) / r.width) * 100)));
+              setSplit(((e.clientX - r.left) / r.width) * 100);
             }
           }}
           onPointerUp={(e) => e.currentTarget.releasePointerCapture(e.pointerId)}
@@ -319,10 +358,7 @@ export function StudioWorkspace(p: Props) {
         </div>
         <section className="ms-map-pane" aria-label="Map workshop">
           <header className="ms-map-heading">
-            <div>
-              <span className="ms-eyebrow">{current ? 'YOUR CREATION' : 'THE CANVAS'}</span>
-              <h2>{p.thread?.title ?? 'An idea becomes a world'}</h2>
-            </div>
+            <strong>Map canvas</strong>
             <div className="ms-version-controls">
               {!!generations.length && (
                 <label>
@@ -375,7 +411,16 @@ export function StudioWorkspace(p: Props) {
           {current?.status === 'failed' && (
             <div className="ms-banner ms-error">
               {current.error ?? 'We could not finish this map. Your earlier maps are safe.'}
-              <button onClick={() => setPane('chat')}>Adjust in chat</button>
+              <button
+                onClick={() => {
+                  p.setDraft(
+                    `Please try building the map again and address this issue: ${current.error ?? 'The last build did not complete.'}`,
+                  );
+                  focusComposer();
+                }}
+              >
+                Prepare retry
+              </button>
             </div>
           )}
           <div className={`ms-viewer-wrap${celebrating ? ' ms-celebrate' : ''}`}>
@@ -450,116 +495,132 @@ export function StudioWorkspace(p: Props) {
               </div>
             )}
           </div>
-          <div className="ms-stage-area">
-            <GenerationTimeline
-              stages={stages}
-              artifacts={visibleProgress?.artifacts ?? []}
-              selectedStage={selectedStage}
-              enabled={!!current}
-              select={(id) => {
-                setStage(id);
-                setArtifactId(undefined);
-                setInspected(current?.id);
-                setFollow(false);
-                setCheck(undefined);
-                setCompare('');
-              }}
-            />
-            {stage && stages.find((s) => s.id === selectedStage)?.detail && (
-              <p className="ms-stage-note">{stages.find((s) => s.id === selectedStage)?.detail}</p>
-            )}
-            {stageArtifacts.length > 1 && (
-              <details className="ms-artifacts">
-                <summary>
-                  {stages.find((s) => s.id === selectedStage)?.label} · {stageArtifacts.length}{' '}
-                  {stageArtifacts.length === 1 ? 'image' : 'images'}
-                </summary>
-                <div>
-                  {stageArtifacts.map((a) => (
-                    <button
-                      key={a.id}
-                      aria-pressed={shown?.id === a.id}
-                      onClick={() => {
-                        setArtifactId(a.id);
-                        setStage(a.stage);
-                        setInspected(current?.id);
-                        setFollow(false);
-                      }}
-                    >
-                      <img src={a.url} alt="" />
-                      {a.label}
-                    </button>
-                  ))}
-                </div>
-              </details>
-            )}
-            {progressError && <p className="ms-stage-note">{progressError}</p>}
-            {visibleProgress?.historical && (
-              <p className="ms-stage-note">
-                This older generation has limited stage history. Available images are preserved.
-              </p>
-            )}
-            {!!visibleProgress?.checks.length && (
-              <ValidationPanel
-                checks={visibleProgress.checks}
-                checking={stages.find((s) => s.id === 'checks')?.status === 'running'}
-                selected={check?.id}
-                select={(value) => {
-                  setCompare('');
-                  setCheck(value);
+          <details className="ms-build-details">
+            <summary>Build details</summary>
+            <div className="ms-stage-area">
+              <GenerationTimeline
+                stages={stages}
+                artifacts={visibleProgress?.artifacts ?? []}
+                selectedStage={selectedStage}
+                enabled={!!current}
+                select={(id) => {
+                  setStage(id);
                   setArtifactId(undefined);
-                  setStage(
-                    visibleProgress.artifacts.some((a) => a.stage === 'ready') ? 'ready' : 'build',
-                  );
                   setInspected(current?.id);
                   setFollow(false);
+                  setCheck(undefined);
+                  setCompare('');
                 }}
               />
-            )}
-            {delivered && (
-              <div className="ms-delivery">
-                <div>
-                  <strong>Made for your next match.</strong>
-                  <span>
-                    {delivered.input.settings.width} × {delivered.input.settings.height} ·{' '}
-                    {delivered.input.settings.players} players · Private until published
-                  </span>
-                </div>
-                <div className="ms-delivery-actions">
-                  <button
-                    className="primary"
-                    disabled={p.busy}
-                    onClick={() => p.versionAction('host', delivered)}
-                  >
-                    Host room <span aria-hidden="true">↗</span>
-                  </button>
-                  <button
-                    disabled={p.busy || !!active}
-                    onClick={() => {
-                      p.revise(delivered);
-                      setPane('chat');
-                    }}
-                  >
-                    Revise this version
-                  </button>
-                  <a
-                    className="btn"
-                    href={`/api/v1/maps/${delivered.map_id}/versions/${delivered.map_hash}/file`}
-                  >
-                    Download
-                  </a>
-
-                  <details>
-                    <summary>More</summary>
-                    <button disabled={p.busy} onClick={() => p.versionAction('publish', delivered)}>
-                      Publish this version
-                    </button>
-                    <Link to={`/maps/${delivered.map_id}`}>Map details</Link>
-                  </details>
-                </div>
+              {stage && stages.find((s) => s.id === selectedStage)?.detail && (
+                <p className="ms-stage-note">
+                  {stages.find((s) => s.id === selectedStage)?.detail}
+                </p>
+              )}
+              {stageArtifacts.length > 1 && (
+                <details className="ms-artifacts">
+                  <summary>
+                    {stages.find((s) => s.id === selectedStage)?.label} · {stageArtifacts.length}{' '}
+                    {stageArtifacts.length === 1 ? 'image' : 'images'}
+                  </summary>
+                  <div>
+                    {stageArtifacts.map((a) => (
+                      <button
+                        key={a.id}
+                        aria-pressed={shown?.id === a.id}
+                        onClick={() => {
+                          setArtifactId(a.id);
+                          setStage(a.stage);
+                          setInspected(current?.id);
+                          setFollow(false);
+                        }}
+                      >
+                        <img src={a.url} alt="" />
+                        {a.label}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              )}
+              {progressError && <p className="ms-stage-note">{progressError}</p>}
+              {visibleProgress?.historical && (
+                <p className="ms-stage-note">
+                  This older generation has limited stage history. Available images are preserved.
+                </p>
+              )}
+              {!!visibleProgress?.checks.length && (
+                <ValidationPanel
+                  checks={visibleProgress.checks}
+                  checking={stages.find((s) => s.id === 'checks')?.status === 'running'}
+                  selected={check?.id}
+                  select={(value) => {
+                    setCompare('');
+                    setCheck(value);
+                    setArtifactId(undefined);
+                    setStage(
+                      visibleProgress.artifacts.some((a) => a.stage === 'ready')
+                        ? 'ready'
+                        : 'build',
+                    );
+                    setInspected(current?.id);
+                    setFollow(false);
+                  }}
+                />
+              )}
+            </div>
+          </details>
+          {delivered && (
+            <div className="ms-delivery">
+              <div>
+                <strong>Made for your next match.</strong>
+                <span>
+                  {delivered.input.settings.width} × {delivered.input.settings.height} ·{' '}
+                  {delivered.input.settings.players} players · Private until published
+                </span>
               </div>
-            )}
-          </div>
+              <div className="ms-delivery-actions">
+                <button
+                  className="primary"
+                  disabled={p.busy}
+                  onClick={() => p.versionAction('host', delivered)}
+                >
+                  Play <span aria-hidden="true">↗</span>
+                </button>
+                <button
+                  disabled={p.busy || !!active}
+                  onClick={() => {
+                    p.revise(delivered);
+                    focusComposer();
+                  }}
+                >
+                  Edit this version
+                </button>
+                <button
+                  disabled={p.busy || !!active}
+                  onClick={() => {
+                    p.revise(undefined);
+                    focusComposer();
+                  }}
+                >
+                  New map
+                </button>
+                <a
+                  className="btn"
+                  href={`/api/v1/maps/${delivered.map_id}/versions/${delivered.map_hash}/file`}
+                >
+                  Download
+                </a>
+
+                <details>
+                  <summary>More</summary>
+                  <button disabled={p.busy} onClick={() => p.versionAction('publish', delivered)}>
+                    Publish this version
+                  </button>
+                  <Link to={`/maps/${delivered.map_id}`}>Map details</Link>
+                </details>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </>

@@ -6,6 +6,7 @@ import {
   StudioCreate,
   StudioMessage,
   StudioGenerate,
+  StudioTurn,
   Strict,
   Uuid,
   parseSimVersionKey,
@@ -177,6 +178,20 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
         body(StudioMessage, request.body),
         config?.pipelineVersion ?? '',
         config?.chatPerHour ?? 60,
+      );
+    }),
+  );
+  app.post('/api/v1/map-studio/threads/:id/turns', async (request) =>
+    guarded(async () => {
+      requireEnabled();
+      return studio.submit(
+        (await accountOf(request)).id,
+        threadOf(request),
+        'chat',
+        body(StudioTurn, request.body),
+        config?.pipelineVersion ?? '',
+        config?.chatPerHour ?? 60,
+        true,
       );
     }),
   );
