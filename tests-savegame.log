@@ -1,0 +1,5 @@
+[run_tests] /home/bradley/glob2-terrain-borders/build/linux/client/release/test/glob2-unit-tests is not built; skipping
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (12.9s)
+
+1 passed, 0 failed, 0 skipped (12.9s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-terrain-borders/artifacts/tests/junit.xml (1 cases)
