@@ -173,12 +173,42 @@ For a performance comparison, first freeze saves with
 `test/prepare_parallel_compute.py`, retaining the baseline executable and its data
 checkout. Run `test/benchmark_resource_refactor.py BEFORE AFTER WINDOWS.json
 --before-root BASELINE_CHECKOUT --output OUTPUT` with compilers and other game runs
-idle. The runner verifies save hashes, alternates executable order, discards warmups,
-and reports simulation CPU separately from setup, save, process CPU, wall time and
-peak resident memory. Both executables must complete the same fixed simulation
-window. Shorten both windows explicitly when a match ends early; do not compare
-unequal tick counts. Retain separate profiling runs for ecology, gradient and cache
-costs, and paired completion runs for gameplay outcomes.
+idle. The default eight measured pairs balance which executable runs first. One
+additional pair per scenario is discarded to warm OS caches; every measured run
+still starts a fresh process from its frozen save with zero simulation warmup.
+Both executables must complete the same fixed simulation window. Shorten both
+windows explicitly when a match ends early; do not compare unequal tick counts.
+
+Before and after the campaign, `input-verification.json` checks executable,
+manifest, fixture, runner/helper and Python executable hashes, resolved Linux
+runtime-library paths/content, affinity, an inherited-environment digest, and the
+runtime catalog inventory (`.json`, `.txt`, `.js`, `.sgsl` under each data root).
+Added or removed catalog files count as changes. This is not an artwork/archive
+hash or a compiler/build-provenance check; retain the build manifest separately.
+Any mismatch or failed final audit prevents publication of an acceptance summary.
+Python exceptions and keyboard interruption retain partial measurements and the
+final audit; abrupt process termination can leave a `starting` or `running` audit,
+which is incomplete evidence and must not be treated as acceptance. Before/after
+hashes do not detect inputs changed and restored between those checkpoints.
+
+The metric descriptions in `metadata.json` distinguish measured engine CPU from
+whole-process CPU, wall time and peak RSS. Measured engine CPU includes every
+worker thread, session summary/teardown and the final gradient drain; it excludes
+session startup and requested final saving. Engine `run_ns` wall time also includes
+session startup, so it is not the identical interval. Setup CPU stops before session
+startup; setup/run/save CPU do not partition whole-process CPU. The structured
+headless command clears a parent `GLOB2_PERF_DISABLE`, leaving production scope
+collection enabled; the parent value in metadata is not an effective override.
+Scope output requires `--telemetry team-timeline` and should remain outside accepted
+timing runs.
+
+Retain separate profiling runs for ecology, gradient and cache costs, and paired
+completion runs for gameplay outcomes. `ResourceRuntimeBenchmark` reports
+candidate-only component timings and allocations, including absent-material fields,
+seed-cache and mixed-stock storage. Its growth samples advance successive map
+states, not identical repeated workloads; consumer routing caches are not exercised.
+These diagnostics do not establish legacy performance equivalence. Whole-process
+peak RSS likewise does not isolate resource allocations.
 
 The performance gate uses paired confidence intervals: aggregate CPU regression
 above 2%, or any legacy scenario above 5%, blocks acceptance. Results whose intervals
