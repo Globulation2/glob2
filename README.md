@@ -1,3 +1,13 @@
+## Historical approved-fixes control tournament (ee3 baseline)
+
+`ee3-approved-fixes-control/` preserves all 84 runs (42 pairs) comparing pure `ee3be8ecd9d7100de78ef63869271371d427cb66` with that same engine plus only the three approved behavior fixes. This is **not a refactor comparison**, and master has since advanced to `f0ff8384b`; a fresh aligned campaign is running. No performance claim is made from these concurrent runs.
+
+The five lossless log shards preserve every original engine log (5.182 GB uncompressed); every decompressed member was checked against its original SHA256. The companion ZIP contains metrics, commands, telemetry, provenance, exact analysis scripts, the seven-file patch, runtime catalog bytes and all 42 starting fixtures. The inventory identifies contents and hashes. Executables and dependencies are not included; earlier corpus and SDL reproduction packages provide related inputs.
+
+All runs and 248 team observations completed with no engine, hash or parser failure. The wrapper exited 143 after writing run records but before summary analysis; the cause is unknown. An analysis-only recovery verified inputs and produced summaries without rerunning or altering those records; its manifest remains in the ZIP.
+
+For the 40 primary games (eight geometry clusters), the fixes alone changed mean final population by -13.65 (cluster-bootstrap 95% CI [-31.03, -1.83]) and food deliveries per 1,000 ticks by -2.01 (CI [-4.08, -0.22]). Starvation delta was -2.4 (CI [-7.58, 3.10]); resolved games increased 14 to 17, with different winners in three of the ten games resolved in both arms. Full metrics, censored outcomes and separate small historical controls are retained. These effects must not be attributed to the resource refactor.
+
 # Runtime resources validation evidence
 
 Implementation PR: https://github.com/Globulation2/glob2/pull/846

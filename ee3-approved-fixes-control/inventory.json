@@ -1,0 +1,557 @@
+{
+  "timing_valid": false,
+  "source": "pure ee3be8ecd versus same base plus approved three fixes; not refactor comparison",
+  "artifacts": [
+    {
+      "path": "land-2-logs.tar.zst",
+      "bytes": 15685073,
+      "sha256": "ffcbda99a9754ffb51a7830bda9a9f9175954133071e534316bd5d5a29d39b03",
+      "logs": 20,
+      "verification": "decompressed each member and matched original run content SHA256"
+    },
+    {
+      "path": "land-4-logs.tar.zst",
+      "bytes": 32704897,
+      "sha256": "87815a887df4e4d648fcec4949c714ccd466adc8decab149e0f46e85617e9b46",
+      "logs": 20,
+      "verification": "decompressed each member and matched original run content SHA256"
+    },
+    {
+      "path": "water-2-logs.tar.zst",
+      "bytes": 18632971,
+      "sha256": "01cb5fe06a71497d7946ba8821b0130816046e6164e35107e6e8381b5d31c81c",
+      "logs": 20,
+      "verification": "decompressed each member and matched original run content SHA256"
+    },
+    {
+      "path": "water-4-logs.tar.zst",
+      "bytes": 35755880,
+      "sha256": "e03fea655f112f683fe43393917870c79625555db160302c6407e0e3451a9cb0",
+      "logs": 20,
+      "verification": "decompressed each member and matched original run content SHA256"
+    },
+    {
+      "path": "control-logs.tar.zst",
+      "bytes": 1252577,
+      "sha256": "a4fd74e61a61d361dc2bf47bc06cd2530962368a9076a0733c267901e642f2d3",
+      "logs": 4,
+      "verification": "decompressed each member and matched original run content SHA256"
+    },
+    {
+      "path": "control-summary-inputs-provenance.zip",
+      "bytes": 13865869,
+      "sha256": "7b6b98ca82f5e09e967b8dd26272056affccc38f9eafc99e149195fb1483f8d4",
+      "contents": "All non-log run evidence and telemetry summaries; all metrics; exact driver/parser/recovery; source/build/runtime identities and patch; original42 fixtures and generation metadata; runtime JSON/TXT/JS input bytes. No binaries/dependencies/fullsource."
+    }
+  ],
+  "logs": [
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-maxima-completion/baseline/engine.log",
+      "sha256": "5d49189e845cf39623f0179351ff2f6c299dbf5c0c100e82aab9e52e7ac40ec8",
+      "bytes": 57563677
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-maxima-completion/candidate/engine.log",
+      "sha256": "a637cf285a2c2963316b573ee8bc9fe0c809ff055bac65987bdbf435bcd1e01f",
+      "bytes": 16373781
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-cortex-completion/baseline/engine.log",
+      "sha256": "e65d1d88655fdd8fd5d57569dd8b9b0170143695124660499c62c823f0daedac",
+      "bytes": 38192459
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-cortex-completion/candidate/engine.log",
+      "sha256": "91d3a031b4e3378b1e93f6c13e25e4f7cb468fe92cd9bde4a53413bd29c8c505",
+      "bytes": 38130101
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-nicowar-completion/baseline/engine.log",
+      "sha256": "ebd455c9b7a5a99d3bbeaeab38edda4ee430de2b4e98a65716a397da04e75cc0",
+      "bytes": 36363292
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "0eec8c577eb15a633fc2ccbe6db73b710fdcac054cc1682757c7951965060b5e",
+      "bytes": 22738704
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-mixed-completion/baseline/engine.log",
+      "sha256": "511a6d76d408bfbfc0b1258f950828580fa03dad841cf84d0fe28cb3ac434540",
+      "bytes": 27306506
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-mixed-completion/candidate/engine.log",
+      "sha256": "2c7bb2f335b6f53d55cf5f42a48e049f3c3290a567c6c2ed3e7b8e5c6e992ceb",
+      "bytes": 30598676
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-maxima-completion/baseline/engine.log",
+      "sha256": "fe56a189e500f02ef0e5af02ba8b0d215034337908e6234be91d16e33a34ab86",
+      "bytes": 67484537
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-maxima-completion/candidate/engine.log",
+      "sha256": "cf348f62620214bb079ebe23a3f959cad9217f10379bb781800fda65f4672309",
+      "bytes": 67518230
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-cortex-completion/baseline/engine.log",
+      "sha256": "15c2e17f03a7eea9875ea657649494e60bcf25bf0d7361eb1f2c5aaf4389ee6b",
+      "bytes": 38208683
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-cortex-completion/candidate/engine.log",
+      "sha256": "ee15701af374ff55c4092c2674344c1d7d47e094cea29ca6a70971b3b32c9b8f",
+      "bytes": 38174495
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-nicowar-completion/baseline/engine.log",
+      "sha256": "a5866747b38a553acbae36928598a5aeac6a5ef586664b8ab5c65a2ca010c1c1",
+      "bytes": 36279233
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "261f8f45662e3b70901c89f6a7d5a125111675d68a107886ab096a7e6a534684",
+      "bytes": 24126213
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-mixed-completion/baseline/engine.log",
+      "sha256": "45855ab1df54a3afd23d9567cce8eb6f8a9ad398e78ab48a8d5b852f8b71f14c",
+      "bytes": 21022893
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-mixed-completion/candidate/engine.log",
+      "sha256": "baec4d36aabcb9ffdd859ca39f34d6d777927a5558a67a49fb59a58092373a1a",
+      "bytes": 39525812
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "36ffff8c1a9dad786411f1fde0a75ede5cf3ff584b32186e4832df37d94d99b0",
+      "bytes": 40087666
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "4602b339baab51d3d69ef9952e918cf867d3a4fac58967a92fab1810b10244b5",
+      "bytes": 32902206
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "c26824706d55541ac3c3e97afa9b9169960418d32787946c958a314aa4bc1cf2",
+      "bytes": 19190525
+    },
+    {
+      "archive": "land-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-2-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "995ea94805a7e7fa6f7b09f9db7c990ede3c55f8bcec214ed05b8384e3691f58",
+      "bytes": 25179250
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-maxima-completion/baseline/engine.log",
+      "sha256": "e2e78f3e2ed8e52da4404cb19e5ca89918b28a8327fbe6b2d8ef2b2f7be8607f",
+      "bytes": 108804631
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-maxima-completion/candidate/engine.log",
+      "sha256": "4067bb4203281ab888af94e97ab34b05bd71bda06ad8c5c5b9b7dcdad1c68b07",
+      "bytes": 132868365
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-cortex-completion/baseline/engine.log",
+      "sha256": "5683264ac7aa91fcedb17d07ae0df173822cad7c107ba00e7506a23ffa9459a7",
+      "bytes": 74612591
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-cortex-completion/candidate/engine.log",
+      "sha256": "5bd7068e1ec3fe01a4beb0c2d4d41387ce562df356501b2e6bbdf09291108b36",
+      "bytes": 74551790
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-nicowar-completion/baseline/engine.log",
+      "sha256": "500fc24363cf0f15cb3c2b32cb1452ef971700cfbdcc99fd68d3726fdb6dbdc0",
+      "bytes": 71033566
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "379fe194d816ed64184da28cf1f9cfa0397d19efcb0816db5024126718a954d0",
+      "bytes": 70892502
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-mixed-completion/baseline/engine.log",
+      "sha256": "4adb5a99bf79a1537dfb58503064392c3b791931c71adebe0b7d853e0eaf712e",
+      "bytes": 101329398
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-mixed-completion/candidate/engine.log",
+      "sha256": "0ce270d5770de8d9bdbd64b0064187f2c46c26a639994b2e4bc60b8b60917777",
+      "bytes": 102915387
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-maxima-completion/baseline/engine.log",
+      "sha256": "a98a2134c6172a6223aefd915d0b91a3fb72974b5c2f47a6013148678672bea1",
+      "bytes": 77932586
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-maxima-completion/candidate/engine.log",
+      "sha256": "2d3ea463c0f66b2e171f9c0e52806160ba7ea88f7ae9a030c736869c99852be5",
+      "bytes": 132841041
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-cortex-completion/baseline/engine.log",
+      "sha256": "b95d6665197b0ee2c8f8690e64a2a9b7023028c9655d13bf0e3556f3061337db",
+      "bytes": 74637568
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-cortex-completion/candidate/engine.log",
+      "sha256": "d765a0cb6e1a57bfbd77fa5603918fb3d53ef283890ffd6647d6a507ff67bd39",
+      "bytes": 74569507
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-nicowar-completion/baseline/engine.log",
+      "sha256": "36bf249f6195191e68b988246f849f7bef6623e8c2e01c91018cb97d754eab72",
+      "bytes": 70834785
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "1b2dd081cb5e657cd0aa5076e3a622e2753c7ec9eae36023caa34383b2ded9f6",
+      "bytes": 70818966
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-mixed-completion/baseline/engine.log",
+      "sha256": "487c3961c699797f434aa83f06278a4ec7cdaa192b7584acc8e79f8c0e2e5eb4",
+      "bytes": 62276593
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-mixed-completion/candidate/engine.log",
+      "sha256": "21d2dc41ae8f4daa6304bb09bf01d7986d0052d3cf5ca9d9857f36df16d657b9",
+      "bytes": 91928659
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "038b7ca49a0a7e92724a484e18f7976aa06473b3b4a4771ca531fbe9ad597856",
+      "bytes": 103110494
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "a26db10fc14bcc8ca1878d529a4065e6a6d08f46924f5ba21c3e5ac38f9d9f1d",
+      "bytes": 102994477
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "786cb4b03cb79c326437ee4e972ea67d37174d1e96319b6cc32eae0e2097a0d5",
+      "bytes": 103021854
+    },
+    {
+      "archive": "land-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/land-4-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "d5dd95b05931bef8abb620fd818cf21ff7b2daec3cd91fdc7ddcd1db7fe45602",
+      "bytes": 102962161
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-maxima-completion/baseline/engine.log",
+      "sha256": "a1f3429ba344c08598fbc2dbb7035b0f5e1959295293a9fa37f8dedb2754429d",
+      "bytes": 24714535
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-maxima-completion/candidate/engine.log",
+      "sha256": "6092c4d0e110ec326a1358f3e56bfa1ced332e562fccdea7a1db63a5e132605a",
+      "bytes": 26223609
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-cortex-completion/baseline/engine.log",
+      "sha256": "495cb70e3d220c01ec276a47fc0b7e661a09e8cd44b8d3a1d833eaa72e2c42e2",
+      "bytes": 38044711
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-cortex-completion/candidate/engine.log",
+      "sha256": "a2bdcdc254ceff1f52670de182225c87dc78ee451c143216aba0e8779495b966",
+      "bytes": 38003789
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-nicowar-completion/baseline/engine.log",
+      "sha256": "f8fdeee6b47005bdfa1595a45979a8e5e5cef34922b3152c73f63c9985d0426c",
+      "bytes": 36268614
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "81be0411d3a255918dd5faeb1a551c7a7fd9de6955dfda9731d238928810e47e",
+      "bytes": 36265249
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-mixed-completion/baseline/engine.log",
+      "sha256": "049381889f84a91e5e92f38c51d2a047a7d0c246449d40a0bf4a01f30b41273b",
+      "bytes": 52910070
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-mixed-completion/candidate/engine.log",
+      "sha256": "3d5d372f5c0510991427850c36f6ef9944610d4aa2f59d4673ca47fa220c7f28",
+      "bytes": 42071031
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-maxima-completion/baseline/engine.log",
+      "sha256": "752d6b000cf0b1eaed4d57e46afc67e25902b831c257e896b5021fa81e9ee150",
+      "bytes": 52224827
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-maxima-completion/candidate/engine.log",
+      "sha256": "3319b42cbd4f66843c19718b88e418c7cbd9dae7bd60b2b2c0dfaa047b11b563",
+      "bytes": 65159254
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-cortex-completion/baseline/engine.log",
+      "sha256": "be1b5c03c8e70cb7fe93e8d0dee3f53dc11397a0a497d51409c026d71d56d52f",
+      "bytes": 38107370
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-cortex-completion/candidate/engine.log",
+      "sha256": "34d9d5e8565b1e63de19cf64f42f9caa3f8dc130606719b85892fddb16fcfb93",
+      "bytes": 38112489
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-nicowar-completion/baseline/engine.log",
+      "sha256": "9c02ffb722a405ebbf3dabd9d281c859d1260f6a8099025b4ce8b1dfb0c8b51f",
+      "bytes": 36686042
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "4844ba800fe32a3c9f7d72931c4db189407328831b5b02b01d429a0a171269a5",
+      "bytes": 36515632
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-mixed-completion/baseline/engine.log",
+      "sha256": "bffde17f103c0dcd1428e75b8ca0e06fe217624f84f22a7c4730a1117504cbf9",
+      "bytes": 52923041
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-mixed-completion/candidate/engine.log",
+      "sha256": "e06e521872a43e20713448db33cb7f48a350943c0369456dd81aeb2731fec716",
+      "bytes": 52936933
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "d095962c17f13f64d613736f1f05617b5281bd99e45d4de6569e57ad7318d4cd",
+      "bytes": 19119415
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "9dc95058b98ca5ea26086a02faa7e26d9ec376abb3663fb567e4cfb8683793fe",
+      "bytes": 24787279
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "4cf0d17cd9924c91064aeb21a4e002818adcef046ffe062d4c20c6ee38d09306",
+      "bytes": 53034538
+    },
+    {
+      "archive": "water-2-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-2-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "eb5622579b69b434fa84eac172bcb6a35f508a786b9fd3164e8fdea0fad8133c",
+      "bytes": 52950874
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-maxima-completion/baseline/engine.log",
+      "sha256": "48787bbe2328990049f5536aaf5de39598f5e9992f2a827967be6cbb2c73f40b",
+      "bytes": 132913435
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-maxima-completion/candidate/engine.log",
+      "sha256": "ac3300bb4082935a46ed1b28a940f1eaba93d1fd7f7770559dd6dd9fd2cad4d8",
+      "bytes": 107248413
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-cortex-completion/baseline/engine.log",
+      "sha256": "c84a3554c46b181c8693a60cfef1e46bfcab1aa007b0b4f0c6281b3cf6999328",
+      "bytes": 74549674
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-cortex-completion/candidate/engine.log",
+      "sha256": "a4a8571b796f06876a0f66a90321e0a9ee5e2401e511d66f093e08783a11215f",
+      "bytes": 74395612
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-nicowar-completion/baseline/engine.log",
+      "sha256": "100a2b0d484e4619f3d900ae7043865ba0cfe692271c25c4abaa38baa41126f7",
+      "bytes": 70846219
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-nicowar-completion/candidate/engine.log",
+      "sha256": "0f291d69eb11e50e14d7670a20d66daf073420a801e04b77d2d7ae4ec0c3dea0",
+      "bytes": 70596880
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-mixed-completion/baseline/engine.log",
+      "sha256": "403f3e60bec2614db1a91a75ed4f977c664e12086a5d3f2c938aab6edcc9b658",
+      "bytes": 102973125
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-mixed-completion/candidate/engine.log",
+      "sha256": "16ca7e316eacb171868bff49734dcdc3e9a9d313bd427965b89664f6045b9b37",
+      "bytes": 87853065
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-maxima-completion/baseline/engine.log",
+      "sha256": "9f0eaebdae9a48e7088bf3a8c08038c24bb3b1c9461664cab2d1ae3229021098",
+      "bytes": 125435423
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-maxima-completion/candidate/engine.log",
+      "sha256": "21d75eb4329b4af8765843668151ba4f2614812f6a96ad2646a9ecc27c16b643",
+      "bytes": 123912795
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-cortex-completion/baseline/engine.log",
+      "sha256": "45c711ee158c588710238c1c89e67935e9d3cb1f7c74d858d2505ef99bc80505",
+      "bytes": 74799880
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-cortex-completion/candidate/engine.log",
+      "sha256": "91e2afe79667b14a0386bbac9d1ed69f82e43790f7b3c2957cd80fb5952da3e4",
+      "bytes": 74635165
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-nicowar-completion/baseline/engine.log",
+      "sha256": "02fa1b6a44e3bc230e85e8e556247733db3bb3b602dec3fac608e73ca119eb3d",
+      "bytes": 46705442
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-nicowar-completion/candidate/engine.log",
+      "sha256": "fa88fecead95cb10ceda6029822c32e4d3566a6284b6d1db33f4af673ce693b3",
+      "bytes": 71392958
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-mixed-completion/baseline/engine.log",
+      "sha256": "d55f002b6793ee88d4aac834ca3c3d6fffa6b8c823edd5d68bb722542176f403",
+      "bytes": 103646428
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-mixed-completion/candidate/engine.log",
+      "sha256": "5b492a5821bd220e28cd4e6b84659d222e8772a436d7e01ba28d0f35c9df79cc",
+      "bytes": 84618577
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "102352165680dfc41ceef286fa4fe207d90b725c2d318fc0ba99f6f98c72cdcf",
+      "bytes": 102954864
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1001-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "a2ad948c07ff09b6caacedced369aa283c36c052ac752d435734c8087556ed50",
+      "bytes": 102806331
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-mixed-swapped-completion/baseline/engine.log",
+      "sha256": "b77d16b8e51295b072d8ffe09af17880fea33ff6f7a049ebb4113c7cefd54725",
+      "bytes": 103268253
+    },
+    {
+      "archive": "water-4-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/water-4-1002-mixed-swapped-completion/candidate/engine.log",
+      "sha256": "4f552623bfae09c02ef8ca8660f549379146716e33668f05e518d4410f2f7a27",
+      "bytes": 60475193
+    },
+    {
+      "archive": "control-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/control-land-2-1002-mixed-64-completion/baseline/engine.log",
+      "sha256": "50f8559e9fe8fa8afeb37f59fa04ecedf1bed664867f533c535142a7c7c8f12c",
+      "bytes": 10249367
+    },
+    {
+      "archive": "control-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/control-land-2-1002-mixed-64-completion/candidate/engine.log",
+      "sha256": "44b38f958fd0a0883cdf28f9498a9614b35f4ade6aa3112c854742e01e522d5e",
+      "bytes": 10244836
+    },
+    {
+      "archive": "control-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/control-land-2-1002-mixed-64-swapped-completion/baseline/engine.log",
+      "sha256": "5ccab47837739bb4dbbee7c303d5dee36fb02381d72b6828932aadb80c28fcee",
+      "bytes": 11695735
+    },
+    {
+      "archive": "control-logs.tar.zst",
+      "path": "artifacts/resource-refactor/tournament-ee3-approved-fixes/control-land-2-1002-mixed-64-swapped-completion/candidate/engine.log",
+      "sha256": "5d5afd5ad08519f92f7ae06e3839fd11618119efc9b7091c0e057eb3ab1ef83e",
+      "bytes": 15006152
+    }
+  ],
+  "limitations": "Bootstrap clusters by terrain/teamcount/mapseed (AI mixes and swapped sides share each geometry). Only two seed values and eight geometry configurations; intervals are descriptive, not proof of equivalence. Tick-cap and otherwise unresolved outcomes are censored, never counted as losses. Win shares and winner-change intervals use only paired resolved outcomes; selection due to differential resolution remains a limitation.",
+  "interruption": "Original wrapper exit143 after successful engines/final runtime hashes. Analysis-only recovery revalidated all original records; see analysis-recovery.json.",
+  "raw_log_bytes": 5182186984,
+  "compressed_log_bytes": 104031398
+}
