@@ -207,3 +207,7 @@ static constexpr int FILE_FORMAT_VERSION_BUILDING_CATALOG = 137;
 
 //! The map's terrain look seed (Map::terrainSeed), presentation only.
 static constexpr int FILE_FORMAT_VERSION_TERRAIN_SEED = 138;
+
+//! Built-in terrain catalogue: TERRAIN_COUNT grew from 7 to 31, so earlier files
+//! carry custom terrain IDs starting at 7 that the loader renumbers.
+static constexpr int FILE_FORMAT_VERSION_TERRAIN_CATALOGUE = 140;

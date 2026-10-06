@@ -127,7 +127,9 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-    for (unsigned id=0; id<TERRAIN_COUNT; ++id)
+    // The side panel keeps the classic brushes; catalogue groups are chosen in
+    // the Terrain palette dialog, which lists every enabled type.
+    for (unsigned id=0; id<TERRAIN_COUNT_FORMAT_136; ++id)
     {
         const auto type = static_cast<::TerrainType>(id);
 		const auto &presentation = game.map.terrainPresentation(type);

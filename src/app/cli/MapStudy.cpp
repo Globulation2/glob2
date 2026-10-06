@@ -729,13 +729,15 @@ int runMapStudy(int argc, char **argv)
 		{
 			const auto material = map.terrainTypeAt(x,y);
             ++materialCounts[material];
-            if (material == GRASS)
+            // Classic buckets by group: catalogue types report through materialCounts.
+            const auto group = unsigned(material) < TERRAIN_COUNT ? std::optional(terrainGroup(material)) : std::nullopt;
+            if (group == TerrainGroup::Grass)
 				++grass;
-			else if (material == SAND)
+			else if (group == TerrainGroup::Sand)
 				++sand;
-			else if (material == WATER)
+			else if (group == TerrainGroup::Water)
 				++water;
-			else if (map.terrainUsesLegacyCorners(material))
+			else if (group == TerrainGroup::Shore)
 				++shore;
 			if (map.isFreeForBuilding(x, y))
 				++free;

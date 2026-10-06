@@ -1103,6 +1103,50 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(map.terrainTypeAt(63, 10) == WATER);
 		CHECK(map.terrainTypeAt(19, 10) == GRASS);
 	}
+	TEST_CASE("every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto &compositor = globals->terrainCompositor();
+		const auto minimap = TerrainVisual::minimapPalette(compositor.catalog());
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
+		auto &map = fixture.game.map;
+		std::vector<TerrainType> painted;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		{
+			const auto type = TerrainType(i);
+			CAPTURE(std::string(TerrainPresentations[i].name));
+			if (!terrainPaintable(type))
+				continue;
+			CHECK(compositor.catalog().bindings.contains(TerrainPresentations[i].name));
+			const auto [sprite, frame] = compositor.editorIcon(type);
+			CHECK(sprite != nullptr);
+			CHECK(frame < 65536);
+			// Classic corner terrain exports through the undermap; whole-cell types
+			// export their registered colour.
+			if (terrainUsesLegacyCorners(type))
+				continue;
+			map.setCellTerrain(int(painted.size()) + 1, 1, type);
+			painted.push_back(type);
+		}
+		(void)minimap;
+		const auto filename = (glob2test::artifactDir() / "terrain-catalogue-colors.png").string();
+		exportMapImage(fixture.game, filename);
+		auto *source = IMG_Load(filename.c_str());
+		REQUIRE(source);
+		auto *image = SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32);
+		SDL_DestroySurface(source);
+		REQUIRE(image);
+		for (std::size_t n = 0; n < painted.size(); ++n)
+		{
+			CAPTURE(std::string(TerrainPresentations[painted[n]].name));
+			const auto c = terrainPresentation(painted[n]).image;
+			const auto *pixel = static_cast<Uint8 *>(image->pixels) + image->pitch + (n + 1) * 4;
+			CHECK(pixel[0] == c.r);
+			CHECK(pixel[1] == c.g);
+			CHECK(pixel[2] == c.b);
+		}
+		SDL_DestroySurface(image);
+	}
 	TEST_CASE("export uses registered whole-cell material colors [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;

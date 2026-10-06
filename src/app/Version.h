@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 139
+#define VERSION_MINOR 140
+// version 140 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
+// version 139 moves completed-tick observation into the engine's phase order.
 // version 138 saves the map's terrain look seed; older maps load with seed 0.
 // version 137 embeds building catalogs and independent capability state.
 // version 136 embeds immutable terrain registries before map tile identities.

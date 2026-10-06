@@ -15,6 +15,8 @@
 #include <memory>
 #include <climits>
 #include <nlohmann/json.hpp>
+#include <fstream>
+#include <iterator>
 
 TEST_SUITE("TerrainProperties")
 {
@@ -339,7 +341,7 @@ TEST_SUITE("TerrainRuntime")
 		first.setSize(5, 5, GRASS);
 		second.setSize(5, 5, GRASS);
 		first.importTerrainDefinitions(runtimeDefinitions);
-		CHECK(second.terrainRegistry().size() == 7);
+		CHECK(second.terrainRegistry().size() == TERRAIN_COUNT);
 		const auto previous = first.frozenTerrainRegistry();
 		const auto generation = first.terrainGeneration();
 		CHECK_THROWS(
@@ -674,6 +676,128 @@ TEST_SUITE("TerrainRuntime")
 			resumed.game.syncStep(0);
 			CHECK(world.game.checkSum() == resumed.game.checkSum());
 		}
+	}
+	TEST_CASE("format-137 saves with custom terrain load with remapped IDs and resave at the current format")
+	{
+		glob2test::HeadlessGlobals globals;
+		// Written by an origin/master build (TERRAIN_COUNT 7) with two runtime
+		// definitions painted at IDs 7 and 8 beside classic ice, trail, sand and water.
+		auto open = []
+		{
+			return globalContainer->fileManager->openInflatingInputStreamBackend(
+				"test/fixtures/terrain-catalogue/custom-registry-137.game.gz");
+		};
+		auto verify = [](const Game &game)
+		{
+			const auto &map = game.map;
+			REQUIRE(map.terrainRegistry().size() == TERRAIN_COUNT + 2);
+			const auto bog = map.terrainRegistry().find("fixture:bog");
+			const auto mud = map.terrainRegistry().find("fixture:mud");
+			REQUIRE(bog);
+			REQUIRE(mud);
+			CHECK(*bog == TerrainType(TERRAIN_COUNT));
+			CHECK(*mud == TerrainType(TERRAIN_COUNT + 1));
+			CHECK(map.terrainRegistry().appearance(*bog) == WATER);
+			CHECK(map.terrainRegistry().appearance(*mud) == SAND);
+			CHECK(map.terrainProperties(*bog).swimmable);
+			CHECK(map.terrainProperties(*bog).groundSpeedQ8 == 128);
+			CHECK(map.terrainProperties(*mud).groundSpeedQ8 == 192);
+			CHECK_FALSE(map.terrainProperties(*mud).buildable);
+			CHECK(map.terrainTypeAt(4, 4) == *bog);
+			CHECK(map.terrainTypeAt(5, 4) == *bog);
+			CHECK(map.terrainTypeAt(6, 6) == *mud);
+			CHECK(map.terrainTypeAt(10, 10) == ICE);
+			CHECK(map.terrainTypeAt(12, 10) == TRAIL);
+			CHECK(map.terrainTypeAt(14, 14) == SAND);
+			CHECK(map.terrainTypeAt(16, 14) == WATER);
+			CHECK(map.terrainTypeAt(0, 0) == GRASS);
+			// Saved frames kept their appearance ranges, so the load-time frame check held.
+			CHECK(map.getTerrain(4, 4) >= 256);
+			CHECK(map.getTerrain(4, 4) < 272);
+			CHECK(map.getTerrain(6, 6) >= 128);
+			CHECK(map.getTerrain(6, 6) < 144);
+		};
+		GameGUI loaded;
+		{
+			auto *backend = open();
+			REQUIRE(backend);
+			GAGCore::BinaryInputStream input(backend);
+			REQUIRE(loaded.game.load(&input));
+		}
+		verify(loaded.game);
+		const auto digest = loaded.game.map.terrainRegistry().digest();
+		CHECK_FALSE(digest.empty());
+
+		auto *resaved = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(resaved);
+		loaded.game.save(&output, false, "custom-registry-138");
+		output.flush();
+		GameGUI reloaded;
+		{
+			GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+				std::string(resaved->getBuffer(), resaved->getPosition())));
+			REQUIRE(reloaded.game.load(&input));
+		}
+		verify(reloaded.game);
+		CHECK(reloaded.game.map.terrainRegistry().digest() == digest);
+		CHECK(reloaded.game.map.checkSum(true) == loaded.game.map.checkSum(true));
+		// Current files number their custom definitions from the current built-ins.
+		CHECK(nlohmann::json::parse(reloaded.game.map.terrainRegistry().serialize())["terrains"][0]["id"] == TERRAIN_COUNT);
+	}
+	TEST_CASE("each catalogue type requires exactly its group's experiment and shares the group profile")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned i = 0; i < TERRAIN_COUNT; ++i)
+		{
+			const auto type = TerrainType(i);
+			CAPTURE(TerrainPresentations[i].name);
+			if (!terrainPaintable(type))
+				continue;
+			Map map;
+			map.setSize(5, 5, GRASS);
+			map.setCellTerrain(2, 2, type);
+			const auto required = map.requiredTerrainExperiments();
+			const auto expected = terrainExperiment(type);
+			CHECK(required.size() == (expected ? 1u : 0u));
+			if (expected)
+				CHECK(required.has(*expected));
+			// Trail keeps its historical switch; every other member takes the group's.
+			if (type == TRAIL)
+				CHECK(expected == ExperimentId::TrailTerrain);
+			else
+				CHECK(expected == terrainGroupExperiment(terrainGroup(type)));
+			CHECK(sameTerrainProperties(map.terrainProperties(type),
+										terrainGroupDefinition(terrainGroup(type)).properties));
+		}
+		// Classic ground never acquires a requirement.
+		Map plain;
+		plain.setSize(5, 5, GRASS);
+		plain.setCellTerrain(1, 1, SAND);
+		plain.setUMTerrain(3, 3, WATER);
+		plain.regenerateMap(0, 0, 5, 5);
+		CHECK(plain.requiredTerrainExperiments().empty());
+		// Group mechanics the catalogue promises.
+		CHECK_FALSE(terrainProperties(BOULDERS).walkable);
+		CHECK(terrainProperties(BOULDERS).projectileBlocks);
+		CHECK(terrainProperties(BOULDERS).flyable);
+		CHECK_FALSE(terrainProperties(RIDGE_ROCK).projectileBlocks);
+		CHECK(terrainProperties(DIRT).buildable);
+		CHECK(terrainProperties(DIRT).inhibitionQ8 == 256);
+		CHECK(terrainProperties(DIRT).shoreSupportQ8 == 0);
+		CHECK_FALSE(terrainProperties(DIRT).shoreline);
+		CHECK(terrainProperties(MUD).groundSpeedQ8 == 160);
+		CHECK_FALSE(terrainProperties(MUD).buildable);
+		CHECK(terrainProperties(DIRT_TRACK).groundSpeedQ8 == 512);
+		CHECK(terrainProperties(LAVA).airHealthQ8 == -64);
+		CHECK_FALSE(terrainProperties(LAVA).walkable);
+		CHECK(terrainProvidesFertility(terrainProperties(LOAM)));
+		CHECK(terrainProperties(LOAM).fertilityQ8 == 768);
+		CHECK(terrainProperties(LOAM).buildable);
+		CHECK(terrainProperties(DEEP_WATER).swimmable);
+		CHECK(terrainProperties(DEEP_WATER).groundSpeedQ8 == 192);
+		CHECK(terrainProperties(DEEP_WATER).allowedResources == 0);
+		CHECK_FALSE(terrainProperties(VOID_HOLE).flyable);
+		CHECK(terrainProperties(VOID_HOLE).projectileBlocks);
 	}
 	TEST_CASE("write equivalent custom maps for paired performance runs [benchmark][artifacts]")
 	{
