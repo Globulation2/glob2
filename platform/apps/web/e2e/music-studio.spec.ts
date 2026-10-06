@@ -142,10 +142,12 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       },
     }),
   );
+  if (info.project.name === 'desktop') await page.setViewportSize({ width: 1470, height: 730 });
   await page.goto(`/music-studio/${id}`);
   await expect(page.getByRole('heading', { name: 'AI Music Studio' })).toBeVisible();
   if (info.project.name === 'phone')
     await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
   await expect(page.getByRole('heading', { name: 'Validation, in detail' })).toBeVisible();
   await page.getByText('balance', { exact: true }).click();
   await expect(
