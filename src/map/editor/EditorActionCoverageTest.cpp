@@ -480,7 +480,7 @@ TEST_SUITE("EditorActionCoverage")
         CHECK(editor.terrainType==TerrainSelector::Wheat);
     }
 
-	TEST_CASE("catalogue groups get side-panel selectors that open a filtered terrain palette [display]")
+	TEST_CASE("catalogue groups get side-panel selectors that open a filtered terrain palette [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals({.display=true,.width=1024,.height=768,
 			.screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
@@ -506,6 +506,9 @@ TEST_SUITE("EditorActionCoverage")
 		CHECK(host.bounds("terrain/boulders").w > 0);
 		CHECK_THROWS(host.bounds("terrain/ice"));
 		CHECK_THROWS(host.bounds("terrain/mud")); // rough-terrain is off
+		editor.draw(SDL_GetTicks());
+		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-palette-obstacles.bmp");
+		globals->gfx->nextFrame();
 		host.scrollIntoView("terrain/hedge");
 		host.layoutIfNeeded();
 		const auto bounds = host.bounds("terrain/hedge");
@@ -516,6 +519,8 @@ TEST_SUITE("EditorActionCoverage")
 		CHECK(editor.terrainType==TerrainSelector::selectorFor(HEDGE));
 		CHECK(editor.paletteGroup==int(TerrainGroup::Obstacles));
 		editor.draw(SDL_GetTicks()); // the group selector shows the active hedge brush
+		globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/terrain-side-panel-groups.bmp");
+		globals->gfx->nextFrame();
 		cursor(editor,12,12);editor.performAction("terrain drag start");editor.performAction("terrain drag end");
 		CHECK(editor.game.map.terrainTypeAt(12,12)==HEDGE);
 		// The menu's plain palette action reopens the remembered group; "all" lists every enabled type.
