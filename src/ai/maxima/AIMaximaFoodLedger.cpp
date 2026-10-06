@@ -291,7 +291,7 @@ void Ledger::reserveQueryFootprint(const Input& input,int width,int height) cons
     reachScratch.reserve(bound);queryScratch.reserve(bound);
 }
 
-void Ledger::evaluate(const Input& input, Result& result) const
+void Ledger::evaluate(const Input& input, Result& result, EvaluationMode mode) const
 {
 	result.clear();
 	const int size=input.width*input.height;
@@ -418,33 +418,44 @@ void Ledger::evaluate(const Input& input, Result& result) const
 	// The largest unclaimed supply any single site could reach bounds how many
 	// more food buildings the map can support. A plain total would add up
 	// scattered remnants that no one building can ever collect.
-	prepareResidualSums(input,result);
+	prepareResidualSums(input,result,mode);
+    if(mode==EvaluationMode::Full)
 	for(int y=0;y<input.height;++y)
 		for(int x=0;x<input.width;++x)
 			result.bestSiteResidual=std::max(result.bestSiteResidual,
 				residualUpperBound(input,result,x,y,0,0,1,1));
 }
 
-void Ledger::prepareResidualSums(const Input& input, Result& result) const
+void Ledger::prepareResidualSums(const Input& input, Result& result, EvaluationMode mode) const
 {
-	result.residualSumsWidth=input.width;
-	result.residualSumsHeight=input.height;
-	const int stride=input.width+1;
-	std::vector<long long>& residualSums=result.residualSums;
-	residualSums.assign(size_t(input.height+1)*stride,0);
-    result.serviceResidualSums.assign(residualSums.size(),0);
-	for(int y=0;y<input.height;++y)
-	{
-		long long row=0,serviceRow=0;
-		for(int x=0;x<input.width;++x)
-		{
-			row+=result.residual[y*input.width+x];
+    result.residualSumsWidth=input.width;
+    result.residualSumsHeight=input.height;
+    const int stride=input.width+1;
+    const size_t count=size_t(input.height+1)*stride;
+    const bool full=mode==EvaluationMode::Full;
+    if(full)result.residualSums.assign(count,0);
+    else {
+        // A replacement appraisal may reuse a full baseline's buffers. Clear
+        // its capacity too, so each cached candidate does not retain this SAT.
+        std::vector<long long>().swap(result.residualSums);
+    }
+    result.serviceResidualSums.assign(count,0);
+    for(int y=0;y<input.height;++y) {
+        long long serviceRow=0;
+        for(int x=0;x<input.width;++x) {
             serviceRow+=result.serviceResidual[y*input.width+x];
-            result.serviceResidualSums[size_t(y+1)*stride+x+1]=result.serviceResidualSums[size_t(y)*stride+x+1]+serviceRow;
-			residualSums[size_t(y+1)*stride+x+1]=
-				residualSums[size_t(y)*stride+x+1]+row;
-		}
-	}
+            result.serviceResidualSums[size_t(y+1)*stride+x+1]=
+                result.serviceResidualSums[size_t(y)*stride+x+1]+serviceRow;
+        }
+        if(full) {
+            long long row=0;
+            for(int x=0;x<input.width;++x) {
+                row+=result.residual[y*input.width+x];
+                result.residualSums[size_t(y+1)*stride+x+1]=
+                    result.residualSums[size_t(y)*stride+x+1]+row;
+            }
+        }
+    }
 }
 
 long long Ledger::residualUpperBound(const Input& input, const Result& result,
@@ -455,6 +466,12 @@ long long Ledger::residualUpperBound(const Input& input, const Result& result,
 	   ||result.residualSumsHeight!=input.height)return 0;
 	const std::vector<long long>& residualSums=services?result.serviceResidualSums:result.residualSums;
 	const int stride=input.width+1;
+    if(residualSums.size()!=size_t(input.height+1)*stride) {
+        // Candidate snapshots deliberately omit this table. The global total
+        // still bounds any footprint, preserving the public query contract.
+        if(!services && residualSums.empty())return result.totalResidual;
+        return 0;
+    }
 	const auto rect=[&](int x0,int y0,int w,int h)->long long
 	{
 		if(w<=0||h<=0)return 0;

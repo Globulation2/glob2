@@ -1330,7 +1330,8 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
             foodCandidateIndependent=independent;foodCandidateProduction=production;foodCandidateFeeding=feedingPackets;
         }
     }
-	foodLedger.evaluate(foodInput,foodResult);
+	foodLedger.evaluate(foodInput,foodResult,candidateType>=0
+        ?AIMaximaFoodLedger::EvaluationMode::CandidateQuery:AIMaximaFoodLedger::EvaluationMode::Full);
 	if(excludeBuilding<0 && candidateType<0)
 	{
 		foodBaselineConsumers=foodResult.consumers;

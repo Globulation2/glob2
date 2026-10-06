@@ -3,6 +3,8 @@
 #include "BuildingType.h"
 #include <nlohmann/json.hpp>
 #include <chrono>
+#include <array>
+#include <cstdlib>
 #include <cstdio>
 
 namespace {
@@ -21,7 +23,10 @@ TEST_CASE("unused definitions do not enlarge simulation work [benchmark]")
     const auto original=nlohmann::json::parse(stock.snapshotJson());
     std::printf("catalog_scale,definitions,repeat,setup_ns,ticks,tick_ns,units\n");
     std::vector<Uint32> referenceInstances;
-    for (int count : {55,256,1024})
+    const char* reverse=std::getenv("GLOB2_CATALOG_BENCHMARK_REVERSE");
+    const auto counts=reverse && *reverse=='1'
+        ? std::array<int,3>{1024,256,55} : std::array<int,3>{55,256,1024};
+    for (int count : counts)
     {
         auto catalog=original;
         auto dormant=original["variants"][stock.getTypeNum("stonewall",0,false)];

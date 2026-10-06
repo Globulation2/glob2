@@ -177,13 +177,19 @@ private:
 	int residualSumsHeight;
 };
 
+enum class EvaluationMode { Full, CandidateQuery };
+
 /// Holds the reusable scratch buffers. Queries never allocate once a map size
 /// has been seen, which keeps the per-candidate placement check cheap.
+
 class Ledger
 {
 public:
 	Ledger();
-	void evaluate(const Input& input, Result& result) const;
+	// Candidate snapshots retain exact allocation/query layers, but omit the
+    // final-residual economic bound used only by the authoritative baseline.
+	void evaluate(const Input& input, Result& result,
+        EvaluationMode mode=EvaluationMode::Full) const;
     void reserveQueryFootprint(const Input& input,int width,int height) const;
     /// Combines the existing exact residual walk with uncontested supply work.
     /// The result can be reused by the candidate's feasibility and score calls.
@@ -211,7 +217,9 @@ public:
 	/// residual. Reach is contained in the Chebyshev square, so a candidate
 	/// rejected here would also fail the exact walk. Requires an unmodified
 	/// result from evaluate; reads its prepared table without scanning,
-	/// allocating or rebuilding. A default/invalid result returns zero.
+	/// allocating or rebuilding. A candidate snapshot without a final-residual
+    /// table uses total residual as a conservative bound. A default/invalid
+    /// result returns zero.
 	long long residualUpperBound(const Input& input, const Result& result,
 		int centerX, int centerY, int left, int top, int width,
 		int height,bool services=false) const;
@@ -225,7 +233,7 @@ private:
 	void walk(const Input& input, int centerX, int centerY, int left, int top,
 		int width, int height, std::vector<ReachCell>& reach,
 		const std::vector<uint32_t>* residual = nullptr, long long cap = 0) const;
-	void prepareResidualSums(const Input& input, Result& result) const;
+	void prepareResidualSums(const Input& input, Result& result, EvaluationMode mode) const;
 	void prepareWorkCurve(const Input& input,const std::vector<ReachCell>& reach,
         const OperatingPlan& plan) const;
     long long wheatWork(long long quantity) const;

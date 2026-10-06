@@ -489,3 +489,45 @@ TEST_CASE("hybrid queries reserve constrained production before flexible service
         CHECK_FALSE(ledger.operatingQuery(input,result,candidate,120).feasible);
     }
 }
+
+TEST_CASE("candidate ledger snapshots omit only final economic bounds" * doctest::test_suite("Maxima.FoodLedger"))
+{
+    Input input=makeInput(32,32);
+    input.yield[input.index(0,8)]=5000;input.yield[input.index(3,8)]=7000;
+    auto hybrid=makeConsumer(1,InnConsumer,1,8,4000);hybrid.productionDemand=2000;
+    input.consumers={hybrid};Ledger ledger;Result full,query;
+    ledger.evaluate(input,full);REQUIRE(full.bestSiteResidual>0);
+    query=full; // exercises releasing a full snapshot's inherited final SAT
+    ledger.evaluate(input,query,EvaluationMode::CandidateQuery);
+    CHECK(query.bestSiteResidual==0);CHECK(query.residual==full.residual);
+    CHECK(query.serviceResidual==full.serviceResidual);
+    CHECK(query.independentClaimed==full.independentClaimed);
+    CHECK(query.totalSupply==full.totalSupply);CHECK(query.totalDemand==full.totalDemand);
+    CHECK(query.totalClaimed==full.totalClaimed);CHECK(query.totalResidual==full.totalResidual);
+    REQUIRE(query.consumer(1));CHECK(query.consumer(1)->claimed==full.consumer(1)->claimed);
+    CHECK(query.consumer(1)->claimedProduction==full.consumer(1)->claimedProduction);
+    const Result retained=query;
+    for(int x:{31,1,5})for(int production:{0,2000,20000})for(int margin:{100,150}) {
+        auto candidate=makeConsumer(2,InnConsumer,x,8,2000+production);
+        candidate.operating.independent[1]=2000;candidate.operating.production[1]=production;
+        const auto a=ledger.operatingQuery(input,full,candidate,margin,&full,2000);
+        const auto b=ledger.operatingQuery(input,retained,candidate,margin,&full,2000);
+        CHECK(a.demand==b.demand);CHECK(a.productionDemand==b.productionDemand);
+        CHECK(a.residual==b.residual);CHECK(a.quality==b.quality);
+        CHECK(a.transferred==b.transferred);CHECK(a.feasible==b.feasible);
+        CHECK(ledger.residualUpperBound(input,retained,x,8,0,0,1,1,true)==
+              ledger.residualUpperBound(input,full,x,8,0,0,1,1,true));
+        CHECK(ledger.residualUpperBound(input,retained,x,8,0,0,1,1)==retained.totalResidual);
+        CHECK(ledger.residualUpperBound(input,retained,x,8,0,0,1,1)>=
+              ledger.residualUpperBound(input,full,x,8,0,0,1,1));
+    }
+    // Returning to full evaluation restores economic metadata; copies still
+    // carry their own service bounds after the reusable result changes mode.
+    ledger.evaluate(input,query);
+    CHECK(query.bestSiteResidual==full.bestSiteResidual);
+    CHECK(ledger.residualUpperBound(input,query,1,8,0,0,1,1)==
+          ledger.residualUpperBound(input,full,1,8,0,0,1,1));
+    CHECK(ledger.residualUpperBound(input,retained,1,8,0,0,1,1,true)==
+          ledger.residualUpperBound(input,full,1,8,0,0,1,1,true));
+    query.clear();CHECK(ledger.residualUpperBound(input,query,1,8,0,0,1,1,true)==0);
+}
