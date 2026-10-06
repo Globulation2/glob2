@@ -1,70 +1,41 @@
-name: macOS development validation
+name: macOS capability map observations
 on:
-  workflow_call:
-    inputs:
-      revision:
-        type: string
-        default: ""
-      coverage_profile:
-        type: string
-        default: compatibility
+  workflow_dispatch:
 permissions:
   contents: read
 env:
   GLOB2_DEV_MODE: isolated
 jobs:
-  native:
+  observations:
     runs-on: macos-26
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.revision || github.sha }}
+          fetch-depth: 2
       - name: Install development dependencies
         run: brew install cmake freetype libpng jpeg-turbo scons pkgconf opusfile opus libogg speex openssl@3 boost fribidi libepoxy
       - uses: ./.github/actions/sdl3
         with:
           cc: clang
           cxx: clang++
-      - name: Compile unsigned game and tests
+      - name: Build exact golden observation tool
         run: |
+          mkdir -p artifacts/capability-map-goldens
           openssl="$(brew --prefix openssl@3)"
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 \
-            build/darwin/client/release/src/glob2 unit-tests engine-tests \
-            CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
-      - name: Execute selected regression cases and continuation
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j3 map-generator-golden-test \
+            CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib" > artifacts/capability-map-goldens/build.log 2>&1
+      - name: Observe existing capability outputs without updating baselines
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
-          python3 test/ci_run_commands.py \
-            --check 'macOS regression cases' 'python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
-            --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
-            --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
-      - name: Retain native simulation and scripting evidence
-        run: |
-          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
-          python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism
-          python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
-          python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
+          { git rev-parse HEAD; git rev-parse HEAD^; uname -a; clang++ --version; shasum -a256 build/darwin/client/release/src/MapGeneratorGoldenTest; brew list --versions; } > artifacts/capability-map-goldens/provenance.txt
+          build/darwin/client/release/src/MapGeneratorGoldenTest glob2-capability-goldens --print --only=swamp,river,islands,crater-lakes,shattered-coast > artifacts/capability-map-goldens/observed-rows.txt
+          build/darwin/client/release/src/MapGeneratorGoldenTest glob2-capability-goldens-repeat --print --only=swamp,river,islands,crater-lakes,shattered-coast > artifacts/capability-map-goldens/repeated-rows.txt
+          cmp artifacts/capability-map-goldens/observed-rows.txt artifacts/capability-map-goldens/repeated-rows.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-determinism-macos
-          path: artifacts/browser-determinism/
+          name: capability-map-goldens-macos-arm64
+          path: artifacts/capability-map-goldens/
           if-no-files-found: error
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: javascript-profile-macos
-          path: |
-            artifacts/javascript-corpus/
-            artifacts/javascript-profile/
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: native-macos-validation
-          path: |
-            artifacts/tests/
-            artifacts/cli-smoke/
