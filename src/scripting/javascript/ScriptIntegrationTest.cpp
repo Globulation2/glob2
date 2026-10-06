@@ -1621,7 +1621,7 @@ TEST_CASE("JavaScript projected boundary preserves history and spatial resources
     full.setProfile(2);projected.setProfile(2);
     Spatial fullSpatial(game,0,full),projectedSpatial(game,0,projected);
     auto compare=[&] {
-        const auto captured=SimulationSnapshot::capture(game,{},SimulationSnapshot::All);
+        const auto captured=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::All);
         AIEngine::AIWorldView complete(captured),narrow(captured.project(requirements));
         REQUIRE_FALSE(narrow.components().growth);
         REQUIRE_FALSE(narrow.components().resourceFields);
