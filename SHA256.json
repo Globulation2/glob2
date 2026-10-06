@@ -1,0 +1,10 @@
+{
+  "before.log": "c4e398e523bca2c10c96651396f2e234b5592f1ff24390335e399da4ceb8709d",
+  "after.log": "754c4eee2f36ffe3a6528df91404c7987b46f8504f85fa9a9690d73ec1a8e9ec",
+  "full-config-after.log": "cf3280c7821c36b89073fbb542586ea88602b5acdf28ffba7154a52c7c21761c",
+  "negative-controls.log": "dbe8dff979c7cd978a073a8d943b786f0e27e9ccb60948d2cb51abdecfe5b469",
+  "maxima-capability-contract-build.log": "965db1c1c096cbbdfd09f402eebd6156a4ae5a6574cfaccbbb3bad0ac745a0db",
+  "maxima-capability-order-tests.log": "b71a28595dc4f9edead0c5f2739868501832572c4ca4f6640b42404e8f148a1e",
+  "maxima-capability-order-junit.xml": "c79daebd2cb52e5f411e569b270099d0c66d468a52dc5cf40ba2fee5a6e81fd5",
+  "backtrace-corrected.log": "ab0e4280373e0de52aaf7aa2a74bd6d88b31f158ce1b70206b22b0adfce58d50"
+}
