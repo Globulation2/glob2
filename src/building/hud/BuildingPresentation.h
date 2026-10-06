@@ -3,6 +3,20 @@
 #include "BuildingType.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <cassert>
+
+// Both ground and overlay buildings use the concrete variant's sprite frames.
+// Healthless stock flags keep their base frame; connections take precedence.
+inline int buildingSpriteFrame(const BuildingType& type, int hp, int effectiveMaxHp, Uint8 connectionMask)
+{
+    if (type.crossConnectMultiImage) return type.gameSpriteImage + connectionMask;
+    if (type.gameSpriteCount == 1 || effectiveMaxHp <= 0) return type.gameSpriteImage;
+    assert(hp >= 0 && hp <= effectiveMaxHp);
+    const int damage = type.gameSpriteCount
+        - (Sint64(hp) * type.gameSpriteCount) / (Sint64(effectiveMaxHp) + 1) - 1;
+    assert(damage >= 0);
+    return type.gameSpriteImage + damage;
+}
 
 inline std::string buildingDisplayName(const BuildingType& type)
 {

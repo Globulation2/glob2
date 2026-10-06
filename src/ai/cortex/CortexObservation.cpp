@@ -277,8 +277,7 @@ namespace Cortex
 			//      game/entities/BuildingType.h:85 (else launchConstruction REPAIRs)
 			// C++: Building::constructionResultState/NO_CONSTRUCTION
 			//      building/Building.h:498,108 (not already upgrading/repairing)
-			// C++: maxBuildLevel > type->level gate gui/GameGUIInput.cpp:426,
-			//      BuildingType::level game/entities/BuildingType.h:90
+			// Construction qualification must meet the next descriptor's requiredWorkerLevel.
 			// C++: Building::isHardSpaceForBuildingSite(UPGRADE) building/Update.cpp:410,
 			//      Building::UPGRADE building/Building.h:110 (larger footprint fits)
 			if (b->buildingState == Building::ALIVE

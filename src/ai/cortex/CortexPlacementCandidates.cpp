@@ -98,7 +98,7 @@ namespace Cortex
 
 	static int placeCandidatesImpl(Game* game, Team* team, int buildingType, int level,
 	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
-	                               const ForwardBias* forward, int placementType = -1)
+	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		// wheatDist is initialised to -1 (no wheat in reach) matching the
@@ -118,7 +118,7 @@ namespace Cortex
 
 		(void)level; // The catalog chooses a placeable variant for this strategic role.
         AIPlanning::BuildingCandidate choice;
-        if (placementType < 0) choice = selectBuilding(*game, *team, buildingType);
+        if (placementType < 0) choice = selectBuilding(*game, *team, buildingType, WORKER, maxWorkerQualification);
         if (placementType >= 0) {
             choice.placementType = placementType;
             choice.completedType = game->buildingsTypes.getFinishedTypeNum(game->buildingsTypes.get(placementType)->key);
@@ -402,15 +402,15 @@ namespace Cortex
 	}
 
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType)
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType, int maxWorkerQualification)
 	{
-		return placeCandidatesImpl(game, team, buildingType, level, out, NULL, placementType);
+		return placeCandidatesImpl(game, team, buildingType, level, out, NULL, placementType, maxWorkerQualification);
 	}
 
 	int placeForwardCandidate(Game* game, Team* team, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
-	                          BuildCandidate& out)
+	                          BuildCandidate& out, int maxWorkerQualification)
 	{
 		// Same scan, same legality gates (a forward inn still needs harvestable
 		// wheat at the front), restricted to the target-distance window and with
@@ -432,7 +432,7 @@ namespace Cortex
 		bias.maxTargetDist = maxTargetDist;
 
 		BuildCandidate slots[CORTEX_BUILD_CANDIDATES];
-		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias);
+		const int n = placeCandidatesImpl(game, team, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
 		if (n <= 0)
 			return 0;
 		out = slots[0];

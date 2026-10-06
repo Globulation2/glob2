@@ -55,13 +55,13 @@ inline int primaryResource(const BuildingResourceCost& cost)
 // Resolve once before a placement search; never enumerate the catalog per tile.
 // Cost then footprint then numeric ID give deterministic choices for unfamiliar
 // providers while preserving the policy's existing strategic role demands.
-inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int role, int productionClass = WORKER)
+inline AIPlanning::BuildingCandidate selectBuilding(Game& game, Team& team, int role, int productionClass = WORKER, int maxWorkerQualification = -1)
 {
  using I = AIPlanning::BuildingIntent;
  AIPlanning::BuildingCandidate best;
  long long bestCost = std::numeric_limits<long long>::max();
  int bestArea = std::numeric_limits<int>::max();
- const int qualification = team.maxBuildLevel();
+ const int qualification = maxWorkerQualification >= 0 ? maxWorkerQualification : team.maxBuildLevel();
  auto consider = [&](I intent) {
   for (const auto& candidate : game.buildingCapabilities().placements(intent))
   {

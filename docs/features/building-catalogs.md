@@ -139,7 +139,9 @@ Mixed staffing first fills deterministic role quotas, then lends unused assignme
 slots to roles with eligible units on the existing recruitment round.
 Connected-segment rendering is configured by `crossConnectMultiImage`, a
 `presentation.connectionGroup` and its cross-team connection policy; ordinary
-sprite rendering remains available for the same capabilities. `presentation.showLevel`
+sprite rendering remains available for the same capabilities. Ground and overlay
+buildings share connection and damage-frame selection; non-segmented healthless
+variants use the base sprite frame. `presentation.showLevel`
 controls the level label directly, independently of upgrade availability. The stock
 market therefore displays its configured level even with its upgrade experiment off.
 

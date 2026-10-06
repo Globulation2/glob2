@@ -58,21 +58,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	BuildingType *type=building->type;
 	const SceneTeam *team=&entities.owner(*building);
 
-	int imgid;
-	if (type->crossConnectMultiImage)
-	{
-		imgid=type->gameSpriteImage+building->connectionMask;
-	}
-	else
-	{
-		// hpMax+1 (not hpMax) so that at full HP the integer division stays strictly
-		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
-		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
-		assert(building->hp <= building->effectiveMaxHp);
-		int damageImgShift = type->gameSpriteCount - ((Sint64(building->hp) * type->gameSpriteCount) / (Sint64(building->effectiveMaxHp)+1)) - 1;
-		assert(damageImgShift >= 0);
-		imgid = type->gameSpriteImage + damageImgShift;
-	}
+	const int imgid = buildingSpriteFrame(*type, building->hp, building->effectiveMaxHp, building->connectionMask);
 	int dx, dy;
 
 

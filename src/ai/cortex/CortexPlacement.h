@@ -31,8 +31,11 @@ namespace Cortex
 	///
 	/// Returns the number of valid candidates written (0..CORTEX_BUILD_CANDIDATES).
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
+	/// Pass a qualification computed for the current observation to avoid rescanning
+	/// workers for each role. The default computes it for standalone callers.
 	int placeCandidates(Game* game, Team* team, int buildingType, int level,
-	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1);
+	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1,
+	                    int maxWorkerQualification = -1);
 
 	/// Forward-base variant of placeCandidates: the single best legal spot for
 	/// `buildingType` whose distance to the attack target (targetX, targetY) lies
@@ -46,7 +49,7 @@ namespace Cortex
 	int placeForwardCandidate(Game* game, Team* team, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
-	                          BuildCandidate& out);
+	                          BuildCandidate& out, int maxWorkerQualification = -1);
 
 	/// Fill `out` with up to CORTEX_FLAG_TARGETS DISCOVERED enemy buildings, ranked
 	/// nearest-first to our colony, to serve as war-flag offense targets. Each

@@ -72,9 +72,9 @@ namespace Cortex
 		obs.prestige          = team->prestige;
 
 		// --- upgrade-decision signals (Phase-2 v4) ---
-		// maxBuildLevel is the highest BUILD level among our workers and is the
-		// engine's own gate on whether a finished building may be upgraded: a
-		// building at type->level L is upgradable only when maxBuildLevel > L.
+		// maxBuildLevel is the highest construction qualification among workers
+		// able to build. Upgrade eligibility compares it with the target
+		// descriptor's requiredWorkerLevel, independently of display level.
 		// C++: Team::maxBuildLevel(), team/TeamRouting.cpp:245-259.
 		// Cached once here; the per-building Upgradable predicate below reuses it
 		// rather than re-scanning every worker per building.
@@ -269,7 +269,7 @@ namespace Cortex
 			// phase reasons about. Other types keep valid==0 from the empty
 			// observation. placeCandidates writes exactly CORTEX_BUILD_CANDIDATES
 			// slots (zero-filling unused trailing ones).
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD], -1, maxBuildLevel);
             for (const auto& project:game->buildProjects) {
                 if(project.teamNumber!=team->teamNumber)continue;
                 const auto* type=game->buildingsTypes.get(project.typeNum);
@@ -278,10 +278,10 @@ namespace Cortex
             }
             Sint32 productionTargets[CORTEX_UNIT_TYPES];
             CortexPolicy::productionTargets(obs, productionTargets);
-            auto productionChoice = selectBuilding(*game,*team,CORTEX_BUILD_SWARM,WORKER);
+            auto productionChoice = selectBuilding(*game,*team,CORTEX_BUILD_SWARM,WORKER,maxBuildLevel);
             for (int unit=0;unit<CORTEX_UNIT_TYPES;++unit) {
                 if (!productionTargets[unit] || (obs.productionPlannedMask & (1u<<unit))) continue;
-                const auto candidate=selectBuilding(*game,*team,CORTEX_BUILD_SWARM,unit);
+                const auto candidate=selectBuilding(*game,*team,CORTEX_BUILD_SWARM,unit,maxBuildLevel);
                 if(candidate.placementType<0) continue;
                 obs.productionMissingMask|=1u<<unit;
                 if(obs.productionPlacementType<0) {
@@ -291,7 +291,7 @@ namespace Cortex
             }
             obs.productionPlacementType=productionChoice.placementType;
             if(productionChoice.placementType>=0)
-                placeCandidates(game,team,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType);
+                placeCandidates(game,team,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType,maxBuildLevel);
             for(int id=0;id<Building::MAX_COUNT;++id) {
                 const auto* building=team->myBuildings[id];
                 if(!building || building->buildingState!=Building::ALIVE || building->type->isBuildingSite)continue;
@@ -303,11 +303,11 @@ namespace Cortex
                     obs.productionNeedsRetune |= (building->ratio[unit]>0) !=
                         bool((mask&(1u<<unit)) && productionTargets[unit]>0);
             }
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL]);
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE]);
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED]);
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_SWIMSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWIMSPEED]);
-			placeCandidates(game, team, Cortex::CORTEX_BUILD_ATTACK,  0, obs.buildCandidates[Cortex::CORTEX_BUILD_ATTACK]);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL], -1, maxBuildLevel);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE], -1, maxBuildLevel);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED], -1, maxBuildLevel);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_SWIMSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWIMSPEED], -1, maxBuildLevel);
+			placeCandidates(game, team, Cortex::CORTEX_BUILD_ATTACK,  0, obs.buildCandidates[Cortex::CORTEX_BUILD_ATTACK], -1, maxBuildLevel);
 
 			// OFFENSE targets: discovered enemy buildings, nearest-first. Filled
 			// ONLY from buildings we have legitimately seen (Building::seenByMask),
@@ -421,14 +421,14 @@ namespace Cortex
 					}
 					placeForwardCandidate(game, team, Cortex::CORTEX_BUILD_FOOD,
 					                      tx, ty, minD, maxD,
-					                      obs.forwardInn);
+					                      obs.forwardInn, maxBuildLevel);
 					// A forward hospital is surfaced only when a finished hospital
 					// already exists (advisory support; the inn binds the envelope);
 					// the forward inn always leads.
 					if (cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL) > 0)
 						placeForwardCandidate(game, team, Cortex::CORTEX_BUILD_HEAL,
 						                      tx, ty, minD, maxD,
-						                      obs.forwardHeal);
+						                      obs.forwardHeal, maxBuildLevel);
 				}
 			}
 

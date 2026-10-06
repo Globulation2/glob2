@@ -643,6 +643,13 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
         auto* site=game.addBuilding(25,4,fixture.replacement,0,2,2);
         REQUIRE(site);
         CHECK(ai.desiredWorkers(*site,9)==3);
+        ai.computeBuildingSum();
+        for(int demand=0;demand<AICastor::DemandCount;++demand) {
+            const bool expected=(service==0 && demand==AICastor::ProduceWorkers)
+                || (service==1 && (demand==AICastor::FeedUnits || demand==AICastor::HealUnits))
+                || (service==2 && (demand==AICastor::TrainWalking || demand==AICastor::TrainConstruction));
+            CHECK(ai.buildingLevels[demand][1][0]-initial[demand][1][0]==int(expected));
+        }
         if(service==1) {
             // An upgrade is counted at its explicit target stage. Staffing still
             // refers to the current feed+heal provider until that transition.

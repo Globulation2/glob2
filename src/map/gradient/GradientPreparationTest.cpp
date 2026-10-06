@@ -339,6 +339,122 @@ TEST_SUITE("GradientPreparation")
 		CHECK_FALSE(cache.storage);
 	}
 
+	TEST_CASE("cached natural goals follow immobile occupancy and live overlays")
+	{
+		glob2test::HeadlessGlobals globals;
+		int hiddenResource = -1;
+		for (int resource = 0; resource < MAX_RESOURCES; ++resource)
+			if (globalContainer->resourcesTypes.get(resource)->visibleToBeCollected)
+			{
+				hiddenResource = resource;
+				break;
+			}
+		REQUIRE(hiddenResource >= 0);
+		for (const int wDec : {5, 7})
+		{
+			CAPTURE(wDec);
+			glob2test::HeadlessGame world({.wDec=wDec, .hDec=wDec, .teams=2, .clearImmobile=true, .header=true});
+			auto &m = world.game.map;
+			auto &cache = m.gradientRuntime->resourceSeeds;
+			const int x = 10, y = 10;
+			const size_t at = m.coordToIndex(x, y);
+			const Uint32 mask = Team::teamNumberToMask(0);
+			std::vector<Uint16> expected(m.size), actual(m.size);
+			m.replaceTile(at, Tile{});
+			m.setCellTerrain(at, GRASS);
+			m.clearImmobileUnit(x, y);
+			m.fogOfWar[at] = mask;
+			m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
+			auto compare = [&](int checkedResource, Uint16 checkedValue) {
+				for (const int swim : {0, 3})
+					for (const int resource : {int(WHEAT), int(WOOD), hiddenResource})
+					{
+						CAPTURE(swim);
+						CAPTURE(resource);
+						scalarResource(m, 0, resource, swim, expected.data(), false);
+						m.seedResourcesGradient(0, resource, swim, actual.data(), false);
+						requireSameField(m, "occupied natural goal", actual, expected);
+						if (resource == checkedResource) CHECK(actual[at] == checkedValue);
+						m.seedResourcesGradientDirect(0, resource, swim, actual.data(), nullptr);
+						requireSameField(m, "direct occupied natural goal", actual, expected);
+					}
+			};
+			auto warm = [&] {
+				for (int i = 0; i < 32; ++i)
+					m.seedResourcesGradient(0, WHEAT, 0, actual.data(), false);
+				CHECK(cache.valid == (wDec == 7));
+			};
+			warm();
+			const auto bytes = cache.allocatedBytes();
+			compare(WHEAT, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			compare(WHEAT, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WHEAT, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 1);
+			compare(WHEAT, GRADIENT_FORBIDDEN);
+			m.replaceResource(at, Resource{WOOD, 0, 1, 0});
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			m.replaceResource(at, Resource{});
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_UNREACHABLE);
+			// Coalesced resource/occupancy edits use the final effective goal type.
+			m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
+			m.markImmobileUnit(x, y, 0);
+			m.replaceResource(at, Resource{WOOD, 0, 1, 0});
+			m.clearImmobileUnit(x, y);
+			m.markImmobileUnit(x, y, 1);
+			compare(WOOD, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(WOOD, GRADIENT_AT_GOAL);
+			// Goals still override terrain/buildings, with fog live and paint last.
+			m.replaceResource(at, Resource{static_cast<Uint8>(hiddenResource), 0, 1, 0});
+			m.setCellTerrain(at, WATER);
+			m.setBuilding(x, y, 1, 1, 42);
+			m.fogOfWar[at] = 0;
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.fogOfWar[at] = mask;
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			m.addForbidden(x, y, 0);
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.removeForbidden(x, y, 0);
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			m.markImmobileUnit(x, y, 0);
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			cache.invalidate();
+			warm();
+			compare(hiddenResource, GRADIENT_FORBIDDEN);
+			m.clearImmobileUnit(x, y);
+			compare(hiddenResource, GRADIENT_AT_GOAL);
+			CHECK(cache.allocatedBytes() == bytes);
+			if (wDec == 7)
+			{
+				// A burst exceeds the existing dirty bound; fallback and rebuild
+				// must both preserve blocked resource membership.
+				for (size_t i = 0; i <= m.size / 64; ++i)
+				{
+					m.replaceResource(i, Resource{WHEAT, 0, 1, 0});
+					m.markImmobileUnit(i & m.wMask, i >> m.wDec, 0);
+				}
+				REQUIRE_FALSE(cache.valid);
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				warm();
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				for (size_t i = 0; i <= m.size / 64; ++i)
+					m.clearImmobileUnit(i & m.wMask, i >> m.wDec);
+				REQUIRE_FALSE(cache.valid);
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				warm();
+				compare(hiddenResource, GRADIENT_AT_GOAL);
+				CHECK(cache.allocatedBytes() == bytes);
+			}
+		}
+	}
+
 	TEST_CASE("concurrent preparation owns buffers and serializes dirty cache refresh")
 	{
 		glob2test::HeadlessGlobals globals;

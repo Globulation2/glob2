@@ -476,7 +476,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 
 				int team = building->team;
 
-				int imgid = type->gameSpriteImage;
+				const int imgid = buildingSpriteFrame(*type, building->hp, building->effectiveMaxHp, building->connectionMask);
 
 				int x, y;
 				const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, building->gid, building->posX) : building->posX;

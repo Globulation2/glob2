@@ -38,6 +38,7 @@ struct ResourceSeedCache::Storage
 	std::array<Bits, MAX_RESOURCES> resources;
 	Bits buildings;
 	std::array<Bits, Team::MAX_COUNT> forbidden;
+	// Effective natural goal type: occupied resource cells have no goal bit.
 	std::vector<Uint8> resourceTypes, dirty;
 	std::vector<Uint32> forbiddenMasks, queue;
 
@@ -117,9 +118,11 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 {
 	auto &s = *storage;
 	const auto &cell = map.tiles[index];
-	if (flags & Resource)
+	if (flags & (Resource | Immobile))
 	{
-		const auto old = s.resourceTypes[index], next = cell.resource.type;
+		const Uint8 old = s.resourceTypes[index];
+		const Uint8 next = map.immobileUnits[index] == IMMOBILE_UNIT_NONE
+			? cell.resource.type : NO_RES_TYPE;
 		if (old != next)
 		{
 			if (old != NO_RES_TYPE) setBit(s.resources[old], index, false);
@@ -197,8 +200,7 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	// Goals override terrain/buildings, but not immobile units or forbidden paint.
 	// Fog, market stock and resource policy are live overlays, never cached.
 	visit(s.resources[resource], [&](std::size_t index) {
-		if (map.immobileUnits[index] == IMMOBILE_UNIT_NONE &&
-			(!hideFogged || (map.fogOfWar[index] & mask)))
+		if (!hideFogged || (map.fogOfWar[index] & mask))
 			output[index] = GRADIENT_AT_GOAL;
 	});
 	if (supplierSeeds)

@@ -31,6 +31,58 @@ void drain(AICortex& ai,Game& game)
 }
 TEST_SUITE("CortexActionCoverage")
 {
+    TEST_CASE("placement reuses observation qualification without persisting stale worker levels")
+    {
+        using namespace Cortex;
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        const int hospital=world.game.buildingsTypes.getPlaceableTypeNum("hospital");
+        REQUIRE(hospital>=0);
+        snapshot["variants"][hospital]["semantics"]["requiredWorkerLevel"]=1;
+        world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+        world.game.configureBuildingCatalog();
+        REQUIRE(world.addBuilding("swarm",4,4));
+        auto* worker=world.addUnit(WORKER,12,12);
+        REQUIRE(worker);
+        refreshStats(*world.team);
+        auto checkCandidate=[](const BuildCandidate& actual,const BuildCandidate& expected) {
+            CHECK(actual.valid==expected.valid);
+            CHECK(actual.x==expected.x); CHECK(actual.y==expected.y);
+            CHECK(actual.score==expected.score); CHECK(actual.wheatDist==expected.wheatDist);
+        };
+        for(int qualification=0;qualification<=1;++qualification) {
+            CAPTURE(qualification);
+            worker->constructionLevel=qualification;
+            REQUIRE(world.team->maxBuildLevel()==qualification);
+            BuildCandidate ordinary[2][CORTEX_BUILD_CANDIDATES];
+            BuildCandidate forward[2];
+            int ordinaryCount[2],forwardCount[2];
+            std::string randomEnd[2];
+            for(int supplied=0;supplied<2;++supplied) {
+                MersenneTwister random(713);
+                SyncRandScope scope(random);
+                const int current=supplied ? world.team->maxBuildLevel() : -1;
+                ordinaryCount[supplied]=placeCandidates(&world.game,world.team,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
+                forwardCount[supplied]=placeForwardCandidate(&world.game,world.team,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
+                randomEnd[supplied]=getSyncRandState();
+            }
+            CHECK(ordinaryCount[0]==ordinaryCount[1]);
+            CHECK(forwardCount[0]==forwardCount[1]);
+            CHECK(randomEnd[0]==randomEnd[1]);
+            for(int slot=0;slot<CORTEX_BUILD_CANDIDATES;++slot)
+                checkCandidate(ordinary[0][slot],ordinary[1][slot]);
+            checkCandidate(forward[0],forward[1]);
+            CHECK((ordinaryCount[0]>0)==(qualification==1));
+            CHECK((forwardCount[0]>0)==(qualification==1));
+            MersenneTwister random(713);
+            SyncRandScope scope(random);
+            const auto observation=observe(world.game.players[0],0,NOGBID);
+            CHECK(observation.maxBuildLevel==qualification);
+            CHECK((observation.buildCandidates[CORTEX_BUILD_HEAL][0].valid!=0)==(qualification==1));
+        }
+    }
+
     TEST_CASE("bounded model channels preserve stock identity and ignore custom family metadata")
     {
         glob2test::HeadlessGlobals globals;

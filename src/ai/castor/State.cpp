@@ -118,10 +118,13 @@ void AICastor::computeBuildingSum()
    }
    if (completed < 0) continue;
    const int stage=std::clamp(capabilities.lineagePosition(completed)-1,0,NB_UNIT_LEVELS-1);
-   const auto mask=capabilities.intentMask(completed);
-   for (int demand=0; demand<DemandCount; ++demand)
-    if (mask & (std::uint64_t{1} << static_cast<unsigned>(demandIntents[demand])))
-     buildingLevels[demand][upgrading || b->type->isBuildingSite][stage]++;
+   auto supplied=capabilities.intentMask(completed) & demandIntentMask;
+   const int site=upgrading || b->type->isBuildingSite;
+   while (supplied) {
+    const int demand=demandForIntent[std::countr_zero(supplied)];
+    buildingLevels[demand][site][stage]++;
+    supplied &= supplied-1;
+   }
 
 		}
 	}

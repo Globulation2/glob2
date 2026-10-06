@@ -326,7 +326,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	//   - constructionResultState == NO_CONSTRUCTION (not already up/repairing)
 	//   - type->nextLevel != BUILDING_LEVEL_NONE (not already at max level)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:424)
-	//   - team->maxBuildLevel() > type->level             (C++: GameGUIInput.cpp:426)
+	//   - worker construction qualification meets the target requiredWorkerLevel
 	//   - isHardSpaceForBuildingSite(UPGRADE) (larger next-level footprint fits)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:425)
 	// If ANY condition fails the OrderConstruction would be silently dropped, so
@@ -355,7 +355,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
 		if (b->constructionResultState != Building::NO_CONSTRUCTION)
 			continue;
-		if (maxBuildLevel < team->game->buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel) // C++: GameGUIInput.cpp:426 (> level)
+		if (maxBuildLevel < team->game->buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel)
 			continue;
 		if (!b->isHardSpaceForBuildingSite(Building::UPGRADE)) // C++: building/Building.h:200
 			continue;
