@@ -102,7 +102,7 @@ ENGINE_TESTS = [
     ('#src/ai/AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingFootprintHarness.cpp',
     '#src/map/MapTilingHarness.cpp',
-    '#src/map/gradient/ClearingFlagGradientTest.cpp',
+    ('#src/map/gradient/ClearingFlagGradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/cortex/CortexGeometryHarness.cpp',
     '#src/unit/EnteringUnitSaveHarness.cpp',
     '#src/map/gradient/MapGradientInvalidationTest.cpp',
