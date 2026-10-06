@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Material.h"
+#include "AIResourcePolicy.h"
 #include <PerformanceTelemetry.h>
 #include "AICastor.h"
 #include "Game.h"
@@ -506,9 +507,10 @@ void AICastor::computeWheatCareMap()
 	
 	memcpy(wheatCareMap[0], obstacleUnitMap, size);
 	for (size_t i=0; i<=sizeMask; i++)
-		if (wheatCareMap[0][i]!=0 && notGrassMap[i]==AI_CASTOR_NOTGRASS_NEIGHBOUR_VAL && hydratationMap[i]>0
+		if (wheatCareMap[0][i]!=0
 			&& ((wheatCareMap[1][i]>AI_CASTOR_WHEATCARE_PREV_HIGH_THRESHOLD)
-				|| ((oldWheatGradient[3][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[2][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK) && (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK))))
+				|| ((oldWheatGradient[3][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[2][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK) && (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK)))
+			&& AIResourcePolicy::canRecoverAt(*map,i%w,i/w,MaterialId::Food))
 		{
 			if (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK)
 				wheatCareMap[0][i]=AI_CASTOR_WHEATCARE_HIGH;
@@ -732,4 +734,3 @@ void AICastor::computeEnemyWarriorsMap()
 	if(map->hasTerrainMovementModifiers()) updateGlobalGradient(gradient);
 	else map->updateGlobalGradient(gradient);
 }
-

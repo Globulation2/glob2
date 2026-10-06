@@ -249,7 +249,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 		// avoids an immediate delivery job, but combat consumes them normally and
 		// later replenishment still needs miners. Refresh the call lists now so
 		// the initial save does not retain the empty store's worker request.
-		building->materials[STONE] = tower->maxMaterial[STONE];
+			building->materials[materialIndex(MaterialId::Stone)] = tower->maxMaterial[materialIndex(MaterialId::Stone)];
 		building->updateCallLists();
 	}
 	game.teams[team]->addToStaticAbilitiesLists(building);

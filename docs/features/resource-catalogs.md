@@ -129,6 +129,16 @@ replace only clearable surplus deposits. Material frontage measures renewable
 supply under harvesting, so full stocks and infinite yields remain sustainable.
 Named planting recipes remain choices of the individual generator.
 
+AI seed reservations require a finite material yield with a positive configured
+spreading rate under the source's current ecology. Expansion checks use that
+specific donor's habitat, including terrain key allowlists. Infinite supplies and
+resources that only regrow in place remain harvestable; whole-tile forbidden
+areas cannot provide partial-stock reserves. Farm areas handle those reserves
+through the configured material `seedReserve`. Non-land ecology does not require
+proximity to the land fertility source. Collection pauses for recovery require
+actual local regrowth or a compatible neighboring donor, rather than assuming
+that every Food deposit behaves like wheat.
+
 Some stable diagnostic interfaces retain historical names: statistics metric IDs
 and Cortex CSV/debug columns containing `wheat` describe Food sources or configured
 recipe supply, rather than requiring a wheat deposit. Their canonical engine fields

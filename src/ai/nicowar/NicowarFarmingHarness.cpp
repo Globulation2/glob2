@@ -69,6 +69,16 @@ TEST_SUITE("NicowarFarming")
 	{
 		glob2test::HeadlessGlobals globals;
 		{
+			Fixture dry;
+			auto& map=dry.game.map;
+			map.setResourceByIndex(20,20,WOOD,0);
+			map.setResourceByIndex(21,20,WHEAT,0);
+			require(map.materialExpansionRateAt(map.coordToIndex(20,20),MaterialId::Wood)==0,
+				"dry fixture cannot propagate wood");
+			dry.update();
+			require(!dry.clearing(20,20),"nonspreading wood beside food remains useful stock");
+		}
+		{
 			Fixture f;
 			auto& map = f.game.map;
 			for (int y=0; y<64; ++y) map.setCellTerrain(0,y,WATER);
@@ -93,11 +103,17 @@ TEST_SUITE("NicowarFarming")
 		{
 			Fixture f;
 			auto& map = f.game.map;
+			// This block tests adjacency of actual spreading threats. The old
+			// all-grass fixture had zero ecological growth everywhere.
+			for(int x:{18,38,48,61}) for(int y=0;y<64;++y)
+				map.setCellTerrain(x,y,WATER);
 			const int directions[][2] = {{-1,0}, {1,0}, {0,-1}, {0,1}, {-1,-1}, {-1,1}, {1,-1}, {1,1}};
 			for (int i=0; i<8; ++i)
 			{
 				map.setResourceByIndex(20,6+7*i,WOOD,0);
 				map.setResourceByIndex(20+directions[i][0],6+7*i+directions[i][1],WHEAT,0);
+				require(map.materialExpansionRateAt(map.coordToIndex(20,6+7*i),MaterialId::Wood)>0,
+					"adjacency fixture has an active wood propagation threat");
 			}
 			map.setResourceByIndex(50,50,WOOD,0); map.setResourceByIndex(51,50,WHEAT,0);
 			map.setResourceByIndex(40,40,WOOD,0); map.setResourceByIndex(41,41,WHEAT,0);

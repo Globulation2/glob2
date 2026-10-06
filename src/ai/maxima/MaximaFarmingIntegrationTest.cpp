@@ -513,7 +513,11 @@ void firebreakManagementRadius()
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     REQUIRE(home);
+    // Firebreaks target actual spreading threats; radius is tested in a
+    // fertile corridor rather than against permanently static dry-map trees.
+    for(int y=0;y<64;++y) map.setCellTerrain(10,y,WATER);
     for(int y:{21,22,63})map.setResourceByIndex(11,y,WOOD,5);
+    REQUIRE(map.materialExpansionRateAt(map.coordToIndex(11,22),MaterialId::Wood)>0);
     ai.budget.farming_enabled=true;
     ai.budget.farming_maintenance_clearing_enabled=true;
     ai.budget.farming_wood_firebreak_enabled=true;
@@ -726,4 +730,173 @@ TEST_SUITE("Maxima.FarmingIntegration")
 	TEST_CASE("archipelago harvest does not seal wheat") { glob2test::HeadlessGlobals globals; archipelagoHarvestDoesNotSealWheat(); }
 	TEST_CASE("seed stability across maps") { glob2test::HeadlessGlobals globals; seedStabilityAcrossMaps(); }
 	TEST_CASE("farming respects discovery") { glob2test::HeadlessGlobals globals; farmingRespectsDiscovery(); }
+}
+
+#include <nlohmann/json.hpp>
+
+TEST_SUITE("Maxima.FarmingIntegration")
+{
+    TEST_CASE("custom producers only reserve finite spreading seeds")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Json=nlohmann::json;
+        for(const std::string material:{"food","wood"})
+            for(const std::string mode:{"finite","infinite","local","persistent-local","spreading","destructive-spreading","nonfarmable-spreading","empty-offspring"})
+            {
+                CAPTURE(material); CAPTURE(mode);
+                const bool spreading=mode.find("spreading")!=std::string::npos;
+                Fixture f; auto& ai=*f.ai; auto& map=f.game.map;
+                // No water: uniform ecology must not depend on land fertility.
+                REQUIRE(f.game.addUnit(8,8,0,WORKER,0,0,0,0));
+                auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][material=="food"?1:0];
+                spec["key"]="fixture:farming-source";
+                spec["properties"]["ecology"]="uniform";
+                spec["properties"]["stockDependentGrowth"]=false;
+                spec["properties"]["persistsWhenEmpty"]=mode=="persistent-local" || mode=="empty-offspring";
+                spec["properties"]["spreadRate"]=(spreading || mode=="infinite" || mode=="empty-offspring")?196608:0;
+                auto& yield=spec["yields"][material];
+                yield["consumption"]=mode=="infinite"?"infinite":mode=="destructive-spreading"?"all":"one";
+                if(mode=="nonfarmable-spreading") spec["properties"]["farmable"]=false;
+                yield["destroysDeposit"]=false;
+                yield["growthRate"]=(mode=="local" || mode=="persistent-local")?196608:0;
+                yield["initial"]=mode=="empty-offspring"?0:1;
+                map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+                const auto id=map.resourceRegistry().find("fixture:farming-source"); REQUIRE(id);
+                // Both aligned seed and off-lattice fallback components.
+                map.setResource(11,21,*id,0); map.setResourceAmount(map.coordToIndex(11,21),5);
+                map.setResource(14,26,*id,0); map.setResourceAmount(map.coordToIndex(14,26),5);
+                ai.budget.farming_enabled=true; ai.budget.farming_protection_enabled=true;
+                ai.budget.farming_management_radius=0;
+                ai.update_farming(ai.context);
+                const bool protectedAny=std::any_of(ai.farm_protection_mask.begin(),ai.farm_protection_mask.end(),[](Uint8 v){return v!=0;});
+                CHECK(protectedAny==spreading);
+                if(!spreading) CHECK(ai.select_wood_reserve(ai.context).seeds==0);
+                if(material=="wood" && mode=="spreading")
+                {
+                    REQUIRE(ai.select_wood_reserve(ai.context).seeds>0);
+                    map.setResourcesGrow(11,21,0); map.setResourcesGrow(14,26,0);
+                    ai.update_farming(ai.context);
+                    CHECK(ai.select_wood_reserve(ai.context).seeds>0);
+                    CHECK(ai.farm_protection_mask[21*64+11]);
+                    map.setResourcesGrow(11,21,1); map.setResourcesGrow(14,26,1);
+                }
+                if(material=="food" && spreading)
+                {
+                    f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+                    ai.context.managementOrders.clear();
+                    ai.update_farming(ai.context);
+                    bool forbiddenSeed=false;
+                    for(const auto& order:ai.context.managementOrders)
+                        if(auto add=std::dynamic_pointer_cast<Management::AddArea>(order))
+                            if(add->areaType==ForbiddenArea)
+                                for(const auto& cell:add->locations)
+                                    forbiddenSeed|=cell.x==11 && cell.y==21;
+                    CHECK(forbiddenSeed==(mode=="destructive-spreading" || mode=="nonfarmable-spreading"));
+                }
+                if(material=="wood")
+                {
+                    ai.budget.farming_maintenance_clearing_enabled=true;
+                    ai.budget.farming_wheat_invasion_clearing_enabled=true;
+                    std::vector<Uint8> protectedFood(64*64,0);
+                    protectedFood[22*64+12]=1;
+                    AIMaxima::Maxima::WoodReserve noReserve(64*64);
+                    CHECK(ai.wheat_invasion_clearing_required(ai.context,21*64+11,protectedFood,noReserve)
+                        ==(spreading || mode=="infinite"));
+                }
+            }
+    }
+
+    TEST_CASE("custom spreading frontier follows actual donor habitat")
+    {
+        glob2test::HeadlessGlobals globals;
+        using Json=nlohmann::json;
+        for(const std::string material:{"food","wood"})
+        {
+            CAPTURE(material);
+            Fixture f; auto& ai=*f.ai; auto& map=f.game.map;
+            for(int y=0;y<64;++y) map.setCellTerrain(10,y,WATER);
+            auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][material=="food"?1:0];
+            spec["key"]="fixture:actual-donor";
+            spec["properties"]["ecology"]="uniform";
+            spec["properties"]["stockDependentGrowth"]=false;
+            map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+            auto other=spec; other["key"]="fixture:other-donor";
+            map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({other})}}.dump());
+            const auto donor=map.resourceRegistry().find("fixture:actual-donor"); REQUIRE(donor);
+            map.setResource(12,22,*donor,0);
+            ai.budget.farming_enabled=true; ai.budget.farming_protection_enabled=true;
+            ai.budget.farming_management_radius=0;
+            const auto terrainSpec=[&](const char* key) {
+                return Json{{"schemaVersion",1},{"terrains",Json::array({Json{{"key","fixture:target"},{"name","Target"},{"base","grass"},{"appearance","grass"},{"properties",Json::object()},{"allowedResourceKeys",Json::array({key})}}})}}.dump();
+            };
+            // Author definitions through the standalone Map API, then restore
+            // the game's ownership before querying AI state. No fake editor.
+            const auto importTerrain=[&](const char* key) {
+                struct RestoreOwner { Map& map; Game* game; ~RestoreOwner(){map.setGame(game);} } restore{map,&f.game};
+                map.game=nullptr; // Match the standalone authoring setup in TerrainPropertiesTest.
+                map.importTerrainDefinitions(terrainSpec(key));
+            };
+            importTerrain("fixture:other-donor");
+            const auto terrain=map.terrainRegistry().find("fixture:target"); REQUIRE(terrain);
+            map.setCellTerrain(11,21,*terrain);
+            ai.update_farming(ai.context);
+            CHECK_FALSE(ai.farm_protection_mask[21*64+11]);
+            importTerrain("fixture:actual-donor");
+            ai.update_farming(ai.context);
+            CHECK(ai.farm_protection_mask[21*64+11]);
+            if(material=="food")
+            {
+                map.setCellTerrain(11,21,GRASS);
+                const auto otherId=map.resourceRegistry().find("fixture:other-donor"); REQUIRE(otherId);
+                map.setResource(11,21,*otherId,0);
+                map.setResourceAmount(map.coordToIndex(11,21),1);
+                const int blocked=ai.growth_absorbing_neighbors(ai.context,12,22);
+                map.setResource(11,21,*donor,0);
+                map.setResourceAmount(map.coordToIndex(11,21),1);
+                CHECK(ai.growth_absorbing_neighbors(ai.context,12,22)==blocked+1);
+                map.setResourceAmount(map.coordToIndex(11,21),5);
+                CHECK(ai.growth_absorbing_neighbors(ai.context,12,22)==blocked);
+            }
+        }
+    }
+}
+
+TEST_CASE("mixed donor reserves its propagating wood without borrowing food renewal" * doctest::test_suite("Maxima.FarmingIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json=nlohmann::json;
+    Fixture f; auto& ai=*f.ai; auto& map=f.game.map;
+    REQUIRE(f.game.addUnit(8,8,0,WORKER,0,0,0,0));
+    auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    spec["key"]="fixture:mixed-reserve";
+    spec["properties"]["ecology"]="uniform";
+    spec["properties"]["stockDependentGrowth"]=false;
+    spec["yields"]["food"]["initial"]=0;
+    spec["yields"]["food"]["growthRate"]=0;
+    spec["yields"]["wood"]={{"capacity",5},{"initial",1},{"growthRate",0},{"consumption","all"}};
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+    const auto id=map.resourceRegistry().find("fixture:mixed-reserve"); REQUIRE(id);
+    // Off-lattice source exercises component fallback as well as dedicated WoodReserve.
+    map.setResource(14,26,*id,0);
+    map.setMaterialAmount(map.coordToIndex(14,26),MaterialId::Food,3);
+    REQUIRE(map.materialAmountAt(map.coordToIndex(14,26),MaterialId::Wood)>0);
+    REQUIRE(map.materialExpansionRateAt(map.coordToIndex(14,26),MaterialId::Food)==0);
+    REQUIRE(map.materialExpansionRateAt(map.coordToIndex(14,26),MaterialId::Wood)>0);
+    ai.budget.farming_enabled=true; ai.budget.farming_protection_enabled=true;
+    ai.budget.farming_management_radius=0;
+    f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+    ai.update_farming(ai.context);
+    CHECK(ai.farm_protection_mask[26*64+14]);
+    CHECK_FALSE(ai.wheat_farm_protection_mask[26*64+14]);
+    bool forbidden=false, farm=false;
+    for(const auto& order:ai.context.managementOrders)
+        if(auto add=std::dynamic_pointer_cast<Management::AddArea>(order))
+            for(const auto& cell:add->locations)
+                if(cell.x==14 && cell.y==26)
+                {
+                    forbidden|=add->areaType==ForbiddenArea;
+                    farm|=add->areaType==FarmArea;
+                }
+    CHECK(forbidden);
+    CHECK_FALSE(farm);
 }

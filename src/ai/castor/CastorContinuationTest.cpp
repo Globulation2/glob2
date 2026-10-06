@@ -3,6 +3,7 @@
 #include "AI.h"
 #include "AICastor.h"
 #include "AICastorTuning.h"
+#include "AIResourcePolicy.h"
 #include "Order.h"
 #include "Player.h"
 #include "Utilities.h"
@@ -10,6 +11,69 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <set>
+#include <algorithm>
+#include <nlohmann/json.hpp>
+
+struct CastorResourcePolicyAccess
+{
+    static Uint8 recoveryCare(AICastor& ai,int x,int y)
+    {
+        const auto size=ai.map->getW()*ai.map->getH();
+        std::fill_n(ai.obstacleUnitMap,size,1);
+        std::fill_n(ai.notGrassMap,size,AI_CASTOR_NOTGRASS_NEIGHBOUR_VAL);
+        std::fill_n(ai.hydratationMap,size,0);
+        for(auto* field:ai.oldWheatGradient) std::fill_n(field,size,0);
+        for(auto* field:ai.wheatCareMap) std::fill_n(field,size,0);
+        const auto index=ai.map->coordToIndex(x,y);
+        ai.wheatCareMap[0][index]=AI_CASTOR_WHEATCARE_HIGH;
+        ai.computeWheatCareMap();
+        return ai.wheatCareMap[0][index];
+    }
+};
+
+TEST_CASE("Castor waits for configured recovery rather than exhausted finite food" * doctest::test_suite("AIRules"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.header=true});
+    auto& map=world.game.map;
+    AICastor ai(world.game.players[0]);
+    using Json=nlohmann::json;
+    auto definition=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    definition["key"]="castor:recovery";
+    definition["properties"]["ecology"]="uniform";
+    definition["properties"]["stockDependentGrowth"]=false;
+    definition["properties"]["spreadRate"]=0;
+    definition["properties"]["persistsWhenEmpty"]=true;
+    definition["yields"]={{"food",{{"capacity",5},{"initial",1},{"growthRate",ResourceRateScale},{"consumption","one"}}}};
+    auto install=[&] {
+        map.setNoResource(8,8,0);
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({definition})}}.dump());
+        map.setResource(8,8,*map.resourceRegistry().find("castor:recovery"),0);
+    };
+    definition["properties"]["growthRate"]=0;
+    install();
+    CHECK(CastorResourcePolicyAccess::recoveryCare(ai,8,8)<AI_CASTOR_WHEATCARE_LOW);
+    definition["properties"]["growthRate"]=ResourceRateScale;
+    install();
+    map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,0);
+    CHECK(CastorResourcePolicyAccess::recoveryCare(ai,8,8)==AI_CASTOR_WHEATCARE_HIGH);
+    world.game.gameHeader.setResourceGrowthDisabled(true);
+    CHECK(CastorResourcePolicyAccess::recoveryCare(ai,8,8)<AI_CASTOR_WHEATCARE_LOW);
+    world.game.gameHeader.setResourceGrowthDisabled(false);
+    for(const char* consumption:{"infinite","all"})
+    {
+        definition["yields"]["food"]["consumption"]=consumption;
+        install();
+        CHECK(CastorResourcePolicyAccess::recoveryCare(ai,8,8)<AI_CASTOR_WHEATCARE_LOW);
+    }
+    definition["properties"]["persistsWhenEmpty"]=false;
+    definition["yields"]["food"]["consumption"]="one";
+    definition["yields"]["wood"]={{"capacity",1},{"initial",1},{"growthRate",0},{"consumption","one"}};
+    install();
+    map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,0);
+    CHECK(map.getResource(8,8).type!=NO_RES_TYPE);
+    CHECK(CastorResourcePolicyAccess::recoveryCare(ai,8,8)==AI_CASTOR_WHEATCARE_HIGH);
+}
 
 namespace
 {

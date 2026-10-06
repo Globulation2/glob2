@@ -831,4 +831,51 @@ TEST_CASE("AI source selectors discover renamed multi-material deposits and inde
     CHECK(either.is_entity(&map,40,40));
 }
 
+TEST_CASE("historical farming reserves only propagating finite material donors")
+{
+    glob2test::HeadlessGlobals globals;
+    for(auto controller:{AI::NICOWAR,AI::WARRUSH}) for(int policy=0;policy<5;++policy) {
+        CAPTURE(controller);CAPTURE(policy);
+        CatalogWorld fixture(controller);auto& game=fixture.world.game;auto& map=game.map;
+        for(int y=0;y<map.h;++y) for(int x=0;x<map.w;++x) map.setNoResource(x,y,0);
+        auto definition=nlohmann::json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+        definition["key"]="fixture:food-donor";
+        definition["properties"]["ecology"]="uniform";
+        definition["properties"]["growthRate"]=ResourceRateScale;
+        definition["properties"]["spreadRate"]=policy==0?0:ResourceRateScale;
+        definition["yields"]["food"]["growthRate"]=0;
+        if(policy==2) definition["yields"]["food"]["consumption"]="infinite";
+        if(policy==3) definition["yields"]["wood"]=definition["yields"]["food"];
+        if(policy==4) {
+            definition["yields"]["food"]["consumption"]="all";
+            game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+        }
+        map.installResourceDefinitions(nlohmann::json{{"schemaVersion",1},{"resources",nlohmann::json::array({definition})}}.dump());
+        const auto id=*map.resourceRegistry().find("fixture:food-donor");
+        map.setResource(41,41,id,0);map.setMapDiscovered();
+        if(policy==0 || policy==2) {
+            auto tile=map.getTile(41,41);tile.forbidden|=game.teams[0]->me;
+            tile.clearArea|=game.teams[0]->me;map.replaceTile(41,41,tile);
+        }
+        auto* implementation=game.players[0]->ai->aiImplementation;
+        auto apply=[&](const std::shared_ptr<Order>& order) {
+            if(order) {order->sender=0;game.executeOrder(order,0);}
+        };
+        if(controller==AI::NICOWAR) {
+            auto& runtime=*dynamic_cast<AISharedRuntime::Runtime*>(implementation);
+            runtime.gm=std::make_unique<AISharedRuntime::Gradients::GradientManager>(&map);
+            runtime.management_orders.clear();runtime.orders.clear();
+            dynamic_cast<NewNicowar*>(runtime.runtimeai.get())->update_farming(runtime);
+            runtime.update_management_orders();
+            for(auto& order:runtime.orders) apply(order);
+        } else {
+            auto& ai=*dynamic_cast<AIWarrush*>(implementation);
+            for(int step=0;step<8;++step) apply(ai.farm());
+        }
+        CHECK(map.isForbidden(41,41,game.teams[0]->me)==(policy==1 || policy==3 || policy==4));
+        CHECK_FALSE(map.isClearArea(41,41,game.teams[0]->me));
+        CHECK(map.materialAmountAt(map.coordToIndex(41,41),MaterialId::Food)>0);
+    }
+}
+
 }
