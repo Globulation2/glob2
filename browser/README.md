@@ -392,7 +392,16 @@ The Emscripten ports/system-library directory and linked output are rebuilt on
 fresh runners; compiler caching does not replace the browser or determinism tests.
 The determinism test transfers its checksum file as Base64 to avoid serializing
 millions of individual byte values through Playwright. The decoded bytes still
-feed the same per-tick comparison against native platforms.
+feed the same per-tick comparison against native platforms. The full hosted matrix
+runs stock traces, match verification, and frozen runtime-resource composition
+checks in both serial and threaded builds on Chromium, Firefox and WebKit.
+Resource compositions compare the committed per-tick/RNG trace inside the native
+harness and again after browser export. Replay import and active replay reload
+also explicitly select and assert both execution modes in all three browsers;
+they check the format140 fixture header before testing loading. A runtime fallback
+is a failure in these compatibility cases, not evidence of threaded execution.
+Android APK smoke coverage remains separate from engine checksum parity.
+
 
 ## Embedded recording
 

@@ -1272,7 +1272,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           traces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))
-          expected = 5 + int('${{ needs.changes.outputs.compatibility }}' == 'true') + int('${{ needs.changes.outputs.macos }}' == 'true')
+          expected = 8 + int('${{ needs.changes.outputs.compatibility }}' == 'true') + int('${{ needs.changes.outputs.macos }}' == 'true')
           assert len(traces) == expected, f'Expected {expected} selected native/browser traces, got {traces}'
           reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
           assert reference.count(b'\n') > 600

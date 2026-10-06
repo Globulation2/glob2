@@ -60,40 +60,41 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
 // The committed turn-protocol match record, verified by the WebAssembly engine
 // exactly as the native lanes verify it (test/run-browser-determinism.py). The
 // comparison job requires every platform's per-tick trace to be identical.
-test('WebAssembly verifies the committed match record', async ({page}, info) => {
+for (const variant of ['serial','threaded']) {
+test(`WebAssembly verifies the committed match record (${variant})`, async ({page}, info) => {
   test.setTimeout(300000);
   const root = path.resolve(__dirname, '../..');
   const record = fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.g2mr'));
   const map = fs.readFileSync(path.join(root, 'maps/FourSquares1.map.gz'));
-  await page.route('**/verify-match.html', route => route.fulfill({
-    contentType: 'text/html',
-    body: `<!doctype html><canvas id="canvas"></canvas><script>
+  await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
       window.engineLog = [];
       var Module = {
         noInitialRun: true,
         canvas: document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
         print: message => engineLog.push(String(message)),
         printErr: message => engineLog.push(String(message)),
         preRun: [function() {
           FS.writeFile('/tmp/match.g2mr', Uint8Array.from(atob('${record.toString('base64')}'), c => c.charCodeAt(0)));
           FS.writeFile('/tmp/FourSquares1.map.gz', Uint8Array.from(atob('${map.toString('base64')}'), c => c.charCodeAt(0)));
         }],
-        onRuntimeInitialized() {
-          window.verifyExit = Module.callMain(['--verify-match', '/tmp/match.g2mr', '--map', '/tmp/FourSquares1.map.gz', '--out', '/tmp/verify']);
+        async onRuntimeInitialized() {
+          window.verifyThreaded = typeof SharedArrayBuffer !== 'undefined' && HEAP8.buffer instanceof SharedArrayBuffer;
+          window.verifyExit = await Module.start(['--verify-match', '/tmp/match.g2mr', '--map', '/tmp/FourSquares1.map.gz', '--out', '/tmp/verify']);
           window.verifyTrace = FS.readFile('/tmp/verify/checksums.txt', {encoding: 'utf8'});
           window.verifyVerdict = FS.readFile('/tmp/verify/verdict.json', {encoding: 'utf8'});
         }
       };
-    </script><script src="/index.js"></script>`,
-  }));
-  await page.goto('/verify-match.html');
+    </script><script src="/${variant==='threaded'?'threaded/':''}index.js"></script>`);
   await page.waitForFunction(() => typeof window.verifyTrace === 'string', null, {timeout: 280000});
+  expect(await page.evaluate(() => window.verifyExit)).toBe(0);
+  expect(await page.evaluate(() => window.verifyThreaded)).toBe(variant==='threaded');
   const trace = await page.evaluate(() => window.verifyTrace);
   const verdict = JSON.parse(await page.evaluate(() => window.verifyVerdict));
   expect(trace.split('\n').length).toBeGreaterThan(600);
   expect(verdict.verdict).toBe('verified');
   expect(trace).toBe(fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt'), 'utf8').replace(/\r\n/g, '\n'));
-  const output = path.join(root, 'artifacts/browser-determinism/wasm');
+  const output = path.join(root, 'artifacts/browser-determinism/wasm', variant==='serial'?'':'verify-threaded');
   fs.mkdirSync(output, {recursive: true});
   fs.writeFileSync(path.join(output, 'verify-match.checksums.txt'), trace);
   fs.writeFileSync(path.join(output, 'verify-match.verdict.json'), JSON.stringify(verdict) + '\n');
@@ -101,6 +102,8 @@ test('WebAssembly verifies the committed match record', async ({page}, info) => 
   fs.mkdirSync(info.outputDir, {recursive: true});
   fs.writeFileSync(info.outputPath('verify-match.checksums.txt'), trace);
 });
+
+}
 
 // The same production-runtime cases and realistic engine observations used by
 // desktop and mobile harnesses. Golden comparisons occur inside C++, not in a
@@ -329,7 +332,7 @@ for (const variant of ['serial', 'threaded']) {
           preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';
             ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
           async onRuntimeInitialized(){
-            const result={files:{}};
+            const result={files:{},threaded:typeof SharedArrayBuffer !== 'undefined' && HEAP8.buffer instanceof SharedArrayBuffer};
             try {result.exit=(await Module.start(['--test-suite=${selection.suite}',
               '--test-case=${selection.cases}','--reporters=junit','--out=/evidence/tests.xml']))??0;}
             catch(error){result.error=String(error);}
@@ -358,6 +361,7 @@ for (const variant of ['serial', 'threaded']) {
         selection,browser:info.project.name,browserVersion:page.context().browser().version(),
         exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
       expect(result.error).toBeUndefined();expect(result.exit).toBe(0);
+      expect(result.threaded).toBe(variant==='threaded');
       expect(result.files['tests.xml']).toMatch(/failures="0"/);
       expect(result.files['tests.xml']).toMatch(/errors="0"/);
       if(selection.name==='composition'){
