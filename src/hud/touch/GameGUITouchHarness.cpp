@@ -2569,12 +2569,13 @@ class GameGUITouchHarness
 			for (auto *flag : {rangeFlag, exploring})
 			{
 				openActions(flag);
-				const int count =
-					flag == rangeFlag ? NB_UNIT_LEVELS : EXPLORATION_FLAG_OPTION_COUNT;
+				const bool explorer = flag == exploring;
+				const int count = explorer ? EXPLORATION_FLAG_OPTION_COUNT : NB_UNIT_LEVELS;
 				for (int level = 0; level < count; ++level)
 				{
-					const int previous = gui.displayedMinLevelToFlag(*flag);
-					pressAction(2, level);
+					const int previous = explorer ? int(gui.displayedExplorersRequireBombing(*flag))
+												  : gui.displayedMinLevelToFlag(*flag);
+					pressAction(explorer ? 11 : 2, level);
 					require(gui.orderQueue.size() == size_t(previous != level),
 							"Requirement changes suppress no-ops");
 					if (previous != level)
@@ -2582,8 +2583,9 @@ class GameGUITouchHarness
 						auto order = std::dynamic_pointer_cast<OrderModifyMinLevelToFlag>(
 							gui.orderQueue.front());
 						gui.orderQueue.clear();
-						require(order && order->gid == flag->gid && order->minLevelToFlag == level,
-								"Flag requirement preserves shared order format");
+						require(order && order->gid == flag->gid && order->minLevelToFlag == level &&
+									order->targetRole == (explorer ? 1 : 0),
+								"Flag requirement preserves its role-specific shared order format");
 					}
 				}
 			}
