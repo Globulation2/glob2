@@ -132,7 +132,9 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 
 	SoftwareTerrainCache::drawUncached(sceneMap, *globalContainer->terrain, left, top, right, bot,
 									   viewportX, viewportY, visibleTeams,
-									   drawOptions & DRAW_WHOLE_MAP, animationTime);
+									   drawOptions & DRAW_WHOLE_MAP, animationTime,
+									   SoftwareTerrainCache::FallbackMode::StreamPages,
+									   drawOptions & DRAW_TILED_CAPTURE);
 }
 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)

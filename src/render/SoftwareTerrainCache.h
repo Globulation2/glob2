@@ -55,7 +55,7 @@ class SoftwareTerrainCache
   private:
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime, int preferredResolution);
+							 int animationTime, int preferredResolution, bool tiledCapture = false);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
@@ -76,10 +76,12 @@ class SoftwareTerrainCache
 	// page alive. EmergencyTiles is explicit for diagnostics and severe limits.
 	static void drawUncached(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages);
+							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages,
+							 bool tiledCapture = false);
 	bool enabled = true;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
-				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0);
+				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
+				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
 	std::size_t bytes() const

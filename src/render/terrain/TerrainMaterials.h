@@ -91,16 +91,22 @@ class PreparedCoverage
 	{
 		int shift = 0, offsetX = 0, offsetY = 0;
 		// At most five noise-grid vertices span a 32px tile at the finest scale.
-		std::array<std::array<int, 2>, 25> vertices{};
+		int vertices[25][2]{};
 		std::array<int, 2> at(int px, int py) const;
 	};
-	std::array<WarpLayer, 3> warp{};
+	// Direct indexing avoids accessor calls in unoptimized coverage builds.
+	WarpLayer warp[3]{};
 	int localDisplacementLimit = 512;
 	struct Curve
 	{
 		const Profile *profile = nullptr;
-		unsigned motif = 0;
+		// Resolve the immutable contour once, outside the per-pixel path.
+		const int *points = nullptr;
+		int segments = 0;
 		int anchor = 0; // Prepared displacement of the shared edge's single crossing.
+		Curve() = default;
+		Curve(const Profile *, unsigned motif);
+		int wave(int t) const;
 	};
 	struct Patch
 	{
@@ -111,7 +117,7 @@ class PreparedCoverage
 		unsigned count = 0;
 		std::array<unsigned, 4> feather{};
 	};
-	std::array<Patch, 9> patches{};
+	Patch patches[9]{};
 };
 // Convenience for individual diagnostic samples. Bulk composition prepares once.
 Coverage coverage(const Catalog &, const Recipe &, int px, int py);
