@@ -592,7 +592,8 @@ atomically. Existing output directories are never overwritten.
 
 The render revision hashes the meshes, production shaders, view transforms,
 animation mapping, layout and encoding recipe. Changing these inputs regenerates
-derivatives while existing matches retain their pinned bundle. Focused validation
+derivatives while existing matches retain their pinned bundle.
+ Focused validation
 uses the `SkinAuthorization`, `SkinDownloads`, `SkinSprites` and `SurfaceCoverage`
 unit suites plus the skin-render worker and API tests. To exercise the actual
 worker adapter, run its opt-in `native.test.ts` under Xvfb with
@@ -727,6 +728,43 @@ wide outlines, carried icons, texture mutation/deletion and context recreation.
 Advance an AI match between comparisons to exercise resource invalidation, and
 check that each render leaves its simulation checksum unchanged. Keep commands,
 seeds, binaries, captures and timing data under `artifacts/` for review.
+
+### Skin materials
+
+Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
+(ids, keys, display names, picker groups, which materials grow fur shells, the
+shell count and the fur length and depth bias every renderer uses) and shaded
+once in `libgag/shaders/skin-material.glsl`. `scons/skin_materials.py`
+compiles both into the generated `include/glob2/SkinMaterials.h`
+(`SKIN_MATERIAL_COUNT`, `SKIN_MATERIAL_SHELLS`, the `SkinMaterials` table and the
+GLSL text) for the desktop, web and mobile builds; Colony Studio imports the GLSL
+raw, and the protocol package carries a mirrored `COLONY_SKIN_MATERIALS` list that
+`packages/protocol/test/skinMaterials.test.ts` pins to the JSON.
+
+Every material fills a `SkinSurface` (albedo, perturbed normal, roughness,
+specular, metal, wrap, rim, cel, emissive, alpha) and one `skinLight` lights them
+all, so the catalogue stays consistent. Meshes carry no tangents: perturb normals
+with `skinTilt` from a UV-space height gradient (`SKIN_GRADIENT`), never from
+tangent-space maps; scale micro-frequency octaves by `s.detail`, which fades to
+0 as texels shrink below pixels, so grain shows in the studio but never aliases
+in the baker's 128 px tiles. The wrappers only declare varyings and call
+`skinShadeAtlas` (mesh renderers, with `SKIN_TEXTURE` defined per dialect) or
+`skinShadeSphere` (swatches). Materials with `shells: true` are drawn
+`SKIN_MATERIAL_SHELLS` extra times with vertices pushed along the camera-space
+normal; their shader sets `alpha` to 0 where a shell carries no strand. Tiles
+are cached per pose, so no material can animate over time.
+
+To add a material: append it to the JSON, add `skinMaterial_<key>` and its
+dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/skins.ts`,
+then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
+suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
+`test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
+`artifacts/skins/materials/`) and review the sheets. While iterating on the
+GLSL, `tools/skins/material_spheres.mjs` (run from `platform/apps/web`) renders
+every material on a sphere through headless Chromium in seconds, and the
+`skins-materials.spec.ts` e2e captures each material on the worker at studio
+resolution. Any shader edit changes the
+sprite render revision and re-bakes every published skin.
 
 ## Simulation verification and diagnostics
 
@@ -896,7 +934,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Loading rebuilds compiled tables before restoring dependent caches;
   it never consults authoring JSON files. Earlier files use the built-in registry;
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
-  and replay floor 134 remain unchanged; network protocol 56 gates registry support.
+  remains unchanged. Building format 137 adds the per-game building catalog; replay
+  floor 137 and network protocol 57 gate the current simulation and catalog transport.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
@@ -1459,11 +1498,13 @@ it is saved, checksummed or read by the simulation.
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
   The outline stroke stops thickening at two points.
-- In the cross-fade `Game::drawMapOverview` fades in one flat colour per tile
-  (terrain, or the resource's minimap colour over it); in the overview it replaces
-  the water, terrain and resource passes. It is one image, a pixel per visible tile,
-  stretched over the map in a single draw: as per-tile translucent fills it cost
-  more than the terrain it covered during the cross-fade.
+- In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
+  from the detailed compositor's material coverage, including legacy corner shores
+  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  during the fade; resource minimap colours tint their gameplay cells over that
+  ground. In the overview this replaces the water, terrain and resource passes.
+  The reusable image stretches over the map in a single draw, avoiding thousands
+  of translucent fills.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
@@ -1484,7 +1525,11 @@ it is saved, checksummed or read by the simulation.
   player's ping.
 - The torus view draws its map texture through the same map transform at the
   camera's zoom (`TorusView::draw`), so it shows the same detail, overlay sizes and
-  overview as the 2D view at that zoom.
+  overview as the 2D view at that zoom. Its tiled atlas chooses terrain sampling
+  density from the complete map capture, then admits each bounded tile at that
+  density. Narrow edge tiles therefore reuse warm pages and keep the same shore
+  samples as their wider neighbors, including when HD sources exceed the cache
+  budget. Streaming fallback follows the same density choice.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling
@@ -1494,9 +1539,10 @@ benchmark saves preferences, so the last value otherwise carries into the next r
 camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`
 (with `GLOB2_BENCH_SMOOTH_FOG=0|1` for the fade),
 `GLOB2_BENCH_FRACTION` (a camera offset in map pixels, which seams need to show) and
-`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
-opaque while markers and chips fade in over them, since a translucent sprite leaves
-its batch; check draw calls as well as time when changing a cross-fade.
+`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Buildings,
+including custom swarm artwork, fade out as their icon chips fade in. Unit sprites
+stay opaque while markers fade in over them. Check draw calls as well as time
+when changing a cross-fade, since a translucent sprite can leave its batch.
 
 ## Software rendering architecture and profiling
 

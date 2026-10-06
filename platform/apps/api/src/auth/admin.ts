@@ -305,6 +305,14 @@ export class AdminService {
       names.delete(DELETED_NAME);
       const nameList = [...names].filter((n) => n.trim().length > 0);
 
+      await tx
+        .deleteFrom('colony_skin_designs')
+        .where(
+          'skin_id',
+          'in',
+          tx.selectFrom('colony_skins').select('id').where('owner_account_id', '=', id),
+        )
+        .execute();
       await tx.deleteFrom('colony_skin_drafts').where('account_id', '=', id).execute();
       await tx.deleteFrom('colony_skin_equipment').where('account_id', '=', id).execute();
       // Keep immutable version ids for match history, but stop serving the paint.

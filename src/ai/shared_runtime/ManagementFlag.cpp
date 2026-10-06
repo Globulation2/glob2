@@ -2,8 +2,10 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "shared_runtime/Runtime.h"
+#include "FileFormatVersions.h"
 #include "Order.h"
 #include "Brush.h"
+#include <algorithm>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
@@ -72,7 +74,8 @@ ChangeFlagSize::ChangeFlagSize(int size, int building_id) : size(size), building
 
 void ChangeFlagSize::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderModifyFlag(runtime.get_building_register().get_building(building_id)->gid, size)));
+	auto* building=runtime.get_building_register().get_building(building_id);
+ runtime.push_order(std::make_shared<OrderModifyFlag>(building->gid,std::clamp(size,0,building->type->maxUnitStayRange)));
 }
 
 
@@ -107,7 +110,7 @@ void ChangeFlagSize::save(GAGCore::OutputStream *stream)
 
 
 
-ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_id) : minimum_level(minimum_level), building_id(building_id)
+ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_id, int targetRole) : minimum_level(minimum_level), building_id(building_id), targetRole(targetRole)
 {
 
 }
@@ -116,7 +119,13 @@ ChangeFlagMinimumLevel::ChangeFlagMinimumLevel(int minimum_level, int building_i
 
 void ChangeFlagMinimumLevel::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderModifyMinLevelToFlag(runtime.get_building_register().get_building(building_id)->gid, minimum_level-AI_SHARED_RUNTIME_LEVEL_OFFSET_USER_TO_ENGINE)));
+	const auto* building=runtime.get_building_register().get_building(building_id);
+	if(!building)return;
+	const bool explorers=targetRole==1 || (targetRole<0 && building->type->zonable[EXPLORER]
+		&& !building->type->zonable[WORKER] && !building->type->zonable[WARRIOR]);
+	const int requirement=explorers ? (targetRole<0 ? minimum_level>1 : minimum_level!=0)
+		: minimum_level-AI_SHARED_RUNTIME_LEVEL_OFFSET_USER_TO_ENGINE;
+	runtime.push_order(std::make_shared<OrderModifyMinLevelToFlag>(building->gid,requirement,explorers ? 1 : 0));
 }
 
 
@@ -134,6 +143,8 @@ bool ChangeFlagMinimumLevel::load(GAGCore::InputStream *stream, Player *player, 
 	ManagementOrder::load(stream, player, versionMinor);
 	minimum_level=stream->readUint32("minimum_level");
 	building_id=stream->readUint32("building_id");
+	targetRole=versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG ? stream->readSint32("target_role") : -1;
+	if(targetRole < -1 || targetRole > 1) return false;
 	stream->readLeaveSection();
 	return true;
 }
@@ -146,6 +157,7 @@ void ChangeFlagMinimumLevel::save(GAGCore::OutputStream *stream)
 	ManagementOrder::save(stream);
 	stream->writeUint32(minimum_level, "minimum_level");
 	stream->writeUint32(building_id, "building_id");
+	stream->writeSint32(targetRole,"target_role");
 	stream->writeLeaveSection();
 }
 
@@ -160,7 +172,9 @@ ChangeFlagPosition::ChangeFlagPosition(int x, int y, int building_id)
 
 void ChangeFlagPosition::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderMoveFlag(runtime.get_building_register().get_building(building_id)->gid, x, y, true)));
+	const auto* building = runtime.get_building_register().get_building(building_id);
+	if (building && building->type->semantics.relocatable)
+		runtime.push_order(shared_ptr<Order>(new OrderMoveFlag(building->gid, x, y, true)));
 }
 
 

@@ -29,7 +29,7 @@ public:
     bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
               int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow = nullptr, std::uint8_t alpha = 255);
     bool drawSwarm(GAGCore::GraphicContext &gfx, int team, float x, float y,
-                   float width, float height);
+                   float width, float height, std::uint8_t alpha = 255);
 private:
     static unsigned unitClip(int type, int action);
     const GAGCore::SkinMesh *unitMesh(int type, int action) const;
@@ -50,9 +50,6 @@ private:
     std::unique_ptr<Online::SkinSprites> sprites;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> textures;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> materials;
-    // Per team and SkinRegion: whether the material map has any hairy (id 3)
-    // texel. Computed once at install for the future fur pass.
-    std::array<std::array<bool,4>,32> hairy{};
     std::array<std::optional<std::uint32_t>,32> colors;
     std::array<int,32> swarmChoice{};
     std::array<unsigned,32> swarmAngles{};

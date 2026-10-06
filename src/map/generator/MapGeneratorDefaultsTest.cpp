@@ -1,3 +1,5 @@
+#include <nlohmann/json.hpp>
+#include "StartingLayout.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
@@ -656,6 +658,38 @@ struct DefaultsFixture
 // diagnostic log, and coverage profile. No generator contract is dropped.
 TEST_SUITE("MapGeneratorDefaults")
 {
+    TEST_CASE("starting layouts follow rectangular and overlay catalog footprints")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (const auto dimensions : {std::pair{1,2},std::pair{7,3},std::pair{2,9},std::pair{4,4}})
+        for (bool overlay : {false,true})
+        {
+            CAPTURE(dimensions.first); CAPTURE(dimensions.second); CAPTURE(overlay);
+            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.terrain=WATER,.teams=0,.loadDefaultRace=true});
+            auto& game=world.game;
+            auto snapshot=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            const int id=game.buildingsTypes.getStartingBuildingTypeNum();
+            auto& type=snapshot["variants"][id];
+            type["properties"]["width"]=dimensions.first;
+            type["properties"]["height"]=dimensions.second;
+            type["semantics"]["occupiesGround"]=!overlay;
+            game.buildingsTypes.loadSnapshotJson(snapshot.dump()); game.configureBuildingCatalog();
+            GenerationRequest request; request.nbTeams=1; request.nbWorkers=6;
+            GenerationContext context(request); context.bootX[0]=61; context.bootY[0]=2;
+            REQUIRE(MapGeneration::placeStarts(game,context));
+            CHECK(game.teams[0]->myBuildings[0]->typeNum==id);
+            const MapGeneration::StartingLayout layout(dimensions.first,dimensions.second,request.nbWorkers);
+            for (int i=0; i<request.nbWorkers; ++i)
+            {
+                const auto* worker=game.teams[0]->myUnits[i]; REQUIRE(worker);
+                CHECK(worker->posX==game.map.normalizeX(61+layout.workerX(i)));
+                CHECK(worker->posY==game.map.normalizeY(2+layout.workerY(i)));
+                CHECK(game.map.getGroundUnit(worker->posX,worker->posY)==worker->gid);
+                CHECK(game.map.getBuilding(worker->posX,worker->posY)==NOGBID);
+            }
+        }
+    }
+
 	TEST_CASE("search domains preserve legal values and constrain deterministic rolls")
 	{
 		for (int method : GeneratorRegistry::builtins().methods())
@@ -960,6 +994,27 @@ TEST_SUITE("MapGeneratorDefaults")
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::eatenMapContracts();
 	}
+    TEST_CASE("Drowned Forest circulation uses the configured starting definition")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto& definition=GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("drowned-forest"));
+        GenerationRequest request; request.setMethodDefaults(definition.legacyId);
+        request.wDec=request.hDec=7; request.nbTeams=2; request.seed=7;
+        GenerationService service;
+        auto stock=std::make_unique<Game>(nullptr);
+        auto renamed=std::make_unique<Game>(nullptr);
+        auto catalog=nlohmann::json::parse(renamed->buildingsTypes.snapshotJson());
+        for(auto& variant : catalog["variants"])
+            if(variant["properties"]["type"]=="swarm") variant["properties"]["type"]="colony-anchor";
+        renamed->buildingsTypes.loadSnapshotJson(catalog.dump()); renamed->configureBuildingCatalog();
+        const auto original=service.generate(*stock,request);
+        REQUIRE_MESSAGE(bool(original),original.diagnostic());
+        const auto replacement=service.generate(*renamed,request);
+        REQUIRE_MESSAGE(bool(replacement),replacement.diagnostic());
+        CHECK(mapFingerprint(*stock)==mapFingerprint(*renamed));
+        for(int team=0;team<request.nbTeams;++team)
+            CHECK(renamed->teams[team]->myBuildings[0]->typeNum==renamed->buildingsTypes.getStartingBuildingTypeNum());
+    }
 	TEST_CASE("Drowned Forest contracts [slow]")
 	{
 		DefaultsFixture fixture;

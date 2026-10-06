@@ -22,7 +22,7 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
 PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
 # Code inside the directories above that belongs to neither class: every check.
-UNCLASSIFIED = ('src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+UNCLASSIFIED = ('data/buildings/', 'src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
 UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',

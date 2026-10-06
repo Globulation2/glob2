@@ -6,6 +6,7 @@
 #include <array>
 #include "AI.h"
 #include "Player.h"
+#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -236,6 +237,38 @@ TEST_SUITE("LegacyScriptCoverage")
         }
         REQUIRE(w.compile("label(\"again\") wait(1) jump(\"again\") win(0)").type==ErrorReport::ET_OK);
         w.step(12); CHECK_FALSE(w.script.hasTeamWon(0));
+    }
+
+    TEST_CASE("authored flag aliases resolve game catalog IDs and respect missing definitions")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (const bool missing : {false, true})
+        {
+            World w;
+            auto catalog=nlohmann::json::parse(w.world.game.buildingsTypes.snapshotJson());
+            const int old=w.world.game.buildingsTypes.getTypeNum("warflag",0,false);
+            auto flag=catalog["variants"][old]; flag["id"]=0;
+            flag["semantics"]["assignmentLimit"]=3;
+            flag["presentation"]["defaultAssigned"]=3;
+            flag["properties"]["maxUnitStayRange"]=6;
+            if (missing) flag["properties"]["type"]="different-authored-alias";
+            catalog["variants"]=nlohmann::json::array({flag});
+            catalog["startingBuilding"]="";
+            w.world.game.buildingsTypes.loadSnapshotJson(catalog.dump());
+            w.world.game.configureBuildingCatalog();
+            REQUIRE(w.compile("summonFlag(\"attack\",4,4,99,99,0) wait(1)").type==ErrorReport::ET_OK);
+            w.step();
+            if (missing) CHECK(w.script.flags.empty());
+            else
+            {
+                REQUIRE(w.script.flags.size()==1);
+                auto* placed=w.script.flags.at("attack");
+                CHECK(placed->typeNum==0);
+                CHECK(placed->unitStayRange==6);
+                CHECK(placed->maxUnitWorking==3);
+                CHECK(placed->maxUnitWorkingPreferred==3);
+            }
+        }
     }
 
     TEST_CASE("independent stories timers space and saved suspension resume exactly")

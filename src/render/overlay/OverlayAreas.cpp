@@ -3,6 +3,8 @@
 
 #include "OverlayAreas.h"
 #include <algorithm>
+#include <cstdint>
+#include <limits>
 #include "OverlayFill.h"
 #include "Unit.h"
 #include "BuildingType.h"
@@ -61,9 +63,10 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 			Building *b = game.teams[localteam]->myBuildings[i];
 			if (b)
 			{
-				if(b->type->shootDamage > 0)
+				if(b->type->semantics.projectileDamage[WARRIOR] > 0)
 				{
-					int power = (b->type->shootDamage*b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE;
+					int power = int(std::min<std::int64_t>(std::numeric_limits<int>::max(),
+						(std::int64_t(b->type->semantics.projectileDamage[WARRIOR])*b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE));
 					OverlayFill::spreadPoint(b->posX, b->posY, power, b->type->shootingRange, width, height, overlay, overlaymax);
 				}
 			}

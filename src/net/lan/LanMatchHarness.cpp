@@ -41,6 +41,8 @@
 #include <thread>
 
 #include <FormatableString.h>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
@@ -468,16 +470,14 @@ struct LanMatch
 	}
 };
 
-std::shared_ptr<Lan::LanRoom> hostRoom(std::uint16_t port, const fs::path &directory,
-									   std::uint8_t bundleInterval = 0,
-									   const std::string &mapFile = mapPath())
+std::shared_ptr<Lan::LanRoom> hostRoom(std::uint16_t port, const fs::path& directory, std::uint8_t bundleInterval = 0, const std::string& sourceMap = mapPath())
 {
 	Lan::LanHost::Options options;
 	if (bundleInterval)
 		options.sequencer.bundleInterval = bundleInterval;
 	options.hostName = "Host";
-	options.map = Engine::loadMapHeader(mapFile);
-	options.mapFile = mapFile;
+	options.map = Engine::loadMapHeader(sourceMap);
+	options.mapFile = sourceMap;
 	options.port = port;
 	options.broadcast = false;
 	options.recordPath = (directory / "match.g2mr").string();
@@ -584,6 +584,143 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
+    GLOB2_TEST_CASE("custom catalog transfer and execution enforce catalog identity",
+                    "[network][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS","127.0.0.1");
+        LanMatch match;match.directory=glob2test::artifactDir()/"catalog-lan";
+        fs::create_directories(match.directory);
+        const auto source=(match.directory/"custom.map").string();
+        std::string catalogSnapshot,catalogHash;
+        int customID=-1;
+        {
+            glob2test::HeadlessGame authored({.teams=2,.loadDefaultRace=true,.header=true});
+            auto snapshot=nlohmann::json::parse(authored.game.buildingsTypes.snapshotJson());
+            snapshot["experiments"].push_back({{"key","network-fixture"},{"label","Network fixture"},{"help","Embedded-only experiment"}});
+            auto variant=snapshot["variants"][authored.game.buildingsTypes.getFinishedTypeNum("stonewall")];
+            customID=int(snapshot["variants"].size());
+            variant["id"]=customID;variant["key"]="network.custom";
+            variant["properties"]["type"]="network-custom";
+            variant["properties"]["hpMax"]=431;
+            variant["previous"]="";variant["next"]="";
+            variant["semantics"]["placeable"]=true;variant["semantics"]["instantPlacement"]=true;
+            variant["semantics"]["repairable"]=false;variant["requiredExperiment"]="network-fixture";
+            snapshot["variants"].push_back(variant);
+            authored.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+            authored.game.gameHeader.getExperiments().set("network-fixture",true,{"network-fixture"});
+            authored.game.configureBuildingCatalog();
+            auto* building=authored.game.addBuilding(4,4,customID,0,0,0);REQUIRE(building);
+            authored.game.map.setBuilding(4,4,1,1,building->gid);
+            REQUIRE(authored.addUnit(WORKER,12,12,0));REQUIRE(authored.addUnit(WORKER,20,20,1));
+            catalogSnapshot=authored.game.buildingsTypes.snapshotJson();catalogHash=authored.game.buildingsTypes.fingerprint();
+            FILE* file=std::fopen(source.c_str(),"wb");REQUIRE(file);
+            GAGCore::BinaryOutputStream out(new GAGCore::FileStreamBackend(file));
+            authored.game.save(&out,true,"Embedded catalog network fixture");
+        }
+        // Local installed definitions know neither the custom ID nor its gate.
+        CHECK_FALSE(knownExperimentKey("network-fixture"));
+        // Structured CLI setup imports only the map's catalog, then applies
+        // explicit command-line choices, including embedded-only gates.
+        GameHeader requested;
+        requested.setRandomSeed(741);
+        requested.setBuildingCatalogSnapshot(Engine::loadGameHeader(source).getBuildingCatalogSnapshot());
+        CHECK(requested.getRandomSeed()==741);
+        CHECK(requested.getExperiments().empty());
+        CHECK(knownExperimentKey("network-fixture",requested.buildingExperimentKeys()));
+        requested.getExperiments().set("network-fixture",true,requested.buildingExperimentKeys());
+        CHECK(requested.getExperiments().has("network-fixture"));
+        CHECK_FALSE(knownExperimentKey("undeclared-fixture",requested.buildingExperimentKeys()));
+        globals->settings.experiments.set("network-fixture",true,{"network-fixture"});
+        const auto port=testPort();
+        match.players.push_back(std::make_unique<LanPlayer>("Host",hostRoom(port,match.directory,0,source),91));
+        match.players.push_back(std::make_unique<LanPlayer>("Guest",guestRoom(match.host().room->shareText(),"Guest",match.directory/"cache"),92));
+        for(auto& player:match.players)player->orderRate=0;
+        joinAndStart(match,{});
+        const auto setup=match.hostSide().state().setup;
+        CHECK(setup.buildingCatalogSnapshot==catalogSnapshot);CHECK(setup.buildingCatalogHash==catalogHash);
+        for(const auto& player:match.players)
+        {
+            const auto& game=player->engine->gui.game;
+            CHECK(game.buildingsTypes.fingerprint()==catalogHash);
+            CHECK(game.buildingsTypes.get(customID)->hpMax==431);
+            CHECK(game.gameHeader.getExperiments().has("network-fixture"));
+        }
+        REQUIRE(match.runUntil(10000,[&] {return match.players[1]->session().executedTick()>=64;}));
+        match.host().engine->gui.isRunning=false;
+        REQUIRE(match.runUntil(10000,[&] {return match.host().stopped && match.players[1]->stopped;}));
+        CHECK(requireIdenticalChecksums({match.players[0].get(),match.players[1].get()},&match.hostSide())>=64);
+        const auto record=Turn::MatchRecord::readFile((match.directory/"match.g2mr").string());
+        const auto recorded=Online::MatchSetup::parse(record.setupJson);
+        fs::create_directories(match.directory/"verify");
+        const auto verdict=MatchVerifier::verify(record,recorded,source,match.directory/"verify");
+        CHECK(verdict.verdict=="verified");
+        for(bool omit:{false,true})
+        {
+            auto wrong=recorded;
+            if(omit){wrong.buildingCatalogSnapshot.clear();wrong.buildingCatalogHash.clear();wrong.experiments.clear();}
+            else
+            {
+                auto changed=nlohmann::json::parse(catalogSnapshot);
+                changed["variants"][customID]["properties"]["hpMax"]=432;
+                BuildingsTypes other;other.loadSnapshotJson(changed.dump());
+                wrong.buildingCatalogSnapshot=other.snapshotJson();wrong.buildingCatalogHash=other.fingerprint();
+            }
+            Engine rejected;Engine::TurnMatchStart start;
+            start.setup=wrong;start.mapFile=source;start.localSeat=0;
+            start.transport=std::make_shared<Turn::RecordTransport>(record,0);
+            CHECK(rejected.initTurnMatch(start)==Engine::EE_CANT_LOAD_MAP);
+            CHECK(rejected.getInitializationDiagnostic().find("catalog")!=std::string::npos);
+            CHECK_THROWS_AS(MatchVerifier::verify(record,wrong,source,match.directory/"verify"),std::invalid_argument);
+        }
+    }
+
+	TEST_CASE("LAN catalog messages fragment and reject malformed fragment streams")
+	{
+		class Wire final : public NetTransport
+		{
+		public:
+			std::deque<std::vector<std::uint8_t>> bytes;
+			bool closed = false;
+			void open(const std::string&, std::uint16_t) override {}
+			void close() override { closed = true; }
+			State state() const override { return closed ? State::Closed : State::Connected; }
+			bool send(std::vector<std::uint8_t> value) override { bytes.push_back(std::move(value)); return true; }
+			bool receive(std::vector<std::uint8_t>& value) override
+			{
+				if (bytes.empty()) return false;
+				value = std::move(bytes.front()); bytes.pop_front(); return true;
+			}
+		};
+		for(int scenario=0;scenario<4;++scenario) {
+		CAPTURE(scenario);
+		auto transport = std::make_unique<Wire>();
+		auto& wire = *transport;
+		Lan::LanLink link(std::move(transport));
+		const auto original = Lan::encodeJson({{"type", "state"}, {"snapshot", std::string(200000, 'x')}});
+		REQUIRE(link.send(original));
+		REQUIRE(wire.bytes.size() > 1);
+		for (const auto& frame : wire.bytes) CHECK(frame.size() <= Lan::MAX_FRAME_BYTES + 2);
+		if(scenario==0)
+		{
+			const auto next = Lan::encodeJson({{"type", "ready"}});
+			REQUIRE(link.send(next));
+			std::vector<std::uint8_t> received;
+			REQUIRE(link.receive(received)); CHECK(received == original);
+			REQUIRE(link.receive(received)); CHECK(received == next);
+			CHECK_FALSE(link.closed());
+		}
+		if(scenario==1) { wire.bytes.pop_front(); }
+		if(scenario==2) { wire.bytes.insert(wire.bytes.begin() + 1, wire.bytes.front()); }
+		if(scenario==3)
+		{
+			wire.bytes.insert(wire.bytes.begin() + 1, NetFrame::encode(Lan::encodeJson({{"type", "ready"}})));
+		}
+		std::vector<std::uint8_t> received;
+		if (!wire.bytes.empty()) { CHECK_FALSE(link.receive(received)); CHECK(link.closed()); }
+		}
+	}
+
 	TEST_CASE("LAN departure waits for asynchronous transport writes")
 	{
 		class DelayedWrite final : public NetTransport

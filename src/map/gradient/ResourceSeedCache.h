@@ -30,8 +30,11 @@ public:
 	void invalidate();
 	void reset();
 	// False requests the direct kernel; allocation failure is a normal fallback.
+	// Optional per-building-ID seeds are compiled for this request (including
+	// resource permissions, stock, pickup costs and consumer exclusions). They
+	// are overlaid live and never retained by the terrain/resource template.
 	bool trySeed(const Map &map, int team, int resource, int swim,
-		std::uint16_t *output, bool markets);
+		std::uint16_t *output, const std::uint16_t *supplierSeeds);
 
 private:
 	struct Storage;

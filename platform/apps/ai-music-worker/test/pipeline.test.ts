@@ -12,7 +12,6 @@ import type { MusicStudioConfig } from '@glob2/protocol';
 import { Pipeline } from '../src/pipeline.ts';
 import {
   Attempts,
-  OpenAIMusic,
   ProviderRejected,
   ProviderUncertain,
   type MusicProvider,
@@ -144,9 +143,7 @@ it('repairs failed candidates, retains evidence, and edits the exact parent sour
     renders = 0;
   const actions = [
     { action: 'write', value: '# initial melody' },
-    { action: 'render' },
     { action: 'write', value: '# repaired bass line' },
-    { action: 'render' },
   ];
   const provider: MusicProvider = {
     text: async () => ({
@@ -180,6 +177,20 @@ it('repairs failed candidates, retains evidence, and edits the exact parent sour
   await worker(revisionProvider, runner).tick();
   expect((await studio.request(revision))?.status).toBe('ready');
   expect((await studio.request(id))?.release_id).toBe(id);
+});
+it('validates and renders a written score without another provider call, even at the call limit', async () => {
+  const { account, id } = await fixture();
+  const text = vi.fn<MusicProvider['text']>(async () => ({
+    text: JSON.stringify({ action: 'write', value: '# complete score' }),
+    usage: { input_tokens: 100, output_tokens: 100 },
+  }));
+  const run = vi.fn<MusicRunner['run']>(async () => candidate(true));
+  await worker({ text }, { run }, { ...cfg, maxCalls: 1 }).tick();
+  expect(text).toHaveBeenCalledTimes(1);
+  expect(run).toHaveBeenCalledTimes(1);
+  expect(run.mock.calls[0]?.[2]).toBe(true);
+  expect((await studio.request(id))?.status).toBe('ready');
+  expect(await studio.credits.balance(account)).toEqual({ balance: 3, reserved: 0, available: 3 });
 });
 it('stops after three failed renders and refunds the reservation', async () => {
   const { account, id } = await fixture();
@@ -318,7 +329,7 @@ it('recovers completed candidate bytes without repeating a render or provider ca
   await worker(provider, { run: render }).tick();
   expect((await studio.request(id))?.status).toBe('ready');
   expect(render).toHaveBeenCalledTimes(1);
-  expect(calls).toBe(2);
+  expect(calls).toBe(1);
 });
 
 it('keeps the three-cycle limit across repeated worker deaths during rendering', async () => {
@@ -361,6 +372,30 @@ it('keeps the three-cycle limit across repeated worker deaths during rendering',
   expect(renders).toBe(3);
   expect((await studio.request(id))?.status).toBe('failed');
   expect((await studio.request(id))?.charged).toBe(false);
+});
+
+it('selects the discussion response schema for chat without rendering or charging', async () => {
+  const { account, thread, id } = await fixture();
+  await studio.cancel(account, thread, id);
+  const chat = await studio.submit(
+    account,
+    thread,
+    'chat',
+    { id: randomUUID(), text: 'Discuss the melody' },
+    'music-v1',
+    30,
+    cfg,
+  );
+  const text = vi.fn<MusicProvider['text']>(async () => ({
+    text: JSON.stringify({ text: 'A quiet melody', brief: 'Quiet cave music' }),
+    usage: { input_tokens: 100, output_tokens: 50 },
+  }));
+  const run = vi.fn();
+  await worker({ text }, { run }).tick();
+  expect(text.mock.calls[0]?.[4]).toBe('discussion');
+  expect(run).not.toHaveBeenCalled();
+  expect((await studio.request(chat.id))?.status).toBe('ready');
+  expect((await studio.credits.balance(account)).balance).toBe(4);
 });
 
 it('fails expired recovered chat before dispatching a provider request', async () => {
@@ -460,18 +495,6 @@ it.each([false, true])(
     await studio.cancel(row.account_id, row.thread_id, id);
   },
 );
-
-it('does not dispatch an already-aborted provider call', async () => {
-  const fetch = vi.spyOn(globalThis, 'fetch');
-  try {
-    await expect(
-      new OpenAIMusic('test').text('test', 'prompt', 4000, AbortSignal.abort()),
-    ).rejects.toBeInstanceOf(ProviderRejected);
-    expect(fetch).not.toHaveBeenCalled();
-  } finally {
-    fetch.mockRestore();
-  }
-});
 
 it('applies a lowered operator daily limit to requests with an older budget snapshot', async () => {
   const { id } = await fixture();

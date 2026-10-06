@@ -3,6 +3,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
 import { registeredPlayer, type Player } from './playSupport.ts';
 import { colourAtlas, materialMap } from './skinImages.ts';
+import { SKIN_MATERIAL_COUNT } from '../src/skins/images.ts';
 let harness: Harness;
 let instance: Instance;
 let owner: Player;
@@ -88,7 +89,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   for (const change of [
     { name: ' ' },
     { imageBase64: Buffer.from('<svg/>').toString('base64') },
-    { materialBase64: (await materialMap({ id: () => 4 })).toString('base64') },
+    { materialBase64: (await materialMap({ id: () => SKIN_MATERIAL_COUNT })).toString('base64') },
     { materialBase64: undefined },
     { buildingColor: -1 },
     { swarmMesh: 'pyramid' },

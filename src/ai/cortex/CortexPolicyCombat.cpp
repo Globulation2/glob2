@@ -210,7 +210,7 @@ namespace Cortex
 		if (f.panic)
 		{
 			// (1) 100% warriors — fire until every swarm is warrior-only.
-			if (f.swarms > 0 && obs.swarmsProducingWarrior < f.swarms)
+			if (obs.hasModelProjection ? obs.productionNeedsRetune : (f.swarms > 0 && obs.swarmsProducingWarrior < f.swarms))
 				return { SCORE_PANIC_DEFENSE, makeSetProductionAction(0, 0, 1) };
 			// (2) Swarms to HIGH priority — EVERY swarm, not just the primary, so the
 			//     whole warrior pump wins worker contention while the base is hit.

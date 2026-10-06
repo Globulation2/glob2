@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "Ressource.h"
 
 #include "shared_runtime/Position.h"
 #include "Map.h"
@@ -24,6 +25,8 @@ namespace AISharedRuntime
 	///This namespace stores anything related to managing you're buildings, flags and areas.
 	namespace Management
 	{
+ inline constexpr int RecurringInputStock=MAX_RESOURCES;
+
 		enum ManagementOrderType
 		{
 			MAssignWorkers,
@@ -41,6 +44,8 @@ namespace AISharedRuntime
 			MSendMessage,
 			MChangeFlagPosition,
 			MAdjustPriority,
+            MRetireAttraction,
+            MRetireFeeding,
 		};
 
 
@@ -130,6 +135,31 @@ namespace AISharedRuntime
 			void save(GAGCore::OutputStream *stream);
 			int building_id;
 		};
+
+
+        // Retire one strategic use without destroying an independent service
+        // supplied by the same concrete building.
+        class RetireAttraction : public DestroyBuilding
+        {
+        public:
+            RetireAttraction() = default;
+            RetireAttraction(int id,unsigned retiringUnitMask):DestroyBuilding(id),retiringUnitMask(retiringUnitMask) {}
+        protected:
+            void modify(Runtime& runtime) override;
+            bool load(GAGCore::InputStream*,Player*,Sint32) override;
+            void save(GAGCore::OutputStream*) override;
+            ManagementOrderType get_type() override {return MRetireAttraction;}
+        private:
+            unsigned retiringUnitMask=0;
+        };
+        class RetireFeeding : public DestroyBuilding
+        {
+        public:
+            using DestroyBuilding::DestroyBuilding;
+        protected:
+            void modify(Runtime& runtime) override;
+            ManagementOrderType get_type() override {return MRetireFeeding;}
+        };
 
 
 		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
@@ -224,14 +254,13 @@ namespace AISharedRuntime
 			int building_id;
 		};
 
-		///This changes the minimum_level required to attend a flag. Used mainly for War Flags, but this
-		///can be used to control whether ground attack explorers come to a particular flag. To have only
-		///ground attack explorers come, use level 4. Levels 2 and 3 can only be set by the map editor.
+		///Ground attraction uses one-based minimum levels (targetRole 0).
+		///Explorer attraction has an independent bombing requirement (targetRole 1, value 0/1).
 		class ChangeFlagMinimumLevel : public ManagementOrder
 		{
 		public:
 			ChangeFlagMinimumLevel() : minimum_level(0), building_id(0) {}
-			explicit ChangeFlagMinimumLevel(int minimum_level, int building_id);
+			explicit ChangeFlagMinimumLevel(int minimum_level, int building_id, int targetRole = 0);
 		protected:
 			void modify(Runtime& runtime);
 			tribool wait(Runtime& runtime);
@@ -241,6 +270,7 @@ namespace AISharedRuntime
 		private:
 			int minimum_level;
 			int building_id;
+			int targetRole = 0; // -1 imports an old combined attraction control.
 		};
 
 		///This changes a flags position

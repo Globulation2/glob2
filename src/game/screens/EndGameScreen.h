@@ -127,6 +127,7 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	bool teamFiltersOpen = false;
 	//! pointer to the game, necessary for correctly saving replays
 	Game *game;
+	std::vector<Stats::Metric> gameMetrics;
 
   private:
 	std::unique_ptr<LoadSaveDialog> replaySave;

@@ -83,10 +83,13 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
     console.log(JSON.stringify({ seconds: release.frames / 48000, decoderHeapBytes: heap }));
   }
   await page.getByRole('button', { name: 'Crossfade to Combat' }).click();
-  await expect(page.getByRole('button', { name: 'Crossfade to Combat' })).toContainText('100%');
-  await page.getByText('Test crossfades', { exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Crossfade to Combat' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await page.getByText('Advanced mixing', { exact: true }).click();
   await page.getByRole('slider', { name: /Manual blend/ }).fill('0.5');
-  await expect(page.getByRole('button', { name: 'Crossfade to Calm' })).toContainText('50%');
+  await expect(page.locator('.music-mix-readout')).toContainText('Calm 50%');
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   const position = page.getByRole('slider', { name: 'Playback position' });
   // Pause must stop the audible clock without dropping the decoder's look-ahead.
@@ -101,6 +104,11 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   for (const theme of ['light', 'dark']) {
     await page.evaluate('document.documentElement.dataset.theme = ' + JSON.stringify(theme));
+    await page.locator('.music-preview-panel').evaluate((panel) => {
+      for (const animation of panel.getAnimations({ subtree: true })) {
+        if (animation.constructor.name === 'CSSTransition') animation.finish();
+      }
+    });
     const result = await new AxeBuilder({ page })
       .include('.music-preview-panel')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -174,4 +182,107 @@ test('upload → worker conversion → audition → publish → like → bulk ZI
   const output = resolve(import.meta.dirname, '../../../../artifacts/music');
   mkdirSync(output, { recursive: true });
   copyFileSync(testInfo.outputPath('downloaded-music.zip'), join(output, 'web-release.zip'));
+});
+
+test('song detail puts listening first and keeps quality and errors understandable', async ({
+  page,
+}, info) => {
+  let failTracks = false;
+  const detail = {
+    ...release,
+    validation: [
+      { id: '1:format', label: 'format', attempt: 1, status: 'pass', measures: [] },
+      {
+        id: '1:contrast',
+        label: 'contrast',
+        attempt: 1,
+        status: 'warn',
+        detail: 'Building and combat may sound similar in quieter passages.',
+        measures: [],
+      },
+    ],
+  };
+  await page.context().route('**/api/v1/music/**', async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const mood = ['calm', 'building', 'combat'].findIndex((m) => path.endsWith('/tracks/' + m));
+    if (mood >= 0)
+      return route.fulfill(
+        failTracks
+          ? { status: 503, body: 'Unavailable' }
+          : { contentType: 'audio/ogg', body: readFileSync(join(directory, `a${mood + 1}.opus`)) },
+      );
+    return route.fulfill({ json: detail });
+  });
+  await page.goto(`/music/${release.id}`);
+  await expect(page.getByRole('heading', { name: release.metadata.title })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
+  await expect(page.getByText('Status: published')).toHaveCount(0);
+  await expect(page.locator('.music-quality-findings')).toContainText('Mood contrast');
+  await expect(page.locator('.music-technical')).not.toHaveAttribute('open', '');
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate('document.documentElement.dataset.theme = ' + JSON.stringify(theme));
+    await page.locator('.music-detail').evaluate((panel) => {
+      for (const animation of panel.getAnimations({ subtree: true })) {
+        if (animation.constructor.name === 'CSSTransition') animation.finish();
+      }
+    });
+    const result = await new AxeBuilder({ page })
+      .include('.music-detail')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .analyze();
+    expect(result.violations).toEqual([]);
+    await page.screenshot({ path: info.outputPath(`song-detail-${theme}.png`), fullPage: true });
+  }
+  await page.getByRole('button', { name: 'Crossfade to Building' }).click();
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  const previewStart = Number(
+    await page.getByRole('slider', { name: 'Playback position' }).inputValue(),
+  );
+  await page.getByRole('button', { name: 'Preview game transitions' }).click();
+  await expect(page.getByRole('button', { name: 'Stop transition preview' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Crossfade to Calm' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect
+    .poll(
+      async () =>
+        Number(await page.getByRole('slider', { name: 'Playback position' }).inputValue()),
+      { timeout: 12000 },
+    )
+    .toBeGreaterThan(previewStart + 8.4);
+  await expect(page.getByRole('button', { name: 'Crossfade to Building' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+    { timeout: 12000 },
+  );
+  await page.getByRole('slider', { name: 'Playback position' }).focus();
+  await page.keyboard.press('ArrowRight');
+  await page.screenshot({ path: info.outputPath('song-transitions.png'), fullPage: true });
+  await page.getByRole('button', { name: 'Stop transition preview' }).click();
+  await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  for (const mood of ['Combat', 'Calm', 'Building'])
+    await page.getByRole('button', { name: `Crossfade to ${mood}` }).click();
+  await page
+    .getByRole('slider', { name: 'Playback position' })
+    .fill(String(Math.floor((release.frames / 48000) * 10 - 2) / 10));
+  await expect
+    .poll(async () =>
+      Number(await page.getByRole('slider', { name: 'Playback position' }).inputValue()),
+    )
+    .toBeLessThan(2);
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
+  expect(await page.evaluate('document.documentElement.scrollWidth <= innerWidth')).toBe(true);
+  failTracks = true;
+  await page.reload();
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Music couldn’t be loaded');
+  await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Download set', exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath('song-playback-error.png'), fullPage: true });
+  failTracks = false;
+  await page.getByRole('button', { name: 'Retry' }).click();
+  await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
 });

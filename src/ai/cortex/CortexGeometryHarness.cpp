@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Building.h"
 #include "ai/cortex/CortexPlacementGeo.h"
+#include "CortexBuildings.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -56,8 +57,8 @@ static unsigned compare(Game& game)
                             b->posY,b->type->height,game.map.getW(),game.map.getH());
                         if (edge<0 || gap<edge) edge=gap;
                         const int distance=game.map.warpDistMax(x,y,b->posX,b->posY);
-                        if (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING && (swarm<0 || distance<swarm)) swarm=distance;
-                        if (b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING && (inn<0 || distance<inn)) inn=distance;
+                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_SWARM) && (swarm<0 || distance<swarm)) swarm=distance;
+                        if (Cortex::servesRole(game,*b->type,Cortex::CORTEX_BUILD_FOOD) && (inn<0 || distance<inn)) inn=distance;
                     }
                     require(snapshot.nearestBuildingEdgeDist(x,y,w,h)==edge);
                     require(snapshot.distanceToNearestBuildingType(x,y,IntBuildingType::SWARM_BUILDING)==swarm);

@@ -2,6 +2,12 @@
   --mu-gold: var(--gold-ink);
   --mu-teal: var(--success);
 }
+/* Music inspection grows with the player and validation results. The map
+   editor's fixed-height workspace would clip these controls below the fold. */
+.music-studio.ms-workspace-root {
+  height: auto;
+  overflow: visible;
+}
 .mu-workspace {
   display: grid;
   grid-template-columns: var(--chat-width, 36%) 8px minmax(0, 1fr);
@@ -361,5 +367,128 @@
   .mu-reveal,
   .mu-score-art i {
     animation: none;
+  }
+}
+/* Completed compositions give the listening surface priority over production logs. */
+.mu-inspector > .mu-delivery-identity,
+.mu-inspector > .mu-comparison,
+.mu-inspector > .mu-generation-status,
+.mu-inspector > .mu-history {
+  margin: 1rem 1.5rem;
+}
+.mu-delivery-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mu-delivery-identity .music-cover {
+  width: 84px;
+  height: 84px;
+  flex: none;
+  border-radius: var(--r-sm);
+}
+.mu-delivery-identity h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin: 5px 0;
+}
+.mu-delivery-identity p {
+  color: var(--ink-2);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.mu-comparison {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+}
+.mu-comparison label {
+  display: grid;
+  gap: 5px;
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+.mu-comparison select {
+  max-width: 220px;
+}
+.mu-inspector > .mu-private,
+.mu-alignment-note {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+.mu-generation-status {
+  color: var(--gold-ink);
+  padding: 16px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.mu-history {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.mu-history summary {
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.mu-history > summary > span {
+  color: var(--ink-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  margin-left: 8px;
+}
+.mu-history-versions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-block: 16px;
+}
+.mu-history .mu-stages {
+  padding: 16px 0;
+}
+.mu-history .mu-artifacts,
+.mu-history .mu-notes,
+.mu-attempt-checks {
+  margin-block: 16px;
+}
+.mu-attempt-checks {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.mu-inspector-heading button {
+  white-space: normal;
+  max-width: 180px;
+}
+.mu-delivery-identity > div {
+  min-width: 0;
+}
+@media (max-width: 850px) {
+  .mu-delivery-identity h3 {
+    font-size: 1.3rem;
+  }
+}
+@media (max-width: 600px) {
+  .mu-inspector > .music-player,
+  .mu-inspector > .music-validation,
+  .mu-inspector > .mu-history,
+  .mu-inspector > .mu-delivery-identity,
+  .mu-inspector > .mu-comparison,
+  .mu-inspector > .mu-actions,
+  .mu-inspector > p {
+    margin-inline: 14px;
+  }
+  .mu-inspector-heading {
+    padding: 18px 14px;
+  }
+  .mu-inspector-heading button {
+    max-width: 135px;
+  }
+  .mu-delivery-identity .music-cover {
+    width: 64px;
+    height: 64px;
+  }
+  .mu-actions {
+    align-items: center;
   }
 }

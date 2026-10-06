@@ -1,3 +1,4 @@
+#include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
@@ -166,9 +167,9 @@ void UpgradeRepair::modify(Runtime& runtime)
 	auto* building=runtime.get_building_register().get_building(id);
 	// Construction means repair for damaged buildings and upgrade for healthy
 	// ones. Do not register an upgrade wait when authoritative rules reject it.
-	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()
-		&& building->hp>=building->getEffectiveMaxHp()) return;
-	runtime.push_order(shared_ptr<Order>(new OrderConstruction(building->gid,1,1)));
+	if(building->hp<building->getEffectiveMaxHp()) { if(!building->type->semantics.repairable) return; }
+ else if(runtime.player->game->gameHeader.isUnitUpgradesDisabled() || !building->isUpgradeAvailable()) return;
+	runtime.push_order(AIRules::constructionOrder(*runtime.player->game, *building,1,1));
 	runtime.get_building_register().set_upgrading(id);
 }
 

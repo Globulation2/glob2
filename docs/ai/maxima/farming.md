@@ -75,6 +75,17 @@ Wheat capacity is divided by three to match its growth-rate gate. A direction is
 not compatible when it contains a resource (including the same type), building,
 ground or air unit, non-grass terrain, or a disabled-growth cell.
 
+## Recurring food demand
+
+The food ledger consumes this farm supply without assigning the full theoretical
+feeding throughput to every provider. It counts each colony's recipient classes
+once and divides meal demand among buildings that admit them. A new feeder can
+relieve queues while sharing the existing crop budget; its independent
+production or other service costs still add demand. Placement evaluates the
+redistributed claim against actual reachable protected wheat. Observed hunger
+can request another feeder even when the nominal capacity forecast is optimistic.
+See [food capacity](food.md) for allocation, caching and validation assumptions.
+
 ## Policy order
 
 Every discovered resource tile, plus empty fertile grass immediately adjacent

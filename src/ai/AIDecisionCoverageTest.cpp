@@ -260,6 +260,7 @@ TEST_SUITE("AIDecisionCoverage")
             auto* swarm=fixture.startingSwarm;
             swarm->resources[WHEAT]=wheat;
             AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+            MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
             bool deletedInn=false;
             // Keep the world fixed so starvation/death and new construction cannot
             // hide the old deletion policy. Age the real trackers past its former
@@ -300,6 +301,7 @@ TEST_SUITE("AIDecisionCoverage")
             game.teams[0]->stats.step(game.teams[0]);
         REQUIRE(game.teams[0]->stats.getLatestStat()->totalUnit==24);
         AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,game.players[0]);
+        MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
         // Keep population fixed while advancing beyond the 2000-tick swarm
         // build cycle. Apply orders so new construction sites enter the map.
         for (int i=0; i<3500; ++i)

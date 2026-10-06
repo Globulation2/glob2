@@ -20,8 +20,39 @@ export const SWARM_MESHES = SwarmMesh.anyOf.map((mesh) => mesh.const) as readonl
 /** Colony skin layout colony-v2: 512x512 images of four 256x256 quadrants,
  * worker (0,0), warrior (256,0), explorer (0,256) and swarm (256,256). */
 export const COLONY_SKIN_LAYOUT = 'colony-v2';
-/** Material ids of a material map pixel (grey level R=G=B). */
-export const COLONY_SKIN_MATERIALS = ['glossy', 'matte', 'metallic', 'hairy'] as const;
+/** Materials of a material map pixel (grey level R=G=B is the id), mirroring
+ * libgag/shaders/skin-materials.json in id order; a test keeps them equal.
+ * `shells` materials grow fur passes in the renderers. */
+export const COLONY_SKIN_MATERIALS = [
+  { id: 0, key: 'glossy', name: 'Classic glossy', group: 'Basics', shells: false },
+  { id: 1, key: 'matte', name: 'Matte', group: 'Basics', shells: false },
+  { id: 2, key: 'metallic', name: 'Riveted metal', group: 'Metal', shells: false },
+  { id: 3, key: 'hairy', name: 'Hairy', group: 'Organic', shells: true },
+  { id: 4, key: 'cartoon', name: 'Cartoon', group: 'Basics', shells: false },
+  { id: 5, key: 'woven', name: 'Woven fabric', group: 'Craft', shells: false },
+  { id: 6, key: 'goo', name: 'Oozy goo', group: 'Wet', shells: false },
+  { id: 7, key: 'wood', name: 'Wood', group: 'Craft', shells: false },
+  { id: 8, key: 'stone', name: 'Stone', group: 'Mineral', shells: false },
+  { id: 9, key: 'scales', name: 'Scales', group: 'Organic', shells: false },
+  { id: 10, key: 'leather', name: 'Leather', group: 'Organic', shells: false },
+  { id: 11, key: 'crystal', name: 'Crystal', group: 'Mineral', shells: false },
+  { id: 12, key: 'lava', name: 'Lava', group: 'Wet', shells: false },
+  { id: 13, key: 'chrome', name: 'Chrome', group: 'Metal', shells: false },
+  { id: 14, key: 'carbon', name: 'Carbon fibre', group: 'Metal', shells: false },
+  { id: 15, key: 'velvet', name: 'Velvet', group: 'Organic', shells: false },
+  { id: 16, key: 'honeycomb', name: 'Honeycomb', group: 'Craft', shells: false },
+  { id: 17, key: 'ice', name: 'Ice', group: 'Mineral', shells: false },
+  { id: 18, key: 'cloud', name: 'Cloud', group: 'Organic', shells: true },
+  { id: 19, key: 'hammered', name: 'Hammered metal', group: 'Metal', shells: false },
+  { id: 20, key: 'candy', name: 'Candy', group: 'Basics', shells: false },
+  { id: 21, key: 'slime', name: 'Slime', group: 'Wet', shells: false },
+] as const;
+export type ColonySkinMaterial = (typeof COLONY_SKIN_MATERIALS)[number];
+/** Fur shell passes drawn beyond the body for `shells` materials, how far the
+ * outermost reaches in the game's tile NDC, and the per-shell depth bias. */
+export const COLONY_SKIN_SHELLS = 8;
+export const COLONY_SKIN_FUR_LENGTH = 0.05;
+export const COLONY_SKIN_SHELL_DEPTH = 0.002;
 /** Colour atlas: PNG or WebP, at most 1 MiB decoded. */
 const ColonyAtlasBase64 = Type.String({
   minLength: 4,
@@ -161,3 +192,27 @@ export const SkinReportList = Open({
   nextCursor: Type.Optional(Uuid),
 });
 export type SkinReportList = Static<typeof SkinReportList>;
+
+/** Mutable account designs; these identifiers never replace immutable match versions. */
+export const CreateSkinDesignRequest = Strict({
+  id: Uuid,
+  name: Type.String({ minLength: 1, maxLength: 64 }),
+  sourceSkinId: Type.Optional(Uuid),
+});
+export const ApplySkinDesignRequest = Strict({ revision: Uuid });
+export const SkinDesign = Open({
+  ...SkinDraft.properties,
+  skinId: Uuid,
+  appliedRevision: Type.Union([Uuid, Type.Null()]),
+  appliedVersionId: Type.Union([Uuid, Type.Null()]),
+});
+export type SkinDesign = Static<typeof SkinDesign>;
+export const SkinCollection = Open({
+  activeArtworkStatus: ColonySkinVersion.properties.softwareStatus,
+  designs: Type.Array(SkinDesign),
+  presets: Type.Array(Open({ ...ColonySkinVersion.properties, name: Type.String() })),
+  equippedVersionId: Type.Union([Uuid, Type.Null()]),
+  activeSkinId: Type.Union([Uuid, Type.Null()]),
+  canUseCustom: Type.Boolean(),
+});
+export type SkinCollection = Static<typeof SkinCollection>;

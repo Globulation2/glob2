@@ -12,7 +12,7 @@
 #include "OrderMessages.h"
 #include "Player.h"
 #include "team/Team.h"
-#include "IntBuildingType.h"
+#include "CortexBuildings.h"
 #include "BuildingType.h"
 #include "building/Building.h"
 #include "Ressource.h"
@@ -190,6 +190,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 			envelope.setDecodeVersionMinor(versionMinor);
 			envelope.decodeData(stream);
 			if (!envelope.getOrder()) return false;
+			AIStateSerialization::normalizeLegacyOrderStaffing(*player->game,*envelope.getOrder(),versionMinor);
 			orderQueue.push(envelope.getOrder());
 			stream->readLeaveSection();
 		}
@@ -313,7 +314,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 {
 	// Scan our real buildings by ARRAY INDEX (myBuildings, never team->upgrade
 	// or any std::set) so the selection is lockstep-deterministic. We keep the
-	// single best instance whose b->type->shortTypeNum == buildingType and that
+	// single best instance whose building serves the requested role and that
 	// passes the FULL engine Upgradable predicate — the same seven conditions the
 	// observation's upgradableCount uses (CortexTypes.h:182-189), which are in
 	// turn exactly what Building::launchConstruction's UPGRADE branch and the GUI
@@ -325,7 +326,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	//   - constructionResultState == NO_CONSTRUCTION (not already up/repairing)
 	//   - type->nextLevel != BUILDING_LEVEL_NONE (not already at max level)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:424)
-	//   - team->maxBuildLevel() > type->level             (C++: GameGUIInput.cpp:426)
+	//   - worker construction qualification meets the target requiredWorkerLevel
 	//   - isHardSpaceForBuildingSite(UPGRADE) (larger next-level footprint fits)
 	//                                                      (C++: Construction.cpp:105, GameGUIInput.cpp:425)
 	// If ANY condition fails the OrderConstruction would be silently dropped, so
@@ -341,20 +342,20 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 		Building* b = team->myBuildings[i];
 		if (b == NULL)
 			continue;
-		if (b->type->shortTypeNum != buildingType)
+		if (!Cortex::servesRole(*team->game, *b->type, buildingType))
 			continue;
 		// C++: Building::launchConstruction, building/Construction.cpp:93-108.
 		if (b->buildingState != Building::ALIVE)
 			continue;
 		if (b->type->isBuildingSite)
 			continue;
-		if (b->type->shortTypeNum == IntBuildingType::MARKET_BUILDING || !b->isUpgradeAvailable())
+		if (!b->isUpgradeAvailable())
 			continue;
 		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
 		if (b->constructionResultState != Building::NO_CONSTRUCTION)
 			continue;
-		if (maxBuildLevel <= b->type->level) // C++: GameGUIInput.cpp:426 (> level)
+		if (maxBuildLevel < team->game->buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel)
 			continue;
 		if (!b->isHardSpaceForBuildingSite(Building::UPGRADE)) // C++: building/Building.h:200
 			continue;
@@ -466,13 +467,13 @@ shared_ptr<Order> AICortex::getOrder(void)
 			const int bid = Building::GIDtoID(static_cast<Uint16>(t0.gid));
 			Building* b = player->team->myBuildings[bid];
 			if (b && b->buildingState == Building::ALIVE && !b->type->isBuildingSite
-			 && b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+			 && Cortex::servesRole(*b->owner->game, *b->type, Cortex::CORTEX_BUILD_SWARM))
 			{
-				b->maxUnitWorking = SWARM_START_WORKERS;
+				b->maxUnitWorking = std::min(SWARM_START_WORKERS, int(b->type->semantics.assignmentLimit));
 				b->update();
 				orderQueue.push(shared_ptr<Order>(
-					new OrderModifyBuilding(b->gid, SWARM_START_WORKERS)));
-				t0.maxUnitWorking = SWARM_START_WORKERS;
+					new OrderModifyBuilding(b->gid, b->maxUnitWorking)));
+				t0.maxUnitWorking = b->maxUnitWorking;
 				swarmKickstarted = true;
 			}
 		}
@@ -564,7 +565,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* bb = tm->myBuildings[b];
 					if (bb == NULL || bb->buildingState == Building::DEAD)
 						continue;
-					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
@@ -648,7 +649,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* bb = team->myBuildings[b];
 					if (bb == NULL || bb->buildingState == Building::DEAD)
 						continue;
-					if (bb->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
+					if (!Cortex::servesRole(*bb->owner->game, *bb->type, Cortex::CORTEX_BUILD_FOOD))
 						continue;
 					int d = game->map.warpDistMax(flag->posX, flag->posY, bb->posX, bb->posY);
 					if (innDist < 0 || d < innDist)
@@ -726,7 +727,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 			Sint32* trackX[2]      = { &forwardInnX,  &forwardHealX };
 			Sint32* trackY[2]      = { &forwardInnY,  &forwardHealY };
 			const int types[2]     = { Cortex::CORTEX_BUILD_FOOD, Cortex::CORTEX_BUILD_HEAL };
-			const int shortTypes[2] = { IntBuildingType::FOOD_BUILDING, IntBuildingType::HEAL_BUILDING };
+			const int shortTypes[2] = { Cortex::CORTEX_BUILD_FOOD, Cortex::CORTEX_BUILD_HEAL };
 			Sint32* underway[2]    = { &obs.forwardInnUnderway, &obs.forwardHealUnderway };
 			for (int p = 0; p < 2; p++)
 			{
@@ -738,7 +739,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 					Building* b = player->team->myBuildings[i];
 					if (b == NULL || b->buildingState != Building::ALIVE)
 						continue;
-					if (b->type->shortTypeNum != shortTypes[p])
+					if (!Cortex::servesRole(*b->owner->game, *b->type, shortTypes[p]))
 						continue;
 					if (b->posX == *trackX[p] && b->posY == *trackY[p])
 					{

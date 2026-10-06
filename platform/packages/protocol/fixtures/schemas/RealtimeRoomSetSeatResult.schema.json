@@ -111,6 +111,26 @@
           "additionalProperties": false,
           "description": "Identity of a deterministic simulation build."
         },
+        "buildingCatalog": {
+          "type": "object",
+          "required": [
+            "snapshot",
+            "hash"
+          ],
+          "properties": {
+            "snapshot": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8388608
+            },
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            }
+          },
+          "additionalProperties": false
+        },
         "map": {
           "anyOf": [
             {

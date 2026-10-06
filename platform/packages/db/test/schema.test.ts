@@ -141,6 +141,18 @@ const typedColumns: ColumnLists = {
     'resolved_by_account_id',
     'resolution_reason',
   ],
+  colony_skin_designs: [
+    'skin_id',
+    'revision',
+    'applied_revision',
+    'applied_version_id',
+    'building_color',
+    'swarm_mesh',
+    'swarm_view_angle',
+    'image',
+    'material',
+    'updated_at',
+  ],
   colony_skin_drafts: [
     'account_id',
     'revision',
@@ -171,6 +183,7 @@ const typedColumns: ColumnLists = {
   ],
   skin_payment_events: ['id', 'event_type', 'purchase_id', 'processed_at'],
   colony_skins: [
+    'archived_at',
     'id',
     'owner_account_id',
     'kind',
@@ -517,7 +530,15 @@ const typedColumns: ColumnLists = {
     'registered_at',
     'last_heartbeat_at',
   ],
-  engine_agents: ['id', 'sim_version', 'kinds', 'build', 'started_at', 'last_seen_at'],
+  engine_agents: [
+    'building_catalog_hash',
+    'id',
+    'sim_version',
+    'kinds',
+    'build',
+    'started_at',
+    'last_seen_at',
+  ],
   engine_jobs: [
     'id',
     'kind',
@@ -558,6 +579,7 @@ const typedColumns: ColumnLists = {
     'hidden_by_account_id',
   ],
   map_versions: [
+    'building_catalog',
     'id',
     'map_id',
     'hash',
@@ -626,6 +648,7 @@ const typedColumns: ColumnLists = {
   ],
   room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
   matches: [
+    'rules_identity',
     'skins_frozen_at',
     'id',
     'sim_version',
@@ -754,6 +777,7 @@ const typedColumns: ColumnLists = {
   ],
   queue_cooldowns: ['account_id', 'until', 'reason', 'created_at'],
   map_uploads: [
+    'building_catalog',
     'id',
     'owner_account_id',
     'blob_sha256',
@@ -773,6 +797,7 @@ const typedColumns: ColumnLists = {
     'completed_at',
   ],
   generated_maps: [
+    'building_catalog',
     'descriptor_hash',
     'sim_version',
     'descriptor',
@@ -883,6 +908,78 @@ afterAll(async () => {
 });
 
 describe('migrations', () => {
+  it('preserves both linked and standalone working drafts in the skin collection migration', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      expect((await createMigrator(existing.db).migrateTo('0044_ai_studio')).error).toBeUndefined();
+      const first = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Linked painter' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const second = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'New painter' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const skin = await existing.db
+        .insertInto('colony_skins')
+        .values({
+          kind: 'custom',
+          name: 'Old name',
+          owner_account_id: first.id,
+          entitlement: 'skins:designer',
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const image = Buffer.from('preserved paint');
+      const material = Buffer.from('preserved material');
+      for (const [accountId, skinId, name] of [
+        [first.id, skin.id, 'Linked draft'],
+        [second.id, null, 'Standalone draft'],
+      ] as const)
+        await existing.db
+          .insertInto('colony_skin_drafts')
+          .values({
+            account_id: accountId,
+            skin_id: skinId,
+            revision: '12345678-1234-1234-1234-123456789abc',
+            name,
+            building_color: 123,
+            swarm_mesh: 'crown',
+            swarm_view_angle: 127,
+            image,
+            material,
+          })
+          .execute();
+      await migrateToLatest(existing.db);
+      const drafts = await existing.db
+        .selectFrom('colony_skin_designs as d')
+        .innerJoin('colony_skins as s', 's.id', 'd.skin_id')
+        .selectAll('d')
+        .select(['s.name', 's.owner_account_id'])
+        .execute();
+      expect(drafts).toHaveLength(2);
+      expect(drafts.find((d) => d.owner_account_id === first.id)).toMatchObject({
+        skin_id: skin.id,
+        name: 'Linked draft',
+        image,
+        material,
+        swarm_view_angle: 127,
+        applied_version_id: null,
+      });
+      expect(drafts.find((d) => d.owner_account_id === second.id)).toMatchObject({
+        name: 'Standalone draft',
+        image,
+        material,
+        building_color: 123,
+        applied_revision: null,
+      });
+    } finally {
+      await existing.drop();
+    }
+  });
+
   it('upgrades the online foundation without replacing account data', async () => {
     const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
     try {
@@ -921,6 +1018,8 @@ describe('migrations', () => {
         '0042_music_studio',
         '0043_skin_sprites',
         '0044_ai_studio',
+        '0045_building_catalogs',
+        '0046_skin_collection',
       ]);
       expect(
         (
@@ -990,7 +1089,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(22);
+      expect(upgraded).toHaveLength(24);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1128,6 +1227,8 @@ describe('migrations', () => {
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
         ['0044_ai_studio', 'Success'],
+        ['0045_building_catalogs', 'Success'],
+        ['0046_skin_collection', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1262,6 +1363,8 @@ describe('migrations', () => {
         ['0042_music_studio', 'Success'],
         ['0043_skin_sprites', 'Success'],
         ['0044_ai_studio', 'Success'],
+        ['0045_building_catalogs', 'Success'],
+        ['0046_skin_collection', 'Success'],
       ]);
       expect(
         await db

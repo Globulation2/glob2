@@ -231,9 +231,13 @@ top-right, explorer bottom-left, swarm bottom-right.
 - `imageBase64`, the colour atlas, is at most 1 MiB. The server re-encodes it as
   an opaque sRGB lossless WebP without metadata.
 - `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
-  (R = G = B), opaque, and a material id: 0 glossy, 1 matte, 2 metallic,
-  3 hairy. Anything else is a 400. The server re-encodes it as an 8-bit
-  lossless WebP.
+  (R = G = B), opaque, and a material id below the count registered in
+  `libgag/shaders/skin-materials.json` (mirrored as `COLONY_SKIN_MATERIALS` in
+  the protocol package). Anything else is a 400. The server re-encodes it as an
+  8-bit lossless WebP. Native clients built with the registry shade ids beyond
+  their own catalogue as matte, so later materials degrade gracefully; clients
+  from before the registry reject such a skin and keep that team's previous
+  appearance, since they only knew ids 0 to 3.
 
 The version's `manifestSha256` is described below; native clients recompute it.
 Publishing identical content again returns the existing version. Publication and
@@ -274,24 +278,27 @@ are converted through the same persistent rendition cache. End-user PNG/WebP
 uploads remain accepted as imports on the server.
 
 Raw uploads and arbitrary blob keys are never served
-by these endpoints. The designer can open any owned version or copy a preset
-into a new design. Publishing an edit updates the design's display name and
-creates an immutable content version; previously equipped versions and frozen
-match appearances retain their paint. Equipping the new version is a separate
-choice. “Make a separate design” publishes the current canvas under a new identity.
+by these endpoints. The designer opens saved working designs or copies an owned
+preset into a new design. Applying an edit creates an immutable content snapshot
+and selects it; frozen match appearances retain their paint.
 
-The `/skins` route opens Colony Studio, a full-window mesh painting workspace.
+The `/skins` route opens the skin collection for registered accounts and a trial
+painting workspace for guests, beside the
+shared persistent sidebar. All app pages retain this sidebar, with a compact icon
+rail below 1100 pixels and a drawer for expanded navigation.
 Brush and eraser paint every surface underneath the cursor, including hidden
 surfaces. The eyedropper samples visible geometry. Horizontal right-drag,
 Alt-drag or the Rotate tool turns the model; touch uses explicit Paint/Rotate tools and
 two-finger pinch zoom. The view menu and +/− keys also adjust inspection zoom.
 Animation starts paused and painting freezes its displayed
 pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
-material swatches, model and pose strips float over the viewport; shop, saved
-skins, settings and patterns are dialogs that preserve the document. The workspace
-and its dialogs use the web application’s shared Meadow and Night colony themes,
-following the device setting or saved preference. Skin settings includes the shared
-theme control; changing themes preserves paint and editing state.
+material swatches (one sphere per registered material, grouped as in the
+registry, shaded by the game's own material GLSL including fur shells), model
+and pose strips float over the viewport. Patterns, paint copying and shape
+selection use focused dialogs; the collection is a separate screen and the Shop
+opens from it. The workspace and dialogs use the web application’s shared Meadow
+and Night colony themes, following the device setting or saved preference. The
+sidebar's theme control preserves paint and editing state.
 
 Glob meshes share paint coordinates across matching front/back and top/bottom
 surfaces, including limb pairs exchanged by their flipping gait. Brush coverage
@@ -332,19 +339,38 @@ the classic swarm. Likewise, an API that finds a stored mesh id it does not know
 (after a rollback) omits that version from skin lists and match appearances
 instead of signing it, and restores such a draft on the classic swarm.
 
-Registered active accounts can save one private working canvas with
-`PUT /api/v1/skins/draft` and restore it with `GET /api/v1/skins/draft`, without
-buying the designer unlock. Drafts carry `imageBase64` and `materialBase64` with
-the same validation as publishing; one bounded atlas and material map are stored
-per account and are never served by public image routes. A save supplies the last observed revision (null for the first save).
-Drafts may also retain an owned skin ID so edits resume as new versions of that
-design, and they keep the chosen swarm mesh and final view angle. Concurrent or stale saves return
-409 rather than overwrite another device's work. The designer also offers a separate account-scoped device draft for offline
-backup before resolving conflicts. A debounced recovery record is stored separately
-from the explicit device checkpoint, scoped by account, including the last known
-account revision. Async restore/open operations preserve any newer local edits
-instead of overwriting them. Checkout saves recovery
-before navigation and returns to the Shop dialog. Publishing and equipping remain explicit.
+Registered active accounts keep private working designs in `colony_skin_designs`,
+one mutable canvas per owned custom skin, with up to 100 active designs per account. `GET /api/v1/skins/collection` returns
+one entry per design and owned presets, together with the selected appearance
+and designer eligibility. Existing account drafts are migrated without changing
+match equipment; other existing designs initialize from their newest immutable
+snapshot when first opened through the collection. The legacy single-draft and
+publication APIs remain available for compatibility.
+
+`POST /api/v1/skins/designs` creates a design using a client-generated UUID
+(idempotent retries), optionally copying an owned design or preset.
+`PUT /api/v1/skins/designs/:id` replaces the working canvas only when the supplied
+revision matches. Saving needs no designer entitlement and never publishes a
+snapshot. `POST /api/v1/skins/designs/:id/use` checks that revision and the designer
+entitlement, creates or reuses an immutable snapshot, and selects it in one
+transaction. A failed apply leaves the previous selection intact. Edits to an
+active design remain unapplied until **Use in game** is clicked. Deleting a design
+archives its identity, removes its private working canvas, and clears equipment
+if selected; historical versions and match appearances remain available. Archive
+state is independent of moderation, which can still disable the paint.
+
+The Skins destination is a collection page, with six designs or presets per page
+to bound simultaneous WebGL previews. Each design has an editor with automatic
+account saving, a truthful save status, and **Use in game**; versions and manual
+save/restore destinations are not exposed. Saving is serialized, debounced after
+edits, and retried after connection recovery. Account-scoped browser recovery
+keeps pending changes per design across navigation and checkout. Cross-device
+conflicts preserve local work and offer **Load account changes** or **Keep mine as
+a new skin** rather than silently overwrite. Guests can paint with browser recovery
+and sign in to carry their work into a saved design. Theme remains a site control;
+building color and copying paint live in the toolbox, and toolbox layout reset
+lives in its options menu. Checkout saves the working design or browser recovery
+before navigation and returns to the Shop dialog.
 
 Match pages show their frozen colony looks and let signed-in players submit a
 reason to `POST /api/v1/skins/versions/:id/reports`. Each account reports a version
@@ -767,6 +793,9 @@ Administrators may also delete any map. Every moderation action is written to
 
 The workspace needs Node 22.18 or newer (TypeScript runs directly through Node's
 type stripping, so there is no build step except for the web app).
+`npm run typecheck` checks server code, the web app, and browser end-to-end tests
+in separate TypeScript projects; the latter includes DOM types for code evaluated
+in the browser without adding browser globals to server checks.
 
 ```sh
 cd platform
@@ -980,7 +1009,9 @@ attachment and full performance validation remain required
 before release.
 ## AI Map Studio
 
-The optional map studio lives at `/map-studio` on the online app host. The public
+The optional map studio lives at `/map-studio` on the online app host, reached
+through **Build in AI Map Studio** in the Maps library. The persistent main sidebar groups
+the studio under Maps. The public
 static website can link into it; it does not hold accounts, credits or authoring
 state. The maintained image-authoring modules were ported from the separate
 `Globulation2/glob2-ai-map-generation` prototype (GPL-3.0-or-later, originally
@@ -996,7 +1027,7 @@ job routed by simulation version. Its map, preview, categorical export and repor
 are private blobs. Provider keys never reach Python or engine subprocesses.
 
 REST under `/api/v1/map-studio` provides account state, thread creation/listing,
-messages, explicit generation, checkout, per-request progress and authorized stage
+messages, conversation turns, legacy explicit generation, checkout, per-request progress and authorized stage
 images. Thread creation accepts an optional client UUID; retrying the same owner,
 UUID and title returns the original project. Clients persist this UUID and the
 first message request ID before sending so an unknown HTTP outcome does not
@@ -1014,14 +1045,30 @@ thread. Image descriptors reference owner-authorized routes, never arbitrary
 blob hashes. Older requests recover only recorded images and delivery summaries
 from a safe checkpoint allowlist; missing historical checks are not invented.
 Events and descriptors participate in account export and cascade on deletion.
-The full-screen workspace separates chat from the inspected map, supports
-following live stages or inspecting history, and displays playability checks.
+The workspace defaults the shared sidebar to a collapsed rail and gives conversation
+and canvas equal, resizable full-height panes. Settings and the accumulated brief
+live beside the anchored composer; build cards appear in the conversation. A compact
+canvas status and an expandable Build details inspector retain live stages, images,
+playability checks and history. Mobile Chat/Map tabs preserve drafts and scrolling.
+Selecting an older delivered version makes it the visible editing target; changing
+settings starts a fresh map. Preparing a failed-build retry only fills and focuses
+the composer; sending it is a new turn, never an automatic repair.
 The separate no-credit landing page preserves draft writing and access to saved
 projects; active last-credit generations open their workspace. Drafts, pending
 submission identities and revision settings survive same-tab refresh and checkout.
 Payment-return URLs trigger wallet refresh without granting credits themselves.
 Messages cost no map credits but require an available
-map credit. A Generate action reserves one credit; a successful validated
+map credit. Sending to `/threads/:id/turns` authorizes at most one build and snapshots
+text, settings and optional parent context. The worker returns a validated `discuss`
+or `build` decision with its reply and updated brief. Questions, brainstorming and
+material ambiguity remain discussion; concrete creation and edit requests can build.
+Completing a build-directed turn atomically saves the reply/brief, completes the chat,
+enqueues one generation with a persisted identity and `sourceTurnId`, and reserves
+one credit under the wallet lock. Reloads, lost responses and worker retries cannot
+enqueue another build. The browser follows events and never enqueues from them.
+Legacy `/messages` requests remain discussion-only and `/generate` stays available
+for older clients. Deploy the updated workers before the API and browser so every
+new turn is handled by a worker that understands build decisions. A generation reserves one credit; a successful validated
 delivery consumes it and failures return it. Each request snapshots the rolling
 conversation and accumulated design brief, settings, parent version and pipeline
 version. A parent revision retains its dimensions/player count; changing these
@@ -1223,12 +1270,23 @@ operational limits.
 
 ## AI Music Studio
 
-`/music-studio` provides CPU-only conversational soundtrack authoring. REST under
+`/music-studio` provides CPU-only conversational soundtrack authoring, reached
+through **Build in AI Music Studio** in the Music library. The persistent main sidebar groups
+the studio under Music. REST under
 `/api/v1/music-studio` owns account state, projects, messages, explicit generation,
 cancellation, private artifacts and checkout. `packages/music-studio` owns the
 transactional journal and delivery; `apps/ai-music-worker` owns provider calls,
 bounded agent tools and isolated Python execution. The score/rendering contracts
 are described in the [music pipeline](../assets/music-pipeline.md#online-ai-music-studio).
+Discussion and composition calls use distinct strict JSON response schemas
+through the provider's response format; the worker also validates discussion
+fields and tool actions before using them. A prompt alone does not establish
+that transport contract. Only the final answer message is consumed; commentary
+and intermediate JSON messages are not concatenated into composer actions.
+Each source write schedules trusted score validation and rendering automatically;
+the next model call receives the resulting checks to repair any failures.
+This prevents repeated source rewrites from consuming the action budget before
+a candidate is ever validated. The three-render limit still applies.
 Common project/message and credit-pack schemas live in `protocol/src/studioCommon.ts`;
 studio-specific settings, products and balances remain separate.
 

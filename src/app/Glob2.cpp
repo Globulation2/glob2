@@ -410,7 +410,7 @@ static void dumpTeams(const Game& game)
 			if (Building* b = team->myBuildings[i])
 			{
 				buildings++;
-				if (b->type->unitProductionTime)
+				if (b->type->semantics.production.enabledUnitMask)
 				{
 					swarmCount++;
 					where += FormattableString(" (%0,%1)").arg(b->posX).arg(b->posY);
@@ -498,7 +498,14 @@ int Glob2::run(int argc, char *argv[])
 	if (headless >= 0) return headless;
 	srand(time(NULL));
 
-	globalContainer=new GlobalContainer();
+	std::string buildingCatalog;
+	for (int i=1; i<argc; ++i)
+		if (std::string(argv[i]) == "--building-catalog")
+		{
+			if (++i >= argc) throw std::invalid_argument("--building-catalog requires a manifest path");
+			buildingCatalog = argv[i];
+		}
+	globalContainer=new GlobalContainer("glob2", buildingCatalog);
 	globalContainer->parseArgs(argc, argv);
     globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();

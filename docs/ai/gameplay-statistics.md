@@ -105,15 +105,28 @@ their history samples unavailable for them, and coverage starting at the loaded
 tick. Their defence snapshot is unavailable (`defenceTick` before
 `labour_coverage_start`) until the next sample.
 
-The replay acceptance floor remains **99** and network/YOG protocol gates remain
-**33**. New-format saves require a reader that understands format 108; these
-fields do not change simulation execution or order formats.
+Save format **137** records per-variant building counters alongside the embedded
+catalog. Earlier saves retain their sampled history through the frozen stock
+catalog mapping. Old blockage counts lacked a level: import preserves each family
+aggregate once, for the total blockage metric. New metrics and their labels use
+the game's concrete catalog, including in saved histories.
+
+The current replay floor is **137** and network protocol **57**. The save loader
+still supports the durable format-58 floor.
 
 ## Existing timeline output
 
 Set `GLOB2_TEAM_TIMELINE=1` to include measurements with the existing output.
-`GLOB2_TL` and `GLOB2_FINAL` are unchanged. `GLOB2_ECON` also reports `hospital`,
-`racetrack` and `pool` counts, so it covers every building type.
+`GLOB2_TL` and `GLOB2_FINAL` keep their existing fields. `GLOB2_ECON` emits
+`variant_<id>` counts for every concrete catalog variant. Its historical named
+columns remain model/log aliases for capabilities: `swarm` is production, `inn`
+is feeding, `hospital` is healing, `school` is worker construction training,
+`barracks` is warrior combat training, `racetrack`/`pool` are walking/swimming
+training, and `tower` is projectile fire. Sites use their explicit completed
+target. A hybrid may count in several columns; do not sum these service columns
+as a physical building count. The `barracks` feature matches the runtime victory
+model's unique warrior-training provider count. The defense-power scalar uses
+damage against warriors; the engine resolves actual damage by target class.
 
 ```
 GLOB2_MEASURE team=0 tick=512 coverage_start=0 final=0 births_0=... deaths_0_0=... stock_1=... ...

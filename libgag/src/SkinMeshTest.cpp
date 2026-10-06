@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <SkinMesh.h>
+#include <glob2/SkinMaterials.h>
 #include "src/online/SwarmMeshCatalog.h"
 #include "src/online/SkinSpriteManifest.h"
 #include <SDL3_image/SDL_image.h>
 #include <cstdlib>
 #include "src/online/SkinViewTransforms.h"
 #include <cmath>
+#include <filesystem>
+#include <fstream>
 #include <SkinAtlasCache.h>
 #include <StreamBackend.h>
 #include <SDLGraphicContext.h>
@@ -139,7 +142,9 @@ TEST_SUITE("SkinMesh")
             }
             return pixels();
         };
-        for (unsigned id=0;id<4;++id) {
+        // The body-only materials share one path; fur adds shell passes.
+        for (unsigned id : {0u, 1u, 3u, 18u}) {
+            REQUIRE(id < SKIN_MATERIAL_COUNT);
             const auto forward=draw(id,false);
             const auto reverse=draw(id,true);
             unsigned differences=0, maximum=0;
@@ -147,13 +152,119 @@ TEST_SUITE("SkinMesh")
             INFO("material " << id << " differences " << differences << " maximum " << maximum);
             // Reallocation in different atlas slots can shift sparse bilinear
             // rounding by one channel level; angle/cache mixups are far larger.
-            CHECK(maximum<=1);
-            CHECK(differences<=100);
+            // Fur strands are single texels of binary alpha, so the same
+            // sub-texel shift moves whole strand edges.
+            const bool shells=GAGCore::skinMaterialShells(id);
+            CHECK(maximum<=(shells?48u:1u));
+            CHECK(differences<=(shells?400u:150u));
             gfx->printScreen(glob2test::artifactDirFromWorkingDirectory()+"/swarm-material-"+std::to_string(id)+".bmp");
             // Substantial non-background coverage proves this is not an empty fallback.
             unsigned changed=0;
             for (unsigned p=0;p<forward.size();p+=4) changed+=forward[p]!=38 || forward[p+1]!=33 || forward[p+2]!=45;
             CHECK(changed>1000);
+        }
+    }
+    // Every material on every model, as the sprite baker renders it: a contact
+    // sheet for review plus guards against a material collapsing into matte.
+    TEST_CASE("material contact sheet [display][artifacts]")
+    {
+        glob2test::ToolkitScope toolkit;
+        auto *gfx=GAGCore::Toolkit::initGraphic(640,480,GAGCore::GraphicContext::USEGPU|GAGCore::GraphicContext::NOAUDIO,"Skin material contact sheet");
+        struct Model { const char *mesh; unsigned frame; GAGCore::SkinRegion region; };
+        const Model models[]={{"worker-walk",0,GAGCore::SkinRegionWorker},{"warrior-fight",8,GAGCore::SkinRegionWarrior},
+                              {"explorer-fly",0,GAGCore::SkinRegionExplorer},{"swarm",0,GAGCore::SkinRegionSwarm}};
+        constexpr unsigned Tile=128, Models=4, Scale=4;
+        std::array<GAGCore::SkinMesh,Models> meshes;
+        for (unsigned m=0;m<Models;++m) {
+            std::string error;
+            REQUIRE(meshes[m].load((glob2test::sourceRoot()/"data/skins/colony-v1"/(std::string(models[m].mesh)+".gsk")).string(),error));
+        }
+        GAGCore::DrawableSurface paint(512,512), material(512,512);
+        paint.drawFilledRect(0,0,512,512,GAGCore::Color(237,146,82));
+        // Straight-alpha tiles per material and model, read back exactly.
+        std::vector<std::vector<std::uint8_t>> tiles(SKIN_MATERIAL_COUNT*Models);
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            material.drawFilledRect(0,0,512,512,GAGCore::Color(id,id,id));
+            for (unsigned m=0;m<Models;++m) {
+                auto &tile=tiles[id*Models+m];
+                REQUIRE(gfx->readSkinMesh({&meshes[m],models[m].frame,&paint,&material,models[m].region},tile));
+                REQUIRE(tile.size()==Tile*Tile*4);
+                std::vector<std::uint8_t> again;
+                REQUIRE(gfx->readSkinMesh({&meshes[m],models[m].frame,&paint,&material,models[m].region},again));
+                INFO("material "<<GAGCore::SkinMaterials[id].key<<" on "<<models[m].mesh);
+                CHECK(again==tile);
+            }
+        }
+        const auto sheets=std::filesystem::path(glob2test::artifactDirFromWorkingDirectory())/"skins"/"materials";
+        std::filesystem::create_directories(sheets);
+        // Sheet rows are materials, columns models, over a neutral backdrop.
+        const auto compose=[&](unsigned scale,const std::string &name) {
+            const unsigned w=Models*Tile*scale, h=SKIN_MATERIAL_COUNT*Tile*scale;
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> sheet(SDL_CreateSurface(w,h,SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);
+            REQUIRE(sheet);
+            for (unsigned y=0;y<h;++y) for (unsigned x=0;x<w;++x) {
+                const unsigned id=y/(Tile*scale), m=x/(Tile*scale);
+                const auto *p=tiles[id*Models+m].data()+(((y/scale)%Tile)*Tile+(x/scale)%Tile)*4;
+                auto *out=static_cast<std::uint8_t*>(sheet->pixels)+y*sheet->pitch+x*4;
+                const unsigned back=((x/(8*scale))+(y/(8*scale)))%2 ? 92 : 76;
+                for (unsigned c=0;c<3;++c) out[c]=static_cast<std::uint8_t>((p[c]*p[3]+back*(255-p[3])+127)/255);
+                out[3]=255;
+            }
+            REQUIRE(SDL_SaveBMP(sheet.get(),(sheets/name).string().c_str()));
+        };
+        compose(1,"contact-sheet.bmp");
+        compose(Scale,"contact-sheet-4x.bmp");
+        // Appearance statistics per material on the worker: a material that
+        // renders like matte, or like any other material, fails here.
+        struct Stats { double coverage, luminance, contrast; };
+        const auto stats=[&](unsigned id) {
+            const auto &tile=tiles[id*Models+0];
+            double sum=0,squares=0; unsigned covered=0;
+            for (unsigned i=0;i<Tile*Tile;++i) if (tile[i*4+3]>127) {
+                const double l=(0.299*tile[i*4]+0.587*tile[i*4+1]+0.114*tile[i*4+2])/255.0;
+                sum+=l; squares+=l*l; ++covered;
+            }
+            const double mean=covered?sum/covered:0, variance=covered?std::max(0.0,squares/covered-mean*mean):0;
+            return Stats{double(covered)/(Tile*Tile),mean,std::sqrt(variance)};
+        };
+        const auto distance=[&](unsigned a,unsigned b) {
+            const auto &ta=tiles[a*Models+0], &tb=tiles[b*Models+0];
+            double sum=0; unsigned n=0;
+            for (unsigned i=0;i<Tile*Tile;++i) if (ta[i*4+3]>127 && tb[i*4+3]>127) {
+                for (unsigned c=0;c<3;++c) sum+=std::abs(int(ta[i*4+c])-int(tb[i*4+c]));
+                ++n;
+            }
+            return n?sum/(3.0*n):0.0;
+        };
+        const auto matte=stats(1);
+        nlohmann::json fingerprints;
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            const auto s=stats(id);
+            INFO("material "<<GAGCore::SkinMaterials[id].key);
+            CHECK(s.coverage>=matte.coverage-0.001);
+            CHECK(s.luminance>0.08); CHECK(s.luminance<0.95);
+            if (id!=1) CHECK(distance(id,1)>=10.0);
+            for (unsigned other=0;other<id;++other) {
+                INFO("against "<<GAGCore::SkinMaterials[other].key);
+                CHECK(distance(id,other)>=4.0);
+            }
+            fingerprints[GAGCore::SkinMaterials[id].key]={{"coverage",std::round(s.coverage*1000)/1000},
+                {"luminance",std::round(s.luminance*1000)/1000},{"contrast",std::round(s.contrast*1000)/1000}};
+        }
+        // Committed fingerprints catch unintended drift; refresh them with
+        // GLOB2_UPDATE_SKIN_FINGERPRINTS=1 when a material changes on purpose.
+        const auto fixture=glob2test::sourceRoot()/"test/fixtures/skins/material-fingerprints.json";
+        if (std::getenv("GLOB2_UPDATE_SKIN_FINGERPRINTS")) glob2test::writeFile(fixture,fingerprints.dump(2)+"\n");
+        const auto expected=nlohmann::json::parse(glob2test::readFile(fixture));
+        for (unsigned id=0;id<SKIN_MATERIAL_COUNT;++id) {
+            const char *key=GAGCore::SkinMaterials[id].key;
+            INFO("material "<<key);
+            REQUIRE(expected.contains(key));
+            for (const char *field : {"coverage","luminance","contrast"}) {
+                const double want=expected[key][field].get<double>(), got=fingerprints[key][field].get<double>();
+                INFO(field<<" expected "<<want<<" got "<<got);
+                CHECK(std::abs(got-want)<=std::max(0.02,0.1*want));
+            }
         }
     }
 #endif

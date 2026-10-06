@@ -16,6 +16,7 @@
 #include "Unit.h"
 #include "AITelemetry.h"
 #include "render/GameAnimations.h"
+#include <unordered_map>
 
 static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");
 static_assert(Unit::MAX_COUNT <= SceneEntities::SlotsPerTeam, "SceneEntities::SlotsPerTeam too small");
@@ -72,6 +73,8 @@ namespace
 		s.generation = b.scriptIdentity;
 		s.team = b.owner->teamNumber;
 		s.type = b.type;
+		s.lastUpgradeType = b.owner->game->buildingsTypes.getLastLevel(
+			b.constructionResultState==Building::REPAIR ? b.getConstructionCompletionTypeNum() : b.typeNum);
 		s.typeNum = b.typeNum;
 		s.shortTypeNum = b.shortTypeNum;
 		s.posX = b.posX;
@@ -123,6 +126,40 @@ namespace
 			for (const Building *b : team->virtualBuildings)
 				e.virtualBuildings[t].push_back(b->gid);
 		}
+
+        // Resolve segment connections once per extracted frame. Overlay buildings
+        // need a sparse footprint index because they do not occupy the map grid.
+        std::unordered_multimap<int,const SceneBuilding*> overlays;
+        const auto tile=[&](int x,int y) { return game.map.normalizeY(y)*game.map.getW()+game.map.normalizeX(x); };
+        for (const auto& b : e.buildings)
+            if (!b.type->semantics.occupiesGround && b.type->presentation.connectionGroupId>=0)
+                for (int dy=0; dy<b.type->height; ++dy)
+                    for (int dx=0; dx<b.type->width; ++dx) overlays.emplace(tile(b.posX+dx,b.posY+dy),&b);
+        for (auto& b : e.buildings)
+            if (b.type->crossConnectMultiImage)
+            {
+                const auto connects=[&](const SceneBuilding* other) {
+                    return other && other->gid!=b.gid &&
+                        other->type->presentation.connectionGroupId==b.type->presentation.connectionGroupId &&
+                        (b.type->presentation.connectsAcrossTeams || other->team==b.team);
+                };
+                const auto neighbor=[&](int x,int y) {
+                    if (connects(e.building(game.map.getBuilding(x,y)))) return true;
+                    const auto range=overlays.equal_range(tile(x,y));
+                    for (auto it=range.first; it!=range.second; ++it) if (connects(it->second)) return true;
+                    return false;
+                };
+                for (int dx=0; dx<b.type->width; ++dx)
+                {
+                    if (!(b.connectionMask&8) && neighbor(b.posX+dx,b.posY-1)) b.connectionMask|=8;
+                    if (!(b.connectionMask&4) && neighbor(b.posX+dx,b.posY+b.type->height)) b.connectionMask|=4;
+                }
+                for (int dy=0; dy<b.type->height; ++dy)
+                {
+                    if (!(b.connectionMask&2) && neighbor(b.posX-1,b.posY+dy)) b.connectionMask|=2;
+                    if (!(b.connectionMask&1) && neighbor(b.posX+b.type->width,b.posY+dy)) b.connectionMask|=1;
+                }
+            }
 
 		// Bullets and animations, grouped by sector in drawing order.
 		Map &map = const_cast<Map &>(game.map); // Map::getSector has no const overload; read only.
@@ -279,12 +316,16 @@ namespace
 			bp.priority = b->priority;
 			bp.unitStayRange = b->unitStayRange;
 			bp.minLevelToFlag = b->minLevelToFlag;
+			bp.minWorkerLevelToFlag=b->minWorkerLevelToFlag;
+			bp.explorersRequireBombing=b->explorersRequireBombing;
 			for (int r = 0; r < BASIC_COUNT; ++r)
 				bp.clearingResources[r] = b->clearingResources[r];
 			for (int r = 0; r < MAX_RESOURCES; ++r)
 				bp.resources[r] = b->resources[r];
 			bp.bullets = b->bullets;
 			bp.productionTimeout = b->productionTimeout;
+			const int recipe=b->productionUnit>=0 ? b->productionUnit : b->selectProductionRecipe();
+			if (recipe>=0) bp.productionDuration=b->type->semantics.production.recipes[recipe].duration;
 			for (int t = 0; t < NB_UNIT_TYPE; ++t)
 				bp.ratio[t] = b->ratio[t];
 			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
@@ -298,18 +339,16 @@ namespace
 			// Ask only where the panels offer repair or upgrade, as drawing did: these
 			// queries assume a real building and an existing next level.
 			const bool constructible = b->constructionResultState == Building::NO_CONSTRUCTION &&
-				b->buildingState == Building::ALIVE && !b->type->isBuildingSite && !b->type->isVirtual;
-			if (constructible && b->type->regenerationSpeed == 0 &&
+				b->buildingState == Building::ALIVE && !b->type->isBuildingSite;
+			if (constructible && b->type->semantics.repairable && b->type->prevLevel>=0 &&
 				(b->hp < bp.effectiveMaxHp || b->hp < b->type->hpMax))
 			{
-				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR);
+				bp.hardSpaceForRepair = b->isHardSpaceForBuildingSite(Building::REPAIR) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->prevLevel)->semantics.requiredWorkerLevel;
 				b->getResourceCountToRepair(bp.repairCost);
 			}
-			bp.showLevel = (b->type->shortTypeNum != IntBuildingType::MARKET_BUILDING ||
-				game.gameHeader.hasExperiment(ExperimentId::MarketsV2)) &&
-				(b->type->prevLevel >= 0 || b->isUpgradeAvailable());
+			bp.showLevel = b->type->presentation.showLevel;
 			if (constructible && b->isUpgradeAvailable())
-				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE);
+				bp.hardSpaceForUpgrade = b->isHardSpaceForBuildingSite(Building::UPGRADE) && b->owner->maxBuildLevel()>=game.buildingsTypes.get(b->type->nextLevel)->semantics.requiredWorkerLevel;
 			bp.buildingHpMultiplier = game.gameHeader.getBuildingHpMultiplier();
 		}
 
@@ -349,6 +388,7 @@ namespace
 
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
+	scene.buildingTypes = game.buildingsTypes.retainTypes();
 	scene.editor = game.edit != nullptr;
 	scene.tick = game.stepCounter;
 	scene.tickTime = request.tickTime;
@@ -356,6 +396,7 @@ void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scen
 	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
 	extractEntities(game, request, scene.entities);
 	if (request.includePanels) extractPanels(game, request, scene.panels);
+	else scene.panels=ScenePanels{};
 
 	// Overlay maps refresh every 25 ticks (windows start at ticks 25k+1), and at once
 	// when the client switches overlay or team.

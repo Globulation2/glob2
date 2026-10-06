@@ -211,13 +211,14 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (auto sample = GAGCore::scrollGesture(*event))
 		{
 			const auto wheel = GAGCore::gestureWheelFallback(*sample);
-			zoomMap(wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1), mouseX, mouseY);
+			const double delta=wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1);
+			if (!scrollBuildingChoices(delta)) zoomMap(delta,mouseX,mouseY);
 		}
 		else if (event->type==SDL_EVENT_MOUSE_WHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
 			const double delta=event->wheel.y;
-			zoomMap(delta*factor,mouseX,mouseY);
+			if (!scrollBuildingChoices(delta*factor)) zoomMap(delta*factor,mouseX,mouseY);
 		}
 	}
 
@@ -365,7 +366,7 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 				// Direct flag grabs still move the flag; other map objects
 				// can start a camera drag.
 				const bool movingFlag = selectionMode == BUILDING_SELECTION && selectionPushed &&
-					selectionBuilding()->type->isVirtual;
+					selectionBuilding()->type->semantics.relocatable;
 				mapPanPushed = !movingFlag;
 				panMouseX=mouseEvent.x;
 				panMouseY=mouseEvent.y;
@@ -394,7 +395,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
 		if (!mapPanPushed && (selectionMode==BUILDING_SELECTION) &&
-			selectionPushed && selectionBuilding()->type->isVirtual)
+			selectionPushed && selectionBuilding()->type->semantics.relocatable)
 		{
 			// update flag
 			moveFlag(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), true);
@@ -493,24 +494,24 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	// we can upgrade or repair only building from our team
 	if (building->owner->teamNumber != localTeamNo)
 		return;
-	int typeNum = building->typeNum + 1; //determines type of updated building
+	int typeNum = buildingType->nextLevel;
 	int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(building->typeNum - 1);
-	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum+1);
+	int repairUnitWorking = defaultAssign.getDefaultAssignedUnits(buildingType->prevLevel);
+	int unitWorkingFuture = defaultAssign.getDefaultAssignedUnits(typeNum>=0 ? game.buildingsTypes.getFinishedTypeNum(game.buildingsTypes.get(typeNum)->key) : -1);
 	if ((building->hp < building->getEffectiveMaxHp()) && repair)
 	{
 		// repair
-		if ((building->type->regenerationSpeed == 0) &&
+		if ((building->type->semantics.repairable && buildingType->prevLevel>=0) &&
 			(building->isHardSpaceForBuildingSite(Building::REPAIR)) &&
-			(localTeam->maxBuildLevel() >= buildingType->level))
-			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, displayedMaxUnitWorking(*building))));
+			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->prevLevel)->semantics.requiredWorkerLevel))
+			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, repairUnitWorking, std::clamp(displayedMaxUnitWorking(*building),0,buildingType->semantics.assignmentLimit))));
 	}
 	else if (upgrade)
 	{
 		// upgrade
 		if (building->isUpgradeAvailable() &&
 			(building->isHardSpaceForBuildingSite(Building::UPGRADE)) &&
-			(localTeam->maxBuildLevel() > buildingType->level))
+			(localTeam->maxBuildLevel() >= game.buildingsTypes.get(buildingType->nextLevel)->semantics.requiredWorkerLevel))
 			orderQueue.push_back(shared_ptr<Order>(new OrderConstruction(building->gid, unitWorking, unitWorkingFuture)));
 	}
 }

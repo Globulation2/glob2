@@ -40,6 +40,9 @@ struct World
             {
                 building->resources[WHEAT]=depleted ? 0 : building->type->maxResource[WHEAT];
                 building->update();
+                // These fixtures materialize finished providers directly; real
+                // games register static capabilities when construction completes.
+                world.game.teams[team]->addToStaticAbilitiesLists(building);
             }
             for (int unit=0; unit<12; ++unit)
                 world.addUnit(unit<8 ? WORKER : WARRIOR,4+offset+unit,12+offset,team);

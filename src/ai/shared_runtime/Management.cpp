@@ -28,6 +28,14 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo.reset(new DestroyBuilding);
 			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
 			break;
+        case MRetireAttraction:
+            mo.reset(new RetireAttraction);
+            if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
+            break;
+        case MRetireFeeding:
+            mo.reset(new RetireFeeding);
+            if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");
+            break;
 		case MAddResourceTracker:
 			mo.reset(new AddResourceTracker);
 			if (!mo->load(stream, player, versionMinor)) throw std::runtime_error("Invalid saved AI object");

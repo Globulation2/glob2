@@ -26,6 +26,8 @@
 #include "StreamBackend.h"
 #include "GameHeader.h"
 #include "Version.h"
+#include "BuildingType.h"
+#include <nlohmann/json.hpp>
 
 using namespace GAGCore;
 
@@ -34,7 +36,7 @@ namespace {
 
 void check(bool ok, const char* what)
 {
-	CHECK_MESSAGE(ok, (what));
+	CHECK_MESSAGE(ok, std::string(what));
 }
 
 std::unique_ptr<TextInputStream> makeInputStream(const MemoryStreamBackend& written)
@@ -200,7 +202,8 @@ void testBinaryHeaderFormsAndLegacy()
 			sectionOut.flush();
 			experimentBytes=section->getPosition();
 		}
-		if (form!=1) extension+=ruleBytes+experimentBytes;
+		const size_t catalogBytes=4; // Empty catalog: zero chunk count (version136).
+		if (form!=1) extension+=ruleBytes+experimentBytes+catalogBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;
 		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
@@ -215,7 +218,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes;
+			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes-catalogBytes;
 			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -234,6 +237,40 @@ void testBinaryHeaderFormsAndLegacy()
 
 TEST_SUITE("GameHeaderTextSaveLoad")
 {
+	TEST_CASE("embedded catalog crosses text and binary chunk boundaries")
+	{
+		BuildingsTypes stock; stock.initLegacy();
+		auto snapshot=nlohmann::json::parse(stock.snapshotJson());
+		auto prototype=snapshot["variants"][3];
+		prototype["previous"]=""; prototype["next"]="";
+		prototype["semantics"]["repairable"]=false;
+		prototype["presentation"]["displayName"]="A \"quoted\" refuge \\ path";
+		for (int i=0; i<230; ++i)
+		{
+			prototype["id"]=snapshot["variants"].size();
+			prototype["key"]="fixture.refuge."+std::to_string(i);
+			prototype["properties"]["type"]="refuge"+std::to_string(i);
+			snapshot["variants"].push_back(prototype);
+		}
+		GameHeader original=makeFixtureHeader();
+		original.setBuildingCatalogSnapshot(snapshot.dump());
+		REQUIRE(original.getBuildingCatalogSnapshot().size()>512*1024);
+		for (bool text : {false,true})
+		{
+			auto* bytes=new MemoryStreamBackend;
+			std::unique_ptr<OutputStream> out;
+			if (text) out=std::make_unique<TextOutputStream>(bytes);
+			else out=std::make_unique<BinaryOutputStream>(bytes);
+			original.save(out.get()); out->flush(); bytes->seekFromStart(0);
+			std::unique_ptr<InputStream> in;
+			if (text) in=std::make_unique<TextInputStream>(bytes);
+			else in=std::make_unique<BinaryInputStream>(new MemoryStreamBackend(*bytes));
+			GameHeader restored;
+			REQUIRE(restored.load(in.get(),VERSION_MINOR));
+			CHECK(restored.getBuildingCatalogSnapshot()==original.getBuildingCatalogSnapshot());
+			CHECK(playersMatch(original,restored,4));
+		}
+	}
 	TEST_CASE("FullRoundTrip") { testFullRoundTrip(); }
 	TEST_CASE("PlayerInfoRoundTrip") { testPlayerInfoRoundTrip(); }
 	TEST_CASE("BinaryHeaderFormsAndLegacy") { testBinaryHeaderFormsAndLegacy(); }

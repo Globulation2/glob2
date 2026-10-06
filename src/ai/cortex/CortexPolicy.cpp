@@ -290,6 +290,13 @@ namespace Cortex
 		return f;
 	}
 
+    void CortexPolicy::productionTargets(const CortexObservation& obs, Sint32 out[CORTEX_UNIT_TYPES])
+    {
+        const auto facts = computeFacts(obs);
+        out[0] = facts.growWorker; out[1] = facts.growExplorer; out[2] = facts.growWarrior;
+        if (facts.panic) { out[0] = out[1] = 0; out[2] = 1; }
+    }
+
 	// DECIDE_CONTRACT action-map class indices for the three war-flag decisions.
 	// They are still EVALUATED inside decide() (for the 19-class eligibility mask +
 	// trace), but their SELECTION moved to decideCombat() so a busy economy can never
@@ -614,7 +621,12 @@ namespace Cortex
 		// can never disagree on those derivations. Everything else is a raw
 		// CortexObservation scalar — the net relearns the teacher's thresholds, so
 		// the derived judgment booleans are deliberately NOT exposed (DECIDE_CONTRACT).
-		const DecideFacts f = computeFacts(obs);
+		CortexObservation projected = obs;
+        if (obs.hasModelProjection)
+            for (int role = 0; role < CORTEX_BUILDING_TYPES; ++role)
+                for (int level = 0; level < CORTEX_BUILDING_LONG_LEVELS; ++level)
+                    projected.buildingCountPerLevel[role][level] = obs.modelBuildingCountPerLevel[role][level];
+        const DecideFacts f = computeFacts(projected);
 
 		// idx 40: count of valid offense flag targets (discovered enemy buildings).
 		int flagTargetsValid = 0;
@@ -629,6 +641,7 @@ namespace Cortex
 		int upgradableTotal = 0;
 		for (int t = 0; t < CORTEX_BUILDING_TYPES; t++)
 			upgradableTotal += obs.upgradableCount[t];
+        if (obs.hasModelProjection) upgradableTotal = obs.modelUpgradableTotal;
 
 		int i = 0;
 		features[i++] = f.swarms;          // 0

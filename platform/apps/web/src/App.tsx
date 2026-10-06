@@ -94,13 +94,13 @@ export const ROUTES: Route[] = [
   },
   {
     pattern: '/music-studio',
-    section: 'music-studio',
+    section: 'music',
     title: 'AI Music Studio',
     render: () => <MusicStudio />,
   },
   {
     pattern: '/music-studio/:id',
-    section: 'music-studio',
+    section: 'music',
     title: 'AI Music Studio',
     render: (p) => <MusicStudio key={p['id']} id={p['id']} />,
   },
@@ -115,13 +115,13 @@ export const ROUTES: Route[] = [
   { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   {
     pattern: '/map-studio',
-    section: 'studio',
+    section: 'maps',
     title: 'AI Map Studio',
     render: () => <MapStudio />,
   },
   {
     pattern: '/map-studio/:id',
-    section: 'studio',
+    section: 'maps',
     title: 'AI Map Studio',
     render: (p) => <MapStudio key={p['id']} id={p['id']} />,
   },
@@ -201,7 +201,12 @@ function AccountChip() {
   }
   return (
     <>
-      <Link className="chip" to="/account" data-testid="account-chip">
+      <Link
+        className="chip"
+        to="/account"
+        data-testid="account-chip"
+        aria-label={account.displayName}
+      >
         <Avatar account={account} size="small" />
         <span>{account.displayName}</span>
       </Link>
@@ -247,9 +252,16 @@ function Layout() {
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
-  const studio = section === 'studio';
+  const studio =
+    section === 'skins' ||
+    (found?.route.pattern.startsWith('/map-studio') ?? false) ||
+    (found?.route.pattern.startsWith('/music-studio') ?? false);
   const main = useRef<HTMLElement>(null);
-  const [collapsed, setCollapsed] = useState(false);
+  const mapWorkspace = found?.route.pattern.startsWith('/map-studio') ?? false;
+  const [navigationCollapsed, setNavigationCollapsed] = useState(false);
+  const [mapNavigationCollapsed, setMapNavigationCollapsed] = useState(true);
+  const collapsed = mapWorkspace ? mapNavigationCollapsed : navigationCollapsed;
+  const setCollapsed = mapWorkspace ? setMapNavigationCollapsed : setNavigationCollapsed;
   const drawer = useRef<HTMLDialogElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const openNavigation = () => {
@@ -291,10 +303,8 @@ function Layout() {
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
     { to: '/ais', id: 'ais', name: 'AI Library', art: 'swarm' },
-    { to: '/music-studio', id: 'music-studio', name: 'AI Music Studio', art: 'fruit' },
     { to: '/music', id: 'music', name: 'Music', art: 'fruit' },
     { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
-    { to: '/map-studio', id: 'studio', name: 'AI Map Studio', art: 'explorationFlag' },
     ...(isModerator(account)
       ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]
       : []),
@@ -346,7 +356,7 @@ function Layout() {
             group === 'Play'
               ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
-                ? ['maps', 'ais', 'music', 'music-studio', 'skins', 'studio'].includes(item.id)
+                ? ['maps', 'ais', 'music', 'skins'].includes(item.id)
                 : item.id === 'admin',
           );
           return items.length ? (
@@ -384,7 +394,6 @@ function Layout() {
       </div>
     </>
   );
-  if (section === 'skins') return <Suspense fallback={<Loading />}>{page}</Suspense>;
   return (
     <div
       className={`site app-shell${home ? ' home' : ''}${studio ? ' studio-shell' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}
@@ -396,21 +405,13 @@ function Layout() {
       <button
         className="rail-expand"
         onClick={() => {
-          if (!studio && window.matchMedia('(min-width: 1100px)').matches) setCollapsed(false);
+          if (window.matchMedia('(min-width: 1100px)').matches) setCollapsed(false);
           else openNavigation();
         }}
         aria-label="Open navigation"
       >
         ☰
       </button>
-      <header className="mobile-bar">
-        <button onClick={openNavigation} aria-label="Open navigation">
-          ☰
-        </button>
-        <Link to="/" aria-label={`${name}, home`}>
-          <Wordmark label={null} />
-        </Link>
-      </header>
       <dialog
         ref={drawer}
         className="navigation-drawer"

@@ -1,34 +1,4 @@
-/* Full-screen studio shell and shared controls. */
-.studio-shell.app-shell {
-  display: block;
-}
-.studio-shell > .app-sidebar,
-.studio-shell > .mobile-bar {
-  display: none;
-}
-.studio-shell > .rail-expand {
-  display: grid;
-  position: absolute;
-  left: 18px;
-  top: 22px;
-  z-index: 25;
-  min-width: 42px;
-  min-height: 42px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-}
-.studio-shell > main > .wrap {
-  padding: 0;
-}
-.studio-shell > main > .wrap > .page {
-  padding: 0;
-  max-width: none;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
+/* Shared map and music studio controls. */
 .ms-root {
   --ms-panel: color-mix(in srgb, var(--surface) 85%, var(--bg));
   --ms-border: color-mix(in srgb, var(--line) 75%, transparent);
@@ -112,7 +82,7 @@
   display: flex;
   align-items: center;
   gap: 28px;
-  padding: 12px 28px 12px 78px;
+  padding: 12px 28px;
   border-bottom: 1px solid var(--ms-border);
   background: var(--ms-panel);
 }
@@ -1610,15 +1580,9 @@
   }
 }
 @media (max-width: 899px) {
-  .studio-shell > .rail-expand {
-    left: 12px;
-    top: 16px;
-    min-width: 36px;
-    min-height: 36px;
-  }
   .ms-header {
     height: 72px;
-    padding: 10px 14px 10px 58px;
+    padding: 10px 14px;
     gap: 12px;
   }
   .ms-emblem {
@@ -2087,4 +2051,216 @@
 }
 .ms-root[data-hidden='true'] * {
   animation-play-state: paused !important;
+}
+
+/* Map workspace: conversation and canvas own the viewport. Scoped to protect Music Studio. */
+.map-studio.ms-workspace-root .ms-header {
+  height: 56px;
+  min-height: 56px;
+  padding: 8px 20px;
+}
+.map-studio.ms-workspace-root .ms-brand .ms-eyebrow {
+  display: none;
+}
+.map-studio.ms-workspace-root .ms-brand h1 {
+  font-size: 17px;
+}
+.map-studio.ms-workspace-root .ms-emblem {
+  font-size: 24px;
+}
+.map-studio .ms-workspace {
+  grid-template-columns: minmax(320px, var(--chat-width, 50%)) 9px minmax(320px, 1fr);
+  min-height: 0;
+}
+.map-studio .ms-conversation {
+  overflow: hidden;
+}
+.map-studio .ms-chat-container {
+  min-height: 0;
+}
+.map-studio .ms-chat {
+  padding: 20px 24px;
+}
+.map-studio .ms-message {
+  margin-bottom: 20px;
+}
+.map-studio .ms-message-author time {
+  color: var(--ink-2);
+}
+.map-studio .ms-compose-area {
+  flex: none;
+  padding: 0 16px 10px;
+}
+.map-studio .ms-composer {
+  padding: 8px 10px;
+}
+.map-studio .ms-composer textarea {
+  min-height: 42px;
+}
+.map-studio .ms-compose-foot {
+  margin-top: 0;
+}
+.map-studio .ms-compose-foot > span {
+  font-size: 10px;
+}
+.map-studio .ms-composer-note {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.map-studio .ms-composer-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  font-size: 12px;
+  position: relative;
+}
+.map-studio .ms-composer-tools button {
+  min-height: 24px;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+.map-studio .ms-settings-popover {
+  margin-left: auto;
+}
+.map-studio .ms-settings-popover summary {
+  cursor: pointer;
+  padding: 6px;
+}
+.map-studio .ms-settings-popover fieldset {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  z-index: 10;
+  padding: 16px;
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.map-studio .ms-settings-popover legend {
+  font-size: 12px;
+}
+.map-studio .ms-settings-grid {
+  gap: 10px;
+}
+.map-studio .ms-brief {
+  margin: 0;
+}
+.map-studio .ms-brief summary {
+  padding: 5px 0;
+  font-size: 11px;
+}
+.map-studio .ms-brief p {
+  margin: 4px 0;
+  max-height: 100px;
+}
+.map-studio .ms-map-pane {
+  padding: 12px 16px;
+  overflow: hidden;
+  min-height: 0;
+}
+.map-studio .ms-map-heading {
+  flex: none;
+  min-height: 32px;
+  margin-bottom: 0;
+  gap: 8px;
+}
+.map-studio .ms-map-heading > strong {
+  font-size: 13px;
+}
+.map-studio .ms-map-status {
+  flex: none;
+  margin: 4px 0 8px;
+}
+.map-studio .ms-viewer-wrap {
+  flex: 1;
+  min-height: 0;
+}
+.map-studio .ms-map-viewer {
+  height: 100%;
+}
+.map-studio .ms-map-surface {
+  min-height: 0;
+}
+.map-studio .ms-build-details {
+  flex: none;
+  max-height: 35%;
+  overflow: auto;
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.map-studio .ms-build-details > summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: 12px;
+}
+.map-studio .ms-stage-area {
+  padding: 0;
+  overflow: visible;
+}
+.map-studio .ms-delivery {
+  flex: none;
+  padding: 8px 0 0;
+  margin: 0;
+}
+.map-studio .ms-delivery > div:first-child {
+  display: none;
+}
+.map-studio .ms-delivery-actions {
+  flex-wrap: wrap;
+}
+.map-studio .ms-build-card {
+  margin: 14px 0 20px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.map-studio .ms-build-card > span {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: 12px;
+}
+.map-studio .ms-build-card p {
+  margin: 8px 0;
+}
+.map-studio .ms-build-card button {
+  min-height: 30px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+@media (max-width: 899px) {
+  .map-studio.ms-workspace-root .ms-header {
+    padding: 8px 12px;
+  }
+  .map-studio .ms-workspace {
+    display: block;
+    min-height: 0;
+  }
+  .map-studio .ms-chat {
+    padding: 12px 16px;
+  }
+  .map-studio .ms-map-pane {
+    padding: 8px 12px;
+  }
+  .map-studio .ms-composer-tools {
+    font-size: 11px;
+  }
+}
+
+.map-studio .ms-map-image {
+  transition: transform 160ms;
+}
+.map-studio .ms-composer-tools {
+  flex-wrap: wrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-studio .ms-map-image {
+    transition: none;
+  }
 }

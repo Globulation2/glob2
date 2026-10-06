@@ -26,7 +26,7 @@
 struct GameEventFeedEvent
 {
 	GameEventType type;
-	/// Unit type for unit attacks; building shortTypeNum for building attacks
+	/// Unit type for unit attacks; building catalog ID for building attacks
 	/// and completions; the other team's number for conversions.
 	std::uint32_t subject;
 	/// Simulation tick the event was raised on.

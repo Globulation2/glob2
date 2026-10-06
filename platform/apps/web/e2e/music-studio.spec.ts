@@ -1,7 +1,8 @@
-import { mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 import { AxeBuilder } from '@axe-core/playwright';
+import type { MusicTrack } from '@glob2/protocol';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 test('music workspace exposes revision checks and keeps publication explicit', async ({
   page,
@@ -19,6 +20,29 @@ test('music workspace exposes revision checks and keeps publication explicit', a
     version = '22222222-2222-4222-8222-222222222222';
   const second = '33333333-3333-4333-8333-333333333333';
   const writes: string[] = [];
+  let holdTracks = false;
+  let releaseTracks: (() => void) | undefined;
+  const audioGate = new Promise<void>((resolve) => {
+    releaseTracks = resolve;
+  });
+  const fixtureDirectory = process.env['MUSIC_FIXTURE_DIR'];
+  const realAudio = fixtureDirectory
+    ? (JSON.parse(readFileSync(join(fixtureDirectory, 'result.json'), 'utf8')) as {
+        frames: number;
+        tracks: MusicTrack[];
+      })
+    : undefined;
+  if (fixtureDirectory)
+    await page.context().route('**/api/v1/music/studio-test/tracks/*', async (route) => {
+      if (holdTracks) await audioGate;
+      const mood = ['calm', 'building', 'combat'].indexOf(
+        new URL(route.request().url()).pathname.split('/').at(-1) ?? '',
+      );
+      return route.fulfill({
+        contentType: 'audio/ogg',
+        body: readFileSync(join(fixtureDirectory, `a${mood + 1}.opus`)),
+      });
+    });
   await page.route('**/api/v1/music-studio/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
     if (route.request().method() === 'POST') {
@@ -129,34 +153,86 @@ test('music workspace exposes revision checks and keeps publication explicit', a
         id: new URL(route.request().url()).pathname.split('/').at(-1),
         timelineId: 'a'.repeat(64),
         status: 'ready',
-        metadata: { license: 'CC-BY-4.0' },
-        frames: 3840000,
-        tracks: ['calm', 'building', 'combat'].map((m, i) => ({
-          mood: m,
-          url: '/unused',
-          waveform: Array.from(
-            { length: 160 },
-            (_, x) => Math.abs(Math.sin(x * 0.2 + i) * Math.cos(x * 0.061)) * 0.6,
-          ),
-        })),
+        metadata: {
+          title: 'Moss & morning light',
+          description: 'Woodwinds, harp and a warm pulse for a growing colony.',
+          license: 'CC-BY-4.0',
+        },
+        frames: realAudio?.frames ?? 3840000,
+        tracks: realAudio
+          ? realAudio.tracks.map((track) => ({
+              ...track,
+              url: `/api/v1/music/studio-test/tracks/${track.mood}`,
+            }))
+          : ['calm', 'building', 'combat'].map((m, i) => ({
+              mood: m,
+              url: '/unused',
+              waveform: Array.from(
+                { length: 160 },
+                (_, x) => Math.abs(Math.sin(x * 0.2 + i) * Math.cos(x * 0.061)) * 0.6,
+              ),
+            })),
       },
     }),
   );
+  if (info.project.name === 'desktop') await page.setViewportSize({ width: 1470, height: 730 });
+  const narrow = (page.viewportSize()?.width ?? 1280) < 850;
   await page.goto(`/music-studio/${id}`);
   await expect(page.getByRole('heading', { name: 'AI Music Studio' })).toBeVisible();
-  if (info.project.name === 'phone')
-    await page.getByRole('button', { name: 'Listen & inspect' }).click();
-  await expect(page.getByRole('heading', { name: 'Validation, in detail' })).toBeVisible();
-  await page.getByText('balance', { exact: true }).click();
+  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
+  const seek = page.getByRole('slider', { name: 'Playback position' });
+  await seek.scrollIntoViewIfNeeded();
+  await expect(seek).toBeInViewport();
+  const validation = page.getByRole('heading', { name: 'Audio quality checks' });
+  await validation.scrollIntoViewIfNeeded();
+  await expect(validation).toBeInViewport();
+  // Scrolling a hidden-overflow ancestor can reveal content in automation even
+  // though users cannot reach it. The workspace must contain its full content.
+  expect(
+    await page.locator('.music-studio').evaluate((root) => {
+      return root.scrollHeight <= root.clientHeight + 1;
+    }),
+  ).toBe(true);
+  await expect(page.getByRole('heading', { name: 'Audio quality checks' })).toBeVisible();
+  await page.getByText('Show technical results', { exact: false }).click();
+  await page.locator('.music-technical').getByText('Mix balance', { exact: true }).click();
   await expect(
-    page.getByText('A little warmth in the low mids. Listen under game effects.'),
+    page
+      .locator('.music-technical')
+      .getByText('A little warmth in the low mids. Listen under game effects.'),
   ).toBeVisible();
   await page.getByRole('button', { name: 'V1 ready' }).click();
   await expect(page.getByRole('heading', { name: 'Version 1', exact: true })).toBeVisible();
   await page.getByRole('combobox', { name: 'Compare revision' }).selectOption(second);
-  await expect(page.getByRole('heading', { name: 'Comparing saved version' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Version 2 · comparing' })).toBeVisible();
   await expect(page.locator('.music-player')).toHaveCount(1);
-  await page.getByRole('button', { name: 'Follow live' }).click();
+  await page.screenshot({ path: info.outputPath('studio-comparison.png'), fullPage: true });
+  if (realAudio) {
+    await page.getByRole('button', { name: 'Crossfade to Combat' }).click();
+    await page.getByRole('slider', { name: 'Volume' }).fill('0.4');
+    holdTracks = true;
+    await page.getByRole('button', { name: 'Play', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Loading music…' })).toBeVisible();
+    await page.screenshot({ path: info.outputPath('studio-loading.png'), fullPage: true });
+    holdTracks = false;
+    releaseTracks?.();
+    await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+    await page.getByRole('slider', { name: 'Playback position' }).fill('13');
+    await page.getByRole('button', { name: 'A · V1' }).click();
+    await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Crossfade to Combat' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(page.getByRole('slider', { name: 'Volume' })).toHaveValue('0.4');
+    expect(
+      Number(await page.getByRole('slider', { name: 'Playback position' }).inputValue()),
+    ).toBeGreaterThanOrEqual(13);
+    await page.getByRole('button', { name: 'Pause', exact: true }).click();
+  }
+
+  await page.getByRole('button', { name: 'Follow latest generation' }).click();
   await expect(page.getByRole('heading', { name: 'Version 2', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Revise this version' }).click();
   await page.getByLabel('Your idea or next change').fill('Keep the melody and soften the drums.');
@@ -165,8 +241,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
     'Keep the melody and soften the drums.',
   );
   await expect(page.getByRole('heading', { name: 'Refine your soundtrack' })).toBeVisible();
-  if (info.project.name === 'phone')
-    await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
   expect(writes).toHaveLength(0);
   await expect(page.getByRole('button', { name: 'Publish to music library' })).toBeVisible();
   expect(await page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')).toBe(

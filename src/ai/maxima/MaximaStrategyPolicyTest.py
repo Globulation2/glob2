@@ -95,12 +95,20 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
                        (ROOT / "data/maxima/base.strategy").read_text()):
             self.assertNotIn("swarm_worker_cap", source)
 
-    def test_every_registered_member_has_a_runtime_consumer(self) -> None:
+    def test_active_members_have_consumers_and_legacy_members_are_explicit(self) -> None:
         consumers = "\n".join(
             path.read_text()
             for path in (ROOT / "src/ai/maxima").glob("AIMaxima*.cpp")
             if path.name != "AIMaximaStrategy.cpp"
         )
+        # These saved-strategy keys deliberately survive the catalog transition.
+        # Keep the exception closed: any newly unconsumed active setting fails.
+        legacy = {
+            "model.inn_capacity_level1", "model.inn_capacity_level2",
+            "model.inn_capacity_level3", "economy.sustainable_inn_floor",
+            "economy.sustainable_inn_corn_divisor", "economy.sustainable_inn_offset",
+            "food.ticks_per_meal",
+        }
         unused = []
         for line in self.strategy.splitlines():
             match = re.match(
@@ -112,7 +120,8 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             member = match.group(2).strip()
             if not re.search(rf"\.{re.escape(member)}\b", consumers):
                 unused.append(key)
-        self.assertEqual([], unused)
+                self.assertIn("legacy", re.findall(r'"([^"]*)"', line)[-1].lower(), key)
+        self.assertEqual(legacy, set(unused))
 
     def test_every_parameter_has_an_explicit_impact_tier(self) -> None:
         specifications = [
@@ -202,9 +211,8 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "workers>MAXIMA_MAX_UNIT_WORKING?MAXIMA_MAX_UNIT_WORKING:workers",
             runtime,
         )
-        # Maxima keeps its own copy so it needs no engine change. The engine's
-        # GUI limit and the ceiling it enforces when executing the order are
-        # also 20; keep all three pinned to each other.
+        # Maxima's own request cap and the legacy GUI control remain 20.
+        # Order execution now enforces each catalog variant's assignment limit.
         self.assertIn("#define MAX_UNIT_WORKING 20", gui_header)
         self.assertIn(
             "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
@@ -213,7 +221,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         # Orders reject oversized requests before assignment; pin the guard to
         # this executor so another order handler cannot satisfy the contract.
         rejection = re.search(
-            r"if\s*\(\s*omb\.numberRequested\s*>\s*MAX_BUILDING_WORKER_REQUEST\s*\)"
+            r"if\s*\(\s*omb\.numberRequested\s*>\s*b->type->semantics\.assignmentLimit\s*\)"
             r"\s*(?:\{\s*)?return\s*;",
             modify_building,
         )

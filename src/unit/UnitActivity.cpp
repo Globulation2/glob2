@@ -46,7 +46,7 @@ void Unit::handleActivity(void)
 				if (b)
 				{
 					assert(destinationPurpose>=WALK);
-					assert(destinationPurpose<ARMOR);
+					assert(destinationPurpose<NB_ABILITY);
 					activity=ACT_UPGRADING;
 					attachedBuilding=b;
 					setTargetBuilding(b);

@@ -4,19 +4,26 @@
 #include "BuildingType.h"
 #include "MapEdit.h"
 #include "Unit.h"
+#include "GlobalContainer.h"
+#include <algorithm>
 
-void MapEdit::layoutOrDisableRow(FractionValueText* label, ValueScrollBox* scrollBox, bool shown, int& ypos)
+void MapEdit::addBuildingEditRow(FractionValueText* label, ValueScrollBox* control, bool shown)
 {
-	if(!shown)
+	label->disable(); control->disable();
+	if (shown) buildingEditRows.emplace_back(label,control);
+}
+
+void MapEdit::layoutBuildingEditRows()
+{
+	if (panelMode!=BuildingEditor) return;
+	const int visible=std::max(1,(globalContainer->gfx->getH()-252)/32);
+	buildingEditFirstRow=std::clamp(buildingEditFirstRow,0,std::max(0,int(buildingEditRows.size())-visible));
+	for (size_t i=0; i<buildingEditRows.size(); ++i)
 	{
-		label->disable();
-		scrollBox->disable();
-	}
-	else
-	{
-		label->area.y=ypos;
-		scrollBox->area.y=ypos+16;
-		ypos+=32;
+		auto [label,control]=buildingEditRows[i];
+		const int row=int(i)-buildingEditFirstRow;
+		label->area.y=252+row*32; control->area.y=label->area.y+16;
+		label->enabled=control->enabled=usesPhone() || (row>=0 && row<visible);
 	}
 }
 
@@ -37,7 +44,8 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 				{
 					{
 						Building *b=*virtualIt;
-						if ((b->posX==x) && (b->posY==y))
+						if (((x-b->posX)&game.map.getMaskW()) < b->type->width &&
+							((y-b->posY)&game.map.getMaskH()) < b->type->height)
 						{
 							gid=b->gid;
 							break;
@@ -60,140 +68,44 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 			enableOnlyGroup("building editor");
 			buildingInfoTitle->setBuilding(b);
 			buildingPicture->setBuilding(b);
-			bool hpLabel=false;
-			buildingHPLabel->setValues(&b->hp, &b->type->hpMax);
-			buildingHPScrollBox->setValues(&b->hp, &b->type->hpMax);
-			bool foodLabel=false;
-			buildingFoodQuantityLabel->setValues(&b->resources[WHEAT], &b->type->maxResource[WHEAT]);
-			buildingFoodQuantityScrollBox->setValues(&b->resources[WHEAT], &b->type->maxResource[WHEAT]);
-			bool assignedLabel=false;
-			buildingAssignedLabel->setValues(&b->maxUnitWorking);
-			buildingAssignedScrollBox->setValues(&b->maxUnitWorking);
-			bool workerRatioLabel=false;
-			buildingWorkerRatioLabel->setValues(&b->ratio[WORKER]);
-			buildingWorkerRatioScrollBox->setValues(&b->ratio[WORKER]);
-			bool explorerRatioLabel=false;
-			buildingExplorerRatioLabel->setValues(&b->ratio[EXPLORER]);
-			buildingExplorerRatioScrollBox->setValues(&b->ratio[EXPLORER]);
-			bool warriorRatioLabel=false;
-			buildingWarriorRatioLabel->setValues(&b->ratio[WARRIOR]);
-			buildingWarriorRatioScrollBox->setValues(&b->ratio[WARRIOR]);
-			bool cherryLabel=false;
-			buildingCherryLabel->setValues(&b->resources[CHERRY], &b->type->maxResource[CHERRY]);
-			buildingCherryScrollBox->setValues(&b->resources[CHERRY], &b->type->maxResource[CHERRY]);
-			bool orangeLabel=false;
-			buildingOrangeLabel->setValues(&b->resources[ORANGE], &b->type->maxResource[ORANGE]);
-			buildingOrangeScrollBox->setValues(&b->resources[ORANGE], &b->type->maxResource[ORANGE]);
-			bool pruneLabel=false;
-			buildingPruneLabel->setValues(&b->resources[PRUNE], &b->type->maxResource[PRUNE]);
-			buildingPruneScrollBox->setValues(&b->resources[PRUNE], &b->type->maxResource[PRUNE]);
-			bool stoneLabel=false;
-			buildingStoneLabel->setValues(&b->resources[STONE], &b->type->maxResource[STONE]);
-			buildingStoneScrollBox->setValues(&b->resources[STONE], &b->type->maxResource[STONE]);
-			bool bulletsLabel=false;
-			buildingBulletsLabel->setValues(&b->bullets, &b->type->maxBullets);
-			buildingBulletsScrollBox->setValues(&b->bullets, &b->type->maxBullets);
-			bool minimumLevel=false;
-			buildingMinimumLevelLabel->setValues(&b->minLevelToFlag);
-			buildingMinimumLevelScrollBox->setValues(&b->minLevelToFlag);
-			bool radius=false;
-			buildingRadiusLabel->setValues(&b->unitStayRange, &b->type->maxUnitStayRange);
-			buildingRadiusScrollBox->setValues(&b->unitStayRange, &b->type->maxUnitStayRange);
-			if(b->type->isBuildingSite)
+			buildingEditRows.clear(); buildingEditFirstRow=0;
+			const auto& spec=b->type->semantics;
+			buildingHPLabel->setValues(&b->hp,&b->type->hpMax);
+			buildingHPScrollBox->setValues(&b->hp,&b->type->hpMax);
+			buildingAssignedLabel->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit);
+			buildingAssignedScrollBox->setValues(&b->maxUnitWorking,&b->type->semantics.assignmentLimit);
+			buildingWorkerRatioLabel->setValues(&b->ratio[WORKER]); buildingWorkerRatioScrollBox->setValues(&b->ratio[WORKER]);
+			buildingExplorerRatioLabel->setValues(&b->ratio[EXPLORER]); buildingExplorerRatioScrollBox->setValues(&b->ratio[EXPLORER]);
+			buildingWarriorRatioLabel->setValues(&b->ratio[WARRIOR]); buildingWarriorRatioScrollBox->setValues(&b->ratio[WARRIOR]);
+			buildingBulletsLabel->setValues(&b->bullets,&b->type->maxBullets); buildingBulletsScrollBox->setValues(&b->bullets,&b->type->maxBullets);
+			buildingMinimumLevelLabel->setValues(&b->minLevelToFlag); buildingMinimumLevelScrollBox->setValues(&b->minLevelToFlag);
+			buildingWorkerLevelLabel->setValues(&b->minWorkerLevelToFlag); buildingWorkerLevelScrollBox->setValues(&b->minWorkerLevelToFlag);
+			buildingBombingRequirement=b->explorersRequireBombing;
+			buildingRadiusLabel->setValues(&b->unitStayRange,&b->type->maxUnitStayRange); buildingRadiusScrollBox->setValues(&b->unitStayRange,&b->type->maxUnitStayRange);
+			addBuildingEditRow(buildingHPLabel,buildingHPScrollBox,b->type->hpMax>0);
+			addBuildingEditRow(buildingAssignedLabel,buildingAssignedScrollBox,spec.assignmentLimit>0);
+			addBuildingEditRow(buildingWorkerRatioLabel,buildingWorkerRatioScrollBox,spec.production.recipes[WORKER].enabled);
+			addBuildingEditRow(buildingExplorerRatioLabel,buildingExplorerRatioScrollBox,spec.production.recipes[EXPLORER].enabled);
+			addBuildingEditRow(buildingWarriorRatioLabel,buildingWarriorRatioScrollBox,spec.production.recipes[WARRIOR].enabled);
+			for (int resource=0; resource<MAX_RESOURCES; ++resource)
 			{
-				hpLabel=true;
-				assignedLabel=true;
+				buildingResourceLabels[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
+				buildingResourceControls[resource]->setValues(&b->resources[resource],&b->type->maxResource[resource]);
+				addBuildingEditRow(buildingResourceLabels[resource],buildingResourceControls[resource],b->type->maxResource[resource]>0);
 			}
-			else if(b->shortTypeNum==IntBuildingType::SWARM_BUILDING)
-			{
-				hpLabel=true;
-				foodLabel=true;
-				assignedLabel=true;
-				workerRatioLabel=true;
-				explorerRatioLabel=true;
-				warriorRatioLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::FOOD_BUILDING)
-			{
-				hpLabel=true;
-				foodLabel=true;
-				assignedLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::HEAL_BUILDING)
-			{
-				hpLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING)
-			{
-				hpLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::SWIMSPEED_BUILDING)
-			{
-				hpLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
-			{
-				hpLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::SCIENCE_BUILDING)
-			{
-				hpLabel=true;
-			}
-			if(b->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
-			{
-				hpLabel=true;
-				assignedLabel=true;
-				stoneLabel=true;
-				bulletsLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::EXPLORATION_FLAG)
-			{
-				assignedLabel=true;
-				radius=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::WAR_FLAG)
-			{
-				assignedLabel=true;
-				minimumLevel=true;
-				radius=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::CLEARING_FLAG)
-			{
-				assignedLabel=true;
-				minimumLevel=true;
-				radius=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::STONE_WALL)
-			{
-				hpLabel=true;
-			}
-			else if(b->shortTypeNum==IntBuildingType::MARKET_BUILDING)
-			{
-				hpLabel=true;
-				assignedLabel=true;
-				cherryLabel=true;
-				orangeLabel=true;
-				pruneLabel=true;
-			}
-
-			int ypos=252;
-			layoutOrDisableRow(buildingHPLabel, buildingHPScrollBox, hpLabel, ypos);
-			layoutOrDisableRow(buildingFoodQuantityLabel, buildingFoodQuantityScrollBox, foodLabel, ypos);
-			layoutOrDisableRow(buildingAssignedLabel, buildingAssignedScrollBox, assignedLabel, ypos);
-			layoutOrDisableRow(buildingWorkerRatioLabel, buildingWorkerRatioScrollBox, workerRatioLabel, ypos);
-			layoutOrDisableRow(buildingExplorerRatioLabel, buildingExplorerRatioScrollBox, explorerRatioLabel, ypos);
-			layoutOrDisableRow(buildingWarriorRatioLabel, buildingWarriorRatioScrollBox, warriorRatioLabel, ypos);
-			layoutOrDisableRow(buildingCherryLabel, buildingCherryScrollBox, cherryLabel, ypos);
-			layoutOrDisableRow(buildingOrangeLabel, buildingOrangeScrollBox, orangeLabel, ypos);
-			layoutOrDisableRow(buildingPruneLabel, buildingPruneScrollBox, pruneLabel, ypos);
-			layoutOrDisableRow(buildingStoneLabel, buildingStoneScrollBox, stoneLabel, ypos);
-			layoutOrDisableRow(buildingBulletsLabel, buildingBulletsScrollBox, bulletsLabel, ypos);
-			layoutOrDisableRow(buildingMinimumLevelLabel, buildingMinimumLevelScrollBox, minimumLevel, ypos);
-			layoutOrDisableRow(buildingRadiusLabel, buildingRadiusScrollBox, radius, ypos);
+			addBuildingEditRow(buildingBulletsLabel,buildingBulletsScrollBox,b->type->maxBullets>0);
+			addBuildingEditRow(buildingMinimumLevelLabel,buildingMinimumLevelScrollBox,b->type->zonable[WARRIOR]);
+			addBuildingEditRow(buildingWorkerLevelLabel,buildingWorkerLevelScrollBox,b->type->zonable[WORKER]);
+			addBuildingEditRow(buildingBombingLabel,buildingBombingScrollBox,b->type->zonable[EXPLORER]);
+			addBuildingEditRow(buildingRadiusLabel,buildingRadiusScrollBox,b->type->maxUnitStayRange>0);
+			layoutBuildingEditRows();
 		}
 	}
 	else if(action=="update building")
 	{
+		if (selectionMode==EditingBuilding)
+			if (auto* b=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)])
+				b->explorersRequireBombing=buildingBombingRequirement!=0;
 		hasMapBeenModified = true;
 	}
 	else

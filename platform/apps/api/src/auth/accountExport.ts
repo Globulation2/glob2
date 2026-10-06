@@ -502,7 +502,7 @@ export async function exportAccount(
 
       const skins = await tx
         .selectFrom('colony_skins')
-        .select(['id', 'kind', 'name', 'entitlement', 'disabled_at', 'created_at'])
+        .select(['id', 'kind', 'name', 'entitlement', 'disabled_at', 'archived_at', 'created_at'])
         .where('owner_account_id', '=', id)
         .orderBy('created_at')
         .execute();
@@ -531,6 +531,13 @@ export async function exportAccount(
           'updated_at',
         ])
         .where('account_id', '=', id)
+        .execute();
+      const designDrafts = await tx
+        .selectFrom('colony_skin_designs as d')
+        .innerJoin('colony_skins as s', 's.id', 'd.skin_id')
+        .selectAll('d')
+        .select('s.name')
+        .where('s.owner_account_id', '=', id)
         .execute();
       const skinMatches = await tx
         .selectFrom('match_colony_skins')
@@ -883,7 +890,7 @@ export async function exportAccount(
             versions: rows(skinVersions.filter((version) => version.skin_id === skin.id)),
           })),
           equipment: rows(skinEquipment),
-          drafts: skinDrafts.map(({ image, material, ...draft }) => ({
+          drafts: [...skinDrafts, ...designDrafts].map(({ image, material, ...draft }) => ({
             ...clean(draft),
             imageBase64: image.toString('base64'),
             materialBase64: material.toString('base64'),

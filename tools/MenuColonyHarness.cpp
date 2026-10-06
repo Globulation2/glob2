@@ -35,6 +35,8 @@
 #include "ReplayWriter.h"
 #include "DatasetWriter.h"
 #include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <sstream>
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -623,6 +625,12 @@ int main(int argc, char **argv)
 				"real match checksum and RNG unaffected by menu");
 		const auto datasetPath =
 			(std::filesystem::temp_directory_path() / "glob2-menu-isolation.gds").string();
+		const auto emptyDatasetPath = datasetPath + ".empty";
+		{
+			DatasetWriter emptyDataset;
+			require(emptyDataset.open(emptyDatasetPath), "open empty recording control");
+			emptyDataset.close();
+		}
 		globals.datasetWriter = std::make_unique<DatasetWriter>();
 		require(globals.datasetWriter->open(datasetPath), "open recording isolation fixture");
 		auto *dataset = globals.datasetWriter.get();
@@ -631,9 +639,16 @@ int main(int argc, char **argv)
 			theme.colony->update(4000000 + i * 40);
 		require(globals.datasetWriter.get() == dataset, "restore dataset writer");
 		globals.datasetWriter.reset();
-		require(std::filesystem::file_size(datasetPath) == 8,
+		const auto readDataset = [](const std::string &path) {
+			std::ifstream stream(path, std::ios::binary);
+			require(stream.good(), "read recording isolation fixture");
+			return std::string(std::istreambuf_iterator<char>(stream),
+						   std::istreambuf_iterator<char>());
+		};
+		require(readDataset(datasetPath) == readDataset(emptyDatasetPath),
 				"menu cannot append training records");
 		std::filesystem::remove(datasetPath);
+		std::filesystem::remove(emptyDatasetPath);
 		MenuColony missing;
 		require(!missing.load("data/menu/does-not-exist.bin"), "missing asset fallback");
 		const auto invalidPath =

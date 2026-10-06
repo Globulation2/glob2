@@ -73,6 +73,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	medical = static_cast<Medical>(readState("medical", MED_DAMAGED));
 	activity = static_cast<Activity>(readState("activity", ACT_UPGRADING));
 	displacement = static_cast<Displacement>(readState("displacement", DIS_EXITING_BUILDING));
+	serviceResourcesReserved = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG
+		? readState("serviceResourcesReserved", 1) != 0
+		: activity == ACT_UPGRADING && displacement != DIS_EXITING_BUILDING;
 	movement = static_cast<Movement>(readState("movement", MOV_ATTACKING_TARGET));
 	action = static_cast<Abilities>(readState("action", NB_ABILITY - 1));
 	if ((displacement % 2) != 0 || movement == 10 ||
@@ -121,12 +124,23 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		&& canLearn[BUILD] && level[HARVEST] != level[BUILD])
 		setWorkerLevel(std::max(level[HARVEST], level[BUILD]));
 
+	constructionLevel = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG
+		? stream->readSint32("constructionLevel") : level[BUILD];
+	if (constructionLevel < 0 || constructionLevel >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid construction qualification");
 
 	experience = stream->readSint32("experience");
 	experienceLevel = stream->readSint32("experienceLevel");
 
 	destinationPurpose = stream->readSint32("destinationPurpose");
 	carriedResource = stream->readSint32("carriedRessource");
+	carriedPacket={};
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG)
+	{
+		carriedPacket.numerator=stream->readUint32("carriedNumerator");
+		carriedPacket.denominator=stream->readUint32("carriedDenominator");
+		if (!carriedPacket.numerator || !carriedPacket.denominator || carriedPacket.denominator>1000000 || carriedPacket.numerator>carriedPacket.denominator)
+			throw std::runtime_error("Invalid carried resource packet");
+	}
 	if (carriedResource < -1 || carriedResource >= MAX_RESOURCES || destinationPurpose < -1 || destinationPurpose > FEED)
 		throw std::runtime_error("Invalid unit resource or destination");
 	if ((activity == ACT_FILLING && (destinationPurpose < 0 || destinationPurpose >= MAX_RESOURCES)) ||
@@ -195,6 +209,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeUint32((Uint32)medical, "medical");
 	stream->writeUint32((Uint32)activity, "activity");
 	stream->writeUint32((Uint32)displacement, "displacement");
+	stream->writeUint32(serviceResourcesReserved, "serviceResourcesReserved");
 	stream->writeUint32((Uint32)movement, "movement");
 	stream->writeUint32((Uint32)action, "action");
 	stream->writeSint32(targetX, "targetX");
@@ -228,11 +243,14 @@ void Unit::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeLeaveSection();
 
+	stream->writeSint32(constructionLevel, "constructionLevel");
 	stream->writeSint32(experience, "experience");
 	stream->writeSint32(experienceLevel, "experienceLevel");
 
 	stream->writeSint32(destinationPurpose, "destinationPurpose");
 	stream->writeSint32(carriedResource, "carriedRessource");
+	stream->writeUint32(carriedPacket.numerator,"carriedNumerator");
+	stream->writeUint32(carriedPacket.denominator,"carriedDenominator");
 	stream->writeSint32(jobTimer, "jobTimer");
 	stream->writeUint8(previousClearingArea.has_value(), "hasClearingClaim");
 	if (previousClearingArea)
@@ -302,7 +320,7 @@ bool Unit::integrity()
 
 Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 {
-	Uint32 cs=0;
+	Uint32 cs=(serviceResourcesReserved ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
 	cs^=typeNum;
 	if (checkSumsVector)
@@ -434,6 +452,8 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(destinationPurpose);// [31]
 	cs^=carriedResource;
+	cs=rotl1(cs); cs^=carriedPacket.numerator;
+	cs=rotl1(cs); cs^=carriedPacket.denominator;
 	if (checkSumsVector)
 		checkSumsVector->push_back(carriedResource);// [33]
 

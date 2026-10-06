@@ -34,7 +34,7 @@ bool GameGUIGhostBuildingManager::isGhostBuilding(int x, int y, int w, int h)
 {
 	for(const GhostBuilding& ghost : buildings)
 	{
-		const BuildingType *bt = globalContainer->buildingsTypes.get(ghost.typeNum);
+		const BuildingType *bt = game.buildingsTypes.get(ghost.typeNum);
 		// Two footprints on a torus collide only if they overlap on both axes
 		// independently.
 		if(wrappedRangesOverlap(x, w, ghost.x, bt->width, game.map.getW()) &&
@@ -67,7 +67,7 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 {
 	for(const GhostBuilding& ghost : buildings)
 	{
-		BuildingType *bt = globalContainer->buildingsTypes.get(ghost.typeNum);
+		BuildingType *bt = game.buildingsTypes.get(ghost.typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
 		sprite->setBaseColor(game.teams[localTeam]->color);
 

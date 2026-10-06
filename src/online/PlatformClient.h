@@ -223,7 +223,7 @@ class PlatformClient
 	// also be an absolute URL on this instance's origin. Authenticated like rest().
 	RequestId restRaw(HttpFetch::Method method, const std::string &path, std::string body,
 					  const std::string &contentType, ResponseHandler handler,
-					  std::size_t responseLimit = 16 * 1024 * 1024);
+					  std::size_t responseLimit = 32 * 1024 * 1024);
 	// GET /api/v1/instance, fetched once per start() and shared: callers
 	// while it is in flight wait for the same answer, later callers get the
 	// cached one (delivered from update(), never inside this call). A failed
@@ -397,7 +397,7 @@ class PlatformScope
 				   ResponseHandler handler);
 	RequestId restRaw(HttpFetch::Method method, const std::string &path, std::string body,
 					  const std::string &contentType, ResponseHandler handler,
-					  std::size_t responseLimit = 16 * 1024 * 1024);
+					  std::size_t responseLimit = 32 * 1024 * 1024);
 	RequestId instanceInfo(ResponseHandler handler);
 	// The client's own account calls: not cancelled (the client still updates
 	// account()), only the handler is guarded.

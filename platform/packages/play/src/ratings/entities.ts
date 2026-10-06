@@ -4,11 +4,34 @@
 // an older revision of the same AI earned.
 import type { Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
-import type { AiId } from '@glob2/protocol';
+import { simVersionKey, type AiId, type SimVersion } from '@glob2/protocol';
+import { catalogRulesVersion } from '@glob2/protocol/node';
 import { DEFAULT_RATING, aiSeedRating } from './scale.ts';
 
 type Db = Kysely<Database>;
 export type RatedAi = Exclude<AiId, 'none'>;
+
+/** Current default-catalog rating identities; executable routing stays unchanged. */
+export async function currentCatalogRulesVersions(
+  db: Db,
+  versions: readonly SimVersion[],
+): Promise<SimVersion[]> {
+  if (!versions.length) return [];
+  const agents = await db
+    .selectFrom('engine_agents')
+    .select(['sim_version', 'building_catalog_hash'])
+    .where('sim_version', 'in', versions.map(simVersionKey))
+    .where('building_catalog_hash', 'is not', null)
+    .orderBy('last_seen_at', 'desc')
+    .execute();
+  return versions.map((version) =>
+    catalogRulesVersion(
+      version,
+      agents.find((agent) => agent.sim_version === simVersionKey(version))?.building_catalog_hash ??
+        undefined,
+    ),
+  );
+}
 
 export async function ensureAccountEntity(db: Db, accountId: string): Promise<string> {
   await db

@@ -739,7 +739,8 @@ record. `glob2 --sim-version` prints the JSON.
   followed by the simulation data files. The revision is hashed first as a pseudo-file
   with path `#sim-revision` and the revision in decimal ASCII as its content. The data
   files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
-  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`) and the USL runtime
+  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default building
+  manifest (`data/buildings/manifest.json`) and every definition it references, and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number
   and the content, with every CR LF pair replaced by LF so a Windows checkout with
@@ -750,6 +751,25 @@ record. `glob2 --sim-version` prints the JSON.
 A unit test checks that the list covers every file in those directories.
 `deploy/sim_version.py` computes the same key from a source tree (engine-agent images
 are labelled with it).
+
+MatchSetup schema 1 additionally accepts `buildingCatalog: {snapshot, hash}`.
+The snapshot is canonical catalog JSON (at most 8 MiB of UTF-8), and `hash` is its
+SHA-256. Maps, saves, LAN rooms, online rooms, reconnects, and match records retain
+that snapshot. A concrete map's catalog is authoritative: a setup with a different
+catalog is rejected. Embedded experiment declarations validate saved keys without
+changing the process-wide experiments UI registry. Older schema-1 setups omit the
+field and use the legacy map catalog.
+
+Engine jobs, relay tickets and client compatibility still use the executable's
+sim version. AI ratings use a separate `matches.rules_identity`: the original sim
+version with dataHash replaced by SHA-256 of
+`glob2-building-rules-v1\n<engine-version-key>\n<catalog-hash>` (no trailing newline).
+Absent catalog metadata keeps the historical identity. This separates results for
+different building rules without requiring a separate verifier executable for each
+catalog. Map validation/generation records the catalog metadata; current engine-agent
+heartbeats advertise their default catalog hash for default AI ladder selection.
+Native online text messages and match setup records accept up to 32 MiB to leave
+room for JSON escaping of an 8 MiB embedded snapshot; binary turn limits are unchanged.
 
 **Bump `SIM_REVISION` with every simulation change.** Everything else the simulation
 depends on is compiled in, and `VERSION_MINOR` tracks the save format, so nothing else
@@ -790,7 +810,7 @@ bundleInterval   u8
 checksumInterval u16
 humanSeatMask    u32
 endTick          u32   the final horizon
-setupJson        text32 (≤ 4 MiB; MatchSetup JSON, opaque to C++ here)
+setupJson        text32 (≤ 32 MiB; MatchSetup JSON, opaque to C++ here)
 mapHash          32 bytes (SHA-256 of the decompressed map bytes)
 turnCount        u32,  turnCount × (u32 tick, u8 seat, bytes16 order)   sorted by (tick, seat)
 reportCount      u32,  reportCount × (u32 tick, u8 seat, u32 checksum)   sorted by (tick, seat)
@@ -922,3 +942,10 @@ requires identical traces (see
 simulation change makes it stale and must bump `SIM_REVISION`; `python3
 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`
 records a fresh match and trace.
+
+Building catalogs are part of match rules identity: a setup carries the canonical
+embedded catalog and its hash, and clients and verifiers compare it with the map
+before starting. A different catalog, or an omitted catalog for a custom map, is
+rejected. Historical schema-1 setups without catalog fields are accepted only
+against the frozen legacy stock catalog. Engine executable routing still uses
+the engine simulation version; catalog-specific rules identity partitions ratings.

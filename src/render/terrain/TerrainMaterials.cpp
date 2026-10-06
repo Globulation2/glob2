@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <cstdlib>
+#include <iterator>
 #include <limits>
 #include <stdexcept>
 #include <set>
@@ -65,21 +66,6 @@ int wrap(int x, int size)
 {
 	x %= size;
 	return x < 0 ? x + size : x;
-}
-// Artist-authored piecewise-linear contours; zero at both sample centers. Q12 in/out.
-int wave(const Profile &profile, int t, unsigned motif)
-{
-	// Version-1 packs keep their four motifs. Later packs read any curve count
-	// and quadruple the variety with mirrored and negated readings of each one.
-	const bool varied = !profile.legacyEdges;
-	const auto &points = profile.contours[varied ? motif % profile.contours.size() : motif & 3];
-	if (varied && (motif & 0x100))
-		t = 4096 - t;
-	const int sign = varied && (motif & 0x200) ? -1 : 1;
-	const int segments = int(points.size()) - 1;
-	const int scaled = t * segments;
-	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
-	return sign * (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
 }
 } // namespace
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt)
@@ -299,6 +285,27 @@ std::array<unsigned, 4> legacyCorners(unsigned frame)
 		result[i] = (mask & (1u << i)) ? (shore ? 1 : 2) : (shore ? 0 : 1);
 	return result;
 }
+PreparedCoverage::Curve::Curve(const Profile *p, unsigned motif) : profile(p)
+{
+	// Version-1 packs keep their four motifs. Later packs read any curve count
+	// and quadruple the variety with mirrored and negated readings of each one.
+	const bool varied = !p->legacyEdges;
+	const auto &curve = p->contours[varied ? motif % p->contours.size() : motif & 3];
+	points = curve.data();
+	segments = int(curve.size()) - 1;
+	mirror = varied && (motif & 0x100);
+	sign = varied && (motif & 0x200) ? -1 : 1;
+}
+int PreparedCoverage::Curve::wave(int t) const
+{
+	// Artist-authored piecewise-linear contours; zero at both sample centers.
+	// Q12 in/out, with the original rounding.
+	if (mirror)
+		t = 4096 - t;
+	const int scaled = t * segments;
+	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
+	return sign * (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
+}
 PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 {
 	// A single world-space field bends the complete material partition. Using
@@ -308,7 +315,7 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 	// the only displacement that consumes the eight-pixel halo of prepared patches.
 	legacy = c.version == 1;
 	constexpr int scales[] = {64, 32, 8};
-	for (unsigned i = 0; i < warp.size(); ++i)
+	for (unsigned i = 0; i < std::size(warp); ++i)
 	{
 		const int amplitude = c.boundaryWarp[i];
 		if (!amplitude)
@@ -357,9 +364,10 @@ PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 					c.materials[a].salt ^ c.materials[b].salt ^ (vertical ? 0x46ac23u : 0x973adafu);
 				const auto &profile = c.profiles[c.profileFor(a, b)];
 				const auto motif = hash(wrap(x, r.width * 2), wrap(y, r.height * 2), salt);
-				return Curve{&profile, motif,
-							 std::clamp(wave(profile, 2048, motif) * profile.roughness / 256,
-										-profile.amplitude, profile.amplitude)};
+				Curve curve{&profile, motif};
+				curve.anchor = std::clamp(curve.wave(2048) * profile.roughness / 256,
+										  -profile.amplitude, profile.amplitude);
+				return curve;
 			};
 			// Adjoining patches use the same wrapped coordinates and endpoint keys.
 			patch.edges = {
@@ -537,7 +545,7 @@ Coverage PreparedCoverage::at(int px, int py) const
 		// crossing and taper to the vertices; put the detail in interior shears.
 		if (!curve.profile->legacyEdges)
 			return curve.anchor * std::min(t, 4096 - t) / 2048;
-		return std::clamp(wave(*curve.profile, t, curve.motif) * curve.profile->roughness / 256,
+		return std::clamp(curve.wave(t) * curve.profile->roughness / 256,
 						  -curve.profile->amplitude, curve.profile->amplitude);
 	};
 	const int du = (edge(patch.edges[0], u) * (4096 - v) + edge(patch.edges[1], u) * v) / 4096;
@@ -550,8 +558,8 @@ Coverage PreparedCoverage::at(int px, int py) const
 	// window stays fold-free up to the four-pixel amplitude limit.
 	const auto contour = [](const Curve &curve, int t)
 	{
-		return curve.profile ? std::clamp(wave(*curve.profile, t, curve.motif) *
-											  curve.profile->roughness / curve.profile->shearScale,
+		return curve.profile ? std::clamp(curve.wave(t) * curve.profile->roughness /
+											  curve.profile->shearScale,
 										  -curve.profile->amplitude, curve.profile->amplitude)
 							 : 0;
 	};

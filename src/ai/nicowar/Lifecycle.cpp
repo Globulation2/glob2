@@ -366,6 +366,11 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 		runtime.add_management_order(mo_clearing);
 		runtime.add_management_order(mo_remove_clearing);
 	}
+ if(message.starts_with("update services ")) {
+  const int id=std::stoi(message.substr(16));
+  if((runtime.get_building_register().provides(id,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(id,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(id,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior)))) manage_swarm(runtime,id);
+  if(runtime.get_building_register().provides(id,BuildingDemand::Feed)) manage_inn(runtime,id);
+ }
 	if(message.substr(0,13) == "update swarm ")
 	{
 		int id=std::stoi(message.substr(13, message.size()-1));
@@ -379,17 +384,17 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 	if(message.substr(0,16)  == "attack finished ")
 	{
 		int id=std::stoi(message.substr(16, message.size()-1));
-		attack_flags.erase(std::find(attack_flags.begin(), attack_flags.end(), id));
+		if(auto found=std::find(attack_flags.begin(),attack_flags.end(),id);found!=attack_flags.end()) attack_flags.erase(found);
 	}
 	if(message.substr(0,19)  == "guard flag deleted ")
 	{
 		int id=std::stoi(message.substr(19, message.size()-1));
-		defense_flags.erase(std::find(defense_flags.begin(), defense_flags.end(), id));
+		if(auto found=std::find(defense_flags.begin(),defense_flags.end(),id);found!=defense_flags.end()) defense_flags.erase(found);
 	}
 	if(message.substr(0,29)  == "explorer attack flag deleted ")
 	{
 		int id=std::stoi(message.substr(29, message.size()-1));
-		explorer_attack_flags.erase(std::find(explorer_attack_flags.begin(), explorer_attack_flags.end(), id));
+		if(auto found=std::find(explorer_attack_flags.begin(),explorer_attack_flags.end(),id);found!=explorer_attack_flags.end()) explorer_attack_flags.erase(found);
 	}
 	if(message == "finished digging out")
 	{
@@ -417,15 +422,15 @@ void NewNicowar::initialize(Runtime& runtime)
 	BuildingSearch bs(runtime);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if((runtime.get_building_register().provides(*i,BuildingDemand::ProduceWorker) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceExplorer)) || runtime.get_building_register().provides(*i,static_cast<int>(AIPlanning::BuildingIntent::ProduceWarrior))))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		if(runtime.get_building_register().provides(*i,BuildingDemand::Feed))
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, RecurringInputStock, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			runtime.add_management_order(mo_tracker);
 		}

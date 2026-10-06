@@ -58,7 +58,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
         if (torusPointerDown)
         {
             if (hit && selectionMode == BUILDING_SELECTION && selectionPushed &&
-                selectedBuildingOrNull() && selectedBuildingOrNull()->type->isVirtual)
+                selectedBuildingOrNull() && selectedBuildingOrNull()->type->semantics.relocatable)
                 moveFlag(mx, my, true);
             else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
             {

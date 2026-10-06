@@ -1,3 +1,4 @@
+#include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -27,8 +28,7 @@ void BuildingInfoTitle::draw()
 
 	// draw "building" of "player"
 	std::string title;
-	std::string key = "[" + buildingType->type + "]";
-	title += Toolkit::getStringTable()->getString(key.c_str());
+	title += buildingDisplayName(*buildingType);
 	{
 		title += " (";
 		title += displayPlayerName(*selBuild->owner);

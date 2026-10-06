@@ -3,7 +3,8 @@
 Production inputs are separated by origin: `original-derived/` contains preserved
 artist exports and Blender unit renders; `authored/` contains rendered SVG
 markers; `ai-upscaled/` contains reviewed enhanced sprites; `ai-materials/`
-contains generated terrain and water; `resampled-masks/` contains deterministic
+contains historical generated terrain and water; `original-materials/` contains
+original-based grass, sand and their connected composites; `resampled-masks/` contains deterministic
 mask resizes. `atlases/` holds the padded mip levels, and `pack-metadata/` the
 PNG source index, provenance and hashes. Classic fallback assets remain unchanged.
 
@@ -18,3 +19,6 @@ runtime alpha, geometry, hashes and encoding policy. Future candidates use the s
 complete reviewed selection explicitly, with base/team pairs and hashes intact.
 The [unit pipeline](../../../tools/unit-animation/README.md) preserves the
 original Blender sources and controls animation exports.
+Reproduce terrain using `tools/artwork/terrain_materials.py`; its retained sources,
+settings and mask records are under `datasrc/gfx/derived/terrain-materials-v1`. Packaging copies these
+approved finals and never generates new texture details.

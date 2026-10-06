@@ -45,7 +45,7 @@ struct Request
 	// Whole-request deadline: name resolution, connection, TLS and transfer.
 	std::chrono::milliseconds timeout{30000};
 	// Larger responses fail rather than exhaust memory.
-	std::size_t responseLimit = 16 * 1024 * 1024;
+	std::size_t responseLimit = 32 * 1024 * 1024;
 };
 
 enum class State

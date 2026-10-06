@@ -20,6 +20,9 @@
 #include "GameDiagnostics.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
+#include "AIMaximaBuildings.h"
+#include "AIMaximaFeedingEstimate.h"
+#include "AIMaximaFeedingDemand.h"
 #include "AIMaximaWorldHelpers.h"
 #include "AIMaximaSwarmController.h"
 #include "AIMaximaFoodSupply.h"
@@ -53,6 +56,34 @@ namespace
 {
 	const int PREEMPTIVE_UNREACHABLE=-1;
 
+    int initialCarrierRequest(const BuildingType& type,const MaximaStrategy& strategy)
+    {
+        int requested=-1;
+        if(type.semantics.production.enabledUnitMask)requested=strategy.staffing.new_swarm_workers;
+        if(type.maxUnitInside>0)requested=std::max(requested,strategy.staffing.new_inn_workers);
+        if(type.shootingRange>0 && type.shootRhythm>0)requested=std::max(requested,strategy.staffing.completed_tower_workers);
+        if(requested<0)requested=type.presentation.defaultAssigned<0?2:type.presentation.defaultAssigned;
+        return std::clamp(requested,0,std::min(type.semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+    }
+
+    FeedingEstimate operatingEstimate(const BuildingType& type,const MaximaStrategy& strategy,const GameHeader& rules,bool constrainHauling=true)
+    {
+        FeedingPlan plan;
+        plan.constrainHauling=constrainHauling;
+        // The same physical staffing request supports every active recipe.
+        // The feedback controller may later adjust it; temporary shortfalls are
+        // represented by coverage, not by inventing demand for another building.
+        plan.feeding=!rules.isHungerDisabled();
+        plan.training=!rules.isUnitUpgradesDisabled() && strategy.upgrades.enabled;
+        plan.projectiles=!rules.isPeacefulModeEnabled();
+        if(rules.isPeacefulModeEnabled())plan.productionMask&=~(1u<<WARRIOR);
+        plan.carriers=initialCarrierRequest(type,strategy);
+        plan.oneWayTravelTicks=strategy.farming.management_radius*strategy.food.carrier_ticks_per_tile;
+        plan.handlingTicks=strategy.food.carrier_fixed_ticks_per_trip;
+        return estimateFeeding(type,plan);
+    }
+
+
 	int clamp_score(int value)
 	{
 		return std::max(0, std::min(100, value));
@@ -81,17 +112,13 @@ namespace
 		return true;
 	}
 
-	int reconnaissance_building_value(int type,
-		const MaximaStrategy::Reconnaissance& policy)
+	int reconnaissance_building_value(const Game& game,int type,const MaximaStrategy::Reconnaissance& policy)
 	{
-		switch(type)
-		{
-			case IntBuildingType::SWARM_BUILDING: return policy.swarm_building_value;
-			case IntBuildingType::FOOD_BUILDING: return policy.inn_building_value;
-			case IntBuildingType::ATTACK_BUILDING: return policy.barracks_building_value;
-			case IntBuildingType::SCIENCE_BUILDING: return policy.school_building_value;
-			default: return policy.default_building_value;
-		}
+	 const auto* b=game.buildingsTypes.get(type);if(!b)return policy.default_building_value;
+	 int value=policy.default_building_value;
+	 for(const auto& entry:std::initializer_list<std::pair<int,int>>{{AIMaximaBuildings::Production,policy.swarm_building_value},{AIMaximaBuildings::Feeding,policy.inn_building_value},{AIMaximaBuildings::CombatTraining,policy.barracks_building_value},{AIMaximaBuildings::ConstructionTraining,policy.school_building_value}})
+	  if(AIMaximaBuildings::serves(game,*b,entry.first))value=std::max(value,entry.second);
+	 return value;
 	}
 
 	struct EconomicWatchSite
@@ -599,6 +626,8 @@ void Maxima::emit_ablation_opportunities(Context& runtime) const
 Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 {
 	StrategicSnapshot state;
+    collect_building_profiles();
+    std::array<long long,3> recurringMeals{};
 	state.tick=timer;
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	state.population=stat->totalUnit;
@@ -617,20 +646,20 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		state.hungry=state.critical_food=state.unserved_food=0;
 	state.need_heal=stat->needHeal;
 	state.buildings=stat->totalBuilding;
-	state.swarms=stat->numberBuildingPerType[IntBuildingType::SWARM_BUILDING];
-	state.inns=stat->numberBuildingPerType[IntBuildingType::FOOD_BUILDING];
-	state.inn_level1=stat->numberBuildingPerTypePerLevel[IntBuildingType::FOOD_BUILDING][1];
-	state.inn_level2=stat->numberBuildingPerTypePerLevel[IntBuildingType::FOOD_BUILDING][3];
-	state.inn_level3=stat->numberBuildingPerTypePerLevel[IntBuildingType::FOOD_BUILDING][5];
-	state.barracks=stat->numberBuildingPerType[IntBuildingType::ATTACK_BUILDING];
-	state.schools=stat->numberBuildingPerType[IntBuildingType::SCIENCE_BUILDING];
-	state.school_level1=stat->numberBuildingPerTypePerLevel[IntBuildingType::SCIENCE_BUILDING][1];
-	state.school_level2=stat->numberBuildingPerTypePerLevel[IntBuildingType::SCIENCE_BUILDING][3];
-	state.school_level3=stat->numberBuildingPerTypePerLevel[IntBuildingType::SCIENCE_BUILDING][5];
-	state.pools=stat->numberBuildingPerType[IntBuildingType::SWIMSPEED_BUILDING];
-	state.hospitals=stat->numberBuildingPerType[IntBuildingType::HEAL_BUILDING];
-	state.racetracks=stat->numberBuildingPerType[IntBuildingType::WALKSPEED_BUILDING];
-	state.towers=stat->numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING];
+	for(int id=0;id<Building::MAX_COUNT;++id) {
+	 const auto* b=runtime.player->team->myBuildings[id];if(!b||b->buildingState==Building::DEAD)continue;
+	 const unsigned roles=AIMaximaBuildings::capabilities(*runtime.player->game,*b->type);
+	 auto has=[&](int role){return bool(roles&AIMaximaBuildings::roleBit(role));};
+	 state.swarms+=has(AIMaximaBuildings::Production);state.inns+=has(AIMaximaBuildings::Feeding);
+	 state.barracks+=has(AIMaximaBuildings::CombatTraining);state.schools+=has(AIMaximaBuildings::ConstructionTraining);
+	 state.pools+=has(AIMaximaBuildings::SwimTraining);state.hospitals+=has(AIMaximaBuildings::Healing);
+	 state.racetracks+=has(AIMaximaBuildings::WalkTraining);state.towers+=has(AIMaximaBuildings::ProjectileDefense);
+	 if(!b->type->isBuildingSite) {
+	  const int level=std::min(3,AIMaximaBuildings::lineagePosition(*runtime.player->game,b->typeNum));
+	  if(has(AIMaximaBuildings::Feeding)){if(level==1)++state.inn_level1;else if(level==2)++state.inn_level2;else ++state.inn_level3;}
+	  if(has(AIMaximaBuildings::ConstructionTraining)){if(level==1)++state.school_level1;else if(level==2)++state.school_level2;else ++state.school_level3;}
+	 }
+	}
 	state.total_hp=stat->totalHP;
 	state.attack_power=stat->totalAttackPower;
 	state.prestige=runtime.player->team->prestige;
@@ -643,10 +672,10 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 
 	for(int level=1; level<4; ++level)
 	{
-		state.trained_workers+=stat->upgradeStatePerType[WORKER][BUILD][level];
+		state.trained_workers+=stat->workersByConstructionLevel[level];
 		if(level>=2)
 			state.trained_workers_level2+=
-				stat->upgradeStatePerType[WORKER][BUILD][level];
+				stat->workersByConstructionLevel[level];
 		state.trained_warriors+=stat->upgradeStatePerType[WARRIOR][ATTACK_SPEED][level];
 		// Level zero means the unit cannot swim. Counting it here made Maxima
 		// treat every sizeable army as amphibious and issue impossible routes
@@ -658,6 +687,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		Unit* unit=runtime.player->team->myUnits[i];
+        if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
 		if(unit && unit->typeNum==EXPLORER
@@ -665,6 +695,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		   && unit->performance[MAGIC_ATTACK_GROUND]>0)
 			state.amphibious_attack_explorers+=1;
 	}
+    for(int unit=0;unit<3;++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
 
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
@@ -673,16 +704,16 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 			continue;
 		// Only a level-zero site is new construction. Upgrade sites retain the
 		// building's previous level and are governed by the separate quotas.
-		if(building->type->isBuildingSite&&building->type->level==0)
+		if(building->type->isBuildingSite&&building->constructionResultState==Building::NEW_BUILDING)
 			state.building_sites+=1;
-		if(building->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
+		if(AIMaximaBuildings::serves(*context.player->game,*building->type,AIMaximaBuildings::Production)
 		   && !building->type->isBuildingSite
 		   && building->constructionResultState==Building::NO_CONSTRUCTION)
 			++state.completed_swarms;
 		if(building->underAttackTimer)
 			state.own_buildings_under_attack+=1;
 		if(!building->type->isBuildingSite
-		   && building->type->shortTypeNum==IntBuildingType::DEFENSE_BUILDING)
+		   && AIMaximaBuildings::serves(*context.player->game,*building->type,AIMaximaBuildings::ProjectileDefense))
 		{
 			state.tower_stone+=building->resources[STONE];
 			state.tower_bullets+=building->bullets;
@@ -978,9 +1009,14 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.accessible_algae=0;
 	observed.buildable_tiles=0;
 	observed.water_tiles=0;
-	observed.feeding_capacity=snapshot.inn_level1*strategy.model.inn_capacity_level1
-		+snapshot.inn_level2*strategy.model.inn_capacity_level2
-		+snapshot.inn_level3*strategy.model.inn_capacity_level3;
+    collect_building_profiles();
+	std::array<long long,8> feedingRates{};
+	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.player->team->myBuildings[id];
+	 if(!b||b->type->isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::Feeding))continue;
+     const unsigned mask=b->type->semantics.feeding.unitMask&b->type->semantics.admittedUnitMask&7u;
+     feedingRates[mask]+=development_feeding_visit_rate[b->typeNum];
+	}
+    observed.feeding_capacity=aggregate_feeding_capacity(feedingRates);
 	observed.terrain_abundance=global_terrain_abundance;
 	observed.connected_abundance=global_connected_abundance;
 	observed.mobility_opportunity=global_mobility_opportunity;
@@ -1023,8 +1059,8 @@ void Maxima::update_environment_model(Context& runtime)
 	BuildingSearch food_buildings(runtime);
 	food_buildings.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i=food_buildings.begin();i!=food_buildings.end();++i)
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING
-		   || runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Feeding)
+		   || runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 		{
 			food_capacity+=nearby_farm_capacity(runtime,*i,&food_tiles);
 			Building* source=runtime.get_building_register().get_building(*i);
@@ -1513,7 +1549,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 			   || !building_currently_visible(runtime.player, building))
 				continue;
 			reconnaissance.observeBuilding(Recon::BuildingSighting(
-				building->gid, *team, building->type->shortTypeNum,
+				building->gid, *team, building->typeNum,
 				building->posX, building->posY, building->type->width,
 				building->type->height, building->type->isBuildingSite, timer));
 		}
@@ -1646,7 +1682,7 @@ void Maxima::update_opponent_models(Context& runtime)
 			const int confidence=Recon::Program::confidenceForAge(
 				timer-building->second.lastSeenTick,
 				strategy.reconnaissance.memory_horizon_ticks);
-			model.strategic_value+=reconnaissance_building_value(
+			model.strategic_value+=reconnaissance_building_value(*runtime.player->game,
 				building->second.type, strategy.reconnaissance)*confidence/100;
 			const int distance=home.get_height(
 				building->second.x, building->second.y);
@@ -1690,7 +1726,7 @@ void Maxima::remove_reconnaissance_missions(Context& runtime,
 	{
 		if(runtime.get_building_register().is_building_found(mission->flagId)
 		   || runtime.get_building_register().is_building_pending(mission->flagId))
-			runtime.add_management_order(new DestroyBuilding(mission->flagId));
+			runtime.add_management_order(new RetireAttraction(mission->flagId,1u<<EXPLORER));
 		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission->flagId)
 			+"\ttarget_team="+telemetryText(mission->targetTeam)
@@ -1777,7 +1813,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 		if(index>=missions.size())
 		{
 			BuildingOrder* order=new BuildingOrder(
-				IntBuildingType::EXPLORATION_FLAG, 1);
+				AIMaximaBuildings::ExploreAttraction, 1);
 			order->add_constraint(new Construction::SinglePosition(
 				objective.x, objective.y));
 			const int flag=runtime.add_building_order(order);
@@ -1785,7 +1821,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 				budget.reconnaissance_flag_radius, flag));
 			ManagementOrder* removed=new Notify(
 				RuntimeEvent(RuntimeEvent::ReconFlagDeleted, flag));
-			removed->add_condition(new BuildingDestroyed(flag));
+			removed->add_condition(new AttractionRetiredOrDestroyed(flag,1u<<EXPLORER));
 			runtime.add_management_order(removed);
 			missions.push_back(Recon::ReconMission(flag, objective.targetTeam,
 				objective.frontier, objective.x, objective.y, timer,
@@ -1853,7 +1889,7 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 		const Recon::ReconMission mission=missions.back();
 		if(runtime.get_building_register().is_building_found(mission.flagId)
 		   || runtime.get_building_register().is_building_pending(mission.flagId))
-			runtime.add_management_order(new DestroyBuilding(mission.flagId));
+			runtime.add_management_order(new RetireAttraction(mission.flagId,1u<<EXPLORER));
 		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission.flagId)
 			+"\ttarget_team="+telemetryText(mission.targetTeam)
@@ -2399,13 +2435,12 @@ void Maxima::build_policy_bids()
 
 	PolicyBid& survival=policy_bids[PolicySurvival];
 	survival.utility=std::max(demands.survival, demands.food);
-	// Nominal inn storage is an optimistic service bound: travel time, uneven
+	// Nominal service throughput is an optimistic bound: travel time, uneven
 	// corn distribution and staffing all reduce the population that a real inn
 	// can feed. Plan against 80% of nominal capacity, but derive the target from
 	// population rather than the current inn count so a temporary queue cannot
 	// ratchet construction upward forever.
-	const int reliable_inn_capacity=std::max(1,
-		strategy.model.inn_capacity_level1*strategy.economy.reliable_inn_percent/100);
+	const int reliable_inn_capacity=std::max(1,feeding_capacity(preferred_profile(AIMaximaBuildings::Feeding),1)*strategy.economy.reliable_inn_percent/100);
 	const int nominal_service_inns=(snapshot.population
 		+reliable_inn_capacity-1)/reliable_inn_capacity;
 	int service_required_inns=nominal_service_inns;
@@ -2422,11 +2457,11 @@ void Maxima::build_policy_bids()
 	if(food_service_stressed)
 		service_required_inns=std::max(service_required_inns,
 			nominal_service_inns+1);
-	const int sustainable_inns=std::max(strategy.economy.sustainable_inn_floor,
-		std::max(environment.accessible_corn,
-			strategy.food.enabled && food_ledger_valid ? 6*food_supported_swarms : 0)
-			/strategy.economy.sustainable_inn_corn_divisor
-			+strategy.economy.sustainable_inn_offset);
+    // A second feeder redistributes the same recipients' recurring meals. A
+    // crop-tiles-per-building ceiling charges that demand again and can block
+    // service recovery. Keep the strategy's construction cap; the placement
+    // ledger checks actual meal shares and independent hybrid costs. Without
+    // that ledger, crop count still cannot constrain free/non-wheat services.
 	int demographic_inns=(snapshot.population
 		+strategy.economy.inn_population_offset)
 		/strategy.economy.inn_population_divisor+1;
@@ -2436,17 +2471,15 @@ void Maxima::build_policy_bids()
 		<strategy.economy.food_headroom_critical ? 1 : 0);
 	demographic_inns+=(demands.food>=strategy.construction.survival_utility_high
 		? 1 : 0);
-	survival.desired_inns=std::min(sustainable_inns,
-		std::min(strategy.economy.inn_target_cap,
+	survival.desired_inns=std::min(strategy.economy.inn_target_cap,
 			std::max(strategy.economy.inn_target_floor,
-			std::max(service_required_inns, demographic_inns))));
+			std::max(service_required_inns, demographic_inns)));
 	if(abundance_surge)
-		survival.desired_inns=std::min(sustainable_inns,
-			std::min(strategy.economy.abundance_inn_target_cap,
+		survival.desired_inns=std::min(strategy.economy.abundance_inn_target_cap,
 				std::max(survival.desired_inns,
 					(snapshot.population
 						+strategy.economy.abundance_inn_population_offset)
-						/strategy.economy.abundance_inn_population_divisor+1)));
+						/strategy.economy.abundance_inn_population_divisor+1));
 	survival.construction_sites=
 		survival.utility>=strategy.construction.survival_utility_high
 			? strategy.construction.policy_high_sites
@@ -2460,9 +2493,9 @@ void Maxima::build_policy_bids()
 	// Food funds births. The local acreage is what existing buildings can
 	// reach; the ledger's supported swarms say what the discovered wheat as a
 	// whole could feed, including stacks a colony would have to move to. A
-	// swarm's full demand is about six full tiles of regrowth.
+	// Production has its own packet budget; provider counts are not acreage.
 	const long long ledger_food=strategy.food.enabled && food_ledger_valid
-		? 6LL*65536*std::max(0, food_supported_swarms) : 0;
+        ? birth_food_acreage() : 0;
 	const SwarmController::Plan birth=SwarmController::plan(snapshot.workers,
 		snapshot.population, snapshot.critical_food, snapshot.unserved_food,
 		std::max(ledger_food,
@@ -2479,8 +2512,10 @@ void Maxima::build_policy_bids()
 	if(strategy.food.enabled && strategy.food.target_capping_enabled
 	   && food_ledger_valid)
 	{
-		survival.desired_inns=std::min(survival.desired_inns,
-			std::max(1,food_supported_inns));
+        // Feeding serves the same colony population across multiple providers.
+        // A count derived from each provider's peak demand cannot bound this
+        // target. The placement ledger checks redistributed local meal claims,
+        // including independent costs of a hybrid, before any order is issued.
 		growth.desired_swarms=std::min(growth.desired_swarms,
 			std::max(1,food_supported_swarms));
 	}
@@ -2752,8 +2787,7 @@ void Maxima::arbitrate_policy_bids()
 		// capacity of existing upgrade sites instead of imposing a building cap.
 		const int seats_wanted=(result.desired_warriors+3)/4;
 		const int new_seats=std::max(0,seats_wanted-barracks.second);
-		const int basic_seats=std::max(1,globalContainer->buildingsTypes
-			.getByType("barracks",0,false)->maxUnitInside);
+		const int basic_seats=std::max(1,(profile_variant(preferred_profile(AIMaximaBuildings::CombatTraining)) ? profile_variant(preferred_profile(AIMaximaBuildings::CombatTraining))->seats : 0));
 		result.desired_barracks=std::max(result.desired_barracks,
 			snapshot.barracks+(new_seats+basic_seats-1)/basic_seats);
 	}
@@ -2959,12 +2993,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.food_relocation_offer_ticks=strategy.food.relocation_offer_ticks;
 	// Discount modelled inn capacity once, here, so the executor never needs the
 	// economic model to judge whether removing an inn would starve anyone.
-	budget.food_inn_seats_level1=strategy.model.inn_capacity_level1
-		*strategy.economy.reliable_inn_percent/100;
-	budget.food_inn_seats_level2=strategy.model.inn_capacity_level2
-		*strategy.economy.reliable_inn_percent/100;
-	budget.food_inn_seats_level3=strategy.model.inn_capacity_level3
-		*strategy.economy.reliable_inn_percent/100;
+    budget.food_inn_seats_level1=budget.food_inn_seats_level2=budget.food_inn_seats_level3=0;
 
 	budget.staffing_window_samples=strategy.staffing.control_window_samples;
 	budget.staffing_low_permille=strategy.staffing.control_low_permille;
@@ -2984,8 +3013,8 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.colony_emergency=severe_colony_emergency();
 	// Expansion buys access to new food, independently of the birth-capacity
 	// target. It still shares real builders and the normal swarm staffing pool.
-	const bool colony_active=development_planner.activeBuildCount(
-		IntBuildingType::SWARM_BUILDING, AIMaximaPlacement::ColonySeed)>0;
+	const bool colony_active=development_planner.activeRoleBuildCount(
+		AIMaximaBuildings::Production, AIMaximaPlacement::ColonySeed)>0;
 	bool colony_starting=false;
 	for(const auto& entry:development_planner.actions())
 	{
@@ -2997,8 +3026,8 @@ void Maxima::finalize_director_plan(Context& runtime)
 		// Once provisioned, remember startup so a later pause cannot block expansion.
 		if(building && !operating_colonies.count(action.id))
 		{
-			if(!building->unitsWorking.empty()
-			   && building->resources[WHEAT]>=building->type->resourceForOneUnit)
+			bool ready=false;for(const auto& recipe:building->type->semantics.production.recipes)if(recipe.enabled){bool stocked=true;for(int r=0;r<MAX_NB_RESOURCES;++r)stocked&=building->resources[r]>=recipe.cost[r];ready|=stocked;}
+			if(ready)
 			{
 				operating_colonies.insert(action.id);
 				emit_telemetry(runtime,"colony_swarm_operating",
@@ -3194,20 +3223,13 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 			continue;
 		const int assigned=building->maxUnitWorking;
 		assigned_building_workers+=assigned;
-		switch(building->type->shortTypeNum)
-		{
-			case IntBuildingType::FOOD_BUILDING: inn_workers+=assigned; break;
-			case IntBuildingType::SWARM_BUILDING: swarm_workers+=assigned; break;
-			case IntBuildingType::WALKSPEED_BUILDING:
-			case IntBuildingType::SWIMSPEED_BUILDING:
-			case IntBuildingType::SCIENCE_BUILDING:
-				technology_workers+=assigned; break;
-			case IntBuildingType::HEAL_BUILDING:
-			case IntBuildingType::ATTACK_BUILDING:
-			case IntBuildingType::DEFENSE_BUILDING:
-				military_workers+=assigned; break;
-			default: break;
-		}
+		const unsigned roles=AIMaximaBuildings::capabilities(*runtime.player->game,*building->type);
+		// Each assigned worker is charged once even when its building supplies
+		// several services from the same inventory.
+		if(roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Production))swarm_workers+=assigned;
+		else if(roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding))inn_workers+=assigned;
+		else if(roles&(AIMaximaBuildings::roleBit(AIMaximaBuildings::ConstructionTraining)|AIMaximaBuildings::roleBit(AIMaximaBuildings::WalkTraining)|AIMaximaBuildings::roleBit(AIMaximaBuildings::SwimTraining)))technology_workers+=assigned;
+		else if(roles)military_workers+=assigned;
 	}
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	const bool endgame=snapshot.alive_enemies<=2;
@@ -3387,8 +3409,8 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 		<<"\tdesired_swarms="<<budget.desired_swarms
 		<<"\tcolonization_eligible="<<(budget.colony_swarm_requested ? 1 : 0)
 		<<"\tcolonization_gate="<<colony_gate_reason
-		<<"\tactive_colonial_action="<<development_planner.activeBuildCount(
-			IntBuildingType::SWARM_BUILDING, AIMaximaPlacement::ColonySeed)
+		<<"\tactive_colonial_action="<<development_planner.activeRoleBuildCount(
+			AIMaximaBuildings::Production, AIMaximaPlacement::ColonySeed)
 		<<"\testablished_colonies="<<established_colonies
 		<<"\tcleared_hotspots="<<cleared_enemy_sites.size()
 		<<"\tdesired_barracks="<<budget.desired_barracks
@@ -3879,7 +3901,7 @@ void Maxima::handle_event(Context& runtime, const RuntimeEvent& event)
 		// Completing a swarm changes every share of the colony-wide budget.
 		// Reconcile the existing producers as well as the completed building.
 		BuildingSearch swarms(runtime);
-		swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
+		swarms.add_condition(new SpecificBuildingType(AIMaximaBuildings::Production));
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator swarm=swarms.begin(); swarm!=swarms.end(); ++swarm)
 			manage_swarm(runtime, *swarm);
@@ -4001,59 +4023,177 @@ void Maxima::check_phases(Context& runtime)
 const std::vector<AIMaximaPlacement::BuildingProfile>&
 Maxima::collect_building_profiles() const
 {
-	using namespace AIMaximaPlacement;
-	if(!development_building_profiles.empty())
-		return development_building_profiles;
-	const int types[]={IntBuildingType::SWARM_BUILDING,
-		IntBuildingType::FOOD_BUILDING,IntBuildingType::HEAL_BUILDING,
-		IntBuildingType::WALKSPEED_BUILDING,IntBuildingType::SWIMSPEED_BUILDING,
-		IntBuildingType::ATTACK_BUILDING,IntBuildingType::SCIENCE_BUILDING,
-		IntBuildingType::DEFENSE_BUILDING};
-	for(size_t typeIndex=0;typeIndex<sizeof(types)/sizeof(types[0]);++typeIndex)
-	{
-		BuildingProfile profile;profile.buildingType=types[typeIndex];
-		for(int level=1;level<=3;++level)
-		{
-			BuildingType* complete=globalContainer->buildingsTypes.getByType(
-				IntBuildingType::typeFromShortNumber(profile.buildingType),level-1,false);
-			BuildingType* site=globalContainer->buildingsTypes.getByType(
-				IntBuildingType::typeFromShortNumber(profile.buildingType),level-1,true);
-			if(!complete)break;
-			BuildingLevelProfile value;value.level=level;
-			value.engineType=site?globalContainer->buildingsTypes.getTypeNum(
-				complete->type,level-1,true):-1;
-			value.footprint=Footprint(complete->decLeft,complete->decTop,
-				complete->width,complete->height);
-			if(site)for(int resource=0;resource<5;++resource)
-				value.constructionResources[resource]=site->maxResource[resource];
-			if(complete->canFeedUnit&&complete->timeToFeedUnit>0)
-				value.serviceThroughput=complete->canFeedUnit*100/complete->timeToFeedUnit;
-			else if(complete->canHealUnit&&complete->timeToHealUnit>0)
-				value.serviceThroughput=complete->canHealUnit*100/complete->timeToHealUnit;
-			else if(profile.buildingType==IntBuildingType::SWARM_BUILDING
-			   &&complete->unitProductionTime>0)
-				value.serviceThroughput=1000/complete->unitProductionTime;
-			else if(profile.buildingType==IntBuildingType::DEFENSE_BUILDING)
-				value.serviceThroughput=complete->shootingRange
-					+complete->shootDamage*std::max(1,complete->shootRhythm)/32
-					+complete->maxBullets/4;
-			else
-				for(int ability=0;ability<NB_ABILITY;++ability)
-					if(complete->upgrade[ability]>0&&complete->upgradeTime[ability]>0)
-						value.serviceThroughput+=complete->upgrade[ability]*100
-							/complete->upgradeTime[ability];
-			// The profile has no live Building; use the canonical effective HP scale.
-			value.durability=complete->hpMax*context.player->game->gameHeader.getBuildingHpMultiplier();
-			value.capability=complete->prestige;
-			for(int ability=0;ability<NB_ABILITY;++ability)
-				value.capability+=complete->upgrade[ability]>0;
-			profile.levels.push_back(value);
-			if(complete->nextLevel<0)
-				break;
-		}
-		if(!profile.levels.empty())development_building_profiles.push_back(profile);
-	}
-	return development_building_profiles;
+ using namespace AIMaximaPlacement;using namespace AIMaximaBuildings;
+ if(development_profiles_initialized)return development_building_profiles;
+ const auto& game=*context.player->game;
+ development_profile_index.assign(game.buildingsTypes.size(),-1);
+ development_feeding_visit_rate.assign(game.buildingsTypes.size(),0);
+ development_feeding_pause.fill(INT_MAX);
+ std::vector<FeedingEstimate> operations(game.buildingsTypes.size());
+ for(size_t id=0;id<game.buildingsTypes.size();++id) {
+  // Recipe/seat ceilings describe potential work. A separate shared hauling
+  // plan predicts usable feeding throughput; staffing feedback owns actual
+  // carrier requests and placement prices the local route independently.
+  operations[id]=operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,false);
+  development_feeding_visit_rate[id]=int(std::min<long long>(INT_MAX,
+      operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,true).visitsPerTick));
+ }
+ development_profiles_initialized=true;
+ for(size_t root=0;root<game.buildingsTypes.size();++root) {
+  const auto* first=game.buildingsTypes.get(root);
+  if(!first->semantics.placeable)continue;
+  BuildingProfile profile;profile.buildingType=int(root);int current=int(root),position=0;
+  for(size_t visited=0;visited<game.buildingsTypes.size()&&current>=0;++visited) {
+   const auto* placement=game.buildingsTypes.get(current);
+   const auto* complete=completed(game,*placement);if(!complete)break;
+   const int completeID=placement->isBuildingSite?placement->nextLevel:current;
+   BuildingLevelProfile v;v.level=++position;v.engineType=current;v.completedType=completeID;
+   v.roles=capabilities(game,*complete);v.seats=complete->maxUnitInside;
+   v.assignmentLimit=placement->semantics.assignmentLimit;v.requiredWorkerLevel=placement->semantics.requiredWorkerLevel;
+   v.repairable=complete->semantics.repairable;v.available=placement->runtimeAvailable&&complete->runtimeAvailable;
+   const int left=std::min(complete->decLeft,placement->decLeft),top=std::min(complete->decTop,placement->decTop);
+   v.footprint=Footprint(left,top,std::max(complete->decLeft+complete->width,placement->decLeft+placement->width)-left,std::max(complete->decTop+complete->height,placement->decTop+placement->height)-top);
+   if(placement->isBuildingSite)for(int r=0;r<8;++r)v.constructionResources[r]=placement->semantics.constructionCost[r];
+   const auto& semantic=complete->semantics;
+   v.foodRetirable=std::none_of(semantic.training.begin(),semantic.training.end(),[](const auto& t){return t.enabled;})
+       && !(complete->shootingRange>0 && complete->shootRhythm>0
+           && (semantic.projectileBuildingDamage>0 || std::any_of(semantic.projectileDamage.begin(),semantic.projectileDamage.end(),[](int n){return n>0;})));
+   v.operatingAssignmentLimit=complete->semantics.assignmentLimit;
+   v.initialCarriers=initialCarrierRequest(*complete,strategy);
+   v.productionDemandPercent=strategy.food.swarm_demand_percent;
+   for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled &&
+       !(unit==WARRIOR && game.gameHeader.isPeacefulModeEnabled())) {
+       v.productionRecipes.ticks[unit]=semantic.production.recipes[unit].duration+1;
+       std::copy_n(semantic.production.recipes[unit].cost.begin(),8,v.productionRecipes.costs[unit]);
+   }
+   std::copy_n(complete->multiplierResource,8,v.productionRecipes.packetSize);
+   const auto& operation=operations[completeID];
+   std::copy(operation.resourcePackets.begin(),operation.resourcePackets.end(),v.operatingResources);
+   v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
+   v.feedingMask=semantic.feeding.unitMask&semantic.admittedUnitMask;
+   std::copy(operation.feedingResourcePackets.begin(),operation.feedingResourcePackets.end(),v.feedingResources);
+   const int nominalRatios[3]={1,1,1};
+   const auto production=AIMaxima::productionPacketCeiling(v.productionRecipes,nominalRatios);
+   std::copy(production.begin(),production.end(),v.productionResources);
+   std::copy(operation.independentResourcePackets.begin(),operation.independentResourcePackets.end(),v.independentResources);
+   for(int r=0;r<8;++r)v.operatingResources[r]=int(std::min<long long>(INT_MAX,
+       static_cast<long long>(v.independentResources[r])+v.feedingResources[r]+v.productionResources[r]));
+   const int otherWheat=v.independentResources[WHEAT];
+   v.feedingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.feedingResources[WHEAT])*strategy.food.inn_demand_percent/100));
+   v.productionResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionResources[WHEAT])*strategy.food.swarm_demand_percent/100));
+   v.operatingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingResources[WHEAT]+v.productionResources[WHEAT]));
+   if(position==1 && v.available && semantic.feeding.enabled && complete->maxUnitInside>0)
+       for(int unit=0;unit<3;++unit)if(v.feedingMask&(1u<<unit))
+           development_feeding_pause[unit]=std::min(development_feeding_pause[unit],serviceTicks(*complete,semantic.feeding.duration));
+   std::copy(operation.services.begin(),operation.services.end(),v.serviceRates);
+   for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled) {
+    v.productionUnitMask|=1u<<unit;
+    v.productionRates[unit]=operation.productionRates[unit];
+   }
+   if(v.roles&roleBit(ProjectileDefense)) {
+    const long long fullUtility=complete->shootingRange+static_cast<long long>(semantic.projectileDamage[WARRIOR])*std::max(1,complete->shootRhythm)/32;
+    const long long fullRate=FeedingEstimate::Scale*complete->shootRhythm/65536;
+    v.serviceRates[ProjectileDefense]=int(std::min<long long>(1000000,fullUtility*operation.projectileRate/std::max(1LL,fullRate)));
+   }
+   int sharedSeats=0;for(int role=Feeding;role<=ConstructionTraining;++role)sharedSeats=std::max(sharedSeats,v.serviceRates[role]);
+   v.serviceThroughput=sharedSeats+v.serviceRates[Production]+v.serviceRates[ProjectileDefense];
+   v.durability=complete->hpMax*game.gameHeader.getBuildingHpMultiplier();v.capability=complete->prestige;
+   for(int role=0;role<RoleCount;++role)v.capability+=bool(v.roles&roleBit(role));
+   profile.levels.push_back(v);current=complete->nextLevel;
+  }
+  if(!profile.levels.empty()) {development_profile_index[root]=int(development_building_profiles.size());development_building_profiles.push_back(profile);}
+ }
+ for(auto& pause:development_feeding_pause)if(pause==INT_MAX)pause=0;
+ return development_building_profiles;
+}
+
+const AIMaximaPlacement::BuildingLevelProfile* Maxima::profile_variant(int root,int position) const
+{
+ collect_building_profiles();
+ if(root<0 || size_t(root)>=development_profile_index.size())return nullptr;
+ const int index=development_profile_index[root];
+ return index<0 ? nullptr : development_building_profiles[index].atLevel(position);
+}
+bool Maxima::profile_serves(int root,int role,int position) const
+{
+ const auto* v=profile_variant(root,position);return v&&(v->roles&AIMaximaBuildings::roleBit(role));
+}
+int Maxima::feeding_capacity(int root,int position) const
+{
+ const auto* v=profile_variant(root,position);if(!v||!(v->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding)))return 0;
+ const auto* b=context.player->game->buildingsTypes.get(v->completedType);if(!b)return 0;
+ return feeding_capacity_for_type(v->completedType);
+}
+
+long long Maxima::recipient_meal_rate(const Unit& unit) const
+{
+ if(context.player->game->gameHeader.isHungerDisabled())return 0;
+ const int action=unit.performance[FLY]>0?FLY:WALK;
+ return recipientMealRate(Unit::HUNGRY_MAX,unit.trigHungry,unit.hungriness,
+     unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
+}
+
+int Maxima::feeding_capacity_for_type(int type) const
+{
+ collect_building_profiles();
+ const auto* definition=context.player->game->buildingsTypes.get(type);
+ if(!definition || size_t(type)>=development_feeding_visit_rate.size())return 0;
+ const unsigned admitted=definition->semantics.feeding.unitMask&definition->semantics.admittedUnitMask;
+ const int populations[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
+ long long demand=0,population=0;
+ for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
+     population+=populations[unit];demand+=snapshot.feeding_demand[unit];
+ }
+ if(!demand) {
+     population=0;
+     // Future recipients use the loaded game's race, including historical
+     // hunger and movement values; an empty colony is not a zero-cost meal.
+     for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
+         const auto* base=context.player->team->race.getUnitType(unit,0);
+         const int action=base->performance[FLY]>0?FLY:WALK;
+         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
+             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+         const int count=std::max(1,populations[unit]);
+         demand+=rate*count;population+=count;
+     }
+     demand=(demand+MealRatePrecision/2)/MealRatePrecision;
+ }
+ if(!demand || !population)return 0;
+ return int(std::min<long long>(1000000,static_cast<long long>(development_feeding_visit_rate[type])*population/demand));
+}
+
+int Maxima::aggregate_feeding_capacity(const std::array<long long,8>& rates) const
+{
+ std::array<int,3> demand{snapshot.feeding_demand[0],snapshot.feeding_demand[1],snapshot.feeding_demand[2]};
+ if(demand==std::array<int,3>{} && !context.player->game->gameHeader.isHungerDisabled()) {
+     // Empty or manually constructed planning observations use the loaded race;
+     // live observations already contain actual per-recipient recurring rates.
+     std::array<int,3> population{snapshot.workers,snapshot.explorers,snapshot.warriors};
+     if(population==std::array<int,3>{})population[WORKER]=snapshot.population;
+     for(int unit=0;unit<3;++unit)if(population[unit]) {
+         const auto* base=context.player->team->race.getUnitType(unit,0);
+         const int action=base->performance[FLY]>0?FLY:WALK;
+         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
+             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+         demand[unit]=int(std::min<long long>(INT_MAX,(rate*population[unit]+MealRatePrecision/2)/MealRatePrecision));
+     }
+ }
+ return feedingPopulationCapacity(demand,snapshot.population,rates);
+}
+
+long long Maxima::birth_food_acreage() const
+{
+ const long long crop=static_cast<long long>(std::max(0,food_birth_crop_rate))*strategy.food.growth_period_ticks;
+ return (crop/AIMaximaFoodLedger::RateScale)*65536
+     +(crop%AIMaximaFoodLedger::RateScale)*65536/AIMaximaFoodLedger::RateScale;
+}
+
+int Maxima::preferred_profile(int role) const
+{
+ const auto c=AIMaximaBuildings::choose(*context.player->game,*context.player->team,role);
+ return c.placementType;
 }
 
 
@@ -4061,9 +4201,9 @@ void Maxima::configure_development_planner()
 {
 	using namespace AIMaximaPlacement;
 	development_planner.configure(collect_building_profiles(),
-		IntBuildingType::FOOD_BUILDING, IntBuildingType::HEAL_BUILDING,
-		IntBuildingType::SCIENCE_BUILDING, IntBuildingType::ATTACK_BUILDING,
-		IntBuildingType::DEFENSE_BUILDING, IntBuildingType::SWARM_BUILDING);
+		AIMaximaBuildings::Feeding, AIMaximaBuildings::Healing,
+		AIMaximaBuildings::ConstructionTraining, AIMaximaBuildings::CombatTraining,
+		AIMaximaBuildings::ProjectileDefense, AIMaximaBuildings::Production);
 	PlacementPolicy& policy=development_planner.mutablePolicy();
 	policy.unmetDemandWeight=strategy.placement.unmet_demand_weight;
 	policy.serviceGainWeight=strategy.placement.service_gain_weight;
@@ -4151,17 +4291,11 @@ void Maxima::configure_development_planner()
 	// Demand comes from the engine's own building rates rather than a tuned
 	// constant: a swarm's wheat per produced unit, and an inn's modelled
 	// population times the rate at which a fed unit eats.
-	const BuildingType* swarmType=globalContainer->buildingsTypes.getByType(
-		"swarm",0,false);
-	policy.foodSwarmDemand=swarmType
-		?AIMaximaFoodLedger::swarmDemand(swarmType->resourceForOneUnit,
-			swarmType->unitProductionTime,strategy.food.swarm_demand_percent):0;
-	const int innCapacity[3]={strategy.model.inn_capacity_level1,
-		strategy.model.inn_capacity_level2,strategy.model.inn_capacity_level3};
-	for(int level=0;level<3;++level)
-		policy.foodInnDemand[level]=AIMaximaFoodLedger::innDemand(
-			innCapacity[level],strategy.food.ticks_per_meal,
-			strategy.food.inn_demand_percent);
+	const auto* swarmProfile=profile_variant(preferred_profile(AIMaximaBuildings::Production));
+	policy.foodSwarmDemand=swarmProfile?swarmProfile->productionResources[WHEAT]:0;
+    // Historical tier arrays remain serialized by old formats only. Live
+    // demand is the same per-variant operating plan used for feeding capacity.
+    std::fill(std::begin(policy.foodInnDemand),std::end(policy.foodInnDemand),0);
 }
 
 
@@ -4300,13 +4434,29 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		Building* building=runtime.get_building_register().get_building(i->first);
 		if(!building||building->type->isVirtual)continue;
 		WorldBuilding value;value.id=i->first;value.gid=building->gid;
-		value.buildingType=building->type->shortTypeNum;
-		value.level=building->type->level+1;
+		value.buildingType=AIMaximaBuildings::lineageRoot(*runtime.player->game,building->typeNum);
+		value.level=AIMaximaBuildings::lineagePosition(*runtime.player->game,building->typeNum);
+		// A placeable intermediate variant can start its own development chain.
+		// Keep the planner's chosen root when observing that project's building.
+		for(const auto& [actionId,a]:development_planner.actions())if(a.buildingId==value.id)
+		 for(const auto& p:world.profiles)if(p.buildingType==a.buildingType)
+		  for(const auto& v:p.levels)if(v.completedType==building->typeNum||v.engineType==building->typeNum){value.buildingType=p.buildingType;value.level=v.level;}
 		value.centerX=map->normalizeX(building->posX-building->type->decLeft);
 		value.centerY=map->normalizeY(building->posY-building->type->decTop);
 		value.hp=building->hp;value.hpMax=building->getEffectiveMaxHp();
 		value.age=i->second.age;value.site=building->type->isBuildingSite;
 		value.upgrading=runtime.get_building_register().is_building_upgrading(i->first);
+        const auto* operating=profile_variant(value.buildingType,value.level);
+        value.plannedCarriers=operating?operating->initialCarriers:0;
+        if(!value.site) {
+            const auto request=staffing_control.find(value.id);
+            if(request!=staffing_control.end())value.plannedCarriers=request->second.request;
+            const auto allowed=swarm_allowance.find(value.id);
+            if(allowed!=swarm_allowance.end())value.plannedCarriers=std::min(value.plannedCarriers,allowed->second);
+            value.plannedCarriers=std::clamp(value.plannedCarriers,0,
+                std::min(building->type->semantics.assignmentLimit,strategy.staffing.control_maximum_workers));
+            std::copy_n(building->ratio,3,value.productionRatios);
+        }
 		world.buildings.push_back(value);
 		const int radius=strategy.placement.building_protection_radius;
 		for(int dy=-radius;dy<=radius;++dy)
@@ -4327,9 +4477,42 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const WorldBuilding& building=world.buildings[i];
 		add_preemptive_hash(worldSignature,Uint32(building.id));
 		add_preemptive_hash(worldSignature,Uint32(building.buildingType));
+        add_preemptive_hash(worldSignature,Uint32(building.plannedCarriers));
+        for(int ratio:building.productionRatios)add_preemptive_hash(worldSignature,Uint32(ratio));
 		add_preemptive_hash(worldSignature,Uint32(world.index(
 			building.centerX,building.centerY)));
 	}
+    // Worker-production centers with overlapping supply catchments form one
+    // strategic colony. Recipients
+    // belong to one nearest colony, independent of how many feeders it owns.
+    std::vector<std::pair<int,int>> anchors;
+    for(const auto& b:world.buildings) {
+        const auto* p=world.profile(b.buildingType);const auto* v=p?p->atLevel(b.level):nullptr;
+        if(!b.site && v && (v->productionUnitMask&(1u<<WORKER)))anchors.emplace_back(b.centerX,b.centerY);
+    }
+    std::vector<int> parents(anchors.size());
+    for(size_t i=0;i<parents.size();++i)parents[i]=int(i);
+    const auto root=[&](int i) {while(parents[i]!=i){parents[i]=parents[parents[i]];i=parents[i];}return i;};
+    for(size_t i=0;i<anchors.size();++i)for(size_t j=0;j<i;++j)
+        if(world.wrappedManhattan(anchors[i].first,anchors[i].second,anchors[j].first,anchors[j].second)<=2*strategy.staffing.swarm_supply_radius) {
+            const int a=root(int(i)),b=root(int(j));parents[std::max(a,b)]=std::min(a,b);
+        }
+    for(size_t i=0;i<anchors.size();++i)if(root(int(i))==int(i))
+        world.feedingColonies.push_back({anchors[i].first,anchors[i].second,{}});
+    if(world.feedingColonies.empty()) {
+        const int x=world.buildings.empty()?0:world.buildings.front().centerX;
+        const int y=world.buildings.empty()?0:world.buildings.front().centerY;
+        world.feedingColonies.push_back({x,y,{}});
+    }
+    std::vector<std::array<long long,3>> colonyMeals(world.feedingColonies.size());
+    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.player->team->myUnits[id];u && !u->isDead)
+        colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
+    for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(int unit=0;unit<3;++unit)
+        world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
+    for(const auto& colony:world.feedingColonies) {
+        add_preemptive_hash(worldSignature,Uint32(colony.x));add_preemptive_hash(worldSignature,Uint32(colony.y));
+        for(int unit=0;unit<3;++unit)add_preemptive_hash(worldSignature,Uint32(colony.demand[unit]));
+    }
 	if(signature)*signature=worldSignature;
 	return world;
 }
@@ -4337,70 +4520,34 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 
 std::pair<int,int> Maxima::barracks_capacity(Context& runtime,int excludedAction) const
 {
-	using namespace AIMaximaPlacement;
-	std::map<int,std::pair<int,int>> seats;
-	for(int id=0;id<Building::MAX_COUNT;++id)
-	{
-		const Building* b=runtime.player->team->myBuildings[id];
-		if(!b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
-		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION)continue;
-		const int operational=b->buildingState==Building::ALIVE
-			&& !b->type->isBuildingSite && b->constructionResultState==Building::NO_CONSTRUCTION
-			? b->maxUnitInside : 0;
-		const int completed=globalContainer->buildingsTypes
-			.getByType("barracks",b->type->level,false)->maxUnitInside;
-		seats[b->gid]=std::make_pair(operational,completed);
-	}
-	for(const auto& entry:development_planner.actions())
-	{
-		const DevelopmentAction& a=entry.second;
-		if(a.id==excludedAction || a.type!=UpgradeBuilding
-		   || a.buildingType!=IntBuildingType::ATTACK_BUILDING
-		   || (a.state!=CreateIssued && a.state!=SiteObserved)
-		   || !runtime.get_building_register().is_building_found(a.buildingId))continue;
-		const Building* b=runtime.get_building_register().get_building(a.buildingId);
-		auto found=seats.find(b->gid);
-		if(found==seats.end())continue;
-		found->second.first=0;
-		found->second.second=std::max(found->second.second,
-			globalContainer->buildingsTypes.getByType("barracks",a.targetLevel-1,false)->maxUnitInside);
-	}
-	std::pair<int,int> result(0,0);
-	for(const auto& entry:seats)
-	{
-		result.first+=entry.second.first;
-		result.second+=entry.second.second;
-	}
-	return result;
+ using namespace AIMaximaPlacement;std::map<int,std::pair<int,int>> seats;
+ for(const auto& [id,record]:runtime.get_building_register().found()) {
+  const auto* b=runtime.get_building_register().get_building(id);if(!b||!AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::CombatTraining))continue;
+  const auto* complete=AIMaximaBuildings::completed(*runtime.player->game,*b->type);
+  if(!(complete->semantics.admittedUnitMask&(1u<<WARRIOR)))continue;
+  seats[b->gid]={b->buildingState==Building::ALIVE&&!b->type->isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION?b->maxUnitInside:0,complete->maxUnitInside};
+ }
+ for(const auto& [id,a]:development_planner.actions()) {
+  if(id==excludedAction||a.type!=UpgradeBuilding||(a.state!=CreateIssued&&a.state!=SiteObserved))continue;
+  const auto* b=runtime.get_building_register().get_building(a.buildingId);if(!b||!seats.count(b->gid))continue;
+  const auto* target=profile_variant(a.buildingType,a.targetLevel);seats[b->gid].first=0;
+  if(target&&(target->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::CombatTraining)))seats[b->gid].second=target->seats;
+ }
+ std::pair<int,int> result{};for(const auto& [gid,p]:seats){result.first+=p.first;result.second+=p.second;}return result;
 }
 
-// Credit the finished capacity of sites and reserved upgrades exactly once.
-int Maxima::committed_hospital_beds(
-	const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
-	int excludedAction) const
+int Maxima::committed_hospital_beds(const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,int excludedAction) const
 {
-	using namespace AIMaximaPlacement;
-	const auto beds=[](int level) {
-		return globalContainer->buildingsTypes.getByType("hospital",level-1,false)->maxUnitInside;
-	};
-	std::map<int,int> capacity;
-	for(const auto& b:buildings)
-		if(b.buildingType==IntBuildingType::HEAL_BUILDING)
-			capacity[b.id]=beds(b.level);
-	int unobserved=0;
-	for(const auto& entry:development_planner.actions())
-	{
-		const DevelopmentAction& a=entry.second;
-		if(a.id==excludedAction || a.buildingType!=IntBuildingType::HEAL_BUILDING
-		   || (a.state!=ParcelReserved && a.state!=CreateIssued && a.state!=SiteObserved)) continue;
-		if(a.type==UpgradeBuilding && capacity.count(a.buildingId))
-			capacity[a.buildingId]=std::max(capacity[a.buildingId],beds(a.targetLevel));
-		else if((a.type==BuildCampusMember || a.type==BuildStandalone)
-		        && !capacity.count(a.buildingId))
-			unobserved+=beds(1);
-	}
-	for(const auto& entry:capacity) unobserved+=entry.second;
-	return unobserved;
+ using namespace AIMaximaPlacement;std::map<int,int> seats;
+ for(const auto& b:buildings){const auto* v=profile_variant(b.buildingType,b.level);if(v&&(v->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Healing)))seats[b.id]=v->seats;}
+ int pending=0;
+ for(const auto& [id,a]:development_planner.actions()) {
+  if(id==excludedAction||(a.state!=ParcelReserved&&a.state!=CreateIssued&&a.state!=SiteObserved))continue;
+  const auto* v=profile_variant(a.buildingType,a.targetLevel);if(!v||!(v->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Healing)))continue;
+  if(seats.count(a.buildingId))seats[a.buildingId]=std::max(seats[a.buildingId],v->seats);
+  else if(a.type==BuildCampusMember||a.type==BuildStandalone)pending+=v->seats;
+ }
+ for(const auto& [id,n]:seats)pending+=n;return pending;
 }
 
 
@@ -4413,35 +4560,40 @@ Maxima::collect_development_intents(
 	const int bedDeficit=std::max(0, Labour::hospitalBedsWanted(snapshot.warriors,
 		strategy.military.hospital_beds_per_warrior_percent)
 		-committed_hospital_beds(world.buildings));
-	const int basicBeds=globalContainer->buildingsTypes.getByType("hospital",0,false)->maxUnitInside;
-	const int hospitals=development_planner.committedBuildingCount(world,
-		IntBuildingType::HEAL_BUILDING)+(bedDeficit+basicBeds-1)/basicBeds;
-	struct Demand {int type,desired,priority,workers;};
+	const auto* healing=profile_variant(preferred_profile(AIMaximaBuildings::Healing));
+	const int basicBeds=std::max(1,healing?healing->seats:0);
+	const int hospitals=development_planner.committedRoleCount(world,
+		AIMaximaBuildings::Healing)+(bedDeficit+basicBeds-1)/basicBeds;
+	struct Demand {int type,desired,priority,workers;unsigned productionMask=0;};
 	const Demand demands[]={
-		{IntBuildingType::FOOD_BUILDING,budget.desired_inns,
+		{AIMaximaBuildings::Feeding,budget.desired_inns,
 			budget.priority_inns,strategy.staffing.construction_inn_workers},
-		{IntBuildingType::SWARM_BUILDING,budget.desired_swarms,
-			budget.priority_swarms,strategy.staffing.construction_swarm_workers},
-		{IntBuildingType::WALKSPEED_BUILDING,budget.desired_racetracks,
+		{AIMaximaBuildings::Production,budget.worker_ratio>0?budget.desired_swarms:0,
+			budget.priority_swarms,strategy.staffing.construction_swarm_workers,1u<<WORKER},
+		{AIMaximaBuildings::Production,budget.explorer_ratio>0&&snapshot.explorers<budget.desired_explorers?1:0,
+			budget.priority_swarms,strategy.staffing.construction_swarm_workers,1u<<EXPLORER},
+		{AIMaximaBuildings::Production,budget.warrior_ratio>0&&snapshot.warriors<budget.desired_warriors?1:0,
+			budget.priority_swarms,strategy.staffing.construction_swarm_workers,1u<<WARRIOR},
+		{AIMaximaBuildings::WalkTraining,budget.desired_racetracks,
 			budget.priority_racetracks,
 			strategy.staffing.construction_large_workers},
-		{IntBuildingType::SWIMSPEED_BUILDING,budget.desired_pools,
+		{AIMaximaBuildings::SwimTraining,budget.desired_pools,
 			budget.priority_pools,strategy.staffing.construction_large_workers},
-		{IntBuildingType::SCIENCE_BUILDING,budget.desired_schools,
+		{AIMaximaBuildings::ConstructionTraining,budget.desired_schools,
 			budget.priority_schools,strategy.staffing.construction_training_workers},
-		{IntBuildingType::ATTACK_BUILDING,budget.desired_barracks,
+		{AIMaximaBuildings::CombatTraining,budget.desired_barracks,
 			budget.priority_barracks,strategy.staffing.construction_training_workers},
-		{IntBuildingType::HEAL_BUILDING,hospitals,
+		{AIMaximaBuildings::Healing,hospitals,
 			budget.priority_hospitals,strategy.staffing.construction_hospital_workers},
-		{IntBuildingType::DEFENSE_BUILDING,budget.desired_towers,
+		{AIMaximaBuildings::ProjectileDefense,budget.desired_towers,
 			budget.priority_towers,strategy.staffing.construction_large_workers}};
 	for(size_t i=0;i<sizeof(demands)/sizeof(demands[0]);++i)
 	{
-		const int current=development_planner.committedBuildingCount(
-			world,demands[i].type);
+		const int current=development_planner.committedRoleCount(
+			world,demands[i].type,demands[i].productionMask);
 		if(demands[i].desired>current)
 		{
-			DevelopmentIntent intent;intent.buildingType=demands[i].type;
+			DevelopmentIntent intent;
 			intent.unmetCount=demands[i].desired-current;
 			intent.priority=clamp_score(demands[i].priority);
 			// A site is staffed from what is idle, not from a fixed number: the
@@ -4451,25 +4603,30 @@ Maxima::collect_development_intents(
 				demands[i].workers+std::max(0, labour_observation.idle
 					-labour_plan.trainingReserve)
 					/std::max(1, budget.construction_sites)));
-			intent.emergency=demands[i].type==IntBuildingType::FOOD_BUILDING
-				?budget.recovery_active:demands[i].type==IntBuildingType::DEFENSE_BUILDING
+			intent.emergency=demands[i].type==AIMaximaBuildings::Feeding
+				?budget.recovery_active:demands[i].type==AIMaximaBuildings::ProjectileDefense
 				&&explorer_defense_active();
-			result.push_back(intent);
+			for(const auto& p:world.profiles){const auto* v=p.atLevel(1);
+			 if(!v||!v->available||!(v->roles&AIMaximaBuildings::roleBit(demands[i].type))||v->requiredWorkerLevel>context.player->team->maxBuildLevel()||(demands[i].productionMask&&(v->productionUnitMask&demands[i].productionMask)!=demands[i].productionMask))continue;
+			 intent.buildingType=p.buildingType;intent.workers=std::min(intent.workers,v->assignmentLimit);
+			 auto old=std::find_if(result.begin(),result.end(),[&](const auto& x){return x.buildingType==intent.buildingType&&x.purpose==intent.purpose;});
+			 if(old==result.end())result.push_back(intent);else {old->priority=std::max(old->priority,intent.priority);old->unmetCount=std::max(old->unmetCount,intent.unmetCount);old->emergency|=intent.emergency;}
+			}
 		}
 	}
 	// Once useful development is exhausted, idle builders fortify the colony.
 	// The planner ranks this purpose below every viable ordinary action.
 	const int spare=labour_observation.idle-labour_plan.trainingReserve;
 	if(spare>=strategy.staffing.construction_large_workers
-	   && budget.desired_towers<=development_planner.committedBuildingCount(
-		world,IntBuildingType::DEFENSE_BUILDING))
+	   && budget.desired_towers<=development_planner.committedRoleCount(
+		world,AIMaximaBuildings::ProjectileDefense))
 	{
 		DevelopmentIntent tower;
-		tower.buildingType=IntBuildingType::DEFENSE_BUILDING;
+		tower.buildingType=preferred_profile(AIMaximaBuildings::ProjectileDefense);
 		tower.purpose=Fortification;
 		tower.unmetCount=1;
 		tower.workers=std::min(12,spare);
-		result.push_back(tower);
+		if(tower.buildingType>=0)result.push_back(tower);
 	}
 	if(relocation_target_building>=0)
 	{
@@ -4486,7 +4643,7 @@ Maxima::collect_development_intents(
 		}
 		if(old && !old->site && !underway)
 		{
-			const bool swarm=old->buildingType==IntBuildingType::SWARM_BUILDING;
+			const bool swarm=profile_serves(old->buildingType,AIMaximaBuildings::Production,old->level);
 			DevelopmentIntent relocation;
 			relocation.buildingType=old->buildingType;
 			relocation.purpose=Relocation;
@@ -4499,155 +4656,80 @@ Maxima::collect_development_intents(
 		}
 	}
 	if(budget.colony_swarm_requested
-	   && development_planner.activeBuildCount(IntBuildingType::SWARM_BUILDING,ColonySeed)==0)
+	   && development_planner.activeRoleBuildCount(AIMaximaBuildings::Production,ColonySeed)==0)
 	{
 		DevelopmentIntent colony;
-		colony.buildingType=IntBuildingType::SWARM_BUILDING;
+		colony.buildingType=preferred_profile(AIMaximaBuildings::Production);
 		colony.purpose=ColonySeed;
 		colony.requiredResourceType=WHEAT;
 		colony.unmetCount=1;
 		colony.workers=strategy.staffing.construction_swarm_workers;
 		// Colony priority comes from new food / establishment cost in placement.
 		colony.priority=0;
-		result.push_back(colony);
+		if(colony.buildingType>=0)result.push_back(colony);
 	}
 
 	return result;
 }
 
 
-AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
-	Context& runtime, int excludedAction) const
+AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(Context& runtime,int excludedAction) const
 {
-	using namespace AIMaximaPlacement;DevelopmentLimits limits;
-	limits.newConstruction=budget.construction_sites;
-	limits.allowUpgrades=budget.allow_upgrades;
-	limits.allowLevel2Upgrades=budget.allow_level2_upgrades;
-	limits.allowRepairs=strategy.repairs.enabled;
-	const int weightedTypes[]={IntBuildingType::FOOD_BUILDING,
-		IntBuildingType::HEAL_BUILDING,IntBuildingType::WALKSPEED_BUILDING,
-		IntBuildingType::SWIMSPEED_BUILDING,IntBuildingType::ATTACK_BUILDING};
-	const int firstWeights[]={budget.upgrade_level1_inn_weight,
-		budget.upgrade_level1_hospital_weight,budget.upgrade_level1_racetrack_weight,
-		budget.upgrade_level1_pool_weight,budget.upgrade_level1_barracks_weight};
-	const int secondWeights[]={budget.upgrade_level2_inn_weight,
-		budget.upgrade_level2_hospital_weight,budget.upgrade_level2_racetrack_weight,
-		budget.upgrade_level2_pool_weight,budget.upgrade_level2_barracks_weight};
-	for(size_t i=0;i<sizeof(weightedTypes)/sizeof(weightedTypes[0]);++i)
-	{
-		limits.upgradePriorities[std::make_pair(weightedTypes[i],1)]=firstWeights[i];
-		limits.upgradePriorities[std::make_pair(weightedTypes[i],2)]=secondWeights[i];
-	}
-	// Except for a lone building, keep at least half of each category operational.
-	// New sites do not provide service yet and cannot authorize more downtime.
-	std::map<int,std::pair<int,bool>> service;
-	for(int id=0;id<Building::MAX_COUNT;++id)
-	{
-		const Building* b=runtime.player->team->myBuildings[id];
-		if(!b || b->type->isVirtual || b->buildingState==Building::DEAD
-		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION
-		   || b->constructionResultState==Building::NEW_BUILDING
-		   || (b->type->isBuildingSite && b->type->level==0
-			&& b->constructionResultState!=Building::REPAIR))continue;
-		service[b->gid]=std::make_pair(b->type->shortTypeNum,
-			b->buildingState==Building::ALIVE && !b->type->isBuildingSite
-			&& b->constructionResultState==Building::NO_CONSTRUCTION);
-	}
-	for(const auto& record:runtime.get_building_register().found())
-		if(record.second.upgrading)
-		{
-			const Building* b=runtime.get_building_register().get_building(record.first);
-			if(b && service.count(b->gid))service[b->gid].second=false;
-		}
-	for(const auto& entry:development_planner.actions())
-	{
-		const DevelopmentAction& a=entry.second;
-		if(a.id==excludedAction || (a.type!=UpgradeBuilding && a.type!=RepairBuilding)
-		   || a.state!=ParcelReserved
-		   || !runtime.get_building_register().is_building_found(a.buildingId))continue;
-		const Building* b=runtime.get_building_register().get_building(a.buildingId);
-		if(service.count(b->gid))service[b->gid].second=false;
-	}
-	std::map<int,std::pair<int,int>> categories;
-	for(const auto& entry:service)
-	{
-		auto& count=categories[entry.second.first];
-		count.first+=entry.second.second;
-		++count.second;
-	}
-	if(snapshot.warriors>snapshot.trained_warriors
-	   && categories[IntBuildingType::ATTACK_BUILDING].second>1)
-	{
-		// Training must keep running while the next tier is built. Recheck at
-		// issue time too, including orders already issued but not yet observed.
-		const auto seats=barracks_capacity(runtime,excludedAction);
-		const int keep=std::max(1,(seats.second+1)/2);
-		for(int level=1;level<=2;++level)
-			if(seats.first-globalContainer->buildingsTypes
-				.getByType("barracks",level-1,false)->maxUnitInside<keep)
-				limits.upgradePriorities[std::make_pair(IntBuildingType::ATTACK_BUILDING,level)]=0;
-	}
-	std::vector<WorldBuilding> hospitals;
-	for(const auto& record:runtime.get_building_register().found())
-	{
-		const Building* b=runtime.get_building_register().get_building(record.first);
-		if(!b || b->type->shortTypeNum!=IntBuildingType::HEAL_BUILDING) continue;
-		WorldBuilding hospital; hospital.id=record.first;
-		hospital.buildingType=IntBuildingType::HEAL_BUILDING;
-		hospital.level=b->type->level+1;
-		hospitals.push_back(hospital);
-	}
-	if(committed_hospital_beds(hospitals,excludedAction)
-	   >=Labour::hospitalBedsWanted(snapshot.warriors,
-		strategy.military.hospital_beds_per_warrior_percent))
-	{
-		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,1)]=0;
-		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,2)]=0;
-	}
-	TeamStat* stat=runtime.player->team->stats.getLatestStat();
-	const int can1=stat->upgradeState[BUILD][1]+stat->upgradeState[BUILD][2]
-		+stat->upgradeState[BUILD][3];
-	const int can2=stat->upgradeState[BUILD][2]+stat->upgradeState[BUILD][3];
-	// Prestige comes from level-three schools. Preserve the workforce needed
-	// for that upgrade, and apply the additional population gate after the first.
-	bool hasPrestigeSchool=false;
-	for(const auto& record:runtime.get_building_register().found())
-	{
-		const Building* building=runtime.get_building_register().get_building(record.first);
-		if(building && building->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING
-		   && building->type->level>=2)
-			hasPrestigeSchool=true;
-	}
-	const bool prestigeAllowed=hasPrestigeSchool
-		? can2>=budget.second_prestige_trained_workers
-			&& stat->totalUnit>=budget.second_prestige_population_min
-		: can2>=budget.first_prestige_trained_workers;
-	if(!prestigeAllowed)
-		limits.upgradePriorities[std::make_pair(IntBuildingType::SCIENCE_BUILDING,2)]=0;
-	limits.level1Upgrades=(can1+budget.upgrade_level1_trained_units_per_slot/2)
-		/std::max(1,budget.upgrade_level1_trained_units_per_slot);
-	limits.level2Upgrades=limits.allowLevel2Upgrades
-		?(can2+budget.upgrade_level2_trained_units_per_slot/2)
-		/std::max(1,budget.upgrade_level2_trained_units_per_slot):0;
-	const std::map<int,DevelopmentAction>& actions=development_planner.actions();
-	for(std::map<int,DevelopmentAction>::const_iterator i=actions.begin();i!=actions.end();++i)
-	{
-		const ActionLifecycleState state=i->second.state;
-		if(state!=ParcelReserved&&state!=CreateIssued&&state!=SiteObserved)continue;
-		if(i->second.type==BuildCampusMember||i->second.type==BuildStandalone)
-			++limits.activeNewConstruction;
-		else if(i->second.type==UpgradeBuilding&&i->second.fromLevel==1)
-			++limits.activeLevel1Upgrades;
-		else if(i->second.type==UpgradeBuilding&&i->second.fromLevel==2)
-			++limits.activeLevel2Upgrades;
-	}
-	for(const auto& entry:categories)
-		if(entry.second.second>=2 && entry.second.first-1<(entry.second.second+1)/2)
-			for(int level=0;level<=2;++level)
-				limits.upgradePriorities[std::make_pair(entry.first,level)]=0;
-	limits.activeNewConstruction=std::max(limits.activeNewConstruction,
-		snapshot.building_sites);
-	return limits;
+ using namespace AIMaximaPlacement;using namespace AIMaximaBuildings;
+ DevelopmentLimits limits;limits.newConstruction=budget.construction_sites;limits.allowUpgrades=budget.allow_upgrades;
+ limits.allowLevel2Upgrades=budget.allow_level2_upgrades;limits.allowRepairs=strategy.repairs.enabled;
+ int total[RoleCount]{},operational[RoleCount]{};std::set<int> unavailable;
+ for(const auto& [id,a]:development_planner.actions())if(id!=excludedAction&&(a.state==ParcelReserved||a.state==CreateIssued||a.state==SiteObserved)) {
+  if(a.type==BuildCampusMember||a.type==BuildStandalone)++limits.activeNewConstruction;
+  else {unavailable.insert(a.buildingId);if(a.type==UpgradeBuilding){if(a.fromLevel==1)++limits.activeLevel1Upgrades;else ++limits.activeLevel2Upgrades;}}
+ }
+ for(const auto& [id,record]:runtime.get_building_register().found()) {
+  const auto* b=runtime.get_building_register().get_building(id);if(!b||b->buildingState!=Building::ALIVE||b->constructionResultState==Building::NEW_BUILDING)continue;
+  const auto roles=capabilities(*runtime.player->game,*b->type);
+  const bool running=!b->type->isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION&&!record.upgrading&&!unavailable.count(id);
+  for(int role=0;role<RoleCount;++role)if(roles&roleBit(role)){++total[role];operational[role]+=running;}
+ }
+ const int roles[]={Feeding,Healing,WalkTraining,SwimTraining,CombatTraining};
+ const int first[]={budget.upgrade_level1_inn_weight,budget.upgrade_level1_hospital_weight,budget.upgrade_level1_racetrack_weight,budget.upgrade_level1_pool_weight,budget.upgrade_level1_barracks_weight};
+ const int later[]={budget.upgrade_level2_inn_weight,budget.upgrade_level2_hospital_weight,budget.upgrade_level2_racetrack_weight,budget.upgrade_level2_pool_weight,budget.upgrade_level2_barracks_weight};
+ const int qualification=runtime.player->team->maxBuildLevel();
+ const int healingWanted=Labour::hospitalBedsWanted(snapshot.warriors,strategy.military.hospital_beds_per_warrior_percent);
+ std::vector<WorldBuilding> physical;
+ for(const auto& [id,record]:runtime.get_building_register().found()) {
+  const auto* b=runtime.get_building_register().get_building(id);if(!b||b->buildingState!=Building::ALIVE)continue;
+  WorldBuilding entry;entry.id=id;entry.buildingType=lineageRoot(*runtime.player->game,b->typeNum);entry.level=lineagePosition(*runtime.player->game,b->typeNum);physical.push_back(entry);
+ }
+ const bool healingDeficit=committed_hospital_beds(physical,excludedAction)<healingWanted;
+ const bool combatTrainingNeeded=snapshot.trained_warriors<snapshot.warriors;
+ const auto* stat=runtime.player->team->stats.getLatestStat();
+ bool hasPrestigeProvider=false;
+ for(const auto& [id,record]:runtime.get_building_register().found()) {
+  const auto* b=runtime.get_building_register().get_building(id);
+  if(b && b->buildingState==Building::ALIVE && completed(*runtime.player->game,*b->type)->prestige>0)hasPrestigeProvider=true;
+ }
+ for(const auto& p:collect_building_profiles())for(const auto& v:p.levels) {
+  int priority=-1;for(int r=0;r<5;++r)if(v.roles&roleBit(roles[r]))priority=std::max(priority,roles[r]==Healing&&!healingDeficit?0:v.level==1?first[r]:later[r]);
+  const auto* next=p.atLevel(v.level+1);
+  if(next && runtime.player->game->buildingsTypes.get(next->completedType)->prestige>
+      runtime.player->game->buildingsTypes.get(v.completedType)->prestige) {
+   int trained=0;
+   for(int level=std::clamp(next->requiredWorkerLevel,0,NB_UNIT_LEVELS-1);level<NB_UNIT_LEVELS;++level)
+    trained+=stat->workersByConstructionLevel[level];
+   const bool prestigeAllowed=hasPrestigeProvider
+    ? trained>=budget.second_prestige_trained_workers && stat->totalUnit>=budget.second_prestige_population_min
+    : trained>=budget.first_prestige_trained_workers;
+   if(!prestigeAllowed)priority=0;
+  }
+  if(!next||!next->available||next->requiredWorkerLevel>qualification)priority=0;
+  bool serviceLost=false;for(int role=0;role<RoleCount;++role)if((v.roles&roleBit(role))&&(role!=CombatTraining||combatTrainingNeeded)&&total[role]>=2&&operational[role]-1<(total[role]+1)/2)serviceLost=true;
+  if(serviceLost){priority=0;limits.upgradePriorities[{p.buildingType,0}]=0;}
+  limits.upgradePriorities[{p.buildingType,v.level}]=priority;
+ }
+ const int can1=stat->workersByConstructionLevel[1]+stat->workersByConstructionLevel[2]+stat->workersByConstructionLevel[3];
+ const int can2=stat->workersByConstructionLevel[2]+stat->workersByConstructionLevel[3];
+ limits.level1Upgrades=(can1+budget.upgrade_level1_trained_units_per_slot/2)/std::max(1,budget.upgrade_level1_trained_units_per_slot);
+ limits.level2Upgrades=limits.allowLevel2Upgrades?(can2+budget.upgrade_level2_trained_units_per_slot/2)/std::max(1,budget.upgrade_level2_trained_units_per_slot):0;
+ limits.activeNewConstruction=std::max(limits.activeNewConstruction,snapshot.building_sites);return limits;
 }
 
 
@@ -4657,17 +4739,19 @@ bool Maxima::issue_development_action(Context& runtime,
 	using namespace AIMaximaPlacement;int buildingId=-1;
 	if(action.type==BuildCampusMember||action.type==BuildStandalone)
 	{
-		const int x=runtime.player->map->normalizeX(action.centerX+action.initialFootprint.left);
-		const int y=runtime.player->map->normalizeY(action.centerY+action.initialFootprint.top);
-		buildingId=runtime.issue_building_at(action.buildingType,action.workers,x,y);
+		const auto* shape=profile_variant(action.buildingType,action.targetLevel);if(!shape)return false;
+		const auto* placement=runtime.player->game->buildingsTypes.get(shape->engineType);if(!placement)return false;
+		const int x=runtime.player->map->normalizeX(action.centerX+placement->decLeft);
+		const int y=runtime.player->map->normalizeY(action.centerY+placement->decTop);
+		buildingId=runtime.issue_building_at(shape->engineType,action.workers,x,y);
 		if(buildingId<0)return false;
-		if(action.buildingType==IntBuildingType::FOOD_BUILDING)
+		if(profile_serves(action.buildingType,AIMaximaBuildings::Feeding,action.targetLevel))
 		{
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateInn,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
 			runtime.add_management_order(update);
 		}
-		else if(action.buildingType==IntBuildingType::SWARM_BUILDING)
+		else if(profile_serves(action.buildingType,AIMaximaBuildings::Production,action.targetLevel))
 		{
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateSwarm,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
@@ -4767,8 +4851,8 @@ void Maxima::emit_placement_diagnostics(Context& runtime,const char* outcome,
 		<<"\tcolony_value="<<action->utility.conqueredGain;
 	fields<<"\tcolonization_eligible="<<(budget.colony_swarm_requested ? 1 : 0)
 		<<"\tcolonization_gate="<<colony_gate_reason
-		<<"\tactive_colonial_action="<<development_planner.activeBuildCount(
-			IntBuildingType::SWARM_BUILDING, ColonySeed)
+		<<"\tactive_colonial_action="<<development_planner.activeRoleBuildCount(
+			AIMaximaBuildings::Production, ColonySeed)
 		<<"\thotspot_count="<<cleared_enemy_sites.size();
 	emit_telemetry(runtime,"placement_planner",fields.str());
 }
@@ -5084,14 +5168,25 @@ void Maxima::update_food_retirement(Context& runtime,
 	const int inn_burden=budget.food_inn_burden_percent;
 	const int swarm_burden=budget.food_swarm_burden_percent;
 	int supported_inns=0, supported_swarms=0;
+    long long productionClaim=0;
 	std::set<int> present;
 	for(size_t i=0;i<ledger.consumers.size();++i)
 	{
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+        const AIMaximaPlacement::BuildingLevelProfile* definition=nullptr;
+        if(const auto* building=world.building(value.key))definition=profile_variant(building->buildingType,std::max(1,value.level));
+        else if(value.key<0) {
+            const auto action=development_planner.actions().find(-value.key-1);
+            if(action!=development_planner.actions().end())definition=profile_variant(action->second.buildingType,std::max(1,action->second.targetLevel));
+        }
+        const bool workerProducer=definition && (definition->productionUnitMask&(1u<<WORKER));
+        if(workerProducer && value.demand>0)
+            productionClaim+=value.claimedProduction;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)
 		{
-			if(value.kind==AIMaximaFoodLedger::InnConsumer)++supported_inns; else ++supported_swarms;
+			if(value.kind==AIMaximaFoodLedger::InnConsumer)++supported_inns;
+            if(workerProducer)++supported_swarms;
 		}
 		if(value.key<0) continue;
 		present.insert(value.key);
@@ -5105,14 +5200,23 @@ void Maxima::update_food_retirement(Context& runtime,
 	// Only capacity one site could actually collect supports another building.
 	// A plain total would add up remnants no single building can ever reach.
 	const long long margin=std::max(1,policy.foodMarginPercent);
-	const long long inn_cost=static_cast<long long>(policy.foodInnDemand[0])*margin/100;
+    const auto* feeding=profile_variant(preferred_profile(AIMaximaBuildings::Feeding));
+    const long long inn_cost=feeding?static_cast<long long>(feeding->operatingResources[WHEAT])*margin/100:0;
 	const long long swarm_cost=static_cast<long long>(policy.foodSwarmDemand)*margin/100;
+    if(inn_cost==0 && feeding && feeding_capacity(feeding->engineType,1)>0) {
+        supported_inns=Building::MAX_COUNT; // Wheat cannot constrain a wheat-free service.
+    }
 	if(inn_cost>0)
 		supported_inns+=int(std::min<long long>(INT_MAX,
 			ledger.bestSiteResidual/inn_cost));
 	if(swarm_cost>0)
 		supported_swarms+=int(std::min<long long>(INT_MAX,
 			ledger.bestSiteResidual/swarm_cost));
+    if(swarm_cost==0) {
+        const auto* producer=profile_variant(preferred_profile(AIMaximaBuildings::Production));
+        if(producer && (producer->productionUnitMask&(1u<<WORKER)))supported_swarms=Building::MAX_COUNT;
+    }
+    food_birth_crop_rate=int(std::min<long long>(INT_MAX,productionClaim+ledger.bestSiteResidual));
 	food_supported_inns=supported_inns;
 	food_supported_swarms=supported_swarms;
 
@@ -5144,6 +5248,7 @@ void Maxima::update_food_retirement(Context& runtime,
 				<<"\tcolony="<<(value.colony?1:0)
 				<<"\tretirable="<<(value.retirable?1:0)
 				<<"\tdemand="<<value.demand<<"\tclaimed="<<value.claimed
+                <<"\tproduction_demand="<<value.productionDemand<<"\tproduction_claimed="<<value.claimedProduction
 				<<"\tavailable="<<value.available
 				<<"\tcoverage="<<value.coveragePercent
 				<<"\tquality="<<value.quality<<"\tquality_band="<<value.qualityBand
@@ -5160,25 +5265,22 @@ void Maxima::update_food_retirement(Context& runtime,
 		return;
 
 	int completed_inns=0,completed_swarms=0;
-	std::map<int,int> inn_level;
+	std::map<int,std::pair<unsigned,long long>> inn_rates;
+    std::array<long long,8> remainingRates{};
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
 		if(building.site||food_building_pending_deletion(runtime,building.id))continue;
-		if(building.buildingType==IntBuildingType::FOOD_BUILDING)
-		{++completed_inns;inn_level[building.id]=std::max(1,building.level);}
-		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)
+		if(profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
+		{
+            const auto* definition=profile_variant(building.buildingType,building.level);
+            const unsigned mask=definition->feedingMask&7u;
+            const long long rate=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*strategy.economy.reliable_inn_percent/100;
+            ++completed_inns;inn_rates[building.id]={mask,rate};remainingRates[mask]+=rate;
+        }
+		else if(profile_serves(building.buildingType,AIMaximaBuildings::Production,building.level))
 			++completed_swarms;
 	}
-	const int modelled[3]={budget.food_inn_seats_level1,
-		budget.food_inn_seats_level2,budget.food_inn_seats_level3};
-	const auto seats_of=[&](int level)
-	{
-		return modelled[std::min(3,std::max(1,level))-1];
-	};
-	int seats=0;
-	for(std::map<int,int>::const_iterator i=inn_level.begin();i!=inn_level.end();++i)
-		seats+=seats_of(i->second);
 
 	const AIMaximaPlacement::DevelopmentAction* relocation=current_food_relocation();
 	const int replacement=relocation?relocation->buildingId:-1;
@@ -5200,11 +5302,12 @@ void Maxima::update_food_retirement(Context& runtime,
 		   ||timer-since->second<budget.food_burden_confirm_ticks)continue;
 		if(value.kind==AIMaximaFoodLedger::InnConsumer)
 		{
-			const std::map<int,int>::const_iterator level=inn_level.find(value.key);
-			if(level==inn_level.end()||completed_inns<=1)continue;
+			const auto provider=inn_rates.find(value.key);
+			if(provider==inn_rates.end()||completed_inns<=1)continue;
 			// The ledger is an accounting view: workers stock whichever inn they
 			// reach. Never remove seats the population is still eating from.
-			if(seats-seats_of(level->second)<snapshot.population)continue;
+			auto without=remainingRates;without[provider->second.first]-=provider->second.second;
+            if(aggregate_feeding_capacity(without)<snapshot.population)continue;
 		}
 		// Only completed buildings are retirable, so a swarm reaching here is
 		// physically present; never remove the settlement's last one.
@@ -5370,28 +5473,25 @@ void Maxima::update_food_relocation(Context& runtime,
 				// replaced is usually starving, and its seats with it.
 				bool seatsRemain=true;
 				const WorldBuilding* old=world.building(target);
-				if(old&&old->buildingType==IntBuildingType::FOOD_BUILDING)
+				if(old&&profile_serves(old->buildingType,AIMaximaBuildings::Feeding,old->level))
 				{
-					const int modelled[3]={budget.food_inn_seats_level1,
-						budget.food_inn_seats_level2,budget.food_inn_seats_level3};
-					long long seats=0,oldSeats=0;
+
+					std::array<long long,8> rates{};
 					for(size_t b=0;b<world.buildings.size();++b)
 					{
 						const WorldBuilding& building=world.buildings[b];
-						if(building.site
+						if(building.site || building.id==target
 						   ||food_building_pending_deletion(runtime,building.id)
-						   ||building.buildingType!=IntBuildingType::FOOD_BUILDING)
+						   ||!profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
 							continue;
-						const int level=std::min(3,std::max(1,building.level));
 						const AIMaximaFoodLedger::ConsumerResult* supplied=
 							ledger.consumer(building.id);
 						const int coverage=supplied
 							? std::min(100,std::max(0,supplied->coveragePercent)) : 100;
-						const long long reliable=modelled[level-1]*coverage/100;
-						seats+=reliable;
-						if(building.id==target)oldSeats=reliable;
-					}
-					seatsRemain=seats-oldSeats>=snapshot.population;
+                        const auto* definition=profile_variant(building.buildingType,building.level);
+                        rates[definition->feedingMask&7u]+=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*coverage*strategy.economy.reliable_inn_percent/10000;
+                    }
+                    seatsRemain=aggregate_feeding_capacity(rates)>=snapshot.population;
 				}
 				if(hungry||!seatsRemain)
 				{
@@ -5486,7 +5586,7 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		const Building* b=team->myBuildings[id];
 		if(!b || !b->type || b->buildingState!=Building::ALIVE) continue;
 		const bool site=b->type->isBuildingSite;
-		const bool swarm=b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING;
+		const bool swarm=AIMaximaBuildings::serves(*context.player->game,*b->type,AIMaximaBuildings::Production);
 		if(swarm && !site)
 		{
 			++result.swarms;
@@ -5496,27 +5596,29 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			result.siteRequested+=std::max(0, b->desiredMaxUnitWorking);
 		// A barracks being upgraded keeps counting as two seats: its warriors are
 		// still coming, and a pause in births for every upgrade starves the army.
-		if(site && b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING
-		   && b->type->level>0)
-			result.barracksSeats+=2;
+		if(site && AIMaximaBuildings::serves(*context.player->game,*b->type,AIMaximaBuildings::CombatTraining)
+		   && b->constructionResultState==Building::UPGRADE)
+			result.barracksSeats+=std::min(2,AIMaximaBuildings::completed(*runtime.player->game,*b->type)->maxUnitInside);
 		if(site) continue;
-		if(b->type->shortTypeNum==IntBuildingType::ATTACK_BUILDING)
+		if(AIMaximaBuildings::serves(*context.player->game,*b->type,AIMaximaBuildings::CombatTraining))
 			result.barracksSeats+=b->maxUnitInside;
-		if(b->type->shortTypeNum==IntBuildingType::HEAL_BUILDING)
+		if(AIMaximaBuildings::serves(*context.player->game,*b->type,AIMaximaBuildings::Healing))
 		{
 			++result.hospitals;
 			result.hospitalSeats+=b->maxUnitInside;
 		}
-		if(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+		if(AIMaximaBuildings::serves(*context.player->game,*b->type,AIMaximaBuildings::Feeding))
 		{
 			++result.inns;
 			result.innSeats+=b->maxUnitInside;
 		}
 		// Idle training reserves cannot pay off when units cannot learn. Existing
 		// hospitals and barracks still provide healing, so only training seats go.
-		const bool trains=!runtime.player->game->gameHeader.isUnitUpgradesDisabled()
-			&& (b->type->upgrade[WALK] || b->type->upgrade[BUILD]
-			|| b->type->upgrade[HARVEST] || (swimming && b->type->upgrade[SWIM]));
+		bool trains=false;
+		if(!runtime.player->game->gameHeader.isUnitUpgradesDisabled())for(int ability=0;ability<NB_ABILITY;++ability){
+		 const auto& t=b->type->semantics.training[ability];
+		 if(t.enabled&&(t.unitMask&b->type->semantics.admittedUnitMask&(1u<<WORKER))&&(ability==WALK||ability==BUILD||ability==HARVEST||t.constructionLevel>0||(swimming&&ability==SWIM)))trains=true;
+		}
 		if(trains)
 		{
 			schools.push_back(b);
@@ -5544,17 +5646,15 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		{
 			const BuildingType* type=u->attachedBuilding->type;
 			if(type->isBuildingSite) ++result.builders;
-			else if(type->shortTypeNum==IntBuildingType::SWARM_BUILDING) ++result.swarmCarriers;
-			else if(type->shortTypeNum==IntBuildingType::FOOD_BUILDING) ++result.innCarriers;
+			else if(AIMaximaBuildings::serves(*context.player->game,*type,AIMaximaBuildings::Production)) ++result.swarmCarriers;
+			else if(AIMaximaBuildings::serves(*context.player->game,*type,AIMaximaBuildings::Feeding)) ++result.innCarriers;
 			else ++result.otherAssigned;
 		}
 		else ++result.otherAssigned;
 		bool canTrain=false;
 		for(size_t b=0;b<schools.size() && !canTrain;++b)
-			for(int ability=WALK;ability<ARMOR && !canTrain;++ability)
-				if((ability!=SWIM || swimming) && u->canLearn[ability]
-				   && schools[b]->type->upgrade[ability]
-				   && u->level[ability]<=schools[b]->type->level)
+			for(int ability=0;ability<NB_ABILITY && !canTrain;++ability)
+				if((ability!=SWIM || swimming) && u->needsTraining(schools[b]->type->semantics.training[ability],ability))
 					canTrain=true;
 		if(canTrain) ++result.trainable;
 	}
@@ -5577,7 +5677,7 @@ void Maxima::manage_buildings(Context& runtime)
 		BuildingSearch swarms(runtime);
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
-			if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+			if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 			{
 				std::map<int,StaffingControl::State>::const_iterator state=
 					staffing_control.find(*i);
@@ -5597,15 +5697,15 @@ void Maxima::manage_buildings(Context& runtime)
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Production))
 		{
 			manage_swarm(runtime, *i);
 		}
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		else if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::Feeding))
 		{
 			manage_inn(runtime, *i);
 		}
-		if(runtime.get_building_register().get_type(*i)==IntBuildingType::DEFENSE_BUILDING
+		else if(runtime.get_building_register().has_role(*i,AIMaximaBuildings::ProjectileDefense)
 		   && runtime.get_building_register().get_assigned(*i)
 			!=(explorer_defense_emergency()
 				? strategy.staffing.completed_tower_emergency_workers
@@ -5672,8 +5772,8 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 	policy.highPermille=budget.staffing_high_permille;
 	policy.slack=budget.staffing_slack;
 	policy.minimumWorkers=budget.staffing_minimum_workers;
-	policy.maximumWorkers=std::min(MAXIMA_MAX_UNIT_WORKING,
-		budget.staffing_maximum_workers);
+	policy.maximumWorkers=std::min({MAXIMA_MAX_UNIT_WORKING,budget.staffing_maximum_workers,building->type->semantics.assignmentLimit});
+	policy.minimumWorkers=std::min(policy.minimumWorkers,policy.maximumWorkers);
 	policy.cooldownPasses=budget.staffing_cooldown_passes;
 	// A building that has just been built starts where it is useful rather
 	// than at one carrier: the loop needs several passes to climb, and an inn
@@ -5682,12 +5782,18 @@ int Maxima::update_staffing_request(Context& runtime, int id)
 	const bool fresh=staffing_control.find(id)==staffing_control.end();
 	StaffingControl::State& state=staffing_control[id];
 	if(fresh)
-		state.request=building->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
+		state.request=AIMaximaBuildings::serves(*context.player->game,*building->type,AIMaximaBuildings::Production)
 			? budget.staffing_new_swarm_workers : budget.staffing_new_inn_workers;
 	const int previous=state.request;
-	// The building's own stock and its own actual staffing are the only inputs.
-	const int request=StaffingControl::update(state, policy,
-		building->resources[WHEAT], building->type->maxResource[WHEAT],
+	// Shared inventory is sampled once. The limiting required resource controls
+	// staffing, regardless of which combination of services consumes it.
+	int stock=1,capacity=1;bool selected=false;
+	const auto* profile=profile_variant(AIMaximaBuildings::lineageRoot(*runtime.player->game,building->typeNum),AIMaximaBuildings::lineagePosition(*runtime.player->game,building->typeNum));
+	if(profile)for(int r=0;r<8;++r)if(profile->operatingResources[r]>0&&building->type->maxResource[r]>0){
+	 if(!selected||static_cast<long long>(building->resources[r])*capacity<static_cast<long long>(stock)*building->type->maxResource[r]){stock=building->resources[r];capacity=building->type->maxResource[r];selected=true;}
+	}
+	if(!selected){state.request=0;return 0;}
+	const int request=StaffingControl::update(state, policy,stock,capacity,
 		runtime.get_building_register().get_enrolled(id));
 	if(request!=previous)
 	{
@@ -5818,7 +5924,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 	for(const auto& entry:runtime.get_building_register().found())
 	{
 		Building* inn=runtime.get_building_register().get_building(entry.first);
-		if(!inn || inn->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING
+		if(!inn || !AIMaximaBuildings::serves(*context.player->game,*inn->type,AIMaximaBuildings::Feeding)
 		   || inn->type->isBuildingSite)continue;
 		const auto assessment=field.assessBuilding(inn->posX,inn->posY,
 			inn->type->width,inn->type->height);
@@ -5843,19 +5949,23 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 		const size_t keep=(source>=0 && strategy.fruit.units_per_flag>0)?1:0;
 		for(size_t n=keep;n<flags.size();++n)
 		{
-			runtime.cancel_or_destroy_building(flags[n]);
+			runtime.cancel_or_destroy_building(flags[n],1u<<EXPLORER);
 		}
 		if(!keep)continue;
 		const int x=source%field.width,y=source/field.width;
 		if(!flags.empty())
 		{
+            if(runtime.begin_attraction(flags[0],1u<<EXPLORER)) {
+                runtime.add_management_order(new AssignWorkers(budget.fruit_units_per_flag,flags[0]));
+                runtime.add_management_order(new ChangeFlagSize(budget.fruit_flag_radius,flags[0]));
+            }
 			int oldX,oldY;
 			if(runtime.get_building_position(flags[0],oldX,oldY) && (x!=oldX || y!=oldY))
 				runtime.add_management_order(new ChangeFlagPosition(x,y,flags[0]));
 			continue;
 		}
 		GradientInfo resource;resource.add_source(new Entities::Resource(CHERRY+v));
-		BuildingOrder* order=new BuildingOrder(IntBuildingType::EXPLORATION_FLAG,
+		BuildingOrder* order=new BuildingOrder(AIMaximaBuildings::ExploreAttraction,
 			budget.fruit_units_per_flag);
 		order->add_constraint(new SinglePosition(x,y));
 		order->add_constraint(new MaximumDistance(resource,0));

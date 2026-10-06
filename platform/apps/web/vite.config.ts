@@ -1,9 +1,17 @@
-import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
   server: {
+    fs: {
+      // Share native shader sources without exposing the rest of the checkout.
+      allow: [
+        searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
+        fileURLToPath(new URL('../../../libgag/shaders', import.meta.url)),
+      ],
+    },
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
       'Cross-Origin-Embedder-Policy': 'require-corp',

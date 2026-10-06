@@ -1,7 +1,10 @@
+#include <nlohmann/json.hpp>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ScriptObservations.h"
 #include "ScriptOrders.h"
+#include "ScriptSpatial.h"
+#include "ScriptBuildingCapabilities.h"
 #include "ScriptRuntime.h"
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -1158,6 +1161,36 @@ TEST_CASE("JavaScript placement reserves footprints and explains impossible cons
 	CHECK_THROWS(spatial.query("placement", {request, staged}, {}));
 }
 
+TEST_CASE("JavaScript solid attraction placement keeps both radius and footprint reservation" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant = world.game.buildingsTypes.getPlaceableTypeNum("inn");
+    REQUIRE(variant >= 0);
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["zonable"]={0,0,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=5;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* type = world.game.buildingsTypes.get(variant);
+    REQUIRE(type->semantics.occupiesGround);
+    Observations observations(world.game, -1);
+    observations.setProfile(2);
+    observations.observe();
+    Spatial spatial(world.game, 0, observations);
+    spatial.begin(Value::array());
+    auto request = Value::object().set("buildingType", variant).set("reachable", false)
+        .set("clearance", 0).set("range", 4);
+    auto result = spatial.query("placement", {request, Value::array()}, {});
+    REQUIRE(result.get("found").number == 1);
+    const auto command = result.get("order");
+    CHECK(command.get("range").number == 4);
+    CHECK(command.get("reservedWidth").number >= type->width);
+    CHECK(command.get("reservedHeight").number >= type->height);
+    CHECK(order(world.game, 0, command)->getOrderType() == ORDER_CREATE);
+}
+
 TEST_CASE("JavaScript services reject unsavable transactions without changing state" *
 		  doctest::test_suite("JavaScriptIntegration"))
 {
@@ -1400,4 +1433,68 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         CHECK(state.get("internal").number==1);CHECK(state.get("frozen").number==1);
         CHECK(state.get("unchanged").number==1);
     }
+}
+
+TEST_CASE("JavaScript custom building descriptors and orders follow services" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("inn");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    auto& spec=snapshot["variants"][variant];
+    spec["properties"]["type"]="new-service";
+    spec["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    spec["semantics"]["production"]["recipes"]={{"explorer",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+    spec["semantics"]["production"]["fallbackUnit"]=EXPLORER;
+    spec["semantics"]["production"]["initialRatios"]={0,0,0};
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* b=world.game.addBuilding(4,4,variant,0,1,1);
+    REQUIRE(b);
+    Observations observations(world.game, 0);
+    auto types = observations.query("buildingTypes", {});
+    const Value* descriptor = nullptr;
+    for (const auto& value : types.items) if (value.get("id").number == b->typeNum) descriptor = &value;
+    REQUIRE(descriptor);
+    CHECK(descriptor->get("feeding").get("enabled").number == 1);
+    CHECK(descriptor->get("production").items[EXPLORER].get("enabled").number == 1);
+    CHECK(buildingProvides(world.game, b->typeNum, AIPlanning::BuildingIntent::Feed));
+    CHECK(buildingProvides(world.game, b->typeNum, AIPlanning::BuildingIntent::ProduceExplorer));
+    auto ref = Value::object().set("id", unsigned(b->gid)).set("generation", b->scriptIdentity);
+    Value ratios=Value::array(); ratios.items={Value(0),Value(1),Value(0)};
+    auto command=Value::object().set("type","production").set("building",ref).set("ratios",ratios);
+    CHECK_NOTHROW(Script::order(world.game,0,command));
+    ratios.items[WORKER]=Value(1); command.set("ratios",ratios);
+    CHECK_THROWS(Script::order(world.game,0,command));
+    CHECK(buildingVariantDescendsFrom(world.game.buildingsTypes, b->type->prevLevel, b->typeNum));
+}
+
+TEST_CASE("JavaScript managed controls use capabilities and independent bombing filter" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const int variant=world.game.buildingsTypes.getFinishedTypeNum("swarm");
+    auto snapshot=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    snapshot["variants"][variant]["properties"]["shortTypeNum"]=IntBuildingType::STONE_WALL;
+    snapshot["variants"][variant]["properties"]["zonable"]={1,1,1};
+    snapshot["variants"][variant]["properties"]["maxUnitStayRange"]=12;
+    world.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
+    world.game.configureBuildingCatalog();
+    auto* building=world.addBuilding("swarm",4,4);
+    Observations observations(world.game,0);observations.setProfile(2);observations.observe();
+    Services services(world.game,0,observations);services.begin();
+    Host host;host.profile=2;host.team=0;host.width=world.game.map.getW();host.height=world.game.map.getH();host.random=[] {return 0u;};
+    host.query=[&](const auto& name,const auto& args,const QueryBudget& budget){return services.query(name,args,budget);};
+    auto result=makeRuntime()->invoke(
+        "export function step(ctx,s){const b=ctx.game.buildings()[0];"
+        "b.production=[2,1,0];b.minimumLevel=2;b.requireBombing=true;b.range=8;b.workerMinimumLevel=1;}"
+        ,Value::object(),false,host);
+    REQUIRE(result.commands.items.size()==5);
+    services.commit(result.commands,result.telemetry);
+    for(int i=0;i<5;++i){auto order=services.dispatch();order->sender=0;world.game.executeOrder(order,0);}
+    CHECK(building->ratio[WORKER]==2);CHECK(building->ratio[EXPLORER]==1);
+    CHECK(building->minLevelToFlag==2);CHECK(building->explorersRequireBombing);
+    CHECK(building->unitStayRange==8);CHECK(building->minWorkerLevelToFlag==1);
+    ++world.game.stepCounter;observations.observe();services.begin();
+    for(const auto& receipt:services.actions().items)CHECK(receipt.get("status").text=="completed");
 }

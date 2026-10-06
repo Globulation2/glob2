@@ -31,10 +31,8 @@ inline bool wrappedRangesOverlap(int aStart, int aLen, int bStart, int bLen, int
 /// tile of its top-left corner.
 struct GhostBuilding
 {
-	/// Index into globalContainer->buildingsTypes, resolved once by
-	/// BuildingsTypes::getPlaceableTypeNum at the moment the placement was
-	/// ordered. These IDs are positions in a const table, so they stay valid
-	/// for the life of the process.
+	/// Index into the owning game's immutable building catalog, resolved when
+	/// placement is ordered. Valid for that game's lifetime.
 	Sint32 typeNum;
 	/// Top-left corner of the footprint, in map tiles. Not wrapped — callers
 	/// wrap on use.
