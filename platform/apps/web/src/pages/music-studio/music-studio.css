@@ -2,6 +2,12 @@
   --mu-gold: var(--gold-ink);
   --mu-teal: var(--success);
 }
+/* Music inspection grows with the player and validation results. The map
+   editor's fixed-height workspace would clip these controls below the fold. */
+.music-studio.ms-workspace-root {
+  height: auto;
+  overflow: visible;
+}
 .mu-workspace {
   display: grid;
   grid-template-columns: var(--chat-width, 36%) 8px minmax(0, 1fr);
