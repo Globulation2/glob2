@@ -44,16 +44,7 @@ public:
   for (const auto intent:demandIntents) mask |= std::uint64_t{1} << static_cast<unsigned>(intent);
   return mask;
  }();
- // The inverse is generated from the same projection, so mixed providers
- // can visit only their supplied strategic demands without another catalog.
  static_assert(std::popcount(demandIntentMask) == DemandCount);
- inline static constexpr auto demandForIntent = [] {
-  std::array<int, static_cast<unsigned>(Intent::Count)> demands{};
-  demands.fill(-1);
-  for (int demand=0; demand<DemandCount; ++demand)
-   demands[static_cast<unsigned>(demandIntents[demand])] = demand;
-  return demands;
- }();
  static AIPlanning::BuildingIntent intentForDemand(int demand);
  bool provides(const Building& building, int demand) const;
  bool demandAvailable(int demand) const;

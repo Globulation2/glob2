@@ -385,7 +385,9 @@ Uint8 Map::getImmobileUnit(int x, int y) const
 Sint32 Map::warpDist1d(int p, int q, int l)
 {
 	Sint32 d=abs(p-q);
-	d%=l;
+	// Normalized coordinates already differ by less than one period.
+	if (d>=l)
+		d%=l;
 	if (d>l/2)
 		d=l-d;
 	return d;
