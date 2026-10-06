@@ -21,9 +21,9 @@ bool AICastor::addProject(Project *project)
 	telemetry.count(AITrace::AI2::AICastor_addProject_calls);
 	// Reject the project before adding its critical wait and workforce reservation.
 	// An unavailable bootstrap project must not hold every later expansion hostage.
-	if (!demandAvailable(project->demand)
+	if (buildingSum[project->demand][0]>=project->amount
 		|| (game->gameHeader.isHungerDisabled() && project->demand==AICastor::FeedUnits)
-		|| buildingSum[project->demand][0]>=project->amount)
+		|| !demandAvailable(project->demand))
 	{
 		delete project;
 		return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
@@ -156,8 +156,8 @@ void AICastor::addProjects()
 		int upgradeSum=0;
 		for (int li=AI_CASTOR_FIRST_UPGRADE_LEVEL; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
-		if (!game->gameHeader.isUnitUpgradesDisabled() && demandAvailable(bi)
-			&& upgradeSum<strategy.build[bi].baseUpgrade)
+		if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<strategy.build[bi].baseUpgrade
+			&& demandAvailable(bi))
 			return;
 	}
 	buildsAmount=2;
@@ -205,8 +205,8 @@ void AICastor::addProjects()
 			int upgradeSum=0;
 			for (int li=agi; li<NB_UNIT_LEVELS; li++)
 				upgradeSum+=buildingLevels[bi][0][li];
-			if (!game->gameHeader.isUnitUpgradesDisabled() && demandAvailable(bi)
-				&& upgradeSum<upgradeGoal[bi])
+			if (!game->gameHeader.isUnitUpgradesDisabled() && upgradeSum<upgradeGoal[bi]
+				&& demandAvailable(bi))
 				return;
 		}
 

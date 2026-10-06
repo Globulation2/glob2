@@ -66,9 +66,15 @@ public:
 		const GameHeader& rules, int unitType = -1) const;
 	// Forward paths start at explicitly placeable variants. Repair links do not
 	// define upgrade ancestry. Shared descendants use the smallest starting ID.
-	std::uint64_t intentMask(int type) const;
+	std::uint64_t intentMask(int type) const
+	{
+		return type >= 0 && static_cast<std::size_t>(type) < intentMasks_.size() ? intentMasks_[type] : 0;
+	}
 	int lineageRoot(int type) const;
-	int lineagePosition(int type) const;
+	int lineagePosition(int type) const
+	{
+		return type >= 0 && static_cast<std::size_t>(type) < lineagePositions_.size() ? lineagePositions_[type] : 0;
+	}
 	static bool allowed(BuildingIntent intent, const GameHeader& rules);
 	static int trainingAbility(BuildingIntent intent);
 

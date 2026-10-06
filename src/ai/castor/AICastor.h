@@ -215,6 +215,8 @@ public:
 	void updateGlobalGradient(Uint8 *gradient);
 	//! The map's wheat gradient for Castor's workers, on Castor's 8-bit scale.
 	Uint8 wheatGradientAt(size_t index);
+	//! Copy one stable resource field without reacquiring its lazy lookup per cell.
+	void copyWheatGradient(Uint8* destination);
 	
 	std::list<Project *> projects;
 	

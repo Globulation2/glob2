@@ -208,6 +208,84 @@ class RuntimeContinuationTest
     }
 
 public:
+    static void recurringInputsAndProviderLookup()
+    {
+        using AISharedRuntime::Management::ResourceTracker;
+        using AISharedRuntime::Management::RecurringInputStock;
+        using AISharedRuntime::BuildingDemand::Feed;
+        using AISharedRuntime::BuildingDemand::ProduceWorker;
+        for(bool paid:{false,true})
+        {
+            CAPTURE(paid);
+            Game game(nullptr);
+            const int completed=game.buildingsTypes.getTypeNum("inn",0,false);
+            const int site=game.buildingsTypes.getTypeNum("inn",0,true);
+            auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+            auto& variant=catalog["variants"][completed];
+            auto& semantics=variant["semantics"];
+            semantics["feeding"]["enabled"]=paid;
+            semantics["feeding"]["cost"]={{"wheat",2},{"orange",1}};
+            semantics["production"]["scheduling"]="weighted_committed_job";
+            semantics["production"]["recipes"]={
+                {"worker",{{"enabled",paid},{"duration",0},{"cost",{{"wheat",3},{"prune",1}}}}},
+                {"explorer",{{"enabled",false},{"duration",0},{"cost",{{"wood",1}}}}},
+                {"warrior",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
+            for(int resource:{WOOD,WHEAT,ORANGE,PRUNE}) variant["properties"]["maxResource"][resource]=50;
+            game.buildingsTypes.loadSnapshotJson(catalog.dump());game.configureBuildingCatalog();
+            // Parse the authored costs so all masks have the same validated
+            // provenance as a real match; do not mutate cold descriptors.
+            CHECK(game.buildingsTypes.get(completed)->semantics.production.recipes[WORKER].costMask
+                ==((1u<<WHEAT)|(1u<<PRUNE)));
+            setup(game);
+            auto* recurring=game.addBuilding(4,4,completed,0);
+            auto* ordinary=game.addBuilding(12,4,completed,0);
+            auto* construction=game.addBuilding(20,4,site,0);
+            REQUIRE(recurring);REQUIRE(ordinary);REQUIRE(construction);
+            recurring->resources[WHEAT]=7;recurring->resources[ORANGE]=5;
+            recurring->resources[PRUNE]=11;recurring->resources[WOOD]=13;
+            ordinary->resources[WOOD]=17;
+            auto& controller=runtime(game,0);
+            controller.getOrder(); // initialize the register through its normal path
+            auto& registry=controller.get_building_register();
+            REQUIRE(registry.get_building(0)==recurring);
+            REQUIRE(registry.get_building(1)==ordinary);
+            REQUIRE(registry.get_building(2)==construction);
+            CHECK(registry.provides(0,Feed)==paid);
+            CHECK(registry.provides(0,ProduceWorker)==paid);
+            CHECK(registry.provides(2,Feed)==paid); // site resolves completion
+            CHECK(registry.provides(2,ProduceWorker)==paid);
+            CHECK(registry.provides(0,int(AIPlanning::BuildingIntent::ProduceWarrior)));
+            CHECK_FALSE(registry.provides(0,int(AIPlanning::BuildingIntent::ProduceExplorer)));
+            CHECK_FALSE(registry.provides(0,-1));
+            CHECK_FALSE(registry.provides(0,AISharedRuntime::BuildingDemand::Count));
+            CHECK(registry.get_building(1000000)==nullptr);
+            CHECK_FALSE(registry.provides(1000000,Feed));
+            const int pending=registry.register_building();
+            REQUIRE(registry.is_building_pending(pending));
+            CHECK(registry.get_building(pending)==nullptr);
+            CHECK_FALSE(registry.provides(pending,Feed));
+            controller.add_resource_tracker(new ResourceTracker(controller,0,1,RecurringInputStock),0);
+            controller.add_resource_tracker(new ResourceTracker(controller,1,1,WOOD),1);
+            controller.add_resource_tracker(new ResourceTracker(controller,pending,1,RecurringInputStock),pending);
+            auto retained=controller.get_resource_tracker(0);
+            for(int tick=0;tick<AISharedRuntime::AI_SHARED_RUNTIME_TRACKER_SAMPLE_INTERVAL_TICKS;++tick) controller.getOrder();
+            // Wheat is shared by feeding and production and counted once.
+            // Disabled explorer wood is excluded; prune exercises the highest
+            // supported bit. The always-enabled free warrior adds no inputs.
+            CHECK(retained->get_total_level()==(paid ? 23 : 0));
+            CHECK(controller.get_resource_tracker(1)->get_total_level()==17);
+            CHECK(controller.get_resource_tracker(pending)->get_total_level()==0);
+            REQUIRE(game.removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
+            // The register still holds its observation until the next tick;
+            // a disappeared live slot must safely return null immediately.
+            REQUIRE(registry.is_building_found(0));
+            CHECK(registry.get_building(0)==nullptr);
+            CHECK_FALSE(registry.provides(0,Feed));
+            controller.getOrder();
+            CHECK_FALSE(controller.get_resource_tracker(0));
+            CHECK(retained->get_total_level()==(paid ? 23 : 0));
+        }
+    }
     static void run()
     {
         Game game(nullptr);game.map.setSize(5,5,GRASS);game.map.setGame(&game);
@@ -317,4 +395,11 @@ TEST_CASE("position entities retain historical binary and text payloads" *
         CHECK(restored.matches(7,13));CHECK_FALSE(restored.matches(7,0));
         CHECK(input->readUint32("sentinel")==0xabc123);
     }
+}
+
+TEST_CASE("recurring input tracking and provider lookup preserve composite membership" *
+          doctest::test_suite("RuntimeContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    RuntimeContinuationTest::recurringInputsAndProviderLookup();
 }

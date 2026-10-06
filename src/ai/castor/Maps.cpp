@@ -519,13 +519,29 @@ void AICastor::computeWheatCareMap()
 
 // The map's resource gradients are Uint16 with GRADIENT_STEP per tile (MapInternal.h);
 // Castor's wheat maps and thresholds keep the historical 8-bit scale of 255 - tiles.
-Uint8 AICastor::wheatGradientAt(size_t index)
+namespace
 {
-	Uint16 g=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
+Uint8 castorWheatGradient(Uint16 g)
+{
 	if (g<=GRADIENT_UNREACHABLE)
 		return (Uint8)g;
 	int tiles=gradientTiles(g);
 	return (Uint8)(tiles>AI_CASTOR_WHEAT_GRADIENT_PEAK-2 ? 2 : AI_CASTOR_WHEAT_GRADIENT_PEAK-tiles);
+}
+}
+
+Uint8 AICastor::wheatGradientAt(size_t index)
+{
+	return castorWheatGradient(map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index]);
+}
+
+void AICastor::copyWheatGradient(Uint8* destination)
+{
+	const size_t size=map->w*map->h;
+	if (!size) return;
+	const auto* gradient=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0);
+	for (size_t i=0; i<size; ++i)
+		destination[i]=castorWheatGradient(gradient[i]);
 }
 
 void AICastor::computeWheatGrowthMap()
@@ -539,8 +555,9 @@ void AICastor::computeWheatGrowthMap()
 	size_t size=w*h;
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
+	const auto* gradient=size ? map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0) : nullptr;
 	for (size_t i=0; i<size; i++)
-		if (wheatGradientAt(i)==AI_CASTOR_WHEAT_GRADIENT_PEAK)
+		if (castorWheatGradient(gradient[i])==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);
 
 	map->updateGlobalGradient(wheatGrowthMap);

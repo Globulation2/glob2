@@ -229,19 +229,9 @@ bool BuildingCapabilityIndex::matches(int type, BuildingIntent intent, int unit)
 	return unit == -1 ? mask != 0 : unit >= 0 && unit < NB_UNIT_TYPE && (mask & (1u << unit)) != 0;
 }
 
-std::uint64_t BuildingCapabilityIndex::intentMask(int type) const
-{
-	return type >= 0 && static_cast<std::size_t>(type) < intentMasks_.size() ? intentMasks_[type] : 0;
-}
-
 int BuildingCapabilityIndex::lineageRoot(int type) const
 {
 	return type >= 0 && static_cast<std::size_t>(type) < lineageRoots_.size() ? lineageRoots_[type] : -1;
-}
-
-int BuildingCapabilityIndex::lineagePosition(int type) const
-{
-	return type >= 0 && static_cast<std::size_t>(type) < lineagePositions_.size() ? lineagePositions_[type] : 0;
 }
 
 bool BuildingCapabilityIndex::allowed(BuildingIntent intent, const GameHeader& rules)

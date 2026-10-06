@@ -16,6 +16,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "TeamStat.h"
+#include "field/GradientConstants.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
@@ -748,6 +749,30 @@ TEST_CASE("Warrush mixed producer staffing respects zero and saturated assignmen
         }
         hybrid->maxUnitWorking=limit;
         CHECK(ai.staffingOrder()->getOrderType()==ORDER_NULL);
+    }
+}
+
+TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and sentinels")
+{
+    glob2test::HeadlessGlobals globals;
+    CatalogWorld fixture(AI::CASTOR);
+    auto& game=fixture.world.game;
+    auto& ai=*dynamic_cast<AICastor*>(game.players[0]->ai->aiImplementation);
+    const std::array<Uint16,11> raw={0,1,2,GRADIENT_AT_GOAL,
+        GRADIENT_AT_GOAL-4,GRADIENT_AT_GOAL-5,GRADIENT_AT_GOAL-14,
+        GRADIENT_AT_GOAL-15,GRADIENT_AT_GOAL-2520,GRADIENT_AT_GOAL-2530,GRADIENT_AT_GOAL-2540};
+    const std::array<Uint8,11> expected={0,1,2,255,255,254,254,253,3,2,2};
+    std::vector<Uint8> copied(game.map.w*game.map.h,99);
+    for(bool swimming:{false,true}) {
+        CAPTURE(swimming);
+        ai.canSwim=swimming;
+        auto* gradient=game.map.getResourceGradient(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
+        for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
+        ai.copyWheatGradient(copied.data());
+        for(std::size_t i=0;i<copied.size();++i) {
+            CHECK(copied[i]==expected[i%expected.size()]);
+            CHECK(ai.wheatGradientAt(i)==expected[i%expected.size()]);
+        }
     }
 }
 }

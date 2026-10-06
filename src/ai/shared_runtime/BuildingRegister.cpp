@@ -309,11 +309,9 @@ bool BuildingRegister::is_building_upgrading(unsigned int id)
 
 Building* BuildingRegister::get_building(unsigned int id)
 {
-	if(found_buildings.find(id)==found_buildings.end())
-	{
-		return NULL;
-	}
-	return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found_buildings[id]))];
+    const auto found=found_buildings.find(id);
+    if(found==found_buildings.end()) return nullptr;
+    return player->team->myBuildings[::Building::GIDtoID(std::get<3>(found->second))];
 }
 
 
@@ -363,5 +361,9 @@ int BuildingRegister::get_assigned(unsigned int id)
 
 bool BuildingRegister::provides(unsigned int id,int demand)
 {
- return buildingProvides(*player->game,get_type(id),demand);
+    if(demand<0 || demand>=BuildingDemand::Count) return false;
+    const auto* building=get_building(id);
+    if(!building) return false;
+    const int completed=building->type->isBuildingSite ? building->type->nextLevel : building->typeNum;
+    return player->game->buildingCapabilities().matches(completed,buildingIntent(demand));
 }

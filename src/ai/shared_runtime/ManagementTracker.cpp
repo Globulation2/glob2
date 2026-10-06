@@ -5,6 +5,7 @@
 #include "Building.h"
 #include "FileFormatVersions.h"
 
+#include <bit>
 #include <limits>
 #include <stdexcept>
 
@@ -30,10 +31,14 @@ void ResourceTracker::tick()
 		if (!b) return;
 		if(resource==RecurringInputStock) {
    int amount=0;
-   for(int input=0;input<MAX_NB_RESOURCES;++input) {
-    bool consumed=b->type->semantics.feeding.enabled && b->type->semantics.feeding.cost[input]>0;
-    for(const auto& recipe:b->type->semantics.production.recipes) consumed |= recipe.enabled && recipe.cost[input]>0;
-    if(consumed) amount+=b->resources[input];
+   const auto& semantics=b->type->semantics;
+   unsigned inputs=semantics.feeding.enabled ? semantics.feeding.costMask : 0;
+   for(const auto& recipe:semantics.production.recipes)
+    if(recipe.enabled) inputs|=recipe.costMask;
+   while(inputs) {
+    const unsigned input=std::countr_zero(inputs);
+    amount+=b->resources[input];
+    inputs&=inputs-1;
    }
    record[position]=amount;
   } else record[position]=b->resources[resource];
