@@ -346,6 +346,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/map/gradient/ResourceSeedCache.cpp',
+    '#src/resource/Resources.cpp',
     '#src/map/pathfind/MapPathfindPoint.cpp',
     '#src/net/message/MessageRecipients.cpp',
     '#src/render/FogFade.cpp',
