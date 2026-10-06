@@ -39,3 +39,15 @@ Sint32 Building::availableResource(int) const { std::abort(); }
 
 unsigned Map::resourceSupplyModes(const Building*, int) const { std::abort(); }
 bool Map::stockSupplierEligible(const Building*, const Building*, int, unsigned) const { std::abort(); }
+
+// Unit Map fixtures have no Game tick or deferred preparation. Preserve real
+// completed-job draining for terrain import, and fail if an engine reservation
+// reaches this test double; that lifecycle is covered by engine harnesses.
+#include "gradient/GradientRuntime.h"
+void Map::preparePendingGradient() {
+    if (gradientRuntime->preparation.job) std::abort();
+}
+void Map::finishGradientPipeline() {
+    preparePendingGradient();
+    gradientRuntime->pipeline.finish();
+}

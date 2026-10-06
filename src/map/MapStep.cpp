@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <tuple>
+#include <utility>
 
 
 // growResources, syncStep, fog of war, discovery, explored area
@@ -213,13 +214,40 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs()};
 }
 
-void Map::advanceGradientPipeline() { gradientRuntime->pipeline.advance(); }
-void Map::finishGradientPipeline() { gradientRuntime->pipeline.finish(); }
-void Map::setGradientWorkerCount(unsigned workers) { gradientRuntime->pipeline.setWorkerCount(workers); }
+bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
+void Map::preparePendingGradient()
+{
+	// Consume before executing: failure leaves no dangling descriptor, while the
+	// pipeline records a completed error so saves/publication cannot wait forever.
+	const auto preparation = std::exchange(gradientRuntime->preparation, {});
+	if (!preparation.job) return;
+	gradientRuntime->pipeline.prepare(preparation.job, [&](GradientPipeline::Job &job) {
+		const auto [reserved, kind, team, resource, swim] = preparation;
+		using Kind = GradientRuntime::Preparation::Kind;
+		switch (kind) {
+		case Kind::Resources: seedResourcesGradient(team, resource, swim, job.data.get()); break;
+		case Kind::Markets: seedResourcesGradient(team, resource, swim, job.data.get(), true); break;
+		case Kind::Guard: seedGuardAreasGradient(team, swim, job.data.get()); break;
+		case Kind::Clear: seedClearAreasGradient(team, swim, job.data.get()); break;
+		}
+		// Propagation owns immutable terrain inputs after the read barrier closes.
+		job.modifiedCosts = hasTerrainMovementModifiers();
+		job.registry = frozenTerrainRegistry();
+		job.terrainBuckets = terrainQueueBuckets();
+		job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
+		job.profiles = job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT ? frozenTerrainMovementSnapshot(swim) : nullptr;
+		job.terrain = !job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)) ? frozenTerrainSnapshot() : nullptr;
+	});
+}
+
+void Map::advanceGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.advance(); }
+void Map::finishGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.finish(); }
+void Map::setGradientWorkerCount(unsigned workers) { preparePendingGradient(); gradientRuntime->pipeline.setWorkerCount(workers); }
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
+	preparePendingGradient();
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 		const field::Grid geometry{getW(), getH()};
 		if (job.water && job.registry && job.registry->size()>TERRAIN_COUNT && !job.modifiedCosts) {
@@ -244,8 +272,9 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	});
 }
 
-void Map::syncStep(Uint32 stepCounter)
+void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 {
+	preparePendingGradient();
 	PERF_SCOPE_TIME(Map);
 	growResources();
 	for (int i=0; i<sizeSector; i++)
@@ -307,20 +336,19 @@ void Map::syncStep(Uint32 stepCounter)
 		}
 	}
 
-	auto dispatch = [&](Uint16 **slot, int swim, auto seed) {
-		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
-			seed(job.data.get());
-            job.modifiedCosts = hasTerrainMovementModifiers();
-			job.registry = frozenTerrainRegistry();
-			job.terrainBuckets = terrainQueueBuckets();
-            job.water = !job.modifiedCosts && terrainRegistry().size()>TERRAIN_COUNT && gradient_kernel::weightedClass(swim) ? frozenWaterSnapshot() : nullptr;
-			job.profiles = job.modifiedCosts && terrainRegistry().size() > TERRAIN_COUNT
-							   ? frozenTerrainMovementSnapshot(swim)
-							   : nullptr;
-			if (!job.profiles && !job.water && (job.modifiedCosts || (swim != 0 && swim != SWIM_CLASS_EVEN)))
-                job.terrain = frozenTerrainSnapshot();
-            else job.terrain.reset();
-		});
+	if (preparePeriodic) { stagePeriodicGradientPreparation(); preparePendingGradient(); }
+}
+
+void Map::stagePeriodicGradientPreparation()
+{
+	preparePendingGradient();
+	using Kind = GradientRuntime::Preparation::Kind;
+	// Queue membership and round-robin flags belong to the simulation owner.
+	// Reserve before AI lazy refreshes so invalidation can supersede this job
+	// regardless of which read-phase task starts first.
+	auto dispatch = [&](Uint16 **slot, Kind kind, int team, int resource, int swim) {
+		auto *job = gradientRuntime->pipeline.reserve(slot, swim);
+		gradientRuntime->preparation = {job, kind, team, resource, swim};
 	};
 	// We only update one gradient per step, round robin over the gradients in use.
 	// Fields are allocated lazily: the second pass runs on freshly reset flags,
@@ -333,7 +361,7 @@ void Map::syncStep(Uint32 stepCounter)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
 					{
-						if (gradientRuntime->pipeline.enabled()) dispatch(&resourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field); });
+						if (gradientRuntime->pipeline.enabled()) dispatch(&resourcesGradient[t][r][s], Kind::Resources, t, r, s);
 						else updateResourcesGradient(t, r, s);
 						gradientUpdated[t][r][s]=true;
 						return;
@@ -347,7 +375,7 @@ void Map::syncStep(Uint32 stepCounter)
 					{
 						// Stock transitions already invalidate stale snapshots. Regular refreshes
 						// must let earlier jobs publish, even when this is the only field.
-						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field, true); });
+						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], Kind::Markets, t, r, s);
 						else updateResourcesGradient(t, r, s, true);
 						marketGradientDirty[t][r][s]=false;
 						marketGradientUpdated[t][r][s]=true;
@@ -357,7 +385,7 @@ void Map::syncStep(Uint32 stepCounter)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
-					if (gradientRuntime->pipeline.enabled()) dispatch(&guardAreasGradient[t][s], s, [&](Uint16 *field) { seedGuardAreasGradient(t, s, field); });
+					if (gradientRuntime->pipeline.enabled()) dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
 					else updateGuardAreasGradient(t, s);
 					guardGradientUpdated[t][s]=true;
 					return;
@@ -366,7 +394,7 @@ void Map::syncStep(Uint32 stepCounter)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
-					if (gradientRuntime->pipeline.enabled()) dispatch(&clearAreasGradient[t][s], s, [&](Uint16 *field) { seedClearAreasGradient(t, s, field); });
+					if (gradientRuntime->pipeline.enabled()) dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
 					else updateClearAreasGradient(t, s);
 					clearGradientUpdated[t][s]=true;
 					return;

@@ -41,11 +41,14 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     map.getClearAreasGradient(0, 0);
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
-    map.syncStep(0);
+    map.syncStep(0, false);
+    map.stagePeriodicGradientPreparation();
+    REQUIRE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().jobs > 0);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
     source.save(&writer, "pending worker continuation");
+    CHECK_FALSE(map.hasPendingGradientPreparation());
     const std::string checkpoint(storage->getBuffer(), storage->getPosition());
     const auto simulationState = [](Game &game) {
         std::vector<Uint32> state, buildings, units;
@@ -69,5 +72,61 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
         restored.game.syncStep(0);
         REQUIRE(simulationState(restored.game) == expected);
     }
+}
+}
+
+#include "ReadOnlyPhase.h"
+TEST_SUITE("SimulationReadPhase") {
+TEST_CASE("direct completed steps match deferred preparation across worker counts") {
+    glob2test::HeadlessGlobals globals;
+    GameHeader header;
+    header.setNumberOfPlayers(1);
+    header.setRandomSeed(123456);
+    header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
+    auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
+    GameGUI direct, deferred;
+    REQUIRE(direct.loadFromHeaders(mapHeader, header, true, true));
+    REQUIRE(deferred.loadFromHeaders(mapHeader, header, true, true));
+    for (Game *game : {&direct.game, &deferred.game}) {
+        game->map.getClearAreasGradient(0, 0);
+        game->map.getResourceGradient(0, 0, 0);
+        game->map.configureGradientPipeline(0, 8);
+    }
+    for (unsigned threads : {1, 4}) {
+        deferred.game.map.configureCompute(threads, Map::ComputeAI);
+        for (unsigned tick = 0; tick < 64; ++tick) {
+            direct.game.syncStep(0);
+            CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
+            deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+            REQUIRE(deferred.game.map.hasPendingGradientPreparation());
+            ReadOnlyPhase phase;
+            auto prepare = [&](size_t) { deferred.game.map.preparePendingGradient(); };
+            auto read = [&](size_t) { deferred.game.map.getResourceGradient(0, 0, 0); };
+            phase.add(1, prepare); phase.add(1, read);
+            phase.run(deferred.game.map.computeExecutor());
+            CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+            CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == deferred.game.checkSum(nullptr, nullptr, nullptr, true));
+        }
+    }
+    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    REQUIRE(deferred.game.map.hasPendingGradientPreparation());
+    deferred.game.map.configureCompute(1, 0);
+    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    deferred.game.map.setGradientWorkerCount(2);
+    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    const auto waitingTick = deferred.game.stepCounter;
+    deferred.game.anyPlayerWaited = true;
+    deferred.game.syncStep(0);
+    CHECK(deferred.game.stepCounter == waitingTick);
+    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+    deferred.game.anyPlayerWaited = false;
+    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    deferred.game.map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[]})");
+    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    deferred.game.map.clear(); // Reserved jobs must not outlive their destination.
+    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
 }
 }
