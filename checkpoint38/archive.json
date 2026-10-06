@@ -1,0 +1,9 @@
+{
+  "filename": "evidence.tar.zst",
+  "sha256": "315c62deafff9fd28a8033b0b3f3db11488da58cfdcb4e53ff7e2a1dabdf7069",
+  "bytes": 68865964,
+  "parts": [
+    "evidence.tar.zst.part000",
+    "evidence.tar.zst.part001"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "revision": "5f6f31e55e9772ea14c4b4d3cf6a701bef418dac",
+  "failureCount": 0,
+  "commands": [
+    {
+      "label": "focused-tests",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--binary",
+        "engine",
+        "--jobs",
+        "1",
+        "--junit",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/results.xml",
+        "--write-inventory",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/inventory.json",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/test-artifacts",
+        "--verbose",
+        "--filter",
+        "BuildingCatalog/*",
+        "--filter",
+        "BuildingCapabilities/*",
+        "--filter",
+        "AICustomCatalog/*",
+        "--filter",
+        "BuildingCatalogFixtures/*",
+        "--filter",
+        "AIStateContinuation/*",
+        "--filter",
+        "AIRules/*"
+      ],
+      "exitCode": 0
+    },
+    {
+      "label": "javascript-corpus",
+      "command": [
+        "python3",
+        "test/check_javascript_corpus.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/96d8/glob2/build/linux/client/release",
+        "--output",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/javascript-corpus"
+      ],
+      "exitCode": 0
+    },
+    {
+      "label": "native-reference",
+      "command": [
+        "python3",
+        "test/run-browser-determinism.py",
+        "/home/bradley/.codex/worktrees/96d8/glob2/build/linux/client/release/src/glob2",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/native-reference"
+      ],
+      "exitCode": 0
+    },
+    {
+      "label": "cli-contracts",
+      "command": [
+        "python3",
+        "test/test_cli_smoke.py",
+        "--binary",
+        "/home/bradley/.codex/worktrees/96d8/glob2/build/linux/client/release/src/glob2",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/cli-contracts",
+        "--junit",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/cli-results.xml"
+      ],
+      "exitCode": 0
+    },
+    {
+      "label": "documented-example",
+      "command": [
+        "bash",
+        "/home/bradley/.codex/worktrees/96d8/glob2/artifacts/building-capabilities/polish38/final/documented-example.sh"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "referenceComparisons": [
+    {
+      "file": "native.replay.checksums",
+      "previousSha256": "3ffb7136416bf99ae102db34fcd579b6649a0b20afff4a6d3728fbf321d42712",
+      "currentSha256": "3ffb7136416bf99ae102db34fcd579b6649a0b20afff4a6d3728fbf321d42712",
+      "equal": true
+    },
+    {
+      "file": "verify-match.checksums.txt",
+      "previousSha256": "27c8fdf1e9f00fe8a0510729162dea920cbb307749e81699fcf76e3d1e60e49f",
+      "currentSha256": "27c8fdf1e9f00fe8a0510729162dea920cbb307749e81699fcf76e3d1e60e49f",
+      "equal": true
+    }
+  ]
+}

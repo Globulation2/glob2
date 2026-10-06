@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="61" failures="0" errors="0" skipped="0"><testsuite name="AICustomCatalog"><testcase classname="AICustomCatalog" name="Castor bulk wheat reads preserve weighted distance rounding and sentinels" time="0.085622" status="run" />
+  <testcase classname="AICustomCatalog" name="Castor projects only its strategic demands and preserves mixed staffing" time="0.232387" status="run" />
+  <testcase classname="AICustomCatalog" name="Maxima exact anchors support rectangular footprints across the torus" time="0.088316" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar and Econo keep independent weighted material objectives and stone clearance" time="0.243711" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar resolves one aggregate production demand per colony management pass" time="0.141501" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar retained attraction retirement completes missions across save load" time="0.194501" status="run" />
+  <testcase classname="AICustomCatalog" name="Warrush mixed producer staffing respects zero and saturated assignment limits" time="0.131954" status="run" />
+  <testcase classname="AICustomCatalog" name="Warrush staffing preserves intent priority slot order and current stage limits" time="0.086961" status="run" />
+  <testcase classname="AICustomCatalog" name="all native controllers continue deterministically with mixed permuted catalog" time="2.06331" status="run" />
+  <testcase classname="AICustomCatalog" name="all native controllers select renamed mixed providers and release missing demands" time="0.814557" status="run" />
+  <testcase classname="AICustomCatalog" name="production placement falls back from an obstructed preferred footprint" time="0.066246" status="run" />
+  <testcase classname="AICustomCatalog" name="shared runtime exact anchors support rectangular attractors across the torus" time="0.084777" status="run" />
+  <testcase classname="AICustomCatalog" name="shared runtime retirement distinguishes attraction and feeding and preserves mixed services" time="0.179454" status="run" />
+  <testcase classname="AICustomCatalog" name="six native strategies construct and use separate demanded production classes" time="0.330666" status="run" />
+  </testsuite><testsuite name="AIRules"><testcase classname="AIRules" name="Cabino migrates legacy warrior reservations only when training is disabled" time="0.068095" status="run" />
+  <testcase classname="AIRules" name="Cabino reservations match unit class and qualification instead of building level" time="0.052537" status="run" />
+  <testcase classname="AIRules" name="Cortex excludes unavailable technology from scoring and feeding prerequisites" time="0" status="run" />
+  <testcase classname="AIRules" name="JavaScript profiles can inspect rules and issue useful orders" time="0.107432" status="run" />
+  <testcase classname="AIRules" name="Maxima removes disabled reserves while retaining finite production supply" time="0.072224" status="run" />
+  <testcase classname="AIRules" name="construction staffing uses separate site and completed capacities" time="0.05019" status="run" />
+  <testcase classname="AIRules" name="disabled training preserves independent services of mixed providers" time="0.04829" status="run" />
+  <testcase classname="AIRules" name="engine prevents training and upgrades while retaining repairs and starting levels" time="0.066414" status="run" />
+  <testcase classname="AIRules" name="legacy queued staffing imports explicit 135 wire without weakening modern validation" time="0.066826" status="run" />
+  <testcase classname="AIRules" name="native controllers exclude disabled work and continue after reload [slow]" time="15.2726" status="run" />
+  <testcase classname="AIRules" name="no growth farms harvest their finite seed rather than waiting forever" time="0.067563" status="run" />
+  <testcase classname="AIRules" name="restored controller queues discard unavailable work and release prerequisites" time="0.065917" status="run" />
+  <testcase classname="AIRules" name="retained tournament replay contains no unavailable orders" time="0.000252" status="run" />
+  <testcase classname="AIRules" name="rule parser and script observations use effective match values" time="0.071011" status="run" />
+  </testsuite><testsuite name="AIStateContinuation"><testcase classname="AIStateContinuation" name="Cabino specialist modules survive save-load" time="6.88571" status="run" />
+  <testcase classname="AIStateContinuation" name="Castor and Maxima active full games preserve decisions and RNG [slow]" time="3.15946" status="run" />
+  <testcase classname="AIStateContinuation" name="Cortex economy and food shortage survive save-load" time="0.902775" status="run" />
+  <testcase classname="AIStateContinuation" name="Econo shared runtime survives save-load" time="3.1105" status="run" />
+  <testcase classname="AIStateContinuation" name="Nicowar shared runtime survives save-load" time="7.28626" status="run" />
+  <testcase classname="AIStateContinuation" name="Numbi growth and attack preparation survive save-load" time="4.60504" status="run" />
+  <testcase classname="AIStateContinuation" name="Warrush growth and attack preparation survive save-load" time="8.28812" status="run" />
+  <testcase classname="AIStateContinuation" name="all controllers continue alongside another AI and a shared-team controller [slow]" time="3.1769" status="run" />
+  </testsuite><testsuite name="BuildingCapabilities"><testcase classname="BuildingCapabilities" name="combined providers retain independent admission and operation rule gates" time="0.001296" status="run" />
+  <testcase classname="BuildingCapabilities" name="concurrent first reads share one immutable catalog index" time="0.301283" status="run" />
+  <testcase classname="BuildingCapabilities" name="construction qualification grants are independent from building speed" time="0.001458" status="run" />
+  <testcase classname="BuildingCapabilities" name="direct stock supply is independently available without market experiments" time="0.001286" status="run" />
+  <testcase classname="BuildingCapabilities" name="experiment gates apply to both initial placement and completion without rebuilding" time="0.002598" status="run" />
+  <testcase classname="BuildingCapabilities" name="fetching stock is not an exchange or supply service" time="0.002463" status="run" />
+  <testcase classname="BuildingCapabilities" name="lineage follows forward transitions without treating repair links as ancestry" time="0.001284" status="run" />
+  <testcase classname="BuildingCapabilities" name="renamed families and reordered concrete IDs preserve capability membership" time="0.018962" status="run" />
+  <testcase classname="BuildingCapabilities" name="stock demand lookup distinguishes finished providers and placements" time="0.002139" status="run" />
+  </testsuite><testsuite name="BuildingCatalog"><testcase classname="BuildingCatalog" name="assignment limits compile staffing capability independently for each stage" time="0.021662" status="run" />
+  <testcase classname="BuildingCatalog" name="compact runtime traits preserve validated numeric boundaries" time="0.0314" status="run" />
+  <testcase classname="BuildingCatalog" name="compiled runtime rows are dense aligned value copies and refresh gates in place" time="0.001437" status="run" />
+  <testcase classname="BuildingCatalog" name="documented experimental field kitchen loads from its authored files" time="0.001093" status="run" />
+  <testcase classname="BuildingCatalog" name="expanded canonical snapshots must fit transport before catalog publication" time="0.489726" status="run" />
+  <testcase classname="BuildingCatalog" name="experiment metadata obeys the same contract before startup and transport" time="0.122144" status="run" />
+  <testcase classname="BuildingCatalog" name="invalid catalog reports the rejected field and preserves the active catalog" time="0.300476" status="run" />
+  <testcase classname="BuildingCatalog" name="manifest parsing identifies the broken definition file without publishing a catalog" time="0.02544" status="run" />
+  <testcase classname="BuildingCatalog" name="renamed composite variant and added feature survive embedded snapshot" time="0.038263" status="run" />
+  <testcase classname="BuildingCatalog" name="shipped JSON preserves all 55 frozen variants and exact canonical stock snapshot" time="0.031601" status="run" />
+  <testcase classname="BuildingCatalog" name="snapshot roundtrip owns independent descriptors and ignores runtime gates" time="0.029885" status="run" />
+  <testcase classname="BuildingCatalog" name="stable keys need no compatibility family alias and defaults are bounded preferences" time="0.037772" status="run" />
+  </testsuite><testsuite name="BuildingCatalogFixtures"><testcase classname="BuildingCatalogFixtures" name="format136 terrain snapshot imports frozen buildings and continues after resave" time="0.167847" status="run" />
+  <testcase classname="BuildingCatalogFixtures" name="ordinary building aliases never suppress sprite binding [display]" time="0.581226" status="run" />
+  <testcase classname="BuildingCatalogFixtures" name="retained seeded compositions preserve full simulation continuation [golden]" time="0.379925" status="run" />
+  <testcase classname="BuildingCatalogFixtures" name="retained split recipes conserve every charged resource through cancellation" time="0.099918" status="run" />
+  </testsuite></testsuites>

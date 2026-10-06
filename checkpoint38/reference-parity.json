@@ -1,0 +1,14 @@
+[
+  {
+    "file": "native.replay.checksums",
+    "previousSha256": "3ffb7136416bf99ae102db34fcd579b6649a0b20afff4a6d3728fbf321d42712",
+    "currentSha256": "3ffb7136416bf99ae102db34fcd579b6649a0b20afff4a6d3728fbf321d42712",
+    "equal": true
+  },
+  {
+    "file": "verify-match.checksums.txt",
+    "previousSha256": "27c8fdf1e9f00fe8a0510729162dea920cbb307749e81699fcf76e3d1e60e49f",
+    "currentSha256": "27c8fdf1e9f00fe8a0510729162dea920cbb307749e81699fcf76e3d1e60e49f",
+    "equal": true
+  }
+]

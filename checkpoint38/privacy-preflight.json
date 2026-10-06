@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scannedFiles": 901,
+  "checks": [
+    "github_token",
+    "private_key",
+    "aws_access_key",
+    "openai_key",
+    "authenticated_url"
+  ],
+  "excluded": "Disposable profile directories; no environment or browser storage dumps.",
+  "findings": []
+}

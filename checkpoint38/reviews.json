@@ -1,0 +1,29 @@
+[
+  {
+    "reviewer": "architecture_polish_review",
+    "scope": "Catalog ownership, loading, persistence interfaces, public descriptor comments; independent documentation/test cross-review",
+    "findings": [
+      "Malformed input diagnostics lacked authoring file and variant context.",
+      "Comments blurred authored capabilities, derived mirrors and frozen legacy import authority."
+    ],
+    "resolution": "Per-variant source context is ephemeral and excluded from canonical snapshots; corrected lifetime/compatibility comments. No accepted-input or simulation behavior change found.",
+    "limits": "Cross-variant graph errors retain manifest and stable-key context; no broad validator refactor."
+  },
+  {
+    "reviewer": "tests_docs_polish_review",
+    "scope": "Authoring documentation and malformed-input tests; independent parser and AI-mask cross-review",
+    "findings": [
+      "Capability paths and resource arrays needed exact nesting/order.",
+      "Experimental snippets needed a complete load-tested example and valid CLI workflow.",
+      "Malformed-input checks were unlabeled and did not verify diagnostic fields or derived-state retention."
+    ],
+    "resolution": "Retained actual-file field-kitchen fixture, complete guide, named invalid cases and atomic snapshot/fingerprint/pointer tests. Reviewed production-mask arithmetic and control-flow equivalence. Corrected source-path assertion for browser root paths."
+  },
+  {
+    "reviewer": "architecture_polish_review",
+    "scope": "Follow-up map CLI fix and independent CLI regression review",
+    "finding": "End-to-end example exposed duplicate numeric parsing of an already-consumed catalog path.",
+    "resolution": "Skip the consumed setup option in generator control parsing; regression is red before fix, covers embedded generated-map replay and save continuation after deleting installed definitions.",
+    "compatibility": "No formerly successful setup or simulation computation changes; SIM_REVISION20 unchanged."
+  }
+]
