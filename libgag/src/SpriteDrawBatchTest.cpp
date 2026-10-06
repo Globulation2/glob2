@@ -199,7 +199,10 @@ void batchPixels(bool highResolution, bool portable = false)
         };
         if (batched) { GAGCore::SpriteDrawBatch batch(gfx, &sprite); draw(); }
         else draw();
-        if (batched) REQUIRE(gfx->getDrawCallCount() == (highResolution || portable ? 3 : 1));
+        // Packed HD frames now share one atlas, just like native frames.
+        // Standalone HD frames and portable textures retain three columns.
+        const bool standaloneHD = highResolution && !sprite.highResolutionAtlas;
+        if (batched) REQUIRE(gfx->getDrawCallCount() == (standaloneHD || portable ? 3 : 1));
         return readPixels();
     };
     REQUIRE(disjointColumns(false) == disjointColumns(true));
