@@ -1,0 +1,38 @@
+{
+  "tested_head": "51ecc5412050ba44eef316116003952375ef30e6",
+  "base": "d0ef6163692bbe41b514333ccd5ffc82bfa0890b",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "gcc": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "clang": "Ubuntu clang version 18.1.8 (20ubuntu8)",
+  "emscripten": "4.0.15",
+  "native_flags": "SCons release=1: GNU C++20, O3, scoped fno-access-control only for fixtures",
+  "commands": [
+    "GLOB2_SDL3_PREFIX=$PWD/build/sdl3-ci/prefix scons -Q -j4 release=1 unit-tests (compiled objects; local artwork export stopped before link)",
+    "GLOB2_SDL3_PREFIX=$PWD/build/sdl3-ci/prefix scons -Q -j4 release=1 build/linux/client/release/src/map/MapCells.o build/linux/client/release/src/map/gradient/ResourceSeedCache.o build/linux/client/release/src/resource/Resources.o build/linux/client/release/test/unit-unit_stubs_MapSectorStubs.o build/linux/client/release/test/unit-support_TestMain.o",
+    "GLOB2_SDL3_PREFIX=$PWD/build/sdl3-ci/prefix scons -Q -n release=1 unit-tests (execute emitted archive/link commands with subprocess, see unit-link-commands.json)",
+    "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --quick --no-display -j4 --filter FertilityField/* --filter Gradient/* --filter MapQuery/* --filter PathGradient/* --artifacts artifacts/map-fixture-repair/tests-final --junit artifacts/map-fixture-repair/tests-final.xml",
+    "Pinned encoder Python -m unittest discover -s test/build_system -v",
+    "Pinned encoder Python -m unittest discover -s test/build_system -p test_layout.py -v",
+    "git diff --check"
+  ],
+  "results": {
+    "native_cases": 81,
+    "failures": 0,
+    "clang_fixture_objects": 4,
+    "wasm_path_objects": 2,
+    "build_contracts": 339,
+    "build_contract_skips": 1,
+    "final_layout_contracts": 7
+  },
+  "sources": {
+    "src/map/FertilityFieldTest.cpp": "e04ec08bfa145f72124634226e92349662a01b3a3547964f2659e986df3d91e6",
+    "src/map/gradient/GradientTest.cpp": "153bd7950429639865b0826be076075d31864b6bc089c46a3515d8d4b2fcddb3",
+    "src/map/MapQueryTest.cpp": "1aadb6f824c28c9e433e54a8b37526a7aa047f8a5a32990cc460449ea8f4f366",
+    "src/map/gradient/PathGradientHarness.cpp": "a63c8a9cd47bf8a28f02f3895582e57852f2a133c7ccb438751eae62d2d92f76",
+    "src/map/MapCells.cpp": "97e99f23a5d07fe134190ed1d6b145392228a2f237aeb593507affbd94692ec9",
+    "src/map/gradient/ResourceSeedCache.cpp": "055c5cb9bc48fb12e419ec8b46e7649c713e479a058365c91366cd968ad1d9c7",
+    "src/resource/Resources.cpp": "4adb04dfb3230a20f360f55263807589f7b1b925749b78485a376c265f8d1902"
+  },
+  "limits": "Focused native fixture execution and compile coverage; no full engine/Android/Windows/macOS execution, browser linking/runtime or full optimized artwork export. No production code changes; subsequent hosted full master verifies those integrations. Initial missing linker dependencies corrected and final link/tests passed. Android old run additionally hit ADB device offline, separate infrastructure failure."
+}

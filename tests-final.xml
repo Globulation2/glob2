@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="81" failures="0" errors="0" skipped="0"><testsuite name="FertilityField"><testcase classname="FertilityField" name="TriangularWeightsMatchGrowResourcesRng" time="0" status="run" />
+    <testcase classname="FertilityField" name="ConvolutionMatchesDirectKernelWithoutSand" time="0.006617" status="run" />
+    <testcase classname="FertilityField" name="SandCorrectionPathMatchesDirectKernel" time="0.011688" status="run" />
+    <testcase classname="FertilityField" name="WaterSplatPathMatchesDirectKernel" time="0.011839" status="run" />
+    <testcase classname="FertilityField" name="AdaptivePathMatchesExplicitPaths" time="0.001811" status="run" />
+    <testcase classname="FertilityField" name="OpenWaterReachesFullScale" time="0" status="run" />
+    <testcase classname="FertilityField" name="SandOppositeWaterRemovesCredit" time="0" status="run" />
+    <testcase classname="FertilityField" name="NonPowerOfTwoDimensionsWrap" time="0.004874" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesNonGrass" time="0.000304" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesGrassNoDepositReaches" time="0" status="run" />
+    <testcase classname="FertilityField" name="ForMapUngatedKeepsUnreachableGrass" time="0" status="run" />
+    <testcase classname="FertilityField" name="UsefulExpansionCapacityFolds" time="0" status="run" />
+    <testcase classname="FertilityField" name="WithinPercentBand" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted ecology handles signed donors, inhibition and local growth" time="0" status="run" />
+    <testcase classname="FertilityField" name="cached ecology changes after canonical terrain mutation" time="0" status="run" />
+    <testcase classname="FertilityField" name="habitat and movement edits reuse exact ecology fields" time="0.000345" status="run" />
+    <testcase classname="FertilityField" name="ecology rebuilt inside a terrain batch survives its commit" time="0.000165" status="run" />
+    <testcase classname="FertilityField" name="future terrain ecology properties invalidate only their effective inputs" time="0.000159" status="run" />
+    <testcase classname="FertilityField" name="growth throughput includes multiple opportunities before occupancy" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted coupled land and shoreline kernels match independent probes" time="0.071992" status="run" />
+    <testcase classname="FertilityField" name="one-point wheat fertility retains exact positive growth potential" time="0" status="run" />
+    <testcase classname="FertilityField" name="fractional growth rejects incomplete RNG bucket and preserves whole bonuses" time="0" status="run" />
+    <testcase classname="FertilityField" name="rational growth rates preserve exact mass across complete random buckets" time="0.000777" status="run" />
+  </testsuite><testsuite name="Gradient"><testcase classname="Gradient" name="OpenGridIsOctileOnTorus" time="0.000345" status="run" />
+    <testcase classname="Gradient" name="ObstaclesForcePathAround" time="0" status="run" />
+    <testcase classname="Gradient" name="WaterCostsBySwimClass" time="0.000146" status="run" />
+    <testcase classname="Gradient" name="UnreachableCellsStayUnreachable" time="0" status="run" />
+    <testcase classname="Gradient" name="SeedBelowGoalPropagates" time="0" status="run" />
+    <testcase classname="Gradient" name="SeedsBeyondBucketWindow" time="0" status="run" />
+    <testcase classname="Gradient" name="MaxCostStopsPropagation" time="0" status="run" />
+    <testcase classname="Gradient" name="DirectionPrefersCheapestTotal" time="0.000204" status="run" />
+    <testcase classname="Gradient" name="DirectionBlockedNeighbour" time="0" status="run" />
+    <testcase classname="Gradient" name="SwimClassFromSpeeds" time="0" status="run" />
+    <testcase classname="Gradient" name="RandomFieldsAgainstReference" time="0.11671" status="run" />
+    <testcase classname="Gradient" name="MatchesLegacyKernelOnLargeMaps" time="0.963886" status="run" />
+  </testsuite><testsuite name="MapQuery"><testcase classname="MapQuery" name="FreeForGroundUnit_CleanGrassPasses" time="0.000244" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_UnitFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterPassesWhenSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenFailsWhenMaskMatches" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_IgnoresForbidden" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_StillBlocksBuilding" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_GrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_UnitFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_WaterFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_SandFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectAllGrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectOneBadTileFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantSameGidPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_IgnoresUnit" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ResourceStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_BuildingStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_WaterFailsWhenNotSwim" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ForbiddenStillFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_IgnoresUnit" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_ResourceFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_BuildingFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_NonGrassFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectAllGrassPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantSameGidPasses" time="0" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantDifferentGidFails" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_DefaultsToSentinel" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SetAndGet" time="0" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SentinelValueIsMinusOne" time="0" status="run" />
+    <testcase classname="MapQuery" name="trail and ice placement use properties independent of sprite variants" time="0" status="run" />
+    <testcase classname="MapQuery" name="point routes prefer trails and reject impassable destination terrain" time="0.000246" status="run" />
+    <testcase classname="MapQuery" name="air routes detour around blocked cells and reset reusable search state" time="0" status="run" />
+    <testcase classname="MapQuery" name="air property profiles honor no-fly barriers and weighted travel without registration" time="0" status="run" />
+    <testcase classname="MapQuery" name="air building distance field resumes one source frontier for many candidates" time="0" status="run" />
+    <testcase classname="MapQuery" name="reverse air field ranks many sources with forward entry costs" time="0.002112" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0.000261" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0.000165" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="0.182506" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.079728" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="0.41256" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,7 @@
+PASS glob2-unit-tests MapQuery (41 cases) (0.0s)
+PASS glob2-unit-tests FertilityField (23 cases) (0.2s)
+PASS glob2-unit-tests PathGradient (5 cases) (0.7s)
+PASS glob2-unit-tests Gradient (12 cases) (1.2s)
+
+4 passed, 0 failed, 0 skipped (2.1s of test time)
+[run_tests] JUnit report: artifacts/map-fixture-repair/tests-final.xml (81 cases)
