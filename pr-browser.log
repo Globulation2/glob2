@@ -1,0 +1,55 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts skins.spec.ts skins-studio-ux.spec.ts
+
+[WebServer] (node:71369) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:71385) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (14.0s)
+  ✓   2 [desktop] › e2e/skins-studio-ux.spec.ts:73:1 › pattern modal keeps Apply visible on short phones and exposes effective controls only (3.3s)
+  ✓   3 [desktop] › e2e/skins-studio-ux.spec.ts:102:1 › studio follows the shared system and saved themes, including open dialogs (5.3s)
+(node:71684) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [desktop] › e2e/skins.spec.ts:45:1 › designs save automatically across devices and resolve stale edits without overwriting (10.6s)
+  ✓   5 [desktop] › e2e/skins.spec.ts:92:3 › paint-to-game demonstration › uses immutable angled snapshots while showing one card per editable design (26.8s)
+  ✓   6 [desktop] › e2e/skins.spec.ts:155:1 › inspection rotation keeps the camera fixed and turns every model horizontally (10.9s)
+  ✓   7 [desktop] › e2e/skins.spec.ts:198:1 › direct strokes, rotation, animation, pattern cancel and undo preserve transactions (16.2s)
+  ✓   8 [desktop] › e2e/skins.spec.ts:257:1 › responsive studio keeps dialogs, tools and the document in the viewport (12.2s)
+  ✓   9 [desktop] › e2e/skins.spec.ts:285:1 › reports match paint and moderates it without rewriting the original (934ms)
+  ✓  10 [desktop] › e2e/skins.spec.ts:345:1 › painting degrades safely without WebGL2 (211ms)
+  ✓  11 [desktop] › e2e/skins.spec.ts:360:1 › idle viewport stops drawing and records stroke feedback latency (12.1s)
+  ✓  12 [desktop] › e2e/skins.spec.ts:455:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (2.1s)
+  ✓  13 [desktop] › e2e/skins.spec.ts:501:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (3.5s)
+  ✓  14 [desktop] › e2e/skins.spec.ts:566:1 › trackpad pinch zooms only the inspection view and preserves final framing (3.2s)
+  ✓  15 [desktop] › e2e/skins.spec.ts:608:1 › collection duplicates designs and deletes the active skin with confirmation (19.4s)
+  ✓  16 [desktop] › e2e/skins.spec.ts:655:1 › pending offline edits recover and save automatically when the connection returns (16.8s)
+  ✓  17 [desktop] › e2e/skins.spec.ts:687:1 › signing in carries a trial design into the account automatically (13.8s)
+  ✓  18 [desktop] › e2e/skins.spec.ts:709:1 › large collections keep previews bounded and every design reachable (15.6s)
+(node:72076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [phone] › e2e/skins-studio-ux.spec.ts:17:1 › studio retains usable canvas and reachable controls at every supported layout (11.8s)
+  ✓  20 [phone] › e2e/skins-studio-ux.spec.ts:73:1 › pattern modal keeps Apply visible on short phones and exposes effective controls only (3.6s)
+  ✓  21 [phone] › e2e/skins-studio-ux.spec.ts:102:1 › studio follows the shared system and saved themes, including open dialogs (5.4s)
+(node:72129) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 [phone] › e2e/skins.spec.ts:45:1 › designs save automatically across devices and resolve stale edits without overwriting (32.9s)
+  ✓  23 [phone] › e2e/skins.spec.ts:92:3 › paint-to-game demonstration › uses immutable angled snapshots while showing one card per editable design (38.7s)
+  ✓  24 [phone] › e2e/skins.spec.ts:155:1 › inspection rotation keeps the camera fixed and turns every model horizontally (9.4s)
+  ✓  25 [phone] › e2e/skins.spec.ts:198:1 › direct strokes, rotation, animation, pattern cancel and undo preserve transactions (14.9s)
+  ✓  26 [phone] › e2e/skins.spec.ts:257:1 › responsive studio keeps dialogs, tools and the document in the viewport (16.9s)
+  ✓  27 [phone] › e2e/skins.spec.ts:285:1 › reports match paint and moderates it without rewriting the original (916ms)
+  ✓  28 [phone] › e2e/skins.spec.ts:345:1 › painting degrades safely without WebGL2 (203ms)
+  ✓  29 [phone] › e2e/skins.spec.ts:360:1 › idle viewport stops drawing and records stroke feedback latency (16.8s)
+  ✓  30 [phone] › e2e/skins.spec.ts:455:1 › two-finger gestures cancel paint and palm touches do not end a pen stroke (1.9s)
+  ✓  31 [phone] › e2e/skins.spec.ts:501:1 › capture ownership and auxiliary buttons cannot create or split paint strokes (3.2s)
+  ✓  32 [phone] › e2e/skins.spec.ts:566:1 › trackpad pinch zooms only the inspection view and preserves final framing (3.1s)
+  ✓  33 [phone] › e2e/skins.spec.ts:608:1 › collection duplicates designs and deletes the active skin with confirmation (28.8s)
+  ✓  34 [phone] › e2e/skins.spec.ts:655:1 › pending offline edits recover and save automatically when the connection returns (27.5s)
+  ✓  35 [phone] › e2e/skins.spec.ts:687:1 › signing in carries a trial design into the account automatically (5.0s)
+  ✓  36 [phone] › e2e/skins.spec.ts:709:1 › large collections keep previews bounded and every design reachable (16.7s)
+
+  36 passed (7.1m)
