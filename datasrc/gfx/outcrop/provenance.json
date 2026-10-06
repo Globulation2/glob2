@@ -1,0 +1,167 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "b017fdd5f39f659352f771315d801e1a389a2d6f4ef0cbd95994f0e20c6d36fb",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "outcrop",
+  "group": "ridges",
+  "label": "Outcrop",
+  "recipe": {
+    "name": "outcrop",
+    "group": "ridges",
+    "label": "Outcrop",
+    "profile": "rock",
+    "seam": {
+      "height": 4,
+      "cast_q8": 72,
+      "cast_width_q8": 768
+    },
+    "palette": {
+      "dark": [
+        80,
+        80,
+        76
+      ],
+      "mid": [
+        110,
+        112,
+        108
+      ],
+      "light": [
+        140,
+        142,
+        136
+      ],
+      "lichen": [
+        120,
+        130,
+        70
+      ]
+    },
+    "style": {
+      "luma": 108,
+      "std": 12,
+      "grain_max": 10,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "band": [
+      6.0,
+      16.0
+    ],
+    "note": "placeholder until the image-generated outcrop lands"
+  },
+  "seed": "fnv1a32(\"outcrop:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-outcrop",
+  "preview": [
+    106,
+    108,
+    104
+  ],
+  "minimap": [
+    106,
+    108,
+    104
+  ],
+  "mean_color": [
+    106,
+    108,
+    104
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 107.3,
+      "std": 12.0,
+      "grain": 6.8,
+      "sat": 0.04,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain-outcrop0.png": "1c96049a0d6d226b08db0a003c118d471d330a476f11b7e582043a915ceff0ef",
+    "data/gfx/terrain-outcrop1.png": "2c751650c32cc2d466e0a48fd9475323026eb64692b5ec0165bdf8bad7c38342",
+    "data/gfx/terrain-outcrop2.png": "a7e1868ec7e0247a05f5961381f645a67f3fef8551a725cf0348d430743213e6",
+    "data/gfx/terrain-outcrop3.png": "17f0eac0442d24167a3d0dae6f638b8afe763ab44dd5593b00a0daf78cd4da49",
+    "data/gfx/terrain-outcrop4.png": "b9bbe70bebe0fd1b0f3237e6d9cfb0f68c11d79bd52cb7effc2c9e9d87d712ec",
+    "data/gfx/terrain-outcrop5.png": "328f61e93ecc445c06e3c4cccf03eaffe965c8f23e165209c93c34bdac308852",
+    "data/gfx/terrain-outcrop6.png": "bcb60b4e1616364d757708d938d3e1cdd6f92a62e94aded6ad57a0b660114bf0",
+    "data/gfx/terrain-outcrop7.png": "f87554ab52271fa1f7ef660aa38ebd31f13feaa99faedd6370221be30f799d7b",
+    "data/gfx/terrain-outcrop8.png": "9dfe0e1df25acf86c7a6846a6cc5ce88b79afdf5783ded7d8a2e33685adf981e",
+    "data/gfx/terrain-outcrop9.png": "3ab9310641337b52c4903b757b483ce50aff3f708e5439545da0694adfcb593f",
+    "data/gfx/terrain-outcrop10.png": "7348acd1bfb13f077c6c8943eb486c2d51ca7b0901683ff9eaf11c3264a8c246",
+    "data/gfx/terrain-outcrop11.png": "8c6c0a1369625dd7167681823b817c886bda3ccd955ec7a85f32808a97ed372b",
+    "data/gfx/terrain-outcrop12.png": "a5c040a0439b39188751a537ab5f4631f3a286425516f03f9c5a6fef33257d77",
+    "data/gfx/terrain-outcrop13.png": "c697cb788c88a4c77b2570f9fcc770b51494c5f2f054f1de9203a6f67cff3470",
+    "data/gfx/terrain-outcrop14.png": "ba386e70ea39fe7f9c2f35b33c9780f6d79ef00f809a788346fb7e6e845dc089",
+    "data/gfx/terrain-outcrop15.png": "015db2b997d3a55aa00ca366af1e47cd996a48fc9622bbc5558d058e1e1be8dc"
+  }
+}

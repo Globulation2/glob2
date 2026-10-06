@@ -1,0 +1,167 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "b017fdd5f39f659352f771315d801e1a389a2d6f4ef0cbd95994f0e20c6d36fb",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "clay",
+  "group": "barren",
+  "label": "Clay",
+  "recipe": {
+    "name": "clay",
+    "group": "barren",
+    "label": "Clay",
+    "profile": "soft",
+    "seam": {
+      "height": 2,
+      "cast_q8": 40,
+      "cast_width_q8": 448
+    },
+    "palette": {
+      "dark": [
+        134,
+        88,
+        60
+      ],
+      "mid": [
+        166,
+        114,
+        80
+      ],
+      "light": [
+        186,
+        138,
+        100
+      ],
+      "crack": [
+        116,
+        74,
+        52
+      ]
+    },
+    "style": {
+      "luma": 124,
+      "std": 8,
+      "grain_max": 8,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "band": [
+      6.0,
+      16.0
+    ],
+    "note": ""
+  },
+  "seed": "fnv1a32(\"clay:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-clay",
+  "preview": [
+    161,
+    112,
+    79
+  ],
+  "minimap": [
+    161,
+    112,
+    79
+  ],
+  "mean_color": [
+    161,
+    112,
+    79
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 122.9,
+      "std": 7.8,
+      "grain": 3.3,
+      "sat": 0.51,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain-clay0.png": "c931c8e19228862d8ee7c8888c59623510c214c4615c8d3d04fa86e6c1eb5e27",
+    "data/gfx/terrain-clay1.png": "486fd4114e52a20d407642cf9075f709d4fe4577a43a770fb1688c49f6bca96e",
+    "data/gfx/terrain-clay2.png": "58d6e7201a4c271c334be2da8dbeb68b74fa75693b3bbc2c33a120eb16c85ca9",
+    "data/gfx/terrain-clay3.png": "be374716f1d77b19e345fed160b810198cd452a70f7f6a95f2d1926c7f1b10f1",
+    "data/gfx/terrain-clay4.png": "2212917b6f34b1330b250e0aac42cce5ceed85c29c223d07285b9a39c30fb780",
+    "data/gfx/terrain-clay5.png": "fbeda9e4ac8920b02b39ebbf1ea453afc1a6093f798aa406cf69def401e21767",
+    "data/gfx/terrain-clay6.png": "82a1e0df1bd540daadceb407da5fb1f026e2cfef86c70df35f34543c7b239329",
+    "data/gfx/terrain-clay7.png": "4baebd692e28fa4a711b14f84608abf8f4833d7c93f0d831f36aaa7193578c69",
+    "data/gfx/terrain-clay8.png": "3e5a7d3765e6bfb9bdbc571892cb53ad748a4b74d22f414797fe0236ef9acd53",
+    "data/gfx/terrain-clay9.png": "839e88a0403d25b8ea0ccad01455a62504693b4df806dc8a0015f82a93150829",
+    "data/gfx/terrain-clay10.png": "8fcca8bc303ceae2117c64441bd6e3b48f1c7b62a0251206737dc36e2336a795",
+    "data/gfx/terrain-clay11.png": "31fc43acebe488b9eaf72e2d6104455a4d5b0576924e8defbf9da2d5a0ac5319",
+    "data/gfx/terrain-clay12.png": "fe58ba68a51c411af05f87a09dbb9355dc1d2b0880ecc9c1bf32a04d07924356",
+    "data/gfx/terrain-clay13.png": "76b7c4515fb774ef2a9bea847bde39d518e744eea38e1885573385f33ec86f9f",
+    "data/gfx/terrain-clay14.png": "c23454eb4f0a19173d9056144b4bec0df23d579a3d2d9d7eaac6d3fe5f89fae8",
+    "data/gfx/terrain-clay15.png": "926eb207fbe4943cbe86722f8529b357c126eb93d7b628f3cadfc63f38b8fde9"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "b017fdd5f39f659352f771315d801e1a389a2d6f4ef0cbd95994f0e20c6d36fb",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "gravel",
+  "group": "barren",
+  "label": "Gravel",
+  "recipe": {
+    "name": "gravel",
+    "group": "barren",
+    "label": "Gravel",
+    "profile": "rock",
+    "seam": {
+      "height": 2,
+      "cast_q8": 40,
+      "cast_width_q8": 448
+    },
+    "palette": {
+      "dark": [
+        108,
+        102,
+        94
+      ],
+      "mid": [
+        138,
+        130,
+        118
+      ],
+      "light": [
+        162,
+        154,
+        140
+      ]
+    },
+    "style": {
+      "luma": 128,
+      "std": 12,
+      "grain_max": 11,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "band": [
+      6.0,
+      16.0
+    ],
+    "note": ""
+  },
+  "seed": "fnv1a32(\"gravel:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-gravel",
+  "preview": [
+    135,
+    127,
+    116
+  ],
+  "minimap": [
+    135,
+    127,
+    116
+  ],
+  "mean_color": [
+    135,
+    127,
+    116
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 128.0,
+      "std": 11.5,
+      "grain": 7.8,
+      "sat": 0.14,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain-gravel0.png": "4e8011adad0e1c9542c1e1fb8374e0b66ca8a0036c0ce262cb2d35bad9c03741",
+    "data/gfx/terrain-gravel1.png": "aaa3fbb1afde629132cc1c166be5729b29e30fc2e8835a74cbb62db80e223b8a",
+    "data/gfx/terrain-gravel2.png": "0d78497dbaf60b3643192d2aa94c936e4a58ab1da37741d1cb20821ec86320ae",
+    "data/gfx/terrain-gravel3.png": "83e3d4c6cd491c32cbe2a76c446ff76d7a30e5ea061d381de2384f7ba0b1d1e7",
+    "data/gfx/terrain-gravel4.png": "591f6b40dbc85916782570228736c6a5b64a90892c568b7b99e2c26866f27dca",
+    "data/gfx/terrain-gravel5.png": "f4eddd75079bbbcc704b5b9e384c15afcfc9cbc383b498621920e02cd526976f",
+    "data/gfx/terrain-gravel6.png": "1efc4b15d093499000b322eec69721285d93bcde9e9b6f004a1515c55d3c5f21",
+    "data/gfx/terrain-gravel7.png": "a0d58cb2d2124b4a0563ef98b435ebc1ad6fbd063c223cf82525f39f90b51097",
+    "data/gfx/terrain-gravel8.png": "38521d812af530444f5381c6d3bf5af2276a956b64350a42527a952131b4d811",
+    "data/gfx/terrain-gravel9.png": "b9b5b3a26242dd0c1bb77daab8ab7fbf767f938f0a6095469782b5095d4834ea",
+    "data/gfx/terrain-gravel10.png": "8daa7d17b201b3e50667ea08af9b17d315120ee585c6f2f1b4165ba298652b15",
+    "data/gfx/terrain-gravel11.png": "05d2443c39f48f24cff5301fc87723416f252e055ff6560f0752fccdb0a02934",
+    "data/gfx/terrain-gravel12.png": "55a89998d8b777905e203ddaae1f4ff6b45e1798ed3b28542df0efe0047624d3",
+    "data/gfx/terrain-gravel13.png": "e4f2f19fd1bb64bcb893ebe00da6727903792b3506c702d0cdb7aac5260f4d66",
+    "data/gfx/terrain-gravel14.png": "eec13465f648184edad9063814dc1e2744c528c3b6481575c6df95867678d70a",
+    "data/gfx/terrain-gravel15.png": "9c5a8fdfc05d352eafd91d15b8ec6caeb989ff433e42b0228d5b20cd9f3056d3"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "b017fdd5f39f659352f771315d801e1a389a2d6f4ef0cbd95994f0e20c6d36fb",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "boardwalk",
+  "group": "paths",
+  "label": "Boardwalk",
+  "recipe": {
+    "name": "boardwalk",
+    "group": "paths",
+    "label": "Boardwalk",
+    "profile": "crisp",
+    "seam": {
+      "height": 3,
+      "cast_q8": 48,
+      "cast_width_q8": 512
+    },
+    "palette": {
+      "dark": [
+        108,
+        90,
+        68
+      ],
+      "mid": [
+        156,
+        134,
+        104
+      ],
+      "light": [
+        182,
+        160,
+        128
+      ],
+      "gap": [
+        76,
+        60,
+        44
+      ]
+    },
+    "style": {
+      "luma": 134,
+      "std": 11,
+      "grain_max": 10,
+      "match": 0.6
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "band": [
+      6.0,
+      16.0
+    ],
+    "note": "planks run one way: accepted compromise"
+  },
+  "seed": "fnv1a32(\"boardwalk:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-boardwalk",
+  "preview": [
+    150,
+    129,
+    101
+  ],
+  "minimap": [
+    150,
+    129,
+    101
+  ],
+  "mean_color": [
+    150,
+    129,
+    101
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 132.2,
+      "std": 13.9,
+      "grain": 8.3,
+      "sat": 0.32,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain-boardwalk0.png": "d1c39a131a4c5bf573018e79c4f528017c3cb7cf61b87c35c983b7c7d4f172ce",
+    "data/gfx/terrain-boardwalk1.png": "78174314127080ef03f2055b2c9166046d996e8a0357d186d4056a4ed0aca382",
+    "data/gfx/terrain-boardwalk2.png": "1ddf249305266d1b7b5cf884c5ad0f168782a1ab38dbd7d2682d035e3b018364",
+    "data/gfx/terrain-boardwalk3.png": "3980804dc23ef0cb5551505d76aa29f6ab555e952b7b6156dd572c43a3604dcc",
+    "data/gfx/terrain-boardwalk4.png": "d4c34eed0e04d0344a9d88e20f088786f432a9bc23f2c270f3699d6ee4c50a4e",
+    "data/gfx/terrain-boardwalk5.png": "036ad5d8d26f93efda4deab933871e15eff52180bc5b2c86b2f7c19c1c9cc320",
+    "data/gfx/terrain-boardwalk6.png": "1b92461027ec3a9f9e6e52ca3507829869d4d5fc9b4016f661981971c4222b55",
+    "data/gfx/terrain-boardwalk7.png": "c475f8e2baaf58ec944904895ca56c35a31c110f47d84f6b77d80af44cd1a83d",
+    "data/gfx/terrain-boardwalk8.png": "7c6c1622829e5cfab7226bbc53d4351d30ac91d04837b43b69ceff777c3609ff",
+    "data/gfx/terrain-boardwalk9.png": "40d4217ade847773a5a93c5643d8c9c82504b5446bd0ab6ffcb7f25b44189eef",
+    "data/gfx/terrain-boardwalk10.png": "e6bcb4498f60807e7058be4157fc3c9c2a05f43ae58294f58bbb278b6703107a",
+    "data/gfx/terrain-boardwalk11.png": "8abaef97688ac498fa40c71a07964404bd05d529a2d4431ba95a5fc29b9aa0b5",
+    "data/gfx/terrain-boardwalk12.png": "efa09b7b0ff009b4b09b813297714670422e963d6d175f03dc11a1dcd76b37fa",
+    "data/gfx/terrain-boardwalk13.png": "456bc4189e13601a71ce8644d39935714e23230a5b88b4942963ac21e3fdbb73",
+    "data/gfx/terrain-boardwalk14.png": "1f6289875086cecc60a63c350935b62328fc8f1dac2c173195da5b8b17e49add",
+    "data/gfx/terrain-boardwalk15.png": "3ef67e6c833578f97626691d7872d517463c8337c5657eae58dfd8a820b51b57"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "b017fdd5f39f659352f771315d801e1a389a2d6f4ef0cbd95994f0e20c6d36fb",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "mud",
+  "group": "rough",
+  "label": "Mud",
+  "recipe": {
+    "name": "mud",
+    "group": "rough",
+    "label": "Mud",
+    "profile": "soft",
+    "seam": {
+      "height": 1
+    },
+    "palette": {
+      "dark": [
+        62,
+        48,
+        36
+      ],
+      "mid": [
+        88,
+        70,
+        52
+      ],
+      "light": [
+        116,
+        96,
+        74
+      ],
+      "sheen": [
+        140,
+        120,
+        100
+      ]
+    },
+    "style": {
+      "luma": 76,
+      "std": 8,
+      "grain_max": 7,
+      "match": 1.0
+    },
+    "phases": 1,
+    "animation_ticks": 8,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": null,
+    "minimap": null,
+    "placeholder_only": false,
+    "band": [
+      6.0,
+      16.0
+    ],
+    "note": ""
+  },
+  "seed": "fnv1a32(\"mud:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 1,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-mud",
+  "preview": [
+    90,
+    72,
+    54
+  ],
+  "minimap": [
+    90,
+    72,
+    54
+  ],
+  "mean_color": [
+    90,
+    72,
+    54
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 75.3,
+      "std": 8.0,
+      "grain": 3.2,
+      "sat": 0.4,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain-mud0.png": "9a707f55e08bd6590f4f247a89d5a26740ed06cf8d5cf0e65ba4b705d9066640",
+    "data/gfx/terrain-mud1.png": "ca1bbdc4d619a9884db7bcab1ff307d82420186a2cfe7563afaed72ddc74de2c",
+    "data/gfx/terrain-mud2.png": "cab2b4fa7812881e4856d75123aa2c229e8518c66349749a0b54e71962d6d0a0",
+    "data/gfx/terrain-mud3.png": "b897ac713307deef7bb88f0124fbf6df80d6a1a6602646e076af3dbe2e9da733",
+    "data/gfx/terrain-mud4.png": "9c696e86aad0e4f3dff457d3a092cc7c2eff5cc8839e1054852e3ea22d1d98ae",
+    "data/gfx/terrain-mud5.png": "4786612db64450c9942443931997b018798deafe40acfb0267b434908ec2b62e",
+    "data/gfx/terrain-mud6.png": "c577902b89dae779f373c676149c5461656145bce8e136b201f0297b70365f76",
+    "data/gfx/terrain-mud7.png": "bb24a2504f9b814d66c88993606364d1272ba9c7fa9fdf1adfdb8ea7fc9b24c1",
+    "data/gfx/terrain-mud8.png": "372885b7b6d210b17aef9cfcf8ba1f26e95923971449674442236ef96ae01cbc",
+    "data/gfx/terrain-mud9.png": "fb823809a733485de6d2dc155d3c1c196b76bc0613fdfa4a1db11fae9ffb81ca",
+    "data/gfx/terrain-mud10.png": "67cfd332ae96c023044b3874b675d9695778f23b3cc92b6b01ec5b017239c1eb",
+    "data/gfx/terrain-mud11.png": "bc33bcab73ccd9d5785d3e63439f0670d3ba123c5e43eb32455d8b233c4c9973",
+    "data/gfx/terrain-mud12.png": "4ed754dc86fe3e2ca18433a27a645bb6fd2fc45dee3589e35dc854056923908f",
+    "data/gfx/terrain-mud13.png": "4a802f05a935fdb2cd3eb9b4a5f1c4263c9206cb61c3adfdb813f1cd02a27858",
+    "data/gfx/terrain-mud14.png": "08921dd1cd8921e2a6fda5137b80c04c8d17fc71426fdd60666901a082884ee3",
+    "data/gfx/terrain-mud15.png": "e90b4e7c7036584ee9ff7d0e57645836485ed477f5def577bd9ddfca5d7cdd2e"
+  }
+}
