@@ -1375,7 +1375,8 @@ and `maxOutputBytes` (at most 128 MiB total artifacts) can lower the hard output
 ceilings. Chat requires available music
 credit but consumes none.
 
-Configure `MUSIC_OPENAI_API_KEY` for the dedicated worker and start it with
+Configure `MUSIC_OPENAI_API_KEY` for the dedicated worker, install the security
+profiles below, then start it with
 `docker compose --profile ai-music up -d --build ai-music-worker`. This image
 preinstalls pinned CC0 samples, sfizz, Surge XT and Python audio tools. The current
 Surge distribution makes this worker Linux amd64 only. There is no GPU or model
@@ -1384,10 +1385,31 @@ a 6 GiB scratch tmpfs and process/time limits. Numerical libraries use one threa
 Scale workers only after measuring memory use and model cost for your workload.
 
 The host must support unprivileged Linux user namespaces and Bubblewrap inside
-the container. Startup probes the isolated Python runtime and refuses to start
-when isolation is unavailable. Standard Docker seccomp/AppArmor policies may
-deny nested namespaces; use an operator-reviewed policy that permits the
-Bubblewrap probe, or run the worker on an appropriately isolated Linux host.
+the container. Startup executes the isolated Python runtime, FFmpeg, FFprobe,
+sfizz and Surge XT, and refuses to start when isolation or their dependencies are
+unavailable. The image resolves system library alternatives within `/usr` so
+the encoder does not require access to `/etc`. The worker uses the scoped profiles in
+`deploy/security/`: install its AppArmor profile before starting it:
+
+```sh
+sudo install -m 644 deploy/security/glob2-ai-music.apparmor /etc/apparmor.d/glob2-ai-music
+sudo apparmor_parser -r /etc/apparmor.d/glob2-ai-music
+```
+
+The seccomp profile is based on Moby profiles revision
+`2ceae35d351c156cb5a8efc0fdc4a08cf94569d8`, with namespace creation and
+mount operations allowed for Bubblewrap. The AppArmor profile retains Docker's
+process, kernel and filesystem protections while allowing private mounts and
+the namespace-limit writes used by `--disable-userns`. Docker's system-path masks
+are removed for this worker so the kernel permits its private proc mount;
+AppArmor still denies sensitive proc/sys access. The worker runs without outer
+capabilities, as UID 10001, with no new privileges and a read-only root. Recipes
+run in a fresh user/mount/PID/network namespace with all capabilities dropped
+and further user namespaces disabled. Keep seccomp and, on AppArmor hosts,
+AppArmor enabled. Hosts without AppArmor can explicitly set
+`GLOB2_AI_MUSIC_APPARMOR_PROFILE=unconfined`; their renderer must still pass the
+same namespace probe. Custom profile locations/names use
+`GLOB2_AI_MUSIC_SECCOMP_PROFILE` and `GLOB2_AI_MUSIC_APPARMOR_PROFILE`.
 Startup also requires a cgroup v2 ancestor with `memory.max` at most 12 GiB.
 This bounds the entire worker and its children; per-process address-space limits
 alone cannot constrain a recipe that forks. A bare-host worker or integration

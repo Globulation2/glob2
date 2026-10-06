@@ -273,6 +273,11 @@ RUN --mount=type=cache,id=glob2-music-assets,target=/var/cache/glob2music \
     /opt/music/bin/python -m glob2music.studio.install_assets /var/cache/glob2music && \
     cp -a /var/cache/glob2music /opt/music-assets
 
+# The child filesystem omits /etc. Canonicalize distro library alternatives so
+# FFmpeg's transitive BLAS/LAPACK dependencies resolve entirely beneath /usr.
+RUN find /usr/lib -type l -lname '/etc/alternatives/*' -exec sh -ec \
+    'for link do target="$(readlink -f "$link")"; case "$target" in /usr/*) ;; *) exit 1;; esac; ln -sf "$target" "$link"; done' sh {} +
+
 FROM ai-music-runtime AS ai-music-worker
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
