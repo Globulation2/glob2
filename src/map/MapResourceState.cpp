@@ -364,6 +364,22 @@ std::uint32_t Map::materialGrowthRateAtSlot(size_t index,int material) const
     return std::min<std::uint64_t>(rate,4u*ResourceRateScale);
 }
 
+std::uint32_t Map::materialRenewalPotentialAtSlot(size_t index,int material) const
+{
+    if (!tiles[index].canResourcesGrow || (game && game->gameHeader.isResourceGrowthDisabled())) return 0;
+    const auto& r=tiles[index].resource;
+    if (r.type==NO_RES_TYPE || material<0 || material>=int(MaterialCount)) return 0;
+    const auto& p=resourcePropertiesByIndex(r.type);
+    const auto& y=resourceRegistry().yields(static_cast<ResourceId>(r.type))[material];
+    if (!y.capacity || !y.growthRate || y.consumption!=ResourceConsumption::One || y.destroysDeposit) return 0;
+    // A one-unit, nonpersistent deposit disappears when harvested unless another
+    // material keeps it alive. Larger stocks can retain a seed while harvesting.
+    if (y.capacity==1 && !p.persistsWhenEmpty && r.amount<=materialAmountAtSlot(index,material)) return 0;
+    auto rate=std::uint64_t(resourceGrowthField().rate(index,r.type))*y.growthRate/ResourceRateScale;
+    if (p.stockDependentGrowth) rate=rate*(p.stockBranchDivisor-std::min<Uint32>(r.amount,p.stockBranchDivisor))/p.stockBranchDivisor;
+    return std::min<std::uint64_t>(rate,4u*ResourceRateScale);
+}
+
 std::uint64_t Map::materialExpansionRateAtSlot(size_t index,int material) const
 {
     if (game && game->gameHeader.isResourceGrowthDisabled()) return 0;

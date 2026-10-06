@@ -4395,9 +4395,9 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
 		// keep live amounts for scoring without invalidating topology caches.
-		tile.fertility=Uint32(std::min<long long>(std::numeric_limits<Uint32>::max(),effectiveWheatRegrowth(map,
-            cell.resource.type!=NO_RES_TYPE ? AIResourceSources::renewableRate(*map,index,tile.materialType)
-            : cachedFertility?fertilityValues[index]:cell.fertility)));
+		tile.fertility=Uint32(std::min<long long>(std::numeric_limits<Uint32>::max(),
+            cell.resource.type!=NO_RES_TYPE ? AIResourceSources::renewablePotential(*map,index,tile.materialType)
+            : effectiveNaturalGrowth(map,cachedFertility?fertilityValues[index]:cell.fertility)));
 		int expansionNeighbors=0;
 		if((tile.materialType==materialIndex(MaterialId::Food)||tile.materialType==materialIndex(MaterialId::Wood))&&tile.materialAmount>0)
 		{
@@ -4411,7 +4411,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			// A stack is an opportunity even where nothing regrows: a colony
 			// seeded beside it lives by mining it (Locust).
 			tile.foodOpportunity=tile.fertility
-				+uint32_t(wheatStockFertilityEquivalent(tile.materialAmount,
+				+uint32_t(foodStockCapacityEquivalent(tile.materialAmount,
 					strategy.farming.wheat_stock_horizon_ticks));
 			tile.farmCapacity=tile.fertility;
 		}
