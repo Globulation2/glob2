@@ -245,8 +245,9 @@ recomposing the entire visible map every frame. The reduced detail can soften
 texture grain at distant zooms. Software pages retain native density. Prepared
 source pixels are reported separately by `sourceBytes()`.
 
-Density selection uses map zoom multiplied by the drawable-to-logical viewport
-ratio, so HiDPI output retains appropriate detail. It is chosen for the complete
+Density selection uses map zoom multiplied by the active target raster scale,
+including HiDPI windows and explicit offscreen capture scales. This preserves
+output detail independently of the window hosting a capture. It is chosen for the complete
 view and shared by cached and streamed pages; tiled map captures also share the
 whole capture's density at narrow edges. The budget includes a fixed allowance
 for recipes and bookkeeping plus density-dependent pixel storage. Increasing it

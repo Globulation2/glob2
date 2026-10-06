@@ -64,9 +64,9 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 	if (gpu && !preferredDownsample && resolution == 1)
 	{
 		auto &target = *globalContainer->gfx;
-		const double outputScale = std::max({1.0, double(target.getDrawableW()) / target.getW(),
-											 double(target.getDrawableH()) / target.getH()});
-		const double density = target.mapTransformScale() * outputScale;
+		// Offscreen captures can override the window DPI. Use the active
+		// target's raster scale so atlas detail is independent of window size.
+		const double density = target.mapTransformScale() * target.getRasterScale();
 		while (downsample < NativeTilePixels && density <= std::sqrt(2.0) / (downsample * 2) &&
 			   visiblePages * pageStorage(resolution, gpu, downsample) > budget)
 			downsample *= 2;

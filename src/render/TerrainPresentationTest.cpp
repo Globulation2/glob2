@@ -924,6 +924,64 @@ TEST_SUITE("TerrainPresentation")
 			CHECK_FALSE(hidpiAdmitted);
 		}
 	}
+	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
+			  "[display]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true,
+			 .width = 256,
+			 .height = 256,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		SceneMap scene;
+		scene.extract(fixture.game.map);
+		auto &gfx = *globals->gfx;
+		// Restore all process-wide drawing state even if a REQUIRE aborts.
+		struct RestoreTarget
+		{
+			GAGCore::GraphicContext &gfx;
+			int width, height;
+			float scale;
+			~RestoreTarget()
+			{
+				gfx.endMapTransform();
+				gfx.setRenderTargetScale(scale);
+				gfx.drawableW = width;
+				gfx.drawableH = height;
+			}
+		} restore{gfx, gfx.drawableW, gfx.drawableH, gfx.renderTargetScale};
+		gfx.beginMapTransform(.25f, 0, 0, 0, 0, 256, 256);
+		for (int windowScale : {1, 2})
+		{
+			CAPTURE(windowScale);
+			gfx.drawableW = gfx.getW() * windowScale;
+			gfx.drawableH = gfx.getH() * windowScale;
+			// Torus captures compensate for the shown zoom: .25 * 4 gives
+			// 32 physical pixels per tile, irrespective of the window DPI.
+			gfx.setRenderTargetScale(4);
+			SoftwareTerrainCache cache;
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
+								  true, 19, true));
+			CHECK(cache.chunks.front()->image->getW() == SoftwareTerrainCache::ChunkPixels);
+			// The same map captured at 8px per cell needs reduced pages. A
+			// narrow edge must retain the complete capture's sampling density.
+			gfx.setRenderTargetScale(1);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 31, 0, 0, fixture.team->me,
+								  true, 19, true));
+			const auto side = cache.chunks.front()->image->getW();
+			CHECK(side < SoftwareTerrainCache::ChunkPixels);
+			const auto rebuilds = cache.cacheRebuilds();
+			for (const auto &strip : {SDL_Rect{0, 0, 7, 32}, SDL_Rect{0, 0, 32, 7}})
+			{
+				REQUIRE(cache.prepare(scene, *globals->terrain, strip.x, strip.y,
+									  strip.x + strip.w - 1, strip.y + strip.h - 1, 0, 0,
+									  fixture.team->me, true, 19, true));
+				CHECK(cache.chunks.front()->image->getW() == side);
+				CHECK(cache.cacheRebuilds() == rebuilds);
+				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+			}
+		}
+	}
 	TEST_CASE(
 		"empty water pages skip software submissions and refresh after terrain edits [display]")
 	{
