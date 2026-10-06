@@ -67,7 +67,9 @@ namespace Utilities
 	
 	void BitArray::serialize(unsigned char *stream) const
 	{
-		size_t l = values.size();
+		const size_t l = values.size();
+		if (l == 0)
+			return;
 		std::copy(&values[0], l + &values[0], stream);
 	}
 	
@@ -75,6 +77,8 @@ namespace Utilities
 	{
 		bitLength = bitCount;
 		values.resize(bitToByte(bitCount));
+		if (values.size() == 0)
+			return;
 		std::copy(stream, stream+values.size(), &values[0]);
 	}
 }
