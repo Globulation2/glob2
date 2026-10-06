@@ -16,15 +16,18 @@ test('production CSP permits worker Opus decoding while document evaluation stay
       route.fulfill({ contentType: 'audio/ogg', body: bytes }),
     );
   await page.goto('/');
-  const result = await page.evaluate(async (sha256) => {
+  // Serialize the async browser probe with the exact fixture checksum.
+  const result = await page.evaluate<{ wasmBlocked: boolean; pcm: boolean }>(
+    `(async () => {
+    const sha256 = ${JSON.stringify(sha256)};
     const wasmBlocked = await WebAssembly.compile(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]))
       .then(() => false)
       .catch(() => true);
-    const pcm = await new Promise<boolean>((resolve, reject) => {
+    const pcm = await new Promise((resolve, reject) => {
       const worker = new Worker('/music/decode-worker.js', { type: 'module' });
       const channel = new MessageChannel();
       const timeout = setTimeout(() => finish(new Error('Decoder did not produce PCM')), 15000);
-      function finish(result: boolean | Error) {
+      function finish(result) {
         clearTimeout(timeout);
         worker.terminate();
         channel.port1.close();
@@ -39,7 +42,7 @@ test('production CSP permits worker Opus decoding while document evaluation stay
       channel.port1.onmessage = (event) => {
         if (event.data.pcm) {
           finish(
-            Array.from(event.data.pcm as Float32Array).some((sample) => Math.abs(sample) > 0.01),
+            Array.from(event.data.pcm).some((sample) => Math.abs(sample) > 0.01),
           );
         }
       };
@@ -53,6 +56,7 @@ test('production CSP permits worker Opus decoding while document evaluation stay
       );
     });
     return { wasmBlocked, pcm };
-  }, sha256);
+  })()`,
+  );
   expect(result).toEqual({ wasmBlocked: true, pcm: true });
 });
