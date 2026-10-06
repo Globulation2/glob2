@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
+#include "AIMaximaFarmGeometry.h"
 #include "ExperimentalFeatures.h"
 #include <algorithm>
 #include "GlobalContainer.h"
@@ -928,4 +929,71 @@ TEST_CASE("farming eligibility snapshot refreshes after stock and catalog change
     map.setNoResource(11,21,0);
     ai.update_farming(ai.context);
     CHECK(std::none_of(ai.farm_protection_mask.begin(),ai.farm_protection_mask.end(),[](Uint8 value){return value!=0;}));
+}
+
+TEST_CASE("indexed farm geometry matches scalar toroidal closing and seed adjacency" * doctest::test_suite("Maxima.FarmingIntegration"))
+{
+    using namespace AIMaxima::FarmGeometry;
+    for(const auto [w,h]:std::vector<std::pair<int,int>>{{1,1},{1,8},{8,1},{2,2},{8,16},{64,32}})
+    for(unsigned pattern=0;pattern<5;++pattern)
+    {
+        std::vector<Uint8> seeds(w*h),food(w*h),adjacent(w*h,0),dilated(w*h,0),exterior(w*h,0);
+        for(int i=0;i<w*h;++i)
+        {
+            // Includes empty, saturated, separated, mixed and seam-spanning masks.
+            seeds[i]=pattern==0?0:pattern==1?3:Uint8(((unsigned(i)*17+pattern*7)%11)%4);
+            food[i]=pattern==0?0:pattern==1?1:((unsigned(i)*13+pattern)%7)<3;
+        }
+        const auto at=[=](int x,int y){return ((y+h)%h)*w+(x+w)%w;};
+        for(int y=0;y<h;++y) for(int x=0;x<w;++x)
+            for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+            {
+                if(dx||dy) adjacent[at(x+dx,y+dy)]|=seeds[y*w+x];
+                if(food[y*w+x]) dilated[at(x+dx,y+dy)]=1;
+            }
+        for(int y=0;y<h;++y) for(int x=0;x<w;++x)
+        {
+            bool inside=true;
+            for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+                inside=inside && dilated[at(x+dx,y+dy)];
+            exterior[y*w+x]=!inside;
+        }
+        CAPTURE(w);CAPTURE(h);CAPTURE(pattern);
+        CHECK(adjacentSeeds(seeds,w,h)==adjacent);
+        CHECK(foodExterior(w,h,[&](int i){return food[i]!=0;})==exterior);
+    }
+}
+
+TEST_CASE("farm boundary geometry reads depleted secondary Food stocks" * doctest::test_suite("Maxima.FarmingIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    using Json=nlohmann::json;
+    Fixture f;auto& map=f.game.map;
+    auto spec=Json::parse(map.resourceRegistry().serialize())["resources"][0];
+    spec["key"]="fixture:geometry-mixed";
+    spec["properties"]["ecology"]="uniform";
+    spec["yields"]["wood"]={{"capacity",5},{"initial",2},{"growthRate",0},{"consumption","one"}};
+    spec["yields"]["food"]={{"capacity",5},{"initial",3},{"growthRate",0},{"consumption","one"}};
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({spec})}}.dump());
+    const auto id=map.resourceRegistry().find("fixture:geometry-mixed");REQUIRE(id);
+    for(const auto [x,y]:std::vector<std::pair<int,int>>{{63,63},{0,63},{63,0},{0,0},{1,1},{31,32}})
+        map.setResource(x,y,*id,0);
+    map.setMaterialAmount(map.coordToIndex(0,0),MaterialId::Food,0);
+    REQUIRE(map.materialAmountAt(map.coordToIndex(0,0),MaterialId::Wood)>0);
+    REQUIRE(map.materialAmountAt(map.coordToIndex(0,0),MaterialId::Food)==0);
+    REQUIRE(map.materialAmountAt(map.coordToIndex(63,63),MaterialId::Food)==3);
+    const int w=map.getW(),h=map.getH();
+    std::vector<Uint8> dilated(w*h,0),expected(w*h,0);
+    for(int y=0;y<h;++y) for(int x=0;x<w;++x)
+        if(map.isMaterialTakeable(x,y,MaterialId::Food))
+            for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+                dilated[map.normalizeY(y+dy)*w+map.normalizeX(x+dx)]=1;
+    for(int y=0;y<h;++y) for(int x=0;x<w;++x)
+    {
+        bool inside=true;
+        for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
+            inside=inside && dilated[map.normalizeY(y+dy)*w+map.normalizeX(x+dx)];
+        expected[y*w+x]=!inside;
+    }
+    CHECK(AIMaxima::FarmGeometry::foodExterior(w,h,[&](int i){return map.materialAmountAt(i,MaterialId::Food)>0;})==expected);
 }

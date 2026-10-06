@@ -5,6 +5,10 @@
 #include "Building.h"
 #include "ai/cortex/CortexPlacementGeo.h"
 #include "CortexBuildings.h"
+#include "CortexPlacement.h"
+#include "CortexFoodAvailability.h"
+#include <nlohmann/json.hpp>
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -107,4 +111,92 @@ TEST_SUITE("CortexGeometry")
 	    pool->buildingState = Building::ALIVE;
 	    MESSAGE("Cortex geometry: " << checks << " candidate comparisons");
 	}
+}
+
+TEST_CASE("placement food snapshot matches scalar stock queries and refreshes per pass" * doctest::test_suite("CortexGeometry"))
+{
+    glob2test::HeadlessGlobals globals;
+    Game game(nullptr);auto& map=game.map;map.setSize(4,3,GRASS);map.setGame(&game);
+    auto definitions=nlohmann::json::parse(map.resourceRegistry().serialize());
+    auto entry=definitions["resources"][0];
+    entry.erase("requiredExperiment");
+    entry["properties"]={{"primaryMaterial","wood"},{"persistsWhenEmpty",true},
+        {"blocksGround",true},{"visibleToHarvest",true}};
+    entry["yields"]={{"wood",{{"capacity",5},{"initial",5},{"consumption","one"}}},
+        {"food",{{"capacity",4},{"initial",4},{"consumption","one"}}}};
+    while(definitions["resources"].size()<260) {
+        // Fixed-width keys sort after builtin names, so the last authored ID
+        // really exercises the wide runtime resource index.
+        entry["key"]="zz-test:cortex-food-"+std::to_string(1000+definitions["resources"].size());
+        definitions["resources"].push_back(entry);
+    }
+    map.installResourceDefinitions(definitions.dump());
+    const auto id=*map.resourceRegistry().find("zz-test:cortex-food-1259");
+    REQUIRE(resourceIndex(id)>255);
+    for(const auto point:std::vector<std::pair<int,int>>{{0,0},{15,7},{7,3}})
+        map.setResource(point.first,point.second,id,0);
+    map.setMaterialAmount(map.coordToIndex(7,3),MaterialId::Food,0);
+    map.setAreaMask(map.coordToIndex(0,0),&Tile::forbidden,~Uint32(0));
+    const auto compare=[&] {
+        const Cortex::FoodAvailabilityView view(map);
+        for(int y=-9;y<17;y+=3) for(int x=-17;x<34;x+=5) {
+            for(int cap:{-1,0,1,4,20}) {
+                int expected=-1;
+                for(int dy=-cap;dy<=cap;++dy) for(int dx=-cap;dx<=cap;++dx)
+                    if(map.materialAmountAt(map.coordToIndex(x+dx,y+dy),MaterialId::Food)>0) {
+                        const int distance=std::max(std::abs(dx),std::abs(dy));
+                        if(expected<0 || distance<expected) expected=distance;
+                    }
+                CHECK(view.nearestDistance(x,y,cap)==expected);
+                CHECK(Cortex::nearestFoodSourceDistance(map,x,y,cap)==expected);
+            }
+            for(int w:{0,1,3,19}) for(int h:{0,2,10}) for(int distance:{0,1,9}) {
+                bool expected=false;
+                for(int dy=-distance;dy<h+distance;++dy) for(int dx=-distance;dx<w+distance;++dx)
+                    expected|=map.materialAmountAt(map.coordToIndex(x+dx,y+dy),MaterialId::Food)>0;
+                CHECK(view.anyWithin(x,y,w,h,distance)==expected);
+                CHECK(Cortex::anyFoodSourceWithin(map,x,y,w,h,distance)==expected);
+            }
+        }
+        CHECK_FALSE(view.at(7,3)); // Other stock keeps this mixed deposit alive.
+    };
+    compare();
+    map.setMaterialAmount(map.coordToIndex(0,0),MaterialId::Food,0);
+    map.setMaterialAmount(map.coordToIndex(15,7),MaterialId::Food,0);
+    compare(); // New pass must see depletion; no persistent availability cache.
+    map.setMaterialAmount(map.coordToIndex(15,7),MaterialId::Food,4);
+    compare();
+}
+
+TEST_CASE("placement food snapshot matches toroidal scalar distances on thin maps" * doctest::test_suite("CortexGeometry"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(const auto dimensions:std::vector<std::pair<int,int>>{{0,0},{0,3},{3,0},{1,1},{4,2}}) {
+        Game game(nullptr);auto& map=game.map;
+        map.setSize(dimensions.first,dimensions.second,GRASS);map.setGame(&game);
+        const auto food=map.resourceRegistry().find("wheat");
+        REQUIRE(food.has_value());
+        const auto compare=[&] {
+            const Cortex::FoodAvailabilityView view(map);
+            for(int y=-map.getH()-1;y<=map.getH()+1;++y)
+                for(int x=-map.getW()-1;x<=map.getW()+1;++x) {
+                    int expected=-1;
+                    for(int sy=0;sy<map.getH();++sy) for(int sx=0;sx<map.getW();++sx)
+                        if(map.materialAmountAt(map.coordToIndex(sx,sy),MaterialId::Food)>0) {
+                            int dx=std::abs((x&(map.getW()-1))-sx);
+                            int dy=std::abs((y&(map.getH()-1))-sy);
+                            dx=std::min(dx,map.getW()-dx);dy=std::min(dy,map.getH()-dy);
+                            const int distance=std::max(dx,dy);
+                            if(expected<0 || distance<expected) expected=distance;
+                        }
+                    for(int cap:{-1,0,1,3,40})
+                        CHECK(view.nearestDistance(x,y,cap)==(expected>=0 && expected<=cap?expected:-1));
+                }
+        };
+        compare(); // No source, including a cap larger than either dimension.
+        map.setResource(map.getW()-1,map.getH()-1,*food,0);
+        compare();
+        map.setResource(0,0,*food,0);
+        compare(); // Aliased neighbors and tied sources do not change distance.
+    }
 }

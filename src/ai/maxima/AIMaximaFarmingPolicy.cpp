@@ -5,6 +5,7 @@
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
+#include "AIMaximaFarmGeometry.h"
 #include "AIMaximaBuildings.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -130,22 +131,9 @@ namespace
 	// Otherwise routine harvesting would turn the entire interior into an edge.
 	std::vector<Uint8> wheat_farm_exterior(Map* map)
 	{
-		const int w=map->getW(), h=map->getH();
-		std::vector<Uint8> dilated(w*h, 0), exterior(w*h, 0);
-		for(int y=0; y<h; ++y) for(int x=0; x<w; ++x)
-		{
-			if(!map->isMaterialTakeable(x,y,MaterialId::Food)) continue;
-			for(int dy=-1; dy<=1; ++dy) for(int dx=-1; dx<=1; ++dx)
-				dilated[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]=1;
-		}
-		for(int y=0; y<h; ++y) for(int x=0; x<w; ++x)
-		{
-			bool inside=true;
-			for(int dy=-1; dy<=1; ++dy) for(int dx=-1; dx<=1; ++dx)
-				inside=inside && dilated[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)];
-			exterior[y*w+x]=!inside;
-		}
-		return exterior;
+        return FarmGeometry::foodExterior(map->getW(),map->getH(),[map](int index) {
+            return map->materialAmountAt(index,MaterialId::Food)>0;
+        });
 	}
 
 	///Semantic roles a single resource tile can play in the shared wheat/wood
@@ -1147,35 +1135,28 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 
 	// Record which empty tiles can extend a live wheat or wood resource. This
 	// avoids running the more expensive classifier for unrelated map cells.
-	std::vector<Uint8> adjacent_resource_mask(w*h, 0);
-	for(int y=0; y<h; ++y)
-		for(int x=0; x<w; ++x)
-		{
-			const Uint8 bit=seedEligibility[y*w+x];
-			if(!bit) continue;
-			for(int dy=-1; dy<=1; ++dy)
-				for(int dx=-1; dx<=1; ++dx)
-					if(dx || dy)
-						adjacent_resource_mask[((y+dy+h)%h)*w
-							+((x+dx+w)%w)]|=bit;
-		}
+    const auto adjacent_resource_mask=FarmGeometry::adjacentSeeds(seedEligibility,w,h);
 
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
 			const int index=y*w+x;
-			const Tile& cell=map->getTile(x, y);
-			const bool wheat=cached_seed(seedEligibility,*map,x,y,materialIndex(MaterialId::Food));
-			const bool wood=cached_seed(seedEligibility,*map,x,y,materialIndex(MaterialId::Wood));
-			const bool empty_growth=is_empty_growth_cell(*map,x,y);
+            // Cells without either a seed or an adjacent seed cannot acquire a
+            // role below. Reject them before touching tile/ecology properties.
+            const Uint8 seeds=seedEligibility[index];
+            const Uint8 adjacent=adjacent_resource_mask[index];
+            if(!(seeds|adjacent)) continue;
+            const bool wheat=seeds&1;
+            const bool wood=seeds&2;
+            const bool empty_growth=adjacent && is_empty_growth_cell(*map,x,y);
 
 			FarmTileClassification wheat_role;
 			FarmTileClassification wood_role;
-            if(wheat || (empty_growth && (adjacent_resource_mask[index]&1)))
+            if(wheat || (empty_growth && (adjacent&1)))
                 wheat_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,seedEligibility,
                     farming_shoreline_mask[index]!=0,x,y,materialIndex(MaterialId::Food),
                     Uint32(budget.farming_wheat_fertility_min));
-            if(wood || (empty_growth && (adjacent_resource_mask[index]&2)))
+            if(wood || (empty_growth && (adjacent&2)))
                 wood_role=classify_farm_tile(map_info,map,fertility_cache,wheat_exterior,seedEligibility,
                     farming_shoreline_mask[index]!=0,x,y,materialIndex(MaterialId::Wood),plan.wood_fertility);
 			const bool wheat_farm=wheat_role.protected_tile();

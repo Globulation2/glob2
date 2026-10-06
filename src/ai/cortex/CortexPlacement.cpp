@@ -5,6 +5,7 @@
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "building/Building.h"
@@ -107,65 +108,15 @@ namespace Cortex
 	// Food detection: map.isMaterialTakeableSlot(x, y, Food) — identical to the
 	// isFoodSource() predicate in CortexFoodSources.cpp (anonymous namespace, line ~29) so
 	// the two subsystems agree on what counts as food.
-	// C++: Resource.h:#define Food 1; Map::getResource (map/Map.h:302).
+	// Material stock is queried independently of map resource identity.
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
 	int nearestFoodSourceDistance(const Map& map, int x, int y, int cap)
 	{
-		for (int r = 0; r <= cap; r++)
-		{
-			if (r == 0)
-			{
-				// Centre tile: radius-0 ring is just (x, y) itself.
-				if (map.isMaterialTakeable(map.normalizeX(x), map.normalizeY(y),MaterialId::Food))
-					return 0;
-				continue;
-			}
-
-			// Iterate the square ring at Chebyshev distance exactly r.
-			// The ring has four sides; adjacent corners are shared — use half-
-			// open intervals to avoid double-counting corners.
-			//
-			// Top row:    y - r,  x in [x-r, x+r)   (left-to-right, right col excluded)
-			// Right col:  x + r,  y in [y-r, y+r)   (top-to-bottom, bottom row excluded)
-			// Bottom row: y + r,  x in (x-r, x+r]   (right-to-left, left col excluded)
-			// Left col:   x - r,  y in (y-r, y+r]   (bottom-to-top, top row excluded)
-
-			// Top row: (x-r .. x+r-1, y-r)
-			for (int dx = -r; dx < r; dx++)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y - r);
-				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
-					return r;
-			}
-			// Right column: (x+r, y-r .. y+r-1)
-			for (int dy = -r; dy < r; dy++)
-			{
-				const int nx = map.normalizeX(x + r);
-				const int ny = map.normalizeY(y + dy);
-				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
-					return r;
-			}
-			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
-			for (int dx = r; dx > -r; dx--)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y + r);
-				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
-					return r;
-			}
-			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
-			for (int dy = r; dy > -r; dy--)
-			{
-				const int nx = map.normalizeX(x - r);
-				const int ny = map.normalizeY(y + dy);
-				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
-					return r;
-			}
-		}
-		return -1; // no Food within cap tiles
+		return food_queries::nearest(x,y,cap,[&](int px,int py) {
+			return map.isMaterialTakeable(px,py,MaterialId::Food);
+		});
 	}
 
 	// AICortex war-flag offense-target surface.

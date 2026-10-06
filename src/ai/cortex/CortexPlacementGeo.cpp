@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
 
 #include "CortexTypes.h"
 #include <algorithm>
@@ -242,19 +243,9 @@ namespace Cortex
 
 	bool anyFoodSourceWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
-		// The footprint expanded by `dist` in Chebyshev distance is exactly the
-		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
-		// cannot hold Food (it passed isHardSpaceForBuilding), so scanning it too is
-		// harmless. Early-out on the first food tile.
-		for (int dy = -dist; dy < h + dist; dy++)
-			for (int dx = -dist; dx < w + dist; dx++)
-			{
-				const int nx = map.normalizeX(x + dx);
-				const int ny = map.normalizeY(y + dy);
-				if (map.isMaterialTakeable(nx, ny,MaterialId::Food))
-					return true;
-			}
-		return false;
+		return food_queries::anyWithin(x,y,w,h,dist,[&](int px,int py) {
+			return map.isMaterialTakeable(px,py,MaterialId::Food);
+		});
 	}
 
 	int countFoodSourcesWithin(const Map& map, int x, int y, int w, int h, int dist)

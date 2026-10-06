@@ -5,6 +5,7 @@
 #include "CortexPlacement.h"
 
 #include "CortexPlacementGeo.h"
+#include "CortexFoodAvailability.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "CortexBuildings.h"
@@ -139,6 +140,7 @@ namespace Cortex
 		const int mapH = map.getH();
 
 		const PlacementGeometry geometry(team, map);
+		const FoodAvailabilityView food(map);
 
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
@@ -243,7 +245,7 @@ namespace Cortex
 				// avoid scanning far on a reject; the full SCAN_CAP is used only for
 				// the retained candidates' foodSourceDistance field at copy-out.
 				if (usesFood &&
-				    nearestFoodSourceDistance(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
+				    food.nearestDistance(x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
 				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
@@ -271,7 +273,7 @@ namespace Cortex
 				// it must hug the food far more tightly than an inn does. anyFoodSourceWithin
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
-				if (isSwarm && usesFood && !anyFoodSourceWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+				if (isSwarm && usesFood && !food.anyWithin(x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
 					continue;
 
 				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
@@ -315,7 +317,7 @@ namespace Cortex
 				// sit close to food. Every other building type is pushed back beyond
 				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
 				// paths into the field. AI-design rule, no engine analogue.
-				if (occupiesGround && !usesFood && anyFoodSourceWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+				if (occupiesGround && !usesFood && food.anyWithin(x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
@@ -395,7 +397,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
-			out[i].foodSourceDistance = nearestFoodSourceDistance(map, heap[i].x, heap[i].y,
+			out[i].foodSourceDistance = food.nearestDistance(heap[i].x, heap[i].y,
 			                                   CORTEX_WHEAT_SCAN_CAP);
 		}
 
