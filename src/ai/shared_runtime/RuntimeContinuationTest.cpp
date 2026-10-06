@@ -239,7 +239,8 @@ public:
         const auto custom=static_cast<ResourceId>(map.resourceRegistry().size()-1);
         REQUIRE(resourceIndex(custom)>255);
         CHECK_FALSE(stone.needs_updating(&map));
-        map.setResource(3,4,custom,3);
+        map.setResource(3,4,custom,0);
+        map.setMaterialAmount(map.coordToIndex(3,4),MaterialId::Stone,3);
         GradientManager original(&map);
         REQUIRE(original.get_gradient(stone).get_height(3,4)==0);
         original.ticks_since_update[0]=151;
@@ -255,7 +256,7 @@ public:
         CHECK(map.staticMaterialSourceGeneration()==generation);
         CHECK(original.is_updated(stone));
         // Ordinary growing/harvestable stock changes must not invalidate this field.
-        map.setResourceByIndex(8,8,WHEAT,3);
+        map.setResourceByIndex(8,8,WHEAT,0);
         map.setMaterialAmount(map.coordToIndex(8,8),MaterialId::Food,2);
         CHECK(map.staticMaterialSourceGeneration()==generation);
         CHECK(original.is_updated(stone));
@@ -290,7 +291,7 @@ public:
         map.setNoResource(3,4,0);
         CHECK_FALSE(original.is_updated(stone));
         CHECK(original.get_gradient(stone).get_height(3,4)!=0);
-        map.setResource(10,10,custom,1);
+        map.setResource(10,10,custom,0);
         CHECK_FALSE(original.is_updated(stone));
         CHECK(original.get_gradient(stone).get_height(10,10)==0);
         auto currentClone=original.clone();

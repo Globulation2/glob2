@@ -158,6 +158,7 @@ int main(int argc, char **argv)
 		{
 			Game source(nullptr);
 			source.map.setSize(6, 6, GRASS);
+			source.map.setGame(&source);
 			source.addTeam();
 			source.teams[0]->startPosSet = 1;
 			source.teams[0]->startPosX = source.teams[0]->startPosY = 32;
