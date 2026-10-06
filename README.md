@@ -3,23 +3,28 @@
 Implementation PR: https://github.com/Globulation2/glob2/pull/846
 This evidence-only branch must not be merged into implementation.
 
-## Integrated runtime-resource candidate
+## Integrated candidate
 
-Production revision `9a54d4bf20b73bd63bd9d0f762cee67dda71eb51`; current test/schema revision `a1c437295`. Their native CLI binaries are byte-identical (SHA-256 `5d4b5672ebfbdc7eddd5fd49bffad5b3e8a4f0d5c3a1c604ed05c03c19af0e29`). Upstream base `ee3be8ecd9d7100de78ef63869271371d427cb66`; save/replay140, protocol59, simulation revision22, supported save floor58.
+Production revision: `9a54d4bf20b73bd63bd9d0f762cee67dda71eb51`. Final native/browser test and schema revision: `a1c437295`. Windows/Android fixture revision: `de4a315d8`. Native 9a and a1 CLI binaries are byte-identical: SHA-256 `5d4b5672ebfbdc7eddd5fd49bffad5b3e8a4f0d5c3a1c604ed05c03c19af0e29`.
 
-- `native-a1-validation-evidence.zip`: broad production run1,897cases:1,748passed,148skipped,one fixture failure; corrected fixture and12related continuation/golden cases pass in final13-case rerun. This is a union of broad and affected runs, not one all-green final full run. Eight targeted display cases passed separately. Map image/report CLI suites pass. Build-system346tests passed with2skips using documented encoder interpreter; original system-Python invocation failures are retained and classified. Exact commands, source/build/runtime provenance, XMLs, logs, traces and screenshots are bundled; summary JSON is also directly available.
-- `android-de4-validation-evidence.zip`: exact fixture revision `de4a315d8`,9registry+56engine cases pass on Android API35x86_64 emulator with NDK28.2/API24. Full8,137-file payload hashes match before and after checks.1,500tick stock trace,150-row resource composition and official match trace match native. This covers the command-line engine/test bridge, not APK UI or physical ARM hardware. Summary/commands/toolchain/cleanup are bundled.
+Upstream base: `ee3be8ecd9d7100de78ef63869271371d427cb66`. Save/replay format 140, protocol 59, simulation revision 22; supported save floor 58 remains unchanged.
 
-- `browser-parity-a1-evidence.zip`: all51selected cases pass across Chromium, Firefox and WebKit, covering serial/threaded engines, registry/compositions, scripts/replay boundaries, static-material continuation and completed-tick observation. Twelve stock traces, three match traces and six composition traces match native/golden. The initial wrong-suite wrapper selection and six corrected reruns are retained; no C++ failures occurred. Fresh-process catalog-poisoning checks remain native-only.
-- `windows-de4-validation-evidence.zip`:76/76focused headless cases pass on Windows11x86_64, MSYS2MinGW GCC16.2, release/optimized_assets=0. Stock/match/composition traces match native. All16,018source files verified before and after. Full Windows display coverage is not claimed. Exact toolchain/commands/provenance are in the bundle and summary. The dedicated VM and task servers were stopped afterward.
+| Bundle | Result | Coverage and limitations |
+| --- | --- | --- |
+| `native-a1-validation-evidence.zip` | Broad run: 1,897 cases, 1,748 passed, 148 skipped, one fixture failure. Corrected fixture and 12 related cases: 13/13 passed. Eight targeted display cases also passed. | This is a union of broad and affected runs, not one all-green full-suite run at final HEAD. Map image/report CLI suites pass. Build-system suite: 346 tests, two skipped, zero failures with the documented encoder interpreter. The incorrect system-Python invocation and original failure logs are retained. |
+| `android-de4-validation-evidence.zip` | Nine registry and 56 engine cases passed. All three traces match native. | NDK 28.2/API 24, API 35 x86_64 emulator. All 8,137 staged inputs verified before and after tests. Covers the command-line engine bridge, not APK UI or physical ARM. |
+| `browser-parity-a1-evidence.zip` | All 51 selected cases passed across Chromium, Firefox and WebKit. Twelve stock traces, three match traces and six composition traces match native/golden. | Serial/threaded engines, registry, compositions, scripting/replay boundaries, static-material continuation and completed-tick observation. An initial wrong-suite wrapper selection and six successful corrected reruns are retained; no C++ failures occurred. Fresh-process catalog-poisoning checks remain native-only. |
+| `windows-de4-validation-evidence.zip` | 76/76 focused headless cases passed; stock, match and composition traces match native. | Windows 11 x86_64, MSYS2 MinGW GCC 16.2, release build with optimized assets disabled. All 16,018 source files verified before and after. Full Windows display coverage is not claimed. |
+
+Exact commands, toolchains, build flags, dependency paths and hashes, source manifests, XMLs, logs, traces and screenshots are bundled. Compact summaries are available beside each archive. All task-owned platform processes, servers and VMs were stopped after validation.
 
 Native stock trace: `5570a99e4345b5aa80d1f14928c4a5e5b37a03244b9327310ca1d0760d3df7e4`.
 Official match trace: `c02adc67dc9e6b9a30b289f78038d72c3b7550c95db84025b28d65f49bf0cd38`.
 Composition trace: `0c2b5b0ae134187198c1a9a3a43b3474192cf05f605b0922b70f6f3fa9f47ab2`.
 
-**Still pending:** refreshed paired tournaments and quiet-host performance acceptance. No performance or gameplay-equivalence claim is made. macOS/iOS/physical ARM and human gameplay review remain unverified. Keep PR draft. Prior results below are historical and do not substitute for this integrated candidate.
+**Still pending:** refreshed paired tournaments and quiet-host performance acceptance. No performance or gameplay-equivalence claim is made. macOS/iOS/physical ARM execution and human gameplay review remain unverified. Keep the PR draft. Earlier results below are historical and do not substitute for this integrated candidate.
 
-`sha256.json` authenticates every top-level evidence bundle and summary. Archives omit executables/dependency caches. Local absolute paths identify the recorded environment; substitute equivalent paths when reproducing from the tested commits.
+`sha256.json` authenticates every top-level evidence bundle and summary. Archives omit executables and dependency caches. Local absolute paths identify the recorded environment; substitute equivalent paths when reproducing from the tested commits.
 
 ---
 
