@@ -1,0 +1,20 @@
+libgag/shaders/skin-material.glsl?raw 200
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(body.includes('export default'))
+
+    at file:///home/bradley/.codex/worktrees/repair-capability-maxima-contracts/glob2/platform/[eval1]:12:55
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.22.1

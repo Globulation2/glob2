@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-capability-maxima-contracts/glob2/platform
+
+
+ Test Files  4 passed (4)
+      Tests  31 passed (31)
+   Start at  09:25:53
+   Duration  6.77s (tests 45%, environment 30%, import 14%, transform 10%)
+

@@ -1,0 +1,28 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-capability-maxima-contracts/glob2/platform
+
+ ❯ apps/web/test/forms.test.tsx (0 test)
+ ❯ apps/web/test/pages.test.tsx (0 test)
+ ❯ apps/web/test/ais.test.tsx (0 test)
+ ❯ apps/web/test/skins-workspace.test.tsx (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/test/ais.test.tsx [ apps/web/test/ais.test.tsx ]
+ FAIL  apps/web/test/forms.test.tsx [ apps/web/test/forms.test.tsx ]
+ FAIL  apps/web/test/pages.test.tsx [ apps/web/test/pages.test.tsx ]
+ FAIL  apps/web/test/skins-workspace.test.tsx [ apps/web/test/skins-workspace.test.tsx ]
+Error: Denied ID /home/bradley/.codex/worktrees/repair-capability-maxima-contracts/glob2/libgag/shaders/skin-material.glsl?raw
+  File: /home/bradley/.codex/worktrees/repair-capability-maxima-contracts/glob2/libgag/shaders/skin-material.glsl?raw
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:19932:31
+ ❯ doTransform node_modules/vite/dist/node/chunks/node.js:19909:17
+ ❯ fetchModule node_modules/vite/dist/node/chunks/node.js:35939:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  no tests
+   Start at  09:24:48
+   Duration  3.87s (environment 99%, worker 1%)
+
