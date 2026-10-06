@@ -1,0 +1,176 @@
+1feaa7706cf49ed97d8cc3042a39ada93f909297
+100644 c713851011ca5051bdd4b80452648fc6e9cd9d08 1	browser/tests/fixtures/cross-replay.replay
+100644 8dec60845c77bb302ba87a2b6ce3a4f3838b0e1b 2	browser/tests/fixtures/cross-replay.replay
+100644 b909d92ae4b3e991f6425be37fc44f46e8eca8d2 3	browser/tests/fixtures/cross-replay.replay
+100644 cfe62e688f1c433208c6fd9aa9eb91ec9218feb3 1	docs/development/headless-replays.md
+100644 097892a87c051fdfe0ca017ba56810ba9f29fdd7 2	docs/development/headless-replays.md
+100644 dcbf25b2da8cbb640a5c3047127cc3aacb8e8b4a 3	docs/development/headless-replays.md
+100644 516828fb2649d49de3cda1719639418602346cde 1	docs/development/performance-telemetry.md
+100644 65f22300ef2015c0dd31e34d028e654613f4cd7e 2	docs/development/performance-telemetry.md
+100644 0990cf9af6dec1c4913f06b78d8d57530f97e493 3	docs/development/performance-telemetry.md
+100644 c6790dc316bfc8b16b62f4ea2a7b75fbd328bdc7 1	platform/packages/protocol/fixtures/manifest.json
+100644 ccf242ecf721a87ed49b234063d98bbbf2eef857 2	platform/packages/protocol/fixtures/manifest.json
+100644 85790a294519930fe29db7f8df1548eaf8563ed9 3	platform/packages/protocol/fixtures/manifest.json
+100644 f9a4503c25d451c099d13485f1671c0c00b619a1 1	platform/packages/protocol/scripts/fixtureCases.ts
+100644 de0f5651a0f4cf125ab284dadd6e9297eace6d28 2	platform/packages/protocol/scripts/fixtureCases.ts
+100644 e95dc052e151478d8bfb51d3ce7cc63c9754f5c1 3	platform/packages/protocol/scripts/fixtureCases.ts
+100644 634134bc318677cb5b17b6b9853f53028ed0a6af 1	src/ai/castor/Control.cpp
+100644 40914335c0487b493ca905561b07151db3561fa1 2	src/ai/castor/Control.cpp
+100644 a1f9b9c081b9fe00391b60f7540c443bf2299027 3	src/ai/castor/Control.cpp
+100644 a0e6c745f15c8f6b675555d6950205e7db74b967 1	src/app/FileFormatVersions.h
+100644 37576d6da05d231d1e391679e304230dc8d1fcb8 2	src/app/FileFormatVersions.h
+100644 28c0c15e5031c842fdde993e48f64415d9c724d3 3	src/app/FileFormatVersions.h
+100644 ba9a40f5fd35b7cc593228e143665f549fb26747 1	src/app/cli/Headless.cpp
+100644 4aed4698199b64f1335259879de5fc9e5364beae 2	src/app/cli/Headless.cpp
+100644 5efc029f4938235c41584b5fa689ccdb5f9df44b 3	src/app/cli/Headless.cpp
+100644 29fa28a773076a9d94a8b3c3722abddc6277da67 1	src/game/ExperimentalFeaturesTest.cpp
+100644 958a70b75afa8fdb788aaa2a84c4d258112cd38a 2	src/game/ExperimentalFeaturesTest.cpp
+100644 629938c3f8d7d18ddc7aa062325467ceb91d6e22 3	src/game/ExperimentalFeaturesTest.cpp
+100644 a046c8dfbd8eb375d5f725d22343199bd6f28426 1	src/game/GameHeaderTextSaveLoadTest.cpp
+100644 409ae6819d43dce50f0b36a7d9cecea0a01175c5 2	src/game/GameHeaderTextSaveLoadTest.cpp
+100644 48b10898ae3980ff7b9a0fffa441560e6dd8b298 3	src/game/GameHeaderTextSaveLoadTest.cpp
+100644 0818a737a4bb109ab32c52d70f7eb8fbdb2965a9 1	src/game/rules/GameRuleOverrides.h
+100644 0fe5e896b6da837b67053310390649f3952926fa 2	src/game/rules/GameRuleOverrides.h
+100644 800320316d334bd03339dcc5ca186871c0bba74d 3	src/game/rules/GameRuleOverrides.h
+100644 d1b745410483d9e8bd4b0692033cd2123e42b8e7 1	src/map/Map.cpp
+100644 fc5559ef2c1f32532632f1eca3d0f0ea56858b71 2	src/map/Map.cpp
+100644 ad9c9471b70c2f4405d2826382ec68aad20b0e8f 3	src/map/Map.cpp
+100644 2ae612341aeda06b7450923343806a9426fd5521 1	src/map/gradient/GradientPipeline.h
+100644 3462e9642500eb82e729a3588aa1daf271d2010f 2	src/map/gradient/GradientPipeline.h
+100644 577ce177fa3daf0125501c394e996902fe2edc16 3	src/map/gradient/GradientPipeline.h
+100644 a912e9d291c6a2514deeb85ddf1f554ca0d6e4c6 1	src/online/MatchSetup.cpp
+100644 b4ac785cc5256d5950b50842ed7a1e8bbaef8400 2	src/online/MatchSetup.cpp
+100644 b5e1bc15dcb84fcf4f1511090ef71f338e9580c0 3	src/online/MatchSetup.cpp
+100644 797cac6caff772f941dafbd4c1b9f849e9dd0233 1	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 79cd2f788d6b935940b2972a36b4474f0c3d86c3 2	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 d40cc48b8a0ed17074377e3ab987d64878430216 3	test/fixtures/multiplayer/FourSquares1.g2mr
+100644 8887ae941cbe7f2040efa702096b6519eb8339bf 1	test/fixtures/protocol/manifest.json
+100644 ba52c4825dd3e04b6f409b5f2d3000bb54e7867c 2	test/fixtures/protocol/manifest.json
+100644 85790a294519930fe29db7f8df1548eaf8563ed9 3	test/fixtures/protocol/manifest.json
+
+Auto-merging browser/tests/fixtures/README.md
+warning: Cannot merge binary files: browser/tests/fixtures/cross-replay.replay (HEAD vs. origin/pr-857)
+Auto-merging browser/tests/fixtures/cross-replay.replay
+CONFLICT (content): Merge conflict in browser/tests/fixtures/cross-replay.replay
+Auto-merging docs/development/headless-replays.md
+CONFLICT (content): Merge conflict in docs/development/headless-replays.md
+Auto-merging docs/development/performance-telemetry.md
+CONFLICT (content): Merge conflict in docs/development/performance-telemetry.md
+Auto-merging platform/packages/protocol/fixtures/invalid/EngineJob/verify-match-bad-setup.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchDetail/array-timeline.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/account-in-two-seats.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/closed-seat-before-player.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/closed-seat-with-name.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/closed-team-played.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/future-schema-version.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/generated-without-hash.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/generator-team-count-mismatch.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/javascript-ai-unsupported.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/name-too-long-in-bytes.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/only-closed-seats.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/pause-limit-out-of-range.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/rule-level-out-of-range.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/seat-on-missing-team.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/seats-not-contiguous.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/seed-out-of-range.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/teams-out-of-order.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/unknown-ai.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/unknown-property.json
+Auto-merging platform/packages/protocol/fixtures/invalid/MatchSetup/uppercase-map-hash.json
+Auto-merging platform/packages/protocol/fixtures/invalid/RealtimeEventMatchStart/assignment-preview-missing-ifLost.json
+Auto-merging platform/packages/protocol/fixtures/invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json
+Auto-merging platform/packages/protocol/fixtures/manifest.json
+CONFLICT (content): Merge conflict in platform/packages/protocol/fixtures/manifest.json
+Auto-merging platform/packages/protocol/fixtures/schemas/EngineJob.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/MatchAssignment.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/MatchDetail.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/MatchRules.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/MatchSetup.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeEventMatchStart.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeEventRoomState.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeMatchReconnectResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeMatchRematchResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateParams.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomCreateResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomJoinResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomKickResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomSetReadyResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomSetSeatResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateParams.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RealtimeRoomUpdateResult.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/RoomState.schema.json
+Auto-merging platform/packages/protocol/fixtures/schemas/VerifyMatchPayload.schema.json
+Auto-merging platform/packages/protocol/fixtures/valid/EngineJob/verify-match.json
+Auto-merging platform/packages/protocol/fixtures/valid/MatchDetail/verified.json
+Auto-merging platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json
+Auto-merging platform/packages/protocol/fixtures/valid/MatchSetup/generated-human-vs-ais.json
+Auto-merging platform/packages/protocol/fixtures/valid/MatchSetup/queue-pause-limit.json
+Auto-merging platform/packages/protocol/fixtures/valid/MatchSetup/room-closed-seats.json
+Auto-merging platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment-rated-preview.json
+Auto-merging platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment-with-relay.json
+Auto-merging platform/packages/protocol/fixtures/valid/RealtimeEventMatchStart/assignment.json
+Auto-merging platform/packages/protocol/fixtures/valid/RealtimeResponse/ok.json
+Auto-merging platform/packages/protocol/fixtures/valid/RealtimeServerMessage/room-state-event.json
+Auto-merging platform/packages/protocol/fixtures/valid/RoomState/generating-map-locked-seat.json
+Auto-merging platform/packages/protocol/fixtures/valid/RoomState/open-room.json
+Auto-merging platform/packages/protocol/scripts/fixtureCases.ts
+CONFLICT (content): Merge conflict in platform/packages/protocol/scripts/fixtureCases.ts
+Auto-merging platform/packages/protocol/src/matchSetup.ts
+Auto-merging scons/sources.py
+Auto-merging src/ai/castor/Control.cpp
+CONFLICT (content): Merge conflict in src/ai/castor/Control.cpp
+Auto-merging src/ai/simple/AICabino.cpp
+Auto-merging src/app/FileFormatVersions.h
+CONFLICT (content): Merge conflict in src/app/FileFormatVersions.h
+Auto-merging src/app/cli/Headless.cpp
+CONFLICT (content): Merge conflict in src/app/cli/Headless.cpp
+Auto-merging src/building/Building.h
+Auto-merging src/game/ExperimentalFeaturesTest.cpp
+CONFLICT (content): Merge conflict in src/game/ExperimentalFeaturesTest.cpp
+Auto-merging src/game/GameHeader.cpp
+Auto-merging src/game/GameHeader.h
+Auto-merging src/game/GameHeaderTextSaveLoadTest.cpp
+CONFLICT (content): Merge conflict in src/game/GameHeaderTextSaveLoadTest.cpp
+Auto-merging src/game/Game_sync.cpp
+Auto-merging src/game/rules/GameRuleOverrides.h
+CONFLICT (content): Merge conflict in src/game/rules/GameRuleOverrides.h
+Auto-merging src/map/Map.cpp
+CONFLICT (content): Merge conflict in src/map/Map.cpp
+Auto-merging src/map/Map.h
+Auto-merging src/map/MapStep.cpp
+Auto-merging src/map/gradient/GradientPipeline.h
+CONFLICT (content): Merge conflict in src/map/gradient/GradientPipeline.h
+Auto-merging src/map/gradient/GradientPipelineHarness.cpp
+Auto-merging src/map/gradient/MapGradientResource.cpp
+Auto-merging src/online/MatchSetup.cpp
+CONFLICT (content): Merge conflict in src/online/MatchSetup.cpp
+Auto-merging src/online/MatchSetup.h
+Auto-merging src/online/MatchSetupTest.cpp
+warning: Cannot merge binary files: test/fixtures/multiplayer/FourSquares1.g2mr (HEAD vs. origin/pr-857)
+Auto-merging test/fixtures/multiplayer/FourSquares1.g2mr
+CONFLICT (content): Merge conflict in test/fixtures/multiplayer/FourSquares1.g2mr
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/account-in-two-seats.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/closed-seat-before-player.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/closed-seat-with-name.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/closed-team-played.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/future-schema-version.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/generated-without-hash.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/generator-team-count-mismatch.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/javascript-ai-unsupported.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/name-too-long-in-bytes.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/only-closed-seats.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/pause-limit-out-of-range.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/rule-level-out-of-range.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/seat-on-missing-team.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/seats-not-contiguous.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/seed-out-of-range.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/teams-out-of-order.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/unknown-ai.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/unknown-property.json
+Auto-merging test/fixtures/protocol/invalid/MatchSetup/uppercase-map-hash.json
+Auto-merging test/fixtures/protocol/manifest.json
+CONFLICT (content): Merge conflict in test/fixtures/protocol/manifest.json
+Auto-merging test/fixtures/protocol/valid/MatchSetup/catalog-1v1.json
+Auto-merging test/fixtures/protocol/valid/MatchSetup/generated-human-vs-ais.json
+Auto-merging test/fixtures/protocol/valid/MatchSetup/queue-pause-limit.json
+Auto-merging test/fixtures/protocol/valid/MatchSetup/room-closed-seats.json
