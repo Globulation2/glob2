@@ -128,21 +128,21 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	CHECK_THROWS_AS(load(missing), std::runtime_error);
 }
 
-TEST_CASE("Building catalog simulation change rejects released replays and enforces acceptance boundaries" *
+TEST_CASE("Terrain seed format rejects released replays and enforces acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
-	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_BUILDING_CATALOG);
-	CHECK(NET_PROTOCOL_VERSION == 57);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_TERRAIN_SEED);
+	CHECK(VERSION_MINOR == FILE_FORMAT_VERSION_TERRAIN_SEED);
+	CHECK(NET_PROTOCOL_VERSION == 58);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, VERSION_MINOR, VERSION_MINOR + 1};
+	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_BUILDING_CATALOG, VERSION_MINOR, VERSION_MINOR + 1};
 	for (Uint16 version : versions)
 	{
 		CAPTURE(version);
