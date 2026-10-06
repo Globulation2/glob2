@@ -16,8 +16,9 @@ Replays and headless loads rebuild their compiled movement metadata from those
 bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
-recorded before version 137 are refused and network protocol 57 separates clients
-using these rules. Supported saved games still load and adopt the current simulation;
+recorded before version 137 became incompatible and network protocol 57 separated
+clients using those rules. The current replay floor is 139 (observation phase below).
+Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
@@ -386,15 +387,25 @@ completed pending fields and their remaining deadlines without publishing them e
 older saves remain loadable and start with an empty queue. The save compatibility
 floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
-versions before 123 used a different routing schedule. The current replay floor is
-127: the sixteen-team capacity changes Warrush's opening window from 24 to 32 ticks.
+versions before 123 used a different routing schedule. The replay floor introduced in format
+127 reflected the sixteen-team capacity changing Warrush's opening window from 24 to 32 ticks.
 Format 127 also counts Maxima opponents and script-generation team slots while
 keeping old saves loadable. Format 128 losslessly packs save data without changing
 that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic serial control.
+the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic serial propagation control.
+
+Version 139 / simulation revision 21 selects periodic preparation after the whole
+Game tick, then lets Engine seed private gradient jobs alongside AI decisions in
+one completed-tick observation phase. `--compute-threads 1` serializes that phase
+at the same boundary. The default worker cap is unchanged. Fixed publication
+cadence and saved pending deadlines are unchanged; saves drain deferred preparation
+before serializing, and old saves still load. Moving the observation point can
+change routes/AI trajectories; the current replay floor is therefore 139. LAN and
+online sim-version gates reject clients using the older boundary. See the
+[phase contract](reference.md) before adding new parallel work.
 
 ### Probability-based early victory
 

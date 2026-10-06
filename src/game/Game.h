@@ -243,7 +243,10 @@ public:
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
 	/// internal processing.
-	void syncStep(Sint32 localTeam);
+	// Complete is safe for direct stepping followed by arbitrary orders/saves.
+	// Engine alone defers into its next read-only batch, before applying orders.
+	enum class PreparationCompletion { Complete, Deferred };
+	void syncStep(Sint32 localTeam, PreparationCompletion completion = PreparationCompletion::Complete);
 
 	void dirtyWarFlagGradient();
 

@@ -80,3 +80,26 @@ TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; 
 	MESSAGE("PASS fixed publication, supersession, bounded buffers, scheduling stress, fallback, exceptions and teardown");
 }
 }
+
+TEST_SUITE("GradientPipeline") {
+TEST_CASE("reservation is invalidatable before preparation and seed failures cannot strand it") {
+    for (unsigned workers : {0, 2}) {
+        GradientPipeline pipeline;
+        auto *slot = new std::uint16_t[1]{};
+        pipeline.configure(workers, 2, 1, [](auto &job, auto &) { job.data[0] += 1; });
+        pipeline.advance();
+        auto *job = pipeline.reserve(&slot, 0);
+        pipeline.invalidate(&slot);
+        pipeline.prepare(job, [](auto &job) { job.data[0] = 41; });
+        pipeline.finish();
+        pipeline.advance(); pipeline.advance();
+        CHECK(slot[0] == 0);
+        CHECK(pipeline.metrics.discarded == 1);
+        job = pipeline.reserve(&slot, 0);
+        CHECK_THROWS_AS(pipeline.prepare(job, [](auto &) { throw std::runtime_error("seed failure"); }), std::runtime_error);
+        CHECK_THROWS_AS(pipeline.finish(), std::runtime_error);
+        pipeline.reset();
+        delete[] slot;
+    }
+}
+}

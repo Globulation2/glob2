@@ -298,6 +298,7 @@ catch (const std::ios_base::failure& error)
 
 void Map::save(GAGCore::OutputStream *stream)
 {
+	preparePendingGradient();
 	stream->writeEnterSection("Map");
 	stream->write("MapB", 4, "signatureStart");
 	
@@ -429,6 +430,7 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 
 void Map::removeTeam(void)
 {
+	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	assert(numberOfTeam<Team::MAX_COUNT);
@@ -512,6 +514,7 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, boo
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
+	const_cast<Map*>(this)->preparePendingGradient();
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
@@ -681,6 +684,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
+	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
