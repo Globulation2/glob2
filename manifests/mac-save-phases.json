@@ -1,0 +1,847 @@
+{
+  "binary_sha256": "aa2df11031ad275b2b3788f56dfb0c5e06e3dd1903033e034f39a64057e935a9",
+  "fixture_sha256": "6ea3bab34f2415a711d20a6e28865f394b9ecefc2c02987380dac8005fa9acb8",
+  "policy": "eager",
+  "checks": [
+    {
+      "delay": 2,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "651b12fba5fa93713f854a0948ba3e7fe4d6e23f58d150fe036f0927c5ec0e37",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-phase1-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "3a6b4288a1ed2b8a4ba5f13ebb0d0c25cd418e30a0f0a0d178a9f1a4a621779f"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "651b12fba5fa93713f854a0948ba3e7fe4d6e23f58d150fe036f0927c5ec0e37",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-phase1-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "3a6b4288a1ed2b8a4ba5f13ebb0d0c25cd418e30a0f0a0d178a9f1a4a621779f"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "4304615f4286f66cc0acd2b10bf4e78c0ec20203fad501c3907768efdf6b58f8",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-phase2-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "874ca1dab30c2f40940834ba2369eff1ad88f5083b9bae91f05c528250c717a6"
+      }
+    },
+    {
+      "delay": 2,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "4304615f4286f66cc0acd2b10bf4e78c0ec20203fad501c3907768efdf6b58f8",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d2-phase2-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "874ca1dab30c2f40940834ba2369eff1ad88f5083b9bae91f05c528250c717a6"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "158f143a795a42f7b31d299974d9872640eef137beb4214b5c244774aa9aa49b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase1-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "29024e8c5f082cde618a668fa1aead7585416038f817fed524632e913ebe9151"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "158f143a795a42f7b31d299974d9872640eef137beb4214b5c244774aa9aa49b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase1-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "29024e8c5f082cde618a668fa1aead7585416038f817fed524632e913ebe9151"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "f2caff8f4308be29c275e6098ba11e44a54fbe9d3d6c9ca315bd624db5aeb626",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase2-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "eb3df8c46e67f053f5d15b99c895b7338f0b132032b9adf11e0bc99b07029c04"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "f2caff8f4308be29c275e6098ba11e44a54fbe9d3d6c9ca315bd624db5aeb626",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase2-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "eb3df8c46e67f053f5d15b99c895b7338f0b132032b9adf11e0bc99b07029c04"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 3,
+      "workers": 0,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "ea92caf6b0a078164c80805841457fc7c2559139dca130f63276976ffad6794b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-603.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase3-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "e1696aab39fc7fe926e28cdbe11a303e729dfdc29bf8fc888825d7d455164ba5"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 3,
+      "workers": 4,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "ea92caf6b0a078164c80805841457fc7c2559139dca130f63276976ffad6794b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-603.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase3-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "e1696aab39fc7fe926e28cdbe11a303e729dfdc29bf8fc888825d7d455164ba5"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 4,
+      "workers": 0,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "2483233758bbb085ae6c7c525434085281d1d1321d3f1533e59af027ed5a0bbd",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-604.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase4-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "b8db743ba1a1a3ad4e45ecf114be40014e2d66cecd22416a382a03369f713c6b"
+      }
+    },
+    {
+      "delay": 4,
+      "phase": 4,
+      "workers": 4,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "2483233758bbb085ae6c7c525434085281d1d1321d3f1533e59af027ed5a0bbd",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-uninterrupted/checkpoint-604.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d4-phase4-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "b8db743ba1a1a3ad4e45ecf114be40014e2d66cecd22416a382a03369f713c6b"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 1,
+      "workers": 0,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "553e8f2cb090132bbe7e6a42c7f288074232b87388f9079b4172b31cc7a541ce",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase1-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "35053ff168ad60a1a0085370cb35d200859700d601ba595f998305dd85cb134b"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 1,
+      "workers": 4,
+      "compared_ticks": 31,
+      "checkpoint_sha256": "553e8f2cb090132bbe7e6a42c7f288074232b87388f9079b4172b31cc7a541ce",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-601.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase1-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "35053ff168ad60a1a0085370cb35d200859700d601ba595f998305dd85cb134b"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 2,
+      "workers": 0,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "36b3c2686d4687d05d9b43aeac4109a969514c8e65ece6a3e59339d513029f0b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase2-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "3ff1b64ac9477996d10f5e325524ed8e0e1bd99f6ad12a61eb4323b9df9ef105"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 2,
+      "workers": 4,
+      "compared_ticks": 30,
+      "checkpoint_sha256": "36b3c2686d4687d05d9b43aeac4109a969514c8e65ece6a3e59339d513029f0b",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-602.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase2-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "3ff1b64ac9477996d10f5e325524ed8e0e1bd99f6ad12a61eb4323b9df9ef105"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 3,
+      "workers": 0,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "5121025365b0a2f6e6a36da52b01d70a7d112e45a2b4a2410cc2f572c5a987e7",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-603.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase3-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "92dfe5ad42a8a359b888277b7a5abfa05bdf9cad055ba80ea33c929dc3167e14"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 3,
+      "workers": 4,
+      "compared_ticks": 29,
+      "checkpoint_sha256": "5121025365b0a2f6e6a36da52b01d70a7d112e45a2b4a2410cc2f572c5a987e7",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-603.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase3-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "92dfe5ad42a8a359b888277b7a5abfa05bdf9cad055ba80ea33c929dc3167e14"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 4,
+      "workers": 0,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "ba789403d52ae2dae0f80ec01ff6286bc7ff2c4dba53cf10cb493935c52fac65",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-604.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase4-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "9cac702f61e11e37d071bdc83c591a604dc468d4cf9a3ea24e99516b587008b3"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 4,
+      "workers": 4,
+      "compared_ticks": 28,
+      "checkpoint_sha256": "ba789403d52ae2dae0f80ec01ff6286bc7ff2c4dba53cf10cb493935c52fac65",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-604.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase4-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "9cac702f61e11e37d071bdc83c591a604dc468d4cf9a3ea24e99516b587008b3"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 5,
+      "workers": 0,
+      "compared_ticks": 27,
+      "checkpoint_sha256": "f5c5faf35097801b3fcc1ffb78741bc6394a2fe2fd1dc4e1557f029560b69225",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-605.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase5-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "a11d792603ed8c626894bbf0f4fcd85fbb39dc638b8938d89d7d86936b11a9bb"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 5,
+      "workers": 4,
+      "compared_ticks": 27,
+      "checkpoint_sha256": "f5c5faf35097801b3fcc1ffb78741bc6394a2fe2fd1dc4e1557f029560b69225",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-605.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase5-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "a11d792603ed8c626894bbf0f4fcd85fbb39dc638b8938d89d7d86936b11a9bb"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 6,
+      "workers": 0,
+      "compared_ticks": 26,
+      "checkpoint_sha256": "e7c05e20d67458209c638e7c191142bcc0c54eb48ab1b49f644d8436009e835c",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-606.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase6-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "5f6159fcbd92de860595a6e75f661286f962cbfef1d48aa7349472e5c8863a9c"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 6,
+      "workers": 4,
+      "compared_ticks": 26,
+      "checkpoint_sha256": "e7c05e20d67458209c638e7c191142bcc0c54eb48ab1b49f644d8436009e835c",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-606.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase6-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "5f6159fcbd92de860595a6e75f661286f962cbfef1d48aa7349472e5c8863a9c"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 7,
+      "workers": 0,
+      "compared_ticks": 25,
+      "checkpoint_sha256": "5a8e9d14285d8b469501d8d49eda4e606a4cadfe55951db1dde4a66c0ffcd182",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-607.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase7-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "d091f041e49d08f514e90453fab09efcad94c295a614cdfc566ed52751b45328"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 7,
+      "workers": 4,
+      "compared_ticks": 25,
+      "checkpoint_sha256": "5a8e9d14285d8b469501d8d49eda4e606a4cadfe55951db1dde4a66c0ffcd182",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-607.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase7-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "d091f041e49d08f514e90453fab09efcad94c295a614cdfc566ed52751b45328"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 8,
+      "workers": 0,
+      "compared_ticks": 24,
+      "checkpoint_sha256": "2da119b9c461a992d6d9a4605832360e62258aa3745fa0c9a4d41b1681608b74",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-608.game.gz",
+        "--gradient-workers",
+        "0",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase8-w0"
+      ],
+      "output_hashes": {
+        "game.replay": "9ac62163f20ee2d40fed0018333813c8def82dc240b99386108712bf055657dc"
+      }
+    },
+    {
+      "delay": 8,
+      "phase": 8,
+      "workers": 4,
+      "compared_ticks": 24,
+      "checkpoint_sha256": "2da119b9c461a992d6d9a4605832360e62258aa3745fa0c9a4d41b1681608b74",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9520/glob2/build/darwin/client/release/src/glob2",
+        "--run-game",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-uninterrupted/checkpoint-608.game.gz",
+        "--gradient-workers",
+        "4",
+        "--ticks",
+        "632",
+        "--compute-experiments",
+        "none",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--replay",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/building-gradient-rebase-851/save-phases-final/d8-phase8-w4"
+      ],
+      "output_hashes": {
+        "game.replay": "9ac62163f20ee2d40fed0018333813c8def82dc240b99386108712bf055657dc"
+      }
+    }
+  ]
+}

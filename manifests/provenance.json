@@ -1,0 +1,21 @@
+{
+  "sourceRevision": "772d0c0566785d6476b94270cf68bce244d0b281",
+  "baseRevision": "e53a673b2609175e781ad2608a15a220866cf2fa",
+  "sourceTree": "bb533de0b14bb5e721fa7ac13e0d1cfe9a1200b9",
+  "macOS": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "buildFlags": "release=1 -std=gnu++20 -O3 -g; native SDL3; ccache; focused registry",
+  "timing": "Not remeasured after the forward port; old timing and cohort results apply only to 47f88f01140b0ed2d74fd599f1f0f8896fc80e69",
+  "simulationRevision": 23,
+  "saveVersion": 140,
+  "minimumSaveVersion": 58,
+  "networkProtocol": 59,
+  "replayFloor": 140,
+  "validatedPriorRevision": "82abffd9d",
+  "historyOnlyRebase": "The final rebase integrates browser fixture PR856; the entire Git tree is byte-identical to the validated prior revision, bb533de0b14bb5e721fa7ac13e0d1cfe9a1200b9.",
+  "macBinarySha256": "aa2df11031ad275b2b3788f56dfb0c5e06e3dd1903033e034f39a64057e935a9",
+  "linuxBinarySha256": "c2bec65a6c6765aca22f490af1d981a590506fba5a3dfe39e379b65af9336e83",
+  "linuxCompiler": "g++ Ubuntu 13.3.0-6ubuntu2~24.04.1",
+  "linuxBuildFlags": "release=1 -std=gnu++20 -O3 -s; SDL3/recording local prefixes",
+  "linuxOS": "Ubuntu 24.04 x86_64 Linux 7.0.0-30-generic"
+}
