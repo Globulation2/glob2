@@ -1193,6 +1193,9 @@ sizing behavior. With adaptive zoom detail the game fades these outlines out as
 the map zooms out and fills zones with `drawMapFill` instead; see
 [Adaptive zoom detail](../docs/development/reference.md#adaptive-zoom-detail).
 `ZoomDetail/*` in the unit tests covers the curves that decide when.
+`MapRenderResize/building sprites fade out*` reads rendered building pixels across
+the fade in software, SDL portable and OpenGL backends, and checks the complementary
+icon opacity. It catches an opaque building disappearing abruptly at the fade's end.
 
 ## Parallel compute prototype
 

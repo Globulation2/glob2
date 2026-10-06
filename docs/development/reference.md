@@ -1494,9 +1494,10 @@ benchmark saves preferences, so the last value otherwise carries into the next r
 camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`
 (with `GLOB2_BENCH_SMOOTH_FOG=0|1` for the fade),
 `GLOB2_BENCH_FRACTION` (a camera offset in map pixels, which seams need to show) and
-`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
-opaque while markers and chips fade in over them, since a translucent sprite leaves
-its batch; check draw calls as well as time when changing a cross-fade.
+`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Buildings,
+including custom swarm artwork, fade out as their icon chips fade in. Unit sprites
+stay opaque while markers fade in over them. Check draw calls as well as time
+when changing a cross-fade, since a translucent sprite can leave its batch.
 
 ## Software rendering architecture and profiling
 
