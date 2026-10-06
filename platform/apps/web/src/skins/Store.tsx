@@ -38,7 +38,7 @@ export function SkinStore({
   beforeCheckout,
 }: {
   onChange: () => void;
-  beforeCheckout?: () => boolean;
+  beforeCheckout?: () => boolean | Promise<boolean>;
 }) {
   const { account } = useSession();
   const [busy, setBusy] = useState(false),
@@ -60,7 +60,7 @@ export function SkinStore({
     [account?.id],
   );
   async function buy(sku: string) {
-    if (beforeCheckout && !beforeCheckout()) {
+    if (beforeCheckout && !(await beforeCheckout())) {
       setMessage('Save your draft before leaving for checkout. Device storage is unavailable.');
       return;
     }
@@ -87,7 +87,7 @@ export function SkinStore({
       );
       setMessage(
         result.status === 'paid'
-          ? 'Purchase confirmed. Your skin is ready to equip.'
+          ? 'Purchase confirmed. Your skin is ready to use in game.'
           : `Payment status: ${result.status}.`,
       );
       purchases.reload();

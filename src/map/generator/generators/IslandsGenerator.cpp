@@ -84,7 +84,7 @@ GeneratorDefinition islandsDefinition()
 			"islands",
 			3,
 			"Islands",
-			3,
+			4,
 			false,
 			std::move(controls),
 			generate,

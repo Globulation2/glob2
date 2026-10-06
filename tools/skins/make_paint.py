@@ -9,13 +9,15 @@ Material map values are material ids (see MATERIALS).
 """
 import argparse
 import io
+import json
 from pathlib import Path
 import struct
 import zlib
 
 SIZE = 512
 QUADRANT = 256
-MATERIALS = {'glossy': 0, 'matte': 1, 'metallic': 2, 'hairy': 3}
+REGISTRY = json.loads((Path(__file__).resolve().parents[2] / 'libgag/shaders/skin-materials.json').read_text())
+MATERIALS = {m['key']: m['id'] for m in REGISTRY['materials']}
 # Distinct per-model colours make quadrant mix-ups visible in previews.
 MODEL_COLORS = (((45, 115, 180), (240, 190, 50)),   # worker
                 ((180, 40, 40), (235, 235, 235)),   # warrior
@@ -59,14 +61,14 @@ def paint(pattern, color=None):
 
 
 def material(name, pattern, only_pattern=False):
-    """'mixed' gives each model glossy/matte/metallic/hairy bands on the pattern.
+    """'mixed' gives each model vertical bands of every material on the pattern.
     only_pattern applies the material to the pattern's marks over a glossy body."""
     rows = []
     for y in range(SIZE):
         row = bytearray()
         for x in range(SIZE):
             if name == 'mixed':
-                band = (x % QUADRANT) * 4 // QUADRANT
+                band = (x % QUADRANT) * len(MATERIALS) // QUADRANT
                 row.append(band if pattern_index(pattern, x % QUADRANT, y % QUADRANT) else 0)
             elif only_pattern and not pattern_index(pattern, x % QUADRANT, y % QUADRANT):
                 row.append(MATERIALS['glossy'])

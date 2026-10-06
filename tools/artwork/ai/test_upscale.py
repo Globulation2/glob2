@@ -47,7 +47,8 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(list((self.output / 'candidate').iterdir()), [])
 
     def test_rejects_originals_terrain_unknown_and_missing_layers_before_writes(self):
-        for recipe in ('recovered original building: inn', 'quiet ripples; periodic material v3'):
+        for recipe in ('recovered original building: inn', 'quiet ripples; periodic material v3',
+                       'original-based grass and sand v1; retained rugged corner masks'):
             self.frame['recipe'] = recipe
             self.manifest()
             with self.assertRaises(ValueError):

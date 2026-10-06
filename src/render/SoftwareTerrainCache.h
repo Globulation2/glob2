@@ -55,13 +55,18 @@ class SoftwareTerrainCache
   private:
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime, int preferredResolution, bool tiledCapture = false);
+							 int animationTime, int preferredResolution, bool tiledCapture = false,
+							 int preferredDownsample = 0);
 	std::vector<std::unique_ptr<Chunk>> chunks;
 	std::shared_ptr<const TerrainRegistry> registry;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	SDL_Rect paintBounds{};
+	// Composition scale and subsequent page reduction are separate: reduction
+	// filters the native material result, never its individual source textures.
+	// Only GPU pages reduce; at most one of these factors can exceed one.
 	int resolution = 1;
+	int downsample = 1;
 	bool gpu = false;
 
   public:
@@ -84,11 +89,7 @@ class SoftwareTerrainCache
 				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
 	std::vector<SDL_Rect> waterRegions(SDL_Rect bounds) const;
-	std::size_t bytes() const
-	{
-		return chunks.size() * (ChunkStorageBytes + (resolution * resolution * (gpu ? 3 : 1) - 1) *
-														ChunkPixels * ChunkPixels * 4);
-	}
+	std::size_t bytes() const;
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 };

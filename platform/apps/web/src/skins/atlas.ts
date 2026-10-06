@@ -1,3 +1,5 @@
+import { COLONY_SKIN_MATERIALS, type ColonySkinMaterial } from '@glob2/protocol';
+
 // colony-v2 skins: a 512px colour atlas and a 512px material map, each holding
 // one 256px quadrant per model. Mesh UVs map into a quadrant as uv / 2 + offset.
 export const ATLAS_SIZE = 512;
@@ -11,12 +13,23 @@ export const MODELS = [
 export type Model = (typeof MODELS)[number];
 
 // Ids are stored in the material map; the game shades each id differently.
-export const MATERIALS = [
-  { id: 0, name: 'Classic glossy' },
-  { id: 1, name: 'Matte' },
-  { id: 2, name: 'Metallic' },
-  { id: 3, name: 'Hairy' },
-] as const;
+export const MATERIALS = COLONY_SKIN_MATERIALS;
+/** Materials in picker order, grouped under their registry group names. */
+export const MATERIAL_GROUPS = MATERIALS.reduce<
+  { name: string; materials: ColonySkinMaterial[] }[]
+>((groups, material) => {
+  const group = groups.find((g) => g.name === material.group);
+  if (group) group.materials.push(material);
+  else groups.push({ name: material.group, materials: [material] });
+  return groups;
+}, []);
+/** Whether the material map's quadrant for a model paints any fur material. */
+export function regionHasShells(map: Uint8Array, model: Model): boolean {
+  for (let y = model.y; y < model.y + ATLAS_SIZE / 2; y++)
+    for (let x = model.x; x < model.x + ATLAS_SIZE / 2; x++)
+      if (MATERIALS[map[y * ATLAS_SIZE + x] ?? 0]?.shells) return true;
+  return false;
+}
 
 /** Opaque grey PNG (id, id, id): canvas premultiplication cannot alter it. */
 export function encodeMaterials(map: Uint8Array): string {

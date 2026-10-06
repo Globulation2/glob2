@@ -682,6 +682,7 @@ export interface NotificationPayloadsTable {
 }
 
 export interface ColonySkinsTable {
+  archived_at: NullableTimestamp;
   id: Generated<string>;
   owner_account_id: Nullable<string>;
   kind: 'preset' | 'custom';
@@ -764,6 +765,19 @@ export interface SkinPaymentEventsTable {
   purchase_id: Nullable<string>;
   processed_at: Timestamp;
 }
+export interface ColonySkinDesignsTable {
+  skin_id: string;
+  revision: string;
+  applied_revision: Nullable<string>;
+  applied_version_id: Nullable<string>;
+  building_color: number;
+  swarm_mesh: string;
+  swarm_view_angle: number;
+  image: Buffer;
+  material: Buffer;
+  updated_at: Timestamp;
+}
+
 export interface ColonySkinDraftsTable {
   skin_id: Nullable<string>;
   account_id: string;
@@ -1096,6 +1110,7 @@ export interface Database {
 
   colony_skin_reports: ColonySkinReportsTable;
   colony_skin_drafts: ColonySkinDraftsTable;
+  colony_skin_designs: ColonySkinDesignsTable;
   skin_purchases: SkinPurchasesTable;
   skin_payment_events: SkinPaymentEventsTable;
   colony_skins: ColonySkinsTable;

@@ -1737,6 +1737,11 @@ refusal) and every constant's reason.
 - A generator's `revision` changes only when a change to `generate()` changes what a given seed
   actually produces; a pure refactor, comment or renumbering change leaves it untouched. Bumping
   it is how a reviewer knows a seed's output isn't expected to match a prior build byte-for-byte.
+  Shared colony-placement changes count too: concrete terrain variants consume the engine RNG,
+  so changing the number or order of terrain brush passes can change fingerprints even when
+  the cleared footprint is identical. Generators that place resources afterward can also change
+  resource amounts and positions. Refresh each affected generator's revision and each existing
+  platform's golden rows from that platform's actual output.
 - `GeneratorControl`s are validated by `GeneratorRegistry`'s constructor: every control's default
   must land on a valid step from its minimum, and (`allowedValues` aside) `(maximum - minimum)`
   must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in

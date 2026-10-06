@@ -19,6 +19,7 @@ AI = {'current', 'outline_repair', 'painted_repair', 'crystal_repair',
       'resource constrained', 'world constrained'}
 MATERIALS = {'shared-material rugged corner masks v5; quiet flat grass',
              'quiet ripples; periodic material v3'}
+ORIGINAL_MATERIALS = {'original-based grass and sand v1; retained rugged corner masks'}
 METADATA = ('manifest.json', 'frames.txt', 'README.md')
 ATLASES = ('terrain_atlas', 'resource_atlas')
 
@@ -41,6 +42,8 @@ def category(recipe):
         return 'ai-upscaled'
     if recipe in MATERIALS:
         return 'ai-materials'
+    if recipe in ORIGINAL_MATERIALS:
+        return 'original-materials'
     if recipe == 'soft mask resampling':
         return 'resampled-masks'
     raise ValueError('Unclassified recipe: ' + recipe)
