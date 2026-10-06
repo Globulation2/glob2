@@ -222,14 +222,14 @@ std::string coloniesApart(const Map &, int teams, const std::string &route);
 ColonyWalk walkFromFirstColony(const Map &, int teams, const std::string &ground,
 							   const std::string &route);
 
-/// Which crops a walk stands beside: whether any wheat deposit, and any wood deposit, has a tile
+/// Which crops a walk stands beside: whether any food source, and any wood source, has a tile
 /// of `reach` (a flood's steps, -1 where nothing was reached) within one tile of it, diagonals
 /// included, the way a worker harvests from the tile next to a deposit. The check a validator
 /// makes after flooding from a colony's workers over walkable land.
 struct CropsInReach
 {
-	bool wheat = false, wood = false;
-	/// "" when both are in reach, else which is not: "cannot walk to wheat."
+	bool food = false, wood = false;
+	/// "" when both are in reach, else which is not: "cannot walk to food."
 	std::string missing() const;
 };
 CropsInReach cropsBesideReach(const Map &, const std::vector<int> &reach);

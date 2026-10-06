@@ -123,6 +123,12 @@ refreshes only when harvesting, clearing and configured ecology cannot change
 their availability. Explicit source edits and catalog replacement invalidate these
 fields; save/load preserves whether a cached field was current or stale.
 
+Shared generator supply checks count positive material stocks, including secondary
+yields. Starting guarantees accept equivalent custom sources; bounded crop repairs
+replace only clearable surplus deposits. Material frontage measures renewable
+supply under harvesting, so full stocks and infinite yields remain sustainable.
+Named planting recipes remain choices of the individual generator.
+
 Some stable diagnostic interfaces retain historical names: statistics metric IDs
 and Cortex CSV/debug columns containing `wheat` describe Food sources or configured
 recipe supply, rather than requiring a wheat deposit. Their canonical engine fields

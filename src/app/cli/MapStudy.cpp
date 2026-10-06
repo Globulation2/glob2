@@ -159,7 +159,7 @@ std::string diagnosticsJson(Game &game, int nbTeams, bool wanted)
 	{
 		const auto &c = report.colonies[i];
 		if (i) out << ',';
-		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableWheat
+		out << "{\"start\":" << i << ",\"renewable_wheat\":" << c.renewableFood
 			<< ",\"wheat_throughput\":" << c.wheatThroughput
 			<< ",\"wood_throughput\":" << c.woodThroughput
 			<< ",\"stone_throughput\":" << c.stoneThroughput
@@ -1134,11 +1134,17 @@ int runMapStudy(int argc, char **argv)
 		const std::string kind = spec.substr(0, first);
 		const int team = std::atoi(spec.substr(first + 1, second - first - 1).c_str());
 		const int radius = std::atoi(spec.substr(second + 1).c_str());
-		const int resource = kind == "remove-wheat" ? WHEAT : kind == "remove-wood" ? WOOD
-						   : kind == "remove-stone" ? STONE : -1;
-		if (resource < 0)
-			return 2;
-		const int removed = MapGeneration::removeResourceNear(game, team, resource, radius);
+		const char* resourceKey = kind == "remove-wheat" ? "wheat" : kind == "remove-wood" ? "trees"
+							 : kind == "remove-stone" ? "rocks" : nullptr;
+		if (!resourceKey) return 2;
+        const auto resource = game.map.resourceRegistry().find(resourceKey);
+        if (!resource)
+        {
+            std::fprintf(stderr,"Cannot apply %s: resource key '%s' is absent from this map's catalog.\n",
+                         kind.c_str(),resourceKey);
+            return 2;
+        }
+		const int removed = MapGeneration::removeResourceNear(game, team, resourceIndex(*resource), radius);
 		std::printf("PERTURB,%s,%d,%d,%d\n", kind.c_str(), team, radius, removed);
 		perturbed += std::string(perturbed.empty() ? "" : ",") + "{\"kind\":" + Headless::quote(kind) +
 					 ",\"team\":" + std::to_string(team) + ",\"radius\":" + std::to_string(radius) +

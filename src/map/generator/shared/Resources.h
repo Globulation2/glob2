@@ -2,6 +2,7 @@
 #pragma once
 #include "Regions.h"
 #include "Grid.h"
+#include "Material.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -98,4 +99,8 @@ struct ResourceFrontage
 /// outside the visited catchment. Absent resource types have no entry.
 std::map<int, ResourceFrontage> resourceFrontages(const Map &, const Flood &, int maximumSteps,
 												  const Fertility::Field *fertility = nullptr);
+/// Harvesting frontage grouped by positive material stock, including secondary yields.
+/// With renewal enabled, saturated renewable and inexhaustible sources still count.
+std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &, const Flood &,
+                                                       int maximumSteps, bool renewal = false);
 } // namespace MapGeneration

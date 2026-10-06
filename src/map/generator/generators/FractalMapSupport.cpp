@@ -1031,11 +1031,11 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			context.telemetry.measure("fractal.home.walk-contact", walk.steps[tile], int(h));
 			context.telemetry.measure("fractal.home.swim-contact", swim[tile], int(h));
 		}
-		auto frontage = resourceFrontages(map, walk, 48, &fertility);
-		const int wheat = frontage[WHEAT].edges, wood = frontage[WOOD].edges;
-		const int quarry = frontage[STONE].edges;
-		const int renewableWheat = frontage[WHEAT].renewableEdges;
-		const int renewableWood = frontage[WOOD].renewableEdges;
+		auto frontage = materialFrontages(map, walk, 48, true);
+		const int wheat = frontage[MaterialId::Food].edges, wood = frontage[MaterialId::Wood].edges;
+		const int quarry = frontage[MaterialId::Stone].edges;
+		const int renewableWheat = frontage[MaterialId::Food].renewableEdges;
+		const int renewableWood = frontage[MaterialId::Wood].renewableEdges;
 		int expansion = 0;
 		for (int i : walk.visited)
 			if (walk.steps[i] <= 48 && !L.reserved[i] && anchors[i])
@@ -1128,8 +1128,8 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 	for (size_t team = 0; team < walk.workers.size(); ++team)
 	{
 		const auto access = floodFrom(t, tileMask(t, walk.workers[team]), finishedOpen, 32);
-		auto frontage = resourceFrontages(map, access, 32);
-		if (!frontage[WHEAT].edges || !frontage[WOOD].edges || !frontage[STONE].edges)
+		auto frontage = materialFrontages(map, access, 32);
+		if (!frontage[MaterialId::Food].edges || !frontage[MaterialId::Wood].edges || !frontage[MaterialId::Stone].edges)
 			return "Colony " + std::to_string(team) +
 				   " lost opening resource access after settlement.";
 	}

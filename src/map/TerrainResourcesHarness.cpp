@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real terrain regeneration and resource clearing without a window.
 #include "EngineFixtures.h"
+#include "FileFormatVersions.h"
 #include "Building.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -10,6 +11,8 @@
 #include "generator/shared/ResourceSemantics.h"
 #include "generator/shared/BalancedStarts.h"
 #include "generator/shared/Pipeline.h"
+#include "generator/shared/Resources.h"
+#include "generator/shared/StartDiagnostics.h"
 #include "Race.h"
 #include "Unit.h"
 
@@ -455,6 +458,160 @@ TEST_CASE("shared starting supply checks accept material sources above resource 
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({wood})}}.dump());
     CHECK(MapGeneration::startingAccessFailure(map,1,rules,0).empty());
 }
+TEST_CASE("starting crop guarantees and adjacent supply use live material yields")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    auto& map=fixture.game.map;
+    using Json=nlohmann::json;
+    auto custom=Json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+    custom["key"]="test:composite-starter";
+    custom["properties"]["growthRate"]=0;
+    custom["properties"]["persistsWhenEmpty"]=true;
+    custom["yields"]["wood"]={{"capacity",4},{"initial",2},{"consumption","one"}};
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump());
+    const auto id=*map.resourceRegistry().find("test:composite-starter");
+    map.setResource(9,8,id,1);
+    const auto at=map.coordToIndex(9,8);
+    std::vector<int> reached(size_t(map.getW())*map.getH(),-1);
+    reached[map.coordToIndex(8,8)]=0;
+    auto crops=MapGeneration::cropsBesideReach(map,reached);
+    CHECK(crops.food); CHECK(crops.wood); CHECK(crops.missing().empty());
+    GenerationRequest request; request.nbTeams=1;
+    GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
+    const auto before=map.materialStocksAt(at);
+    MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0);
+    CHECK(context.namedStreams().empty());
+    CHECK(map.materialStocksAt(at)==before);
+    // A retained deposit and another positive yield must not disguise exhausted food.
+    map.setMaterialAmount(at,MaterialId::Food,0);
+    crops=MapGeneration::cropsBesideReach(map,reached);
+    CHECK_FALSE(crops.food); CHECK(crops.wood);
+    CHECK(crops.missing()=="cannot walk to food.");
+    CHECK_FALSE(map.hasMaterialSource(MaterialId::Food));
+    MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0);
+    CHECK(map.hasMaterialSource(MaterialId::Food));
+    CHECK(map.getResource(at).type==resourceIndex(id));
+    CHECK(map.materialAmountAt(at,MaterialId::Wood)==before[materialIndex(MaterialId::Wood)]);
+}
+
+TEST_CASE("bounded starter crop replacement uses surplus materials and respects clearability")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool clearable : {false,true})
+    {
+        CAPTURE(clearable);
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+        auto& map=fixture.game.map;
+        using Json=nlohmann::json;
+        auto custom=Json::parse(map.resourceRegistry().serialize())["resources"][WOOD];
+        custom["key"]="test:surplus-timber";
+        custom["properties"]["clearable"]=clearable;
+        map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump());
+        const auto id=*map.resourceRegistry().find("test:surplus-timber");
+        map.setResource(9,8,id,1);
+        GenerationRequest request; request.nbTeams=1;
+        GenerationContext context(request); context.bootX[0]=8; context.bootY[0]=8;
+        std::vector<unsigned char> allowed(size_t(map.getW())*map.getH(),0);
+        allowed[map.coordToIndex(9,8)]=1;
+        MapGeneration::guaranteeStartingResources(fixture.game,context,12,12,0,nullptr,&allowed);
+        CHECK(map.hasMaterialSource(MaterialId::Food)==clearable);
+        CHECK((map.getResource(9,8).type==resourceIndex(id))==!clearable);
+    }
+}
+
+TEST_CASE("material frontage counts secondary stocks and prospective renewable supply")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true});
+    auto& map=fixture.game.map;
+    using Json=nlohmann::json;
+    auto custom=Json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+    custom["key"]="test:frontage";
+    custom["properties"]["ecology"]="uniform";
+    custom["properties"]["growthRate"]=ResourceRateScale;
+    custom["properties"]["spreadRate"]=0;
+    custom["properties"]["stockDependentGrowth"]=false;
+    custom["properties"]["persistsWhenEmpty"]=true;
+    custom["yields"]={{"food",{{"capacity",4},{"initial",4},{"growthRate",ResourceRateScale},{"consumption","one"}}},
+                      {"wood",{{"capacity",4},{"initial",2},{"growthRate",0},{"consumption","infinite"}}}};
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump());
+    const auto id=*map.resourceRegistry().find("test:frontage");
+    map.setResource(9,8,id,1);
+    const auto at=map.coordToIndex(9,8);
+    const MapGeneration::Torus torus(map);
+    const auto access=MapGeneration::floodFrom(torus,MapGeneration::tileMask(torus,{int(map.coordToIndex(8,8))}),MapGeneration::groundUnitTiles(map),0);
+    CHECK(map.materialGrowthRateAt(at,MaterialId::Food)==0);
+    REQUIRE(map.materialRenewalPotentialAt(at,MaterialId::Food)>0);
+    auto frontage=MapGeneration::materialFrontages(map,access,0,true);
+    CHECK(frontage[MaterialId::Food].edges==1);
+    CHECK(frontage[MaterialId::Food].renewableEdges==1);
+    CHECK(frontage[MaterialId::Wood].edges==1);
+    CHECK(frontage[MaterialId::Wood].renewableEdges==1);
+    CHECK(frontage[MaterialId::Food].nearestStep==0);
+    CHECK(frontage.count(MaterialId::Stone)==0);
+    map.setMaterialAmount(at,MaterialId::Food,0);
+    frontage=MapGeneration::materialFrontages(map,access,0,true);
+    CHECK(frontage.count(MaterialId::Food)==0);
+    CHECK(frontage[MaterialId::Wood].edges==1);
+    custom["yields"]["wood"]["consumption"]="one";
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump());
+    frontage=MapGeneration::materialFrontages(map,access,0,true);
+    CHECK(frontage[MaterialId::Wood].renewableEdges==0);
+}
+
+TEST_CASE("start diagnostics distinguish configured renewal from spreading pressure")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    auto& map=fixture.game.map;
+    fixture.addUnit(WORKER,8,8);
+    using Json=nlohmann::json;
+    auto custom=Json::parse(map.resourceRegistry().serialize())["resources"][WHEAT];
+    custom["key"]="test:diagnostic-supply";
+    custom["properties"]["ecology"]="uniform";
+    custom["properties"]["growthRate"]=ResourceRateScale;
+    custom["properties"]["spreadRate"]=0;
+    custom["properties"]["stockDependentGrowth"]=false;
+    custom["properties"]["persistsWhenEmpty"]=true;
+    custom["yields"]={{"food",{{"capacity",4},{"initial",4},{"growthRate",0},{"consumption","one"}}},
+                      {"wood",{{"capacity",4},{"initial",2},{"growthRate",0},{"consumption","one"}}}};
+    const auto install=[&] { map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({custom})}}.dump()); };
+    const auto diagnose=[&] {
+        auto report=MapGeneration::diagnoseStarts(fixture.game,1);
+        REQUIRE(report.measured); REQUIRE(report.colonies.size()==1);
+        return report.colonies.front();
+    };
+    install();
+    const auto id=*map.resourceRegistry().find("test:diagnostic-supply");
+    map.setResource(10,8,id,1);
+    auto metrics=diagnose();
+    CHECK(metrics.renewableFood==0); CHECK(metrics.encroachingWood==0);
+    CHECK(metrics.threatenedBuildSites==0);
+    custom["yields"]["food"]["growthRate"]=ResourceRateScale;
+    install();
+    metrics=diagnose();
+    REQUIRE(metrics.renewableFood>0);
+    CHECK(metrics.encroachingWood==0); CHECK(metrics.threatenedBuildSites==0);
+    const auto normalRenewal=metrics.renewableFood;
+    fixture.game.gameHeader.setResourceScarcityLevel(1);
+    CHECK(diagnose().renewableFood==doctest::Approx(normalRenewal/2));
+    fixture.game.gameHeader.setResourceScarcityLevel(0);
+    custom["properties"]["spreadRate"]=ResourceRateScale;
+    install();
+    metrics=diagnose();
+    CHECK(metrics.encroachingWood>0); CHECK(metrics.threatenedBuildSites>0);
+    fixture.game.gameHeader.setResourceGrowthDisabled(true);
+    metrics=diagnose();
+    CHECK(metrics.renewableFood==0); CHECK(metrics.encroachingWood==0);
+    CHECK(metrics.threatenedBuildSites==0);
+    custom["yields"]["food"]["consumption"]="infinite";
+    install();
+    CHECK(diagnose().renewableFood>0);
+    map.setMaterialAmount(map.coordToIndex(10,8),MaterialId::Food,0);
+    CHECK(diagnose().renewableFood==0);
+}
+
 TEST_CASE("fixed property ablations preserve harvest growth clearing and movement invariants")
 {
     glob2test::HeadlessGlobals globals;
@@ -1153,4 +1310,50 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
         { auto random = legacy.game.bindRandom(); legacy.game.syncStep(0); }
     }
     CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
+}
+
+TEST_CASE("released observation format 139 imports legacy stocks and preserves current save continuation" * doctest::test_suite("RuntimeResources"))
+{
+    glob2test::HeadlessGlobals globals;
+    const auto bytes=glob2test::readFile(glob2test::inflated("resources/observation139.game.gz"));
+    const auto manifest=nlohmann::json::parse(glob2test::readFile(
+        glob2test::sourceRoot()/"test/fixtures/resources/observation139.game.manifest.json"));
+    REQUIRE(Online::Sha256::hex(bytes)==manifest["decompressed_sha256"].get<std::string>());
+    GAGCore::BinaryInputStream legacyInput(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    legacyInput.seekFromStart(0);
+    GameGUI original(false),restored(false);
+    REQUIRE(original.game.load(&legacyInput));
+    REQUIRE(original.game.mapHeader.getVersionMinor()==139);
+    REQUIRE(original.game.stepCounter==8193);
+    CHECK(original.game.map.resourceRegistry().digest()==ResourceRegistry::legacy()->digest());
+    REQUIRE(original.game.map.resourceRegistry().size()==8);
+    unsigned pendingHarvests=0;
+    for(int team=0;team<original.game.mapHeader.getNumberOfTeams();++team)
+    {
+        for(unsigned u=0;u<Unit::MAX_COUNT;++u)
+            if(const auto* unit=original.game.teams[team]->myUnits[u])
+                pendingHarvests+=unit->movement==Unit::MOV_HARVESTING;
+        for(unsigned b=0;b<Building::MAX_COUNT;++b)
+            if(const auto* building=original.game.teams[team]->myBuildings[b])
+                for(unsigned material=8;material<MaterialCount;++material)
+                    CHECK(building->materials[material]==0);
+    }
+    REQUIRE(pendingHarvests>0);
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(memory);
+    original.game.save(&output,false,original.game.mapHeader.getMapName()); output.flush();
+    auto* copy=new GAGCore::MemoryStreamBackend(*memory); copy->seekFromStart(0);
+    GAGCore::BinaryInputStream currentInput(copy);
+    REQUIRE(restored.game.load(&currentInput));
+    REQUIRE(restored.game.mapHeader.getVersionMinor()==FILE_FORMAT_VERSION_RUNTIME_RESOURCES);
+    // File-format versions contribute to checksums but are not simulation state.
+    // Verify the remaining header metadata before normalizing only that boundary.
+    REQUIRE(original.game.mapHeader==restored.game.mapHeader);
+    original.game.mapHeader=restored.game.mapHeader;
+    for(unsigned tick=0;tick<32;++tick)
+    {
+        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+        original.game.syncStep(0); restored.game.syncStep(0);
+    }
+    CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
 }

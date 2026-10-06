@@ -16,6 +16,7 @@
 #include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -418,7 +419,7 @@ namespace
 // can compare it against a wall-blind flood and find exactly where such a wall runs.
 struct ReachResult
 {
-	int wheatDist = -1, woodDist = -1;
+	int foodSourceDistance = -1, woodDist = -1;
 	std::vector<MapGeneratorPoint> closeGrass, farGrass;
 	std::vector<int> dist;
 };
@@ -442,10 +443,10 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 			{
 				if (dx == 0 && dy == 0)
 					continue;
-				const int resType = map.getResource(t.x(x + dx), t.y(y + dy)).type;
-				if (resType == WHEAT && r.wheatDist < 0)
-					r.wheatDist = r.dist[p] + 1;
-				if (resType == WOOD && r.woodDist < 0)
+				const auto index = map.coordToIndex(x + dx, y + dy);
+				if (map.materialAmountAt(index, MaterialId::Food) && r.foodSourceDistance < 0)
+					r.foodSourceDistance = r.dist[p] + 1;
+				if (map.materialAmountAt(index, MaterialId::Wood) && r.woodDist < 0)
 					r.woodDist = r.dist[p] + 1;
 			}
 	}
@@ -526,12 +527,17 @@ struct CropReplant
 // accessible patch of the surplus crop instead. The ordinary guarantee keeps
 // its historical behavior because this runs only with `allowedTopup`.
 CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
-							   const ReachResult &reach, int resourceType, int range,
+							   const ReachResult &reach, int resourceType, MaterialId desired, int range,
 							   const std::vector<unsigned char> &allowedTopup,
 							   const std::vector<unsigned char> *protectedWalls)
 {
 	const Torus t(map);
-	const int surplusType = resourceType == WHEAT ? WOOD : WHEAT;
+	const auto surplus = desired == MaterialId::Food ? MaterialId::Wood : MaterialId::Food;
+	const auto expendable = [&](int i) {
+		const auto& deposit = map.getResource(i);
+		return deposit.type != NO_RES_TYPE && map.resourcePropertiesByIndex(deposit.type).clearable &&
+			map.materialAmountAt(i, surplus) && !map.materialAmountAt(i, desired);
+	};
 	int best = -1, bestDistance = range + 1;
 	// A resource tile itself blocks walking. Score its accessible neighbouring
 	// sand/grass tile using the *current* resource-respecting flood, so the new
@@ -548,7 +554,7 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
 					continue;
 				const int i = t.at(p % t.w + dx, p / t.w + dy);
 				if (!allowedTopup[i] || (protectedWalls && (*protectedWalls)[i]) ||
-					map.getResource(i % t.w, i / t.w).type != surplusType ||
+					!expendable(i) ||
 					!map.isResourceAllowed(i % t.w, i / t.w, resourceType))
 					continue;
 				best = i;
@@ -576,7 +582,7 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
 			if (dx * dx + dy * dy > 4)
 				continue;
 			const int i = t.at(best % t.w + dx, best / t.w + dy);
-			if (!(*placement)[i] || map.getResource(i % t.w, i / t.w).type != surplusType)
+			if (!(*placement)[i] || !expendable(i))
 				continue;
 			map.setNoResource(i % t.w, i / t.w, 1);
 			++result.cleared;
@@ -623,7 +629,7 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		int bootX = map.normalizeX(context.bootX[team]),
 			bootY = map.normalizeY(context.bootY[team]);
 		ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
-		context.telemetry.measure("resources.starting_wheat.before_distance", reach.wheatDist,
+		context.telemetry.measure("resources.starting_wheat.before_distance", reach.foodSourceDistance,
 								  team);
 		context.telemetry.measure("resources.starting_wood.before_distance", reach.woodDist, team);
 		int wallClearRounds = 0;
@@ -635,7 +641,7 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 					++n;
 			return n;
 		};
-		bool underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
+		bool underServed = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange ||
 						   reach.woodDist < 0 || reach.woodDist > woodRange;
 		// Up to six rounds of wall clearing per colony, flooding again after each: a cap on the
 		// work for a pocket that stays small, which is then taken to be genuinely small land rather
@@ -649,14 +655,14 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 				break;
 			++wallClearRounds;
 			reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
-			underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
+			underServed = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange ||
 						  reach.woodDist < 0 || reach.woodDist > woodRange;
 		}
 		context.telemetry.measure("resources.starting.wall_clear_rounds", wallClearRounds, team);
 		if (wallClearRounds)
 			context.telemetry.fallback("resources.starting.resource_wall",
 									   "cleared blocking deposits", team);
-		auto placeReachable = [&](int resourceType)
+		auto placeReachable = [&](int resourceType, MaterialId material)
 		{
 			int placed = 0;
 			bool triedFar = false;
@@ -672,15 +678,15 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 			}
 			if (!placed && allowedTopup)
 			{
-				replanted = replantAccessibleCrop(map, context, reach, resourceType,
-										 resourceType == WHEAT ? wheatRange : woodRange,
+				replanted = replantAccessibleCrop(map, context, reach, resourceType, material,
+										 material == MaterialId::Food ? wheatRange : woodRange,
 										 *allowedTopup, protectedWalls);
 				placed = replanted.placed;
 			}
 			if (context.telemetry.enabled())
 			{
 				const std::string key =
-					resourceType == WHEAT ? "resources.starting_wheat" : "resources.starting_wood";
+					material == MaterialId::Food ? "resources.starting_wheat" : "resources.starting_wood";
 				if (replanted.placed)
 				{
 					context.telemetry.fallback(key + ".topup_replant",
@@ -699,14 +705,14 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 											   team);
 			}
 		};
-		const bool needsWheat = reach.wheatDist < 0 || reach.wheatDist > wheatRange;
+		const bool needsWheat = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange;
 		const bool needsWood = reach.woodDist < 0 || reach.woodDist > woodRange;
 		context.telemetry.measure("resources.starting_wheat.topup_needed", needsWheat, team);
 		context.telemetry.measure("resources.starting_wood.topup_needed", needsWood, team);
 		if (needsWheat)
-			placeReachable(WHEAT);
+			placeReachable(WHEAT, MaterialId::Food);
 		if (needsWood)
-			placeReachable(WOOD);
+			placeReachable(WOOD, MaterialId::Wood);
 	}
 }
 
@@ -790,6 +796,43 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 	}
 }
 
+namespace
+{
+bool renewableMaterialAt(const Map& map, size_t index, MaterialId material)
+{
+    if (!map.materialAmountAt(index, material)) return false;
+    const auto& deposit = map.getResource(index);
+    const auto& yield = map.resourceRegistry().yields(static_cast<ResourceId>(deposit.type))[materialIndex(material)];
+    return yield.consumption == ResourceConsumption::Infinite ||
+        map.materialRenewalPotentialAt(index, material) > 0;
+}
+}
+
+std::map<MaterialId, ResourceFrontage> materialFrontages(const Map& map, const Flood& access,
+                                                       int maximumSteps, bool renewal)
+{
+    const Torus t(map);
+    std::map<MaterialId, ResourceFrontage> result;
+    for (int i : access.visited)
+    {
+        if (access.steps[i] < 0 || access.steps[i] > maximumSteps) continue;
+        for (const auto& step : kCardinalSteps)
+        {
+            const auto index = map.coordToIndex(i % t.w + step[0], i / t.w + step[1]);
+            for (unsigned mask = map.materialMaskAt(index); mask; mask &= mask - 1)
+            {
+                const auto material = static_cast<MaterialId>(std::countr_zero(mask));
+                auto& front = result[material];
+                ++front.edges;
+                if (front.nearestStep < 0 || access.steps[i] < front.nearestStep)
+                    front.nearestStep = access.steps[i];
+                front.renewableEdges += renewal && renewableMaterialAt(map, index, material);
+            }
+        }
+    }
+    return result;
+}
+
 std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &access,
 												  int maximumSteps,
 												  const Fertility::Field *fertility)
@@ -813,8 +856,7 @@ std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &a
 			// Renewal belongs to the deposit's compiled ecology and stocks.
             bool renewable=false;
             if (fertility) for (unsigned material=0;material<MaterialCount;++material)
-                renewable |= map.materialGrowthRateAtSlot(map.coordToIndex(x,y),material)>0
-                    || map.materialExpansionRateAtSlot(map.coordToIndex(x,y),material)>0;
+                renewable |= renewableMaterialAt(map, map.coordToIndex(x,y), static_cast<MaterialId>(material));
             front.renewableEdges += renewable;
 		}
 	}

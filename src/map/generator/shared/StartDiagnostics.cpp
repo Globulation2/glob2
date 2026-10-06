@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StartDiagnostics.h"
-#include "FertilityField.h"
 #include "Game.h"
 #include "Grid.h"
 #include "Map.h"
@@ -36,12 +35,12 @@ bool neighbourHolds(const Map &map, int x, int y, MaterialMask materials)
 				return true;
 	return false;
 }
-constexpr auto isWheat = materialBit(MaterialId::Food);
+constexpr auto isFoodSource = materialBit(MaterialId::Food);
 constexpr auto isWood = materialBit(MaterialId::Wood);
 constexpr auto isStone = materialBit(MaterialId::Stone);
 constexpr MaterialMask isFruit = materialBit(MaterialId::Cherries) | materialBit(MaterialId::Oranges) | materialBit(MaterialId::Prunes);
 
-/// Wheat that is a race: this colony reaches it, and some rival reaches it within the slack.
+/// Food that is a race: this colony reaches it, and some rival reaches it within the slack.
 int nearestContestedWheat(const Map &map, const std::vector<std::vector<int>> &fields, int team)
 {
 	const int w = map.getW(), h = map.getH();
@@ -125,8 +124,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 		if (team.empty())
 			return report;
 
-	const Fertility::Field fertility = Fertility::forMap(map);
-	// Ground within feeding reach of standing wheat, marked once for the whole map rather than
+	// Ground within feeding reach of standing food sources, marked once for the whole map rather than
 	// re-searched around every candidate building site.
 	std::vector<unsigned char> fedGround(w * h, 0);
 	for (int y = 0; y < h; ++y)
@@ -152,23 +150,43 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 			if (d < 0)
 				continue;
 			const int x = p % w, y = p / w;
-			if (d <= scale.catchmentSteps && map.terrainSupportsMaterialAt(x, y, MaterialId::Food) && map.canResourcesGrow(x,y) &&
-				fertility.at(x, y) > 0)
+			if (d <= scale.catchmentSteps)
 			{
-				const double chance = double(fertility.at(x, y)) / Fertility::kScale;
-				if (neighbourHolds(map, x, y, isWheat))
-					colony.renewableWheat += chance;
-				if (neighbourHolds(map, x, y, isWood))
-				{
-					colony.encroachingWood += chance;
-					if (map.isFreeForBuilding(x, y, 4, 4))
-						++colony.threatenedBuildSites;
-				}
+                double foodRenewal = 0, woodExpansion = 0;
+                const double scarcity = double(1u << game.gameHeader.getResourceScarcityLevel());
+                for (int dy = -1; dy <= 1; ++dy)
+                    for (int dx = -1; dx <= 1; ++dx)
+                    {
+                        if (!dx && !dy) continue;
+                        const auto source = map.coordToIndex(x + dx, y + dy);
+                        const auto& deposit = map.getResource(source);
+                        if (deposit.type == NO_RES_TYPE) continue;
+                        const auto id = static_cast<ResourceId>(deposit.type);
+                        if (map.materialAmountAt(source, MaterialId::Food))
+                        {
+                            const auto& yield = map.resourceRegistry().yields(id)[materialIndex(MaterialId::Food)];
+                            const double potential = yield.consumption == ResourceConsumption::Infinite ? 1.0 :
+                                double(map.materialRenewalPotentialAt(source, MaterialId::Food)) / ResourceRateScale / scarcity;
+                            foodRenewal = std::max(foodRenewal, potential);
+                        }
+                        // An occupied target cannot become a new deposit. Source ecology,
+                        // exact habitat permission and the selected yield determine spread.
+                        if (map.getResource(p).type == NO_RES_TYPE && map.canResourcesGrow(x,y) &&
+                            map.materialAmountAt(source, MaterialId::Wood) &&
+                            map.terrainSupportsResourceAt(size_t(p), id) &&
+                            map.isResourceAllowed(x,y,resourceIndex(id)))
+                            woodExpansion += double(map.materialExpansionRateAt(source, MaterialId::Wood)) /
+                                (8.0 * ResourceRateScale * scarcity);
+                    }
+                colony.renewableFood += foodRenewal;
+                colony.encroachingWood += woodExpansion;
+                if (woodExpansion > 0 && map.isFreeForBuilding(x,y,4,4))
+                    ++colony.threatenedBuildSites;
 			}
 			if (d <= kHarvestReach)
 			{
 				const double trip = 1.0 / (2.0 * d + kHarvestSteps);
-				colony.wheatThroughput += neighbourHolds(map, x, y, isWheat) ? trip : 0.0;
+				colony.wheatThroughput += neighbourHolds(map, x, y, isFoodSource) ? trip : 0.0;
 				colony.woodThroughput += neighbourHolds(map, x, y, isWood) ? trip : 0.0;
 				colony.stoneThroughput += neighbourHolds(map, x, y, isStone) ? trip : 0.0;
 				colony.fruitThroughput += neighbourHolds(map, x, y, isFruit) ? trip : 0.0;

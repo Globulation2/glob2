@@ -126,10 +126,10 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	const StartingLayout layout(swarm->width,swarm->height,context.request.nbWorkers);
 	const std::vector<std::uint8_t> hard = buildHardSpaceGrid(map);
 	const std::vector<std::int16_t> woodDist = distanceToMaterial(map, hard, MaterialId::Wood);
-	const std::vector<std::int16_t> wheatDist = distanceToMaterial(map, hard, MaterialId::Food);
+	const std::vector<std::int16_t> foodSourceDistance = distanceToMaterial(map, hard, MaterialId::Food);
 
 	// A site is worth exactly what its *worse* resource costs to reach: a colony next to wood
-	// but a long walk from wheat is not a good start, however good the wood is.
+	// but a long walk from food is not a good start, however good the wood is.
 	// A colony changes its own surroundings the moment it is built: placeStarts() clears a
 	// five by seven box of resources to make room, the swarm itself becomes four by four tiles
 	// of obstacle, and the workers appear on the row above it rather than on the boot tile. A
@@ -220,11 +220,11 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			if (!map.isFreeForBuilding(x, y, swarm->width, swarm->height))
 				continue;
 			const int p = y * w + x;
-			if (woodDist[p] < 0 || wheatDist[p] < 0)
+			if (woodDist[p] < 0 || foodSourceDistance[p] < 0)
 				continue;
 			// The bare-map distance can only understate what the built colony will walk, so it
 			// is a sound cheap filter: it shortlists sites worth the exact simulation above.
-			sites.push_back({std::max(woodDist[p], wheatDist[p]), p});
+			sites.push_back({std::max(woodDist[p], foodSourceDistance[p]), p});
 		}
 	context.telemetry.measure("starts.balanced.candidate_sites", int(sites.size()));
 	if ((int)sites.size() < nbTeams)
