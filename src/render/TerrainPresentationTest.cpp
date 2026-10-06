@@ -1206,13 +1206,13 @@ TEST_SUITE("TerrainValidation")
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row, so interior variants, boundaries and seams are all visible.
 		std::vector<TerrainType> types;
-		for (unsigned i = TERRAIN_COUNT_FORMAT_136; i < TERRAIN_COUNT; ++i)
+		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
 		REQUIRE(types.size() == 24);
 		for (std::size_t n = 0; n < types.size(); ++n)
 		{
-			const int ox = 6 + int(n % 5) * 5, oy = 1 + int(n / 5) * 5;
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5; // rows 0..23 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
 					map.setCellTerrain(ox + dx, oy + dy, types[n]);
@@ -1239,7 +1239,7 @@ TEST_SUITE("TerrainValidation")
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
 		// Painted islands keep their identity and the map declares every group painted.
 		for (std::size_t n = 0; n < types.size(); ++n)
-			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, 1 + int(n / 5) * 5) == types[n]);
+			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);
 		const auto required = map.requiredTerrainExperiments();
 		for (auto type : types)
 			if (const auto experiment = terrainExperiment(type))
