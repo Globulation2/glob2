@@ -652,6 +652,8 @@ int runMapStudy(int argc, char **argv)
 			if (eq == std::string::npos)
 				return 2;
 			std::string id = arg.substr(0, eq);
+			// Consumed before GlobalContainer construction, not a numeric generator control.
+			if (id == "building-catalog") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump
