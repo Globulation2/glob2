@@ -1385,8 +1385,10 @@ a 6 GiB scratch tmpfs and process/time limits. Numerical libraries use one threa
 Scale workers only after measuring memory use and model cost for your workload.
 
 The host must support unprivileged Linux user namespaces and Bubblewrap inside
-the container. Startup probes the isolated Python runtime and refuses to start
-when isolation is unavailable. The worker uses the scoped profiles in
+the container. Startup executes the isolated Python runtime, FFmpeg, FFprobe,
+sfizz and Surge XT, and refuses to start when isolation or their dependencies are
+unavailable. The image resolves system library alternatives within `/usr` so
+the encoder does not require access to `/etc`. The worker uses the scoped profiles in
 `deploy/security/`: install its AppArmor profile before starting it:
 
 ```sh
