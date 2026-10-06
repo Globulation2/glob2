@@ -1,0 +1,47 @@
+{
+  "revision": "b3fab1a48a9ac6ec74a6985e60a839eea54da346",
+  "candidate_sha256": "7de08ee1bcbb74b7d711efd29ad84237a499efc4626055d61fb1bab1db0fbbc9",
+  "performance_acceptance": false,
+  "status": "09b variable-governor Maxima calibration failed; Cortex inconclusive. New cache exactness/instruction diagnostics pass; final b3fab stabilized calibration has not started.",
+  "repairs": {
+    "4996a5f32": "Resource experiment protocol fixture and lint migration",
+    "c3ca882ab": "Preserve resource experiment validation metadata",
+    "9554357d4": "Typed menu colony harness migration"
+  },
+  "scope": "Historical failures, fixture-only repairs, final native traces/UI captures, all09b timing rows, exact command counters, retained rejected distance-field experiment, governor restoration smokes. Logs identify individual tested revisions; not a single all-green final full-suite claim.",
+  "exclusions": [
+    "Executables and raw perf.data",
+    "Redundant saves/replays; reusable input corpus published separately",
+    "Private scratch profiles and generated build products"
+  ],
+  "deduplication": "Each archive stores a unique SHA256 payload once. file-inventory.json maps every original repository-relative path to stored_as; identical checksum files remain reconstructible exactly.",
+  "archives": [
+    {
+      "path": "artifacts/resource-refactor/b3fab-publication/native-platform-b3fab.zip",
+      "bytes": 1374621,
+      "sha256": "cf00dee9f936e943112ad7d90b66de7699540ba6e6d38875fe29e4097c369016",
+      "original_paths": 118,
+      "unique_payloads": 93,
+      "uncompressed_unique_bytes": 7615535,
+      "verification": "Every archived payload decompressed and SHA256 verified."
+    },
+    {
+      "path": "artifacts/resource-refactor/b3fab-publication/calibration-09b-governor.zip",
+      "bytes": 841159,
+      "sha256": "01ee5641327025d1ad9100b970aa5cc2d0e761a57956a3d9243e1178779323eb",
+      "original_paths": 435,
+      "unique_payloads": 111,
+      "uncompressed_unique_bytes": 4783651,
+      "verification": "Every archived payload decompressed and SHA256 verified."
+    },
+    {
+      "path": "artifacts/resource-refactor/b3fab-publication/cache-diagnostics-b3fab.zip",
+      "bytes": 26024592,
+      "sha256": "f6341f9761522bee9dd7568b39f60838fb8951981017e834894efc582f63430e",
+      "original_paths": 348,
+      "unique_payloads": 183,
+      "uncompressed_unique_bytes": 206656507,
+      "verification": "Every archived payload decompressed and SHA256 verified."
+    }
+  ]
+}
