@@ -5564,3 +5564,5 @@ Työläiset voivat hakea tarvikkeita markkinoiden yhteisestä varastosta. Markki
 Tuo maastomäärittelyt
 [Terrain palette]
 Maastopaletti
+[Reroll terrain look]
+Arvo maaston ulkoasu uudelleen

@@ -5564,3 +5564,5 @@ Pekerja dapat mengambil persediaan dari stok bersama pasar. Pasar dapat ditingka
 Impor definisi medan
 [Terrain palette]
 Palet medan
+[Reroll terrain look]
+Acak ulang tampilan medan

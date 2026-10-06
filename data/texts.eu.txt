@@ -5564,3 +5564,5 @@ Langileek hornigaiak har ditzakete merkatuen biltegi partekatutik. Merkatuak hob
 Inportatu lur-eremuaren definizioak
 [Terrain palette]
 Lur-eremuen paleta
+[Reroll terrain look]
+Ausaz aukeratu berriro lurraren itxura

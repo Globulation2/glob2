@@ -5564,3 +5564,5 @@ Muncitorii pot lua provizii din stocul comun al piețelor. Piețele pot fi îmbu
 Importă definiții de teren
 [Terrain palette]
 Paletă de terenuri
+[Reroll terrain look]
+Alege din nou aleatoriu aspectul terenului

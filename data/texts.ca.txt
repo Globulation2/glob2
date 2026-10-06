@@ -5564,3 +5564,5 @@ Els treballadors poden recollir provisions de l’estoc compartit dels mercats. 
 Importa definicions de terreny
 [Terrain palette]
 Paleta de terrenys
+[Reroll terrain look]
+Torna a sortejar l’aspecte del terreny

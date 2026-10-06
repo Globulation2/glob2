@@ -5564,3 +5564,5 @@ Robotnicy mogą pobierać zapasy ze wspólnego magazynu rynków. Rynki można ul
 Importuj definicje terenu
 [Terrain palette]
 Paleta terenów
+[Reroll terrain look]
+Wylosuj ponownie wygląd terenu

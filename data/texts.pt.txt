@@ -5564,3 +5564,5 @@ Os trabalhadores podem buscar provisões no estoque compartilhado dos mercados. 
 Importar definições de terreno
 [Terrain palette]
 Paleta de terrenos
+[Reroll terrain look]
+Sortear novamente a aparência do terreno

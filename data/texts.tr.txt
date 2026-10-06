@@ -5564,3 +5564,5 @@ Pazarlar V2
 Arazi tanımlarını içe aktar
 [Terrain palette]
 Arazi paleti
+[Reroll terrain look]
+Arazi görünümünü yeniden rastgele seç

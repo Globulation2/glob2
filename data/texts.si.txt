@@ -5564,3 +5564,5 @@ Delavci lahko jemljejo zaloge iz skupnega skladišča tržnic. Tržnice je mogo�
 Uvozi definicije terena
 [Terrain palette]
 Paleta terenov
+[Reroll terrain look]
+Znova naključno izberi videz terena

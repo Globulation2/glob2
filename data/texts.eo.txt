@@ -5564,3 +5564,5 @@ Laboristoj povas preni provizojn el la komuna merkata stoko. Merkatoj povas plia
 Importi terendifinojn
 [Terrain palette]
 Terenpaletro
+[Reroll terrain look]
+Denove hazardigi la aspekton de la tereno
