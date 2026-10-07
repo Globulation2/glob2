@@ -1,0 +1,16 @@
+40 paired seeds
+team 0 feed+fortify: mean completion tick of the first 8 | built | deliveries | starved
+   base         9666 |  8.00 |   164.1 |  0.00
+   h2           7259 |  8.00 |   164.0 |  0.00
+team 1 finish/start: mean completion tick of the first 8 | built | deliveries | starved
+   base         4816 |  8.00 |    88.3 |  0.00
+   h2           4094 |  8.00 |    88.3 |  0.00
+team 2 near/far: mean completion tick of the first 8 | built | deliveries | starved
+   base        11386 |  8.00 |    98.2 |  0.00
+   h2           9125 |  8.00 |    98.1 |  0.00
+team 3 two shores: mean completion tick of the first 9 | built | deliveries | starved
+   base         4052 |  9.00 |    99.5 |  0.05
+   h2           3665 |  9.00 |    99.5 |  0.00
+team 4 priority: mean completion tick of the first 9 | built | deliveries | starved
+   base         5102 |  9.00 |   105.1 |  0.00
+   h2           3921 |  9.00 |   105.2 |  0.00
