@@ -5766,3 +5766,5 @@ AI 遙測
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

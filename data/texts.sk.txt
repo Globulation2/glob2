@@ -5766,3 +5766,5 @@ Znova náhodne vybrať vzhľad terénu
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

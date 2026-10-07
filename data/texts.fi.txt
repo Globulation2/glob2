@@ -5766,3 +5766,5 @@ Arvo maaston ulkoasu uudelleen
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

@@ -281,11 +281,44 @@ rules or adapt another presentation's composed screen.
 
 ### Map and campaign editor
 
-`PhoneEditor` owns the touch editor's map bounds, compact header, bottom mode
-strip and horizontally scrolling artwork palette. Terrain and Resources share
-brush operations; Buildings and Flags expose team and level beside the map.
-Individual artwork widgets are reused, never the composed desktop sidebar or
-its minimap. Done leaves the active tool and returns to object selection; Pan
+The editor has two presentations, chosen live by `chooseEditorPresentation`
+(`src/map/editor/MapEditPresentation.h`) from room rather than input: the phone
+tray (`PhoneEditor`) when the usable area cannot hold a 300-point dock beside a
+480 x 480-point map, otherwise the dock beside the map. A 1024 x 768 touch
+tablet or a touch laptop docks with touch-sized targets; a phone in either
+orientation, a portrait tablet narrower than 780 points and a small pointer
+window use the tray. The Compact interface preference always uses the tray;
+Spacious keeps the dock down to a 320 x 400-point map. `GLOB2_MOBILE_UI=1`
+forces the tray, `0` or `touch-spacious` the dock, and `touch-auto` applies the
+automatic rule. Before a host has resolved any metrics (tools and tests that
+never run a frame) the legacy rule applies: the tray only where shared forms
+adapt. `MapEdit::syncPresentation` runs on construction and from every
+`viewportResized`, which `ScreenStack` also sends when the resolved presentation
+changes at the same size. Switching cancels unfinished strokes, drags and
+gestures (never commits them) and keeps the brush, panel mode, team, levels and
+brush size. `MapEditorScreen::usesResponsiveViewport` follows the editor's
+presentation; `GraphicContext::setResponsiveViewport` grants the point-sized
+viewport only where shared forms adapt, so a tray on a small pointer window
+keeps the desktop canvas and scales through `logicalUnitsPerPoint`.
+
+`PhoneEditor` owns the tray presentation's map bounds, compact header, bottom
+mode strip (Terrain, Resources, Buildings, Flags, Teams) and horizontally
+scrolling card tray. Cards come from the brush catalogue (`MapEdit::brushCatalog`,
+`PhoneEditorTray.cpp`) and carry its ids, so imports and experiment changes
+rebuild the tray on the next frame (`catalogRevision`). Each card is the shared
+`BrushSwatches` swatch (building, unit and zone artwork for objects) with its
+name on up to two lines. Terrain lists every offered terrain group, group
+variants inline and imported terrain, then areas, delete and the fertility
+overlay toggle (`tool/fertility`); Resources lists every registry resource,
+foundation and imported ones included. In both, header chips above the cards
+name the groups, follow the scroll position and jump to a group on tap. A locked
+card (an experiment the map does not carry) is dimmed with a padlock; a tap
+enables the experiment for this map, says so above the tray and selects the
+brush. The highlighted card is `MapEdit::currentBrushId()`. Status messages from
+`MapEdit::showStatus` show above the tray. With a mouse, the wheel scrolls the
+tray or inspector under the pointer and zooms the map about it.
+Terrain and Resources share brush operations; Buildings and Flags expose team
+and level beside the map. Done leaves the active tool and returns to object selection; Pan
 switches one-finger navigation. One-finger zoom dragging and held paint taps
 behave as in gameplay. In the editor, a double tap without travel still resets
 to 1:1 zoom; taps that place buildings or units never arm zoom.

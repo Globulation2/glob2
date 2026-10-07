@@ -5766,3 +5766,5 @@ Slumpa terrängens utseende igen
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

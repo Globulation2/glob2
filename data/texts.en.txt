@@ -5766,3 +5766,5 @@ Areas
 Tools
 [brush clearing area]
 Clearing area
+[Enabled %0 for this map]
+Enabled %0 for this map

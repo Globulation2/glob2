@@ -5766,3 +5766,5 @@ Torna a sortejar l’aspecte del terreny
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

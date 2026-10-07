@@ -5766,3 +5766,5 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

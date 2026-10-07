@@ -256,6 +256,9 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})
         widget->area.y += height - oldHeight;
     if (auto *dialog = activeDialog()) dialog->cancelInput();
+    // Rotation, window resizing and presentation changes can move the editor
+    // between the phone tray and the dock.
+    syncPresentation();
 }
 
 void MapEdit::importTerrainFile(const std::string &filename)

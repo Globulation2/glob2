@@ -221,3 +221,4 @@
 [brush section areas]
 [brush section tools]
 [brush clearing area]
+[Enabled %0 for this map]

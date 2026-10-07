@@ -5766,3 +5766,5 @@ Genera un nuovo aspetto casuale del terreno
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

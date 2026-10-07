@@ -5766,3 +5766,5 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

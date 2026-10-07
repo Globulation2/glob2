@@ -5766,3 +5766,5 @@ Tirer à nouveau l’apparence du terrain
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

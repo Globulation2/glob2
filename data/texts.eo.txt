@@ -5766,3 +5766,5 @@ Denove hazardigi la aspekton de la tereno
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

@@ -5766,3 +5766,5 @@ Terreinuiterlijk opnieuw loten
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

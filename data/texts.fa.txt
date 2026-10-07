@@ -5766,3 +5766,5 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+

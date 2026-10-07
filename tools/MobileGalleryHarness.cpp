@@ -1175,8 +1175,11 @@ class MobileGalleryGameplay
 		editor.game.sgslScript.sourceCode =
 			"# Valley introduction\nGuiDisable(AllianceScreen)\nGuiDisable(FlagTab)\n";
 		editor.beginEditing();
-		if (bool(editor.phone) == desktopPresentation)
+		// Desktop captures always dock; touch captures follow the live rule
+		// (MapEditPresentation.h): phones get the tray, tablets the dock.
+		if ((desktopPresentation && editor.phone) || editor.presentation() != editor.wantedPresentation())
 			throw std::runtime_error("Unexpected editor presentation");
+		std::cerr << "EDITOR PRESENTATION " << editorPresentationName(editor.presentation()) << "\n";
 		auto editCapture = [&](const std::string &name)
 		{
 			queueShot(name);
@@ -1216,7 +1219,11 @@ class MobileGalleryGameplay
 			phone.chooseMode(2);
 			phone.prepare();
 			editor.updateCamera();
-			const auto icon = phone.rows.at(1).rect; // inn, stable production palette order
+			const auto inn = std::find_if(phone.rows.begin(), phone.rows.end(),
+										  [](const auto &row) { return row.id.starts_with("building/inn."); });
+			if (inn == phone.rows.end())
+				throw std::runtime_error("The editor tray has no inn card");
+			const auto icon = inn->rect;
 			const GAGCore::ViewPoint from{icon.x + icon.w / 2, icon.y + icon.h / 2};
 			std::optional<GAGCore::ViewPoint> drop;
 			const auto *type = globalContainer->buildingsTypes.get(

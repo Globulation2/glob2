@@ -1,5 +1,6 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control}=require('./main-menu');
+const {clickCreateMap}=require('./editor-controls');
 const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
 async function matchFrame(page) {
@@ -91,5 +92,42 @@ test.describe('responsive mixed input',()=>{
     await screen(page,'match');
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     await page.screenshot({path:info.outputPath('phone-loaded-match.png')});
+  });
+  // The editor chooses its presentation from room, live (MapEditPresentation.h):
+  // a touch tablet docks, a phone in either orientation uses the card tray, and
+  // a desktop-sized window docks again with the same session.
+  test('touch editor docks on a tablet and uses the tray on a phone',async({page},info)=>{
+    const controls=()=>page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls));
+    const tray=async()=>(await controls()).some(key=>key.startsWith('tray/'));
+    await page.goto(gameURL());await screen(page,'MainMenuScreen');
+    await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
+    await clickControl(page,'new-map');await screen(page,'NewMapScreen');
+    await clickCreateMap(page);await screen(page,'MapEditorScreen');
+    await matchFrame(page);
+    expect(await tray()).toBe(false);
+    await page.screenshot({path:info.outputPath('editor-tablet-dock.png')});
+    await page.setViewportSize({width:390,height:844});
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([390,844]);
+    await control(page,'tray/terrain/grass');
+    await tapControl(page,'tray/mode/1');
+    await tapControl(page,'tray/resource/wheat');
+    await control(page,'tray/chip/0');
+    await page.screenshot({path:info.outputPath('editor-phone-tray.png')});
+    await page.setViewportSize({width:844,height:390});
+    await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
+    await control(page,'tray/resource/wheat');
+    await page.screenshot({path:info.outputPath('editor-phone-landscape.png')});
+    await page.setViewportSize({width:1024,height:768});
+    await expect.poll(tray).toBe(false);
+    expect((await snapshot(page)).screen).toContain('MapEditorScreen');
+  });
+  // TODO(WS-C merge): the dock publishes its brush cards as dock/brush/<id>;
+  // assert them here once EditorDock is on this branch.
+  test.fixme('touch tablet dock publishes its brush cards',async({page})=>{
+    await page.goto(gameURL());await screen(page,'MainMenuScreen');
+    await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
+    await clickControl(page,'new-map');await screen(page,'NewMapScreen');
+    await clickCreateMap(page);await screen(page,'MapEditorScreen');
+    await control(page,'dock/brush/terrain/grass');
   });
 });

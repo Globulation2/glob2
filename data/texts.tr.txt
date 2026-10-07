@@ -5766,3 +5766,5 @@ Arazi görünümünü yeniden rastgele seç
 
 [brush clearing area]
 
+[Enabled %0 for this map]
+
