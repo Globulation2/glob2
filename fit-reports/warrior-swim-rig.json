@@ -1,0 +1,34 @@
+{
+  "format": "GSR1",
+  "version": 1,
+  "experimental": true,
+  "file": "warrior-swim.gsr",
+  "sha256": "35a34fee6874df8a32b9814d2c16734b6a9c7831c3f5e5352cc0ce576b297d61",
+  "clips": [
+    {
+      "id": 1,
+      "name": "swim",
+      "samples": 256,
+      "mapping": "direction-major-v1",
+      "direction8": "existing-unitAnimationFrame"
+    }
+  ],
+  "sources": {
+    "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+    "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+    "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+    "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+    "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+    "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+    "data/skins/colony-v1/warrior-surface.json": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052",
+    "datasrc/gfx/originals/units/glob-warrior-walk.blend": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
+    "datasrc/gfx/originals/units/glob-warrior-swim.blend": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
+    "datasrc/gfx/originals/units/glob-warrior-fight.blend": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
+    "data/skins/colony-v1/warrior-walk.gsk": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
+    "data/skins/colony-v1/warrior-walk.view.json": "6c11e912c3bde88ff4f62983fa0cd6b57dbc0afb1bd68c03d4c7a7fee6b6f033",
+    "data/skins/colony-v1/warrior-swim.gsk": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
+    "data/skins/colony-v1/warrior-swim.view.json": "044da3d17ba89d714aa78975ab1930b2b4dab9b4206609b99f499ae4c30b8ca1",
+    "data/skins/colony-v1/warrior-fight.gsk": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
+    "data/skins/colony-v1/warrior-fight.view.json": "102798f33b7775ff170c11eaeef7042a64b893ade58da02868411ebdfc613d9d"
+  }
+}

@@ -1,0 +1,107 @@
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:32:54)
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-harvest.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-fight.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/explorer.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+test_edited_action_exports_against_the_same_base (__main__.FittedRigTest) ... Info: Total files 1 | Changed 1 | Failed 0
+ok
+test_every_clip_fits_the_baked_frames (__main__.FittedRigTest) ... ok
+test_installed_rigs_match_the_authoring_scripts (__main__.FittedRigTest) ... ok
+test_installer_rejects_stale_sources_and_altered_bytes (__main__.FittedRigTest) ... ok
+test_regeneration_is_byte_identical (__main__.FittedRigTest) ... Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-worker-harvest.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-walk.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-swim.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/glob-warrior-fight.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+Read blend: "/home/bradley/glob2-rigfit/datasrc/gfx/originals/units/explorer.blend"
+NOTE: ortho render has changed, tweak new Camera 'scale' value.
+Info: Total files 0 | Changed 0 | Failed 0
+ok
+test_rest_surface_keeps_paint_topology_and_both_reflections (__main__.FittedRigTest) ... ok
+test_weights_are_valid_mirrored_and_bounded_to_four_bones (__main__.FittedRigTest) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 193.300s
+
+OK
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker: pass 1 rms 0.6269 (14s)
+worker: pass 2 rms 0.5875 (22s)
+worker: pass 3 rms 0.5601 (30s)
+worker: pass 4 rms 0.5524 (37s)
+worker: pass 5 rms 0.5494 (45s)
+worker: pass 6 rms 0.5481 (53s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.503 p95 1.071 max 3.456 flipped faces max 305 strayed normals max 438
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.509 p95 1.031 max 6.181 flipped faces max 497 strayed normals max 497
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.653 p95 1.508 max 3.940 flipped faces max 445 strayed normals max 560
+Info: Saved "worker.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9982 (6s)
+warrior: pass 1 rms 0.9368 (14s)
+warrior: pass 2 rms 0.9766 (23s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.574 p95 1.208 max 4.607 flipped faces max 346 strayed normals max 296
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.126 p95 2.559 max 8.223 flipped faces max 856 strayed normals max 450
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.579 p95 1.247 max 4.749 flipped faces max 372 strayed normals max 297
+Info: Saved "warrior.blend"
+Warning: Library file, loading empty scene
+explorer-fly: 1330 vertices, 4 bones, 120700 bytes
+Info: Saved "explorer.blend"
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.509 p95 1.031 max 6.181 flipped faces max 497 strayed normals max 497
+Info: Saved "worker.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker: pass 1 rms 0.6269 (14s)
+worker: pass 2 rms 0.5875 (22s)
+worker: pass 3 rms 0.5601 (29s)
+worker: pass 4 rms 0.5524 (37s)
+worker: pass 5 rms 0.5494 (44s)
+worker: pass 6 rms 0.5481 (52s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.503 p95 1.071 max 3.456 flipped faces max 305 strayed normals max 438
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.509 p95 1.031 max 6.181 flipped faces max 497 strayed normals max 497
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.653 p95 1.508 max 3.940 flipped faces max 445 strayed normals max 560
+Info: Saved "worker.blend"
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+Warning: Library file, loading empty scene
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9982 (6s)
+warrior: pass 1 rms 0.9368 (15s)
+warrior: pass 2 rms 0.9766 (23s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.574 p95 1.208 max 4.607 flipped faces max 346 strayed normals max 296
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.126 p95 2.559 max 8.223 flipped faces max 856 strayed normals max 450
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.579 p95 1.247 max 4.749 flipped faces max 372 strayed normals max 297
+Info: Saved "warrior.blend"
+Warning: Library file, loading empty scene
+explorer-fly: 1330 vertices, 4 bones, 120700 bytes
+Info: Saved "explorer.blend"
+
+Blender quit
+exit 0

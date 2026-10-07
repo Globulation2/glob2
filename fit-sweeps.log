@@ -1,0 +1,166 @@
+### fit-smooth
+== smoothness 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6891 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.304 p95 0.564 max 2.709 flipped faces max 338
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.387 p95 0.757 max 4.650 flipped faces max 600
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.377 p95 0.769 max 2.718 flipped faces max 542
+== smoothness 0.5
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6926 (18s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.339 p95 0.637 max 2.914 flipped faces max 378
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.430 p95 0.812 max 5.714 flipped faces max 570
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.375 p95 0.781 max 2.952 flipped faces max 399
+== smoothness 2
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.7012 (19s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.389 p95 0.798 max 3.317 flipped faces max 420
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.443 p95 0.827 max 6.259 flipped faces max 569
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.432 p95 0.940 max 3.401 flipped faces max 498
+== smoothness 8
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.7059 (20s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.482 p95 1.051 max 3.392 flipped faces max 370
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.474 p95 0.919 max 6.409 flipped faces max 676
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.531 p95 1.220 max 3.900 flipped faces max 647
+done
+### fit-support
+== support-passes 0 smoothness 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6891 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.302 p95 0.553 max 2.675 flipped faces max 379
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.392 p95 0.774 max 4.645 flipped faces max 612
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.386 p95 0.801 max 2.999 flipped faces max 547
+== support-passes 5 smoothness 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.310 p95 0.600 max 2.602 flipped faces max 271
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.384 p95 0.748 max 4.945 flipped faces max 536
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.369 p95 0.750 max 2.766 flipped faces max 373
+== support-passes 20 smoothness 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.7025 (8s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.340 p95 0.647 max 3.908 flipped faces max 252
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.414 p95 0.821 max 5.053 flipped faces max 507
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.409 p95 0.913 max 3.700 flipped faces max 407
+== support-passes 20 smoothness 0.5
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.7195 (19s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.375 p95 0.758 max 3.192 flipped faces max 276
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.443 p95 0.847 max 5.916 flipped faces max 583
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.460 p95 1.036 max 3.656 flipped faces max 397
+== iterations 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6891 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.642 p95 1.251 max 3.976 flipped faces max 416
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.604 p95 1.286 max 6.532 flipped faces max 618
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.828 p95 1.994 max 4.449 flipped faces max 832
+done
+### fit-anchor
+== anchor 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.310 p95 0.600 max 2.602 flipped faces max 271 strayed normals max 474
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.384 p95 0.748 max 4.945 flipped faces max 536 strayed normals max 624
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.369 p95 0.750 max 2.766 flipped faces max 373 strayed normals max 630
+== anchor 0.3
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.351 p95 0.679 max 3.101 flipped faces max 255 strayed normals max 433
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.404 p95 0.778 max 5.198 flipped faces max 486 strayed normals max 587
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.452 p95 0.950 max 3.812 flipped faces max 480 strayed normals max 591
+== anchor 1
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.385 p95 0.796 max 2.742 flipped faces max 233 strayed normals max 467
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.419 p95 0.808 max 5.101 flipped faces max 538 strayed normals max 560
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.512 p95 1.082 max 3.801 flipped faces max 535 strayed normals max 605
+== anchor 3
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6939 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.403 p95 0.837 max 2.608 flipped faces max 296 strayed normals max 520
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.422 p95 0.817 max 5.059 flipped faces max 536 strayed normals max 591
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.536 p95 1.113 max 3.861 flipped faces max 569 strayed normals max 612
+done
+### fit-allowed
+== allowed, anchor 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.348 p95 0.680 max 3.095 flipped faces max 333 strayed normals max 440
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.443 p95 0.922 max 5.010 flipped faces max 549 strayed normals max 643
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.463 p95 1.073 max 3.641 flipped faces max 374 strayed normals max 645
+== allowed, anchor 0.3
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.428 p95 0.896 max 3.647 flipped faces max 319 strayed normals max 417
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.427 p95 0.873 max 5.120 flipped faces max 417 strayed normals max 575
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.507 p95 1.138 max 3.663 flipped faces max 365 strayed normals max 536
+done
+### fit-locked
+== locked rotations, iterations 0
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.650 p95 1.276 max 4.141 flipped faces max 416 strayed normals max 245
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.608 p95 1.296 max 6.532 flipped faces max 572 strayed normals max 334
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.830 p95 2.030 max 4.449 flipped faces max 852 strayed normals max 378
+silhouette IoU mean 0.9143 p5 0.8320 min 0.8107 (frame 249)
+== locked rotations, iterations 20
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.452 p95 0.957 max 3.099 flipped faces max 334 strayed normals max 499
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.436 p95 0.883 max 4.955 flipped faces max 480 strayed normals max 600
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.591 p95 1.261 max 3.925 flipped faces max 418 strayed normals max 591
+silhouette IoU mean 0.9334 p5 0.8892 min 0.8763 (frame 254)
+done
+### fit-bound
+== translation bound 0.25
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (6s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.593 p95 1.178 max 3.730 flipped faces max 328 strayed normals max 375
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.592 p95 1.211 max 6.869 flipped faces max 583 strayed normals max 446
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.780 p95 1.836 max 4.769 flipped faces max 475 strayed normals max 623
+silhouette IoU mean 0.9391 p5 0.8927 min 0.8687 (frame 248)
+== translation bound 0.5
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.555 p95 1.143 max 3.515 flipped faces max 292 strayed normals max 498
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.552 p95 1.099 max 6.643 flipped faces max 562 strayed normals max 574
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.724 p95 1.725 max 4.078 flipped faces max 426 strayed normals max 610
+silhouette IoU mean 0.9424 p5 0.8947 min 0.8765 (frame 254)
+== translation bound 1
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6936 (7s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.503 p95 1.071 max 3.456 flipped faces max 305 strayed normals max 438
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.509 p95 1.031 max 6.181 flipped faces max 497 strayed normals max 497
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.653 p95 1.508 max 3.940 flipped faces max 445 strayed normals max 560
+silhouette IoU mean 0.9415 p5 0.8987 min 0.8808 (frame 254)
+done
+### fit-warrior-bound
+== warrior translation bound 2
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9982 (6s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.557 p95 1.133 max 5.674 flipped faces max 380 strayed normals max 303
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 1.050 p95 2.394 max 9.360 flipped faces max 891 strayed normals max 444
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.552 p95 1.174 max 5.519 flipped faces max 407 strayed normals max 299
+== warrior translation bound 4
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9982 (6s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.465 p95 0.935 max 4.934 flipped faces max 350 strayed normals max 323
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 0.829 p95 1.771 max 8.511 flipped faces max 817 strayed normals max 764
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.491 p95 1.037 max 4.810 flipped faces max 382 strayed normals max 325
+done
+### fit-mid
+warrior: 21 bones, samples {'walk': 64, 'swim': 256, 'fight': 64}, initial rms 0.9845 (10s)
+warrior: pass 1 rms 0.5661 (24s)
+warrior: pass 2 rms 0.5157 (37s)
+warrior: pass 3 rms 0.4906 (50s)
+warrior: pass 4 rms 0.4786 (64s)
+warrior: pass 5 rms 0.4720 (74s)
+warrior: pass 6 rms 0.4672 (82s)
+warrior: pass 7 rms 0.4618 (90s)
+warrior: pass 8 rms 0.4584 (98s)
+warrior: pass 9 rms 0.4529 (106s)
+warrior: pass 10 rms 0.4487 (114s)
+warrior: pass 11 rms 0.4461 (121s)
+warrior: pass 12 rms 0.4449 (129s)
+warrior-walk: 2450 vertices, 21 bones, 262192 bytes, rms 0.326 p95 0.716 max 2.574
+warrior-swim: 2450 vertices, 21 bones, 391216 bytes, rms 0.489 p95 1.072 max 4.744
+warrior-fight: 2450 vertices, 21 bones, 262192 bytes, rms 0.371 p95 0.799 max 3.275
+worker: 29 bones, samples {'walk': 64, 'swim': 64, 'harvest': 64}, initial rms 0.6891 (7s)
+worker: pass 1 rms 0.5233 (14s)
+worker: pass 2 rms 0.4031 (21s)
+worker: pass 3 rms 0.3707 (29s)
+worker: pass 4 rms 0.3554 (36s)
+worker: pass 5 rms 0.3474 (43s)
+worker: pass 6 rms 0.3426 (51s)
+worker: pass 7 rms 0.3392 (58s)
+worker: pass 8 rms 0.3368 (66s)
+worker: pass 9 rms 0.3339 (73s)
+worker: pass 10 rms 0.3317 (80s)
+worker: pass 11 rms 0.3286 (87s)
+worker: pass 12 rms 0.3248 (94s)
+worker: pass 13 rms 0.3229 (100s)
+worker: pass 14 rms 0.3208 (107s)
+worker: pass 15 rms 0.3195 (114s)
+worker-walk: 2834 vertices, 29 bones, 312912 bytes, rms 0.284 p95 0.519 max 2.338
+worker-swim: 2834 vertices, 29 bones, 312912 bytes, rms 0.366 p95 0.705 max 4.463
+worker-harvest: 2834 vertices, 29 bones, 312912 bytes, rms 0.358 p95 0.742 max 3.213
+done

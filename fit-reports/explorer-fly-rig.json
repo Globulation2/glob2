@@ -1,0 +1,25 @@
+{
+  "format": "GSR1",
+  "version": 1,
+  "experimental": true,
+  "file": "explorer-fly.gsr",
+  "sha256": "d1d19b75cf4f0213372a1d707e050c9844e69de6845fdc047067811cb67454ba",
+  "clips": [
+    {
+      "id": 0,
+      "name": "fly",
+      "samples": 64,
+      "mapping": "alternating-gait-halves-v1",
+      "direction8": "existing-unitAnimationFrame"
+    }
+  ],
+  "sources": {
+    "tools/skins/author_explorer_rig.py": "1f4d8c395ab8a95e7a3eb893f81ed1a645f94647085db783f5ec506792b4dace",
+    "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+    "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+    "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+    "data/skins/colony-v1/explorer-fly.gsk": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49",
+    "data/skins/colony-v1/explorer-fly.view.json": "3774a18f1c409b826cac93b9bd7c7407a6add2d580854ef8c9190477f0013220",
+    "datasrc/gfx/originals/units/explorer.blend": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "format": "GSR1",
+  "version": 1,
+  "experimental": true,
+  "file": "worker-harvest.gsr",
+  "sha256": "e98064b506c588d58fa25ff475114741e76443b7e089881793c10215c09c8879",
+  "clips": [
+    {
+      "id": 2,
+      "name": "harvest",
+      "samples": 64,
+      "mapping": "alternating-gait-halves-v1",
+      "direction8": "existing-unitAnimationFrame"
+    }
+  ],
+  "sources": {
+    "tools/skins/fit_unit_rigs.py": "7106a7c61734e86240eccdfd0716cabd9cd376fb77d578bde1406d4ac2137ee0",
+    "tools/skins/rig_scene.py": "63ab0b31fb853235941702de0eddefc19ba8dce21a0aa3704c0cbba72f627641",
+    "tools/skins/export_rig.py": "41aecaed307114817279b056f615a174f4a58cb83ea6ce735aaeec211201c372",
+    "tools/skins/export_units.py": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+    "tools/skins/limb_surface.py": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+    "datasrc/gfx/authored/skins/limb-surfaces.json": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+    "data/skins/colony-v1/worker-surface.json": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f",
+    "datasrc/gfx/originals/units/glob-worker-walk.blend": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+    "datasrc/gfx/originals/units/glob-worker-swim.blend": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+    "datasrc/gfx/originals/units/glob-worker-harvest.blend": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+    "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+    "data/skins/colony-v1/worker-walk.view.json": "2a7d9b183cef9b53e5e4f56298669e5088c07511fc91b0ef0f59ac4d524e69fe",
+    "data/skins/colony-v1/worker-swim.gsk": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
+    "data/skins/colony-v1/worker-swim.view.json": "50188f513e89fb684100d41683a2e76df94e802067187f2aff625a8861a2da7b",
+    "data/skins/colony-v1/worker-harvest.gsk": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
+    "data/skins/colony-v1/worker-harvest.view.json": "37f35707fe15bf1d3f2afa38a5aebdcf6af60aeffb7b0d095f516df6c533a488"
+  }
+}

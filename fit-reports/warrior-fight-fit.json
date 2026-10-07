@@ -1,0 +1,70 @@
+{
+  "model": "warrior",
+  "clip": "fight",
+  "bones": 21,
+  "samples": 64,
+  "boneNames": [
+    "body",
+    "arm.socket.R",
+    "arm.1.mid.R",
+    "arm.1.R",
+    "arm.2.mid.R",
+    "arm.2.R",
+    "arm.socket.L",
+    "arm.1.mid.L",
+    "arm.1.L",
+    "arm.2.mid.L",
+    "arm.2.L",
+    "leg.socket.R",
+    "leg.1.mid.R",
+    "leg.1.R",
+    "leg.2.mid.R",
+    "leg.2.R",
+    "leg.socket.L",
+    "leg.1.mid.L",
+    "leg.1.L",
+    "leg.2.mid.L",
+    "leg.2.L"
+  ],
+  "iterations": 2,
+  "meanRmsHistory": [
+    0.998245413195054,
+    0.9368015429533729,
+    0.9766193126987753
+  ],
+  "restExtent": 7.725781561687501,
+  "restAsymmetry": 4.0617542120813255e-06,
+  "frames": {
+    "flippedFacesMax": 372,
+    "flippedFacesMean": 339.98046875,
+    "normalsStrayedMax": 297,
+    "normalsStrayedMean": 261.328125,
+    "rms": 0.5793444241370089,
+    "p95": 1.2469838885780515,
+    "max": 4.748510404956118,
+    "worstFrame": 149,
+    "worstFrameMean": 0.3787275011552502,
+    "kinds": {
+      "body": {
+        "rms": 0.34791258186027973,
+        "max": 2.285839070973714
+      },
+      "ring": {
+        "rms": 0.8364123558629619,
+        "max": 4.748510404956118
+      },
+      "cap": {
+        "rms": 0.1951096777431933,
+        "max": 0.7350999127280757
+      },
+      "tip": {
+        "rms": 0.14836826526130814,
+        "max": 0.395586555801824
+      },
+      "average": {
+        "rms": 0.547274541101394,
+        "max": 3.904881925849866
+      }
+    }
+  }
+}

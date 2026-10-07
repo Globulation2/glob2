@@ -1,0 +1,5 @@
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json && tsc -p apps/web/e2e/tsconfig.json
+
+typecheck exit 0

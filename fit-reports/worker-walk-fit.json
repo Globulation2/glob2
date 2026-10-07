@@ -1,0 +1,82 @@
+{
+  "model": "worker",
+  "clip": "walk",
+  "bones": 29,
+  "samples": 64,
+  "boneNames": [
+    "body",
+    "arm.socket.R",
+    "arm.1.mid.R",
+    "arm.1.R",
+    "arm.2.mid.R",
+    "arm.2.R",
+    "arm.3.mid.R",
+    "arm.3.R",
+    "arm.socket.L",
+    "arm.1.mid.L",
+    "arm.1.L",
+    "arm.2.mid.L",
+    "arm.2.L",
+    "arm.3.mid.L",
+    "arm.3.L",
+    "leg.socket.R",
+    "leg.1.mid.R",
+    "leg.1.R",
+    "leg.2.mid.R",
+    "leg.2.R",
+    "leg.3.mid.R",
+    "leg.3.R",
+    "leg.socket.L",
+    "leg.1.mid.L",
+    "leg.1.L",
+    "leg.2.mid.L",
+    "leg.2.L",
+    "leg.3.mid.L",
+    "leg.3.L"
+  ],
+  "iterations": 6,
+  "meanRmsHistory": [
+    0.6936344264236161,
+    0.6268646787093356,
+    0.5875405559931227,
+    0.5600678259582483,
+    0.5524085858004569,
+    0.5494147193863498,
+    0.5480935084855774
+  ],
+  "restExtent": 7.855034041011036,
+  "restAsymmetry": 6.269125146118881e-06,
+  "frames": {
+    "flippedFacesMax": 305,
+    "flippedFacesMean": 228.79296875,
+    "normalsStrayedMax": 438,
+    "normalsStrayedMean": 348.140625,
+    "rms": 0.5030429427862473,
+    "p95": 1.0706255228025452,
+    "max": 3.456228766449117,
+    "worstFrame": 240,
+    "worstFrameMean": 0.5299753187653528,
+    "kinds": {
+      "body": {
+        "rms": 0.663195816082443,
+        "max": 3.1053468412631076
+      },
+      "ring": {
+        "rms": 0.4778764562277807,
+        "max": 2.8170524895501377
+      },
+      "cap": {
+        "rms": 0.1857772928759815,
+        "max": 0.5150901840690314
+      },
+      "tip": {
+        "rms": 0.15536700756606192,
+        "max": 0.28124976407004837
+      },
+      "average": {
+        "rms": 0.5019673300797203,
+        "max": 3.456228766449117
+      }
+    }
+  }
+}

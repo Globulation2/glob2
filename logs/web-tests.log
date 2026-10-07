@@ -1,0 +1,11 @@
+
+ RUN  v5.0.3 /home/bradley/glob2-rigfit/platform
+
+<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+
+ Test Files  3 passed (3)
+      Tests  72 passed (72)
+   Start at  23:10:50
+   Duration  37.40s (tests 95%, transform 3%, import 2%)
+
+vitest exit 0
