@@ -64,7 +64,7 @@ static std::vector<Uint32> state(Game& game)
     return result;
 }
 
-static void checkContinuation(int checkpoint)
+static void checkContinuation(int checkpoint, bool hazards = false)
 {
     setSyncRandSeed(731);
     GameGUI original;
@@ -75,6 +75,10 @@ static void checkContinuation(int checkpoint)
     game.addTeam();
     game.teams[0]->race.loadDefault();
     game.setWaitingOnMask(0);
+    if (hazards) {
+        auto edit=game.map.editTerrain();
+        for (int y=8;y<18;++y) for(int x=6;x<15;++x) game.map.setCellTerrain(x,y,ICE);
+    }
     for (int y = 0; y < 32; ++y)
         for (int x = 0; x < 32; ++x) game.map.clearImmobileUnit(x, y);
     for (int x = 12; x < 15; ++x)
@@ -138,6 +142,12 @@ static void checkContinuation(int checkpoint)
 
 TEST_SUITE("UnitContinuation")
 {
+    TEST_CASE("hazard routes and idle escape preserve per-tick state across save load")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+        for (int checkpoint : {0,31,127}) checkContinuation(checkpoint,true);
+    }
+
 	TEST_CASE("five checkpoints replay 256 ticks with matching state and RNG")
 	{
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});

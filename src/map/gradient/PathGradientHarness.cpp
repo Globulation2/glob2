@@ -92,6 +92,7 @@ std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
             const auto &p = terrainProperties((*semantic)[i]);
             const int base = p.swimmable ? waterSteps[swimClass] : 10;
             cardinal = std::max(1, (base*256 + p.groundSpeedQ8/2)/p.groundSpeedQ8);
+            cardinal = std::min(181, (cardinal*(256+20*std::max(0,-int(p.groundHealthQ8)))+128)/256);
         }
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)

@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 141
+#define VERSION_MINOR 142
+// version 142 rebuilds pre-penalty terrain route caches; replay trajectories change.
 // version 141 adds the built-in terrain catalogue; older custom terrain IDs are remapped on load.
 // version 140 separates fixed materials from embedded runtime resource definitions.
 // version 139 moves periodic gradient preparation to the completed-tick observation phase.
@@ -176,7 +177,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 59
+#define NET_PROTOCOL_VERSION 60
+// protocol 60 requires damage-weighted routing and safe idle movement.
 // protocol 59 requires readers of format-140 runtime resource and material snapshots.
 // protocol 58 requires readers of version-138 map snapshots (terrain look seed).
 // protocol 54 transfers the format-132 AI continuation fields.

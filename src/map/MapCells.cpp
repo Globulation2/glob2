@@ -5,20 +5,30 @@
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
 	gradientRuntime->resourceSeeds.changed(index, flags);
+	// Material availability is not a movement obstacle. Resource replacements
+    // invalidate below only when their blocking properties actually change.
+    gradientRuntime->safety.invalidate(
+        flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Building | ResourceSeedCache::Forbidden),
+        flags & ResourceSeedCache::Terrain);
 }
 
 void Map::invalidateResourceSeeds()
 {
 	gradientRuntime->resourceSeeds.invalidate();
+	gradientRuntime->safety.invalidate(true, true);
 }
 
 void Map::replaceResource(size_t index, const Resource &resource)
 {
+    const bool blockedGround = resourceBlocksGround(index);
+    const bool blockedAir = resourceBlocksAir(index);
     const auto before = resourceMaterialMaskAt(index);
     releaseResourceStock(index);
     tiles[index].resource = resource;
     initializeResourceStock(index);
     materialStockChanged(index, before);
+    gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
+                                       blockedAir != resourceBlocksAir(index));
 }
 
 void Map::replaceTile(size_t index, const Tile &tile)

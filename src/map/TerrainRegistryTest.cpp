@@ -316,6 +316,23 @@ TEST_SUITE("TerrainRegistry")
 					CHECK(actual == expected);
 				}
 	}
+	TEST_CASE("many distinct hazard costs retain compact profile indices and exact propagation")
+    {
+        Json definitions=Json::array();
+        for(int damage=0;damage<240;++damage)
+            definitions.push_back(definition("test:damage"+std::to_string(damage),"grass",{{"groundHealthQ8",-damage}}));
+        auto registry=TerrainRegistry::builtins()->importJson(source(definitions));
+        REQUIRE(registry->movement(0).profiles.size()>128);
+        std::vector<TerrainType> ids(1024);
+        for(unsigned i=0;i<ids.size();++i) ids[i]=*registry->find("test:damage"+std::to_string(i%240));
+        std::vector<std::uint16_t> seeds(1024,GRADIENT_UNREACHABLE);
+        seeds[0]=GRADIENT_AT_GOAL;
+        auto expected=oracle(seeds,32,32,0,gradient_kernel::COST_LIMIT,ids,*registry);
+        GradientWorkspace workspace;
+        gradient_kernel::propagateTerrainField(seeds.data(),0,gradient_kernel::COST_LIMIT,
+            {32,32},workspace,[&](size_t i){return ids[i];},true,*registry,256);
+        CHECK(seeds==expected);
+    }
 	TEST_CASE("runtime searches reject undersized queues before changing the field")
 	{
 		auto registry = TerrainRegistry::builtins()->importJson(

@@ -242,7 +242,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
         {
 			const auto &registry = game.map.terrainRegistry();
 			entryCosts[i] = mode == "fly" ? registry.airCost(c.terrainType)
-										  : registry.movement(3).entries[c.terrainType].cardinal;
+										  : registry.groundTravelCost(c.terrainType);
 		}
 	}
 	const auto key = spec.encode();

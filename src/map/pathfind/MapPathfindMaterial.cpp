@@ -10,7 +10,7 @@
 
 
 
-// Resource pathfinding for units (pathfindResource, pathfindRandom)
+// Material pathfinding and idle ground movement.
 
 bool Map::pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
@@ -53,9 +53,15 @@ void Map::pathfindRandom(Unit *unit)
 {
 	int x=unit->posX;
 	int y=unit->posY;
+	if (terrainPropertiesAt(x,y).groundHealthQ8 < 0)
+	{
+		pathfindTerrainSafety(unit);
+		return;
+	}
 	if ((tiles[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy))
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy)
+			&& terrainPropertiesAt(x+unit->dx,y+unit->dy).groundHealthQ8 >= 0)
 		{
 			unit->directionFromDxDy();
 		}
@@ -84,7 +90,8 @@ void Map::pathfindRandom(Unit *unit)
 				int ty=(y+tabClose[di][1])&hMask;
 				if (pass == 0 && !(tiles[coordToIndex(tx, ty)].guardArea & unit->owner->me))
 					da[di]=false;
-				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				else if (terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
+					&& isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
 				{
 					da[di]=true;
 					count++;

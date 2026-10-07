@@ -5,6 +5,7 @@
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
 #include "ResourceSeedCache.h"
+#include "TerrainSafetyCache.h"
 #include "field/GradientWorkspace.h"
 
 #include <vector>
@@ -27,6 +28,7 @@ struct GradientRuntime
 			std::vector<std::size_t> positions, seeds;
 		} crowding;
 	};
+    TerrainSafetyCache safety;
 	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;

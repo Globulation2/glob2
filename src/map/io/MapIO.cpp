@@ -993,6 +993,33 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	}
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	stream->readLeaveSection();
+    if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
+        // Consume the complete old state first, then discard only route caches.
+        // Unit health, claims, fog and scheduling unrelated to routing survive.
+        gradientRuntime->preparation={};
+        const unsigned delay = gradientRuntime->pipeline.delayTicks();
+        gradientRuntime->pipeline.reset();
+        if (delay) configureGradientPipeline(2,delay);
+        gradientRuntime->materialFields.clear();
+        gradientRuntime->materialLru.clear();
+        for (int t=0; t<game->teamsCount(); ++t) {
+            for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+                for (int r=0; r<MaterialSlotCount; ++r) {
+                    delete[] materialGradients[t][r][sw]; materialGradients[t][r][sw]=nullptr;
+                    gradientUpdated[t][r][sw]=false;
+                    delete[] marketMaterialGradients[t][r][sw]; marketMaterialGradients[t][r][sw]=nullptr;
+                    marketGradientDirty[t][r][sw]=marketGradientUpdated[t][r][sw]=false;
+                }
+                delete[] forbiddenGradient[t][sw]; forbiddenGradient[t][sw]=nullptr;
+                delete[] guardAreasGradient[t][sw]; guardAreasGradient[t][sw]=nullptr;
+                delete[] clearAreasGradient[t][sw]; clearAreasGradient[t][sw]=nullptr;
+                guardGradientUpdated[t][sw]=clearGradientUpdated[t][sw]=false;
+            }
+            for (int b=0; b<Building::MAX_COUNT; ++b)
+                if (auto* building=game->teams[t]->myBuildings[b]) building->freeGradients();
+        }
+    }
+
 }
 
 
