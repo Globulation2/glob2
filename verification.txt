@@ -1,0 +1,10 @@
+Commit 91d7b2c4ef209e17e3d8cbe075542786565f8ac0; parent d42d3e51281c7d149b0a259f5a2a945316cf4562.
+Fetched master 9db08d59dd1be85689630e509d013bc9cf373f7f; later changes affect WebGL VAOs and platform skin studio, not failed-session cleanup.
+Linux x86_64 GCC15.2 debug; pinned SDL3 from build/sdl3-ci/prefix.
+Build: GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/test/glob2-engine-tests
+Before: build/native-coverage-torus/test/glob2-engine-tests --test-case="JavaScript fatal failure tears down a live engine session" (master d42, exit134).
+After: same command: 1 case,11 assertions PASS.
+Focused coverage: build/native-coverage-torus/test/glob2-engine-tests --test-suite=JavaScriptSession,AIOrderScheduler,AIPipeline
+19 cases,71228 assertions PASS.
+Built before committing exact EngineRun.cpp patch: provenance records parent + dirty tracked file, sourceTreeSha256 b93ac00d0eb288ee85f94846ef00a1d45557af133e6e88da5ea9e8f07c3bbf4b. No subsequent code edits.
+Covers error propagation, teardown, scheduler and AI pipeline including save continuity. Browser and other OS coverage pending; no claim of full matrix success. Normal simulation and serialization are unchanged: only abort path discards failed pipeline after joining.

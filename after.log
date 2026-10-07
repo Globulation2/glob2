@@ -1,0 +1,28 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "d42d3e51281c7d149b0a259f5a2a945316cf4562", "sourceStatus": [" M src/engine/EngineRun.cpp", "?? build-software-terrain/"], "sourceTreeSha256": "b93ac00d0eb288ee85f94846ef00a1d45557af133e6e88da5ea9e8f07c3bbf4b"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Failed to load the map: SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+The map couldn't be loaded because the file is either damaged or an incompatible version.
+SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+Failed to load the map: SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+===============================================================================
+[doctest] test cases:    19 |    19 passed | 0 failed | 1169 skipped
+[doctest] assertions: 71228 | 71228 passed | 0 failed |
+[doctest] Status: SUCCESS!
