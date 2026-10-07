@@ -14,6 +14,7 @@
 #include <vector>
 class MapEdit;
 class MapEditorWidget;
+struct BrushEntry;
 class ValueScrollBox;
 class Minimap;
 struct Tile;
@@ -37,24 +38,70 @@ class PhoneEditor
   private:
 	friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
+	// One card of the tray. Cards come from the brush catalogue
+	// (MapEdit::brushCatalog) and are identified by entry id, so they survive
+	// catalogue rebuilds; the script-area number and name are the only shared
+	// desktop widgets the tray still hosts.
 	struct Row
 	{
-		MapEditorWidget *widget;
+		enum class Kind : std::uint8_t
+		{
+			Entry,     // a catalogue brush
+			Fertility, // the fertility overlay toggle ("tool/fertility")
+			Widget     // script-area number cycler ("area/number") and name ("area/name")
+		};
+		Kind kind = Kind::Entry;
+		std::string id;
+		MapEditorWidget *widget = nullptr;
+		GAGCore::ViewRect rect; // on screen, scrolled
+		double x = 0, width = 0; // tray-relative layout
+		std::vector<std::string> lines; // label, at most two lines
+		int chip = -1; // the group header chip this card belongs to
+	};
+	// Group headers of the Terrain and Resources trays; a tap jumps to the group.
+	struct Chip
+	{
+		std::string title;
+		int first = 0; // first row of the group
+		double x = 0, width = 0;
 		GAGCore::ViewRect rect;
-		double scale;
 	};
 	MapEdit &editor;
 	GAGCore::TouchInput touch;
 	std::vector<Row> rows;
+	std::vector<Chip> chips;
 	GAGCore::ViewRect safe, content;
 	bool tools = true, pan = false, onMap = false;
-	int paletteMode = 2; // Terrain, resources, buildings, flags/units.
-	GAGCore::ViewRect tray, modeBar;
+	// Terrain, resources, buildings, flags/units, teams.
+	static constexpr int modeCount = 5;
+	// Points: the card strip, and the group chips above it in Terrain and Resources.
+	static constexpr double cardHeight = 68, chipHeight = 36;
+	int paletteMode = 2;
+	GAGCore::ViewRect tray, modeBar, chipBar, cardBar;
+	double chipOffset = 0;
+	// Card layout is measured once per catalogue revision, mode and size.
+	std::string trayLayoutKey;
+	void prepareTray(double unit);
+	void layoutTray(double unit);
+	void drawTray();
+	void drawCard(const Row &row);
+	void drawSwatch(const BrushEntry &entry, GAGCore::ViewRect box);
+	void activateRow(const Row &row, GAGCore::ViewPoint point);
+	int activeChip() const;
+	// Index of the card with this catalogue id in the current tray, or -1.
+	int rowOf(const std::string &id) const;
+	// Read-only diagnostic for browser tests (ApplicationHost::controlsChanged):
+	// "tray/mode/<n>", "tray/chip/<n>" and "tray/<catalogue id>" bounds.
+	void publishControls(bool shown);
+	std::string publishedControls;
+	void jumpToChip(int chip);
+	// Whether a card's brush is placed by dragging it onto the map.
+	bool dragPlaces(const Row &row);
 	struct Drag
 	{
 		SDL_TouchID device;
 		SDL_FingerID finger;
-		MapEditorWidget *widget;
+		std::string id, action;
 		GAGCore::ViewPoint start;
 		bool moving = false, browsing = false;
 	};
@@ -83,6 +130,8 @@ class PhoneEditor
 	void paintStroke();
 	void placeAt(GAGCore::ViewPoint point);
 	void label(GAGCore::ViewRect rect, const std::string &text);
+	void drawStatusToast();
+	void centredLabel(GAGCore::ViewRect rect, const std::string &text);
 	double offset = 0, maximum = 0;
 	// Momentum and bounce; syncTray() and syncInspector() keep the axes and
 	// the plain `offset` and `inspectorScroll` variables in step.

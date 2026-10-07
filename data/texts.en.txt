@@ -1041,7 +1041,7 @@ Unlocked At Start
 [unlocked by]
 Unlocked By
 [Unnamed Area]
-{Unnamed Area}
+Unnamed area
 [up]
 up
 [upgrade building]
@@ -5602,8 +5602,8 @@ Prune tree
 Gold ore
 [Iron ore]
 Iron ore
-[Sand]
-Sand
+[Silica]
+Silica
 [Cotton]
 Cotton
 [boulders]
@@ -5750,3 +5750,133 @@ Pick a brush. Groups share one set of rules; their members differ only in look.
 Algae grow
 [terrain palette experiments hint]
 Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
+[brush valid on %0]
+Valid on: %0
+[brush valid nowhere]
+Cannot be placed on any terrain of this map
+[brush requires experiment %0]
+Requires the %0 experiment
+[brush resources custom]
+Imported resources
+[brush section zones]
+Zones
+[brush section areas]
+Areas
+[brush section tools]
+Tools
+[brush clearing area]
+Clearing area
+[editor unsaved title]
+Unsaved changes
+[editor quit unsaved]
+Save your changes to this map before leaving the editor?
+[editor load unsaved]
+Save your changes to this map before opening another one?
+[editor save]
+Save…
+[editor discard]
+Don't save
+[editor share never saved]
+Maps are shared from their saved file. Save this map first, then share it.
+[editor share unsaved]
+This map has changes that are not saved yet. Sharing uploads the saved file.
+[editor save and share]
+Save and share…
+[editor share saved version]
+Share saved version
+[editor reroll confirm]
+Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone.
+[editor reroll]
+Reroll
+[editor map saved]
+Map saved
+[editor map shared]
+Map shared online
+[editor save needs fertility]
+Saving needs the fertility map, so the save was cancelled. Press OK to try again.
+[editor fertility stale]
+Fertility map is out of date · Click to refresh
+[No definition files found in %0]
+No definition files found in %0
+[From device…]
+From device…
+[replace existing file %0?]
+A file named "%0" already exists. Replace it?
+[Replace]
+Replace
+[Keep existing file]
+Keep existing file
+[editor menu save]
+Save map
+[editor menu load]
+Open map…
+[editor menu import terrain]
+Import terrain definitions…
+[editor menu import resources]
+Import resource definitions…
+[editor menu teams]
+Teams…
+[editor menu scenario]
+Scenario…
+[editor menu reroll]
+Reroll terrain look…
+[editor menu file]
+File
+[editor menu map]
+Map
+[no resource growth areas]
+No-growth areas
+[dock flags and units]
+Flags & units
+[dock minimap]
+Minimap
+[dock search brushes]
+Search brushes
+[dock brush shape %0]
+Brush shape %0
+[dock brush]
+Brush
+[dock brush paint]
+Paint
+[dock brush erase]
+Erase
+[dock enable for map]
+Enable for this map
+[dock enable experiment %0]
+Enable %0
+[dock enable experiment hint %0]
+Turns on the %0 experiment for this map only.
+[dock area number]
+Area
+[dock building level]
+Level
+[dock unit level]
+Unit level
+[dock no brushes match]
+No brushes match the search.
+[dock active team]
+Active team
+[dock team count %0]
+Teams on this map: %0
+[dock add team]
+Add team
+[dock remove team]
+Remove team
+[dock nothing selected]
+Nothing is selected.
+[dock no properties]
+This object has no editable properties.
+[focus brush search]
+Search brushes
+[switch to resources view]
+Switch to resources view
+[dock resources base]
+Standard resources
+[dock fertility stale]
+The fertility map is out of date.
+[dock fertility refresh]
+Refresh fertility
+[Enabled %0 for this map]
+Enabled %0 for this map
+[editor fertility tap refresh]
+Fertility map out of date: tap to refresh

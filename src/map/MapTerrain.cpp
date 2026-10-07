@@ -4,6 +4,8 @@
 #include "Map.h"
 #include "TerrainCompatibility.h"
 #include "Utilities.h"
+#include <algorithm>
+#include <stdexcept>
 
 // Terrain editing & rendering: setUMatPos, regenerateMap, lookup
 
@@ -120,6 +122,56 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 		regenerateMap(x-(l>>1)-2,y-(l>>1)-2,l+3,l+3);
 }
 
+
+void Map::paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t)
+{
+	if (t != GRASS && t != SAND && t != WATER)
+		throw std::invalid_argument("paintLegacyCells requires a legacy corner terrain");
+	if (cells.empty())
+		return;
+	auto terrainBatch = editTerrain();
+	// The corners written: all four of every listed cell, sorted for lookup.
+	std::vector<size_t> written;
+	written.reserve(cells.size() * 4);
+	int minX = cells.front().first, maxX = minX, minY = cells.front().second, maxY = minY;
+	for (const auto &[x, y] : cells)
+	{
+		minX = std::min(minX, x); maxX = std::max(maxX, x);
+		minY = std::min(minY, y); maxY = std::max(maxY, y);
+		// Only the painted cells give up an authored whole-cell material.
+		const auto index = coordToIndex(x, y);
+		if (!terrainUsesLegacyCorners(terrainTypeAt(index)))
+			changeTerrainIdentity(index, GRASS);
+		for (int dy = 0; dy <= 1; ++dy)
+			for (int dx = 0; dx <= 1; ++dx)
+				written.push_back(coordToIndex(x + dx, y + dy));
+	}
+	std::sort(written.begin(), written.end());
+	written.erase(std::unique(written.begin(), written.end()), written.end());
+	for (const auto corner : written)
+		undermap[corner] = Uint8(t);
+	// setUMatPos's shore rule: grass and water corners never touch, so an
+	// opposite-kind corner next to the written set becomes sand. Corners inside
+	// the set keep the painted terrain; sand needs no shore.
+	if (t != SAND)
+	{
+		const TerrainType clash = t == GRASS ? WATER : GRASS;
+		for (const auto corner : written)
+		{
+			const int x = int(corner & wMask), y = int(corner >> wDec);
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					const auto neighbour = coordToIndex(x + dx, y + dy);
+					if (undermap[neighbour] == Uint8(clash) &&
+						!std::binary_search(written.begin(), written.end(), neighbour))
+						undermap[neighbour] = Uint8(SAND);
+				}
+		}
+	}
+	// Corners from minX-1 to maxX+2 changed; a cell reads its corners at +0/+1.
+	regenerateMap(minX - 2, minY - 2, maxX - minX + 5, maxY - minY + 5);
+}
 
 void Map::regenerateMap(int x, int y, int w, int h)
 {

@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "a8eda69c7b7212d9f9573766da37f1002a984d62327c108fb581e9a9c23830dc",
+    "tools/artwork/terrain_synth.py": "7bcde1353e6c5ded00fb349e5091d326ac7a45777978f0337c2a40a728883aae",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "spring_meadow",
@@ -55,6 +55,7 @@
     "preview": null,
     "minimap": null,
     "placeholder_only": false,
+    "periodic": false,
     "note": ""
   },
   "seed": "fnv1a32(\"spring_meadow:<variant>:<phase>\")",
@@ -164,5 +165,23 @@
     "data/gfx/terrain-spring_meadow13.png": "f5507b9d5bb203d2abbf230e8d9292025d0db11a9603a3ff2e0297e101fb6597",
     "data/gfx/terrain-spring_meadow14.png": "21ad7ed3cbcea6bab2315451e6f3d922d1f200ea86b68b8b638419c9a95cfb51",
     "data/gfx/terrain-spring_meadow15.png": "71a883e0076f9a0358308dcd4e0be49184632b5b9ea19fe2e75b6a82f407818f"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-spring_meadow0.png": "416487b456bb39a93f743af4783d6a5c89584870ddbf2f3ac272d4e625779e66",
+    "data/highres/v1/terrain-spring_meadow1.png": "0afda9e6e97368eeb76e2166bdf858979b7ff1559af5945effe9324e77e5559d",
+    "data/highres/v1/terrain-spring_meadow2.png": "9f635129066c753be8487c0361d913f378559061fe37a7b681f84abf5dc54e84",
+    "data/highres/v1/terrain-spring_meadow3.png": "0ced85f55a9723b40093fe5028081e2b01785e1da7853994aaefb2d1162f82d0",
+    "data/highres/v1/terrain-spring_meadow4.png": "df9eb75bf2ce22d343ac8c3f94769a50537c49dafc13ba0f976155871d22ad7d",
+    "data/highres/v1/terrain-spring_meadow5.png": "55ec48f09a575cb6e5190a250a291d577d87653b8791e63789eb35a75761a533",
+    "data/highres/v1/terrain-spring_meadow6.png": "ef849c46e7b19bdf7e36ade17b52aaa0b082b493b65942596478471d7d9576dc",
+    "data/highres/v1/terrain-spring_meadow7.png": "7a299e4514cda02a2628ec3e06065c604b9960bb75389b2edf83c5b2f258e488",
+    "data/highres/v1/terrain-spring_meadow8.png": "12e2f88fd72c810b6fe2b1c8b4a1b8dc8e3f11b3de7e2b42aecf7afa1d6dd521",
+    "data/highres/v1/terrain-spring_meadow9.png": "b7b1f919aca6671afcdc9da7ed074a2693ba37cf14df8243dbd4a10868a7976f",
+    "data/highres/v1/terrain-spring_meadow10.png": "99deb68d8bfa4845f360a4877fb8d3b6b78f58ae3d7c888e5249778f994206c6",
+    "data/highres/v1/terrain-spring_meadow11.png": "f9a98b6f3452ae360005101a7d7be2dbbd5ad5625b4e6cbbe87730fd30380fc9",
+    "data/highres/v1/terrain-spring_meadow12.png": "da4a8e06c854a1d68919913a4d132bcb533893ab45492d3831756c0c4a6b9023",
+    "data/highres/v1/terrain-spring_meadow13.png": "7d82dc3d136ae1b6759eb41cbf8c090b76299077b4e9b5a3b1286c492f76c6db",
+    "data/highres/v1/terrain-spring_meadow14.png": "d864ab7a1f9a1e3591509cc37eb594c5afc2944b6ff5ce7789987b20b8bae3f1",
+    "data/highres/v1/terrain-spring_meadow15.png": "06d4985dbed9cad2abbad027ffe01f0a2616a883d29cb08566c0ede8326cc6ba"
   }
 }

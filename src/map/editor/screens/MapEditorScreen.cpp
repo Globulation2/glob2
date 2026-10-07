@@ -2,7 +2,6 @@
 #include "MapEditorScreen.h"
 #include "MapEdit.h"
 #include "MessageScreen.h"
-#include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
 #include "OnlineMapsScreen.h"
 #include <Toolkit.h>
@@ -36,8 +35,11 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 	const auto shared = editor->takeShareRequest();
 	if (!shared.empty())
 	{
+		// Sharing (sign-in, upload, catalog details) is a full online screen;
+		// closing it returns here with the result shown over the map.
 		editor->suspendInput();
-		screens.push(std::make_unique<MapShareScreen>(shared));
+		screens.push(std::make_unique<MapShareScreen>(shared),
+					 [this](GAGGUI::Screen &, int result) { editor->finishShare(result == MapShareScreen::SHARED); });
 	}
 	const auto replacement = editor->takeLoadRequest();
 	if (!replacement.empty())
@@ -61,32 +63,11 @@ void MapEditorScreen::updateExecution(Uint32 tick)
 						 }
 					 });
 	}
-	else if (editor->needsFertility())
-	{
-		editor->suspendInput();
-		screens.push(std::make_unique<FertilityScreen>(editor->game.map),
-					 [this](GAGGUI::Screen &, int result)
-					 {
-						 if (!editor->finishFertility(result == 1))
-						 {
-							 auto &strings = *GAGCore::Toolkit::getStringTable();
-							 screens.push(std::make_unique<MessageScreen>(
-								 strings.getString("[ERROR_CANT_SAVE_MAP]"),
-								 std::vector<std::string>{strings.getString("[ok]")}));
-						 }
-					 });
-	}
-	else if (editor->needsQuitDecision())
-	{
-		editor->suspendInput();
-		auto &strings = *GAGCore::Toolkit::getStringTable();
-		screens.push(
-			std::make_unique<MessageScreen>(
-				strings.getString("[save before quit?]"),
-				std::vector<std::string>{strings.getString("[Yes]"), strings.getString("[No]"),
-										 strings.getString("[Cancel]")}),
-			[this](GAGGUI::Screen &, int choice) { editor->resolveQuitDecision(choice); });
-	}
+}
+bool MapEditorScreen::interceptsQuit() const
+{
+	// Unsaved work turns a window close into the editor's own quit prompt.
+	return editor && editor->hasUnsavedChanges();
 }
 void MapEditorScreen::handleExecutionEvent(SDL_Event event)
 {
@@ -104,6 +85,11 @@ Uint32 MapEditorScreen::executionDelay(Uint32 now, Uint32)
 	// Touch content coasting or bouncing frames at 16 ms so it stays smooth.
 	const Uint32 budget = editor && editor->touchAnimating() ? 16 : 33;
 	return elapsed < budget ? budget - elapsed : 0;
+}
+
+bool MapEditorScreen::usesResponsiveViewport() const
+{
+	return editor ? editor->wantsResponsiveViewport() : GAGCore::phonePresentationRequested();
 }
 
 void MapEditorScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)

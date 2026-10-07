@@ -39,6 +39,8 @@ namespace MapEditKeyActions
 		SelectClearingFlag,
 		ToggleMenuScreen,
 		SelectDeleteTool,
+		FocusBrushSearch,
+		SwitchToResourcesView,
 		ActionSize,
 	};
 

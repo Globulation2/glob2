@@ -7,6 +7,8 @@
 #include "Team.h"
 #include "map/TerrainRegistry.h"
 #include "resource/ResourceRegistry.h"
+#include "BrushCatalog.h"
+class BrushSwatches;
 namespace GAGCore
 {
 class DrawableSurface;
@@ -40,9 +42,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 		QUIT_EDITOR,
 		SHARE_MAP,
 		IMPORT_TERRAIN,
-		TERRAIN_PALETTE,
-		IMPORT_RESOURCES,
-		RESOURCE_PALETTE
+		IMPORT_RESOURCES
 	};
 
   protected:
@@ -120,61 +120,4 @@ class TeamsEditor : public Glob2UI::InGameDialog
 	Game *game;
 	Slot slots[Team::MAX_COUNT];
 	Glob2UI::Element slotRow(int index, const Glob2UI::Presentation &p, bool compact);
-};
-
-// Classic ground has its own side-panel brushes and palette section.
-constexpr bool terrainGroupIsClassic(TerrainGroup group)
-{
-	return group == TerrainGroup::Water || group == TerrainGroup::Sand || group == TerrainGroup::Grass;
-}
-// Whether the editor offers a type: selectable, and its experiment (if any) enabled.
-bool terrainBrushOffered(const TerrainRegistry &registry, TerrainType type);
-// The offered built-in members of a catalogue group, in table order.
-std::vector<TerrainType> offeredTerrainBrushes(const TerrainRegistry &registry, TerrainGroup group);
-
-// Shared desktop/touch palette: material previews grouped by catalogue group, with
-// each group's rules under its heading. Definitions are fixed for the dialog lifetime.
-class TerrainPaletteDialog : public Glob2UI::InGameDialog
-{
-	std::shared_ptr<const TerrainRegistry> registry;
-	std::optional<TerrainType> current;
-	int focus;
-	// Composed swatches live for the dialog: the registry and catalog are fixed.
-	std::map<TerrainType, std::unique_ptr<GAGCore::DrawableSurface>> previews;
-	GAGCore::DrawableSurface *preview(TerrainType type);
-
-  public:
-	// Maps a catalogue group key to its index; anything else means no focus.
-	static int groupFor(std::string_view key);
-	TerrainPaletteDialog(std::shared_ptr<const TerrainRegistry> value,
-						 std::optional<TerrainType> currentBrush = std::nullopt, int focusGroup = -1)
-		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), current(currentBrush), focus(focusGroup)
-	{
-	}
-	~TerrainPaletteDialog() override;
-	int focusedGroup() const { return focus; }
-	// Scrolls the focused group's first brush into view; call once after attaching.
-	void focusOnOpen();
-	const char *recordingId() const override { return "terrain_palette"; }
-	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
-
-  protected:
-	void onEscape() override { finish(-1); }
-	bool fillHeight() const override { return true; }
-	double maxWidth() const override { return 760; }
-};
-
-class ResourcePaletteDialog : public Glob2UI::InGameDialog
-{
-	std::shared_ptr<const ResourceRegistry> registry;
-	ExperimentSet& enabled;
-public:
-	explicit ResourcePaletteDialog(std::shared_ptr<const ResourceRegistry> value, ExperimentSet& experiments)
-		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), enabled(experiments) {}
-	const char* recordingId() const override { return "resource_palette"; }
-	Glob2UI::Element build(const Glob2UI::Presentation& p) override;
-protected:
-	void onEscape() override { finish(-1); }
-	bool fillHeight() const override { return true; }
-	double maxWidth() const override { return 760; }
 };

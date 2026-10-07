@@ -270,13 +270,16 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 		s->readLeaveSection();
 		require(r.current.tick >= r.coverage);
 		const auto samples = s->readUint32("samples");
-		require(samples <= Uint64(r.current.tick) / 512 + 1);
+		// Early format-143 writers retained delayed observation timestamps.
+        // Such samples remain ordered but need not fall on the capture grid.
+        const bool observedHistory = versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE;
+        require(samples <= Uint64(r.current.tick) / 512 + (observedHistory ? 2 : 1));
         const auto readOne=[&](GAGCore::InputStream* source,size_t n)
         {
             source->readEnterSection(static_cast<unsigned>(n));
             auto a=readSample(source,fields);
             source->readLeaveSection();
-            require(a.tick>=r.coverage && a.tick<=r.current.tick && !(a.tick&511) &&
+            require(a.tick>=r.coverage && a.tick<=r.current.tick && (observedHistory || !(a.tick&511)) &&
                     (r.history.empty() || a.tick>r.history.back().tick));
             r.history.push_back(std::move(a));
         };

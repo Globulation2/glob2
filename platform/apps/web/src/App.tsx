@@ -7,7 +7,8 @@ import { CommanderCredits } from './pages/Commander.tsx';
 // /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
 // links (/j/<code>) and sign-in (/signin) are server-rendered by the API.
 import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react';
-import { ART, GLOB_ICON, Wordmark, type ArtName } from './art.tsx';
+import { GLOB_ICON, Wordmark } from './art.tsx';
+import { Icon, type IconName } from './icons.tsx';
 import { Avatar, Loading } from './components/common.tsx';
 import { DOWNLOAD_URL, Home, WEBSITE_URL, websitePage } from './pages/Home.tsx';
 import { Leaderboard } from './pages/Leaderboard.tsx';
@@ -221,7 +222,7 @@ interface NavItem {
   to: string;
   id: string;
   name: string;
-  art?: ArtName;
+  icon?: IconName;
 }
 
 function About() {
@@ -298,15 +299,15 @@ function Layout() {
   }, [location.path]);
   const nav: NavItem[] = [
     { to: '/', id: 'home', name: 'Home' },
-    { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
-    { to: '/players', id: 'players', name: 'Players', art: 'school' },
-    { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
-    { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
-    { to: '/ais', id: 'ais', name: 'AI Library', art: 'swarm' },
-    { to: '/music', id: 'music', name: 'Music', art: 'fruit' },
-    { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
+    { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', icon: 'trophy' },
+    { to: '/players', id: 'players', name: 'Players', icon: 'users' },
+    { to: '/matches', id: 'matches', name: 'Matches', icon: 'swords' },
+    { to: '/maps', id: 'maps', name: 'Maps', icon: 'map' },
+    { to: '/ais', id: 'ais', name: 'AI Library', icon: 'robot' },
+    { to: '/music', id: 'music', name: 'Music', icon: 'music' },
+    { to: '/skins', id: 'skins', name: 'Skins', icon: 'palette' },
     ...(isModerator(account)
-      ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]
+      ? [{ to: '/admin', id: 'admin', name: 'Moderation', icon: 'shield-check' as IconName }]
       : []),
   ];
   const page = found ? (
@@ -333,7 +334,7 @@ function Layout() {
             onClick={() => drawer.current?.close()}
             aria-label="Close navigation"
           >
-            ×
+            <Icon name="x" />
           </button>
         ) : (
           <button
@@ -347,7 +348,7 @@ function Layout() {
         )}
       </div>
       <a className="btn primary sidebar-play" href="/play/" aria-label="Play in browser">
-        <span aria-hidden="true">▶</span>
+        <Icon name="player-play" size={20} />
         <span className="nav-label">Play in browser</span>
       </a>
       <nav className="nav" aria-label="Main">
@@ -370,7 +371,13 @@ function Layout() {
                   aria-label={item.name}
                   aria-current={section === item.id ? 'page' : undefined}
                 >
-                  <img src={item.art ? ART[item.art] : GLOB_ICON} width={26} height={26} alt="" />
+                  {item.icon ? (
+                    <span className={`nav-chip nav-chip-${item.id}`}>
+                      <Icon name={item.icon} size={20} />
+                    </span>
+                  ) : (
+                    <img src={GLOB_ICON} width={26} height={26} alt="" />
+                  )}
                   <span className="nav-label">{item.name}</span>
                   <span className="rail-tooltip" aria-hidden="true">
                     {item.name}

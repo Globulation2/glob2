@@ -372,4 +372,66 @@ TEST_CASE("screen phases; completion; reuse; quit and compatibility host")
     });
     require(hostCompleted, "Native host completes exactly once before returning");
 }
+
+TEST_CASE("a top screen with unsaved work can veto window close")
+{
+    GAGCore::DrawableSurface surface(800, 600);
+    struct Guarded : Screen {
+        bool dirty = true;
+        int quits = 0, terminations = 0, destroyed = 0;
+        bool interceptsQuit() const override { return dirty; }
+        void handleExecutionEvent(SDL_Event event) override
+        {
+            if (event.type == SDL_EVENT_QUIT) ++quits;
+            else if (event.type == SDL_EVENT_TERMINATING) ++terminations;
+        }
+    };
+    SDL_Event quit{}; quit.type = SDL_EVENT_QUIT;
+    {
+        ScreenStack stack(surface);
+        auto owned = std::make_unique<Guarded>();
+        auto *guarded = owned.get();
+        bool continued = false;
+        stack.push(std::move(owned), [&](Screen&, int) { continued = true; });
+        stack.frame(0, {});
+        require(stack.quitIntercepted(), "A dirty top screen intercepts quit");
+        stack.frame(40, {quit});
+        require(stack.running() && guarded->quits == 1, "Intercepted quit is delivered to the top screen instead of stopping");
+        // The screen answers the request by quitting the application itself.
+        guarded->endExecute(Screen::QUIT_APPLICATION);
+        stack.frame(80, {});
+        require(!stack.running() && stack.result() == Screen::QUIT_APPLICATION && !continued,
+                "A screen-confirmed quit stops the stack without running continuations");
+    }
+    {
+        ScreenStack stack(surface);
+        auto owned = std::make_unique<Guarded>();
+        owned->dirty = false;
+        stack.push(std::move(owned));
+        stack.frame(0, {});
+        require(!stack.quitIntercepted(), "A clean screen does not intercept quit");
+        stack.frame(40, {quit});
+        require(!stack.running() && stack.result() == Screen::QUIT_APPLICATION, "A clean screen quits immediately");
+    }
+    {
+        ScreenStack stack(surface);
+        stack.push(std::make_unique<Guarded>());
+        stack.frame(0, {});
+        SDL_Event terminating{}; terminating.type = SDL_EVENT_TERMINATING;
+        stack.frame(40, {terminating});
+        require(!stack.running(), "Platform termination is never vetoed");
+    }
+    {
+        // Only the top screen decides: a dirty parent under a clean child does not veto.
+        ScreenStack stack(surface);
+        stack.push(std::make_unique<Guarded>());
+        stack.frame(0, {});
+        auto child = std::make_unique<Guarded>();
+        child->dirty = false;
+        stack.push(std::move(child));
+        stack.frame(40, {});
+        stack.frame(80, {quit});
+        require(!stack.running(), "A clean child screen lets quit stop the stack");
+    }
+}
 }

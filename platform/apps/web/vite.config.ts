@@ -6,10 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     fs: {
-      // Share native shader sources without exposing the rest of the checkout.
+      // Share native shader and icon sources without exposing the rest of the checkout.
       allow: [
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
         fileURLToPath(new URL('../../../libgag/shaders', import.meta.url)),
+        fileURLToPath(new URL('../../../datasrc/icons/tabler', import.meta.url)),
       ],
     },
     headers: {

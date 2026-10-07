@@ -458,6 +458,34 @@
       "group": "Map & campaign editor"
     },
     {
+      "id": "editor-dock-terrain",
+      "title": "Map editor \u00b7 dock terrain",
+      "description": "Docked brush browser on the Terrain tab with a water brush selected: catalogue groups as collapsible sections of labelled swatch cards, brush shape and Paint/Erase below.",
+      "group": "Map & campaign editor",
+      "availability": "desktop"
+    },
+    {
+      "id": "editor-dock-resources",
+      "title": "Map editor \u00b7 dock resources",
+      "description": "Resources tab with wheat selected; each card names the terrains the resource may be placed on.",
+      "group": "Map & campaign editor",
+      "availability": "desktop"
+    },
+    {
+      "id": "editor-dock-locked",
+      "title": "Map editor \u00b7 dock locked group",
+      "description": "An experiment-gated terrain group opened by its palette action: dimmed cards with a lock and an Enable for this map action.",
+      "group": "Map & campaign editor",
+      "availability": "desktop"
+    },
+    {
+      "id": "editor-dock-inspector",
+      "title": "Map editor \u00b7 dock inspector",
+      "description": "A selected building edited in the dock: picture, team and level, and a stepper per editable property.",
+      "group": "Map & campaign editor",
+      "availability": "desktop"
+    },
+    {
       "id": "editor-pause",
       "title": "Map editor \u00b7 menu",
       "description": "Editor save, script, team and exit actions.",

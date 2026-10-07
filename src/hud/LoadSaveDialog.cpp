@@ -8,6 +8,7 @@
 #include <TextSort.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include "FormatableString.h"
 #include <map>
 
 namespace fe = Glob2UI;
@@ -94,6 +95,7 @@ void LoadSaveDialog::setName(const std::string &value)
 	if (persistence)
 		return;
 	name = value;
+	confirmingOverwrite = false;
 	generateFileName();
 	selected = -1;
 	for (std::size_t i = 0; i < files.size(); ++i)
@@ -107,6 +109,7 @@ void LoadSaveDialog::selectPresentedFile(int index)
 	if (persistence || index < 0 || index >= int(files.size()))
 		return;
 	selected = index;
+	confirmingOverwrite = false;
 	name = files[std::size_t(index)];
 	generateFileName();
 	invalidate();
@@ -117,7 +120,46 @@ void LoadSaveDialog::confirmPresentedFile()
 	if (persistence || name.empty())
 		return;
 	generateFileName();
+	// A retry after a failed save writes the file this dialog already chose.
+	if (!isLoad && !confirmingOverwrite && !saveFailed && name != ownName &&
+		std::find(files.begin(), files.end(), name) != files.end())
+	{
+		confirmingOverwrite = true;
+		invalidate();
+		return;
+	}
+	confirmingOverwrite = false;
 	finish(OK);
+}
+
+void LoadSaveDialog::confirmOverwrite()
+{
+	if (!confirmingOverwrite || persistence)
+		return;
+	confirmingOverwrite = false;
+	generateFileName();
+	finish(OK);
+}
+
+void LoadSaveDialog::cancelOverwrite()
+{
+	confirmingOverwrite = false;
+	invalidate();
+}
+
+void LoadSaveDialog::chooseDevice()
+{
+	if (persistence || !deviceImport)
+		return;
+	finish(DEVICE);
+}
+
+void LoadSaveDialog::showNotice(const std::string &message)
+{
+	saveFailed = false;
+	notice = true;
+	status = message;
+	invalidate();
 }
 
 void LoadSaveDialog::cancelPresentedFile()
@@ -137,6 +179,7 @@ void LoadSaveDialog::exportPresentedFile()
 void LoadSaveDialog::showLoadFailure(const std::string &message)
 {
 	saveFailed = true;
+	notice = false;
 	status = message;
 	resume();
 	invalidate();
@@ -191,7 +234,9 @@ LoadSaveDialog::FilePresentation LoadSaveDialog::filePresentation() const
 {
 	FilePresentation result;
 	result.title = title;
-	result.status = saveFailed || persistence ? status : std::string{};
+	result.status = saveFailed || persistence || notice ? status : std::string{};
+	result.confirmingOverwrite = confirmingOverwrite;
+	result.deviceImport = deviceImport;
 	result.name = name;
 	result.load = isLoad;
 	result.busy = bool(persistence);
@@ -208,13 +253,13 @@ Element LoadSaveDialog::build(const Presentation &p)
 	std::vector<Element> parts;
 	if (!title.empty())
 		parts.push_back(fe::paragraph(title, {fe::FontRole::Heading, false, fe::TextAlign::Center}));
-	if (saveFailed || busy)
+	if (saveFailed || busy || notice)
 		parts.push_back(fe::paragraph(status, {fe::FontRole::Body, !saveFailed}));
 	if (canExport)
 		parts.push_back(fe::button("export", fe::tr("[export save]"), [this] { exportPresentedFile(); }));
 	fe::ListOptions list;
 	list.visibleRows = isLoad ? 8 : 6;
-	list.emptyText = fe::tr("[No files saved yet]");
+	list.emptyText = emptyText.empty() ? fe::tr("[No files saved yet]") : emptyText;
 	list.activate = [this](int) { confirmPresentedFile(); };
 	if (busy)
 		list.enabled.assign(files.size(), false);
@@ -230,7 +275,18 @@ Element LoadSaveDialog::build(const Presentation &p)
 		parts.push_back(fe::field(fe::tr("[Filename]"), fe::textField("name", name, [this](const std::string &value) { setName(value); }, entry),
 								  {"", 220, true}));
 	}
+	if (deviceImport && isLoad)
+		parts.push_back(fe::button("device", fe::tr("[From device…]"), [this] { chooseDevice(); }, {false, false, !busy}));
 	std::vector<fe::MenuAction> actions;
+	if (confirmingOverwrite)
+	{
+		// Inline confirmation: Return keeps the existing file, only an explicit
+		// press replaces it.
+		parts.push_back(fe::paragraph(FormattableString(fe::tr("[replace existing file %0?]")).arg(name), {fe::FontRole::Body}));
+		actions.push_back({"overwrite", fe::tr("[Replace]"), [this] { confirmOverwrite(); }});
+		actions.push_back({"overwrite/cancel", fe::tr("[Keep existing file]"), [this] { cancelOverwrite(); }, true, SDLK_ESCAPE});
+		return fe::footer(fe::column(std::move(parts), {p.pt(10)}), dialogActions(std::move(actions), p));
+	}
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirmPresentedFile(); }, true, SDLK_RETURN, !busy && !name.empty()});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { cancelPresentedFile(); }, false, SDLK_ESCAPE, !busy});
 	return fe::footer(fe::column(std::move(parts), {p.pt(10)}), dialogActions(std::move(actions), p));

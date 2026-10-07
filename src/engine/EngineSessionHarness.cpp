@@ -32,7 +32,7 @@
 #include "LoadSaveDialog.h"
 #include "GameGUIDialog.h"
 #include "FertilityCalculator.h"
-#include "FertilityScreen.h"
+#include "EditorDialogs.h"
 #include "EditorLoadScreen.h"
 #include "EditorGenerateScreen.h"
 #include "GameLoadScreen.h"
@@ -1044,15 +1044,18 @@ TEST_SUITE("EngineSession")
 		        }
 		        {
 		            const auto beforeCancel = snapshot();
-		            GAGGUI::ScreenStack screens(*globalContainer->gfx);
-		            screens.push(std::make_unique<FertilityScreen>(editor.game.map));
+		            EditorProgressDialog progress(editor.game.map, "Fertility");
+		            progress.attach(*globalContainer->gfx);
+		            progress.update(1000);
+		            progress.draw(1000);
 		            SDL_Event escape{};
 		            escape.type = SDL_EVENT_KEY_DOWN;
 		            escape.key.key = SDLK_ESCAPE;
-		            screens.frame(1000, {escape});
-		            screens.frame(1001, {});
-		            require(!screens.running() && screens.result() == 0, "Fertility screen must accept cancellation");
-		            require(snapshot() == beforeCancel, "Cancelling the progress screen changed the map");
+		            escape.key.scancode = SDL_SCANCODE_ESCAPE;
+		            progress.event(escape);
+		            require(progress.finished() && progress.result() == EditorProgressDialog::CANCELLED,
+		                    "Fertility progress must accept cancellation");
+		            require(snapshot() == beforeCancel, "Cancelling the progress dialog changed the map");
 		        }
 		        editor.beginEditing();
 		        editor.mapHasBeenModified();

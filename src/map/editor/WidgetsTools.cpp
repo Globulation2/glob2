@@ -113,7 +113,8 @@ void TerrainSelector::draw()
 	}
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
-	if (me.terrainType == terrainType)
+	// Legacy and registry selectors for one resource are the same brush.
+	if (me.canonicalSelector(me.terrainType) == me.canonicalSelector(terrainType))
 	{
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);

@@ -1,0 +1,312 @@
+{
+  "generator": "tools/artwork/terrain_synth.py",
+  "method": "procedural",
+  "generator_sha256": {
+    "tools/artwork/terrain_synth.py": "7bcde1353e6c5ded00fb349e5091d326ac7a45777978f0337c2a40a728883aae",
+    "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
+  },
+  "material": "water",
+  "group": "water",
+  "label": "Water",
+  "recipe": {
+    "name": "water",
+    "group": "water",
+    "label": "Water",
+    "profile": "sand",
+    "seam": {
+      "height": 5,
+      "cast_q8": 72,
+      "cast_width_q8": 640
+    },
+    "palette": {
+      "deep": [
+        60,
+        44,
+        188
+      ],
+      "base": [
+        69,
+        52,
+        200
+      ],
+      "light": [
+        80,
+        64,
+        210
+      ],
+      "glint": [
+        138,
+        128,
+        236
+      ]
+    },
+    "style": {
+      "luma": 74,
+      "std": 5,
+      "grain_max": 5,
+      "match": 0.6
+    },
+    "phases": 4,
+    "animation_ticks": 24,
+    "alpha_range": [
+      255,
+      255
+    ],
+    "preview": [
+      70,
+      50,
+      191
+    ],
+    "minimap": [
+      0,
+      40,
+      120
+    ],
+    "placeholder_only": false,
+    "periodic": false,
+    "note": ""
+  },
+  "seed": "fnv1a32(\"water:<variant>:<phase>\")",
+  "render_size": 128,
+  "tile_size": 32,
+  "variants": 16,
+  "phases": 4,
+  "frame_layout": "variant + 16 * phase",
+  "sprite": "data/gfx/terrain-water",
+  "preview": [
+    70,
+    50,
+    191
+  ],
+  "minimap": [
+    0,
+    40,
+    120
+  ],
+  "mean_color": [
+    69,
+    52,
+    199
+  ],
+  "style_stats": {
+    "0": {
+      "luma": 74.1,
+      "std": 4.9,
+      "grain": 1.8,
+      "sat": 0.74,
+      "alpha": 255.0
+    },
+    "1": {
+      "luma": 74.1,
+      "std": 4.9,
+      "grain": 1.6,
+      "sat": 0.74,
+      "alpha": 255.0
+    },
+    "2": {
+      "luma": 74.1,
+      "std": 4.9,
+      "grain": 1.8,
+      "sat": 0.74,
+      "alpha": 255.0
+    },
+    "3": {
+      "luma": 74.1,
+      "std": 4.9,
+      "grain": 1.8,
+      "sat": 0.74,
+      "alpha": 255.0
+    }
+  },
+  "style_references": {
+    "data/gfx/terrain0..15.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 79.3,
+        "std": 5.0,
+        "grain": 3.0,
+        "sat": 0.73,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain128..143.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 160.1,
+        "std": 27.0,
+        "grain": 27.9,
+        "sat": 0.74,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain256..271.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 95.2,
+        "std": 8.4,
+        "grain": 5.5,
+        "sat": 0.92,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain272..287.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 215.4,
+        "std": 6.2,
+        "grain": 4.3,
+        "sat": 0.17,
+        "alpha": 255.0
+      }
+    },
+    "data/gfx/terrain288..303.png": {
+      "use": "statistics only",
+      "stats": {
+        "luma": 102.9,
+        "std": 10.3,
+        "grain": 7.9,
+        "sat": 0.37,
+        "alpha": 255.0
+      }
+    }
+  },
+  "python": "3.14.4",
+  "pillow": "12.2.0",
+  "platform": {
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
+  },
+  "runtime_sha256": {
+    "data/gfx/terrain-water0.png": "62f757188c9b49f2b12595fe034d96f9d64c651f0bd412b4a96b1fc218be9e3a",
+    "data/gfx/terrain-water1.png": "6aacd552deab4520e7075231004cd43544943f63d6e3f450a4ee4cad345a7835",
+    "data/gfx/terrain-water2.png": "12e66b815011acbc52e5cce1f8125f3793fc3ffd86dfb01387a9d480b83c909f",
+    "data/gfx/terrain-water3.png": "e03f9566cf81041fe874580b4de74a2c27a26b675b60175e4baf1084037eaa83",
+    "data/gfx/terrain-water4.png": "63d3cd594d8afbcfdb1b55729a9f1bdb975df0e7d0b11a1f0266db6531d6f055",
+    "data/gfx/terrain-water5.png": "4a1f897d61e0be11571f3bac4bc35d758b3d463a2b0d1cebc31d5e7ffeef8036",
+    "data/gfx/terrain-water6.png": "a40a12b8e17f994bd20fa98673e2c130b0c8e79f31f6e33e4b543b2af3fe8b3a",
+    "data/gfx/terrain-water7.png": "8eacabb3571bd883d5bef5232f61a79f0badf186f25aeee60ebd37e3a19bfcd3",
+    "data/gfx/terrain-water8.png": "71179072b2721a7750c2844dace7b1bf2517049553070fe1adf14d853feb7b0f",
+    "data/gfx/terrain-water9.png": "aef9f25e1c9f6a214459a2bbdf7d0faf412f7378847a64c5d7191507c80089f8",
+    "data/gfx/terrain-water10.png": "34b15269c6c9d475c1e2acc5efcaa99adcc1e5782d4d04c147c7ec73a38e9e99",
+    "data/gfx/terrain-water11.png": "24cccf3ee2539e67aa9a78d829949e21cb0cc787bf4e7f74b99035841db3a6af",
+    "data/gfx/terrain-water12.png": "137d354a99af128286c5c4af675242de412819fa100c384766db36f7d4b2f9a9",
+    "data/gfx/terrain-water13.png": "742fc1f0c6bbcef49e6386756d5084c3aeb9843170e7418d935e318419c588b9",
+    "data/gfx/terrain-water14.png": "fa59f4a43a2e95909653bb3b24dfbc8a65b878cf7edd818c3e7f8a2bc78c0659",
+    "data/gfx/terrain-water15.png": "ad3be7e9664a30af31e26dcbf53cbe8669933cc1a2c73fa66a1629a8597fe7b2",
+    "data/gfx/terrain-water16.png": "922c3a94c1f87a6bf4d26bce074466d4fc239548a73ef160a139535136420b25",
+    "data/gfx/terrain-water17.png": "a983a36d648865097abd2c5bc83a7220f6c76224b1fd09494f56f62d8c8d5aad",
+    "data/gfx/terrain-water18.png": "d2c2664631aa8ff3b77831671df46e3b2d08ef5d07c74d7cb22740f3d6ede90f",
+    "data/gfx/terrain-water19.png": "37efdf59abe792f7d6c0d9f413a7b7fc4479959da580f76e64b1a517c7908680",
+    "data/gfx/terrain-water20.png": "772451672cfcc29a41131edf961e2ec938b455d93c64e4583ef5f4d00cd22ee8",
+    "data/gfx/terrain-water21.png": "61bcb651ed800669a2e281aca13d875afa0777c7f104179d81aaf587bb32f820",
+    "data/gfx/terrain-water22.png": "2ce392276863430e163ccff7cf7ab8ce9b739af2c1fdb25465a42b328c23584c",
+    "data/gfx/terrain-water23.png": "ea1ff674172c46f0f73c6d032d482daa44b8acbc50173664722232d62e95685b",
+    "data/gfx/terrain-water24.png": "44cd4a6b025e60c533441b1f0599ae5626f628a1551ce05fb12d784a0d9c3cf8",
+    "data/gfx/terrain-water25.png": "5d413f8a4eece415aa5dd11fc042b57c27db26dd1124aeed1f7183c2d3446d19",
+    "data/gfx/terrain-water26.png": "d0c373e37ccd7a71625874ec9d2982be22b3246a89ad604872c246ae71b193be",
+    "data/gfx/terrain-water27.png": "a31ba7e34d7a6b05c73379401988a743e34b6bd521a6b569a80e88f2b5f1b952",
+    "data/gfx/terrain-water28.png": "ac233771b6d2aa8fbdbcdec6f6f5350ddf4b08cbf5caf6b99bde735c1c6e4d5b",
+    "data/gfx/terrain-water29.png": "da3415d2f147f0488b9c2bca2a37b2b54de632de9eb8fa645853c8938864daa7",
+    "data/gfx/terrain-water30.png": "6b82abdb67d3bd869b6dabe3370448e5c17fb190ed9c8c7bf0f5a837fc3dd612",
+    "data/gfx/terrain-water31.png": "7d53695d0adcab6beab3f596155f27f35032cf2cf79743fa096d1b5cdf7bc472",
+    "data/gfx/terrain-water32.png": "bb4560cc02331d347fbac56e0698bc2cfa4bffddd06f66c5a0b5a1d4cee6f82d",
+    "data/gfx/terrain-water33.png": "be473093911e249b295e9ea0243276b097342e2e5ecee12f329fcb3baaf771d5",
+    "data/gfx/terrain-water34.png": "b058238fa81e0bc2b8f646dd6973073dd2b1580c236250f4ffaef377b3fa6858",
+    "data/gfx/terrain-water35.png": "7045f8ec5fa5ff18f1b6ac4ce58c00b0a8acf61e9362739599dac361432f71e2",
+    "data/gfx/terrain-water36.png": "2268fcd76a4023c87d8a70af2fea7102a716b89f1ba7f5d046ecc31319ed31ff",
+    "data/gfx/terrain-water37.png": "dbf141d050d1e2e6a55e3358b531e64a01e3ce01c9d8913ab627932086ef2744",
+    "data/gfx/terrain-water38.png": "b2dd1401cdab1a33fd84439e84a618fb820585be93ba2bd2cd3258c630cc6a70",
+    "data/gfx/terrain-water39.png": "0a846b334c2389a7770d2bc1244fd291ad4ddcd61f6828606dec0168397a1c08",
+    "data/gfx/terrain-water40.png": "92e5a5fe9d131c2b08851c18ff0de92ef231b4470b7a32c7cc1422e222fc3733",
+    "data/gfx/terrain-water41.png": "bbf511723aea919137f8771371928d333240f9cac21b9c0644fc1f6b528ddc87",
+    "data/gfx/terrain-water42.png": "384e2289f96619256f532ef1518c0340c6aee1f1fb8db2b1b7ed5097f60ec6f7",
+    "data/gfx/terrain-water43.png": "ebdd5ddc25b0fdd64a75fdf35e0a4b423b26f7434247c6051811f12c31b92d44",
+    "data/gfx/terrain-water44.png": "d6d43d8eb9aeba123df5e5c20f01e39b32491f70c69b596f2de0aa610938694e",
+    "data/gfx/terrain-water45.png": "172b979f1647f705b03366c304ba4c6121b3a20b06cc3c94a2938a61649cd25a",
+    "data/gfx/terrain-water46.png": "af240d094fd74e45c8c9eb0db66a2867782d3271e5cab4c6f50ab82ca45a095f",
+    "data/gfx/terrain-water47.png": "e53337c3388873cdfa3d66f9a8dfff8394cbbda584812d430ff7b2cf2607b79e",
+    "data/gfx/terrain-water48.png": "bb4560cc02331d347fbac56e0698bc2cfa4bffddd06f66c5a0b5a1d4cee6f82d",
+    "data/gfx/terrain-water49.png": "be473093911e249b295e9ea0243276b097342e2e5ecee12f329fcb3baaf771d5",
+    "data/gfx/terrain-water50.png": "b058238fa81e0bc2b8f646dd6973073dd2b1580c236250f4ffaef377b3fa6858",
+    "data/gfx/terrain-water51.png": "7045f8ec5fa5ff18f1b6ac4ce58c00b0a8acf61e9362739599dac361432f71e2",
+    "data/gfx/terrain-water52.png": "2268fcd76a4023c87d8a70af2fea7102a716b89f1ba7f5d046ecc31319ed31ff",
+    "data/gfx/terrain-water53.png": "dbf141d050d1e2e6a55e3358b531e64a01e3ce01c9d8913ab627932086ef2744",
+    "data/gfx/terrain-water54.png": "b2dd1401cdab1a33fd84439e84a618fb820585be93ba2bd2cd3258c630cc6a70",
+    "data/gfx/terrain-water55.png": "0a846b334c2389a7770d2bc1244fd291ad4ddcd61f6828606dec0168397a1c08",
+    "data/gfx/terrain-water56.png": "92e5a5fe9d131c2b08851c18ff0de92ef231b4470b7a32c7cc1422e222fc3733",
+    "data/gfx/terrain-water57.png": "bbf511723aea919137f8771371928d333240f9cac21b9c0644fc1f6b528ddc87",
+    "data/gfx/terrain-water58.png": "384e2289f96619256f532ef1518c0340c6aee1f1fb8db2b1b7ed5097f60ec6f7",
+    "data/gfx/terrain-water59.png": "ebdd5ddc25b0fdd64a75fdf35e0a4b423b26f7434247c6051811f12c31b92d44",
+    "data/gfx/terrain-water60.png": "d6d43d8eb9aeba123df5e5c20f01e39b32491f70c69b596f2de0aa610938694e",
+    "data/gfx/terrain-water61.png": "172b979f1647f705b03366c304ba4c6121b3a20b06cc3c94a2938a61649cd25a",
+    "data/gfx/terrain-water62.png": "af240d094fd74e45c8c9eb0db66a2867782d3271e5cab4c6f50ab82ca45a095f",
+    "data/gfx/terrain-water63.png": "e53337c3388873cdfa3d66f9a8dfff8394cbbda584812d430ff7b2cf2607b79e"
+  },
+  "highres_sha256": {
+    "data/highres/v1/terrain-water0.png": "762f7b56f61e6fb6e6331ced00c561398f94eba02461c771d6cd3cf24c936039",
+    "data/highres/v1/terrain-water1.png": "c4ae32e24b6f3fffca45a295af130ba147dd81b225da012240d7df0efa77fcd5",
+    "data/highres/v1/terrain-water2.png": "09e445f6046cffdb31b816656e0b388e3581072239ce0000f507423e34cb8b50",
+    "data/highres/v1/terrain-water3.png": "7defe358a69b4864330012136189b76a991392af604629ba1fbdd2d1c5b7207c",
+    "data/highres/v1/terrain-water4.png": "766d94b64d40d42d1dfe1ff7c8a8e2943ab653336f3ce814b11295da46d5b886",
+    "data/highres/v1/terrain-water5.png": "65a75aaf1ae1834870dd1c03a7b693c736f8277b9a1a1f4585739d6ad4180995",
+    "data/highres/v1/terrain-water6.png": "107c27b0a01baa9d85c6b66e90a197c16082e3194cc9933e65bc67b8ca94a6fa",
+    "data/highres/v1/terrain-water7.png": "a9dca0cdb9be5b2665d983e9c01ef93ae9f7fc3ee2f5c6204f6b18e15a341a77",
+    "data/highres/v1/terrain-water8.png": "e4379f73a9a543631690d3817b6e4091bd4dc3bf4944e653341fce0a88cd2618",
+    "data/highres/v1/terrain-water9.png": "1f4fd7c3facfe3d4022bae67b8048d5d640ef4ff7862adc6d9a5880c10d8dbe1",
+    "data/highres/v1/terrain-water10.png": "c9c92d273f14faf9fdbd82024f78eee9d673fdd807c3a09af5c0deb5784efd87",
+    "data/highres/v1/terrain-water11.png": "6d97f802c51dee819b1629ac3b8eb2af374a4b945931d9cd322ac8424f03f1f4",
+    "data/highres/v1/terrain-water12.png": "e1161efb36a44b60df5bebf24542f825248b326a41c3aab989ac9caefa5db1f4",
+    "data/highres/v1/terrain-water13.png": "d95b4d8756e72fc2b35363f8eb4d5dea8e6c64dc8eccae3cd776c8b90ad40845",
+    "data/highres/v1/terrain-water14.png": "08e92a7f0793ef8fbfa78ff9ac8ffea0c50fb44a57e05ead738aa611d48da732",
+    "data/highres/v1/terrain-water15.png": "b940cf22b56b0441d8a9059bb6a0c886a67404b95c428c5c44b0744e7ed6437f",
+    "data/highres/v1/terrain-water16.png": "cc068ff24c7b4fc3f7667f58f0d980bbaa433fa0a606d928dfc9911d8b23880f",
+    "data/highres/v1/terrain-water17.png": "20cf1cfcca97d1ac91f5b8d65634ebfde67e8761e6fcef4fe7a3ff5b7d9fffb1",
+    "data/highres/v1/terrain-water18.png": "49a08aa83d80273ff81b66c90fabd1122a408e6aab9264314b881f07032f8ad9",
+    "data/highres/v1/terrain-water19.png": "b56a13f838c13969e44a272a65330f14ea2e6c3fab05f44dd9cbab5b89af89d4",
+    "data/highres/v1/terrain-water20.png": "9c55445a3b1869781f447f98739f44534fa254ea6c28d2f22e185494e232c6c4",
+    "data/highres/v1/terrain-water21.png": "5a0ace1d442d11c107d46c1094bfa60af69a82f519b3637b6abd27c466d904b6",
+    "data/highres/v1/terrain-water22.png": "5a4543c8ede5abdd46904f83124681677c498baf535c41e2451e84ac2337cc0d",
+    "data/highres/v1/terrain-water23.png": "21fcb59706cae1671fb4693584a1d211ed743f892acbcfa4578be323ee06cb19",
+    "data/highres/v1/terrain-water24.png": "791c82f6e1d15e8afb31f54b7cbb661070d8353bb4750fe58c7c1eaf4207cb05",
+    "data/highres/v1/terrain-water25.png": "894d56a8dcdcb97348e8b31d6f612686b41c47ac5e8a374e46f46ba94f4a28f3",
+    "data/highres/v1/terrain-water26.png": "a3cf2d894c66aaf3c5f62fc1ced459552fe70d6a971b5b4b3b3d0181c8322cdf",
+    "data/highres/v1/terrain-water27.png": "6acf1ff9169bc06f489a27daa64768b03010eedfdf812cee61579ab195364f59",
+    "data/highres/v1/terrain-water28.png": "f4770b651905fc1f3bbdcde4d2cae2e28dde6b73c12eb1be610e36efaf2438be",
+    "data/highres/v1/terrain-water29.png": "cc13b5277c6ffdb53673f3e178fd97d8849b6da7c9425f5838f36697c246d641",
+    "data/highres/v1/terrain-water30.png": "14cc4943729789ee50ae4f573ca1b7e46f5dfaf23198e2e5f69d1e5de9b6b826",
+    "data/highres/v1/terrain-water31.png": "0fa2106a9c40297728fd9ac7bb0fef6994f4dba2c83167fabca2a9f897106e75",
+    "data/highres/v1/terrain-water32.png": "95cfd57b9742502afd66ea14b687a1cc3c74b7ad089f97ef61dd9ca29f81b91a",
+    "data/highres/v1/terrain-water33.png": "120409c4d1ba76e6000afa3d635848cd6c53eb3d1f005ab4a47189e7b0a10e11",
+    "data/highres/v1/terrain-water34.png": "3cf6f76831c7f42be63cb29b0b0eb7f027271a3f0a4e2e20d6ee0b17a6dcddf3",
+    "data/highres/v1/terrain-water35.png": "51d29cb81f57d55e595e42b72f520a1cd96702e7a8ca551974fb6f3d98e15841",
+    "data/highres/v1/terrain-water36.png": "18dce40e10f4753c0f7ad96d7f48156c60b126c1b9a2f6b7680deb39e0adf388",
+    "data/highres/v1/terrain-water37.png": "9d02dd67d7cfbf1480e2c655dc36a00a2949e53f871322abdd212dcc819aa836",
+    "data/highres/v1/terrain-water38.png": "7c609db06b08c5d7fad1e38d9a891d6a63d20eb465ccf24a8bbe021e3a43c07e",
+    "data/highres/v1/terrain-water39.png": "fc36797da9523ce4505831ff1de62a8245e7c8c460684b236d8fef4a0c1321a9",
+    "data/highres/v1/terrain-water40.png": "1f43e06a7b315f23075a24da0086c5b2911ce2a0043c5faef98d23430c93f2b9",
+    "data/highres/v1/terrain-water41.png": "97006d3e639d1b2da614bd4ada1e0524484c3a4c3f1053f13b7d3f254758aa25",
+    "data/highres/v1/terrain-water42.png": "5e3aef1732d1d49e0596b57fb9206ddcdfc55af1510562c52e1cea1fd9615c99",
+    "data/highres/v1/terrain-water43.png": "a3c45e7cad132523303dd99b32d24a5c1c57a9e1508ab33f7e8133db291b6104",
+    "data/highres/v1/terrain-water44.png": "ccdc87a380d65928f577febeb4beed94a55eb536f29ed3338f8b07d306a68999",
+    "data/highres/v1/terrain-water45.png": "06655b5541bafde50199d1ed7dc961ad582cca884af0c63bd9fa73184a2f8b7c",
+    "data/highres/v1/terrain-water46.png": "baaef71d7f2048562a69fb8332f47e08313e70f1b07bd05551e3f14ddbb024e9",
+    "data/highres/v1/terrain-water47.png": "711807cbd4efb227ba2d87fd5d49a77ff0f3b8789352d28ef1b691fc756cbf02",
+    "data/highres/v1/terrain-water48.png": "95cfd57b9742502afd66ea14b687a1cc3c74b7ad089f97ef61dd9ca29f81b91a",
+    "data/highres/v1/terrain-water49.png": "120409c4d1ba76e6000afa3d635848cd6c53eb3d1f005ab4a47189e7b0a10e11",
+    "data/highres/v1/terrain-water50.png": "3cf6f76831c7f42be63cb29b0b0eb7f027271a3f0a4e2e20d6ee0b17a6dcddf3",
+    "data/highres/v1/terrain-water51.png": "51d29cb81f57d55e595e42b72f520a1cd96702e7a8ca551974fb6f3d98e15841",
+    "data/highres/v1/terrain-water52.png": "18dce40e10f4753c0f7ad96d7f48156c60b126c1b9a2f6b7680deb39e0adf388",
+    "data/highres/v1/terrain-water53.png": "9d02dd67d7cfbf1480e2c655dc36a00a2949e53f871322abdd212dcc819aa836",
+    "data/highres/v1/terrain-water54.png": "7c609db06b08c5d7fad1e38d9a891d6a63d20eb465ccf24a8bbe021e3a43c07e",
+    "data/highres/v1/terrain-water55.png": "fc36797da9523ce4505831ff1de62a8245e7c8c460684b236d8fef4a0c1321a9",
+    "data/highres/v1/terrain-water56.png": "1f43e06a7b315f23075a24da0086c5b2911ce2a0043c5faef98d23430c93f2b9",
+    "data/highres/v1/terrain-water57.png": "97006d3e639d1b2da614bd4ada1e0524484c3a4c3f1053f13b7d3f254758aa25",
+    "data/highres/v1/terrain-water58.png": "5e3aef1732d1d49e0596b57fb9206ddcdfc55af1510562c52e1cea1fd9615c99",
+    "data/highres/v1/terrain-water59.png": "a3c45e7cad132523303dd99b32d24a5c1c57a9e1508ab33f7e8133db291b6104",
+    "data/highres/v1/terrain-water60.png": "ccdc87a380d65928f577febeb4beed94a55eb536f29ed3338f8b07d306a68999",
+    "data/highres/v1/terrain-water61.png": "06655b5541bafde50199d1ed7dc961ad582cca884af0c63bd9fa73184a2f8b7c",
+    "data/highres/v1/terrain-water62.png": "baaef71d7f2048562a69fb8332f47e08313e70f1b07bd05551e3f14ddbb024e9",
+    "data/highres/v1/terrain-water63.png": "711807cbd4efb227ba2d87fd5d49a77ff0f3b8789352d28ef1b691fc756cbf02"
+  }
+}

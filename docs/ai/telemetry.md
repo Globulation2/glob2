@@ -75,7 +75,12 @@ carry their original update ticks. In particular, the strategic snapshot's own
   returned remain separate measurements.
 
 Counters are cumulative from `coverage_start`; derive rates from sample differences.
-Timestamps are simulation ticks. AI-local timer values retain the AI's own cadence.
+Timestamps are simulation ticks. Published sample timestamps use the game clock;
+individual field update timestamps retain the observation time of delayed AI
+decisions. Historical samples use the 512-tick capture boundaries. Saves written
+by early format-143 builds may instead contain ordered observation-time history;
+the loader preserves that history when reading them. AI-local timer values retain
+the AI's own cadence.
 
 ## Built-in coverage
 

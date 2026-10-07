@@ -4,7 +4,7 @@
     {
       "key": "foundation-resources",
       "label": "Foundation resources",
-      "help": "Makes gold ore, iron ore, sand and cotton available in the map editor. Existing maps and building costs are unchanged."
+      "help": "Makes gold ore, iron ore, silica and cotton available in the map editor. Existing maps and building costs are unchanged."
     }
   ],
   "resources": [
@@ -1018,7 +1018,7 @@
       }
     },
     {
-      "key": "sand",
+      "key": "silica",
       "properties": {
         "primaryMaterial": "glass",
         "growthRate": 0,
@@ -1052,8 +1052,8 @@
       },
       "requiredExperiment": "foundation-resources",
       "presentation": {
-        "name": "Sand",
-        "sprite": "data/gfx/resource-sand",
+        "name": "Silica",
+        "sprite": "data/gfx/resource-silica",
         "minimap": [
           224,
           204,

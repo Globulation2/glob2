@@ -27,11 +27,6 @@ struct Profile
 	bool legacyEdges = false;
 	std::vector<std::vector<int>> contours; // Q12 normalized patch displacements.
 };
-struct Backdrop
-{
-	std::string sprite;
-	int firstFrame = 0, frames = 1, ticks = 1;
-};
 // Contact treatment where this material meets another. A higher material casts
 // a shade onto lower neighbors within castWidth; a fringe tints any neighbor.
 struct Seam
@@ -41,6 +36,15 @@ struct Seam
 	int fringe = 0, fringeWidth = 0; // Q8 tint strength and Q8 pixel width.
 	std::array<unsigned char, 3> fringeColor{255, 255, 255};
 };
+// Raised objects drawn over a material's cells with the resources, in screen
+// row order, so they overlap neighbouring cells (boulders, hedges, rock).
+// `full` frames are for cells surrounded by the same material, `edge` frames
+// (smaller, pulled toward the cell centre) for cells with an open neighbour.
+struct Decor
+{
+	std::string sprite;
+	std::vector<int> full, edge;
+};
 struct Material
 {
 	std::string key, sprite;
@@ -48,9 +52,11 @@ struct Material
 	unsigned totalWeight = 0;
 	std::uint32_t salt = 0;
 	unsigned profile = 0;
-	bool ocean = false;
-	Backdrop backdrop;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
+	// Variants share one periodic edge band and join without the runtime's
+	// border blend toward variant 0 ("edges": "periodic").
+	bool periodicEdges = false;
+	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
 };
@@ -76,6 +82,8 @@ class Catalog
 	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
+	// Decor frame for a cell of this material, or -1 when it has no decor.
+	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 // Pure presentation adapter. Saved sprite numbers never become material handles.
@@ -94,7 +102,7 @@ struct Recipe
 struct Coverage
 {
 	std::array<MaterialId, 4> material{};
-	std::array<unsigned, 4> weight{}; // Sum exactly 65536, including ocean.
+	std::array<unsigned, 4> weight{}; // Sum exactly 65536.
 	// Nearest other material and an estimate of the Q8 pixel distance to it,
 	// for seam shading. Interior samples report 65535 and their own material.
 	MaterialId neighbor = 0;
