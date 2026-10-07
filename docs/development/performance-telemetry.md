@@ -253,6 +253,24 @@ A synchronous refresh supersedes older pending results for that field. Increasin
 worker count does not increase the number of scheduled fields. Buffers are bounded
 by the delay; workers block on condition variables when idle.
 
+Periodic map propagation can reuse a previous private result when the complete
+prepared seed buffer, scalar parameters and immutable input owners match exactly.
+This is an internal optimization for the map's pure propagation callback; generic
+pipeline callbacks remain uncached. The first eligible fields occupy at most 32
+stable entries, with a combined 16 MiB limit for retained seed and result arrays.
+Further fields and overlapping requests compute normally. Entries hold only weak
+references to immutable snapshots; expired or replaced owners cause a conservative
+miss, and the cache never reads a published field as its stored result.
+
+A propagation worker owns an entry until the request's original publication
+deadline, including when computation finishes earlier. Seed comparison and result
+copying happen on that worker. Hits still reserve a normal job and retain the same
+publication, supersession, error and scheduling-counter behavior. The cache is
+unsaved derived state: reset or worker reconfiguration clears it, while pending
+jobs preserve their existing owned results and deadlines. Restored pending jobs do
+not populate or release cache entries. Reuse adds bounded memory and comparison/
+copy work; evaluate simulation CPU, end-to-end wall time and peak RSS separately.
+
 Saving waits for private computation without publishing early, then stores each
 pending field, destination, supersession flag and remaining deadline. Loading
 restores that queue; worker count is local execution configuration and is not

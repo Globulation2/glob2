@@ -291,6 +291,7 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 			[types](size_t i) { return types ? types[i] : GRASS; }, job.modifiedCosts,
 			job.registry ? *job.registry : terrainRegistry(), job.terrainBuckets);
 	});
+    gradientRuntime->pipeline.enableResultReuseForPureWork();
 }
 
 void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)

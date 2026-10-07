@@ -116,6 +116,9 @@ allowlist, including an empty list to prohibit all resources; `null` selects
 capability-based habitats. Old numeric terrain resource masks are converted to
 key lists by the compatibility loader. Habitat predicates still apply to explicit
 allowlists. Unused material types do not create natural-material gradient work.
+Periodic propagation may reuse an exact prior prepared result within a bounded,
+unsaved cache. Reuse does not schedule additional material fields or change fixed
+publication deadlines; see [delayed periodic gradients](../development/performance-telemetry.md#delayed-periodic-gradients).
 
 AI source fields use a compiled material mutability mask covering every registered
 definition, including unplaced ones. Permanent sources avoid periodic queued

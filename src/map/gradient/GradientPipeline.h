@@ -4,6 +4,7 @@
 #include "map/TerrainType.h"
 #include "map/TerrainRegistry.h"
 #include <atomic>
+#include <array>
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
@@ -38,6 +39,9 @@ public:
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
 		std::exception_ptr error;
+        // Lease association assigned by preparation before propagation worker enqueue.
+        unsigned reuseIndex = 32;
+        std::uint64_t reuseGeneration = 0, reuseEpoch = 0;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -71,6 +75,97 @@ private:
 	Work work;
 	GradientWorkspace serialWorkspace;
 	std::atomic<std::uint64_t> activeNs{0};
+    // Bounded, pinned admission avoids cycling an LRU through large field sets.
+    // Weak identities never retain old map snapshots or catalog allocations.
+    static constexpr unsigned ReuseSlots = 32;
+    static constexpr std::size_t ReuseBytes = 16 * 1024 * 1024;
+    template<class T> struct Identity {
+        std::weak_ptr<const T> value;
+        bool present = false;
+        void set(const std::shared_ptr<const T>& input) { value=input; present=bool(input); }
+        bool matches(const std::shared_ptr<const T>& input) const {
+            if (!present) return !input;
+            const auto owned=value.lock();
+            return owned && owned==input && !owned.owner_before(input) && !input.owner_before(owned);
+        }
+    };
+    struct ReuseEntry {
+        std::uint16_t **slot=nullptr;
+        int swim=0;
+        unsigned buckets=0;
+        bool modified=false, valid=false, leased=false;
+        std::uint64_t generation=0;
+        std::unique_ptr<std::uint16_t[]> seeds, result;
+        Identity<std::vector<std::uint8_t>> water;
+        Identity<std::vector<TerrainType>> terrain;
+        Identity<TerrainRegistry> registry;
+        Identity<TerrainMovementSnapshot> profiles;
+        bool matches(const Job& job, std::size_t cells) const {
+            return valid && buckets==job.terrainBuckets && modified==job.modifiedCosts &&
+                water.matches(job.water) && terrain.matches(job.terrain) &&
+                registry.matches(job.registry) && profiles.matches(job.profiles) &&
+                std::equal(seeds.get(),seeds.get()+cells,job.data.get());
+        }
+    };
+    std::array<ReuseEntry,ReuseSlots> reuse;
+    unsigned reuseCount=0;
+    std::uint64_t reuseEpoch=0;
+    bool reuseEnabled=false, reuseAdmissionFailed=false;
+    // Preparation admits and leases metadata only. A lease lasts until the
+    // fixed publication deadline, irrespective of when a worker completes.
+    void leasePrepared(Job& job) {
+        if (!reuseEnabled || !cells || cells>ReuseBytes/(2*sizeof(std::uint16_t))) return;
+        unsigned index=0;
+        for (;index<reuseCount;++index)
+            if (reuse[index].slot==job.slot && reuse[index].swim==job.swim) break;
+        if (index==reuseCount) {
+            if (reuseAdmissionFailed || reuseCount==ReuseSlots ||
+                reuseCount>=ReuseBytes/(2*sizeof(std::uint16_t)*cells)) return;
+            try {
+                auto seeds=std::make_unique<std::uint16_t[]>(cells);
+                auto result=std::make_unique<std::uint16_t[]>(cells);
+                auto& entry=reuse[index];
+                entry.seeds=std::move(seeds); entry.result=std::move(result);
+                entry.slot=job.slot; entry.swim=job.swim;
+                ++reuseCount;
+            } catch (const std::bad_alloc&) {
+                reuseAdmissionFailed=true;
+                return;
+            }
+        }
+        auto& entry=reuse[index];
+        if (entry.leased) return; // Never wait for or share another job's cache storage.
+        entry.leased=true; ++entry.generation;
+        job.reuseIndex=index; job.reuseGeneration=entry.generation; job.reuseEpoch=reuseEpoch;
+    }
+    void releaseLease(const Job& job) {
+        if (job.reuseEpoch!=reuseEpoch || job.reuseIndex>=reuseCount) return;
+        auto& entry=reuse[job.reuseIndex];
+        if (entry.generation==job.reuseGeneration) entry.leased=false;
+    }
+    // A propagation worker exclusively owns the leased arrays/identities until
+    // done is signalled. Preparation/publication touch only lease metadata;
+    // reset joins workers before destroying storage. No live field is read.
+    void executeWithReuse(Job& job, GradientWorkspace& scratch) {
+        auto* entry=job.reuseIndex<ReuseSlots && job.reuseEpoch==reuseEpoch ?
+            &reuse[job.reuseIndex] : nullptr;
+        if (entry && entry->matches(job,cells)) {
+            std::copy_n(entry->result.get(),cells,job.data.get());
+            return;
+        }
+        if (entry) {
+            entry->valid=false;
+            std::copy_n(job.data.get(),cells,entry->seeds.get());
+            entry->buckets=job.terrainBuckets; entry->modified=job.modifiedCosts;
+            entry->water.set(job.water); entry->terrain.set(job.terrain);
+            entry->registry.set(job.registry); entry->profiles.set(job.profiles);
+        }
+        work(job,scratch);
+        if (entry) {
+            std::copy_n(job.data.get(),cells,entry->result.get());
+            entry->valid=true;
+        }
+    }
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
@@ -79,7 +174,7 @@ private:
 		const auto start = Clock::now();
 		try
 		{
-			work(job, scratch);
+			executeWithReuse(job, scratch);
 			job.water.reset();
 			job.terrain.reset();
 			job.registry.reset();
@@ -105,6 +200,9 @@ public:
 	unsigned workerCount() const { return workers.size(); }
 	unsigned delayTicks() const { return delay; }
 	std::uint64_t activeElapsedNs() const { return activeNs.load(std::memory_order_relaxed); }
+    // Internal opt-in: callback must depend only on the captured immutable inputs
+    // and configure-time geometry. Generic callbacks retain normal execution.
+    void enableResultReuseForPureWork() { reuseEnabled=true; }
 	void finish() { for (auto &job : pending) { wait(*job); if(job->error) std::rethrow_exception(job->error); } }
 	void reset() noexcept {
 		{ std::lock_guard<std::mutex> lock(mutex); quit = true; }
@@ -112,6 +210,8 @@ public:
 		for (auto &thread : workers) thread.join();
 		workers.clear(); ready.clear(); pending.clear(); spare.clear();
 		delay = 0; tick = 0; lastSubmission = 0; quit = false;
+        for (auto& entry:reuse) entry=ReuseEntry{};
+        reuseCount=0; ++reuseEpoch; reuseEnabled=false; reuseAdmissionFailed=false;
 	}
 	void configure(unsigned count, unsigned ticks, std::size_t size, Work callback,
 		Factory factory = [](std::function<void()> f) { return GAGCore::ThreadSupport::launch(std::move(f)); }) {
@@ -162,7 +262,9 @@ public:
 		auto savedSpare=std::move(spare);
 		const auto savedTick=tick, savedSubmission=lastSubmission, savedActive=activeElapsedNs();
 		const auto savedMetrics=metrics;
+        const bool savedReuse=reuseEnabled;
 		configure(count, delay, cells, work);
+        reuseEnabled=savedReuse;
 		pending=std::move(savedPending); spare=std::move(savedSpare);
 		tick=savedTick; lastSubmission=savedSubmission; metrics=savedMetrics; activeNs=savedActive;
 	}
@@ -172,6 +274,7 @@ public:
 		while (!pending.empty() && pending.front()->due <= tick) {
 			auto &job = *pending.front(); wait(job);
 			if (job.error) std::rethrow_exception(job.error);
+            releaseLease(job);
 			if (!job.superseded) {
 				auto *old = *job.slot; *job.slot = job.data.release(); job.data.reset(old);
 				++metrics.published;
@@ -191,6 +294,7 @@ public:
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->done=false; job->superseded=false; job->error=nullptr;
+        job->reuseIndex=ReuseSlots; job->reuseGeneration=0; job->reuseEpoch=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;
@@ -202,6 +306,7 @@ public:
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
 		try {
 			seed(*ptr);
+            leasePrepared(*ptr);
 			if (workers.empty()) execute(*ptr, serialWorkspace);
 			else { { std::lock_guard<std::mutex> lock(mutex); ready.push_back(ptr); } wake.notify_one(); }
 		}
