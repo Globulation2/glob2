@@ -1234,9 +1234,35 @@ TEST_SUITE("TerrainValidation")
 		SceneMap scene;
 		scene.extract(map);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		// Raised obstacle decor is drawn with the resources, row by row.
+		fixture.game.drawMapResources(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
+		// Obstacle islands carry decor: interior cells use full frames, cells
+		// with an open neighbour the smaller edge frames; open ground has none.
+		auto &compositor = globals->terrainCompositor();
+		REQUIRE(compositor.decorSprite());
+		const auto &catalog = compositor.catalog();
+		const auto contains = [](const std::vector<int> &frames, int frame)
+		{ return std::find(frames.begin(), frames.end(), frame) != frames.end(); };
+		for (std::size_t n = 0; n < types.size(); ++n)
+		{
+			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5;
+			const auto &decor =
+				catalog.materials[catalog.bindings.at(terrainPresentation(types[n]).name)].decor;
+			INFO(terrainPresentation(types[n]).name);
+			if (decor.full.empty())
+			{
+				CHECK(compositor.decorFrame(scene, ox + 1, oy + 1) == -1);
+				continue;
+			}
+			CHECK(contains(decor.full, compositor.decorFrame(scene, ox + 1, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 3)));
+		}
+		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity and the map declares every group painted.
 		for (std::size_t n = 0; n < types.size(); ++n)
 			CHECK(map.terrainTypeAt(6 + int(n % 5) * 5, int(n / 5) * 5) == types[n]);

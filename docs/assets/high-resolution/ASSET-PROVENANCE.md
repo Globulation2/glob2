@@ -13,10 +13,10 @@ Generated terrain combines selected generated materials with deterministic masks
 | Hand-authored vector | 8 |
 | Non-AI mask resampling | 38 |
 | Original-based terrain with deterministic grain and tiling | 256 |
-| Procedural terrain synthesis | 592 |
+| Procedural terrain synthesis | 652 |
 | Recovered original | 1852 |
 
-Total: **2877 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
+Total: **2937 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../../data/highres/v1/manifest.json). See [original export recipes](../../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -303,6 +303,66 @@ Total: **2877 frames**. Source/output SHA-256 hashes, native sizes and selected 
 | `terrain-dark_water7` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dark_water |
 | `terrain-dark_water8` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dark_water |
 | `terrain-dark_water9` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: dark_water |
+| `terrain-decor0` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor1` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor10` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor11` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor12` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor13` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor14` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor15` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor16` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor17` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor18` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor19` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor2` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor20` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor21` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor22` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor23` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: hedge |
+| `terrain-decor24` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor25` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor26` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor27` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor28` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor29` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor3` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor30` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor31` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor32` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor33` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor34` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor35` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: thicket |
+| `terrain-decor36` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor37` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor38` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor39` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor4` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor40` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor41` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor42` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor43` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor44` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor45` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor46` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor47` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: ridge_rock |
+| `terrain-decor48` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor49` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor5` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor50` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor51` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor52` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor53` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor54` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor55` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor56` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor57` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor58` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor59` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: outcrop |
+| `terrain-decor6` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor7` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor8` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
+| `terrain-decor9` | Procedural terrain synthesis | 64×64 | — ([source](../../../tools/artwork/terrain_decor.py)) | procedural terrain decor v1: boulders |
 | `terrain-deep_snow0` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_snow |
 | `terrain-deep_snow1` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_snow |
 | `terrain-deep_snow10` | Procedural terrain synthesis | 32×32 | — ([source](../../../tools/artwork/terrain_synth.py)) | procedural terrain synthesis v1: deep_snow |

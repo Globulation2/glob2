@@ -154,6 +154,7 @@ def _validate(document, root):
         profiles[p["key"]] = p
     materials = {}
     sources = {}
+    decor_sprites = set()
     for m in document["materials"]:
         if (
             not isinstance(m["key"], str)
@@ -227,7 +228,23 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "decor" in m:
+            decor = m["decor"]
+            decor_sprite = data_path(decor["sprite"], "Decor sprite")
+            for key in ("full", "edge"):
+                frames = decor.get(key)
+                if not isinstance(frames, list) or not frames or len(frames) > 256:
+                    raise ValueError("Decor frames must be a non-empty array")
+                for frame in frames:
+                    integer(frame, 0, 65535, "Decor frame")
+                    source = root / f"{decor_sprite.as_posix()}{frame}.png"
+                    with Image.open(source) as image:
+                        if image.width > 64 or image.height > 64:
+                            raise ValueError(f"Decor frame larger than 64x64: {source}")
+            decor_sprites.add(decor["sprite"])
         materials[m["key"]] = m
+    if len(decor_sprites) > 1:
+        raise ValueError("All decor blocks must share one sprite")
     if not 0 < len(materials) < 65536:
         raise ValueError("Invalid material count")
     if not isinstance(document["bindings"], dict):

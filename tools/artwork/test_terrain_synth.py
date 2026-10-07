@@ -65,6 +65,12 @@ class TerrainSynth(unittest.TestCase):
             sprite = material["sprite"]
             if sprite in native_only:
                 continue
+            decor = material.get("decor")
+            if decor:
+                for frame in decor["full"] + decor["edge"]:
+                    name = f"{decor['sprite'].removeprefix('data/gfx/')}{frame}"
+                    with self.subTest(frame=name):
+                        self.assertIn(name, rows)
             stem = sprite.removeprefix("data/gfx/")
             phases = material.get("animation_frames", 1)
             stride = material.get("animation_stride", 0)

@@ -70,7 +70,7 @@ class WebAssetPlanTests(unittest.TestCase):
                                                 'data/gfx/unitmini.sheet', 'data/gfx/unitmini-sheet-0.png'], {'unit'}),
                          {'data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp'})
 
-    def test_terrain_registry_atlases_and_backdrops_are_game_sprites(self):
+    def test_terrain_registry_atlases_and_decor_are_game_sprites(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)
@@ -84,7 +84,7 @@ class WebAssetPlanTests(unittest.TestCase):
                 'constexpr auto backdrop = "data/gfx/future-backdrop";\n')
             (root / 'data/terrain').mkdir(parents=True)
             (root / 'data/terrain/tileset.json').write_text(json.dumps({'materials': [
-                {'sprite': 'data/materials/rock', 'backdrop': {'sprite': 'data/gfx/glow'}}]}))
+                {'sprite': 'data/materials/rock', 'decor': {'sprite': 'data/gfx/glow'}}]}))
             names = web_assets.game_sprites(root)
             self.assertEqual(names, {'unit', 'terrain', 'gamegui', 'swarm0b',
                                      'future-terrain', 'future-backdrop', 'data/materials/rock', 'glow'})

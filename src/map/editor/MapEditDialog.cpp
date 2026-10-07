@@ -406,6 +406,14 @@ GAGCore::DrawableSurface *TerrainPaletteDialog::preview(TerrainType type)
 		recipe.width = recipe.height = 1;
 		compositor.compose(recipe, texture.getSDLSurface(), 0, 0, 2);
 		surface->drawSurface(0, 0, &texture);
+		// Obstacles show their raised decor, at the same 2x scale as the ground.
+		const auto &decor = catalog.materials[binding->second].decor;
+		if (auto *sprite = compositor.decorSprite(); sprite && !decor.full.empty())
+			if (auto *frame = sprite->nativeFrame(decor.full.front()))
+			{
+				const int w = frame->getW() * 2, h = frame->getH() * 2;
+				surface->drawSurface(32 - w / 2, 32 - h / 2, w, h, frame);
+			}
 	}
 	auto *result = surface.get();
 	previews.emplace(type, std::move(surface));

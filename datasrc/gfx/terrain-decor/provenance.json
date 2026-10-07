@@ -1,0 +1,250 @@
+{
+  "sets": {
+    "boulders": {
+      "description": "rounded weathered boulders, three-quarter view",
+      "seed": "fnv1a32(\"decor:boulders:<frame>\")",
+      "full": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "edge": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "runtime_sha256": {
+        "data/gfx/terrain-decor0.png": "4a658928e979c68e7469cff86e6f885bbe13f3c0cc1a4753cfe904b8f34271f5",
+        "data/gfx/terrain-decor1.png": "d0488c0d7ab92d593064f203f8939af5751d463266e428f45c27537bdea2855d",
+        "data/gfx/terrain-decor2.png": "4e906748d36b65f6aa673019ab35302d6bd72dc922e945528f31973e45d14e12",
+        "data/gfx/terrain-decor3.png": "5fb48c15a8b1c2148291cbd7fb82196f0f29a2f7c7a77e59d6c6f882837d112a",
+        "data/gfx/terrain-decor4.png": "48371bc5344b36074d5931bb5ee153397190a76ff03d89faeac169963caee544",
+        "data/gfx/terrain-decor5.png": "96583622c77ecce4b3643802cd0d6089f0ad58470ff3b2e2173e79c1d1490adc",
+        "data/gfx/terrain-decor6.png": "ff514e962fb3fac366268ee9b56498effd14b8bd51246f6cfe3dba586d84ba54",
+        "data/gfx/terrain-decor7.png": "c16c9210fabe91d7bed48d719e8eba5b7eafda5601e147751321988f93b157ce",
+        "data/gfx/terrain-decor8.png": "d2a73f5c1484449b3f17b727a0c2730c739a4316459648a0e0aad20145fbc395",
+        "data/gfx/terrain-decor9.png": "a7065a313717c50d9eeb58d6ebd0f1481d319337c27c7c0e9f92db5c37a235df",
+        "data/gfx/terrain-decor10.png": "ec79587eb668f4835276087a246e48e7170a918c8962d0945a32e094c7f3ccc1",
+        "data/gfx/terrain-decor11.png": "e298536171607fc86ea9ee5382601bd7d49b5c0bd849b49a2fde68aeeb54e191"
+      },
+      "highres_sha256": {
+        "data/highres/v1/terrain-decor0.png": "a3b826111acf435645a9bc3c3cc98430c49ff9454bd4f3cf2c26a9e43d6918e6",
+        "data/highres/v1/terrain-decor1.png": "98a207ed12f7bb70c47fc6926fc6a1132cf8986d3d35f8992cd6560e83ad14ae",
+        "data/highres/v1/terrain-decor2.png": "60f7fdd8a456ce651ef62dfc4ea52a7625d34a93f3c83e98fb55c14bbf0e3f66",
+        "data/highres/v1/terrain-decor3.png": "8127833a8e35d267ac3b4626555d378647004f53feee76a9918d0762efa30804",
+        "data/highres/v1/terrain-decor4.png": "86cb93663bceef98f657734e6ebcf224247bc6c3961e5079a701449eadcb024d",
+        "data/highres/v1/terrain-decor5.png": "7844658f8d7e73726dc9ec4edfe238c6d45715f81e5463cf1d9374d4214936fe",
+        "data/highres/v1/terrain-decor6.png": "f8e993b130638ac0596d60d19bc605380c5a1cae3d7d29fbeaf7c94039069643",
+        "data/highres/v1/terrain-decor7.png": "6af0d78e6597938975d914345bd1e114572505b2f2cf6a79b6637c6d1ecc0e7e",
+        "data/highres/v1/terrain-decor8.png": "d1d0df59ea6024cb8246b9764b35611a60e7b75d9a1fe42518f8c605abd7ae7f",
+        "data/highres/v1/terrain-decor9.png": "1d6113ee5ac91aaeaa680962b390b9786b981ee560d1cbfa9f0ee7214b8091c8",
+        "data/highres/v1/terrain-decor10.png": "e91363257042660b08c7179733324e2868617b896519cef43a3cf54c3939aeb5",
+        "data/highres/v1/terrain-decor11.png": "c693ff9078942b395e6cdaa82a4d9250936b8271f113ee6b5ce8d3732601bfa7"
+      }
+    },
+    "hedge": {
+      "description": "a continuous clipped hedge mass that joins its neighbours",
+      "seed": "fnv1a32(\"decor:hedge:<frame>\")",
+      "full": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "edge": [
+        20,
+        21,
+        22,
+        23
+      ],
+      "runtime_sha256": {
+        "data/gfx/terrain-decor12.png": "03546e7ff641e5f633a7ab66cfe16f3139e0e72eab352f71c942cde47a7f91db",
+        "data/gfx/terrain-decor13.png": "9bfad303234c67fdc00135d5505df092cfa9c20733e05ee044f6e2aabe5b09fe",
+        "data/gfx/terrain-decor14.png": "59547d5382f7df2b6e28dbb5b0cb59f8f5c3f295ff2f7fe007cf7ad0659a36bd",
+        "data/gfx/terrain-decor15.png": "4fe4c65ce4069612fb49ee8545f7aca10d56002238b861d5e17c959a6f1a1f63",
+        "data/gfx/terrain-decor16.png": "d27256faa6a00a6ef7672022f660fbd99fdde24d3cf4114cd15b7dcc2ad7bb79",
+        "data/gfx/terrain-decor17.png": "eabf0b9962932b895f4ea305364e6b49fc73539b0855360f2fbf32b603a2c69a",
+        "data/gfx/terrain-decor18.png": "cfd84587313f41993283e5862e2e98d8247bc5956152371a68b7e5823c4577d1",
+        "data/gfx/terrain-decor19.png": "8aef373fa24eb8e30edbbddc8df05b8e362daaa3717d824fdf1839f2adafaeb2",
+        "data/gfx/terrain-decor20.png": "ea6e906381e1b4eed510f1ccc5e854aa5e838db479e7c03832b4c019ded2688a",
+        "data/gfx/terrain-decor21.png": "011f3c5c595b3cd3fb9cb0ce0e7c80f910bcc5a1c199e25b24b9cd1f0db52023",
+        "data/gfx/terrain-decor22.png": "73748ca149299dc8e3a02c085818d60deeb41a17a3f6bd1d845a4c272a4dd64a",
+        "data/gfx/terrain-decor23.png": "d108b0b7349f26cf6c9e1e0d57b3c8041c254b53e1da55933b6aacdc8b66530e"
+      },
+      "highres_sha256": {
+        "data/highres/v1/terrain-decor12.png": "062a06f04960443a34a7724059cf77feba404c48164dd89d0cbb6e77e3e555b3",
+        "data/highres/v1/terrain-decor13.png": "2e6c01d6f6ac8f6421989392c59dbaceafefa1136c8946d58e23618ed716df16",
+        "data/highres/v1/terrain-decor14.png": "7584682337477eeff1a23d5f0fc02e7bbee30128b7bc122e385a6ebec2a42750",
+        "data/highres/v1/terrain-decor15.png": "ac1e9c7b2b3f01197cd6550475338a2d1146991fba9851e39ba6fcc1b545c3b7",
+        "data/highres/v1/terrain-decor16.png": "60616df4f6a264a4bbc004c512e4b11f7a342779df0206c4842c5a0e7ee123a6",
+        "data/highres/v1/terrain-decor17.png": "f34faa04773f4a9c673bd3f63edac95086ffd91fe77b7b66391338190cb8d879",
+        "data/highres/v1/terrain-decor18.png": "fb409b8fe9f29153aa6cac116c37fbc00761382918159c0cb094f3ec6881cff9",
+        "data/highres/v1/terrain-decor19.png": "9a8eae954c3e75fe40663706eba0742ee791996c580266d4a04a9ac6b30acfe1",
+        "data/highres/v1/terrain-decor20.png": "c0918e378c4bfa850506d88f83c36e22fb8e2f03eba77b12e3c5dea48342fa39",
+        "data/highres/v1/terrain-decor21.png": "6c1d5a3ac1b259d4deba38886129d8317cc931fe37172227c1f4e0e357416ef5",
+        "data/highres/v1/terrain-decor22.png": "606c34856358b84485955bc77cc4d243ad767674e595dd7bbfdf312fddccb1c2",
+        "data/highres/v1/terrain-decor23.png": "53415cbbdcf2536d00bcb94aea5268d7a62385bae7d7e9dd5d54bb5aa3e91241"
+      }
+    },
+    "thicket": {
+      "description": "scrubby bushes with twigs poking through",
+      "seed": "fnv1a32(\"decor:thicket:<frame>\")",
+      "full": [
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "edge": [
+        32,
+        33,
+        34,
+        35
+      ],
+      "runtime_sha256": {
+        "data/gfx/terrain-decor24.png": "d0e155ceac747b13453c2fd0431ba73b3f4811e85be403ea406ce51b1fca3184",
+        "data/gfx/terrain-decor25.png": "7b80961cabc3f38979b67e153ff95482fe5ebceb5fa9a38ff031974b27a681c4",
+        "data/gfx/terrain-decor26.png": "adee50e7e4cb6729e3f03f34f2c971255fe9ed474483a78b6997ce074df096df",
+        "data/gfx/terrain-decor27.png": "f3a7e3e1809c309c12ba79eef20f606d826694ca454504f7f73312d3bcf7389f",
+        "data/gfx/terrain-decor28.png": "ef8480f6196c41db81af62bf5fb5131c467d75fbe92e1286ba0e8fea61888088",
+        "data/gfx/terrain-decor29.png": "829758e2744f7b63f026e6d6964262cf7509af2795d58e45815a5f66af0f62f4",
+        "data/gfx/terrain-decor30.png": "8cd3268f0c93d7eb96328c82bdc200756a4fbac0ca50cb3f0d3812033f8f349b",
+        "data/gfx/terrain-decor31.png": "7e46b19c1424c28350047228fa096c5625cc3d6be511b3a27c2e361f03343f10",
+        "data/gfx/terrain-decor32.png": "b6615367477f6d8729b7a8c6fd24f195eeb3f1e2de891c4ad73a19ce84af8842",
+        "data/gfx/terrain-decor33.png": "739210cb9b5bb5062e53565c4bd6fdd8da11bf5f354fc3993cec5caa2b416eca",
+        "data/gfx/terrain-decor34.png": "04b0da6878d1bd0f41c9a9ae6d11710558fe5e3ca39e73688618a34d78b3838c",
+        "data/gfx/terrain-decor35.png": "10293ff92847d64a98cb24613576cdbd31731b17b6e4abae662d0f1f9e5cd7cd"
+      },
+      "highres_sha256": {
+        "data/highres/v1/terrain-decor24.png": "ecbf0df9a83a4e9e669d99704d2cbb378c62166ea8d5d5bd32678cc569234a78",
+        "data/highres/v1/terrain-decor25.png": "11f03c298115c840af1ce1bc23b10f51d3115592d3eeb51a06e30fcdd90872a7",
+        "data/highres/v1/terrain-decor26.png": "1a768f5024b295c9f4458a0e53485447c1616cd15ced20eeba68cad33bd1793f",
+        "data/highres/v1/terrain-decor27.png": "e9eb8cdc9b4b3b1e4cb5226199256b4d982a4f1808238d49c76bd6e1266e1bf5",
+        "data/highres/v1/terrain-decor28.png": "ef22f4cfeea59a172a8d77ff30d248628bb3ad2d8add408beb5ec5111960eba3",
+        "data/highres/v1/terrain-decor29.png": "5221c0a4454254cb29341812bda21e874917b4ced27b69c19f6d137ed430c25b",
+        "data/highres/v1/terrain-decor30.png": "a7b65f6bccd977abe2a632d066fb8e57690a28dcc261fa660273bdf85766c0d1",
+        "data/highres/v1/terrain-decor31.png": "bb8d325060d806cbb4f30315ad070623d835a32ff7744aec7b731ec697373bef",
+        "data/highres/v1/terrain-decor32.png": "d2047f50e57e0bb37d38dc10a902ec72faa8c7d139ea3562bc478dbd77751577",
+        "data/highres/v1/terrain-decor33.png": "9f053fcaf03fbf1ba82c65759a1dc660192673ac298dc6065012c0da4f0f7f72",
+        "data/highres/v1/terrain-decor34.png": "338a92bbe12a22307a33805c987e7003ec709b7f14ef1637211e340f541df6a4",
+        "data/highres/v1/terrain-decor35.png": "50c292970be92520cd2f775ca383219b7f22b30ac8e143f65f90900f6c97f6a3"
+      }
+    },
+    "ridge_rock": {
+      "description": "upright jagged rock fins and shards",
+      "seed": "fnv1a32(\"decor:ridge_rock:<frame>\")",
+      "full": [
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "edge": [
+        44,
+        45,
+        46,
+        47
+      ],
+      "runtime_sha256": {
+        "data/gfx/terrain-decor36.png": "7d4c3489a3168163b5ddb76785ffeee6bffc8672f442c1dbd730f6b880c9a3b4",
+        "data/gfx/terrain-decor37.png": "ac6b87c847373db61571121787e14947da96f23dc1307934ddffcc6169139d2e",
+        "data/gfx/terrain-decor38.png": "9d740d4fe418f5984d88bdee2b2d87aee7ab4becc17db4204cca8423cf9cfb27",
+        "data/gfx/terrain-decor39.png": "d311a5872fa9809395924401a1289e88d24132285ad547d94d568c8629ebfaa7",
+        "data/gfx/terrain-decor40.png": "b29562ee5f8ab6025fc20c6ed9a085f1cc2fb97e310392aa4ec41d9b65edf162",
+        "data/gfx/terrain-decor41.png": "7a62a97e8facd6cb1946005bf5c7c02786ce3d81bdf9e2ec6bc7ebeb41942875",
+        "data/gfx/terrain-decor42.png": "d3f1e1ba4b4a1609a23b06c1e4c0555088ebce80bef71fd23f1de4e2cfdd567e",
+        "data/gfx/terrain-decor43.png": "5f216dccbd1aacd4f8b5292c90a134295b2681a85aef34b1cb9222925886cebd",
+        "data/gfx/terrain-decor44.png": "1e278873cddc0dbfe29126f9bb2ea61a923df657bdb6c0f6c32294c4087b7d9e",
+        "data/gfx/terrain-decor45.png": "0856f198408a2b58bb20d251bb4e8fb9c6521d9935302c261b602c374b5d26b9",
+        "data/gfx/terrain-decor46.png": "523ac2710df834b81f38e8589ef15bcfd90231620374e84478cdc36ac0f8d363",
+        "data/gfx/terrain-decor47.png": "a2be6225eb0c06b84b615e67284070b35076cda73532427e0bdd8353b77528d1"
+      },
+      "highres_sha256": {
+        "data/highres/v1/terrain-decor36.png": "03c8c5c0fd5e940f370ca1a011172d38a3210b8b7111fad06f455b91565023ab",
+        "data/highres/v1/terrain-decor37.png": "075727160942dc35f13f382ad20ec5c01ea5a590ffb5cef23c9247e6ea1dbc54",
+        "data/highres/v1/terrain-decor38.png": "1c50c6d449e624bcabb78fed5d53ab8cf7a462f26948d810ab4b2a0a972ed72c",
+        "data/highres/v1/terrain-decor39.png": "9fd50f5df92728a807effe4b479ae4b633b444cc15c4179ac9a3a2deb8d3200a",
+        "data/highres/v1/terrain-decor40.png": "56429eb2c0927b94b133f5a4ead52d2faa9b8504b49b1bbd2dff4a222e4b0090",
+        "data/highres/v1/terrain-decor41.png": "2e842fc0c4c1fa6d84f8bd6f310a363764511296c5c5b7b720dc78b4c4220cc5",
+        "data/highres/v1/terrain-decor42.png": "9476b77f320cb869e0edf218deb58d8c0998396b292b67b462a5867e9788496e",
+        "data/highres/v1/terrain-decor43.png": "8f163e01417bd0dc8165242d3d75ade9a1f4ced3f16237d8176b27fa37e12f5a",
+        "data/highres/v1/terrain-decor44.png": "f8021a8173c26dd2a33df1b898e06c0bb977bcc945f43249bcdc39ea85f7cf61",
+        "data/highres/v1/terrain-decor45.png": "a170b76ec8a58d8cf89084c7c47e71edc8fe01c5e061fb0ecd5ea61ae83b1a94",
+        "data/highres/v1/terrain-decor46.png": "2f5188318a115c1a6662e52f552fe1e25cb7ac21d3a0ec94843b4b3eb221819e",
+        "data/highres/v1/terrain-decor47.png": "aa3c9b79e66e6873da6e002e82f33a5649c6849c531cbe8327c30ac4f938aa6f"
+      }
+    },
+    "outcrop": {
+      "description": "one or two tall irregular bedrock massifs with sparse lichen",
+      "seed": "fnv1a32(\"decor:outcrop:<frame>\")",
+      "full": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55
+      ],
+      "edge": [
+        56,
+        57,
+        58,
+        59
+      ],
+      "runtime_sha256": {
+        "data/gfx/terrain-decor48.png": "7534d532857c6fa1e4a7820e50ee7c254439a9be558acd89cd06b28f2e3233b3",
+        "data/gfx/terrain-decor49.png": "5acebc911229fc0f7802bde8d92175cf70c5e0aa3f71cf6897ba2cc9c36437a3",
+        "data/gfx/terrain-decor50.png": "ea22366ec4f8c1ac39c03b39301613279b2fcabf2419bb6bec65219faa89c155",
+        "data/gfx/terrain-decor51.png": "6869431863e8f41f5436826ace077341504ccffd588f3fc076113ef88853d4c9",
+        "data/gfx/terrain-decor52.png": "a606e0757fe845e2dd6e22583dd15d2bc19535aa9ce08a431d473c614a18c0ce",
+        "data/gfx/terrain-decor53.png": "6c3831896d6ba835a2efe7dd9838f03be7af369c7a6bda0bef130b26a16fdee6",
+        "data/gfx/terrain-decor54.png": "401ed44ae9614494fb158b00403bd8ea076c8430c8c4beff8d9ac615ee2fe153",
+        "data/gfx/terrain-decor55.png": "4b0eccb2456de937457d68a50ce7490e10bb1c0112d2f7d3877a52835471ad8d",
+        "data/gfx/terrain-decor56.png": "e6901756a5f313000a0b8b44fd42a8efd9f46b0e9a64198fed833d559a180b1e",
+        "data/gfx/terrain-decor57.png": "b3a45f1d86cc8e02a7eacaac0e56cc557486f09bdb202751087cbedc2a07c27b",
+        "data/gfx/terrain-decor58.png": "66abb7687a2d6fa0f5db0d633efc364cee3160caced46236da7af0d56feb8672",
+        "data/gfx/terrain-decor59.png": "4234438750c104b4558c6da11044ee51651297347a0cf5d616a0e1eef865611f"
+      },
+      "highres_sha256": {
+        "data/highres/v1/terrain-decor48.png": "fd1e6c320ba8d156f375d8ccf0fc5af0728de760f47f780cfc609e31f25504ba",
+        "data/highres/v1/terrain-decor49.png": "f18b5f93cda036f06848a6e6a3b7552e60c8a7eb5ea5a47860e16fa1ace1080f",
+        "data/highres/v1/terrain-decor50.png": "b87694272e171ddd7bd729b5cad410197920c917dbd24f125a2afbcb254c523b",
+        "data/highres/v1/terrain-decor51.png": "97139c9f5a2611fe5e2cd1f4faff1286790955513e943624233df85ec022f9e5",
+        "data/highres/v1/terrain-decor52.png": "78f1fecb24aa179403bff4eb9920edecca937951d5abda7b3679f5f4a5c58c1b",
+        "data/highres/v1/terrain-decor53.png": "b0c04d3a9db1fa6b39f251a8840d1d26e4a74e6df3aaa11f60d14c8adc6a8513",
+        "data/highres/v1/terrain-decor54.png": "9f657dc09cb6800d368b48b27224e7f407e6753db786b30972985df81e86f2f8",
+        "data/highres/v1/terrain-decor55.png": "472036c02718cf658c4dd605b87c56dacda7469f3e4b1eca42f19a4a12264076",
+        "data/highres/v1/terrain-decor56.png": "0ef0da1443cde69eaa9edd46ea0c946b856c4f4feaddf1ab248e376514a54924",
+        "data/highres/v1/terrain-decor57.png": "4f13d2445399ad9250b65d2fcc72035966fbc735aa2ac531045cd722ae774709",
+        "data/highres/v1/terrain-decor58.png": "f24a224414f2d2a35a763ba9284b5e3f492a299ae41555b3cc784615f1895931",
+        "data/highres/v1/terrain-decor59.png": "e0215b6823b3af7210001cfae9826f82f7d0bada344f871736707d770e51b742"
+      }
+    }
+  },
+  "generator": "tools/artwork/terrain_decor.py",
+  "method": "procedural",
+  "generator_sha256": "3ab63b27973d7970dac461783ba1b6ef966b1c9db82b0a767f30dcebc8a1281b",
+  "native_size": 64,
+  "render_size": 256,
+  "pillow": "12.2.0"
+}

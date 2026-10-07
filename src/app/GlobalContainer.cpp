@@ -357,7 +357,11 @@ void GlobalContainer::requestGameGraphics()
         "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
 	for (const auto &material : TerrainVisual::loadCatalog().materials)
+	{
 		Toolkit::requestSprite(material.sprite);
+		if (!material.decor.sprite.empty())
+			Toolkit::requestSprite(material.decor.sprite);
+	}
 	for (size_t i = 0; i < buildingsTypes.size(); ++i) {
         const auto *type = buildingsTypes.get(i);
         if (type->type == "null") continue;

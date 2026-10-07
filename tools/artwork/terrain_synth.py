@@ -1315,41 +1315,12 @@ def render_chasm(ctx):
         style=Style(luma=108, std=14, grain_max=12, match=0.5),
         note="placeholder until the image-generated boulders land")
 def render_boulders(ctx):
+    """Dusty ground under the raised boulder decor: quiet warm earth with fine
+    grit and a few faint stones, so the decor sprites carry the boulders."""
     p = RECIPES["boulders"].palette
-    rng = ctx.rng
-    f1, _, _ = worley(rng, 10)
-    grit = fbm(rng, 12, 2)
-    tone = normalize([0.4 * (1 - a) + 0.6 * g for a, g in zip(f1, grit)])
-    rgb = ramp(tone, [(0.0, p["ground_dark"]), (0.5, p["ground"]), (1.0, p["ground_light"])])
-    rgb = shade(rgb, [1 - v for v in f1], 0.12)
-    rgb = grain(rgb, rng, 0.08)
-    # Two or three large stones well inside the tile, each with a lit top-left
-    # face and a soft cast shadow toward the lower right.
-    stones = []
-    for _ in range(rng.randint(2, 3)):
-        for _attempt in range(30):
-            r = 10 + rng.random() * 6
-            cx, cy = ctx.interior_point(STAMP_MARGIN + r + 8)
-            if all(math.hypot(cx - ox, cy - oy) > (r + orr) * 1.1 for ox, oy, orr, _ in stones):
-                break
-        lumps = [(2, 0.08 + rng.random() * 0.08, rng.random() * TAU),
-                 (3, 0.05 + rng.random() * 0.07, rng.random() * TAU),
-                 (5, 0.03 + rng.random() * 0.03, rng.random() * TAU)]
-        stones.append((cx, cy, r, lumps))
-    height = [0.0] * (N * N)
-    shadow = [0.0] * (N * N)
-    for cx, cy, r, lumps in stones:
-        dome = disc_profile(cx, cy, r, lumps)
-        height = [max(a, b) for a, b in zip(height, dome)]
-        stamp_disc(shadow, cx + r * 0.45, cy + r * 0.55, r * 1.15, 1.0, 0.6)
-    coverage = [smoothstep(0.0, 0.12, h) for h in height]
-    shadow = [s * (1 - c) for s, c in zip(shadow, coverage)]
-    rgb = mix(rgb, p["shadow"], shadow, 0.6)
-    rock_tone = normalize([h * 0.6 + g * 0.4 for h, g in zip(height, grit)])
-    rock = ramp(rock_tone, [(0.0, p["rock_dark"]), (1.0, p["rock_light"])])
-    rock = shade(rock, height, 0.6, light=(-0.8, -0.8))
-    rock = grain(rock, rng, 0.10)
-    rgb = mix(rgb, rock, coverage, 1.0)
+    rgb, _ = ground(ctx, 6, 3, (p["ground_dark"], p["ground"], p["ground_light"]), warp=6, grit=0.1)
+    pebbles, _, _ = soft_blobs(ctx, 10, 2.5, 4.0)
+    rgb = mix(rgb, p["ground_dark"], pebbles, 0.35)
     return rgb, None
 
 
@@ -1357,23 +1328,13 @@ def render_boulders(ctx):
         seam={"height": 4, "cast_q8": 88, "cast_width_q8": 832},
         palette={"dark": (22, 50, 24), "mid": (36, 76, 36), "light": (64, 108, 52), "gap": (10, 26, 14)},
         style=Style(luma=56, std=10, grain_max=9),
-        note="placeholder until the image-generated hedge lands")
+        note="ground under the raised decor sprites (tools/artwork/terrain_decor.py)")
 def render_hedge(ctx):
+    """Leaf litter and dark soil under the raised hedge decor."""
     p = RECIPES["hedge"].palette
-    rng = ctx.rng
-    # Eight to ten large clumps per tile, a dark gap network between them and
-    # a strong top-left-lit bevel for height.
-    f1, f2, ids, _ = worley_points(rng, rng.randint(8, 10))
-    edge = [b - a for a, b in zip(f1, f2)]
-    pillows = normalize([1 - v for v in f1])
-    leaves = fbm(rng, 10, 3)
-    h = normalize([0.6 * a + 0.4 * b for a, b in zip(pillows, leaves)])
-    rgb = ramp(h, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    rgb = apply_cell_jitter(rgb, ids, cell_jitter(rng, 10, 0.08))
-    rgb = shade(rgb, h, 0.5, light=(-0.8, -0.8))
-    gaps = band(edge, 0.08, 0.10)
-    rgb = mix(rgb, p["gap"], gaps, 0.7)
-    rgb = grain(rgb, rng, 0.10)
+    rgb, _ = ground(ctx, 8, 3, (p["gap"], p["dark"], p["mid"]), warp=8, grit=0.14)
+    leaves, _, _ = soft_blobs(ctx, 14, 2.5, 4.5)
+    rgb = mix(rgb, p["light"], leaves, 0.25)
     return rgb, None
 
 
@@ -1382,24 +1343,22 @@ def render_hedge(ctx):
         palette={"dark": (40, 54, 26), "mid": (62, 80, 38), "light": (92, 110, 58),
                  "twig": (96, 78, 52), "twig_dark": (52, 42, 30)},
         style=Style(luma=65, std=11, grain_max=10, match=0.7),
-        note="placeholder until the image-generated thicket lands")
+        note="ground under the raised decor sprites (tools/artwork/terrain_decor.py)")
 def render_thicket(ctx):
+    """Shaded undergrowth with a few faint fallen twigs under the thicket decor."""
     p = RECIPES["thicket"].palette
+    rgb, _ = ground(ctx, 7, 3, (p["dark"], p["mid"], p["light"]), warp=8, grit=0.12)
     rng = ctx.rng
-    rgb, _ = ground(ctx, 5, 3, (p["dark"], p["mid"], p["light"]), warp=10)
-    for color, count, width in ((p["twig_dark"], 14, 5.5), (p["twig"], 10, 4.5)):
-        twigs = [0.0] * (N * N)
-        for _ in range(count):
-            length = 16 + rng.random() * 22
-            x, y = ctx.interior_point(STAMP_MARGIN + length * 0.3)
-            angle = rng.random() * TAU
-            stamp_stroke(twigs, x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2,
-                         angle, length, width + rng.random() * 1.5)
-        rgb = mix(rgb, color, twigs, 0.85)
+    twigs = [0.0] * (N * N)
+    for _ in range(rng.randint(3, 5)):
+        length = 14 + rng.random() * 12
+        x, y = ctx.interior_point(STAMP_MARGIN + length / 2)
+        angle = rng.random() * TAU
+        stamp_stroke(twigs, x - math.cos(angle) * length / 2, y - math.sin(angle) * length / 2,
+                     angle, length, 2.5)
+    rgb = mix(rgb, p["twig_dark"], twigs, 0.35)
     return rgb, None
 
-
-# Lava: warm, saturated, animated glow in channels between dark plates.
 
 @recipe(name="lava", group="lava", label="Lava", profile="fractured",
         seam={"height": 4, "fringe": [214, 110, 40], "fringe_q8": 128, "fringe_width_q8": 640},
