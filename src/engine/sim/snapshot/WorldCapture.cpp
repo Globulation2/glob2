@@ -218,11 +218,15 @@ Handle capture(const Game& game,
 		std::copy_n(team->teamMaterials, MaterialSlotCount, target.materials.begin());
 		}
 		if (!needs(requirements, Component::Entities)) continue;
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		// Live lists walk occupied slots in slot order, so records keep the
+		// order a full slot sweep would produce without visiting empty slots.
+		std::fill_n(entities->buildingSlotIndices.begin() + t * Building::MAX_COUNT, Building::MAX_COUNT, Entities::NoRecord);
+		std::fill_n(entities->unitSlotIndices.begin() + t * Unit::MAX_COUNT, Unit::MAX_COUNT, Entities::NoRecord);
+		for (std::size_t n = 0; n < team->liveBuildings.size(); ++n)
 		{
+			const auto i = team->liveBuildings.slots()[n];
 			auto& slot = entities->buildingSlotIndices[t * Building::MAX_COUNT + i];
-			slot = Entities::NoRecord;
-			if (auto* b = team->myBuildings[i])
+			if (auto* b = team->liveBuildings.entries()[n])
 			{
 				slot = Uint32(entities->buildings.size());
 				BuildingView v;
@@ -237,11 +241,11 @@ Handle capture(const Game& game,
 				append(entities->buildings, std::move(v));
 			}
 		}
-		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		for (std::size_t n = 0; n < team->liveUnits.size(); ++n)
 		{
+			const auto i = team->liveUnits.slots()[n];
 			auto& slot = entities->unitSlotIndices[t * Unit::MAX_COUNT + i];
-			slot = Entities::NoRecord;
-			if (const auto* u = team->myUnits[i])
+			if (const auto* u = team->liveUnits.entries()[n])
 			{
 				slot = Uint32(entities->units.size());
 				UnitView v;

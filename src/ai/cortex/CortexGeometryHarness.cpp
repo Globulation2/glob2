@@ -129,8 +129,10 @@ TEST_SUITE("CortexGeometry")
         // A null type pointer is not a valid serialized simulation state.
         const auto slot = Building::GIDtoID(pool->gid);
         game.teams[0]->myBuildings[slot] = nullptr;
+        game.teams[0]->rebuildLiveLists();
         checks += compare(game);
         game.teams[0]->myBuildings[slot] = pool;
+        game.teams[0]->rebuildLiveLists();
         pool->typeNum = game.buildingsTypes.getTypeNum(
             IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false);
         pool->type = game.buildingsTypes.get(pool->typeNum);

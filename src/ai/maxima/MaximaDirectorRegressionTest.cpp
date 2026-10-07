@@ -244,7 +244,7 @@ static void reusedOwnId() {
         Fixture f; auto old=f.building(10,10,0); auto& c=f.ai->context;c.initialize();
         int oldId=f.id(old),oldGid=old->gid;
         old->kill();f.player.team->removeFromAbilitiesLists(old);
-        f.player.team->myBuildings[::Building::GIDtoID(oldGid)]=NULL;delete old;
+        f.player.team->myBuildings[::Building::GIDtoID(oldGid)]=NULL;f.player.team->rebuildLiveLists();delete old;
         // Identity remains safe even when a worker never observes the empty
         // slot between removal and replacement.
         auto replacement=f.building(sameLocation?10:40,sameLocation?10:40,0);

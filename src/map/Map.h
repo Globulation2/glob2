@@ -1176,7 +1176,7 @@ protected:
 	std::optional<Uint16> planeKeyForSlot(Uint16* const* slot) const;
 	//! Register a publication into slot; other field slots (areas, buildings) are ignored.
 	void publishPlane(Uint16* const* slot);
-	void clearPlaneRegistry();
+	void clearPlaneRegistry() { publishedPlanes.clear(); publishedPlaneIndex.fill(0); planeGenerations.fill(0); }
 	//! Re-register every non-null slot with a fresh generation after bulk slot
 	//! changes (load, team removal) that bypass publishPlane.
 	void rebuildPlaneRegistry();

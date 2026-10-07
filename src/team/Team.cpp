@@ -55,6 +55,8 @@ void Team::init(void)
 
 	for (int i=0; i<Building::MAX_COUNT; i++)
 		myBuildings[i]=NULL;
+	liveUnits.clear();
+	liveBuildings.clear();
 
 	startPosX=startPosY=0;
 	startPosSet=START_POS_UNSET;
@@ -78,9 +80,17 @@ void Team::init(void)
 
 
 
+void Team::rebuildLiveLists()
+{
+	liveUnits.rebuild(myUnits, Unit::MAX_COUNT);
+	liveBuildings.rebuild(myBuildings, Building::MAX_COUNT);
+}
+
 bool Team::integrity(void)
 {
 	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
+	checkInvariant(liveUnits.matches(myUnits, Unit::MAX_COUNT));
+	checkInvariant(liveBuildings.matches(myBuildings, Building::MAX_COUNT));
 	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];

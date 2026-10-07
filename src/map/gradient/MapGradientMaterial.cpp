@@ -296,13 +296,6 @@ void Map::publishPlane(Uint16* const* slot)
 	publishedPlanes[index - 1].generation = ++planeGenerations[key];
 }
 
-void Map::clearPlaneRegistry()
-{
-	publishedPlanes.clear();
-	publishedPlaneIndex.fill(0);
-	planeGenerations.fill(0);
-}
-
 void Map::rebuildPlaneRegistry()
 {
 	publishedPlanes.clear();

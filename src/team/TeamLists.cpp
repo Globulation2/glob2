@@ -12,6 +12,7 @@ void Team::createLists(void)
 	// Setup helpers can register buildings before requesting a complete rebuild.
 	// Rebuild only static capability lists; active service and staffing queues
 	// retain their scheduling state.
+	rebuildLiveLists();
 	stockSuppliers.clear();
 	directStockSuppliers.clear();
 	combatFlags.clear();
@@ -107,6 +108,8 @@ void Team::clearMem(void)
 			myBuildings[i] = NULL;
 		}
 	}
+	liveUnits.clear();
+	liveBuildings.clear();
 }
 
 
