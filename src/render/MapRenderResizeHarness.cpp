@@ -166,6 +166,7 @@ void run(bool gpu)
 	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 1800, .height = 1100,
 	                                                             .screenFlags = Uint32(GraphicContext::RESIZABLE) | (gpu ? Uint32(GraphicContext::USEGPU) : 0)});
 	GameGUI gui;
+    gui.init();
 	Game &game=gui.game;
 	game.map.setSize(4,4,GRASS);
 	game.map.setGame(&game);
