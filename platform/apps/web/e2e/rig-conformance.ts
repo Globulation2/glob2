@@ -44,9 +44,6 @@ for (const asset of assets) {
           'data:text/javascript;base64,' + btoa(evaluator)
         )) as typeof RigEvaluator;
         const model = decodeRig(new Uint8Array(bytes).buffer);
-        // The platform tsconfig intentionally omits global DOM types: adding
-        // lib.dom here also changes Node fetch overloads in unrelated API tests.
-        // @ts-expect-error This callback executes in Playwright's browser realm.
         const gl = document.createElement('canvas').getContext('webgl2');
         if (!gl) throw new Error('WebGL2 unavailable: this backend remains unverified');
         const compile = (type: number, source: string) => {
