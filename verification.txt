@@ -1,0 +1,7 @@
+Tested commit 6d45acb494ecdbfb5af7db3fc0ee45171e4383ea
+Base d42d3e51281c7d149b0a259f5a2a945316cf4562
+Linux x86_64 GCC 15.2 debug, pinned SDL3 build/sdl3-ci/prefix.
+Build: GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/src/glob2
+Result: success.
+Run: GLOB2_SIM_THREAD=1 build/native-coverage-torus/src/glob2 --run-game --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 --player maxima --player cortex --player warrush --player cabino --ticks 600 --replay true --output-dir "$PWD/artifacts/headless-ownership/run"
+Result: 600 ticks, checksum 32800aa3. This unsanitized smoke test does not establish absence of races. Hosted TSan pending; no simulation changes.
