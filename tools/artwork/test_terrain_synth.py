@@ -36,13 +36,13 @@ class TerrainSynth(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.results = synth.synthesize(synth.BUILTIN_ORDER)
+        cls.results, cls.hd = synth.synthesize_both(synth.SYNTH_ORDER)
 
     def tiles(self, name, phase=0):
         return self.results[name][phase]
 
     def test_every_catalogue_type_has_a_recipe(self):
-        self.assertEqual(sorted(synth.RECIPES), sorted(synth.BUILTIN_ORDER))
+        self.assertEqual(sorted(synth.RECIPES), sorted(synth.SYNTH_ORDER))
         self.assertEqual(len(synth.BUILTIN_ORDER), 24)
         for name, recipe in synth.RECIPES.items():
             self.assertEqual(recipe.name, name)
@@ -50,11 +50,47 @@ class TerrainSynth(unittest.TestCase):
             self.assertIn("height", recipe.seam)
 
     def test_determinism_matches_committed_frames_and_provenance(self):
-        for name in synth.BUILTIN_ORDER:
+        for name in synth.SYNTH_ORDER:
             if synth.RECIPES[name].placeholder_only:
                 continue
             with self.subTest(material=name):
-                self.assertEqual(synth.check_material(name, self.results[name], ROOT), [])
+                self.assertEqual(synth.check_material(name, self.results[name], ROOT, self.hd[name]), [])
+
+    def test_every_catalogue_sprite_frame_has_registered_hd(self):
+        """Native-only terrain is limited to legacy art without an HD source."""
+        catalog = json.loads((ROOT / "data/terrain/tileset.json").read_text())
+        rows = {line.split()[0] for line in (ROOT / "data/highres/v1/frames.txt").read_text().splitlines()[1:]}
+        native_only = {"data/gfx/terrain", "data/gfx/terrain-cobblestone"}
+        for material in catalog["materials"]:
+            sprite = material["sprite"]
+            if sprite in native_only:
+                continue
+            decor = material.get("decor")
+            if decor:
+                for frame in decor["full"] + decor["edge"]:
+                    name = f"{decor['sprite'].removeprefix('data/gfx/')}{frame}"
+                    with self.subTest(frame=name):
+                        self.assertIn(name, rows)
+            stem = sprite.removeprefix("data/gfx/")
+            phases = material.get("animation_frames", 1)
+            stride = material.get("animation_stride", 0)
+            for variant in material["variants"]:
+                for phase in range(phases):
+                    frame = f"{stem}{variant['frame'] + phase * stride}"
+                    with self.subTest(frame=frame):
+                        self.assertIn(frame, rows)
+                        self.assertTrue((ROOT / "data/highres/v1" / f"{frame}.png").is_file())
+
+    def test_hd_frames_match_their_classic_downsample(self):
+        """HD frames are the 4x source of the classic tiles, not a separate look."""
+        _, hd = synth.synthesize_both(["gravel", "lava"], jobs=1)
+        for name, phases in hd.items():
+            for phase, tiles in phases.items():
+                for tile, native in zip(tiles, self.tiles(name, phase)):
+                    with self.subTest(material=name, phase=phase):
+                        self.assertEqual(tile.size, (4 * TILE, 4 * TILE))
+                        down = tile.convert("RGB").resize((TILE, TILE), Image.Resampling.BOX)
+                        self.assertLess(color_distance(mean_color([down]), mean_color([native])), 6)
 
     def test_second_synthesis_is_identical(self):
         again = synth.synthesize(["dirt", "lava"], jobs=1)
@@ -75,7 +111,7 @@ class TerrainSynth(unittest.TestCase):
                     self.assertEqual(len({tile.tobytes() for tile in tiles}), synth.VARIANTS)
 
     def test_tileability(self):
-        for name in synth.BUILTIN_ORDER:
+        for name in synth.SYNTH_ORDER:
             tiles = self.tiles(name)
             grain = statistics.fmean(interior_grain(tile) for tile in tiles)
             seam = statistics.fmean(wrap_seam_error(tile) for tile in tiles)
@@ -84,6 +120,8 @@ class TerrainSynth(unittest.TestCase):
 
     def test_perimeter_agreement_for_all_ordered_pairs(self):
         for name, recipe in synth.RECIPES.items():
+            if recipe.periodic:
+                continue  # covered by test_periodic_materials_share_their_outer_ring_and_wrap
             for phase in range(recipe.phases):
                 tiles = self.tiles(name, phase)
                 with self.subTest(material=name, phase=phase):
@@ -101,9 +139,10 @@ class TerrainSynth(unittest.TestCase):
                 with self.subTest(material=name):
                     self.assertGreaterEqual(lo, low)
                     self.assertLessEqual(hi, high)
-        # Deep water about 160, dark water about 210: tints of the ocean, not covers.
-        self.assertLess(style_stats(self.tiles("deep_water"))["alpha"], 175)
-        self.assertGreater(style_stats(self.tiles("dark_water"))["alpha"], 200)
+        # Every terrain material is opaque: nothing is drawn underneath terrain.
+        for name in synth.SYNTH_ORDER:
+            with self.subTest(material=name):
+                self.assertEqual(style_stats(self.tiles(name))["alpha"], 255.0)
 
     def test_style_bands(self):
         for name, recipe in synth.RECIPES.items():
@@ -113,7 +152,9 @@ class TerrainSynth(unittest.TestCase):
                 tolerance = 3 + 3 * (1 - recipe.style.match)
                 self.assertLessEqual(abs(stats["std"] - recipe.style.std), tolerance)
                 self.assertLessEqual(stats["grain"], recipe.style.grain_max)
-                self.assertLessEqual(stats["std"], 26)
+                # Object materials (pebbles, flower heads, tussocks) need contrast
+                # between objects and gaps to read at 32 px; ground stays quiet.
+                self.assertLessEqual(stats["std"], 36 if recipe.periodic else 26)
 
     def test_ground_materials_stay_low_contrast_like_the_native_tiles(self):
         grass = style_stats(reference_tiles("grass"))
@@ -128,7 +169,7 @@ class TerrainSynth(unittest.TestCase):
 
     def test_preview_colors_follow_the_rendered_mean(self):
         previews = {}
-        for name in synth.BUILTIN_ORDER:
+        for name in synth.SYNTH_ORDER:
             recipe = synth.RECIPES[name]
             preview, minimap, mean = synth.preview_colors(name, self.results[name])
             previews[name] = preview
@@ -143,10 +184,10 @@ class TerrainSynth(unittest.TestCase):
                 self.assertTrue(all(0 <= c <= 255 for c in preview + minimap))
 
     def test_non_sibling_materials_are_separable(self):
-        means = {name: mean_color(self.tiles(name)) for name in synth.BUILTIN_ORDER}
+        means = {name: mean_color(self.tiles(name)) for name in synth.SYNTH_ORDER}
         for legacy in ("grass", "sand", "trail", "ice"):
             means[legacy] = mean_color(reference_tiles(legacy))
-        groups = {name: synth.RECIPES[name].group for name in synth.BUILTIN_ORDER}
+        groups = {name: synth.RECIPES[name].group for name in synth.SYNTH_ORDER}
         groups.update(grass="grass", sand="sand", trail="paths", ice="ice")
         names = sorted(means)
         for i, a in enumerate(names):
@@ -190,14 +231,27 @@ class TerrainSynth(unittest.TestCase):
             for i, blended in enumerate(runtime_blend(tiles)):
                 self.assertEqual(blended.tobytes(), prepared[f"data/gfx/terrain-{name}{i}.png"].tobytes(), (name, i))
 
+    def test_periodic_materials_share_their_outer_ring_and_wrap(self):
+        """Periodic variants join any variant: identical outer ring, and each
+        tile continues itself across its own edges (no hard seam)."""
+        periodic = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].periodic]
+        self.assertEqual(sorted(periodic), ["flower_meadow", "gravel", "marsh"])
+        for name in periodic:
+            tiles = [t.convert("RGB") for t in self.tiles(name)]
+            ring = lambda t: [t.getpixel((x, y)) for y in range(TILE) for x in range(TILE)
+                              if min(x, y, TILE - 1 - x, TILE - 1 - y) == 0]
+            for tile in tiles[1:]:
+                with self.subTest(material=name):
+                    self.assertEqual(ring(tile), ring(tiles[0]))
+
     def test_catalog_fragment_is_well_formed(self):
         fragment = synth.catalog_fragment(self.results)
-        self.assertEqual([m["key"] for m in fragment["materials"]], synth.BUILTIN_ORDER)
-        self.assertEqual(fragment["bindings"], {name: name for name in synth.BUILTIN_ORDER})
+        self.assertEqual([m["key"] for m in fragment["materials"]], synth.SYNTH_ORDER)
+        self.assertEqual(fragment["bindings"], {name: name for name in synth.SYNTH_ORDER})
         for block in fragment["materials"]:
             self.assertEqual(block["sprite"], f"data/gfx/terrain-{block['key']}")
             self.assertEqual(len(block["variants"]), 16)
-            self.assertFalse(block["ocean"])
+            self.assertNotIn("ocean", block)
             if synth.RECIPES[block["key"]].phases > 1:
                 self.assertEqual((block["animation_frames"], block["animation_stride"]), (4, 16))
         pairs = {tuple(sorted((p["a"], p["b"]))) for p in fragment["pair_treatments"]}
@@ -207,7 +261,7 @@ class TerrainSynth(unittest.TestCase):
         json.dumps(fragment)
 
     def test_provenance_records_statistics_only_references(self):
-        for name in synth.BUILTIN_ORDER:
+        for name in synth.SYNTH_ORDER:
             document = json.loads((ROOT / "datasrc/gfx" / name / "provenance.json").read_text())
             recipe = synth.RECIPES[name]
             with self.subTest(material=name):

@@ -59,8 +59,8 @@ def validate_frames(root, pack, manifest):
                 require(role in layers, f'Missing {role} layer: {frame_id}')
     expected = {p.stem.removesuffix('r') for p in (root / 'data/gfx').glob('*.png')
                 if WORLD_FRAME.fullmatch(p.name)}
-    # New experimental terrain is compiled by the shared tileset pipeline and
-    # uses native fallback. This HD pack covers the 272 legacy connected tiles.
+    # Legacy connected terrain must cover the 272 atlas tiles; catalogue
+    # materials (terrain-<name>N) register standalone 4x frames instead.
     connected = topology(root)
     expected = {name for name in expected if not name.startswith('terrain') or
                 int(name.removeprefix('terrain')) in connected}
@@ -171,16 +171,6 @@ def validate_terrain(root, pack, manifest):
     print(f'PASS: {joins} terrain joins, all corner junctions and padded borders through four mip levels')
 
 
-def validate_water(pack):
-    water = rgba(pack / 'water0.png')
-    require(water.getchannel('A').getextrema() == (255, 255), 'Water must be opaque')
-    for level in range(4):
-        pixels = np.asarray(water.resize((water.width >> level, water.height >> level), Image.Resampling.BOX))
-        require(np.array_equal(pixels[0], pixels[-1]) and np.array_equal(pixels[:, 0], pixels[:, -1]),
-                f'Periodic water edges: {level}')
-    print('PASS: opaque periodic water through four mip levels')
-
-
 def validate_export(root, pack, manifest, exported):
     """Check shipped naming, decoded alpha/geometry and audited encoding identity."""
     sys.path.insert(0, str(ROOT))
@@ -230,7 +220,6 @@ def validate(root=ROOT, exported=None):
     frames = validate_frames(root, pack, manifest)
     validate_resources(root, pack, manifest, frames)
     validate_terrain(root, pack, manifest)
-    validate_water(pack)
     if exported is not None:
         validate_export(root, pack, manifest, Path(exported).resolve())
 

@@ -154,6 +154,7 @@ def _validate(document, root):
         profiles[p["key"]] = p
     materials = {}
     sources = {}
+    decor_sprites = set()
     for m in document["materials"]:
         if (
             not isinstance(m["key"], str)
@@ -163,8 +164,11 @@ def _validate(document, root):
         ):
             raise ValueError("Invalid material key or profile")
         sprite = data_path(m["sprite"], "Sprite")
-        if type(m.get("ocean", False)) is not bool:
-            raise ValueError("Ocean must be a boolean")
+        if m.get("edges", "blend") not in ("blend", "periodic"):
+            raise ValueError("Material edges must be 'blend' or 'periodic'")
+        if "ocean" in m or "backdrop" in m:
+            # Water is an ordinary animated tile material now.
+            raise ValueError("Ocean and backdrop materials are no longer supported")
         if not isinstance(m["preview"], list) or len(m["preview"]) != 3 or any(
             type(n) is not int or not 0 <= n <= 255 for n in m["preview"]
         ):
@@ -224,22 +228,23 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
-        if "backdrop" in m:
-            b = m["backdrop"]
-            path = data_path(b["sprite"], "Backdrop sprite")
-            first = integer(b.get("first_frame", 0), 0, 65535, "Backdrop first_frame")
-            count = integer(b.get("frames", 1), 1, 256, "Backdrop frames")
-            integer(b.get("ticks", 1), 1, 2147483647, "Backdrop ticks")
-            if m.get("ocean", False) or first + count > 65536:
-                raise ValueError("Invalid backdrop")
-            for frame in range(first, first + count):
-                relative = f"{path.as_posix()}{frame}.png"
-                source = root / relative
-                with Image.open(source) as image:
-                    if image.size != (32, 32):
-                        raise ValueError("Backdrop must have 32x32 logical dimensions")
-                sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "decor" in m:
+            decor = m["decor"]
+            decor_sprite = data_path(decor["sprite"], "Decor sprite")
+            for key in ("full", "edge"):
+                frames = decor.get(key)
+                if not isinstance(frames, list) or not frames or len(frames) > 256:
+                    raise ValueError("Decor frames must be a non-empty array")
+                for frame in frames:
+                    integer(frame, 0, 65535, "Decor frame")
+                    source = root / f"{decor_sprite.as_posix()}{frame}.png"
+                    with Image.open(source) as image:
+                        if image.width > 64 or image.height > 64:
+                            raise ValueError(f"Decor frame larger than 64x64: {source}")
+            decor_sprites.add(decor["sprite"])
         materials[m["key"]] = m
+    if len(decor_sprites) > 1:
+        raise ValueError("All decor blocks must share one sprite")
     if not 0 < len(materials) < 65536:
         raise ValueError("Invalid material count")
     if not isinstance(document["bindings"], dict):
@@ -250,8 +255,6 @@ def _validate(document, root):
     for name in BINDINGS:
         if document["bindings"][name] not in materials:
             raise ValueError(f"Missing binding: {name}")
-    if not materials[document["bindings"]["water"]].get("ocean", False):
-        raise ValueError("Water requires ocean backdrop")
     pairs = set()
     treatments = document.get("pair_treatments", [])
     if not isinstance(treatments, list):
@@ -273,6 +276,7 @@ def seamless_sources(document, root):
     """Same four-native-pixel shared border used by runtime source preparation."""
     result = {}
     for material in document["materials"]:
+        periodic = material.get("edges") == "periodic"
         for phase in range(material.get("animation_frames", 1)):
             names = [
                 f"{material['sprite']}{v['frame']+phase*material.get('animation_stride',0)}.png"
@@ -281,7 +285,8 @@ def seamless_sources(document, root):
             master = Image.open(root / names[0]).convert("RGBA")
             for name in names:
                 image = Image.open(root / name).convert("RGBA")
-                for y in range(32):
+                # Periodic materials already share one periodic edge band.
+                for y in range(0 if periodic else 32):
                     for x in range(32):
                         distance = min(x, y, 31 - x, 31 - y)
                         if distance >= 4:

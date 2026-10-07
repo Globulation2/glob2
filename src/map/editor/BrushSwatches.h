@@ -6,8 +6,7 @@
 // presentation so a brush looks the same in the dock, the phone tray and the
 // palette, and the same as on the map:
 //  - terrain swatches go through the map renderer's material compositor using
-//    the type's appearance (imported types included), over the shared animated
-//    ocean the map draws beneath every swimmable cell;
+//    the type's appearance (imported types included), with any raised decor;
 //  - resource swatches draw the resource's map sprite over a terrain swatch it
 //    may be placed on.
 // Every swatch is fully opaque. Swatches are cached by (registry digests, entry,

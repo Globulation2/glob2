@@ -1169,7 +1169,9 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             if (globalContainer->runNoX)
             {
                 drawSession();
-                runner->acquireScene();
+                // Acquiring releases the old front slot to the producer. Keep
+                // telemetry on the newly owned scene, just as drawing does.
+                gui.setPublishedScene(runner->acquireScene());
                 std::this_thread::sleep_for(std::chrono::milliseconds(8));
             }
             else

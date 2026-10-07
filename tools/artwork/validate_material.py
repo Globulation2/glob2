@@ -90,6 +90,13 @@ def validate(name, root=ROOT):
             lo, hi = tile.getchannel("A").getextrema()
             require(low <= lo and hi <= high, f"{name}: alpha {lo}..{hi} outside the material's rule {low}..{high}")
             for other in tiles:
+                if recipe.periodic:
+                    # Periodic edges: every variant carries the same outer ring,
+                    # which continues across the edge like one wrapping tile.
+                    for box in ((0, 0, 1, 32), (31, 0, 32, 32), (0, 0, 32, 1), (0, 31, 32, 32)):
+                        require(tile.crop(box).tobytes() == other.crop(box).tobytes(),
+                                f"{name} phase {phase}: periodic variant ring differs")
+                    continue
                 require(tile.crop((31, 0, 32, 32)).tobytes() == other.crop((0, 0, 1, 32)).tobytes(),
                         f"{name} phase {phase}: horizontal variant join differs")
                 require(tile.crop((0, 31, 32, 32)).tobytes() == other.crop((0, 0, 32, 1)).tobytes(),

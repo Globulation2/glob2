@@ -339,12 +339,12 @@ TEST_SUITE("BrushCatalog")
 			REQUIRE(surface);
 			CHECK(surface->getW() == 64);
 			CHECK(fullyOpaque(*surface));
-			// Every material here has texture or the ocean's variation beneath it
+			// Every material here has texture
 			// (the void is a uniform black hole on the map too).
 			if (type != VOID_HOLE)
 				CHECK(variation(*surface) > 0.5);
 		}
-		// Swimmable materials read through to the ocean rather than black.
+		// Water materials draw their own opaque tiles rather than black.
 		for (auto type : {WATER, DEEP_WATER, *registry.find("example:pond")})
 		{
 			const auto centre = pixel(*swatches.terrain(type, 64), 32, 32);

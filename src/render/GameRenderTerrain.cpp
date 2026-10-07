@@ -39,10 +39,13 @@
 
 namespace
 {
-// Resource images overlap neighboring tiles. Cache ONE complete canonical row,
-// retain source traversal order inside texture runs, and select the exact source
-// tile range with binary searches. Splitting rectangles vertically would change
-// the painter order. Partial discovery uses the ordinary path below instead.
+// Obstacle decor (boulders, hedges, rock) and resource images overlap
+// neighboring tiles. Each canonical row draws its decor first, then its
+// resources, so lower rows stay in front of higher ones across both layers.
+// Cache ONE complete canonical row per layer, retain source traversal order
+// inside texture runs, and select the exact source tile range with binary
+// searches. Splitting rectangles vertically would change the painter order.
+// Partial discovery uses the ordinary path below instead.
 bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
@@ -51,9 +54,11 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
     auto *sprite = globalContainer->resources;
-    std::vector<int> frames;
+    const auto &compositor = globalContainer->terrainCompositor();
+    auto *decorSprite = compositor.decorSprite();
+    std::vector<int> frames, decorFrames;
     GAGCore::MapGeometryCache *cache;
-    try { frames.resize(map.getW()); cache = &batch->geometryCache(); }
+    try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
     catch (const std::bad_alloc&) { return false; }
     // Decide before emitting geometry: fallback must never redraw earlier rows.
     for (int y = top; y <= bottom; ++y)
@@ -69,6 +74,7 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
     for (int y = top; y <= bottom; ++y)
     {
         int mapY = (y + viewportY) & map.getMaskH();
+        bool anyDecor = false;
         for (int mapX = 0; mapX < map.getW(); ++mapX)
         {
             const auto& resource = map.getResource(mapX, mapY);
@@ -78,41 +84,49 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
                 const auto& type = map.resourceRegistry().presentation(static_cast<ResourceId>(resource.type));
                 frames[mapX] = type.frame(resource.amount, mapX, mapY, map.tick);
             }
+            decorFrames[mapX] = decorSprite ? compositor.decorFrame(map, mapX, mapY) : -1;
+            anyDecor |= decorFrames[mapX] >= 0;
         }
-        auto draw = [&](int first, int last, int originX, int originY)
+        auto drawLayer = [&](GAGCore::Sprite *layerSprite, const std::vector<int> &layerFrames, int layerKey)
         {
-            for (int mapX = first; mapX <= last; ++mapX)
+            auto draw = [&](int first, int last, int originX, int originY)
             {
-                int frame = frames[mapX];
-                if (frame < 0) continue;
-                int dx = (sprite->getW(frame) - 32) >> 1;
-                int dy = (sprite->getH(frame) - 32) >> 1;
-                gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, sprite, frame);
+                for (int mapX = first; mapX <= last; ++mapX)
+                {
+                    int frame = layerFrames[mapX];
+                    if (frame < 0) continue;
+                    int dx = (layerSprite->getW(frame) - 32) >> 1;
+                    int dy = (layerSprite->getH(frame) - 32) >> 1;
+                    gfx->drawSprite((originX + mapX) * 32 - dx, originY * 32 - dy, layerSprite, frame);
+                }
+                gfx->finishDrawingSprite(layerSprite, 255);
+            };
+            for (int x = left; x <= right;)
+            {
+                int mapX = (x + viewportX) & map.getMaskW();
+                int width = std::min(right - x + 1, map.getW() - mapX);
+                bool drawn = false;
+                try
+                {
+                    drawn = cache->draw({mapIdentity, layerKey, 0, mapY, map.getW(), 1}, layerFrames,
+                        [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
+                        float((x - mapX) * 32), float(y * 32));
+                }
+                catch (const std::bad_alloc&) {}
+                if (!drawn)
+                {
+                    layer.prepareFallback();
+                    // Cold-cache budget exhaustion must retain the family
+                    // batching path instead of reverting to one HD bind per sprite.
+                    GAGCore::SpriteDrawBatch fallback(gfx, layerSprite);
+                    draw(mapX, mapX + width - 1, x - mapX, y);
+                }
+                x += width;
             }
-            gfx->finishDrawingSprite(sprite, 255);
         };
-        for (int x = left; x <= right;)
-        {
-            int mapX = (x + viewportX) & map.getMaskW();
-            int width = std::min(right - x + 1, map.getW() - mapX);
-            bool drawn = false;
-            try
-            {
-                drawn = cache->draw({mapIdentity, 1, 0, mapY, map.getW(), 1}, frames,
-                    [&] { draw(0, map.getW() - 1, 0, 0); }, mapX, mapX + width - 1,
-                    float((x - mapX) * 32), float(y * 32));
-            }
-            catch (const std::bad_alloc&) {}
-            if (!drawn)
-            {
-                layer.prepareFallback();
-                // Cold-cache budget exhaustion must retain the resource-family
-                // batching path instead of reverting to one HD bind per sprite.
-                GAGCore::SpriteDrawBatch fallback(gfx, sprite);
-                draw(mapX, mapX + width - 1, x - mapX, y);
-            }
-            x += width;
-        }
+        if (anyDecor)
+            drawLayer(decorSprite, decorFrames, 2);
+        drawLayer(sprite, frames, 1);
     }
     return true;
 }
@@ -120,21 +134,6 @@ bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left,
 
 // Terrain, resource, and area rendering. Split from Game_render.cpp.
 
-
-void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
-{
-	PERF_SCOPE_TIME(Water);
-    const auto &p=TerrainOceanBackdrop;
-    const int frame=terrainAnimatedFrame(p.firstFrame,p.frames,p.ticksPerFrame,time);
-    const int width=globalContainer->terrainWater->getW(frame),height=globalContainer->terrainWater->getH(frame);
-    const int waterStartX=-(((viewportX<<5)+terrainScrollOffset(time,p.scrollDivisorX))%width);
-    const int waterStartY=-(((viewportY<<5)+terrainScrollOffset(time,p.scrollDivisorY))%height);
-    for(int y=waterStartY;y<sh;y+=height) {
-        for(int x=waterStartX;x<sw;x+=width)
-            globalContainer->gfx->drawSprite(x,y,globalContainer->terrainWater,frame);
-    }
-    globalContainer->gfx->finishDrawingSprite(globalContainer->terrainWater,255);
-}
 
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, int animationTime)
 {
@@ -158,6 +157,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
     const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry());
+    const auto &compositor = globalContainer->terrainCompositor();
+    Sprite *decorSprite = compositor.decorSprite();
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
         if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
@@ -174,6 +175,16 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 						y+viewportY+1,
 						visibleTeams))
 			{
+				if (decorSprite)
+				{
+					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
+					if (decor >= 0)
+					{
+						if (pendingSprite != decorSprite) { flush(); pendingSprite = decorSprite; }
+						globalContainer->gfx->drawSprite((x << 5) - ((decorSprite->getW(decor) - 32) >> 1),
+							(y << 5) - ((decorSprite->getH(decor) - 32) >> 1), decorSprite, decor);
+					}
+				}
 				const auto& r = sceneMap.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{

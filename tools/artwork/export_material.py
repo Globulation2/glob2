@@ -117,11 +117,12 @@ MATERIAL_PROMPTS = {
         "steady medium intensity."
     ),
     "flower_meadow": PROMPT_HEADER + (
-        "Material: Flower meadow, a wild meadow viewed from above. Soft mid-green grass with painterly "
-        "mottling, scattered small round flower heads in pastel pink, pale yellow and lilac, about 3% of "
-        "the surface, each one or two pixels across after downscaling, spread evenly without clumping "
-        "into rows or rings. Flowers slightly lighter than the grass; no stems drawn, no large blooms, "
-        "no bare soil, no path, no border."
+        "Material: Flower meadow, a wild meadow viewed from above. Mid-green grass with painterly "
+        "mottling and short blades, covered about 12-18% by clearly readable flower heads: small patches "
+        "of one colour (white daisies, yellow buttercups, pink, violet, red, blue) plus scattered "
+        "singles. Each head is a ring of four to six saturated petals around a contrasting centre with a "
+        "small soft shadow, three to four pixels across after downscaling. No stems drawn, no bare soil, "
+        "no path, no border."
     ),
     "outcrop": PROMPT_HEADER + (
         "Material: Outcrop, impassable bare bedrock viewed from above. Four to six large flat slabs of "

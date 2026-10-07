@@ -4,7 +4,8 @@ Production inputs are separated by origin: `original-derived/` contains preserve
 artist exports and Blender unit renders; `authored/` contains rendered SVG
 markers; `ai-upscaled/` contains reviewed enhanced sprites; `ai-materials/`
 contains historical generated terrain and water; `original-materials/` contains
-original-based grass, sand and their connected composites; `resampled-masks/` contains deterministic
+original-based grass, sand and their connected composites; `procedural-materials/` contains the
+HD frames of the procedurally synthesised terrain catalogue; `resampled-masks/` contains deterministic
 mask resizes. `atlases/` holds the padded mip levels, and `pack-metadata/` the
 PNG source index, provenance and hashes. Classic fallback assets remain unchanged.
 

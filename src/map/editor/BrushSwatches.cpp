@@ -108,24 +108,6 @@ void makeOpaque(DrawableSurface &surface)
 	surface.markPixelsChanged();
 }
 
-// The shared ocean exactly as Game::drawMapWater tiles it, at `scale` swatch
-// pixels per map pixel.
-void drawOcean(DrawableSurface &target, int size, int scale)
-{
-	auto *sprite = globalContainer->terrainWater;
-	if (!sprite)
-		return;
-	const int frame = TerrainOceanBackdrop.firstFrame;
-	auto *source = sprite->baseFrame(frame);
-	if (!source || !source->getSDLSurface())
-		source = sprite->nativeFrame(frame);
-	if (!source || !source->getSDLSurface())
-		return;
-	const int w = std::max(1, sprite->getW(frame) * scale), h = std::max(1, sprite->getH(frame) * scale);
-	for (int y = 0; y < size; y += h)
-		for (int x = 0; x < size; x += w)
-			target.drawSurface(x, y, w, h, source);
-}
 } // namespace
 
 std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type, int px)
@@ -138,7 +120,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 	const auto binding = builtinLook ? catalog.bindings.find(terrainPresentation(appearance).name) : catalog.bindings.end();
 	// Two by two map cells, as the map shows them at 100% zoom, at an integer
 	// scale at least as large as the swatch: neighbouring cells pick their own
-	// texture variants and the ocean shows its own variation.
+	// texture variants.
 	const int scale = std::clamp((px + 63) / 64, 1, 8);
 	const int cell = 32 * scale, size = 2 * cell;
 	DrawableSurface base(size, size);
@@ -152,12 +134,7 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 		fill = GAGCore::Color(material.preview[0], material.preview[1], material.preview[2]);
 	}
 	base.drawFilledRect(0, 0, size, size, fill);
-	// The map draws the shared ocean beneath every swimmable cell; translucent
-	// water materials (and the ocean itself) read through it.
-	if (terrainRegistry->properties(type).swimmable || terrainRegistry->properties(appearance).swimmable ||
-		(binding != catalog.bindings.end() && catalog.materials[binding->second].ocean))
-		drawOcean(base, size, scale);
-	if (binding != catalog.bindings.end() && !catalog.materials[binding->second].ocean)
+	if (binding != catalog.bindings.end())
 	{
 		DrawableSurface texture(size, size);
 		TerrainVisual::Recipe recipe;
@@ -172,6 +149,21 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeTerrain(TerrainType type,
 			}
 		texture.markPixelsChanged();
 		base.drawSurface(0, 0, &texture);
+		// Raised decor (boulders, hedges, rock) over each cell, as the map draws
+		// it for cells surrounded by the same material.
+		if (auto *sprite = compositor.decorSprite())
+			for (int y = 0; y < 2; ++y)
+				for (int x = 0; x < 2; ++x)
+				{
+					const int frame = catalog.decorFrame(binding->second, x, y, false);
+					if (frame < 0)
+						continue;
+					if (auto *source = sprite->nativeFrame(frame))
+					{
+						const int w = source->getW() * scale, h = source->getH() * scale;
+						base.drawSurface(x * cell + cell / 2 - w / 2, y * cell + cell / 2 - h / 2, w, h, source);
+					}
+				}
 	}
 	makeOpaque(base);
 	auto result = std::make_unique<DrawableSurface>(px, px);
