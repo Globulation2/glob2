@@ -295,10 +295,11 @@ class GameGUITouchHarness
 		editor.performAction("select sand");
 		touch.prepare();
 		{
-			// The brush rail on the thumb edge: sizes, Pan; sand has no Erase.
+			// The brush rail on the thumb edge: sizes, Pan, and Erase, which
+			// reverts sand to grass.
 			const auto rail = touch.rail();
-			require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w == 0 && rail.pan.w > 0,
-					"Editor rail offers sizes and Pan; sand has no Erase");
+			require(rail.detents.size() == BrushTool::BRUSH_COUNT && rail.mode.w > 0 && rail.pan.w > 0,
+					"Editor rail offers sizes, Pan and Erase for sand");
 			tap(centre(rail.detents[2]));
 			require(editor.brush.getFigure() == 2, "Editor rail tap selects a size");
 			finger(SDL_EVENT_FINGER_DOWN, 1, centre(rail.detents[0]));

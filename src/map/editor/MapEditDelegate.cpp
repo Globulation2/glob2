@@ -323,10 +323,8 @@ void MapEdit::updateCoordinatesLabel()
 	std::ostringstream s;
 	int x;
 	int y;
-	if (panelMode==Terrain) //terrain has a slightly different coordinates system
-		game.map.displayToMapCaseAligned(mouseX+(terrainType>TerrainSelector::Water ? 0 : 16), mouseY+(terrainType>TerrainSelector::Water ? 0 : 16), &x, &y,  viewportX, viewportY);
-	else
-		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
+	// Every brush, terrain included, is centred on the cell under the pointer.
+	game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 	s << "X: " << x << " Y: " << y;
 	mapCoordinatesLabel->setLabel(s.str());
 }

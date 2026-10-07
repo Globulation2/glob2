@@ -78,25 +78,18 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 						for (int x = 0; x < 16; ++x)
 							before.push_back(map.getResource(x, y));
 
-					// The map operations used by MapEdit::handleTerrainClick.
-					map.setUMatPos(px, py, paint, 1);
-					map.removeUnallowedResources(px - 2, py - 2, 4, 4);
-					if (paint == GRASS)
-						for (int y = py - 1; y <= py; ++y)
-							for (int x = px - 1; x <= px; ++x)
-								map.replaceResource(x, y, Resource{});
+					// The map operations MapEdit::handleTerrainClick uses for one cell.
+					map.paintLegacyCells({{px, py}}, paint);
+					map.removeUnallowedResources(px - 2, py - 2, 5, 5);
 
-					// Independent whole-map oracle: retain every compatible resource,
-					// except the four tiles explicitly cleared by the grass brush.
+					// Independent whole-map oracle: retain every compatible resource.
+					// The grass brush no longer clears the cells it paints.
 					for (int y = 0; y < 16; ++y)
 						for (int x = 0; x < 16; ++x)
 						{
 							Resource expected = before[y * 16 + x];
-							const bool bareGrass = paint == GRASS &&
-								(x == (px & 15) || x == ((px - 1) & 15)) &&
-								(y == (py & 15) || y == ((py - 1) & 15));
-							if (bareGrass || (expected.type != NO_RES_TYPE &&
-								!(map.terrainPropertiesAt(x,y).allowedResources & (1u<<expected.type))))
+							if (expected.type != NO_RES_TYPE &&
+								!(map.terrainPropertiesAt(x,y).allowedResources & (1u<<expected.type)))
 								expected.clear();
 							REQUIRE(map.getResource(x, y).getUint64() == expected.getUint64());
 						}
@@ -107,7 +100,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 
 	// Buildings and units. After a stroke a building stands iff its whole footprint is
 	// still grass, a walker iff its tile is not water, an explorer always; the grass
-	// brush also clears the four tiles the cell touches. The oracle knows nothing about
+	// brush no longer clears what it paints over. The oracle knows nothing about
 	// the stroke position, so it holds on every side of an entity alike.
 	const int swarm = globals->buildingsTypes.getTypeNum("swarm", 0, false);
 	const int swarmW = globals->buildingsTypes.get(swarm)->width;
@@ -143,29 +136,23 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 				return game.teams[0]->myBuildings[Building::GIDtoID(gid)] != nullptr;
 			return game.teams[0]->myUnits[Unit::GIDtoID(gid)] != nullptr;
 		}
-		// The map operations used by MapEdit::handleTerrainClick.
+		// The map operations MapEdit::handleTerrainClick uses for one cell: a
+		// painted cell moves the corners of the cells up to two away.
 		void stroke(int x, int y, TerrainType paint)
 		{
-			game.map.setUMatPos(x, y, paint, 1);
-			game.map.removeUnallowedResources(x - 2, y - 2, 4, 4);
-			game.removeUnallowedUnitsAndBuildings(x - 2, y - 2, 4, 4);
-			if (paint == GRASS)
-				game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
+			game.map.paintLegacyCells({{x, y}}, paint);
+			game.map.removeUnallowedResources(x - 2, y - 2, 5, 5);
+			game.removeUnallowedUnitsAndBuildings(x - 2, y - 2, 5, 5);
 		}
-		void check(int px, int py, TerrainType paint) const
+		void check() const
 		{
-			auto touched = [&](int x, int y)
-			{
-				return paint == GRASS && (((x - px) & 15) == 0 || ((x - px) & 15) == 15)
-                    && (((y - py) & 15) == 0 || ((y - py) & 15) == 15);
-			};
 			bool swarmStands = true;
 			for (int y = swarmY; y < swarmY + swarmH; ++y)
 				for (int x = swarmX; x < swarmX + swarmW; ++x)
-					if (!game.map.isGrass(x & 15, y & 15) || touched(x, y))
+					if (!game.map.isGrass(x & 15, y & 15))
 						swarmStands = false;
-			const bool workerStands = !game.map.isWater(workerX, workerY) && !touched(workerX, workerY);
-			const bool explorerStands = !touched(explorerX, explorerY);
+			const bool workerStands = !game.map.isWater(workerX, workerY);
+			const bool explorerStands = true;
 			REQUIRE(alive(swarmGid, true) == swarmStands);
 			REQUIRE((game.map.getBuilding(swarmX, swarmY) != NOGBID) == swarmStands);
 			REQUIRE(alive(workerGid, false) == workerStands);
@@ -186,18 +173,19 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
                     const int x = (px + offset[0]) & 15;
                     const int y = (py + offset[1]) & 15;
                     world.stroke(x, y, paint);
-                    world.check(x, y, paint);
+                    world.check();
                     ++entityStrokes;
                 }
 
-	// A cell touches the tiles c-1..c; the cell 2*swarmX+swarmW-c touches their mirror
-	// image across the swarm, the same distance east as c is west, and must agree.
+	// A painted cell c changes the cells c-2..c+2; the cell 2*swarmX+swarmW-1-c
+	// changes their mirror image across the swarm, the same distance east as c is
+	// west, and must agree.
 	for (TerrainType paint : {GRASS, SAND, WATER})
 		for (int c = 4; c <= swarmX; ++c)
 		{
 			World west(swarm, swarmW, swarmH), east(swarm, swarmW, swarmH);
 			west.stroke(c, swarmY, paint);
-			east.stroke(2 * swarmX + swarmW - c, swarmY, paint);
+			east.stroke(2 * swarmX + swarmW - 1 - c, swarmY, paint);
 			REQUIRE(west.alive(west.swarmGid, true) == east.alive(east.swarmGid, true));
 		}
 
