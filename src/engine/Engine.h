@@ -24,6 +24,7 @@
 
 
 class SimulationRunner;
+class ScenePreparation;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
@@ -353,6 +354,7 @@ private:
     /// A turn game draws only after a step: polls between steps change nothing visible.
     bool turnDrawPending = true;
     std::unique_ptr<SimulationRunner> runner;
+    std::unique_ptr<ScenePreparation> serialPresentation;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
     void publishSessionClock(Uint64 now);

@@ -1083,6 +1083,21 @@ write timing counts and completed/failed/superseded accounting. See
 off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
 timing records, including site assignment. Use a disposable HOME and run from the repository.
 
+Scene extraction has an opt-in paired diagnostic in the engine harness:
+
+```sh
+GLOB2_SCENE_BENCH=1 build/linux/client/release/test/glob2-engine-tests --test-suite=ScenePerformance
+```
+
+It compares synchronous extraction with owner capture and pure preparation on the
+same seeded state at 128, 512 and 1024 tiles per side, with 512 units. Five warmups
+precede 40 samples for unchanged and changed terrain. CSV rows report median and
+p95 microseconds plus snapshot pool capacity, leased payload bytes and cumulative
+copied bytes. Three retained Scenes model consumer leases. These are extraction
+microbenchmarks, not frame-rate or whole-game speedup measurements; pool payload
+accounting excludes registry heaps and allocator overhead. No timing threshold is
+used as a test assertion.
+
 ### Distributed gameplay, AI and performance telemetry
 
 `python3 test/test_distributed_game_telemetry.py` tests typed streaming extraction,

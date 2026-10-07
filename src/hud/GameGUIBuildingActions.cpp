@@ -12,7 +12,7 @@ void GameGUI::requestBuildingConstruction(Building &building)
 	if (building.constructionResultState==Building::REPAIR || building.constructionResultState==Building::UPGRADE)
 	{
 		const int workers=defaultAssign.getDefaultAssignedUnits(building.getConstructionOriginTypeNum());
-		orderQueue.push_back(std::make_shared<OrderCancelConstruction>(building.gid,workers));
+		enqueueOrder(std::make_shared<OrderCancelConstruction>(building.gid,workers));
 	}
 	else if ((building.constructionResultState == Building::NO_CONSTRUCTION) &&
 			 (building.buildingState == Building::ALIVE))
@@ -26,10 +26,39 @@ void GameGUI::requestBuildingDestruction(Building &building)
 		return;
 	if (building.buildingState == Building::WAITING_FOR_DESTRUCTION)
 	{
-		orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(building.gid)));
+		enqueueOrder(shared_ptr<Order>(new OrderCancelDelete(building.gid)));
 	}
 	else if (building.buildingState == Building::ALIVE)
 	{
-		orderQueue.push_back(shared_ptr<Order>(new OrderDelete(building.gid)));
+		enqueueOrder(shared_ptr<Order>(new OrderDelete(building.gid)));
+	}
+}
+
+void GameGUI::requestBuildingConstruction(const SceneBuildingPanel &building)
+{
+	if (globalContainer->isViewingGame() || building.owner.teamNumber != localTeamNo)
+		return;
+	if (building.constructionResultState==Building::REPAIR || building.constructionResultState==Building::UPGRADE)
+	{
+		const int workers=defaultAssign.getDefaultAssignedUnits(building.constructionOriginTypeNum);
+		enqueueOrder(std::make_shared<OrderCancelConstruction>(building.gid,workers));
+	}
+	else if ((building.constructionResultState == Building::NO_CONSTRUCTION) &&
+			 (building.buildingState == Building::ALIVE))
+	{
+		repairAndUpgradeBuilding(&building, true, true);
+	}
+}
+void GameGUI::requestBuildingDestruction(const SceneBuildingPanel &building)
+{
+	if (globalContainer->isViewingGame() || building.owner.teamNumber != localTeamNo)
+		return;
+	if (building.buildingState == Building::WAITING_FOR_DESTRUCTION)
+	{
+		enqueueOrder(shared_ptr<Order>(new OrderCancelDelete(building.gid)));
+	}
+	else if (building.buildingState == Building::ALIVE)
+	{
+		enqueueOrder(shared_ptr<Order>(new OrderDelete(building.gid)));
 	}
 }

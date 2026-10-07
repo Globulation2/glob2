@@ -38,6 +38,7 @@ namespace Online { class SkinDownloads; }
 #include "BuildingGuiState.h"
 #include "GameMusicController.h"
 #include "sim/ClientCommandSink.h"
+#include "sim/ClientOrderQueue.h"
 #include "sim/ClientEvents.h"
 #include "sim/ClientRequests.h"
 
@@ -271,10 +272,10 @@ public:
 	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
 	/// What the next scene should show; read by extraction, which runs where the
 	/// game may be read. GUI state it reads changes only while the simulation is parked.
-	SceneRequest sceneRequest();
+	SceneRequest sceneRequest(bool includeTiming = true);
 	/// Extract the next scene from the game (the simulation thread calls this).
 	void extractScene(Scene& scene) { sceneExtractor.extract(game, sceneRequest(), scene); }
-    std::shared_ptr<SceneInputs> captureSceneInputs() { return sceneExtractor.capture(game, sceneRequest()); }
+    std::shared_ptr<SceneInputs> captureSceneInputs(SceneRequest request) { request.tickTime = lastTickTime; request.tickInterval = tickInterval; return sceneExtractor.capture(game, request); }
 	/// Per-frame GUI work that reads or writes the game, for threaded execution:
 	/// the simulation is parked while it runs (SimulationRunner::withGame).
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
@@ -384,6 +385,7 @@ private:
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
+	void repairAndUpgradeBuilding(const SceneBuildingPanel *building, bool repair, bool upgrade);
 	
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
@@ -564,10 +566,13 @@ private:
 	//! Queues a move of one of the local team's flags to tile (x, y), replacing any
 	//! move of the same flag still in the queue, and shows the flag there at once.
 	void queueFlagMove(Building &flag, int x, int y, bool drop);
+	void queueFlagMove(const SceneBuilding &flag, int x, int y, bool drop);
+	void queueFlagMove(Uint16 gid, int x, int y, bool drop);
+	std::optional<SceneBuilding> inputBuilding(BuildingRef ref) const;
 	//! The local team's flag at a viewport-relative map point: an exact tile hit,
 	//! or else the nearest flag whose tile centre is within `reachPoints` screen
 	//! points (0 for exact hits only).
-	Building *flagAt(int mx, int my, double reachPoints);
+	std::optional<SceneBuilding> flagAt(int mx, int my, double reachPoints);
 	//! The touch reach around flags for a contact at a screen point, in points.
 	double flagReachAt(double screenX, double screenY) const;
 	//! One viewport has moved and a flag or a brush is selected, update its position
@@ -713,7 +718,9 @@ private:
 
 	Uint32 chatMask;
 
-	std::list<std::shared_ptr<Order> > orderQueue;
+	ClientOrderQueue orderQueue;
+	void stampClientOrder(const std::shared_ptr<Order>& order, bool simulationOwner = false);
+	void enqueueOrder(std::shared_ptr<Order> order);
 
 	Minimap minimap;
 
@@ -859,6 +866,8 @@ private:
 	///Scene published by the simulation thread, or null when drawAll extracts
 	///frameScene itself (serial execution).
 	const Scene* publishedScene = nullptr;
+	ScenePanels serialInputPanels;
+	const SceneBuildingPanel* inputBuildingPanel();
 	///Extracts frameScene; keeps the state that spans frames (the overlay map).
 	SceneExtractor sceneExtractor;
 
@@ -867,10 +876,15 @@ private:
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
     void requestBuildingConstruction(Building& building);
+    void requestBuildingConstruction(const SceneBuildingPanel& building);
     void requestBuildingDestruction(Building& building);
+    void requestBuildingDestruction(const SceneBuildingPanel& building);
     bool requestWorkerAllocation(Building& building, int requested);
+    bool requestWorkerAllocation(const SceneBuildingPanel& building, int requested);
     bool requestBuildingPriority(Building& building, int requested);
+    bool requestBuildingPriority(const SceneBuildingPanel& building, int requested);
     bool requestFlagRange(Building& building, int requested);
+    bool requestFlagRange(const SceneBuildingPanel& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;
@@ -879,6 +893,8 @@ private:
 	template<class B> bool displayedExplorersRequireBombing(const B& b) const { return ::displayedExplorersRequireBombing(buildingGuiState,b); }
 	std::array<Sint32, NB_UNIT_TYPE> displayedRatio(const Building& b) const;
 	// The same for the selected building's panel model.
+	Sint32 displayedPosX(const SceneBuilding& b) const { return ::displayedPosX(buildingGuiState, b); }
+	Sint32 displayedPosY(const SceneBuilding& b) const { return ::displayedPosY(buildingGuiState, b); }
 	Sint32 displayedPosX(const SceneBuildingPanel& b) const { return ::displayedPosX(buildingGuiState, b); }
 	Sint32 displayedPosY(const SceneBuildingPanel& b) const { return ::displayedPosY(buildingGuiState, b); }
 	Sint32 displayedMaxUnitWorking(const SceneBuildingPanel& b) const { return ::displayedMaxUnitWorking(buildingGuiState, b); }

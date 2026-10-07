@@ -42,6 +42,7 @@
 #include <chrono>
 #include "Version.h"
 #include "sim/SimulationRunner.h"
+#include "sim/presentation/ScenePreparation.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
@@ -321,7 +322,14 @@ void Engine::drawSession(bool everyFrame)
     if (!runner)
     {
         if (turn && !std::exchange(turnDrawPending, false)) return;
-        drawFrame(*session, everyFrame && !turn);
+        if (!serialPresentation)
+            serialPresentation=std::make_unique<ScenePreparation>(gui.game.map.computeExecutor());
+        if (serialPresentation->readyToCapture())
+            serialPresentation->submit(gui.captureSceneInputs(gui.sceneRequest()));
+        const auto* scene=serialPresentation->acquire();
+        if (!scene) return;
+        gui.setPublishedScene(scene);
+        drawFrame(*session, everyFrame && !turn, scene);
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
@@ -360,6 +368,8 @@ bool Engine::startSimulationThread(Uint64 now)
 
 void Engine::stopSimulationThread()
 {
+    serialPresentation.reset();
+    gui.setPublishedScene(nullptr);
     if (!runner) {gui.game.drainAI();return;}
     runner->stop();
     gui.game.drainAI();
@@ -377,8 +387,22 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     if (!runner) throw std::logic_error("Simulation thread not running");
     publishSessionClock(now);
     runner->rethrowFailure();
+    for (const auto& event : events) sessionInput.push_back(event);
+    // Selection and hit testing need this world's first immutable view. Preserve
+    // early input until it arrives; never fall back to a previous world's Scene.
+    if (!runner->sceneReady())
+    {
+        const auto* scene=runner->acquireScene();
+        if (!scene) return gui.isRunning && !runner->ended();
+        gui.setPublishedScene(scene);
+    }
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(events); absorbSimulationTelemetry(); });
+        runner->withGame([&] {
+            clientStep(sessionInput.events());
+            sessionInput.clear();
+            runner->requestScene(gui.sceneRequest(false));
+            absorbSimulationTelemetry();
+        });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -729,6 +753,8 @@ void Engine::pumpTurnSession(Uint64 now)
 
 void Engine::reloadTurnInitialState()
 {
+    serialPresentation.reset();
+    gui.setPublishedScene(nullptr);
 	assert(turn && turnMatch);
 	TurnMatchState& state = *turnMatch;
 	const auto started = std::chrono::steady_clock::now();

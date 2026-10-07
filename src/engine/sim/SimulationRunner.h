@@ -50,8 +50,10 @@ public:
 	//! until resume().
 	void suspend();
 	void resume();
+	void requestScene(SceneRequest request);
 	//! The newest published Scene, or null before the first one.
 	const Scene *acquireScene();
+	bool sceneReady() const { return haveScene; }
 	//! True once the simulation ended the session or failed.
 	bool ended() const { return finished.load(); }
 	//! Rethrow a failure raised on the simulation thread, if any.
@@ -66,6 +68,7 @@ private:
 
 	Engine &engine;
 	SceneBuffer<Scene> scenes;
+	SceneRequest requestedScene;
 	SceneExtractor presentationExtractor;
 	ComputeExecutor::PresentationTicket presentation;
 	std::thread thread;

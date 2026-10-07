@@ -211,13 +211,14 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selectionBuilding();
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its upgrade is not ours to cancel.
-						if (selBuild->owner->teamNumber != localTeamNo)
+						if (selBuild->owner.teamNumber != localTeamNo)
 							break;
 						if (selBuild->constructionResultState == Building::UPGRADE)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+							enqueueOrder(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 							repairAndUpgradeBuilding(selBuild, false, true);
 					}
@@ -227,13 +228,14 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
 						const int current = displayedMaxUnitWorking(*selBuild);
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
+						if ((selBuild->owner.teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current<MAX_UNIT_WORKING))
 						{
 							int nbReq=std::min(20, current+1);
 							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
@@ -243,13 +245,14 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
 						const int current = displayedMaxUnitWorking(*selBuild);
-						if ((selBuild->owner->teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
+						if ((selBuild->owner.teamNumber==localTeamNo) && (selBuild->type->maxUnitWorking) && (current>0))
 						{
 							int nbReq=std::max(0, current-1);
 							pendingFor(selBuild->gid).pendingMaxUnitWorking = nbReq;
-							orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
+							enqueueOrder(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, nbReq)));
 							defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, nbReq);
 						}
 					}
@@ -316,16 +319,17 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild=selectionBuilding();
-						if (selBuild->owner->teamNumber==localTeamNo)
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						if (selBuild->owner.teamNumber==localTeamNo)
 						{
 							if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
+								enqueueOrder(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
 							}
 							else if (selBuild->buildingState==Building::ALIVE)
 							{
-								orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
+								enqueueOrder(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
 							}
 						}
 					}
@@ -335,13 +339,14 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				{
 					if (selectionMode==BUILDING_SELECTION)
 					{
-						Building* selBuild = selectionBuilding();
-						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->getConstructionOriginTypeNum());
+						const auto* selBuild = inputBuildingPanel();
+						if (!selBuild) break;
+						int unitWorking = defaultAssign.getDefaultAssignedUnits(selBuild->constructionOriginTypeNum);
 						// Another team's building can be selected for viewing; its repair is not ours to cancel.
-						if (selBuild->owner->teamNumber != localTeamNo)
+						if (selBuild->owner.teamNumber != localTeamNo)
 							break;
 						if (selBuild->constructionResultState == Building::REPAIR)
-							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
+							enqueueOrder(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
 							repairAndUpgradeBuilding(selBuild, true, false);
 					}

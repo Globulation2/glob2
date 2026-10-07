@@ -11,7 +11,13 @@
 #include <nlohmann/json.hpp>
 #include <SDLGraphicContext.h>
 #include <array>
+#include <chrono>
+#include <cstdlib>
+#include <cstdio>
+#include <algorithm>
 #include "sim/presentation/SceneInputs.h"
+#include "sim/presentation/ScenePreparation.h"
+#include <thread>
 #include "sim/snapshot/SnapshotStore.h"
 
 TEST_SUITE("SceneExtract")
@@ -502,4 +508,80 @@ TEST_CASE("snapshot preparation matches legacy queries and survives later live m
         }
     }
 }
+}
+
+// Opt-in diagnostic: matched state and extraction inputs, no timing assertions.
+// Keep capture and preparation separate: only capture delays the simulation owner.
+TEST_CASE("Scene extraction performance" * doctest::test_suite("ScenePerformance") * doctest::skip(std::getenv("GLOB2_SCENE_BENCH") == nullptr))
+{
+    glob2test::HeadlessGlobals globals;
+    using Clock=std::chrono::steady_clock;
+    auto micros=[](auto from,auto to) { return std::chrono::duration<double,std::micro>(to-from).count(); };
+    std::puts("scene_bench,size,units,mode,phase,median_us,p95_us,pool_capacity_bytes,pool_leased_bytes,bytes_copied");
+    for (int exponent : {7,9,10})
+    {
+        glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.discovered=true,.loadDefaultRace=true,.header=true,.seed=1});
+        auto& game=world.game;
+        const int width=1<<exponent;
+        for (int i=0;i<512;++i) world.addUnit(WORKER,2+(i%(width-4)),2+(i/(width-4)));
+        SceneRequest request;
+        SceneExtractor direct,capture,prepare;
+        Scene oldScene,newScene;
+        std::array<Scene,3> retained;
+        for (bool changed : {false,true})
+        {
+            std::vector<double> legacy,captures,prepares;
+            for (int i=0;i<45;++i)
+            {
+                if (changed) { ++game.stepCounter; game.map.setUMTerrain(i%width,0,static_cast<TerrainType>(i%2)); }
+                auto a=Clock::now(); direct.extract(game,request,oldScene); auto b=Clock::now();
+                auto inputs=capture.capture(game,request); auto c=Clock::now();
+                prepare.prepare(*inputs,newScene); auto d=Clock::now();
+                retained[i%3]=newScene;
+                if (i>=5) { legacy.push_back(micros(a,b)); captures.push_back(micros(b,c)); prepares.push_back(micros(c,d)); }
+                REQUIRE(oldScene.tick==newScene.tick);
+                REQUIRE(oldScene.entities.units.size()==newScene.entities.units.size());
+            }
+            const auto memory=game.snapshots().memoryMetrics();
+            auto print=[&](const char* phase,std::vector<double>& samples) {
+                std::sort(samples.begin(),samples.end());
+                std::printf("scene_bench,%d,512,%s,%s,%.3f,%.3f,%llu,%llu,%llu\n",width,changed?"changed":"unchanged",phase,
+                    samples[samples.size()/2],samples[samples.size()*95/100],
+                    (unsigned long long)memory.capacityBytes,(unsigned long long)memory.leasedBytes,
+                    (unsigned long long)game.snapshots().metrics.bytesCopied);
+            };
+            print("legacy",legacy);print("capture",captures);print("prepare",prepares);
+        }
+    }
+}
+
+TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fallback" * doctest::test_suite("SceneExtract"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (unsigned threads : {1u,2u})
+    {
+        if (threads>1 && !GAGCore::ThreadSupport::available) continue;
+        glob2test::HeadlessGame world;
+        auto* unit=world.addUnit(WORKER,2,2);
+        ComputeExecutor executor; executor.configure(threads);
+        SceneExtractor extractor;
+        ScenePreparation presentation(executor);
+        REQUIRE(presentation.readyToCapture());
+        const auto gid=unit->gid;
+        const auto hp=unit->hp;
+        presentation.submit(extractor.capture(world.game,{}));
+        unit->hp=hp-1;
+        const Scene* scene=nullptr;
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        do { scene=presentation.acquire(); if (!scene) std::this_thread::yield(); }
+        while (!scene && std::chrono::steady_clock::now()<deadline);
+        REQUIRE(scene);
+        REQUIRE(scene->entities.unit(gid));
+        CHECK(scene->entities.unit(gid)->hp==hp);
+        // Publishing can precede the task's final return; allow that narrow tail.
+        while (!presentation.readyToCapture() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+        REQUIRE(presentation.readyToCapture());
+        presentation.submit(extractor.capture(world.game,{}));
+        // Destruction cancels without waiting; an active chunk owns its storage.
+    }
 }

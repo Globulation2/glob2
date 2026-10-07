@@ -309,7 +309,7 @@ ViewPoint GameGUITouch::dialActionPoint(int kind, int value, int side) const
 	return {-1, -1};
 }
 
-void GameGUITouch::tapDial(Building &b, const DialRegion &region, ViewPoint point)
+void GameGUITouch::tapDial(const SceneBuildingPanel &b, const DialRegion &region, ViewPoint point)
 {
 	const auto &row = region.action;
 	if (row.kind == 10)

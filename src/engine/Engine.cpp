@@ -12,6 +12,7 @@
 #include "GameDiagnostics.h"
 #include "TurnMatchPresenter.h"
 #include "sim/SimulationRunner.h"
+#include "sim/presentation/ScenePreparation.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "OnlineMatch.h"
@@ -30,6 +31,7 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+	stopSimulationThread();
 	PerformanceTelemetry::collector().enabled = false;
 	globalContainer->liveSpectating=false;
 	if(previousCustomSpeed>=0) {

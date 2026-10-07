@@ -964,7 +964,7 @@ void GameGUI::drawWinProbabilities(int x, int y)
 	}
 }
 
-SceneRequest GameGUI::sceneRequest()
+SceneRequest GameGUI::sceneRequest(bool includeTiming)
 {
 	SceneRequest request;
 	request.localTeam = localTeamNo;
@@ -976,8 +976,7 @@ SceneRequest GameGUI::sceneRequest()
 	if (selectionMode == UNIT_SELECTION)
 		if (const UnitRef *u = std::get_if<UnitRef>(&selection))
 			request.selectedUnit = *u;
-	request.tickTime = lastTickTime;
-	request.tickInterval = tickInterval;
+	if (includeTiming) { request.tickTime = lastTickTime; request.tickInterval = tickInterval; }
 	return request;
 }
 

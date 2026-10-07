@@ -664,8 +664,8 @@ bool GameGUITouch::process(SDL_Event &event)
 	if (!fingers.empty() &&
 		(ownerSelection != gui.selectionMode || ownerMenu != gui.inGameMenu ||
 		 ownerBuilding != (gui.selectionMode == GameGUI::BUILDING_SELECTION
-							   ? gui.selectionBuilding()
-							   : nullptr) ||
+							   ? std::get<BuildingRef>(gui.selection)
+							   : BuildingRef{}) ||
 		 ownerDialog != activeDialog() || ownerTool != gui.toolManager.getBuildingName() ||
 		 ownerOverlay != bool(gui.typingInputScreen || gui.scrollableText)))
 	{
@@ -673,7 +673,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		return true;
 	}
 	// Input validates against the live building (authoritative state).
-	Building *held = inspecting() ? gui.selectionBuilding() : nullptr;
+	const auto* held = inspecting() ? gui.inputBuildingPanel() : nullptr;
 	if (!fingers.empty() && held &&
 		(heldBuildingState != held->buildingState ||
 		 heldConstructionState != held->constructionResultState))
@@ -724,7 +724,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerRegion = interfaceRegion(point);
 			heldActionKind = -1;
 			heldActionConfirmation = confirmDestroy;
-			if (Building *building = inspecting() ? gui.selectionBuilding() : nullptr)
+			if (const auto* building = inspecting() ? gui.inputBuildingPanel() : nullptr)
 			{
 				heldBuildingState = building->buildingState;
 				heldConstructionState = building->constructionResultState;
@@ -740,8 +740,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerSelection = gui.selectionMode;
 			ownerMenu = gui.inGameMenu;
 			ownerBuilding = gui.selectionMode == GameGUI::BUILDING_SELECTION
-								? gui.selectionBuilding()
-								: nullptr;
+								? std::get<BuildingRef>(gui.selection)
+								: BuildingRef{};
 			ownerDialog = activeDialog();
 			ownerOverlay = gui.typingInputScreen || gui.scrollableText;
 			ownerTool = gui.toolManager.getBuildingName();
@@ -753,7 +753,7 @@ bool GameGUITouch::process(SDL_Event &event)
 																					  : TouchMode::Navigate;
 			// A contact on or near one of the player's flags carries the flag rather
 			// than the map, even straight after a tap.
-			Building *grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : nullptr;
+			auto grabbed = !interfaceGesture && natural == TouchMode::Navigate ? grabbableFlag(point) : std::optional<SceneBuilding>{};
 			if (grabbed)
 				beginFlagDrag(*grabbed, key, point);
 			else
@@ -1126,9 +1126,9 @@ void GameGUITouch::applyZoneUndo()
 	if (!zoneUndo || globalContainer->isViewingGame())
 		return;
 	while (auto pending = gui.toolManager.getOrder())
-		gui.orderQueue.push_back(pending);
+		gui.enqueueOrder(pending);
 	for (const auto &order : zoneUndo->orders)
-		gui.orderQueue.push_back(order);
+		gui.enqueueOrder(order);
 	auto &view = gui.toolManager.displayedViewForZone(static_cast<GameGUIToolManager::ZoneType>(zoneUndo->zone));
 	for (const auto &[index, value] : zoneUndo->displayed)
 		view.set(index, value);
@@ -1442,10 +1442,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 
 // The visible unit drawn under a screen point, matching draw order: ground units
 // first, then flying units, using their interpolated rectangles.
-Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
+UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 {
 	const ViewPoint point{double(gui.mapMouseX(int(screenPoint.x))), double(gui.mapMouseY(int(screenPoint.y)))};
-	Unit *found = nullptr, *nearest = nullptr;
+	UnitRef found, nearest;
 	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / gui.camera.zoom;
 	double nearestDistance = radius * radius;
 	const int tiles = 1 + int(std::ceil(radius / 32));
@@ -1453,12 +1453,12 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 	// motion. Input runs with the simulation parked; resolve snapshot identities
 	// before returning so a dead/replaced unit can never be selected.
 	const Scene *scene = gui.view.scene;
-	if (scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
+	if (!gui.simulationThreaded && scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
 	auto scan = [&](const auto &map)
 	{
 		const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
 		const Uint32 visible =
-			globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
+			globalContainer->replaying ? globalContainer->replayVisibleTeams : Team::teamNumberToMask(gui.localTeamNo);
 		const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
 		// Match draw order: ground units first, then flying units, using their interpolated rectangles.
 		for (bool air : {false, true})
@@ -1470,9 +1470,9 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 						continue;
 					const SceneUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
 					if (scene && !shown) continue;
-					auto *unit = shown ? gui.game.resolveUnit({shown->gid, shown->generation})
+					auto *unit = gui.simulationThreaded ? nullptr : shown ? gui.game.resolveUnit({shown->gid, shown->generation})
 						: gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-					if (!unit)
+					if (!unit && !gui.simulationThreaded)
 						continue;
 					const int ux = shown ? shown->posX : unit->posX, uy = shown ? shown->posY : unit->posY;
 					const int moveX = shown ? shown->dx : unit->dx, moveY = shown ? shown->dy : unit->dy;
@@ -1492,20 +1492,20 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					const double dy = MapCamera::wrap(point.y - py - 16 + map.getH() * 16., map.getH() * 32.) - map.getH() * 16.;
 					const double distance = dx * dx + dy * dy;
 					if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
-						(distance < nearestDistance || (distance == nearestDistance && nearest && gid < nearest->gid)))
+						(distance < nearestDistance || (distance == nearestDistance && !nearest.empty() && gid < nearest.gid)))
 					{
-						nearest = unit;
+						nearest = shown ? UnitRef{shown->gid, shown->generation} : Game::refOf(unit);
 						nearestDistance = distance;
 					}
 					if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
 						(wholeMap || map.isFOWDiscovered(x, y, visible) ||
 						 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-						found = unit;
+						found = shown ? UnitRef{shown->gid, shown->generation} : Game::refOf(unit);
 				}
 	};
 	if (scene) scan(scene->map);
-	else scan(gui.game.map); // Before the first frame, no presentation exists yet.
-	return found ? found : nearest;
+	else if (!gui.simulationThreaded) scan(gui.game.map); // Before the first frame, no presentation exists yet.
+	return !found.empty() ? found : nearest;
 }
 
 void GameGUITouch::select(ViewPoint point)
@@ -1514,21 +1514,22 @@ void GameGUITouch::select(ViewPoint point)
 	point = {double(gui.mapMouseX(point.x)), double(gui.mapMouseY(point.y))};
 	if (gui.putMark && !globalContainer->isViewingGame())
 	{
-		gui.orderQueue.push_back(std::make_shared<MapMarkOrder>(
+		gui.enqueueOrder(std::make_shared<MapMarkOrder>(
 			gui.localTeamNo, (int(point.x) / 32 + gui.viewportX) & gui.game.map.getMaskW(),
 			(int(point.y) / 32 + gui.viewportY) & gui.game.map.getMaskH()));
 		gui.putMark = false;
 		return;
 	}
-	auto *hitUnit = unitAt(screenPoint);
+	auto hitUnit = unitAt(screenPoint);
 	// Exact flags/buildings/resources retain precedence; the halo fills nearby ground.
 	const int tileX = int(point.x) / 32 + gui.viewportX, tileY = int(point.y) / 32 + gui.viewportY;
-	const bool resourceHit = gui.game.map.isResource(tileX, tileY) &&
-		gui.game.map.isMapDiscovered(tileX, tileY, gui.localTeam->me);
-	if (!hitUnit && usesHUD() && !resourceHit && gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
+	const bool resourceHit = gui.simulationThreaded
+        ? gui.drawnScene().map.getResource(tileX,tileY).type!=NO_RES_TYPE && gui.drawnScene().map.isMapDiscovered(tileX,tileY,Team::teamNumberToMask(gui.localTeamNo))
+        : gui.game.map.isResource(tileX,tileY) && gui.game.map.isMapDiscovered(tileX,tileY,gui.localTeam->me);
+	if (hitUnit.empty() && usesHUD() && !resourceHit && (gui.simulationThreaded ? gui.drawnScene().map.getBuilding(tileX,tileY) : gui.game.map.getBuilding(tileX,tileY)) == NOGBID &&
 		!gui.flagAt(int(point.x), int(point.y), gui.flagReachAt(screenPoint.x, screenPoint.y)))
 		hitUnit = unitAt(screenPoint, InGameTouchTheme::flagReach);
-	gui.view.mouseUnit = Game::refOf(hitUnit);
+	gui.view.mouseUnit = hitUnit;
 	const bool wasInspecting = inspecting();
 	// A read-only card is not a palette to restore after a building inspector.
 	const bool wasOpen = panelOpen && !inspectingReadOnly();

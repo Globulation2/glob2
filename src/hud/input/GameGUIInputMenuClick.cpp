@@ -29,7 +29,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 		{
 			int markx, marky;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &markx, &marky, false);
-			orderQueue.push_back(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
+			enqueueOrder(shared_ptr<Order>(new MapMarkOrder(localTeamNo, markx, marky)));
 			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 			putMark = false;
 		}

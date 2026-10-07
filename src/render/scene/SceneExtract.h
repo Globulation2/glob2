@@ -36,6 +36,7 @@ class OverlayArea;
 class SceneExtractor
 {
 public:
+	static void extractInputPanels(const Game& game, const SceneRequest& request, ScenePanels& panels);
 	void extract(const Game &game, const SceneRequest &request, Scene &scene);
     //! Capture simulation-owned source values; only called at an owner boundary.
     std::shared_ptr<SceneInputs> capture(const Game& game, const SceneRequest& request);
