@@ -44,7 +44,7 @@ jobs:
       - name: Retain native simulation and scripting evidence
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
-          python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism
+          python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism --engine-binary build/darwin/client/release/test/glob2-engine-tests
           python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
           python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
       - uses: actions/upload-artifact@v4

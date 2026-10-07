@@ -264,5 +264,44 @@ class ReuseTest(unittest.TestCase):
             (root/'browser-determinism-windows'/'native.replay.checksums').write_bytes(b'y'*1501)
             with self.assertRaises(ValueError):evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
 
+    def test_resource_compositions_require_complete_matching_producers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            trace = b'1 2 3 checksum\n' * 150
+            committed = root / 'committed.trace'
+            committed.write_bytes(trace)
+            producer = dict(revision='revision', sourceTreeSha256='tree', dirty=False)
+            native = root / 'browser-determinism-windows/native/resources/native'
+            native.mkdir(parents=True)
+            (native / 'manifest.json').write_text(json.dumps(dict(producer=producer)))
+            (native / 'seeded-compositions.trace').write_bytes(trace.replace(b'\n', b'\r\n'))
+            for variant in ('serial', 'threaded'):
+                path = root / f'browser-determinism-wasm-0/resources/{variant}/chromium/composition'
+                path.mkdir(parents=True)
+                manifest = dict(producer=producer, variant=variant, browser='chromium',
+                                selection=dict(name='composition'), exit=0)
+                (path / 'manifest.json').write_text(json.dumps(manifest))
+                (path / 'seeded-compositions.trace').write_bytes(trace)
+            self.assertEqual(evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed), 3)
+            with self.assertRaises(ValueError):
+                evidence.validate_resource_compositions(root, ['windows', 'macos'], {'chromium'}, committed)
+            with self.assertRaises(ValueError):
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium', 'firefox'}, committed)
+            (path / 'seeded-compositions.trace').write_bytes(trace[:-1])
+            with self.assertRaises(ValueError):
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+            (path / 'seeded-compositions.trace').write_bytes(trace)
+            for change in (dict(dirty=True), dict(dirty=None), dict(revision=''),
+                           dict(sourceTreeSha256=''), dict(revision='other'), dict(sourceTreeSha256='other')):
+                manifest['producer'] = dict(producer, **change)
+                (path / 'manifest.json').write_text(json.dumps(manifest))
+                with self.assertRaises(ValueError):
+                    evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+            manifest['producer'] = producer
+            manifest['exit'] = 1
+            (path / 'manifest.json').write_text(json.dumps(manifest))
+            with self.assertRaises(ValueError):
+                evidence.validate_resource_compositions(root, ['windows'], {'chromium'}, committed)
+
 
 if __name__=='__main__':unittest.main()

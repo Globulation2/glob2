@@ -695,7 +695,7 @@ jobs:
       - name: Retain browser/native simulation trace
         id: retain_browser_native_simulation_trace
         continue-on-error: true
-        run: python3 test/run-browser-determinism.py build/mingw/client/release/src/glob2.exe artifacts/browser-determinism/native
+        run: python3 test/run-browser-determinism.py build/mingw/client/release/src/glob2.exe artifacts/browser-determinism/native --engine-binary build/mingw/client/release/test/glob2-engine-tests.exe
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true

@@ -1373,6 +1373,14 @@ compares their numeric/data results, complete traces and decoded saves against
 the Linux and Windows corpus runs. The separate released replay comparison
 selects only its baseline traces, so scripting fixture traces cannot be mistaken
 for the released replay.
+The same evidence comparison requires the frozen 150-row custom-resource
+composition trace from every selected native platform and both serial and
+threaded runtimes in Chromium, Firefox and WebKit. Native collection uses
+`test/run-browser-determinism.py BINARY OUTPUT --engine-binary ENGINE_TEST_BINARY`;
+its fresh `resources/native` directory retains the command, embedded build
+provenance, JUnit result and complete trace. The comparison rejects missing or
+repeated browser identities, dirty or mismatched source producers, failed runs,
+and truncated or changed traces against the preserved committed fixture.
 
 `python3 test/check_javascript_evidence.py REFERENCE CANDIDATE --output artifacts/js-comparison.json`
 compares shared numeric/data values, complete traces and decoded save payloads,
