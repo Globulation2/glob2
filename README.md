@@ -110,3 +110,5 @@ The [final campaign orchestration and verified inputs](final-campaign-orchestrat
 
 
 [Exclusive CPU reservation validation](cpuset-validation.zip) contains the reviewed wrapper, 42 passing contracts, and actual successful/interrupted nested-governor runs. Both live cases preserved the original user identity, confined the child to CPUs0–7, reserved their SMT siblings16–23, and restored governors and ordinary CPU access. This validates cleanup and isolation setup, not an engine speedup.
+
+[Complete isolated priority measurements](gradient-reuse-v2-isolated-priority.zip) contain all68 runs, exact statistical recomputation, input checks, full CPU-reservation/governor audits and per-CPU activity. The provisional candidate reduces aggregate simulation CPU by3.86% (95% CI3.12–4.52%), with about0.6% additional wall time and roughly10MiB additional peak RSS. Broader-corpus validation and the wall-time tradeoff remain open.
