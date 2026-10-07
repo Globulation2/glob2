@@ -4,6 +4,7 @@
 #include <GraphicContext.h>
 #include <SkinMesh.h>
 #include <SkinModel.h>
+#include <SkinShapeModel.h>
 #include <glob2/SkinMaterials.h>
 #include <PerformanceTelemetry.h>
 #include <SDL3/SDL.h>
@@ -115,10 +116,10 @@ int main(int argc, char **argv)
 		SkinMesh mesh;
 		std::string error;
 		const double loadStart = milliseconds();
-		if (!mesh.load(assets + "/worker-walk." + (mode == "rig" ? "gsr" : "gsk"), error))
+		if (!mesh.load(assets + "/" + skinClipFile("worker-walk", mode == "baked"), error))
 			throw std::runtime_error(error);
 		result["meshLoadMs"] = milliseconds() - loadStart;
-		if (bool(mesh.model) != (mode == "rig"))
+		if (bool(mesh.model || mesh.shapes) != (mode == "rig"))
 			throw std::runtime_error("Unexpected geometry backend");
 		result["meshBytes"] = mesh.poses.size() * sizeof(float) + mesh.uv.size() * sizeof(float) +
 							  mesh.indices.size() * sizeof(std::uint32_t);
@@ -131,6 +132,19 @@ int main(int argc, char **argv)
 							   m.bones().size() * sizeof(SkinBone);
 			for (const auto &clip : m.clips())
 				size += sizeof(SkinClip) + clip.tracks.size() * sizeof(SkinTransform);
+			result["meshBytes"] = result["meshBytes"].get<std::size_t>() + size;
+		}
+		if (mesh.shapes)
+		{
+			const auto &m = *mesh.shapes;
+			std::size_t size = (m.mean().size() + m.normalMean().size() + m.uv().size()) *
+								   sizeof(float) +
+							   m.indices().size() * sizeof(std::uint32_t) +
+							   (m.shapes() + m.normalShapes()) *
+								   (sizeof(float) + m.vertices() * 3 * sizeof(std::int16_t));
+			for (const auto &clip : m.clips())
+				size += sizeof(SkinShapeClip) +
+						(clip.coefficients.size() + clip.normalCoefficients.size()) * sizeof(float);
 			result["meshBytes"] = result["meshBytes"].get<std::size_t>() + size;
 		}
 		std::array<std::unique_ptr<DrawableSurface>, 4> paints;
@@ -160,10 +174,14 @@ int main(int argc, char **argv)
 		glFinish();
 		result["coldFirstDrawMs"] = milliseconds() - coldStart;
 		result["startupExcludingSettleMs"] = milliseconds() - processStart - settleMs;
+		// Blend shapes are always evaluated on the CPU; only a bone rig has a
+		// GPU path, and a measurement must not be mislabeled when it is missing.
 		const bool gpuRig = bool(gfx->skinResources.rigProgram);
-		result["gpuRig"] = gpuRig;
+		result["deformation"] = mesh.shapes ? "cpu-shapes"
+							  : mesh.model	? (gpuRig ? "gpu-rig" : "cpu-rig")
+											: "baked";
 		const char *deformation = std::getenv("GLOB2_SKIN_DEFORMATION");
-		if (mode == "rig" && !(deformation && std::string(deformation) == "cpu") && !gpuRig)
+		if (mesh.model && !(deformation && std::string(deformation) == "cpu") && !gpuRig)
 			throw std::runtime_error("Rig shader unavailable; refusing mislabeled GPU measurement");
 		// Fully populate the 4 x 256 pose/paint working set before warm measurements.
 		std::vector<SkinMeshRequest> all;

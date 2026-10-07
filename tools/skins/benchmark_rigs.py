@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Alternating baked/rig pairs with raw samples and per-run provenance.
 
-Runs either the worker-only skin-rig-benchmark or the production Scene diagnostic.
+Runs either the worker-only skin-rig-benchmark or the production Scene diagnostic;
+"rig" runs use the default fitted clips and "baked" runs set GLOB2_SKIN_RIGS=0.
 No production assets, user settings, or GPU clocks are modified.
 """
 import argparse
@@ -82,7 +83,7 @@ def main():
     if args.pairs < 1 or args.frames < 20 or args.warmup < 1:
         parser.error('Require positive pairs/warmup and at least 20 measured frames')
     if args.kind == 'scene' and not args.save:
-        parser.error('--scene requires --save')
+        parser.error('--kind scene requires --save')
     try:
         scene_size = tuple(int(value) for value in args.scene_size.split('x'))
         if len(scene_size) != 2 or min(scene_size) < 1:
@@ -106,7 +107,7 @@ def main():
         'diff': capture(['git', 'diff']), 'cpu': capture(['lscpu']), 'gl': capture(['glxinfo', '-B']),
         'gpu': capture(['nvidia-smi', '--query-gpu=name,uuid,driver_version', '--format=csv']),
         'trackedAssets': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in args.assets.iterdir()
-                          if p.suffix in ('.gsr', '.gsk', '.webp')}}
+                          if p.suffix in ('.gsb', '.gsr', '.gsk', '.webp')}}
     if args.save:
         metadata['saveSha256'] = hashlib.sha256(args.save.read_bytes()).hexdigest()
     (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2)+'\n')
@@ -150,7 +151,7 @@ def main():
                     row['geometryMeanMs'] = statistics.mean(s['geometry']['ms'] for s in raw['samples']['scopes'])
                     if raw['gpuTimers']:
                         row['gpuP95Ms'] = raw['gpuMs']['p95']
-                    if mode == 'rig' and not raw['gpuRig']:
+                    if mode == 'rig' and raw['deformation'] == 'cpu-rig':
                         raise RuntimeError('Rig used CPU fallback')
                     renderer = raw['glRenderer']
                 else:
@@ -170,8 +171,6 @@ def main():
                             raise RuntimeError('Paired Scene simulation states differ')
                     if raw['workerRig'] != (mode == 'rig') or raw['backend'].get('swapInterval') != 0:
                         raise RuntimeError('Scene backend mismatch')
-                    if mode == 'rig' and not raw['gpuRig']:
-                        raise RuntimeError('Scene rig shader not used')
                 if not renderer:
                     raise RuntimeError('Missing hardware renderer identity')
                 if any(s in renderer.lower() for s in ('llvmpipe', 'softpipe', 'swiftshader')):

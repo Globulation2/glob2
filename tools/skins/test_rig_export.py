@@ -49,8 +49,16 @@ class RigExportTest(unittest.TestCase):
         return vertices, [0, 1, 2], [(0xFFFFFFFF, identity, identity)], [clip], 38
 
     def test_encodes_complete_model_and_binary32_endpoints(self):
+        import struct
+
         model = self.model()
-        self.assertEqual(encode(*model)[:4], b"GSR1")
+        data = encode(*model)
+        magic, vertices, indices, bones, clips, size, length = struct.unpack_from("<4s6I", data)
+        self.assertEqual((magic, vertices, indices, bones, clips, size), (b"GSR1", 3, 3, 1, 1, 38))
+        self.assertEqual(length, len(data) - 28)
+        # Header, 3 vertices, 3 indices, 1 bone, clip header with 256 frame
+        # mappings, and one track key.
+        self.assertEqual(len(data), 28 + 3 * 64 + 3 * 4 + 68 + 2176 + 32)
         model[3][0]["duration"] = 0.0001
         model[3][0]["tracks"][0][0] = Matrix.Scale(0.0001, 4)
         self.assertEqual(encode(*model)[:4], b"GSR1")
@@ -97,9 +105,10 @@ class RigExportTest(unittest.TestCase):
             encode(*model)
 
 
-if (
-    not unittest.TextTestRunner()
-    .run(unittest.defaultTestLoader.loadTestsFromTestCase(RigExportTest))
-    .wasSuccessful()
-):
-    raise RuntimeError("Rig export contract failed")
+if __name__ == "__main__":
+    if (
+        not unittest.TextTestRunner()
+        .run(unittest.defaultTestLoader.loadTestsFromTestCase(RigExportTest))
+        .wasSuccessful()
+    ):
+        raise RuntimeError("Rig export contract failed")

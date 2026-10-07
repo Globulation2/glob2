@@ -384,7 +384,8 @@ void GraphicContext::SkinResources::uploadRigPalette(const SkinMesh &mesh, unsig
 	if (paletteIdentity == mesh.identity && paletteFrame == sample)
 		return;
 	SkinPalette palette;
-	mesh.model->paletteForFrame(mesh.clip, sample, palette);
+	if (!mesh.model->paletteForFrame(mesh.clip, sample, palette))
+		return; // valid() admitted the request, so the frame and clip exist
 	std::array<float, 32 * 16> positions{};
 	for (unsigned b = 0; b < palette.count; ++b)
 	{

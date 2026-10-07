@@ -1,42 +1,74 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/* GSR1 contract; keep in agreement with libgag/src/SkinModel.cpp. */
+/* GSR1 contract; keep in agreement with libgag/src/SkinModel.cpp.
+ *
+ * A bone rig stores a rest mesh whose vertices each follow up to four bones,
+ * a parent-ordered skeleton with rest and inverse-bind transforms, and clips
+ * of uniformly spaced bone keys. A frame interpolates the keys, turns the
+ * posed skeleton about the clip pivot by the frame's heading and skins the
+ * rest mesh with the result. Coordinates are right-handed model space;
+ * matrices are row-major; quaternions are xyzw; transforms apply positive
+ * uniform scale, rotation, then translation. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { normalizeOrUp } from './affine.ts';
+import {
+  ByteReader,
+  CLIP_FRAMES,
+  MAX_ASSET_BYTES,
+  MAX_HEADING,
+  MAX_SCALAR,
+  TOLERANCE,
+  readClipCamera,
+  requireAsset,
+  requireGeometryCounts,
+  type ClipCamera,
+} from './binaryAsset.ts';
+
 type Values = readonly number[];
 export type RigTransform = Readonly<{ translation: Values; rotation: Values; scale: number }>;
 export type RigBone = Readonly<{ parent: number; rest: RigTransform; inverseBind: RigTransform }>;
-export type RigClip = Readonly<{
-  id: number;
-  samples: number;
-  duration: number;
-  modelToClip: Values;
-  normalToCamera: Values;
-  pivot: Values;
-  radius: number;
-  frames: readonly Readonly<{ heading: number; time: number }>[];
-  tracks: readonly RigTransform[];
-}>;
-export type SkinModel = Readonly<{
+export type RigClip = Readonly<
+  ClipCamera & {
+    id: number;
+    samples: number;
+    duration: number;
+    pivot: Values;
+    radius: number;
+    frames: readonly Readonly<{ heading: number; time: number }>[];
+    /** Sample-major local transforms; the last sample wraps to the first. */
+    tracks: readonly RigTransform[];
+  }
+>;
+export type RigModel = Readonly<{
   count: number;
   logicalSize: number;
-  rest: Values;
-  uv: Values;
-  indices: Values;
+  rest: Float32Array; // xyz, normal xyz per vertex
+  uv: Float32Array;
+  indices: Uint32Array;
   bones: readonly RigBone[];
   influences: readonly Readonly<{ bones: Values; weights: Values }>[];
   clips: readonly RigClip[];
 }>;
-export type SkinPoseRequest = Readonly<{ model: SkinModel; clip: number; sample: number }>;
-export type SkinPalette = { positions: number[][]; normals: number[][] };
-const noParent = 0xffffffff;
-// Serialized endpoint limits are binary32; all validation calculations use
-// binary64, matching SkinModel::decode. Normalized storage remains binary32.
-const tolerance = 0.0001;
-const minimumScale = Math.fround(0.0001);
-const minimumDuration = Math.fround(0.0001);
-const maximumHeading = Math.fround(6.283186);
-function requireRig(ok: boolean, message: string): asserts ok {
-  if (!ok) throw new Error(message);
-}
+/** Row-major 4x4 position matrices and 3x3 normal matrices per bone. */
+export type RigPalette = { positions: number[][]; normals: number[][] };
+
+const NO_PARENT = 0xffffffff;
+const HEADER_BYTES = 28;
+const MAX_BONES = 32;
+const MAX_SAMPLES = 256;
+// Serialized sizes: a vertex (position, normal, UV, four bones, four
+// weights), a bone (parent, rest, inverse bind), a clip header and a key.
+const VERTEX_BYTES = 64;
+const BONE_BYTES = 68;
+const CLIP_HEADER_BYTES = 2176;
+const TRANSFORM_BYTES = 32;
+// Endpoints the decoders compare in binary64 after rounding to binary32.
+const MINIMUM_SCALE = Math.fround(0.0001);
+const MINIMUM_DURATION = Math.fround(0.0001);
+// Below this cosine the arc between keys is too short for spherical
+// interpolation to differ from linear.
+const SLERP_THRESHOLD = 0.9995;
+const INVERSE_BIND_TOLERANCE = 0.002;
+
 function matrix(t: RigTransform): number[] {
   const [x, y, z, w] = t.rotation as [number, number, number, number];
   const s = t.scale;
@@ -66,92 +98,49 @@ function multiply(a: Values, b: Values): number[] {
       for (let k = 0; k < 4; k++) out[y * 4 + x]! += a[y * 4 + k]! * b[k * 4 + x]!;
   return out;
 }
-export function decodeRig(bytes: ArrayBuffer): SkinModel {
-  requireRig(bytes.byteLength >= 28 && bytes.byteLength <= 16 * 1024 * 1024, 'Invalid rig size');
-  const data = new DataView(bytes);
-  let at = 0;
-  const word = () => {
-    requireRig(at + 4 <= bytes.byteLength, 'Truncated rig payload');
-    const value = data.getUint32(at, true);
-    at += 4;
-    return value;
-  };
-  const scalar = () => {
-    requireRig(at + 4 <= bytes.byteLength, 'Truncated rig payload');
-    const value = data.getFloat32(at, true);
-    at += 4;
-    requireRig(Number.isFinite(value) && Math.abs(value) <= 10000, 'Invalid rig scalar');
-    return value;
-  };
-  const values = (count: number) => Array.from({ length: count }, scalar);
-  const transform = (): RigTransform => {
-    const translation = values(3),
-      rotation = values(4),
-      scale = scalar();
-    const norm = rotation.reduce((sum, v) => sum + v * v, 0);
-    requireRig(
-      Math.abs(norm - 1) <= tolerance && scale >= minimumScale && scale <= 10000,
-      'Invalid rig transform',
-    );
-    return Object.freeze({
-      translation: Object.freeze(translation),
-      rotation: Object.freeze(rotation.map((v) => Math.fround(v / Math.sqrt(norm)))),
-      scale,
-    });
-  };
-  requireRig(word() === 0x31525347, 'Unsupported rig format');
-  const count = word(),
-    indexCount = word(),
-    boneCount = word(),
-    clipCount = word(),
-    logicalSize = word(),
-    payload = word();
-  requireRig(
-    count >= 3 &&
-      count <= 8192 &&
-      indexCount >= 3 &&
-      indexCount <= 49152 &&
-      indexCount % 3 === 0 &&
-      boneCount >= 1 &&
-      boneCount <= 32 &&
-      clipCount >= 1 &&
-      clipCount <= 8 &&
-      logicalSize >= 1 &&
-      logicalSize <= 128 &&
-      payload === bytes.byteLength - 28,
-    'Invalid rig dimensions',
+function readTransform(reader: ByteReader): RigTransform {
+  const translation = reader.f32s(3),
+    rotation = reader.f32s(4),
+    scale = reader.f32();
+  const norm = rotation.reduce((sum, v) => sum + v * v, 0);
+  requireAsset(
+    Math.abs(norm - 1) <= TOLERANCE && scale >= MINIMUM_SCALE && scale <= MAX_SCALAR,
+    'Invalid rig transform',
   );
-  requireRig(
-    28 + count * 64 + indexCount * 4 + boneCount * 68 + clipCount * 2176 <= bytes.byteLength,
-    'Truncated rig geometry',
-  );
-  const rest: number[] = [],
-    uv: number[] = [];
-  const influences: SkinModel['influences'][number][] = [];
+  return Object.freeze({
+    translation: Object.freeze(translation),
+    rotation: Object.freeze(rotation.map((v) => Math.fround(v / Math.sqrt(norm)))),
+    scale,
+  });
+}
+function readVertices(reader: ByteReader, count: number, boneCount: number) {
+  const rest = new Float32Array(count * 6),
+    uv = new Float32Array(count * 2);
+  const influences: RigModel['influences'][number][] = [];
   for (let v = 0; v < count; v++) {
-    const vertex = values(6),
-      coords = values(2),
-      bones = Array.from({ length: 4 }, word),
-      weights = values(4);
-    requireRig(
-      Math.abs(vertex.slice(3).reduce((sum, n) => sum + n * n, 0) - 1) < tolerance,
+    const vertex = reader.f32s(6),
+      coords = reader.f32s(2),
+      bones = Array.from({ length: 4 }, () => reader.u32()),
+      weights = reader.f32s(4);
+    requireAsset(
+      Math.abs(vertex.slice(3).reduce((sum, n) => sum + n * n, 0) - 1) < TOLERANCE,
       'Invalid rig normal',
     );
-    requireRig(
-      coords.every((v) => v >= 0 && v <= 1),
+    requireAsset(
+      coords.every((c) => c >= 0 && c <= 1),
       'Invalid rig UV',
     );
-    requireRig(
+    requireAsset(
       bones.every((b) => b < boneCount),
       'Invalid rig influence bone',
     );
     const sum = weights.reduce((a, b) => a + b, 0);
-    requireRig(
-      weights.every((w) => w >= 0 && w <= 1) && Math.abs(sum - 1) < tolerance,
+    requireAsset(
+      weights.every((w) => w >= 0 && w <= 1) && Math.abs(sum - 1) < TOLERANCE,
       'Invalid rig weights',
     );
-    rest.push(...vertex);
-    uv.push(...coords);
+    rest.set(vertex, v * 6);
+    uv.set(coords, v * 2);
     influences.push(
       Object.freeze({
         bones: Object.freeze(bones),
@@ -159,115 +148,145 @@ export function decodeRig(bytes: ArrayBuffer): SkinModel {
       }),
     );
   }
-  const indices = Array.from({ length: indexCount }, word);
-  requireRig(
-    indices.every((i) => i < count),
-    'Invalid rig index',
-  );
+  return { rest, uv, influences };
+}
+function readBones(reader: ByteReader, boneCount: number): RigBone[] {
   const bones: RigBone[] = [],
     global: number[][] = [];
   for (let b = 0; b < boneCount; b++) {
-    const parent = word();
-    requireRig(parent === noParent || parent < b, 'Invalid rig hierarchy');
-    const rest = transform(),
-      inverseBind = transform();
-    global[b] = parent === noParent ? matrix(rest) : multiply(global[parent]!, matrix(rest));
+    const parent = reader.u32();
+    requireAsset(parent === NO_PARENT || parent < b, 'Invalid rig hierarchy');
+    const rest = readTransform(reader),
+      inverseBind = readTransform(reader);
+    global[b] = parent === NO_PARENT ? matrix(rest) : multiply(global[parent]!, matrix(rest));
     const identity = multiply(global[b]!, matrix(inverseBind));
-    requireRig(
-      identity.every((v, i) => Number.isFinite(v) && Math.abs(v - (i % 5 === 0 ? 1 : 0)) < 0.002),
+    requireAsset(
+      identity.every(
+        (v, i) =>
+          Number.isFinite(v) && Math.abs(v - (i % 5 === 0 ? 1 : 0)) < INVERSE_BIND_TOLERANCE,
+      ),
       'Invalid rig inverse bind',
     );
     bones.push(Object.freeze({ parent, rest, inverseBind }));
   }
-  const clips: RigClip[] = [];
-  for (let c = 0; c < clipCount; c++) {
-    const id = word(),
-      samples = word(),
-      duration = scalar();
-    requireRig(
-      samples >= 1 && samples <= 256 && duration >= minimumDuration,
-      'Invalid rig track dimensions',
+  return bones;
+}
+function readClip(reader: ByteReader, bones: readonly RigBone[], taken: Set<number>): RigClip {
+  const id = reader.u32(),
+    samples = reader.u32(),
+    duration = reader.f32();
+  requireAsset(
+    samples >= 1 && samples <= MAX_SAMPLES && duration >= MINIMUM_DURATION,
+    'Invalid rig track dimensions',
+  );
+  requireAsset(!taken.has(id), 'Duplicate rig clip');
+  taken.add(id);
+  const camera = readClipCamera(reader, 'rig');
+  const pivot = reader.f32s(3),
+    radius = reader.f32();
+  requireAsset(radius > 0, 'Invalid rig radius');
+  const frames = Array.from({ length: CLIP_FRAMES }, () => {
+    const heading = reader.f32(),
+      time = reader.f32();
+    requireAsset(
+      Math.abs(heading) <= MAX_HEADING && time >= 0 && time < duration,
+      'Invalid rig frame mapping',
     );
-    requireRig(!clips.some((c) => c.id === id), 'Duplicate rig clip');
-    const modelToClip = values(16),
-      normalToCamera = values(9),
-      pivot = values(3),
-      radius = scalar();
-    requireRig(radius > 0, 'Invalid rig radius');
-    const m = modelToClip,
-      n = normalToCamera;
-    requireRig(m[12] === 0 && m[13] === 0 && m[14] === 0 && m[15] === 1, 'Invalid rig camera');
-    const determinant =
-      m[0]! * (m[5]! * m[10]! - m[6]! * m[9]!) -
-      m[1]! * (m[4]! * m[10]! - m[6]! * m[8]!) +
-      m[2]! * (m[4]! * m[9]! - m[5]! * m[8]!);
-    requireRig(Math.abs(determinant) > 1e-12, 'Singular rig camera');
-    for (let i = 0; i < 3; i++)
-      for (let j = 0; j < 3; j++) {
-        let dot = 0;
-        for (let k = 0; k < 3; k++) dot += n[i * 3 + k]! * n[j * 3 + k]!;
-        requireRig(Math.abs(dot - (i === j ? 1 : 0)) < tolerance, 'Invalid rig normal camera');
-      }
-    const frames = Array.from({ length: 256 }, () => {
-      const heading = scalar(),
-        time = scalar();
-      requireRig(
-        Math.abs(heading) <= maximumHeading && time >= 0 && time < duration,
-        'Invalid rig frame mapping',
-      );
-      return Object.freeze({ heading, time });
-    });
-    requireRig(samples * boneCount * 32 <= bytes.byteLength - at, 'Truncated rig tracks');
-    const tracks = Array.from({ length: samples * boneCount }, transform);
-    const lo: number[] = [],
-      hi: number[] = [];
-    for (let b = 0; b < boneCount; b++) {
-      const scales = Array.from({ length: samples }, (_, i) => tracks[i * boneCount + b]!.scale);
-      const parent = bones[b]!.parent;
-      lo[b] = Math.min(...scales) * (parent === noParent ? 1 : lo[parent]!);
-      hi[b] = Math.max(...scales) * (parent === noParent ? 1 : hi[parent]!);
-      const inverse = bones[b]!.inverseBind.scale;
-      requireRig(
-        lo[b]! >= minimumScale &&
-          hi[b]! <= 10000 &&
-          lo[b]! * inverse >= minimumScale &&
-          hi[b]! * inverse <= 10000,
-        'Unbounded rig scale',
-      );
-    }
-    clips.push(
-      Object.freeze({
-        id,
-        samples,
-        duration,
-        modelToClip: Object.freeze(modelToClip),
-        normalToCamera: Object.freeze(normalToCamera),
-        pivot: Object.freeze(pivot),
-        radius,
-        frames: Object.freeze(frames),
-        tracks: Object.freeze(tracks),
-      }),
+    return Object.freeze({ heading, time });
+  });
+  requireAsset(
+    samples * bones.length * TRANSFORM_BYTES <= reader.remaining,
+    'Truncated rig tracks',
+  );
+  const tracks = Array.from({ length: samples * bones.length }, () => readTransform(reader));
+  // Bound every interpolated hierarchy, including combinations between keys:
+  // a bone's scale range times its ancestors' and its inverse bind must stay
+  // representable.
+  const lo: number[] = [],
+    hi: number[] = [];
+  bones.forEach((bone, b) => {
+    const scales = Array.from({ length: samples }, (_, i) => tracks[i * bones.length + b]!.scale);
+    const parentLo = bone.parent === NO_PARENT ? 1 : lo[bone.parent]!,
+      parentHi = bone.parent === NO_PARENT ? 1 : hi[bone.parent]!;
+    lo[b] = Math.min(...scales) * parentLo;
+    hi[b] = Math.max(...scales) * parentHi;
+    const inverse = bone.inverseBind.scale;
+    requireAsset(
+      lo[b]! >= MINIMUM_SCALE &&
+        hi[b]! <= MAX_SCALAR &&
+        lo[b]! * inverse >= MINIMUM_SCALE &&
+        hi[b]! * inverse <= MAX_SCALAR,
+      'Unbounded rig scale',
     );
+  });
+  return Object.freeze({
+    id,
+    samples,
+    duration,
+    ...camera,
+    pivot: Object.freeze(pivot),
+    radius,
+    frames: Object.freeze(frames),
+    tracks: Object.freeze(tracks),
+  });
+}
+export function decodeRig(bytes: ArrayBuffer): RigModel {
+  requireAsset(
+    bytes.byteLength >= HEADER_BYTES && bytes.byteLength <= MAX_ASSET_BYTES,
+    'Invalid rig size',
+  );
+  const reader = new ByteReader(bytes, 'rig');
+  requireAsset(reader.u32() === 0x31525347, 'Unsupported rig format');
+  const count = reader.u32(),
+    indexCount = reader.u32(),
+    boneCount = reader.u32(),
+    clipCount = reader.u32(),
+    logicalSize = reader.u32(),
+    payload = reader.u32();
+  requireGeometryCounts(count, indexCount, clipCount, logicalSize, 'rig');
+  requireAsset(
+    boneCount >= 1 && boneCount <= MAX_BONES && payload === bytes.byteLength - HEADER_BYTES,
+    'Invalid rig dimensions',
+  );
+  // Fixed geometry and every clip header must fit before allocating.
+  requireAsset(
+    HEADER_BYTES +
+      count * VERTEX_BYTES +
+      indexCount * 4 +
+      boneCount * BONE_BYTES +
+      clipCount * CLIP_HEADER_BYTES <=
+      bytes.byteLength,
+    'Truncated rig geometry',
+  );
+  const { rest, uv, influences } = readVertices(reader, count, boneCount);
+  const indices = new Uint32Array(indexCount);
+  for (let i = 0; i < indexCount; i++) {
+    indices[i] = reader.u32();
+    requireAsset(indices[i]! < count, 'Invalid rig index');
   }
-  requireRig(at === bytes.byteLength, 'Rig payload length mismatch');
+  const bones = readBones(reader, boneCount);
+  const taken = new Set<number>();
+  const clips = Array.from({ length: clipCount }, () => readClip(reader, bones, taken));
+  reader.assertConsumed();
   return Object.freeze({
     count,
     logicalSize,
-    rest: Object.freeze(rest),
-    uv: Object.freeze(uv),
-    indices: Object.freeze(indices),
+    rest,
+    uv,
+    indices,
     influences: Object.freeze(influences),
     bones: Object.freeze(bones),
     clips: Object.freeze(clips),
   });
 }
+/** Linear translation and scale; shortest-arc spherical rotation. */
 function interpolate(a: RigTransform, b: RigTransform, f: number): RigTransform {
   const dot = a.rotation.reduce((sum, v, i) => sum + v * b.rotation[i]!, 0),
     sign = dot < 0 ? -1 : 1;
   const absolute = Math.min(1, Math.abs(dot));
   let left = 1 - f,
     right = f;
-  if (absolute < 0.9995) {
+  if (absolute < SLERP_THRESHOLD) {
     const angle = Math.acos(absolute),
       divisor = Math.sin(angle);
     left = Math.sin((1 - f) * angle) / divisor;
@@ -281,14 +300,16 @@ function interpolate(a: RigTransform, b: RigTransform, f: number): RigTransform 
     scale: a.scale * (1 - f) + b.scale * f,
   };
 }
-export function rigPalette(
-  model: SkinModel,
+/** Bone matrices at a continuous time (wrapping in either direction) and
+ * heading. Gameplay frames go through paletteAtFrame. */
+export function paletteAtTime(
+  model: RigModel,
   clipIndex: number,
   time: number,
   heading: number,
-): SkinPalette {
+): RigPalette {
   const clip = model.clips[clipIndex];
-  requireRig(
+  requireAsset(
     Number.isInteger(clipIndex) && !!clip && Number.isFinite(time) && Number.isFinite(heading),
     'Invalid rig pose',
   );
@@ -298,6 +319,7 @@ export function rigPalette(
     a = Math.min(Math.floor(sample), clip.samples - 1),
     b = (a + 1) % clip.samples,
     f = sample - a;
+  // Heading turns the posed model about the clip pivot's vertical axis.
   const c = Math.cos(heading),
     s = Math.sin(heading),
     [x, y] = clip.pivot as [number, number, number];
@@ -313,9 +335,10 @@ export function rigPalette(
         f,
       ),
     );
-    global[i] = bone.parent === noParent ? local : multiply(global[bone.parent]!, local);
+    global[i] = bone.parent === NO_PARENT ? local : multiply(global[bone.parent]!, local);
     const m = multiply(turn, multiply(global[i]!, matrix(bone.inverseBind)));
     positions.push(m);
+    // Uniform scale: the normal matrix is the rotation divided by the scale.
     const scaleSquared = m[0]! ** 2 + m[4]! ** 2 + m[8]! ** 2;
     normals.push(
       Array.from({ length: 9 }, (_, k) => m[Math.floor(k / 3) * 4 + (k % 3)]! / scaleSquared),
@@ -323,20 +346,25 @@ export function rigPalette(
   });
   return { positions, normals };
 }
-export function rigFramePalette({ model, clip, sample }: SkinPoseRequest): SkinPalette {
-  requireRig(Number.isInteger(sample) && sample >= 0 && sample < 256, 'Invalid rig sample');
-  const frame = model.clips[clip]?.frames[sample];
-  requireRig(!!frame, 'Invalid rig clip');
-  return rigPalette(model, clip, frame.time, frame.heading);
+/** Bone matrices for one of the 256 gameplay frames of a clip. */
+export function paletteAtFrame(model: RigModel, clip: number, frame: number): RigPalette {
+  requireAsset(Number.isInteger(frame) && frame >= 0 && frame < CLIP_FRAMES, 'Invalid rig sample');
+  const mapping = model.clips[clip]?.frames[frame];
+  requireAsset(!!mapping, 'Invalid rig clip');
+  return paletteAtTime(model, clip, mapping.time, mapping.heading);
 }
-/** Deform into reusable caller storage. The vertex loop allocates no objects. */
+/** Deforms the rest mesh for one frame as xyz, normal xyz per vertex: in
+ * camera (clip) space by default, or in model space with the heading
+ * applied. Reuses `output` when it has the right length; the vertex loop
+ * allocates nothing. */
 export function evaluateRig(
-  request: SkinPoseRequest,
+  model: RigModel,
+  clip: number,
+  frame: number,
   cameraSpace = true,
   output?: Float32Array,
 ): Float32Array {
-  const { model, clip } = request;
-  const palette = rigFramePalette(request),
+  const palette = paletteAtFrame(model, clip, frame),
     camera = model.clips[clip]!;
   const out = output?.length === model.count * 6 ? output : new Float32Array(model.count * 6);
   const view = camera.modelToClip,
@@ -368,36 +396,28 @@ export function evaluateRig(
       ny += weight * (n[3]! * rx + n[4]! * ry + n[5]! * rz);
       nz += weight * (n[6]! * rx + n[7]! * ry + n[8]! * rz);
     }
-    // Opposing influences can cancel a normal. The fallback and both
-    // normalization steps intentionally match the native evaluator and shader.
-    let length = Math.hypot(nx, ny, nz);
-    if (length < 1e-8) {
-      nx = 0;
-      ny = 0;
-      nz = 1;
-    } else {
-      nx /= length;
-      ny /= length;
-      nz /= length;
-    }
+    // Opposing influences can cancel a normal. Normalizing before and after
+    // the camera matches the native evaluator and the shader.
+    out[offset + 3] = nx;
+    out[offset + 4] = ny;
+    out[offset + 5] = nz;
+    normalizeOrUp(out, offset + 3);
     if (cameraSpace) {
       out[offset] = view[0]! * px + view[1]! * py + view[2]! * pz + view[3]!;
       out[offset + 1] = view[4]! * px + view[5]! * py + view[6]! * pz + view[7]!;
       out[offset + 2] = view[8]! * px + view[9]! * py + view[10]! * pz + view[11]!;
-      const tx = normalView[0]! * nx + normalView[1]! * ny + normalView[2]! * nz;
-      const ty = normalView[3]! * nx + normalView[4]! * ny + normalView[5]! * nz;
-      nz = normalView[6]! * nx + normalView[7]! * ny + normalView[8]! * nz;
-      nx = tx;
-      ny = ty;
+      nx = out[offset + 3]!;
+      ny = out[offset + 4]!;
+      nz = out[offset + 5]!;
+      out[offset + 3] = normalView[0]! * nx + normalView[1]! * ny + normalView[2]! * nz;
+      out[offset + 4] = normalView[3]! * nx + normalView[4]! * ny + normalView[5]! * nz;
+      out[offset + 5] = normalView[6]! * nx + normalView[7]! * ny + normalView[8]! * nz;
+      normalizeOrUp(out, offset + 3);
     } else {
       out[offset] = px;
       out[offset + 1] = py;
       out[offset + 2] = pz;
     }
-    length = Math.hypot(nx, ny, nz);
-    out[offset + 3] = length < 1e-8 ? 0 : nx / length;
-    out[offset + 4] = length < 1e-8 ? 0 : ny / length;
-    out[offset + 5] = length < 1e-8 ? 1 : nz / length;
   }
   return out;
 }

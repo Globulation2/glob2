@@ -22,7 +22,6 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <cstdlib>
 #if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 #include <webp/encode.h>
 #include <webp/decode.h>
@@ -32,17 +31,6 @@
 namespace
 {
 using Json = nlohmann::json;
-bool rigPreview()
-{
-	const char *mode = std::getenv("GLOB2_SKIN_RIGS");
-	return mode && std::string(mode) == "1";
-}
-std::string renderRevision()
-{
-	// Never publish different pixels under the baked recipe, even in tooling.
-	return rigPreview() ? Online::Sha256::hex(std::string(SKIN_RENDER_REVISION) + ":unit-rigs-v2")
-						: SKIN_RENDER_REVISION;
-}
 std::string read(const std::string &path, std::size_t limit)
 {
 	std::ifstream in(path, std::ios::binary | std::ios::ate);
@@ -209,7 +197,7 @@ int runRenderSkin(int argc, char **argv)
 			// a revision and consumes publication jobs.
 			checkEncoderVersion();
 			std::cout << Json{{"format", "colony-sprites-v1"},
-							  {"renderRevision", renderRevision()},
+							  {"renderRevision", SKIN_RENDER_REVISION},
 							  {"encoding", "bundled-images-v3-webp-only"},
 							  {"webpVersion", SKIN_WEBP_VERSION}}
 							 .dump()
@@ -286,7 +274,7 @@ int runRenderSkin(int argc, char **argv)
 		staging = candidate;
 		Json result = {
 			{"format", "colony-sprites-v1"},
-			{"renderRevision", renderRevision()},
+			{"renderRevision", SKIN_RENDER_REVISION},
 			{"sourceManifestSha256", sourceHash},
 			{"textureSha256", textureHash},
 			{"materialSha256", materialHash},
@@ -303,13 +291,10 @@ int runRenderSkin(int argc, char **argv)
 		{
 			GAGCore::SkinMesh mesh;
 			std::string error;
-			std::string file;
-			if (clip < 7 && rigPreview())
-				file = std::string(Online::SkinSpriteClips[clip]) + (clip < 6 ? ".gsb" : ".gsr");
-			else if (clip < 7)
-				file = std::string(Online::SkinSpriteClips[clip]) + ".gsk";
-			else
-				file = Online::SWARM_MESHES[choice].file;
+			// Published sprites always render the rigs: the recipe digest covers
+			// their bytes and decoders, so GLOB2_SKIN_RIGS is deliberately ignored.
+			const std::string file = clip < 7 ? GAGCore::skinClipFile(Online::SkinSpriteClips[clip])
+											  : std::string(Online::SWARM_MESHES[choice].file);
 			if (!mesh.load("data/skins/colony-v1/" + file, error))
 				throw std::runtime_error(file + ": " + error);
 			if (clip == 7 && angle != 0)

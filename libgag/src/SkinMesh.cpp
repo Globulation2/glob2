@@ -6,6 +6,7 @@
 #include <atomic>
 #include <bit>
 #include <cmath>
+#include <cstdlib>
 #include <StreamBackend.h>
 #include <limits>
 #include <utility>
@@ -25,7 +26,7 @@ SkinMesh SkinMesh::fromModel(std::shared_ptr<const SkinModel> model, unsigned cl
 	mesh.model = std::move(model);
 	mesh.clip = clip;
 	mesh.vertices = mesh.model->vertices();
-	mesh.frames = 256;
+	mesh.frames = SkinClipFrames;
 	mesh.logicalSize = mesh.model->logicalSize();
 	mesh.uv = mesh.model->uv();
 	mesh.indices = mesh.model->indices();
@@ -40,7 +41,7 @@ SkinMesh SkinMesh::fromShapes(std::shared_ptr<const SkinShapeModel> shapes, unsi
 	mesh.shapes = std::move(shapes);
 	mesh.clip = clip;
 	mesh.vertices = mesh.shapes->vertices();
-	mesh.frames = 256;
+	mesh.frames = SkinClipFrames;
 	mesh.logicalSize = mesh.shapes->logicalSize();
 	mesh.uv = mesh.shapes->uv();
 	mesh.indices = mesh.shapes->indices();
@@ -54,8 +55,8 @@ bool SkinMesh::evaluate(unsigned frame, std::vector<float> &output) const
 		return model->evaluate(clip, frame, output);
 	if (shapes)
 		return shapes->evaluate(clip, frame, output);
-	// SkinMesh is a public migration adapter, so reject incomplete manually
-	// constructed baked data as well as invalid frame requests. Keep output on failure.
+	// Baked poses may have been assembled by hand: reject incomplete storage
+	// as well as invalid frame requests, and keep the output on failure.
 	const auto count = std::size_t(vertices) * 6;
 	if (!count || poses.size() / count < frames)
 		return false;
@@ -73,6 +74,19 @@ AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader& loader, const std::st
         if (!mesh->load(stream, error)) throw std::runtime_error(error);
         return mesh;
     }, [bytes] { return bytes.get()->size() * 2; });
+}
+bool skinRigsDisabled()
+{
+	const char *mode = std::getenv("GLOB2_SKIN_RIGS");
+	return mode && std::string(mode) == "0";
+}
+std::string skinClipFile(const std::string &clip, bool baked)
+{
+	const bool unit = clip.rfind("worker-", 0) == 0 || clip.rfind("warrior-", 0) == 0 ||
+					  clip.rfind("explorer-", 0) == 0;
+	if (baked || !unit)
+		return clip + ".gsk";
+	return clip + (clip.rfind("explorer-", 0) == 0 ? ".gsr" : ".gsb");
 }
 bool SkinMesh::load(const std::string &path, std::string &error)
 {
@@ -96,32 +110,22 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
     input.seekFromStart(0);
     std::array<char, 4> magic{};
     bool complete = input.readExact(magic.data(), 4);
-	if (magic == std::array<char, 4>{'G', 'S', 'R', '1'})
+	// Rigs and blend shapes are decoded from the whole file by their own
+	// bounded decoders; only baked GSK1 streams through the reader below.
+	const bool rig = magic == std::array<char, 4>{'G', 'S', 'R', '1'};
+	if (rig || magic == std::array<char, 4>{'G', 'S', 'B', '1'})
 	{
 		if (length > 16 * 1024 * 1024)
-			return fail("invalid rig size");
+			return fail("invalid skin asset size");
 		input.seekFromStart(0);
 		std::vector<std::uint8_t> bytes(static_cast<std::size_t>(length));
 		if (!input.readExact(bytes.data(), bytes.size()))
-			return fail("truncated rig asset");
-		auto model = SkinModel::decode(bytes, error);
-		if (!model)
+			return fail("truncated skin asset");
+		SkinMesh decoded = rig ? fromModel(SkinModel::decode(bytes, error), 0)
+							   : fromShapes(SkinShapeModel::decode(bytes, error), 0);
+		if (!decoded.identity)
 			return false;
-		*this = fromModel(std::move(model), 0);
-		return true;
-	}
-	if (magic == std::array<char, 4>{'G', 'S', 'B', '1'})
-	{
-		if (length > 16 * 1024 * 1024)
-			return fail("invalid shape size");
-		input.seekFromStart(0);
-		std::vector<std::uint8_t> bytes(static_cast<std::size_t>(length));
-		if (!input.readExact(bytes.data(), bytes.size()))
-			return fail("truncated shape asset");
-		auto decoded = SkinShapeModel::decode(bytes, error);
-		if (!decoded)
-			return false;
-		*this = fromShapes(std::move(decoded), 0);
+		*this = std::move(decoded);
 		return true;
 	}
     if (magic != std::array<char, 4>{'G','S','K','1'}) return fail("unsupported skin mesh format");
@@ -137,7 +141,7 @@ bool SkinMesh::load(StreamBackend &input, std::string &error)
     candidate.frames = word();
     candidate.logicalSize = word();
     if (candidate.vertices < 3 || candidate.vertices > 8192 || count < 3 ||
-        count > 49152 || count % 3 || (candidate.frames != 1 && candidate.frames != 256) ||
+        count > 49152 || count % 3 || (candidate.frames != 1 && candidate.frames != SkinClipFrames) ||
         candidate.logicalSize == 0 || candidate.logicalSize > 128)
         return fail("invalid skin mesh dimensions");
     const std::uint64_t floats = candidate.vertices * (2ULL + 6ULL * candidate.frames);

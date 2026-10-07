@@ -957,20 +957,15 @@ shadows, fog, zoom, clipping and the Show colony skins preference apply to both
 rendering paths. This is presentation state and does not alter saves, simulation
 checksums or `SIM_REVISION`.
 
-The rig migration provides opt-in candidates for all seven unit clips alongside
-those baked meshes, fitted to the baked frames so they keep the original metaball
-look: blend-shape clips (GSB1) for workers and warriors, a bone rig (GSR1) for
-the explorer. `GLOB2_SKIN_RIGS=1` enables them in native gameplay and offline
-sprite generation; `VITE_SKIN_RIGS=1` enables Studio inspection and painting.
-Studio evaluates the displayed rig pose on the CPU for rendering and brush
-visibility; pattern and fill coordinates remain tied to the fixed rest chart.
-The native atlas renderer uploads rest geometry once per model/context, then
-shares palette uniforms across paints. Shader capability failures use the same
-CPU evaluator. All default paths stay baked pending acceptance.
-Rig sprite generation has a separate recipe digest, so previews cannot replace
-immutable bundles published by the baked generator. Software clients continue
-using their authorized published sprites. See the
-[GSR1 contract and migration gates](../../tools/unit-animation/README.md#gsr1-rig-migration-opt-in-unit-previews).
+Units animate from fitted rigs rather than the baked per-frame meshes: GSB1
+blend-shape clips for workers and warriors and a GSR1 bone rig for the
+explorer, all fitted to the baked clips so they keep the original metaball
+look and paint layout. The baked GSK1 clips remain the fallback when a fitted
+asset is missing or invalid, and `GLOB2_SKIN_RIGS=0` selects them in gameplay
+for comparison. Sprite publishing always renders the rigs; its recipe digest
+covers their bytes and decoders, so a changed rig never overwrites a published
+bundle. Software clients continue using their authorized published sprites.
+See [unit rigs](../../tools/unit-animation/README.md#unit-rigs-gsb1-blend-shapes-and-gsr1-bone-rigs).
 
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package

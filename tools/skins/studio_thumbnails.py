@@ -12,9 +12,12 @@ from pathlib import Path
 import re
 import struct
 
-ROOT = Path(__file__).resolve().parents[2]
-CLIPS = ('worker-walk', 'worker-swim', 'worker-harvest', 'warrior-walk',
-         'warrior-swim', 'warrior-fight', 'explorer-fly', 'swarm')
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from skin_assets import ROOT, UNIT_CLIP_NAMES
+
+CLIPS = (*UNIT_CLIP_NAMES, 'swarm')
 
 
 def from_bundle(bundle, output, clips):

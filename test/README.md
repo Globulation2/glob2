@@ -41,20 +41,14 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 
-`SkinModel` checks the GSR1 rig contract against the same analytic and numeric
-boundary fixtures used by the Studio evaluator. `SkinModelRender` checks native
-GPU/CPU agreement, mixed baked/rig rendering, GL state restoration and CPU
-fallback. The focused browser conformance suite tests the shared deformation
-shader in Chromium, Firefox and WebKit; see the
-[rig verification commands](../tools/unit-animation/README.md#repeatable-verification).
-These correctness checks do not replace visual or hardware-performance acceptance.
-`SkinShapeModel` checks the GSB1 blend-shape contract against the analytic fixture
-shared with the Studio decoder (`test/fixtures/skins/shapes.json`).
-`tools/skins/test_fit_shapes.py` (NumPy, run under Blender's Python) regenerates the
-worker and warrior blend-shape clips and checks their fit to the baked clips and
-agreement with the installed assets; `tools/skins/test_fit_rigs.py` (pinned Blender)
-does the same for the bone rigs kept for comparison and the explorer rig; see
-[blend-shape clips](../tools/unit-animation/README.md#blend-shape-clips-for-the-worker-and-warrior-gsb1).
+`SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig
+contracts against the analytic fixtures shared with the Studio decoders
+(`test/fixtures/skins/`). `SkinModelRender` checks native GPU/CPU agreement for
+the rig shader, mixed baked/rig rendering, GL state restoration and CPU fallback,
+and the browser conformance suite checks the same shader in Chromium, Firefox and
+WebKit; `tools/skins/test_fit_shapes.py` and `test_explorer_rig.py` regenerate
+the installed assets and check their fit to the baked clips. See
+[unit rigs](../tools/unit-animation/README.md#contract-and-conformance-tests).
 
 Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
 continuation cancellation, cache metadata cleanup and variable atlas admission.

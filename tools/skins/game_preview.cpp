@@ -230,7 +230,7 @@ int main(int argc, char **argv)
 #endif
                     std::cout << nlohmann::json{{"zoom",gui.camera.zoom},
                         {"backend",backend},{"forcedMiss",forceMiss},{"uncapped",uncapped},
-                        {"workerRig",bool(appearance.clips[0].model)},{"gpuRig",bool(globalContainer->gfx->skinResources.rigProgram)},
+                        {"workerRig",bool(appearance.clips[0].model||appearance.clips[0].shapes)},{"gpuRig",bool(globalContainer->gfx->skinResources.rigProgram)},
                         {"frameMs",samples},{"stateChecksums",classicChecksums},
                         {"adaptiveZoom",globalContainer->settings.adaptiveZoomDetail},
                         {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},

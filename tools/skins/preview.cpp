@@ -78,15 +78,9 @@ int main(int argc, char **argv)
         SDL_Delay(20);
     }
     {
-        const char *mode = std::getenv("GLOB2_SKIN_RIGS");
-        const bool useRig = mode && std::string(mode) == "1";
+		const bool baked = skinRigsDisabled();
 		auto meshPath = [&](const std::string &name)
-		{
-			const auto extension = !useRig || name == "swarm" ? ".gsk"
-								   : name.rfind("explorer", 0) == 0		? ".gsr"
-																		: ".gsb";
-			return std::string(argv[1]) + "/" + name + extension;
-		};
+		{ return std::string(argv[1]) + "/" + skinClipFile(name, baked); };
 		// colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
 		// map (absent means all glossy), one 256x256 quadrant per model.
 		DrawableSurface paint(std::string(argv[1]) + "/paint.webp");

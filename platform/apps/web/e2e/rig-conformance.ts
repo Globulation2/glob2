@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+/* The production GSR1 deformation shader agrees with the TypeScript evaluator,
+ * captured with WebGL2 transform feedback in each browser engine. GSB1 blend
+ * shapes are evaluated on the CPU everywhere, so they have no shader to check. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
@@ -7,10 +10,24 @@ import type * as RigEvaluator from '../src/skins/rig.ts';
 
 const root = new URL('../../../../', import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, root));
-// Transpile the production evaluator, without maintaining a browser-only copy.
-const evaluator = ts.transpileModule(read('platform/apps/web/src/skins/rig.ts').toString(), {
-  compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
-}).outputText;
+// Transpile the production evaluator and its helpers for the browser, without
+// maintaining a browser-only copy: each module becomes a data URL and relative
+// imports are rewritten to the URL of the module they name.
+function browserModule(path: string, modules: Map<string, string>): string {
+  const cached = modules.get(path);
+  if (cached) return cached;
+  let source = ts.transpileModule(read(path).toString(), {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  source = source.replace(/from '\.\/([\w-]+)\.ts'/gu, (_, name: string) => {
+    const dependency = path.replace(/[^/]+$/u, `${name}.ts`);
+    return `from '${browserModule(dependency, modules)}'`;
+  });
+  const url = 'data:text/javascript;base64,' + Buffer.from(source).toString('base64');
+  modules.set(path, url);
+  return url;
+}
+const evaluator = browserModule('platform/apps/web/src/skins/rig.ts', new Map());
 const shader = read('libgag/include/SkinDeformation.h')
   .toString()
   .match(/R"GLSL\(([\s\S]*?)\)GLSL"/u)?.[1];
@@ -29,17 +46,7 @@ const assets = [
     // inside the ordinary mesh agreement budget.
     positionTolerance: 0.00001,
   },
-  ...[
-    'worker-walk',
-    'worker-swim',
-    'worker-harvest',
-    'warrior-walk',
-    'warrior-swim',
-    'warrior-fight',
-    'explorer-fly',
-  ].map(
-    (name) => ({ name: `installed ${name}`, bytes: read(`data/skins/colony-v1/${name}.gsr`) }),
-  ),
+  { name: 'installed explorer-fly', bytes: read('data/skins/colony-v1/explorer-fly.gsr') },
 ];
 
 for (const asset of assets) {
@@ -48,8 +55,8 @@ for (const asset of assets) {
   }, info) => {
     const result = await page.evaluate(
       async ({ evaluator, shader, bytes }) => {
-        const { decodeRig, rigFramePalette, evaluateRig } = (await import(
-          'data:text/javascript;base64,' + btoa(evaluator)
+        const { decodeRig, paletteAtFrame, evaluateRig } = (await import(
+          evaluator
         )) as typeof RigEvaluator;
         const model = decodeRig(new Uint8Array(bytes).buffer);
         const gl = document.createElement('canvas').getContext('webgl2');
@@ -90,8 +97,8 @@ for (const asset of assets) {
 
         const geometry = new Float32Array(model.count * 16);
         for (let v = 0; v < model.count; v++) {
-          geometry.set(model.rest.slice(v * 6, v * 6 + 6), v * 16);
-          geometry.set(model.uv.slice(v * 2, v * 2 + 2), v * 16 + 6);
+          geometry.set(model.rest.subarray(v * 6, v * 6 + 6), v * 16);
+          geometry.set(model.uv.subarray(v * 2, v * 2 + 2), v * 16 + 6);
           geometry.set(model.influences[v]!.bones, v * 16 + 8);
           geometry.set(model.influences[v]!.weights, v * 16 + 12);
         }
@@ -127,9 +134,8 @@ for (const asset of assets) {
         for (let clip = 0; clip < model.clips.length; clip++) {
           gl.uniformMatrix4fv(view, false, transpose(model.clips[clip]!.modelToClip, 4));
           gl.uniformMatrix3fv(normalView, false, transpose(model.clips[clip]!.normalToCamera, 3));
-          for (let sample = 0; sample < 256; sample++) {
-            const request = { model, clip, sample };
-            rigFramePalette(request).positions.forEach((matrix, i) =>
+          for (let frame = 0; frame < 256; frame++) {
+            paletteAtFrame(model, clip, frame).positions.forEach((matrix, i) =>
               matrices.set(transpose(matrix, 4), i * 16),
             );
             gl.uniformMatrix4fv(bones, false, matrices);
@@ -141,8 +147,8 @@ for (const asset of assets) {
               gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outputs[i]!);
             });
             if (gl.getError() !== gl.NO_ERROR)
-              throw new Error(`GL capture failed at ${clip}/${sample}`);
-            const cpu = evaluateRig(request);
+              throw new Error(`GL capture failed at ${clip}/${frame}`);
+            const cpu = evaluateRig(model, clip, frame);
             for (let v = 0; v < model.count; v++) {
               let normalSquared = 0;
               // Remove shader atlas padding before expressing screen-space error in logical pixels.

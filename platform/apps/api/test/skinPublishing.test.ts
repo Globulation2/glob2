@@ -432,7 +432,7 @@ it('exposes pending status immediately and only serves ready enabled sprite bund
   expect((await instance.app.inject({ url: url + '/pages/' + page.sha256 })).statusCode).toBe(404);
 });
 
-it('keeps baked sprite URLs available when a rig render revision becomes ready', async () => {
+it('retains prior render-revision sprite bundles when a newer revision becomes ready', async () => {
   const db = harness.database.db;
   const { enqueueSkinSprites, putContent } = await import('@glob2/core');
   const revisions = ['b'.repeat(64), 'c'.repeat(64)];

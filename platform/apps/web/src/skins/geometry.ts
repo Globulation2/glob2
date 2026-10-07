@@ -1,16 +1,31 @@
-/* Indexed geometry and camera metadata are validated before use. */
+/* Unit meshes for Studio: baked GSK1 clips, GSB1 blend-shape clips and GSR1
+ * bone rigs, all presented as one Mesh with a rest pose for the fixed paint
+ * chart and a pose() evaluator for the displayed frame. Indexed geometry and
+ * camera metadata are validated before use. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { decodeRig, evaluateRig, type SkinModel } from './rig.ts';
+import {
+  invertAffine,
+  sha256Hex,
+  transformNormal,
+  transformPoint,
+  transposed3,
+  type Mat3,
+  type Mat4,
+} from './affine.ts';
+import { CLIP_FRAMES, MAX_INDICES, MAX_VERTICES } from './binaryAsset.ts';
+import { decodeRig, evaluateRig, type RigModel } from './rig.ts';
 import { decodeShapes, evaluateShapes, type ShapeModel } from './shapes.ts';
 export type Mesh = {
-  rig?: SkinModel;
-  shapes?: ShapeModel;
-  clip?: number;
   count: number;
   frames: number;
   uv: Float32Array;
   indices: Uint32Array;
-  poses: Float32Array;
+  /** xyz, normal xyz per vertex in clip space: the fixed chart for fill and
+   * pattern tools, and the framing reference for the inspection camera. */
+  rest: Float32Array;
+  /** The displayed frame in the same layout. Rigs and blend shapes evaluate
+   * into `out` when it has the right length; baked clips return a view. */
+  pose(frame: number, out?: Float32Array): Float32Array;
 };
 export type ViewTransform = {
   version: number;
@@ -29,6 +44,44 @@ export const ACTIONS = {
   explorer: ['fly'],
   swarm: [''],
 };
+/** The fitted format each unit clip animates from; swarms stay baked. */
+export const UNIT_CLIP_FORMATS = {
+  'worker-walk': 'gsb',
+  'worker-swim': 'gsb',
+  'worker-harvest': 'gsb',
+  'warrior-walk': 'gsb',
+  'warrior-swim': 'gsb',
+  'warrior-fight': 'gsb',
+  'explorer-fly': 'gsr',
+} as const;
+export type UnitClipFormat = (typeof UNIT_CLIP_FORMATS)[keyof typeof UNIT_CLIP_FORMATS];
+export function unitClipFormat(asset: string): UnitClipFormat | undefined {
+  return Object.hasOwn(UNIT_CLIP_FORMATS, asset)
+    ? UNIT_CLIP_FORMATS[asset as keyof typeof UNIT_CLIP_FORMATS]
+    : undefined;
+}
+// Clip space is padded by this factor around the logical sprite tile.
+export const ATLAS_PADDING = 1.25;
+export { transformPoint as point };
+
+/** A mesh over frame-major baked poses (xyz, normal xyz per vertex). */
+export function bakedMesh(
+  count: number,
+  frames: number,
+  uv: Float32Array,
+  indices: Uint32Array,
+  poses: Float32Array,
+): Mesh {
+  const stride = count * 6;
+  return {
+    count,
+    frames,
+    uv,
+    indices,
+    rest: poses.subarray(0, stride),
+    pose: (frame) => poses.subarray(frame * stride, (frame + 1) * stride),
+  };
+}
 export function decode(bytes: ArrayBuffer): Mesh {
   if (bytes.byteLength < 20 || bytes.byteLength > 64 * 1024 * 1024)
     throw new Error('Invalid model size');
@@ -39,11 +92,11 @@ export function decode(bytes: ArrayBuffer): Mesh {
   if (
     d.getUint32(0, true) !== 0x314b5347 ||
     count < 3 ||
-    count > 8192 ||
+    count > MAX_VERTICES ||
     indices < 3 ||
-    indices > 49152 ||
+    indices > MAX_INDICES ||
     indices % 3 ||
-    ![1, 256].includes(frames) ||
+    ![1, CLIP_FRAMES].includes(frames) ||
     bytes.byteLength !== 20 + count * 8 + indices * 4 + frames * count * 24
   )
     throw new Error('Invalid model dimensions');
@@ -56,7 +109,7 @@ export function decode(bytes: ArrayBuffer): Mesh {
     poses.some((v) => !Number.isFinite(v))
   )
     throw new Error('Invalid model geometry');
-  return { count, frames, uv, indices: index, poses };
+  return bakedMesh(count, frames, uv, index, poses);
 }
 export function validateView(view: ViewTransform) {
   if (
@@ -79,85 +132,41 @@ export function validateView(view: ViewTransform) {
     )
       throw new Error('Invalid model transform');
 }
-const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
-// Internal migration switch. Assets that have not passed their acceptance
-// gates continue loading their baked counterpart, including missing rig files.
-const rigPreview = import.meta.env.VITE_SKIN_RIGS === '1';
-const rigCandidates = new Set([
-  'worker-walk',
-  'worker-swim',
-  'worker-harvest',
-  'warrior-walk',
-  'warrior-swim',
-  'warrior-fight',
-  'explorer-fly',
-]);
-export async function loadRigMesh(asset: string, clip = 0) {
-  const response = await fetch(`/skins/models/${asset}.gsr`);
-  if (!response.ok) throw new Error('Could not load rig');
-  const bytes = await response.arrayBuffer();
-  const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
-    v.toString(16).padStart(2, '0'),
-  ).join('');
-  return rigGeometry(decodeRig(bytes), clip, hash);
-}
-// Workers and warriors use blend-shape clips; the explorer keeps its bone rig.
-export function candidateFormat(asset: string): 'shapes' | 'rig' {
-  return asset.startsWith('explorer') ? 'rig' : 'shapes';
-}
-export async function loadShapeMesh(asset: string, clip = 0) {
-  const response = await fetch(`/skins/models/${asset}.gsb`);
-  if (!response.ok) throw new Error('Could not load shapes');
-  const bytes = await response.arrayBuffer();
-  const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
-    v.toString(16).padStart(2, '0'),
-  ).join('');
-  return shapeGeometry(decodeShapes(bytes), clip, hash);
-}
+/** The view sidecar a fitted asset's clip camera implies, with the asset's
+ * own digest as the cache identity. */
 function cameraView(
-  m: readonly number[],
-  normals: readonly number[],
+  modelToClip: Mat4,
+  normalToCamera: Mat3,
   meshSha256: string,
   pivot: number[],
   radius: number,
 ): ViewTransform {
-  const determinant =
-    m[0]! * (m[5]! * m[10]! - m[6]! * m[9]!) -
-    m[1]! * (m[4]! * m[10]! - m[6]! * m[8]!) +
-    m[2]! * (m[4]! * m[9]! - m[5]! * m[8]!);
-  const inverse = [
-    m[5]! * m[10]! - m[6]! * m[9]!,
-    m[2]! * m[9]! - m[1]! * m[10]!,
-    m[1]! * m[6]! - m[2]! * m[5]!,
-    0,
-    m[6]! * m[8]! - m[4]! * m[10]!,
-    m[0]! * m[10]! - m[2]! * m[8]!,
-    m[2]! * m[4]! - m[0]! * m[6]!,
-    0,
-    m[4]! * m[9]! - m[5]! * m[8]!,
-    m[1]! * m[8]! - m[0]! * m[9]!,
-    m[0]! * m[5]! - m[1]! * m[4]!,
-    0,
-    0,
-    0,
-    0,
-    determinant,
-  ].map((v) => v / determinant);
-  for (let row = 0; row < 3; row++)
-    inverse[row * 4 + 3] = -(
-      inverse[row * 4]! * m[3]! +
-      inverse[row * 4 + 1]! * m[7]! +
-      inverse[row * 4 + 2]! * m[11]!
-    );
   return {
     version: 1,
     meshSha256,
-    clipToModel: inverse,
-    modelToClip: [...m],
-    normalToModel: Array.from({ length: 9 }, (_, k) => normals[(k % 3) * 3 + Math.floor(k / 3)]!),
+    clipToModel: invertAffine(modelToClip),
+    modelToClip: [...modelToClip],
+    normalToModel: transposed3(normalToCamera),
     pivot,
     radius,
   };
+}
+/** Takes a model-space rest mesh into clip space with unit normals. */
+function restInClipSpace(
+  count: number,
+  modelToClip: Mat4,
+  normalToCamera: Mat3,
+  position: (v: number) => [number, number, number],
+  normal: (v: number) => [number, number, number],
+): Float32Array {
+  const rest = new Float32Array(count * 6);
+  for (let v = 0; v < count; v++) {
+    rest.set(transformPoint(modelToClip, ...position(v)), v * 6);
+    const n = transformNormal(normalToCamera, ...normal(v));
+    const length = Math.hypot(...n);
+    rest.set(length < 1e-8 ? [0, 0, 1] : n.map((k) => k / length), v * 6 + 3);
+  }
+  return rest;
 }
 export function shapeGeometry(
   shapes: ShapeModel,
@@ -174,158 +183,126 @@ export function shapeGeometry(
       Math.hypot(shapes.mean[v * 3]!, shapes.mean[v * 3 + 1]!, shapes.mean[v * 3 + 2]!),
     );
   const view = cameraView(camera.modelToClip, camera.normalToCamera, meshSha256, [0, 0, 0], radius);
-  // The fixed chart for fill/pattern tools is the mean mesh at heading zero.
-  const rest = new Float32Array(shapes.count * 6);
-  const m = camera.modelToClip,
-    normals = camera.normalToCamera;
-  for (let v = 0; v < shapes.count; v++) {
-    rest.set(
-      point(m, shapes.mean[v * 3]!, shapes.mean[v * 3 + 1]!, shapes.mean[v * 3 + 2]!),
-      v * 6,
-    );
-    let length = 0;
-    for (let k = 0; k < 3; k++) {
-      rest[v * 6 + 3 + k] =
-        normals[k * 3]! * shapes.normalMean[v * 3]! +
-        normals[k * 3 + 1]! * shapes.normalMean[v * 3 + 1]! +
-        normals[k * 3 + 2]! * shapes.normalMean[v * 3 + 2]!;
-      length += rest[v * 6 + 3 + k]! ** 2;
-    }
-    length = Math.sqrt(length);
-    for (let k = 0; k < 3; k++)
-      rest[v * 6 + 3 + k] = length < 1e-8 ? (k === 2 ? 1 : 0) : rest[v * 6 + 3 + k]! / length;
-  }
+  // The fixed chart is the mean mesh at heading zero.
+  const rest = restInClipSpace(
+    shapes.count,
+    camera.modelToClip,
+    camera.normalToCamera,
+    (v) => [shapes.mean[v * 3]!, shapes.mean[v * 3 + 1]!, shapes.mean[v * 3 + 2]!],
+    (v) => [
+      shapes.normalMean[v * 3]!,
+      shapes.normalMean[v * 3 + 1]!,
+      shapes.normalMean[v * 3 + 2]!,
+    ],
+  );
   return {
     mesh: {
       count: shapes.count,
-      frames: 256,
+      frames: CLIP_FRAMES,
       uv: new Float32Array(shapes.uv),
       indices: new Uint32Array(shapes.indices),
-      poses: rest,
-      shapes,
-      clip,
+      rest,
+      pose: (frame, out) => evaluateShapes(shapes, clip, frame, true, out),
     },
     view,
   };
 }
 export function rigGeometry(
-  rig: SkinModel,
+  rig: RigModel,
   clip: number,
   meshSha256: string,
 ): { mesh: Mesh; view: ViewTransform } {
   const camera = rig.clips[clip];
   if (!camera || !Number.isInteger(clip)) throw new Error('Invalid rig clip');
-  const m = camera.modelToClip;
-  const determinant =
-    m[0]! * (m[5]! * m[10]! - m[6]! * m[9]!) -
-    m[1]! * (m[4]! * m[10]! - m[6]! * m[8]!) +
-    m[2]! * (m[4]! * m[9]! - m[5]! * m[8]!);
-  const inverse = [
-    m[5]! * m[10]! - m[6]! * m[9]!,
-    m[2]! * m[9]! - m[1]! * m[10]!,
-    m[1]! * m[6]! - m[2]! * m[5]!,
-    0,
-    m[6]! * m[8]! - m[4]! * m[10]!,
-    m[0]! * m[10]! - m[2]! * m[8]!,
-    m[2]! * m[4]! - m[0]! * m[6]!,
-    0,
-    m[4]! * m[9]! - m[5]! * m[8]!,
-    m[1]! * m[8]! - m[0]! * m[9]!,
-    m[0]! * m[5]! - m[1]! * m[4]!,
-    0,
-    0,
-    0,
-    0,
-    determinant,
-  ].map((v) => v / determinant);
-  for (let row = 0; row < 3; row++)
-    inverse[row * 4 + 3] = -(
-      inverse[row * 4]! * m[3]! +
-      inverse[row * 4 + 1]! * m[7]! +
-      inverse[row * 4 + 2]! * m[11]!
-    );
-  const normals = camera.normalToCamera;
-  const view: ViewTransform = {
-    version: 1,
+  const view = cameraView(
+    camera.modelToClip,
+    camera.normalToCamera,
     meshSha256,
-    clipToModel: inverse,
-    modelToClip: [...m],
-    normalToModel: Array.from({ length: 9 }, (_, k) => normals[(k % 3) * 3 + Math.floor(k / 3)]!),
-    pivot: [...camera.pivot],
-    radius: camera.radius,
-  };
-  // Preserve the fixed rest chart for fill/pattern tools. Animation is evaluated
-  // only for the displayed pose, and the same result drives brush visibility.
-  const rest = new Float32Array(rig.count * 6);
-  for (let v = 0; v < rig.count; v++) {
-    rest.set(point(m, rig.rest[v * 6]!, rig.rest[v * 6 + 1]!, rig.rest[v * 6 + 2]!), v * 6);
-    for (let k = 0; k < 3; k++)
-      rest[v * 6 + 3 + k] =
-        normals[k * 3]! * rig.rest[v * 6 + 3]! +
-        normals[k * 3 + 1]! * rig.rest[v * 6 + 4]! +
-        normals[k * 3 + 2]! * rig.rest[v * 6 + 5]!;
-  }
+    [...camera.pivot],
+    camera.radius,
+  );
+  // The fixed chart is the rest mesh; animation only drives the displayed pose.
+  const rest = restInClipSpace(
+    rig.count,
+    camera.modelToClip,
+    camera.normalToCamera,
+    (v) => [rig.rest[v * 6]!, rig.rest[v * 6 + 1]!, rig.rest[v * 6 + 2]!],
+    (v) => [rig.rest[v * 6 + 3]!, rig.rest[v * 6 + 4]!, rig.rest[v * 6 + 5]!],
+  );
   return {
     mesh: {
       count: rig.count,
-      frames: 256,
+      frames: CLIP_FRAMES,
       uv: new Float32Array(rig.uv),
       indices: new Uint32Array(rig.indices),
-      poses: rest,
-      rig,
-      clip,
+      rest,
+      pose: (frame, out) => evaluateRig(rig, clip, frame, true, out),
     },
     view,
   };
 }
+/** Loads a unit clip's fitted asset: blend shapes or the bone rig. */
+export async function loadFittedMesh(asset: string, clip = 0) {
+  const format = unitClipFormat(asset);
+  if (!format) throw new Error(`${asset} has no fitted clip`);
+  const response = await fetch(`/skins/models/${asset}.${format}`);
+  if (!response.ok) throw new Error(`Could not load ${asset}.${format}`);
+  const bytes = await response.arrayBuffer();
+  const hash = await sha256Hex(bytes);
+  return format === 'gsb'
+    ? shapeGeometry(decodeShapes(bytes), clip, hash)
+    : rigGeometry(decodeRig(bytes), clip, hash);
+}
+async function loadBakedMesh(asset: string) {
+  const [a, b] = await Promise.all([
+    fetch(`/skins/models/${asset}.gsk`),
+    fetch(`/skins/models/${asset}.view.json`),
+  ]);
+  if (!a.ok || !b.ok) throw new Error('Could not load this model. Please retry.');
+  const bytes = await a.arrayBuffer(),
+    view = (await b.json()) as ViewTransform;
+  validateView(view);
+  if ((await sha256Hex(bytes)) !== view.meshSha256)
+    throw new Error('Model and camera versions do not match. Reload to update.');
+  return { mesh: decode(bytes), view };
+}
+const cache = new Map<string, Promise<{ mesh: Mesh; view: ViewTransform }>>();
+/** Unit clips load their fitted asset and fall back to the baked clip, which
+ * shares the paint layout, if the fitted asset is missing or invalid. */
 export function loadMesh(asset: string) {
   let pending = cache.get(asset);
   if (!pending) {
-    const baked = () =>
-      Promise.all([fetch(`/skins/models/${asset}.gsk`), fetch(`/skins/models/${asset}.view.json`)])
-        .then(async ([a, b]) => {
-          if (!a.ok || !b.ok) throw new Error('Could not load this model. Please retry.');
-          const bytes = await a.arrayBuffer(),
-            view = (await b.json()) as ViewTransform;
-          validateView(view);
-          const hash = Array.from(
-            new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
-            (v) => v.toString(16).padStart(2, '0'),
-          ).join('');
-          if (hash !== view.meshSha256)
-            throw new Error('Model and camera versions do not match. Reload to update.');
-          return { mesh: decode(bytes), view };
-        })
-        .catch((e: unknown) => {
-          cache.delete(asset);
-          throw e;
-        });
-    const candidate = () =>
-      candidateFormat(asset) === 'shapes' ? loadShapeMesh(asset) : loadRigMesh(asset);
-    pending = rigPreview && rigCandidates.has(asset) ? candidate().catch(baked) : baked();
+    pending = (
+      unitClipFormat(asset)
+        ? loadFittedMesh(asset).catch((error: unknown) => {
+            console.warn(`Fitted ${asset} unavailable, using the baked clip:`, error);
+            return loadBakedMesh(asset);
+          })
+        : loadBakedMesh(asset)
+    ).catch((e: unknown) => {
+      cache.delete(asset);
+      throw e;
+    });
     cache.set(asset, pending);
   }
   return pending;
 }
-export function point(m: readonly number[], x: number, y: number, z: number): number[] {
-  return [
-    m[0]! * x + m[1]! * y + m[2]! * z + m[3]!,
-    m[4]! * x + m[5]! * y + m[6]! * z + m[7]!,
-    m[8]! * x + m[9]! * y + m[10]! * z + m[11]!,
-  ];
-}
 const fitCache = new WeakMap<Mesh, { view: ViewTransform; center: number[]; radius: number }>();
+// Inspection framing: the rest pose fills this share of the canvas at zoom 1.
+const INSPECTION_FILL = 0.82;
+// The inspection radius is this share of the rest pose's largest extent.
+const EXTENT_TO_RADIUS = 0.68;
 function inspectionFit(mesh: Mesh, view: ViewTransform) {
   const cached = fitCache.get(mesh);
   if (cached?.view === view) return cached;
   const low = [Infinity, Infinity, Infinity],
     high = [-Infinity, -Infinity, -Infinity];
   for (let v = 0; v < mesh.count; v++) {
-    const p = point(
+    const p = transformPoint(
       view.clipToModel,
-      mesh.poses[v * 6]!,
-      mesh.poses[v * 6 + 1]!,
-      mesh.poses[v * 6 + 2]!,
+      mesh.rest[v * 6]!,
+      mesh.rest[v * 6 + 1]!,
+      mesh.rest[v * 6 + 2]!,
     );
     for (let k = 0; k < 3; k++) {
       low[k] = Math.min(low[k]!, p[k]!);
@@ -335,13 +312,13 @@ function inspectionFit(mesh: Mesh, view: ViewTransform) {
   const fit = {
     view,
     center: low.map((v, i) => (v + high[i]!) / 2),
-    radius: Math.max(...high.map((v, i) => v - low[i]!)) * 0.68,
+    radius: Math.max(...high.map((v, i) => v - low[i]!)) * EXTENT_TO_RADIUS,
   };
   fitCache.set(mesh, fit);
   return fit;
 }
 // NDC offset per unit of fur length under the current framing, so fur on the
-// studio canvas is as long as on the game's tile (clip space over 1.25).
+// studio canvas is as long as on the game's tile (clip space over the padding).
 export function furScale(
   mesh: Mesh,
   view: ViewTransform,
@@ -351,9 +328,9 @@ export function furScale(
   let k = 1;
   if (!camera.game) {
     const m = view.modelToClip;
-    const game = Math.hypot(m[0]!, m[1]!, m[2]!) / 1.25;
+    const game = Math.hypot(m[0]!, m[1]!, m[2]!) / ATLAS_PADDING;
     const { radius } = inspectionFit(mesh, view);
-    k = (camera.zoom * 0.82) / radius / game;
+    k = (camera.zoom * INSPECTION_FILL) / radius / game;
   }
   return [k / Math.max(1, aspect), k * Math.min(1, aspect)];
 }
@@ -366,13 +343,9 @@ export function projectPose(
 ): Float32Array {
   const result = new Float32Array(mesh.count * 6);
   const sample = Math.max(0, Math.min(mesh.frames - 1, Math.floor(frame)));
-  // Each vertex is fully read before projection overwrites it, so rig evaluation
+  // Each vertex is fully read before projection overwrites it, so evaluation
   // can share the output buffer instead of allocating a second deformed mesh.
-  const pose = mesh.rig
-    ? evaluateRig({ model: mesh.rig, clip: mesh.clip ?? 0, sample }, true, result)
-    : mesh.shapes
-      ? evaluateShapes(mesh.shapes, mesh.clip ?? 0, sample, true, result)
-      : mesh.poses.subarray(sample * mesh.count * 6);
+  const pose = mesh.pose(sample, result);
   const inv = view.clipToModel,
     n = view.normalToModel;
   // Framing is fixed from the rest pose, cached across camera and animation updates.
@@ -381,28 +354,26 @@ export function projectPose(
     cy = Math.cos(camera.yaw);
   const ca = Math.cos((-camera.angle * Math.PI) / 180),
     sa = Math.sin((-camera.angle * Math.PI) / 180);
-  const factor = (camera.zoom * 0.82) / radius;
+  const factor = (camera.zoom * INSPECTION_FILL) / radius;
   for (let v = 0; v < mesh.count; v++) {
     const i = v * 6;
-    const p = point(inv, pose[i]!, pose[i + 1]!, pose[i + 2]!);
-    const normal = [0, 1, 2].map(
-      (k) => n[k * 3]! * pose[i + 3]! + n[k * 3 + 1]! * pose[i + 4]! + n[k * 3 + 2]! * pose[i + 5]!,
-    );
+    const p = transformPoint(inv, pose[i]!, pose[i + 1]!, pose[i + 2]!);
+    const normal = transformNormal(n, pose[i + 3]!, pose[i + 4]!, pose[i + 5]!);
     let position: number[], rotated: number[];
     if (camera.game) {
-      const x = p[0]! - view.pivot[0]!,
-        y = p[1]! - view.pivot[1]!;
-      position = point(
+      const x = p[0] - view.pivot[0]!,
+        y = p[1] - view.pivot[1]!;
+      position = transformPoint(
         view.modelToClip,
         ca * x - sa * y + view.pivot[0]!,
         sa * x + ca * y + view.pivot[1]!,
-        p[2]!,
+        p[2],
       );
-      const nx = ca * normal[0]! - sa * normal[1]!,
-        ny = sa * normal[0]! + ca * normal[1]!;
-      rotated = [0, 1, 2].map((k) => n[k]! * nx + n[k + 3]! * ny + n[k + 6]! * normal[2]!);
-      position[0] = position[0]! / 1.25 / Math.max(1, aspect);
-      position[1] = (position[1]! / 1.25) * Math.min(1, aspect);
+      const nx = ca * normal[0] - sa * normal[1],
+        ny = sa * normal[0] + ca * normal[1];
+      rotated = [0, 1, 2].map((k) => n[k]! * nx + n[k + 3]! * ny + n[k + 6]! * normal[2]);
+      position[0] = position[0]! / ATLAS_PADDING / Math.max(1, aspect);
+      position[1] = (position[1]! / ATLAS_PADDING) * Math.min(1, aspect);
     } else {
       const rotate = (a: number[]) => {
         // Turn around model-space Z (upright), then use the fixed exported

@@ -1,55 +1,57 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""GSR1 export helpers for authored Blender rigs; no runtime surface rebuilding.
+"""GSR1 encoder for authored Blender rigs; no runtime surface rebuilding.
 
 Transforms must be translation, quaternion rotation and positive uniform scale.
-Validate the serialized values before returning bytes: rounding to binary32 must
-not turn a valid authoring value into an asset that production decoders reject.
+Every value is checked after rounding to binary32, so an authoring value the
+production decoders would reject never reaches an asset.
 """
 
-import hashlib
-import json
 import math
 from pathlib import Path
 import struct
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from skin_assets import (
+    FRAMES,
+    GSR_HEADER,
+    MAX_BONES,
+    MAX_CLIPS,
+    MAX_HEADING,
+    MAX_INDICES,
+    MAX_LOGICAL_SIZE,
+    MAX_SCALAR,
+    MAX_VERTICES,
+    f32,
+    write_candidate as write_record,
+)
 
 NO_PARENT = 0xFFFFFFFF
 TOLERANCE = 0.0001
-
-
-def _f32(value):
-    if not math.isfinite(value) or abs(value) > 10000:
-        raise ValueError("Invalid GSR1 scalar")
-    return struct.unpack("<f", struct.pack("<f", value))[0]
-
-
-MINIMUM_SCALE = _f32(0.0001)
-MINIMUM_DURATION = _f32(0.0001)
-MAXIMUM_HEADING = _f32(6.283186)
+MINIMUM_SCALE = f32(0.0001)
+MINIMUM_DURATION = f32(0.0001)
+MAX_SAMPLES = 256
 
 
 def _values(values, count, label):
     if len(values) != count:
         raise ValueError(f"Invalid GSR1 {label} length")
-    return [_f32(value) for value in values]
+    return [f32(value) for value in values]
 
 
 def transform(matrix):
-    """Return serialized TRS, rejecting matrices the runtime cannot represent."""
+    """Serialized TRS of a Blender matrix, rejecting what the runtime cannot represent."""
+    from mathutils import Matrix
+
     translation, rotation, scale = matrix.decompose()
     if min(scale) <= 0 or max(scale) - min(scale) > 1e-5 * max(scale):
         raise ValueError("GSR1 requires positive uniform scale")
-    from mathutils import Matrix
-
     uniform = sum(scale) / 3
-    rebuilt = (
-        Matrix.Translation(translation) @ rotation.to_matrix().to_4x4() @ Matrix.Scale(uniform, 4)
-    )
+    rebuilt = Matrix.Translation(translation) @ rotation.to_matrix().to_4x4() @ Matrix.Scale(uniform, 4)
     if max(abs(matrix[y][x] - rebuilt[y][x]) for y in range(4) for x in range(4)) > 1e-4:
         raise ValueError("GSR1 cannot represent shear")
-    result = _values(
-        [*translation, rotation.x, rotation.y, rotation.z, rotation.w, uniform], 8, "transform"
-    )
+    result = _values([*translation, rotation.x, rotation.y, rotation.z, rotation.w, uniform], 8, "transform")
     if result[7] < MINIMUM_SCALE or abs(sum(v * v for v in result[3:7]) - 1) > TOLERANCE:
         raise ValueError("Invalid GSR1 transform")
     return result
@@ -59,7 +61,7 @@ def _matrix(trs):
     # Decoders normalize serialized quaternions and round the stored values
     # back to binary32 before checking bind transforms with binary64 arithmetic.
     norm = math.sqrt(sum(value * value for value in trs[3:7]))
-    x, y, z, w = (_f32(value / norm) for value in trs[3:7])
+    x, y, z, w = (f32(value / norm) for value in trs[3:7])
     s = trs[7]
     return [
         (1 - 2 * (y * y + z * z)) * s,
@@ -89,7 +91,7 @@ def _camera(clip):
     m = _values(clip["modelToClip"], 16, "camera")
     n = _values(clip["normalToCamera"], 9, "normal camera")
     pivot = _values(clip["pivot"], 3, "pivot")
-    radius = _f32(clip["radius"])
+    radius = f32(clip["radius"])
     determinant = (
         m[0] * (m[5] * m[10] - m[6] * m[9])
         - m[1] * (m[4] * m[10] - m[6] * m[8])
@@ -106,6 +108,9 @@ def _camera(clip):
 
 
 def _validate_scales(samples, bones):
+    # The decoders bound every interpolated hierarchy, so the product of a
+    # bone's scale range with its ancestors' and its inverse bind must stay
+    # representable.
     lo, hi = [], []
     for bone, (parent, _, inverse) in enumerate(bones):
         scales = [sample[bone][7] for sample in samples]
@@ -113,21 +118,27 @@ def _validate_scales(samples, bones):
         hi.append(max(scales) * (1 if parent == NO_PARENT else hi[parent]))
         if (
             lo[bone] < MINIMUM_SCALE
-            or hi[bone] > 10000
+            or hi[bone] > MAX_SCALAR
             or lo[bone] * inverse[7] < MINIMUM_SCALE
-            or hi[bone] * inverse[7] > 10000
+            or hi[bone] * inverse[7] > MAX_SCALAR
         ):
             raise ValueError("Unbounded GSR1 hierarchy or deformation scale")
 
 
 def encode(vertices, indices, bones, clips, logical_size):
+    """Serialize a GSR1 asset.
+
+    ``vertices`` are ``(position, normal, uv, joints, weights)``; ``bones`` are
+    ``(parent, rest, inverse_bind)`` Blender matrices in parent order; ``clips``
+    are the dictionaries rig_scene.clip_record builds.
+    """
     if (
-        not 3 <= len(vertices) <= 8192
-        or not 3 <= len(indices) <= 49152
+        not 3 <= len(vertices) <= MAX_VERTICES
+        or not 3 <= len(indices) <= MAX_INDICES
         or len(indices) % 3
-        or not 1 <= len(bones) <= 32
-        or not 1 <= len(clips) <= 8
-        or not 1 <= logical_size <= 128
+        or not 1 <= len(bones) <= MAX_BONES
+        or not 1 <= len(clips) <= MAX_CLIPS
+        or not 1 <= logical_size <= MAX_LOGICAL_SIZE
     ):
         raise ValueError("GSR1 dimensions exceed v1 limits")
     data = bytearray(b"GSR1")
@@ -138,7 +149,7 @@ def encode(vertices, indices, bones, clips, logical_size):
         data.extend(struct.pack("<" + "I" * len(values), *values))
 
     def floats(*values):
-        data.extend(struct.pack("<" + "f" * len(values), *(_f32(v) for v in values)))
+        data.extend(struct.pack("<" + "f" * len(values), *(f32(v) for v in values)))
 
     words(len(vertices), len(indices), len(bones), len(clips), logical_size, 0)
     for position, normal, uv, joints, weights in vertices:
@@ -181,22 +192,22 @@ def encode(vertices, indices, bones, clips, logical_size):
     for clip in clips:
         samples = clip["tracks"]
         if (
-            not 1 <= len(samples) <= 256
+            not 1 <= len(samples) <= MAX_SAMPLES
             or any(len(s) != len(bones) for s in samples)
-            or len(clip["frames"]) != 256
+            or len(clip["frames"]) != FRAMES
         ):
             raise ValueError("Incomplete rig tracks or frame mapping")
         if clip["id"] in clip_ids:
             raise ValueError("Duplicate GSR1 clip")
         clip_ids.add(clip["id"])
-        duration = _f32(clip["duration"])
+        duration = f32(clip["duration"])
         if duration < MINIMUM_DURATION:
             raise ValueError("Invalid GSR1 duration")
         words(clip["id"], len(samples))
         floats(duration, *_camera(clip))
         for frame in clip["frames"]:
             heading, time = _values(frame, 2, "frame mapping")
-            if abs(heading) > MAXIMUM_HEADING or not 0 <= time < duration:
+            if abs(heading) > MAX_HEADING or not 0 <= time < duration:
                 raise ValueError("Invalid GSR1 frame mapping")
             floats(heading, time)
         encoded_samples = [[transform(local) for local in sample] for sample in samples]
@@ -204,25 +215,10 @@ def encode(vertices, indices, bones, clips, logical_size):
         for sample in encoded_samples:
             for local in sample:
                 floats(*local)
-    struct.pack_into("<I", data, 24, len(data) - 28)
+    struct.pack_into("<I", data, GSR_HEADER - 4, len(data) - GSR_HEADER)
     return bytes(data)
 
 
-def provenance(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
 def write_candidate(output, name, data, sources, clips):
-    output.mkdir(parents=True, exist_ok=True)
-    (output / (name + ".gsr")).write_bytes(data)
-    root = Path(__file__).resolve().parents[2]
-    record = {
-        "format": "GSR1",
-        "version": 1,
-        "experimental": True,
-        "file": name + ".gsr",
-        "sha256": hashlib.sha256(data).hexdigest(),
-        "clips": clips,
-        "sources": {str(Path(p).resolve().relative_to(root)): provenance(p) for p in sources},
-    }
-    (output / (name + "-rig.json")).write_text(json.dumps(record, indent=2) + "\n")
+    """Stage a GSR1 asset with the record install_rigs.py validates."""
+    return write_record(output, name, data, sources, clips, "GSR1")

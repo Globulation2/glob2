@@ -70,16 +70,8 @@ def evaluate(mean, normal_mean, shapes, normal_shapes, clip, frame):
     return out
 
 
-def fixture():
-    vertices = [(0, 0), (1, 0), (0, 1), (1, 1)]
-    indices = [0, 1, 2, 2, 1, 3]
-    mean = [(1, 0, 0), (0, 1, 0), (-1, 0, 0), (0, -1, 0.5)]
-    normal_mean = [(1, 0, 0), (0, 1, 0), (-1, 0, 0), (0, 0, 1)]
-    shapes = [
-        (0.001, [(1000, 0, 0), (0, 1000, 0), (-1000, 0, 0), (0, -1000, 0)]),
-        (0.0005, [(0, 0, 2000), (0, 0, 2000), (0, 0, -2000), (0, 0, 0)]),
-    ]
-    normal_shapes = [(0.002, [(0, 0, 500), (0, 0, 500), (0, 0, 500), (500, 0, 0)])]
+def fixture_clips():
+    """The two analytic clips: a scaled camera and a smaller, shifted one."""
     headings = [-(f // 32) * math.pi / 4 for f in range(FRAMES)]
     clips = []
     for clip_id, (sx, tz) in enumerate(((0.5, 0.0), (0.25, 0.125))):
@@ -95,6 +87,20 @@ def fixture():
                 "normalCoefficients": [[0.5 * math.sin(f / 5.0)] for f in range(FRAMES)],
             }
         )
+    return clips
+
+
+def fixture():
+    vertices = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    indices = [0, 1, 2, 2, 1, 3]
+    mean = [(1, 0, 0), (0, 1, 0), (-1, 0, 0), (0, -1, 0.5)]
+    normal_mean = [(1, 0, 0), (0, 1, 0), (-1, 0, 0), (0, 0, 1)]
+    shapes = [
+        (0.001, [(1000, 0, 0), (0, 1000, 0), (-1000, 0, 0), (0, -1000, 0)]),
+        (0.0005, [(0, 0, 2000), (0, 0, 2000), (0, 0, -2000), (0, 0, 0)]),
+    ]
+    normal_shapes = [(0.002, [(0, 0, 500), (0, 0, 500), (0, 0, 500), (500, 0, 0)])]
+    clips = fixture_clips()
     data = build(vertices, indices, mean, normal_mean, shapes, normal_shapes, clips)
     expected = {
         f"{clip['id']}:{frame}": evaluate(mean, normal_mean, shapes, normal_shapes, clip, frame)

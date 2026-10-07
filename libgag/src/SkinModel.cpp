@@ -1,65 +1,43 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SkinModel.h>
+#include <SkinMesh.h>
+#include "SkinAssetReader.h"
 #include <algorithm>
 #include <atomic>
-#include <bit>
 #include <cmath>
 #include <limits>
-#include <stdexcept>
 
 namespace GAGCore
 {
 namespace
 {
+using namespace SkinAsset;
 std::atomic<std::uint64_t> nextGeneration{1};
-// Validation arithmetic is binary64 in both native and Studio decoders. Limits
-// on serialized scalars use their binary32 representation, including endpoints.
-constexpr double Tolerance = 0.0001;
+constexpr unsigned HeaderBytes = 28, MaximumBones = 32, MaximumSamples = 256;
 constexpr double MinimumScale = double(0.0001f);
 constexpr double MinimumDuration = double(0.0001f);
-constexpr double MaximumHeading = double(6.283186f);
 constexpr unsigned NoParent = 0xffffffffu;
-struct Reader
+// Serialized sizes: a vertex (position, normal, UV, four bones, four weights),
+// a bone (parent, rest, inverse bind), a clip header and a track key.
+constexpr unsigned VertexBytes = 64, BoneBytes = 68, ClipHeaderBytes = 2176,
+				   TransformBytes = 32;
+
+SkinTransform readTransform(Reader &r)
 {
-	std::span<const std::uint8_t> bytes;
-	std::size_t at = 0;
-	std::uint32_t word()
-	{
-		if (bytes.size() - at < 4)
-			throw std::runtime_error("truncated rig payload");
-		const auto *p = bytes.data() + at;
-		at += 4;
-		return std::uint32_t(p[0]) | std::uint32_t(p[1]) << 8 | std::uint32_t(p[2]) << 16 |
-			   std::uint32_t(p[3]) << 24;
-	}
-	float scalar(float bound = 10000)
-	{
-		const float v = std::bit_cast<float>(word());
-		if (!std::isfinite(v) || std::abs(v) > bound)
-			throw std::runtime_error("invalid rig scalar");
-		return v;
-	}
-	template <std::size_t N> void read(std::array<float, N> &a)
-	{
-		for (auto &v : a)
-			v = scalar();
-	}
-	SkinTransform transform()
-	{
-		SkinTransform t;
-		read(t.translation);
-		read(t.rotation);
-		t.scale = scalar();
-		double norm = 0;
-		for (float v : t.rotation)
-			norm += double(v) * v;
-		if (std::abs(norm - 1) > Tolerance || t.scale < MinimumScale || t.scale > 10000)
-			throw std::runtime_error("invalid rig transform");
-		for (auto &v : t.rotation)
-			v = float(v / std::sqrt(norm));
-		return t;
-	}
-};
+	SkinTransform t;
+	r.read(t.translation);
+	r.read(t.rotation);
+	t.scale = r.scalar();
+	double norm = 0;
+	for (float v : t.rotation)
+		norm += double(v) * v;
+	require(std::abs(norm - 1) <= Tolerance && t.scale >= MinimumScale &&
+				t.scale <= MaximumScalar,
+			"invalid rig transform");
+	for (auto &v : t.rotation)
+		v = float(v / std::sqrt(norm));
+	return t;
+}
 template <typename Scalar = float> std::array<Scalar, 16> matrix(const SkinTransform &t)
 {
 	const Scalar x = t.rotation[0], y = t.rotation[1], z = t.rotation[2], w = t.rotation[3];
@@ -91,6 +69,8 @@ std::array<Scalar, 16> multiply(const std::array<Scalar, 16> &a, const std::arra
 				r[y * 4 + x] += a[y * 4 + k] * b[k * 4 + x];
 	return r;
 }
+// Linear translation and scale, shortest-arc spherical rotation (linear below
+// the 0.9995 cosine threshold, where the arc is too short to matter).
 SkinTransform interpolate(const SkinTransform &a, const SkinTransform &b, float f)
 {
 	SkinTransform r;
@@ -119,24 +99,6 @@ SkinTransform interpolate(const SkinTransform &a, const SkinTransform &b, float 
 		v /= std::sqrt(length);
 	return r;
 }
-void require(bool ok, const char *error)
-{
-	if (!ok)
-		throw std::runtime_error(error);
-}
-void normalize(float *n)
-{
-	const float length = std::sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-	if (length < 1e-8f)
-	{
-		n[0] = 0;
-		n[1] = 0;
-		n[2] = 1;
-	}
-	else
-		for (unsigned k = 0; k < 3; ++k)
-			n[k] /= length;
-}
 } // namespace
 std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t> bytes,
 												   std::string &error)
@@ -144,17 +106,19 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 	error.clear();
 	try
 	{
-		require(bytes.size() >= 28 && bytes.size() <= 16 * 1024 * 1024, "invalid rig size");
+		require(bytes.size() >= HeaderBytes && bytes.size() <= MaximumBytes, "invalid rig size");
 		Reader r{bytes};
 		require(r.word() == 0x31525347, "unsupported rig format");
 		const auto vertices = r.word(), indices = r.word(), bones = r.word(), clips = r.word(),
 				   logical = r.word(), payload = r.word();
-		require(vertices >= 3 && vertices <= 8192 && indices >= 3 && indices <= 49152 &&
-					indices % 3 == 0 && bones >= 1 && bones <= 32 && clips >= 1 && clips <= 8 &&
-					logical >= 1 && logical <= 128 && payload == bytes.size() - 28,
+		require(vertices >= 3 && vertices <= MaximumVertices && indices >= 3 &&
+					indices <= MaximumIndices && indices % 3 == 0 && bones >= 1 &&
+					bones <= MaximumBones && clips >= 1 && clips <= MaximumClips && logical >= 1 &&
+					logical <= MaximumLogicalSize && payload == bytes.size() - HeaderBytes,
 				"invalid rig dimensions");
 		// Fixed geometry and every clip header must fit before allocating.
-		require(28ULL + vertices * 64ULL + indices * 4ULL + bones * 68ULL + clips * 2176ULL <=
+		require(HeaderBytes + vertices * std::uint64_t(VertexBytes) + indices * 4ULL +
+					bones * std::uint64_t(BoneBytes) + clips * std::uint64_t(ClipHeaderBytes) <=
 					bytes.size(),
 				"truncated rig geometry");
 		auto model = std::shared_ptr<SkinModel>(new SkinModel);
@@ -199,14 +163,14 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 			v = r.word();
 			require(v < vertices, "invalid rig index");
 		}
-		std::array<std::array<double, 16>, 32> global{};
+		std::array<std::array<double, 16>, MaximumBones> global{};
 		for (unsigned b = 0; b < bones; ++b)
 		{
 			SkinBone bone;
 			bone.parent = r.word();
 			require(bone.parent == NoParent || bone.parent < b, "invalid rig hierarchy");
-			bone.rest = r.transform();
-			bone.inverseBind = r.transform();
+			bone.rest = readTransform(r);
+			bone.inverseBind = readTransform(r);
 			global[b] = matrix<double>(bone.rest);
 			if (bone.parent != NoParent)
 				global[b] = multiply(global[bone.parent], global[b]);
@@ -223,7 +187,8 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 			clip.id = r.word();
 			clip.samples = r.word();
 			clip.duration = r.scalar();
-			require(clip.samples >= 1 && clip.samples <= 256 && clip.duration >= MinimumDuration,
+			require(clip.samples >= 1 && clip.samples <= MaximumSamples &&
+						clip.duration >= MinimumDuration,
 					"invalid rig track dimensions");
 			for (const auto &other : model->animations)
 				require(other.id != clip.id, "duplicate rig clip");
@@ -232,22 +197,7 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 			r.read(clip.pivot);
 			clip.radius = r.scalar();
 			require(clip.radius > 0, "invalid rig radius");
-			const auto &m = clip.modelToClip;
-			require(m[12] == 0 && m[13] == 0 && m[14] == 0 && m[15] == 1, "invalid rig camera");
-			const double determinant = double(m[0]) * (double(m[5]) * m[10] - double(m[6]) * m[9]) -
-									   double(m[1]) * (double(m[4]) * m[10] - double(m[6]) * m[8]) +
-									   double(m[2]) * (double(m[4]) * m[9] - double(m[5]) * m[8]);
-			require(std::abs(determinant) > 1e-12, "singular rig camera");
-			const auto &n = clip.normalToCamera;
-			for (unsigned i = 0; i < 3; ++i)
-				for (unsigned j = 0; j < 3; ++j)
-				{
-					double dot = 0;
-					for (unsigned k = 0; k < 3; ++k)
-						dot += double(n[i * 3 + k]) * n[j * 3 + k];
-					require(std::abs(dot - (i == j ? 1. : 0.)) < Tolerance,
-							"invalid rig normal camera");
-				}
+			requireCamera(clip.modelToClip, clip.normalToCamera);
 			for (auto &frame : clip.frames)
 			{
 				frame.heading = r.scalar();
@@ -256,17 +206,17 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 							frame.time < clip.duration,
 						"invalid rig frame mapping");
 			}
-			require(std::uint64_t(clip.samples) * bones * 32 <= bytes.size() - r.at,
+			require(std::uint64_t(clip.samples) * bones * TransformBytes <= bytes.size() - r.at,
 					"truncated rig tracks");
 			clip.tracks.reserve(clip.samples * bones);
-			std::array<double, 32> lo{}, hi{};
 			for (unsigned i = 0; i < clip.samples * bones; ++i)
-				clip.tracks.push_back(r.transform());
+				clip.tracks.push_back(readTransform(r));
 			// Bound every interpolated hierarchy, including combinations between
 			// keys, before publishing. Prevent overflow from scale products.
+			std::array<double, MaximumBones> lo{}, hi{};
 			for (unsigned b = 0; b < bones; ++b)
 			{
-				lo[b] = 10000;
+				lo[b] = MaximumScalar;
 				hi[b] = 0;
 				for (unsigned i = 0; i < clip.samples; ++i)
 				{
@@ -280,14 +230,15 @@ std::shared_ptr<const SkinModel> SkinModel::decode(std::span<const std::uint8_t>
 					lo[b] *= lo[parent];
 					hi[b] *= hi[parent];
 				}
-				require(lo[b] >= MinimumScale && hi[b] <= 10000, "unbounded rig hierarchy scale");
+				require(lo[b] >= MinimumScale && hi[b] <= MaximumScalar,
+						"unbounded rig hierarchy scale");
 				const auto inverse = model->skeleton[b].inverseBind.scale;
-				require(lo[b] * inverse >= MinimumScale && hi[b] * inverse <= 10000,
+				require(lo[b] * inverse >= MinimumScale && hi[b] * inverse <= MaximumScalar,
 						"unbounded rig deformation scale");
 			}
 			model->animations.push_back(std::move(clip));
 		}
-		require(r.at == bytes.size(), "rig payload length mismatch");
+		require(r.finished(), "rig payload length mismatch");
 		model->generation = nextGeneration.fetch_add(1, std::memory_order_relaxed);
 		return model;
 	}
@@ -308,9 +259,10 @@ bool SkinModel::palette(unsigned clipIndex, double time, float heading, SkinPale
 	const double sample = wrapped / clip.duration * clip.samples;
 	const unsigned a = std::min(unsigned(sample), clip.samples - 1), b = (a + 1) % clip.samples;
 	const float fraction = sample - a;
-	std::array<SkinMatrix, 32> global;
+	std::array<SkinMatrix, MaximumBones> global;
 	SkinPalette result;
 	result.count = skeleton.size();
+	// Heading turns the posed model about the clip pivot's vertical axis.
 	const float c = std::cos(heading), s = std::sin(heading);
 	const auto &p = clip.pivot;
 	const SkinMatrix turn{
@@ -324,6 +276,7 @@ bool SkinModel::palette(unsigned clipIndex, double time, float heading, SkinPale
 			global[i] = multiply(global[skeleton[i].parent], global[i]);
 		auto &m = result.positions[i];
 		m = multiply(turn, multiply(global[i], matrix(skeleton[i].inverseBind)));
+		// Uniform scale: the normal matrix is the rotation divided by scale.
 		const float squaredScale = m[0] * m[0] + m[4] * m[4] + m[8] * m[8];
 		for (unsigned y = 0; y < 3; ++y)
 			for (unsigned x = 0; x < 3; ++x)
@@ -334,7 +287,7 @@ bool SkinModel::palette(unsigned clipIndex, double time, float heading, SkinPale
 }
 bool SkinModel::paletteForFrame(unsigned clip, unsigned frame, SkinPalette &out) const
 {
-	if (clip >= animations.size() || frame >= 256)
+	if (clip >= animations.size() || frame >= SkinClipFrames)
 		return false;
 	const auto &mapping = animations[clip].frames[frame];
 	return palette(clip, mapping.time, mapping.heading, out);

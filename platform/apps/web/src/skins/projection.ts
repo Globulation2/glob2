@@ -129,7 +129,7 @@ export function buildProjection(
  * Glob bodies use height bands; flying explorers use their long body axis. */
 export function buildFillChart(mesh: Mesh, view: ViewTransform, model: string) {
   const world = Array.from({ length: mesh.count }, (_, i) =>
-    point(view.clipToModel, mesh.poses[i * 6]!, mesh.poses[i * 6 + 1]!, mesh.poses[i * 6 + 2]!),
+    point(view.clipToModel, mesh.rest[i * 6]!, mesh.rest[i * 6 + 1]!, mesh.rest[i * 6 + 2]!),
   );
   const low = [0, 1, 2].map((k) => Math.min(...world.map((p) => p[k]!)));
   const high = [0, 1, 2].map((k) => Math.max(...world.map((p) => p[k]!)));
@@ -144,7 +144,7 @@ export function buildFillChart(mesh: Mesh, view: ViewTransform, model: string) {
     triangle(uv[0]!, uv[1]!, uv[2]!, 256, 256, (u, v, a, b, c) => {
       const at = v * 256 + u,
         weights = [a, b, c];
-      const z = ids.reduce((sum, id, j) => sum + weights[j]! * mesh.poses[id * 6 + 2]!, 0);
+      const z = ids.reduce((sum, id, j) => sum + weights[j]! * mesh.rest[id * 6 + 2]!, 0);
       if (z >= depth[at]!) return;
       depth[at] = z;
       used[at] = 1;
