@@ -1,0 +1,12 @@
+{
+  "source": "3fb7141d5152fc2544bd307f62f4023456df1296",
+  "original_source": "ab143f583b16c4cfdab32c9fc4abaa6200867a07",
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+  "arch": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "build_flags": "release=1: -O3, -std=gnu++20; native client, rendering unused",
+  "binary_hashes": {
+    "artifacts/gradient-budget-sweep/binaries/glob2-original-mac": "0f237a7bdf0362e2e2f0c6d87058c2bfebd586a946835ff20d13be363de9fbb7",
+    "artifacts/gradient-budget-sweep/binaries/glob2-candidate-mac": "b784c3cc2a8609f54c821c99350ef706be69aa12f462c43ec5dadde73a50fc73"
+  }
+}

@@ -1,0 +1,678 @@
+{
+  "matches": [
+    "artifacts/gradient-budget-sweep/linux-training/contested-town-715045/demand",
+    "artifacts/gradient-budget-sweep/linux-training/contested-town-715247/demand",
+    "artifacts/gradient-budget-sweep/linux-training/large-economy-710101/demand",
+    "artifacts/gradient-budget-sweep/linux-training/large-generated-economy-711009/demand",
+    "artifacts/gradient-budget-sweep/linux-training/large-generated-economy-711211/demand",
+    "artifacts/gradient-budget-sweep/linux-training/mixed-islands-712119/demand",
+    "artifacts/gradient-budget-sweep/linux-training/mixed-town-713027/demand",
+    "artifacts/gradient-budget-sweep/linux-training/mixed-town-713229/demand",
+    "artifacts/gradient-budget-sweep/linux-training/small-economy-714137/demand",
+    "artifacts/gradient-budget-sweep/mac/contested-town-715146/demand",
+    "artifacts/gradient-budget-sweep/mac/large-economy-710000/demand",
+    "artifacts/gradient-budget-sweep/mac/large-economy-710202/demand",
+    "artifacts/gradient-budget-sweep/mac/large-generated-economy-711110/demand",
+    "artifacts/gradient-budget-sweep/mac/mixed-islands-712018/demand",
+    "artifacts/gradient-budget-sweep/mac/mixed-islands-712220/demand",
+    "artifacts/gradient-budget-sweep/mac/mixed-town-713128/demand",
+    "artifacts/gradient-budget-sweep/mac/small-economy-714036/demand",
+    "artifacts/gradient-budget-sweep/mac/small-economy-714238/demand"
+  ],
+  "summaries": [
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/contested-town-715045/demand",
+      "totals": {
+        "queries": 82399,
+        "extensions": 1826,
+        "full_requests": 1,
+        "unreachable": 83,
+        "unknown": 1
+      },
+      "popped": 4031609,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 82398,
+          "popped": 4031609
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 1,
+          "popped": 0
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 755,
+      "epochs_with_full_requests": 1,
+      "epochs_started_before_observation": 90,
+      "required_land_steps": {
+        "0.5": 13.6,
+        "0.95": 42.4,
+        "0.99": 104.6
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 28.4,
+        "0.95": 155.4,
+        "0.99": 180.2
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/contested-town-715247/demand",
+      "totals": {
+        "queries": 159388,
+        "extensions": 3201,
+        "full_requests": 0,
+        "unreachable": 144,
+        "unknown": 0
+      },
+      "popped": 8912275,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 159388,
+          "popped": 8912275
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1329,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 28,
+      "required_land_steps": {
+        "0.5": 13.8,
+        "0.95": 46.4,
+        "0.99": 106.6
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 30.6,
+        "0.95": 132.8,
+        "0.99": 180.0
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/large-economy-710101/demand",
+      "totals": {
+        "queries": 7307412,
+        "extensions": 106541,
+        "full_requests": 35,
+        "unreachable": 66132,
+        "unknown": 199
+      },
+      "popped": 436078261,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 7307377,
+          "popped": 434978748
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 35,
+          "popped": 1099513
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 41382,
+      "epochs_with_full_requests": 34,
+      "epochs_started_before_observation": 207,
+      "required_land_steps": {
+        "0.5": 19.2,
+        "0.95": 67.8,
+        "0.99": 142.6
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 45.2,
+        "0.95": 157.7,
+        "0.99": 189.6
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/large-generated-economy-711009/demand",
+      "totals": {
+        "queries": 487342,
+        "extensions": 21233,
+        "full_requests": 18,
+        "unreachable": 11691,
+        "unknown": 12
+      },
+      "popped": 122107453,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 487324,
+          "popped": 121695853
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 18,
+          "popped": 411600
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 11365,
+      "epochs_with_full_requests": 17,
+      "epochs_started_before_observation": 47,
+      "required_land_steps": {
+        "0.5": 9.4,
+        "0.95": 101.6,
+        "0.99": 248.2
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 31.6,
+        "0.95": 214.8,
+        "0.99": 285.0
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/large-generated-economy-711211/demand",
+      "totals": {
+        "queries": 419028,
+        "extensions": 15287,
+        "full_requests": 9,
+        "unreachable": 1741,
+        "unknown": 5
+      },
+      "popped": 81809245,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 419019,
+          "popped": 81718227
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 9,
+          "popped": 91018
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 7623,
+      "epochs_with_full_requests": 9,
+      "epochs_started_before_observation": 70,
+      "required_land_steps": {
+        "0.5": 9.8,
+        "0.95": 121.0,
+        "0.99": 223.5
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 43.0,
+        "0.95": 236.2,
+        "0.99": 327.4
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/mixed-islands-712119/demand",
+      "totals": {
+        "queries": 1020302,
+        "extensions": 7812,
+        "full_requests": 0,
+        "unreachable": 1237,
+        "unknown": 0
+      },
+      "popped": 1528081,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 1020302,
+          "popped": 1528081
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 2421,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 24,
+      "required_land_steps": {
+        "0.5": 12.0,
+        "0.95": 32.4,
+        "0.99": 89.6
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 24.0,
+        "0.95": 98.2,
+        "0.99": 112.6
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/mixed-town-713027/demand",
+      "totals": {
+        "queries": 140528,
+        "extensions": 2046,
+        "full_requests": 0,
+        "unreachable": 74,
+        "unknown": 0
+      },
+      "popped": 1587176,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 140528,
+          "popped": 1587176
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 770,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 8,
+      "required_land_steps": {
+        "0.5": 18.2,
+        "0.95": 52.2,
+        "0.99": 62.0
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 29.0,
+        "0.95": 51.0,
+        "0.99": 61.8
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/mixed-town-713229/demand",
+      "totals": {
+        "queries": 225215,
+        "extensions": 3788,
+        "full_requests": 0,
+        "unreachable": 807,
+        "unknown": 0
+      },
+      "popped": 3746213,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 225215,
+          "popped": 3746213
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1616,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 22,
+      "required_land_steps": {
+        "0.5": 22.2,
+        "0.95": 53.0,
+        "0.99": 77.0
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 30.6,
+        "0.95": 56.8,
+        "0.99": 73.0
+      }
+    },
+    {
+      "directory": "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/linux/small-economy-714137/demand",
+      "totals": {
+        "queries": 1505813,
+        "extensions": 8328,
+        "full_requests": 6,
+        "unreachable": 411976,
+        "unknown": 3
+      },
+      "popped": 3407782,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 1505807,
+          "popped": 3400674
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 6,
+          "popped": 7108
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 3402,
+      "epochs_with_full_requests": 6,
+      "epochs_started_before_observation": 12,
+      "required_land_steps": {
+        "0.5": 4.2,
+        "0.95": 55.4,
+        "0.99": 81.4
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 42.8,
+        "0.95": 87.8,
+        "0.99": 120.6
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/contested-town-715146/demand",
+      "totals": {
+        "queries": 146652,
+        "extensions": 3447,
+        "full_requests": 1,
+        "unreachable": 0,
+        "unknown": 0
+      },
+      "popped": 6705636,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 146651,
+          "popped": 6671534
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 1,
+          "popped": 34102
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1415,
+      "epochs_with_full_requests": 1,
+      "epochs_started_before_observation": 32,
+      "required_land_steps": {
+        "0.5": 14.2,
+        "0.95": 55.0,
+        "0.99": 71.0
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 28.6,
+        "0.95": 130.8,
+        "0.99": 166.0
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/large-economy-710000/demand",
+      "totals": {
+        "queries": 6161411,
+        "extensions": 98041,
+        "full_requests": 26,
+        "unreachable": 21723,
+        "unknown": 6
+      },
+      "popped": 360904953,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 6161385,
+          "popped": 360009919
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 26,
+          "popped": 895034
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 38482,
+      "epochs_with_full_requests": 25,
+      "epochs_started_before_observation": 225,
+      "required_land_steps": {
+        "0.5": 21.2,
+        "0.95": 62.4,
+        "0.99": 89.4
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 43.6,
+        "0.95": 145.2,
+        "0.99": 183.8
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/large-economy-710202/demand",
+      "totals": {
+        "queries": 6455568,
+        "extensions": 105291,
+        "full_requests": 30,
+        "unreachable": 27260,
+        "unknown": 8
+      },
+      "popped": 393736915,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 6455538,
+          "popped": 392771765
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 30,
+          "popped": 965150
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 42302,
+      "epochs_with_full_requests": 29,
+      "epochs_started_before_observation": 239,
+      "required_land_steps": {
+        "0.5": 23.6,
+        "0.95": 67.2,
+        "0.99": 86.4
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 45.6,
+        "0.95": 139.2,
+        "0.99": 185.2
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/large-generated-economy-711110/demand",
+      "totals": {
+        "queries": 459561,
+        "extensions": 21430,
+        "full_requests": 12,
+        "unreachable": 3224,
+        "unknown": 84
+      },
+      "popped": 129104311,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 459549,
+          "popped": 128792062
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 12,
+          "popped": 312249
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 11495,
+      "epochs_with_full_requests": 12,
+      "epochs_started_before_observation": 56,
+      "required_land_steps": {
+        "0.5": 10.2,
+        "0.95": 139.6,
+        "0.99": 220.2
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 47.5,
+        "0.95": 218.2,
+        "0.99": 266.6
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/mixed-islands-712018/demand",
+      "totals": {
+        "queries": 661655,
+        "extensions": 6223,
+        "full_requests": 0,
+        "unreachable": 588,
+        "unknown": 0
+      },
+      "popped": 1134305,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 661655,
+          "popped": 1134305
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1932,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 2,
+      "required_land_steps": {
+        "0.5": 13.0,
+        "0.95": 45.0,
+        "0.99": 108.6
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 20.2,
+        "0.95": 63.2,
+        "0.99": 117.4
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/mixed-islands-712220/demand",
+      "totals": {
+        "queries": 518286,
+        "extensions": 5901,
+        "full_requests": 0,
+        "unreachable": 0,
+        "unknown": 0
+      },
+      "popped": 1784290,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 518286,
+          "popped": 1784290
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1874,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 22,
+      "required_land_steps": {
+        "0.5": 14.0,
+        "0.95": 71.2,
+        "0.99": 75.4
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 22.8,
+        "0.95": 150.8,
+        "0.99": 182.2
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/mixed-town-713128/demand",
+      "totals": {
+        "queries": 271706,
+        "extensions": 3073,
+        "full_requests": 0,
+        "unreachable": 0,
+        "unknown": 0
+      },
+      "popped": 3113983,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 271706,
+          "popped": 3113983
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 1400,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 15,
+      "required_land_steps": {
+        "0.5": 18.0,
+        "0.95": 42.4,
+        "0.99": 54.4
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 30.6,
+        "0.95": 57.8,
+        "0.99": 69.0
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/small-economy-714036/demand",
+      "totals": {
+        "queries": 4667130,
+        "extensions": 9213,
+        "full_requests": 0,
+        "unreachable": 606257,
+        "unknown": 861
+      },
+      "popped": 4746951,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 4667130,
+          "popped": 4746951
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 3057,
+      "epochs_with_full_requests": 0,
+      "epochs_started_before_observation": 28,
+      "required_land_steps": {
+        "0.5": 8.2,
+        "0.95": 91.6,
+        "0.99": 128.2
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 64.6,
+        "0.95": 136.4,
+        "0.99": 154.8
+      }
+    },
+    {
+      "directory": "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/mac/small-economy-714238/demand",
+      "totals": {
+        "queries": 4189999,
+        "extensions": 8424,
+        "full_requests": 11,
+        "unreachable": 1968452,
+        "unknown": 7
+      },
+      "popped": 4727247,
+      "callers": [
+        {
+          "caller": "walking_query",
+          "full": false,
+          "requests": 4189988,
+          "popped": 4722843
+        },
+        {
+          "caller": "forbidden_escape",
+          "full": true,
+          "requests": 11,
+          "popped": 4404
+        }
+      ],
+      "ticks": 10000,
+      "epochs": 3115,
+      "epochs_with_full_requests": 10,
+      "epochs_started_before_observation": 28,
+      "required_land_steps": {
+        "0.5": 3.8,
+        "0.95": 131.0,
+        "0.99": 142.8
+      },
+      "epoch_maximum_land_steps": {
+        "0.5": 63.8,
+        "0.95": 136.8,
+        "0.99": 163.0
+      }
+    }
+  ]
+}

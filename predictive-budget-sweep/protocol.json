@@ -1,0 +1,418 @@
+{
+  "schema": 1,
+  "status": "preregistered-before-any-new-policy-timing",
+  "quantiles": [
+    0,
+    0.25,
+    0.5,
+    0.65,
+    0.8,
+    0.9,
+    0.95,
+    0.99,
+    1
+  ],
+  "publication_delays": [
+    2,
+    4,
+    8
+  ],
+  "gradient_workers": [
+    1,
+    2,
+    4
+  ],
+  "controls": [
+    "original greedy code and experiment-off candidate code, bracketing every block",
+    "scheduled zero-expansion",
+    "full refresh prebuilding"
+  ],
+  "training_mode": "walking_extensions",
+  "training_seeds_per_family": 3,
+  "evaluation_seeds_per_family": 4,
+  "balanced_repetitions": 2,
+  "measured_ticks": 2048,
+  "diagnostic_ticks": 10000,
+  "families": [
+    {
+      "id": "large-economy",
+      "map": "maps/Oazis.map.gz",
+      "players": [
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima"
+      ],
+      "warmup": 16000
+    },
+    {
+      "id": "large-generated-economy",
+      "generator": "coral",
+      "size": 256,
+      "players": [
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima"
+      ],
+      "warmup": 16000
+    },
+    {
+      "id": "mixed-islands",
+      "generator": "coral",
+      "size": 256,
+      "players": [
+        "numbi",
+        "castor",
+        "numbi",
+        "castor"
+      ],
+      "warmup": 10000
+    },
+    {
+      "id": "mixed-town",
+      "generator": "old-town",
+      "size": 256,
+      "players": [
+        "numbi",
+        "castor",
+        "numbi",
+        "castor"
+      ],
+      "warmup": 10000
+    },
+    {
+      "id": "small-economy",
+      "generator": "coral",
+      "size": 128,
+      "players": [
+        "maxima",
+        "castor",
+        "maxima",
+        "castor"
+      ],
+      "warmup": 10000
+    },
+    {
+      "id": "contested-town",
+      "generator": "old-town",
+      "size": 256,
+      "players": [
+        "maxima",
+        "nicowar",
+        "maxima",
+        "warrush"
+      ],
+      "warmup": 10000
+    }
+  ],
+  "training": [
+    {
+      "id": "large-economy-710000",
+      "family": "large-economy",
+      "map_seed": 710000,
+      "game_seed": 760000,
+      "host": "mac"
+    },
+    {
+      "id": "large-economy-710101",
+      "family": "large-economy",
+      "map_seed": 710101,
+      "game_seed": 760101,
+      "host": "linux"
+    },
+    {
+      "id": "large-economy-710202",
+      "family": "large-economy",
+      "map_seed": 710202,
+      "game_seed": 760202,
+      "host": "mac"
+    },
+    {
+      "id": "large-generated-economy-711009",
+      "family": "large-generated-economy",
+      "map_seed": 711009,
+      "game_seed": 761009,
+      "host": "linux"
+    },
+    {
+      "id": "large-generated-economy-711110",
+      "family": "large-generated-economy",
+      "map_seed": 711110,
+      "game_seed": 761110,
+      "host": "mac"
+    },
+    {
+      "id": "large-generated-economy-711211",
+      "family": "large-generated-economy",
+      "map_seed": 711211,
+      "game_seed": 761211,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-islands-712018",
+      "family": "mixed-islands",
+      "map_seed": 712018,
+      "game_seed": 762018,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-islands-712119",
+      "family": "mixed-islands",
+      "map_seed": 712119,
+      "game_seed": 762119,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-islands-712220",
+      "family": "mixed-islands",
+      "map_seed": 712220,
+      "game_seed": 762220,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-town-713027",
+      "family": "mixed-town",
+      "map_seed": 713027,
+      "game_seed": 763027,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-town-713128",
+      "family": "mixed-town",
+      "map_seed": 713128,
+      "game_seed": 763128,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-town-713229",
+      "family": "mixed-town",
+      "map_seed": 713229,
+      "game_seed": 763229,
+      "host": "linux"
+    },
+    {
+      "id": "small-economy-714036",
+      "family": "small-economy",
+      "map_seed": 714036,
+      "game_seed": 764036,
+      "host": "mac"
+    },
+    {
+      "id": "small-economy-714137",
+      "family": "small-economy",
+      "map_seed": 714137,
+      "game_seed": 764137,
+      "host": "linux"
+    },
+    {
+      "id": "small-economy-714238",
+      "family": "small-economy",
+      "map_seed": 714238,
+      "game_seed": 764238,
+      "host": "mac"
+    },
+    {
+      "id": "contested-town-715045",
+      "family": "contested-town",
+      "map_seed": 715045,
+      "game_seed": 765045,
+      "host": "linux"
+    },
+    {
+      "id": "contested-town-715146",
+      "family": "contested-town",
+      "map_seed": 715146,
+      "game_seed": 765146,
+      "host": "mac"
+    },
+    {
+      "id": "contested-town-715247",
+      "family": "contested-town",
+      "map_seed": 715247,
+      "game_seed": 765247,
+      "host": "linux"
+    }
+  ],
+  "evaluation": [
+    {
+      "id": "large-economy-810000",
+      "family": "large-economy",
+      "map_seed": 810000,
+      "game_seed": 860000,
+      "host": "mac"
+    },
+    {
+      "id": "large-economy-810101",
+      "family": "large-economy",
+      "map_seed": 810101,
+      "game_seed": 860101,
+      "host": "linux"
+    },
+    {
+      "id": "large-economy-810202",
+      "family": "large-economy",
+      "map_seed": 810202,
+      "game_seed": 860202,
+      "host": "mac"
+    },
+    {
+      "id": "large-economy-810303",
+      "family": "large-economy",
+      "map_seed": 810303,
+      "game_seed": 860303,
+      "host": "linux"
+    },
+    {
+      "id": "large-generated-economy-811009",
+      "family": "large-generated-economy",
+      "map_seed": 811009,
+      "game_seed": 861009,
+      "host": "linux"
+    },
+    {
+      "id": "large-generated-economy-811110",
+      "family": "large-generated-economy",
+      "map_seed": 811110,
+      "game_seed": 861110,
+      "host": "mac"
+    },
+    {
+      "id": "large-generated-economy-811211",
+      "family": "large-generated-economy",
+      "map_seed": 811211,
+      "game_seed": 861211,
+      "host": "linux"
+    },
+    {
+      "id": "large-generated-economy-811312",
+      "family": "large-generated-economy",
+      "map_seed": 811312,
+      "game_seed": 861312,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-islands-812018",
+      "family": "mixed-islands",
+      "map_seed": 812018,
+      "game_seed": 862018,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-islands-812119",
+      "family": "mixed-islands",
+      "map_seed": 812119,
+      "game_seed": 862119,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-islands-812220",
+      "family": "mixed-islands",
+      "map_seed": 812220,
+      "game_seed": 862220,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-islands-812321",
+      "family": "mixed-islands",
+      "map_seed": 812321,
+      "game_seed": 862321,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-town-813027",
+      "family": "mixed-town",
+      "map_seed": 813027,
+      "game_seed": 863027,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-town-813128",
+      "family": "mixed-town",
+      "map_seed": 813128,
+      "game_seed": 863128,
+      "host": "mac"
+    },
+    {
+      "id": "mixed-town-813229",
+      "family": "mixed-town",
+      "map_seed": 813229,
+      "game_seed": 863229,
+      "host": "linux"
+    },
+    {
+      "id": "mixed-town-813330",
+      "family": "mixed-town",
+      "map_seed": 813330,
+      "game_seed": 863330,
+      "host": "mac"
+    },
+    {
+      "id": "small-economy-814036",
+      "family": "small-economy",
+      "map_seed": 814036,
+      "game_seed": 864036,
+      "host": "mac"
+    },
+    {
+      "id": "small-economy-814137",
+      "family": "small-economy",
+      "map_seed": 814137,
+      "game_seed": 864137,
+      "host": "linux"
+    },
+    {
+      "id": "small-economy-814238",
+      "family": "small-economy",
+      "map_seed": 814238,
+      "game_seed": 864238,
+      "host": "mac"
+    },
+    {
+      "id": "small-economy-814339",
+      "family": "small-economy",
+      "map_seed": 814339,
+      "game_seed": 864339,
+      "host": "linux"
+    },
+    {
+      "id": "contested-town-815045",
+      "family": "contested-town",
+      "map_seed": 815045,
+      "game_seed": 865045,
+      "host": "linux"
+    },
+    {
+      "id": "contested-town-815146",
+      "family": "contested-town",
+      "map_seed": 815146,
+      "game_seed": 865146,
+      "host": "mac"
+    },
+    {
+      "id": "contested-town-815247",
+      "family": "contested-town",
+      "map_seed": 815247,
+      "game_seed": 865247,
+      "host": "linux"
+    },
+    {
+      "id": "contested-town-815348",
+      "family": "contested-town",
+      "map_seed": 815348,
+      "game_seed": 865348,
+      "host": "mac"
+    }
+  ],
+  "aggregation": "Pair each variant with the same-match same-host same-worker lazy baseline. Equal weight to each match within family and each family overall. Bootstrap independent matches, never gradient queries or ticks.",
+  "confirmation": "After complete grid, confirm the compute/speed frontier on additional held-out seeds and balanced repetitions. Report selection uncertainty and match-type regressions. Include the production AI executor (compute-experiments=ai, compute-threads=4), with the frontier prepass disabled.",
+  "limits": "Finite held-out maps/AI configurations; cannot establish a universal optimum. Publication changes trajectories; workload/outcome changes must be reported separately from CPU savings. Timing instrumentation and impact auditing disabled.",
+  "compute_experiments": "none (ordinary hiring filter retained; frontier prepass disabled)"
+}

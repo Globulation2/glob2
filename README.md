@@ -1,3 +1,7 @@
+# Latest predictive-budget tradeoff results
+
+The completed 24-match sweep is in [predictive-budget-sweep](predictive-budget-sweep/README.md), with all 5,616 timing records, charts, models and checkpoints. This is separate from the earlier prototype evidence below.
+
 # Scheduled building-gradient draft evidence
 
 Feature commit: 8e272eb89571d3497bccecf529ebe5a748ba276c. Tested parent: 79c8d65f52cfea0a91efa3c104f97d79fd5de54d.

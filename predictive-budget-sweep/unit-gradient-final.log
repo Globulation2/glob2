@@ -1,0 +1,4 @@
+PASS glob2-unit-tests GradientPipeline (6 cases) (0.7s)
+
+1 passed, 0 failed, 0 skipped (0.7s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/9520/glob2/artifacts/tests/junit.xml (6 cases)

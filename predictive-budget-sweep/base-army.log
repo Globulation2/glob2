@@ -1,0 +1,15 @@
+FAIL Maxima.Economy/army births match platform checksums (0.1s)
+
+===== FAIL Maxima.Economy/army births match platform checksums =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/glob2/artifacts/recording-sdl3/prefix/lib"}, "revision": "ab143f583b16c4cfdab32c9fc4abaa6200867a07", "sourceStatus": [], "sourceTreeSha256": "15fdaab5f5a802e6ab4f18d1098682f2e42c2ea8453f78c5b8a5a8d8554cd450"}
+Army birth checksum mismatch: tick=153 actual=3294264917 expected=2074444202
+
+[failure] army births match platform checksums: false
+src/ai/maxima/MaximaEconomyRegressionTest.cpp:569:
+REQUIRE( (expectedTick==tick && expectedChecksum==checksum) ) is NOT correct!
+  values: REQUIRE( false )
+
+
+0 passed, 1 failed, 0 skipped (0.1s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/greedy-fetch-comparison/glob2/artifacts/tests/junit.xml (1 cases)

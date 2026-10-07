@@ -1,0 +1,18 @@
+late-large-economy-910101 64000 480.87041571503505
+late-large-economy-910303 64000 464.53159133391455
+late-large-generated-economy-911009 48000 109.75823809904978
+late-large-generated-economy-911211 48000 104.80809609312564
+Traceback (most recent call last):
+  File "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/sweep.py", line 32, in <module>
+    run=execute(a.original_binary if role.startswith('original-') else a.binary,args,dest,cwd=a.root)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/test/benchmark_parallel_compute.py", line 46, in execute
+    raise RuntimeError(f"exit {process.returncode}: {output / 'engine.log'}")
+RuntimeError: exit 2: /home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/stress-linux/late-large-economy-910101/timing/r0-d4-w4-original-before/engine.log
+Traceback (most recent call last):
+  File "/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/follow-on.py", line 17, in <module>
+    for command in commands:subprocess.run(command,cwd=root,check=True)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/sweep.py', '--binary', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/binaries/glob2-candidate-linux', '--original-binary', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/binaries/glob2-original-linux', '--evidence', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/stress-linux', '--models', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/models', '--protocol', '/home/bradley/glob2-building-gradient-20261004-9520/rebase-851/source/artifacts/gradient-budget-sweep/stress-protocol.json']' returned non-zero exit status 1.

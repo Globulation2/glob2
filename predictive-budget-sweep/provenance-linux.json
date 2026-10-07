@@ -1,0 +1,14 @@
+{
+  "source": "3fb7141d5152fc2544bd307f62f4023456df1296",
+  "original_source": "ab143f583b16c4cfdab32c9fc4abaa6200867a07",
+  "os": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+  "arch": "x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "build_flags": "release=1: -O3, -std=gnu++20; native client, rendering unused",
+  "binary_sha256": "9dc3d48a135cd660a2c38d577bf8d24f5f7bd3b28a71cbba53426d40072ca40f",
+  "original_binary_sha256": "d9525b3016ca9ad6140a7c46e356a8b50efa1f616b988eebe0fd629011f4c723",
+  "dependencies": {
+    "SDL3_prefix": "/home/bradley/glob2-verify/sdl3/prefix",
+    "recording_prefix": "/home/bradley/glob2-building-gradient-20261004-9520/recording-prefix"
+  }
+}

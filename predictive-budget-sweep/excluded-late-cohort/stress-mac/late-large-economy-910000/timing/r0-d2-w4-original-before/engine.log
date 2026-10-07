@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+Failed to load the map: Invalid AI telemetry
+The map couldn't be loaded because the file is either damaged or an incompatible version.
+Invalid AI telemetry
+cannot load saved game

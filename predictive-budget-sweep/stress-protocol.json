@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "status": "additional late-game stress cohort registered before reviewing aggregate timing results",
+  "quantiles": [
+    0,
+    0.25,
+    0.5,
+    0.65,
+    0.8,
+    0.9,
+    0.95,
+    0.99,
+    1
+  ],
+  "publication_delays": [
+    2,
+    4,
+    8
+  ],
+  "gradient_workers": [
+    1,
+    2,
+    4
+  ],
+  "controls": [
+    "original greedy code and experiment-off candidate code, bracketing every block",
+    "scheduled zero-expansion",
+    "full refresh prebuilding"
+  ],
+  "training_mode": "walking_extensions",
+  "training_seeds_per_family": 3,
+  "evaluation_seeds_per_family": 4,
+  "balanced_repetitions": 2,
+  "measured_ticks": 2048,
+  "diagnostic_ticks": 10000,
+  "families": [
+    {
+      "id": "late-large-economy",
+      "map": "maps/Oazis.map.gz",
+      "players": [
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima"
+      ],
+      "warmup": 64000
+    },
+    {
+      "id": "late-large-generated-economy",
+      "generator": "coral",
+      "size": 256,
+      "players": [
+        "maxima",
+        "maxima",
+        "maxima",
+        "maxima"
+      ],
+      "warmup": 48000
+    }
+  ],
+  "training": [],
+  "evaluation": [
+    {
+      "id": "late-large-economy-910000",
+      "family": "late-large-economy",
+      "map_seed": 910000,
+      "game_seed": 960000,
+      "host": "mac"
+    },
+    {
+      "id": "late-large-economy-910101",
+      "family": "late-large-economy",
+      "map_seed": 910101,
+      "game_seed": 960101,
+      "host": "linux"
+    },
+    {
+      "id": "late-large-economy-910202",
+      "family": "late-large-economy",
+      "map_seed": 910202,
+      "game_seed": 960202,
+      "host": "mac"
+    },
+    {
+      "id": "late-large-economy-910303",
+      "family": "late-large-economy",
+      "map_seed": 910303,
+      "game_seed": 960303,
+      "host": "linux"
+    },
+    {
+      "id": "late-large-generated-economy-911009",
+      "family": "late-large-generated-economy",
+      "map_seed": 911009,
+      "game_seed": 961009,
+      "host": "linux"
+    },
+    {
+      "id": "late-large-generated-economy-911110",
+      "family": "late-large-generated-economy",
+      "map_seed": 911110,
+      "game_seed": 961110,
+      "host": "mac"
+    },
+    {
+      "id": "late-large-generated-economy-911211",
+      "family": "late-large-generated-economy",
+      "map_seed": 911211,
+      "game_seed": 961211,
+      "host": "linux"
+    },
+    {
+      "id": "late-large-generated-economy-911312",
+      "family": "late-large-generated-economy",
+      "map_seed": 911312,
+      "game_seed": 961312,
+      "host": "mac"
+    }
+  ],
+  "aggregation": "Report late cohort separately (two equal-weight families, four independent seeds each), plus overall sensitivity summary; retain primary six-family summary. Bootstrap whole independent matches.",
+  "confirmation": "After complete grid, confirm the compute/speed frontier on additional held-out seeds and balanced repetitions. Report selection uncertainty and match-type regressions. Include the production AI executor (compute-experiments=ai, compute-threads=4), with the frontier prepass disabled.",
+  "limits": "Finite held-out maps/AI configurations; cannot establish a universal optimum. Publication changes trajectories; workload/outcome changes must be reported separately from CPU savings. Timing instrumentation and impact auditing disabled.",
+  "compute_experiments": "none (ordinary hiring filter retained; frontier prepass disabled)",
+  "models": "Reuse the frozen 18-match training models; do not refit on stress evaluations. These cases test size-bucket fallback/generalization."
+}

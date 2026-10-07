@@ -1,0 +1,18 @@
+late-large-economy-910000 64000 251.154112665914
+late-large-economy-910202 64000 272.1358515419997
+late-large-generated-economy-911110 48000 70.26400537509471
+late-large-generated-economy-911312 48000 69.78371137497015
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/sweep.py", line 32, in <module>
+    run=execute(a.original_binary if role.startswith('original-') else a.binary,args,dest,cwd=a.root)
+  File "/Users/bradley/.codex/worktrees/9520/glob2/test/benchmark_parallel_compute.py", line 46, in execute
+    raise RuntimeError(f"exit {process.returncode}: {output / 'engine.log'}")
+RuntimeError: exit 2: /Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/stress-mac/late-large-economy-910000/timing/r0-d2-w4-original-before/engine.log
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/follow-on.py", line 17, in <module>
+    for command in commands:subprocess.run(command,cwd=root,check=True)
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/sweep.py', '--binary', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/binaries/glob2-candidate-mac', '--original-binary', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/binaries/glob2-original-mac', '--evidence', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/stress-mac', '--models', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/models', '--protocol', '/Users/bradley/.codex/worktrees/9520/glob2/artifacts/gradient-budget-sweep/stress-protocol.json']' returned non-zero exit status 1.
