@@ -5825,4 +5825,53 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [editor menu map]
 
 [no resource growth areas]
+[dock flags and units]
+
+[dock minimap]
+
+[dock search brushes]
+
+[dock brush shape %0]
+
+[dock brush]
+
+[dock brush paint]
+
+[dock brush erase]
+
+[dock enable for map]
+
+[dock enable experiment %0]
+
+[dock enable experiment hint %0]
+
+[dock area number]
+
+[dock building level]
+
+[dock unit level]
+
+[dock no brushes match]
+
+[dock active team]
+
+[dock team count %0]
+
+[dock add team]
+
+[dock remove team]
+
+[dock nothing selected]
+
+[dock no properties]
+
+[focus brush search]
+
+[switch to resources view]
+
+[dock resources base]
+
+[dock fertility stale]
+
+[dock fertility refresh]
 

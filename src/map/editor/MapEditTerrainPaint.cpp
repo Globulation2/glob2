@@ -230,17 +230,3 @@ void MapEdit::drawTerrainBrushPreview()
 	for (const auto &cell : cells)
 		cellRect(cell, [&](int x, int y, int w, int h) { gfx->drawRect(x, y, w, h, Color(intensity, intensity, intensity)); });
 }
-
-void MapEdit::drawStatus()
-{
-	if (statusText.empty() || SDL_GetTicks() >= statusUntil)
-		return;
-	auto *gfx = globalContainer->gfx;
-	auto *font = globalContainer->littleFont;
-	const int pad = 6;
-	const int w = font->getStringWidth(statusText) + 2 * pad, h = font->getStringHeight(statusText) + 2 * pad;
-	const int x = 8, y = gfx->getH() - h - 8;
-	gfx->drawFilledRect(x, y, w, h, Color(0, 0, 0, 190));
-	gfx->drawRect(x, y, w, h, Color(220, 80, 65));
-	gfx->drawString(x + pad, y + pad, font, statusText.c_str());
-}

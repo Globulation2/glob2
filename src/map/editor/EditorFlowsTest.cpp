@@ -5,6 +5,7 @@
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "EditorDock.h"
 #include "MapEditorScreen.h"
 #include "LoadSaveDialog.h"
 #include <FileManager.h>
@@ -82,9 +83,8 @@ void capture(MapEdit &editor, const char *name)
 {
 	auto *gfx = globalContainer->gfx;
 	editor.drawMap(0, 0, gfx->getW(), gfx->getH());
-	editor.drawMenu();
-	editor.drawMiniMap();
-	editor.drawWidgets();
+	editor.drawMenuEyeCandy();
+	editor.drawDock(SDL_GetTicks());
 	editor.drawFlowOverlays();
 	editor.drawDialog();
 	gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + name);
@@ -243,7 +243,7 @@ TEST_SUITE("EditorFlows")
 		CHECK_FALSE(shared.empty());
 		CHECK(shared == editor.savedMapFile());
 		CHECK_FALSE(editor.hasUnsavedChanges());
-		CHECK_FALSE(editor.editorNotice().empty());
+		CHECK_FALSE(editor.lastStatus().empty());
 		// A clean saved map shares at once; a dirty one offers the saved version.
 		editor.performAction("share map");
 		CHECK_FALSE(editor.confirmation());
@@ -256,7 +256,7 @@ TEST_SUITE("EditorFlows")
 		poll(editor);
 		CHECK(editor.takeShareRequest() == shared);
 		editor.finishShare(true);
-		CHECK_FALSE(editor.editorNotice().empty());
+		CHECK_FALSE(editor.lastStatus().empty());
 		removeMap(shared);
 	}
 
@@ -386,17 +386,25 @@ TEST_SUITE("EditorFlows")
 		editor.performAction("terrain drag end");
 		CHECK(editor.fertilityOverlayStale());
 		capture(editor, "editor-fertility-stale.bmp");
-		// The chip over the map refreshes it.
+		// Docked editors refresh from the dock's fertility controls; the chip
+		// over the map is for presentations without a dock.
+		REQUIRE(editor.dock);
 		const auto chip = editor.fertilityChipRect();
 		SDL_Event down{};
 		down.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		down.button.button = SDL_BUTTON_LEFT;
 		down.button.x = float(chip.x + chip.width / 2);
 		down.button.y = float(chip.y + chip.height / 2);
-		SDL_Event up = down;
-		up.type = SDL_EVENT_MOUSE_BUTTON_UP;
-		CHECK(editor.handleFlowEvent(down));
-		CHECK(editor.handleFlowEvent(up));
+		CHECK_FALSE(editor.handleFlowEvent(down));
+		editor.dock->showTab(EditorDock::Tab::Terrain, true);
+		editor.dock->update(tick);
+		auto &host = editor.dock->host();
+		host.layoutIfNeeded();
+		REQUIRE(host.find("dock/fertility/refresh"));
+		host.scrollIntoView("dock/fertility/refresh");
+		host.layoutIfNeeded();
+		const auto refresh = host.bounds("dock/fertility/refresh");
+		host.tapAt({refresh.x + refresh.w / 2, refresh.y + refresh.h / 2});
 		CHECK(editor.fertilityRequested);
 		for (int frame = 0; frame < 2000 && (editor.fertilityRequested || editor.fertilityProgress()); ++frame)
 			editor.advanceEditing({}, tick += 33);

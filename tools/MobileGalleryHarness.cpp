@@ -47,6 +47,7 @@
 #undef RIGHT_MENU_OFFSET
 #include "MapEdit.h"
 #include "PhoneEditor.h"
+#include "EditorDock.h"
 #include "MapEditDialog.h"
 #include "ScriptEditorScreen.h"
 #include "RoomMapPickerScreen.h"
@@ -1315,6 +1316,21 @@ class MobileGalleryGameplay
 			editor.performAction("switch to terrain view");
 			editCapture("editor-palette-resources");
 		}
+		if (editor.dock)
+		{
+			// The desktop/tablet dock: a terrain brush, a resource brush with its
+			// placement rule, and a locked experiment group offering to enable it.
+			editor.dock->showTab(EditorDock::Tab::Terrain);
+			editor.performAction("select terrain water");
+			editCapture("editor-dock-terrain");
+			editor.dock->showTab(EditorDock::Tab::Resources);
+			editor.performAction("select resource wheat");
+			editCapture("editor-dock-resources");
+			// Bundled maps carry no foundation resources, so show a locked terrain
+			// group instead (the gallery runs with experiments off).
+			editor.performAction("open terrain palette obstacles");
+			editCapture("editor-dock-locked");
+		}
 
 		// Existing-object inspection has its own composition, separate from the
 		// placement palette. Build controlled editable examples on legal cells.
@@ -1341,6 +1357,8 @@ class MobileGalleryGameplay
 		inspectedBuilding->hp = std::max(1, inspectedBuilding->type->hpMax * 2 / 3);
 		focusObject(inspectedBuilding->posX, inspectedBuilding->posY, "select map building");
 		editCapture("editor-inspector-building");
+		if (editor.dock)
+			editCapture("editor-dock-inspector");
 		Unit *inspectedUnit = nullptr;
 		for (int y = 0; y < editor.game.map.getH() && !inspectedUnit; ++y)
 			for (int x = 0; x < editor.game.map.getW() && !inspectedUnit; ++x)

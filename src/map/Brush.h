@@ -127,6 +127,8 @@ public:
 	
 	//! This enables or disables the ability to select add / remove. Used by the map editor because logically you can't "remove" Terrain and such.
 	void setAddRemoveEnabledState(bool value);
+	//! Whether Add/Delete can be chosen for the current brush.
+	bool addRemoveIsEnabled() const { return addRemoveEnabled; }
 	//! Return the left extend of the brush (not counting its center cell)
 	static int getBrushDimXMinus(unsigned figure);
 	//! Return the right extend of the brush (not counting its center cell)

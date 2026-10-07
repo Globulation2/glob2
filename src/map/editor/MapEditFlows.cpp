@@ -143,8 +143,6 @@ void MapEdit::closeDialogsForFlow()
 		performAction("close menu screen");
 	if (showingLoad)
 		performAction("close load screen");
-	terrainPalette.reset();
-	resourcePalette.reset();
 	if (showingScriptEditor)
 		performAction("close scenario editor");
 	if (showingTeamsEditor)
@@ -170,7 +168,7 @@ void MapEdit::saveSucceeded()
 	}
 	if (doQuitAfterLoadSave)
 		return;
-	showEditorNotice(text("[editor map saved]"));
+	showStatus(text("[editor map saved]"));
 	if (share)
 		pendingShareFilename = savedFilename;
 	else if (load)
@@ -180,7 +178,7 @@ void MapEdit::saveSucceeded()
 void MapEdit::finishShare(bool shared)
 {
 	if (shared)
-		showEditorNotice(text("[editor map shared]"));
+		showStatus(text("[editor map shared]"));
 }
 
 void MapEdit::openLoadDialog()
@@ -205,12 +203,6 @@ void MapEdit::finishFertilityProgress()
 	const bool completed = progressDialog->result() == EditorProgressDialog::COMPLETED;
 	progressDialog.reset();
 	finishFertility(completed);
-}
-
-void MapEdit::showEditorNotice(const std::string &value, Uint32 durationMs)
-{
-	noticeText = value;
-	noticeUntil = SDL_GetTicks() + durationMs;
 }
 
 void MapEdit::importTerrainJson(const std::string &json)
@@ -322,13 +314,14 @@ widgetRectangle MapEdit::fertilityChipRect() const
 	auto *font = globalContainer->standardFont;
 	const std::string label = text("[editor fertility stale]");
 	const int width = font->getStringWidth(label) + 24, height = font->getStringHeight(label) + 12;
-	const int mapWidth = globalContainer->gfx->getW() - menuWidth();
+	const int mapWidth = globalContainer->gfx->getW() - dockWidth();
 	return widgetRectangle(std::max(0, (mapWidth - width) / 2), 24, width, height);
 }
 
 bool MapEdit::handleFlowEvent(const SDL_Event &raw)
 {
-	if (phone || hasDialog() || !fertilityOverlayStale())
+	// With a dock the refresh lives beside its fertility switch.
+	if (phone || dock || hasDialog() || !fertilityOverlayStale())
 	{
 		fertilityChipPressed = false;
 		return false;
@@ -359,23 +352,11 @@ void MapEdit::drawFlowOverlays()
 	auto *gfx = globalContainer->gfx;
 	auto *font = globalContainer->standardFont;
 	gfx->setClipRect();
-	if (fertilityOverlayStale() && !phone)
+	if (fertilityOverlayStale() && !phone && !dock)
 	{
 		const auto chip = fertilityChipRect();
 		gfx->drawFilledRect(chip.x, chip.y, chip.width, chip.height, 46, 30, 72, 230);
 		gfx->drawRect(chip.x, chip.y, chip.width, chip.height, 176, 148, 232);
 		gfx->drawString(chip.x + 12, chip.y + 6, font, text("[editor fertility stale]"));
-	}
-	if (!noticeText.empty())
-	{
-		if (SDL_GetTicks() > noticeUntil)
-		{
-			noticeText.clear();
-			return;
-		}
-		const int width = font->getStringWidth(noticeText) + 24, height = font->getStringHeight(noticeText) + 12;
-		const int x = 12, y = gfx->getH() - height - 28;
-		gfx->drawFilledRect(x, y, width, height, 46, 30, 72, 230);
-		gfx->drawString(x + 12, y + 6, font, noticeText);
 	}
 }

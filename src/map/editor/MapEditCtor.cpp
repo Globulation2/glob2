@@ -10,6 +10,7 @@
 #include "MapEdit.h"
 #include "MapEditDialog.h"
 #include "PhoneEditor.h"
+#include "EditorDock.h"
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
@@ -310,6 +311,11 @@ MapEdit::MapEdit()
 	isShowingAreaName=false;
 	
 	isFertilityOn=false;
+
+	// Desktop and tablet presentations browse brushes in the dock; the legacy
+	// sidebar widgets above stay constructed for the phone tray (PhoneEditor).
+	if (!phone)
+		createDock();
 }
 
 
@@ -328,7 +334,7 @@ void MapEdit::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-menuWidth(),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    camera.resize(globalContainer->gfx->getW()-dockWidth(),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());

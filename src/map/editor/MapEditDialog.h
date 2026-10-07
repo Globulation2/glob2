@@ -42,9 +42,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 		QUIT_EDITOR,
 		SHARE_MAP,
 		IMPORT_TERRAIN,
-		TERRAIN_PALETTE,
-		IMPORT_RESOURCES,
-		RESOURCE_PALETTE
+		IMPORT_RESOURCES
 	};
 
   protected:
@@ -122,49 +120,4 @@ class TeamsEditor : public Glob2UI::InGameDialog
 	Game *game;
 	Slot slots[Team::MAX_COUNT];
 	Glob2UI::Element slotRow(int index, const Glob2UI::Presentation &p, bool compact);
-};
-
-// Shared desktop/touch palette over the catalogue's Terrain section: material
-// swatches grouped by catalogue group, with each group's rules under its heading.
-// Locked brushes are left out. The catalogue is fixed for the dialog lifetime; the
-// result is the chosen TerrainType, or -1 when cancelled.
-class TerrainPaletteDialog : public Glob2UI::InGameDialog
-{
-	std::vector<BrushGroup> groups;
-	BrushSwatches &swatches;
-	std::string current;
-	int focus;
-
-  public:
-	// Maps a catalogue group key to its index; anything else means no focus.
-	static int groupFor(std::string_view key);
-	// `currentBrush` is a catalogue id (MapEdit::currentBrushId) shown selected.
-	TerrainPaletteDialog(std::vector<BrushGroup> terrainGroups, BrushSwatches &swatches,
-						 std::string currentBrush = {}, int focusGroup = -1);
-	~TerrainPaletteDialog() override;
-	int focusedGroup() const { return focus; }
-	// Scrolls the focused group's first brush into view; call once after attaching.
-	void focusOnOpen();
-	const char *recordingId() const override { return "terrain_palette"; }
-	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
-
-  protected:
-	void onEscape() override { finish(-1); }
-	bool fillHeight() const override { return true; }
-	double maxWidth() const override { return 760; }
-};
-
-class ResourcePaletteDialog : public Glob2UI::InGameDialog
-{
-	std::shared_ptr<const ResourceRegistry> registry;
-	ExperimentSet& enabled;
-public:
-	explicit ResourcePaletteDialog(std::shared_ptr<const ResourceRegistry> value, ExperimentSet& experiments)
-		: InGameDialog(Glob2UI::Surface::Editor), registry(std::move(value)), enabled(experiments) {}
-	const char* recordingId() const override { return "resource_palette"; }
-	Glob2UI::Element build(const Glob2UI::Presentation& p) override;
-protected:
-	void onEscape() override { finish(-1); }
-	bool fillHeight() const override { return true; }
-	double maxWidth() const override { return 760; }
 };

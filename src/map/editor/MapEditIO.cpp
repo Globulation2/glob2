@@ -203,10 +203,12 @@ void MapEdit::drawEditing()
     if (!editing) return;
 	drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
 
-	if(!phone) {drawMenu();drawMiniMap();}
+	if(!phone && !dock) {drawMenu();drawMiniMap();}
+	else if(dock) drawMenuEyeCandy();
 	wasMinimapRendered=false;
 	if(phone) {phone->draw();if(!hasDialog()) drawFlowOverlays();globalContainer->gfx->nextFrame();return;}
-	drawWidgets();
+	if(dock) drawDock(SDL_GetTicks());
+	else drawWidgets();
 	drawFlowOverlays();
 	drawDialog();
 

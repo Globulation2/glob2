@@ -5826,3 +5826,53 @@ File
 Map
 [no resource growth areas]
 No-growth areas
+[dock flags and units]
+Flags & units
+[dock minimap]
+Minimap
+[dock search brushes]
+Search brushes
+[dock brush shape %0]
+Brush shape %0
+[dock brush]
+Brush
+[dock brush paint]
+Paint
+[dock brush erase]
+Erase
+[dock enable for map]
+Enable for this map
+[dock enable experiment %0]
+Enable %0
+[dock enable experiment hint %0]
+Turns on the %0 experiment for this map only.
+[dock area number]
+Area
+[dock building level]
+Level
+[dock unit level]
+Unit level
+[dock no brushes match]
+No brushes match the search.
+[dock active team]
+Active team
+[dock team count %0]
+Teams on this map: %0
+[dock add team]
+Add team
+[dock remove team]
+Remove team
+[dock nothing selected]
+Nothing is selected.
+[dock no properties]
+This object has no editable properties.
+[focus brush search]
+Search brushes
+[switch to resources view]
+Switch to resources view
+[dock resources base]
+Standard resources
+[dock fertility stale]
+The fertility map is out of date.
+[dock fertility refresh]
+Refresh fertility
