@@ -1,0 +1,63 @@
+{
+  "state": "downloaded; exact byte counts and SHA256 verified; archives safely extracted",
+  "items": [
+    {
+      "run": 37573574144,
+      "artifact": 11462713207,
+      "name": "accepted-macos-fingerprints-final-integration",
+      "bytes": 714285,
+      "sha256": "19d7fa99db2e77c3db639fc272b730e187137afefa91da62bbf8185b63a1f644",
+      "source": "914a1e5088b817a5993b5ffc8f2601aa58e0c642",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/37573574144/artifacts/11462713207"
+    },
+    {
+      "run": 37576994682,
+      "artifact": 11463188065,
+      "name": "candidate-exact-run-native-browser-parity",
+      "bytes": 25474094,
+      "sha256": "76f0c52dc8d5ba7ece9a29c1cf19b65628a4571c090be4b9a7f9108afcdc04e9",
+      "source": "4c8297c5c17974bbcc9f1fedbfbb43064095e04c",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/37576994682/artifacts/11463188065"
+    },
+    {
+      "run": 37573940556,
+      "artifact": 11462501159,
+      "name": "exact-artifact-editor-crash-investigation",
+      "bytes": 10699257,
+      "sha256": "4ad94fc45bffce52f4022371385451969b6384afda5055cf83e357ffd19e1ecc",
+      "source": "4c8297c5c17974bbcc9f1fedbfbb43064095e04c",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/37573940556/artifacts/11462501159"
+    },
+    {
+      "run": 37570683268,
+      "artifact": 11461861889,
+      "name": "browser-failure-traces-1",
+      "bytes": 163618770,
+      "sha256": "da8a7e5147fbbe19e1f17d33cecde57711bf5aac546b763160ff435bff009e4c",
+      "source": "4c8297c5c17974bbcc9f1fedbfbb43064095e04c",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/37570683268/artifacts/11461861889"
+    }
+  ],
+  "original_crash_parts": [
+    {
+      "file": "browser-failure-traces-1.zip.part00",
+      "bytes": 52428800,
+      "sha256": "484f897df1a92ad32ba15d2b2db055cf37ffa459f2f2cffbba592aa224b83b77"
+    },
+    {
+      "file": "browser-failure-traces-1.zip.part01",
+      "bytes": 52428800,
+      "sha256": "145b151a36676903770b51eaaece952783d8148aa157d18d9cdcdf97d3bb78db"
+    },
+    {
+      "file": "browser-failure-traces-1.zip.part02",
+      "bytes": 52428800,
+      "sha256": "350305a68cd9035081fc316d3351733f7464aabd7b50ecc97c485b57799f69a6"
+    },
+    {
+      "file": "browser-failure-traces-1.zip.part03",
+      "bytes": 6332370,
+      "sha256": "dbf857a6f3cbd82a43b6d738092dcdef6017de515c0493431058b1b68dc16d0c"
+    }
+  ]
+}

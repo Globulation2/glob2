@@ -134,6 +134,34 @@ Simulation CPU covers all threads through finishSession/final gradient drain and
 
 [Raw attribution evidence](isolated-reference-attribution.zip) contains every measurement/result/log, commands, input and restoration audits, independent analysis and exact runner sources. No optimization-retention conclusion follows from these reference campaigns.
 
+## Completed isolated 98-window legacy campaign: aggregate benefit with unresolved individual costs
+
+Frozen merged77fb → v2 candidate4a068 completed all 98 windows, one warmup plus eight measured alternating pairs each: 1764 children, 1568 measured runs/784 measured pairs. Independent audit recomputes all reported ratios, 4000-draw bootstrap intervals and medians exactly, validates exact command order/arguments and every window length, and confirms equal initial/final checksums across both variants and all repeats. These are final checksums, not per-tick traces. Frozen binary-role bindings, metadata/input audits, actual governor stabilization/restoration and exclusive cpuset cleanup pass; no forced kill. Per-tick and pending-save evidence remains separately linked above.
+
+| Equal-window aggregate metric | Candidate/reference ratio [95% CI] |
+| --- | --- |
+| simulation_cpu_s | 0.978905 [0.977087, 0.980760] |
+| simulation_wall_s | 0.985114 [0.983559, 0.986659] |
+| cpu_s | 0.980214 [0.978470, 0.981962] |
+| wall_s | 0.986387 [0.984986, 0.987846] |
+| peak_rss_bytes | 1.033454 [1.032499, 1.034436] |
+
+Aggregate simulation CPU decreases 2.11% [1.92%,2.29%], but 54/98 windows have CPU point slowdowns, with 34 per-window intervals wholly above 1. Of 98 windows, 26 have wall point slowdowns (three intervals wholly above 1), and 69 have RSS point increases (45 intervals wholly above 1). Intervals are unadjusted for multiple comparisons and identify investigations, not automatic retention/rejection. The old percentage gates do not decide acceptance. The worst CPU point increases cluster in water Nicowar/mixed windows, while the Nicowar group overall benefits; do not generalize the subset to the whole AI.
+
+| Largest CPU point slowdowns | CPU ratio [95% CI] | Wall ratio [95% CI] | RSS ratio [95% CI] |
+| --- | --- | --- | --- |
+| water-2-1002-nicowar-early | 1.049073 [1.027843, 1.072725] | 0.999264 [0.967156, 1.043671] | 0.999529 [0.998824, 1.000000] |
+| water-2-1002-nicowar-middle | 1.048501 [1.013260, 1.079686] | 1.004655 [0.974064, 1.035423] | 1.000000 [1.000000, 1.000000] |
+| water-4-1002-nicowar-middle | 1.042474 [1.020665, 1.063866] | 0.991455 [0.971755, 1.011306] | 1.000000 [0.999485, 1.000516] |
+| water-4-1002-nicowar-early | 1.039635 [1.016229, 1.064044] | 0.981523 [0.962151, 1.002431] | 1.000173 [0.999653, 1.000693] |
+| water-4-1002-mixed-early | 1.039428 [1.023537, 1.056349] | 0.998126 [0.988185, 1.009503] | 0.999831 [0.999494, 1.000000] |
+
+Wall intervals wholly above 1 occur for land-4-1001-maxima-late (+0.695%),water-2-1002-mixed-late (+0.561%) and water-4-1002-maxima-late (+0.230%). Worst RSS point increase is land-2-1001-cortex-middle (+14.06%, interval+13.29% to+14.73%). Exact per-window values and all slowdown ranks are in the archive. These costs are not yet causally explained; the candidate remains provisional pending attribution, separate large/custom stress and final review.
+
+Measured reserved busy minus whole-child CPU averages 0.158124 cores (maximum 0.483322); outside CPUs average 7.523006 busy cores, maximum 16.020142. SMT siblings accumulate 1.16 CPU-seconds. Slightly negative residuals and the outside maximum just above 16 are retained coarse-jiffy/boundary effects, not clamped. Residuals include wrapper/kernel work and do not attribute processes. Outside work is expected under verified exclusivity; shared memory/power/thermal/IRQ effects remain possible. The wrapper enforces complementary allocation on every check, but saved snapshots only retain child masks, limiting independent reconstruction of parent history.
+
+[Complete raw corpus evidence](gradient-reuse-v2-isolated-legacy.zip) retains all 1764 outputs, commands, measurements, summaries, independently rerunnable audit and source/provenance/restoration data. No frozen engine binary or duplicate input-save tree is embedded; their exact hashes and prior fixture archives identify them.
+
 ## Ranked remaining investigations and evidence rejections
 
 1. **Indexed-ring candidate rejected with controlled CPU evidence.** Original production code is restored. Preserve the diagnostic reduction in instructions alongside the null aggregate CPU result and Maxima slowdown; do not resurrect this patch from instruction counts alone.
