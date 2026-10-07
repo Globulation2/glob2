@@ -128,7 +128,7 @@ void GameGUI::processEvent(SDL_Event *event)
 {
     // Live diagnostic dumps and dialog construction are exceptional owner work.
     const bool diagnostic=(event->type==SDL_EVENT_MOUSE_BUTTON_DOWN || event->type==SDL_EVENT_MOUSE_BUTTON_UP) && (inputState.modifiers() & SDL_KMOD_SHIFT);
-    if ((diagnostic || activeDialog() || hive) && parkForClient([&]{processEvent(event);})) return;
+    if ((diagnostic || gameMenuScreen || hive) && parkForClient([&]{processEvent(event);})) return;
     if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;

@@ -126,7 +126,7 @@ void GameGUI::step(void)
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
     if(autosaveWriter) autosaveWriter->poll();
-    if (simulationThreaded && autosavePending && (!autosaveWriter || !autosaveWriter->busy()))
+    if (simulationThreaded && globalContainer->settings.autosaveGames && autosavePending && (!autosaveWriter || !autosaveWriter->busy()))
         parkForClient([&] {
             if (autosavePending.exchange(false)) { lastAutosaveStep=game.stepCounter; autosave(); }
         });
@@ -137,7 +137,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
     if (auto *dialog = activeDialog())
     {
         const auto update=[&]{dialog->update(Uint32(now));};
-        if (!parkForClient(update)) update();
+        if (inGameMenu!=IGM_TELEMETRY || !parkForClient(update)) update();
     }
     // A dialog can finish without an SDL event (browser-native text editing
     // submits through the host bridge); act on its result every frame.
