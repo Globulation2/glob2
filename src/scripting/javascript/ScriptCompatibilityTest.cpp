@@ -134,7 +134,7 @@ TEST_CASE("Completed-tick simulation rejects released replays and enforces accep
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 139);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 140);
 	CHECK(VERSION_MINOR >= REPLAY_MINIMUM_VERSION_MINOR);
 	CHECK(NET_PROTOCOL_VERSION == 58);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);

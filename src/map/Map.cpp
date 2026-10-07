@@ -189,11 +189,7 @@ ExperimentSet Map::requiredTerrainExperiments() const
 void Map::adjustTerrainFeatures(TerrainType type, bool add)
 {
 	const auto &p = terrainProperties(type);
-	const unsigned edge =
-		gradient_kernel::entrySteps(
-			gradient_kernel::scaledTerrainStep(
-				p.swimmable ? GRADIENT_SLOWEST_SWIM_STEP : GRADIENT_STEP, p.groundSpeedQ8))
-			.diagonal;
+	const unsigned edge = terrainRegistry().movement(p.swimmable ? SWIM_CLASS_COUNT - 1 : 0).entries[type].diagonal;
 	for (unsigned sw = 0; sw < 7; ++sw)
 		if (p.walkable || (sw && p.swimmable))
 		{
@@ -219,8 +215,8 @@ void Map::adjustTerrainFeatures(TerrainType type, bool add)
 		}
 	}
 	const bool flags[] = {bool(p.groundHealthQ8 || p.airHealthQ8),
-						  p.groundSpeedQ8 != 256,
-						  !p.flyable || p.airSpeedQ8 != 256,
+						  p.groundSpeedQ8 != 256 || p.groundHealthQ8 < 0,
+						  !p.flyable || p.airSpeedQ8 != 256 || p.airHealthQ8 < 0,
 						  p.projectileBlocks,
 						  edge >= 64,
 						  edge >= 128};
@@ -390,7 +386,8 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	const auto &before = terrainProperties(old), &after = terrainProperties(type);
 	if (before.walkable != after.walkable || before.swimmable != after.swimmable ||
 		before.groundSpeedQ8 != after.groundSpeedQ8 || before.flyable != after.flyable ||
-		before.airSpeedQ8 != after.airSpeedQ8)
+		before.airSpeedQ8 != after.airSpeedQ8 ||
+		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
 	if (!terrainEditDepth) finishTerrainEdit();
 }
@@ -501,6 +498,7 @@ void Map::clear()
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
+	gradientRuntime->safety.reset();
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{

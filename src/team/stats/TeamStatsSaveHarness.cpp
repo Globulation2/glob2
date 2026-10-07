@@ -842,7 +842,7 @@ static void measurementReplayBoundaries()
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
 	// Building format 137 changes services/AI and uses replay floor 137, protocol 57.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 139 && NET_PROTOCOL_VERSION == 58,
+	require(REPLAY_MINIMUM_VERSION_MINOR == 140 && NET_PROTOCOL_VERSION == 58,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, VERSION_MINOR, VERSION_MINOR+1})
 	{

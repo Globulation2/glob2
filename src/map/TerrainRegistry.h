@@ -28,7 +28,7 @@ class TerrainRegistry
 		std::vector<std::uint8_t> profileIds;
 		std::vector<unsigned> steps;
 		using Prepared = std::variant<gradient_kernel::PreparedTerrainCosts<8>,
-									  gradient_kernel::PreparedTerrainCosts<128>>;
+									  gradient_kernel::PreparedTerrainCosts<256>>;
 		std::optional<Prepared> prepared;
 		void prepare();
 		unsigned minimum = GRADIENT_STEP;
@@ -68,6 +68,8 @@ class TerrainRegistry
 	TerrainType appearance(TerrainType id) const { return appearances_[id]; }
 	const Movement &movement(unsigned swim) const { return movement_[swim]; }
 	unsigned airCost(TerrainType id) const { return airCosts_[id]; }
+	unsigned groundTravelCost(TerrainType id) const { return groundTravelCosts_[id]; }
+	unsigned airRouteCost(TerrainType id) const { return airRouteCosts_[id]; }
 	unsigned minimumAirCost() const { return minimumAirCost_; }
 	bool swimming(TerrainType id) const { return properties_[id].swimmable; }
 	std::uint32_t checksum() const { return checksum_; }
@@ -98,7 +100,7 @@ class TerrainRegistry
 	std::vector<std::string> keys_, names_;
 	std::vector<TerrainType> appearances_;
 	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
-	std::vector<unsigned> airCosts_;
+	std::vector<unsigned> airCosts_, airRouteCosts_, groundTravelCosts_;
 	unsigned minimumAirCost_ = GRADIENT_STEP;
 	std::uint32_t checksum_ = 0;
 	std::string digest_;

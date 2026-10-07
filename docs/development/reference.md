@@ -940,10 +940,36 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-134 files also derive canonical IDs from legacy sprite ranges. Save floor 58
   remains unchanged. Building format 137 adds the per-game building catalog; replay
   floor 137 and network protocol 57 introduced those simulation/catalog gates.
-  The current replay floor is 139 for the completed-tick observation phase.
+  The current replay floor is 140 for damage-weighted routing and idle safety.
+  Loading earlier saves rebuilds cached routes on maps with terrain health effects;
+  current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
   Built-in-only maps keep their previous terrain checksum contribution. Existing
   map-content hashes cover the embedded section for LAN, online and verification.
+- Routing values expected terrain damage at **20 ticks per HP**. For damage rate
+  `d` HP/tick, the effective travel cost is `travel * (1 + 20*d)`. Compile the
+  speed-adjusted cardinal cost once, round its weighted value to nearest integer,
+  then derive the diagonal with the existing `cardinal*14/10` integer rule.
+  Ice therefore costs 33 straight and 46 diagonal; grass remains 10/14. Healing
+  gives no discount. Ground profiles remain shared by swim class, independent of
+  unit type, current HP or hospital availability. Strategic travel/influence
+  fields retain travel-only costs; route-derived distance estimates include the
+  preference penalty and can consequently make long hazardous jobs less attractive.
+  Authored extremes saturate at cardinal 181 (diagonal 253), preserving compact
+  fields and readable maps. Finite field range still limits very long costly routes.
+  Idle units on safe ground never wander onto damaging terrain. Idle units already
+  exposed follow a lazily built shared reverse escape field, allowing hazardous
+  intermediate steps. Ground fields are keyed by team, swim class and whether the
+  unit is escaping forbidden paint; flyers share a separate air field across teams.
+  Static resources, buildings, terrain and forbidden paint invalidate ground fields;
+  only terrain invalidates air fields. Occupancy is checked at the next step and
+  does not invalidate either field. Unreachable results are cached too. The cache
+  retains at most 64 MiB of 32-bit field cells (or one field on larger maps), evicting
+  least-recently-used profiles. Complete synchronous rebuilds consume no RNG, so
+  cache eviction and save/load discard cannot change directions or timing rules.
+  A cold query can still require a full-map build; subsequent queries inspect eight
+  neighbors. Flyers use their separate air damage rate. These rules are preferences for travel, not
+  guarantees against lethal crossings or overrides of explicit local combat moves.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
@@ -1097,6 +1123,28 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 
 
 ### Terrain gradient benchmarks
+
+`TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
+routing at fixed origins and full shared-field propagation. It covers safe ground,
+nearby safety, broad ice patches, unreachable safety, and many custom damage rates.
+It prints CSV rows with per-call nanoseconds. `idle-cold` measures the first query
+after a terrain invalidation; `idle` measures repeated queries with warm caches.
+Adaptive batches exclude setup and have no timing assertions. Run the same harness against both revisions with the
+same compiler, flags, inputs and CPU affinity. Fixed-origin retries intentionally
+measure a worst case; successful units move on in real games.
+
+```sh
+build/linux/client/release/test/glob2-engine-tests -ts=TerrainHazardBenchmark \
+  '-tc=*idle decisions*,*shared terrain fields*'
+```
+
+Its separate `write mature game fixtures` case creates control, sparse-ice and
+patchwork-ice saves. Set `GLOB2_HAZARD_BENCH_SAVE` to a mature save (the default is
+`games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
+fixtures with the older build so both readers accept exactly the same bytes. Use
+`--run-game --benchmark-warmup` to exclude loading and initial cache rebuilding
+from whole-engine CPU time per tick. Alternate revision order across repeats and
+report distributions; changed routes also change the later simulation workload.
 
 Engine movement profiles are prepared once from the compiled terrain table in
 `src/field/PreparedTerrainCosts.h`. Terrain identities with the same cardinal and

@@ -207,3 +207,6 @@ static constexpr int FILE_FORMAT_VERSION_BUILDING_CATALOG = 137;
 
 //! The map's terrain look seed (Map::terrainSeed), presentation only.
 static constexpr int FILE_FORMAT_VERSION_TERRAIN_SEED = 138;
+
+//! Hazard-weighted routing fields; older cached fields must be rebuilt.
+static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 140;

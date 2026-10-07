@@ -27,6 +27,24 @@ struct GradientRuntime
 			std::vector<std::size_t> positions, seeds;
 		} crowding;
 	};
+    // Fully derived synchronous escape fields. Cache state never affects route
+    // choices: eviction/load simply repeats the same complete computation.
+    struct SafetyField {
+        std::vector<Uint32> costs;
+        Uint64 generation=0, used=0;
+    };
+    struct SafetyCache {
+        static constexpr std::size_t MaximumBytes=64u*1024u*1024u;
+        std::map<unsigned,SafetyField> fields;
+        Uint64 groundGeneration=1, airGeneration=1, clock=0, builds=0;
+        void changed(unsigned flags) {
+            if (flags & (ResourceSeedCache::Resource | ResourceSeedCache::Building |
+                         ResourceSeedCache::Forbidden | ResourceSeedCache::Terrain))
+                if (++groundGeneration==0) reset();
+            if ((flags & ResourceSeedCache::Terrain) && ++airGeneration==0) reset();
+        }
+        void reset() { fields.clear(); groundGeneration=airGeneration=1; clock=builds=0; }
+    } safety;
 	struct ResourceField
 	{
 		std::unique_ptr<Uint16[]> cells;

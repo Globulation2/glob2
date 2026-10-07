@@ -5,11 +5,13 @@
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
 	gradientRuntime->resourceSeeds.changed(index, flags);
+	gradientRuntime->safety.changed(flags);
 }
 
 void Map::invalidateResourceSeeds()
 {
 	gradientRuntime->resourceSeeds.invalidate();
+	gradientRuntime->safety.changed(ResourceSeedCache::All);
 }
 
 void Map::replaceResource(size_t index, const Resource &resource)

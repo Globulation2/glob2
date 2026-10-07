@@ -380,7 +380,7 @@ std::shared_ptr<const TerrainRegistry> TerrainRegistry::deserialize(std::string_
 
 void TerrainRegistry::Movement::prepare()
 {
-	if (profiles.empty() || profiles.size() > 128)
+	if (profiles.empty() || profiles.size() > 256)
 		throw std::logic_error("Invalid terrain movement profiles");
 	auto make = [&]<std::size_t N>()
 	{
@@ -392,7 +392,7 @@ void TerrainRegistry::Movement::prepare()
 	if (profiles.size() <= 8)
 		make.template operator()<8>();
 	else
-		make.template operator()<128>();
+		make.template operator()<256>();
 }
 
 void TerrainRegistry::compile()
@@ -412,6 +412,8 @@ void TerrainRegistry::compile()
 	}
 
 	airCosts_.resize(size());
+	airRouteCosts_.resize(size());
+	groundTravelCosts_.resize(size());
 	minimumAirCost_ = GRADIENT_STEP;
 	for (unsigned i = 0; i < size(); ++i)
 	{
@@ -421,7 +423,9 @@ void TerrainRegistry::compile()
 			presentations_[i].label = names_[i].c_str();
 		}
 		const auto &p = properties_[i];
+		groundTravelCosts_[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.groundSpeedQ8);
 		airCosts_[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, p.airSpeedQ8);
+		airRouteCosts_[i] = gradient_kernel::hazardRouteCost(airCosts_[i], p.airHealthQ8);
 		if (p.flyable)
 			minimumAirCost_ = std::min(minimumAirCost_, airCosts_[i]);
 	}
@@ -434,9 +438,9 @@ void TerrainRegistry::compile()
 		std::array<bool, 256> used{};
 		for (const auto &p : properties_)
 		{
-			auto cost = gradient_kernel::entrySteps(gradient_kernel::scaledTerrainStep(
+			auto cost = gradient_kernel::entrySteps(gradient_kernel::hazardRouteCost(gradient_kernel::scaledTerrainStep(
 				p.swimmable && sw ? gradient_kernel::WATER_STEP[sw] : GRADIENT_STEP,
-				p.groundSpeedQ8));
+				p.groundSpeedQ8), p.groundHealthQ8));
 			if (cost.cardinal == 0 || cost.diagonal >= 256)
 				throw std::invalid_argument("Terrain edge exceeds supported gradient queue");
 			m.entries.push_back(cost);

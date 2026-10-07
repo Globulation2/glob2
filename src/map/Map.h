@@ -107,7 +107,7 @@ class Map
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
-	std::array<std::array<unsigned, 121>, 7> terrainGroundCostCounts{};
+	std::array<std::array<unsigned, 182>, 7> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
 	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
@@ -909,6 +909,8 @@ public:
 	//! fetching and carrying it there; without one, for the resource nearest to itself.
 	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
+	// Idle escape: least-cost reachable non-damaging cell, sharing point-search scratch.
+	bool pathfindTerrainSafety(Unit *unit);
 
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.

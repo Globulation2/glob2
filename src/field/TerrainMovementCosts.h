@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GradientCosts.h"
+#include "TerrainHazardCost.h"
 #include "map/TerrainProperties.h"
 #include <array>
 
@@ -41,7 +42,7 @@ constexpr TerrainEntryCosts terrainEntryCosts(int swim)
     {
         const auto &p = terrainProperties(static_cast<TerrainType>(t));
         const unsigned base = p.swimmable && swim > 0 ? WATER_STEP[swim] : GRADIENT_STEP;
-        result[t] = entrySteps(scaledTerrainStep(base, p.groundSpeedQ8));
+        result[t] = entrySteps(hazardRouteCost(scaledTerrainStep(base, p.groundSpeedQ8), p.groundHealthQ8));
     }
     return result;
 }
