@@ -220,6 +220,14 @@ states, not identical repeated workloads; consumer routing caches are not exerci
 These diagnostics do not establish legacy performance equivalence. Whole-process
 peak RSS likewise does not isolate resource allocations.
 
+Setting `GLOB2_RESOURCE_STRESS_OUTPUT` to an output directory while running
+`ResourceRuntimeBenchmark` with `test/run_tests.py --tag benchmark` also exports
+custom-resource saves for CLI continuation. Exports include complete GUI save
+state and idle AI controllers so every player supplies orders in headless runs.
+They exercise resource growth and storage with sparse colonies, not an active AI
+economy. Check full-window completion and worker-count checksum parity before
+using them for end-to-end timing.
+
 By default the historical performance gate uses paired confidence intervals:
 aggregate CPU regression above 2%, or any scenario above 5%, exits with status 1;
 intervals wholly within these limits exit 0, and inconclusive results exit 2.
