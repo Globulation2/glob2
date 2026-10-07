@@ -1,0 +1,163 @@
+{
+  "acceptance": "Diagnostic anchors only; no accepted expected-output edits.",
+  "sources": [
+    "src/map/generator/MapGeneratorDefaultsTest.cpp explicit historical constants",
+    "test/map-generator-resource-epoch.json Linux rows",
+    "test/fixtures/map-generators/pre-resource-epoch-golden.txt Portage rows",
+    "first c3fc macOS job112593621348 explicit observations",
+    "first7b Mac print Portage diagnostic values"
+  ],
+  "cases": [
+    {
+      "name": "maze",
+      "method": 11,
+      "revision": 15,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {
+        "cell-shape": 0
+      },
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 6132248727033081699,
+          "current": 5504856400217732380
+        },
+        "macos-arm64": {
+          "historical": 6132248727033081699,
+          "current": 5504856400217732380
+        }
+      }
+    },
+    {
+      "name": "fingerprint",
+      "method": 26,
+      "revision": 4,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {
+        "pattern": 0,
+        "barrier": 0
+      },
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 5648058033288605271,
+          "current": 3308641788709647431
+        },
+        "macos-arm64": {
+          "historical": 15850274609968439542,
+          "current": 16881829834589485263
+        }
+      }
+    },
+    {
+      "name": "canals",
+      "method": 29,
+      "revision": 7,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {
+        "block-shape": 0
+      },
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 16622643961647829752,
+          "current": 11099226097251723814
+        },
+        "macos-arm64": {
+          "historical": 16622643961647829752,
+          "current": 11099226097251723814
+        }
+      }
+    },
+    {
+      "name": "caravanserai",
+      "method": 41,
+      "revision": 3,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {
+        "desert": 1
+      },
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 6244602504248136250,
+          "current": 7881860256827117520
+        },
+        "macos-arm64": {
+          "historical": 6244602504248136250,
+          "current": 7881860256827117520
+        }
+      }
+    },
+    {
+      "name": "honeycomb-isle",
+      "method": 53,
+      "revision": 2,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {
+        "block-shape": 1
+      },
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 5908701397362810997,
+          "current": 9145829052127692952
+        },
+        "macos-arm64": {
+          "historical": 5908701397362810997,
+          "current": 9145829052127692952
+        }
+      }
+    },
+    {
+      "name": "portage-9-8-1",
+      "method": 65,
+      "revision": 4,
+      "w": 9,
+      "h": 8,
+      "teams": 4,
+      "seed": 1,
+      "options": {},
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 3271284103966557892,
+          "current": 10979952947016022140
+        },
+        "macos-arm64": {
+          "historical": 3271284103966557892,
+          "current": 15517041212468541340
+        }
+      }
+    },
+    {
+      "name": "portage-8-8-2",
+      "method": 65,
+      "revision": 4,
+      "w": 8,
+      "h": 8,
+      "teams": 4,
+      "seed": 2,
+      "options": {},
+      "anchors": {
+        "linux-x86_64": {
+          "historical": 11038895292732077700,
+          "current": 16118877485436928657
+        },
+        "macos-arm64": {
+          "historical": 790618175143118060,
+          "current": 16118877485436928657
+        }
+      }
+    }
+  ]
+}
