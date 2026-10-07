@@ -206,7 +206,7 @@ static void integrationRegressions()
     REQUIRE(game.addBuilding(20,20,flagType,0,8,8));
     REQUIRE(game.addBuilding(23,20,flagType,0,8,8));
     REQUIRE(game.addUnit(21,20,1,WARRIOR,0,0,0,0));
-    context.get_building_register().initiate();
+    glob2test::withMaximaObservation(context,[&]{context.get_building_register().initiate();});
     ai.defense_flags.push_back(0);
     ai.defense_flags.push_back(1);
     ai.budget.reactive_defense_enabled=true;
@@ -419,7 +419,7 @@ static void fruitStrategyRegressions()
     auto opportunity=field.assessBuilding(10,10,inn->type->width,inn->type->height);
     REQUIRE((opportunity.available==1 && opportunity.covered==0));
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).size()==1);
     bool advertisesInn=false;
     for(const auto& order:c.managementOrders)
         if(auto* alliance=dynamic_cast<Management::ChangeAlliances*>(order.get()))
@@ -429,7 +429,7 @@ static void fruitStrategyRegressions()
         }
     REQUIRE(advertisesInn);
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).size()==1);
     for(auto posture:{AIMaxima::Maxima::PostureDefend,AIMaxima::Maxima::PostureRecover})
     {
         ai.posture=posture;
@@ -438,7 +438,7 @@ static void fruitStrategyRegressions()
         REQUIRE(ai.budget.fruit_active);
         REQUIRE(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
         ai.update_fruit_flags(c);
-        REQUIRE(c.resource_flags(CHERRY).size()==1);
+        REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).size()==1);
     }
     // Pending mission identity survives a save; the next pass must reuse it.
     auto* backend=new GAGCore::MemoryStreamBackend;
@@ -449,22 +449,22 @@ static void fruitStrategyRegressions()
     input.seekFromStart(0);
     AIMaxima::Maxima restored(&player);
     REQUIRE(restored.load(&input,&player,VERSION_MINOR));
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(glob2test::withMaximaObservation(restored.context,[&]{return restored.context.resource_flags(CHERRY);})==glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}));
     restored.update_fruit_flags(restored.context);
-    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(glob2test::withMaximaObservation(restored.context,[&]{return restored.context.resource_flags(CHERRY);})==glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}));
     // Completed building vision replaces the pending explorer assignment.
     ::Building* covering=game.addBuilding(22,11,innType,0);REQUIRE(covering);
     const int coverId=c.buildings.register_building();
     c.buildings.issue_order(coverId,22,11,innType);
     {auto observation=c.scopeOwnerObservation();c.buildings.tick();}
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).empty());
     covering->kill();player.team->syncStep();{auto observation=c.scopeOwnerObservation();c.buildings.tick();}
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).size()==1);
     ai.strategy.fruit.enabled=false;ai.budget.fruit_active=false;
     ai.update_fruit_flags(c);
-    REQUIRE(c.resource_flags(CHERRY).empty());
+    REQUIRE(glob2test::withMaximaObservation(c,[&]{return c.resource_flags(CHERRY);}).empty());
 }
 
 static void reviewBugRegressions()
