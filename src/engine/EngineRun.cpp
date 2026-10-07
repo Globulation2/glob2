@@ -387,8 +387,22 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     if (!runner) throw std::logic_error("Simulation thread not running");
     publishSessionClock(now);
     runner->rethrowFailure();
+    for (const auto& event : events) sessionInput.push_back(event);
+    // Selection and hit testing need this world's first immutable view. Preserve
+    // early input until it arrives; never fall back to a previous world's Scene.
+    if (!runner->sceneReady())
+    {
+        const auto* scene=runner->acquireScene();
+        if (!scene) return gui.isRunning && !runner->ended();
+        gui.setPublishedScene(scene);
+    }
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(events); runner->requestScene(gui.sceneRequest(false)); absorbSimulationTelemetry(); });
+        runner->withGame([&] {
+            clientStep(sessionInput.events());
+            sessionInput.clear();
+            runner->requestScene(gui.sceneRequest(false));
+            absorbSimulationTelemetry();
+        });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
